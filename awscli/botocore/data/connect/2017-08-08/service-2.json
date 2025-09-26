@@ -85,6 +85,24 @@
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Allows the specified Amazon Connect instance to access the specified Amazon Lex or Amazon Lex V2 bot.</p>"
     },
+    "AssociateContactWithUser":{
+      "name":"AssociateContactWithUser",
+      "http":{
+        "method":"POST",
+        "requestUri":"/contacts/{InstanceId}/{ContactId}/associate-user"
+      },
+      "input":{"shape":"AssociateContactWithUserRequest"},
+      "output":{"shape":"AssociateContactWithUserResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Associates a queued contact with an agent.</p> <p> <b>Use cases</b> </p> <p>Following are common uses cases for this API:</p> <ul> <li> <p>Custom contact routing. You can build custom contact routing mechanisms beyond the default system routing in Amazon Connect. You can create tailored contact distribution logic that offers queued contacts directly to specific agents.</p> </li> <li> <p>Manual contact assignment. You can programmatically assign queued contacts to available users. This provides flexibility to contact centers that require manual oversight or specialized routing workflows outside of standard queue management.</p> <p>For information about how manual contact assignment works in the agent workspace, see the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/worklist-app.html\">Access the Worklist app in the Amazon Connect agent workspace</a> in the <i>Amazon Connect Administrator Guide</i>. </p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>Use this API chat/SMS, email, and task contacts. It does not support voice contacts.</p> </li> <li> <p>Use it to associate contacts with users regardless of their current state, including custom states. Ensure your application logic accounts for user availability before making associations.</p> </li> <li> <p>It honors the IAM context key <code>connect:PreferredUserArn</code> to prevent unauthorized contact associations.</p> </li> <li> <p>It respects the IAM context key <code>connect:PreferredUserArn</code> to enforce authorization controls and prevent unauthorized contact associations. Verify that your IAM policies are properly configured to support your intended use cases.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect endpoints and quotas</a>.</p>"
+    },
     "AssociateDefaultVocabulary":{
       "name":"AssociateDefaultVocabulary",
       "http":{
@@ -2897,6 +2915,23 @@
       ],
       "documentation":"<p>Provides a list of analysis segments for a real-time chat analysis session. This API supports CHAT channels only. </p> <important> <p>This API does not support VOICE. If you attempt to use it for VOICE, an <code>InvalidRequestException</code> occurs.</p> </important>"
     },
+    "ListRoutingProfileManualAssignmentQueues":{
+      "name":"ListRoutingProfileManualAssignmentQueues",
+      "http":{
+        "method":"GET",
+        "requestUri":"/routing-profiles/{InstanceId}/{RoutingProfileId}/manual-assignment-queues"
+      },
+      "input":{"shape":"ListRoutingProfileManualAssignmentQueuesRequest"},
+      "output":{"shape":"ListRoutingProfileManualAssignmentQueuesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Lists the manual assignment queues associated with a routing profile.</p> <p> <b>Use cases</b> </p> <p>Following are common uses cases for this API:</p> <ul> <li> <p>This API returns list of queues where contacts can be manually assigned or picked. The user can additionally filter on queues, if they have access to those queues (otherwise a invalid request exception will be thrown).</p> <p>For information about how manual contact assignment works in the agent workspace, see the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/worklist-app.html\">Access the Worklist app in the Amazon Connect agent workspace</a> in the <i>Amazon Connect Administrator Guide</i>. </p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>This API only returns the manual assignment queues associated with a routing profile. Use the ListRoutingProfileQueues API to list the auto assignment queues for the routing profile.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect endpoints and quotas</a>.</p>"
+    },
     "ListRoutingProfileQueues":{
       "name":"ListRoutingProfileQueues",
       "http":{
@@ -5679,6 +5714,36 @@
         }
       }
     },
+    "AssociateContactWithUserRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactId",
+        "UserId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactId":{
+          "shape":"ContactId",
+          "documentation":"<p>The identifier of the contact in this instance of Amazon Connect. </p>",
+          "location":"uri",
+          "locationName":"ContactId"
+        },
+        "UserId":{
+          "shape":"AgentResourceId",
+          "documentation":"<p>The identifier for the user. This can be the ID or the ARN of the user.</p>"
+        }
+      }
+    },
+    "AssociateContactWithUserResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "AssociateDefaultVocabularyRequest":{
       "type":"structure",
       "required":[
@@ -5881,8 +5946,7 @@
       "type":"structure",
       "required":[
         "InstanceId",
-        "RoutingProfileId",
-        "QueueConfigs"
+        "RoutingProfileId"
       ],
       "members":{
         "InstanceId":{
@@ -5900,6 +5964,10 @@
         "QueueConfigs":{
           "shape":"RoutingProfileQueueConfigList",
           "documentation":"<p>The queues to associate with this routing profile.</p>"
+        },
+        "ManualAssignmentQueueConfigs":{
+          "shape":"RoutingProfileManualAssignmentQueueConfigList",
+          "documentation":"<p>The manual assignment queues to associate with this routing profile.</p>"
         }
       }
     },
@@ -7824,7 +7892,7 @@
           "documentation":"<p>The message.</p>"
         }
       },
-      "documentation":"<p>The contact with the specified ID is not active or does not exist. Applies to Voice calls only, not to Chat or Task contacts.</p>",
+      "documentation":"<p>The contact with the specified ID is not active or does not exist.</p>",
       "error":{"httpStatusCode":410},
       "exception":true
     },
@@ -7891,7 +7959,12 @@
         "SegmentAttributes":{
           "shape":"ContactSearchSummarySegmentAttributes",
           "documentation":"<p>Set of segment attributes for a contact.</p>"
-        }
+        },
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>Indicates name of the contact.</p>"
+        },
+        "RoutingCriteria":{"shape":"RoutingCriteria"}
       },
       "documentation":"<p>Information of returned contact.</p>"
     },
@@ -7929,6 +8002,10 @@
         "ValueString":{
           "shape":"SegmentAttributeValueString",
           "documentation":"<p>The value of a segment attribute represented as a string.</p>"
+        },
+        "ValueMap":{
+          "shape":"SegmentAttributeValueMap",
+          "documentation":"<p>The key and value of a segment attribute.</p>"
         }
       },
       "documentation":"<p>The value of a segment attribute. This is structured as a map with a single key-value pair. The key 'valueString' indicates that the attribute type is a string, and its corresponding value is the actual string value of the segment attribute.</p>"
@@ -9013,6 +9090,10 @@
         "QueueConfigs":{
           "shape":"RoutingProfileQueueConfigList",
           "documentation":"<p>The inbound queues associated with the routing profile. If no queue is added, the agent can make only outbound calls.</p> <p>The limit of 10 array members applies to the maximum number of <code>RoutingProfileQueueConfig</code> objects that can be passed during a CreateRoutingProfile API request. It is different from the quota of 50 queues per routing profile per instance that is listed in <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html\">Amazon Connect service quotas</a>. </p>"
+        },
+        "ManualAssignmentQueueConfigs":{
+          "shape":"RoutingProfileManualAssignmentQueueConfigList",
+          "documentation":"<p>The manual assignment queues associated with the routing profile. If no queue is added, agents and supervisors can't pick or assign any contacts from this routing profile. The limit of 10 array members applies to the maximum number of RoutingProfileManualAssignmentQueueConfig objects that can be passed during a CreateRoutingProfile API request. It is different from the quota of 50 queues per routing profile per instance that is listed in Amazon Connect service quotas.</p>"
         },
         "MediaConcurrencies":{
           "shape":"MediaConcurrencies",
@@ -11783,8 +11864,7 @@
       "type":"structure",
       "required":[
         "InstanceId",
-        "RoutingProfileId",
-        "QueueReferences"
+        "RoutingProfileId"
       ],
       "members":{
         "InstanceId":{
@@ -11802,6 +11882,10 @@
         "QueueReferences":{
           "shape":"RoutingProfileQueueReferenceList",
           "documentation":"<p>The queues to disassociate from this routing profile.</p>"
+        },
+        "ManualAssignmentQueueReferences":{
+          "shape":"RoutingProfileQueueReferenceList",
+          "documentation":"<p>The manual assignment queues to disassociate with this routing profile.</p>"
         }
       }
     },
@@ -17016,6 +17100,61 @@
         }
       }
     },
+    "ListRoutingProfileManualAssignmentQueuesRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "RoutingProfileId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "RoutingProfileId":{
+          "shape":"RoutingProfileId",
+          "documentation":"<p>The identifier of the routing profile.</p>",
+          "location":"uri",
+          "locationName":"RoutingProfileId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListRoutingProfileManualAssignmentQueuesResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        },
+        "RoutingProfileManualAssignmentQueueConfigSummaryList":{
+          "shape":"RoutingProfileManualAssignmentQueueConfigSummaryList",
+          "documentation":"<p>Information about the manual assignment queues associated with the routing profile.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this resource was last modified.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The Amazon Web Services Region where this resource was last modified.</p>"
+        }
+      }
+    },
     "ListRoutingProfileQueuesRequest":{
       "type":"structure",
       "required":[
@@ -18120,6 +18259,24 @@
       "max":128,
       "min":1,
       "pattern":"(^[\\S].*[\\S]$)|(^[\\S]$)"
+    },
+    "NameCriteria":{
+      "type":"structure",
+      "required":[
+        "SearchText",
+        "MatchType"
+      ],
+      "members":{
+        "SearchText":{
+          "shape":"SearchTextList",
+          "documentation":"<p>The words or phrases used to match the contact name.</p>"
+        },
+        "MatchType":{
+          "shape":"SearchContactsMatchType",
+          "documentation":"<p>The match type combining name search criteria using multiple search texts in a name criteria.</p>"
+        }
+      },
+      "documentation":"<p>The search criteria based on the contact name</p>"
     },
     "Namespace":{
       "type":"string",
@@ -20922,6 +21079,10 @@
           "shape":"Long",
           "documentation":"<p>The number of associated queues in routing profile.</p>"
         },
+        "NumberOfAssociatedManualAssignmentQueues":{
+          "shape":"Long",
+          "documentation":"<p>The number of associated manual assignment queues in routing profile.</p>"
+        },
         "NumberOfAssociatedUsers":{
           "shape":"Long",
           "documentation":"<p>The number of associated users in routing profile.</p>"
@@ -20945,6 +21106,10 @@
         "AssociatedQueueIds":{
           "shape":"AssociatedQueueIdList",
           "documentation":"<p>The IDs of the associated queue.</p>"
+        },
+        "AssociatedManualAssignmentQueueIds":{
+          "shape":"AssociatedQueueIdList",
+          "documentation":"<p>The IDs of the associated manual assignment queues.</p>"
         }
       },
       "documentation":"<p>Contains information about a routing profile.</p>"
@@ -20958,6 +21123,52 @@
     "RoutingProfileList":{
       "type":"list",
       "member":{"shape":"RoutingProfile"}
+    },
+    "RoutingProfileManualAssignmentQueueConfig":{
+      "type":"structure",
+      "required":["QueueReference"],
+      "members":{
+        "QueueReference":{"shape":"RoutingProfileQueueReference"}
+      },
+      "documentation":"<p>Contains information about the queue and channel for manual assignment behaviour can be enabled.</p>"
+    },
+    "RoutingProfileManualAssignmentQueueConfigList":{
+      "type":"list",
+      "member":{"shape":"RoutingProfileManualAssignmentQueueConfig"},
+      "max":10,
+      "min":1
+    },
+    "RoutingProfileManualAssignmentQueueConfigSummary":{
+      "type":"structure",
+      "required":[
+        "QueueId",
+        "QueueArn",
+        "QueueName",
+        "Channel"
+      ],
+      "members":{
+        "QueueId":{
+          "shape":"QueueId",
+          "documentation":"<p>The identifier for the queue.</p>"
+        },
+        "QueueArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the queue.</p>"
+        },
+        "QueueName":{
+          "shape":"QueueName",
+          "documentation":"<p>The name of the queue.</p>"
+        },
+        "Channel":{
+          "shape":"Channel",
+          "documentation":"<p>The channels this queue supports. Valid Values: CHAT | TASK | EMAIL </p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a routing profile manual assignment queue.</p>"
+    },
+    "RoutingProfileManualAssignmentQueueConfigSummaryList":{
+      "type":"list",
+      "member":{"shape":"RoutingProfileManualAssignmentQueueConfigSummary"}
     },
     "RoutingProfileName":{
       "type":"string",
@@ -21552,11 +21763,46 @@
         }
       }
     },
+    "SearchContactsAdditionalTimeRange":{
+      "type":"structure",
+      "required":[
+        "Criteria",
+        "MatchType"
+      ],
+      "members":{
+        "Criteria":{
+          "shape":"SearchContactsAdditionalTimeRangeCriteriaList",
+          "documentation":"<p>List of criteria of the time range to additionally filter on.</p>"
+        },
+        "MatchType":{
+          "shape":"SearchContactsMatchType",
+          "documentation":"<p>The match type combining multiple time range filters.</p>"
+        }
+      },
+      "documentation":"<p>Time range that you additionally want to filter on.</p>"
+    },
+    "SearchContactsAdditionalTimeRangeCriteria":{
+      "type":"structure",
+      "members":{
+        "TimeRange":{"shape":"SearchContactsTimeRange"},
+        "TimestampCondition":{
+          "shape":"SearchContactsTimestampCondition",
+          "documentation":"<p>List of the timestamp conditions.</p>"
+        }
+      },
+      "documentation":"<p>The criteria of the time range to additionally filter on.</p>"
+    },
+    "SearchContactsAdditionalTimeRangeCriteriaList":{
+      "type":"list",
+      "member":{"shape":"SearchContactsAdditionalTimeRangeCriteria"}
+    },
     "SearchContactsMatchType":{
       "type":"string",
       "enum":[
         "MATCH_ALL",
-        "MATCH_ANY"
+        "MATCH_ANY",
+        "MATCH_EXACT",
+        "MATCH_NONE"
       ]
     },
     "SearchContactsRequest":{
@@ -21634,18 +21880,45 @@
       },
       "documentation":"<p>A structure of time range that you want to search results.</p>"
     },
+    "SearchContactsTimeRangeConditionType":{
+      "type":"string",
+      "enum":["NOT_EXISTS"]
+    },
     "SearchContactsTimeRangeType":{
       "type":"string",
       "enum":[
         "INITIATION_TIMESTAMP",
         "SCHEDULED_TIMESTAMP",
         "CONNECTED_TO_AGENT_TIMESTAMP",
-        "DISCONNECT_TIMESTAMP"
+        "DISCONNECT_TIMESTAMP",
+        "ENQUEUE_TIMESTAMP"
       ]
+    },
+    "SearchContactsTimestampCondition":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "ConditionType"
+      ],
+      "members":{
+        "Type":{
+          "shape":"SearchContactsTimeRangeType",
+          "documentation":"<p>Type of the timestamps to use for the filter.</p>"
+        },
+        "ConditionType":{
+          "shape":"SearchContactsTimeRangeConditionType",
+          "documentation":"<p>Condition of the timestamp on the contact.</p>"
+        }
+      },
+      "documentation":"<p>The timestamp condition indicating which timestamp should be used and how it should be filtered.</p>"
     },
     "SearchCriteria":{
       "type":"structure",
       "members":{
+        "Name":{
+          "shape":"NameCriteria",
+          "documentation":"<p>Name of the contact.</p>"
+        },
         "AgentIds":{
           "shape":"AgentResourceIdList",
           "documentation":"<p>The identifiers of agents who handled the contacts.</p>"
@@ -21669,6 +21942,14 @@
         "QueueIds":{
           "shape":"QueueIdList",
           "documentation":"<p>The list of queue IDs associated with contacts.</p>"
+        },
+        "RoutingCriteria":{
+          "shape":"SearchableRoutingCriteria",
+          "documentation":"<p>Routing criteria for the contact.</p>"
+        },
+        "AdditionalTimeRange":{
+          "shape":"SearchContactsAdditionalTimeRange",
+          "documentation":"<p>Additional TimeRange used to filter contacts.</p>"
         },
         "SearchableContactAttributes":{
           "shape":"SearchableContactAttributes",
@@ -22250,6 +22531,20 @@
         }
       }
     },
+    "SearchableAgentCriteriaStep":{
+      "type":"structure",
+      "members":{
+        "AgentIds":{
+          "shape":"AgentResourceIdList",
+          "documentation":"<p>The identifiers of agents used in preferred agents matching.</p>"
+        },
+        "MatchType":{
+          "shape":"SearchContactsMatchType",
+          "documentation":"<p>The match type combining multiple agent criteria steps.</p>"
+        }
+      },
+      "documentation":"<p>The agent criteria to search for preferred agents on the routing criteria.</p>"
+    },
     "SearchableContactAttributeKey":{
       "type":"string",
       "max":100,
@@ -22310,6 +22605,30 @@
     "SearchableQueueType":{
       "type":"string",
       "enum":["STANDARD"]
+    },
+    "SearchableRoutingCriteria":{
+      "type":"structure",
+      "members":{
+        "Steps":{
+          "shape":"SearchableRoutingCriteriaStepList",
+          "documentation":"<p>The list of Routing criteria steps of the contact routing.</p>"
+        }
+      },
+      "documentation":"<p>Routing criteria of the contact to match on.</p>"
+    },
+    "SearchableRoutingCriteriaStep":{
+      "type":"structure",
+      "members":{
+        "AgentCriteria":{
+          "shape":"SearchableAgentCriteriaStep",
+          "documentation":"<p>Agent matching the routing step of the routing criteria</p>"
+        }
+      },
+      "documentation":"<p>Routing criteria of the contact to match on.</p>"
+    },
+    "SearchableRoutingCriteriaStepList":{
+      "type":"list",
+      "member":{"shape":"SearchableRoutingCriteriaStep"}
     },
     "SearchableSegmentAttributeKey":{
       "type":"string",
@@ -22888,7 +23207,8 @@
         "CONNECTED_TO_AGENT_TIMESTAMP",
         "DISCONNECT_TIMESTAMP",
         "INITIATION_METHOD",
-        "CHANNEL"
+        "CHANNEL",
+        "EXPIRY_TIMESTAMP"
       ]
     },
     "SourceApplicationName":{

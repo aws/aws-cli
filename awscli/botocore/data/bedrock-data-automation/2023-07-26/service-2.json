@@ -298,7 +298,8 @@
       "required":["state"],
       "members":{
         "state":{"shape":"State"},
-        "types":{"shape":"AudioExtractionCategoryTypes"}
+        "types":{"shape":"AudioExtractionCategoryTypes"},
+        "typeConfiguration":{"shape":"AudioExtractionCategoryTypeConfiguration"}
       },
       "documentation":"<p>Category of Audio Extraction</p>"
     },
@@ -309,6 +310,13 @@
         "TRANSCRIPT",
         "TOPIC_CONTENT_MODERATION"
       ]
+    },
+    "AudioExtractionCategoryTypeConfiguration":{
+      "type":"structure",
+      "members":{
+        "transcript":{"shape":"TranscriptConfiguration"}
+      },
+      "documentation":"<p>Configuration for different audio extraction category types</p>"
     },
     "AudioExtractionCategoryTypes":{
       "type":"list",
@@ -475,6 +483,14 @@
       "type":"list",
       "member":{"shape":"BlueprintSummary"},
       "documentation":"<p>List of Blueprints</p>"
+    },
+    "ChannelLabelingConfiguration":{
+      "type":"structure",
+      "required":["state"],
+      "members":{
+        "state":{"shape":"State"}
+      },
+      "documentation":"<p>Channel labeling configuration</p>"
     },
     "ClientToken":{
       "type":"string",
@@ -715,8 +731,7 @@
     },
     "DeleteBlueprintResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Delete Blueprint Response</p>"
     },
     "DeleteDataAutomationProjectRequest":{
@@ -1171,6 +1186,14 @@
       },
       "exception":true
     },
+    "SpeakerLabelingConfiguration":{
+      "type":"structure",
+      "required":["state"],
+      "members":{
+        "state":{"shape":"State"}
+      },
+      "documentation":"<p>Speaker labeling configuration</p>"
+    },
     "SplitterConfiguration":{
       "type":"structure",
       "members":{
@@ -1241,8 +1264,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -1269,6 +1291,14 @@
       },
       "exception":true
     },
+    "TranscriptConfiguration":{
+      "type":"structure",
+      "members":{
+        "speakerLabeling":{"shape":"SpeakerLabelingConfiguration"},
+        "channelLabeling":{"shape":"ChannelLabelingConfiguration"}
+      },
+      "documentation":"<p>Configuration for transcript related features</p>"
+    },
     "Type":{
       "type":"string",
       "documentation":"<p>Type</p>",
@@ -1292,8 +1322,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateBlueprintRequest":{
       "type":"structure",

@@ -205,8 +205,13 @@ def ignore_ctrl_c():
         signal.signal(signal.SIGINT, original)
 
 
-def emit_top_level_args_parsed_event(session, args):
-    session.emit('top-level-args-parsed', parsed_args=args, session=session)
+def emit_top_level_args_parsed_event(session, args, remaining):
+    session.emit(
+        'top-level-args-parsed',
+        parsed_args=args,
+        remaining_args=remaining,
+        session=session
+    )
 
 
 def is_a_tty():

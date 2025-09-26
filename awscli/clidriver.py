@@ -79,6 +79,8 @@ def main():
 def create_clidriver():
     session = botocore.session.Session(EnvironmentVariables)
     _set_user_agent_for_session(session)
+    # TODO check if full config plugins is empty or not. if it's not, we signal the warning for plugin support being provisional
+    # similarly, we check for api_versions config value here.
     load_plugins(
         session.full_config.get('plugins', {}),
         event_hooks=session.get_component('event_emitter'),
@@ -225,7 +227,7 @@ class CLIDriver:
             # that exceptions can be raised, which should have the same
             # general exception handling logic as calling into the
             # command table.  This is why it's in the try/except clause.
-            self._handle_top_level_args(parsed_args)
+            self._handle_top_level_args(parsed_args, remaining)
             self._emit_session_event(parsed_args)
             HISTORY_RECORDER.record(
                 'CLI_VERSION', self.session.user_agent(), 'CLI'
@@ -279,8 +281,8 @@ class CLIDriver:
         sys.stderr.write(msg)
         sys.stderr.write('\n')
 
-    def _handle_top_level_args(self, args):
-        emit_top_level_args_parsed_event(self.session, args)
+    def _handle_top_level_args(self, args, remaining):
+        emit_top_level_args_parsed_event(self.session, args, remaining)
         if args.profile:
             self.session.set_config_variable('profile', args.profile)
         if args.region:

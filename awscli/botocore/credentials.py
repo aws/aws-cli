@@ -1900,7 +1900,7 @@ class AssumeRoleWithWebIdentityProvider(CredentialProvider):
             return config_value
 
         return None
-    
+
     def _assume_role_with_web_identity(self):
         token_path = self._get_config('web_identity_token_file')
         if not token_path:

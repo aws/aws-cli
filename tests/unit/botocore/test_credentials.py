@@ -739,6 +739,30 @@ class TestAssumeRoleCredentialFetcher(BaseEnvVar):
         self.assertEqual(response, expected_response)
         self.assertEqual(response['account_id'], None)
 
+    @mock.patch('botocore.credentials.register_feature_ids')
+    def test_feature_ids_registered_during_get_credentials(
+        self, mock_register
+    ):
+        response = {
+            'Credentials': {
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': self.some_future_time(),
+            }
+        }
+        client_creator = self.create_client_creator(with_response=response)
+        fetcher = credentials.AssumeRoleCredentialFetcher(
+            client_creator, self.source_creds, self.role_arn
+        )
+
+        test_feature_ids = {'test_feature_1', 'test_feature_2'}
+        fetcher.feature_ids = test_feature_ids
+
+        fetcher.fetch_credentials()
+        # Verify register_credential_feature_ids was called with test feature IDs
+        mock_register.assert_called_once_with(test_feature_ids)
+
 
 class TestAssumeRoleWithWebIdentityCredentialFetcher(BaseEnvVar):
     def setUp(self):
@@ -847,52 +871,76 @@ class TestAssumeRoleWithWebIdentityCredentialFetcher(BaseEnvVar):
 
         self.assertEqual(response, expected)
 
-        def test_account_id_with_valid_arn(self):
-            response = {
-                'Credentials': {
-                    'AccessKeyId': 'foo',
-                    'SecretAccessKey': 'bar',
-                    'SessionToken': 'baz',
-                    'Expiration': self.some_future_time().isoformat(),
-                    'AccountId': '123456789012',
-                },
-                'AssumedRoleUser': {
-                    'AssumedRoleId': 'myroleid',
-                    'Arn': 'arn:aws:iam::123456789012:role/RoleA',
-                },
-            }
-            client_creator = self.create_client_creator(with_response=response)
-            refresher = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
-                client_creator, self.load_token, self.role_arn
-            )
-            expected_response = self.get_expected_creds_from_response(response)
-            response = refresher.fetch_credentials()
-            self.assertEqual(response, expected_response)
-            self.assertEqual(response['account_id'], '123456789012')
+    def test_account_id_with_valid_arn(self):
+        response = {
+            'Credentials': {
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': self.some_future_time().isoformat(),
+                'AccountId': '123456789012',
+            },
+            'AssumedRoleUser': {
+                'AssumedRoleId': 'myroleid',
+                'Arn': 'arn:aws:iam::123456789012:role/RoleA',
+            },
+        }
+        client_creator = self.create_client_creator(with_response=response)
+        refresher = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
+            client_creator, self.load_token, self.role_arn
+        )
+        expected_response = self.get_expected_creds_from_response(response)
+        response = refresher.fetch_credentials()
+        self.assertEqual(response, expected_response)
+        self.assertEqual(response['account_id'], '123456789012')
 
-        def test_account_id_with_invalid_arn(self):
-            response = {
-                'Credentials': {
-                    'AccessKeyId': 'foo',
-                    'SecretAccessKey': 'bar',
-                    'SessionToken': 'baz',
-                    'Expiration': self.some_future_time().isoformat(),
-                },
-                'AssumedRoleUser': {
-                    'AssumedRoleId': 'myroleid',
-                    'Arn': 'invalid-arn',
-                },
+    def test_account_id_with_invalid_arn(self):
+        response = {
+            'Credentials': {
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': self.some_future_time().isoformat(),
+            },
+            'AssumedRoleUser': {
+                'AssumedRoleId': 'myroleid',
+                'Arn': 'invalid-arn',
+            },
+        }
+        client_creator = self.create_client_creator(with_response=response)
+        refresher = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
+            client_creator,
+            self.load_token,
+            self.role_arn,
+        )
+        expected_response = self.get_expected_creds_from_response(response)
+        response = refresher.fetch_credentials()
+        self.assertEqual(response, expected_response)
+        self.assertEqual(response['account_id'], None)
+
+    @mock.patch('botocore.credentials.register_feature_ids')
+    def test_feature_ids_registered_during_get_credentials(
+        self, mock_register
+    ):
+        response = {
+            'Credentials': {
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': self.some_future_time(),
             }
-            client_creator = self.create_client_creator(with_response=response)
-            refresher = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
-                client_creator,
-                self.load_token,
-                self.role_arn,
-            )
-            expected_response = self.get_expected_creds_from_response(response)
-            response = refresher.fetch_credentials()
-            self.assertEqual(response, expected_response)
-            self.assertEqual(response['account_id'], None)
+        }
+        client_creator = self.create_client_creator(with_response=response)
+        fetcher = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
+            client_creator, self.load_token, self.role_arn
+        )
+
+        test_feature_ids = {'test_feature_1', 'test_feature_2'}
+        fetcher.feature_ids = test_feature_ids
+
+        fetcher.fetch_credentials()
+        # Verify register_credential_feature_ids was called with test feature IDs
+        mock_register.assert_called_once_with(test_feature_ids)
 
 
 class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):

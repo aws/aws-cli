@@ -31,6 +31,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
@@ -97,7 +98,8 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Returns the token count for a given inference request. This operation helps you estimate token usage before sending requests to foundation models by returning the token count that would be used if the same input were sent to the model in an inference request.</p> <p>Token counting is model-specific because different models use different tokenization strategies. The token count returned by this operation will match the token count that would be charged if the same input were sent to the model in an <code>InvokeModel</code> or <code>Converse</code> request.</p> <p>You can use this operation to:</p> <ul> <li> <p>Estimate costs before sending inference requests.</p> </li> <li> <p>Optimize prompts to fit within token limits.</p> </li> <li> <p>Plan for token usage in your applications.</p> </li> </ul> <p>This operation accepts the same input formats as <code>InvokeModel</code> and <code>Converse</code>, allowing you to count tokens for both raw text inputs and structured conversation formats.</p> <p>The following operations are related to <code>CountTokens</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/API/API_runtime_InvokeModel.html\">InvokeModel</a> - Sends inference requests to foundation models</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/API/API_runtime_Converse.html\">Converse</a> - Sends conversation-based inference requests to foundation models</p> </li> </ul>"
+      "documentation":"<p>Returns the token count for a given inference request. This operation helps you estimate token usage before sending requests to foundation models by returning the token count that would be used if the same input were sent to the model in an inference request.</p> <p>Token counting is model-specific because different models use different tokenization strategies. The token count returned by this operation will match the token count that would be charged if the same input were sent to the model in an <code>InvokeModel</code> or <code>Converse</code> request.</p> <p>You can use this operation to:</p> <ul> <li> <p>Estimate costs before sending inference requests.</p> </li> <li> <p>Optimize prompts to fit within token limits.</p> </li> <li> <p>Plan for token usage in your applications.</p> </li> </ul> <p>This operation accepts the same input formats as <code>InvokeModel</code> and <code>Converse</code>, allowing you to count tokens for both raw text inputs and structured conversation formats.</p> <p>The following operations are related to <code>CountTokens</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/API/API_runtime_InvokeModel.html\">InvokeModel</a> - Sends inference requests to foundation models</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/API/API_runtime_Converse.html\">Converse</a> - Sends conversation-based inference requests to foundation models</p> </li> </ul>",
+      "readonly":true
     },
     "GetAsyncInvoke":{
       "name":"GetAsyncInvoke",
@@ -114,7 +116,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieve information about an asynchronous invocation.</p>"
+      "documentation":"<p>Retrieve information about an asynchronous invocation.</p>",
+      "readonly":true
     },
     "InvokeModel":{
       "name":"InvokeModel",
@@ -202,7 +205,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Lists asynchronous invocations.</p>"
+      "documentation":"<p>Lists asynchronous invocations.</p>",
+      "readonly":true
     },
     "StartAsyncInvoke":{
       "name":"StartAsyncInvoke",
@@ -246,8 +250,7 @@
     },
     "AnyToolChoice":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The model must request at least one tool (no text is generated). For example, <code>{\"any\" : {}}</code>.</p>"
     },
     "ApplyGuardrailRequest":{
@@ -436,8 +439,7 @@
     },
     "AutoToolChoice":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The Model automatically decides if a tool should be called or whether to generate text instead. For example, <code>{\"auto\" : {}}</code>.</p>"
     },
     "AutomatedReasoningRuleIdentifier":{
@@ -1158,8 +1160,7 @@
     },
     "Document":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "document":true
     },
     "DocumentBlock":{
@@ -1596,8 +1597,7 @@
     },
     "GuardrailAutomatedReasoningNoTranslationsFinding":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Indicates that no relevant logical information could be extracted from the input for validation.</p>"
     },
     "GuardrailAutomatedReasoningPoliciesProcessed":{
@@ -1706,8 +1706,7 @@
     },
     "GuardrailAutomatedReasoningTooComplexFinding":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Indicates that the input exceeds the processing capacity due to the volume or complexity of the logical information.</p>"
     },
     "GuardrailAutomatedReasoningTranslation":{
@@ -3177,8 +3176,7 @@
     },
     "ModelInputPayload":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "document":true,
       "sensitive":true
     },
@@ -3551,7 +3549,8 @@
         "max_tokens",
         "stop_sequence",
         "guardrail_intervened",
-        "content_filtered"
+        "content_filtered",
+        "model_context_window_exceeded"
       ]
     },
     "String":{"type":"string"},

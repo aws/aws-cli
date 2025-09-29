@@ -1546,7 +1546,7 @@
         },
         "kmsKeyId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The KMS key identifier used to encrypt the distributed image.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the KMS key used to encrypt the distributed image. This can be either the Key ARN or the Alias ARN. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN\">Key identifiers (KeyId)</a> in the <i>Key Management Service Developer Guide</i>.</p>"
         },
         "launchPermission":{
           "shape":"LaunchPermissionConfiguration",
@@ -1566,6 +1566,22 @@
       "pattern":"^[-_A-Za-z0-9{][-_A-Za-z0-9\\s:{}\\.]+[-_A-Za-z0-9}]$"
     },
     "Arn":{"type":"string"},
+    "AutoDisableFailureCount":{
+      "type":"integer",
+      "max":10,
+      "min":1
+    },
+    "AutoDisablePolicy":{
+      "type":"structure",
+      "required":["failureCount"],
+      "members":{
+        "failureCount":{
+          "shape":"AutoDisableFailureCount",
+          "documentation":"<p>The number of consecutive scheduled image pipeline executions that must fail before Image Builder automatically disables the pipeline.</p>"
+        }
+      },
+      "documentation":"<p>Defines the rules by which an image pipeline is automatically disabled when it fails.</p>"
+    },
     "Boolean":{"type":"boolean"},
     "BuildType":{
       "type":"string",
@@ -1714,7 +1730,7 @@
         },
         "kmsKeyId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The KMS key identifier used to encrypt the component.</p>"
+          "documentation":"<p>The KMS key identifier used to encrypt the component. This can be either the Key ARN or the Alias ARN. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN\">Key identifiers (KeyId)</a> in the <i>Key Management Service Developer Guide</i>.</p>"
         },
         "encrypted":{
           "shape":"NullableBoolean",
@@ -2009,6 +2025,10 @@
       "type":"list",
       "member":{"shape":"ComponentVersion"}
     },
+    "ConsecutiveFailures":{
+      "type":"integer",
+      "min":0
+    },
     "Container":{
       "type":"structure",
       "members":{
@@ -2091,7 +2111,7 @@
         },
         "kmsKeyId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Identifies which KMS key is used to encrypt the container image for distribution to the target Region.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies which KMS key is used to encrypt the container image for distribution to the target Region. This can be either the Key ARN or the Alias ARN. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN\">Key identifiers (KeyId)</a> in the <i>Key Management Service Developer Guide</i>.</p>"
         },
         "encrypted":{
           "shape":"NullableBoolean",
@@ -2155,6 +2175,10 @@
           "shape":"DateTime",
           "documentation":"<p>The date when this container recipe was created.</p>"
         },
+        "instanceImage":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The base image for a container build and test instance. This can contain an AMI ID or it can specify an Amazon Web Services Systems Manager (SSM) Parameter Store Parameter, prefixed by <code>ssm:</code>, followed by the parameter name or ARN.</p> <p>If not specified, Image Builder uses the appropriate ECS-optimized AMI as a base image.</p>"
+        },
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>Tags that are attached to the container recipe.</p>"
@@ -2217,7 +2241,7 @@
         },
         "kmsKeyId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ID of the KMS key that is used to encrypt this component.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the KMS key used to encrypt this component. This can be either the Key ARN or the Alias ARN. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN\">Key identifiers (KeyId)</a> in the <i>Key Management Service Developer Guide</i>.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -2317,7 +2341,7 @@
         },
         "kmsKeyId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Identifies which KMS key is used to encrypt the Dockerfile template.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies which KMS key is used to encrypt the Dockerfile template. This can be either the Key ARN or the Alias ARN. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN\">Key identifiers (KeyId)</a> in the <i>Key Management Service Developer Guide</i>.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -2459,6 +2483,10 @@
         "executionRole":{
           "shape":"RoleNameOrArn",
           "documentation":"<p>The name or Amazon Resource Name (ARN) for the IAM role you create that grants Image Builder access to perform workflow actions.</p>"
+        },
+        "loggingConfiguration":{
+          "shape":"PipelineLoggingConfiguration",
+          "documentation":"<p>Define logging configuration for the image build process.</p>"
         }
       }
     },
@@ -2524,6 +2552,10 @@
         "additionalInstanceConfiguration":{
           "shape":"AdditionalInstanceConfiguration",
           "documentation":"<p>Specify additional settings and launch scripts for your build instances.</p>"
+        },
+        "amiTags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags that are applied to the AMI that Image Builder creates during the Build phase prior to image distribution.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -2600,6 +2632,10 @@
         "executionRole":{
           "shape":"RoleNameOrArn",
           "documentation":"<p>The name or Amazon Resource Name (ARN) for the IAM role you create that grants Image Builder access to perform workflow actions.</p>"
+        },
+        "loggingConfiguration":{
+          "shape":"ImageLoggingConfiguration",
+          "documentation":"<p>Define logging configuration for the image build process.</p>"
         }
       }
     },
@@ -2806,7 +2842,7 @@
         },
         "kmsKeyId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ID of the KMS key that is used to encrypt this workflow resource.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the KMS key used to encrypt this workflow resource. This can be either the Key ARN or the Alias ARN. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN\">Key identifiers (KeyId)</a> in the <i>Key Management Service Developer Guide</i>.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -3284,7 +3320,7 @@
         },
         "kmsKeyId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Use to configure the KMS key to use when encrypting the device.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the KMS key to use when encrypting the device. This can be either the Key ARN or the Alias ARN. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN\">Key identifiers (KeyId)</a> in the <i>Key Management Service Developer Guide</i>.</p>"
         },
         "snapshotId":{
           "shape":"NonEmptyString",
@@ -4116,9 +4152,13 @@
         "workflows":{
           "shape":"WorkflowConfigurationList",
           "documentation":"<p>Contains the build and test workflows that are associated with the image.</p>"
+        },
+        "loggingConfiguration":{
+          "shape":"ImageLoggingConfiguration",
+          "documentation":"<p>The logging configuration that's defined for the image. Image Builder uses the defined settings to direct execution log output during image creation.</p>"
         }
       },
-      "documentation":"<p>An Image Builder image. You must specify exactly one recipe for the image – either a container recipe (<code>containerRecipe</code>), which creates a container image, or an image recipe (<code>imageRecipe</code>), which creates an AMI.</p>"
+      "documentation":"<p>An Image Builder image resource that keeps track of all of the settings used to create, configure, and distribute output for that image. You must specify exactly one recipe for the image – either a container recipe (<code>containerRecipe</code>), which creates a container image, or an image recipe (<code>imageRecipe</code>), which creates an AMI.</p>"
     },
     "ImageAggregation":{
       "type":"structure",
@@ -4146,6 +4186,16 @@
     "ImageBuilderArn":{
       "type":"string",
       "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws(?:-[a-z-]+)?):(?:image-recipe|container-recipe|infrastructure-configuration|distribution-configuration|component|image|image-pipeline|lifecycle-policy|workflow\\/(?:build|test|distribution))/[a-z0-9-_]+(?:/(?:(?:x|[0-9]+)\\.(?:x|[0-9]+)\\.(?:x|[0-9]+))(?:/[0-9]+)?)?$"
+    },
+    "ImageLoggingConfiguration":{
+      "type":"structure",
+      "members":{
+        "logGroupName":{
+          "shape":"LogGroupName",
+          "documentation":"<p>The log group name that Image Builder uses for image creation. If not specified, the log group name defaults to <code>/aws/imagebuilder/image-name</code>.</p>"
+        }
+      },
+      "documentation":"<p>The logging configuration that's defined for the image. Image Builder uses the defined settings to direct execution log output during image creation.</p>"
     },
     "ImagePackage":{
       "type":"structure",
@@ -4228,6 +4278,10 @@
           "shape":"DateTime",
           "documentation":"<p>This is no longer supported, and does not return a value.</p>"
         },
+        "lastRunStatus":{
+          "shape":"ImageStatus",
+          "documentation":"<p>The status of the last image that this pipeline built, such as <code>BUILDING</code>, <code>TESTING</code>, <code>FAILED</code>, or <code>AVAILABLE</code>.</p>"
+        },
         "dateNextRun":{
           "shape":"DateTime",
           "documentation":"<p>The next date when the pipeline is scheduled to run.</p>"
@@ -4247,6 +4301,14 @@
         "workflows":{
           "shape":"WorkflowConfigurationList",
           "documentation":"<p>Contains the workflows that run for the image pipeline.</p>"
+        },
+        "loggingConfiguration":{
+          "shape":"PipelineLoggingConfiguration",
+          "documentation":"<p>Defines logging configuration for the output image.</p>"
+        },
+        "consecutiveFailures":{
+          "shape":"ConsecutiveFailures",
+          "documentation":"<p>Image Builder tracks the number of consecutive failures for scheduled pipeline executions and takes one of the following actions each time it runs on a schedule:</p> <ul> <li> <p>If the pipeline execution is successful, the number of consecutive failures resets to zero.</p> </li> <li> <p>If the pipeline execution fails, Image Builder increments the number of consecutive failures. If the failure count exceeds the limit defined in the <code>AutoDisablePolicy</code>, Image Builder disables the pipeline.</p> </li> </ul> <p>The consecutive failure count is also reset to zero under the following conditions:</p> <ul> <li> <p>The pipeline runs manually and succeeds.</p> </li> <li> <p>The pipeline configuration is updated.</p> </li> </ul> <p>If the pipeline runs manually and fails, the count remains the same. The next scheduled run continues to increment where it left off before.</p>"
         }
       },
       "documentation":"<p>Details of an image pipeline.</p>"
@@ -4331,6 +4393,10 @@
         "additionalInstanceConfiguration":{
           "shape":"AdditionalInstanceConfiguration",
           "documentation":"<p>Before you create a new AMI, Image Builder launches temporary Amazon EC2 instances to build and test your image configuration. Instance configuration adds a layer of control over those instances. You can define settings and add scripts to run when an instance is launched from your AMI.</p>"
+        },
+        "amiTags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags that are applied to the AMI that Image Builder creates during the Build phase prior to image distribution.</p>"
         }
       },
       "documentation":"<p>An image recipe.</p>"
@@ -4638,6 +4704,10 @@
         "lifecycleExecutionId":{
           "shape":"LifecycleExecutionId",
           "documentation":"<p>Identifies the last runtime instance of the lifecycle policy to take action on the image.</p>"
+        },
+        "loggingConfiguration":{
+          "shape":"ImageLoggingConfiguration",
+          "documentation":"<p>The logging configuration that's defined for the image.</p>"
         }
       },
       "documentation":"<p>An image summary.</p>"
@@ -4779,7 +4849,7 @@
         },
         "kmsKeyId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The ID of the KMS key that should be used to encrypt this component.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the KMS key used to encrypt this component. This can be either the Key ARN or the Alias ARN. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN\">Key identifiers (KeyId)</a> in the <i>Key Management Service Developer Guide</i>.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -4853,6 +4923,10 @@
           "shape":"Uri",
           "documentation":"<p>The <code>uri</code> of the ISO disk file that's stored in Amazon S3.</p>"
         },
+        "loggingConfiguration":{
+          "shape":"ImageLoggingConfiguration",
+          "documentation":"<p>Define logging configuration for the image build process.</p>"
+        },
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>Tags that are attached to image resources created from the import.</p>"
@@ -4910,6 +4984,10 @@
         "vmImportTaskId":{
           "shape":"NonEmptyString",
           "documentation":"<p>The <code>importTaskId</code> (API) or <code>ImportTaskId</code> (CLI) from the Amazon EC2 VM import process. Image Builder retrieves information from the import process to pull in the AMI that is created from the VM source as the base image for your recipe.</p>"
+        },
+        "loggingConfiguration":{
+          "shape":"ImageLoggingConfiguration",
+          "documentation":"<p>Define logging configuration for the image build process.</p>"
         },
         "tags":{
           "shape":"TagMap",
@@ -5812,7 +5890,7 @@
         },
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -5855,7 +5933,7 @@
         },
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -5894,7 +5972,7 @@
         },
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -5929,7 +6007,7 @@
         },
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -5968,7 +6046,7 @@
         },
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -6004,7 +6082,7 @@
         },
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -6044,7 +6122,7 @@
         },
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -6079,7 +6157,7 @@
         },
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -6110,7 +6188,7 @@
       "members":{
         "owner":{
           "shape":"Ownership",
-          "documentation":"<p>The owner defines which image recipes you want to list. By default, this request will only show image recipes owned by your account. You can use this field to specify if you want to view image recipes owned by yourself, by Amazon, or those image recipes that have been shared with you by other customers.</p>"
+          "documentation":"<p>You can specify the recipe owner to filter results by that owner. By default, this request will only show image recipes owned by your account. To filter by a different owner, specify one of the <code>Valid Values</code> that are listed for this parameter.</p>"
         },
         "filters":{
           "shape":"FilterList",
@@ -6118,7 +6196,7 @@
         },
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -6136,7 +6214,7 @@
         },
         "imageRecipeSummaryList":{
           "shape":"ImageRecipeSummaryList",
-          "documentation":"<p>The list of image pipelines.</p>"
+          "documentation":"<p>A list of <code>ImageRecipeSummary</code> objects that contain identifying characteristics for the image recipe, such as the name, the Amazon Resource Name (ARN), and the date created, along with other key details.</p>"
         },
         "nextToken":{
           "shape":"PaginationToken",
@@ -6184,7 +6262,7 @@
         },
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -6227,7 +6305,7 @@
         },
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -6266,7 +6344,7 @@
         },
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -6306,7 +6384,7 @@
         },
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -6342,7 +6420,7 @@
       "members":{
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -6377,7 +6455,7 @@
         },
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -6425,7 +6503,7 @@
       "members":{
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -6456,7 +6534,7 @@
         },
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -6484,7 +6562,7 @@
       "members":{
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -6528,7 +6606,7 @@
       "members":{
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -6591,7 +6669,7 @@
         },
         "maxResults":{
           "shape":"RestrictedInteger",
-          "documentation":"<p>The maximum items to return in a request.</p>",
+          "documentation":"<p>Specify the maximum number of items to return in a request.</p>",
           "box":true
         },
         "nextToken":{
@@ -6612,6 +6690,12 @@
           "documentation":"<p>The next token used for paginated responses. When this field isn't empty, there are additional elements that the service hasn't included in this request. Use this token with the next request to retrieve additional objects.</p>"
         }
       }
+    },
+    "LogGroupName":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9\\-_/\\.]{1,512}$"
     },
     "Logging":{
       "type":"structure",
@@ -6781,6 +6865,20 @@
         "EXPRESSION_MATCH_ONLY",
         "EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE"
       ]
+    },
+    "PipelineLoggingConfiguration":{
+      "type":"structure",
+      "members":{
+        "imageLogGroupName":{
+          "shape":"LogGroupName",
+          "documentation":"<p>The log group name that Image Builder uses for image creation. If not specified, the log group name defaults to <code>/aws/imagebuilder/image-name</code>.</p>"
+        },
+        "pipelineLogGroupName":{
+          "shape":"LogGroupName",
+          "documentation":"<p>The log group name that Image Builder uses for the log output during creation of a new pipeline. If not specified, the pipeline log group name defaults to <code>/aws/imagebuilder/pipeline/pipeline-name</code>.</p>"
+        }
+      },
+      "documentation":"<p>The logging configuration that's defined for pipeline execution.</p>"
     },
     "PipelineStatus":{
       "type":"string",
@@ -7159,6 +7257,10 @@
         "pipelineExecutionStartCondition":{
           "shape":"PipelineExecutionStartCondition",
           "documentation":"<p>The start condition configures when the pipeline should trigger a new image build, as follows. If no value is set Image Builder defaults to <code>EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE</code>.</p> <ul> <li> <p> <code>EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE</code> (default) – When you use semantic version filters on the base image or components in your image recipe, EC2 Image Builder builds a new image only when there are new versions of the base image or components in your recipe that match the filter.</p> <note> <p>For semantic version syntax, see <a href=\"https://docs.aws.amazon.com/imagebuilder/latest/APIReference/API_CreateComponent.html\">CreateComponent</a>.</p> </note> </li> <li> <p> <code>EXPRESSION_MATCH_ONLY</code> – This condition builds a new image every time the CRON expression matches the current time.</p> </li> </ul>"
+        },
+        "autoDisablePolicy":{
+          "shape":"AutoDisablePolicy",
+          "documentation":"<p>The policy that configures when Image Builder should automatically disable a pipeline that is failing.</p>"
         }
       },
       "documentation":"<p>A schedule configures when and how often a pipeline will automatically create a new image.</p>"
@@ -7322,6 +7424,10 @@
           "shape":"ClientToken",
           "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
           "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Specify tags for Image Builder to apply to the image resource that's created When it starts pipeline execution.</p>"
         }
       }
     },
@@ -7403,7 +7509,7 @@
       "members":{
         "uninstallAfterBuild":{
           "shape":"NullableBoolean",
-          "documentation":"<p>Controls whether the Systems Manager agent is removed from your final build image, prior to creating the new AMI. If this is set to true, then the agent is removed from the final image. If it's set to false, then the agent is left in, so that it is included in the new AMI. The default value is false.</p>"
+          "documentation":"<p>Controls whether the Systems Manager agent is removed from your final build image, prior to creating the new AMI. If this is set to true, then the agent is removed from the final image. If it's set to false, then the agent is left in, so that it is included in the new AMI. default value is false.</p> <p>The default behavior of uninstallAfterBuild is to remove the SSM Agent if it was installed by EC2 Image Builder</p>"
         }
       },
       "documentation":"<p>Contains settings for the Systems Manager agent on your build instance.</p>"
@@ -7620,6 +7726,10 @@
         "workflows":{
           "shape":"WorkflowConfigurationList",
           "documentation":"<p>Contains the workflows to run for the pipeline.</p>"
+        },
+        "loggingConfiguration":{
+          "shape":"PipelineLoggingConfiguration",
+          "documentation":"<p>Update logging configuration for the output image that's created when the pipeline runs.</p>"
         },
         "executionRole":{
           "shape":"RoleNameOrArn",
@@ -7904,7 +8014,7 @@
         },
         "kmsKeyId":{
           "shape":"NonEmptyString",
-          "documentation":"<p>The KMS key identifier used to encrypt the workflow resource.</p>"
+          "documentation":"<p>The KMS key identifier used to encrypt the workflow resource. This can be either the Key ARN or the Alias ARN. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN\">Key identifiers (KeyId)</a> in the <i>Key Management Service Developer Guide</i>.</p>"
         },
         "dateCreated":{
           "shape":"DateTime",

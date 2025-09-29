@@ -4887,7 +4887,7 @@
       "type":"string",
       "max":1011,
       "min":20,
-      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:custom-model/(imported|[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2})/[a-z0-9]{12}"
+      "pattern":"arn:aws(|-us-gov|-cn|-iso|-iso-b):bedrock:[a-z0-9-]{1,20}:[0-9]{12}:custom-model/(imported|[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2})/[a-z0-9]{12}"
     },
     "CustomModelDeploymentArn":{
       "type":"string",
@@ -6810,12 +6810,18 @@
         }
       }
     },
+    "GetFoundationModelIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}::foundation-model/[a-z0-9-]{1,63}[.]{1}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2})|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.]?[a-z0-9-]{1,63})([:][a-z0-9-]{1,63}){0,2})"
+    },
     "GetFoundationModelRequest":{
       "type":"structure",
       "required":["modelIdentifier"],
       "members":{
         "modelIdentifier":{
-          "shape":"ModelIdentifier",
+          "shape":"GetFoundationModelIdentifier",
           "documentation":"<p>The model identifier. </p>",
           "location":"uri",
           "locationName":"modelIdentifier"
@@ -8898,7 +8904,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9])*"
+      "pattern":"[a-zA-Z0-9]([-a-zA-Z0-9]{0,254}[a-zA-Z0-9])?"
     },
     "Identifier":{
       "type":"string",
@@ -11768,7 +11774,6 @@
     },
     "RoleArn":{
       "type":"string",
-      "documentation":"<p>ARN of a IAM role</p>",
       "max":2048,
       "min":0,
       "pattern":"arn:aws(-[^:]+)?:iam::([0-9]{12})?:role/.+"

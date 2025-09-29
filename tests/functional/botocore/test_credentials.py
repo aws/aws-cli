@@ -1183,6 +1183,34 @@ class SSOSessionTest(BaseEnvVar):
             [],
             'e',
         ),
+                # Test case 5: Credentials set with Boto2 config
+        (
+            {},
+            {},
+            [
+                patch(
+                    "botocore.configloader.raw_config_parse",
+                    return_value={
+                        "Credentials": {
+                            "aws_access_key_id": "FAKEACCESSKEY",
+                            "aws_secret_access_key": "FAKESECRETKEY",
+                        }
+                    },
+                ),
+                patch(
+                    "botocore.credentials.ConfigProvider.load",
+                    return_value=None,
+                ),
+                patch(
+                    "botocore.credentials.SharedCredentialProvider.load",
+                    return_value=None,
+                ),
+                                patch(
+                    "botocore.credentials.EnvProvider.load", return_value=None
+                ),
+            ],
+            'x',
+        ),
     ],
 )
 def test_user_agent_feature_ids(

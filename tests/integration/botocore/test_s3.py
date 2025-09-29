@@ -109,7 +109,7 @@ def clear_out_bucket(bucket, region, delete_bucket=False):
         for _ in range(5):
             try:
                 s3.delete_bucket(Bucket=bucket)
-                break
+                return
             except s3.exceptions.NoSuchBucket:
                 exists_waiter.wait(Bucket=bucket)
             except Exception as e:
@@ -121,9 +121,13 @@ def clear_out_bucket(bucket, region, delete_bucket=False):
                     "delete_bucket() raised an exception: %s", e, exc_info=True
                 )
                 not_exists_waiter = s3.get_waiter('bucket_not_exists')
-                not_exists_waiter.wait(Bucket=bucket)
-            except WaiterError:
-                continue
+                try:
+                    not_exists_waiter.wait(Bucket=bucket)
+                    return
+                except WaiterError:
+                    continue
+        # If all attempts to delete the bucket fail, we still need to raise an error
+        raise RuntimeError(f"Bucket {bucket} still exists after attempted deletion.")
 
 
 def teardown_module():

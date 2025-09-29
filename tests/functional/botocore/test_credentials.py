@@ -1293,6 +1293,7 @@ def _assert_feature_ids_in_ua(client, expected_feature_ids):
             '''[profile assume-role-test]
 role_arn = arn:aws:iam::123456789012:role/test-role
 source_profile = base
+
 [profile base]
 aws_access_key_id = FAKEACCESSKEY
 aws_secret_access_key = FAKESECRET''',

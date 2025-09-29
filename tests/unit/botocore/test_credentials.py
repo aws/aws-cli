@@ -739,7 +739,6 @@ class TestAssumeRoleCredentialFetcher(BaseEnvVar):
         self.assertEqual(response, expected_response)
         self.assertEqual(response['account_id'], None)
 
-
     @mock.patch('botocore.credentials.register_feature_ids')
     def test_feature_ids_registered_during_get_credentials(
         self, mock_register

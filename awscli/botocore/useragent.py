@@ -93,6 +93,7 @@ _USERAGENT_FEATURE_MAPPINGS = {
 
 def register_feature_id(feature_id):
     """Adds metric value to the current context object's ``features`` set.
+
     :type feature_id: str
     :param feature_id: The name of the feature to register. Value must be a key
         in the ``_USERAGENT_FEATURE_MAPPINGS`` dict.

@@ -1183,6 +1183,41 @@ class SSOSessionTest(BaseEnvVar):
             [],
             'e',
         ),
+        # Test case 6: Credentials set via process provider
+        (
+            {},
+            {},
+            [
+                patch(
+                    "botocore.credentials.ProcessProvider._retrieve_credentials_using",
+                    return_value={
+                        'access_key': "FAKEACCESSKEY",
+                        'secret_key': "FAKESECRETKEY",
+                        'token': "FAKETOKEN",
+                    },
+                ),
+                patch(
+                    "botocore.credentials.ProcessProvider._credential_process",
+                    return_value="Mock_credential_process",
+                ),
+                patch(
+                    "botocore.credentials.ContainerProvider.load",
+                    return_value=None,
+                ),
+                patch(
+                    "botocore.credentials.ConfigProvider.load",
+                    return_value=None,
+                ),
+                patch(
+                    "botocore.credentials.SharedCredentialProvider.load",
+                    return_value=None,
+                ),
+                patch(
+                    "botocore.credentials.EnvProvider.load", return_value=None
+                ),
+            ],
+            ['v', 'w'],
+        ),
     ],
 )
 def test_user_agent_feature_ids(

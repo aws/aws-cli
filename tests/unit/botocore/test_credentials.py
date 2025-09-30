@@ -3868,6 +3868,48 @@ class TestSSOCredentialFetcher(unittest.TestCase):
             fetcher.fetch_credentials()
         self.assertFalse(mock_client.get_role_credentials.called)
 
+    @mock.patch('botocore.credentials.register_feature_ids')
+    def test_feature_ids_registered_during_get_credentials(
+        self, mock_register
+    ):
+        response = {
+            'roleCredentials': {
+                'accessKeyId': 'foo',
+                'secretAccessKey': 'bar',
+                'sessionToken': 'baz',
+                'expiration': self.now_timestamp + 1000000,
+            }
+        }
+        params = {
+            'roleName': self.role_name,
+            'accountId': self.account_id,
+            'accessToken': self.access_token['accessToken'],
+        }
+        self.stubber.add_response(
+            'get_role_credentials',
+            response,
+            expected_params=params,
+        )
+
+        self.stubber.activate()
+        try:
+            fetcher = SSOCredentialFetcher(
+                self.start_url,
+                self.sso_region,
+                self.role_name,
+                self.account_id,
+                self.mock_session.create_client,
+                token_loader=self.loader,
+                cache=self.cache,
+                time_fetcher=self.mock_time_fetcher,
+            )
+            test_feature_ids = {'test_feature_1', 'test_feature_2'}
+            fetcher.feature_ids = test_feature_ids
+            fetcher.fetch_credentials()
+            mock_register.assert_called_once_with(test_feature_ids)
+        finally:
+            self.stubber.deactivate()
+
 
 class TestSSOProvider(unittest.TestCase):
     def setUp(self):

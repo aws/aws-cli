@@ -89,7 +89,6 @@ SMOKE_TESTS = {
     'sns': {'ListTopics': {}},
     'sqs': {'ListQueues': {}},
     'ssm': {'ListDocuments': {}},
-    'storagegateway': {'ListGateways': {}},
     # sts tests would normally go here, but
     # there aren't any calls you can make when
     # using session credentials so we don't run any

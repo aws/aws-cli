@@ -1048,7 +1048,9 @@ class ProcessProvider(CredentialProvider):
         if credential_process is None:
             return
 
+        register_feature_id('CREDENTIALS_PROFILE_PROCESS')
         creds_dict = self._retrieve_credentials_using(credential_process)
+        register_feature_id('CREDENTIALS_PROCESS')
         if creds_dict.get('expiry_time') is not None:
             return RefreshableCredentials.create_from_metadata(
                 creds_dict,
@@ -2299,6 +2301,7 @@ class SSOCredentialFetcher(CachedCredentialFetcher):
             'accessToken': token,
         }
         try:
+            register_feature_ids(self.feature_ids)
             response = client.get_role_credentials(**kwargs)
         except client.exceptions.UnauthorizedException:
             raise UnauthorizedSSOTokenError()
@@ -2354,6 +2357,7 @@ class SSOProvider(CredentialProvider):
         self._load_config = load_config
         self._client_creator = client_creator
         self._profile_name = profile_name
+        self._feature_ids = set()
 
     def _load_sso_config(self):
         loaded_config = self._load_config()
@@ -2428,11 +2432,23 @@ class SSOProvider(CredentialProvider):
             'token_loader': SSOTokenLoader(cache=self._token_cache),
             'cache': self.cache,
         }
-        if 'sso_session' in sso_config:
+        sso_session_in_config = 'sso_session' in sso_config
+        if sso_session_in_config:
             fetcher_kwargs['sso_session_name'] = sso_config['sso_session']
             fetcher_kwargs['token_provider'] = self._token_provider
+            self._feature_ids.add('CREDENTIALS_PROFILE_SSO')
+        else:
+            self._feature_ids.add('CREDENTIALS_PROFILE_SSO_LEGACY')
 
         sso_fetcher = SSOCredentialFetcher(**fetcher_kwargs)
+        sso_fetcher.feature_ids = self._feature_ids.copy()
+
+        if sso_session_in_config:
+            self._feature_ids.add('CREDENTIALS_SSO')
+        else:
+            self._feature_ids.add('CREDENTIALS_SSO_LEGACY')
+
+        register_feature_ids(self._feature_ids)
 
         return DeferredRefreshableCredentials(
             method=self.METHOD,

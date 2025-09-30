@@ -650,6 +650,23 @@
       ],
       "documentation":"<p>Before calling this API, use <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_CreateDomain.html\">CreateDomain</a> or <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UpdateDomain.html\">UpdateDomain</a> to enable identity resolution: set <code>Matching</code> to true.</p> <p>GetMatches returns potentially matching profiles, based on the results of the latest run of a machine learning process. </p> <important> <p>The process of matching duplicate profiles. If <code>Matching</code> = <code>true</code>, Amazon Connect Customer Profiles starts a weekly batch process called Identity Resolution Job. If you do not specify a date and time for Identity Resolution Job to run, by default it runs every Saturday at 12AM UTC to detect duplicate profiles in your domains. </p> <p>After the Identity Resolution Job completes, use the <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">GetMatches</a> API to return and review the results. Or, if you have configured <code>ExportingConfig</code> in the <code>MatchingRequest</code>, you can download the results from S3.</p> </important> <p>Amazon Connect uses the following profile attributes to identify matches:</p> <ul> <li> <p>PhoneNumber</p> </li> <li> <p>HomePhoneNumber</p> </li> <li> <p>BusinessPhoneNumber</p> </li> <li> <p>MobilePhoneNumber</p> </li> <li> <p>EmailAddress</p> </li> <li> <p>PersonalEmailAddress</p> </li> <li> <p>BusinessEmailAddress</p> </li> <li> <p>FullName</p> </li> </ul> <p>For example, two or more profiles—with spelling mistakes such as <b>John Doe</b> and <b>Jhn Doe</b>, or different casing email addresses such as <b>JOHN_DOE@ANYCOMPANY.COM</b> and <b>johndoe@anycompany.com</b>, or different phone number formats such as <b>555-010-0000</b> and <b>+1-555-010-0000</b>—can be detected as belonging to the same customer <b>John Doe</b> and merged into a unified profile.</p>"
     },
+    "GetProfileHistoryRecord":{
+      "name":"GetProfileHistoryRecord",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/profiles/{ProfileId}/history-records/{Id}"
+      },
+      "input":{"shape":"GetProfileHistoryRecordRequest"},
+      "output":{"shape":"GetProfileHistoryRecordResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns a history record for a specific profile, for a specific domain.</p>"
+    },
     "GetProfileObjectType":{
       "name":"GetProfileObjectType",
       "http":{
@@ -700,7 +717,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Gets a segment definition from the domain.</p>"
+      "documentation":"<p>Gets a segment definition from the domain.</p>",
+      "readonly":true
     },
     "GetSegmentEstimate":{
       "name":"GetSegmentEstimate",
@@ -788,7 +806,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>This API retrieves the details of a specific upload job. </p>"
+      "documentation":"<p>This API retrieves the details of a specific upload job. </p>",
+      "readonly":true
     },
     "GetUploadJobPath":{
       "name":"GetUploadJobPath",
@@ -806,7 +825,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>This API retrieves the pre-signed URL and client token for uploading the file associated with the upload job. </p>"
+      "documentation":"<p>This API retrieves the pre-signed URL and client token for uploading the file associated with the upload job. </p>",
+      "readonly":true
     },
     "GetWorkflow":{
       "name":"GetWorkflow",
@@ -1029,6 +1049,23 @@
       ],
       "documentation":"<p>Fetch the possible attribute values given the attribute name.</p>"
     },
+    "ListProfileHistoryRecords":{
+      "name":"ListProfileHistoryRecords",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/profiles/history-records"
+      },
+      "input":{"shape":"ListProfileHistoryRecordsRequest"},
+      "output":{"shape":"ListProfileHistoryRecordsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns a list of history records for a specific profile, for a specific domain.</p>"
+    },
     "ListProfileObjectTypeTemplates":{
       "name":"ListProfileObjectTypeTemplates",
       "http":{
@@ -1113,7 +1150,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all segment definitions under a domain.</p>"
+      "documentation":"<p>Lists all segment definitions under a domain.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -1146,7 +1184,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>This API retrieves a list of upload jobs for the specified domain. </p>"
+      "documentation":"<p>This API retrieves a list of upload jobs for the specified domain. </p>",
+      "readonly":true
     },
     "ListWorkflows":{
       "name":"ListWorkflows",
@@ -1416,6 +1455,20 @@
       "documentation":"<p>You do not have sufficient access to perform this action.</p>",
       "error":{"httpStatusCode":403},
       "exception":true
+    },
+    "ActionType":{
+      "type":"string",
+      "enum":[
+        "ADDED_PROFILE_KEY",
+        "DELETED_PROFILE_KEY",
+        "CREATED",
+        "UPDATED",
+        "INGESTED",
+        "DELETED_BY_CUSTOMER",
+        "EXPIRED",
+        "MERGED",
+        "DELETED_BY_MERGE"
+      ]
     },
     "AddProfileKeyRequest":{
       "type":"structure",
@@ -4789,6 +4842,77 @@
         }
       }
     },
+    "GetProfileHistoryRecordRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "ProfileId",
+        "Id"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain for which to return a profile history record.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "ProfileId":{
+          "shape":"uuid",
+          "documentation":"<p>The unique identifier of the profile for which to return a history record.</p>",
+          "location":"uri",
+          "locationName":"ProfileId"
+        },
+        "Id":{
+          "shape":"uuid",
+          "documentation":"<p>The unique identifier of the profile history record to return.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        }
+      }
+    },
+    "GetProfileHistoryRecordResponse":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "ObjectTypeName",
+        "CreatedAt",
+        "ActionType"
+      ],
+      "members":{
+        "Id":{
+          "shape":"uuid",
+          "documentation":"<p>The unique identifier of the profile history record.</p>"
+        },
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The name of the profile object type.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the profile history record was created.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the profile history record was last updated.</p>"
+        },
+        "ActionType":{
+          "shape":"ActionType",
+          "documentation":"<p>The action type of the profile history record.</p>"
+        },
+        "ProfileObjectUniqueKey":{
+          "shape":"string1To255",
+          "documentation":"<p>The unique identifier of the profile object generated by the service.</p>"
+        },
+        "Content":{
+          "shape":"stringifiedJson",
+          "documentation":"<p>A string containing the customer profile, profile object, or profile key content.</p>"
+        },
+        "PerformedBy":{
+          "shape":"string1To255",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the person or service principal who performed the action.</p>"
+        }
+      }
+    },
     "GetProfileObjectTypeRequest":{
       "type":"structure",
       "required":[
@@ -6267,6 +6391,62 @@
         }
       }
     },
+    "ListProfileHistoryRecordsRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "ProfileId"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain for which to return profile history records.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "ProfileId":{
+          "shape":"uuid",
+          "documentation":"<p>The identifier of the profile to be taken.</p>"
+        },
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>Applies a filter to include profile history records only with the specified <code>ObjectTypeName</code> value in the response.</p>"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"maxSize100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "ActionType":{
+          "shape":"ActionType",
+          "documentation":"<p>Applies a filter to include profile history records only with the specified <code>ActionType</code> value in the response.</p>"
+        },
+        "PerformedBy":{
+          "shape":"string1To255",
+          "documentation":"<p>Applies a filter to include profile history records only with the specified <code>PerformedBy</code> value in the response. The <code>PerformedBy</code> value can be the Amazon Resource Name (ARN) of the person or service principal who performed the action.</p>"
+        }
+      }
+    },
+    "ListProfileHistoryRecordsResponse":{
+      "type":"structure",
+      "members":{
+        "ProfileHistoryRecords":{
+          "shape":"ProfileHistoryRecords",
+          "documentation":"<p>The list of profile history records.</p>"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
     "ListProfileObjectTypeItem":{
       "type":"structure",
       "required":[
@@ -7375,6 +7555,50 @@
         }
       },
       "documentation":"<p>Object to hold the dimensions of a profile's fields to segment on.</p>"
+    },
+    "ProfileHistoryRecord":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "ObjectTypeName",
+        "CreatedAt",
+        "ActionType"
+      ],
+      "members":{
+        "Id":{
+          "shape":"uuid",
+          "documentation":"<p>The unique identifier of the profile history record.</p>"
+        },
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The name of the profile object type.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the profile history record was created.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the profile history record was last updated.</p>"
+        },
+        "ActionType":{
+          "shape":"ActionType",
+          "documentation":"<p>The action type of the profile history record.</p>"
+        },
+        "ProfileObjectUniqueKey":{
+          "shape":"string1To255",
+          "documentation":"<p>The unique identifier of the profile object generated by the service.</p>"
+        },
+        "PerformedBy":{
+          "shape":"string1To255",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the person or service principal who performed the action.</p>"
+        }
+      },
+      "documentation":"<p>Contains profile history record metadata.</p>"
+    },
+    "ProfileHistoryRecords":{
+      "type":"list",
+      "member":{"shape":"ProfileHistoryRecord"}
     },
     "ProfileId":{"type":"string"},
     "ProfileIdList":{

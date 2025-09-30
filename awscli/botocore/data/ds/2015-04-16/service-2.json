@@ -1320,7 +1320,7 @@
         {"shape":"ClientException"},
         {"shape":"ServiceException"}
       ],
-      "documentation":"<p> Updates the directory for a particular update type. </p>"
+      "documentation":"<p>Updates directory configuration for the specified update type.</p>"
     },
     "UpdateHybridAD":{
       "name":"UpdateHybridAD",
@@ -1995,6 +1995,14 @@
       "type":"list",
       "member":{"shape":"CidrIp"}
     },
+    "CidrIpv6":{
+      "type":"string",
+      "pattern":"^((([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4})|(([0-9a-fA-F]{1,4}:){1,7}:)|(([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4})|(([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2})|(([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3})|(([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4})|(([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5})|([0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6}))|(:((:[0-9a-fA-F]{1,4}){1,7}|:)))\\/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$"
+    },
+    "CidrIpv6s":{
+      "type":"list",
+      "member":{"shape":"CidrIpv6"}
+    },
     "ClientAuthenticationSettingInfo":{
       "type":"structure",
       "members":{
@@ -2092,6 +2100,10 @@
           "shape":"DnsIpAddrs",
           "documentation":"<p>The IP addresses of the remote DNS server associated with RemoteDomainName. This is the IP address of the DNS server that your conditional forwarder points to.</p>"
         },
+        "DnsIpv6Addrs":{
+          "shape":"DnsIpv6Addrs",
+          "documentation":"<p>The IPv6 addresses of the remote DNS server associated with RemoteDomainName. This is the IPv6 address of the DNS server that your conditional forwarder points to.</p>"
+        },
         "ReplicationScope":{
           "shape":"ReplicationScope",
           "documentation":"<p>The replication scope of the conditional forwarder. The only allowed value is <code>Domain</code>, which will replicate the conditional forwarder to all of the domain controllers for your Amazon Web Services directory.</p>"
@@ -2139,6 +2151,10 @@
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>The tags to be assigned to AD Connector.</p>"
+        },
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>The network type for your directory. The default value is <code>IPv4</code> or <code>IPv6</code> based on the provided subnet capabilities.</p>"
         }
       },
       "documentation":"<p>Contains the inputs for the <a>ConnectDirectory</a> operation.</p>"
@@ -2237,8 +2253,7 @@
       "type":"structure",
       "required":[
         "DirectoryId",
-        "RemoteDomainName",
-        "DnsIpAddrs"
+        "RemoteDomainName"
       ],
       "members":{
         "DirectoryId":{
@@ -2252,6 +2267,10 @@
         "DnsIpAddrs":{
           "shape":"DnsIpAddrs",
           "documentation":"<p>The IP addresses of the remote DNS server associated with RemoteDomainName.</p>"
+        },
+        "DnsIpv6Addrs":{
+          "shape":"DnsIpv6Addrs",
+          "documentation":"<p>The IPv6 addresses of the remote DNS server associated with RemoteDomainName.</p>"
         }
       },
       "documentation":"<p>Initiates the creation of a conditional forwarder for your Directory Service for Microsoft Active Directory. Conditional forwarders are required in order to set up a trust relationship with another domain.</p>"
@@ -2296,6 +2315,10 @@
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>The tags to be assigned to the Simple AD directory.</p>"
+        },
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>The network type for your directory. Simple AD supports IPv4 and Dual-stack only.</p>"
         }
       },
       "documentation":"<p>Contains the inputs for the <a>CreateDirectory</a> operation. </p>"
@@ -2396,6 +2419,10 @@
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>The tags to be assigned to the Managed Microsoft AD directory.</p>"
+        },
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p> The network type for your domain. The default value is <code>IPv4</code> or <code>IPv6</code> based on the provided subnet capabilities.</p>"
         }
       },
       "documentation":"<p>Creates an Managed Microsoft AD directory.</p>"
@@ -2469,6 +2496,10 @@
         "ConditionalForwarderIpAddrs":{
           "shape":"DnsIpAddrs",
           "documentation":"<p>The IP addresses of the remote DNS server associated with RemoteDomainName.</p>"
+        },
+        "ConditionalForwarderIpv6Addrs":{
+          "shape":"DnsIpv6Addrs",
+          "documentation":"<p>The IPv6 addresses of the remote DNS server associated with RemoteDomainName.</p>"
         },
         "SelectiveAuth":{
           "shape":"SelectiveAuth",
@@ -3281,7 +3312,6 @@
       "required":[
         "VpcId",
         "SubnetIds",
-        "CustomerDnsIps",
         "CustomerUserName"
       ],
       "members":{
@@ -3295,14 +3325,18 @@
         },
         "CustomerDnsIps":{
           "shape":"DnsIpAddrs",
-          "documentation":"<p>A list of one or more IP addresses of DNS servers or domain controllers in your self-managed directory.</p>"
+          "documentation":"<p>The IP addresses of DNS servers or domain controllers in your self-managed directory.</p>"
+        },
+        "CustomerDnsIpsV6":{
+          "shape":"DnsIpv6Addrs",
+          "documentation":"<p>The IPv6 addresses of DNS servers or domain controllers in your self-managed directory.</p>"
         },
         "CustomerUserName":{
           "shape":"UserName",
           "documentation":"<p>The user name of an account in your self-managed directory that is used to connect to the directory. This account must have the following permissions:</p> <ul> <li> <p>Read users and groups</p> </li> <li> <p>Create computer objects</p> </li> <li> <p>Join computers to the domain</p> </li> </ul>"
         }
       },
-      "documentation":"<p>Contains information for the <a>ConnectDirectory</a> operation when an AD Connector directory is being created.</p>"
+      "documentation":"<p>Contains connection settings for creating an AD Connector with the <a>ConnectDirectory</a> action.</p>"
     },
     "DirectoryConnectSettingsDescription":{
       "type":"structure",
@@ -3325,11 +3359,15 @@
         },
         "AvailabilityZones":{
           "shape":"AvailabilityZones",
-          "documentation":"<p>A list of the Availability Zones that the directory is in.</p>"
+          "documentation":"<p>The Availability Zones that the directory is in.</p>"
         },
         "ConnectIps":{
           "shape":"IpAddrs",
           "documentation":"<p>The IP addresses of the AD Connector servers.</p>"
+        },
+        "ConnectIpsV6":{
+          "shape":"IpV6Addrs",
+          "documentation":"<p>The IPv6 addresses of the AD Connector servers.</p>"
         }
       },
       "documentation":"<p>Contains information about an AD Connector directory.</p>"
@@ -3359,11 +3397,11 @@
         },
         "Alias":{
           "shape":"AliasName",
-          "documentation":"<p>The alias for the directory. If no alias has been created for the directory, the alias is the directory identifier, such as <code>d-XXXXXXXXXX</code>.</p>"
+          "documentation":"<p>The alias for the directory. If no alias exists, the alias is the directory identifier, such as <code>d-XXXXXXXXXX</code>.</p>"
         },
         "AccessUrl":{
           "shape":"AccessUrl",
-          "documentation":"<p>The access URL for the directory, such as <code>http://&lt;alias&gt;.awsapps.com</code>. If no alias has been created for the directory, <code>&lt;alias&gt;</code> is the directory identifier, such as <code>d-XXXXXXXXXX</code>.</p>"
+          "documentation":"<p>The access URL for the directory, such as <code>http://&lt;alias&gt;.awsapps.com</code>. If no alias exists, <code>&lt;alias&gt;</code> is the directory identifier, such as <code>d-XXXXXXXXXX</code>.</p>"
         },
         "Description":{
           "shape":"Description",
@@ -3371,7 +3409,11 @@
         },
         "DnsIpAddrs":{
           "shape":"DnsIpAddrs",
-          "documentation":"<p>The IP addresses of the DNS servers for the directory. For a Simple AD or Microsoft AD directory, these are the IP addresses of the Simple AD or Microsoft AD directory servers. For an AD Connector directory, these are the IP addresses of the DNS servers or domain controllers in your self-managed directory to which the AD Connector is connected.</p>"
+          "documentation":"<p>The IP addresses of the DNS servers for the directory. For a Simple AD or Microsoft AD directory, these are the IP addresses of the Simple AD or Microsoft AD directory servers. For an AD Connector directory, these are the IP addresses of self-managed directory to which the AD Connector is connected.</p>"
+        },
+        "DnsIpv6Addrs":{
+          "shape":"DnsIpv6Addrs",
+          "documentation":"<p>The IPv6 addresses of the DNS servers for the directory. For a Simple AD or Microsoft AD directory, these are the IPv6 addresses of the Simple AD or Microsoft AD directory servers. For an AD Connector directory, these are the IPv6 addresses of the DNS servers or domain controllers in your self-managed directory to which the AD Connector is connected.</p>"
         },
         "Stage":{
           "shape":"DirectoryStage",
@@ -3391,11 +3433,11 @@
         },
         "LaunchTime":{
           "shape":"LaunchTime",
-          "documentation":"<p>Specifies when the directory was created.</p>"
+          "documentation":"<p>The date and time when the directory was created.</p>"
         },
         "StageLastUpdatedDateTime":{
           "shape":"LastUpdatedDateTime",
-          "documentation":"<p>The date and time that the stage was last updated.</p>"
+          "documentation":"<p>The date and time when the stage was last updated.</p>"
         },
         "Type":{
           "shape":"DirectoryType",
@@ -3403,15 +3445,15 @@
         },
         "VpcSettings":{
           "shape":"DirectoryVpcSettingsDescription",
-          "documentation":"<p>A <a>DirectoryVpcSettingsDescription</a> object that contains additional information about a directory. This member is only present if the directory is a Simple AD or Managed Microsoft AD directory.</p>"
+          "documentation":"<p>A <a>DirectoryVpcSettingsDescription</a> object that contains additional information about a directory. Present only for Simple AD and Managed Microsoft AD directories.</p>"
         },
         "ConnectSettings":{
           "shape":"DirectoryConnectSettingsDescription",
-          "documentation":"<p>A <a>DirectoryConnectSettingsDescription</a> object that contains additional information about an AD Connector directory. This member is only present if the directory is an AD Connector directory.</p>"
+          "documentation":"<p> <a>DirectoryConnectSettingsDescription</a> object that contains additional information about an AD Connector directory. Present only for AD Connector directories.</p>"
         },
         "RadiusSettings":{
           "shape":"RadiusSettings",
-          "documentation":"<p>A <a>RadiusSettings</a> object that contains information about the RADIUS server configured for this directory.</p>"
+          "documentation":"<p>Information about the <a>RadiusSettings</a> object configured for this directory.</p>"
         },
         "RadiusStatus":{
           "shape":"RadiusStatus",
@@ -3423,7 +3465,7 @@
         },
         "SsoEnabled":{
           "shape":"SsoEnabled",
-          "documentation":"<p>Indicates if single sign-on is enabled for the directory. For more information, see <a>EnableSso</a> and <a>DisableSso</a>.</p>"
+          "documentation":"<p>Indicates whether single sign-on is enabled for the directory. For more information, see <a>EnableSso</a> and <a>DisableSso</a>.</p>"
         },
         "DesiredNumberOfDomainControllers":{
           "shape":"DesiredNumberOfDomainControllers",
@@ -3444,6 +3486,10 @@
         "HybridSettings":{
           "shape":"HybridSettingsDescription",
           "documentation":"<p>Contains information about the hybrid directory configuration for the directory, including Amazon Web Services System Manager managed node identifiers and DNS IPs.</p>"
+        },
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>The network type of the directory.</p>"
         }
       },
       "documentation":"<p>Contains information about an Directory Service directory.</p>"
@@ -3466,7 +3512,8 @@
       "type":"string",
       "enum":[
         "Enterprise",
-        "Standard"
+        "Standard",
+        "Hybrid"
       ]
     },
     "DirectoryId":{
@@ -3561,6 +3608,16 @@
         "Small",
         "Large"
       ]
+    },
+    "DirectorySizeUpdateSettings":{
+      "type":"structure",
+      "members":{
+        "DirectorySize":{
+          "shape":"DirectorySize",
+          "documentation":"<p>The target directory size for the update operation.</p>"
+        }
+      },
+      "documentation":"<p>Contains the directory size configuration for update operations.</p>"
     },
     "DirectoryStage":{
       "type":"string",
@@ -3762,6 +3819,10 @@
       "type":"list",
       "member":{"shape":"IpAddr"}
     },
+    "DnsIpv6Addrs":{
+      "type":"list",
+      "member":{"shape":"Ipv6Addr"}
+    },
     "DomainController":{
       "type":"structure",
       "members":{
@@ -3776,6 +3837,10 @@
         "DnsIpAddr":{
           "shape":"IpAddr",
           "documentation":"<p>The IP address of the domain controller.</p>"
+        },
+        "DnsIpv6Addr":{
+          "shape":"Ipv6Addr",
+          "documentation":"<p>The IPv6 address of the domain controller.</p>"
         },
         "VpcId":{
           "shape":"VpcId",
@@ -4282,14 +4347,18 @@
       "members":{
         "CidrIp":{
           "shape":"CidrIp",
-          "documentation":"<p>IP address block using CIDR format, for example 10.0.0.0/24. This is often the address block of the DNS server used for your self-managed domain. For a single IP address use a CIDR address block with /32. For example 10.0.0.0/32.</p>"
+          "documentation":"<p>IP address block in CIDR format, such as 10.0.0.0/24. This is often the address block of the DNS server used for your self-managed domain. For a single IP address, use a CIDR address block with /32. For example, 10.0.0.0/32.</p>"
+        },
+        "CidrIpv6":{
+          "shape":"CidrIpv6",
+          "documentation":"<p>IPv6 address block in CIDR format, such as 2001:db8::/32. This is often the address block of the DNS server used for your self-managed domain. For a single IPv6 address, use a CIDR address block with /128. For example, 2001:db8::1/128.</p>"
         },
         "Description":{
           "shape":"Description",
           "documentation":"<p>Description of the address block.</p>"
         }
       },
-      "documentation":"<p>IP address block. This is often the address block of the DNS server used for your self-managed domain. </p>"
+      "documentation":"<p>Contains the IP address block. This is often the address block of the DNS server used for your self-managed domain. </p>"
     },
     "IpRouteInfo":{
       "type":"structure",
@@ -4301,6 +4370,10 @@
         "CidrIp":{
           "shape":"CidrIp",
           "documentation":"<p>IP address block in the <a>IpRoute</a>.</p>"
+        },
+        "CidrIpv6":{
+          "shape":"CidrIpv6",
+          "documentation":"<p>IPv6 address block in the <a>IpRoute</a>.</p>"
         },
         "IpRouteStatusMsg":{
           "shape":"IpRouteStatusMsg",
@@ -4349,6 +4422,14 @@
     "IpRoutesInfo":{
       "type":"list",
       "member":{"shape":"IpRouteInfo"}
+    },
+    "IpV6Addrs":{
+      "type":"list",
+      "member":{"shape":"Ipv6Addr"}
+    },
+    "Ipv6Addr":{
+      "type":"string",
+      "pattern":"^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$"
     },
     "LDAPSSettingInfo":{
       "type":"structure",
@@ -4611,6 +4692,28 @@
       "member":{"shape":"LogSubscription"}
     },
     "ManualSnapshotsLimitReached":{"type":"boolean"},
+    "NetworkType":{
+      "type":"string",
+      "enum":[
+        "Dual-stack",
+        "IPv4",
+        "IPv6"
+      ]
+    },
+    "NetworkUpdateSettings":{
+      "type":"structure",
+      "members":{
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>The target network type for the directory update.</p>"
+        },
+        "CustomerDnsIpsV6":{
+          "shape":"DnsIpv6Addrs",
+          "documentation":"<p>IPv6 addresses of DNS servers or domain controllers in the self-managed directory. Required only when updating an AD Connector directory.</p>"
+        }
+      },
+      "documentation":"<p>Contains the network configuration for directory update operations.</p>"
+    },
     "NextToken":{"type":"string"},
     "NoAvailableCertificateException":{
       "type":"structure",
@@ -4637,10 +4740,10 @@
       "members":{
         "OSVersion":{
           "shape":"OSVersion",
-          "documentation":"<p> OS version that the directory needs to be updated to. </p>"
+          "documentation":"<p>OS version that the directory needs to be updated to.</p>"
         }
       },
-      "documentation":"<p> OS version that the directory needs to be updated to. </p>"
+      "documentation":"<p>OS version that the directory needs to be updated to.</p>"
     },
     "OSVersion":{
       "type":"string",
@@ -4678,20 +4781,28 @@
           "shape":"DnsIpAddrs",
           "documentation":"<p>IP address of the directory’s domain controllers.</p>"
         },
+        "DnsIpv6Addrs":{
+          "shape":"DnsIpv6Addrs",
+          "documentation":"<p>IPv6 addresses of the directory’s domain controllers.</p>"
+        },
         "VpcSettings":{
           "shape":"DirectoryVpcSettingsDescription",
           "documentation":"<p>Information about the VPC settings for the directory.</p>"
         },
         "RadiusSettings":{
           "shape":"RadiusSettings",
-          "documentation":"<p>A <a>RadiusSettings</a> object that contains information about the RADIUS server.</p>"
+          "documentation":"<p>Information about the <a>RadiusSettings</a> object server configuration.</p>"
         },
         "RadiusStatus":{
           "shape":"RadiusStatus",
-          "documentation":"<p>Information about the status of the RADIUS server.</p>"
+          "documentation":"<p>The status of the RADIUS server.</p>"
+        },
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>Network type of the directory in the directory owner account.</p>"
         }
       },
-      "documentation":"<p>Describes the directory owner account details that have been shared to the directory consumer account.</p>"
+      "documentation":"<p>Contains the directory owner account details shared with the directory consumer account.</p>"
     },
     "PageLimit":{
       "type":"integer",
@@ -4736,7 +4847,11 @@
       "members":{
         "RadiusServers":{
           "shape":"Servers",
-          "documentation":"<p>An array of strings that contains the fully qualified domain name (FQDN) or IP addresses of the RADIUS server endpoints, or the FQDN or IP addresses of your RADIUS server load balancer.</p>"
+          "documentation":"<p>The fully qualified domain name (FQDN) or IP addresses of the RADIUS server endpoints, or the FQDN or IP addresses of your RADIUS server load balancer.</p>"
+        },
+        "RadiusServersIpv6":{
+          "shape":"Servers",
+          "documentation":"<p>The IPv6 addresses of the RADIUS server endpoints or RADIUS server load balancer.</p>"
         },
         "RadiusPort":{
           "shape":"PortNumber",
@@ -4954,10 +5069,7 @@
     },
     "RemoveIpRoutesRequest":{
       "type":"structure",
-      "required":[
-        "DirectoryId",
-        "CidrIps"
-      ],
+      "required":["DirectoryId"],
       "members":{
         "DirectoryId":{
           "shape":"DirectoryId",
@@ -4966,6 +5078,10 @@
         "CidrIps":{
           "shape":"CidrIps",
           "documentation":"<p>IP address blocks that you want to remove.</p>"
+        },
+        "CidrIpv6s":{
+          "shape":"CidrIpv6s",
+          "documentation":"<p>IPv6 address blocks that you want to remove.</p>"
         }
       }
     },
@@ -5782,8 +5898,7 @@
       "type":"structure",
       "required":[
         "DirectoryId",
-        "RemoteDomainName",
-        "DnsIpAddrs"
+        "RemoteDomainName"
       ],
       "members":{
         "DirectoryId":{
@@ -5797,6 +5912,10 @@
         "DnsIpAddrs":{
           "shape":"DnsIpAddrs",
           "documentation":"<p>The updated IP addresses of the remote DNS server associated with the conditional forwarder.</p>"
+        },
+        "DnsIpv6Addrs":{
+          "shape":"DnsIpv6Addrs",
+          "documentation":"<p>The updated IPv6 addresses of the remote DNS server associated with the conditional forwarder.</p>"
         }
       },
       "documentation":"<p>Updates a conditional forwarder.</p>"
@@ -5815,19 +5934,27 @@
       "members":{
         "DirectoryId":{
           "shape":"DirectoryId",
-          "documentation":"<p> The identifier of the directory on which you want to perform the update. </p>"
+          "documentation":"<p>The identifier of the directory to update.</p>"
         },
         "UpdateType":{
           "shape":"UpdateType",
-          "documentation":"<p> The type of update that needs to be performed on the directory. For example, OS. </p>"
+          "documentation":"<p>The type of update to perform on the directory.</p>"
         },
         "OSUpdateSettings":{
           "shape":"OSUpdateSettings",
-          "documentation":"<p> The settings for the OS update that needs to be performed on the directory. </p>"
+          "documentation":"<p>Operating system configuration to apply during the directory update operation.</p>"
+        },
+        "DirectorySizeUpdateSettings":{
+          "shape":"DirectorySizeUpdateSettings",
+          "documentation":"<p>Directory size configuration to apply during the update operation.</p>"
+        },
+        "NetworkUpdateSettings":{
+          "shape":"NetworkUpdateSettings",
+          "documentation":"<p>Network configuration to apply during the directory update operation.</p>"
         },
         "CreateSnapshotBeforeUpdate":{
           "shape":"CreateSnapshotBeforeUpdate",
-          "documentation":"<p> The boolean that specifies if a snapshot for the directory needs to be taken before updating the directory. </p>",
+          "documentation":"<p>Specifies whether to create a directory snapshot before performing the update.</p>",
           "box":true
         }
       }
@@ -5903,7 +6030,7 @@
           "documentation":"<p> The last updated date and time of a particular directory setting. </p>"
         }
       },
-      "documentation":"<p> An entry of update information related to a requested update type. </p>"
+      "documentation":"<p>An entry of update information related to a requested update type.</p>"
     },
     "UpdateNumberOfDomainControllersRequest":{
       "type":"structure",
@@ -6011,7 +6138,11 @@
     },
     "UpdateType":{
       "type":"string",
-      "enum":["OS"]
+      "enum":[
+        "OS",
+        "NETWORK",
+        "SIZE"
+      ]
     },
     "UpdateValue":{
       "type":"structure",

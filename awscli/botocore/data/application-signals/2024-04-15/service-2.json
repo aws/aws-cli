@@ -62,6 +62,22 @@
       ],
       "documentation":"<p>Creates a service level objective (SLO), which can help you ensure that your critical business operations are meeting customer expectations. Use SLOs to set and track specific target levels for the reliability and availability of your applications and services. SLOs use service level indicators (SLIs) to calculate whether the application is performing at the level that you want.</p> <p>Create an SLO to set a target for a service or operation’s availability or latency. CloudWatch measures this target frequently you can find whether it has been breached. </p> <p>The target performance quality that is defined for an SLO is the <i>attainment goal</i>.</p> <p>You can set SLO targets for your applications that are discovered by Application Signals, using critical metrics such as latency and availability. You can also set SLOs against any CloudWatch metric or math expression that produces a time series.</p> <note> <p>You can't create an SLO for a service operation that was discovered by Application Signals until after that operation has reported standard metrics to Application Signals.</p> </note> <p>When you create an SLO, you specify whether it is a <i>period-based SLO</i> or a <i>request-based SLO</i>. Each type of SLO has a different way of evaluating your application's performance against its attainment goal.</p> <ul> <li> <p>A <i>period-based SLO</i> uses defined <i>periods</i> of time within a specified total time interval. For each period of time, Application Signals determines whether the application met its goal. The attainment rate is calculated as the <code>number of good periods/number of total periods</code>.</p> <p>For example, for a period-based SLO, meeting an attainment goal of 99.9% means that within your interval, your application must meet its performance goal during at least 99.9% of the time periods.</p> </li> <li> <p>A <i>request-based SLO</i> doesn't use pre-defined periods of time. Instead, the SLO measures <code>number of good requests/number of total requests</code> during the interval. At any time, you can find the ratio of good requests to total requests for the interval up to the time stamp that you specify, and measure that ratio against the goal set in your SLO.</p> </li> </ul> <p>After you have created an SLO, you can retrieve error budget reports for it. An <i>error budget</i> is the amount of time or amount of requests that your application can be non-compliant with the SLO's goal, and still have your application meet the goal.</p> <ul> <li> <p>For a period-based SLO, the error budget starts at a number defined by the highest number of periods that can fail to meet the threshold, while still meeting the overall goal. The <i>remaining error budget</i> decreases with every failed period that is recorded. The error budget within one interval can never increase.</p> <p>For example, an SLO with a threshold that 99.95% of requests must be completed under 2000ms every month translates to an error budget of 21.9 minutes of downtime per month.</p> </li> <li> <p>For a request-based SLO, the remaining error budget is dynamic and can increase or decrease, depending on the ratio of good requests to total requests.</p> </li> </ul> <p>For more information about SLOs, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-ServiceLevelObjectives.html\"> Service level objectives (SLOs)</a>. </p> <p>When you perform a <code>CreateServiceLevelObjective</code> operation, Application Signals creates the <i>AWSServiceRoleForCloudWatchApplicationSignals</i> service-linked role, if it doesn't already exist in your account. This service- linked role has the following permissions:</p> <ul> <li> <p> <code>xray:GetServiceGraph</code> </p> </li> <li> <p> <code>logs:StartQuery</code> </p> </li> <li> <p> <code>logs:GetQueryResults</code> </p> </li> <li> <p> <code>cloudwatch:GetMetricData</code> </p> </li> <li> <p> <code>cloudwatch:ListMetrics</code> </p> </li> <li> <p> <code>tag:GetResources</code> </p> </li> <li> <p> <code>autoscaling:DescribeAutoScalingGroups</code> </p> </li> </ul>"
     },
+    "DeleteGroupingConfiguration":{
+      "name":"DeleteGroupingConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/grouping-configuration",
+        "responseCode":200
+      },
+      "output":{"shape":"DeleteGroupingConfigurationOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes the grouping configuration for this account. This removes all custom grouping attribute definitions that were previously configured.</p>",
+      "idempotent":true
+    },
     "DeleteServiceLevelObjective":{
       "name":"DeleteServiceLevelObjective",
       "http":{
@@ -109,6 +125,37 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns information about one SLO created in the account. </p>"
+    },
+    "ListAuditFindings":{
+      "name":"ListAuditFindings",
+      "http":{
+        "method":"POST",
+        "requestUri":"/auditFindings",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAuditFindingsInput"},
+      "output":{"shape":"ListAuditFindingsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a list of audit findings that provide automated analysis of service behavior and root cause analysis. These findings help identify the most significant observations about your services, including performance issues, anomalies, and potential problems. The findings are generated using heuristic algorithms based on established troubleshooting patterns.</p>"
+    },
+    "ListGroupingAttributeDefinitions":{
+      "name":"ListGroupingAttributeDefinitions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/grouping-attribute-definitions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListGroupingAttributeDefinitionsInput"},
+      "output":{"shape":"ListGroupingAttributeDefinitionsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the current grouping configuration for this account, including all custom grouping attribute definitions that have been configured. These definitions determine how services are logically grouped based on telemetry attributes, Amazon Web Services tags, or predefined mappings.</p>"
     },
     "ListServiceDependencies":{
       "name":"ListServiceDependencies",
@@ -186,6 +233,21 @@
       ],
       "documentation":"<p>Returns a list of the <i>operations</i> of this service that have been discovered by Application Signals. Only the operations that were invoked during the specified time range are returned.</p>"
     },
+    "ListServiceStates":{
+      "name":"ListServiceStates",
+      "http":{
+        "method":"POST",
+        "requestUri":"/service/states",
+        "responseCode":200
+      },
+      "input":{"shape":"ListServiceStatesInput"},
+      "output":{"shape":"ListServiceStatesOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns information about the last deployment and other change states of services. This API provides visibility into recent changes that may have affected service performance, helping with troubleshooting and change correlation.</p>"
+    },
     "ListServices":{
       "name":"ListServices",
       "http":{
@@ -215,6 +277,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Displays the tags associated with a CloudWatch resource. Tags can be assigned to service level objectives.</p>"
+    },
+    "PutGroupingConfiguration":{
+      "name":"PutGroupingConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/grouping-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"PutGroupingConfigurationInput"},
+      "output":{"shape":"PutGroupingConfigurationOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates or updates the grouping configuration for this account. This operation allows you to define custom grouping attributes that determine how services are logically grouped based on telemetry attributes, Amazon Web Services tags, or predefined mappings. These grouping attributes can then be used to organize and filter services in the Application Signals console and APIs.</p>",
+      "idempotent":true
     },
     "StartDiscovery":{
       "name":"StartDiscovery",
@@ -311,6 +390,44 @@
       "type":"double",
       "box":true
     },
+    "AttributeFilter":{
+      "type":"structure",
+      "required":[
+        "AttributeFilterName",
+        "AttributeFilterValues"
+      ],
+      "members":{
+        "AttributeFilterName":{
+          "shape":"AttributeFilterName",
+          "documentation":"<p>The name of the attribute to filter by, such as <code>Platform</code>, <code>Environment</code>, or <code>BusinessUnit</code>.</p>"
+        },
+        "AttributeFilterValues":{
+          "shape":"AttributeFilterValues",
+          "documentation":"<p>An array of values to match for the specified attribute. Services that have any of these values for the attribute will be included in the results.</p>"
+        }
+      },
+      "documentation":"<p>A structure that defines a filter for narrowing down results based on specific attribute values. This can be used to filter services by platform, environment, or other service characteristics.</p>"
+    },
+    "AttributeFilterName":{
+      "type":"string",
+      "pattern":"[A-Za-z0-9 :/-]+"
+    },
+    "AttributeFilterValue":{
+      "type":"string",
+      "pattern":"[A-Za-z0-9 :/-]+"
+    },
+    "AttributeFilterValues":{
+      "type":"list",
+      "member":{"shape":"AttributeFilterValue"},
+      "max":20,
+      "min":0
+    },
+    "AttributeFilters":{
+      "type":"list",
+      "member":{"shape":"AttributeFilter"},
+      "max":20,
+      "min":0
+    },
     "AttributeMap":{
       "type":"map",
       "key":{"shape":"String"},
@@ -326,6 +443,119 @@
       "value":{"shape":"KeyAttributeValue"},
       "max":4,
       "min":1
+    },
+    "AuditFinding":{
+      "type":"structure",
+      "required":["KeyAttributes"],
+      "members":{
+        "KeyAttributes":{
+          "shape":"Attributes",
+          "documentation":"<p>The key attributes that identify the service or entity this audit finding relates to. This is a string-to-string map that includes fields like Type, Name, and Environment.</p>"
+        },
+        "AuditorResults":{
+          "shape":"AuditorResults",
+          "documentation":"<p>An array of auditor results that contain the specific findings, descriptions, and severity levels identified by different auditing algorithms.</p>"
+        },
+        "Operation":{
+          "shape":"String",
+          "documentation":"<p>The name of the operation associated with this audit finding, if the finding is specific to a particular service operation.</p>"
+        },
+        "MetricGraph":{
+          "shape":"MetricGraph",
+          "documentation":"<p>A structure containing metric data queries and time range information that provides context for the audit finding through relevant performance metrics.</p>"
+        },
+        "DependencyGraph":{
+          "shape":"DependencyGraph",
+          "documentation":"<p>A structure containing nodes and edges that represent the dependency relationships relevant to this audit finding, helping to understand the context and potential impact.</p>"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The type of audit finding.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains information about an audit finding, which represents an automated analysis result about service behavior, performance issues, or potential problems identified through heuristic algorithms.</p>"
+    },
+    "AuditFindings":{
+      "type":"list",
+      "member":{"shape":"AuditFinding"},
+      "max":10,
+      "min":0
+    },
+    "AuditTarget":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "Data"
+      ],
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The type of entity being audited, such as <code>Service</code>, <code>SLO</code>, or <code>ServiceOperation</code>.</p>"
+        },
+        "Data":{
+          "shape":"AuditTargetEntity",
+          "documentation":"<p>The specific data identifying the audit target entity.</p>"
+        }
+      },
+      "documentation":"<p>A structure that specifies the target entity for audit analysis, such as a <code>service</code>, <code>SLO</code>, or <code>service_operation</code>.</p>"
+    },
+    "AuditTargetEntity":{
+      "type":"structure",
+      "members":{
+        "Service":{
+          "shape":"ServiceEntity",
+          "documentation":"<p>Service entity information when the audit target is a service.</p>"
+        },
+        "Slo":{
+          "shape":"ServiceLevelObjectiveEntity",
+          "documentation":"<p>SLO entity information when the audit target is a service level objective.</p>"
+        },
+        "ServiceOperation":{
+          "shape":"ServiceOperationEntity",
+          "documentation":"<p>Service operation entity information when the audit target is a specific service operation.</p>"
+        }
+      },
+      "documentation":"<p>A union structure that contains the specific entity information for different types of audit targets.</p>",
+      "union":true
+    },
+    "AuditTargets":{
+      "type":"list",
+      "member":{"shape":"AuditTarget"},
+      "max":10,
+      "min":1
+    },
+    "AuditorResult":{
+      "type":"structure",
+      "members":{
+        "Auditor":{
+          "shape":"String",
+          "documentation":"<p>The name of the auditor algorithm that generated this result.</p>"
+        },
+        "Description":{
+          "shape":"AuditorResultDescriptionString",
+          "documentation":"<p>A detailed description of the audit finding, explaining what was observed and potential implications.</p>"
+        },
+        "Severity":{
+          "shape":"Severity",
+          "documentation":"<p>The severity level of this audit finding, indicating the importance and potential impact of the issue.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the result of an automated audit analysis, including the auditor name, description of findings, and severity level.</p>"
+    },
+    "AuditorResultDescriptionString":{
+      "type":"string",
+      "max":10240,
+      "min":0
+    },
+    "AuditorResults":{
+      "type":"list",
+      "member":{"shape":"AuditorResult"},
+      "max":5,
+      "min":0
+    },
+    "Auditors":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "AwsAccountId":{
       "type":"string",
@@ -497,6 +727,56 @@
       "box":true,
       "min":1
     },
+    "ChangeEvent":{
+      "type":"structure",
+      "required":[
+        "Timestamp",
+        "AccountId",
+        "Region",
+        "Entity",
+        "ChangeEventType",
+        "EventId"
+      ],
+      "members":{
+        "Timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this change event occurred. When used in a raw HTTP Query API, it is formatted as epoch time in seconds.</p>"
+        },
+        "AccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID where this change event occurred.</p>"
+        },
+        "Region":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services region where this change event occurred.</p>"
+        },
+        "Entity":{
+          "shape":"Attributes",
+          "documentation":"<p>The entity (service or resource) that was affected by this change event, including its key attributes.</p>"
+        },
+        "ChangeEventType":{
+          "shape":"ChangeEventType",
+          "documentation":"<p>The type of change event that occurred, such as <code>DEPLOYMENT</code>.</p>"
+        },
+        "EventId":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier for this change event.</p>"
+        },
+        "UserName":{
+          "shape":"String",
+          "documentation":"<p>The name of the user who initiated this change event, if available.</p>"
+        },
+        "EventName":{
+          "shape":"String",
+          "documentation":"<p>The name or description of this change event.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains information about a change event that occurred for a service, such as a deployment or configuration change.</p>"
+    },
+    "ChangeEventType":{
+      "type":"string",
+      "enum":["DEPLOYMENT"]
+    },
     "ConflictException":{
       "type":"structure",
       "required":["Message"],
@@ -509,6 +789,13 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ConnectionType":{
+      "type":"string",
+      "enum":[
+        "INDIRECT",
+        "DIRECT"
+      ]
     },
     "CreateServiceLevelObjectiveInput":{
       "type":"structure",
@@ -554,6 +841,10 @@
         }
       }
     },
+    "DeleteGroupingConfigurationOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteServiceLevelObjectiveInput":{
       "type":"structure",
       "required":["Id"],
@@ -568,8 +859,7 @@
     },
     "DeleteServiceLevelObjectiveOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DependencyConfig":{
       "type":"structure",
@@ -588,6 +878,20 @@
         }
       },
       "documentation":"<p>Identifies the dependency using the <code>DependencyKeyAttributes</code> and <code>DependencyOperationName</code>.</p> <p>When creating a service dependency SLO, you must specify the <code>KeyAttributes</code> of the service, and the <code>DependencyConfig</code> for the dependency. You can specify the <code>OperationName</code> of the service, from which it calls the dependency. Alternatively, you can exclude <code>OperationName</code> and the SLO will monitor all of the service's operations that call the dependency.</p>"
+    },
+    "DependencyGraph":{
+      "type":"structure",
+      "members":{
+        "Nodes":{
+          "shape":"Nodes",
+          "documentation":"<p>An array of nodes representing the services, resources, or other entities in the dependency graph.</p>"
+        },
+        "Edges":{
+          "shape":"Edges",
+          "documentation":"<p>An array of edges representing the connections and relationships between the nodes in the dependency graph.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents the dependency relationships relevant to an audit finding, containing nodes and edges that show how services and resources are connected.</p>"
     },
     "Dimension":{
       "type":"structure",
@@ -623,6 +927,10 @@
       "max":30,
       "min":0
     },
+    "Double":{
+      "type":"double",
+      "box":true
+    },
     "DurationUnit":{
       "type":"string",
       "enum":[
@@ -631,6 +939,32 @@
         "DAY",
         "MONTH"
       ]
+    },
+    "Edge":{
+      "type":"structure",
+      "members":{
+        "SourceNodeId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the source node in this edge connection.</p>"
+        },
+        "DestinationNodeId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the destination node in this edge connection.</p>"
+        },
+        "Duration":{
+          "shape":"Double",
+          "documentation":"<p>The duration or latency associated with this connection, if applicable.</p>"
+        },
+        "ConnectionType":{
+          "shape":"ConnectionType",
+          "documentation":"<p>The type of connection between the nodes, indicating the nature of the relationship.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a connection between two nodes in a dependency graph, showing the relationship and characteristics of the connection.</p>"
+    },
+    "Edges":{
+      "type":"list",
+      "member":{"shape":"Edge"}
     },
     "EvaluationType":{
       "type":"string",
@@ -778,6 +1112,77 @@
       },
       "documentation":"<p>This structure contains the attributes that determine the goal of an SLO. This includes the time period for evaluation and the attainment threshold.</p>"
     },
+    "GroupIdentifier":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "GroupName":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "GroupSource":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "GroupValue":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "GroupingAttributeDefinition":{
+      "type":"structure",
+      "required":["GroupingName"],
+      "members":{
+        "GroupingName":{
+          "shape":"GroupingString",
+          "documentation":"<p>The friendly name for this grouping attribute, such as <code>BusinessUnit</code> or <code>Environment</code>. This name is used to identify the grouping in the console and APIs.</p>"
+        },
+        "GroupingSourceKeys":{
+          "shape":"GroupingSourceKeyStringList",
+          "documentation":"<p>An array of source keys used to derive the grouping attribute value from telemetry data, Amazon Web Services tags, or other sources. For example, [\"business_unit\", \"team\"] would look for values in those fields.</p>"
+        },
+        "DefaultGroupingValue":{
+          "shape":"GroupingString",
+          "documentation":"<p>The default value to use for this grouping attribute when no value can be derived from the source keys. This ensures all services have a grouping value even if the source data is missing.</p>"
+        }
+      },
+      "documentation":"<p>A structure that defines how services should be grouped based on specific attributes. This includes the friendly name for the grouping, the source keys to derive values from, and an optional default value.</p>"
+    },
+    "GroupingAttributeDefinitions":{
+      "type":"list",
+      "member":{"shape":"GroupingAttributeDefinition"}
+    },
+    "GroupingConfiguration":{
+      "type":"structure",
+      "required":[
+        "GroupingAttributeDefinitions",
+        "UpdatedAt"
+      ],
+      "members":{
+        "GroupingAttributeDefinitions":{
+          "shape":"GroupingAttributeDefinitions",
+          "documentation":"<p>An array of grouping attribute definitions that specify how services should be grouped based on various attributes and source keys.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this grouping configuration was last updated. When used in a raw HTTP Query API, it is formatted as epoch time in seconds.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the complete grouping configuration for an account, including all defined grouping attributes and metadata about when it was last updated.</p>"
+    },
+    "GroupingSourceKeyStringList":{
+      "type":"list",
+      "member":{"shape":"GroupingString"}
+    },
+    "GroupingString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\s+\\-=\\._:/@]*"
+    },
     "Interval":{
       "type":"structure",
       "members":{
@@ -802,6 +1207,99 @@
       "max":1024,
       "min":1,
       "pattern":"[ -~]*[!-~]+[ -~]*"
+    },
+    "LatestChangeEvents":{
+      "type":"list",
+      "member":{"shape":"ChangeEvent"},
+      "max":1,
+      "min":1
+    },
+    "ListAuditFindingMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "ListAuditFindingsInput":{
+      "type":"structure",
+      "required":[
+        "StartTime",
+        "EndTime",
+        "AuditTargets"
+      ],
+      "members":{
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start of the time period to retrieve audit findings for. When used in a raw HTTP Query API, it is formatted as epoch time in seconds. For example, <code>1698778057</code> </p>",
+          "location":"querystring",
+          "locationName":"StartTime"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end of the time period to retrieve audit findings for. When used in a raw HTTP Query API, it is formatted as epoch time in seconds. For example, <code>1698778057</code> </p>",
+          "location":"querystring",
+          "locationName":"EndTime"
+        },
+        "Auditors":{
+          "shape":"Auditors",
+          "documentation":"<p>A list of auditor names to filter the findings by. Only findings generated by the specified auditors will be returned.</p> <p>The following auditors are available for configuration:</p> <ul> <li> <p> <code>slo</code> - SloAuditor: Identifies SLO violations and detects breached thresholds during the Assessment phase.</p> </li> <li> <p> <code>operation_metric</code> - OperationMetricAuditor: Detects anomalies in service operation metrics from Application Signals RED metrics during the Assessment phase</p> </li> <li> <p> <code>service_quota</code> - ServiceQuotaAuditor: Monitors resource utilization against service quotas during the Assessment phase</p> </li> <li> <p> <code>trace</code> - TraceAuditor: Performs deep-dive analysis of distributed traces, correlating traces with breached SLOs or abnormal RED metrics during the Analysis phase</p> </li> <li> <p> <code>dependency_metric</code> - CriticalPathAuditor: Analyzes service dependency impacts and maps dependency relationships from Application Signals RED metrics during the Analysis phase</p> </li> <li> <p> <code>top_contributor</code> - TopContributorAuditor: Identifies infrastructure-level contributors to issues by analyzing EMF logs of Application Signals RED metrics during the Analysis phase</p> </li> <li> <p> <code>log</code> - LogAuditor: Extracts insights from application logs, categorizing error types and ranking severity by frequency during the Analysis phase</p> </li> </ul> <note> <p> <code>InitAuditor</code> and <code>Summarizer</code> auditors are not configurable as they are automatically triggered during the audit process.</p> </note>"
+        },
+        "AuditTargets":{
+          "shape":"AuditTargets",
+          "documentation":"<p>A list of audit targets to filter the findings by. You can specify services, SLOs, or service operations to limit the audit findings to specific entities.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Include this value, if it was returned by the previous operation, to get the next set of audit findings.</p>"
+        },
+        "MaxResults":{
+          "shape":"ListAuditFindingMaxResults",
+          "documentation":"<p>The maximum number of audit findings to return in one operation. If you omit this parameter, the default of 10 is used.</p>"
+        }
+      }
+    },
+    "ListAuditFindingsOutput":{
+      "type":"structure",
+      "required":["AuditFindings"],
+      "members":{
+        "AuditFindings":{
+          "shape":"AuditFindings",
+          "documentation":"<p>An array of structures, where each structure contains information about one audit finding, including the auditor results, severity, and associated metric and dependency graphs.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Include this value in your next use of this API to get the next set of audit findings.</p>"
+        }
+      }
+    },
+    "ListGroupingAttributeDefinitionsInput":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Include this value, if it was returned by the previous operation, to get the next set of grouping attribute definitions.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListGroupingAttributeDefinitionsOutput":{
+      "type":"structure",
+      "required":["GroupingAttributeDefinitions"],
+      "members":{
+        "GroupingAttributeDefinitions":{
+          "shape":"GroupingAttributeDefinitions",
+          "documentation":"<p>An array of structures, where each structure contains information about one grouping attribute definition, including the grouping name, source keys, and default values.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the grouping configuration was last updated. When used in a raw HTTP Query API, it is formatted as epoch time in seconds.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Include this value in your next use of this API to get the next set of grouping attribute definitions.</p>"
+        }
+      }
     },
     "ListServiceDependenciesInput":{
       "type":"structure",
@@ -955,13 +1453,13 @@
         },
         "MaxResults":{
           "shape":"ListServiceLevelObjectiveExclusionWindowsMaxResults",
-          "documentation":"<p>The maximum number of results to return in one operation. If you omit this parameter, the default of 50 is used. <pre><code> &lt;/p&gt; </code></pre>",
+          "documentation":"<p>The maximum number of results to return in one operation. If you omit this parameter, the default of 50 is used. </p>",
           "location":"querystring",
           "locationName":"MaxResults"
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>Include this value, if it was returned by the previous operation, to get the next set of service level objectives. <pre><code> &lt;/p&gt; </code></pre>",
+          "documentation":"<p>Include this value, if it was returned by the previous operation, to get the next set of service level objectives. </p>",
           "location":"querystring",
           "locationName":"NextToken"
         }
@@ -983,7 +1481,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>Include this value, if it was returned by the previous operation, to get the next set of service level objectives. <pre><code> &lt;/p&gt; </code></pre>"
+          "documentation":"<p>Include this value, if it was returned by the previous operation, to get the next set of service level objectives. </p>"
         }
       }
     },
@@ -1016,13 +1514,9 @@
           "location":"querystring",
           "locationName":"NextToken"
         },
-        "MetricSourceTypes":{
-          "shape":"MetricSourceTypes",
-          "documentation":"<p>Use this optional field to only include SLOs with the specified metric source types in the output. Supported types are:</p> <ul> <li> <p>Service operation</p> </li> <li> <p>Service dependency</p> </li> <li> <p>CloudWatch metric</p> </li> </ul>"
-        },
         "IncludeLinkedAccounts":{
           "shape":"Boolean",
-          "documentation":"<p>If you are using this operation in a monitoring account, specify <code>true</code> to include SLO from source accounts in the returned data. <pre><code> &lt;/p&gt; &lt;p&gt;When you are monitoring an account, you can use Amazon Web Services account ID in &lt;code&gt;KeyAttribute&lt;/code&gt; filter for service source account and &lt;code&gt;SloOwnerawsaccountID&lt;/code&gt; for SLO source account with &lt;code&gt;IncludeLinkedAccounts&lt;/code&gt; to filter the returned data to only a single source account. &lt;/p&gt; </code></pre>",
+          "documentation":"<p>If you are using this operation in a monitoring account, specify <code>true</code> to include SLO from source accounts in the returned data. </p> <p>When you are monitoring an account, you can use Amazon Web Services account ID in <code>KeyAttribute</code> filter for service source account and <code>SloOwnerawsaccountID</code> for SLO source account with <code>IncludeLinkedAccounts</code> to filter the returned data to only a single source account. </p>",
           "location":"querystring",
           "locationName":"IncludeLinkedAccounts"
         },
@@ -1031,6 +1525,10 @@
           "documentation":"<p>SLO's Amazon Web Services account ID.</p>",
           "location":"querystring",
           "locationName":"SloOwnerAwsAccountId"
+        },
+        "MetricSourceTypes":{
+          "shape":"MetricSourceTypes",
+          "documentation":"<p>Use this optional field to only include SLOs with the specified metric source types in the output. Supported types are:</p> <ul> <li> <p>Service operation</p> </li> <li> <p>Service dependency</p> </li> <li> <p>CloudWatch metric</p> </li> </ul>"
         }
       }
     },
@@ -1123,6 +1621,74 @@
         }
       }
     },
+    "ListServiceStatesInput":{
+      "type":"structure",
+      "required":[
+        "StartTime",
+        "EndTime"
+      ],
+      "members":{
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start of the time period to retrieve service state information for. When used in a raw HTTP Query API, it is formatted as epoch time in seconds. For example, <code>1698778057</code>.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end of the time period to retrieve service state information for. When used in a raw HTTP Query API, it is formatted as epoch time in seconds. For example, <code>1698778057</code>.</p>"
+        },
+        "MaxResults":{
+          "shape":"ListServiceStatesMaxResults",
+          "documentation":"<p>The maximum number of service states to return in one operation. If you omit this parameter, the default of 20 is used.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Include this value, if it was returned by the previous operation, to get the next set of service states.</p>"
+        },
+        "IncludeLinkedAccounts":{
+          "shape":"Boolean",
+          "documentation":"<p>If you are using this operation in a monitoring account, specify <code>true</code> to include service states from source accounts in the returned data.</p>"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID to filter service states by. Use this to limit results to services from a specific account.</p>"
+        },
+        "AttributeFilters":{
+          "shape":"AttributeFilters",
+          "documentation":"<p>A list of attribute filters to narrow down the services. You can filter by platform, environment, or other service attributes.</p>"
+        }
+      }
+    },
+    "ListServiceStatesMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":250
+    },
+    "ListServiceStatesOutput":{
+      "type":"structure",
+      "required":[
+        "StartTime",
+        "EndTime",
+        "ServiceStates"
+      ],
+      "members":{
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start of the time period that the returned information applies to. When used in a raw HTTP Query API, it is formatted as epoch time in seconds. For example, <code>1698778057</code>.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end of the time period that the returned information applies to. When used in a raw HTTP Query API, it is formatted as epoch time in seconds. For example, <code>1698778057</code>.</p>"
+        },
+        "ServiceStates":{
+          "shape":"ServiceStates",
+          "documentation":"<p>An array of structures, where each structure contains information about the state of one service, including its latest change events such as deployments.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Include this value in your next use of this API to get the next set of service states.</p>"
+        }
+      }
+    },
     "ListServicesInput":{
       "type":"structure",
       "required":[
@@ -1156,7 +1722,7 @@
         },
         "IncludeLinkedAccounts":{
           "shape":"Boolean",
-          "documentation":"<p>If you are using this operation in a monitoring account, specify <code>true</code> to include services from source accounts in the returned data. <pre><code> &lt;/p&gt; </code></pre>",
+          "documentation":"<p>If you are using this operation in a monitoring account, specify <code>true</code> to include services from source accounts in the returned data. </p>",
           "location":"querystring",
           "locationName":"IncludeLinkedAccounts"
         },
@@ -1287,6 +1853,24 @@
       "max":2048,
       "min":1
     },
+    "MetricGraph":{
+      "type":"structure",
+      "members":{
+        "MetricDataQueries":{
+          "shape":"MetricDataQueries",
+          "documentation":"<p>An array of metric data queries that define the metrics to be retrieved and analyzed as part of the audit finding context.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time for the metric data included in this graph. When used in a raw HTTP Query API, it is formatted as epoch time in seconds.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time for the metric data included in this graph. When used in a raw HTTP Query API, it is formatted as epoch time in seconds.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains metric data queries and time range information that provides context for audit findings through relevant performance metrics.</p>"
+    },
     "MetricId":{
       "type":"string",
       "max":255,
@@ -1400,6 +1984,51 @@
       "pattern":".*[^:].*"
     },
     "NextToken":{"type":"string"},
+    "Node":{
+      "type":"structure",
+      "required":[
+        "KeyAttributes",
+        "Name",
+        "NodeId"
+      ],
+      "members":{
+        "KeyAttributes":{
+          "shape":"Attributes",
+          "documentation":"<p>The key attributes that identify this node, including Type, Name, and Environment information.</p>"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the entity represented by this node.</p>"
+        },
+        "NodeId":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier for this node within the dependency graph.</p>"
+        },
+        "Operation":{
+          "shape":"String",
+          "documentation":"<p>The operation associated with this node, if applicable.</p>"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The type of entity represented by this node, such as <code>Service</code> or <code>Resource</code>.</p>"
+        },
+        "Duration":{
+          "shape":"Double",
+          "documentation":"<p>The duration or processing time associated with this node, if applicable.</p>"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The status of the entity represented by this node.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a node in a dependency graph, containing information about a service, resource, or other entity and its characteristics.</p>"
+    },
+    "Nodes":{
+      "type":"list",
+      "member":{"shape":"Node"},
+      "max":4,
+      "min":0
+    },
     "OperationName":{
       "type":"string",
       "max":255,
@@ -1409,6 +2038,26 @@
       "type":"integer",
       "box":true,
       "min":1
+    },
+    "PutGroupingConfigurationInput":{
+      "type":"structure",
+      "required":["GroupingAttributeDefinitions"],
+      "members":{
+        "GroupingAttributeDefinitions":{
+          "shape":"GroupingAttributeDefinitions",
+          "documentation":"<p>An array of grouping attribute definitions that specify how services should be grouped. Each definition includes a friendly name, source keys to derive the grouping value from, and an optional default value.</p>"
+        }
+      }
+    },
+    "PutGroupingConfigurationOutput":{
+      "type":"structure",
+      "required":["GroupingConfiguration"],
+      "members":{
+        "GroupingConfiguration":{
+          "shape":"GroupingConfiguration",
+          "documentation":"<p>A structure containing the updated grouping configuration, including all grouping attribute definitions and the timestamp when it was last updated.</p>"
+        }
+      }
     },
     "RecurrenceRule":{
       "type":"structure",
@@ -1598,6 +2247,10 @@
           "shape":"AttributeMaps",
           "documentation":"<p>This structure contains one or more string-to-string maps that help identify this service. It can include <i>platform attributes</i>, <i>application attributes</i>, and <i>telemetry attributes</i>.</p> <p>Platform attributes contain information the service's platform.</p> <ul> <li> <p> <code>PlatformType</code> defines the hosted-in platform.</p> </li> <li> <p> <code>EKS.Cluster</code> is the name of the Amazon EKS cluster.</p> </li> <li> <p> <code>K8s.Cluster</code> is the name of the self-hosted Kubernetes cluster.</p> </li> <li> <p> <code>K8s.Namespace</code> is the name of the Kubernetes namespace in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>K8s.Workload</code> is the name of the Kubernetes workload in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>K8s.Node</code> is the name of the Kubernetes node in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>K8s.Pod</code> is the name of the Kubernetes pod in either Amazon EKS or Kubernetes clusters.</p> </li> <li> <p> <code>EC2.AutoScalingGroup</code> is the name of the Amazon EC2 Auto Scaling group.</p> </li> <li> <p> <code>EC2.InstanceId</code> is the ID of the Amazon EC2 instance.</p> </li> <li> <p> <code>Host</code> is the name of the host, for all platform types.</p> </li> </ul> <p>Application attributes contain information about the application.</p> <ul> <li> <p> <code>AWS.Application</code> is the application's name in Amazon Web Services Service Catalog AppRegistry.</p> </li> <li> <p> <code>AWS.Application.ARN</code> is the application's ARN in Amazon Web Services Service Catalog AppRegistry.</p> </li> </ul> <p>Telemetry attributes contain telemetry information.</p> <ul> <li> <p> <code>Telemetry.SDK</code> is the fingerprint of the OpenTelemetry SDK version for instrumented services.</p> </li> <li> <p> <code>Telemetry.Agent</code> is the fingerprint of the agent used to collect and send telemetry data.</p> </li> <li> <p> <code>Telemetry.Source</code> Specifies the point of application where the telemetry was collected or specifies what was used for the source of telemetry data.</p> </li> </ul>"
         },
+        "ServiceGroups":{
+          "shape":"ServiceGroups",
+          "documentation":"<p>An array of service groups that this service belongs to, based on the configured grouping attributes.</p>"
+        },
         "MetricReferences":{
           "shape":"MetricReferences",
           "documentation":"<p>An array of structures that each contain information about one metric associated with this service.</p>"
@@ -1675,7 +2328,61 @@
       "max":100,
       "min":0
     },
+    "ServiceEntity":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The type of the service entity.</p>"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the service.</p>"
+        },
+        "Environment":{
+          "shape":"String",
+          "documentation":"<p>The environment where the service is deployed.</p>"
+        },
+        "AwsAccountId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID where the service is located. Provide this value only for cross-account access.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains identifying information for a service entity.</p>"
+    },
     "ServiceErrorMessage":{"type":"string"},
+    "ServiceGroup":{
+      "type":"structure",
+      "required":[
+        "GroupName",
+        "GroupValue",
+        "GroupSource",
+        "GroupIdentifier"
+      ],
+      "members":{
+        "GroupName":{
+          "shape":"GroupName",
+          "documentation":"<p>The name of the grouping attribute, such as <code>BusinessUnit</code> or <code>Environment</code>.</p>"
+        },
+        "GroupValue":{
+          "shape":"GroupValue",
+          "documentation":"<p>The value of the grouping attribute for this service, such as <code>Payments</code> or <code>Production</code>.</p>"
+        },
+        "GroupSource":{
+          "shape":"GroupSource",
+          "documentation":"<p>The source of the grouping attribute, such as <code>TAG</code>, <code>OTEL</code>, or <code>DEFAULT</code>.</p>"
+        },
+        "GroupIdentifier":{
+          "shape":"GroupIdentifier",
+          "documentation":"<p>A unique identifier for this grouping attribute value, used for filtering and API operations.</p>"
+        }
+      },
+      "documentation":"<p>A structure that represents a logical grouping of services based on shared attributes such as business unit, environment, or entry point.</p>"
+    },
+    "ServiceGroups":{
+      "type":"list",
+      "member":{"shape":"ServiceGroup"}
+    },
     "ServiceLevelIndicator":{
       "type":"structure",
       "required":[
@@ -1772,6 +2479,10 @@
         "MetricType":{
           "shape":"ServiceLevelIndicatorMetricType",
           "documentation":"<p>If the SLO is to monitor either the <code>LATENCY</code> or <code>AVAILABILITY</code> metric that Application Signals collects, use this field to specify which of those metrics is used.</p>"
+        },
+        "MetricName":{
+          "shape":"MetricName",
+          "documentation":"<p>The name of the CloudWatch metric to use for the SLO, when using a custom metric rather than Application Signals standard metrics.</p>"
         },
         "Statistic":{
           "shape":"ServiceLevelIndicatorStatistic",
@@ -1978,6 +2689,20 @@
       "max":1024,
       "min":1
     },
+    "ServiceLevelObjectiveEntity":{
+      "type":"structure",
+      "members":{
+        "SloName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service level objective.</p>"
+        },
+        "SloArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the service level objective. The SLO must be provided with ARN for cross-account access.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains identifying information for a service level objective entity.</p>"
+    },
     "ServiceLevelObjectiveId":{
       "type":"string",
       "pattern":"[0-9A-Za-z][-._0-9A-Za-z ]{0,126}[0-9A-Za-z]$|^arn:aws:application-signals:[^:]*:[^:]*:slo/[0-9A-Za-z][-._0-9A-Za-z ]{0,126}[0-9A-Za-z]"
@@ -2056,6 +2781,24 @@
       },
       "documentation":"<p>This structure contains information about an operation discovered by Application Signals. An operation is a specific function performed by a service that was discovered by Application Signals, and is often an API that is called by an upstream dependent. </p>"
     },
+    "ServiceOperationEntity":{
+      "type":"structure",
+      "members":{
+        "Service":{
+          "shape":"ServiceEntity",
+          "documentation":"<p>The service entity that contains this operation.</p>"
+        },
+        "Operation":{
+          "shape":"String",
+          "documentation":"<p>The name of the operation.</p>"
+        },
+        "MetricType":{
+          "shape":"String",
+          "documentation":"<p>The type of metric associated with this service operation.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains identifying information for a service operation entity.</p>"
+    },
     "ServiceOperations":{
       "type":"list",
       "member":{"shape":"ServiceOperation"},
@@ -2074,6 +2817,34 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ServiceState":{
+      "type":"structure",
+      "required":[
+        "Service",
+        "LatestChangeEvents"
+      ],
+      "members":{
+        "AttributeFilters":{
+          "shape":"AttributeFilters",
+          "documentation":"<p>The attribute filters that were applied when retrieving this service state information.</p>"
+        },
+        "Service":{
+          "shape":"Attributes",
+          "documentation":"<p>The key attributes that identify this service, including Type, Name, and Environment information.</p>"
+        },
+        "LatestChangeEvents":{
+          "shape":"LatestChangeEvents",
+          "documentation":"<p>An array containing the most recent change events for this service, such as deployments, with information about when they occurred and who initiated them.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains information about the current state of a service, including its latest change events such as deployments and other state-changing activities.</p>"
+    },
+    "ServiceStates":{
+      "type":"list",
+      "member":{"shape":"ServiceState"},
+      "max":250,
+      "min":0
     },
     "ServiceSummaries":{
       "type":"list",
@@ -2097,9 +2868,23 @@
         "MetricReferences":{
           "shape":"MetricReferences",
           "documentation":"<p>An array of structures that each contain information about one metric associated with this service.</p>"
+        },
+        "ServiceGroups":{
+          "shape":"ServiceGroups",
+          "documentation":"<p>An array of service groups that this service belongs to, based on the configured grouping attributes.</p>"
         }
       },
       "documentation":"<p>This structure contains information about one of your services that was discovered by Application Signals</p>"
+    },
+    "Severity":{
+      "type":"string",
+      "enum":[
+        "CRITICAL",
+        "HIGH",
+        "MEDIUM",
+        "LOW",
+        "NONE"
+      ]
     },
     "StandardUnit":{
       "type":"string",
@@ -2135,13 +2920,11 @@
     },
     "StartDiscoveryInput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "StartDiscoveryOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Stat":{"type":"string"},
     "String":{"type":"string"},
@@ -2199,8 +2982,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -2248,8 +3030,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateServiceLevelObjectiveInput":{
       "type":"structure",

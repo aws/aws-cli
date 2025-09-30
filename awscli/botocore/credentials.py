@@ -1495,6 +1495,7 @@ class BotoProvider(CredentialProvider):
                     access_key, secret_key = self._extract_creds_from_mapping(
                         credentials, self.ACCESS_KEY, self.SECRET_KEY
                     )
+                    register_feature_id('CREDENTIALS_BOTO2_CONFIG_FILE')
                     return Credentials(
                         access_key, secret_key, method=self.METHOD
                     )

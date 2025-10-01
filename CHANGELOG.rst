@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.31.6
+======
+
+* api-change:``dms``: This is a doc-only update, revising text for kms-key-arns.
+* bugfix:``botocore``: Fix HTTP 100 Continue parsing to accept optional reason phrase
+* api-change:``ecs``: This is a documentation only Amazon ECS release that adds additional information for health checks.
+* api-change:``cleanrooms``: This release introduces data access budgets to control how many times a table can be used for queries and jobs in a collaboration.
+* bugfix:``s3``: Fix CancelledError retry loops to enable immediate S3 upload cancellation
+* api-change:``chime-sdk-meetings``: Add support to receive dual stack MediaPlacement URLs in Chime Meetings SDK
+* api-change:``cleanroomsml``: This release introduces data access budgets to view how many times an input channel can be used for ML jobs in a collaboration.
+* api-change:``pcs``: Added the UpdateCluster API action to modify cluster configurations, and Slurm custom settings for queues.
+
+
 2.31.5
 ======
 

@@ -1667,6 +1667,127 @@
     }
   },
   "shapes":{
+    "AccessBudget":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "details",
+        "aggregateRemainingBudget"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"BudgetedResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the access budget resource.</p>"
+        },
+        "details":{
+          "shape":"AccessBudgetDetailsList",
+          "documentation":"<p>Detailed budget information including time bounds, remaining budget, and refresh settings.</p>"
+        },
+        "aggregateRemainingBudget":{
+          "shape":"RemainingBudget",
+          "documentation":"<p>The total remaining budget across all budget parameters, showing the lower value between the per-period budget and lifetime budget for this access budget. For individual parameter budgets, see <code>remainingBudget</code>.</p>"
+        }
+      },
+      "documentation":"<p>Controls and tracks usage limits for associated configured tables within a collaboration across queries and job. Supports both period-based budgets that can renew (daily, weekly, or monthly) and fixed lifetime budgets. Contains the resource ARN, remaining budget information, and up to two budget configurations (period-based and lifetime). By default, table usage is unlimited unless a budget is configured.</p>"
+    },
+    "AccessBudgetDetails":{
+      "type":"structure",
+      "required":[
+        "startTime",
+        "remainingBudget",
+        "budget",
+        "budgetType"
+      ],
+      "members":{
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time for the access budget period.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time for the access budget period.</p>"
+        },
+        "remainingBudget":{
+          "shape":"RemainingBudget",
+          "documentation":"<p>The remaining budget amount available for use within this access budget.</p>"
+        },
+        "budget":{
+          "shape":"Budget",
+          "documentation":"<p>The total budget allocation amount for this access budget.</p>"
+        },
+        "budgetType":{
+          "shape":"AccessBudgetType",
+          "documentation":"<p>Specifies the time period for limiting table usage in queries and jobs. For calendar-based periods, the budget can renew if auto refresh is enabled. For lifetime budgets, the limit applies to the total usage throughout the collaboration. Valid values are:</p> <p> <code>CALENDAR_DAY</code> - Limit table usage per day.</p> <p> <code>CALENDAR_WEEK</code> - Limit table usage per week.</p> <p> <code>CALENDAR_MONTH</code> - Limit table usage per month.</p> <p> <code>LIFETIME</code> - Limit total table usage for the collaboration duration.</p>"
+        },
+        "autoRefresh":{
+          "shape":"AutoRefreshMode",
+          "documentation":"<p>Indicates whether the budget automatically refreshes for each time period specified in <code>budgetType</code>. Valid values are:</p> <p> <code>ENABLED</code> - The budget refreshes automatically at the start of each period.</p> <p> <code>DISABLED</code> - The budget must be refreshed manually.</p> <p> <code>NULL</code> - The value is null when <code>budgetType</code> is set to <code>LIFETIME</code>.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about an access budget including time bounds, budget allocation, and configuration settings.</p>"
+    },
+    "AccessBudgetDetailsList":{
+      "type":"list",
+      "member":{"shape":"AccessBudgetDetails"},
+      "max":2,
+      "min":1
+    },
+    "AccessBudgetType":{
+      "type":"string",
+      "enum":[
+        "CALENDAR_DAY",
+        "CALENDAR_MONTH",
+        "CALENDAR_WEEK",
+        "LIFETIME"
+      ]
+    },
+    "AccessBudgetsPrivacyTemplateParametersInput":{
+      "type":"structure",
+      "required":[
+        "budgetParameters",
+        "resourceArn"
+      ],
+      "members":{
+        "budgetParameters":{
+          "shape":"BudgetParameters",
+          "documentation":"<p>An array of budget parameters that define the access budget configuration for the privacy template.</p>"
+        },
+        "resourceArn":{
+          "shape":"BudgetedResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource associated with this privacy budget template.</p>"
+        }
+      },
+      "documentation":"<p>Input parameters for privacy budget templates that support access budgets functionality, enabling enhanced budget management capabilities.</p>"
+    },
+    "AccessBudgetsPrivacyTemplateParametersOutput":{
+      "type":"structure",
+      "required":[
+        "budgetParameters",
+        "resourceArn"
+      ],
+      "members":{
+        "budgetParameters":{
+          "shape":"BudgetParameters",
+          "documentation":"<p>An array of budget parameters returned from the access budget configuration.</p>"
+        },
+        "resourceArn":{
+          "shape":"BudgetedResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource associated with this privacy budget template.</p>"
+        }
+      },
+      "documentation":"<p>Output parameters for privacy budget templates with access budgets support, containing the configured budget information.</p>"
+    },
+    "AccessBudgetsPrivacyTemplateUpdateParameters":{
+      "type":"structure",
+      "required":["budgetParameters"],
+      "members":{
+        "budgetParameters":{
+          "shape":"BudgetParameters",
+          "documentation":"<p>Updated array of budget parameters for the access budget configuration.</p>"
+        }
+      },
+      "documentation":"<p>Update parameters for privacy budget templates with access budgets functionality, allowing modification of existing budget configurations.</p>"
+    },
     "AccessDeniedException":{
       "type":"structure",
       "members":{
@@ -2478,6 +2599,13 @@
       "type":"list",
       "member":{"shape":"AutoApprovedChangeType"}
     },
+    "AutoRefreshMode":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "BatchGetCollaborationAnalysisTemplateError":{
       "type":"structure",
       "required":[
@@ -2703,6 +2831,46 @@
     "Boolean":{
       "type":"boolean",
       "box":true
+    },
+    "Budget":{
+      "type":"integer",
+      "box":true,
+      "max":1000000,
+      "min":0
+    },
+    "BudgetParameter":{
+      "type":"structure",
+      "required":[
+        "type",
+        "budget"
+      ],
+      "members":{
+        "type":{
+          "shape":"AccessBudgetType",
+          "documentation":"<p>The type of budget parameter being configured.</p>"
+        },
+        "budget":{
+          "shape":"Budget",
+          "documentation":"<p>The budget allocation amount for this specific parameter.</p>"
+        },
+        "autoRefresh":{
+          "shape":"AutoRefreshMode",
+          "documentation":"<p>Whether this individual budget parameter automatically refreshes when the budget period resets.</p>"
+        }
+      },
+      "documentation":"<p>Individual budget parameter configuration that defines specific budget allocation settings for access budgets.</p>"
+    },
+    "BudgetParameters":{
+      "type":"list",
+      "member":{"shape":"BudgetParameter"},
+      "max":2,
+      "min":1
+    },
+    "BudgetedResourceArn":{
+      "type":"string",
+      "max":200,
+      "min":0,
+      "pattern":"arn:aws:[\\w]+:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:membership/[\\d\\w-]+/configuredtableassociation/[\\d\\w-]+"
     },
     "Change":{
       "type":"structure",
@@ -5031,7 +5199,6 @@
       "type":"structure",
       "required":[
         "membershipIdentifier",
-        "autoRefresh",
         "privacyBudgetType",
         "parameters"
       ],
@@ -7124,6 +7291,12 @@
           "documentation":"<p>The pagination token that's used to fetch the next set of results.</p>",
           "location":"querystring",
           "locationName":"nextToken"
+        },
+        "accessBudgetResourceArn":{
+          "shape":"BudgetedResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Configured Table Association (ConfiguredTableAssociation) used to filter privacy budgets.</p>",
+          "location":"querystring",
+          "locationName":"accessBudgetResourceArn"
         }
       }
     },
@@ -7504,6 +7677,12 @@
           "documentation":"<p>The maximum number of results that are returned for an API request call. The service chooses a default number if you don't set one. The service might return a `nextToken` even if the `maxResults` value has not been met.</p>",
           "location":"querystring",
           "locationName":"maxResults"
+        },
+        "accessBudgetResourceArn":{
+          "shape":"BudgetedResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the access budget resource to filter privacy budgets by.</p>",
+          "location":"querystring",
+          "locationName":"accessBudgetResourceArn"
         }
       }
     },
@@ -8353,6 +8532,10 @@
         "differentialPrivacy":{
           "shape":"DifferentialPrivacyPrivacyBudget",
           "documentation":"<p>An object that specifies the epsilon parameter and the utility in terms of total aggregations, as well as the remaining aggregations available.</p>"
+        },
+        "accessBudget":{
+          "shape":"AccessBudget",
+          "documentation":"<p>Access budget information associated with this privacy budget.</p>"
         }
       },
       "documentation":"<p>The epsilon parameter value and number of each aggregation function that you can perform.</p>",
@@ -8513,6 +8696,10 @@
         "differentialPrivacy":{
           "shape":"DifferentialPrivacyTemplateParametersInput",
           "documentation":"<p>An object that specifies the epsilon and noise parameters.</p>"
+        },
+        "accessBudget":{
+          "shape":"AccessBudgetsPrivacyTemplateParametersInput",
+          "documentation":"<p>Access budget configuration for the privacy budget template input, enabling integration with access budget functionality.</p>"
         }
       },
       "documentation":"<p>The epsilon and noise parameters that you want to use for the privacy budget template.</p>",
@@ -8524,6 +8711,10 @@
         "differentialPrivacy":{
           "shape":"DifferentialPrivacyTemplateParametersOutput",
           "documentation":"<p>The epsilon and noise parameters.</p>"
+        },
+        "accessBudget":{
+          "shape":"AccessBudgetsPrivacyTemplateParametersOutput",
+          "documentation":"<p>Access budget configuration returned from the privacy budget template, containing the configured access budget settings.</p>"
         }
       },
       "documentation":"<p>The epsilon and noise parameters that were used in the privacy budget template.</p>",
@@ -8592,6 +8783,10 @@
         "differentialPrivacy":{
           "shape":"DifferentialPrivacyTemplateUpdateParameters",
           "documentation":"<p>An object that specifies the new values for the epsilon and noise parameters.</p>"
+        },
+        "accessBudget":{
+          "shape":"AccessBudgetsPrivacyTemplateUpdateParameters",
+          "documentation":"<p> The new access budget configuration that completely replaces the existing access budget settings in the privacy budget template.</p>"
         }
       },
       "documentation":"<p>The epsilon and noise parameters that you want to update in the privacy budget template.</p>",
@@ -8599,7 +8794,10 @@
     },
     "PrivacyBudgetType":{
       "type":"string",
-      "enum":["DIFFERENTIAL_PRIVACY"]
+      "enum":[
+        "DIFFERENTIAL_PRIVACY",
+        "ACCESS_BUDGET"
+      ]
     },
     "PrivacyImpact":{
       "type":"structure",
@@ -9439,6 +9637,11 @@
       "type":"list",
       "member":{"shape":"ReceiverConfiguration"}
     },
+    "RemainingBudget":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
     "ResourceAlias":{
       "type":"string",
       "max":128,
@@ -9632,6 +9835,10 @@
           "shape":"SchemaStatusDetailList",
           "documentation":"<p>Details about the status of the schema. Currently, only one entry is present.</p>"
         },
+        "resourceArn":{
+          "shape":"SchemaResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the schema resource.</p>"
+        },
         "schemaTypeProperties":{
           "shape":"SchemaTypeProperties",
           "documentation":"<p>The schema type properties.</p>"
@@ -9682,6 +9889,12 @@
       "member":{"shape":"Schema"},
       "max":25,
       "min":0
+    },
+    "SchemaResourceArn":{
+      "type":"string",
+      "max":200,
+      "min":0,
+      "pattern":"arn:aws:cleanrooms:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:membership\\/[\\d\\w-]+\\/(configuredtableassociation|idmappingtable)\\/[\\d\\w-]+"
     },
     "SchemaStatus":{
       "type":"string",
@@ -9810,6 +10023,10 @@
         "analysisMethod":{
           "shape":"AnalysisMethod",
           "documentation":"<p>The analysis method for the associated schema.</p> <p> <code>DIRECT_QUERY</code> allows SQL queries to be run directly on this table.</p> <p> <code>DIRECT_JOB</code> allows PySpark jobs to be run directly on this table.</p> <p> <code>MULTIPLE</code> allows both SQL queries and PySpark jobs to be run directly on this table.</p>"
+        },
+        "resourceArn":{
+          "shape":"SchemaResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the schema summary resource.</p>"
         },
         "selectedAnalysisMethods":{
           "shape":"SelectedAnalysisMethods",

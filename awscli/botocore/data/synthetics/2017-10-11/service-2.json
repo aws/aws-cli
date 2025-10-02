@@ -458,6 +458,18 @@
       "max":10000000,
       "min":1
     },
+    "BlueprintType":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[0-9a-zA-Z_\\-\\.]+"
+    },
+    "BlueprintTypes":{
+      "type":"list",
+      "member":{"shape":"BlueprintType"},
+      "max":1,
+      "min":0
+    },
     "BrowserConfig":{
       "type":"structure",
       "members":{
@@ -582,7 +594,6 @@
     },
     "CanaryCodeInput":{
       "type":"structure",
-      "required":["Handler"],
       "members":{
         "S3Bucket":{
           "shape":"String",
@@ -602,7 +613,11 @@
         },
         "Handler":{
           "shape":"CodeHandler",
-          "documentation":"<p>The entry point to use for the source code when running the canary. For canaries that use the <code>syn-python-selenium-1.0</code> runtime or a <code>syn-nodejs.puppeteer</code> runtime earlier than <code>syn-nodejs.puppeteer-3.4</code>, the handler must be specified as <code> <i>fileName</i>.handler</code>. For <code>syn-python-selenium-1.1</code>, <code>syn-nodejs.puppeteer-3.4</code>, and later runtimes, the handler can be specified as <code> <i>fileName</i>.<i>functionName</i> </code>, or you can specify a folder where canary scripts reside as <code> <i>folder</i>/<i>fileName</i>.<i>functionName</i> </code>.</p>"
+          "documentation":"<p>The entry point to use for the source code when running the canary. For canaries that use the <code>syn-python-selenium-1.0</code> runtime or a <code>syn-nodejs.puppeteer</code> runtime earlier than <code>syn-nodejs.puppeteer-3.4</code>, the handler must be specified as <code> <i>fileName</i>.handler</code>. For <code>syn-python-selenium-1.1</code>, <code>syn-nodejs.puppeteer-3.4</code>, and later runtimes, the handler can be specified as <code> <i>fileName</i>.<i>functionName</i> </code>, or you can specify a folder where canary scripts reside as <code> <i>folder</i>/<i>fileName</i>.<i>functionName</i> </code>.</p> <p>This field is required when you don't specify <code>BlueprintTypes</code> and is not allowed when you specify <code>BlueprintTypes</code>.</p>"
+        },
+        "BlueprintTypes":{
+          "shape":"BlueprintTypes",
+          "documentation":"<p> <code>BlueprintTypes</code> is a list of templates that enable simplified canary creation. You can create canaries for common monitoring scenarios by providing only a JSON configuration file instead of writing custom scripts. The only supported value is <code>multi-checks</code>.</p> <p>Multi-checks monitors HTTP/DNS/SSL/TCP endpoints with built-in authentication schemes (Basic, API Key, OAuth, SigV4) and assertion capabilities. When you specify <code>BlueprintTypes</code>, the Handler field cannot be specified since the blueprint provides a pre-defined entry point.</p> <p> <code>BlueprintTypes</code> is supported only on canaries for syn-nodejs-3.0 runtime or later.</p>"
         },
         "Dependencies":{
           "shape":"Dependencies",
@@ -620,7 +635,11 @@
         },
         "Handler":{
           "shape":"String",
-          "documentation":"<p>The entry point to use for the source code when running the canary.</p>"
+          "documentation":"<p>The entry point to use for the source code when running the canary.</p> <p>This field is required when you don't specify <code>BlueprintTypes</code> and is not allowed when you specify <code>BlueprintTypes</code>.</p>"
+        },
+        "BlueprintTypes":{
+          "shape":"BlueprintTypes",
+          "documentation":"<p> <code>BlueprintTypes</code> is a list of templates that enable simplified canary creation. You can create canaries for common monitoring scenarios by providing only a JSON configuration file instead of writing custom scripts. The only supported value is <code>multi-checks</code>.</p> <p>Multi-checks monitors HTTP/DNS/SSL/TCP endpoints with built-in authentication schemes (Basic, API Key, OAuth, SigV4) and assertion capabilities. When you specify <code>BlueprintTypes</code>, the Handler field cannot be specified since the blueprint provides a pre-defined entry point.</p> <p> <code>BlueprintTypes</code> is supported only on canaries for syn-nodejs-3.0 runtime or later.</p>"
         },
         "Dependencies":{
           "shape":"Dependencies",
@@ -927,8 +946,8 @@
     "CodeHandler":{
       "type":"string",
       "max":128,
-      "min":1,
-      "pattern":"^([0-9a-zA-Z_-]+(\\/|\\.))*[0-9A-Za-z_\\\\-]+(\\.|::)[A-Za-z_][A-Za-z0-9_]*$"
+      "min":0,
+      "pattern":"^(([0-9a-zA-Z_-]+(\\/|\\.))*[0-9A-Za-z_\\\\-]+(\\.|::)[A-Za-z_][A-Za-z0-9_]*)?$"
     },
     "ConflictException":{
       "type":"structure",

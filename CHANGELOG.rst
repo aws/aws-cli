@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.31.7
+======
+
+* api-change:``dynamodb``: Add support for dual-stack account endpoint generation
+* api-change:``cloudformation``: Add new warning type 'EXCLUDED_RESOURCES'
+* api-change:``guardduty``: Updated descriptions for the Location parameter in CreateTrustedEntitySet and CreateThreatEntitySet.
+* api-change:``synthetics``: Adds support to configure canaries with pre-configured blueprint code on supported runtime versions.  This behavior can be controlled via the new BlueprintTypes property exposed in the CreateCanary and UpdateCanary APIs.
+* api-change:``connectcases``: New Search All Related Items API enables searching related items across cases
+* enhancement:``eks``: Add ``proxy-url`` to ``aws eks update-kubeconfig``
+
+
 2.31.6
 ======
 

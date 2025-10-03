@@ -1914,6 +1914,10 @@
       "type":"list",
       "member":{"shape":"AccountId"}
     },
+    "AllowedResultRegions":{
+      "type":"list",
+      "member":{"shape":"SupportedS3Region"}
+    },
     "AnalysisFormat":{
       "type":"string",
       "enum":[
@@ -2566,6 +2570,10 @@
         "tableName"
       ],
       "members":{
+        "region":{
+          "shape":"CommercialRegion",
+          "documentation":"<p>The Amazon Web Services Region where the Athena table is located. This parameter is required to uniquely identify and access tables across different Regions.</p>"
+        },
         "workGroup":{
           "shape":"AthenaWorkGroup",
           "documentation":"<p> The workgroup of the Athena table reference.</p>"
@@ -3042,6 +3050,10 @@
         "autoApprovedChangeTypes":{
           "shape":"AutoApprovedChangeTypeList",
           "documentation":"<p>The types of change requests that are automatically approved for this collaboration.</p>"
+        },
+        "allowedResultRegions":{
+          "shape":"AllowedResultRegions",
+          "documentation":"<p>The Amazon Web Services Regions where collaboration query results can be stored. Returns the list of Region identifiers that were specified when the collaboration was created. This list is used to enforce regional storage policies and compliance requirements.</p>"
         }
       },
       "documentation":"<p>The multi-party data share environment. The collaboration contains metadata about its purpose and participants.</p>"
@@ -3835,6 +3847,44 @@
       "max":255,
       "min":0,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDBFF-\\uDC00\\uDFFF\\t]*"
+    },
+    "CommercialRegion":{
+      "type":"string",
+      "enum":[
+        "us-west-1",
+        "us-west-2",
+        "us-east-1",
+        "us-east-2",
+        "af-south-1",
+        "ap-east-1",
+        "ap-south-2",
+        "ap-southeast-1",
+        "ap-southeast-2",
+        "ap-southeast-3",
+        "ap-southeast-5",
+        "ap-southeast-4",
+        "ap-southeast-7",
+        "ap-south-1",
+        "ap-northeast-3",
+        "ap-northeast-1",
+        "ap-northeast-2",
+        "ca-central-1",
+        "ca-west-1",
+        "eu-south-1",
+        "eu-west-3",
+        "eu-south-2",
+        "eu-central-2",
+        "eu-central-1",
+        "eu-north-1",
+        "eu-west-1",
+        "eu-west-2",
+        "me-south-1",
+        "me-central-1",
+        "il-central-1",
+        "sa-east-1",
+        "mx-central-1",
+        "ap-east-2"
+      ]
     },
     "ComputeConfiguration":{
       "type":"structure",
@@ -4825,6 +4875,10 @@
         "autoApprovedChangeRequestTypes":{
           "shape":"AutoApprovedChangeTypeList",
           "documentation":"<p>The types of change requests that are automatically approved for this collaboration.</p>"
+        },
+        "allowedResultRegions":{
+          "shape":"AllowedResultRegions",
+          "documentation":"<p>The Amazon Web Services Regions where collaboration query results can be stored. When specified, results can only be written to these Regions. This parameter enables you to meet your compliance and data governance requirements, and implement regional data governance policies.</p>"
         }
       }
     },
@@ -6502,6 +6556,10 @@
         "databaseName"
       ],
       "members":{
+        "region":{
+          "shape":"CommercialRegion",
+          "documentation":"<p>The Amazon Web Services Region where the Glue table is located. This parameter is required to uniquely identify and access tables across different Regions.</p>"
+        },
         "tableName":{
           "shape":"GlueTableName",
           "documentation":"<p>The name of the Glue table.</p>"
@@ -10281,6 +10339,44 @@
       }
     },
     "String":{"type":"string"},
+    "SupportedS3Region":{
+      "type":"string",
+      "enum":[
+        "us-west-1",
+        "us-west-2",
+        "us-east-1",
+        "us-east-2",
+        "af-south-1",
+        "ap-east-1",
+        "ap-east-2",
+        "ap-south-2",
+        "ap-southeast-1",
+        "ap-southeast-2",
+        "ap-southeast-3",
+        "ap-southeast-5",
+        "ap-southeast-4",
+        "ap-southeast-7",
+        "ap-south-1",
+        "ap-northeast-3",
+        "ap-northeast-1",
+        "ap-northeast-2",
+        "ca-central-1",
+        "ca-west-1",
+        "eu-south-1",
+        "eu-west-3",
+        "eu-south-2",
+        "eu-central-2",
+        "eu-central-1",
+        "eu-north-1",
+        "eu-west-1",
+        "eu-west-2",
+        "me-south-1",
+        "me-central-1",
+        "il-central-1",
+        "sa-east-1",
+        "mx-central-1"
+      ]
+    },
     "TableAlias":{
       "type":"string",
       "max":128,

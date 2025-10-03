@@ -133,7 +133,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates an Amazon Q in Connect AI Prompt.</p> <note> <p>For more information on supported models, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/create-ai-prompts.html#cli-create-aiprompt\">Supported models for system and custom prompts</a>.</p> </note>",
+      "documentation":"<p>Creates an Amazon Q in Connect AI Prompt.</p>",
       "idempotent":true
     },
     "CreateAIPromptVersion":{
@@ -347,6 +347,7 @@
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"},
+        {"shape":"DependencyFailedException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
@@ -1679,6 +1680,18 @@
         "selfServiceAIAgentConfiguration":{
           "shape":"SelfServiceAIAgentConfiguration",
           "documentation":"<p>The configuration for AI Agents of type SELF_SERVICE.</p>"
+        },
+        "emailResponseAIAgentConfiguration":{
+          "shape":"EmailResponseAIAgentConfiguration",
+          "documentation":"<p>Configuration for the EMAIL_RESPONSE AI agent that generates professional email responses using knowledge base content.</p>"
+        },
+        "emailOverviewAIAgentConfiguration":{
+          "shape":"EmailOverviewAIAgentConfiguration",
+          "documentation":"<p>Configuration for the EMAIL_OVERVIEW AI agent that generates structured overview of email conversations.</p>"
+        },
+        "emailGenerativeAnswerAIAgentConfiguration":{
+          "shape":"EmailGenerativeAnswerAIAgentConfiguration",
+          "documentation":"<p>Configuration for the EMAIL_GENERATIVE_ANSWER AI agent that provides comprehensive knowledge-based answers for customer queries.</p>"
         }
       },
       "documentation":"<p>A typed union that specifies the configuration based on the type of AI Agent.</p>",
@@ -1844,7 +1857,10 @@
       "enum":[
         "MANUAL_SEARCH",
         "ANSWER_RECOMMENDATION",
-        "SELF_SERVICE"
+        "SELF_SERVICE",
+        "EMAIL_RESPONSE",
+        "EMAIL_OVERVIEW",
+        "EMAIL_GENERATIVE_ANSWER"
       ]
     },
     "AIAgentVersionSummariesList":{
@@ -2301,7 +2317,11 @@
         "INTENT_LABELING_GENERATION",
         "QUERY_REFORMULATION",
         "SELF_SERVICE_PRE_PROCESSING",
-        "SELF_SERVICE_ANSWER_GENERATION"
+        "SELF_SERVICE_ANSWER_GENERATION",
+        "EMAIL_RESPONSE",
+        "EMAIL_OVERVIEW",
+        "EMAIL_GENERATIVE_ANSWER",
+        "EMAIL_QUERY_REFORMULATION"
       ]
     },
     "AIPromptVersionSummariesList":{
@@ -3579,7 +3599,7 @@
         },
         "modelId":{
           "shape":"AIPromptModelIdentifier",
-          "documentation":"<p>The identifier of the model used for this AI Prompt.</p>"
+          "documentation":"<p>The identifier of the model used for this AI Prompt.</p> <note> <p>For information about which models are supported in each Amazon Web Services Region, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/create-ai-prompts.html#cli-create-aiprompt\">Supported models for system/custom prompts</a>.</p> </note>"
         },
         "apiFormat":{
           "shape":"AIPromptAPIFormat",
@@ -4140,6 +4160,10 @@
         "aiAgentConfiguration":{
           "shape":"AIAgentConfigurationMap",
           "documentation":"<p>The configuration of the AI Agents (mapped by AI Agent Type to AI Agent version) that should be used by Amazon Q in Connect for this Session.</p>"
+        },
+        "contactArn":{
+          "shape":"GenericArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the email contact in Amazon Connect. Used to retrieve email content and establish session context for AI-powered email assistance.</p>"
         }
       }
     },
@@ -4418,6 +4442,18 @@
         "generativeChunkData":{
           "shape":"GenerativeChunkDataDetails",
           "documentation":"<p>Details about the generative chunk data.</p>"
+        },
+        "emailResponseChunkData":{
+          "shape":"EmailResponseChunkDataDetails",
+          "documentation":"<p>Streaming chunk data for email response generation containing partial response content.</p>"
+        },
+        "emailOverviewChunkData":{
+          "shape":"EmailOverviewChunkDataDetails",
+          "documentation":"<p>Streaming chunk data for email overview containing partial overview content.</p>"
+        },
+        "emailGenerativeAnswerChunkData":{
+          "shape":"EmailGenerativeAnswerChunkDataDetails",
+          "documentation":"<p>Streaming chunk data for email generative answers containing partial knowledge-based response content.</p>"
         }
       },
       "documentation":"<p>Details about the data.</p>",
@@ -4528,8 +4564,7 @@
     },
     "DeleteAIAgentResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteAIAgentVersionRequest":{
       "type":"structure",
@@ -4561,8 +4596,7 @@
     },
     "DeleteAIAgentVersionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteAIGuardrailRequest":{
       "type":"structure",
@@ -4587,8 +4621,7 @@
     },
     "DeleteAIGuardrailResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteAIGuardrailVersionRequest":{
       "type":"structure",
@@ -4620,8 +4653,7 @@
     },
     "DeleteAIGuardrailVersionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteAIPromptRequest":{
       "type":"structure",
@@ -4646,8 +4678,7 @@
     },
     "DeleteAIPromptResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteAIPromptVersionRequest":{
       "type":"structure",
@@ -4679,8 +4710,7 @@
     },
     "DeleteAIPromptVersionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteAssistantAssociationRequest":{
       "type":"structure",
@@ -4705,8 +4735,7 @@
     },
     "DeleteAssistantAssociationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteAssistantRequest":{
       "type":"structure",
@@ -4722,8 +4751,7 @@
     },
     "DeleteAssistantResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteContentAssociationRequest":{
       "type":"structure",
@@ -4755,8 +4783,7 @@
     },
     "DeleteContentAssociationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteContentRequest":{
       "type":"structure",
@@ -4781,8 +4808,7 @@
     },
     "DeleteContentResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteImportJobRequest":{
       "type":"structure",
@@ -4807,8 +4833,7 @@
     },
     "DeleteImportJobResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteKnowledgeBaseRequest":{
       "type":"structure",
@@ -4824,8 +4849,7 @@
     },
     "DeleteKnowledgeBaseResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteMessageTemplateAttachmentRequest":{
       "type":"structure",
@@ -4857,8 +4881,7 @@
     },
     "DeleteMessageTemplateAttachmentResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteMessageTemplateRequest":{
       "type":"structure",
@@ -4883,8 +4906,7 @@
     },
     "DeleteMessageTemplateResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteQuickResponseRequest":{
       "type":"structure",
@@ -4909,8 +4931,19 @@
     },
     "DeleteQuickResponseResponse":{
       "type":"structure",
+      "members":{}
+    },
+    "DependencyFailedException":{
+      "type":"structure",
       "members":{
-      }
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>An error occurred while calling a dependency. For example, calling <code>connect:DecribeContact</code> as part of <code>CreateSession</code> with a contactArn.</p>",
+      "error":{
+        "httpStatusCode":424,
+        "senderFault":true
+      },
+      "exception":true
     },
     "Description":{
       "type":"string",
@@ -4950,6 +4983,46 @@
         }
       },
       "documentation":"<p>The text of the document.</p>"
+    },
+    "EmailGenerativeAnswerAIAgentConfiguration":{
+      "type":"structure",
+      "members":{
+        "emailGenerativeAnswerAIPromptId":{
+          "shape":"UuidWithQualifier",
+          "documentation":"<p>The ID of the System AI prompt used for generating comprehensive knowledge-based answers from email queries.</p>"
+        },
+        "emailQueryReformulationAIPromptId":{
+          "shape":"UuidWithQualifier",
+          "documentation":"<p>The ID of the System AI prompt used for reformulating email queries to optimize knowledge base search results.</p>"
+        },
+        "locale":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The locale setting for language-specific email processing and response generation (for example, en_US, es_ES).</p>"
+        },
+        "associationConfigurations":{
+          "shape":"AssociationConfigurationList",
+          "documentation":"<p>Configuration settings for knowledge base associations used by the email generative answer agent.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for the EMAIL_GENERATIVE_ANSWER AI agent including prompts, locale, and knowledge base associations.</p>"
+    },
+    "EmailGenerativeAnswerChunkDataDetails":{
+      "type":"structure",
+      "members":{
+        "completion":{
+          "shape":"NonEmptySensitiveString",
+          "documentation":"<p>The partial or complete text content of the generative answer response.</p>"
+        },
+        "references":{
+          "shape":"DataSummaryList",
+          "documentation":"<p>Source references and citations from knowledge base articles used to generate the answer.</p>"
+        },
+        "nextChunkToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Token for retrieving the next chunk of streaming response data, if available.</p>"
+        }
+      },
+      "documentation":"<p>Details of streaming chunk data for email generative answers including completion text and references.</p>"
     },
     "EmailHeader":{
       "type":"structure",
@@ -5015,6 +5088,70 @@
         }
       },
       "documentation":"<p>The body to use in email messages.</p>"
+    },
+    "EmailOverviewAIAgentConfiguration":{
+      "type":"structure",
+      "members":{
+        "emailOverviewAIPromptId":{
+          "shape":"UuidWithQualifier",
+          "documentation":"<p>The ID of the System AI prompt used for generating structured email conversation summaries.</p>"
+        },
+        "locale":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The locale setting for language-specific email overview processing (for example, en_US, es_ES).</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for the EMAIL_OVERVIEW AI agent including prompt ID and locale settings.</p>"
+    },
+    "EmailOverviewChunkDataDetails":{
+      "type":"structure",
+      "members":{
+        "completion":{
+          "shape":"NonEmptySensitiveString",
+          "documentation":"<p>The partial or complete overview text content in structured HTML format with customer issues, resolutions, and next steps.</p>"
+        },
+        "nextChunkToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Token for retrieving the next chunk of streaming overview data, if available.</p>"
+        }
+      },
+      "documentation":"<p>Details of streaming chunk data for email overview including completion text and pagination tokens.</p>"
+    },
+    "EmailResponseAIAgentConfiguration":{
+      "type":"structure",
+      "members":{
+        "emailResponseAIPromptId":{
+          "shape":"UuidWithQualifier",
+          "documentation":"<p>The ID of the System AI prompt used for generating professional email responses based on knowledge base content.</p>"
+        },
+        "emailQueryReformulationAIPromptId":{
+          "shape":"UuidWithQualifier",
+          "documentation":"<p>The ID of the System AI prompt used for reformulating email queries to optimize knowledge base search for response generation.</p>"
+        },
+        "locale":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The locale setting for language-specific email response generation (for example, en_US, es_ES).</p>"
+        },
+        "associationConfigurations":{
+          "shape":"AssociationConfigurationList",
+          "documentation":"<p>Configuration settings for knowledge base associations used by the email response agent.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for the EMAIL_RESPONSE AI agent including prompts, locale, and knowledge base associations.</p>"
+    },
+    "EmailResponseChunkDataDetails":{
+      "type":"structure",
+      "members":{
+        "completion":{
+          "shape":"NonEmptySensitiveString",
+          "documentation":"<p>The partial or complete professional email response text with appropriate greetings and closings.</p>"
+        },
+        "nextChunkToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Token for retrieving the next chunk of streaming response data, if available.</p>"
+        }
+      },
+      "documentation":"<p>Details of streaming chunk data for email responses including completion text and pagination tokens.</p>"
     },
     "ExtendedMessageTemplateData":{
       "type":"structure",
@@ -8312,7 +8449,10 @@
         "GENERATIVE_ANSWER_CHUNK",
         "BLOCKED_GENERATIVE_ANSWER_CHUNK",
         "INTENT_ANSWER_CHUNK",
-        "BLOCKED_INTENT_ANSWER_CHUNK"
+        "BLOCKED_INTENT_ANSWER_CHUNK",
+        "EMAIL_RESPONSE_CHUNK",
+        "EMAIL_OVERVIEW_CHUNK",
+        "EMAIL_GENERATIVE_ANSWER_CHUNK"
       ]
     },
     "QueryResultsList":{
@@ -8939,7 +9079,10 @@
         "GENERATIVE_ANSWER_CHUNK",
         "BLOCKED_GENERATIVE_ANSWER_CHUNK",
         "INTENT_ANSWER_CHUNK",
-        "BLOCKED_INTENT_ANSWER_CHUNK"
+        "BLOCKED_INTENT_ANSWER_CHUNK",
+        "EMAIL_RESPONSE_CHUNK",
+        "EMAIL_OVERVIEW_CHUNK",
+        "EMAIL_GENERATIVE_ANSWER_CHUNK"
       ]
     },
     "ReferenceType":{
@@ -8991,8 +9134,7 @@
     },
     "RemoveAssistantAIAgentResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "RemoveKnowledgeBaseTemplateUriRequest":{
       "type":"structure",
@@ -9008,8 +9150,7 @@
     },
     "RemoveKnowledgeBaseTemplateUriResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "RenderMessageTemplateRequest":{
       "type":"structure",
@@ -9934,8 +10075,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -10067,8 +10207,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateAIAgentRequest":{
       "type":"structure",
@@ -10231,7 +10370,7 @@
         },
         "modelId":{
           "shape":"AIPromptModelIdentifier",
-          "documentation":"<p>The identifier of the model used for this AI Prompt.</p> <note> <p>For more information on supported models, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/create-ai-prompts.html#cli-create-aiprompt\">Supported models for system and custom prompts</a>.</p> </note>"
+          "documentation":"<p>The identifier of the model used for this AI Prompt.</p> <note> <p>For information about which models are supported in each Amazon Web Services Region, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/create-ai-prompts.html#cli-create-aiprompt\">Supported models for system/custom prompts</a>.</p> </note>"
         }
       }
     },

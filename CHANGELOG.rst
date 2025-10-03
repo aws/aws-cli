@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.31.8
+======
+
+* api-change:``qconnect``: Updated Amazon Q in Connect APIs to support Email Contact Recommendations.
+* api-change:``payment-cryptography-data``: Added a new API - translateKeyMaterial; allows keys wrapped by ECDH derived keys to be rewrapped under a static AES keyblock without first importing the key into the service.
+* api-change:``medialive``: AWS Elemental MediaLive enables Mediapackage V2 users to configure ID3, KLV, Nielsen ID3, and Segment Length related parameters through the Mediapackage output group.
+* api-change:``cleanrooms``: Added support for reading data sources across regions, and results delivery to allowedlisted regions.
+
+
 2.31.7
 ======
 

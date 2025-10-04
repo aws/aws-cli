@@ -1,4 +1,4 @@
-AWS-cli
+AWS-CLI
 =================
 
 .. image:: https://github.com/aws/aws-cli/actions/workflows/run-tests.yml/badge.svg

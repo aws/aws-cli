@@ -1,9 +1,20 @@
-Aws-cli
+AWS-cli
 =================
 
 .. image:: https://github.com/aws/aws-cli/actions/workflows/run-tests.yml/badge.svg
    :target: https://github.com/aws/aws-cli/actions/workflows/run-tests.yml
    :alt: Build Status
+
+.. image:: https://img.shields.io/badge/license-Apache%202.0-blue.svg
+   :target: https://opensource.org/licenses/Apache-2.0
+   :alt: License Apache 2.0
+
+.. image:: awscli/assets/Amazon_Web_Services-Logo.png
+   :alt: AWS Logo
+   :align: center
+   :height: 200px
+
+The AWS Command Line Interface (CLI) is a unified tool to manage your Amazon Web Services resources, enab
 
 ----------------
 

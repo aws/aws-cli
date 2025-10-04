@@ -14,7 +14,7 @@ AWS-CLI
    :align: center
    :height: 200px
 
-The AWS Command Line Interface (CLI) is a unified tool to manage your Amazon Web Services resources, enab
+The AWS Command Line Interface (CLI) is a unified tool to manage your Amazon Web Services resources, enabling seamless automation and scripting of cloud operations.
 
 ----------------
 

@@ -79,6 +79,11 @@ GET_DATA = {
             },
             "read-timeout": {"type": "int", "help": ""},
             "connect-timeout": {"type": "int", "help": ""},
+            "cli-error-format": {
+                "choices": ["standard", "legacy"],
+                "default": "standard",
+                "help": "The formatting style for error output."
+            }
         },
     },
 }

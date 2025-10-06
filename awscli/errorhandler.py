@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import json
 import logging
 import signal
 
@@ -51,7 +52,7 @@ def construct_entry_point_handlers_chain():
     return ChainedExceptionHandler(exception_handlers=handlers)
 
 
-def construct_cli_error_handlers_chain():
+def construct_cli_error_handlers_chain(session=None):
     handlers = [
         ParamValidationErrorsHandler(),
         UnknownArgumentErrorHandler(),
@@ -60,7 +61,7 @@ def construct_cli_error_handlers_chain():
         NoCredentialsErrorHandler(),
         PagerErrorHandler(),
         InterruptExceptionHandler(),
-        ClientErrorHandler(),
+        ClientErrorHandler(session=session),
         GeneralExceptionHandler(),
     ]
     return ChainedExceptionHandler(exception_handlers=handlers)
@@ -107,6 +108,62 @@ class SilenceParamValidationMsgErrorHandler(ParamValidationErrorsHandler):
 class ClientErrorHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = ClientError
     RC = CLIENT_ERROR_RC
+
+    def __init__(self, session=None):
+        self._session = session
+
+    def _do_handle_exception(self, exception, stdout, stderr):
+        if self._should_display_error_details():
+            self._display_error_details(exception, stdout)
+        
+        stderr.write("\n")
+        stderr.write(str(exception))
+        stderr.write("\n")
+        
+        return self.RC
+
+    def _should_display_error_details(self):
+        if not self._session:
+            return True
+        
+        output_format = self._session.get_config_variable('output')
+        if output_format == 'off':
+            return False
+            
+        error_format = self._session.get_config_variable('cli_error_format')
+        return error_format != 'legacy'
+
+    def _display_error_details(self, exception, stdout):
+        if not hasattr(exception, 'response') or not exception.response:
+            return
+        
+        error_details = exception.response.get('Error', {})
+        if not error_details:
+            return
+        
+        output_format = 'json'
+        if self._session:
+            output_format = self._session.get_config_variable('output') or 'json'
+        
+        try:
+            if output_format == 'yaml':
+                self._display_yaml_error(error_details, stdout)
+            else:
+                json.dump(error_details, stdout, indent=4, ensure_ascii=False)
+                stdout.write('\n')
+        except (OSError, UnicodeError, TypeError) as e:
+            LOG.debug("Error formatting failed: %s", e)
+
+    def _display_yaml_error(self, error_details, stdout):
+        try:
+            from ruamel.yaml import YAML
+            yaml = YAML(typ='safe')
+            yaml.encoding = None
+            yaml.representer.default_flow_style = False
+            yaml.dump(error_details, stdout)
+        except ImportError:
+            json.dump(error_details, stdout, indent=4, ensure_ascii=False)
+            stdout.write('\n')
 
 
 class ConfigurationErrorHandler(FilteredExceptionHandler):

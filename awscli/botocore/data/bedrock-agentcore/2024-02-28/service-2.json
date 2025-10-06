@@ -13,6 +13,64 @@
     "uid":"bedrock-agentcore-2024-02-28"
   },
   "operations":{
+    "BatchCreateMemoryRecords":{
+      "name":"BatchCreateMemoryRecords",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memories/{memoryId}/memoryRecords/batchCreate",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchCreateMemoryRecordsInput"},
+      "output":{"shape":"BatchCreateMemoryRecordsOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottledException"},
+        {"shape":"ServiceException"}
+      ],
+      "documentation":"<p>Creates multiple memory records in a single batch operation for the specified memory with custom content.</p>",
+      "idempotent":true
+    },
+    "BatchDeleteMemoryRecords":{
+      "name":"BatchDeleteMemoryRecords",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memories/{memoryId}/memoryRecords/batchDelete",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchDeleteMemoryRecordsInput"},
+      "output":{"shape":"BatchDeleteMemoryRecordsOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottledException"},
+        {"shape":"ServiceException"}
+      ],
+      "documentation":"<p>Deletes multiple memory records in a single batch operation from the specified memory.</p>"
+    },
+    "BatchUpdateMemoryRecords":{
+      "name":"BatchUpdateMemoryRecords",
+      "http":{
+        "method":"POST",
+        "requestUri":"/memories/{memoryId}/memoryRecords/batchUpdate",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchUpdateMemoryRecordsInput"},
+      "output":{"shape":"BatchUpdateMemoryRecordsOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottledException"},
+        {"shape":"ServiceException"}
+      ],
+      "documentation":"<p>Updates multiple memory records with custom content in a single batch operation within the specified memory.</p>"
+    },
     "CreateEvent":{
       "name":"CreateEvent",
       "http":{
@@ -73,6 +131,26 @@
         {"shape":"ServiceException"}
       ],
       "documentation":"<p>Deletes a memory record from an AgentCore Memory resource. When you delete a memory record, it is permanently removed.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:DeleteMemoryRecord</code> permission.</p>"
+    },
+    "GetAgentCard":{
+      "name":"GetAgentCard",
+      "http":{
+        "method":"GET",
+        "requestUri":"/runtimes/{agentRuntimeArn}/invocations/.well-known/agent-card.json",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAgentCardRequest"},
+      "output":{"shape":"GetAgentCardResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"RuntimeClientError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the A2A agent card associated with an AgentCore Runtime agent.</p>"
     },
     "GetBrowserSession":{
       "name":"GetBrowserSession",
@@ -167,7 +245,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves an API Key associated with an API Key Credential Provider</p>"
+      "documentation":"<p>Retrieves the API key associated with an API key credential provider.</p>"
     },
     "GetResourceOauth2Token":{
       "name":"GetResourceOauth2Token",
@@ -186,7 +264,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns the OAuth 2.0 token of the provided resource</p>"
+      "documentation":"<p>Returns the OAuth 2.0 token of the provided resource.</p>"
     },
     "GetWorkloadAccessToken":{
       "name":"GetWorkloadAccessToken",
@@ -205,7 +283,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Obtains an Workload access token for agentic workloads not acting on behalf of user.</p>"
+      "documentation":"<p>Obtains a workload access token for agentic workloads not acting on behalf of a user.</p>"
     },
     "GetWorkloadAccessTokenForJWT":{
       "name":"GetWorkloadAccessTokenForJWT",
@@ -224,7 +302,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Obtains an Workload access token for agentic workloads acting on behalf of user with JWT token</p>"
+      "documentation":"<p>Obtains a workload access token for agentic workloads acting on behalf of a user, using a JWT token.</p>"
     },
     "GetWorkloadAccessTokenForUserId":{
       "name":"GetWorkloadAccessTokenForUserId",
@@ -243,7 +321,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Obtains an Workload access token for agentic workloads acting on behalf of user with User Id.</p>"
+      "documentation":"<p>Obtains a workload access token for agentic workloads acting on behalf of a user, using the user's ID.</p>"
     },
     "InvokeAgentRuntime":{
       "name":"InvokeAgentRuntime",
@@ -505,6 +583,29 @@
       "documentation":"<p>Terminates an active code interpreter session in Amazon Bedrock. This operation stops the session, releases associated resources, and makes the session unavailable for further use.</p> <p>To stop a code interpreter session, you must specify both the code interpreter identifier and the session ID. Once stopped, a session cannot be restarted; you must create a new session using <code>StartCodeInterpreterSession</code>.</p> <p>The following operations are related to <code>StopCodeInterpreterSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/API_StartCodeInterpreterSession.html\">StartCodeInterpreterSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/API_GetCodeInterpreterSession.html\">GetCodeInterpreterSession</a> </p> </li> </ul>",
       "idempotent":true
     },
+    "StopRuntimeSession":{
+      "name":"StopRuntimeSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/runtimes/{agentRuntimeArn}/stopruntimesession",
+        "responseCode":200
+      },
+      "input":{"shape":"StopRuntimeSessionRequest"},
+      "output":{"shape":"StopRuntimeSessionResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"RuntimeClientError"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Stops a session that is running in an running AgentCore Runtime agent.</p>",
+      "idempotent":true
+    },
     "UpdateBrowserStream":{
       "name":"UpdateBrowserStream",
       "http":{
@@ -550,7 +651,7 @@
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"[a-zA-Z0-9][a-zA-Z0-9-_/]*"
+      "pattern":"[a-zA-Z0-9][a-zA-Z0-9-_/]*(?::[a-zA-Z0-9-_/]+)*[a-zA-Z0-9-_/]*"
     },
     "ActorSummary":{
       "type":"structure",
@@ -566,6 +667,11 @@
     "ActorSummaryList":{
       "type":"list",
       "member":{"shape":"ActorSummary"}
+    },
+    "AgentCard":{
+      "type":"structure",
+      "members":{},
+      "document":true
     },
     "ApiKeyType":{
       "type":"string",
@@ -607,6 +713,119 @@
         }
       },
       "documentation":"<p>Contains information about an update to an automation stream.</p>"
+    },
+    "BatchCreateMemoryRecordsInput":{
+      "type":"structure",
+      "required":[
+        "memoryId",
+        "records"
+      ],
+      "members":{
+        "memoryId":{
+          "shape":"MemoryId",
+          "documentation":"<p>The unique ID of the memory resource where records will be created.</p>",
+          "location":"uri",
+          "locationName":"memoryId"
+        },
+        "records":{
+          "shape":"MemoryRecordsCreateInputList",
+          "documentation":"<p>A list of memory record creation inputs to be processed in the batch operation.</p>"
+        },
+        "clientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotent processing of the batch request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "BatchCreateMemoryRecordsOutput":{
+      "type":"structure",
+      "required":[
+        "successfulRecords",
+        "failedRecords"
+      ],
+      "members":{
+        "successfulRecords":{
+          "shape":"MemoryRecordsOutputList",
+          "documentation":"<p>A list of memory records that were successfully created during the batch operation.</p>"
+        },
+        "failedRecords":{
+          "shape":"MemoryRecordsOutputList",
+          "documentation":"<p>A list of memory records that failed to be created, including error details for each failure.</p>"
+        }
+      }
+    },
+    "BatchDeleteMemoryRecordsInput":{
+      "type":"structure",
+      "required":[
+        "memoryId",
+        "records"
+      ],
+      "members":{
+        "memoryId":{
+          "shape":"MemoryId",
+          "documentation":"<p>The unique ID of the memory resource where records will be deleted.</p>",
+          "location":"uri",
+          "locationName":"memoryId"
+        },
+        "records":{
+          "shape":"MemoryRecordsDeleteInputList",
+          "documentation":"<p>A list of memory record deletion inputs to be processed in the batch operation.</p>"
+        }
+      }
+    },
+    "BatchDeleteMemoryRecordsOutput":{
+      "type":"structure",
+      "required":[
+        "successfulRecords",
+        "failedRecords"
+      ],
+      "members":{
+        "successfulRecords":{
+          "shape":"MemoryRecordsOutputList",
+          "documentation":"<p>A list of memory records that were successfully deleted during the batch operation.</p>"
+        },
+        "failedRecords":{
+          "shape":"MemoryRecordsOutputList",
+          "documentation":"<p>A list of memory records that failed to be deleted, including error details for each failure.</p>"
+        }
+      }
+    },
+    "BatchUpdateMemoryRecordsInput":{
+      "type":"structure",
+      "required":[
+        "memoryId",
+        "records"
+      ],
+      "members":{
+        "memoryId":{
+          "shape":"MemoryId",
+          "documentation":"<p>The unique ID of the memory resource where records will be updated.</p>",
+          "location":"uri",
+          "locationName":"memoryId"
+        },
+        "records":{
+          "shape":"MemoryRecordsUpdateInputList",
+          "documentation":"<p>A list of memory record update inputs to be processed in the batch operation.</p>"
+        }
+      }
+    },
+    "BatchUpdateMemoryRecordsOutput":{
+      "type":"structure",
+      "required":[
+        "successfulRecords",
+        "failedRecords"
+      ],
+      "members":{
+        "successfulRecords":{
+          "shape":"MemoryRecordsOutputList",
+          "documentation":"<p>A list of memory records that were successfully updated during the batch operation.</p>"
+        },
+        "failedRecords":{
+          "shape":"MemoryRecordsOutputList",
+          "documentation":"<p>A list of memory records that failed to be updated, including error details for each failure.</p>"
+        }
+      }
     },
     "Blob":{"type":"blob"},
     "Body":{
@@ -972,6 +1191,10 @@
           "shape":"String",
           "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, AgentCore ignores the request, but does not return an error.</p>",
           "idempotencyToken":true
+        },
+        "metadata":{
+          "shape":"MetadataMap",
+          "documentation":"<p>The key-value metadata to attach to the event.</p>"
         }
       }
     },
@@ -1071,7 +1294,7 @@
           "locationName":"memoryId"
         },
         "memoryRecordId":{
-          "shape":"String",
+          "shape":"MemoryRecordId",
           "documentation":"<p>The identifier of the memory record to delete.</p>",
           "location":"uri",
           "locationName":"memoryRecordId"
@@ -1083,7 +1306,7 @@
       "required":["memoryRecordId"],
       "members":{
         "memoryRecordId":{
-          "shape":"String",
+          "shape":"MemoryRecordId",
           "documentation":"<p>The identifier of the memory record that was deleted.</p>"
         }
       }
@@ -1135,6 +1358,10 @@
         "branch":{
           "shape":"Branch",
           "documentation":"<p>The branch information for the event.</p>"
+        },
+        "metadata":{
+          "shape":"MetadataMap",
+          "documentation":"<p>Metadata associated with an event.</p>"
         }
       },
       "documentation":"<p>Contains information about an event in an AgentCore Memory resource.</p>"
@@ -1147,15 +1374,94 @@
       "type":"list",
       "member":{"shape":"Event"}
     },
+    "EventMetadataFilterExpression":{
+      "type":"structure",
+      "required":[
+        "left",
+        "operator"
+      ],
+      "members":{
+        "left":{
+          "shape":"LeftExpression",
+          "documentation":"<p>Left operand of the event metadata filter expression.</p>"
+        },
+        "operator":{
+          "shape":"OperatorType",
+          "documentation":"<p>Operator applied to the event metadata filter expression.</p>"
+        },
+        "right":{
+          "shape":"RightExpression",
+          "documentation":"<p>Right operand of the event metadata filter expression.</p>"
+        }
+      },
+      "documentation":"<p>Filter expression for retrieving events based on metadata associated with an event.</p>"
+    },
+    "EventMetadataFilterList":{
+      "type":"list",
+      "member":{"shape":"EventMetadataFilterExpression"},
+      "max":5,
+      "min":1
+    },
     "FilterInput":{
       "type":"structure",
       "members":{
         "branch":{
           "shape":"BranchFilter",
           "documentation":"<p>The branch filter criteria to apply when listing events.</p>"
+        },
+        "eventMetadata":{
+          "shape":"EventMetadataFilterList",
+          "documentation":"<p>Event metadata filter criteria to apply when retrieving events.</p>"
         }
       },
       "documentation":"<p>Contains filter criteria for listing events.</p>"
+    },
+    "GetAgentCardRequest":{
+      "type":"structure",
+      "required":["agentRuntimeArn"],
+      "members":{
+        "runtimeSessionId":{
+          "shape":"SessionType",
+          "documentation":"<p>The session ID that the AgentCore Runtime agent is using. </p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-AgentCore-Runtime-Session-Id"
+        },
+        "agentRuntimeArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the AgentCore Runtime agent for which you want to get the A2A agent card.</p>",
+          "location":"uri",
+          "locationName":"agentRuntimeArn"
+        },
+        "qualifier":{
+          "shape":"String",
+          "documentation":"<p>Optional qualifier to specify an agent alias, such as <code>prod</code>code&gt; or <code>dev</code>. If you don't provide a value, the DEFAULT alias is used. </p>",
+          "location":"querystring",
+          "locationName":"qualifier"
+        }
+      }
+    },
+    "GetAgentCardResponse":{
+      "type":"structure",
+      "required":["agentCard"],
+      "members":{
+        "runtimeSessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The ID of the session associated with the AgentCore Runtime agent.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-AgentCore-Runtime-Session-Id"
+        },
+        "agentCard":{
+          "shape":"AgentCard",
+          "documentation":"<p>An agent card document that contains metadata and capabilities for an AgentCore Runtime agent.</p>"
+        },
+        "statusCode":{
+          "shape":"HttpResponseCode",
+          "documentation":"<p>The status code of the request.</p>",
+          "location":"statusCode"
+        }
+      },
+      "payload":"agentCard"
     },
     "GetBrowserSessionRequest":{
       "type":"structure",
@@ -1339,7 +1645,7 @@
           "locationName":"memoryId"
         },
         "memoryRecordId":{
-          "shape":"String",
+          "shape":"MemoryRecordId",
           "documentation":"<p>The identifier of the memory record to retrieve.</p>",
           "location":"uri",
           "locationName":"memoryRecordId"
@@ -1365,11 +1671,11 @@
       "members":{
         "workloadIdentityToken":{
           "shape":"WorkloadIdentityTokenType",
-          "documentation":"<p>The identity token of the workload you want to get the API Key of.</p>"
+          "documentation":"<p>The identity token of the workload from which you want to retrieve the API key.</p>"
         },
         "resourceCredentialProviderName":{
           "shape":"CredentialProviderName",
-          "documentation":"<p>The credential provider name of the resource you are retrieving the API Key of.</p>"
+          "documentation":"<p>The credential provider name for the resource from which you are retrieving the API key.</p>"
         }
       }
     },
@@ -1379,7 +1685,7 @@
       "members":{
         "apiKey":{
           "shape":"ApiKeyType",
-          "documentation":"<p>The API Key associated with the resource requested.</p>"
+          "documentation":"<p>The API key associated with the resource requested.</p>"
         }
       }
     },
@@ -1394,31 +1700,31 @@
       "members":{
         "workloadIdentityToken":{
           "shape":"WorkloadIdentityTokenType",
-          "documentation":"<p>The identity token of the workload you want to retrive the Oauth2 Token of.</p>"
+          "documentation":"<p>The identity token of the workload from which you want to retrieve the OAuth2 token.</p>"
         },
         "resourceCredentialProviderName":{
           "shape":"CredentialProviderName",
-          "documentation":"<p>Reference to the credential provider</p>"
+          "documentation":"<p>The name of the resource's credential provider.</p>"
         },
         "scopes":{
           "shape":"ScopesListType",
-          "documentation":"<p>The OAuth scopes requested</p>"
+          "documentation":"<p>The OAuth scopes being requested.</p>"
         },
         "oauth2Flow":{
           "shape":"Oauth2FlowType",
-          "documentation":"<p>The type of flow to be performed</p>"
+          "documentation":"<p>The type of flow to be performed.</p>"
         },
         "resourceOauth2ReturnUrl":{
           "shape":"ResourceOauth2ReturnUrlType",
-          "documentation":"<p>Callback url to redirect after token retrieval completes. Should be one of the provideded urls during WorkloadIdentity creation</p>"
+          "documentation":"<p>The callback URL to redirect to after the OAuth 2.0 token retrieval is complete. This URL must be one of the provided URLs configured for the workload identity.</p>"
         },
         "forceAuthentication":{
           "shape":"Boolean",
-          "documentation":"<p>If true, always initiate a new 3LO flow</p>"
+          "documentation":"<p>Indicates whether to always initiate a new three-legged OAuth (3LO) flow, regardless of any existing session.</p>"
         },
         "customParameters":{
           "shape":"CustomRequestParametersType",
-          "documentation":"<p>Gives the ability to send extra/custom parameters to the resource credentials provider during the authorization process. Standard OAuth2 flow parameters will not be overriden.</p>"
+          "documentation":"<p>A map of custom parameters to include in the authorization request to the resource credential provider. These parameters are in addition to the standard OAuth 2.0 flow parameters, and will not override them.</p>"
         }
       }
     },
@@ -1427,11 +1733,11 @@
       "members":{
         "authorizationUrl":{
           "shape":"String",
-          "documentation":"<p>The URL for the authorization process, provided if the Access token requires user Authorization.</p>"
+          "documentation":"<p>The URL to initiate the authorization process, provided when the access token requires user authorization.</p>"
         },
         "accessToken":{
           "shape":"AccessTokenType",
-          "documentation":"<p>OAuth2 token ready for use</p>"
+          "documentation":"<p>The OAuth 2.0 access token to use.</p>"
         }
       }
     },
@@ -1444,11 +1750,11 @@
       "members":{
         "workloadName":{
           "shape":"WorkloadIdentityNameType",
-          "documentation":"<p>Unique identifier for the registered agent</p>"
+          "documentation":"<p>The unique identifier for the registered workload.</p>"
         },
         "userToken":{
           "shape":"UserTokenType",
-          "documentation":"<p>OAuth2 token issued by the user's identity provider</p>"
+          "documentation":"<p>The OAuth 2.0 token issued by the user's identity provider.</p>"
         }
       }
     },
@@ -1458,7 +1764,7 @@
       "members":{
         "workloadAccessToken":{
           "shape":"WorkloadIdentityTokenType",
-          "documentation":"<p>Opaque token representing both agent and user identity</p>"
+          "documentation":"<p>An opaque token representing the identity of both the workload and the user.</p>"
         }
       }
     },
@@ -1471,11 +1777,11 @@
       "members":{
         "workloadName":{
           "shape":"WorkloadIdentityNameType",
-          "documentation":"<p>The name of the worklaod you want to get the access token of.</p>"
+          "documentation":"<p>The name of the workload from which you want to retrieve the access token.</p>"
         },
         "userId":{
           "shape":"UserIdType",
-          "documentation":"<p>The user id of the user you are retrieving the access token for.</p>"
+          "documentation":"<p>The ID of the user for whom you are retrieving the access token.</p>"
         }
       }
     },
@@ -1485,7 +1791,7 @@
       "members":{
         "workloadAccessToken":{
           "shape":"WorkloadIdentityTokenType",
-          "documentation":"<p>The workload access token of the named workload.</p>"
+          "documentation":"<p>The access token for the specified workload.</p>"
         }
       }
     },
@@ -1495,7 +1801,7 @@
       "members":{
         "workloadName":{
           "shape":"WorkloadIdentityNameType",
-          "documentation":"<p>Unique identifier for the registered agent</p>"
+          "documentation":"<p>The unique identifier for the registered workload.</p>"
         }
       }
     },
@@ -1505,7 +1811,7 @@
       "members":{
         "workloadAccessToken":{
           "shape":"WorkloadIdentityTokenType",
-          "documentation":"<p>Opaque token representing both agent and user identity</p>"
+          "documentation":"<p>An opaque token representing the identity of both the workload and the user.</p>"
         }
       }
     },
@@ -1779,6 +2085,17 @@
         }
       },
       "payload":"stream"
+    },
+    "LeftExpression":{
+      "type":"structure",
+      "members":{
+        "metadataKey":{
+          "shape":"MetadataKey",
+          "documentation":"<p>Key associated with the metadata in an event.</p>"
+        }
+      },
+      "documentation":"<p>Left expression of the event metadata filter.</p>",
+      "union":true
     },
     "ListActorsInput":{
       "type":"structure",
@@ -2065,12 +2382,18 @@
       "type":"structure",
       "members":{
         "text":{
-          "shape":"SensitiveString",
+          "shape":"MemoryContentTextString",
           "documentation":"<p>The text content of the memory record.</p>"
         }
       },
       "documentation":"<p>Contains the content of a memory record.</p>",
       "union":true
+    },
+    "MemoryContentTextString":{
+      "type":"string",
+      "max":16000,
+      "min":1,
+      "sensitive":true
     },
     "MemoryId":{
       "type":"string",
@@ -2110,11 +2433,91 @@
       },
       "documentation":"<p>Contains information about a memory record in an AgentCore Memory resource.</p>"
     },
+    "MemoryRecordCreateInput":{
+      "type":"structure",
+      "required":[
+        "requestIdentifier",
+        "namespaces",
+        "content",
+        "timestamp"
+      ],
+      "members":{
+        "requestIdentifier":{
+          "shape":"RequestIdentifier",
+          "documentation":"<p>A client-provided identifier for tracking this specific record creation request.</p>"
+        },
+        "namespaces":{
+          "shape":"NamespacesList",
+          "documentation":"<p>A list of namespace identifiers that categorize or group the memory record.</p>"
+        },
+        "content":{
+          "shape":"MemoryContent",
+          "documentation":"<p>The content to be stored within the memory record.</p>"
+        },
+        "timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time at which the memory record was created.</p>"
+        },
+        "memoryStrategyId":{
+          "shape":"MemoryStrategyId",
+          "documentation":"<p>The ID of the memory strategy that defines how this memory record is grouped.</p>"
+        }
+      },
+      "documentation":"<p>Input structure to create a new memory record.</p>"
+    },
+    "MemoryRecordDeleteInput":{
+      "type":"structure",
+      "required":["memoryRecordId"],
+      "members":{
+        "memoryRecordId":{
+          "shape":"MemoryRecordId",
+          "documentation":"<p>The unique ID of the memory record to be deleted.</p>"
+        }
+      },
+      "documentation":"<p>Input structure to delete an existing memory record.</p>"
+    },
     "MemoryRecordId":{
       "type":"string",
-      "max":40,
+      "max":50,
       "min":40,
-      "pattern":"mem-[a-zA-Z0-9-]*"
+      "pattern":"mem-[a-zA-Z0-9-_]*"
+    },
+    "MemoryRecordOutput":{
+      "type":"structure",
+      "required":[
+        "memoryRecordId",
+        "status"
+      ],
+      "members":{
+        "memoryRecordId":{
+          "shape":"MemoryRecordId",
+          "documentation":"<p>The unique ID associated to the memory record.</p>"
+        },
+        "status":{
+          "shape":"MemoryRecordStatus",
+          "documentation":"<p>The status of the memory record operation (e.g., SUCCEEDED, FAILED).</p>"
+        },
+        "requestIdentifier":{
+          "shape":"RequestIdentifier",
+          "documentation":"<p>The client-provided identifier that was used to track this record operation.</p>"
+        },
+        "errorCode":{
+          "shape":"Integer",
+          "documentation":"<p>The error code returned when the memory record operation fails.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>A human-readable error message describing why the memory record operation failed.</p>"
+        }
+      },
+      "documentation":"<p>Output information returned after processing a memory record operation.</p>"
+    },
+    "MemoryRecordStatus":{
+      "type":"string",
+      "enum":[
+        "SUCCEEDED",
+        "FAILED"
+      ]
     },
     "MemoryRecordSummary":{
       "type":"structure",
@@ -2157,11 +2560,93 @@
       "type":"list",
       "member":{"shape":"MemoryRecordSummary"}
     },
+    "MemoryRecordUpdateInput":{
+      "type":"structure",
+      "required":[
+        "memoryRecordId",
+        "timestamp"
+      ],
+      "members":{
+        "memoryRecordId":{
+          "shape":"MemoryRecordId",
+          "documentation":"<p>The unique ID of the memory record to be updated.</p>"
+        },
+        "timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time at which the memory record was updated</p>"
+        },
+        "content":{
+          "shape":"MemoryContent",
+          "documentation":"<p>The content to be stored within the memory record.</p>"
+        },
+        "namespaces":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The updated list of namespace identifiers for categorizing the memory record.</p>"
+        },
+        "memoryStrategyId":{
+          "shape":"MemoryStrategyId",
+          "documentation":"<p>The updated ID of the memory strategy that defines how this memory record is grouped.</p>"
+        }
+      },
+      "documentation":"<p>Input structure to update an existing memory record.</p>"
+    },
+    "MemoryRecordsCreateInputList":{
+      "type":"list",
+      "member":{"shape":"MemoryRecordCreateInput"},
+      "max":100,
+      "min":0
+    },
+    "MemoryRecordsDeleteInputList":{
+      "type":"list",
+      "member":{"shape":"MemoryRecordDeleteInput"},
+      "max":100,
+      "min":0
+    },
+    "MemoryRecordsOutputList":{
+      "type":"list",
+      "member":{"shape":"MemoryRecordOutput"}
+    },
+    "MemoryRecordsUpdateInputList":{
+      "type":"list",
+      "member":{"shape":"MemoryRecordUpdateInput"},
+      "max":100,
+      "min":0
+    },
     "MemoryStrategyId":{
       "type":"string",
       "max":100,
       "min":1,
       "pattern":"[a-zA-Z0-9][a-zA-Z0-9-_]*"
+    },
+    "MetadataKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\s._:/=+@-]*"
+    },
+    "MetadataMap":{
+      "type":"map",
+      "key":{"shape":"MetadataKey"},
+      "value":{"shape":"MetadataValue"},
+      "max":15,
+      "min":0
+    },
+    "MetadataValue":{
+      "type":"structure",
+      "members":{
+        "stringValue":{
+          "shape":"MetadataValueStringValueString",
+          "documentation":"<p>Value associated with the <code>eventMetadata</code> key.</p>"
+        }
+      },
+      "documentation":"<p>Value associated with the <code>eventMetadata</code> key.</p>",
+      "union":true
+    },
+    "MetadataValueStringValueString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9\\s._:/=+@-]*"
     },
     "MimeType":{
       "type":"string",
@@ -2177,12 +2662,13 @@
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"[a-zA-Z0-9/*][a-zA-Z0-9-_/*]*"
+      "pattern":"[a-zA-Z0-9/*][a-zA-Z0-9-_/*]*(?::[a-zA-Z0-9-_/*]+)*[a-zA-Z0-9-_/*]*"
     },
     "NamespacesList":{
       "type":"list",
       "member":{"shape":"Namespace"},
-      "min":1
+      "max":1,
+      "min":0
     },
     "NextToken":{
       "type":"string",
@@ -2199,6 +2685,14 @@
       "enum":[
         "USER_FEDERATION",
         "M2M"
+      ]
+    },
+    "OperatorType":{
+      "type":"string",
+      "enum":[
+        "EQUALS_TO",
+        "EXISTS",
+        "NOT_EXISTS"
       ]
     },
     "PaginationToken":{"type":"string"},
@@ -2230,6 +2724,12 @@
         "javascript",
         "typescript"
       ]
+    },
+    "RequestIdentifier":{
+      "type":"string",
+      "max":80,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
     },
     "ResourceContent":{
       "type":"structure",
@@ -2334,6 +2834,17 @@
         }
       }
     },
+    "RightExpression":{
+      "type":"structure",
+      "members":{
+        "metadataValue":{
+          "shape":"MetadataValue",
+          "documentation":"<p>Value associated with the key in <code>eventMetadata</code>.</p>"
+        }
+      },
+      "documentation":"<p>Right expression of the <code>eventMetadata</code>filter.</p>",
+      "union":true
+    },
     "Role":{
       "type":"string",
       "enum":[
@@ -2394,10 +2905,6 @@
       "box":true,
       "max":100,
       "min":1
-    },
-    "SensitiveString":{
-      "type":"string",
-      "sensitive":true
     },
     "ServiceException":{
       "type":"structure",
@@ -2531,7 +3038,7 @@
         },
         "sessionTimeoutSeconds":{
           "shape":"CodeInterpreterSessionTimeout",
-          "documentation":"<p>The time in seconds after which the session automatically terminates if there is no activity. The default value is 3600 seconds (1 hour). The minimum allowed value is 60 seconds, and the maximum allowed value is 28800 seconds (8 hours).</p>"
+          "documentation":"<p>The time in seconds after which the session automatically terminates if there is no activity. The default value is 900 seconds (15 minutes). The minimum allowed value is 60 seconds, and the maximum allowed value is 28800 seconds (8 hours).</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -2655,6 +3162,54 @@
         "lastUpdatedAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The timestamp when the code interpreter session was last updated.</p>"
+        }
+      }
+    },
+    "StopRuntimeSessionRequest":{
+      "type":"structure",
+      "required":[
+        "runtimeSessionId",
+        "agentRuntimeArn"
+      ],
+      "members":{
+        "runtimeSessionId":{
+          "shape":"SessionType",
+          "documentation":"<p>The ID of the session that you want to stop.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-AgentCore-Runtime-Session-Id"
+        },
+        "agentRuntimeArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the agent that contains the session that you want to stop.</p>",
+          "location":"uri",
+          "locationName":"agentRuntimeArn"
+        },
+        "qualifier":{
+          "shape":"String",
+          "documentation":"<p>Optional qualifier to specify an agent alias, such as <code>prod</code>code&gt; or <code>dev</code>. If you don't provide a value, the DEFAULT alias is used. </p>",
+          "location":"querystring",
+          "locationName":"qualifier"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Idempotent token used to identify the request. If you use the same token with multiple requests, the same response is returned. Use ClientToken to prevent the same request from being processed more than once.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StopRuntimeSessionResponse":{
+      "type":"structure",
+      "members":{
+        "runtimeSessionId":{
+          "shape":"SessionId",
+          "documentation":"<p>The ID of the session that you requested to stop.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-AgentCore-Runtime-Session-Id"
+        },
+        "statusCode":{
+          "shape":"HttpResponseCode",
+          "documentation":"<p>The status code of the request to stop the session.</p>",
+          "location":"statusCode"
         }
       }
     },

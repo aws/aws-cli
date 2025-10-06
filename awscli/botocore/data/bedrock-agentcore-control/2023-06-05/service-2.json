@@ -1727,10 +1727,6 @@
           "shape":"AgentRuntimeName",
           "documentation":"<p>The name of the AgentCore Runtime.</p>"
         },
-        "description":{
-          "shape":"Description",
-          "documentation":"<p>The description of the AgentCore Runtime.</p>"
-        },
         "agentRuntimeArtifact":{
           "shape":"AgentRuntimeArtifact",
           "documentation":"<p>The artifact of the AgentCore Runtime.</p>"
@@ -1743,15 +1739,14 @@
           "shape":"NetworkConfiguration",
           "documentation":"<p>The network configuration for the AgentCore Runtime.</p>"
         },
-        "protocolConfiguration":{"shape":"ProtocolConfiguration"},
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
           "idempotencyToken":true
         },
-        "environmentVariables":{
-          "shape":"EnvironmentVariablesMap",
-          "documentation":"<p>Environment variables to set in the AgentCore Runtime environment.</p>"
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the AgentCore Runtime.</p>"
         },
         "authorizerConfiguration":{
           "shape":"AuthorizerConfiguration",
@@ -1760,6 +1755,15 @@
         "requestHeaderConfiguration":{
           "shape":"RequestHeaderConfiguration",
           "documentation":"<p>Configuration for HTTP request headers that will be passed through to the runtime.</p>"
+        },
+        "protocolConfiguration":{"shape":"ProtocolConfiguration"},
+        "lifecycleConfiguration":{
+          "shape":"LifecycleConfiguration",
+          "documentation":"<p>The life cycle configuration for the AgentCore Runtime.</p>"
+        },
+        "environmentVariables":{
+          "shape":"EnvironmentVariablesMap",
+          "documentation":"<p>Environment variables to set in the AgentCore Runtime environment.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -2236,6 +2240,10 @@
         "memoryStrategies":{
           "shape":"MemoryStrategyInputList",
           "documentation":"<p>The memory strategies to use for this memory. Strategies define how information is extracted, processed, and consolidated.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of tag keys and values to assign to an AgentCore Memory. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment.</p>"
         }
       }
     },
@@ -3190,24 +3198,17 @@
         "lastUpdatedAt",
         "roleArn",
         "networkConfiguration",
-        "status"
+        "status",
+        "lifecycleConfiguration"
       ],
       "members":{
         "agentRuntimeArn":{
           "shape":"AgentRuntimeArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the AgentCore Runtime.</p>"
         },
-        "workloadIdentityDetails":{
-          "shape":"WorkloadIdentityDetails",
-          "documentation":"<p>The workload identity details for the AgentCore Runtime.</p>"
-        },
         "agentRuntimeName":{
           "shape":"AgentRuntimeName",
           "documentation":"<p>The name of the AgentCore Runtime.</p>"
-        },
-        "description":{
-          "shape":"Description",
-          "documentation":"<p>The description of the AgentCore Runtime.</p>"
         },
         "agentRuntimeId":{
           "shape":"AgentRuntimeId",
@@ -3229,13 +3230,29 @@
           "shape":"RoleArn",
           "documentation":"<p>The IAM role ARN that provides permissions for the AgentCore Runtime.</p>"
         },
-        "agentRuntimeArtifact":{
-          "shape":"AgentRuntimeArtifact",
-          "documentation":"<p>The artifact of the AgentCore Runtime.</p>"
-        },
         "networkConfiguration":{
           "shape":"NetworkConfiguration",
           "documentation":"<p>The network configuration for the AgentCore Runtime.</p>"
+        },
+        "status":{
+          "shape":"AgentRuntimeStatus",
+          "documentation":"<p>The current status of the AgentCore Runtime.</p>"
+        },
+        "lifecycleConfiguration":{
+          "shape":"LifecycleConfiguration",
+          "documentation":"<p>The life cycle configuration for the AgentCore Runtime.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the AgentCore Runtime.</p>"
+        },
+        "workloadIdentityDetails":{
+          "shape":"WorkloadIdentityDetails",
+          "documentation":"<p>The workload identity details for the AgentCore Runtime.</p>"
+        },
+        "agentRuntimeArtifact":{
+          "shape":"AgentRuntimeArtifact",
+          "documentation":"<p>The artifact of the AgentCore Runtime.</p>"
         },
         "protocolConfiguration":{"shape":"ProtocolConfiguration"},
         "environmentVariables":{
@@ -3249,10 +3266,6 @@
         "requestHeaderConfiguration":{
           "shape":"RequestHeaderConfiguration",
           "documentation":"<p>Configuration for HTTP request headers that will be passed through to the runtime.</p>"
-        },
-        "status":{
-          "shape":"AgentRuntimeStatus",
-          "documentation":"<p>The current status of the AgentCore Runtime.</p>"
         }
       }
     },
@@ -3848,6 +3861,32 @@
       "max":170,
       "min":1,
       "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:([a-z]{2}(-gov)?-[a-z]+-\\d{1}):(\\d{12}):function:([a-zA-Z0-9-_.]+)(:(\\$LATEST|[a-zA-Z0-9-]+))?"
+    },
+    "LifecycleConfiguration":{
+      "type":"structure",
+      "members":{
+        "idleRuntimeSessionTimeout":{
+          "shape":"LifecycleConfigurationIdleRuntimeSessionTimeoutInteger",
+          "documentation":"<p>Timeout in seconds for idle runtime sessions. When a session remains idle for this duration, it will be automatically terminated. Default: 900 seconds (15 minutes).</p>"
+        },
+        "maxLifetime":{
+          "shape":"LifecycleConfigurationMaxLifetimeInteger",
+          "documentation":"<p>Maximum lifetime for the instance in seconds. Once reached, instances will be automatically terminated and replaced. Default: 28800 seconds (8 hours).</p>"
+        }
+      },
+      "documentation":"<p>LifecycleConfiguration lets you manage the lifecycle of runtime sessions and resources in AgentCore Runtime. This configuration helps optimize resource utilization by automatically cleaning up idle sessions and preventing long-running instances from consuming resources indefinitely.</p>"
+    },
+    "LifecycleConfigurationIdleRuntimeSessionTimeoutInteger":{
+      "type":"integer",
+      "box":true,
+      "max":28800,
+      "min":60
+    },
+    "LifecycleConfigurationMaxLifetimeInteger":{
+      "type":"integer",
+      "box":true,
+      "max":28800,
+      "min":60
     },
     "ListAgentRuntimeEndpointsRequest":{
       "type":"structure",
@@ -5269,7 +5308,8 @@
       "type":"string",
       "enum":[
         "MCP",
-        "HTTP"
+        "HTTP",
+        "A2A"
       ]
     },
     "ServiceException":{
@@ -5814,10 +5854,6 @@
           "location":"uri",
           "locationName":"agentRuntimeId"
         },
-        "description":{
-          "shape":"Description",
-          "documentation":"<p>The updated description of the AgentCore Runtime.</p>"
-        },
         "agentRuntimeArtifact":{
           "shape":"AgentRuntimeArtifact",
           "documentation":"<p>The updated artifact of the AgentCore Runtime.</p>"
@@ -5830,15 +5866,9 @@
           "shape":"NetworkConfiguration",
           "documentation":"<p>The updated network configuration for the AgentCore Runtime.</p>"
         },
-        "protocolConfiguration":{"shape":"ProtocolConfiguration"},
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
-          "idempotencyToken":true
-        },
-        "environmentVariables":{
-          "shape":"EnvironmentVariablesMap",
-          "documentation":"<p>Updated environment variables to set in the AgentCore Runtime environment.</p>"
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The updated description of the AgentCore Runtime.</p>"
         },
         "authorizerConfiguration":{
           "shape":"AuthorizerConfiguration",
@@ -5847,6 +5877,20 @@
         "requestHeaderConfiguration":{
           "shape":"RequestHeaderConfiguration",
           "documentation":"<p>The updated configuration for HTTP request headers that will be passed through to the runtime.</p>"
+        },
+        "protocolConfiguration":{"shape":"ProtocolConfiguration"},
+        "lifecycleConfiguration":{
+          "shape":"LifecycleConfiguration",
+          "documentation":"<p>The updated life cycle configuration for the AgentCore Runtime.</p>"
+        },
+        "environmentVariables":{
+          "shape":"EnvironmentVariablesMap",
+          "documentation":"<p>Updated environment variables to set in the AgentCore Runtime environment.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
         }
       }
     },

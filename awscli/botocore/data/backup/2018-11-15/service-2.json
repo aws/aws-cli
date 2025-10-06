@@ -1410,7 +1410,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Starts a job to create a one-time copy of the specified resource.</p> <p>Does not support continuous backups.</p>",
+      "documentation":"<p>Starts a job to create a one-time copy of the specified resource.</p> <p>Does not support continuous backups.</p> <p>See <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/recov-point-create-a-copy.html#backup-copy-retry\">Copy job retry</a> for information on how Backup retries copy job operations.</p>",
       "idempotent":true
     },
     "StartReportJob":{
@@ -3681,7 +3681,7 @@
       "members":{
         "GlobalSettings":{
           "shape":"GlobalSettings",
-          "documentation":"<p>The status of the flag <code>isCrossAccountBackupEnabled</code>.</p>"
+          "documentation":"<p>The status of the flags <code>isCrossAccountBackupEnabled</code> and <code>isMpaEnabled</code> ('Mpa' refers to multi-party approval).</p>"
         },
         "LastUpdateTime":{
           "shape":"timestamp",
@@ -4241,6 +4241,12 @@
           "documentation":"<p>Unique, randomly generated, Unicode, UTF-8 encoded strings that are at most 1,024 bytes long. Version IDs cannot be edited.</p>",
           "location":"querystring",
           "locationName":"versionId"
+        },
+        "MaxScheduledRunsPreview":{
+          "shape":"MaxScheduledRunsPreview",
+          "documentation":"<p>Number of future scheduled backup runs to preview. When set to 0 (default), no scheduled runs preview is included in the response. Valid range is 0-10.</p>",
+          "location":"querystring",
+          "locationName":"MaxScheduledRunsPreview"
         }
       }
     },
@@ -4282,6 +4288,10 @@
         "AdvancedBackupSettings":{
           "shape":"AdvancedBackupSettings",
           "documentation":"<p>Contains a list of <code>BackupOptions</code> for each resource type. The list is populated only if the advanced option is set for the backup plan.</p>"
+        },
+        "ScheduledRunsPreview":{
+          "shape":"ScheduledRunsPreview",
+          "documentation":"<p>List of upcoming scheduled backup runs. Only included when <code>MaxScheduledRunsPreview</code> parameter is greater than 0. Contains up to 10 future backup executions with their scheduled times, execution types, and associated rule IDs.</p>"
         }
       }
     },
@@ -6276,6 +6286,11 @@
       "max":1000,
       "min":1
     },
+    "MaxScheduledRunsPreview":{
+      "type":"integer",
+      "max":10,
+      "min":0
+    },
     "MessageCategory":{"type":"string"},
     "Metadata":{
       "type":"map",
@@ -7511,6 +7526,36 @@
         }
       }
     },
+    "RuleExecutionType":{
+      "type":"string",
+      "enum":[
+        "CONTINUOUS",
+        "SNAPSHOTS",
+        "CONTINUOUS_AND_SNAPSHOTS"
+      ]
+    },
+    "ScheduledPlanExecutionMember":{
+      "type":"structure",
+      "members":{
+        "ExecutionTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the backup is scheduled to run, in Unix format and Coordinated Universal Time (UTC). The value is accurate to milliseconds.</p>"
+        },
+        "RuleId":{
+          "shape":"string",
+          "documentation":"<p>The unique identifier of the backup rule that will execute at the scheduled time.</p>"
+        },
+        "RuleExecutionType":{
+          "shape":"RuleExecutionType",
+          "documentation":"<p>The type of backup rule execution. Valid values are <code>CONTINUOUS</code> (point-in-time recovery), <code>SNAPSHOTS</code> (snapshot backups), or <code>CONTINUOUS_AND_SNAPSHOTS</code> (both types combined).</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a scheduled backup plan execution, including the execution time, rule type, and associated rule identifier.</p>"
+    },
+    "ScheduledRunsPreview":{
+      "type":"list",
+      "member":{"shape":"ScheduledPlanExecutionMember"}
+    },
     "SensitiveStringMap":{
       "type":"map",
       "key":{"shape":"String"},
@@ -7891,7 +7936,7 @@
       "members":{
         "GlobalSettings":{
           "shape":"GlobalSettings",
-          "documentation":"<p>A value for <code>isCrossAccountBackupEnabled</code> and a Region. Example: <code>update-global-settings --global-settings isCrossAccountBackupEnabled=false --region us-west-2</code>.</p>"
+          "documentation":"<p>Inputs can include:</p> <p>A value for <code>isCrossAccountBackupEnabled</code> and a Region. Example: <code>update-global-settings --global-settings isCrossAccountBackupEnabled=false --region us-west-2</code>.</p> <p>A value for Multi-party approval, styled as \"Mpa\": <code>isMpaEnabled</code>. Values can be true or false. Example: <code>update-global-settings --global-settings isMpaEnabled=false --region us-west-2</code>.</p>"
         }
       }
     },

@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+1.42.46
+=======
+
+* api-change:``backup``: Adds optional MaxScheduledRunsPreview input to GetBackupPlan API to provide a preview of up to 10 next scheduled backup plan runs in the GetBackupPlan response.
+* api-change:``bedrock-agentcore``: Add support for batch memory management, agent card retrieval and session termination
+* api-change:``bedrock-agentcore-control``: Add support for VM lifecycle configuration parameters and A2A protocol
+* api-change:``glue``: Adds labeling for DataQualityRuleResult for GetDataQualityResult and PublishDataQualityResult APIs
+* api-change:``mediaconnect``: Enabling Tag-on-Create for AWS Elemental MediaConnect flow-based resource types
+* api-change:``memorydb``: Support for DescribeMultiRegionParameterGroups and DescribeMultiRegionParameters API.
+* api-change:``quicksight``: Documentation improvements for QuickSight API documentation to clarify that delete operation APIs are global.
+* api-change:``rds``: Documentation updates to the CreateDBClusterMessage$PubliclyAccessible and CreateDBInstanceMessage$PubliclyAccessible properties.
+* api-change:``resource-explorer-2``: Add new AWS Resource Explorer APIs
+
+
 1.42.45
 =======
 

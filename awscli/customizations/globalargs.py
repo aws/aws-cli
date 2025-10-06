@@ -12,6 +12,9 @@
 # language governing permissions and limitations under the License.
 import sys
 import os
+
+from awscli.customizations.argrename import HIDDEN_ALIASES
+from awscli.customizations.utils import uni_print
 from botocore.client import Config
 from botocore import UNSIGNED
 from botocore.endpoint import DEFAULT_TIMEOUT
@@ -30,6 +33,8 @@ def register_parse_global_args(cli):
                  unique_id='resolve-cli-read-timeout')
     cli.register('top-level-args-parsed', resolve_cli_connect_timeout,
                  unique_id='resolve-cli-connect-timeout')
+    cli.register('top-level-args-parsed', detect_migration_breakage,
+                 unique_id='detect-migration-breakage')
 
 
 def resolve_types(parsed_args, **kwargs):
@@ -90,6 +95,20 @@ def resolve_cli_connect_timeout(parsed_args, session, **kwargs):
     arg_name = 'connect_timeout'
     _resolve_timeout(session, parsed_args, arg_name)
 
+def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
+    if parsed_args.v2_debug:
+        url_params = [param for param in remaining_args if param.startswith('http://') or param.startswith('https://')]
+        if parsed_args.command == 'ecr' and remaining_args[0] == 'get-login':
+            uni_print('AWS CLI v2 MIGRATION WARNING: The ecr get-login command has been removed in AWS CLI v2. See https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration-changes.html#cliv2-migration-ecr-get-login.\n')
+        if url_params and session.full_config.get('cli_follow_urlparam', True):
+            uni_print('AWS CLI v2 MIGRATION WARNING: For input parameters that have a prefix of http:// or https://, AWS CLI v2 will no longer automatically request the content of the URL for the parameter, and the cli_follow_urlparam option has been removed. See https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration-changes.html#cliv2-migration-paramfile.\n')
+        for working, obsolete in HIDDEN_ALIASES.items():
+            working_split = working.split('.')
+            working_service = working_split[0]
+            working_cmd = working_split[1]
+            working_param = working_split[2]
+            if parsed_args.command == working_service and remaining_args[0] == working_cmd and f"--{working_param}" in remaining_args:
+                uni_print('AWS CLI v2 MIGRATION WARNING: You have entered command arguments that uses at least 1 of 21 hidden aliases that were removed in AWS CLI v2. See https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration-changes.html#cliv2-migration-aliases.\n')
 
 def resolve_cli_read_timeout(parsed_args, session, **kwargs):
     arg_name = 'read_timeout'

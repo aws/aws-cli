@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.31.10
+=======
+
+* api-change:``proton``: Deprecating APIs in AWS Proton namespace.
+
+
 2.31.9
 ======
 

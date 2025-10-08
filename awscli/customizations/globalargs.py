@@ -112,6 +112,26 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
                     'cliv2-migration-changes.html'
                     '#cliv2-migration-encodingenvvar.\n'
                 )
+        if session.get_config_variable('api_versions'):
+            uni_print(
+                'AWS CLI v2 MIGRATION WARNING: The AWS CLI v2 does not support '
+                'calling earlier versions of AWS service APIs via the '
+                '`api_versions` configuration file setting. To migrate to v2 '
+                'behavior and resolve this warning, remove the `api_versions` '
+                'setting in the configuration file. See '
+                'https://docs.aws.amazon.com/cli/latest/userguide/'
+                'cliv2-migration-changes.html#cliv2-migration-api-versions.\n'
+            )
+        if session.full_config.get('plugins', {}):
+            uni_print(
+                'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, plugin support '
+                'is provisional. If you rely on plugins, be sure to lock into '
+                'a particular version of the AWS CLI and test the '
+                'functionality of your plugins for each upgrade. See '
+                'https://docs.aws.amazon.com/cli/latest/userguide/'
+                'cliv2-migration-changes.html#'
+                'cliv2-migration-profile-plugins\n'
+            )
         if parsed_args.command == 'ecr' and remaining_args[0] == 'get-login':
             uni_print(
                 'AWS CLI v2 MIGRATION WARNING: The ecr get-login command has '

@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.42.48
+=======
+
+* api-change:``bedrock-agentcore-control``: Adding support for authorizer type AWS_IAM to AgentCore Control Gateway.
+* api-change:``license-manager-user-subscriptions``: Released support for IPv6 and dual-stack active directories
+* api-change:``outposts``: This release adds the new StartOutpostDecommission API, which starts the decommission process to return Outposts racks or servers.
+* api-change:``service-quotas``: introduces Service Quotas Automatic Management. Users can opt-in to monitoring and managing service quotas, receive notifications when quota usage reaches thresholds, configure notification channels, subscribe to EventBridge events for automation, and view notifications in the AWS Health dashboard.
+
+
 1.42.47
 =======
 

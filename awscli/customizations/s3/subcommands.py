@@ -664,6 +664,15 @@ BUCKET_REGION = {
     ),
 }
 
+NO_OVERWRITE = {
+    'name': 'no-overwrite',
+    'action': 'store_true',
+    'help_text': (
+        "This flag prevents overwriting of files at the destination. With this flag, "
+        "only files not present at the destination will be transferred."
+    ),
+}
+
 TRANSFER_ARGS = [
     DRYRUN,
     QUIET,
@@ -1081,7 +1090,14 @@ class CpCommand(S3TransferCommand):
             }
         ]
         + TRANSFER_ARGS
-        + [METADATA, COPY_PROPS, METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE]
+        + [
+            METADATA,
+            COPY_PROPS,
+            METADATA_DIRECTIVE,
+            EXPECTED_SIZE,
+            RECURSIVE,
+            NO_OVERWRITE,
+        ]
     )
 
 
@@ -1105,6 +1121,7 @@ class MvCommand(S3TransferCommand):
             METADATA_DIRECTIVE,
             RECURSIVE,
             VALIDATE_SAME_S3_PATHS,
+            NO_OVERWRITE,
         ]
     )
 
@@ -1150,7 +1167,7 @@ class SyncCommand(S3TransferCommand):
             }
         ]
         + TRANSFER_ARGS
-        + [METADATA, COPY_PROPS, METADATA_DIRECTIVE]
+        + [METADATA, COPY_PROPS, METADATA_DIRECTIVE, NO_OVERWRITE]
     )
 
 
@@ -1321,7 +1338,6 @@ class CommandArchitecture:
                     sync_type = override_sync_strategy.sync_type
                     sync_type += '_sync_strategy'
                     sync_strategies[sync_type] = override_sync_strategy
-
         return sync_strategies
 
     def run(self):
@@ -1408,7 +1424,8 @@ class CommandArchitecture:
             self._client, self._source_client, self.parameters
         )
 
-        s3_transfer_handler = S3TransferHandlerFactory(self.parameters)(
+        params = self._get_s3_handler_params()
+        s3_transfer_handler = S3TransferHandlerFactory(params)(
             self._transfer_manager, result_queue
         )
 
@@ -1517,6 +1534,16 @@ class CommandArchitecture:
                 },
             )
 
+    def _get_s3_handler_params(self):
+        """
+        Removing no-overwrite params from sync since file to
+        be synced are already separated out using sync strategy
+        """
+        params = self.parameters.copy()
+        if self.cmd == 'sync':
+            params.pop('no_overwrite', None)
+        return params
+
 
 # TODO: This class is fairly quirky in the sense that it is both a builder
 #  and a data object. In the future we should make the following refactorings
@@ -1580,6 +1607,7 @@ class CommandParameters:
         elif len(paths) == 1:
             self.parameters['dest'] = paths[0]
         self._validate_streaming_paths()
+        self._validate_no_overwrite_for_download_streaming()
         self._validate_path_args()
         self._validate_sse_c_args()
         self._validate_not_s3_express_bucket_for_sync()
@@ -1831,3 +1859,20 @@ class CommandParameters:
                     '--sse-c-copy-source is only supported for '
                     'copy operations.'
                 )
+
+    def _validate_no_overwrite_for_download_streaming(self):
+        """
+        Validates that no-overwrite parameter is not used with streaming downloads.
+
+        Raises:
+            ParamValidationError: If no-overwrite is specified with a streaming download.
+        """
+        if (
+            self.parameters['is_stream']
+            and self.parameters.get('no_overwrite')
+            and self.parameters['dest'] == '-'
+        ):
+            raise ParamValidationError(
+                "--no-overwrite parameter is not supported for "
+                "streaming downloads"
+            )

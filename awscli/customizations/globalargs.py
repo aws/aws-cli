@@ -101,6 +101,7 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
             param for param in remaining_args
             if param.startswith('http://') or param.startswith('https://')
         ]
+        region = parsed_args.region or session.get_config_variable('region')
         if 'PYTHONUTF8' in os.environ or 'PYTHONIOENCODING' in os.environ:
             if 'AWS_CLI_FILE_ENCODING' not in os.environ:
                 uni_print(
@@ -112,6 +113,22 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
                     'cliv2-migration-changes.html'
                     '#cliv2-migration-encodingenvvar.\n'
                 )
+        if (
+                session.get_config_variable('s3')
+                        .get(
+                            'us_east_1_regional_endpoint',
+                            'legacy'
+                        ) == 'legacy' and region in ('us-east-1', None)
+        ):
+            uni_print(
+                'AWS CLI v2 MIGRATION WARNING: When you configure AWS CLI v2 '
+                'to use the `us-east-1` region, it uses the true regional '
+                'endpoint rather than the global endpoint. To continue using '
+                'the global endpoint on v2, configure the region to be '
+                '`aws-global`. See https://docs.aws.amazon.com/cli/latest/'
+                'userguide/cliv2-migration-changes.html'
+                '#cliv2-migration-s3-regional-endpoint.\n'
+            )
         if session.get_config_variable('api_versions'):
             uni_print(
                 'AWS CLI v2 MIGRATION WARNING: The AWS CLI v2 does not support '

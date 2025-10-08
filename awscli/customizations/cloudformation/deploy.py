@@ -322,7 +322,7 @@ class DeployCommand(BasicCommand):
                            parsed_args.execute_changeset, parsed_args.role_arn,
                            parsed_args.notification_arns, s3_uploader,
                            tags, parsed_args.fail_on_empty_changeset,
-                           parsed_args.disable_rollback, parsed_args.v2_debug)
+                           parsed_args.disable_rollback, getattr(parsed_globals, 'v2_debug', False))
 
     def deploy(self, deployer, stack_name, template_str,
                parameters, capabilities, execute_changeset, role_arn,

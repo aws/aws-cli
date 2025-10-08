@@ -775,7 +775,7 @@ class S3TransferCommand(S3Command):
                                   runtime_config)
         cmd.set_clients()
         cmd.create_instructions()
-        return cmd.run()
+        return cmd.run(parsed_globals.v2_debug)
 
     def _build_call_parameters(self, args, command_params):
         """
@@ -1019,7 +1019,7 @@ class CommandArchitecture(object):
 
         return sync_strategies
 
-    def run(self):
+    def run(self, v2_debug):
         """
         This function wires together all of the generators and completes
         the command.  First a dictionary is created that is indexed first by
@@ -1055,6 +1055,20 @@ class CommandArchitecture(object):
         }
         result_queue = queue.Queue()
         operation_name = cmd_translation[paths_type]
+
+        if v2_debug:
+            if operation_name == 'copy':
+                uni_print(
+                    'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, object '
+                    'properties will be copied from the source in multipart '
+                    'copies between S3 buckets. This may result in extra S3 '
+                    'API calls being made. Breakage may occur if the principal '
+                    'does not have permission to call these extra APIs. This '
+                    'warning cannot be resolved. See '
+                    'https://docs.aws.amazon.com/cli/latest/userguide/'
+                    'cliv2-migration-changes.html'
+                    '#cliv2-migration-s3-copy-metadata\n\n'
+                )
 
         fgen_kwargs = {
             'client': self._source_client, 'operation_name': operation_name,

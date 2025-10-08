@@ -1019,7 +1019,7 @@ class CommandArchitecture(object):
 
         return sync_strategies
 
-    def run(self, v2_debug):
+    def run(self, v2_debug=False):
         """
         This function wires together all of the generators and completes
         the command.  First a dictionary is created that is indexed first by

@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from s3transfer.exceptions import CancelledError, FatalError
+from botocore.exceptions import HTTPClientError
 
 from awscli.compat import StringIO, queue
 from awscli.customizations.s3.results import (
@@ -31,6 +32,7 @@ from awscli.customizations.s3.results import (
     ResultProcessor,
     ResultRecorder,
     ShutdownThreadRequest,
+    SkipFileResult,
     SuccessResult,
 )
 from awscli.customizations.s3.utils import WarningResult
@@ -158,6 +160,27 @@ class TestResultSubscribers(unittest.TestCase):
                 exception=self.ref_exception,
             ),
         )
+
+    def test_on_done_precondition_failed(self):
+        subscriber = self.get_result_subscriber(DoneResultSubscriber)
+        precondition_failed = HTTPClientError(
+            request=mock.Mock(),
+            response={
+                'Error': {
+                    'Code': 'PreconditionFailed'
+                }
+            },
+            error='PreconditionFailed',
+        )
+        precondition_failed_future = self.get_failed_transfer_future(precondition_failed)
+        subscriber.on_done(precondition_failed_future)
+        result = self.get_queued_result()
+        self.assert_result_queue_is_empty()
+        self.assertEqual(
+            result,
+            SkipFileResult(transfer_type=mock.ANY, src=mock.ANY, dest=mock.ANY)
+        )
+
 
     def test_on_done_unexpected_cancelled(self):
         subscriber = self.get_result_subscriber(DoneResultSubscriber)
@@ -1492,6 +1515,23 @@ class TestResultPrinter(BaseResultPrinterTest):
         self.result_printer(ErrorResult(Exception('unicode exists \u2713')))
         ref_error_statement = 'fatal error: unicode exists \u2713\n'
         self.assertEqual(self.error_file.getvalue(), ref_error_statement)
+
+    def test_does_not_print_skipped_file(self):
+        transfer_type = 'upload'
+        src = 'file'
+        dest = 's3://mybucket/mykey'
+        skip_file_result = SkipFileResult(
+            transfer_type=transfer_type, src=src, dest=dest
+        )
+
+        # Pretend that this is the final result in the result queue that
+        # is processed.
+        self.result_recorder.final_expected_files_transferred = 1
+        self.result_recorder.expected_files_transferred = 1
+        self.result_recorder.files_skipped = 1
+
+        self.result_printer(skip_file_result)
+        self.assertEqual(self.out_file.getvalue(), '')
 
 
 class TestNoProgressResultPrinter(BaseResultPrinterTest):

@@ -66,15 +66,19 @@ def add_timestamp_parser(session, v2_debug):
         # parser (which parses to a datetime.datetime object) with the
         # identity function which prints the date exactly the same as it comes
         # across the wire.
+        encountered_timestamp = False
         def identity_with_warning(x):
-            uni_print(
-                'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, all timestamp '
-                'response values are returned in the ISO 8601 format. To '
-                'migrate to v2 behavior and resolve this warning, set the '
-                'configuration variable `cli_timestamp_format` to `iso8601`. '
-                'See https://docs.aws.amazon.com/cli/latest/userguide/'
-                'cliv2-migration-changes.html#cliv2-migration-timestamp.\n'
-            )
+            nonlocal encountered_timestamp
+            if not encountered_timestamp:
+                encountered_timestamp = True
+                uni_print(
+                    'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, all timestamp '
+                    'response values are returned in the ISO 8601 format. To '
+                    'migrate to v2 behavior and resolve this warning, set the '
+                    'configuration variable `cli_timestamp_format` to `iso8601`. '
+                    'See https://docs.aws.amazon.com/cli/latest/userguide/'
+                    'cliv2-migration-changes.html#cliv2-migration-timestamp.\n'
+                )
             return identity(x)
 
         timestamp_parser = identity_with_warning if v2_debug else identity

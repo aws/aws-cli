@@ -775,7 +775,7 @@ class S3TransferCommand(S3Command):
                                   runtime_config)
         cmd.set_clients()
         cmd.create_instructions()
-        return cmd.run(parsed_globals.v2_debug)
+        return cmd.run(getattr(parsed_globals, 'v2_debug', False))
 
     def _build_call_parameters(self, args, command_params):
         """

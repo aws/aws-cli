@@ -613,6 +613,31 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         output_str = "(dryrun) upload: %s to %s" % (rel_local_file, s3_file)
         self.assertIn(output_str, self.output.getvalue())
 
+    def test_v2_debug_mv(self):
+        s3_file = 's3://' + self.bucket + '/' + 'text1.txt'
+        filters = [['--include', '*']]
+        params = {'dir_op': False, 'quiet': False, 'dryrun': True,
+                  'src': s3_file, 'dest': s3_file, 'filters': filters,
+                  'paths_type': 's3s3', 'region': 'us-east-1',
+                  'endpoint_url': None, 'verify_ssl': None,
+                  'follow_symlinks': True, 'page_size': None,
+                  'is_stream': False, 'source_region': None,
+                  'is_move': True}
+        self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
+                                  "LastModified": "2014-01-09T20:45:49.000Z"}]
+        config = RuntimeConfig().build_config()
+        cmd_arc = CommandArchitecture(self.session, 'mv', params, config)
+        cmd_arc.set_clients()
+        cmd_arc.create_instructions()
+        self.patch_make_request()
+        cmd_arc.run(v2_debug=True)
+        warning_str = 'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, object '\
+                      'properties will be copied from the source in multipart '\
+                      'copies between S3 buckets.'
+        output_str = f"(dryrun) move: {s3_file} to {s3_file}"
+        self.assertIn(warning_str, self.output.getvalue())
+        self.assertIn(output_str, self.output.getvalue())
+
 
 class CommandParametersTest(unittest.TestCase):
     def setUp(self):

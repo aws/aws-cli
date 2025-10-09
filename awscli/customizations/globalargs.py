@@ -102,6 +102,7 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
             if param.startswith('http://') or param.startswith('https://')
         ]
         region = parsed_args.region or session.get_config_variable('region')
+        s3_config = session.get_config_variable('s3')
         if 'PYTHONUTF8' in os.environ or 'PYTHONIOENCODING' in os.environ:
             if 'AWS_CLI_FILE_ENCODING' not in os.environ:
                 uni_print(
@@ -114,8 +115,8 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
                     '#cliv2-migration-encodingenvvar.\n'
                 )
         if (
-                session.get_config_variable('s3')
-                        .get(
+                s3_config is not None and s3_config
+                    .get(
                             'us_east_1_regional_endpoint',
                             'legacy'
                         ) == 'legacy' and region in ('us-east-1', None)

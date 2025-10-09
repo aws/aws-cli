@@ -104,7 +104,8 @@ GET_DATA = {
 GET_VARIABLE = {
     'provider': 'aws',
     'output': 'json',
-    'api_versions': {}
+    'api_versions': {},
+    'cli_binary_format': 'raw-in-base64-out',
 }
 
 

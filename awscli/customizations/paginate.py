@@ -135,6 +135,9 @@ def unify_paging_params(argument_table, operation_model, event_name,
     _remove_existing_paging_arguments(argument_table, paginator_config)
     parsed_args_event = event_name.replace('building-argument-table.',
                                            'operation-args-parsed.')
+    call_parameters_event = event_name.replace(
+        'building-argument-table', 'calling-command'
+    )
     shadowed_args = {}
     add_paging_argument(argument_table, 'starting-token',
                         PageArgument('starting-token', STARTING_TOKEN_HELP,
@@ -168,6 +171,13 @@ def unify_paging_params(argument_table, operation_model, event_name,
         partial(check_should_enable_pagination,
                 list(_get_all_cli_input_tokens(paginator_config)),
                 shadowed_args, argument_table))
+    session.register(
+        call_parameters_event,
+        partial(
+            check_should_enable_pagination_call_parameters,
+            list(_get_all_input_tokens(paginator_config)),
+        ),
+    )
 
 
 def add_paging_argument(argument_table, arg_name, argument, shadowed_args):
@@ -240,6 +250,18 @@ def _get_all_cli_input_tokens(pagination_config):
         yield cli_name
 
 
+# Get all tokens but return them in API namespace rather than CLI namespace
+def _get_all_input_tokens(pagination_config):
+    # Get all input tokens including the limit_key
+    # if it exists.
+    tokens = _get_input_tokens(pagination_config)
+    for token_name in tokens:
+        yield token_name
+    if 'limit_key' in pagination_config:
+        key_name = pagination_config['limit_key']
+        yield key_name
+
+
 def _get_input_tokens(pagination_config):
     tokens = pagination_config['input_token']
     if not isinstance(tokens, list):
@@ -251,6 +273,25 @@ def _get_cli_name(param_objects, token_name):
     for param in param_objects:
         if param.name == token_name:
             return param.cli_name.lstrip('-')
+
+
+# This function checks for pagination args in the actual calling
+# arguments passed to the function.  If the user is using the
+# --cli-input-json parameter to provide JSON parameters they are
+# all in the API naming space rather than the CLI naming space
+# and would be missed by the processing above.  This function gets
+# called on the calling-command event.
+def check_should_enable_pagination_call_parameters(
+    input_tokens, call_parameters, parsed_args, parsed_globals, **kwargs
+):
+    if parsed_globals.v2_debug:
+        pagination_params_in_input_tokens = [
+            param for param in call_parameters if param in input_tokens
+        ]
+        if pagination_params_in_input_tokens:
+            uni_print(
+                'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, if you specify pagination parameters by using a file with the `--cli-input-json` parameter, automatic pagination will be turned off. This is not the case in v1. See https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration-changes.html#cliv2-migration-skeleton-paging.\n'
+            )
 
 
 class PageArgument(BaseCLIArgument):

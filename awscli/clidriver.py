@@ -669,7 +669,10 @@ class ServiceOperation:
         return parser
 
     def _detect_migration_breakage(self, session, parsed_args, parsed_globals, arg_table):
-        if session.get_config_variable('cli_binary_format') == 'raw-in-base64-out':
+        if (
+                session.get_scoped_config()
+                        .get('cli_binary_format', None) == 'raw-in-base64-out'
+        ):
             # if cli_binary_format is set to raw-in-base64-out, then v2 behavior will
             # be the same as v1, so there is no breaking change in this case.
             return

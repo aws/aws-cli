@@ -529,7 +529,6 @@ class ServiceOperation:
         operation_parser = self._create_operation_parser(self.arg_table)
         self._add_help(operation_parser)
         parsed_args, remaining = operation_parser.parse_known_args(args)
-        # print(f"operation parser parsed args: {parsed_args}")
         if parsed_args.help == 'help':
             op_help = self.create_help_command()
             return op_help(remaining, parsed_globals)
@@ -547,8 +546,12 @@ class ServiceOperation:
             parsed_args, self.arg_table
         )
 
-        self._detect_migration_breakage(self._session, parsed_args, parsed_globals, self.arg_table)
-
+        self._detect_migration_breakage(
+            self._session,
+            parsed_args,
+            parsed_globals,
+            self.arg_table
+        )
         event = f'calling-command.{self._parent_name}.{self._name}'
         override = self._emit_first_non_none_response(
             event,

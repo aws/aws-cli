@@ -237,6 +237,9 @@ class FakeSession(object):
             return GET_VARIABLE[name]
         return self.session_vars[name]
 
+    def get_scoped_config(self):
+        return GET_VARIABLE
+
     def get_service_model(self, name, api_version=None):
         return botocore.model.ServiceModel(
             MINI_SERVICE, service_name='s3')

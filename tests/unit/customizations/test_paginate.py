@@ -13,7 +13,7 @@
 import pytest
 
 from awscli.customizations.paginate import PageArgument
-from awscli.testutils import mock, unittest
+from awscli.testutils import mock, unittest, capture_output
 
 from botocore.exceptions import DataNotFoundError, PaginationError
 from botocore.model import OperationModel
@@ -215,6 +215,7 @@ class TestShouldEnablePagination(TestPaginateBase):
         self.parsed_args.starting_token = None
         self.parsed_args.page_size = None
         self.parsed_args.max_items = None
+        self.call_parameters = {}
 
     def test_should_not_enable_pagination(self):
         # Here the user has specified a manual pagination argument,
@@ -230,6 +231,31 @@ class TestShouldEnablePagination(TestPaginateBase):
         # We should have turned paginate off because the
         # user specified --bar 10
         self.assertFalse(self.parsed_globals.paginate)
+
+    def test_should_not_enable_pagination_call_parameters(self):
+        # Here the user has specified a manual pagination argument,
+        # via CLI Input JSON and specified v2-debug, so a
+        # migration warning should printed.
+        # From setUp(), the limit_key is 'Bar'
+        input_tokens = ['Foo', 'Bar']
+        self.parsed_globals.v2_debug = True
+        self.parsed_globals.paginate = True
+        # Corresponds to --bar 10
+        self.call_parameters['Foo'] = None
+        self.call_parameters['Bar'] = 10
+        with capture_output() as output:
+            paginate.check_should_enable_pagination_call_parameters(
+                input_tokens, self.call_parameters, {}, self.parsed_globals
+            )
+            # We should have printed the migration warning
+            # because the user specified {Bar: 10} in the input JSON
+            self.assertIn(
+                'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, if you specify '
+                'pagination parameters by using a file with the '
+                '`--cli-input-json` parameter, automatic pagination will be '
+                'turned off.',
+                output.stdout.getvalue()
+            )
 
     def test_should_enable_pagination_with_no_args(self):
         input_tokens = ['foo', 'bar']

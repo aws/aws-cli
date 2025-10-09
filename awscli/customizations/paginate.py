@@ -290,7 +290,13 @@ def check_should_enable_pagination_call_parameters(
         ]
         if pagination_params_in_input_tokens:
             uni_print(
-                'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, if you specify pagination parameters by using a file with the `--cli-input-json` parameter, automatic pagination will be turned off. This is not the case in v1. See https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration-changes.html#cliv2-migration-skeleton-paging.\n'
+                'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, if you specify '
+                'pagination parameters by using a file with the '
+                '`--cli-input-json` parameter, automatic pagination will be '
+                'turned off. This is not the case in v1. See '
+                'https://docs.aws.amazon.com/cli/latest/userguide/'
+                'cliv2-migration-changes.html'
+                '#cliv2-migration-skeleton-paging.\n'
             )
 
 

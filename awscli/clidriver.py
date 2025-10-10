@@ -697,7 +697,8 @@ class ServiceOperation:
                     '`cli_binary_format` configuration variable to '
                     '`raw-in-base64-out`. See https://docs.aws.amazon.com/cli/'
                     'latest/userguide/cliv2-migration-changes.html#'
-                    'cliv2-migration-binaryparam.\n'
+                    'cliv2-migration-binaryparam.\n',
+                    out_file=sys.stderr
                 )
 
 

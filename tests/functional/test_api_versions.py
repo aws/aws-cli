@@ -52,7 +52,7 @@ class TestAPIVersions(BaseAWSCommandParamsTest):
 
     def test_v2_debug_migration_warning(self):
         cmdline = 'ec2 describe-instances --v2-debug'
-        stdout, _, _ = self.run_cmd(cmdline)
+        _, stderr, _ = self.run_cmd(cmdline)
         # Make sure that the correct api version is used for the client
         # by checking the version that was sent in the request.
         self.assertEqual(self.last_params['Version'], self.api_version)
@@ -62,6 +62,6 @@ class TestAPIVersions(BaseAWSCommandParamsTest):
             'AWS CLI v2 MIGRATION WARNING: The AWS CLI v2 does not support '
             'calling earlier versions of AWS service APIs via the '
             '`api_versions` configuration file setting.',
-            stdout
+            stderr
         )
 

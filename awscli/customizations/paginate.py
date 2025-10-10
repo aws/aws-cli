@@ -296,7 +296,8 @@ def check_should_enable_pagination_call_parameters(
                 'turned off. This is not the case in v1. See '
                 'https://docs.aws.amazon.com/cli/latest/userguide/'
                 'cliv2-migration-changes.html'
-                '#cliv2-migration-skeleton-paging.\n'
+                '#cliv2-migration-skeleton-paging.\n',
+                out_file=sys.stderr
             )
 
 

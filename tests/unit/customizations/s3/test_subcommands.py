@@ -635,8 +635,8 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                       'properties will be copied from the source in multipart '\
                       'copies between S3 buckets.'
         output_str = f"(dryrun) move: {s3_file} to {s3_file}"
-        self.assertIn(warning_str, self.output.getvalue())
-        self.assertIn(output_str, self.output.getvalue())
+        self.assertIn(warning_str, self.err_output.getvalue())
+        self.assertIn(output_str, self.err_output.getvalue())
 
 
 class CommandParametersTest(unittest.TestCase):

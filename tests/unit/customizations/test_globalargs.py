@@ -197,7 +197,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
                     'AWS CLI v2 MIGRATION WARNING: The PYTHONUTF8 and '
                     'PYTHONIOENCODING environment variables are unsupported '
                     'in AWS CLI v2.',
-                    output.stdout.getvalue()
+                    output.stderr.getvalue()
                 )
 
     def test_v2_debug_python_utf8_resolved_env_var(self):
@@ -211,7 +211,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
                     'AWS CLI v2 MIGRATION WARNING: The PYTHONUTF8 and '
                     'PYTHONIOENCODING environment variables are unsupported '
                     'in AWS CLI v2.',
-                    output.stdout.getvalue()
+                    output.stderr.getvalue()
                 )
 
     def test_v2_debug_python_io_encoding_env_var(self):
@@ -225,7 +225,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
                     'AWS CLI v2 MIGRATION WARNING: The PYTHONUTF8 and '
                     'PYTHONIOENCODING environment variables are unsupported '
                     'in AWS CLI v2.',
-                    output.stdout.getvalue()
+                    output.stderr.getvalue()
                 )
 
     def test_v2_debug_s3_sigv2(self):
@@ -243,5 +243,5 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         self.assertIn(
             'AWS CLI v2 MIGRATION WARNING: The AWS CLI v2 only uses Signature '
             'v4 to authenticate Amazon S3 requests.',
-            output.stdout.getvalue()
+            output.stderr.getvalue()
         )

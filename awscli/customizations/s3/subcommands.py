@@ -1067,7 +1067,8 @@ class CommandArchitecture(object):
                     'warning cannot be resolved. See '
                     'https://docs.aws.amazon.com/cli/latest/userguide/'
                     'cliv2-migration-changes.html'
-                    '#cliv2-migration-s3-copy-metadata\n\n'
+                    '#cliv2-migration-s3-copy-metadata\n\n',
+                    out_file=sys.stderr
                 )
 
         fgen_kwargs = {

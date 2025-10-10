@@ -112,7 +112,8 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
                     'instead, set this environment variable to resolve this. '
                     'See https://docs.aws.amazon.com/cli/latest/userguide/'
                     'cliv2-migration-changes.html'
-                    '#cliv2-migration-encodingenvvar.\n'
+                    '#cliv2-migration-encodingenvvar.\n',
+                    out_file=sys.stderr
                 )
         if (
                 s3_config is not None and s3_config
@@ -133,7 +134,8 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
                 'behavior and resolve this warning, remove the `api_versions` '
                 'setting in the configuration file. See '
                 'https://docs.aws.amazon.com/cli/latest/userguide/'
-                'cliv2-migration-changes.html#cliv2-migration-api-versions.\n'
+                'cliv2-migration-changes.html#cliv2-migration-api-versions.\n',
+                out_file = sys.stderr
             )
         if session.full_config.get('plugins', {}):
             uni_print(
@@ -143,14 +145,16 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
                 'functionality of your plugins for each upgrade. See '
                 'https://docs.aws.amazon.com/cli/latest/userguide/'
                 'cliv2-migration-changes.html#'
-                'cliv2-migration-profile-plugins\n'
+                'cliv2-migration-profile-plugins\n',
+                out_file=sys.stderr
             )
         if parsed_args.command == 'ecr' and remaining_args[0] == 'get-login':
             uni_print(
                 'AWS CLI v2 MIGRATION WARNING: The ecr get-login command has '
                 'been removed in AWS CLI v2. See https://docs.aws.amazon.com/'
                 'cli/latest/userguide/cliv2-migration-changes.html'
-                '#cliv2-migration-ecr-get-login.\n'
+                '#cliv2-migration-ecr-get-login.\n',
+                out_file=sys.stderr
             )
         if url_params and session.full_config.get('cli_follow_urlparam', True):
             uni_print(
@@ -160,7 +164,8 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
                 'parameter, and the cli_follow_urlparam option has been '
                 'removed. See https://docs.aws.amazon.com/cli/latest/'
                 'userguide/cliv2-migration-changes.html'
-                '#cliv2-migration-paramfile.\n'
+                '#cliv2-migration-paramfile.\n',
+                out_file=sys.stderr
             )
         for working, obsolete in HIDDEN_ALIASES.items():
             working_split = working.split('.')
@@ -177,7 +182,8 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
                     'arguments that uses at least 1 of 21 hidden aliases that '
                     'were removed in AWS CLI v2. See '
                     'https://docs.aws.amazon.com/cli/latest/userguide'
-                    '/cliv2-migration-changes.html#cliv2-migration-aliases.\n'
+                    '/cliv2-migration-changes.html#cliv2-migration-aliases.\n',
+                    out_file=sys.stderr
                 )
         session.register('choose-signer.s3.*', warn_if_sigv2)
 
@@ -193,7 +199,8 @@ def warn_if_east_configured_global_endpoint(request, operation_name, **kwargs):
             'the global endpoint on v2, configure the region to be '
             '`aws-global`. See https://docs.aws.amazon.com/cli/latest/'
             'userguide/cliv2-migration-changes.html'
-            '#cliv2-migration-s3-regional-endpoint.\n'
+            '#cliv2-migration-s3-regional-endpoint.\n',
+            out_file=sys.stderr
         )
 
 def warn_if_sigv2(
@@ -208,7 +215,8 @@ def warn_if_sigv2(
             'AWS CLI v2 MIGRATION WARNING: The AWS CLI v2 only uses Signature '
             'v4 to authenticate Amazon S3 requests. Run the command `aws '
             'configure set s3.signature_version s3v4` to migrate to v4 and '
-            'resolve this.\n'
+            'resolve this.\n',
+            out_file=sys.stderr
         )
 
 def resolve_cli_read_timeout(parsed_args, session, **kwargs):

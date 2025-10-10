@@ -351,7 +351,8 @@ class DeployCommand(BasicCommand):
                         'flag to migrate to v2 behavior and resolve this '
                         'warning. See https://docs.aws.amazon.com/cli/latest/'
                         'userguide/cliv2-migration-changes.html'
-                        '#cliv2-migration-cfn.\n'
+                        '#cliv2-migration-cfn.\n',
+                        out_file=sys.stderr
                     )
                 raise
             write_exception(ex, outfile=get_stdout_text_writer())

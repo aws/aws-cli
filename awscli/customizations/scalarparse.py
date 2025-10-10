@@ -27,6 +27,8 @@ There's nothing currently done for timestamps, but this will change
 in the future.
 
 """
+import sys
+
 from botocore.utils import parse_timestamp
 from botocore.exceptions import ProfileNotFound
 
@@ -77,7 +79,8 @@ def add_timestamp_parser(session, v2_debug):
                     'migrate to v2 behavior and resolve this warning, set the '
                     'configuration variable `cli_timestamp_format` to `iso8601`. '
                     'See https://docs.aws.amazon.com/cli/latest/userguide/'
-                    'cliv2-migration-changes.html#cliv2-migration-timestamp.\n'
+                    'cliv2-migration-changes.html#cliv2-migration-timestamp.\n',
+                    out_file=sys.stderr
                 )
             return identity(x)
 

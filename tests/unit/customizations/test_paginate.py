@@ -234,7 +234,7 @@ class TestShouldEnablePagination(TestPaginateBase):
         # user specified --bar 10
         self.assertFalse(self.parsed_globals.paginate)
 
-    def test_should_not_enable_pagination_call_parameters(self):
+    def test_v2_debug_call_parameters(self):
         # Here the user has specified a manual pagination argument,
         # via CLI Input JSON and specified v2-debug, so a
         # migration warning should printed.
@@ -256,7 +256,7 @@ class TestShouldEnablePagination(TestPaginateBase):
                 'pagination parameters by using a file with the '
                 '`--cli-input-json` parameter, automatic pagination will be '
                 'turned off.',
-                output.stdout.getvalue()
+                output.stderr.getvalue()
             )
 
     def test_should_enable_pagination_with_no_args(self):

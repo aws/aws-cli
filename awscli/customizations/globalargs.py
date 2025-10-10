@@ -183,8 +183,8 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
 
 def warn_if_east_configured_global_endpoint(request, operation_name, **kwargs):
     # The regional us-east-1 endpoint is used in certain cases (e.g.
-    # FIPS/Dual-Stack is enabled). Rather than duplicating this logic from botocore,
-    # we check the endpoint URL directly.
+    # FIPS/Dual-Stack is enabled). Rather than duplicating this logic
+    # from botocore, we check the endpoint URL directly.
     if 's3.amazonaws.com' in request.url:
         uni_print(
             'AWS CLI v2 MIGRATION WARNING: When you configure AWS CLI v2 '

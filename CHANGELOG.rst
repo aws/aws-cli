@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.31.13
+=======
+
+* api-change:``bedrock-agentcore``: Bedrock AgentCore release for Runtime, and Memory.
+* api-change:``cloudfront``: Added new viewer security policy, TLSv1.2_2025, for CloudFront.
+* api-change:``glue``: Addition of AuditContext in GetTable/GetTables Request
+* api-change:``rds``: Updated the text in the Important section of the ModifyDBClusterParameterGroup page.
+* api-change:``bedrock-agentcore-control``: Bedrock AgentCore release for Gateway, and Memory including Self-Managed Strategies support for Memory.
+* api-change:``lambda``: Add InvokedViaFunctionUrl context key to limit invocations to only FURL invokes.
+* api-change:``odb``: This release adds APIs that allow you to specify CIDR ranges in your ODB peering connection.
+* enhancement:openssl: Update bundled OpenSSL version to 1.1.1zd for Linux installers
+
+
 2.31.12
 =======
 

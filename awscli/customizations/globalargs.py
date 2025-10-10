@@ -121,14 +121,9 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
                             'legacy'
                         ) == 'legacy' and region in ('us-east-1', None)
         ):
-            uni_print(
-                'AWS CLI v2 MIGRATION WARNING: When you configure AWS CLI v2 '
-                'to use the `us-east-1` region, it uses the true regional '
-                'endpoint rather than the global endpoint. To continue using '
-                'the global endpoint on v2, configure the region to be '
-                '`aws-global`. See https://docs.aws.amazon.com/cli/latest/'
-                'userguide/cliv2-migration-changes.html'
-                '#cliv2-migration-s3-regional-endpoint.\n'
+            session.register(
+                'request-created.s3.*',
+                warn_if_east_configured_global_endpoint
             )
         if session.get_config_variable('api_versions'):
             uni_print(
@@ -185,6 +180,21 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
                     '/cliv2-migration-changes.html#cliv2-migration-aliases.\n'
                 )
         session.register('choose-signer.s3.*', warn_if_sigv2)
+
+def warn_if_east_configured_global_endpoint(request, operation_name, **kwargs):
+    # The regional us-east-1 endpoint is used in certain cases (e.g.
+    # FIPS/Dual-Stack is enabled). Rather than duplicating this logic from botocore,
+    # we check the endpoint URL directly.
+    if 's3.amazonaws.com' in request.url:
+        uni_print(
+            'AWS CLI v2 MIGRATION WARNING: When you configure AWS CLI v2 '
+            'to use the `us-east-1` region, it uses the true regional '
+            'endpoint rather than the global endpoint. To continue using '
+            'the global endpoint on v2, configure the region to be '
+            '`aws-global`. See https://docs.aws.amazon.com/cli/latest/'
+            'userguide/cliv2-migration-changes.html'
+            '#cliv2-migration-s3-regional-endpoint.\n'
+        )
 
 def warn_if_sigv2(
         signing_name,

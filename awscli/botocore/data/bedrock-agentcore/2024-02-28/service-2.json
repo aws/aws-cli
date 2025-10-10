@@ -18,7 +18,7 @@
       "http":{
         "method":"POST",
         "requestUri":"/memories/{memoryId}/memoryRecords/batchCreate",
-        "responseCode":200
+        "responseCode":201
       },
       "input":{"shape":"BatchCreateMemoryRecordsInput"},
       "output":{"shape":"BatchCreateMemoryRecordsOutput"},
@@ -76,7 +76,7 @@
       "http":{
         "method":"POST",
         "requestUri":"/memories/{memoryId}/events",
-        "responseCode":200
+        "responseCode":201
       },
       "input":{"shape":"CreateEventInput"},
       "output":{"shape":"CreateEventOutput"},
@@ -341,7 +341,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Sends a request to an agent or tool hosted in an Amazon Bedrock AgentCore Runtime and receives responses in real-time. </p> <p>To invoke an agent you must specify the AgentCore Runtime ARN and provide a payload containing your request. You can optionally specify a qualifier to target a specific version or endpoint of the agent.</p> <p>This operation supports streaming responses, allowing you to receive partial responses as they become available. We recommend using pagination to ensure that the operation returns quickly and successfully when processing large responses.</p> <p>For example code, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-invoke-agent.html\">Invoke an AgentCore Runtime agent</a>. </p> <p>If you're integrating your agent with OAuth, you can't use the Amazon Web Services SDK to call <code>InvokeAgentRuntime</code>. Instead, make a HTTPS request to <code>InvokeAgentRuntime</code>. For an example, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-oauth.html\">Authenticate and authorize with Inbound Auth and Outbound Auth</a>.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:InvokeAgentRuntime</code> permission.</p>"
+      "documentation":"<p>Sends a request to an agent or tool hosted in an Amazon Bedrock AgentCore Runtime and receives responses in real-time. </p> <p>To invoke an agent you must specify the AgentCore Runtime ARN and provide a payload containing your request. You can optionally specify a qualifier to target a specific version or endpoint of the agent.</p> <p>This operation supports streaming responses, allowing you to receive partial responses as they become available. We recommend using pagination to ensure that the operation returns quickly and successfully when processing large responses.</p> <p>For example code, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-invoke-agent.html\">Invoke an AgentCore Runtime agent</a>. </p> <p>If you're integrating your agent with OAuth, you can't use the Amazon Web Services SDK to call <code>InvokeAgentRuntime</code>. Instead, make a HTTPS request to <code>InvokeAgentRuntime</code>. For an example, see <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-oauth.html\">Authenticate and authorize with Inbound Auth and Outbound Auth</a>.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:InvokeAgentRuntime</code> permission. If you are making a call to <code>InvokeAgentRuntime</code> on behalf of a user ID with the <code>X-Amzn-Bedrock-AgentCore-Runtime-User-Id</code> header, You require permissions to both actions (<code>bedrock-agentcore:InvokeAgentRuntime</code> and <code>bedrock-agentcore:InvokeAgentRuntimeForUser</code>). </p>"
     },
     "InvokeCodeInterpreter":{
       "name":"InvokeCodeInterpreter",
@@ -2059,6 +2059,18 @@
           "location":"header",
           "locationName":"x-amzn-code-interpreter-session-id"
         },
+        "traceId":{
+          "shape":"InvokeCodeInterpreterRequestTraceIdString",
+          "documentation":"<p>The trace identifier for request tracking.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Trace-Id"
+        },
+        "traceParent":{
+          "shape":"InvokeCodeInterpreterRequestTraceParentString",
+          "documentation":"<p>The parent trace information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"traceparent"
+        },
         "name":{
           "shape":"ToolName",
           "documentation":"<p>The name of the code interpreter to invoke.</p>"
@@ -2068,6 +2080,16 @@
           "documentation":"<p>The arguments for the code interpreter. This includes the code to execute and any additional parameters such as the programming language, whether to clear the execution context, and other execution options. The structure of this parameter depends on the specific code interpreter being used.</p>"
         }
       }
+    },
+    "InvokeCodeInterpreterRequestTraceIdString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "InvokeCodeInterpreterRequestTraceParentString":{
+      "type":"string",
+      "max":1024,
+      "min":0
     },
     "InvokeCodeInterpreterResponse":{
       "type":"structure",
@@ -2971,6 +2993,18 @@
       "type":"structure",
       "required":["browserIdentifier"],
       "members":{
+        "traceId":{
+          "shape":"StartBrowserSessionRequestTraceIdString",
+          "documentation":"<p>The trace identifier for request tracking.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Trace-Id"
+        },
+        "traceParent":{
+          "shape":"StartBrowserSessionRequestTraceParentString",
+          "documentation":"<p>The parent trace information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"traceparent"
+        },
         "browserIdentifier":{
           "shape":"String",
           "documentation":"<p>The unique identifier of the browser to use for this session. This identifier specifies which browser environment to initialize for the session.</p>",
@@ -2995,6 +3029,16 @@
           "idempotencyToken":true
         }
       }
+    },
+    "StartBrowserSessionRequestTraceIdString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "StartBrowserSessionRequestTraceParentString":{
+      "type":"string",
+      "max":1024,
+      "min":0
     },
     "StartBrowserSessionResponse":{
       "type":"structure",
@@ -3026,6 +3070,18 @@
       "type":"structure",
       "required":["codeInterpreterIdentifier"],
       "members":{
+        "traceId":{
+          "shape":"StartCodeInterpreterSessionRequestTraceIdString",
+          "documentation":"<p>The trace identifier for request tracking.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Trace-Id"
+        },
+        "traceParent":{
+          "shape":"StartCodeInterpreterSessionRequestTraceParentString",
+          "documentation":"<p>The parent trace information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"traceparent"
+        },
         "codeInterpreterIdentifier":{
           "shape":"String",
           "documentation":"<p>The unique identifier of the code interpreter to use for this session. This identifier specifies which code interpreter environment to initialize for the session.</p>",
@@ -3046,6 +3102,16 @@
           "idempotencyToken":true
         }
       }
+    },
+    "StartCodeInterpreterSessionRequestTraceIdString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "StartCodeInterpreterSessionRequestTraceParentString":{
+      "type":"string",
+      "max":1024,
+      "min":0
     },
     "StartCodeInterpreterSessionResponse":{
       "type":"structure",
@@ -3076,6 +3142,18 @@
         "sessionId"
       ],
       "members":{
+        "traceId":{
+          "shape":"StopBrowserSessionRequestTraceIdString",
+          "documentation":"<p>The trace identifier for request tracking.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Trace-Id"
+        },
+        "traceParent":{
+          "shape":"StopBrowserSessionRequestTraceParentString",
+          "documentation":"<p>The parent trace information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"traceparent"
+        },
         "browserIdentifier":{
           "shape":"String",
           "documentation":"<p>The unique identifier of the browser associated with the session.</p>",
@@ -3094,6 +3172,16 @@
           "idempotencyToken":true
         }
       }
+    },
+    "StopBrowserSessionRequestTraceIdString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "StopBrowserSessionRequestTraceParentString":{
+      "type":"string",
+      "max":1024,
+      "min":0
     },
     "StopBrowserSessionResponse":{
       "type":"structure",
@@ -3124,6 +3212,18 @@
         "sessionId"
       ],
       "members":{
+        "traceId":{
+          "shape":"StopCodeInterpreterSessionRequestTraceIdString",
+          "documentation":"<p>The trace identifier for request tracking.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Trace-Id"
+        },
+        "traceParent":{
+          "shape":"StopCodeInterpreterSessionRequestTraceParentString",
+          "documentation":"<p>The parent trace information for distributed tracing.</p>",
+          "location":"header",
+          "locationName":"traceparent"
+        },
         "codeInterpreterIdentifier":{
           "shape":"String",
           "documentation":"<p>The unique identifier of the code interpreter associated with the session.</p>",
@@ -3142,6 +3242,16 @@
           "idempotencyToken":true
         }
       }
+    },
+    "StopCodeInterpreterSessionRequestTraceIdString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "StopCodeInterpreterSessionRequestTraceParentString":{
+      "type":"string",
+      "max":1024,
+      "min":0
     },
     "StopCodeInterpreterSessionResponse":{
       "type":"structure",

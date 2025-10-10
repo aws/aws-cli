@@ -136,7 +136,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a gateway for Amazon Bedrock Agent. A gateway serves as an integration point between your agent and external services.</p> <p>To create a gateway, you must specify a name, protocol type, and IAM role. The role grants the gateway permission to access Amazon Web Services services and resources.</p>",
+      "documentation":"<p>Creates a gateway for Amazon Bedrock Agent. A gateway serves as an integration point between your agent and external services.</p> <p>If you specify <code>CUSTOM_JWT</code> as the <code>authorizerType</code>, you must provide an <code>authorizerConfiguration</code>.</p>",
       "idempotent":true
     },
     "CreateGatewayTarget":{
@@ -165,7 +165,7 @@
       "http":{
         "method":"POST",
         "requestUri":"/memories/create",
-        "responseCode":200
+        "responseCode":202
       },
       "input":{"shape":"CreateMemoryInput"},
       "output":{"shape":"CreateMemoryOutput"},
@@ -371,7 +371,7 @@
       "http":{
         "method":"DELETE",
         "requestUri":"/memories/{memoryId}/delete",
-        "responseCode":200
+        "responseCode":202
       },
       "input":{"shape":"DeleteMemoryInput"},
       "output":{"shape":"DeleteMemoryOutput"},
@@ -885,6 +885,27 @@
       ],
       "documentation":"<p>Sets the customer master key (CMK) for a token vault.</p>"
     },
+    "SynchronizeGatewayTargets":{
+      "name":"SynchronizeGatewayTargets",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/gateways/{gatewayIdentifier}/synchronizeTargets",
+        "responseCode":202
+      },
+      "input":{"shape":"SynchronizeGatewayTargetsRequest"},
+      "output":{"shape":"SynchronizeGatewayTargetsResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>The gateway targets.</p>",
+      "idempotent":true
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -1036,7 +1057,7 @@
       "http":{
         "method":"PUT",
         "requestUri":"/memories/{memoryId}/update",
-        "responseCode":200
+        "responseCode":202
       },
       "input":{"shape":"UpdateMemoryInput"},
       "output":{"shape":"UpdateMemoryOutput"},
@@ -1994,7 +2015,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, the service ignores the request, but does not return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
           "idempotencyToken":true
         },
         "roleArn":{
@@ -2011,11 +2032,11 @@
         },
         "authorizerType":{
           "shape":"AuthorizerType",
-          "documentation":"<p>The type of authorizer to use for the gateway.</p>"
+          "documentation":"<p>The type of authorizer to use for the gateway.</p> <ul> <li> <p> <code>CUSTOM_JWT</code> - Authorize with a bearer token.</p> </li> <li> <p> <code>AWS_IAM</code> - Authorize with your Amazon Web Services IAM credentials.</p> </li> </ul>"
         },
         "authorizerConfiguration":{
           "shape":"AuthorizerConfiguration",
-          "documentation":"<p>The authorizer configuration for the gateway.</p>"
+          "documentation":"<p>The authorizer configuration for the gateway. Required if <code>authorizerType</code> is <code>CUSTOM_JWT</code>.</p>"
         },
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
@@ -2119,8 +2140,7 @@
       "required":[
         "gatewayIdentifier",
         "name",
-        "targetConfiguration",
-        "credentialProviderConfigurations"
+        "targetConfiguration"
       ],
       "members":{
         "gatewayIdentifier":{
@@ -2139,7 +2159,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, the service ignores the request, but does not return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
           "idempotencyToken":true
         },
         "targetConfiguration":{
@@ -2204,6 +2224,10 @@
         "credentialProviderConfigurations":{
           "shape":"CredentialProviderConfigurations",
           "documentation":"<p>The credential provider configurations for the target.</p>"
+        },
+        "lastSynchronizedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The last synchronization of the target.</p>"
         }
       }
     },
@@ -2427,6 +2451,10 @@
         "userPreferenceOverride":{
           "shape":"UserPreferenceOverrideConfigurationInput",
           "documentation":"<p>The user preference override configuration for a custom memory strategy.</p>"
+        },
+        "selfManagedConfiguration":{
+          "shape":"SelfManagedConfigurationInput",
+          "documentation":"<p>The self managed configuration for a custom memory strategy.</p>"
         }
       },
       "documentation":"<p>Input for custom configuration of a memory strategy.</p>",
@@ -3087,6 +3115,67 @@
       },
       "documentation":"<p>Contains summary information about a gateway.</p>"
     },
+    "GatewayTarget":{
+      "type":"structure",
+      "required":[
+        "gatewayArn",
+        "targetId",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "name",
+        "targetConfiguration",
+        "credentialProviderConfigurations"
+      ],
+      "members":{
+        "gatewayArn":{
+          "shape":"GatewayArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the gateway target.</p>"
+        },
+        "targetId":{
+          "shape":"TargetId",
+          "documentation":"<p>The target ID.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The date and time at which the target was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The date and time at which the target was updated.</p>"
+        },
+        "status":{
+          "shape":"TargetStatus",
+          "documentation":"<p>The status of the gateway target.</p>"
+        },
+        "statusReasons":{
+          "shape":"StatusReasons",
+          "documentation":"<p>The status reasons for the target status.</p>"
+        },
+        "name":{
+          "shape":"TargetName",
+          "documentation":"<p>The name of the gateway target.</p>"
+        },
+        "description":{
+          "shape":"TargetDescription",
+          "documentation":"<p>The description for the gateway target.</p>"
+        },
+        "targetConfiguration":{"shape":"TargetConfiguration"},
+        "credentialProviderConfigurations":{
+          "shape":"CredentialProviderConfigurations",
+          "documentation":"<p>The provider configurations.</p>"
+        },
+        "lastSynchronizedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The last synchronization time.</p>"
+        }
+      },
+      "documentation":"<p>The gateway target.</p>"
+    },
+    "GatewayTargetList":{
+      "type":"list",
+      "member":{"shape":"GatewayTarget"}
+    },
     "GatewayUrl":{
       "type":"string",
       "max":1024,
@@ -3602,6 +3691,10 @@
         "credentialProviderConfigurations":{
           "shape":"CredentialProviderConfigurations",
           "documentation":"<p>The credential provider configurations for the gateway target.</p>"
+        },
+        "lastSynchronizedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The last synchronization of the target.</p>"
         }
       }
     },
@@ -3819,6 +3912,10 @@
       "type":"string",
       "sensitive":true
     },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
     "InternalServerException":{
       "type":"structure",
       "members":{
@@ -3828,6 +3925,46 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "InvocationConfiguration":{
+      "type":"structure",
+      "required":[
+        "topicArn",
+        "payloadDeliveryBucketName"
+      ],
+      "members":{
+        "topicArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the SNS topic for job notifications.</p>"
+        },
+        "payloadDeliveryBucketName":{
+          "shape":"String",
+          "documentation":"<p>The S3 bucket name for event payload delivery.</p>"
+        }
+      },
+      "documentation":"<p>The configuration to invoke a self-managed memory processing pipeline with.</p>"
+    },
+    "InvocationConfigurationInput":{
+      "type":"structure",
+      "required":[
+        "topicArn",
+        "payloadDeliveryBucketName"
+      ],
+      "members":{
+        "topicArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the SNS topic for job notifications.</p>"
+        },
+        "payloadDeliveryBucketName":{
+          "shape":"InvocationConfigurationInputPayloadDeliveryBucketNameString",
+          "documentation":"<p>The S3 bucket name for event payload delivery.</p>"
+        }
+      },
+      "documentation":"<p>The configuration to invoke a self-managed memory processing pipeline with.</p>"
+    },
+    "InvocationConfigurationInputPayloadDeliveryBucketNameString":{
+      "type":"string",
+      "pattern":"[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]"
     },
     "IssuerUrlType":{"type":"string"},
     "KeyType":{
@@ -4334,6 +4471,21 @@
       },
       "documentation":"<p>The Lambda configuration for a Model Context Protocol target. This structure defines how the gateway uses a Lambda function to communicate with the target.</p>"
     },
+    "McpServerTargetConfiguration":{
+      "type":"structure",
+      "required":["endpoint"],
+      "members":{
+        "endpoint":{
+          "shape":"McpServerTargetConfigurationEndpointString",
+          "documentation":"<p>The endpoint for the MCP server target configuration.</p>"
+        }
+      },
+      "documentation":"<p>The target configuration for the MCP server.</p>"
+    },
+    "McpServerTargetConfigurationEndpointString":{
+      "type":"string",
+      "pattern":"https://.*"
+    },
     "McpSupportedVersions":{
       "type":"list",
       "member":{"shape":"McpVersion"}
@@ -4352,6 +4504,10 @@
         "lambda":{
           "shape":"McpLambdaTargetConfiguration",
           "documentation":"<p>The Lambda configuration for the Model Context Protocol target. This configuration defines how the gateway uses a Lambda function to communicate with the target.</p>"
+        },
+        "mcpServer":{
+          "shape":"McpServerTargetConfiguration",
+          "documentation":"<p>The MCP server specified as the gateway target.</p>"
         }
       },
       "documentation":"<p>The Model Context Protocol (MCP) configuration for a target. This structure defines how the gateway uses MCP to communicate with the target.</p>",
@@ -4581,6 +4737,32 @@
       "type":"list",
       "member":{"shape":"MemorySummary"}
     },
+    "MessageBasedTrigger":{
+      "type":"structure",
+      "members":{
+        "messageCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of messages that trigger memory processing.</p>"
+        }
+      },
+      "documentation":"<p>The trigger configuration based on a message.</p>"
+    },
+    "MessageBasedTriggerInput":{
+      "type":"structure",
+      "members":{
+        "messageCount":{
+          "shape":"MessageBasedTriggerInputMessageCountInteger",
+          "documentation":"<p>The number of messages that trigger memory processing.</p>"
+        }
+      },
+      "documentation":"<p>The trigger configuration based on a message.</p>"
+    },
+    "MessageBasedTriggerInputMessageCountInteger":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
+    },
     "MicrosoftOauth2ProviderConfigInput":{
       "type":"structure",
       "required":[
@@ -4632,6 +4814,24 @@
       "documentation":"<p>Contains information for modifying an extraction configuration.</p>",
       "union":true
     },
+    "ModifyInvocationConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "topicArn":{
+          "shape":"Arn",
+          "documentation":"<p>The updated ARN of the SNS topic for job notifications.</p>"
+        },
+        "payloadDeliveryBucketName":{
+          "shape":"ModifyInvocationConfigurationInputPayloadDeliveryBucketNameString",
+          "documentation":"<p>The updated S3 bucket name for event payload delivery.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for updating invocation settings.</p>"
+    },
+    "ModifyInvocationConfigurationInputPayloadDeliveryBucketNameString":{
+      "type":"string",
+      "pattern":"[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]"
+    },
     "ModifyMemoryStrategies":{
       "type":"structure",
       "members":{
@@ -4677,6 +4877,30 @@
       },
       "documentation":"<p>Input for modifying a memory strategy.</p>"
     },
+    "ModifySelfManagedConfiguration":{
+      "type":"structure",
+      "members":{
+        "triggerConditions":{
+          "shape":"TriggerConditionInputList",
+          "documentation":"<p>The updated list of conditions that trigger memory processing.</p>"
+        },
+        "invocationConfiguration":{
+          "shape":"ModifyInvocationConfigurationInput",
+          "documentation":"<p>The updated configuration to invoke self-managed memory processing pipeline.</p>"
+        },
+        "historicalContextWindowSize":{
+          "shape":"ModifySelfManagedConfigurationHistoricalContextWindowSizeInteger",
+          "documentation":"<p>The updated number of historical messages to include in processing context.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for updating the self-managed memory strategy.</p>"
+    },
+    "ModifySelfManagedConfigurationHistoricalContextWindowSizeInteger":{
+      "type":"integer",
+      "box":true,
+      "max":20,
+      "min":3
+    },
     "ModifyStrategyConfiguration":{
       "type":"structure",
       "members":{
@@ -4687,6 +4911,10 @@
         "consolidation":{
           "shape":"ModifyConsolidationConfiguration",
           "documentation":"<p>The updated consolidation configuration.</p>"
+        },
+        "selfManagedConfiguration":{
+          "shape":"ModifySelfManagedConfiguration",
+          "documentation":"<p>The updated self-managed configuration.</p>"
         }
       },
       "documentation":"<p>Contains information for modifying a strategy configuration.</p>"
@@ -4939,7 +5167,8 @@
       "enum":[
         "SEMANTIC_OVERRIDE",
         "SUMMARY_OVERRIDE",
-        "USER_PREFERENCE_OVERRIDE"
+        "USER_PREFERENCE_OVERRIDE",
+        "SELF_MANAGED"
       ]
     },
     "Prompt":{
@@ -5201,6 +5430,54 @@
       "max":16,
       "min":1
     },
+    "SelfManagedConfiguration":{
+      "type":"structure",
+      "required":[
+        "triggerConditions",
+        "invocationConfiguration",
+        "historicalContextWindowSize"
+      ],
+      "members":{
+        "triggerConditions":{
+          "shape":"TriggerConditionsList",
+          "documentation":"<p>A list of conditions that trigger memory processing.</p>"
+        },
+        "invocationConfiguration":{
+          "shape":"InvocationConfiguration",
+          "documentation":"<p>The configuration to use when invoking memory processing.</p>"
+        },
+        "historicalContextWindowSize":{
+          "shape":"Integer",
+          "documentation":"<p>The number of historical messages to include in processing context.</p>"
+        }
+      },
+      "documentation":"<p>A configuration for a self-managed memory strategy.</p>"
+    },
+    "SelfManagedConfigurationInput":{
+      "type":"structure",
+      "required":["invocationConfiguration"],
+      "members":{
+        "triggerConditions":{
+          "shape":"TriggerConditionInputList",
+          "documentation":"<p>A list of conditions that trigger memory processing.</p>"
+        },
+        "invocationConfiguration":{
+          "shape":"InvocationConfigurationInput",
+          "documentation":"<p>Configuration to invoke a self-managed memory processing pipeline with.</p>"
+        },
+        "historicalContextWindowSize":{
+          "shape":"SelfManagedConfigurationInputHistoricalContextWindowSizeInteger",
+          "documentation":"<p>Number of historical messages to include in processing context.</p>"
+        }
+      },
+      "documentation":"<p>Input configuration for a self-managed memory strategy.</p>"
+    },
+    "SelfManagedConfigurationInputHistoricalContextWindowSizeInteger":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":0
+    },
     "SemanticConsolidationOverride":{
       "type":"structure",
       "required":[
@@ -5427,6 +5704,10 @@
         "consolidation":{
           "shape":"ConsolidationConfiguration",
           "documentation":"<p>The consolidation configuration for the memory strategy.</p>"
+        },
+        "selfManagedConfiguration":{
+          "shape":"SelfManagedConfiguration",
+          "documentation":"<p>Self-managed configuration settings.</p>"
         }
       },
       "documentation":"<p>Contains configuration information for a memory strategy.</p>"
@@ -5507,6 +5788,34 @@
       },
       "documentation":"<p>Input for summary override consolidation configuration in a memory strategy.</p>"
     },
+    "SynchronizeGatewayTargetsRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayIdentifier",
+        "targetIdList"
+      ],
+      "members":{
+        "gatewayIdentifier":{
+          "shape":"GatewayIdentifier",
+          "documentation":"<p>The gateway Identifier.</p>",
+          "location":"uri",
+          "locationName":"gatewayIdentifier"
+        },
+        "targetIdList":{
+          "shape":"TargetIdList",
+          "documentation":"<p>The target ID list.</p>"
+        }
+      }
+    },
+    "SynchronizeGatewayTargetsResponse":{
+      "type":"structure",
+      "members":{
+        "targets":{
+          "shape":"GatewayTargetList",
+          "documentation":"<p>The gateway targets for synchronization.</p>"
+        }
+      }
+    },
     "TagKey":{
       "type":"string",
       "max":128,
@@ -5582,6 +5891,12 @@
       "type":"string",
       "pattern":"[0-9a-zA-Z]{10}"
     },
+    "TargetIdList":{
+      "type":"list",
+      "member":{"shape":"TargetId"},
+      "max":1,
+      "min":1
+    },
     "TargetMaxResults":{
       "type":"integer",
       "box":true,
@@ -5607,7 +5922,9 @@
         "UPDATE_UNSUCCESSFUL",
         "DELETING",
         "READY",
-        "FAILED"
+        "FAILED",
+        "SYNCHRONIZING",
+        "SYNCHRONIZE_UNSUCCESSFUL"
       ]
     },
     "TargetSummaries":{
@@ -5676,7 +5993,59 @@
       },
       "exception":true
     },
+    "TimeBasedTrigger":{
+      "type":"structure",
+      "members":{
+        "idleSessionTimeout":{
+          "shape":"Integer",
+          "documentation":"<p>Idle session timeout (seconds) that triggers memory processing.</p>"
+        }
+      },
+      "documentation":"<p>Trigger configuration based on time.</p>"
+    },
+    "TimeBasedTriggerInput":{
+      "type":"structure",
+      "members":{
+        "idleSessionTimeout":{
+          "shape":"TimeBasedTriggerInputIdleSessionTimeoutInteger",
+          "documentation":"<p>Idle session timeout (seconds) that triggers memory processing.</p>"
+        }
+      },
+      "documentation":"<p>Trigger configuration based on time.</p>"
+    },
+    "TimeBasedTriggerInputIdleSessionTimeoutInteger":{
+      "type":"integer",
+      "box":true,
+      "max":3000,
+      "min":10
+    },
     "Timestamp":{"type":"timestamp"},
+    "TokenBasedTrigger":{
+      "type":"structure",
+      "members":{
+        "tokenCount":{
+          "shape":"Integer",
+          "documentation":"<p>Number of tokens that trigger memory processing.</p>"
+        }
+      },
+      "documentation":"<p>Trigger configuration based on tokens.</p>"
+    },
+    "TokenBasedTriggerInput":{
+      "type":"structure",
+      "members":{
+        "tokenCount":{
+          "shape":"TokenBasedTriggerInputTokenCountInteger",
+          "documentation":"<p>Number of tokens that trigger memory processing.</p>"
+        }
+      },
+      "documentation":"<p>Trigger configuration based on tokens.</p>"
+    },
+    "TokenBasedTriggerInputTokenCountInteger":{
+      "type":"integer",
+      "box":true,
+      "max":500000,
+      "min":100
+    },
     "TokenEndpointType":{"type":"string"},
     "TokenVaultIdType":{
       "type":"string",
@@ -5729,6 +6098,54 @@
       },
       "documentation":"<p>A tool schema for a gateway target. This structure defines the schema for a tool that the target exposes through the Model Context Protocol.</p>",
       "union":true
+    },
+    "TriggerCondition":{
+      "type":"structure",
+      "members":{
+        "messageBasedTrigger":{
+          "shape":"MessageBasedTrigger",
+          "documentation":"<p>Message based trigger configuration.</p>"
+        },
+        "tokenBasedTrigger":{
+          "shape":"TokenBasedTrigger",
+          "documentation":"<p>Token based trigger configuration.</p>"
+        },
+        "timeBasedTrigger":{
+          "shape":"TimeBasedTrigger",
+          "documentation":"<p>Time based trigger configuration.</p>"
+        }
+      },
+      "documentation":"<p>Condition that triggers memory processing.</p>",
+      "union":true
+    },
+    "TriggerConditionInput":{
+      "type":"structure",
+      "members":{
+        "messageBasedTrigger":{
+          "shape":"MessageBasedTriggerInput",
+          "documentation":"<p>Message based trigger configuration.</p>"
+        },
+        "tokenBasedTrigger":{
+          "shape":"TokenBasedTriggerInput",
+          "documentation":"<p>Token based trigger configuration.</p>"
+        },
+        "timeBasedTrigger":{
+          "shape":"TimeBasedTriggerInput",
+          "documentation":"<p>Time based trigger configuration.</p>"
+        }
+      },
+      "documentation":"<p>Condition that triggers memory processing.</p>",
+      "union":true
+    },
+    "TriggerConditionInputList":{
+      "type":"list",
+      "member":{"shape":"TriggerConditionInput"},
+      "min":1
+    },
+    "TriggerConditionsList":{
+      "type":"list",
+      "member":{"shape":"TriggerCondition"},
+      "min":1
     },
     "UnauthorizedException":{
       "type":"structure",
@@ -6123,8 +6540,7 @@
         "gatewayIdentifier",
         "targetId",
         "name",
-        "targetConfiguration",
-        "credentialProviderConfigurations"
+        "targetConfiguration"
       ],
       "members":{
         "gatewayIdentifier":{
@@ -6203,6 +6619,10 @@
         "credentialProviderConfigurations":{
           "shape":"CredentialProviderConfigurations",
           "documentation":"<p>The updated credential provider configurations for the gateway target.</p>"
+        },
+        "lastSynchronizedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The date and time at which the targets were last synchronized.</p>"
         }
       }
     },

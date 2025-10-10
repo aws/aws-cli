@@ -11,7 +11,6 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import os
-import random
 import re
 import shutil
 import signal
@@ -24,6 +23,7 @@ from awscli.clidriver import create_clidriver
 from awscli.testutils import (
     BaseS3CLICommand,
     aws,
+    random_bucket_name,
     skip_if_windows,
     temporary_file,
     unittest,
@@ -173,9 +173,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     def test_streaming_output_operation(self):
         d = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, d)
-        bucket_name = (
-            'clistream' + str(int(time.time())) + str(random.randint(1, 100))
-        )
+        bucket_name = random_bucket_name('clistream')
 
         self.put_object(
             bucket=bucket_name, key='foobar', content='foobar contents'
@@ -196,9 +194,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         env_vars['AWS_ACCESS_KEY_ID'] = 'foo'
         env_vars['AWS_SECRET_ACCESS_KEY'] = 'bar'
 
-        bucket_name = (
-            'nosign' + str(int(time.time())) + str(random.randint(1, 100))
-        )
+        bucket_name = random_bucket_name('nosign')
         self.put_object(
             bucket_name,
             'foo',
@@ -229,9 +225,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     def test_no_paginate_arg(self):
         d = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, d)
-        bucket_name = (
-            'nopaginate' + str(int(time.time())) + str(random.randint(1, 100))
-        )
+        bucket_name = random_bucket_name('nopaginate')
 
         self.put_object(
             bucket=bucket_name, key='foobar', content='foobar contents'

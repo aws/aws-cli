@@ -24,6 +24,7 @@ from awscli.customizations.cloudformation.yamlhelper import yaml_parse
 
 from awscli.customizations.commands import BasicCommand
 from awscli.compat import get_stdout_text_writer
+from awscli.customizations.utils import uni_print
 from awscli.utils import create_nested_client, write_exception
 
 LOG = logging.getLogger(__name__)
@@ -321,12 +322,13 @@ class DeployCommand(BasicCommand):
                            parsed_args.execute_changeset, parsed_args.role_arn,
                            parsed_args.notification_arns, s3_uploader,
                            tags, parsed_args.fail_on_empty_changeset,
-                           parsed_args.disable_rollback)
+                           parsed_args.disable_rollback, getattr(parsed_globals, 'v2_debug', False))
 
     def deploy(self, deployer, stack_name, template_str,
                parameters, capabilities, execute_changeset, role_arn,
                notification_arns, s3_uploader, tags,
-               fail_on_empty_changeset=True, disable_rollback=False):
+               fail_on_empty_changeset=True, disable_rollback=False,
+               v2_debug=False):
         try:
             result = deployer.create_and_wait_for_changeset(
                 stack_name=stack_name,
@@ -339,10 +341,19 @@ class DeployCommand(BasicCommand):
                 tags=tags
             )
         except exceptions.ChangeEmptyError as ex:
-            # TODO print the runtime check for cli v2 breakage. technically won't be breaking if --fail-on-empty-changeset is
-            # explicitly provided. but we cannot differentiate between whether fail-on-empty-changeset is true because it's default
-            # or because it's explicitly specified.
             if fail_on_empty_changeset:
+                if v2_debug:
+                    uni_print(
+                        'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, '
+                        'deploying an AWS CloudFormation Template that '
+                        'results in an empty changeset will NOT result in an '
+                        'error. You can add the -–no-fail-on-empty-changeset '
+                        'flag to migrate to v2 behavior and resolve this '
+                        'warning. See https://docs.aws.amazon.com/cli/latest/'
+                        'userguide/cliv2-migration-changes.html'
+                        '#cliv2-migration-cfn.\n',
+                        out_file=sys.stderr
+                    )
                 raise
             write_exception(ex, outfile=get_stdout_text_writer())
             return 0

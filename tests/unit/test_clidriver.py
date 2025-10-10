@@ -104,7 +104,8 @@ GET_DATA = {
 GET_VARIABLE = {
     'provider': 'aws',
     'output': 'json',
-    'api_versions': {}
+    'api_versions': {},
+    'cli_binary_format': 'raw-in-base64-out',
 }
 
 
@@ -235,6 +236,9 @@ class FakeSession(object):
         if name in GET_VARIABLE:
             return GET_VARIABLE[name]
         return self.session_vars[name]
+
+    def get_scoped_config(self):
+        return GET_VARIABLE
 
     def get_service_model(self, name, api_version=None):
         return botocore.model.ServiceModel(

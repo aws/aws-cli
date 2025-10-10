@@ -14,7 +14,7 @@ from botocore.session import get_session
 from botocore import UNSIGNED
 import os
 
-from awscli.testutils import mock, unittest
+from awscli.testutils import mock, unittest, capture_output
 from awscli.customizations import globalargs
 
 
@@ -185,3 +185,63 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         self.assertEqual(parsed_args.connect_timeout, None)
         self.assertEqual(
             session.get_default_client_config().connect_timeout, None)
+
+    def test_v2_debug_python_utf8_env_var(self):
+        parsed_args = FakeParsedArgs(v2_debug=True)
+        session = get_session()
+        environ = {'PYTHONUTF8': '1'}
+        with mock.patch('os.environ', environ):
+            with capture_output() as output:
+                globalargs.detect_migration_breakage(parsed_args, [], session)
+                self.assertIn(
+                    'AWS CLI v2 MIGRATION WARNING: The PYTHONUTF8 and '
+                    'PYTHONIOENCODING environment variables are unsupported '
+                    'in AWS CLI v2.',
+                    output.stderr.getvalue()
+                )
+
+    def test_v2_debug_python_utf8_resolved_env_var(self):
+        parsed_args = FakeParsedArgs(v2_debug=True)
+        session = get_session()
+        environ = {'PYTHONUTF8': '1', 'AWS_CLI_FILE_ENCODING': 'UTF-8'}
+        with mock.patch('os.environ', environ):
+            with capture_output() as output:
+                globalargs.detect_migration_breakage(parsed_args, [], session)
+                self.assertNotIn(
+                    'AWS CLI v2 MIGRATION WARNING: The PYTHONUTF8 and '
+                    'PYTHONIOENCODING environment variables are unsupported '
+                    'in AWS CLI v2.',
+                    output.stderr.getvalue()
+                )
+
+    def test_v2_debug_python_io_encoding_env_var(self):
+        parsed_args = FakeParsedArgs(v2_debug=True)
+        session = get_session()
+        environ = {'PYTHONIOENCODING': 'UTF8'}
+        with mock.patch('os.environ', environ):
+            with capture_output() as output:
+                globalargs.detect_migration_breakage(parsed_args, [], session)
+                self.assertIn(
+                    'AWS CLI v2 MIGRATION WARNING: The PYTHONUTF8 and '
+                    'PYTHONIOENCODING environment variables are unsupported '
+                    'in AWS CLI v2.',
+                    output.stderr.getvalue()
+                )
+
+    def test_v2_debug_s3_sigv2(self):
+        parsed_args = FakeParsedArgs(v2_debug=True)
+        session = get_session()
+        globalargs.detect_migration_breakage(parsed_args, [], session)
+        with capture_output() as output:
+            session.emit(
+                'choose-signer.s3.*',
+                signing_name='s3',
+                region_name='us-west-2',
+                signature_version='v2',
+                context={'auth_type': 'v2'},
+            )
+        self.assertIn(
+            'AWS CLI v2 MIGRATION WARNING: The AWS CLI v2 only uses Signature '
+            'v4 to authenticate Amazon S3 requests.',
+            output.stderr.getvalue()
+        )

@@ -4,7 +4,7 @@ The following ``create-function`` example creates a Lambda function named ``my-f
 
     aws lambda create-function \
         --function-name my-function \
-        --runtime nodejs18.x \
+        --runtime nodejs22.x \
         --zip-file fileb://my-function.zip \
         --handler my-function.handler \
         --role arn:aws:iam::123456789012:role/service-role/MyTestFunction-role-tges6bf4
@@ -28,10 +28,10 @@ Output::
         "Version": "$LATEST",
         "Role": "arn:aws:iam::123456789012:role/service-role/MyTestFunction-role-zgur6bf4",
         "Timeout": 3,
-        "LastModified": "2023-10-14T22:26:11.234+0000",
+        "LastModified": "2025-10-14T22:26:11.234+0000",
         "Handler": "my-function.handler",
-        "Runtime": "nodejs18.x",
+        "Runtime": "nodejs22.x",
         "Description": ""
     }
 
-For more information, see `AWS Lambda Function Configuration <https://docs.aws.amazon.com/lambda/latest/dg/resource-model.html>`__ in the *AWS Lambda Developer Guide*.
+For more information, see `Configure Lambda function memory <https://docs.aws.amazon.com/lambda/latest/dg/configuration-memory.html>`__ in the *AWS Lambda Developer Guide*.

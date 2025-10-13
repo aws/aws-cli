@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.31.14
+=======
+
+* api-change:``observabilityadmin``: CloudWatch Observability Admin adds the ability to enable Resource tags for telemetry in a customer account. The release introduces new APIs to enable, disable and describe the status of Resource tags for telemetry feature. This new capability simplifies monitoring AWS resources using tags.
+* api-change:``bedrock-agentcore-control``: Updated http status code in control plane apis of agentcore runtime, tools and identity. Additional included provider types for AgentCore Identity
+* api-change:``ec2``: Release Amazon EC2 c8i, c8i-flex, m8a, and r8gb
+* api-change:``bedrock-agentcore``: Updated InvokeAgentRuntime API to accept account id optionally and added CompleteResourceTokenAuth API.
+
+
 2.31.13
 =======
 

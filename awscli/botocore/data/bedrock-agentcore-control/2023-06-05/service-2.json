@@ -18,7 +18,7 @@
       "http":{
         "method":"PUT",
         "requestUri":"/runtimes/",
-        "responseCode":201
+        "responseCode":202
       },
       "input":{"shape":"CreateAgentRuntimeRequest"},
       "output":{"shape":"CreateAgentRuntimeResponse"},
@@ -38,7 +38,7 @@
       "http":{
         "method":"PUT",
         "requestUri":"/runtimes/{agentRuntimeId}/runtime-endpoints/",
-        "responseCode":200
+        "responseCode":202
       },
       "input":{"shape":"CreateAgentRuntimeEndpointRequest"},
       "output":{"shape":"CreateAgentRuntimeEndpointResponse"},
@@ -59,7 +59,7 @@
       "http":{
         "method":"POST",
         "requestUri":"/identities/CreateApiKeyCredentialProvider",
-        "responseCode":200
+        "responseCode":201
       },
       "input":{"shape":"CreateApiKeyCredentialProviderRequest"},
       "output":{"shape":"CreateApiKeyCredentialProviderResponse"},
@@ -84,7 +84,7 @@
       "http":{
         "method":"PUT",
         "requestUri":"/browsers",
-        "responseCode":201
+        "responseCode":202
       },
       "input":{"shape":"CreateBrowserRequest"},
       "output":{"shape":"CreateBrowserResponse"},
@@ -104,7 +104,7 @@
       "http":{
         "method":"PUT",
         "requestUri":"/code-interpreters",
-        "responseCode":201
+        "responseCode":202
       },
       "input":{"shape":"CreateCodeInterpreterRequest"},
       "output":{"shape":"CreateCodeInterpreterResponse"},
@@ -186,7 +186,7 @@
       "http":{
         "method":"POST",
         "requestUri":"/identities/CreateOauth2CredentialProvider",
-        "responseCode":200
+        "responseCode":201
       },
       "input":{"shape":"CreateOauth2CredentialProviderRequest"},
       "output":{"shape":"CreateOauth2CredentialProviderResponse"},
@@ -211,7 +211,7 @@
       "http":{
         "method":"POST",
         "requestUri":"/identities/CreateWorkloadIdentity",
-        "responseCode":200
+        "responseCode":201
       },
       "input":{"shape":"CreateWorkloadIdentityRequest"},
       "output":{"shape":"CreateWorkloadIdentityResponse"},
@@ -231,7 +231,7 @@
       "http":{
         "method":"DELETE",
         "requestUri":"/runtimes/{agentRuntimeId}/",
-        "responseCode":200
+        "responseCode":202
       },
       "input":{"shape":"DeleteAgentRuntimeRequest"},
       "output":{"shape":"DeleteAgentRuntimeResponse"},
@@ -250,7 +250,7 @@
       "http":{
         "method":"DELETE",
         "requestUri":"/runtimes/{agentRuntimeId}/runtime-endpoints/{endpointName}/",
-        "responseCode":200
+        "responseCode":202
       },
       "input":{"shape":"DeleteAgentRuntimeEndpointRequest"},
       "output":{"shape":"DeleteAgentRuntimeEndpointResponse"},
@@ -269,7 +269,7 @@
       "http":{
         "method":"POST",
         "requestUri":"/identities/DeleteApiKeyCredentialProvider",
-        "responseCode":200
+        "responseCode":204
       },
       "input":{"shape":"DeleteApiKeyCredentialProviderRequest"},
       "output":{"shape":"DeleteApiKeyCredentialProviderResponse"},
@@ -289,7 +289,7 @@
       "http":{
         "method":"DELETE",
         "requestUri":"/browsers/{browserId}",
-        "responseCode":200
+        "responseCode":202
       },
       "input":{"shape":"DeleteBrowserRequest"},
       "output":{"shape":"DeleteBrowserResponse"},
@@ -310,7 +310,7 @@
       "http":{
         "method":"DELETE",
         "requestUri":"/code-interpreters/{codeInterpreterId}",
-        "responseCode":200
+        "responseCode":202
       },
       "input":{"shape":"DeleteCodeInterpreterRequest"},
       "output":{"shape":"DeleteCodeInterpreterResponse"},
@@ -390,7 +390,7 @@
       "http":{
         "method":"POST",
         "requestUri":"/identities/DeleteOauth2CredentialProvider",
-        "responseCode":200
+        "responseCode":204
       },
       "input":{"shape":"DeleteOauth2CredentialProviderRequest"},
       "output":{"shape":"DeleteOauth2CredentialProviderResponse"},
@@ -410,7 +410,7 @@
       "http":{
         "method":"POST",
         "requestUri":"/identities/DeleteWorkloadIdentity",
-        "responseCode":200
+        "responseCode":204
       },
       "input":{"shape":"DeleteWorkloadIdentityRequest"},
       "output":{"shape":"DeleteWorkloadIdentityResponse"},
@@ -949,7 +949,7 @@
       "http":{
         "method":"PUT",
         "requestUri":"/runtimes/{agentRuntimeId}/",
-        "responseCode":201
+        "responseCode":202
       },
       "input":{"shape":"UpdateAgentRuntimeRequest"},
       "output":{"shape":"UpdateAgentRuntimeResponse"},
@@ -970,7 +970,7 @@
       "http":{
         "method":"PUT",
         "requestUri":"/runtimes/{agentRuntimeId}/runtime-endpoints/{endpointName}/",
-        "responseCode":200
+        "responseCode":202
       },
       "input":{"shape":"UpdateAgentRuntimeEndpointRequest"},
       "output":{"shape":"UpdateAgentRuntimeEndpointResponse"},
@@ -1414,6 +1414,36 @@
       "type":"string",
       "pattern":"arn:[a-z0-9-\\.]{1,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[a-z0-9-\\.]{0,63}:[^/].{0,1023}"
     },
+    "AtlassianOauth2ProviderConfigInput":{
+      "type":"structure",
+      "required":[
+        "clientId",
+        "clientSecret"
+      ],
+      "members":{
+        "clientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The client ID for the Atlassian OAuth2 provider. This identifier is assigned by Atlassian when you register your application.</p>"
+        },
+        "clientSecret":{
+          "shape":"ClientSecretType",
+          "documentation":"<p>The client secret for the Atlassian OAuth2 provider. This secret is assigned by Atlassian and used along with the client ID to authenticate your application.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for connecting to Atlassian services using OAuth2 authentication. This includes the client credentials required to authenticate with Atlassian's OAuth2 authorization server.</p>"
+    },
+    "AtlassianOauth2ProviderConfigOutput":{
+      "type":"structure",
+      "required":["oauthDiscovery"],
+      "members":{
+        "oauthDiscovery":{"shape":"Oauth2Discovery"},
+        "clientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The client ID for the Atlassian OAuth2 provider.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details returned for an Atlassian OAuth2 provider, including the client ID and OAuth2 discovery information.</p>"
+    },
     "AuthorizationEndpointType":{"type":"string"},
     "AuthorizerConfiguration":{
       "type":"structure",
@@ -1728,6 +1758,14 @@
           "shape":"AgentRuntimeArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the AgentCore Runtime.</p>"
         },
+        "agentRuntimeId":{
+          "shape":"AgentRuntimeId",
+          "documentation":"<p>The unique identifier of the AgentCore Runtime.</p>"
+        },
+        "endpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the AgentCore Runtime endpoint.</p>"
+        },
         "status":{
           "shape":"AgentRuntimeEndpointStatus",
           "documentation":"<p>The current status of the AgentCore Runtime endpoint.</p>"
@@ -1845,6 +1883,10 @@
         "apiKey":{
           "shape":"ApiKeyType",
           "documentation":"<p>The API key to use for authentication. This value is encrypted and stored securely.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of tag keys and values to assign to the API key credential provider. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment.</p>"
         }
       }
     },
@@ -2312,6 +2354,10 @@
         "oauth2ProviderConfigInput":{
           "shape":"Oauth2ProviderConfigInput",
           "documentation":"<p>The configuration settings for the OAuth2 provider, including client ID, client secret, and other vendor-specific settings.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of tag keys and values to assign to the OAuth2 credential provider. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment.</p>"
         }
       }
     },
@@ -2334,7 +2380,12 @@
         "credentialProviderArn":{
           "shape":"CredentialProviderArnType",
           "documentation":"<p>The Amazon Resource Name (ARN) of the OAuth2 credential provider.</p>"
-        }
+        },
+        "callbackUrl":{
+          "shape":"String",
+          "documentation":"<p>Callback URL to register on the OAuth2 credential provider as an allowed callback URL. This URL is where the OAuth2 authorization server redirects users after they complete the authorization flow.</p>"
+        },
+        "oauth2ProviderConfigOutput":{"shape":"Oauth2ProviderConfigOutput"}
       }
     },
     "CreateWorkloadIdentityRequest":{
@@ -2348,6 +2399,10 @@
         "allowedResourceOauth2ReturnUrls":{
           "shape":"ResourceOauth2ReturnUrlListType",
           "documentation":"<p>The list of allowed OAuth2 return URLs for resources associated with this workload identity.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of tag keys and values to assign to the workload identity. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment.</p>"
         }
       }
     },
@@ -2434,7 +2489,26 @@
         "SlackOauth2",
         "SalesforceOauth2",
         "MicrosoftOauth2",
-        "CustomOauth2"
+        "CustomOauth2",
+        "AtlassianOauth2",
+        "LinkedinOauth2",
+        "XOauth2",
+        "OktaOauth2",
+        "OneLoginOauth2",
+        "PingOneOauth2",
+        "FacebookOauth2",
+        "YandexOauth2",
+        "RedditOauth2",
+        "ZoomOauth2",
+        "TwitchOauth2",
+        "SpotifyOauth2",
+        "DropboxOauth2",
+        "NotionOauth2",
+        "HubspotOauth2",
+        "CyberArkOauth2",
+        "FusionAuthOauth2",
+        "Auth0Oauth2",
+        "CognitoOauth2"
       ]
     },
     "CustomConfigurationInput":{
@@ -2600,6 +2674,10 @@
         "oauthDiscovery":{
           "shape":"Oauth2Discovery",
           "documentation":"<p>The OAuth2 discovery information for the custom provider.</p>"
+        },
+        "clientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The client ID for the custom OAuth2 provider.</p>"
         }
       },
       "documentation":"<p>Output configuration for a custom OAuth2 provider.</p>"
@@ -2656,6 +2734,14 @@
         "status":{
           "shape":"AgentRuntimeEndpointStatus",
           "documentation":"<p>The current status of the AgentCore Runtime endpoint deletion.</p>"
+        },
+        "agentRuntimeId":{
+          "shape":"AgentRuntimeId",
+          "documentation":"<p>The unique identifier of the AgentCore Runtime.</p>"
+        },
+        "endpointName":{
+          "shape":"EndpointName",
+          "documentation":"<p>The name of the AgentCore Runtime endpoint.</p>"
         }
       }
     },
@@ -2678,6 +2764,10 @@
         "status":{
           "shape":"AgentRuntimeStatus",
           "documentation":"<p>The current status of the AgentCore Runtime deletion.</p>"
+        },
+        "agentRuntimeId":{
+          "shape":"AgentRuntimeId",
+          "documentation":"<p>The unique identifier of the AgentCore Runtime.</p>"
         }
       }
     },
@@ -3758,6 +3848,10 @@
           "shape":"CredentialProviderVendorType",
           "documentation":"<p>The vendor of the OAuth2 credential provider.</p>"
         },
+        "callbackUrl":{
+          "shape":"String",
+          "documentation":"<p>Callback URL to register on the OAuth2 credential provider as an allowed callback URL. This URL is where the OAuth2 authorization server redirects users after they complete the authorization flow.</p>"
+        },
         "oauth2ProviderConfigOutput":{
           "shape":"Oauth2ProviderConfigOutput",
           "documentation":"<p>The configuration output for the OAuth2 provider.</p>"
@@ -3869,6 +3963,10 @@
         "oauthDiscovery":{
           "shape":"Oauth2Discovery",
           "documentation":"<p>The OAuth2 discovery information for the GitHub provider.</p>"
+        },
+        "clientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The client ID for the GitHub OAuth2 provider.</p>"
         }
       },
       "documentation":"<p>Output configuration for a GitHub OAuth2 provider.</p>"
@@ -3898,6 +3996,10 @@
         "oauthDiscovery":{
           "shape":"Oauth2Discovery",
           "documentation":"<p>The OAuth2 discovery information for the Google provider.</p>"
+        },
+        "clientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The client ID for the Google OAuth2 provider.</p>"
         }
       },
       "documentation":"<p>Output configuration for a Google OAuth2 provider.</p>"
@@ -3907,6 +4009,48 @@
       "max":256,
       "min":1,
       "pattern":"(Authorization|X-Amzn-Bedrock-AgentCore-Runtime-Custom-[a-zA-Z0-9_-]+)"
+    },
+    "IncludedOauth2ProviderConfigInput":{
+      "type":"structure",
+      "required":[
+        "clientId",
+        "clientSecret"
+      ],
+      "members":{
+        "clientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The client ID for the supported OAuth2 provider. This identifier is assigned by the OAuth2 provider when you register your application.</p>"
+        },
+        "clientSecret":{
+          "shape":"ClientSecretType",
+          "documentation":"<p>The client secret for the supported OAuth2 provider. This secret is assigned by the OAuth2 provider and used along with the client ID to authenticate your application.</p>"
+        },
+        "issuer":{
+          "shape":"IssuerUrlType",
+          "documentation":"<p>Token issuer of your isolated OAuth2 application tenant. This URL identifies the authorization server that issues tokens for this provider.</p>"
+        },
+        "authorizationEndpoint":{
+          "shape":"AuthorizationEndpointType",
+          "documentation":"<p>OAuth2 authorization endpoint for your isolated OAuth2 application tenant. This is where users are redirected to authenticate and authorize access to their resources.</p>"
+        },
+        "tokenEndpoint":{
+          "shape":"TokenEndpointType",
+          "documentation":"<p>OAuth2 token endpoint for your isolated OAuth2 application tenant. This is where authorization codes are exchanged for access tokens.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for connecting to a supported OAuth2 provider. This includes client credentials and OAuth2 discovery information for providers that have built-in support.</p>"
+    },
+    "IncludedOauth2ProviderConfigOutput":{
+      "type":"structure",
+      "required":["oauthDiscovery"],
+      "members":{
+        "oauthDiscovery":{"shape":"Oauth2Discovery"},
+        "clientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The client ID for the supported OAuth2 provider.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details returned for a supported OAuth2 provider, including client credentials and OAuth2 discovery information.</p>"
     },
     "InlinePayload":{
       "type":"string",
@@ -4026,6 +4170,36 @@
       "box":true,
       "max":28800,
       "min":60
+    },
+    "LinkedinOauth2ProviderConfigInput":{
+      "type":"structure",
+      "required":[
+        "clientId",
+        "clientSecret"
+      ],
+      "members":{
+        "clientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The client ID for the LinkedIn OAuth2 provider. This identifier is assigned by LinkedIn when you register your application.</p>"
+        },
+        "clientSecret":{
+          "shape":"ClientSecretType",
+          "documentation":"<p>The client secret for the LinkedIn OAuth2 provider. This secret is assigned by LinkedIn and used along with the client ID to authenticate your application.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for connecting to LinkedIn services using OAuth2 authentication. This includes the client credentials required to authenticate with LinkedIn's OAuth2 authorization server.</p>"
+    },
+    "LinkedinOauth2ProviderConfigOutput":{
+      "type":"structure",
+      "required":["oauthDiscovery"],
+      "members":{
+        "oauthDiscovery":{"shape":"Oauth2Discovery"},
+        "clientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The client ID for the LinkedIn OAuth2 provider.</p>"
+        }
+      },
+      "documentation":"<p>The configuration details returned for a LinkedIn OAuth2 provider, including the client ID and OAuth2 discovery information.</p>"
     },
     "ListAgentRuntimeEndpointsRequest":{
       "type":"structure",
@@ -4777,6 +4951,10 @@
         "clientSecret":{
           "shape":"ClientSecretType",
           "documentation":"<p>The client secret for the Microsoft OAuth2 provider.</p>"
+        },
+        "tenantId":{
+          "shape":"TenantIdType",
+          "documentation":"<p>The Microsoft Entra ID (formerly Azure AD) tenant ID for your organization. This identifies the specific tenant within Microsoft's identity platform where your application is registered.</p>"
         }
       },
       "documentation":"<p>Input configuration for a Microsoft OAuth2 provider.</p>"
@@ -4788,6 +4966,10 @@
         "oauthDiscovery":{
           "shape":"Oauth2Discovery",
           "documentation":"<p>The OAuth2 discovery information for the Microsoft provider.</p>"
+        },
+        "clientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The client ID for the Microsoft OAuth2 provider.</p>"
         }
       },
       "documentation":"<p>Output configuration for a Microsoft OAuth2 provider.</p>"
@@ -4898,8 +5080,8 @@
     "ModifySelfManagedConfigurationHistoricalContextWindowSizeInteger":{
       "type":"integer",
       "box":true,
-      "max":20,
-      "min":3
+      "max":50,
+      "min":0
     },
     "ModifyStrategyConfiguration":{
       "type":"structure",
@@ -5044,6 +5226,10 @@
         "responseTypes":{
           "shape":"ResponseListType",
           "documentation":"<p>The supported response types for the OAuth2 authorization server.</p>"
+        },
+        "tokenEndpointAuthMethods":{
+          "shape":"TokenEndpointAuthMethodsType",
+          "documentation":"<p>The authentication methods supported by the token endpoint. This specifies how clients can authenticate when requesting tokens from the authorization server.</p>"
         }
       },
       "documentation":"<p>Contains the authorization server metadata for an OAuth2 provider.</p>"
@@ -5126,6 +5312,18 @@
         "microsoftOauth2ProviderConfig":{
           "shape":"MicrosoftOauth2ProviderConfigInput",
           "documentation":"<p>The configuration for a Microsoft OAuth2 provider.</p>"
+        },
+        "atlassianOauth2ProviderConfig":{
+          "shape":"AtlassianOauth2ProviderConfigInput",
+          "documentation":"<p>Configuration settings for Atlassian OAuth2 provider integration.</p>"
+        },
+        "linkedinOauth2ProviderConfig":{
+          "shape":"LinkedinOauth2ProviderConfigInput",
+          "documentation":"<p>Configuration settings for LinkedIn OAuth2 provider integration.</p>"
+        },
+        "includedOauth2ProviderConfig":{
+          "shape":"IncludedOauth2ProviderConfigInput",
+          "documentation":"<p>The configuration for a non-custom OAuth2 provider. This includes settings for supported OAuth2 providers that have built-in integration support.</p>"
         }
       },
       "documentation":"<p>Contains the input configuration for an OAuth2 provider.</p>",
@@ -5157,6 +5355,18 @@
         "microsoftOauth2ProviderConfig":{
           "shape":"MicrosoftOauth2ProviderConfigOutput",
           "documentation":"<p>The output configuration for a Microsoft OAuth2 provider.</p>"
+        },
+        "atlassianOauth2ProviderConfig":{
+          "shape":"AtlassianOauth2ProviderConfigOutput",
+          "documentation":"<p>The configuration details for the Atlassian OAuth2 provider.</p>"
+        },
+        "linkedinOauth2ProviderConfig":{
+          "shape":"LinkedinOauth2ProviderConfigOutput",
+          "documentation":"<p>The configuration details for the LinkedIn OAuth2 provider.</p>"
+        },
+        "includedOauth2ProviderConfig":{
+          "shape":"IncludedOauth2ProviderConfigOutput",
+          "documentation":"<p>The configuration for a non-custom OAuth2 provider. This includes the configuration details for supported OAuth2 providers that have built-in integration support.</p>"
         }
       },
       "documentation":"<p>Contains the output configuration for an OAuth2 provider.</p>",
@@ -5350,6 +5560,10 @@
         "oauthDiscovery":{
           "shape":"Oauth2Discovery",
           "documentation":"<p>The OAuth2 discovery information for the Salesforce provider.</p>"
+        },
+        "clientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The client ID for the Salesforce OAuth2 provider.</p>"
         }
       },
       "documentation":"<p>Output configuration for a Salesforce OAuth2 provider.</p>"
@@ -5675,6 +5889,10 @@
         "oauthDiscovery":{
           "shape":"Oauth2Discovery",
           "documentation":"<p>The OAuth2 discovery information for the Slack provider.</p>"
+        },
+        "clientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The client ID for the Slack OAuth2 provider.</p>"
         }
       },
       "documentation":"<p>Output configuration for a Slack OAuth2 provider.</p>"
@@ -5968,6 +6186,11 @@
       },
       "documentation":"<p>Contains summary information about a gateway target. A target represents an endpoint that the gateway can connect to.</p>"
     },
+    "TenantIdType":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "ThrottledException":{
       "type":"structure",
       "members":{
@@ -6020,6 +6243,10 @@
       "min":10
     },
     "Timestamp":{"type":"timestamp"},
+    "TokenAuthMethod":{
+      "type":"string",
+      "pattern":"(client_secret_post|client_secret_basic)"
+    },
     "TokenBasedTrigger":{
       "type":"structure",
       "members":{
@@ -6045,6 +6272,12 @@
       "box":true,
       "max":500000,
       "min":100
+    },
+    "TokenEndpointAuthMethodsType":{
+      "type":"list",
+      "member":{"shape":"TokenAuthMethod"},
+      "max":2,
+      "min":1
     },
     "TokenEndpointType":{"type":"string"},
     "TokenVaultIdType":{
@@ -6728,6 +6961,10 @@
         "credentialProviderArn":{
           "shape":"CredentialProviderArnType",
           "documentation":"<p>The Amazon Resource Name (ARN) of the OAuth2 credential provider.</p>"
+        },
+        "callbackUrl":{
+          "shape":"String",
+          "documentation":"<p>Callback URL to register on the OAuth2 credential provider as an allowed callback URL. This URL is where the OAuth2 authorization server redirects users after they complete the authorization flow.</p>"
         },
         "oauth2ProviderConfigOutput":{
           "shape":"Oauth2ProviderConfigOutput",

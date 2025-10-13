@@ -71,6 +71,25 @@
       ],
       "documentation":"<p>Updates multiple memory records with custom content in a single batch operation within the specified memory.</p>"
     },
+    "CompleteResourceTokenAuth":{
+      "name":"CompleteResourceTokenAuth",
+      "http":{
+        "method":"POST",
+        "requestUri":"/identities/CompleteResourceTokenAuth",
+        "responseCode":200
+      },
+      "input":{"shape":"CompleteResourceTokenAuthRequest"},
+      "output":{"shape":"CompleteResourceTokenAuthResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Confirms the user authentication session for obtaining OAuth2.0 tokens for a resource.</p>"
+    },
     "CreateEvent":{
       "name":"CreateEvent",
       "http":{
@@ -679,6 +698,11 @@
       "min":1,
       "sensitive":true
     },
+    "AuthorizationUrlType":{
+      "type":"string",
+      "min":1,
+      "sensitive":true
+    },
     "AutomationStream":{
       "type":"structure",
       "required":[
@@ -1048,6 +1072,27 @@
       },
       "documentation":"<p>Contains output from a code interpreter stream.</p>",
       "eventstream":true
+    },
+    "CompleteResourceTokenAuthRequest":{
+      "type":"structure",
+      "required":[
+        "userIdentifier",
+        "sessionUri"
+      ],
+      "members":{
+        "userIdentifier":{
+          "shape":"UserIdentifier",
+          "documentation":"<p>The OAuth2.0 token or user ID that was used to generate the workload access token used for initiating the user authorization flow to retrieve OAuth2.0 tokens.</p>"
+        },
+        "sessionUri":{
+          "shape":"RequestUri",
+          "documentation":"<p>Unique identifier for the user's authentication session for retrieving OAuth2 tokens. This ID tracks the authorization flow state across multiple requests and responses during the OAuth2 authentication process.</p>"
+        }
+      }
+    },
+    "CompleteResourceTokenAuthResponse":{
+      "type":"structure",
+      "members":{}
     },
     "ConflictException":{
       "type":"structure",
@@ -1714,6 +1759,10 @@
           "shape":"Oauth2FlowType",
           "documentation":"<p>The type of flow to be performed.</p>"
         },
+        "sessionUri":{
+          "shape":"RequestUri",
+          "documentation":"<p>Unique identifier for the user's authentication session for retrieving OAuth2 tokens. This ID tracks the authorization flow state across multiple requests and responses during the OAuth2 authentication process.</p>"
+        },
         "resourceOauth2ReturnUrl":{
           "shape":"ResourceOauth2ReturnUrlType",
           "documentation":"<p>The callback URL to redirect to after the OAuth 2.0 token retrieval is complete. This URL must be one of the provided URLs configured for the workload identity.</p>"
@@ -1725,6 +1774,10 @@
         "customParameters":{
           "shape":"CustomRequestParametersType",
           "documentation":"<p>A map of custom parameters to include in the authorization request to the resource credential provider. These parameters are in addition to the standard OAuth 2.0 flow parameters, and will not override them.</p>"
+        },
+        "customState":{
+          "shape":"State",
+          "documentation":"<p>An opaque string that will be sent back to the callback URL provided in resourceOauth2ReturnUrl. This state should be used to protect the callback URL of your application against CSRF attacks by ensuring the response corresponds to the original request.</p>"
         }
       }
     },
@@ -1732,12 +1785,20 @@
       "type":"structure",
       "members":{
         "authorizationUrl":{
-          "shape":"String",
+          "shape":"AuthorizationUrlType",
           "documentation":"<p>The URL to initiate the authorization process, provided when the access token requires user authorization.</p>"
         },
         "accessToken":{
           "shape":"AccessTokenType",
           "documentation":"<p>The OAuth 2.0 access token to use.</p>"
+        },
+        "sessionUri":{
+          "shape":"RequestUri",
+          "documentation":"<p>Unique identifier for the user's authorization session for retrieving OAuth2 tokens. This matches the sessionId from the request and can be used to track the session state.</p>"
+        },
+        "sessionStatus":{
+          "shape":"SessionStatus",
+          "documentation":"<p>Status indicating whether the user's authorization session is in progress or has failed. This helps determine the next steps in the OAuth2 authentication flow.</p>"
         }
       }
     },
@@ -1949,12 +2010,22 @@
           "location":"querystring",
           "locationName":"qualifier"
         },
+        "accountId":{
+          "shape":"InvokeAgentRuntimeRequestAccountIdString",
+          "documentation":"<p>The identifier of the Amazon Web Services account for the agent runtime resource.</p>",
+          "location":"querystring",
+          "locationName":"accountId"
+        },
         "payload":{
           "shape":"Body",
           "documentation":"<p>The input data to send to the agent runtime. The format of this data depends on the specific agent configuration and must match the specified content type. For most agents, this is a JSON object containing the user's request.</p>"
         }
       },
       "payload":"payload"
+    },
+    "InvokeAgentRuntimeRequestAccountIdString":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
     },
     "InvokeAgentRuntimeRequestBaggageString":{
       "type":"string",
@@ -2753,6 +2824,12 @@
       "min":1,
       "pattern":"[a-zA-Z0-9_-]+"
     },
+    "RequestUri":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"urn:ietf:params:oauth:request_uri:[a-zA-Z0-9-._~]+"
+    },
     "ResourceContent":{
       "type":"structure",
       "required":["type"],
@@ -2957,6 +3034,13 @@
       "min":1,
       "pattern":"[a-zA-Z0-9][a-zA-Z0-9-_]*"
     },
+    "SessionStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "FAILED"
+      ]
+    },
     "SessionSummary":{
       "type":"structure",
       "required":[
@@ -3134,6 +3218,12 @@
           "documentation":"<p>The time at which the code interpreter session was created.</p>"
         }
       }
+    },
+    "State":{
+      "type":"string",
+      "max":4096,
+      "min":1,
+      "sensitive":true
     },
     "StopBrowserSessionRequest":{
       "type":"structure",
@@ -3537,6 +3627,21 @@
       "type":"string",
       "max":128,
       "min":1
+    },
+    "UserIdentifier":{
+      "type":"structure",
+      "members":{
+        "userToken":{
+          "shape":"UserTokenType",
+          "documentation":"<p>The OAuth2.0 token issued by the user’s identity provider</p>"
+        },
+        "userId":{
+          "shape":"UserIdType",
+          "documentation":"<p>The ID of the user for whom you have retrieved a workload access token for</p>"
+        }
+      },
+      "documentation":"<p>The OAuth2.0 token or user ID that was used to generate the workload access token used for initiating the user authorization flow to retrieve OAuth2.0 tokens.</p>",
+      "union":true
     },
     "UserTokenType":{
       "type":"string",

@@ -18,9 +18,11 @@ from awscli.customizations.utils import uni_print
 from botocore.client import Config
 from botocore import UNSIGNED
 from botocore.endpoint import DEFAULT_TIMEOUT
+from botocore.useragent import register_feature_id
 import jmespath
 
 from awscli.compat import urlparse
+
 
 def register_parse_global_args(cli):
     cli.register('top-level-args-parsed', resolve_types,
@@ -186,7 +188,18 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
                 '/cliv2-migration-changes.html#cliv2-migration-aliases.\n',
                 out_file=sys.stderr
             )
+    # Register against the provide-client-params event to ensure that the
+    # feature ID is registered before any API requests are made. We
+    # cannot register the feature ID in this function because no
+    # botocore context is created at this point.
+    session.register(
+        'provide-client-params.*.*',
+        _register_v2_debug_feature_id
+    )
     session.register('choose-signer.s3.*', warn_if_sigv2)
+
+def _register_v2_debug_feature_id(params, model, **kwargs):
+    register_feature_id('CLI_V1_TO_V2_MIGRATION_DEBUG_MODE')
 
 def warn_if_east_configured_global_endpoint(request, operation_name, **kwargs):
     # The regional us-east-1 endpoint is used in certain cases (e.g.

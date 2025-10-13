@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from unittest.mock import patch
+
 from botocore.session import get_session
 from botocore import UNSIGNED
 import os
@@ -185,6 +187,44 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         self.assertEqual(parsed_args.connect_timeout, None)
         self.assertEqual(
             session.get_default_client_config().connect_timeout, None)
+
+    def test_register_feature_id(self):
+        parsed_args = FakeParsedArgs(v2_debug=True)
+        session = get_session()
+        globalargs.detect_migration_breakage(
+            parsed_args,
+            [],
+            session
+        )
+        # Verify the correct feature ID is registered during the
+        # provide-client-params event.
+        with (mock.patch('awscli.customizations.globalargs.register_feature_id')
+              as mock_register_feature_id):
+            session.emit(
+                'provide-client-params.s3.ListBuckets',
+                params={},
+                model={},
+            )
+        mock_register_feature_id.assert_any_call(
+            'CLI_V1_TO_V2_MIGRATION_DEBUG_MODE'
+        )
+
+    def test_ecr_login_v2_debug(self):
+        parsed_args = FakeParsedArgs(command='ecr', v2_debug=True)
+        remaining_args = ['get-login']
+        session = get_session()
+        with capture_output() as output:
+            globalargs.detect_migration_breakage(
+                parsed_args,
+                remaining_args,
+                session
+            )
+        # Verify the expected warning is printed
+        self.assertIn(
+            'AWS CLI v2 MIGRATION WARNING: The ecr get-login command has '
+            'been removed in AWS CLI v2.',
+            output.stderr.getvalue()
+        )
 
     def test_v2_debug_python_utf8_env_var(self):
         parsed_args = FakeParsedArgs(v2_debug=True)

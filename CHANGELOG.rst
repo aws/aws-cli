@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.42.52
+=======
+
+* api-change:``appstream``: This release introduces support for Microsoft license included applications streaming.
+* api-change:``backup``: The AWS Backup job attribute extension enhancement helps customers better understand the plan that initiated each job, and the properties of the resource each job creates.
+* api-change:``connect``: SDK release for TaskTemplateInfo in Contact for DescribeContact response.
+* api-change:``datazone``: Support creating scoped and trustedIdentityPropagation enabled connections.
+* api-change:``ec2``: This release adds support for creating instant, point-in-time copies of EBS volumes within the same Availability Zone
+* api-change:``transcribe``: Move UntagResource API body member to query parameter
+* api-change:``transfer``: SFTP connectors now support routing connections via customers' VPC. This enables connections to remote servers that are only accessible in a customer's VPC environment, and to servers that are accessible over the internet but need connections coming from an IP address in a customer VPC's CIDR range.
+
+
 1.42.51
 =======
 

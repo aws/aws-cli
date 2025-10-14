@@ -450,7 +450,8 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                   'paths_type': 'locals3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False, 'source_region': None, 'metadata': None}
+                  'is_stream': False, 'source_region': None, 'metadata': None,
+                  'v2_debug': False}
         config = RuntimeConfig().build_config()
         cmd_arc = CommandArchitecture(self.session, 'cp', params, config)
         cmd_arc.set_clients()
@@ -470,7 +471,8 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                   'paths_type': 'locals3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False, 'source_region': None, 'metadata': None}
+                  'is_stream': False, 'source_region': None, 'metadata': None,
+                  'v2_debug': False}
         self.http_response.status_code = 400
         self.parsed_responses = [{'Error': {
                                   'Code': 'BucketNotExists',
@@ -501,7 +503,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                   'paths_type': 's3local', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False, 'source_region': None}
+                  'is_stream': False, 'source_region': None, 'v2_debug': False}
         self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
                                   "LastModified": "2014-01-09T20:45:49.000Z"}]
         config = RuntimeConfig().build_config()
@@ -524,7 +526,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                   'paths_type': 's3s3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False, 'source_region': None}
+                  'is_stream': False, 'source_region': None, 'v2_debug': False}
         self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
                                   "LastModified": "2014-01-09T20:45:49.000Z"}]
         config = RuntimeConfig().build_config()
@@ -548,7 +550,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
                   'is_stream': False, 'source_region': None,
-                  'is_move': True}
+                  'is_move': True, 'v2_debug': False}
         self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
                                   "LastModified": "2014-01-09T20:45:49.000Z"}]
         config = RuntimeConfig().build_config()
@@ -571,7 +573,8 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                   'paths_type': 's3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False, 'source_region': None}
+                  'is_stream': False, 'source_region': None,
+                  'v2_debug': False}
         self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
                                   "LastModified": "2014-01-09T20:45:49.000Z"}]
         config = RuntimeConfig().build_config()
@@ -598,7 +601,8 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                   'paths_type': 'locals3', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False, 'source_region': 'us-west-2'}
+                  'is_stream': False, 'source_region': 'us-west-2',
+                  'v2_debug': False}
         self.parsed_responses = [
             {"CommonPrefixes": [], "Contents": [
                 {"Key": "text1.txt", "Size": 100,
@@ -622,7 +626,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
                   'is_stream': False, 'source_region': None,
-                  'is_move': True}
+                  'is_move': True, 'v2_debug': True}
         self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
                                   "LastModified": "2014-01-09T20:45:49.000Z"}]
         config = RuntimeConfig().build_config()
@@ -630,7 +634,7 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
         cmd_arc.set_clients()
         cmd_arc.create_instructions()
         self.patch_make_request()
-        cmd_arc.run(v2_debug=True)
+        cmd_arc.run()
         warning_str = 'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, object '\
                       'properties will be copied from the source in multipart '\
                       'copies between S3 buckets.'

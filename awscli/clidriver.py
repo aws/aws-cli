@@ -546,7 +546,7 @@ class ServiceOperation:
             parsed_args, self.arg_table
         )
 
-        self._detect_migration_breakage(
+        self._detect_binary_file_migration_change(
             self._session,
             parsed_args,
             parsed_globals,
@@ -668,7 +668,13 @@ class ServiceOperation:
         parser = ArgTableArgParser(arg_table)
         return parser
 
-    def _detect_migration_breakage(self, session, parsed_args, parsed_globals, arg_table):
+    def _detect_binary_file_migration_change(
+            self,
+            session,
+            parsed_args,
+            parsed_globals,
+            arg_table
+    ):
         if (
                 session.get_scoped_config()
                         .get('cli_binary_format', None) == 'raw-in-base64-out'

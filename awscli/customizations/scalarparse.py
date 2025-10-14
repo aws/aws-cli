@@ -70,6 +70,9 @@ def add_timestamp_parser(session, v2_debug):
         # across the wire.
         encountered_timestamp = False
         def identity_with_warning(x):
+            # To prevent printing the same warning for each timestamp in the
+            # response, we utilize a reference to a nonlocal variable to track
+            # if we have already printed the warning.
             nonlocal encountered_timestamp
             if not encountered_timestamp:
                 encountered_timestamp = True

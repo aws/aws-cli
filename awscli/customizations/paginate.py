@@ -175,6 +175,7 @@ def unify_paging_params(argument_table, operation_model, event_name,
         call_parameters_event,
         partial(
             check_should_enable_pagination_call_parameters,
+            session,
             list(_get_all_input_tokens(paginator_config)),
         ),
     )
@@ -275,18 +276,31 @@ def _get_cli_name(param_objects, token_name):
             return param.cli_name.lstrip('-')
 
 
-# This function checks for pagination args in the actual calling
-# arguments passed to the function.  If the user is using the
-# --cli-input-json parameter to provide JSON parameters they are
-# all in the API naming space rather than the CLI naming space
-# and would be missed by the processing above.  This function gets
-# called on the calling-command event.
 def check_should_enable_pagination_call_parameters(
-    input_tokens, call_parameters, parsed_args, parsed_globals, **kwargs
+        session,
+        input_tokens,
+        call_parameters,
+        parsed_args,
+        parsed_globals,
+        **kwargs
 ):
+    """
+    Check for pagination args in the actual calling arguments passed to
+    the function.
+
+    If the user is using the --cli-input-json parameter to provide JSON
+    parameters they are all in the API naming space rather than the CLI
+    naming space and would be missed by the processing above. This function
+    gets called on the calling-command event.
+    """
     if parsed_globals.v2_debug:
+        cli_input_json_data = session.emit_first_non_none_response(
+            f"get-cli-input-json-data",
+        )
+        if cli_input_json_data is None:
+            cli_input_json_data = {}
         pagination_params_in_input_tokens = [
-            param for param in call_parameters if param in input_tokens
+            param for param in cli_input_json_data if param in input_tokens
         ]
         if pagination_params_in_input_tokens:
             uni_print(

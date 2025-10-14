@@ -767,6 +767,7 @@ class S3TransferCommand(S3Command):
         cmd_params.add_verify_ssl(parsed_globals)
         cmd_params.add_page_size(parsed_args)
         cmd_params.add_paths(parsed_args.paths)
+        cmd_params.add_v2_debug(parsed_globals)
 
         runtime_config = transferconfig.RuntimeConfig().build_config(
             **self._session.get_scoped_config().get('s3', {}))
@@ -775,7 +776,7 @@ class S3TransferCommand(S3Command):
                                   runtime_config)
         cmd.set_clients()
         cmd.create_instructions()
-        return cmd.run(getattr(parsed_globals, 'v2_debug', False))
+        return cmd.run()
 
     def _build_call_parameters(self, args, command_params):
         """
@@ -1019,7 +1020,7 @@ class CommandArchitecture(object):
 
         return sync_strategies
 
-    def run(self, v2_debug=False):
+    def run(self):
         """
         This function wires together all of the generators and completes
         the command.  First a dictionary is created that is indexed first by
@@ -1056,7 +1057,7 @@ class CommandArchitecture(object):
         result_queue = queue.Queue()
         operation_name = cmd_translation[paths_type]
 
-        if v2_debug:
+        if self.parameters['v2_debug']:
             if operation_name == 'copy':
                 uni_print(
                     'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, object '
@@ -1461,6 +1462,9 @@ class CommandParameters(object):
 
     def add_page_size(self, parsed_args):
         self.parameters['page_size'] = getattr(parsed_args, 'page_size', None)
+
+    def add_v2_debug(self, parsed_globals):
+        self.parameters['v2_debug'] = parsed_globals.v2_debug
 
     def _validate_sse_c_args(self):
         self._validate_sse_c_arg()

@@ -1671,7 +1671,7 @@
         },
         "BackupOptions":{
           "shape":"BackupOptions",
-          "documentation":"<p>Specifies the backup option for a selected resource. This option is only available for Windows VSS backup jobs.</p> <p>Valid values: </p> <p>Set to <code>\"WindowsVSS\":\"enabled\"</code> to enable the <code>WindowsVSS</code> backup option and create a Windows VSS backup. </p> <p>Set to <code>\"WindowsVSS\":\"disabled\"</code> to create a regular backup. The <code>WindowsVSS</code> option is not enabled by default.</p> <p>If you specify an invalid option, you get an <code>InvalidParameterValueException</code> exception.</p> <p>For more information about Windows VSS backups, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/windows-backups.html\">Creating a VSS-Enabled Windows Backup</a>.</p>"
+          "documentation":"<p>Specifies the backup option for a selected resource. This option is available for Windows VSS backup jobs and S3 backups.</p> <p>Valid values: </p> <p>Set to <code>\"WindowsVSS\":\"enabled\"</code> to enable the <code>WindowsVSS</code> backup option and create a Windows VSS backup. </p> <p>Set to <code>\"WindowsVSS\":\"disabled\"</code> to create a regular backup. The <code>WindowsVSS</code> option is not enabled by default.</p> <p>For S3 backups, set to <code>\"S3BackupACLs\":\"disabled\"</code> to exclude ACLs from the backup, or <code>\"S3BackupObjectTags\":\"disabled\"</code> to exclude object tags from the backup. By default, both ACLs and object tags are included in S3 backups.</p> <p>If you specify an invalid option, you get an <code>InvalidParameterValueException</code> exception.</p> <p>For more information about Windows VSS backups, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/windows-backups.html\">Creating a VSS-Enabled Windows Backup</a>.</p>"
         }
       },
       "documentation":"<p>The backup options for each resource type.</p>"
@@ -1755,9 +1755,26 @@
           "shape":"ARN",
           "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
         },
+        "VaultType":{
+          "shape":"string",
+          "documentation":"<p>The type of backup vault where the recovery point is stored. Valid values are <code>BACKUP_VAULT</code> for standard backup vaults and <code>LOGICALLY_AIR_GAPPED_BACKUP_VAULT</code> for logically air-gapped vaults.</p>"
+        },
+        "VaultLockState":{
+          "shape":"string",
+          "documentation":"<p>The lock state of the backup vault. For logically air-gapped vaults, this indicates whether the vault is locked in compliance mode. Valid values include <code>LOCKED</code> and <code>UNLOCKED</code>.</p>"
+        },
         "RecoveryPointArn":{
           "shape":"ARN",
           "documentation":"<p>An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
+        },
+        "RecoveryPointLifecycle":{"shape":"Lifecycle"},
+        "EncryptionKeyArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the backup. This can be a customer-managed key or an Amazon Web Services managed key, depending on the vault configuration.</p>"
+        },
+        "IsEncrypted":{
+          "shape":"boolean",
+          "documentation":"<p>A boolean value indicating whether the backup is encrypted. All backups in Backup are encrypted, but this field indicates the encryption status for transparency.</p>"
         },
         "ResourceArn":{
           "shape":"ARN",
@@ -2551,10 +2568,23 @@
           "shape":"ARN",
           "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a destination copy vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
         },
+        "DestinationVaultType":{
+          "shape":"string",
+          "documentation":"<p>The type of destination backup vault where the copied recovery point is stored. Valid values are <code>BACKUP_VAULT</code> for standard backup vaults and <code>LOGICALLY_AIR_GAPPED_BACKUP_VAULT</code> for logically air-gapped vaults.</p>"
+        },
+        "DestinationVaultLockState":{
+          "shape":"string",
+          "documentation":"<p>The lock state of the destination backup vault. For logically air-gapped vaults, this indicates whether the vault is locked in compliance mode. Valid values include <code>LOCKED</code> and <code>UNLOCKED</code>.</p>"
+        },
         "DestinationRecoveryPointArn":{
           "shape":"ARN",
           "documentation":"<p>An ARN that uniquely identifies a destination recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
         },
+        "DestinationEncryptionKeyArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the copied backup in the destination vault. This can be a customer-managed key or an Amazon Web Services managed key.</p>"
+        },
+        "DestinationRecoveryPointLifecycle":{"shape":"Lifecycle"},
         "ResourceArn":{
           "shape":"ARN",
           "documentation":"<p>The Amazon Web Services resource to be copied; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database.</p>"
@@ -3417,13 +3447,30 @@
           "shape":"BackupVaultName",
           "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>"
         },
+        "RecoveryPointLifecycle":{"shape":"Lifecycle"},
         "BackupVaultArn":{
           "shape":"ARN",
           "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
         },
+        "VaultType":{
+          "shape":"string",
+          "documentation":"<p>The type of backup vault where the recovery point is stored. Valid values are <code>BACKUP_VAULT</code> for standard backup vaults and <code>LOGICALLY_AIR_GAPPED_BACKUP_VAULT</code> for logically air-gapped vaults.</p>"
+        },
+        "VaultLockState":{
+          "shape":"string",
+          "documentation":"<p>The lock state of the backup vault. For logically air-gapped vaults, this indicates whether the vault is locked in compliance mode. Valid values include <code>LOCKED</code> and <code>UNLOCKED</code>.</p>"
+        },
         "RecoveryPointArn":{
           "shape":"ARN",
           "documentation":"<p>An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
+        },
+        "EncryptionKeyArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the backup. This can be a customer-managed key or an Amazon Web Services managed key, depending on the vault configuration.</p>"
+        },
+        "IsEncrypted":{
+          "shape":"boolean",
+          "documentation":"<p>A boolean value indicating whether the backup is encrypted. All backups in Backup are encrypted, but this field indicates the encryption status for transparency.</p>"
         },
         "ResourceArn":{
           "shape":"ARN",
@@ -3967,6 +4014,14 @@
         "RecoveryPointArn":{
           "shape":"ARN",
           "documentation":"<p>An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
+        },
+        "SourceResourceArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the original resource that was backed up. This provides context about what resource is being restored.</p>"
+        },
+        "BackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the backup vault containing the recovery point being restored. This helps identify vault access policies and permissions.</p>"
         },
         "CreationDate":{
           "shape":"timestamp",
@@ -6656,6 +6711,10 @@
           "shape":"ARN",
           "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, <code>arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50</code>.</p>"
         },
+        "BackupPlanName":{
+          "shape":"string",
+          "documentation":"<p>The name of the backup plan that created this recovery point. This provides human-readable context about which backup plan was responsible for the backup job.</p>"
+        },
         "BackupPlanVersion":{
           "shape":"string",
           "documentation":"<p>Version IDs are unique, randomly generated, Unicode, UTF-8 encoded strings that are at most 1,024 bytes long. They cannot be edited.</p>"
@@ -6663,6 +6722,18 @@
         "BackupRuleId":{
           "shape":"string",
           "documentation":"<p>Uniquely identifies a rule used to schedule the backup of a selection of resources.</p>"
+        },
+        "BackupRuleName":{
+          "shape":"string",
+          "documentation":"<p>The name of the backup rule within the backup plan that created this recovery point. This helps identify which specific rule triggered the backup job.</p>"
+        },
+        "BackupRuleCron":{
+          "shape":"string",
+          "documentation":"<p>The cron expression that defines the schedule for the backup rule. This shows the frequency and timing of when backups are automatically triggered.</p>"
+        },
+        "BackupRuleTimezone":{
+          "shape":"string",
+          "documentation":"<p>The timezone used for the backup rule schedule. This provides context for when backups are scheduled to run in the specified timezone.</p>"
         }
       },
       "documentation":"<p>Contains information about the backup plan and rule that Backup used to initiate the recovery point backup.</p>"
@@ -7065,6 +7136,14 @@
         "RecoveryPointArn":{
           "shape":"ARN",
           "documentation":"<p>An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
+        },
+        "SourceResourceArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the original resource that was backed up. This provides context about what resource is being restored.</p>"
+        },
+        "BackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the backup vault containing the recovery point being restored. This helps identify vault access policies and permissions.</p>"
         },
         "CreationDate":{
           "shape":"timestamp",

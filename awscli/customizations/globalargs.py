@@ -106,6 +106,20 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
     ]
     region = parsed_args.region or session.get_config_variable('region')
     s3_config = session.get_config_variable('s3')
+    if (
+            not session.get_scoped_config().get('cli_pager', None)
+            == '' and 'AWS_PAGER' not in os.environ
+    ):
+        uni_print(
+            'AWS CLI v2 UPGRADE WARNING: By default, the AWS CLI version 2 '
+            'returns all output through your operating system’s default pager '
+            'program. To retain AWS CLI v1 behavior, set the `cli_pager` '
+            'configuration setting, or the `AWS_PAGER` environment variable, '
+            'to the empty string. See https://docs.aws.amazon.com/cli/latest/'
+            'userguide/cliv2-migration-changes.html'
+            '#cliv2-migration-output-pager.\n',
+            out_file=sys.stderr
+        )
     if 'PYTHONUTF8' in os.environ or 'PYTHONIOENCODING' in os.environ:
         if 'AWS_CLI_FILE_ENCODING' not in os.environ:
             uni_print(
@@ -197,6 +211,7 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
         _register_v2_debug_feature_id
     )
     session.register('choose-signer.s3.*', warn_if_sigv2)
+
 
 def _register_v2_debug_feature_id(params, model, **kwargs):
     register_feature_id('CLI_V1_TO_V2_MIGRATION_DEBUG_MODE')

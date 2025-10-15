@@ -112,7 +112,7 @@
       },
       "input":{"shape":"AllocateAddressRequest"},
       "output":{"shape":"AllocateAddressResult"},
-      "documentation":"<p>Allocates an Elastic IP address to your Amazon Web Services account. After you allocate the Elastic IP address you can associate it with an instance or network interface. After you release an Elastic IP address, it is released to the IP address pool and can be allocated to a different Amazon Web Services account.</p> <p>You can allocate an Elastic IP address from an address pool owned by Amazon Web Services or from an address pool created from a public IPv4 address range that you have brought to Amazon Web Services for use with your Amazon Web Services resources using bring your own IP addresses (BYOIP). For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html\">Bring Your Own IP Addresses (BYOIP)</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>If you release an Elastic IP address, you might be able to recover it. You cannot recover an Elastic IP address that you released after it is allocated to another Amazon Web Services account. To attempt to recover an Elastic IP address that you released, specify it in this operation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\">Elastic IP Addresses</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>You can allocate a carrier IP address which is a public IP address from a telecommunication carrier, to a network interface which resides in a subnet in a Wavelength Zone (for example an EC2 instance).</p>"
+      "documentation":"<p>Allocates an Elastic IP address to your Amazon Web Services account. After you allocate the Elastic IP address you can associate it with an instance or network interface. After you release an Elastic IP address, it is released to the IP address pool and can be allocated to a different Amazon Web Services account.</p> <p>You can allocate an Elastic IP address from one of the following address pools:</p> <ul> <li> <p>Amazon's pool of IPv4 addresses</p> </li> <li> <p>Public IPv4 address range that you own and bring to your Amazon Web Services account using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html\">Bring Your Own IP Addresses (BYOIP)</a> </p> </li> <li> <p>An IPv4 IPAM pool with an Amazon-provided or BYOIP public IPv4 address range</p> </li> <li> <p>IPv4 addresses from your on-premises network made available for use with an Outpost using a <a href=\"https://docs.aws.amazon.com/outposts/latest/userguide/routing.html#ip-addressing\">customer-owned IP address pool</a> (CoIP pool)</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\">Elastic IP Addresses</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>If you release an Elastic IP address, you might be able to recover it. You cannot recover an Elastic IP address that you released after it is allocated to another Amazon Web Services account. To attempt to recover an Elastic IP address that you released, specify it in this operation.</p> <p>You can allocate a carrier IP address which is a public IP address from a telecommunication carrier, to a network interface which resides in a subnet in a Wavelength Zone (for example an EC2 instance).</p>"
     },
     "AllocateHosts":{
       "name":"AllocateHosts",
@@ -619,6 +619,16 @@
       "input":{"shape":"CopyVolumesRequest"},
       "output":{"shape":"CopyVolumesResult"},
       "documentation":"<p>Creates a crash-consistent, point-in-time copy of an existing Amazon EBS volume within the same Availability Zone. The volume copy can be attached to an Amazon EC2 instance once it reaches the <code>available</code> state. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-copying-volume.html\">Copy an Amazon EBS volume</a>.</p>"
+    },
+    "CreateCapacityManagerDataExport":{
+      "name":"CreateCapacityManagerDataExport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateCapacityManagerDataExportRequest"},
+      "output":{"shape":"CreateCapacityManagerDataExportResult"},
+      "documentation":"<p> Creates a new data export configuration for EC2 Capacity Manager. This allows you to automatically export capacity usage data to an S3 bucket on a scheduled basis. The exported data includes metrics for On-Demand, Spot, and Capacity Reservations usage across your organization. </p>"
     },
     "CreateCapacityReservation":{
       "name":"CreateCapacityReservation",
@@ -1546,6 +1556,16 @@
       "input":{"shape":"CreateVpnGatewayRequest"},
       "output":{"shape":"CreateVpnGatewayResult"},
       "documentation":"<p>Creates a virtual private gateway. A virtual private gateway is the endpoint on the VPC side of your VPN connection. You can create a virtual private gateway before creating the VPC itself.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpn/latest/s2svpn/VPC_VPN.html\">Amazon Web Services Site-to-Site VPN</a> in the <i>Amazon Web Services Site-to-Site VPN User Guide</i>.</p>"
+    },
+    "DeleteCapacityManagerDataExport":{
+      "name":"DeleteCapacityManagerDataExport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteCapacityManagerDataExportRequest"},
+      "output":{"shape":"DeleteCapacityManagerDataExportResult"},
+      "documentation":"<p> Deletes an existing Capacity Manager data export configuration. This stops future scheduled exports but does not delete previously exported files from S3. </p>"
     },
     "DeleteCarrierGateway":{
       "name":"DeleteCarrierGateway",
@@ -2568,6 +2588,16 @@
       "input":{"shape":"DescribeCapacityBlocksRequest"},
       "output":{"shape":"DescribeCapacityBlocksResult"},
       "documentation":"<p>Describes details about Capacity Blocks in the Amazon Web Services Region that you're currently using.</p>"
+    },
+    "DescribeCapacityManagerDataExports":{
+      "name":"DescribeCapacityManagerDataExports",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeCapacityManagerDataExportsRequest"},
+      "output":{"shape":"DescribeCapacityManagerDataExportsResult"},
+      "documentation":"<p> Describes one or more Capacity Manager data export configurations. Returns information about export settings, delivery status, and recent export activity. </p>"
     },
     "DescribeCapacityReservationBillingRequests":{
       "name":"DescribeCapacityReservationBillingRequests",
@@ -4236,6 +4266,16 @@
       "output":{"shape":"DisableAwsNetworkPerformanceMetricSubscriptionResult"},
       "documentation":"<p>Disables Infrastructure Performance metric subscriptions.</p>"
     },
+    "DisableCapacityManager":{
+      "name":"DisableCapacityManager",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisableCapacityManagerRequest"},
+      "output":{"shape":"DisableCapacityManagerResult"},
+      "documentation":"<p> Disables EC2 Capacity Manager for your account. This stops data ingestion and removes access to capacity analytics and optimization recommendations. Previously collected data is retained but no new data will be processed. </p>"
+    },
     "DisableEbsEncryptionByDefault":{
       "name":"DisableEbsEncryptionByDefault",
       "http":{
@@ -4593,6 +4633,16 @@
       "output":{"shape":"EnableAwsNetworkPerformanceMetricSubscriptionResult"},
       "documentation":"<p>Enables Infrastructure Performance subscriptions.</p>"
     },
+    "EnableCapacityManager":{
+      "name":"EnableCapacityManager",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"EnableCapacityManagerRequest"},
+      "output":{"shape":"EnableCapacityManagerResult"},
+      "documentation":"<p> Enables EC2 Capacity Manager for your account. This starts data ingestion for your EC2 capacity usage across On-Demand, Spot, and Capacity Reservations. Initial data processing may take several hours to complete. </p>"
+    },
     "EnableEbsEncryptionByDefault":{
       "name":"EnableEbsEncryptionByDefault",
       "http":{
@@ -4860,6 +4910,36 @@
       "input":{"shape":"GetAwsNetworkPerformanceDataRequest"},
       "output":{"shape":"GetAwsNetworkPerformanceDataResult"},
       "documentation":"<p>Gets network performance data.</p>"
+    },
+    "GetCapacityManagerAttributes":{
+      "name":"GetCapacityManagerAttributes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCapacityManagerAttributesRequest"},
+      "output":{"shape":"GetCapacityManagerAttributesResult"},
+      "documentation":"<p> Retrieves the current configuration and status of EC2 Capacity Manager for your account, including enablement status, Organizations access settings, and data ingestion status. </p>"
+    },
+    "GetCapacityManagerMetricData":{
+      "name":"GetCapacityManagerMetricData",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCapacityManagerMetricDataRequest"},
+      "output":{"shape":"GetCapacityManagerMetricDataResult"},
+      "documentation":"<p> Retrieves capacity usage metrics for your EC2 resources. Returns time-series data for metrics like unused capacity, utilization rates, and costs across On-Demand, Spot, and Capacity Reservations. Data can be grouped and filtered by various dimensions such as region, account, and instance family. </p>"
+    },
+    "GetCapacityManagerMetricDimensions":{
+      "name":"GetCapacityManagerMetricDimensions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCapacityManagerMetricDimensionsRequest"},
+      "output":{"shape":"GetCapacityManagerMetricDimensionsResult"},
+      "documentation":"<p> Retrieves the available dimension values for capacity metrics within a specified time range. This is useful for discovering what accounts, regions, instance families, and other dimensions have data available for filtering and grouping. </p>"
     },
     "GetCapacityReservationUsage":{
       "name":"GetCapacityReservationUsage",
@@ -6881,6 +6961,16 @@
       "output":{"shape":"UnmonitorInstancesResult"},
       "documentation":"<p>Disables detailed monitoring for a running instance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-cloudwatch.html\">Monitoring your instances and volumes</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
+    "UpdateCapacityManagerOrganizationsAccess":{
+      "name":"UpdateCapacityManagerOrganizationsAccess",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateCapacityManagerOrganizationsAccessRequest"},
+      "output":{"shape":"UpdateCapacityManagerOrganizationsAccessResult"},
+      "documentation":"<p> Updates the Organizations access setting for EC2 Capacity Manager. This controls whether Capacity Manager can aggregate data from all accounts in your Amazon Web Services Organization or only from the current account. </p>"
+    },
     "UpdateSecurityGroupRuleDescriptionsEgress":{
       "name":"UpdateSecurityGroupRuleDescriptionsEgress",
       "http":{
@@ -7912,7 +8002,7 @@
         },
         "PublicIpv4Pool":{
           "shape":"String",
-          "documentation":"<p>The ID of an address pool.</p>",
+          "documentation":"<p>The ID of an address pool that you own.</p>",
           "locationName":"publicIpv4Pool"
         },
         "NetworkBorderGroup":{
@@ -7937,12 +8027,12 @@
         },
         "CarrierIp":{
           "shape":"String",
-          "documentation":"<p>The carrier IP address. This option is only available for network interfaces that reside in a subnet in a Wavelength Zone.</p>",
+          "documentation":"<p>The carrier IP address. Available only for network interfaces that reside in a subnet in a Wavelength Zone.</p>",
           "locationName":"carrierIp"
         },
         "PublicIp":{
           "shape":"String",
-          "documentation":"<p>The Elastic IP address.</p>",
+          "documentation":"<p>The Amazon-owned IP address. Not available when using an address pool that you own.</p>",
           "locationName":"publicIp"
         }
       }
@@ -10611,6 +10701,7 @@
         "uefi-preferred"
       ]
     },
+    "BoxedBoolean":{"type":"boolean"},
     "BoxedDouble":{"type":"double"},
     "BoxedInteger":{"type":"integer"},
     "BoxedLong":{"type":"long"},
@@ -11654,6 +11745,208 @@
         "locationName":"item"
       }
     },
+    "CapacityManagerCondition":{
+      "type":"structure",
+      "members":{
+        "DimensionCondition":{
+          "shape":"DimensionCondition",
+          "documentation":"<p> The dimension-based condition that specifies how to filter the data based on dimension values. </p>"
+        }
+      },
+      "documentation":"<p> Represents a filter condition for Capacity Manager queries. Contains dimension-based filtering criteria used to narrow down metric data and dimension results. </p>"
+    },
+    "CapacityManagerConditionSet":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityManagerCondition",
+        "locationName":"item"
+      },
+      "max":20,
+      "min":0
+    },
+    "CapacityManagerDataExportId":{"type":"string"},
+    "CapacityManagerDataExportIdSet":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityManagerDataExportId",
+        "locationName":"item"
+      }
+    },
+    "CapacityManagerDataExportResponse":{
+      "type":"structure",
+      "members":{
+        "CapacityManagerDataExportId":{
+          "shape":"CapacityManagerDataExportId",
+          "documentation":"<p> The unique identifier for the data export configuration. </p>",
+          "locationName":"capacityManagerDataExportId"
+        },
+        "S3BucketName":{
+          "shape":"String",
+          "documentation":"<p> The name of the S3 bucket where export files are delivered. </p>",
+          "locationName":"s3BucketName"
+        },
+        "S3BucketPrefix":{
+          "shape":"String",
+          "documentation":"<p> The S3 key prefix used for organizing export files within the bucket. </p>",
+          "locationName":"s3BucketPrefix"
+        },
+        "Schedule":{
+          "shape":"Schedule",
+          "documentation":"<p> The frequency at which data exports are generated. </p>",
+          "locationName":"schedule"
+        },
+        "OutputFormat":{
+          "shape":"OutputFormat",
+          "documentation":"<p> The file format of the exported data. </p>",
+          "locationName":"outputFormat"
+        },
+        "CreateTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p> The timestamp when the data export configuration was created. </p>",
+          "locationName":"createTime"
+        },
+        "LatestDeliveryStatus":{
+          "shape":"CapacityManagerDataExportStatus",
+          "documentation":"<p> The status of the most recent export delivery. </p>",
+          "locationName":"latestDeliveryStatus"
+        },
+        "LatestDeliveryStatusMessage":{
+          "shape":"String",
+          "documentation":"<p> A message describing the status of the most recent export delivery, including any error details if the delivery failed. </p>",
+          "locationName":"latestDeliveryStatusMessage"
+        },
+        "LatestDeliveryS3LocationUri":{
+          "shape":"String",
+          "documentation":"<p> The S3 URI of the most recently delivered export file. </p>",
+          "locationName":"latestDeliveryS3LocationUri"
+        },
+        "LatestDeliveryTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p> The timestamp when the most recent export was delivered to S3. </p>",
+          "locationName":"latestDeliveryTime"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p> The tags associated with the data export configuration. </p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p> Contains information about a Capacity Manager data export configuration, including export settings, delivery status, and recent export activity. </p>"
+    },
+    "CapacityManagerDataExportResponseSet":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityManagerDataExportResponse",
+        "locationName":"item"
+      }
+    },
+    "CapacityManagerDataExportStatus":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "in-progress",
+        "delivered",
+        "failed"
+      ]
+    },
+    "CapacityManagerDimension":{
+      "type":"structure",
+      "members":{
+        "ResourceRegion":{
+          "shape":"String",
+          "documentation":"<p> The Amazon Web Services Region where the capacity resource is located. </p>",
+          "locationName":"resourceRegion"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p> The unique identifier of the Availability Zone where the capacity resource is located. </p>",
+          "locationName":"availabilityZoneId"
+        },
+        "AccountId":{
+          "shape":"String",
+          "documentation":"<p> The Amazon Web Services account ID that owns the capacity resource. </p>",
+          "locationName":"accountId"
+        },
+        "InstanceFamily":{
+          "shape":"String",
+          "documentation":"<p> The EC2 instance family of the capacity resource. </p>",
+          "locationName":"instanceFamily"
+        },
+        "InstanceType":{
+          "shape":"String",
+          "documentation":"<p> The specific EC2 instance type of the capacity resource. </p>",
+          "locationName":"instanceType"
+        },
+        "InstancePlatform":{
+          "shape":"String",
+          "documentation":"<p> The platform or operating system of the instance. </p>",
+          "locationName":"instancePlatform"
+        },
+        "ReservationArn":{
+          "shape":"String",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the capacity reservation. This provides a unique identifier that can be used across Amazon Web Services services to reference the specific reservation. </p>",
+          "locationName":"reservationArn"
+        },
+        "ReservationId":{
+          "shape":"String",
+          "documentation":"<p> The unique identifier of the capacity reservation. </p>",
+          "locationName":"reservationId"
+        },
+        "ReservationType":{
+          "shape":"ReservationType",
+          "documentation":"<p> The type of capacity reservation. </p>",
+          "locationName":"reservationType"
+        },
+        "ReservationCreateTimestamp":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p> The timestamp when the capacity reservation was originally created, in milliseconds since epoch. This differs from the start timestamp as reservations can be created before they become active. </p>",
+          "locationName":"reservationCreateTimestamp"
+        },
+        "ReservationStartTimestamp":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p> The timestamp when the capacity reservation becomes active and available for use, in milliseconds since epoch. This is when the reservation begins providing capacity. </p>",
+          "locationName":"reservationStartTimestamp"
+        },
+        "ReservationEndTimestamp":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p> The timestamp when the capacity reservation expires and is no longer available, in milliseconds since epoch. After this time, the reservation will not provide any capacity. </p>",
+          "locationName":"reservationEndTimestamp"
+        },
+        "ReservationEndDateType":{
+          "shape":"ReservationEndDateType",
+          "documentation":"<p> The type of end date for the capacity reservation. This indicates whether the reservation has a fixed end date, is open-ended, or follows a specific termination pattern. </p>",
+          "locationName":"reservationEndDateType"
+        },
+        "Tenancy":{
+          "shape":"CapacityTenancy",
+          "documentation":"<p> The tenancy of the EC2 instances associated with this capacity dimension. Valid values are 'default' for shared tenancy, 'dedicated' for dedicated instances, or 'host' for dedicated hosts. </p>",
+          "locationName":"tenancy"
+        },
+        "ReservationState":{
+          "shape":"ReservationState",
+          "documentation":"<p> The current state of the capacity reservation. </p>",
+          "locationName":"reservationState"
+        },
+        "ReservationInstanceMatchCriteria":{
+          "shape":"String",
+          "documentation":"<p> The instance matching criteria for the capacity reservation, determining how instances are matched to the reservation. </p>",
+          "locationName":"reservationInstanceMatchCriteria"
+        },
+        "ReservationUnusedFinancialOwner":{
+          "shape":"String",
+          "documentation":"<p> The Amazon Web Services account ID that is financially responsible for unused capacity reservation costs. </p>",
+          "locationName":"reservationUnusedFinancialOwner"
+        }
+      },
+      "documentation":"<p> Represents dimension values for capacity metrics, including resource identifiers, geographic information, and reservation details used for grouping and filtering capacity data. </p>"
+    },
+    "CapacityManagerStatus":{
+      "type":"string",
+      "enum":[
+        "enabled",
+        "disabled"
+      ]
+    },
     "CapacityReservation":{
       "type":"structure",
       "members":{
@@ -12248,6 +12541,13 @@
       "enum":[
         "default",
         "capacity-block"
+      ]
+    },
+    "CapacityTenancy":{
+      "type":"string",
+      "enum":[
+        "default",
+        "dedicated"
       ]
     },
     "CarrierGateway":{
@@ -13217,6 +13517,13 @@
         "locationName":"item"
       }
     },
+    "Comparison":{
+      "type":"string",
+      "enum":[
+        "equals",
+        "in"
+      ]
+    },
     "ComponentAccount":{
       "type":"string",
       "pattern":"\\d{12}"
@@ -13224,6 +13531,15 @@
     "ComponentRegion":{
       "type":"string",
       "pattern":"[a-z]{2}-[a-z]+-[1-9]+"
+    },
+    "ConditionValueList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"item"
+      },
+      "max":10,
+      "min":0
     },
     "ConfirmProductInstanceRequest":{
       "type":"structure",
@@ -13878,6 +14194,56 @@
         }
       },
       "documentation":"<p>The CPU performance to consider, using an instance family as the baseline reference.</p>"
+    },
+    "CreateCapacityManagerDataExportRequest":{
+      "type":"structure",
+      "required":[
+        "S3BucketName",
+        "Schedule",
+        "OutputFormat"
+      ],
+      "members":{
+        "S3BucketName":{
+          "shape":"String",
+          "documentation":"<p> The name of the S3 bucket where the capacity data export files will be delivered. The bucket must exist and you must have write permissions to it. </p>"
+        },
+        "S3BucketPrefix":{
+          "shape":"String",
+          "documentation":"<p> The S3 key prefix for the exported data files. This allows you to organize exports in a specific folder structure within your bucket. If not specified, files are placed at the bucket root. </p>"
+        },
+        "Schedule":{
+          "shape":"Schedule",
+          "documentation":"<p> The frequency at which data exports are generated. </p>"
+        },
+        "OutputFormat":{
+          "shape":"OutputFormat",
+          "documentation":"<p> The file format for the exported data. Parquet format is recommended for large datasets and better compression. </p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p> Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see Ensure Idempotency. </p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p> Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>. </p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p> The tags to apply to the data export configuration. You can tag the export for organization and cost tracking purposes. </p>",
+          "locationName":"TagSpecification"
+        }
+      }
+    },
+    "CreateCapacityManagerDataExportResult":{
+      "type":"structure",
+      "members":{
+        "CapacityManagerDataExportId":{
+          "shape":"CapacityManagerDataExportId",
+          "documentation":"<p> The unique identifier for the created data export configuration. Use this ID to reference the export in other API calls. </p>",
+          "locationName":"capacityManagerDataExportId"
+        }
+      }
     },
     "CreateCapacityReservationBySplittingRequest":{
       "type":"structure",
@@ -19214,6 +19580,30 @@
       ]
     },
     "DefaultingDhcpOptionsId":{"type":"string"},
+    "DeleteCapacityManagerDataExportRequest":{
+      "type":"structure",
+      "required":["CapacityManagerDataExportId"],
+      "members":{
+        "CapacityManagerDataExportId":{
+          "shape":"CapacityManagerDataExportId",
+          "documentation":"<p> The unique identifier of the data export configuration to delete. </p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p> Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>. </p>"
+        }
+      }
+    },
+    "DeleteCapacityManagerDataExportResult":{
+      "type":"structure",
+      "members":{
+        "CapacityManagerDataExportId":{
+          "shape":"CapacityManagerDataExportId",
+          "documentation":"<p> The unique identifier of the deleted data export configuration. </p>",
+          "locationName":"capacityManagerDataExportId"
+        }
+      }
+    },
     "DeleteCarrierGatewayRequest":{
       "type":"structure",
       "required":["CarrierGatewayId"],
@@ -20314,7 +20704,7 @@
       "members":{
         "Return":{
           "shape":"Boolean",
-          "documentation":"<p>Returns <code>true</code> if the request succeeds, otherwise returns an error.</p>",
+          "documentation":"<p>Is <code>true</code> if the request succeeds and an error otherwise.</p>",
           "locationName":"return"
         }
       },
@@ -22240,6 +22630,53 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "DescribeCapacityManagerDataExportsRequest":{
+      "type":"structure",
+      "members":{
+        "CapacityManagerDataExportIds":{
+          "shape":"CapacityManagerDataExportIdSet",
+          "documentation":"<p> The IDs of the data export configurations to describe. If not specified, all export configurations are returned. </p>",
+          "locationName":"CapacityManagerDataExportId"
+        },
+        "MaxResults":{
+          "shape":"DescribeCapacityManagerDataExportsRequestMaxResults",
+          "documentation":"<p> The maximum number of results to return in a single call. If not specified, up to 1000 results are returned. </p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p> The token for the next page of results. Use this value in a subsequent call to retrieve additional results. </p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p> Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>. </p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p> One or more filters to narrow the results. Supported filters include export status, creation date, and S3 bucket name. </p>",
+          "locationName":"Filter"
+        }
+      }
+    },
+    "DescribeCapacityManagerDataExportsRequestMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":1
+    },
+    "DescribeCapacityManagerDataExportsResult":{
+      "type":"structure",
+      "members":{
+        "CapacityManagerDataExports":{
+          "shape":"CapacityManagerDataExportResponseSet",
+          "documentation":"<p> Information about the data export configurations, including export settings, delivery status, and recent activity. </p>",
+          "locationName":"capacityManagerDataExportSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p> The token to use to retrieve the next page of results. This value is null when there are no more results to return. </p>",
           "locationName":"nextToken"
         }
       }
@@ -29724,6 +30161,25 @@
         "locationName":"item"
       }
     },
+    "DimensionCondition":{
+      "type":"structure",
+      "members":{
+        "Dimension":{
+          "shape":"FilterByDimension",
+          "documentation":"<p> The name of the dimension to filter by. </p>"
+        },
+        "Comparison":{
+          "shape":"Comparison",
+          "documentation":"<p> The comparison operator to use for the filter. </p>"
+        },
+        "Values":{
+          "shape":"ConditionValueList",
+          "documentation":"<p> The list of values to match against the specified dimension. For 'equals' comparison, only the first value is used. For 'in' comparison, any matching value will satisfy the condition. </p>",
+          "locationName":"Value"
+        }
+      },
+      "documentation":"<p> Specifies a condition for filtering capacity data based on dimension values. Used to create precise filters for metric queries and dimension lookups. </p>"
+    },
     "DirectoryServiceAuthentication":{
       "type":"structure",
       "members":{
@@ -29820,6 +30276,35 @@
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the unsubscribe action was successful.</p>",
           "locationName":"output"
+        }
+      }
+    },
+    "DisableCapacityManagerRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p> Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>. </p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p> Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. </p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "DisableCapacityManagerResult":{
+      "type":"structure",
+      "members":{
+        "CapacityManagerStatus":{
+          "shape":"CapacityManagerStatus",
+          "documentation":"<p> The current status of Capacity Manager after the disable operation. </p>",
+          "locationName":"capacityManagerStatus"
+        },
+        "OrganizationsAccess":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates whether Organizations access is enabled. This will be <code>false</code> after disabling Capacity Manager. </p>",
+          "locationName":"organizationsAccess"
         }
       }
     },
@@ -30851,7 +31336,7 @@
       "members":{
         "Return":{
           "shape":"Boolean",
-          "documentation":"<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
+          "documentation":"<p>Is <code>true</code> if the request succeeds and an error otherwise.</p>",
           "locationName":"return"
         },
         "ClientToken":{
@@ -31198,7 +31683,7 @@
         },
         "VolumeInitializationRate":{
           "shape":"Integer",
-          "documentation":"<p>Specifies the Amazon EBS Provisioned Rate for Volume Initialization (volume initialization rate), in MiB/s, at which to download the snapshot blocks from Amazon S3 to the volume. This is also known as <i>volume initialization</i>. Specifying a volume initialization rate ensures that the volume is initialized at a predictable and consistent rate after creation.</p> <p>This parameter is supported only for volumes created from snapshots. Omit this parameter if:</p> <ul> <li> <p>You want to create the volume using fast snapshot restore. You must specify a snapshot that is enabled for fast snapshot restore. In this case, the volume is fully initialized at creation.</p> <note> <p>If you specify a snapshot that is enabled for fast snapshot restore and a volume initialization rate, the volume will be initialized at the specified rate instead of fast snapshot restore.</p> </note> </li> <li> <p>You want to create a volume that is initialized at the default rate.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/initalize-volume.html\"> Initialize Amazon EBS volumes</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>This parameter is not supported when using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>.</p> <p>Valid range: 100 - 300 MiB/s</p>"
+          "documentation":"<p>Specifies the Amazon EBS Provisioned Rate for Volume Initialization (volume initialization rate), in MiB/s, at which to download the snapshot blocks from Amazon S3 to the volume. This is also known as <i>volume initialization</i>. Specifying a volume initialization rate ensures that the volume is initialized at a predictable and consistent rate after creation. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/initalize-volume.html\">Initialize Amazon EBS volumes</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>This parameter is supported only for volumes created from snapshots. Omit this parameter if:</p> <ul> <li> <p>You want to create the volume using fast snapshot restore. You must specify a snapshot that is enabled for fast snapshot restore. In this case, the volume is fully initialized at creation.</p> <note> <p>If you specify a snapshot that is enabled for fast snapshot restore and a volume initialization rate, the volume will be initialized at the specified rate instead of fast snapshot restore.</p> </note> </li> <li> <p>You want to create a volume that is initialized at the default rate.</p> </li> </ul> <p>This parameter is not supported when using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeImages.html\">DescribeImages</a>.</p> <p>Valid range: 100 - 300 MiB/s</p>"
         },
         "AvailabilityZoneId":{
           "shape":"String",
@@ -31514,7 +31999,7 @@
         },
         "PreserveClientIp":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether your client's IP address is preserved as the source. The value is <code>true</code> or <code>false</code>.</p> <ul> <li> <p>If <code>true</code>, your client's IP address is used when you connect to a resource.</p> </li> <li> <p>If <code>false</code>, the elastic network interface IP address is used when you connect to a resource.</p> </li> </ul> <p>Default: <code>true</code> </p>",
+          "documentation":"<p>Indicates whether your client's IP address is preserved as the source when you connect to a resource. The following are the possible values.</p> <ul> <li> <p> <code>true</code> - Use the IP address of the client. Your instance must have an IPv4 address.</p> </li> <li> <p> <code>false</code> - Use the IP address of the network interface.</p> </li> </ul> <p>Default: <code>false</code> </p>",
           "locationName":"preserveClientIp"
         },
         "SecurityGroupIds":{
@@ -31538,7 +32023,7 @@
           "locationName":"publicDnsNames"
         }
       },
-      "documentation":"<p>The EC2 Instance Connect Endpoint.</p>"
+      "documentation":"<p>Describes an EC2 Instance Connect Endpoint.</p>"
     },
     "Ec2InstanceConnectEndpointState":{
       "type":"string",
@@ -31986,6 +32471,39 @@
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the subscribe action was successful.</p>",
           "locationName":"output"
+        }
+      }
+    },
+    "EnableCapacityManagerRequest":{
+      "type":"structure",
+      "members":{
+        "OrganizationsAccess":{
+          "shape":"Boolean",
+          "documentation":"<p> Specifies whether to enable cross-account access for Amazon Web Services Organizations. When enabled, Capacity Manager can aggregate data from all accounts in your organization. Default is false. </p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p> Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>. </p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p> Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. </p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "EnableCapacityManagerResult":{
+      "type":"structure",
+      "members":{
+        "CapacityManagerStatus":{
+          "shape":"CapacityManagerStatus",
+          "documentation":"<p> The current status of Capacity Manager after the enable operation. </p>",
+          "locationName":"capacityManagerStatus"
+        },
+        "OrganizationsAccess":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates whether Organizations access is enabled for cross-account data aggregation. </p>",
+          "locationName":"organizationsAccess"
         }
       }
     },
@@ -33645,6 +34163,28 @@
       },
       "documentation":"<p>A filter name and value pair that is used to return a more specific list of results from a describe operation. Filters can be used to match a set of resources by specific criteria, such as tags, attributes, or IDs.</p> <p>If you specify multiple filters, the filters are joined with an <code>AND</code>, and the request returns only results that match all of the specified filters.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Filtering.html#Filtering_Resources_CLI\">List and filter using the CLI and API</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
+    "FilterByDimension":{
+      "type":"string",
+      "enum":[
+        "resource-region",
+        "availability-zone-id",
+        "account-id",
+        "instance-family",
+        "instance-type",
+        "instance-platform",
+        "reservation-arn",
+        "reservation-id",
+        "reservation-type",
+        "reservation-create-timestamp",
+        "reservation-start-timestamp",
+        "reservation-end-timestamp",
+        "reservation-end-date-type",
+        "tenancy",
+        "reservation-state",
+        "reservation-instance-match-criteria",
+        "reservation-unused-financial-owner"
+      ]
+    },
     "FilterList":{
       "type":"list",
       "member":{
@@ -34886,6 +35426,177 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "GetCapacityManagerAttributesRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p> Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>. </p>"
+        }
+      }
+    },
+    "GetCapacityManagerAttributesResult":{
+      "type":"structure",
+      "members":{
+        "CapacityManagerStatus":{
+          "shape":"CapacityManagerStatus",
+          "documentation":"<p> The current status of Capacity Manager. </p>",
+          "locationName":"capacityManagerStatus"
+        },
+        "OrganizationsAccess":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates whether Organizations access is enabled for cross-account data aggregation. </p>",
+          "locationName":"organizationsAccess"
+        },
+        "DataExportCount":{
+          "shape":"Integer",
+          "documentation":"<p> The number of active data export configurations for this account. This count includes all data exports regardless of their current delivery status. </p>",
+          "locationName":"dataExportCount"
+        },
+        "IngestionStatus":{
+          "shape":"IngestionStatus",
+          "documentation":"<p> The current data ingestion status. Initial ingestion may take several hours after enabling Capacity Manager. </p>",
+          "locationName":"ingestionStatus"
+        },
+        "IngestionStatusMessage":{
+          "shape":"String",
+          "documentation":"<p> A descriptive message providing additional details about the current ingestion status. This may include error information if ingestion has failed or progress details during initial setup. </p>",
+          "locationName":"ingestionStatusMessage"
+        },
+        "EarliestDatapointTimestamp":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p> The timestamp of the earliest data point available in Capacity Manager, in milliseconds since epoch. This indicates how far back historical data is available for queries. </p>",
+          "locationName":"earliestDatapointTimestamp"
+        },
+        "LatestDatapointTimestamp":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p> The timestamp of the most recent data point ingested by Capacity Manager, in milliseconds since epoch. This indicates how current your capacity data is. </p>",
+          "locationName":"latestDatapointTimestamp"
+        }
+      }
+    },
+    "GetCapacityManagerMetricDataRequest":{
+      "type":"structure",
+      "required":[
+        "MetricNames",
+        "StartTime",
+        "EndTime",
+        "Period"
+      ],
+      "members":{
+        "MetricNames":{
+          "shape":"MetricSet",
+          "documentation":"<p> The names of the metrics to retrieve. Maximum of 10 metrics per request. </p>",
+          "locationName":"MetricName"
+        },
+        "StartTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p> The start time for the metric data query, in ISO 8601 format. The time range (end time - start time) must be a multiple of the specified period. </p>"
+        },
+        "EndTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p> The end time for the metric data query, in ISO 8601 format. If the end time is beyond the latest ingested data, it will be automatically adjusted to the latest available data point. </p>"
+        },
+        "Period":{
+          "shape":"Period",
+          "documentation":"<p> The granularity, in seconds, of the returned data points. </p>"
+        },
+        "GroupBy":{
+          "shape":"GroupBySet",
+          "documentation":"<p> The dimensions by which to group the metric data. This determines how the data is aggregated and returned. </p>"
+        },
+        "FilterBy":{
+          "shape":"CapacityManagerConditionSet",
+          "documentation":"<p> Conditions to filter the metric data. Each filter specifies a dimension, comparison operator ('equals', 'in'), and values to match against. </p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> The maximum number of data points to return. Valid range is 1 to 100,000. Use with NextToken for pagination of large result sets. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token for the next page of results. Use this value in a subsequent call to retrieve additional data points. </p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p> Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>. </p>"
+        }
+      }
+    },
+    "GetCapacityManagerMetricDataResult":{
+      "type":"structure",
+      "members":{
+        "MetricDataResults":{
+          "shape":"MetricDataResultSet",
+          "documentation":"<p> The metric data points returned by the query. Each result contains dimension values, timestamp, and metric values with their associated statistics. </p>",
+          "locationName":"metricDataResultSet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token to use to retrieve the next page of results. This value is null when there are no more results to return. </p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "GetCapacityManagerMetricDimensionsRequest":{
+      "type":"structure",
+      "required":[
+        "GroupBy",
+        "StartTime",
+        "EndTime",
+        "MetricNames"
+      ],
+      "members":{
+        "GroupBy":{
+          "shape":"GroupBySet",
+          "documentation":"<p> The dimensions to group by when retrieving available dimension values. This determines which dimension combinations are returned. Required parameter. </p>"
+        },
+        "FilterBy":{
+          "shape":"CapacityManagerConditionSet",
+          "documentation":"<p> Conditions to filter which dimension values are returned. Each filter specifies a dimension, comparison operator, and values to match against. </p>"
+        },
+        "StartTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p> The start time for the dimension query, in ISO 8601 format. Only dimensions with data in this time range will be returned. </p>"
+        },
+        "EndTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p> The end time for the dimension query, in ISO 8601 format. Only dimensions with data in this time range will be returned. </p>"
+        },
+        "MetricNames":{
+          "shape":"MetricSet",
+          "documentation":"<p> The metric names to use as an additional filter when retrieving dimensions. Only dimensions that have data for these metrics will be returned. Required parameter with maximum size of 1 for v1. </p>",
+          "locationName":"MetricName"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> The maximum number of dimension combinations to return. Valid range is 1 to 1000. Use with NextToken for pagination. </p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token for the next page of results. Use this value in a subsequent call to retrieve additional dimension values. </p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p> Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>. </p>"
+        }
+      }
+    },
+    "GetCapacityManagerMetricDimensionsResult":{
+      "type":"structure",
+      "members":{
+        "MetricDimensionResults":{
+          "shape":"MetricDimensionResultSet",
+          "documentation":"<p> The available dimension combinations that have data within the specified time range and filters. </p>",
+          "locationName":"metricDimensionResultSet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token to use to retrieve the next page of results. This value is null when there are no more results to return. </p>",
           "locationName":"nextToken"
         }
       }
@@ -37048,6 +37759,37 @@
         }
       },
       "documentation":"<p>Describes the GPU accelerators for the instance type.</p>"
+    },
+    "GroupBy":{
+      "type":"string",
+      "enum":[
+        "resource-region",
+        "availability-zone-id",
+        "account-id",
+        "instance-family",
+        "instance-type",
+        "instance-platform",
+        "reservation-arn",
+        "reservation-id",
+        "reservation-type",
+        "reservation-create-timestamp",
+        "reservation-start-timestamp",
+        "reservation-end-timestamp",
+        "reservation-end-date-type",
+        "tenancy",
+        "reservation-state",
+        "reservation-instance-match-criteria",
+        "reservation-unused-financial-owner"
+      ]
+    },
+    "GroupBySet":{
+      "type":"list",
+      "member":{
+        "shape":"GroupBy",
+        "locationName":"item"
+      },
+      "max":20,
+      "min":0
     },
     "GroupIdStringList":{
       "type":"list",
@@ -39354,6 +40096,14 @@
     },
     "InferenceDeviceMemorySize":{"type":"integer"},
     "InferenceDeviceName":{"type":"string"},
+    "IngestionStatus":{
+      "type":"string",
+      "enum":[
+        "initial-ingestion-in-progress",
+        "ingestion-complete",
+        "ingestion-failed"
+      ]
+    },
     "InitializationStatusDetails":{
       "type":"structure",
       "members":{
@@ -47968,6 +48718,89 @@
         "no-preference"
       ]
     },
+    "Metric":{
+      "type":"string",
+      "enum":[
+        "reservation-total-capacity-hrs-vcpu",
+        "reservation-total-capacity-hrs-inst",
+        "reservation-max-size-vcpu",
+        "reservation-max-size-inst",
+        "reservation-min-size-vcpu",
+        "reservation-min-size-inst",
+        "reservation-unused-total-capacity-hrs-vcpu",
+        "reservation-unused-total-capacity-hrs-inst",
+        "reservation-unused-total-estimated-cost",
+        "reservation-max-unused-size-vcpu",
+        "reservation-max-unused-size-inst",
+        "reservation-min-unused-size-vcpu",
+        "reservation-min-unused-size-inst",
+        "reservation-max-utilization",
+        "reservation-min-utilization",
+        "reservation-avg-utilization-vcpu",
+        "reservation-avg-utilization-inst",
+        "reservation-total-count",
+        "reservation-total-estimated-cost",
+        "reservation-avg-future-size-vcpu",
+        "reservation-avg-future-size-inst",
+        "reservation-min-future-size-vcpu",
+        "reservation-min-future-size-inst",
+        "reservation-max-future-size-vcpu",
+        "reservation-max-future-size-inst",
+        "reservation-avg-committed-size-vcpu",
+        "reservation-avg-committed-size-inst",
+        "reservation-max-committed-size-vcpu",
+        "reservation-max-committed-size-inst",
+        "reservation-min-committed-size-vcpu",
+        "reservation-min-committed-size-inst",
+        "reserved-total-usage-hrs-vcpu",
+        "reserved-total-usage-hrs-inst",
+        "reserved-total-estimated-cost",
+        "unreserved-total-usage-hrs-vcpu",
+        "unreserved-total-usage-hrs-inst",
+        "unreserved-total-estimated-cost",
+        "spot-total-usage-hrs-vcpu",
+        "spot-total-usage-hrs-inst",
+        "spot-total-estimated-cost",
+        "spot-avg-run-time-before-interruption-inst",
+        "spot-max-run-time-before-interruption-inst",
+        "spot-min-run-time-before-interruption-inst"
+      ]
+    },
+    "MetricDataResult":{
+      "type":"structure",
+      "members":{
+        "Dimension":{
+          "shape":"CapacityManagerDimension",
+          "documentation":"<p> The dimension values that identify this specific data point, such as account ID, region, and instance family. </p>",
+          "locationName":"dimension"
+        },
+        "Timestamp":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p> The timestamp for this data point, indicating when the capacity usage occurred. </p>",
+          "locationName":"timestamp"
+        },
+        "MetricValues":{
+          "shape":"MetricValueSet",
+          "documentation":"<p> The metric values and statistics for this data point, containing the actual capacity usage numbers. </p>",
+          "locationName":"metricValueSet"
+        }
+      },
+      "documentation":"<p> Contains a single data point from a capacity metrics query, including the dimension values, timestamp, and metric values for that specific combination. </p>"
+    },
+    "MetricDataResultSet":{
+      "type":"list",
+      "member":{
+        "shape":"MetricDataResult",
+        "locationName":"item"
+      }
+    },
+    "MetricDimensionResultSet":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityManagerDimension",
+        "locationName":"item"
+      }
+    },
     "MetricPoint":{
       "type":"structure",
       "members":{
@@ -48000,9 +48833,41 @@
         "locationName":"item"
       }
     },
+    "MetricSet":{
+      "type":"list",
+      "member":{
+        "shape":"Metric",
+        "locationName":"item"
+      },
+      "max":40,
+      "min":0
+    },
     "MetricType":{
       "type":"string",
       "enum":["aggregate-latency"]
+    },
+    "MetricValue":{
+      "type":"structure",
+      "members":{
+        "Metric":{
+          "shape":"Metric",
+          "documentation":"<p> The name of the metric. </p>",
+          "locationName":"metric"
+        },
+        "Value":{
+          "shape":"Double",
+          "documentation":"<p> The numerical value of the metric for the specified statistic and time period. </p>",
+          "locationName":"value"
+        }
+      },
+      "documentation":"<p> Represents a single metric value with its associated statistic, such as the sum or average of unused capacity hours. </p>"
+    },
+    "MetricValueSet":{
+      "type":"list",
+      "member":{
+        "shape":"MetricValue",
+        "locationName":"item"
+      }
     },
     "MillisecondDateTime":{"type":"timestamp"},
     "ModifyAddressAttributeRequest":{
@@ -48688,7 +49553,7 @@
         },
         "PreserveClientIp":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the client IP address is preserved as the source. The following are the possible values.</p> <ul> <li> <p> <code>true</code> - Use the client IP address as the source.</p> </li> <li> <p> <code>false</code> - Use the network interface IP address as the source.</p> </li> </ul> <note> <p> <code>PreserveClientIp=true</code> is only supported on IPv4 EC2 Instance Connect Endpoints. If modifying <code>PreserveClientIp</code> to <code>true</code>, either the endpoint's existing <code>IpAddressType</code> must be <code>ipv4</code>, or if modifying <code>IpAddressType</code> in the same request, the new value must be <code>ipv4</code>.</p> </note> <p>Default: <code>false</code> </p>"
+          "documentation":"<p>Indicates whether the client IP address is preserved as the source when you connect to a resource. The following are the possible values.</p> <ul> <li> <p> <code>true</code> - Use the IP address of the client. Your instance must have an IPv4 address.</p> </li> <li> <p> <code>false</code> - Use the IP address of the network interface.</p> </li> </ul>"
         }
       }
     },
@@ -48697,7 +49562,7 @@
       "members":{
         "Return":{
           "shape":"Boolean",
-          "documentation":"<p>The return value of the request. Returns <code>true</code> if the specified product code is owned by the requester and associated with the specified instance.</p>",
+          "documentation":"<p>Is <code>true</code> if the request succeeds and an error otherwise.</p>",
           "locationName":"return"
         }
       }
@@ -53332,6 +54197,13 @@
         "locationName":"item"
       }
     },
+    "OutputFormat":{
+      "type":"string",
+      "enum":[
+        "csv",
+        "parquet"
+      ]
+    },
     "OwnerStringList":{
       "type":"list",
       "member":{
@@ -53775,6 +54647,11 @@
         "shape":"PerformanceFactorReferenceRequest",
         "locationName":"item"
       }
+    },
+    "Period":{
+      "type":"integer",
+      "max":86400,
+      "min":3600
     },
     "PeriodType":{
       "type":"string",
@@ -57056,6 +57933,13 @@
       },
       "documentation":"<p>Describes a launch request for one or more instances, and includes owner, requester, and security group information that applies to all instances in the launch request.</p>"
     },
+    "ReservationEndDateType":{
+      "type":"string",
+      "enum":[
+        "limited",
+        "unlimited"
+      ]
+    },
     "ReservationFleetInstanceSpecification":{
       "type":"structure",
       "members":{
@@ -57105,10 +57989,24 @@
     "ReservationState":{
       "type":"string",
       "enum":[
+        "active",
+        "expired",
+        "cancelled",
+        "scheduled",
+        "pending",
+        "failed",
+        "delayed",
+        "unsupported",
         "payment-pending",
         "payment-failed",
-        "active",
         "retired"
+      ]
+    },
+    "ReservationType":{
+      "type":"string",
+      "enum":[
+        "capacity-block",
+        "odcr"
       ]
     },
     "ReservationValue":{
@@ -57941,7 +58839,8 @@
         "verified-access-endpoint-target",
         "ipam-external-resource-verification-token",
         "capacity-block",
-        "mac-modification-task"
+        "mac-modification-task",
+        "capacity-manager-data-export"
       ]
     },
     "ResourceTypeOption":{
@@ -59848,6 +60747,10 @@
         "sse-kms",
         "none"
       ]
+    },
+    "Schedule":{
+      "type":"string",
+      "enum":["hourly"]
     },
     "ScheduledInstance":{
       "type":"structure",
@@ -66608,6 +67511,40 @@
       "member":{
         "shape":"UnsuccessfulItem",
         "locationName":"item"
+      }
+    },
+    "UpdateCapacityManagerOrganizationsAccessRequest":{
+      "type":"structure",
+      "required":["OrganizationsAccess"],
+      "members":{
+        "OrganizationsAccess":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p> Specifies whether to enable or disable cross-account access for Amazon Web Services Organizations. When enabled, Capacity Manager aggregates data from all accounts in your organization. </p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p> Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>. </p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p> Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. </p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateCapacityManagerOrganizationsAccessResult":{
+      "type":"structure",
+      "members":{
+        "CapacityManagerStatus":{
+          "shape":"CapacityManagerStatus",
+          "documentation":"<p> The current status of Capacity Manager after the update operation. </p>",
+          "locationName":"capacityManagerStatus"
+        },
+        "OrganizationsAccess":{
+          "shape":"Boolean",
+          "documentation":"<p> The updated Organizations access setting indicating whether cross-account data aggregation is enabled. </p>",
+          "locationName":"organizationsAccess"
+        }
       }
     },
     "UpdateSecurityGroupRuleDescriptionsEgressRequest":{

@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.31.16
+=======
+
+* api-change:``timestream-influxdb``: This release adds support for creating and managing InfluxDB 3 Core and Enterprise DbClusters.
+* api-change:``ec2``: Introducing EC2 Capacity Manager for monitoring and analyzing capacity usage across On-Demand Instances, Spot Instances, and Capacity Reservations.
+* api-change:``docdb``: Add support for NetworkType field in CreateDbCluster, ModifyDbCluster, RestoreDbClusterFromSnapshot and RestoreDbClusterToPointInTime for DocumentDB.
+* api-change:``lightsail``: Add support for manage Lightsail Bucket CORS configuration
+* api-change:``guardduty``: Added default pagination value for ListMalwareProtectionPlans API and updated UpdateFindingsFeedback API
+* api-change:``elbv2``: This release expands Listener Rule Conditions to support RegexValues and adds support for a new Transforms field in Listener Rules.
+* api-change:``bedrock``: Amazon Bedrock Automated Reasoning Policy now offers enhanced AWS KMS integration. The CreateAutomatedReasoningPolicy API includes a new kmsKeyId field, allowing customers to specify their preferred KMS key for encryption, improving control and compliance with AWS encryption mandates.
+
+
 2.31.15
 =======
 

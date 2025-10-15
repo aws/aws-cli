@@ -16,6 +16,7 @@ from botocore.exceptions import DataNotFoundError
 from awscli.clidriver import ServiceOperation
 from awscli.customizations.commands import BasicCommand, BasicHelp, \
     BasicDocHandler
+from awscli.utils import create_nested_client
 
 
 def register_add_waiters(cli):
@@ -200,8 +201,8 @@ class WaiterCaller(object):
         self._waiter_name = waiter_name
 
     def invoke(self, service_name, operation_name, parameters, parsed_globals):
-        client = self._session.create_client(
-            service_name, region_name=parsed_globals.region,
+        client = create_nested_client(
+            self._session, service_name, region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl)
         waiter = client.get_waiter(xform_name(self._waiter_name))

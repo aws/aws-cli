@@ -21,12 +21,13 @@ Output::
                     "storage": [
                         "SEQUENTIAL"
                     ],
-                    "recordingMode": "DISABLED",
+                    "recordingMode": "DISABLED"
                 },
                 "recordingReconnectWindowSeconds": 0,
                 "hlsConfiguration": {
                     "targetSegmentDurationSeconds": 6
-                }
+                },
+                "recordParticipantReplicas": true
             },
             "endpoints": {
                 "events": "wss://global.events.live-video.net",

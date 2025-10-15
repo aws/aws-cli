@@ -26,7 +26,6 @@ ARGUMENT_RENAMES = {
     'ec2.create-image.no-no-reboot': 'reboot',
     'ec2.*.no-egress': 'ingress',
     'ec2.*.no-disable-api-termination': 'enable-api-termination',
-    'opsworks.*.region': 'stack-region',
     'elastictranscoder.*.output': 'job-output',
     'swf.register-activity-type.version': 'activity-version',
     'swf.register-workflow-type.version': 'workflow-version',
@@ -140,7 +139,6 @@ HIDDEN_ALIASES = {
     'importexport.get-shipping-label.street3': 'street-3',
     'lambda.publish-version.code-sha256': 'code-sha-256',
     'lightsail.import-key-pair.public-key-base64': 'public-key-base-64',
-    'opsworks.register-volume.ec2-volume-id': 'ec-2-volume-id',
     'mgn.*.replication-servers-security-groups-ids':
         'replication-servers-security-groups-i-ds',
     'mgn.*.source-server-ids': 'source-server-i-ds',

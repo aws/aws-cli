@@ -63,7 +63,8 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         self.parsed_responses = [
             {"CommonPrefixes": [], "Contents": [
                 {"Key": key, "Size": 3,
-                 "LastModified": "2014-01-09T20:45:49.000Z"}]},
+                 "LastModified": "2014-01-09T20:45:49.000Z",
+                 "ETag": '"c8afdb36c52cf4727836669019e69222-"',}]},
             {'ETag': '"c8afdb36c52cf4727836669019e69222-"',
              'Body': BytesIO(b'foo')}
         ]
@@ -79,7 +80,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                     {'Key': 'foo/bar.txt', 'ContentLength': '100',
                      'LastModified': '00:00:00Z',
                      'StorageClass': 'GLACIER',
-                     'Size': 100},
+                     'Size': 100, 'ETag': '"foo-1"',},
                 ],
                 'CommonPrefixes': []
             },

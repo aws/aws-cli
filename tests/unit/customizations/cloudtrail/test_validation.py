@@ -917,7 +917,7 @@ class TestS3ClientProvider(BaseAWSCommandParamsTest):
         created_client = provider.get_client('foo')
         self.assertEqual(s3_client, created_client)
         create_client_calls = session.create_client.call_args_list
-        self.assertEqual(create_client_calls, [mock.call('s3', 'us-east-1')])
+        self.assertEqual(create_client_calls, [mock.call('s3', region_name='us-east-1')])
         self.assertEqual(1, s3_client.get_bucket_location.call_count)
 
     def test_creates_clients_for_buckets_outside_us_east_1(self):
@@ -931,8 +931,8 @@ class TestS3ClientProvider(BaseAWSCommandParamsTest):
         self.assertEqual(s3_client, created_client)
         create_client_calls = session.create_client.call_args_list
         self.assertEqual(create_client_calls, [
-            mock.call('s3', 'us-west-1'),
-            mock.call('s3', 'us-west-2')
+            mock.call('s3', region_name='us-west-1'),
+            mock.call('s3', region_name='us-west-2')
         ])
         self.assertEqual(1, s3_client.get_bucket_location.call_count)
 

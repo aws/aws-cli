@@ -17,8 +17,8 @@ import sys
 from .utils import get_account_id
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.utils import s3_bucket_exists
+from awscli.utils import create_nested_client
 from botocore.exceptions import ClientError
-
 
 LOG = logging.getLogger(__name__)
 S3_POLICY_TEMPLATE = 'policy/S3/AWSCloudTrail-S3BucketPolicy-2014-12-17.json'
@@ -80,16 +80,16 @@ class CloudTrailSubscribe(BasicCommand):
 
         # Initialize services
         LOG.debug('Initializing S3, SNS and CloudTrail...')
-        self.sts = self._session.create_client('sts', **client_args)
-        self.s3 = self._session.create_client('s3', **client_args)
-        self.sns = self._session.create_client('sns', **client_args)
+        self.sts = create_nested_client(self._session, 'sts', **client_args)
+        self.s3 = create_nested_client(self._session, 's3', **client_args)
+        self.sns = create_nested_client(self._session, 'sns', **client_args)
         self.region_name = self.s3.meta.region_name
 
         # If the endpoint is specified, it is designated for the cloudtrail
         # service. Not all of the other services will use it.
         if parsed_globals.endpoint_url is not None:
             client_args['endpoint_url'] = parsed_globals.endpoint_url
-        self.cloudtrail = self._session.create_client('cloudtrail', **client_args)
+        self.cloudtrail = create_nested_client(self._session, 'cloudtrail', **client_args)
 
     def _call(self, options, parsed_globals):
         """

@@ -1,4 +1,4 @@
-**To describe dimension keys**
+**Example 1: To describe dimension keys**
 
 This example requests the names of all wait events. The data is summarized by event name, and the aggregate values of those events over the specified time period.
 
@@ -54,3 +54,35 @@ Output::
           }
       ]
   }
+
+**Example 2: To find the SQL ID for statements contributing the most to DB load**
+
+The following ``describe-dimension-keys`` requests the SQL statement and SQL ID for the 10 statements that contributed the most to DB load. ::
+
+    aws pi describe-dimension-keys \
+        --service-type RDS \
+        --identifier db-abcdefg123456789 \
+        --start-time 2023-05-01T00:00:00Z \
+        --end-time 2023-05-01T01:00:00Z \
+        --metric db.load.avg \
+        --group-by '{"Group": "db.sql", "Dimensions": ["db.sql.id", "db.sql.statement"],"Limit": 10}'
+
+Output::
+
+    {
+        "AlignedEndTime": 1.5270804E9,
+        "AlignedStartTime": 1.5270264E9,
+        "Identifier": "db-abcdefg123456789",
+        "MetricList": [
+            {
+                "Keys": [
+                    {
+                        "Dimensions": {"db.sql.id": "AKIAIOSFODNN7EXAMPLE", "db.sql.statement": "SELECT * FROM customers WHERE customer_id = 123"},
+                        "Total": 25.5,"Partitions": [12.3, 13.2]
+                    }
+                ]
+            }
+        ]
+    }
+
+For more information about dimensions in Performance Insights, see `Database load <https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.Overview.ActiveSessions.html>`__ in the *Amazon RDS User Guide* and `Database load <https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.Overview.ActiveSessions.html>`__ in the *Amazon Aurora User Guide*.

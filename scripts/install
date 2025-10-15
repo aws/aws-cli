@@ -28,6 +28,7 @@ UNSUPPORTED_PYTHON = (
     (3,5),
     (3,6),
     (3,7),
+    (3,8),
 )
 INSTALL_ARGS = (
     '--no-binary :all: --no-build-isolation --no-cache-dir --no-index '
@@ -149,7 +150,7 @@ def pip_install_packages(install_dir):
 
     with cd(PACKAGES_DIR):
         run(
-            '{} -m pip install {} --find-links file://{} {}'.format(
+            '{} -m pip install {} --find-links {} {}'.format(
                 python, INSTALL_ARGS, PACKAGES_DIR, cli_tarball
             )
         )
@@ -159,24 +160,17 @@ def _install_setup_deps(python, setup_package_dir):
     # Some packages declare `setup_requires`, which is a list of dependencies
     # to be used at setup time. These need to be installed before anything
     # else, and pip doesn't manage them.  We have to manage this ourselves
-    # so for now we're explicitly installing the one setup_requires package
-    # we need.  This comes from python-dateutils.
-    setuptools_scm_tarball = _get_package_tarball(
-        setup_package_dir, 'setuptools_scm'
-    )
-    run(
-        (
-            '{} -m pip install --no-binary :all: --no-cache-dir --no-index '
-            '--find-links file://{} {}'
-        ).format(python, setup_package_dir, setuptools_scm_tarball)
-    )
-    wheel_tarball = _get_package_tarball(setup_package_dir, 'wheel')
-    run(
-        (
-            '{} -m pip install --no-binary :all: --no-cache-dir --no-index '
-            '--find-links file://{} {}'
-        ).format(python, setup_package_dir, wheel_tarball)
-    )
+    # so for now we're explicitly installing setuptools_scm which is needed for
+    # python-dateutils. We're also now installing setuptools since its no
+    # longer installed alongside pip for 3.12+.
+    for package in ['setuptools-', 'wheel', 'setuptools_scm']:
+        # these are actually wheels, but the bundle lookup logic is the same
+        tarball = _get_package_tarball(setup_package_dir, package)
+        run(
+            '{} -m pip install {} --find-links {} {}'.format(
+                python, INSTALL_ARGS, PACKAGES_DIR, tarball
+            )
+        )
 
 
 def create_symlink(real_location, symlink_name):
@@ -208,7 +202,7 @@ def main():
     if py_version in UNSUPPORTED_PYTHON:
         unsupported_python_msg = (
             "Unsupported Python version detected: Python {}.{}\n"
-            "To continue using this installer you must use Python 3.8 "
+            "To continue using this installer you must use Python 3.9 "
             "or later.\n"
             "For more information see the following blog post: "
             "https://aws.amazon.com/blogs/developer/announcing-end-"
@@ -224,7 +218,7 @@ def main():
             "Deprecated Python version detected: Python {}.{}\n"
             "Starting {}, the AWS CLI will no longer support "
             "this version of Python. To continue receiving service updates, "
-            "bug fixes, and security updates please upgrade to Python 3.8 or "
+            "bug fixes, and security updates please upgrade to Python 3.9 or "
             "later. More information can be found here: {}"
         ).format(
             py_version[0], py_version[1], params['date'], params['blog_link']

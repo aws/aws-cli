@@ -25,6 +25,8 @@ from awscli.customizations.datapipeline.constants \
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.datapipeline.translator \
     import display_response, dict_to_string, get_region
+from awscli.utils import create_nested_client
+
 from botocore.exceptions import ClientError
 
 LOG = logging.getLogger(__name__)
@@ -69,8 +71,8 @@ class CreateDefaultRoles(BasicCommand):
         """Call to run the commands"""
         self._region = get_region(self._session, parsed_globals)
         self._endpoint_url = parsed_globals.endpoint_url
-        self._iam_client = self._session.create_client(
-            'iam', 
+        self._iam_client = create_nested_client(
+            self._session, 'iam', 
             region_name=self._region, 
             endpoint_url=self._endpoint_url,
             verify=parsed_globals.verify_ssl

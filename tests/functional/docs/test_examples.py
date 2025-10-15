@@ -46,7 +46,6 @@ COMMAND_EXAMPLES = {
     'swf': ['deprecate-domain', 'describe-domain'],
     'sqs': ['create-queue', 'get-queue-attributes'],
     'emr': ['add-steps', 'create-default-roles', 'describe-cluster', 'schedule-hbase-backup'],
-    'opsworks': ['register'],
 }
 _dname = os.path.dirname
 EXAMPLES_DIR = os.path.join(
@@ -84,7 +83,10 @@ def _get_all_doc_examples():
     for root, _, filenames in os.walk(EXAMPLES_DIR):
         for filename in filenames:
             full_path = os.path.join(root, filename)
-            if not filename.endswith('.rst'):
+            if filename.startswith('.'):
+                # Ignore hidden files as it starts with "."
+                continue
+            if not filename.endswith('.rst'):                
                 other_doc_examples.append(full_path)
                 continue
             rst_doc_examples.append(full_path)

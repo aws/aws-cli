@@ -21,6 +21,7 @@ from s3transfer import S3Transfer
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.s3.utils import human_readable_size
+from awscli.utils import create_nested_client
 
 
 class UploadBuildCommand(BasicCommand):
@@ -43,8 +44,8 @@ class UploadBuildCommand(BasicCommand):
     ]
 
     def _run_main(self, args, parsed_globals):
-        gamelift_client = self._session.create_client(
-            'gamelift', region_name=parsed_globals.region,
+        gamelift_client = create_nested_client(
+            self._session, 'gamelift', region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,
             verify=parsed_globals.verify_ssl
         )
@@ -81,8 +82,9 @@ class UploadBuildCommand(BasicCommand):
         access_key = upload_credentials['AccessKeyId']
         secret_key = upload_credentials['SecretAccessKey']
         session_token = upload_credentials['SessionToken']
-        s3_client = self._session.create_client(
-            's3', aws_access_key_id=access_key,
+        s3_client = create_nested_client(
+            self._session, 's3', 
+            aws_access_key_id=access_key,
             aws_secret_access_key=secret_key,
             aws_session_token=session_token,
             region_name=parsed_globals.region,

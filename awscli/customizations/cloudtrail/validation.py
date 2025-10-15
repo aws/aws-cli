@@ -19,7 +19,7 @@ import re
 import sys
 import zlib
 from zlib import error as ZLibError
-from datetime import datetime, timedelta
+from datetime import timedelta
 from dateutil import tz, parser
 
 from pyasn1.error import PyAsn1Error
@@ -29,8 +29,9 @@ from awscli.customizations.cloudtrail.utils import get_trail_by_arn, \
     get_account_id_from_arn
 from awscli.customizations.commands import BasicCommand
 from botocore.exceptions import ClientError
+from awscli.compat import get_current_datetime
 from awscli.schema import ParameterRequiredError
-
+from awscli.utils import create_nested_client
 
 LOG = logging.getLogger(__name__)
 DATE_FORMAT = '%Y%m%dT%H%M%SZ'
@@ -193,7 +194,7 @@ class S3ClientProvider(object):
     def _create_client(self, region_name):
         """Creates an Amazon S3 client for the given region name"""
         if region_name not in self._client_cache:
-            client = self._session.create_client('s3', region_name)
+            client = create_nested_client(self._session, 's3', region_name=region_name)
             # Remove the CLI error event that prevents exceptions.
             self._client_cache[region_name] = client
         return self._client_cache[region_name]
@@ -432,7 +433,7 @@ class DigestTraverser(object):
         :param end_date: Date to stop validating at (inclusive).
         """
         if end_date is None:
-            end_date = datetime.utcnow()
+            end_date = get_current_datetime()
         end_date = normalize_date(end_date)
         start_date = normalize_date(start_date)
         bucket = self.starting_bucket
@@ -735,7 +736,7 @@ class CloudTrailValidateLogs(BasicCommand):
         if args.end_time:
             self.end_time = normalize_date(parse_date(args.end_time))
         else:
-            self.end_time = normalize_date(datetime.utcnow())
+            self.end_time = normalize_date(get_current_datetime())
         if self.start_time > self.end_time:
             raise ValueError(('Invalid time range specified: start-time must '
                               'occur before end-time'))
@@ -753,13 +754,13 @@ class CloudTrailValidateLogs(BasicCommand):
             self._session, self._source_region)
         client_args = {'region_name': parsed_globals.region,
                        'verify': parsed_globals.verify_ssl}
-        self.organization_client = self._session.create_client(
-            'organizations', **client_args)
+        self.organization_client = create_nested_client(
+            self._session, 'organizations', **client_args)
 
         if parsed_globals.endpoint_url is not None:
             client_args['endpoint_url'] = parsed_globals.endpoint_url
-        self.cloudtrail_client = self._session.create_client(
-            'cloudtrail', **client_args)
+        self.cloudtrail_client = create_nested_client(
+            self._session, 'cloudtrail', **client_args)
 
     def _call(self):
         traverser = create_digest_traverser(

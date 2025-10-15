@@ -12,17 +12,18 @@
 # language governing permissions and limitations under the License.
 
 import json
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from awscli.formatter import get_formatter
 from awscli.arguments import CustomArgument
+from awscli.compat import get_current_datetime
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.datapipeline import translator
 from awscli.customizations.datapipeline.createdefaultroles \
     import CreateDefaultRoles
 from awscli.customizations.datapipeline.listrunsformatter \
     import ListRunsFormatter
-
+from awscli.utils import create_nested_client
 
 DEFINITION_HELP_TEXT = """\
 The JSON pipeline definition.  If the pipeline definition
@@ -184,7 +185,7 @@ class QueryArgBuilder(object):
     """
     def __init__(self, current_time=None):
         if current_time is None:
-            current_time = datetime.utcnow()
+            current_time = get_current_datetime()
         self.current_time = current_time
 
     def build_query(self, parsed_args):
@@ -361,7 +362,9 @@ class ListRunsCommand(BasicCommand):
     def _set_client(self, parsed_globals):
         # This is called from _run_main and is used to ensure that we have
         # a service/endpoint object to work with.
-        self.client = self._session.create_client(
+        from awscli.utils import create_nested_client
+        self.client = create_nested_client(
+            self._session,
             'datapipeline',
             region_name=parsed_globals.region,
             endpoint_url=parsed_globals.endpoint_url,

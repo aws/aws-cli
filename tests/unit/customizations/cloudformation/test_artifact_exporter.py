@@ -893,7 +893,7 @@ class TestArtifactExporter(unittest.TestCase):
 
     @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
     def test_template_export_metadata(self, yaml_parse_mock):
-        parent_dir = os.path.sep
+        parent_dir = os.path.abspath(os.path.sep)
         template_dir = os.path.join(parent_dir, 'foo', 'bar')
         template_path = os.path.join(template_dir, 'path')
         template_str = self.example_yaml_template()
@@ -953,7 +953,7 @@ class TestArtifactExporter(unittest.TestCase):
 
     @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
     def test_template_export(self, yaml_parse_mock):
-        parent_dir = os.path.sep
+        parent_dir = os.path.abspath(os.path.sep)
         template_dir = os.path.join(parent_dir, 'foo', 'bar')
         template_path = os.path.join(template_dir, 'path')
         template_str = self.example_yaml_template()
@@ -1018,7 +1018,7 @@ class TestArtifactExporter(unittest.TestCase):
 
     @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
     def test_template_export_foreach_valid(self, yaml_parse_mock):
-        parent_dir = os.path.sep
+        parent_dir = os.path.abspath(os.path.sep)
         template_dir = os.path.join(parent_dir, 'foo', 'bar')
         template_path = os.path.join(template_dir, 'path')
         template_str = self.example_yaml_template()
@@ -1113,7 +1113,7 @@ class TestArtifactExporter(unittest.TestCase):
 
     @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
     def test_template_export_foreach_invalid(self, yaml_parse_mock):
-        parent_dir = os.path.sep
+        parent_dir = os.path.abspath(os.path.sep)
         template_dir = os.path.join(parent_dir, 'foo', 'bar')
         template_path = os.path.join(template_dir, 'path')
         template_str = self.example_yaml_template()
@@ -1173,7 +1173,7 @@ class TestArtifactExporter(unittest.TestCase):
 
     @mock.patch("awscli.customizations.cloudformation.artifact_exporter.yaml_parse")
     def test_template_global_export(self, yaml_parse_mock):
-        parent_dir = os.path.sep
+        parent_dir = os.path.abspath(os.path.sep)
         template_dir = os.path.join(parent_dir, 'foo', 'bar')
         template_path = os.path.join(template_dir, 'path')
         template_str = self.example_yaml_template()

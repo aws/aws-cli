@@ -259,6 +259,7 @@ class TestUniPrint(unittest.TestCase):
 
 class TestGetPolicyARNSuffix(unittest.TestCase):
     def test_get_policy_arn_suffix(self):
+        self.assertEqual("aws-cn", utils.get_policy_arn_suffix("eusc-de-east-1"))
         self.assertEqual("aws-cn", utils.get_policy_arn_suffix("cn-northwest-1"))
         self.assertEqual("aws-cn", utils.get_policy_arn_suffix("cn-northwest-2"))
         self.assertEqual("aws-cn", utils.get_policy_arn_suffix("cn-north-1"))

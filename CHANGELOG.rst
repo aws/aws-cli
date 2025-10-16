@@ -2,6 +2,62 @@
 CHANGELOG
 =========
 
+1.42.54
+=======
+
+* api-change:``acm-pca``: Update endpoint ruleset parameters casing
+* api-change:``amplify``: Update endpoint ruleset parameters casing
+* api-change:``apigatewaymanagementapi``: Update endpoint ruleset parameters casing
+* api-change:``apprunner``: Update endpoint ruleset parameters casing
+* api-change:``apptest``: Update endpoint ruleset parameters casing
+* api-change:``autoscaling-plans``: Updated FIPS endpoints for US GovCloud regions
+* api-change:``batch``: Update endpoint ruleset parameters casing
+* api-change:``bcm-data-exports``: Update endpoint ruleset parameters casing
+* api-change:``billingconductor``: New feature: service flat CLI and first AWS managed pricing plan (BasicPricingPlan)
+* api-change:``customer-profiles``: Update endpoint ruleset parameters casing
+* api-change:``databrew``: Update endpoint ruleset parameters casing
+* api-change:``dataexchange``: Update endpoint ruleset parameters casing
+* api-change:``dlm``: Update endpoint ruleset parameters casing
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``freetier``: Update endpoint ruleset parameters casing
+* api-change:``gamelift``: Update endpoint ruleset parameters casing
+* api-change:``geo-routes``: Update endpoint ruleset parameters casing
+* api-change:``globalaccelerator``: Update endpoint ruleset parameters casing
+* api-change:``grafana``: Update endpoint ruleset parameters casing
+* api-change:``identitystore``: Update endpoint ruleset parameters casing
+* api-change:``ivs``: Update endpoint ruleset parameters casing
+* api-change:``ivs-realtime``: Update endpoint ruleset parameters casing
+* api-change:``kafka``: Update endpoint ruleset parameters casing
+* api-change:``keyspaces``: Update endpoint ruleset parameters casing
+* api-change:``kms``: Update endpoint ruleset parameters casing
+* api-change:``lex-models``: Update endpoint ruleset parameters casing
+* api-change:``lexv2-runtime``: Update endpoint ruleset parameters casing
+* api-change:``lookoutequipment``: Update endpoint ruleset parameters casing
+* api-change:``m2``: Update endpoint ruleset parameters casing
+* api-change:``machinelearning``: Update endpoint ruleset parameters casing
+* api-change:``marketplace-entitlement``: Update endpoint ruleset parameters casing
+* api-change:``mediapackagev2``: Update endpoint ruleset parameters casing
+* api-change:``medical-imaging``: Update endpoint ruleset parameters casing
+* api-change:``memorydb``: Update endpoint ruleset parameters casing
+* api-change:``migrationhub-config``: Update endpoint ruleset parameters casing
+* api-change:``networkflowmonitor``: Update endpoint ruleset parameters casing
+* api-change:``osis``: Update endpoint ruleset parameters casing
+* api-change:``personalize``: Update endpoint ruleset parameters casing
+* api-change:``personalize-runtime``: Update endpoint ruleset parameters casing
+* api-change:``pinpoint-sms-voice``: Update endpoint ruleset parameters casing
+* api-change:``polly``: Update endpoint ruleset parameters casing
+* api-change:``pricing``: Update endpoint ruleset parameters casing
+* api-change:``qldb``: Update endpoint ruleset parameters casing
+* api-change:``qldb-session``: Update endpoint ruleset parameters casing
+* api-change:``route53-recovery-control-config``: Update endpoint ruleset parameters casing
+* api-change:``ssm``: Update endpoint ruleset parameters casing
+* api-change:``ssm-contacts``: Update endpoint ruleset parameters casing
+* api-change:``ssm-guiconnect``: Update endpoint ruleset parameters casing
+* api-change:``timestream-query``: Update endpoint ruleset parameters casing
+* api-change:``voice-id``: Update endpoint ruleset parameters casing
+* api-change:``workspaces-web``: Update endpoint ruleset parameters casing
+
+
 1.42.53
 =======
 

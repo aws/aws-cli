@@ -146,8 +146,23 @@ class ClientArgsCreator:
             proxies_config=new_config.proxies_config,
         )
 
+
+        # Emit event to allow service-specific or customer customization of serializer kwargs
+        event_name = f'creating-serializer.{service_name}'
+        serializer_kwargs = {
+            'timestamp_precision': botocore.serialize.TIMESTAMP_PRECISION_DEFAULT
+        }
+        event_emitter.emit(
+            event_name,
+            protocol_name=protocol,
+            service_model=service_model,
+            serializer_kwargs=serializer_kwargs,
+        )
+
         serializer = botocore.serialize.create_serializer(
-            protocol, parameter_validation
+            protocol,
+            parameter_validation,
+            timestamp_precision=serializer_kwargs['timestamp_precision'],
         )
         response_parser = botocore.parsers.create_parser(protocol)
 

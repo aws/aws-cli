@@ -2,6 +2,62 @@
 CHANGELOG
 =========
 
+1.42.55
+=======
+
+* api-change:``amp``: Update endpoint ruleset parameters casing
+* api-change:``amplifybackend``: Update endpoint ruleset parameters casing
+* api-change:``appconfigdata``: Update endpoint ruleset parameters casing
+* api-change:``appintegrations``: Update endpoint ruleset parameters casing
+* api-change:``application-insights``: Update endpoint ruleset parameters casing
+* api-change:``arc-zonal-shift``: Update endpoint ruleset parameters casing
+* api-change:``bcm-recommended-actions``: Update endpoint ruleset parameters casing
+* api-change:``bedrock-data-automation-runtime``: Update endpoint ruleset parameters casing
+* api-change:``chime-sdk-meetings``: Update endpoint ruleset parameters casing
+* api-change:``cloudfront``: Update endpoint ruleset parameters casing
+* api-change:``cloudfront-keyvaluestore``: Update endpoint ruleset parameters casing
+* api-change:``codestar-notifications``: Update endpoint ruleset parameters casing
+* api-change:``controlcatalog``: Update endpoint ruleset parameters casing
+* api-change:``datasync``: Update endpoint ruleset parameters casing
+* api-change:``ds``: Update endpoint ruleset parameters casing
+* api-change:``dsql``: Update endpoint ruleset parameters casing
+* api-change:``ec2``: Documentation updates for Amazon EC2.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``es``: Update endpoint ruleset parameters casing
+* api-change:``events``: Update endpoint ruleset parameters casing
+* api-change:``evidently``: Update endpoint ruleset parameters casing
+* api-change:``finspace``: Update endpoint ruleset parameters casing
+* api-change:``finspace-data``: Update endpoint ruleset parameters casing
+* api-change:``gameliftstreams``: Updates documentation to clarify valid application binaries for an Amazon GameLift Streams application and provide descriptions of stream session error status reasons
+* api-change:``geo-maps``: Added support for optional style parameters in maps, including Terrain, ContourDensity, Traffic, and TravelModes.
+* api-change:``imagebuilder``: Update endpoint ruleset parameters casing
+* api-change:``iot-data``: Update endpoint ruleset parameters casing
+* api-change:``iotdeviceadvisor``: Update endpoint ruleset parameters casing
+* api-change:``iotthingsgraph``: Update endpoint ruleset parameters casing
+* api-change:``iottwinmaker``: Update endpoint ruleset parameters casing
+* api-change:``kendra-ranking``: Update endpoint ruleset parameters casing
+* api-change:``kinesis-video-media``: Update endpoint ruleset parameters casing
+* api-change:``lakeformation``: Update endpoint ruleset parameters casing
+* api-change:``license-manager``: Update endpoint ruleset parameters casing
+* api-change:``license-manager-user-subscriptions``: Update endpoint ruleset parameters casing
+* api-change:``marketplace-catalog``: The ListEntities API now supports two new CAPI filters: DeliveryOptionTypes for SaaS products and CompatibleAWSServices for Container products.
+* api-change:``mediaconnect``: Update endpoint ruleset parameters casing
+* api-change:``migration-hub-refactor-spaces``: Update endpoint ruleset parameters casing
+* api-change:``network-firewall``: Update endpoint ruleset parameters casing
+* api-change:``networkmanager``: Update endpoint ruleset parameters casing
+* api-change:``organizations``: Update endpoint ruleset parameters casing
+* api-change:``pi``: Update endpoint ruleset parameters casing
+* api-change:``qapps``: Update endpoint ruleset parameters casing
+* api-change:``rolesanywhere``: Update endpoint ruleset parameters casing
+* api-change:``route53-recovery-readiness``: Update endpoint ruleset parameters casing
+* api-change:``sagemaker-geospatial``: Update endpoint ruleset parameters casing
+* api-change:``signer``: Update endpoint ruleset parameters casing
+* api-change:``swf``: Releasing minor endpoint updates.
+* api-change:``timestream-write``: Update endpoint ruleset parameters casing
+* api-change:``tnb``: Update endpoint ruleset parameters casing
+* api-change:``wellarchitected``: Update endpoint ruleset parameters casing
+
+
 1.42.54
 =======
 

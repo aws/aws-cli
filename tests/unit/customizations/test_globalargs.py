@@ -221,7 +221,26 @@ class TestGlobalArgsCustomization(unittest.TestCase):
             )
         # Verify the expected warning is printed
         self.assertIn(
-            'AWS CLI v2 MIGRATION WARNING: The ecr get-login command has '
+            'AWS CLI v2 UPGRADE WARNING: The ecr get-login command has '
+            'been removed in AWS CLI v2.',
+            output.stderr.getvalue()
+        )
+
+    def test_ecr_login_v2_debug_env_var(self):
+        parsed_args = FakeParsedArgs(command='ecr')
+        remaining_args = ['get-login']
+        session = get_session()
+        env = {'AWS_CLI_UPGRADE_DEBUG_MODE': 'true'}
+        with capture_output() as output:
+            with mock.patch('os.environ', env):
+                globalargs.detect_migration_breakage(
+                    parsed_args,
+                    remaining_args,
+                    session
+                )
+        # Verify the expected warning is printed
+        self.assertIn(
+            'AWS CLI v2 UPGRADE WARNING: The ecr get-login command has '
             'been removed in AWS CLI v2.',
             output.stderr.getvalue()
         )
@@ -234,7 +253,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
             with capture_output() as output:
                 globalargs.detect_migration_breakage(parsed_args, [], session)
                 self.assertIn(
-                    'AWS CLI v2 MIGRATION WARNING: The PYTHONUTF8 and '
+                    'AWS CLI v2 UPGRADE WARNING: The PYTHONUTF8 and '
                     'PYTHONIOENCODING environment variables are unsupported '
                     'in AWS CLI v2.',
                     output.stderr.getvalue()
@@ -248,7 +267,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
             with capture_output() as output:
                 globalargs.detect_migration_breakage(parsed_args, [], session)
                 self.assertNotIn(
-                    'AWS CLI v2 MIGRATION WARNING: The PYTHONUTF8 and '
+                    'AWS CLI v2 UPGRADE WARNING: The PYTHONUTF8 and '
                     'PYTHONIOENCODING environment variables are unsupported '
                     'in AWS CLI v2.',
                     output.stderr.getvalue()
@@ -262,7 +281,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
             with capture_output() as output:
                 globalargs.detect_migration_breakage(parsed_args, [], session)
                 self.assertIn(
-                    'AWS CLI v2 MIGRATION WARNING: The PYTHONUTF8 and '
+                    'AWS CLI v2 UPGRADE WARNING: The PYTHONUTF8 and '
                     'PYTHONIOENCODING environment variables are unsupported '
                     'in AWS CLI v2.',
                     output.stderr.getvalue()
@@ -281,7 +300,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
                 context={'auth_type': 'v2'},
             )
         self.assertIn(
-            'AWS CLI v2 MIGRATION WARNING: The AWS CLI v2 only uses Signature '
+            'AWS CLI v2 UPGRADE WARNING: The AWS CLI v2 only uses Signature '
             'v4 to authenticate Amazon S3 requests.',
             output.stderr.getvalue()
         )

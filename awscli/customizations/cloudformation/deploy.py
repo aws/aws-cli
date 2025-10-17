@@ -25,7 +25,7 @@ from awscli.customizations.cloudformation.yamlhelper import yaml_parse
 from awscli.customizations.commands import BasicCommand
 from awscli.compat import get_stdout_text_writer
 from awscli.customizations.utils import uni_print
-from awscli.utils import create_nested_client, write_exception
+from awscli.utils import create_nested_client, write_exception, resolve_v2_debug_mode
 
 LOG = logging.getLogger(__name__)
 
@@ -317,12 +317,13 @@ class DeployCommand(BasicCommand):
             s3_uploader = None
 
         deployer = Deployer(cloudformation_client)
+        v2_debug = resolve_v2_debug_mode(parsed_globals)
         return self.deploy(deployer, stack_name, template_str,
                            parameters, parsed_args.capabilities,
                            parsed_args.execute_changeset, parsed_args.role_arn,
                            parsed_args.notification_arns, s3_uploader,
                            tags, parsed_args.fail_on_empty_changeset,
-                           parsed_args.disable_rollback, getattr(parsed_globals, 'v2_debug', False))
+                           parsed_args.disable_rollback, v2_debug)
 
     def deploy(self, deployer, stack_name, template_str,
                parameters, capabilities, execute_changeset, role_arn,
@@ -344,7 +345,7 @@ class DeployCommand(BasicCommand):
             if fail_on_empty_changeset:
                 if v2_debug:
                     uni_print(
-                        'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, '
+                        'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, '
                         'deploying an AWS CloudFormation Template that '
                         'results in an empty changeset will NOT result in an '
                         'error. You can add the -–no-fail-on-empty-changeset '

@@ -335,6 +335,7 @@ class TestPaginateV2Debug(TestPaginateBase):
         # migration warning should be printed.
         # From setUp(), the limit_key is 'Bar'
         input_tokens = ['Foo', 'Bar']
+        self.parsed_globals.no_v2_debug = False
         self.parsed_globals.v2_debug = True
         self.parsed_globals.paginate = True
         self.session.emit_first_non_none_response.side_effect = partial(
@@ -355,7 +356,7 @@ class TestPaginateV2Debug(TestPaginateBase):
             # We should have printed the migration warning
             # because the user specified {Bar: 10} in the input JSON
             self.assertIn(
-                'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, if you specify '
+                'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, if you specify '
                 'pagination parameters by using a file with the '
                 '`--cli-input-json` parameter, automatic pagination will be '
                 'turned off.',
@@ -387,7 +388,7 @@ class TestPaginateV2Debug(TestPaginateBase):
             # We should not have printed the warning because
             # the user did not specify any params through CLI input JSON
             self.assertNotIn(
-                'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, if you specify '
+                'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, if you specify '
                 'pagination parameters by using a file with the '
                 '`--cli-input-json` parameter, automatic pagination will be '
                 'turned off.',

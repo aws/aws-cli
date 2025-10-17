@@ -51,10 +51,18 @@ def iso_format(value):
 
 def add_timestamp_parser(session, v2_debug):
     factory = session.get_component('response_parser_factory')
+    print_v2_debug_warnings = v2_debug
     try:
         timestamp_format = session.get_scoped_config().get(
             'cli_timestamp_format',
-            'wire')
+            None)
+        if timestamp_format is not None:
+            # We do not want to print v2 debug warnings if the user explicitly
+            # configured the cli_timestamp_format, they would not be
+            # broken in that case.
+            print_v2_debug_warnings = False
+        else:
+            timestamp_format = 'wire'
     except ProfileNotFound:
         # If a --profile is provided that does not exist, loading
         # a value from get_scoped_config will crash the CLI.
@@ -91,7 +99,8 @@ def add_timestamp_parser(session, v2_debug):
                 )
             return identity(x)
 
-        timestamp_parser = identity_with_warning if v2_debug else identity
+        timestamp_parser = identity_with_warning \
+            if print_v2_debug_warnings else identity
     elif timestamp_format == 'iso8601':
         timestamp_parser = iso_format
     else:

@@ -244,7 +244,7 @@ def warn_if_sigv2(
 ):
     if context.get('auth_type', None) == 'v2':
         uni_print(
-            'AWS CLI v2 MIGRATION WARNING: The AWS CLI v2 only uses Signature '
+            'AWS CLI v2 UPGRADE WARNING: The AWS CLI v2 only uses Signature '
             'v4 to authenticate Amazon S3 requests. To migrate to AWS CLI '
             'v2 behavior, configure the Signature Version S3 setting to '
             'version 4.\n',

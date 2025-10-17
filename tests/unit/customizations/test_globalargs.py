@@ -221,7 +221,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
             )
         # Verify the expected warning is printed
         self.assertIn(
-            'AWS CLI v2 UPGRADE WARNING: The ecr get-login command has '
+            'AWS CLI v2 UPGRADE WARNING: The `ecr get-login` command has '
             'been removed in AWS CLI v2.',
             output.stderr.getvalue()
         )
@@ -240,7 +240,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
                 )
         # Verify the expected warning is printed
         self.assertIn(
-            'AWS CLI v2 UPGRADE WARNING: The ecr get-login command has '
+            'AWS CLI v2 UPGRADE WARNING: The `ecr get-login` command has '
             'been removed in AWS CLI v2.',
             output.stderr.getvalue()
         )

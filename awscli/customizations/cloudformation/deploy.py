@@ -331,6 +331,18 @@ class DeployCommand(BasicCommand):
                fail_on_empty_changeset=True, disable_rollback=False,
                v2_debug=False):
         try:
+            if v2_debug and fail_on_empty_changeset:
+                uni_print(
+                    'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, '
+                    'deploying an AWS CloudFormation Template that '
+                    'results in an empty changeset will NOT result in an '
+                    'error. You can add the -–no-fail-on-empty-changeset '
+                    'flag to migrate to v2 behavior and resolve this '
+                    'warning. See https://docs.aws.amazon.com/cli/latest/'
+                    'userguide/cliv2-migration-changes.html'
+                    '#cliv2-migration-cfn.\n',
+                    out_file=sys.stderr
+                )
             result = deployer.create_and_wait_for_changeset(
                 stack_name=stack_name,
                 cfn_template=template_str,
@@ -343,18 +355,6 @@ class DeployCommand(BasicCommand):
             )
         except exceptions.ChangeEmptyError as ex:
             if fail_on_empty_changeset:
-                if v2_debug:
-                    uni_print(
-                        'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, '
-                        'deploying an AWS CloudFormation Template that '
-                        'results in an empty changeset will NOT result in an '
-                        'error. You can add the -–no-fail-on-empty-changeset '
-                        'flag to migrate to v2 behavior and resolve this '
-                        'warning. See https://docs.aws.amazon.com/cli/latest/'
-                        'userguide/cliv2-migration-changes.html'
-                        '#cliv2-migration-cfn.\n',
-                        out_file=sys.stderr
-                    )
                 raise
             write_exception(ex, outfile=get_stdout_text_writer())
             return 0

@@ -71,7 +71,7 @@ def add_timestamp_parser(session):
         timestamp_parser = iso_format
     else:
         raise ValueError('Unknown cli_timestamp_format value: %s, valid values'
-                         ' are "wire" or "iso8601"' % timestamp_format)
+                         ' are "none", "wire" or "iso8601"' % timestamp_format)
     factory.set_parser_defaults(timestamp_parser=timestamp_parser)
 
 

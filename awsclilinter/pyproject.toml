@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "awsclilinter"
+version = "0.1.0"
+description = "CLI tool to lint and upgrade bash scripts from AWS CLI v1 to v2"
+requires-python = ">=3.12"
+dependencies = [
+    "ast-grep-py>=0.39.6",
+]
+
+[project.scripts]
+upgrade-aws-cli = "awsclilinter.cli:main"
+
+[tool.black]
+line-length = 100
+target-version = ['py312']
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

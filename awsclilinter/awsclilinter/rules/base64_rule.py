@@ -6,7 +6,9 @@ from awsclilinter.rules_base import LintFinding, LintRule
 
 
 class Base64BinaryFormatRule(LintRule):
-    """Detects AWS CLI commands with file:// that need --cli-binary-format."""
+    """Detects AWS CLI commands with file:// that need --cli-binary-format. This is a best-effort
+    attempt at statically detecting the breaking change with how AWS CLI v2 treats binary
+    parameters."""
 
     @property
     def name(self) -> str:

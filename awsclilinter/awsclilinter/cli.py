@@ -13,6 +13,9 @@ GREEN = "\033[32m"
 CYAN = "\033[36m"
 RESET = "\033[0m"
 
+# The number of lines to show before an after a fix suggestion, for context within the script
+CONTEXT_SIZE = 3
+
 
 def get_user_choice(prompt: str) -> str:
     """Get user input for interactive mode."""
@@ -25,7 +28,7 @@ def get_user_choice(prompt: str) -> str:
 
 def display_finding(finding: LintFinding, index: int, total: int, script_content: str):
     """Display a finding to the user with context."""
-    lines = script_content.splitlines()
+    src_lines = script_content.splitlines()
     dest_lines = finding.edit.inserted_text.splitlines()
     start_line = finding.line_start
     end_line = finding.line_end
@@ -35,13 +38,13 @@ def display_finding(finding: LintFinding, index: int, total: int, script_content
     # Create a map from line numbers to their indices within the full script file
     line_positions = []
     pos = 0
-    for i, line in enumerate(lines):
+    for i, line in enumerate(src_lines):
         line_positions.append((pos, pos + len(line)))
         pos += len(line) + 1
 
-    # Get context lines (3 before and 3 after)
-    context_start = max(0, start_line - 3)
-    context_end = min(len(lines), end_line + 4)
+    # Get context lines
+    context_start = max(0, start_line - CONTEXT_SIZE)
+    context_end = min(len(src_lines), end_line + CONTEXT_SIZE + 1)
     src_context_size = context_end - context_start
     dest_context_size = src_context_size + (new_lines_added - src_lines_removed)
 
@@ -53,10 +56,10 @@ def display_finding(finding: LintFinding, index: int, total: int, script_content
     )
 
     for i in range(context_start, context_end):
-        line = lines[i] if i < len(lines) else ""
+        line = src_lines[i] if i < len(src_lines) else ""
 
         if start_line <= i <= end_line:
-            # This line is actually being modified
+            # This line is being modified
             print(f"{RED}-{line}{RESET}")
 
             if i == end_line:
@@ -64,8 +67,7 @@ def display_finding(finding: LintFinding, index: int, total: int, script_content
                 start_pos_in_line = max(0, finding.edit.start_pos - line_start_pos)
                 end_pos_in_line = min(len(line), finding.edit.end_pos - line_start_pos)
                 new_line = line[:start_pos_in_line] + finding.suggested_fix + line[end_pos_in_line:]
-                # Print the new line suggestion. The line number will always be the start line
-                # returned by ast-grep.
+                # Print the new line suggestion.
                 print(f"{GREEN}+{new_line}{RESET}")
         else:
             # Context line

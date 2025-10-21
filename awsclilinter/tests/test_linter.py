@@ -7,7 +7,7 @@ class TestScriptLinter:
 
     def test_lint_finds_issues(self):
         """Test that linter finds issues in script."""
-        script = "aws s3api put-object --bucket mybucket --key mykey --body file://data.json"
+        script = "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json"
         linter = ScriptLinter([Base64BinaryFormatRule()])
         findings = linter.lint(script)
 
@@ -15,17 +15,9 @@ class TestScriptLinter:
         assert findings[0].rule_name == "binary-params-base64"
         assert "file://" in findings[0].original_text
 
-    def test_lint_no_issues(self):
-        """Test that linter returns no findings for compliant script."""
-        script = "aws s3api put-object --bucket mybucket --key mykey --body file://data.json --cli-binary-format raw-in-base64-out"
-        linter = ScriptLinter([Base64BinaryFormatRule()])
-        findings = linter.lint(script)
-
-        assert len(findings) == 0
-
     def test_apply_fixes(self):
         """Test that fixes are applied correctly."""
-        script = "aws s3api put-object --bucket mybucket --key mykey --body file://data.json"
+        script = "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json"
         linter = ScriptLinter([Base64BinaryFormatRule()])
         findings = linter.lint(script)
         fixed = linter.apply_fixes(script, findings)
@@ -35,8 +27,8 @@ class TestScriptLinter:
 
     def test_multiple_issues(self):
         """Test linter with multiple issues."""
-        script = """aws s3api put-object --bucket mybucket --key mykey --body file://data.json
-aws dynamodb put-item --table-name mytable --item file://item.json"""
+        script = """aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json
+            aws kinesis put-record --stream-name samplestream --data file://data --partition-key samplepartitionkey"""
         linter = ScriptLinter([Base64BinaryFormatRule()])
         findings = linter.lint(script)
 

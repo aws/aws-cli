@@ -1,13 +1,16 @@
 # AWS CLI Linter
 
 A CLI tool that lints bash scripts for AWS CLI v1 usage and updates them to avoid breaking 
-changes introduced in AWS CLI v2. Not all of the breaking changes can be detected statically, 
+changes introduced in AWS CLI v2. Not all breaking changes can be detected statically, 
 thus not all of them are supported by this tool.
 
 For a full list of the breaking changes introduced with AWS CLI v2, see 
 [Breaking changes between AWS CLI version 1 and AWS CLI version 2](https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration-changes.html#cliv2-migration-changes-breaking).
 
 ## Installation
+
+Run `make setup` to set up a virtual environment with the linter installed. Alternatively, 
+you can follow the steps below.
 
 1. Create a virtual environment:
 ```bash
@@ -18,6 +21,7 @@ source venv/bin/activate
 2. Install dependencies:
 ```bash
 pip install -r requirements.txt
+pip install -r requirements-dev-lock.txt
 ```
 
 3. Install the package in development mode:

@@ -5,7 +5,7 @@ aws secretsmanager put-secret-value --secret-id secret1213 \
   --secret-binary file://data.json
 
 if
- aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json ; then
+ aws kinesis put-record --stream-name samplestream --data file://data --partition-key samplepartitionkey ; then
     echo "command succeeded."
 fi
 

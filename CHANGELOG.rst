@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.42.56
+=======
+
+* api-change:``dynamodb``: Add AccountID based endpoint metric to endpoint rules.
+* api-change:``emr``: Added RECONFIGURING to the InstanceFleetState convenience enum.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``mediaconvert``: This release adds the ability to set resolution for the black video generator and also adds the StartJobsQuery and GetJobsQueryResults APIs which allow asynchronous search of job history using new filters.
+* api-change:``meteringmarketplace``: Added ClientToken parameter to MeterUsage API for specifying idempotent requests.
+* enhancement:timestamps: Add ``wire`` as a valid value for ``cli_timestamp_format``.
+
+
 1.42.55
 =======
 

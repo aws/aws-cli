@@ -42,9 +42,6 @@ class Base64BinaryFormatRule(LintRule):
             suggested = original + " --cli-binary-format raw-in-base64-out"
             edit = stmt.replace(suggested)
 
-            print(f"suggested fix: {suggested}")
-            print(f"edit text: {edit.inserted_text}")
-
             findings.append(
                 LintFinding(
                     line_start=stmt.range().start.line,

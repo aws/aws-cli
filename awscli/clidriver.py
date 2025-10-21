@@ -41,6 +41,7 @@ from awscli.arguments import (
 )
 from awscli.commands import CLICommand
 from awscli.compat import get_stderr_text_writer
+from awscli.customizations.utils import uni_print
 from awscli.formatter import get_formatter
 from awscli.help import (
     OperationHelpCommand,
@@ -79,8 +80,6 @@ def main():
 def create_clidriver():
     session = botocore.session.Session(EnvironmentVariables)
     _set_user_agent_for_session(session)
-    # TODO check if full config plugins is empty or not. if it's not, we signal the warning for plugin support being provisional
-    # similarly, we check for api_versions config value here.
     load_plugins(
         session.full_config.get('plugins', {}),
         event_hooks=session.get_component('event_emitter'),
@@ -547,6 +546,12 @@ class ServiceOperation:
             parsed_args, self.arg_table
         )
 
+        self._detect_binary_file_migration_change(
+            self._session,
+            parsed_args,
+            parsed_globals,
+            self.arg_table
+        )
         event = f'calling-command.{self._parent_name}.{self._name}'
         override = self._emit_first_non_none_response(
             event,
@@ -662,6 +667,45 @@ class ServiceOperation:
     def _create_operation_parser(self, arg_table):
         parser = ArgTableArgParser(arg_table)
         return parser
+
+    def _detect_binary_file_migration_change(
+            self,
+            session,
+            parsed_args,
+            parsed_globals,
+            arg_table
+    ):
+        if (
+                session.get_scoped_config()
+                        .get('cli_binary_format', None) == 'raw-in-base64-out'
+        ):
+            # if cli_binary_format is set to raw-in-base64-out, then v2 behavior will
+            # be the same as v1, so there is no breaking change in this case.
+            return
+        if parsed_globals.v2_debug:
+            parsed_args_to_check = {
+                arg: getattr(parsed_args, arg)
+                for arg in vars(parsed_args) if getattr(parsed_args, arg)
+            }
+
+            arg_values_to_check = [
+                arg.py_name for arg in arg_table.values()
+                if arg.py_name in parsed_args_to_check
+                   and arg.argument_model.type_name == 'blob'
+                   and parsed_args_to_check[arg.py_name].startswith('file://')
+            ]
+            if arg_values_to_check:
+                uni_print(
+                    'AWS CLI v2 MIGRATION WARNING: When specifying a blob-type '
+                    'parameter starting with `file://`, AWS CLI v2 will assume '
+                    'the content of the file is already base64-encoded. To '
+                    'maintain v1 behavior after upgrading to v2, set the '
+                    '`cli_binary_format` configuration variable to '
+                    '`raw-in-base64-out`. See https://docs.aws.amazon.com/cli/'
+                    'latest/userguide/cliv2-migration-changes.html#'
+                    'cliv2-migration-binaryparam.\n',
+                    out_file=sys.stderr
+                )
 
 
 class CLIOperationCaller:

@@ -32,7 +32,7 @@ class TestScalarParse(unittest.TestCase):
         session = mock.Mock()
         session.get_scoped_config.return_value = {'cli_timestamp_format':
                                                   'none'}
-        scalarparse.add_scalar_parsers(session)
+        scalarparse.add_scalar_parsers(session, mock.Mock(v2_debug=False))
         session.get_component.assert_called_with('response_parser_factory')
         factory = session.get_component.return_value
         expected = [mock.call(blob_parser=scalarparse.identity),
@@ -45,7 +45,7 @@ class TestScalarParse(unittest.TestCase):
         session.get_scoped_config.return_value = {'cli_timestamp_format':
                                                   'none'}
         factory = session.get_component.return_value
-        scalarparse.add_scalar_parsers(session)
+        scalarparse.add_scalar_parsers(session, mock.Mock(v2_debug=False))
         factory.set_parser_defaults.assert_called_with(
             timestamp_parser=scalarparse.identity)
 
@@ -54,7 +54,7 @@ class TestScalarParse(unittest.TestCase):
         session.get_scoped_config.return_value = {'cli_timestamp_format':
                                                   'iso8601'}
         factory = session.get_component.return_value
-        scalarparse.add_scalar_parsers(session)
+        scalarparse.add_scalar_parsers(session, mock.Mock(v2_debug=False))
         factory.set_parser_defaults.assert_called_with(
             timestamp_parser=scalarparse.iso_format)
 
@@ -64,12 +64,12 @@ class TestScalarParse(unittest.TestCase):
                                                   'foobar'}
         session.get_component.return_value
         with self.assertRaises(ValueError):
-            scalarparse.add_scalar_parsers(session)
+            scalarparse.add_scalar_parsers(session, mock.Mock(v2_debug=False))
 
     def test_choose_timestamp_parser_profile_not_found(self):
         session = mock.Mock(spec=Session)
         session.get_scoped_config.side_effect = ProfileNotFound(profile='foo')
         factory = session.get_component.return_value
-        scalarparse.add_scalar_parsers(session)
+        scalarparse.add_scalar_parsers(session, mock.Mock(v2_debug=False))
         factory.set_parser_defaults.assert_called_with(
             timestamp_parser=scalarparse.identity)

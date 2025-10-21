@@ -27,8 +27,12 @@ There's nothing currently done for timestamps, but this will change
 in the future.
 
 """
+import sys
+
 from botocore.utils import parse_timestamp
 from botocore.exceptions import ProfileNotFound
+
+from awscli.customizations.utils import uni_print
 
 
 def register_scalar_parser(event_handlers):
@@ -44,7 +48,7 @@ def iso_format(value):
     return parse_timestamp(value).isoformat()
 
 
-def add_timestamp_parser(session):
+def add_timestamp_parser(session, v2_debug):
     factory = session.get_component('response_parser_factory')
     try:
         timestamp_format = session.get_scoped_config().get(
@@ -64,8 +68,26 @@ def add_timestamp_parser(session):
         # parser (which parses to a datetime.datetime object) with the
         # identity function which prints the date exactly the same as it comes
         # across the wire.
-        # TODO create an inner function that wraps identity here. it'll signal to print the runtime check.
-        timestamp_parser = identity
+        encountered_timestamp = False
+        def identity_with_warning(x):
+            # To prevent printing the same warning for each timestamp in the
+            # response, we utilize a reference to a nonlocal variable to track
+            # if we have already printed the warning.
+            nonlocal encountered_timestamp
+            if not encountered_timestamp:
+                encountered_timestamp = True
+                uni_print(
+                    'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, all timestamp '
+                    'response values are returned in the ISO 8601 format. To '
+                    'migrate to v2 behavior and resolve this warning, set the '
+                    'configuration variable `cli_timestamp_format` to `iso8601`. '
+                    'See https://docs.aws.amazon.com/cli/latest/userguide/'
+                    'cliv2-migration-changes.html#cliv2-migration-timestamp.\n',
+                    out_file=sys.stderr
+                )
+            return identity(x)
+
+        timestamp_parser = identity_with_warning if v2_debug else identity
     elif timestamp_format == 'iso8601':
         timestamp_parser = iso_format
     else:
@@ -74,7 +96,7 @@ def add_timestamp_parser(session):
     factory.set_parser_defaults(timestamp_parser=timestamp_parser)
 
 
-def add_scalar_parsers(session, **kwargs):
+def add_scalar_parsers(session, parsed_args, **kwargs):
     factory = session.get_component('response_parser_factory')
     factory.set_parser_defaults(blob_parser=identity)
-    add_timestamp_parser(session)
+    add_timestamp_parser(session, parsed_args.v2_debug)

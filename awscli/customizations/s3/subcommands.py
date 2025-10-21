@@ -767,6 +767,7 @@ class S3TransferCommand(S3Command):
         cmd_params.add_verify_ssl(parsed_globals)
         cmd_params.add_page_size(parsed_args)
         cmd_params.add_paths(parsed_args.paths)
+        cmd_params.add_v2_debug(parsed_globals)
 
         runtime_config = transferconfig.RuntimeConfig().build_config(
             **self._session.get_scoped_config().get('s3', {}))
@@ -1055,6 +1056,21 @@ class CommandArchitecture(object):
         }
         result_queue = queue.Queue()
         operation_name = cmd_translation[paths_type]
+
+        if self.parameters['v2_debug']:
+            if operation_name == 'copy':
+                uni_print(
+                    'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, object '
+                    'properties will be copied from the source in multipart '
+                    'copies between S3 buckets. This may result in extra S3 '
+                    'API calls being made. Breakage may occur if the principal '
+                    'does not have permission to call these extra APIs. This '
+                    'warning cannot be resolved. See '
+                    'https://docs.aws.amazon.com/cli/latest/userguide/'
+                    'cliv2-migration-changes.html'
+                    '#cliv2-migration-s3-copy-metadata\n\n',
+                    out_file=sys.stderr
+                )
 
         fgen_kwargs = {
             'client': self._source_client, 'operation_name': operation_name,
@@ -1446,6 +1462,9 @@ class CommandParameters(object):
 
     def add_page_size(self, parsed_args):
         self.parameters['page_size'] = getattr(parsed_args, 'page_size', None)
+
+    def add_v2_debug(self, parsed_globals):
+        self.parameters['v2_debug'] = parsed_globals.v2_debug
 
     def _validate_sse_c_args(self):
         self._validate_sse_c_arg()

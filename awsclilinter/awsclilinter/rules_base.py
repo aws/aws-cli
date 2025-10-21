@@ -13,7 +13,6 @@ class LintFinding:
     line_end: int
     edit: Edit
     original_text: str
-    suggested_fix: str
     rule_name: str
     description: str
 

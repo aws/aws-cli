@@ -66,7 +66,10 @@ def display_finding(finding: LintFinding, index: int, total: int, script_content
                 line_start_pos, _ = line_positions[i]
                 start_pos_in_line = max(0, finding.edit.start_pos - line_start_pos)
                 end_pos_in_line = min(len(line), finding.edit.end_pos - line_start_pos)
-                new_line = line[:start_pos_in_line] + finding.suggested_fix + line[end_pos_in_line:]
+                new_line = line[:start_pos_in_line] + finding.edit.inserted_text + line[end_pos_in_line:]
+                # In case the inserted text takes up multiple lines,
+                # inject a + at the start of each line.
+                new_line = new_line.replace("\n", "\n+")
                 # Print the new line suggestion.
                 print(f"{GREEN}+{new_line}{RESET}")
         else:

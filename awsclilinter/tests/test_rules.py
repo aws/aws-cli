@@ -19,7 +19,7 @@ class TestBase64BinaryFormatRule:
         findings = rule.check(root)
 
         assert len(findings) == 1
-        assert "--cli-binary-format" in findings[0].suggested_fix
+        assert "--cli-binary-format" in findings[0].edit.inserted_text
 
     def test_no_detection_with_flag(self):
         """Test no detection when flag is present."""

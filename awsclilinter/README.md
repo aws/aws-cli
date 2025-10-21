@@ -1,4 +1,4 @@
-# AWS CLI Linter
+# AWS CLI v1-to-v2 Upgrade Linter
 
 A CLI tool that lints bash scripts for AWS CLI v1 usage and updates them to avoid breaking 
 changes introduced in AWS CLI v2. Not all breaking changes can be detected statically, 

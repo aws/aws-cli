@@ -1,5 +1,7 @@
 from typing import List
 
+from ast_grep_py.ast_grep_py import SgRoot
+
 from awsclilinter.rules_base import LintFinding, LintRule
 
 
@@ -8,16 +10,17 @@ class Base64BinaryFormatRule(LintRule):
 
     @property
     def name(self) -> str:
-        return "base64-binary-format"
+        return "binary-params-base64"
 
     @property
     def description(self) -> str:
         return (
-            "AWS CLI v2 requires --cli-binary-format raw-in-base64-out "
-            "for commands using file:// protocol"
+            "In AWS CLI v2, an input parameter typed as binary large object (BLOB) expects "
+            "the input to be base64-encoded. To retain v1 behavior after upgrading to AWS CLI v2, "
+            "add `--cli-binary-format raw-in-base64-out`."
         )
 
-    def check(self, root) -> List[LintFinding]:
+    def check(self, root: SgRoot) -> List[LintFinding]:
         """Check for AWS CLI commands with file:// missing --cli-binary-format."""
         node = root.root()
         base64_broken_nodes = node.find_all(
@@ -31,17 +34,17 @@ class Base64BinaryFormatRule(LintRule):
 
         findings = []
         for stmt in base64_broken_nodes:
-            service = stmt.get_match("SERVICE").text()
-            operation = stmt.get_match("OPERATION").text()
-            args = " ".join([match.text() for match in stmt.get_multiple_matches("ARGS")])
-
             original = stmt.text()
-            suggested = f"aws {service} {operation} {args} --cli-binary-format raw-in-base64-out"
+            # To retain v1 behavior after migrating to v2, append
+            # --cli-binary-format raw-in-base64-out
+            suggested = original + " --cli-binary-format raw-in-base64-out"
+            edit = stmt.replace(suggested)
 
             findings.append(
                 LintFinding(
                     line_start=stmt.range().start.line,
                     line_end=stmt.range().end.line,
+                    edit=edit,
                     original_text=original,
                     suggested_fix=suggested,
                     rule_name=self.name,

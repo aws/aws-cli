@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import List
 
+from ast_grep_py.ast_grep_py import Edit, SgRoot
+
 
 @dataclass
 class LintFinding:
@@ -9,6 +11,7 @@ class LintFinding:
 
     line_start: int
     line_end: int
+    edit: Edit
     original_text: str
     suggested_fix: str
     rule_name: str
@@ -31,6 +34,6 @@ class LintRule(ABC):
         pass
 
     @abstractmethod
-    def check(self, root) -> List[LintFinding]:
+    def check(self, root: SgRoot) -> List[LintFinding]:
         """Check the AST root for violations and return findings."""
         pass

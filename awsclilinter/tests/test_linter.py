@@ -12,7 +12,7 @@ class TestScriptLinter:
         findings = linter.lint(script)
 
         assert len(findings) == 1
-        assert findings[0].rule_name == "base64-binary-format"
+        assert findings[0].rule_name == "binary-params-base64"
         assert "file://" in findings[0].original_text
 
     def test_lint_no_issues(self):

@@ -9,7 +9,7 @@ class TestBase64BinaryFormatRule:
     def test_rule_properties(self):
         """Test rule name and description."""
         rule = Base64BinaryFormatRule()
-        assert rule.name == "base64-binary-format"
+        assert rule.name == "binary-params-base64"
         assert "cli-binary-format" in rule.description
 
     def test_detects_missing_flag(self):

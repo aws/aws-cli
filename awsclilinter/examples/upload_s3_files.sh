@@ -1,13 +1,12 @@
 #!/bin/bash
 # Example script with AWS CLI v1 patterns
 
-# TODO update examples to commands that specify file:// for blob-type params
+aws secretsmanager put-secret-value --secret-id secret1213 \
+  --secret-binary file://data.json
 
-# This command needs --cli-binary-format flag
-aws s3api put-object --bucket mybucket --key mykey --body file://data.json
+if
+ aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json ; then
+    echo "command succeeded."
+fi
 
-# This command also needs the flag
-aws dynamodb put-item --table-name mytable --item file://item.json
-
-# This command doesn't use file:// so it's fine
 aws s3 ls s3://mybucket

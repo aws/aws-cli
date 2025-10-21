@@ -1,6 +1,11 @@
 # AWS CLI Linter
 
-A CLI tool that lints bash scripts for AWS CLI v1 usage and updates them to avoid breaking changes introduced in AWS CLI v2.
+A CLI tool that lints bash scripts for AWS CLI v1 usage and updates them to avoid breaking 
+changes introduced in AWS CLI v2. Not all of the breaking changes can be detected statically, 
+thus not all of them are supported by this tool.
+
+For a full list of the breaking changes introduced with AWS CLI v2, see 
+[Breaking changes between AWS CLI version 1 and AWS CLI version 2](https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration-changes.html#cliv2-migration-changes-breaking).
 
 ## Installation
 
@@ -13,8 +18,6 @@ source venv/bin/activate
 2. Install dependencies:
 ```bash
 pip install -r requirements.txt
-# Or use lockfile for reproducible builds:
-pip install -r requirements.lock
 ```
 
 3. Install the package in development mode:
@@ -52,53 +55,16 @@ In interactive mode, you can:
 - Press `y` to accept the current change
 - Press `n` to skip the current change
 - Press `u` to accept all remaining changes
-- Press `x` to cancel and exit
-
-Note: `--interactive` requires either `--output` to specify where to write changes, or no output flag for dry-run. It cannot be used with `--fix`.
+- Press `q` to cancel and quit
 
 ## Development
 
 ### Running tests
 ```bash
-pytest
+make test
 ```
 
 ### Code formatting
 ```bash
-black awsclilinter tests
-isort awsclilinter tests
+make format
 ```
-
-## Adding New Linting Rules
-
-To add a new linting rule:
-
-1. Create a new rule class in `awsclilinter/rules/` that inherits from `LintRule`
-2. Implement the required methods: `name`, `description`, and `check`
-3. Add the rule to the rules list in `awsclilinter/cli.py`
-
-Example:
-```python
-from awsclilinter.rules_base import LintRule, LintFinding
-
-class MyCustomRule(LintRule):
-    @property
-    def name(self) -> str:
-        return "my-custom-rule"
-    
-    @property
-    def description(self) -> str:
-        return "Description of what this rule checks"
-    
-    def check(self, root) -> List[LintFinding]:
-        # Implementation using ast-grep
-        pass
-```
-
-## Architecture
-
-- `rules_base.py`: Base classes for linting rules (`LintRule`, `LintFinding`)
-- `rules/`: Directory containing individual linting rule implementations
-- `linter.py`: Main `ScriptLinter` class that orchestrates rule checking
-- `cli.py`: CLI interface using argparse
-- `tests/`: Unit tests using pytest

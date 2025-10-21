@@ -1,4 +1,4 @@
-from unittest.mock import mock_open, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -144,7 +144,7 @@ class TestCLI:
         script_file.write_text("aws s3api put-object --bucket mybucket --body file://data.json")
 
         with patch("sys.argv", ["upgrade-aws-cli", "--script", str(script_file), "--interactive"]):
-            with patch("builtins.input", return_value="x"):
+            with patch("builtins.input", return_value="q"):
                 with pytest.raises(SystemExit) as exc_info:
                     main()
                 assert exc_info.value.code == 0

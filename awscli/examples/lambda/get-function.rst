@@ -34,10 +34,10 @@ Output::
             "Handler": "index.handler",
             "Role": "arn:aws:iam::123456789012:role/service-role/helloWorldPython-role-uy3l9qyq",
             "Timeout": 3,
-            "LastModified": "2019-09-24T18:20:35.054+0000",
-            "Runtime": "nodejs10.x",
+            "LastModified": "2025-09-24T18:20:35.054+0000",
+            "Runtime": "nodejs22.x",
             "Description": ""
         }
     }
 
-For more information, see `AWS Lambda Function Configuration <https://docs.aws.amazon.com/lambda/latest/dg/resource-model.html>`__ in the *AWS Lambda Developer Guide*.
+For more information, see `Configure Lambda function memory <https://docs.aws.amazon.com/lambda/latest/dg/configuration-memory.html>`__ in the *AWS Lambda Developer Guide*.

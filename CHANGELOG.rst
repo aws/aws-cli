@@ -2,6 +2,60 @@
 CHANGELOG
 =========
 
+2.31.20
+=======
+
+* api-change:``workmail``: Update endpoint ruleset parameters casing
+* api-change:``iotanalytics``: Update endpoint ruleset parameters casing
+* api-change:``connectparticipant``: Update endpoint ruleset parameters casing
+* api-change:``medialive``: Add 3 API operations for fetching alerts: ListAlerts (Channels), ListClusterAlerts (MediaLive Anywhere), and ListMultiplexAlerts
+* api-change:``lexv2-models``: Update endpoint ruleset parameters casing
+* api-change:``ds-data``: Update endpoint ruleset parameters casing
+* api-change:``oam``: Update endpoint ruleset parameters casing
+* api-change:``cloudformation``: Update endpoint ruleset parameters casing
+* api-change:``directconnect``: Update endpoint ruleset parameters casing
+* api-change:``workspaces``: Update endpoint ruleset parameters casing
+* api-change:``autoscaling``: Update endpoint ruleset parameters casing
+* api-change:``connect``: This release added support for email address alias configuration and outbound campaign preview mode.
+* api-change:``pcs``: Update endpoint ruleset parameters casing
+* api-change:``sagemaker-a2i-runtime``: Update endpoint ruleset parameters casing
+* api-change:``marketplace-agreement``: Update endpoint ruleset parameters casing
+* api-change:``notificationscontacts``: Update endpoint ruleset parameters casing
+* api-change:``forecastquery``: Update endpoint ruleset parameters casing
+* api-change:``connectcampaignsv2``: Updated Amazon Connect Outbound Campaigns V2 SDK to support Preview Outbound Mode
+* api-change:``ssm-incidents``: Update endpoint ruleset parameters casing
+* api-change:``redshift-data``: Update endpoint ruleset parameters casing
+* api-change:``chatbot``: Update endpoint ruleset parameters casing
+* api-change:``cloudhsm``: Update endpoint ruleset parameters casing
+* api-change:``codeguru-reviewer``: Update endpoint ruleset parameters casing
+* api-change:``iotsecuretunneling``: Update endpoint ruleset parameters casing
+* api-change:``ivschat``: Update endpoint ruleset parameters casing
+* api-change:``workdocs``: Update endpoint ruleset parameters casing
+* api-change:``route53-recovery-cluster``: Update endpoint ruleset parameters casing
+* api-change:``ec2-instance-connect``: Update endpoint ruleset parameters casing
+* api-change:``mailmanager``: Update endpoint ruleset parameters casing
+* api-change:``iot``: Update endpoint ruleset parameters casing
+* api-change:``bcm-dashboards``: Update endpoint ruleset parameters casing
+* api-change:``sns``: Update endpoint ruleset parameters casing
+* api-change:``pinpoint-sms-voice-v2``: Update endpoint ruleset parameters casing
+* api-change:``inspector2``: Update endpoint ruleset parameters casing
+* api-change:``rtbfabric``: Update for general availability of AWS RTB Fabric service.
+* api-change:``kinesisanalyticsv2``: Update endpoint ruleset parameters casing
+* api-change:``ce``: Update endpoint ruleset parameters casing
+* api-change:``cognito-identity``: Update endpoint ruleset parameters casing
+* api-change:``cloudhsmv2``: Update endpoint ruleset parameters casing
+* api-change:``mwaa``: Update endpoint ruleset parameters casing
+* api-change:``iotsitewise``: Update endpoint ruleset parameters casing
+* api-change:``ec2``: This release adds AvailabilityZoneId support for CreateNetworkInterface and DescribeNetworkInterfaces APIs.
+* api-change:``b2bi``: Update endpoint ruleset parameters casing
+* api-change:``devicefarm``: This release adds support for optionally including an app as part of a CreateRemoteAccessSession request
+* api-change:``appfabric``: Update endpoint ruleset parameters casing
+* api-change:``iotfleetwise``: Update endpoint ruleset parameters casing
+* api-change:``comprehendmedical``: Update endpoint ruleset parameters casing
+* api-change:``iam``: Updated OIDC and SAML apis to reject multiple simultaneous requests to change a unique object.
+* api-change:``route53``: Amazon Route 53 now supports the ISOB West Region for private DNS for Amazon VPCs and cloudwatch healthchecks.
+
+
 2.31.19
 =======
 

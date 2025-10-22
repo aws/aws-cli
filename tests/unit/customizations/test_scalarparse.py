@@ -54,7 +54,7 @@ class TestScalarParse(unittest.TestCase):
         session.get_scoped_config.return_value = {'cli_timestamp_format':
                                                   'wire'}
         factory = session.get_component.return_value
-        scalarparse.add_scalar_parsers(session)
+        scalarparse.add_scalar_parsers(session, mock.Mock(v2_debug=False))
         factory.set_parser_defaults.assert_called_with(
             timestamp_parser=scalarparse.identity)
 

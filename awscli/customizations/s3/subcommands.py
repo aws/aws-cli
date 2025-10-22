@@ -36,7 +36,7 @@ from awscli.customizations.utils import uni_print
 from awscli.customizations.s3.syncstrategy.base import MissingFileSync, \
     SizeAndLastModifiedSync, NeverSync
 from awscli.customizations.s3 import transferconfig
-
+from awscli.utils import resolve_v2_debug_mode
 
 LOGGER = logging.getLogger(__name__)
 
@@ -1060,7 +1060,7 @@ class CommandArchitecture(object):
         if self.parameters['v2_debug']:
             if operation_name == 'copy':
                 uni_print(
-                    'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, object '
+                    'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, object '
                     'properties will be copied from the source in multipart '
                     'copies between S3 buckets. This may result in extra S3 '
                     'API calls being made. Breakage may occur if the principal '
@@ -1464,7 +1464,7 @@ class CommandParameters(object):
         self.parameters['page_size'] = getattr(parsed_args, 'page_size', None)
 
     def add_v2_debug(self, parsed_globals):
-        self.parameters['v2_debug'] = parsed_globals.v2_debug
+        self.parameters['v2_debug'] = resolve_v2_debug_mode(parsed_globals)
 
     def _validate_sse_c_args(self):
         self._validate_sse_c_arg()

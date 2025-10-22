@@ -74,3 +74,7 @@
   
   Enable AWS CLI v2 migration assistance. Prints warnings if the command would face a breaking change after swapping AWS CLI v1 for AWS CLI v2 in the current environment. Prints one warning for each breaking change detected.
   
+``--no-v2-debug`` (boolean)
+  
+  Disable AWS CLI v2 migration assistance.
+  

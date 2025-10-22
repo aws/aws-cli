@@ -33,7 +33,7 @@ from botocore.exceptions import DataNotFoundError, PaginationError
 from botocore import model
 
 from awscli.arguments import BaseCLIArgument
-
+from awscli.utils import resolve_v2_debug_mode
 
 logger = logging.getLogger(__name__)
 
@@ -293,7 +293,7 @@ def check_should_enable_pagination_call_parameters(
     naming space and would be missed by the processing above. This function
     gets called on the calling-command event.
     """
-    if parsed_globals.v2_debug:
+    if resolve_v2_debug_mode(parsed_globals):
         cli_input_json_data = session.emit_first_non_none_response(
             f"get-cli-input-json-data",
         )
@@ -304,11 +304,12 @@ def check_should_enable_pagination_call_parameters(
         ]
         if pagination_params_in_input_tokens:
             uni_print(
-                'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, if you specify '
+                'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, if you specify '
                 'pagination parameters by using a file with the '
                 '`--cli-input-json` parameter, automatic pagination will be '
-                'turned off. This is not the case in v1. See '
-                'https://docs.aws.amazon.com/cli/latest/userguide/'
+                'turned off. To retain AWS CLI v1 behavior after upgrading to '
+                'AWS CLI v2, remove all pagination parameters from the input '
+                'JSON. See https://docs.aws.amazon.com/cli/latest/userguide/'
                 'cliv2-migration-changes.html'
                 '#cliv2-migration-skeleton-paging.\n',
                 out_file=sys.stderr

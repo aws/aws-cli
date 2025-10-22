@@ -14,13 +14,13 @@ import time
 import signal
 import os
 import tempfile
-import random
 import shutil
 
 import botocore.session
 from awscli.testutils import unittest, aws, BaseS3CLICommand
 from awscli.testutils import temporary_file
 from awscli.testutils import skip_if_windows
+from awscli.testutils import random_bucket_name
 from awscli.clidriver import create_clidriver
 
 
@@ -159,8 +159,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     def test_streaming_output_operation(self):
         d = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, d)
-        bucket_name = 'clistream' + str(
-            int(time.time())) + str(random.randint(1, 100))
+        bucket_name = random_bucket_name('clistream')
 
         self.put_object(bucket=bucket_name, key='foobar',
                         content='foobar contents')
@@ -179,8 +178,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         env_vars['AWS_ACCESS_KEY_ID'] = 'foo'
         env_vars['AWS_SECRET_ACCESS_KEY'] = 'bar'
 
-        bucket_name = 'nosign' + str(
-            int(time.time())) + str(random.randint(1, 100))
+        bucket_name = random_bucket_name('nosign')
         self.put_object(bucket_name, 'foo', content='bar',
                         extra_args={'ACL': 'public-read-write'})
 
@@ -203,8 +201,7 @@ class TestBasicCommandFunctionality(unittest.TestCase):
     def test_no_paginate_arg(self):
         d = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, d)
-        bucket_name = 'nopaginate' + str(
-            int(time.time())) + str(random.randint(1, 100))
+        bucket_name = random_bucket_name('nopaginate')
 
         self.put_object(bucket=bucket_name, key='foobar',
                         content='foobar contents')

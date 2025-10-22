@@ -449,7 +449,7 @@ class CLIArgument(BaseCLIArgument):
         cli_name = self.cli_name
         parser.add_argument(
             cli_name,
-            help=self.documentation,
+            help=self.documentation.replace('%', '%%'),
             type=self.cli_type,
             required=self.required,
         )

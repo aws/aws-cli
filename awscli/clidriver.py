@@ -41,7 +41,6 @@ from awscli.arguments import (
 )
 from awscli.commands import CLICommand
 from awscli.compat import get_stderr_text_writer
-from awscli.customizations.utils import uni_print
 from awscli.formatter import get_formatter
 from awscli.help import (
     OperationHelpCommand,
@@ -694,7 +693,7 @@ class ServiceOperation:
                    and arg.argument_model.type_name == 'blob'
             ]
             if arg_values_to_check:
-                uni_print(
+                print(
                     'AWS CLI v2 UPGRADE WARNING: When specifying a blob-type '
                     'parameter, AWS CLI v2 will assume the parameter value is '
                     'base64-encoded. To maintain v1 behavior after upgrading '
@@ -703,7 +702,7 @@ class ServiceOperation:
                     'https://docs.aws.amazon.com/cli/latest/userguide'
                     '/cliv2-migration-changes.html'
                     '#cliv2-migration-binaryparam.\n',
-                    out_file=sys.stderr
+                    file=sys.stderr
                 )
 
 

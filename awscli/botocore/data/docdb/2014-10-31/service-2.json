@@ -131,7 +131,8 @@
         {"shape":"DBInstanceNotFoundFault"},
         {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
         {"shape":"GlobalClusterNotFoundFault"},
-        {"shape":"InvalidGlobalClusterStateFault"}
+        {"shape":"InvalidGlobalClusterStateFault"},
+        {"shape":"NetworkTypeNotSupported"}
       ],
       "documentation":"<p>Creates a new Amazon DocumentDB cluster.</p>"
     },
@@ -261,7 +262,7 @@
         {"shape":"InvalidDBClusterStateFault"},
         {"shape":"DBClusterNotFoundFault"}
       ],
-      "documentation":"<p>Creates an Amazon DocumentDB global cluster that can span multiple multiple Amazon Web Services Regions. The global cluster contains one primary cluster with read-write capability, and up-to give read-only secondary clusters. Global clusters uses storage-based fast replication across regions with latencies less than one second, using dedicated infrastructure with no impact to your workload’s performance.</p> <p/> <p>You can create a global cluster that is initially empty, and then add a primary and a secondary to it. Or you can specify an existing cluster during the create operation, and this cluster becomes the primary of the global cluster. </p> <note> <p>This action only applies to Amazon DocumentDB clusters.</p> </note>"
+      "documentation":"<p>Creates an Amazon DocumentDB global cluster that can span multiple multiple Amazon Web Services Regions. The global cluster contains one primary cluster with read-write capability, and up-to 10 read-only secondary clusters. Global clusters uses storage-based fast replication across regions with latencies less than one second, using dedicated infrastructure with no impact to your workload’s performance.</p> <p/> <p>You can create a global cluster that is initially empty, and then add a primary and a secondary to it. Or you can specify an existing cluster during the create operation, and this cluster becomes the primary of the global cluster. </p> <note> <p>This action only applies to Amazon DocumentDB clusters.</p> </note>"
     },
     "DeleteDBCluster":{
       "name":"DeleteDBCluster",
@@ -699,7 +700,8 @@
         {"shape":"DBClusterParameterGroupNotFoundFault"},
         {"shape":"InvalidDBSecurityGroupStateFault"},
         {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"DBClusterAlreadyExistsFault"}
+        {"shape":"DBClusterAlreadyExistsFault"},
+        {"shape":"NetworkTypeNotSupported"}
       ],
       "documentation":"<p>Modifies a setting for an Amazon DocumentDB cluster. You can change one or more database configuration parameters by specifying these parameters and the new values in the request. </p>"
     },
@@ -934,7 +936,8 @@
         {"shape":"InvalidRestoreFault"},
         {"shape":"DBSubnetGroupNotFoundFault"},
         {"shape":"InvalidSubnet"},
-        {"shape":"KMSKeyNotAccessibleFault"}
+        {"shape":"KMSKeyNotAccessibleFault"},
+        {"shape":"NetworkTypeNotSupported"}
       ],
       "documentation":"<p>Creates a new cluster from a snapshot or cluster snapshot.</p> <p>If a snapshot is specified, the target cluster is created from the source DB snapshot with a default configuration and default security group.</p> <p>If a cluster snapshot is specified, the target cluster is created from the source cluster restore point with the same configuration as the original source DB cluster, except that the new cluster is created with the default security group.</p>"
     },
@@ -964,7 +967,8 @@
         {"shape":"InvalidSubnet"},
         {"shape":"InvalidVPCNetworkStateFault"},
         {"shape":"KMSKeyNotAccessibleFault"},
-        {"shape":"StorageQuotaExceededFault"}
+        {"shape":"StorageQuotaExceededFault"},
+        {"shape":"NetworkTypeNotSupported"}
       ],
       "documentation":"<p>Restores a cluster to an arbitrary point in time. Users can restore to any point in time before <code>LatestRestorableTime</code> for up to <code>BackupRetentionPeriod</code> days. The target cluster is created from the source cluster with the same configuration as the original cluster, except that the new cluster is created with the default security group. </p>"
     },
@@ -1302,7 +1306,7 @@
       "members":{
         "SourceDBClusterSnapshotIdentifier":{
           "shape":"String",
-          "documentation":"<p>The identifier of the cluster snapshot to copy. This parameter is not case sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must specify a valid system snapshot in the <i>available</i> state.</p> </li> <li> <p>If the source snapshot is in the same Amazon Web Services Region as the copy, specify a valid snapshot identifier.</p> </li> <li> <p>If the source snapshot is in a different Amazon Web Services Region than the copy, specify a valid cluster snapshot ARN.</p> </li> </ul> <p>Example: <code>my-cluster-snapshot1</code> </p>"
+          "documentation":"<p>The identifier of the cluster snapshot to copy. This parameter is not case sensitive.</p> <p>Constraints:</p> <ul> <li> <p>Must specify a valid cluster snapshot in the <i>available</i> state.</p> </li> <li> <p>If the source cluster snapshot is in the same Amazon Web Services Region as the copy, specify a valid snapshot identifier.</p> </li> <li> <p>If the source cluster snapshot is in a different Amazon Web Services Region or owned by another Amazon Web Services account, specify the snapshot ARN.</p> </li> </ul> <p>Example: <code>my-cluster-snapshot1</code> </p>"
         },
         "TargetDBClusterSnapshotIdentifier":{
           "shape":"String",
@@ -1422,7 +1426,7 @@
         },
         "StorageType":{
           "shape":"String",
-          "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p> <note> <p>When you create a DocumentDB DB cluster with the storage type set to <code>iopt1</code>, the storage type is returned in the response. The storage type isn't returned when you set it to <code>standard</code>.</p> </note>"
+          "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p> <note> <p>When you create an Amazon DocumentDB cluster with the storage type set to <code>iopt1</code>, the storage type is returned in the response. The storage type isn't returned when you set it to <code>standard</code>.</p> </note>"
         },
         "ServerlessV2ScalingConfiguration":{
           "shape":"ServerlessV2ScalingConfiguration",
@@ -1435,6 +1439,10 @@
         "MasterUserSecretKmsKeyId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services KMS key identifier to encrypt a secret that is automatically generated and managed in Amazon Web Services Secrets Manager. This setting is valid only if the master user password is managed by Amazon DocumentDB in Amazon Web Services Secrets Manager for the DB cluster.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key. To use a KMS key in a different Amazon Web Services account, specify the key ARN or alias ARN.</p> <p>If you don't specify <code>MasterUserSecretKmsKeyId</code>, then the <code>aws/secretsmanager</code> KMS key is used to encrypt the secret. If the secret is in a different Amazon Web Services account, then you can't use the <code>aws/secretsmanager</code> KMS key to encrypt the secret, and you must use a customer managed KMS key.</p> <p>There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services Region.</p>"
+        },
+        "NetworkType":{
+          "shape":"String",
+          "documentation":"<p>The network type of the cluster.</p> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the cluster. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/documentdb/latest/developerguide/vpc-clusters.html\">DocumentDB clusters in a VPC</a> in the Amazon DocumentDB Developer Guide.</p> <p>Valid Values: <code>IPV4</code> | <code>DUAL</code> </p>"
         }
       },
       "documentation":"<p>Represents the input to <a>CreateDBCluster</a>. </p>"
@@ -1825,6 +1833,10 @@
           "shape":"Boolean",
           "documentation":"<p>Specifies whether this cluster can be deleted. If <code>DeletionProtection</code> is enabled, the cluster cannot be deleted unless it is modified and <code>DeletionProtection</code> is disabled. <code>DeletionProtection</code> protects clusters from being accidentally deleted.</p>"
         },
+        "IOOptimizedNextAllowedModificationTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The next time you can modify the Amazon DocumentDB cluster to use the iopt1 storage type.</p>"
+        },
         "StorageType":{
           "shape":"String",
           "documentation":"<p>Storage type associated with your cluster</p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p>"
@@ -1836,6 +1848,10 @@
         "MasterUserSecret":{
           "shape":"ClusterMasterUserSecret",
           "documentation":"<p>The secret managed by Amazon DocumentDB in Amazon Web Services Secrets Manager for the master user password.</p>"
+        },
+        "NetworkType":{
+          "shape":"String",
+          "documentation":"<p>The network type of the cluster.</p> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the cluster. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/documentdb/latest/developerguide/vpc-clusters.html\">DocumentDB clusters in a VPC</a> in the Amazon DocumentDB Developer Guide.</p> <p>Valid Values: <code>IPV4</code> | <code>DUAL</code> </p>"
         }
       },
       "documentation":"<p>Detailed information about a cluster. </p>",
@@ -2551,6 +2567,10 @@
         "DBSubnetGroupArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) for the DB subnet group.</p>"
+        },
+        "SupportedNetworkTypes":{
+          "shape":"NetworkTypeList",
+          "documentation":"<p>The network type of the DB subnet group.</p> <p>Valid Values: <code>IPV4</code> | <code>DUAL</code> </p> <p>A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (DUAL).</p>"
         }
       },
       "documentation":"<p>Detailed information about a subnet group. </p>",
@@ -3879,7 +3899,7 @@
         },
         "AllowMajorVersionUpgrade":{
           "shape":"Boolean",
-          "documentation":"<p>A value that indicates whether major version upgrades are allowed.</p> <p>Constraints: You must allow major version upgrades when specifying a value for the <code>EngineVersion</code> parameter that is a different major version than the DB cluster's current version.</p>"
+          "documentation":"<p>A value that indicates whether major version upgrades are allowed.</p> <p>Constraints:</p> <ul> <li> <p>You must allow major version upgrades when specifying a value for the <code>EngineVersion</code> parameter that is a different major version than the cluster's current version.</p> </li> <li> <p>Since some parameters are version specific, changing them requires executing a new <code>ModifyDBCluster</code> API call after the in-place MVU completes.</p> </li> </ul> <note> <p>Performing an MVU directly impacts the following parameters:</p> <ul> <li> <p> <code>MasterUserPassword</code> </p> </li> <li> <p> <code>NewDBClusterIdentifier</code> </p> </li> <li> <p> <code>VpcSecurityGroupIds</code> </p> </li> <li> <p> <code>Port</code> </p> </li> </ul> </note>"
         },
         "DeletionProtection":{
           "shape":"BooleanOptional",
@@ -3904,6 +3924,10 @@
         "RotateMasterUserPassword":{
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies whether to rotate the secret managed by Amazon Web Services Secrets Manager for the master user password.</p> <p>This setting is valid only if the master user password is managed by Amazon DocumentDB in Amazon Web Services Secrets Manager for the cluster. The secret value contains the updated password.</p> <p>Constraint: You must apply the change immediately when rotating the master user password.</p>"
+        },
+        "NetworkType":{
+          "shape":"String",
+          "documentation":"<p>The network type of the cluster.</p> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the cluster. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/documentdb/latest/developerguide/vpc-clusters.html\">DocumentDB clusters in a VPC</a> in the Amazon DocumentDB Developer Guide.</p> <p>Valid Values: <code>IPV4</code> | <code>DUAL</code> </p>"
         }
       },
       "documentation":"<p>Represents the input to <a>ModifyDBCluster</a>.</p>"
@@ -4111,6 +4135,21 @@
         "GlobalCluster":{"shape":"GlobalCluster"}
       }
     },
+    "NetworkTypeList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "NetworkTypeNotSupported":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The network type is not supported by either <code>DBSubnetGroup</code> or the DB engine version.</p>",
+      "error":{
+        "code":"NetworkTypeNotSupported",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "OrderableDBInstanceOption":{
       "type":"structure",
       "members":{
@@ -4176,7 +4215,7 @@
         },
         "ParameterValue":{
           "shape":"String",
-          "documentation":"<p>Specifies the value of the parameter.</p>"
+          "documentation":"<p>Specifies the value of the parameter. Must be one or more of the cluster parameter's <code>AllowedValues</code> in CSV format:</p> <p>Valid values are:</p> <ul> <li> <p> <code>enabled</code>: The cluster accepts secure connections using TLS version 1.0 through 1.3. </p> </li> <li> <p> <code>disabled</code>: The cluster does not accept secure connections using TLS. </p> </li> <li> <p> <code>fips-140-3</code>: The cluster only accepts secure connections per the requirements of the Federal Information Processing Standards (FIPS) publication 140-3. Only supported starting with Amazon DocumentDB 5.0 (engine version 3.0.3727) clusters in these regions: ca-central-1, us-west-2, us-east-1, us-east-2, us-gov-east-1, us-gov-west-1.</p> </li> <li> <p> <code>tls1.2+</code>: The cluster accepts secure connections using TLS version 1.2 and above. Only supported starting with Amazon DocumentDB 4.0 (engine version 2.0.10980) and Amazon DocumentDB 5.0 (engine version 3.0.11051).</p> </li> <li> <p> <code>tls1.3+</code>: The cluster accepts secure connections using TLS version 1.3 and above. Only supported starting with Amazon DocumentDB 4.0 (engine version 2.0.10980) and Amazon DocumentDB 5.0 (engine version 3.0.11051).</p> </li> </ul>"
         },
         "Description":{
           "shape":"String",
@@ -4564,6 +4603,10 @@
         "StorageType":{
           "shape":"String",
           "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p>"
+        },
+        "NetworkType":{
+          "shape":"String",
+          "documentation":"<p>The network type of the cluster.</p> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the cluster. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/documentdb/latest/developerguide/vpc-clusters.html\">DocumentDB clusters in a VPC</a> in the Amazon DocumentDB Developer Guide.</p> <p>Valid Values: <code>IPV4</code> | <code>DUAL</code> </p>"
         }
       },
       "documentation":"<p>Represents the input to <a>RestoreDBClusterFromSnapshot</a>.</p>"
@@ -4636,6 +4679,10 @@
         "StorageType":{
           "shape":"String",
           "documentation":"<p>The storage type to associate with the DB cluster.</p> <p>For information on storage types for Amazon DocumentDB clusters, see Cluster storage configurations in the <i>Amazon DocumentDB Developer Guide</i>.</p> <p>Valid values for storage type - <code>standard | iopt1</code> </p> <p>Default value is <code>standard </code> </p>"
+        },
+        "NetworkType":{
+          "shape":"String",
+          "documentation":"<p>The network type of the cluster.</p> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the cluster. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/documentdb/latest/developerguide/vpc-clusters.html\">DocumentDB clusters in a VPC</a> in the Amazon DocumentDB Developer Guide.</p> <p>Valid Values: <code>IPV4</code> | <code>DUAL</code> </p>"
         }
       },
       "documentation":"<p>Represents the input to <a>RestoreDBClusterToPointInTime</a>.</p>"

@@ -34,7 +34,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"DisabledApiException"}
       ],
-      "documentation":"<important> <p> The <code>CustomerIdentifier</code> parameter is scheduled for deprecation. Use <code>CustomerAWSAccountID</code> instead.</p> <p>These parameters are mutually exclusive. You can't specify both <code>CustomerIdentifier</code> and <code>CustomerAWSAccountID</code> in the same request. </p> </important> <p>To post metering records for customers, SaaS applications call <code>BatchMeterUsage</code>, which is used for metering SaaS flexible consumption pricing (FCP). Identical requests are idempotent and can be retried with the same records or a subset of records. Each <code>BatchMeterUsage</code> request is for only one product. If you want to meter usage for multiple products, you must make multiple <code>BatchMeterUsage</code> calls.</p> <p>Usage records should be submitted in quick succession following a recorded event. Usage records aren't accepted 6 hours or more after an event.</p> <p> <code>BatchMeterUsage</code> can process up to 25 <code>UsageRecords</code> at a time, and each request must be less than 1 MB in size. Optionally, you can have multiple usage allocations for usage data that's split into buckets according to predefined tags.</p> <p> <code>BatchMeterUsage</code> returns a list of <code>UsageRecordResult</code> objects, which have each <code>UsageRecord</code>. It also returns a list of <code>UnprocessedRecords</code>, which indicate errors on the service side that should be retried.</p> <p>For Amazon Web Services Regions that support <code>BatchMeterUsage</code>, see <a href=\"https://docs.aws.amazon.com/marketplace/latest/APIReference/metering-regions.html#batchmeterusage-region-support\">BatchMeterUsage Region support</a>. </p> <note> <p>For an example of <code>BatchMeterUsage</code>, see <a href=\"https://docs.aws.amazon.com/marketplace/latest/userguide/saas-code-examples.html#saas-batchmeterusage-example\"> BatchMeterUsage code example</a> in the <i>Amazon Web Services Marketplace Seller Guide</i>.</p> </note>"
+      "documentation":"<important> <p> The <code>CustomerIdentifier</code> parameter is scheduled for deprecation on March 31, 2026. Use <code>CustomerAWSAccountID</code> instead.</p> <p>These parameters are mutually exclusive. You can't specify both <code>CustomerIdentifier</code> and <code>CustomerAWSAccountID</code> in the same request. </p> </important> <p>To post metering records for customers, SaaS applications call <code>BatchMeterUsage</code>, which is used for metering SaaS flexible consumption pricing (FCP). Identical requests are idempotent and can be retried with the same records or a subset of records. Each <code>BatchMeterUsage</code> request is for only one product. If you want to meter usage for multiple products, you must make multiple <code>BatchMeterUsage</code> calls.</p> <p>Usage records should be submitted in quick succession following a recorded event. Usage records aren't accepted 6 hours or more after an event.</p> <p> <code>BatchMeterUsage</code> can process up to 25 <code>UsageRecords</code> at a time, and each request must be less than 1 MB in size. Optionally, you can have multiple usage allocations for usage data that's split into buckets according to predefined tags.</p> <p> <code>BatchMeterUsage</code> returns a list of <code>UsageRecordResult</code> objects, which have each <code>UsageRecord</code>. It also returns a list of <code>UnprocessedRecords</code>, which indicate errors on the service side that should be retried.</p> <p>For Amazon Web Services Regions that support <code>BatchMeterUsage</code>, see <a href=\"https://docs.aws.amazon.com/marketplace/latest/APIReference/metering-regions.html#batchmeterusage-region-support\">BatchMeterUsage Region support</a>. </p> <note> <p>For an example of <code>BatchMeterUsage</code>, see <a href=\"https://docs.aws.amazon.com/marketplace/latest/userguide/saas-code-examples.html#saas-batchmeterusage-example\"> BatchMeterUsage code example</a> in the <i>Amazon Web Services Marketplace Seller Guide</i>.</p> </note>"
     },
     "MeterUsage":{
       "name":"MeterUsage",
@@ -53,10 +53,11 @@
         {"shape":"InvalidEndpointRegionException"},
         {"shape":"TimestampOutOfBoundsException"},
         {"shape":"DuplicateRequestException"},
+        {"shape":"IdempotencyConflictException"},
         {"shape":"ThrottlingException"},
         {"shape":"CustomerNotEntitledException"}
       ],
-      "documentation":"<p>API to emit metering records. For identical requests, the API is idempotent and returns the metering record ID. This is used for metering flexible consumption pricing (FCP) Amazon Machine Images (AMI) and container products.</p> <p> <code>MeterUsage</code> is authenticated on the buyer's Amazon Web Services account using credentials from the Amazon EC2 instance, Amazon ECS task, or Amazon EKS pod.</p> <p> <code>MeterUsage</code> can optionally include multiple usage allocations, to provide customers with usage data split into buckets by tags that you define (or allow the customer to define).</p> <p>Usage records are expected to be submitted as quickly as possible after the event that is being recorded, and are not accepted more than 6 hours after the event.</p> <p>For Amazon Web Services Regions that support <code>MeterUsage</code>, see <a href=\"https://docs.aws.amazon.com/marketplace/latest/APIReference/metering-regions.html#meterusage-region-support-ec2\">MeterUsage Region support for Amazon EC2</a> and <a href=\"https://docs.aws.amazon.com/marketplace/latest/APIReference/metering-regions.html#meterusage-region-support-ecs-eks\">MeterUsage Region support for Amazon ECS and Amazon EKS</a>. </p>"
+      "documentation":"<p>API to emit metering records. For identical requests, the API is idempotent and returns the metering record ID. This is used for metering flexible consumption pricing (FCP) Amazon Machine Images (AMI) and container products.</p> <p> <code>MeterUsage</code> is authenticated on the buyer's Amazon Web Services account using credentials from the Amazon EC2 instance, Amazon ECS task, or Amazon EKS pod.</p> <p> <code>MeterUsage</code> can optionally include multiple usage allocations, to provide customers with usage data split into buckets by tags that you define (or allow the customer to define).</p> <p>Submit usage records to report events from the previous hour. If you submit records that are greater than six hours after events occur, the records won’t be accepted. The timestamp in your request determines when an event is recorded. You can only report usage once per hour for each dimension. For AMI-based products, this is per dimension and per EC2 instance. For container products, this is per dimension and per ECS task or EKS pod. You can’t modify values after they’re recorded. If you report usage before the current hour ends, you will be unable to report additional usage until the next hour begins.</p> <p>For Amazon Web Services Regions that support <code>MeterUsage</code>, see <a href=\"https://docs.aws.amazon.com/marketplace/latest/APIReference/metering-regions.html#meterusage-region-support-ec2\">MeterUsage Region support for Amazon EC2</a> and <a href=\"https://docs.aws.amazon.com/marketplace/latest/APIReference/metering-regions.html#meterusage-region-support-ecs-eks\">MeterUsage Region support for Amazon ECS and Amazon EKS</a>. </p>"
     },
     "RegisterUsage":{
       "name":"RegisterUsage",
@@ -135,6 +136,11 @@
       "documentation":"<p>Contains the <code>UsageRecords</code> processed by <code>BatchMeterUsage</code> and any records that have failed due to transient error.</p>"
     },
     "Boolean":{"type":"boolean"},
+    "ClientToken":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
     "CustomerAWSAccountId":{
       "type":"string",
       "max":255,
@@ -177,6 +183,14 @@
         "message":{"shape":"errorMessage"}
       },
       "documentation":"<p>The submitted registration token has expired. This can happen if the buyer's browser takes too long to redirect to your page, the buyer has resubmitted the registration token, or your application has held on to the registration token for too long. Your SaaS registration website should redeem this token as soon as it is submitted by the buyer's browser.</p>",
+      "exception":true
+    },
+    "IdempotencyConflictException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>The <code>ClientToken</code> is being used for multiple requests.</p>",
       "exception":true
     },
     "InternalServiceErrorException":{
@@ -291,6 +305,11 @@
         "UsageAllocations":{
           "shape":"UsageAllocations",
           "documentation":"<p>The set of <code>UsageAllocations</code> to submit.</p> <p>The sum of all <code>UsageAllocation</code> quantities must equal the <code>UsageQuantity</code> of the <code>MeterUsage</code> request, and each <code>UsageAllocation</code> must have a unique set of tags (include no tags).</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Specifies a unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This lets you safely retry the request without accidentally performing the same operation a second time. Passing the same value to a later call to an operation requires that you also pass the same value for all other parameters. We recommend that you use a <a href=\"https://wikipedia.org/wiki/Universally_unique_identifier\">UUID type of value</a>.</p> <p>If you don't provide this value, then Amazon Web Services generates a random one for you.</p> <p>If you retry the operation with the same <code>ClientToken</code>, but with different parameters, the retry fails with an <code>IdempotencyConflictException</code> error.</p>",
+          "idempotencyToken":true
         }
       }
     },
@@ -484,7 +503,7 @@
       "members":{
         "Timestamp":{
           "shape":"Timestamp",
-          "documentation":"<p>Timestamp, in UTC, for which the usage is being reported.</p> <p>Your application can meter usage for up to one hour in the past. Make sure the <code>timestamp</code> value is not before the start of the software usage.</p>"
+          "documentation":"<p>Timestamp, in UTC, for which the usage is being reported.</p> <p>Your application can meter usage for up to six hours in the past. Make sure the <code>timestamp</code> value is not before the start of the software usage.</p>"
         },
         "CustomerIdentifier":{
           "shape":"CustomerIdentifier",

@@ -22,7 +22,8 @@
       },
       "input":{"shape":"GetGlyphsRequest"},
       "output":{"shape":"GetGlyphsResponse"},
-      "documentation":"<p> <code>GetGlyphs</code> returns the map's glyphs.</p>"
+      "documentation":"<p> <code>GetGlyphs</code> returns the map's glyphs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/styling-labels-with-glyphs.html\">Style labels with glyphs</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
+      "readonly":true
     },
     "GetSprites":{
       "name":"GetSprites",
@@ -33,7 +34,8 @@
       },
       "input":{"shape":"GetSpritesRequest"},
       "output":{"shape":"GetSpritesResponse"},
-      "documentation":"<p> <code>GetSprites</code> returns the map's sprites.</p>"
+      "documentation":"<p> <code>GetSprites</code> returns the map's sprites.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/styling-iconography-with-sprites.html\">Style iconography with sprites</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
+      "readonly":true
     },
     "GetStaticMap":{
       "name":"GetStaticMap",
@@ -50,7 +52,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> <code>GetStaticMap</code> provides high-quality static map images with customizable options. You can modify the map's appearance and overlay additional information. It's an ideal solution for applications requiring tailored static map snapshots.</p>"
+      "documentation":"<p> <code>GetStaticMap</code> provides high-quality static map images with customizable options. You can modify the map's appearance and overlay additional information. It's an ideal solution for applications requiring tailored static map snapshots.</p> <p>For more information, see the following topics in the <i>Amazon Location Service Developer Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/static-maps.html\">Static maps</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/customizing-static-maps.html\">Customize static maps</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/overlaying-static-map.html\">Overlay on the static map</a> </p> </li> </ul>",
+      "readonly":true
     },
     "GetStyleDescriptor":{
       "name":"GetStyleDescriptor",
@@ -61,7 +64,8 @@
       },
       "input":{"shape":"GetStyleDescriptorRequest"},
       "output":{"shape":"GetStyleDescriptorResponse"},
-      "documentation":"<p> <code>GetStyleDescriptor</code> returns information about the style.</p>"
+      "documentation":"<p> <code>GetStyleDescriptor</code> returns information about the style.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/styling-dynamic-maps.html\">Style dynamic maps</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
+      "readonly":true
     },
     "GetTile":{
       "name":"GetTile",
@@ -79,7 +83,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> <code>GetTile</code> returns a tile. Map tiles are used by clients to render a map. they're addressed using a grid arrangement with an X coordinate, Y coordinate, and Z (zoom) level.</p>"
+      "documentation":"<p> <code>GetTile</code> returns a tile. Map tiles are used by clients to render a map. they're addressed using a grid arrangement with an X coordinate, Y coordinate, and Z (zoom) level.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/tiles.html\">Tiles</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
+      "readonly":true
     }
   },
   "shapes":{
@@ -123,6 +128,10 @@
       "min":1,
       "sensitive":true
     },
+    "ContourDensity":{
+      "type":"string",
+      "enum":["Medium"]
+    },
     "CountryCode":{
       "type":"string",
       "max":3,
@@ -157,7 +166,7 @@
         },
         "FontUnicodeRange":{
           "shape":"GetGlyphsRequestFontUnicodeRangeString",
-          "documentation":"<p>A Unicode range of characters to download glyphs for. This must be aligned to multiples of 256. </p> <p>Example: <code>0-255.pdf</code> </p>",
+          "documentation":"<p>A Unicode range of characters to download glyphs for. This must be aligned to multiples of 256. </p> <p>Example: <code>0-255.pbf</code> </p>",
           "location":"uri",
           "locationName":"FontUnicodeRange"
         }
@@ -277,19 +286,19 @@
       "members":{
         "BoundingBox":{
           "shape":"PositionListString",
-          "documentation":"<p>Takes in two pairs of coordinates, [Lon, Lat], denoting south-westerly and north-easterly edges of the image. The underlying area becomes the view of the image. </p> <p>Example: -123.17075,49.26959,-123.08125,49.31429</p>",
+          "documentation":"<p>Takes in two pairs of coordinates in World Geodetic System (WGS 84) format: [longitude, latitude], denoting south-westerly and north-easterly edges of the image. The underlying area becomes the view of the image. </p> <p>Example: -123.17075,49.26959,-123.08125,49.31429</p>",
           "location":"querystring",
           "locationName":"bounding-box"
         },
         "BoundedPositions":{
           "shape":"PositionListString",
-          "documentation":"<p>Takes in two or more pair of coordinates, [Lon, Lat], with each coordinate separated by a comma. The API will generate an image to encompass all of the provided coordinates. </p> <note> <p>Cannot be used with <code>Zoom</code> and or <code>Radius</code> </p> </note> <p>Example: 97.170451,78.039098,99.045536,27.176178</p>",
+          "documentation":"<p>Takes in two or more pair of coordinates in World Geodetic System (WGS 84) format: [longitude, latitude], with each coordinate separated by a comma. The API will generate an image to encompass all of the provided coordinates. </p> <note> <p>Cannot be used with <code>Zoom</code> and or <code>Radius</code> </p> </note> <p>Example: 97.170451,78.039098,99.045536,27.176178</p>",
           "location":"querystring",
           "locationName":"bounded-positions"
         },
         "Center":{
           "shape":"PositionString",
-          "documentation":"<p>Takes in a pair of coordinates, [Lon, Lat], which becomes the center point of the image. This parameter requires that either zoom or radius is set.</p> <note> <p>Cannot be used with <code>Zoom</code> and or <code>Radius</code> </p> </note> <p>Example: 49.295,-123.108</p>",
+          "documentation":"<p>Takes in a pair of coordinates in World Geodetic System (WGS 84) format: [longitude, latitude], which becomes the center point of the image. This parameter requires that either zoom or radius is set.</p> <note> <p>Cannot be used with <code>Zoom</code> and or <code>Radius</code> </p> </note> <p>Example: 49.295,-123.108</p>",
           "location":"querystring",
           "locationName":"center"
         },
@@ -479,6 +488,30 @@
           "documentation":"<p>Specifies the political view using ISO 3166-2 or ISO 3166-3 country code format.</p> <p>The following political views are currently supported:</p> <ul> <li> <p> <code>ARG</code>: Argentina's view on the Southern Patagonian Ice Field and Tierra Del Fuego, including the Falkland Islands, South Georgia, and South Sandwich Islands</p> </li> <li> <p> <code>EGY</code>: Egypt's view on Bir Tawil</p> </li> <li> <p> <code>IND</code>: India's view on Gilgit-Baltistan</p> </li> <li> <p> <code>KEN</code>: Kenya's view on the Ilemi Triangle</p> </li> <li> <p> <code>MAR</code>: Morocco's view on Western Sahara</p> </li> <li> <p> <code>RUS</code>: Russia's view on Crimea</p> </li> <li> <p> <code>SDN</code>: Sudan's view on the Halaib Triangle</p> </li> <li> <p> <code>SRB</code>: Serbia's view on Kosovo, Vukovar, and Sarengrad Islands</p> </li> <li> <p> <code>SUR</code>: Suriname's view on the Courantyne Headwaters and Lawa Headwaters</p> </li> <li> <p> <code>SYR</code>: Syria's view on the Golan Heights</p> </li> <li> <p> <code>TUR</code>: Turkey's view on Cyprus and Northern Cyprus</p> </li> <li> <p> <code>TZA</code>: Tanzania's view on Lake Malawi</p> </li> <li> <p> <code>URY</code>: Uruguay's view on Rincon de Artigas</p> </li> <li> <p> <code>VNM</code>: Vietnam's view on the Paracel Islands and Spratly Islands</p> </li> </ul>",
           "location":"querystring",
           "locationName":"political-view"
+        },
+        "Terrain":{
+          "shape":"Terrain",
+          "documentation":"<p>Adjusts how physical terrain details are rendered on the map.</p> <p>The following terrain styles are currently supported:</p> <ul> <li> <p> <code>Hillshade</code>: Displays the physical terrain details through shading and highlighting of elevation change and geographic features.</p> </li> </ul> <p>This parameter is valid only for the <code>Standard</code> map style.</p>",
+          "location":"querystring",
+          "locationName":"terrain"
+        },
+        "ContourDensity":{
+          "shape":"ContourDensity",
+          "documentation":"<p>Displays the shape and steepness of terrain features using elevation lines. The density value controls how densely the available contour line information is rendered on the map.</p> <p>This parameter is valid only for the <code>Standard</code> map style.</p>",
+          "location":"querystring",
+          "locationName":"contour-density"
+        },
+        "Traffic":{
+          "shape":"Traffic",
+          "documentation":"<p>Displays real-time traffic information overlay on map, such as incident events and flow events.</p> <p>This parameter is valid only for the <code>Standard</code> map style.</p>",
+          "location":"querystring",
+          "locationName":"traffic"
+        },
+        "TravelModes":{
+          "shape":"TravelModeList",
+          "documentation":"<p>Renders additional map information relevant to selected travel modes. Information for multiple travel modes can be displayed simultaneously, although this increases the overall information density rendered on the map.</p> <p>This parameter is valid only for the <code>Standard</code> map style.</p>",
+          "location":"querystring",
+          "locationName":"travel-modes"
         },
         "Key":{
           "shape":"ApiKey",
@@ -701,6 +734,10 @@
       ]
     },
     "String":{"type":"string"},
+    "Terrain":{
+      "type":"string",
+      "enum":["Hillshade"]
+    },
     "ThrottlingException":{
       "type":"structure",
       "required":["Message"],
@@ -723,6 +760,21 @@
       "max":100,
       "min":1,
       "pattern":"[-.\\w]+"
+    },
+    "Traffic":{
+      "type":"string",
+      "enum":["All"]
+    },
+    "TravelMode":{
+      "type":"string",
+      "enum":[
+        "Transit",
+        "Truck"
+      ]
+    },
+    "TravelModeList":{
+      "type":"list",
+      "member":{"shape":"TravelMode"}
     },
     "ValidationException":{
       "type":"structure",

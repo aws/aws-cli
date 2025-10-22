@@ -164,7 +164,7 @@
         {"shape":"TooManyUniqueTargetGroupsPerLoadBalancerException"},
         {"shape":"TooManyTagsException"}
       ],
-      "documentation":"<p>Creates a rule for the specified listener. The listener must be associated with an Application Load Balancer.</p> <p>Each rule consists of a priority, one or more actions, and one or more conditions. Rules are evaluated in priority order, from the lowest value to the highest value. When the conditions for a rule are met, its actions are performed. If the conditions for no rules are met, the actions for the default rule are performed. For more information, see <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-listeners.html#listener-rules\">Listener rules</a> in the <i>Application Load Balancers Guide</i>.</p>"
+      "documentation":"<p>Creates a rule for the specified listener. The listener must be associated with an Application Load Balancer.</p> <p>Each rule consists of a priority, one or more actions, one or more conditions, and up to two optional transforms. Rules are evaluated in priority order, from the lowest value to the highest value. When the conditions for a rule are met, its actions are performed. If the conditions for no rules are met, the actions for the default rule are performed. For more information, see <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-listeners.html#listener-rules\">Listener rules</a> in the <i>Application Load Balancers Guide</i>.</p>"
     },
     "CreateTargetGroup":{
       "name":"CreateTargetGroup",
@@ -973,7 +973,7 @@
         {"shape":"AvailabilityZoneNotSupportedException"},
         {"shape":"CapacityReservationPendingException"}
       ],
-      "documentation":"<p>Enables the Availability Zones for the specified public subnets for the specified Application Load Balancer, Network Load Balancer or Gateway Load Balancer. The specified subnets replace the previously enabled subnets.</p> <p>When you specify subnets for a Network Load Balancer, or Gateway Load Balancer you must include all subnets that were enabled previously, with their existing configurations, plus any additional subnets.</p>"
+      "documentation":"<p>Enables the Availability Zones for the specified public subnets for the specified Application Load Balancer, Network Load Balancer or Gateway Load Balancer. The specified subnets replace the previously enabled subnets.</p>"
     }
   },
   "shapes":{
@@ -1535,7 +1535,7 @@
         },
         "MutualAuthentication":{
           "shape":"MutualAuthenticationAttributes",
-          "documentation":"<p>The mutual authentication configuration information.</p>"
+          "documentation":"<p>[HTTPS listeners] The mutual authentication configuration information.</p>"
         }
       }
     },
@@ -1635,6 +1635,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The tags to assign to the rule.</p>"
+        },
+        "Transforms":{
+          "shape":"RuleTransformList",
+          "documentation":"<p>The transforms to apply to requests that match this rule. You can add one host header rewrite transform and one URL rewrite transform.</p>"
         }
       }
     },
@@ -2614,10 +2618,24 @@
       "members":{
         "Values":{
           "shape":"ListOfString",
-          "documentation":"<p>The host names. The maximum size of each name is 128 characters. The comparison is case insensitive. The following wildcard characters are supported: * (matches 0 or more characters) and ? (matches exactly 1 character). You must include at least one \".\" character. You can include only alphabetical characters after the final \".\" character.</p> <p>If you specify multiple strings, the condition is satisfied if one of the strings matches the host name.</p>"
+          "documentation":"<p>The host names. The maximum length of each string is 128 characters. The comparison is case insensitive. The following wildcard characters are supported: * (matches 0 or more characters) and ? (matches exactly 1 character). You must include at least one \".\" character. You can include only alphabetical characters after the final \".\" character.</p> <p>If you specify multiple strings, the condition is satisfied if one of the strings matches the host name.</p>"
+        },
+        "RegexValues":{
+          "shape":"ListOfString",
+          "documentation":"<p>The regular expressions to compare against the host header. The maximum length of each string is 128 characters.</p>"
         }
       },
       "documentation":"<p>Information about a host header condition.</p>"
+    },
+    "HostHeaderRewriteConfig":{
+      "type":"structure",
+      "members":{
+        "Rewrites":{
+          "shape":"RewriteConfigList",
+          "documentation":"<p>The host header rewrite transform. Each transform consists of a regular expression to match and a replacement string.</p>"
+        }
+      },
+      "documentation":"<p>Information about a host header rewrite transform. This transform matches a pattern in the host header in an HTTP request and replaces it with the specified string.</p>"
     },
     "HttpCode":{"type":"string"},
     "HttpHeaderConditionConfig":{
@@ -2625,11 +2643,15 @@
       "members":{
         "HttpHeaderName":{
           "shape":"HttpHeaderConditionName",
-          "documentation":"<p>The name of the HTTP header field. The maximum size is 40 characters. The header name is case insensitive. The allowed characters are specified by RFC 7230. Wildcards are not supported.</p> <p>You can't use an HTTP header condition to specify the host header. Instead, use a <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-listeners.html#host-conditions\">host condition</a>.</p>"
+          "documentation":"<p>The name of the HTTP header field. The maximum length is 40 characters. The header name is case insensitive. The allowed characters are specified by RFC 7230. Wildcards are not supported.</p> <p>You can't use an HTTP header condition to specify the host header. Instead, use a <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-listeners.html#host-conditions\">host condition</a>.</p>"
         },
         "Values":{
           "shape":"ListOfString",
-          "documentation":"<p>The strings to compare against the value of the HTTP header. The maximum size of each string is 128 characters. The comparison strings are case insensitive. The following wildcard characters are supported: * (matches 0 or more characters) and ? (matches exactly 1 character).</p> <p>If the same header appears multiple times in the request, we search them in order until a match is found.</p> <p>If you specify multiple strings, the condition is satisfied if one of the strings matches the value of the HTTP header. To require that all of the strings are a match, create one condition per string.</p>"
+          "documentation":"<p>The strings to compare against the value of the HTTP header. The maximum length of each string is 128 characters. The comparison strings are case insensitive. The following wildcard characters are supported: * (matches 0 or more characters) and ? (matches exactly 1 character).</p> <p>If the same header appears multiple times in the request, we search them in order until a match is found.</p> <p>If you specify multiple strings, the condition is satisfied if one of the strings matches the value of the HTTP header. To require that all of the strings are a match, create one condition per string.</p>"
+        },
+        "RegexValues":{
+          "shape":"ListOfString",
+          "documentation":"<p>The regular expression to compare against the HTTP header. The maximum length of each string is 128 characters.</p>"
         }
       },
       "documentation":"<p>Information about an HTTP header condition.</p> <p>There is a set of standard HTTP header fields. You can also define custom HTTP header fields.</p>"
@@ -2640,7 +2662,7 @@
       "members":{
         "Values":{
           "shape":"ListOfString",
-          "documentation":"<p>The name of the request method. The maximum size is 40 characters. The allowed characters are A-Z, hyphen (-), and underscore (_). The comparison is case sensitive. Wildcards are not supported; therefore, the method name must be an exact match.</p> <p>If you specify multiple strings, the condition is satisfied if one of the strings matches the HTTP request method. We recommend that you route GET and HEAD requests in the same way, because the response to a HEAD request may be cached.</p>"
+          "documentation":"<p>The name of the request method. The maximum length is 40 characters. The allowed characters are A-Z, hyphen (-), and underscore (_). The comparison is case sensitive. Wildcards are not supported; therefore, the method name must be an exact match.</p> <p>If you specify multiple strings, the condition is satisfied if one of the strings matches the HTTP request method. We recommend that you route GET and HEAD requests in the same way, because the response to a HEAD request may be cached.</p>"
         }
       },
       "documentation":"<p>Information about an HTTP method condition.</p> <p>HTTP defines a set of request methods, also referred to as HTTP verbs. For more information, see the <a href=\"https://www.iana.org/assignments/http-methods/http-methods.xhtml\">HTTP Method Registry</a>. You can also define custom HTTP methods.</p>"
@@ -2787,7 +2809,7 @@
       "members":{
         "Name":{
           "shape":"Name",
-          "documentation":"<p>The name of the limit. The possible values are:</p> <ul> <li> <p>application-load-balancers</p> </li> <li> <p>condition-values-per-alb-rule</p> </li> <li> <p>condition-wildcards-per-alb-rule</p> </li> <li> <p>gateway-load-balancers</p> </li> <li> <p>gateway-load-balancers-per-vpc</p> </li> <li> <p>geneve-target-groups</p> </li> <li> <p>listeners-per-application-load-balancer</p> </li> <li> <p>listeners-per-network-load-balancer</p> </li> <li> <p>network-load-balancers</p> </li> <li> <p>rules-per-application-load-balancer</p> </li> <li> <p>target-groups</p> </li> <li> <p>target-groups-per-action-on-application-load-balancer</p> </li> <li> <p>target-groups-per-action-on-network-load-balancer</p> </li> <li> <p>target-groups-per-application-load-balancer</p> </li> <li> <p>targets-per-application-load-balancer</p> </li> <li> <p>targets-per-availability-zone-per-gateway-load-balancer</p> </li> <li> <p>targets-per-availability-zone-per-network-load-balancer</p> </li> <li> <p>targets-per-network-load-balancer</p> </li> </ul>"
+          "documentation":"<p>The name of the limit.</p>"
         },
         "Max":{
           "shape":"Max",
@@ -3000,7 +3022,7 @@
       "members":{
         "Key":{
           "shape":"LoadBalancerAttributeKey",
-          "documentation":"<p>The name of the attribute.</p> <p>The following attributes are supported by all load balancers:</p> <ul> <li> <p> <code>deletion_protection.enabled</code> - Indicates whether deletion protection is enabled. The value is <code>true</code> or <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>load_balancing.cross_zone.enabled</code> - Indicates whether cross-zone load balancing is enabled. The possible values are <code>true</code> and <code>false</code>. The default for Network Load Balancers and Gateway Load Balancers is <code>false</code>. The default for Application Load Balancers is <code>true</code>, and can't be changed.</p> </li> </ul> <p>The following attributes are supported by both Application Load Balancers and Network Load Balancers:</p> <ul> <li> <p> <code>access_logs.s3.enabled</code> - Indicates whether access logs are enabled. The value is <code>true</code> or <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>access_logs.s3.bucket</code> - The name of the S3 bucket for the access logs. This attribute is required if access logs are enabled. The bucket must exist in the same region as the load balancer and have a bucket policy that grants Elastic Load Balancing permissions to write to the bucket.</p> </li> <li> <p> <code>access_logs.s3.prefix</code> - The prefix for the location in the S3 bucket for the access logs.</p> </li> <li> <p> <code>ipv6.deny_all_igw_traffic</code> - Blocks internet gateway (IGW) access to the load balancer. It is set to <code>false</code> for internet-facing load balancers and <code>true</code> for internal load balancers, preventing unintended access to your internal load balancer through an internet gateway.</p> </li> <li> <p> <code>zonal_shift.config.enabled</code> - Indicates whether zonal shift is enabled. The possible values are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> </ul> <p>The following attributes are supported by only Application Load Balancers:</p> <ul> <li> <p> <code>idle_timeout.timeout_seconds</code> - The idle timeout value, in seconds. The valid range is 1-4000 seconds. The default is 60 seconds.</p> </li> <li> <p> <code>client_keep_alive.seconds</code> - The client keep alive value, in seconds. The valid range is 60-604800 seconds. The default is 3600 seconds.</p> </li> <li> <p> <code>connection_logs.s3.enabled</code> - Indicates whether connection logs are enabled. The value is <code>true</code> or <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>connection_logs.s3.bucket</code> - The name of the S3 bucket for the connection logs. This attribute is required if connection logs are enabled. The bucket must exist in the same region as the load balancer and have a bucket policy that grants Elastic Load Balancing permissions to write to the bucket.</p> </li> <li> <p> <code>connection_logs.s3.prefix</code> - The prefix for the location in the S3 bucket for the connection logs.</p> </li> <li> <p> <code>routing.http.desync_mitigation_mode</code> - Determines how the load balancer handles requests that might pose a security risk to your application. The possible values are <code>monitor</code>, <code>defensive</code>, and <code>strictest</code>. The default is <code>defensive</code>.</p> </li> <li> <p> <code>routing.http.drop_invalid_header_fields.enabled</code> - Indicates whether HTTP headers with invalid header fields are removed by the load balancer (<code>true</code>) or routed to targets (<code>false</code>). The default is <code>false</code>.</p> </li> <li> <p> <code>routing.http.preserve_host_header.enabled</code> - Indicates whether the Application Load Balancer should preserve the <code>Host</code> header in the HTTP request and send it to the target without any change. The possible values are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>routing.http.x_amzn_tls_version_and_cipher_suite.enabled</code> - Indicates whether the two headers (<code>x-amzn-tls-version</code> and <code>x-amzn-tls-cipher-suite</code>), which contain information about the negotiated TLS version and cipher suite, are added to the client request before sending it to the target. The <code>x-amzn-tls-version</code> header has information about the TLS protocol version negotiated with the client, and the <code>x-amzn-tls-cipher-suite</code> header has information about the cipher suite negotiated with the client. Both headers are in OpenSSL format. The possible values for the attribute are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>routing.http.xff_client_port.enabled</code> - Indicates whether the <code>X-Forwarded-For</code> header should preserve the source port that the client used to connect to the load balancer. The possible values are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>routing.http.xff_header_processing.mode</code> - Enables you to modify, preserve, or remove the <code>X-Forwarded-For</code> header in the HTTP request before the Application Load Balancer sends the request to the target. The possible values are <code>append</code>, <code>preserve</code>, and <code>remove</code>. The default is <code>append</code>.</p> <ul> <li> <p>If the value is <code>append</code>, the Application Load Balancer adds the client IP address (of the last hop) to the <code>X-Forwarded-For</code> header in the HTTP request before it sends it to targets.</p> </li> <li> <p>If the value is <code>preserve</code> the Application Load Balancer preserves the <code>X-Forwarded-For</code> header in the HTTP request, and sends it to targets without any change.</p> </li> <li> <p>If the value is <code>remove</code>, the Application Load Balancer removes the <code>X-Forwarded-For</code> header in the HTTP request before it sends it to targets.</p> </li> </ul> </li> <li> <p> <code>routing.http2.enabled</code> - Indicates whether HTTP/2 is enabled. The possible values are <code>true</code> and <code>false</code>. The default is <code>true</code>. Elastic Load Balancing requires that message header names contain only alphanumeric characters and hyphens.</p> </li> <li> <p> <code>waf.fail_open.enabled</code> - Indicates whether to allow a WAF-enabled load balancer to route requests to targets if it is unable to forward the request to Amazon Web Services WAF. The possible values are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> </ul> <p>The following attributes are supported by only Network Load Balancers:</p> <ul> <li> <p> <code>dns_record.client_routing_policy</code> - Indicates how traffic is distributed among the load balancer Availability Zones. The possible values are <code>availability_zone_affinity</code> with 100 percent zonal affinity, <code>partial_availability_zone_affinity</code> with 85 percent zonal affinity, and <code>any_availability_zone</code> with 0 percent zonal affinity.</p> </li> <li> <p> <code>secondary_ips.auto_assigned.per_subnet</code> - The number of secondary IP addresses to configure for your load balancer nodes. Use to address port allocation errors if you can't add targets. The valid range is 0 to 7. The default is 0. After you set this value, you can't decrease it.</p> </li> </ul>"
+          "documentation":"<p>The name of the attribute.</p> <p>The following attributes are supported by all load balancers:</p> <ul> <li> <p> <code>deletion_protection.enabled</code> - Indicates whether deletion protection is enabled. The value is <code>true</code> or <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>load_balancing.cross_zone.enabled</code> - Indicates whether cross-zone load balancing is enabled. The possible values are <code>true</code> and <code>false</code>. The default for Network Load Balancers and Gateway Load Balancers is <code>false</code>. The default for Application Load Balancers is <code>true</code>, and can't be changed.</p> </li> </ul> <p>The following attributes are supported by both Application Load Balancers and Network Load Balancers:</p> <ul> <li> <p> <code>access_logs.s3.enabled</code> - Indicates whether access logs are enabled. The value is <code>true</code> or <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>access_logs.s3.bucket</code> - The name of the S3 bucket for the access logs. This attribute is required if access logs are enabled. The bucket must exist in the same region as the load balancer and have a bucket policy that grants Elastic Load Balancing permissions to write to the bucket.</p> </li> <li> <p> <code>access_logs.s3.prefix</code> - The prefix for the location in the S3 bucket for the access logs.</p> </li> <li> <p> <code>ipv6.deny_all_igw_traffic</code> - Blocks internet gateway (IGW) access to the load balancer. It is set to <code>false</code> for internet-facing load balancers and <code>true</code> for internal load balancers, preventing unintended access to your internal load balancer through an internet gateway.</p> </li> <li> <p> <code>zonal_shift.config.enabled</code> - Indicates whether zonal shift is enabled. The possible values are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> </ul> <p>The following attributes are supported by only Application Load Balancers:</p> <ul> <li> <p> <code>idle_timeout.timeout_seconds</code> - The idle timeout value, in seconds. The valid range is 1-4000 seconds. The default is 60 seconds.</p> </li> <li> <p> <code>client_keep_alive.seconds</code> - The client keep alive value, in seconds. The valid range is 60-604800 seconds. The default is 3600 seconds.</p> </li> <li> <p> <code>connection_logs.s3.enabled</code> - Indicates whether connection logs are enabled. The value is <code>true</code> or <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>connection_logs.s3.bucket</code> - The name of the S3 bucket for the connection logs. This attribute is required if connection logs are enabled. The bucket must exist in the same region as the load balancer and have a bucket policy that grants Elastic Load Balancing permissions to write to the bucket.</p> </li> <li> <p> <code>connection_logs.s3.prefix</code> - The prefix for the location in the S3 bucket for the connection logs.</p> </li> <li> <p> <code>routing.http.desync_mitigation_mode</code> - Determines how the load balancer handles requests that might pose a security risk to your application. The possible values are <code>monitor</code>, <code>defensive</code>, and <code>strictest</code>. The default is <code>defensive</code>.</p> </li> <li> <p> <code>routing.http.drop_invalid_header_fields.enabled</code> - Indicates whether HTTP headers with invalid header fields are removed by the load balancer (<code>true</code>) or routed to targets (<code>false</code>). The default is <code>false</code>.</p> </li> <li> <p> <code>routing.http.preserve_host_header.enabled</code> - Indicates whether the Application Load Balancer should preserve the <code>Host</code> header in the HTTP request and send it to the target without any change. The possible values are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>routing.http.x_amzn_tls_version_and_cipher_suite.enabled</code> - Indicates whether the two headers (<code>x-amzn-tls-version</code> and <code>x-amzn-tls-cipher-suite</code>), which contain information about the negotiated TLS version and cipher suite, are added to the client request before sending it to the target. The <code>x-amzn-tls-version</code> header has information about the TLS protocol version negotiated with the client, and the <code>x-amzn-tls-cipher-suite</code> header has information about the cipher suite negotiated with the client. Both headers are in OpenSSL format. The possible values for the attribute are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>routing.http.xff_client_port.enabled</code> - Indicates whether the <code>X-Forwarded-For</code> header should preserve the source port that the client used to connect to the load balancer. The possible values are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>routing.http.xff_header_processing.mode</code> - Enables you to modify, preserve, or remove the <code>X-Forwarded-For</code> header in the HTTP request before the Application Load Balancer sends the request to the target. The possible values are <code>append</code>, <code>preserve</code>, and <code>remove</code>. The default is <code>append</code>.</p> <ul> <li> <p>If the value is <code>append</code>, the Application Load Balancer adds the client IP address (of the last hop) to the <code>X-Forwarded-For</code> header in the HTTP request before it sends it to targets.</p> </li> <li> <p>If the value is <code>preserve</code> the Application Load Balancer preserves the <code>X-Forwarded-For</code> header in the HTTP request, and sends it to targets without any change.</p> </li> <li> <p>If the value is <code>remove</code>, the Application Load Balancer removes the <code>X-Forwarded-For</code> header in the HTTP request before it sends it to targets.</p> </li> </ul> </li> <li> <p> <code>routing.http2.enabled</code> - Indicates whether clients can connect to the load balancer using HTTP/2. If <code>true</code>, clients can connect using HTTP/2 or HTTP/1.1. However, all client requests are subject to the stricter HTTP/2 header validation rules. For example, message header names must contain only alphanumeric characters and hyphens. If <code>false</code>, clients must connect using HTTP/1.1. The default is <code>true</code>.</p> </li> <li> <p> <code>waf.fail_open.enabled</code> - Indicates whether to allow a WAF-enabled load balancer to route requests to targets if it is unable to forward the request to Amazon Web Services WAF. The possible values are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> </ul> <p>The following attributes are supported by only Network Load Balancers:</p> <ul> <li> <p> <code>dns_record.client_routing_policy</code> - Indicates how traffic is distributed among the load balancer Availability Zones. The possible values are <code>availability_zone_affinity</code> with 100 percent zonal affinity, <code>partial_availability_zone_affinity</code> with 85 percent zonal affinity, and <code>any_availability_zone</code> with 0 percent zonal affinity.</p> </li> <li> <p> <code>secondary_ips.auto_assigned.per_subnet</code> - The number of secondary IP addresses to configure for your load balancer nodes. Use to address port allocation errors if you can't add targets. The valid range is 0 to 7. The default is 0. After you set this value, you can't decrease it.</p> </li> </ul>"
         },
         "Value":{
           "shape":"LoadBalancerAttributeValue",
@@ -3242,7 +3264,7 @@
         },
         "MutualAuthentication":{
           "shape":"MutualAuthenticationAttributes",
-          "documentation":"<p>The mutual authentication configuration information.</p>"
+          "documentation":"<p>[HTTPS listeners] The mutual authentication configuration information.</p>"
         }
       }
     },
@@ -3296,6 +3318,14 @@
         "Actions":{
           "shape":"Actions",
           "documentation":"<p>The actions.</p>"
+        },
+        "Transforms":{
+          "shape":"RuleTransformList",
+          "documentation":"<p>The transforms to apply to requests that match this rule. You can add one host header rewrite transform and one URL rewrite transform. If you specify <code>Transforms</code>, you can't specify <code>ResetTransforms</code>.</p>"
+        },
+        "ResetTransforms":{
+          "shape":"ResetTransforms",
+          "documentation":"<p>Indicates whether to remove all transforms from the rule. If you specify <code>ResetTransforms</code>, you can't specify <code>Transforms</code>.</p>"
         }
       }
     },
@@ -3356,7 +3386,7 @@
         },
         "HealthCheckEnabled":{
           "shape":"HealthCheckEnabled",
-          "documentation":"<p>Indicates whether health checks are enabled.</p>"
+          "documentation":"<p>Indicates whether health checks are enabled. If the target type is <code>lambda</code>, health checks are disabled by default but can be enabled. If the target type is <code>instance</code>, <code>ip</code>, or <code>alb</code>, health checks are always enabled and can't be disabled.</p>"
         },
         "HealthCheckIntervalSeconds":{
           "shape":"HealthCheckIntervalSeconds",
@@ -3480,7 +3510,11 @@
       "members":{
         "Values":{
           "shape":"ListOfString",
-          "documentation":"<p>The path patterns to compare against the request URL. The maximum size of each string is 128 characters. The comparison is case sensitive. The following wildcard characters are supported: * (matches 0 or more characters) and ? (matches exactly 1 character).</p> <p>If you specify multiple strings, the condition is satisfied if one of them matches the request URL. The path pattern is compared only to the path of the URL, not to its query string. To compare against the query string, use a <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-listeners.html#query-string-conditions\">query string condition</a>.</p>"
+          "documentation":"<p>The path patterns to compare against the request URL. The maximum length of each string is 128 characters. The comparison is case sensitive. The following wildcard characters are supported: * (matches 0 or more characters) and ? (matches exactly 1 character).</p> <p>If you specify multiple strings, the condition is satisfied if one of them matches the request URL. The path pattern is compared only to the path of the URL, not to its query string. To compare against the query string, use a <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-listeners.html#query-string-conditions\">query string condition</a>.</p>"
+        },
+        "RegexValues":{
+          "shape":"ListOfString",
+          "documentation":"<p>The regular expressions to compare against the request URL. The maximum length of each string is 128 characters.</p>"
         }
       },
       "documentation":"<p>Information about a path pattern condition.</p>"
@@ -3535,7 +3569,7 @@
       "members":{
         "Values":{
           "shape":"QueryStringKeyValuePairList",
-          "documentation":"<p>The key/value pairs or values to find in the query string. The maximum size of each string is 128 characters. The comparison is case insensitive. The following wildcard characters are supported: * (matches 0 or more characters) and ? (matches exactly 1 character). To search for a literal '*' or '?' character in a query string, you must escape these characters in <code>Values</code> using a '\\' character.</p> <p>If you specify multiple key/value pairs or values, the condition is satisfied if one of them is found in the query string.</p>"
+          "documentation":"<p>The key/value pairs or values to find in the query string. The maximum length of each string is 128 characters. The comparison is case insensitive. The following wildcard characters are supported: * (matches 0 or more characters) and ? (matches exactly 1 character). To search for a literal '*' or '?' character in a query string, you must escape these characters in <code>Values</code> using a '\\' character.</p> <p>If you specify multiple key/value pairs or values, the condition is satisfied if one of them is found in the query string.</p>"
         }
       },
       "documentation":"<p>Information about a query string condition.</p> <p>The query string component of a URI starts after the first '?' character and is terminated by either a '#' character or the end of the URI. A typical query string contains key/value pairs separated by '&amp;' characters. The allowed characters are specified by RFC 3986. Any character can be percentage encoded.</p>"
@@ -3709,6 +3743,7 @@
       "members":{}
     },
     "ResetCapacityReservation":{"type":"boolean"},
+    "ResetTransforms":{"type":"boolean"},
     "ResourceArn":{"type":"string"},
     "ResourceArns":{
       "type":"list",
@@ -3793,6 +3828,28 @@
       "type":"string",
       "enum":["CRL"]
     },
+    "RewriteConfig":{
+      "type":"structure",
+      "required":[
+        "Regex",
+        "Replace"
+      ],
+      "members":{
+        "Regex":{
+          "shape":"StringValue",
+          "documentation":"<p>The regular expression to match in the input string. The maximum length of the string is 1,024 characters.</p>"
+        },
+        "Replace":{
+          "shape":"StringValue",
+          "documentation":"<p>The replacement string to use when rewriting the matched input. The maximum length of the string is 1,024 characters. You can specify capture groups in the regular expression (for example, $1 and $2).</p>"
+        }
+      },
+      "documentation":"<p>Information about a rewrite transform. This transform matches a pattern and replaces it with the specified string.</p>"
+    },
+    "RewriteConfigList":{
+      "type":"list",
+      "member":{"shape":"RewriteConfig"}
+    },
     "Rule":{
       "type":"structure",
       "members":{
@@ -3815,6 +3872,10 @@
         "IsDefault":{
           "shape":"IsDefault",
           "documentation":"<p>Indicates whether this is the default rule.</p>"
+        },
+        "Transforms":{
+          "shape":"RuleTransformList",
+          "documentation":"<p>The transforms for the rule.</p>"
         }
       },
       "documentation":"<p>Information about a rule.</p>"
@@ -3858,6 +3919,10 @@
         "SourceIpConfig":{
           "shape":"SourceIpConditionConfig",
           "documentation":"<p>Information for a source IP condition. Specify only when <code>Field</code> is <code>source-ip</code>.</p>"
+        },
+        "RegexValues":{
+          "shape":"ListOfString",
+          "documentation":"<p>The regular expressions to match against the condition field. The maximum length of each string is 128 characters. Specify only when <code>Field</code> is <code>http-header</code>, <code>host-header</code>, or <code>path-pattern</code>.</p>"
         }
       },
       "documentation":"<p>Information about a condition for a rule.</p> <p>Each rule can optionally include up to one of each of the following conditions: <code>http-request-method</code>, <code>host-header</code>, <code>path-pattern</code>, and <code>source-ip</code>. Each rule can also optionally include one or more of each of the following conditions: <code>http-header</code> and <code>query-string</code>. Note that the value for a condition can't be empty.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-limits.html\">Quotas for your Application Load Balancers</a>.</p>"
@@ -3899,6 +3964,29 @@
         }
       },
       "documentation":"<p>Information about the priorities for the rules for a listener.</p>"
+    },
+    "RuleTransform":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"TransformTypeEnum",
+          "documentation":"<p>The type of transform. </p> <ul> <li> <p> <code>host-header-rewrite</code> - Rewrite the host header.</p> </li> <li> <p> <code>url-rewrite</code> - Rewrite the request URL.</p> </li> </ul>"
+        },
+        "HostHeaderRewriteConfig":{
+          "shape":"HostHeaderRewriteConfig",
+          "documentation":"<p>Information about a host header rewrite transform. This transform modifies the host header in an HTTP request. Specify only when <code>Type</code> is <code>host-header-rewrite</code>.</p>"
+        },
+        "UrlRewriteConfig":{
+          "shape":"UrlRewriteConfig",
+          "documentation":"<p>Information about a URL rewrite transform. This transform modifies the request URL. Specify only when <code>Type</code> is <code>url-rewrite</code>.</p>"
+        }
+      },
+      "documentation":"<p>Information about a transform to apply to requests that match a rule. Transforms are applied to requests before they are sent to targets.</p>"
+    },
+    "RuleTransformList":{
+      "type":"list",
+      "member":{"shape":"RuleTransform"}
     },
     "Rules":{
       "type":"list",
@@ -4012,7 +4100,7 @@
         },
         "Subnets":{
           "shape":"Subnets",
-          "documentation":"<p>The IDs of the public subnets. You can specify only one subnet per Availability Zone. You must specify either subnets or subnet mappings.</p> <p>[Application Load Balancers] You must specify subnets from at least two Availability Zones.</p> <p>[Application Load Balancers on Outposts] You must specify one Outpost subnet.</p> <p>[Application Load Balancers on Local Zones] You can specify subnets from one or more Local Zones.</p> <p>[Network Load Balancers and Gateway Load Balancers] You can specify subnets from one or more Availability Zones.</p>"
+          "documentation":"<p>The IDs of the public subnets. You can specify only one subnet per Availability Zone. You must specify either subnets or subnet mappings.</p> <p>[Application Load Balancers] You must specify subnets from at least two Availability Zones.</p> <p>[Application Load Balancers on Outposts] You must specify one Outpost subnet.</p> <p>[Application Load Balancers on Local Zones] You can specify subnets from one or more Local Zones.</p> <p>[Network Load Balancers] You can specify subnets from one or more Availability Zones.</p> <p>[Gateway Load Balancers] You can specify subnets from one or more Availability Zones. You must include all subnets that were enabled previously, with their existing configurations, plus any additional subnets.</p>"
         },
         "SubnetMappings":{
           "shape":"SubnetMappings",
@@ -4640,6 +4728,13 @@
       "exception":true
     },
     "TotalRevokedEntries":{"type":"long"},
+    "TransformTypeEnum":{
+      "type":"string",
+      "enum":[
+        "host-header-rewrite",
+        "url-rewrite"
+      ]
+    },
     "TrustStore":{
       "type":"structure",
       "members":{
@@ -4794,6 +4889,16 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "UrlRewriteConfig":{
+      "type":"structure",
+      "members":{
+        "Rewrites":{
+          "shape":"RewriteConfigList",
+          "documentation":"<p>The URL rewrite transform to apply to the request. The transform consists of a regular expression to match and a replacement string.</p>"
+        }
+      },
+      "documentation":"<p>Information about a URL rewrite transform. This transform matches a pattern in the request URL and replaces it with the specified string.</p>"
     },
     "VpcId":{"type":"string"},
     "ZonalCapacityReservationState":{

@@ -89,7 +89,7 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p> Manage how Amazon GameLift Streams streams your applications by using a stream group. A stream group is a collection of resources that Amazon GameLift Streams uses to stream your application to end-users. When you create a stream group, you specify an application to stream by default and the type of hardware to use, such as the graphical processing unit (GPU). You can also link additional applications, which allows you to stream those applications using this stream group. Depending on your expected users, you also scale the number of concurrent streams you want to support at one time, and in what locations. </p> <p> Stream capacity represents the number of concurrent streams that can be active at a time. You set stream capacity per location, per stream group. There are two types of capacity, always-on and on-demand: </p> <ul> <li> <p> <b>Always-on</b>: The streaming capacity that is allocated and ready to handle stream requests without delay. You pay for this capacity whether it's in use or not. Best for quickest time from streaming request to streaming session. Default is 1 when creating a stream group or adding a location. </p> </li> <li> <p> <b>On-demand</b>: The streaming capacity that Amazon GameLift Streams can allocate in response to stream requests, and then de-allocate when the session has terminated. This offers a cost control measure at the expense of a greater startup time (typically under 5 minutes). Default is 0 when creating a stream group or adding a location. </p> </li> </ul> <p> To adjust the capacity of any <code>ACTIVE</code> stream group, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_UpdateStreamGroup.html\">UpdateStreamGroup</a>. </p> <p> If the request is successful, Amazon GameLift Streams begins creating the stream group. Amazon GameLift Streams assigns a unique ID to the stream group resource and sets the status to <code>ACTIVATING</code>. When the stream group reaches <code>ACTIVE</code> status, you can start stream sessions by using <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_StartStreamSession.html\">StartStreamSession</a>. To check the stream group's status, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetStreamGroup.html\">GetStreamGroup</a>. </p>",
+      "documentation":"<p> Manage how Amazon GameLift Streams streams your applications by using a stream group. A stream group is a collection of resources that Amazon GameLift Streams uses to stream your application to end-users. When you create a stream group, you specify an application to stream by default and the type of hardware to use, such as the graphical processing unit (GPU). You can also link additional applications, which allows you to stream those applications using this stream group. Depending on your expected users, you also scale the number of concurrent streams you want to support at one time, and in what locations. </p> <p> Stream capacity represents the number of concurrent streams that can be active at a time. You set stream capacity per location, per stream group. There are two types of capacity, always-on and on-demand: </p> <ul> <li> <p> <b>Always-on</b>: The streaming capacity that is allocated and ready to handle stream requests without delay. You pay for this capacity whether it's in use or not. Best for quickest time from streaming request to streaming session. Default is 1 (2 for high stream classes) when creating a stream group or adding a location. </p> </li> <li> <p> <b>On-demand</b>: The streaming capacity that Amazon GameLift Streams can allocate in response to stream requests, and then de-allocate when the session has terminated. This offers a cost control measure at the expense of a greater startup time (typically under 5 minutes). Default is 0 when creating a stream group or adding a location. </p> </li> </ul> <p>Values for capacity must be whole number multiples of the tenancy value of the stream group's stream class.</p> <p> To adjust the capacity of any <code>ACTIVE</code> stream group, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_UpdateStreamGroup.html\">UpdateStreamGroup</a>. </p> <p> If the request is successful, Amazon GameLift Streams begins creating the stream group. Amazon GameLift Streams assigns a unique ID to the stream group resource and sets the status to <code>ACTIVATING</code>. When the stream group reaches <code>ACTIVE</code> status, you can start stream sessions by using <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_StartStreamSession.html\">StartStreamSession</a>. To check the stream group's status, call <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetStreamGroup.html\">GetStreamGroup</a>. </p>",
       "idempotent":true
     },
     "CreateStreamSessionConnection":{
@@ -203,7 +203,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves properties for an Amazon GameLift Streams application resource. Specify the ID of the application that you want to retrieve. If the operation is successful, it returns properties for the requested application.</p>"
+      "documentation":"<p>Retrieves properties for an Amazon GameLift Streams application resource. Specify the ID of the application that you want to retrieve. If the operation is successful, it returns properties for the requested application.</p>",
+      "readonly":true
     },
     "GetStreamGroup":{
       "name":"GetStreamGroup",
@@ -221,7 +222,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves properties for a Amazon GameLift Streams stream group resource. Specify the ID of the stream group that you want to retrieve. If the operation is successful, it returns properties for the requested stream group.</p>"
+      "documentation":"<p>Retrieves properties for a Amazon GameLift Streams stream group resource. Specify the ID of the stream group that you want to retrieve. If the operation is successful, it returns properties for the requested stream group.</p>",
+      "readonly":true
     },
     "GetStreamSession":{
       "name":"GetStreamSession",
@@ -239,7 +241,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves properties for a Amazon GameLift Streams stream session resource. Specify the Amazon Resource Name (ARN) of the stream session that you want to retrieve and its stream group ARN. If the operation is successful, it returns properties for the requested resource.</p>"
+      "documentation":"<p>Retrieves properties for a Amazon GameLift Streams stream session resource. Specify the Amazon Resource Name (ARN) of the stream session that you want to retrieve and its stream group ARN. If the operation is successful, it returns properties for the requested resource.</p>",
+      "readonly":true
     },
     "ListApplications":{
       "name":"ListApplications",
@@ -256,7 +259,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves a list of all Amazon GameLift Streams applications that are associated with the Amazon Web Services account in use. This operation returns applications in all statuses, in no particular order. You can paginate the results as needed.</p>"
+      "documentation":"<p>Retrieves a list of all Amazon GameLift Streams applications that are associated with the Amazon Web Services account in use. This operation returns applications in all statuses, in no particular order. You can paginate the results as needed.</p>",
+      "readonly":true
     },
     "ListStreamGroups":{
       "name":"ListStreamGroups",
@@ -273,7 +277,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves a list of all Amazon GameLift Streams stream groups that are associated with the Amazon Web Services account in use. This operation returns stream groups in all statuses, in no particular order. You can paginate the results as needed.</p>"
+      "documentation":"<p>Retrieves a list of all Amazon GameLift Streams stream groups that are associated with the Amazon Web Services account in use. This operation returns stream groups in all statuses, in no particular order. You can paginate the results as needed.</p>",
+      "readonly":true
     },
     "ListStreamSessions":{
       "name":"ListStreamSessions",
@@ -291,7 +296,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves a list of Amazon GameLift Streams stream sessions that a stream group is hosting.</p> <p>To retrieve stream sessions, specify the stream group, and optionally filter by stream session status. You can paginate the results as needed.</p> <p>This operation returns the requested stream sessions in no particular order.</p>"
+      "documentation":"<p>Retrieves a list of Amazon GameLift Streams stream sessions that a stream group is hosting.</p> <p>To retrieve stream sessions, specify the stream group, and optionally filter by stream session status. You can paginate the results as needed.</p> <p>This operation returns the requested stream sessions in no particular order.</p>",
+      "readonly":true
     },
     "ListStreamSessionsByAccount":{
       "name":"ListStreamSessionsByAccount",
@@ -308,7 +314,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves a list of Amazon GameLift Streams stream sessions that this user account has access to.</p> <p>In the returned list of stream sessions, the <code>ExportFilesMetadata</code> property only shows the <code>Status</code> value. To get the <code>OutpurUri</code> and <code>StatusReason</code> values, use <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetStreamSession.html\">GetStreamSession</a>.</p> <p>We don't recommend using this operation to regularly check stream session statuses because it's costly. Instead, to check status updates for a specific stream session, use <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetStreamSession.html\">GetStreamSession</a>.</p>"
+      "documentation":"<p>Retrieves a list of Amazon GameLift Streams stream sessions that this user account has access to.</p> <p>In the returned list of stream sessions, the <code>ExportFilesMetadata</code> property only shows the <code>Status</code> value. To get the <code>OutpurUri</code> and <code>StatusReason</code> values, use <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetStreamSession.html\">GetStreamSession</a>.</p> <p>We don't recommend using this operation to regularly check stream session statuses because it's costly. Instead, to check status updates for a specific stream session, use <a href=\"https://docs.aws.amazon.com/gameliftstreams/latest/apireference/API_GetStreamSession.html\">GetStreamSession</a>.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -325,7 +332,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves all tags assigned to a Amazon GameLift Streams resource. To list tags for a resource, specify the ARN value for the resource.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i> </p> <p> <a href=\"http://aws.amazon.com/answers/account-management/aws-tagging-strategies/\"> Amazon Web Services Tagging Strategies</a> </p>"
+      "documentation":"<p>Retrieves all tags assigned to a Amazon GameLift Streams resource. To list tags for a resource, specify the ARN value for the resource.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i> </p> <p> <a href=\"http://aws.amazon.com/answers/account-management/aws-tagging-strategies/\"> Amazon Web Services Tagging Strategies</a> </p>",
+      "readonly":true
     },
     "RemoveStreamGroupLocations":{
       "name":"RemoveStreamGroupLocations",
@@ -454,7 +462,7 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p> Updates the configuration settings for an Amazon GameLift Streams stream group resource. You can change the description, the set of locations, and the requested capacity of a stream group per location. If you want to change the stream class, create a new stream group. </p> <p> Stream capacity represents the number of concurrent streams that can be active at a time. You set stream capacity per location, per stream group. There are two types of capacity, always-on and on-demand: </p> <ul> <li> <p> <b>Always-on</b>: The streaming capacity that is allocated and ready to handle stream requests without delay. You pay for this capacity whether it's in use or not. Best for quickest time from streaming request to streaming session. Default is 1 when creating a stream group or adding a location. </p> </li> <li> <p> <b>On-demand</b>: The streaming capacity that Amazon GameLift Streams can allocate in response to stream requests, and then de-allocate when the session has terminated. This offers a cost control measure at the expense of a greater startup time (typically under 5 minutes). Default is 0 when creating a stream group or adding a location. </p> </li> </ul> <p>To update a stream group, specify the stream group's Amazon Resource Name (ARN) and provide the new values. If the request is successful, Amazon GameLift Streams returns the complete updated metadata for the stream group.</p>"
+      "documentation":"<p> Updates the configuration settings for an Amazon GameLift Streams stream group resource. You can change the description, the set of locations, and the requested capacity of a stream group per location. If you want to change the stream class, create a new stream group. </p> <p> Stream capacity represents the number of concurrent streams that can be active at a time. You set stream capacity per location, per stream group. There are two types of capacity, always-on and on-demand: </p> <ul> <li> <p> <b>Always-on</b>: The streaming capacity that is allocated and ready to handle stream requests without delay. You pay for this capacity whether it's in use or not. Best for quickest time from streaming request to streaming session. Default is 1 (2 for high stream classes) when creating a stream group or adding a location. </p> </li> <li> <p> <b>On-demand</b>: The streaming capacity that Amazon GameLift Streams can allocate in response to stream requests, and then de-allocate when the session has terminated. This offers a cost control measure at the expense of a greater startup time (typically under 5 minutes). Default is 0 when creating a stream group or adding a location. </p> </li> </ul> <p>Values for capacity must be whole number multiples of the tenancy value of the stream group's stream class.</p> <p>To update a stream group, specify the stream group's Amazon Resource Name (ARN) and provide the new values. If the request is successful, Amazon GameLift Streams returns the complete updated metadata for the stream group.</p>"
     }
   },
   "shapes":{
@@ -561,7 +569,7 @@
         },
         "Status":{
           "shape":"ApplicationStatus",
-          "documentation":"<p>The current status of the application resource. Possible statuses include the following:</p> <ul> <li> <p> <code>INITIALIZED</code>: Amazon GameLift Streams has received the request and is initiating the work flow to create an application. </p> </li> <li> <p> <code>PROCESSING</code>: The create application work flow is in process. Amazon GameLift Streams is copying the content and caching for future deployment in a stream group.</p> </li> <li> <p> <code>READY</code>: The application is ready to deploy in a stream group.</p> </li> <li> <p> <code>ERROR</code>: An error occurred when setting up the application. See <code>StatusReason</code> for more information.</p> </li> <li> <p> <code>DELETING</code>: Amazon GameLift Streams is in the process of deleting the application.</p> </li> </ul>"
+          "documentation":"<p>The current status of the application resource. Possible statuses include the following:</p> <ul> <li> <p> <code>INITIALIZED</code>: Amazon GameLift Streams has received the request and is initiating the work flow to create an application. </p> </li> <li> <p> <code>PROCESSING</code>: The create application work flow is in process. Amazon GameLift Streams is copying the content and caching for future deployment in a stream group.</p> </li> <li> <p> <code>READY</code>: The application is ready to deploy in a stream group.</p> </li> <li> <p> <code>ERROR</code>: An error occurred when setting up the application. For more information about the error, call <code>GetApplication</code> and refer to <code>StatusReason</code>.</p> </li> <li> <p> <code>DELETING</code>: Amazon GameLift Streams is in the process of deleting the application.</p> </li> </ul>"
         },
         "CreatedAt":{
           "shape":"Timestamp",
@@ -676,7 +684,7 @@
         },
         "ExecutablePath":{
           "shape":"ExecutablePath",
-          "documentation":"<p>The path and file name of the executable file that launches the content for streaming. Enter a path value that is relative to the location set in <code>ApplicationSourceUri</code>.</p>"
+          "documentation":"<p>The relative path and file name of the executable file that Amazon GameLift Streams will stream. Specify a path relative to the location set in <code>ApplicationSourceUri</code>. The file must be contained within the application's root folder. For Windows applications, the file must be a valid Windows executable or batch file with a filename ending in .exe, .cmd, or .bat. For Linux applications, the file must be a valid Linux binary executable or a script that contains an initial interpreter line starting with a shebang ('<code>#!</code>').</p>"
         },
         "ApplicationSourceUri":{
           "shape":"ApplicationSourceUri",
@@ -719,7 +727,7 @@
         },
         "ExecutablePath":{
           "shape":"ExecutablePath",
-          "documentation":"<p>The path and file name of the executable file that launches the content for streaming.</p>"
+          "documentation":"<p>The relative path and file name of the executable file that launches the content for streaming.</p>"
         },
         "ApplicationLogPaths":{
           "shape":"FilePaths",
@@ -827,7 +835,7 @@
         },
         "Status":{
           "shape":"StreamGroupStatus",
-          "documentation":"<p>The current status of the stream group resource. Possible statuses include the following:</p> <ul> <li> <p> <code>ACTIVATING</code>: The stream group is deploying and isn't ready to host streams. </p> </li> <li> <p> <code>ACTIVE</code>: The stream group is ready to host streams. </p> </li> <li> <p> <code>ACTIVE_WITH_ERRORS</code>: One or more locations in the stream group are in an error state. Verify the details of individual locations and remove any locations which are in error. </p> </li> <li> <p> <code>ERROR</code>: An error occurred when the stream group deployed. See <code>StatusReason</code> for more information. </p> </li> <li> <p> <code>DELETING</code>: Amazon GameLift Streams is in the process of deleting the stream group. </p> </li> <li> <p> <code>UPDATING_LOCATIONS</code>: One or more locations in the stream group are in the process of updating (either activating or deleting). </p> </li> </ul>"
+          "documentation":"<p>The current status of the stream group resource. Possible statuses include the following:</p> <ul> <li> <p> <code>ACTIVATING</code>: The stream group is deploying and isn't ready to host streams. </p> </li> <li> <p> <code>ACTIVE</code>: The stream group is ready to host streams. </p> </li> <li> <p> <code>ACTIVE_WITH_ERRORS</code>: One or more locations in the stream group are in an error state. Verify the details of individual locations and remove any locations which are in error. </p> </li> <li> <p> <code>ERROR</code>: An error occurred when the stream group deployed. See <code>StatusReason</code> (returned by <code>CreateStreamGroup</code>, <code>GetStreamGroup</code>, and <code>UpdateStreamGroup</code>) for more information. </p> </li> <li> <p> <code>DELETING</code>: Amazon GameLift Streams is in the process of deleting the stream group. </p> </li> <li> <p> <code>UPDATING_LOCATIONS</code>: One or more locations in the stream group are in the process of updating (either activating or deleting). </p> </li> </ul>"
         },
         "StatusReason":{
           "shape":"StreamGroupStatusReason",
@@ -1095,7 +1103,7 @@
         },
         "ExecutablePath":{
           "shape":"ExecutablePath",
-          "documentation":"<p>The path and file name of the executable file that launches the content for streaming.</p>"
+          "documentation":"<p>The relative path and file name of the executable file that launches the content for streaming.</p>"
         },
         "ApplicationLogPaths":{
           "shape":"FilePaths",
@@ -1181,7 +1189,7 @@
         },
         "Status":{
           "shape":"StreamGroupStatus",
-          "documentation":"<p>The current status of the stream group resource. Possible statuses include the following:</p> <ul> <li> <p> <code>ACTIVATING</code>: The stream group is deploying and isn't ready to host streams. </p> </li> <li> <p> <code>ACTIVE</code>: The stream group is ready to host streams. </p> </li> <li> <p> <code>ACTIVE_WITH_ERRORS</code>: One or more locations in the stream group are in an error state. Verify the details of individual locations and remove any locations which are in error. </p> </li> <li> <p> <code>ERROR</code>: An error occurred when the stream group deployed. See <code>StatusReason</code> for more information. </p> </li> <li> <p> <code>DELETING</code>: Amazon GameLift Streams is in the process of deleting the stream group. </p> </li> <li> <p> <code>UPDATING_LOCATIONS</code>: One or more locations in the stream group are in the process of updating (either activating or deleting). </p> </li> </ul>"
+          "documentation":"<p>The current status of the stream group resource. Possible statuses include the following:</p> <ul> <li> <p> <code>ACTIVATING</code>: The stream group is deploying and isn't ready to host streams. </p> </li> <li> <p> <code>ACTIVE</code>: The stream group is ready to host streams. </p> </li> <li> <p> <code>ACTIVE_WITH_ERRORS</code>: One or more locations in the stream group are in an error state. Verify the details of individual locations and remove any locations which are in error. </p> </li> <li> <p> <code>ERROR</code>: An error occurred when the stream group deployed. See <code>StatusReason</code> (returned by <code>CreateStreamGroup</code>, <code>GetStreamGroup</code>, and <code>UpdateStreamGroup</code>) for more information. </p> </li> <li> <p> <code>DELETING</code>: Amazon GameLift Streams is in the process of deleting the stream group. </p> </li> <li> <p> <code>UPDATING_LOCATIONS</code>: One or more locations in the stream group are in the process of updating (either activating or deleting). </p> </li> </ul>"
         },
         "StatusReason":{
           "shape":"StreamGroupStatusReason",
@@ -1243,11 +1251,11 @@
         },
         "Status":{
           "shape":"StreamSessionStatus",
-          "documentation":"<p>The current status of the stream session. A stream session is ready for a client to connect when in <code>ACTIVE</code> status.</p> <ul> <li> <p> <code>ACTIVATING</code>: The stream session is starting and preparing to stream.</p> </li> <li> <p> <code>ACTIVE</code>: The stream session is ready and waiting for a client connection. A client has <code>ConnectionTimeoutSeconds</code> (specified in <code>StartStreamSession</code>) from when the session reaches <code>ACTIVE</code> state to establish a connection. If no client connects within this timeframe, the session automatically terminates.</p> </li> <li> <p> <code>CONNECTED</code>: The stream session has a connected client. A session will automatically terminate if there is no user input for 60 minutes, or if the maximum length of a session specified by <code>SessionLengthSeconds</code> in <code>StartStreamSession</code> is exceeded.</p> </li> <li> <p> <code>ERROR</code>: The stream session failed to activate.</p> </li> <li> <p> <code>PENDING_CLIENT_RECONNECTION</code>: A client has recently disconnected and the stream session is waiting for the client to reconnect. A client has <code>ConnectionTimeoutSeconds</code> (specified in <code>StartStreamSession</code>) from when the session reaches <code>PENDING_CLIENT_RECONNECTION</code> state to re-establish a connection. If no client connects within this timeframe, the session automatically terminates.</p> </li> <li> <p> <code>RECONNECTING</code>: A client has initiated a reconnect to a session that was in <code>PENDING_CLIENT_RECONNECTION</code> state.</p> </li> <li> <p> <code>TERMINATING</code>: The stream session is ending.</p> </li> <li> <p> <code>TERMINATED</code>: The stream session has ended.</p> </li> </ul>"
+          "documentation":"<p>The current status of the stream session. A stream session is ready for a client to connect when in <code>ACTIVE</code> status.</p> <ul> <li> <p> <code>ACTIVATING</code>: The stream session is starting and preparing to stream.</p> </li> <li> <p> <code>ACTIVE</code>: The stream session is ready and waiting for a client connection. A client has <code>ConnectionTimeoutSeconds</code> (specified in <code>StartStreamSession</code>) from when the session reaches <code>ACTIVE</code> state to establish a connection. If no client connects within this timeframe, the session automatically terminates.</p> </li> <li> <p> <code>CONNECTED</code>: The stream session has a connected client. A session will automatically terminate if there is no user input for 60 minutes, or if the maximum length of a session specified by <code>SessionLengthSeconds</code> in <code>StartStreamSession</code> is exceeded.</p> </li> <li> <p> <code>ERROR</code>: The stream session failed to activate. See <code>StatusReason</code> (returned by <code>GetStreamSession</code> and <code>StartStreamSession</code>) for more information.</p> </li> <li> <p> <code>PENDING_CLIENT_RECONNECTION</code>: A client has recently disconnected and the stream session is waiting for the client to reconnect. A client has <code>ConnectionTimeoutSeconds</code> (specified in <code>StartStreamSession</code>) from when the session reaches <code>PENDING_CLIENT_RECONNECTION</code> state to re-establish a connection. If no client connects within this timeframe, the session automatically terminates.</p> </li> <li> <p> <code>RECONNECTING</code>: A client has initiated a reconnect to a session that was in <code>PENDING_CLIENT_RECONNECTION</code> state.</p> </li> <li> <p> <code>TERMINATING</code>: The stream session is ending.</p> </li> <li> <p> <code>TERMINATED</code>: The stream session has ended.</p> </li> </ul>"
         },
         "StatusReason":{
           "shape":"StreamSessionStatusReason",
-          "documentation":"<p>A short description of the reason the stream session is in <code>ERROR</code> status.</p>"
+          "documentation":"<p>A short description of the reason the stream session is in <code>ERROR</code> status.</p> <ul> <li> <p> <code>internalError</code>: An internal service error occurred. Start a new stream session to continue streaming.</p> </li> <li> <p> <code>invalidSignalRequest</code>: The WebRTC signal request that was sent is not valid. When starting or reconnecting to a stream session, use <code>generateSignalRequest</code> in the Amazon GameLift Streams Web SDK to generate a new signal request.</p> </li> <li> <p> <code>placementTimeout</code>: Amazon GameLift Streams could not find available stream capacity to start a stream session. Increase the stream capacity in the stream group or wait until capacity becomes available.</p> </li> <li> <p> <code>applicationLogS3DestinationError</code>: Could not write the application log to the Amazon S3 bucket that is configured for the streaming application. Make sure the bucket still exists.</p> </li> </ul>"
         },
         "Protocol":{
           "shape":"Protocol",
@@ -1522,7 +1530,7 @@
         },
         "AlwaysOnCapacity":{
           "shape":"AlwaysOnCapacity",
-          "documentation":"<p>The streaming capacity that is allocated and ready to handle stream requests without delay. You pay for this capacity whether it's in use or not. Best for quickest time from streaming request to streaming session. Default is 1 when creating a stream group or adding a location.</p>"
+          "documentation":"<p>The streaming capacity that is allocated and ready to handle stream requests without delay. You pay for this capacity whether it's in use or not. Best for quickest time from streaming request to streaming session. Default is 1 (2 for high stream classes) when creating a stream group or adding a location.</p>"
         },
         "OnDemandCapacity":{
           "shape":"OnDemandCapacity",
@@ -1561,7 +1569,7 @@
         },
         "AlwaysOnCapacity":{
           "shape":"AlwaysOnCapacity",
-          "documentation":"<p>The streaming capacity that is allocated and ready to handle stream requests without delay. You pay for this capacity whether it's in use or not. Best for quickest time from streaming request to streaming session. Default is 1 when creating a stream group or adding a location.</p>"
+          "documentation":"<p>The streaming capacity that is allocated and ready to handle stream requests without delay. You pay for this capacity whether it's in use or not. Best for quickest time from streaming request to streaming session. Default is 1 (2 for high stream classes) when creating a stream group or adding a location.</p>"
         },
         "OnDemandCapacity":{
           "shape":"OnDemandCapacity",
@@ -1569,15 +1577,15 @@
         },
         "RequestedCapacity":{
           "shape":"CapacityValue",
-          "documentation":"<p>This value is the total number of compute resources that you request for a stream group. This includes resources that Amazon GameLift Streams has either already provisioned or is working to provision. You request capacity for each location in a stream group.</p>"
+          "documentation":"<p>This value is the always-on capacity that you most recently requested for a stream group. You request capacity separately for each location in a stream group. In response to an increase in requested capacity, Amazon GameLift Streams attempts to provision compute resources to make the stream group's allocated capacity meet requested capacity. When always-on capacity is decreased, it can take a few minutes to deprovision allocated capacity to match the requested capacity.</p>"
         },
         "AllocatedCapacity":{
           "shape":"CapacityValue",
-          "documentation":"<p>This value is the number of compute resources that a stream group has provisioned and is ready to stream. It includes resources that are currently streaming and resources that are idle and ready to respond to stream requests.</p>"
+          "documentation":"<p>This value is the stream capacity that Amazon GameLift Streams has provisioned in a stream group that can respond immediately to stream requests. It includes resources that are currently streaming and resources that are idle and ready to respond to stream requests. You pay for this capacity whether it's in use or not. After making changes to capacity, it can take a few minutes for the allocated capacity count to reflect the change while compute resources are allocated or deallocated. Similarly, when allocated on-demand capacity is no longer needed, it can take a few minutes for Amazon GameLift Streams to spin down the allocated capacity.</p>"
         },
         "IdleCapacity":{
           "shape":"CapacityValue",
-          "documentation":"<p>This value is the amount of allocated capacity that is not currently streaming. It represents the stream group's availability to respond to new stream requests, but not including on-demand capacity.</p>"
+          "documentation":"<p>This value is the amount of allocated capacity that is not currently streaming. It represents the stream group's ability to respond immediately to new stream requests with near-instant startup time.</p>"
         }
       },
       "documentation":"<p>Represents a location and its corresponding stream capacity and status.</p>"
@@ -1821,11 +1829,11 @@
         },
         "Status":{
           "shape":"StreamSessionStatus",
-          "documentation":"<p>The current status of the stream session. A stream session is ready for a client to connect when in <code>ACTIVE</code> status.</p> <ul> <li> <p> <code>ACTIVATING</code>: The stream session is starting and preparing to stream.</p> </li> <li> <p> <code>ACTIVE</code>: The stream session is ready and waiting for a client connection. A client has <code>ConnectionTimeoutSeconds</code> (specified in <code>StartStreamSession</code>) from when the session reaches <code>ACTIVE</code> state to establish a connection. If no client connects within this timeframe, the session automatically terminates.</p> </li> <li> <p> <code>CONNECTED</code>: The stream session has a connected client. A session will automatically terminate if there is no user input for 60 minutes, or if the maximum length of a session specified by <code>SessionLengthSeconds</code> in <code>StartStreamSession</code> is exceeded.</p> </li> <li> <p> <code>ERROR</code>: The stream session failed to activate.</p> </li> <li> <p> <code>PENDING_CLIENT_RECONNECTION</code>: A client has recently disconnected and the stream session is waiting for the client to reconnect. A client has <code>ConnectionTimeoutSeconds</code> (specified in <code>StartStreamSession</code>) from when the session reaches <code>PENDING_CLIENT_RECONNECTION</code> state to re-establish a connection. If no client connects within this timeframe, the session automatically terminates.</p> </li> <li> <p> <code>RECONNECTING</code>: A client has initiated a reconnect to a session that was in <code>PENDING_CLIENT_RECONNECTION</code> state.</p> </li> <li> <p> <code>TERMINATING</code>: The stream session is ending.</p> </li> <li> <p> <code>TERMINATED</code>: The stream session has ended.</p> </li> </ul>"
+          "documentation":"<p>The current status of the stream session. A stream session is ready for a client to connect when in <code>ACTIVE</code> status.</p> <ul> <li> <p> <code>ACTIVATING</code>: The stream session is starting and preparing to stream.</p> </li> <li> <p> <code>ACTIVE</code>: The stream session is ready and waiting for a client connection. A client has <code>ConnectionTimeoutSeconds</code> (specified in <code>StartStreamSession</code>) from when the session reaches <code>ACTIVE</code> state to establish a connection. If no client connects within this timeframe, the session automatically terminates.</p> </li> <li> <p> <code>CONNECTED</code>: The stream session has a connected client. A session will automatically terminate if there is no user input for 60 minutes, or if the maximum length of a session specified by <code>SessionLengthSeconds</code> in <code>StartStreamSession</code> is exceeded.</p> </li> <li> <p> <code>ERROR</code>: The stream session failed to activate. See <code>StatusReason</code> (returned by <code>GetStreamSession</code> and <code>StartStreamSession</code>) for more information.</p> </li> <li> <p> <code>PENDING_CLIENT_RECONNECTION</code>: A client has recently disconnected and the stream session is waiting for the client to reconnect. A client has <code>ConnectionTimeoutSeconds</code> (specified in <code>StartStreamSession</code>) from when the session reaches <code>PENDING_CLIENT_RECONNECTION</code> state to re-establish a connection. If no client connects within this timeframe, the session automatically terminates.</p> </li> <li> <p> <code>RECONNECTING</code>: A client has initiated a reconnect to a session that was in <code>PENDING_CLIENT_RECONNECTION</code> state.</p> </li> <li> <p> <code>TERMINATING</code>: The stream session is ending.</p> </li> <li> <p> <code>TERMINATED</code>: The stream session has ended.</p> </li> </ul>"
         },
         "StatusReason":{
           "shape":"StreamSessionStatusReason",
-          "documentation":"<p>A short description of the reason the stream session is in <code>ERROR</code> status.</p>"
+          "documentation":"<p>A short description of the reason the stream session is in <code>ERROR</code> status.</p> <ul> <li> <p> <code>internalError</code>: An internal service error occurred. Start a new stream session to continue streaming.</p> </li> <li> <p> <code>invalidSignalRequest</code>: The WebRTC signal request that was sent is not valid. When starting or reconnecting to a stream session, use <code>generateSignalRequest</code> in the Amazon GameLift Streams Web SDK to generate a new signal request.</p> </li> <li> <p> <code>placementTimeout</code>: Amazon GameLift Streams could not find available stream capacity to start a stream session. Increase the stream capacity in the stream group or wait until capacity becomes available.</p> </li> <li> <p> <code>applicationLogS3DestinationError</code>: Could not write the application log to the Amazon S3 bucket that is configured for the streaming application. Make sure the bucket still exists.</p> </li> </ul>"
         },
         "Protocol":{
           "shape":"Protocol",
@@ -1949,7 +1957,7 @@
         },
         "Status":{
           "shape":"StreamGroupStatus",
-          "documentation":"<p>The current status of the stream group resource. Possible statuses include the following:</p> <ul> <li> <p> <code>ACTIVATING</code>: The stream group is deploying and isn't ready to host streams. </p> </li> <li> <p> <code>ACTIVE</code>: The stream group is ready to host streams. </p> </li> <li> <p> <code>ACTIVE_WITH_ERRORS</code>: One or more locations in the stream group are in an error state. Verify the details of individual locations and remove any locations which are in error. </p> </li> <li> <p> <code>ERROR</code>: An error occurred when the stream group deployed. See <code>StatusReason</code> for more information. </p> </li> <li> <p> <code>DELETING</code>: Amazon GameLift Streams is in the process of deleting the stream group. </p> </li> <li> <p> <code>UPDATING_LOCATIONS</code>: One or more locations in the stream group are in the process of updating (either activating or deleting). </p> </li> </ul>"
+          "documentation":"<p>The current status of the stream group resource. Possible statuses include the following:</p> <ul> <li> <p> <code>ACTIVATING</code>: The stream group is deploying and isn't ready to host streams. </p> </li> <li> <p> <code>ACTIVE</code>: The stream group is ready to host streams. </p> </li> <li> <p> <code>ACTIVE_WITH_ERRORS</code>: One or more locations in the stream group are in an error state. Verify the details of individual locations and remove any locations which are in error. </p> </li> <li> <p> <code>ERROR</code>: An error occurred when the stream group deployed. See <code>StatusReason</code> (returned by <code>CreateStreamGroup</code>, <code>GetStreamGroup</code>, and <code>UpdateStreamGroup</code>) for more information. </p> </li> <li> <p> <code>DELETING</code>: Amazon GameLift Streams is in the process of deleting the stream group. </p> </li> <li> <p> <code>UPDATING_LOCATIONS</code>: One or more locations in the stream group are in the process of updating (either activating or deleting). </p> </li> </ul>"
         },
         "CreatedAt":{
           "shape":"Timestamp",
@@ -2001,7 +2009,7 @@
         },
         "Status":{
           "shape":"StreamSessionStatus",
-          "documentation":"<p>The current status of the stream session resource.</p> <ul> <li> <p> <code>ACTIVATING</code>: The stream session is starting and preparing to stream.</p> </li> <li> <p> <code>ACTIVE</code>: The stream session is ready and waiting for a client connection. A client has <code>ConnectionTimeoutSeconds</code> (specified in <code>StartStreamSession</code>) from when the session reaches <code>ACTIVE</code> state to establish a connection. If no client connects within this timeframe, the session automatically terminates.</p> </li> <li> <p> <code>CONNECTED</code>: The stream session has a connected client. A session will automatically terminate if there is no user input for 60 minutes, or if the maximum length of a session specified by <code>SessionLengthSeconds</code> in <code>StartStreamSession</code> is exceeded.</p> </li> <li> <p> <code>ERROR</code>: The stream session failed to activate.</p> </li> <li> <p> <code>PENDING_CLIENT_RECONNECTION</code>: A client has recently disconnected and the stream session is waiting for the client to reconnect. A client has <code>ConnectionTimeoutSeconds</code> (specified in <code>StartStreamSession</code>) from when the session reaches <code>PENDING_CLIENT_RECONNECTION</code> state to re-establish a connection. If no client connects within this timeframe, the session automatically terminates.</p> </li> <li> <p> <code>RECONNECTING</code>: A client has initiated a reconnect to a session that was in <code>PENDING_CLIENT_RECONNECTION</code> state.</p> </li> <li> <p> <code>TERMINATING</code>: The stream session is ending.</p> </li> <li> <p> <code>TERMINATED</code>: The stream session has ended.</p> </li> </ul>"
+          "documentation":"<p>The current status of the stream session resource.</p> <ul> <li> <p> <code>ACTIVATING</code>: The stream session is starting and preparing to stream.</p> </li> <li> <p> <code>ACTIVE</code>: The stream session is ready and waiting for a client connection. A client has <code>ConnectionTimeoutSeconds</code> (specified in <code>StartStreamSession</code>) from when the session reaches <code>ACTIVE</code> state to establish a connection. If no client connects within this timeframe, the session automatically terminates.</p> </li> <li> <p> <code>CONNECTED</code>: The stream session has a connected client. A session will automatically terminate if there is no user input for 60 minutes, or if the maximum length of a session specified by <code>SessionLengthSeconds</code> in <code>StartStreamSession</code> is exceeded.</p> </li> <li> <p> <code>ERROR</code>: The stream session failed to activate. See <code>StatusReason</code> (returned by <code>GetStreamSession</code> and <code>StartStreamSession</code>) for more information.</p> </li> <li> <p> <code>PENDING_CLIENT_RECONNECTION</code>: A client has recently disconnected and the stream session is waiting for the client to reconnect. A client has <code>ConnectionTimeoutSeconds</code> (specified in <code>StartStreamSession</code>) from when the session reaches <code>PENDING_CLIENT_RECONNECTION</code> state to re-establish a connection. If no client connects within this timeframe, the session automatically terminates.</p> </li> <li> <p> <code>RECONNECTING</code>: A client has initiated a reconnect to a session that was in <code>PENDING_CLIENT_RECONNECTION</code> state.</p> </li> <li> <p> <code>TERMINATING</code>: The stream session is ending.</p> </li> <li> <p> <code>TERMINATED</code>: The stream session has ended.</p> </li> </ul>"
         },
         "Protocol":{
           "shape":"Protocol",
@@ -2187,7 +2195,7 @@
         },
         "ExecutablePath":{
           "shape":"ExecutablePath",
-          "documentation":"<p>The path and file name of the executable file that launches the content for streaming.</p>"
+          "documentation":"<p>The relative path and file name of the executable file that launches the content for streaming.</p>"
         },
         "ApplicationLogPaths":{
           "shape":"FilePaths",
@@ -2285,7 +2293,7 @@
         },
         "Status":{
           "shape":"StreamGroupStatus",
-          "documentation":"<p>The current status of the stream group resource. Possible statuses include the following:</p> <ul> <li> <p> <code>ACTIVATING</code>: The stream group is deploying and isn't ready to host streams. </p> </li> <li> <p> <code>ACTIVE</code>: The stream group is ready to host streams. </p> </li> <li> <p> <code>ACTIVE_WITH_ERRORS</code>: One or more locations in the stream group are in an error state. Verify the details of individual locations and remove any locations which are in error. </p> </li> <li> <p> <code>ERROR</code>: An error occurred when the stream group deployed. See <code>StatusReason</code> for more information. </p> </li> <li> <p> <code>DELETING</code>: Amazon GameLift Streams is in the process of deleting the stream group. </p> </li> <li> <p> <code>UPDATING_LOCATIONS</code>: One or more locations in the stream group are in the process of updating (either activating or deleting). </p> </li> </ul>"
+          "documentation":"<p>The current status of the stream group resource. Possible statuses include the following:</p> <ul> <li> <p> <code>ACTIVATING</code>: The stream group is deploying and isn't ready to host streams. </p> </li> <li> <p> <code>ACTIVE</code>: The stream group is ready to host streams. </p> </li> <li> <p> <code>ACTIVE_WITH_ERRORS</code>: One or more locations in the stream group are in an error state. Verify the details of individual locations and remove any locations which are in error. </p> </li> <li> <p> <code>ERROR</code>: An error occurred when the stream group deployed. See <code>StatusReason</code> (returned by <code>CreateStreamGroup</code>, <code>GetStreamGroup</code>, and <code>UpdateStreamGroup</code>) for more information. </p> </li> <li> <p> <code>DELETING</code>: Amazon GameLift Streams is in the process of deleting the stream group. </p> </li> <li> <p> <code>UPDATING_LOCATIONS</code>: One or more locations in the stream group are in the process of updating (either activating or deleting). </p> </li> </ul>"
         },
         "StatusReason":{
           "shape":"StreamGroupStatusReason",

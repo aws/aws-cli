@@ -84,6 +84,23 @@
       ],
       "documentation":"<p>Associates the specified fleet with the specified stack.</p>"
     },
+    "AssociateSoftwareToImageBuilder":{
+      "name":"AssociateSoftwareToImageBuilder",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateSoftwareToImageBuilderRequest"},
+      "output":{"shape":"AssociateSoftwareToImageBuilderResult"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"IncompatibleImageException"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Associates license included application(s) with an existing image builder instance.</p>"
+    },
     "BatchAssociateUserStack":{
       "name":"BatchAssociateUserStack",
       "http":{
@@ -636,6 +653,21 @@
       ],
       "documentation":"<p>Retrieves a list that describes one or more app blocks.</p>"
     },
+    "DescribeAppLicenseUsage":{
+      "name":"DescribeAppLicenseUsage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeAppLicenseUsageRequest"},
+      "output":{"shape":"DescribeAppLicenseUsageResult"},
+      "errors":[
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves license included application usage information.</p>"
+    },
     "DescribeApplicationFleetAssociations":{
       "name":"DescribeApplicationFleetAssociations",
       "http":{
@@ -757,6 +789,20 @@
         {"shape":"InvalidParameterCombinationException"}
       ],
       "documentation":"<p>Retrieves a list that describes the streaming sessions for a specified stack and fleet. If a UserId is provided for the stack and fleet, only streaming sessions for that user are described. If an authentication type is not provided, the default is to authenticate users using a streaming URL.</p>"
+    },
+    "DescribeSoftwareAssociations":{
+      "name":"DescribeSoftwareAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeSoftwareAssociationsRequest"},
+      "output":{"shape":"DescribeSoftwareAssociationsResult"},
+      "errors":[
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves license included application associations for a specified resource.</p>"
     },
     "DescribeStacks":{
       "name":"DescribeStacks",
@@ -904,6 +950,22 @@
       ],
       "documentation":"<p>Disassociates the specified fleet from the specified stack.</p>"
     },
+    "DisassociateSoftwareFromImageBuilder":{
+      "name":"DisassociateSoftwareFromImageBuilder",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateSoftwareFromImageBuilderRequest"},
+      "output":{"shape":"DisassociateSoftwareFromImageBuilderResult"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Removes license included application(s) association(s) from an image builder instance.</p>"
+    },
     "EnableUser":{
       "name":"EnableUser",
       "http":{
@@ -1031,6 +1093,21 @@
         {"shape":"IncompatibleImageException"}
       ],
       "documentation":"<p>Starts the specified image builder.</p>"
+    },
+    "StartSoftwareDeploymentToImageBuilder":{
+      "name":"StartSoftwareDeploymentToImageBuilder",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartSoftwareDeploymentToImageBuilderRequest"},
+      "output":{"shape":"StartSoftwareDeploymentToImageBuilderResult"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Initiates license included applications deployment to an image builder instance.</p>"
     },
     "StopAppBlockBuilder":{
       "name":"StopAppBlockBuilder",
@@ -1302,6 +1379,53 @@
         "DOMAIN_SMART_CARD_SIGNIN",
         "AUTO_TIME_ZONE_REDIRECTION"
       ]
+    },
+    "AdminAppLicenseUsageList":{
+      "type":"list",
+      "member":{"shape":"AdminAppLicenseUsageRecord"}
+    },
+    "AdminAppLicenseUsageRecord":{
+      "type":"structure",
+      "required":[
+        "UserArn",
+        "BillingPeriod",
+        "OwnerAWSAccountId",
+        "SubscriptionFirstUsedDate",
+        "SubscriptionLastUsedDate",
+        "LicenseType",
+        "UserId"
+      ],
+      "members":{
+        "UserArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the user who used the license-included application.</p>"
+        },
+        "BillingPeriod":{
+          "shape":"String",
+          "documentation":"<p>The billing period for the license usage record.</p>"
+        },
+        "OwnerAWSAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The account ID of the owner of the license.</p>"
+        },
+        "SubscriptionFirstUsedDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the license was first used.</p>"
+        },
+        "SubscriptionLastUsedDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the license was last used.</p>"
+        },
+        "LicenseType":{
+          "shape":"String",
+          "documentation":"<p>The type of license (for example, Microsoft Office).</p>"
+        },
+        "UserId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the user who used the license-included application.</p>"
+        }
+      },
+      "documentation":"<p>The collection of license usage records.</p>"
     },
     "AppBlock":{
       "type":"structure",
@@ -1764,6 +1888,27 @@
       }
     },
     "AssociateFleetResult":{
+      "type":"structure",
+      "members":{}
+    },
+    "AssociateSoftwareToImageBuilderRequest":{
+      "type":"structure",
+      "required":[
+        "ImageBuilderName",
+        "SoftwareNames"
+      ],
+      "members":{
+        "ImageBuilderName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the target image builder instance.</p>"
+        },
+        "SoftwareNames":{
+          "shape":"StringList",
+          "documentation":"<p>The list of license included applications to associate with the image builder.</p> <p>Possible values include the following:</p> <ul> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_64Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_64Bit</p> </li> </ul>"
+        }
+      }
+    },
+    "AssociateSoftwareToImageBuilderResult":{
       "type":"structure",
       "members":{}
     },
@@ -2379,6 +2524,14 @@
         "AccessEndpoints":{
           "shape":"AccessEndpointList",
           "documentation":"<p>The list of interface VPC endpoint (interface endpoint) objects. Administrators can connect to the image builder only through the specified endpoints.</p>"
+        },
+        "SoftwaresToInstall":{
+          "shape":"StringList",
+          "documentation":"<p>The list of license included applications to install on the image builder during creation.</p> <p>Possible values include the following:</p> <ul> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_64Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_64Bit</p> </li> </ul>"
+        },
+        "SoftwaresToUninstall":{
+          "shape":"StringList",
+          "documentation":"<p>The list of license included applications to uninstall from the image builder during creation.</p> <p>Possible values include the following:</p> <ul> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_64Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_64Bit</p> </li> </ul>"
         }
       }
     },
@@ -2967,6 +3120,37 @@
         }
       }
     },
+    "DescribeAppLicenseUsageRequest":{
+      "type":"structure",
+      "required":["BillingPeriod"],
+      "members":{
+        "BillingPeriod":{
+          "shape":"String",
+          "documentation":"<p>Billing period for the usage record.</p> <p>Specify the value in <i>yyyy-mm</i> format. For example, for August 2025, use <i>2025-08</i>.</p>"
+        },
+        "MaxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to return.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Token for pagination of results.</p>"
+        }
+      }
+    },
+    "DescribeAppLicenseUsageResult":{
+      "type":"structure",
+      "members":{
+        "AppLicenseUsages":{
+          "shape":"AdminAppLicenseUsageList",
+          "documentation":"<p>Collection of license usage records.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Token for pagination of results.</p>"
+        }
+      }
+    },
     "DescribeApplicationFleetAssociationsRequest":{
       "type":"structure",
       "members":{
@@ -3285,6 +3469,41 @@
         }
       }
     },
+    "DescribeSoftwareAssociationsRequest":{
+      "type":"structure",
+      "required":["AssociatedResource"],
+      "members":{
+        "AssociatedResource":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the resource to describe software associations. Possible resources are Image and ImageBuilder.</p>"
+        },
+        "MaxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to return.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token to use to retrieve the next page of results for this operation.</p>"
+        }
+      }
+    },
+    "DescribeSoftwareAssociationsResult":{
+      "type":"structure",
+      "members":{
+        "AssociatedResource":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the resource to describe software associations.</p>"
+        },
+        "SoftwareAssociations":{
+          "shape":"SoftwareAssociationsList",
+          "documentation":"<p>Collection of license included applications association details including:</p> <ul> <li> <p>License included application name and version information</p> </li> <li> <p>Deployment status (SoftwareDeploymentStatus enum)</p> </li> <li> <p>Error details for failed deployments</p> </li> <li> <p>Association timestamps</p> </li> </ul>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token to use to retrieve the next page of results for this operation.</p>"
+        }
+      }
+    },
     "DescribeStacksRequest":{
       "type":"structure",
       "members":{
@@ -3572,6 +3791,27 @@
       }
     },
     "DisassociateFleetResult":{
+      "type":"structure",
+      "members":{}
+    },
+    "DisassociateSoftwareFromImageBuilderRequest":{
+      "type":"structure",
+      "required":[
+        "ImageBuilderName",
+        "SoftwareNames"
+      ],
+      "members":{
+        "ImageBuilderName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the target image builder instance.</p>"
+        },
+        "SoftwareNames":{
+          "shape":"StringList",
+          "documentation":"<p>The list of license included applications to disassociate from the image builder.</p> <p>Possible values include the following:</p> <ul> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_64Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_64Bit</p> </li> </ul>"
+        }
+      }
+    },
+    "DisassociateSoftwareFromImageBuilderResult":{
       "type":"structure",
       "members":{}
     },
@@ -4075,6 +4315,10 @@
         "ImageSharedWithOthers":{
           "shape":"ImageSharedWithOthers",
           "documentation":"<p>Indicates whether the image is shared with another account ID.</p>"
+        },
+        "ManagedSoftwareIncluded":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the image includes license-included applications.</p>"
         }
       },
       "documentation":"<p>Describes an image.</p>"
@@ -4176,7 +4420,9 @@
         "DELETING",
         "FAILED",
         "UPDATING",
-        "PENDING_QUALIFICATION"
+        "PENDING_QUALIFICATION",
+        "PENDING_SYNCING_APPS",
+        "SYNCING_APPS"
       ]
     },
     "ImageBuilderStateChangeReason":{
@@ -4785,6 +5031,40 @@
       "type":"list",
       "member":{"shape":"SharedImagePermissions"}
     },
+    "SoftwareAssociations":{
+      "type":"structure",
+      "members":{
+        "SoftwareName":{
+          "shape":"String",
+          "documentation":"<p>The name of the license-included application.</p> <p>Possible values include the following:</p> <ul> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_64Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_64Bit</p> </li> </ul>"
+        },
+        "Status":{
+          "shape":"SoftwareDeploymentStatus",
+          "documentation":"<p>The deployment status of the license-included application.</p>"
+        },
+        "DeploymentError":{
+          "shape":"ErrorDetailsList",
+          "documentation":"<p>The error details for failed deployments of the license-included application.</p>"
+        }
+      },
+      "documentation":"<p>The association between a license-included application and a resource.</p>"
+    },
+    "SoftwareAssociationsList":{
+      "type":"list",
+      "member":{"shape":"SoftwareAssociations"}
+    },
+    "SoftwareDeploymentStatus":{
+      "type":"string",
+      "enum":[
+        "STAGED_FOR_INSTALLATION",
+        "PENDING_INSTALLATION",
+        "INSTALLED",
+        "STAGED_FOR_UNINSTALLATION",
+        "PENDING_UNINSTALLATION",
+        "FAILED_TO_INSTALL",
+        "FAILED_TO_UNINSTALL"
+      ]
+    },
     "Stack":{
       "type":"structure",
       "required":["Name"],
@@ -4952,6 +5232,24 @@
           "documentation":"<p>Information about the image builder.</p>"
         }
       }
+    },
+    "StartSoftwareDeploymentToImageBuilderRequest":{
+      "type":"structure",
+      "required":["ImageBuilderName"],
+      "members":{
+        "ImageBuilderName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the target image builder instance.</p>"
+        },
+        "RetryFailedDeployments":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to retry previously failed license included application deployments.</p>"
+        }
+      }
+    },
+    "StartSoftwareDeploymentToImageBuilderResult":{
+      "type":"structure",
+      "members":{}
     },
     "StopAppBlockBuilderRequest":{
       "type":"structure",

@@ -2,6 +2,207 @@
 CHANGELOG
 =========
 
+2.31.19
+=======
+
+* api-change:``dynamodb``: Add AccountID based endpoint metric to endpoint rules.
+* api-change:``mediaconvert``: This release adds the ability to set resolution for the black video generator and also adds the StartJobsQuery and GetJobsQueryResults APIs which allow asynchronous search of job history using new filters.
+* api-change:``emr``: Added RECONFIGURING to the InstanceFleetState convenience enum.
+* api-change:``meteringmarketplace``: Added ClientToken parameter to MeterUsage API for specifying idempotent requests.
+
+
+2.31.18
+=======
+
+* api-change:``arc-zonal-shift``: Update endpoint ruleset parameters casing
+* api-change:``finspace-data``: Update endpoint ruleset parameters casing
+* api-change:``wellarchitected``: Update endpoint ruleset parameters casing
+* api-change:``ds``: Update endpoint ruleset parameters casing
+* api-change:``amp``: Update endpoint ruleset parameters casing
+* api-change:``bedrock-data-automation-runtime``: Update endpoint ruleset parameters casing
+* api-change:``tnb``: Update endpoint ruleset parameters casing
+* api-change:``license-manager-user-subscriptions``: Update endpoint ruleset parameters casing
+* api-change:``kinesis-video-media``: Update endpoint ruleset parameters casing
+* api-change:``bcm-recommended-actions``: Update endpoint ruleset parameters casing
+* api-change:``marketplace-catalog``: The ListEntities API now supports two new CAPI filters: DeliveryOptionTypes for SaaS products and CompatibleAWSServices for Container products.
+* api-change:``license-manager``: Update endpoint ruleset parameters casing
+* api-change:``lakeformation``: Update endpoint ruleset parameters casing
+* api-change:``codestar-notifications``: Update endpoint ruleset parameters casing
+* api-change:``network-firewall``: Update endpoint ruleset parameters casing
+* api-change:``mediaconnect``: Update endpoint ruleset parameters casing
+* api-change:``pi``: Update endpoint ruleset parameters casing
+* api-change:``networkmanager``: Update endpoint ruleset parameters casing
+* api-change:``iotthingsgraph``: Update endpoint ruleset parameters casing
+* api-change:``controlcatalog``: Update endpoint ruleset parameters casing
+* api-change:``sagemaker-geospatial``: Update endpoint ruleset parameters casing
+* api-change:``chime-sdk-meetings``: Update endpoint ruleset parameters casing
+* api-change:``iottwinmaker``: Update endpoint ruleset parameters casing
+* api-change:``appconfigdata``: Update endpoint ruleset parameters casing
+* api-change:``kendra-ranking``: Update endpoint ruleset parameters casing
+* api-change:``es``: Update endpoint ruleset parameters casing
+* api-change:``gameliftstreams``: Updates documentation to clarify valid application binaries for an Amazon GameLift Streams application and provide descriptions of stream session error status reasons
+* api-change:``rolesanywhere``: Update endpoint ruleset parameters casing
+* api-change:``datasync``: Update endpoint ruleset parameters casing
+* api-change:``route53-recovery-readiness``: Update endpoint ruleset parameters casing
+* api-change:``finspace``: Update endpoint ruleset parameters casing
+* api-change:``timestream-write``: Update endpoint ruleset parameters casing
+* api-change:``qapps``: Update endpoint ruleset parameters casing
+* api-change:``evidently``: Update endpoint ruleset parameters casing
+* api-change:``swf``: Releasing minor endpoint updates.
+* api-change:``migration-hub-refactor-spaces``: Update endpoint ruleset parameters casing
+* api-change:``organizations``: Update endpoint ruleset parameters casing
+* api-change:``imagebuilder``: Update endpoint ruleset parameters casing
+* api-change:``events``: Update endpoint ruleset parameters casing
+* api-change:``dsql``: Update endpoint ruleset parameters casing
+* api-change:``cloudfront``: Update endpoint ruleset parameters casing
+* api-change:``signer``: Update endpoint ruleset parameters casing
+* api-change:``geo-maps``: Added support for optional style parameters in maps, including Terrain, ContourDensity, Traffic, and TravelModes.
+* api-change:``application-insights``: Update endpoint ruleset parameters casing
+* api-change:``amplifybackend``: Update endpoint ruleset parameters casing
+* api-change:``appintegrations``: Update endpoint ruleset parameters casing
+* api-change:``iot-data``: Update endpoint ruleset parameters casing
+* api-change:``iotdeviceadvisor``: Update endpoint ruleset parameters casing
+* api-change:``cloudfront-keyvaluestore``: Update endpoint ruleset parameters casing
+* api-change:``ec2``: Documentation updates for Amazon EC2.
+
+
+2.31.17
+=======
+
+* api-change:``route53-recovery-control-config``: Update endpoint ruleset parameters casing
+* api-change:``amplify``: Update endpoint ruleset parameters casing
+* api-change:``timestream-query``: Update endpoint ruleset parameters casing
+* api-change:``migrationhub-config``: Update endpoint ruleset parameters casing
+* api-change:``qldb-session``: Update endpoint ruleset parameters casing
+* api-change:``personalize-runtime``: Update endpoint ruleset parameters casing
+* api-change:``ssm``: Update endpoint ruleset parameters casing
+* api-change:``identitystore``: Update endpoint ruleset parameters casing
+* api-change:``mediapackagev2``: Update endpoint ruleset parameters casing
+* api-change:``lex-models``: Update endpoint ruleset parameters casing
+* api-change:``geo-routes``: Update endpoint ruleset parameters casing
+* api-change:``ssm-guiconnect``: Update endpoint ruleset parameters casing
+* api-change:``memorydb``: Update endpoint ruleset parameters casing
+* api-change:``apigatewaymanagementapi``: Update endpoint ruleset parameters casing
+* api-change:``osis``: Update endpoint ruleset parameters casing
+* api-change:``lexv2-runtime``: Update endpoint ruleset parameters casing
+* api-change:``billingconductor``: New feature: service flat CLI and first AWS managed pricing plan (BasicPricingPlan)
+* api-change:``kafka``: Update endpoint ruleset parameters casing
+* api-change:``workspaces-web``: Update endpoint ruleset parameters casing
+* api-change:``machinelearning``: Update endpoint ruleset parameters casing
+* api-change:``lookoutequipment``: Update endpoint ruleset parameters casing
+* api-change:``globalaccelerator``: Update endpoint ruleset parameters casing
+* api-change:``m2``: Update endpoint ruleset parameters casing
+* api-change:``pricing``: Update endpoint ruleset parameters casing
+* api-change:``freetier``: Update endpoint ruleset parameters casing
+* api-change:``grafana``: Update endpoint ruleset parameters casing
+* api-change:``dataexchange``: Update endpoint ruleset parameters casing
+* api-change:``dlm``: Update endpoint ruleset parameters casing
+* api-change:``ivs-realtime``: Update endpoint ruleset parameters casing
+* api-change:``apptest``: Update endpoint ruleset parameters casing
+* api-change:``polly``: Update endpoint ruleset parameters casing
+* api-change:``apprunner``: Update endpoint ruleset parameters casing
+* api-change:``databrew``: Update endpoint ruleset parameters casing
+* api-change:``kms``: Update endpoint ruleset parameters casing
+* api-change:``acm-pca``: Update endpoint ruleset parameters casing
+* api-change:``keyspaces``: Update endpoint ruleset parameters casing
+* api-change:``voice-id``: Update endpoint ruleset parameters casing
+* api-change:``medical-imaging``: Update endpoint ruleset parameters casing
+* api-change:``bcm-data-exports``: Update endpoint ruleset parameters casing
+* api-change:``batch``: Update endpoint ruleset parameters casing
+* api-change:``marketplace-entitlement``: Update endpoint ruleset parameters casing
+* api-change:``ivs``: Update endpoint ruleset parameters casing
+* api-change:``personalize``: Update endpoint ruleset parameters casing
+* api-change:``networkflowmonitor``: Update endpoint ruleset parameters casing
+* api-change:``customer-profiles``: Update endpoint ruleset parameters casing
+* api-change:``gamelift``: Update endpoint ruleset parameters casing
+* api-change:``autoscaling-plans``: Updated FIPS endpoints for US GovCloud regions
+* api-change:``qldb``: Update endpoint ruleset parameters casing
+* api-change:``ssm-contacts``: Update endpoint ruleset parameters casing
+
+
+2.31.16
+=======
+
+* api-change:``timestream-influxdb``: This release adds support for creating and managing InfluxDB 3 Core and Enterprise DbClusters.
+* api-change:``ec2``: Introducing EC2 Capacity Manager for monitoring and analyzing capacity usage across On-Demand Instances, Spot Instances, and Capacity Reservations.
+* api-change:``docdb``: Add support for NetworkType field in CreateDbCluster, ModifyDbCluster, RestoreDbClusterFromSnapshot and RestoreDbClusterToPointInTime for DocumentDB.
+* api-change:``lightsail``: Add support for manage Lightsail Bucket CORS configuration
+* api-change:``guardduty``: Added default pagination value for ListMalwareProtectionPlans API and updated UpdateFindingsFeedback API
+* api-change:``elbv2``: This release expands Listener Rule Conditions to support RegexValues and adds support for a new Transforms field in Listener Rules.
+* api-change:``bedrock``: Amazon Bedrock Automated Reasoning Policy now offers enhanced AWS KMS integration. The CreateAutomatedReasoningPolicy API includes a new kmsKeyId field, allowing customers to specify their preferred KMS key for encryption, improving control and compliance with AWS encryption mandates.
+
+
+2.31.15
+=======
+
+* api-change:``connect``: SDK release for TaskTemplateInfo in Contact for DescribeContact response.
+* api-change:``ec2``: This release adds support for creating instant, point-in-time copies of EBS volumes within the same Availability Zone
+* api-change:``transfer``: SFTP connectors now support routing connections via customers' VPC. This enables connections to remote servers that are only accessible in a customer's VPC environment, and to servers that are accessible over the internet but need connections coming from an IP address in a customer VPC's CIDR range.
+* api-change:``backup``: The AWS Backup job attribute extension enhancement helps customers better understand the plan that initiated each job, and the properties of the resource each job creates.
+* api-change:``transcribe``: Move UntagResource API body member to query parameter
+* api-change:``datazone``: Support creating scoped and trustedIdentityPropagation enabled connections.
+* enhancement:setuptools: Upgrade pinned setuptools to version 78.1.1
+* api-change:``appstream``: This release introduces support for Microsoft license included applications streaming.
+
+
+2.31.14
+=======
+
+* api-change:``observabilityadmin``: CloudWatch Observability Admin adds the ability to enable Resource tags for telemetry in a customer account. The release introduces new APIs to enable, disable and describe the status of Resource tags for telemetry feature. This new capability simplifies monitoring AWS resources using tags.
+* api-change:``bedrock-agentcore-control``: Updated http status code in control plane apis of agentcore runtime, tools and identity. Additional included provider types for AgentCore Identity
+* api-change:``ec2``: Release Amazon EC2 c8i, c8i-flex, m8a, and r8gb
+* api-change:``bedrock-agentcore``: Updated InvokeAgentRuntime API to accept account id optionally and added CompleteResourceTokenAuth API.
+
+
+2.31.13
+=======
+
+* api-change:``bedrock-agentcore``: Bedrock AgentCore release for Runtime, and Memory.
+* api-change:``cloudfront``: Added new viewer security policy, TLSv1.2_2025, for CloudFront.
+* api-change:``glue``: Addition of AuditContext in GetTable/GetTables Request
+* api-change:``rds``: Updated the text in the Important section of the ModifyDBClusterParameterGroup page.
+* api-change:``bedrock-agentcore-control``: Bedrock AgentCore release for Gateway, and Memory including Self-Managed Strategies support for Memory.
+* api-change:``lambda``: Add InvokedViaFunctionUrl context key to limit invocations to only FURL invokes.
+* api-change:``odb``: This release adds APIs that allow you to specify CIDR ranges in your ODB peering connection.
+* enhancement:openssl: Update bundled OpenSSL version to 1.1.1zd for Linux installers
+
+
+2.31.12
+=======
+
+* api-change:``wafv2``: This release adds the ability to throw WafLimitsExceededException when the maximum number of Application Load Balancer (ALB) associations per AWS WAF v2 WebACL is exceeded.
+* api-change:``quicksight``: This release adds support for ActionConnector and Flow, which are new resources associated with Amazon Quick Suite. Additional updates include expanded Data Source options, further branding customization, and new capabilities that can be restricted by Admins.
+
+
+2.31.11
+=======
+
+* api-change:``outposts``: This release adds the new StartOutpostDecommission API, which starts the decommission process to return Outposts racks or servers.
+* api-change:``service-quotas``: introduces Service Quotas Automatic Management. Users can opt-in to monitoring and managing service quotas, receive notifications when quota usage reaches thresholds, configure notification channels, subscribe to EventBridge events for automation, and view notifications in the AWS Health dashboard.
+* api-change:``license-manager-user-subscriptions``: Released support for IPv6 and dual-stack active directories
+* api-change:``bedrock-agentcore-control``: Adding support for authorizer type AWS_IAM to AgentCore Control Gateway.
+
+
+2.31.10
+=======
+
+* api-change:``proton``: Deprecating APIs in AWS Proton namespace.
+
+
+2.31.9
+======
+
+* api-change:``rds``: Documentation updates to the CreateDBClusterMessage$PubliclyAccessible and CreateDBInstanceMessage$PubliclyAccessible properties.
+* api-change:``bedrock-agentcore-control``: Add support for VM lifecycle configuration parameters and A2A protocol
+* api-change:``mediaconnect``: Enabling Tag-on-Create for AWS Elemental MediaConnect flow-based resource types
+* api-change:``backup``: Adds optional MaxScheduledRunsPreview input to GetBackupPlan API to provide a preview of up to 10 next scheduled backup plan runs in the GetBackupPlan response.
+* api-change:``quicksight``: Documentation improvements for QuickSight API documentation to clarify that delete operation APIs are global.
+* api-change:``glue``: Adds labeling for DataQualityRuleResult for GetDataQualityResult and PublishDataQualityResult APIs
+* api-change:``resource-explorer-2``: Add new AWS Resource Explorer APIs
+* api-change:``memorydb``: Support for DescribeMultiRegionParameterGroups and DescribeMultiRegionParameters API.
+* api-change:``bedrock-agentcore``: Add support for batch memory management, agent card retrieval and session termination
+
+
 2.31.8
 ======
 

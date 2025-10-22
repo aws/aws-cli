@@ -3949,6 +3949,96 @@
       "members":{},
       "documentation":"<p>The all users grant filter.</p>"
     },
+    "AmazonQPropertiesInput":{
+      "type":"structure",
+      "required":["isEnabled"],
+      "members":{
+        "authMode":{
+          "shape":"AmazonQPropertiesInputAuthModeString",
+          "documentation":"<p>The authentication mode of the connection's Amazon Q properties.</p>"
+        },
+        "isEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether Amazon Q is enabled for the connection.</p>"
+        },
+        "profileArn":{
+          "shape":"AmazonQPropertiesInputProfileArnString",
+          "documentation":"<p>The profile ARN of the connection's Amazon Q properties.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Q properties of the connection.</p>"
+    },
+    "AmazonQPropertiesInputAuthModeString":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "AmazonQPropertiesInputProfileArnString":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^arn:aws[a-z\\-]*:[a-z0-9\\-]+:[a-z0-9\\-]*:[0-9]*:.*"
+    },
+    "AmazonQPropertiesOutput":{
+      "type":"structure",
+      "required":["isEnabled"],
+      "members":{
+        "authMode":{
+          "shape":"AmazonQPropertiesOutputAuthModeString",
+          "documentation":"<p>The authentication mode of the connection's Amazon Q properties.</p>"
+        },
+        "isEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether Amazon Q is enabled for the connection.</p>"
+        },
+        "profileArn":{
+          "shape":"AmazonQPropertiesOutputProfileArnString",
+          "documentation":"<p>The profile ARN of the connection's Amazon Q properties.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Q properties of the connection.</p>"
+    },
+    "AmazonQPropertiesOutputAuthModeString":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "AmazonQPropertiesOutputProfileArnString":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^arn:aws[a-z\\-]*:[a-z0-9\\-]+:[a-z0-9\\-]*:[0-9]*:.*"
+    },
+    "AmazonQPropertiesPatch":{
+      "type":"structure",
+      "required":["isEnabled"],
+      "members":{
+        "authMode":{
+          "shape":"AmazonQPropertiesPatchAuthModeString",
+          "documentation":"<p>The authentication mode of the connection's Amazon Q properties.</p>"
+        },
+        "isEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether Amazon Q is enabled for the connection.</p>"
+        },
+        "profileArn":{
+          "shape":"AmazonQPropertiesPatchProfileArnString",
+          "documentation":"<p>The profile ARN of the connection's Amazon Q properties.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Q properties of the connection.</p>"
+    },
+    "AmazonQPropertiesPatchAuthModeString":{
+      "type":"string",
+      "max":128,
+      "min":0
+    },
+    "AmazonQPropertiesPatchProfileArnString":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"^arn:aws[a-z\\-]*:[a-z0-9\\-]+:[a-z0-9\\-]*:[0-9]*:.*"
+    },
     "ApplicableAssetTypes":{
       "type":"list",
       "member":{"shape":"TypeName"}
@@ -5101,6 +5191,10 @@
     "ConnectionPropertiesInput":{
       "type":"structure",
       "members":{
+        "amazonQProperties":{
+          "shape":"AmazonQPropertiesInput",
+          "documentation":"<p>The Amazon Q properties of the connection.</p>"
+        },
         "athenaProperties":{
           "shape":"AthenaPropertiesInput",
           "documentation":"<p>The Amazon Athena properties of a connection.</p>"
@@ -5140,6 +5234,10 @@
     "ConnectionPropertiesOutput":{
       "type":"structure",
       "members":{
+        "amazonQProperties":{
+          "shape":"AmazonQPropertiesOutput",
+          "documentation":"<p>The Amazon Q properties of the connection.</p>"
+        },
         "athenaProperties":{
           "shape":"AthenaPropertiesOutput",
           "documentation":"<p>The Amazon Athena properties of a connection.</p>"
@@ -5179,6 +5277,10 @@
     "ConnectionPropertiesPatch":{
       "type":"structure",
       "members":{
+        "amazonQProperties":{
+          "shape":"AmazonQPropertiesPatch",
+          "documentation":"<p>The Amazon Q properties of the connection.</p>"
+        },
         "athenaProperties":{
           "shape":"AthenaPropertiesPatch",
           "documentation":"<p>The Amazon Athena properties of a connection properties patch.</p>"
@@ -5211,6 +5313,13 @@
       "type":"string",
       "max":2048,
       "min":1
+    },
+    "ConnectionScope":{
+      "type":"string",
+      "enum":[
+        "DOMAIN",
+        "PROJECT"
+      ]
     },
     "ConnectionStatus":{
       "type":"string",
@@ -5272,6 +5381,10 @@
           "shape":"ConnectionPropertiesOutput",
           "documentation":"<p>The connection props.</p>"
         },
+        "scope":{
+          "shape":"ConnectionScope",
+          "documentation":"<p>The scope of the connection.</p>"
+        },
         "type":{
           "shape":"ConnectionType",
           "documentation":"<p>The connection type.</p>"
@@ -5301,7 +5414,8 @@
         "SQLSERVER",
         "TERADATA",
         "VERTICA",
-        "WORKFLOWS_MWAA"
+        "WORKFLOWS_MWAA",
+        "AMAZON_Q"
       ]
     },
     "CreateAccountPoolInput":{
@@ -5903,7 +6017,6 @@
       "type":"structure",
       "required":[
         "domainIdentifier",
-        "environmentIdentifier",
         "name"
       ],
       "members":{
@@ -5926,6 +6039,10 @@
           "location":"uri",
           "locationName":"domainIdentifier"
         },
+        "enableTrustedIdentityPropagation":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the trusted identity propagation is enabled.</p>"
+        },
         "environmentIdentifier":{
           "shape":"EnvironmentId",
           "documentation":"<p>The ID of the environment where the connection is created.</p>"
@@ -5937,6 +6054,10 @@
         "props":{
           "shape":"ConnectionPropertiesInput",
           "documentation":"<p>The connection props.</p>"
+        },
+        "scope":{
+          "shape":"ConnectionScope",
+          "documentation":"<p>The scope of the connection.</p>"
         }
       }
     },
@@ -5992,6 +6113,10 @@
         "props":{
           "shape":"ConnectionPropertiesOutput",
           "documentation":"<p>The connection props.</p>"
+        },
+        "scope":{
+          "shape":"ConnectionScope",
+          "documentation":"<p>The scope of the connection.</p>"
         },
         "type":{
           "shape":"ConnectionType",
@@ -11560,6 +11685,10 @@
           "shape":"ConnectionPropertiesOutput",
           "documentation":"<p>Connection props.</p>"
         },
+        "scope":{
+          "shape":"ConnectionScope",
+          "documentation":"<p>The scope of the connection.</p>"
+        },
         "type":{
           "shape":"ConnectionType",
           "documentation":"<p>The type of the connection.</p>"
@@ -15521,10 +15650,7 @@
     },
     "ListConnectionsInput":{
       "type":"structure",
-      "required":[
-        "domainIdentifier",
-        "projectIdentifier"
-      ],
+      "required":["domainIdentifier"],
       "members":{
         "domainIdentifier":{
           "shape":"DomainId",
@@ -15561,6 +15687,12 @@
           "documentation":"<p>The ID of the project where you want to list connections.</p>",
           "location":"querystring",
           "locationName":"projectIdentifier"
+        },
+        "scope":{
+          "shape":"ConnectionScope",
+          "documentation":"<p>The scope of the connection.</p>",
+          "location":"querystring",
+          "locationName":"scope"
         },
         "sortBy":{
           "shape":"SortFieldConnection",
@@ -18144,6 +18276,10 @@
         "awsLocation":{
           "shape":"AwsLocation",
           "documentation":"<p>The location of a connection.</p>"
+        },
+        "enableTrustedIdentityPropagation":{
+          "shape":"Boolean",
+          "documentation":"<p>Specified whether trusted identity propagation for the connection is enabled.</p>"
         },
         "glueConnection":{
           "shape":"GlueConnection",
@@ -22517,6 +22653,10 @@
         "props":{
           "shape":"ConnectionPropertiesOutput",
           "documentation":"<p>The connection props.</p>"
+        },
+        "scope":{
+          "shape":"ConnectionScope",
+          "documentation":"<p>The scope of the connection.</p>"
         },
         "type":{
           "shape":"ConnectionType",

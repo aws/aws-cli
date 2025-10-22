@@ -388,6 +388,10 @@
           "shape":"ActiveDirectorySettingsDomainIpv4ListList",
           "documentation":"<p>A list of domain IPv4 addresses that are used for the Active Directory.</p>"
         },
+        "DomainIpv6List":{
+          "shape":"ActiveDirectorySettingsDomainIpv6ListList",
+          "documentation":"<p>A list of domain IPv6 addresses that are used for the Active Directory.</p>"
+        },
         "DomainCredentialsProvider":{
           "shape":"CredentialsProvider",
           "documentation":"<p>Points to the <code>CredentialsProvider</code> resource that contains information about the credential provider for user administration.</p>"
@@ -402,6 +406,12 @@
     "ActiveDirectorySettingsDomainIpv4ListList":{
       "type":"list",
       "member":{"shape":"IpV4"},
+      "max":2,
+      "min":1
+    },
+    "ActiveDirectorySettingsDomainIpv6ListList":{
+      "type":"list",
+      "member":{"shape":"IpV6"},
       "max":2,
       "min":1
     },
@@ -812,6 +822,10 @@
       "type":"string",
       "pattern":"(?:(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\\.(?!$)|$)){4}"
     },
+    "IpV6":{
+      "type":"string",
+      "pattern":"([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|::|::[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}"
+    },
     "LicenseServer":{
       "type":"structure",
       "members":{
@@ -826,6 +840,10 @@
         "Ipv4Address":{
           "shape":"String",
           "documentation":"<p>A list of domain IPv4 addresses that are used for the RDS license server.</p>"
+        },
+        "Ipv6Address":{
+          "shape":"String",
+          "documentation":"<p>A list of domain IPv6 addresses that are used for the RDS license server.</p>"
         }
       },
       "documentation":"<p>Information about a Remote Desktop Services (RDS) license server.</p>"

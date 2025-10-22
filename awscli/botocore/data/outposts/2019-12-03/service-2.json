@@ -468,6 +468,23 @@
       ],
       "documentation":"<note> <p> Amazon Web Services uses this action to install Outpost servers.</p> </note> <p> Starts the connection required for Outpost server installation. </p> <p> Use CloudTrail to monitor this action or Amazon Web Services managed policy for Amazon Web Services Outposts to secure it. For more information, see <a href=\"https://docs.aws.amazon.com/outposts/latest/userguide/security-iam-awsmanpol.html\"> Amazon Web Services managed policies for Amazon Web Services Outposts</a> and <a href=\"https://docs.aws.amazon.com/outposts/latest/userguide/logging-using-cloudtrail.html\"> Logging Amazon Web Services Outposts API calls with Amazon Web Services CloudTrail</a> in the <i>Amazon Web Services Outposts User Guide</i>. </p>"
     },
+    "StartOutpostDecommission":{
+      "name":"StartOutpostDecommission",
+      "http":{
+        "method":"POST",
+        "requestUri":"/outposts/{OutpostId}/decommission"
+      },
+      "input":{"shape":"StartOutpostDecommissionInput"},
+      "output":{"shape":"StartOutpostDecommissionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Starts the decommission process to return the Outposts racks or servers.</p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -854,6 +871,22 @@
       "type":"list",
       "member":{"shape":"BlockingInstance"}
     },
+    "BlockingResourceType":{
+      "type":"string",
+      "enum":[
+        "EC2_INSTANCE",
+        "OUTPOST_RAM_SHARE",
+        "LGW_ROUTING_DOMAIN",
+        "LGW_ROUTE_TABLE",
+        "LGW_VIRTUAL_INTERFACE_GROUP",
+        "OUTPOST_ORDER_CANCELLABLE",
+        "OUTPOST_ORDER_INTERVENTION_REQUIRED"
+      ]
+    },
+    "BlockingResourceTypeList":{
+      "type":"list",
+      "member":{"shape":"BlockingResourceType"}
+    },
     "CIDR":{
       "type":"string",
       "max":18,
@@ -1185,7 +1218,6 @@
       "type":"structure",
       "required":[
         "OutpostIdentifier",
-        "LineItems",
         "PaymentOption"
       ],
       "members":{
@@ -1280,6 +1312,14 @@
       "members":{
         "Site":{"shape":"Site"}
       }
+    },
+    "DecommissionRequestStatus":{
+      "type":"string",
+      "enum":[
+        "SKIPPED",
+        "BLOCKED",
+        "REQUESTED"
+      ]
     },
     "DeleteOutpostInput":{
       "type":"structure",
@@ -2908,6 +2948,35 @@
         }
       }
     },
+    "StartOutpostDecommissionInput":{
+      "type":"structure",
+      "required":["OutpostIdentifier"],
+      "members":{
+        "OutpostIdentifier":{
+          "shape":"OutpostIdentifier",
+          "documentation":"<p>The ID or ARN of the Outpost that you want to decommission.</p>",
+          "location":"uri",
+          "locationName":"OutpostId"
+        },
+        "ValidateOnly":{
+          "shape":"ValidateOnly",
+          "documentation":"<p>Validates the request without starting the decommission process.</p>"
+        }
+      }
+    },
+    "StartOutpostDecommissionOutput":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"DecommissionRequestStatus",
+          "documentation":"<p>The status of the decommission request.</p>"
+        },
+        "BlockingResourceTypes":{
+          "shape":"BlockingResourceTypeList",
+          "documentation":"<p>The resources still associated with the Outpost that you are decommissioning.</p>"
+        }
+      }
+    },
     "StateOrRegion":{
       "type":"string",
       "max":50,
@@ -3276,6 +3345,7 @@
       "type":"integer",
       "box":true
     },
+    "ValidateOnly":{"type":"boolean"},
     "ValidationException":{
       "type":"structure",
       "members":{

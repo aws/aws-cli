@@ -552,7 +552,7 @@
         {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
-      "documentation":"<p>Creates a Lightsail load balancer. To learn more about deciding whether to load balance your application, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/configure-lightsail-instances-for-load-balancing\">Configure your Lightsail instances for load balancing</a>. You can create up to 5 load balancers per AWS Region in your account.</p> <p>When you create a load balancer, you can specify a unique name and port settings. To change additional load balancer settings, use the <code>UpdateLoadBalancerAttribute</code> operation.</p> <p>The <code>create load balancer</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
+      "documentation":"<p>Creates a Lightsail load balancer. To learn more about deciding whether to load balance your application, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/configure-lightsail-instances-for-load-balancing\">Configure your Lightsail instances for load balancing</a>. You can create up to 10 load balancers per AWS Region in your account.</p> <p>When you create a load balancer, you can specify a unique name and port settings. To change additional load balancer settings, use the <code>UpdateLoadBalancerAttribute</code> operation.</p> <p>The <code>create load balancer</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
     },
     "CreateLoadBalancerTlsCertificate":{
       "name":"CreateLoadBalancerTlsCertificate",
@@ -3840,6 +3840,10 @@
         "accessLogConfig":{
           "shape":"BucketAccessLogConfig",
           "documentation":"<p>An object that describes the access log configuration for the bucket.</p>"
+        },
+        "cors":{
+          "shape":"BucketCorsConfig",
+          "documentation":"<p>An array of cross-origin resource sharing (CORS) rules that identify origins and the HTTP methods that can be executed on your bucket. This field is only included in the response when CORS configuration is requested or when updating CORS configuration. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/configure-cors.html\">Configuring cross-origin resource sharing (CORS)</a>.</p>"
         }
       },
       "documentation":"<p>Describes an Amazon Lightsail bucket.</p>"
@@ -3902,6 +3906,79 @@
     "BucketBundleList":{
       "type":"list",
       "member":{"shape":"BucketBundle"}
+    },
+    "BucketCorsAllowedHeaders":{
+      "type":"list",
+      "member":{"shape":"string"}
+    },
+    "BucketCorsAllowedMethod":{
+      "type":"string",
+      "pattern":"^(DELETE|GET|HEAD|POST|PUT)$"
+    },
+    "BucketCorsAllowedMethods":{
+      "type":"list",
+      "member":{"shape":"BucketCorsAllowedMethod"}
+    },
+    "BucketCorsAllowedOrigins":{
+      "type":"list",
+      "member":{"shape":"string"}
+    },
+    "BucketCorsConfig":{
+      "type":"structure",
+      "members":{
+        "rules":{
+          "shape":"BucketCorsRules",
+          "documentation":"<p>A set of origins and methods (cross-origin access that you want to allow). You can add up to 20 rules to the configuration. The total size is limited to 64 KB.</p>"
+        }
+      },
+      "documentation":"<p>Describes the cross-origin resource sharing (CORS) configuration for a Lightsail bucket. CORS defines a way for client web applications that are loaded in one domain to interact with resources in a different domain. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/configure-cors.html\">Configuring cross-origin resource sharing (CORS)</a>.</p>"
+    },
+    "BucketCorsExposeHeaders":{
+      "type":"list",
+      "member":{"shape":"string"}
+    },
+    "BucketCorsRule":{
+      "type":"structure",
+      "required":[
+        "allowedMethods",
+        "allowedOrigins"
+      ],
+      "members":{
+        "id":{
+          "shape":"BucketCorsRuleId",
+          "documentation":"<p>A unique identifier for the CORS rule. The ID value can be up to 255 characters long. The IDs help you find a rule in the configuration.</p>"
+        },
+        "allowedMethods":{
+          "shape":"BucketCorsAllowedMethods",
+          "documentation":"<p>The HTTP methods that are allowed when accessing the bucket from the specified origin. Each CORS rule must identify at least one origin and one method.</p> <p>You can use the following HTTP methods:</p> <ul> <li> <p> <code>GET</code> - Retrieves data from the server, such as downloading files or viewing content.</p> </li> <li> <p> <code>PUT</code> - Uploads or replaces data on the server, such as uploading new files.</p> </li> <li> <p> <code>POST</code> - Sends data to the server for processing, such as submitting forms or creating new resources.</p> </li> <li> <p> <code>DELETE</code> - Removes data from the server, such as deleting files or resources.</p> </li> <li> <p> <code>HEAD</code> - Retrieves only the headers from the server without the actual content, useful for checking if a resource exists.</p> </li> </ul>"
+        },
+        "allowedOrigins":{
+          "shape":"BucketCorsAllowedOrigins",
+          "documentation":"<p>One or more origins you want customers to be able to access the bucket from. Each CORS rule must identify at least one origin and one method.</p>"
+        },
+        "allowedHeaders":{
+          "shape":"BucketCorsAllowedHeaders",
+          "documentation":"<p>Headers that are specified in the <code>Access-Control-Request-Headers</code> header. These headers are allowed in a preflight <code>OPTIONS</code> request. In response to any preflight <code>OPTIONS</code> request, Amazon S3 returns any requested headers that are allowed.</p>"
+        },
+        "exposeHeaders":{
+          "shape":"BucketCorsExposeHeaders",
+          "documentation":"<p>One or more headers in the response that you want customers to be able to access from their applications (for example, from a JavaScript <code>XMLHttpRequest</code> object).</p>"
+        },
+        "maxAgeSeconds":{
+          "shape":"integer",
+          "documentation":"<p>The time in seconds that your browser is to cache the preflight response for the specified resource. A CORS rule can have only one <code>maxAgeSeconds</code> element.</p>"
+        }
+      },
+      "documentation":"<p>Describes a cross-origin resource sharing (CORS) rule for a Lightsail bucket. CORS rules specify which origins are allowed to access the bucket, which HTTP methods are allowed, and other access control information. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/configure-cors.html\">Configuring cross-origin resource sharing (CORS)</a>.</p>"
+    },
+    "BucketCorsRuleId":{
+      "type":"string",
+      "max":255
+    },
+    "BucketCorsRules":{
+      "type":"list",
+      "member":{"shape":"BucketCorsRule"},
+      "max":20
     },
     "BucketList":{
       "type":"list",
@@ -7280,6 +7357,10 @@
         "includeConnectedResources":{
           "shape":"boolean",
           "documentation":"<p>A Boolean value that indicates whether to include Lightsail instances that were given access to the bucket using the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_SetResourceAccessForBucket.html\">SetResourceAccessForBucket</a> action.</p>"
+        },
+        "includeCors":{
+          "shape":"boolean",
+          "documentation":"<p>A Boolean value that indicates whether to include Lightsail bucket CORS configuration in the response. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/configure-cors.html\">Configuring cross-origin resource sharing (CORS)</a>.</p> <note> <p>This parameter is only supported when getting a single bucket with <code>bucketName</code> specified. The default value for this parameter is <code>False</code>.</p> </note>"
         }
       }
     },
@@ -12265,6 +12346,10 @@
         "accessLogConfig":{
           "shape":"BucketAccessLogConfig",
           "documentation":"<p>An object that describes the access log configuration for the bucket.</p>"
+        },
+        "cors":{
+          "shape":"BucketCorsConfig",
+          "documentation":"<p>Sets the cross-origin resource sharing (CORS) configuration for your bucket. If a CORS configuration exists, it is replaced with the specified configuration. For AWS CLI operations, this parameter can also be passed as a file. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/configure-cors.html\">Configuring cross-origin resource sharing (CORS)</a>.</p> <note> <p>CORS information is only returned in a response when you update the CORS policy.</p> </note>"
         }
       }
     },

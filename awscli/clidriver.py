@@ -692,18 +692,17 @@ class ServiceOperation:
                 arg.py_name for arg in arg_table.values()
                 if arg.py_name in parsed_args_to_check
                    and arg.argument_model.type_name == 'blob'
-                   and parsed_args_to_check[arg.py_name].startswith('file://')
             ]
             if arg_values_to_check:
                 uni_print(
                     'AWS CLI v2 UPGRADE WARNING: When specifying a blob-type '
-                    'parameter starting with `file://`, AWS CLI v2 will assume '
-                    'the content of the file is already base64-encoded. To '
-                    'maintain v1 behavior after upgrading to v2, set the '
-                    '`cli_binary_format` configuration variable to '
-                    '`raw-in-base64-out`. See https://docs.aws.amazon.com/cli/'
-                    'latest/userguide/cliv2-migration-changes.html#'
-                    'cliv2-migration-binaryparam.\n',
+                    'parameter, AWS CLI v2 will assume the parameter value is '
+                    'base64-encoded. To maintain v1 behavior after upgrading '
+                    'to v2, set the `cli_binary_format` configuration '
+                    'variable to `raw-in-base64-out`. See '
+                    'https://docs.aws.amazon.com/cli/latest/userguide'
+                    '/cliv2-migration-changes.html'
+                    '#cliv2-migration-binaryparam.\n',
                     out_file=sys.stderr
                 )
 

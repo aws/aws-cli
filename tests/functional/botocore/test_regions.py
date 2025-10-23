@@ -311,7 +311,6 @@ KNOWN_REGIONS = {
         'support': 'support.us-east-1.amazonaws.com',
         'swf': 'swf.us-east-1.amazonaws.com',
         'workspaces': 'workspaces.us-east-1.amazonaws.com',
-        'waf': 'waf.amazonaws.com',
     },
     'us-gov-west-1': {
         'autoscaling': 'autoscaling.us-gov-west-1.amazonaws.com',
@@ -418,7 +417,6 @@ KNOWN_REGIONS = {
 KNOWN_AWS_PARTITION_WIDE = {
     'importexport': 'https://importexport.amazonaws.com',
     'cloudfront': 'https://cloudfront.amazonaws.com',
-    'waf': 'https://waf.amazonaws.com',
     'route53': 'https://route53.amazonaws.com',
     's3': 'https://s3.amazonaws.com',
     'sts': 'https://sts.amazonaws.com',

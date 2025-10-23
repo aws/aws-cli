@@ -2,6 +2,61 @@
 CHANGELOG
 =========
 
+1.42.58
+=======
+
+* api-change:``account``: Update endpoint ruleset parameters casing
+* api-change:``application-autoscaling``: Update endpoint ruleset parameters casing
+* api-change:``bedrock-agentcore``: Fixing the service documentation name
+* api-change:``bedrock-agentcore-control``: Fixing the service documentation name
+* api-change:``chime-sdk-voice``: Update endpoint ruleset parameters casing
+* api-change:``cloudtrail-data``: Update endpoint ruleset parameters casing
+* api-change:``codebuild``: Update endpoint ruleset parameters casing
+* api-change:``codestar-connections``: Update endpoint ruleset parameters casing
+* api-change:``config``: Update endpoint ruleset parameters casing
+* api-change:``connect-contact-lens``: Update endpoint ruleset parameters casing
+* api-change:``cur``: Update endpoint ruleset parameters casing
+* api-change:``discovery``: Update endpoint ruleset parameters casing
+* api-change:``dms``: Update endpoint ruleset parameters casing
+* api-change:``docdb-elastic``: Update endpoint ruleset parameters casing
+* api-change:``drs``: Update endpoint ruleset parameters casing
+* api-change:``dsql``: Add support for resource-based policies for Aurora DSQL clusters. This will enable you to implement Block Public Access (BPA) which will help restrict access to your Aurora DSQL public or VPC endpoints.
+* api-change:``ebs``: Update endpoint ruleset parameters casing
+* api-change:``ecr``: Update endpoint ruleset parameters casing
+* api-change:``ecr-public``: Update endpoint ruleset parameters casing
+* api-change:``healthlake``: Update endpoint ruleset parameters casing
+* api-change:``internetmonitor``: Update endpoint ruleset parameters casing
+* api-change:``iotevents``: Update endpoint ruleset parameters casing
+* api-change:``iot-jobs-data``: Update endpoint ruleset parameters casing
+* api-change:``kinesis-video-archived-media``: Update endpoint ruleset parameters casing
+* api-change:``kinesis-video-webrtc-storage``: Update endpoint ruleset parameters casing
+* api-change:``lambda``: Add NodeJs 24 (nodejs24.x) support to AWS Lambda.
+* api-change:``macie2``: Update endpoint ruleset parameters casing
+* api-change:``managedblockchain-query``: Update endpoint ruleset parameters casing
+* api-change:``marketplacecommerceanalytics``: Update endpoint ruleset parameters casing
+* api-change:``mediatailor``: Update endpoint ruleset parameters casing
+* api-change:``mgh``: Update endpoint ruleset parameters casing
+* api-change:``mgn``: Update endpoint ruleset parameters casing
+* api-change:``mpa``: Update endpoint ruleset parameters casing
+* api-change:``neptunedata``: Update endpoint ruleset parameters casing
+* api-change:``networkmonitor``: Update endpoint ruleset parameters casing
+* api-change:``odb``: Doc-only update that removes duplicate values from descriptions of ODB peering APIs.
+* api-change:``omics``: Update endpoint ruleset parameters casing
+* api-change:``opensearchserverless``: Update endpoint ruleset parameters casing
+* api-change:``pca-connector-scep``: Update endpoint ruleset parameters casing
+* api-change:``personalize-events``: Update endpoint ruleset parameters casing
+* api-change:``pinpoint-email``: Update endpoint ruleset parameters casing
+* api-change:``resiliencehub``: Update endpoint ruleset parameters casing
+* api-change:``rum``: Update endpoint ruleset parameters casing
+* api-change:``sagemaker``: Update endpoint ruleset parameters casing
+* api-change:``sagemaker-edge``: Update endpoint ruleset parameters casing
+* api-change:``savingsplans``: Update endpoint ruleset parameters casing
+* api-change:``securitylake``: Update endpoint ruleset parameters casing
+* api-change:``sesv2``: Update endpoint ruleset parameters casing
+* api-change:``storagegateway``: Update endpoint ruleset parameters casing
+* api-change:``synthetics``: Update endpoint ruleset parameters casing
+
+
 1.42.57
 =======
 

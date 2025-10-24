@@ -24,8 +24,8 @@
       "output":{"shape":"AssociateTrackerConsumerResponse"},
       "errors":[
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"},
@@ -108,7 +108,8 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists the latest device positions for requested devices.</p>",
-      "endpoint":{"hostPrefix":"tracking."}
+      "endpoint":{"hostPrefix":"tracking."},
+      "readonly":true
     },
     "BatchPutGeofence":{
       "name":"BatchPutGeofence",
@@ -164,8 +165,9 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> <a href=\"https://docs.aws.amazon.com/location/previous/developerguide/calculate-route.html\">Calculates a route</a> given the following required parameters: <code>DeparturePosition</code> and <code>DestinationPosition</code>. Requires that you first <a href=\"https://docs.aws.amazon.com/location-routes/latest/APIReference/API_CreateRouteCalculator.html\">create a route calculator resource</a>.</p> <p>By default, a request that doesn't specify a departure time uses the best time of day to travel with the best traffic conditions when calculating the route.</p> <p>Additional options include:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/location/previous/developerguide/departure-time.html\">Specifying a departure time</a> using either <code>DepartureTime</code> or <code>DepartNow</code>. This calculates a route based on predictive traffic data at the given time. </p> <note> <p>You can't specify both <code>DepartureTime</code> and <code>DepartNow</code> in a single request. Specifying both parameters returns a validation error.</p> </note> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/location/previous/developerguide/travel-mode.html\">Specifying a travel mode</a> using TravelMode sets the transportation mode used to calculate the routes. This also lets you specify additional route preferences in <code>CarModeOptions</code> if traveling by <code>Car</code>, or <code>TruckModeOptions</code> if traveling by <code>Truck</code>.</p> <note> <p>If you specify <code>walking</code> for the travel mode and your data provider is Esri, the start and destination must be within 40km.</p> </note> </li> </ul>",
-      "endpoint":{"hostPrefix":"routes."}
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend you upgrade to <a href=\"/location/latest/APIReference/API_CalculateRoutes.html\"> <code>CalculateRoutes</code> </a> or <a href=\"/location/latest/APIReference/API_CalculateIsolines.html\"> <code>CalculateIsolines</code> </a> unless you require Grab data.</p> <ul> <li> <p> <code>CalculateRoute</code> is part of a previous Amazon Location Service Routes API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The version 2 <code>CalculateRoutes</code> operation gives better results for point-to-point routing, while the version 2 <code>CalculateIsolines</code> operation adds support for calculating service areas and travel time envelopes.</p> </li> <li> <p>If you are using an Amazon Web Services SDK or the Amazon Web Services CLI, note that the Routes API version 2 is found under <code>geo-routes</code> or <code>geo_routes</code>, not under <code>location</code>.</p> </li> <li> <p>Since Grab is not yet fully supported in Routes API version 2, we recommend you continue using API version 1 when using Grab.</p> </li> </ul> </important> <p> <a href=\"https://docs.aws.amazon.com/location/previous/developerguide/calculate-route.html\">Calculates a route</a> given the following required parameters: <code>DeparturePosition</code> and <code>DestinationPosition</code>. Requires that you first <a href=\"https://docs.aws.amazon.com/location-routes/latest/APIReference/API_CreateRouteCalculator.html\">create a route calculator resource</a>.</p> <p>By default, a request that doesn't specify a departure time uses the best time of day to travel with the best traffic conditions when calculating the route.</p> <p>Additional options include:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/location/previous/developerguide/departure-time.html\">Specifying a departure time</a> using either <code>DepartureTime</code> or <code>DepartNow</code>. This calculates a route based on predictive traffic data at the given time. </p> <note> <p>You can't specify both <code>DepartureTime</code> and <code>DepartNow</code> in a single request. Specifying both parameters returns a validation error.</p> </note> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/location/previous/developerguide/travel-mode.html\">Specifying a travel mode</a> using TravelMode sets the transportation mode used to calculate the routes. This also lets you specify additional route preferences in <code>CarModeOptions</code> if traveling by <code>Car</code>, or <code>TruckModeOptions</code> if traveling by <code>Truck</code>.</p> <note> <p>If you specify <code>walking</code> for the travel mode and your data provider is Esri, the start and destination must be within 40km.</p> </note> </li> </ul></p>",
+      "endpoint":{"hostPrefix":"routes."},
+      "readonly":true
     },
     "CalculateRouteMatrix":{
       "name":"CalculateRouteMatrix",
@@ -183,8 +185,9 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> <a href=\"https://docs.aws.amazon.com/location/previous/developerguide/calculate-route-matrix.html\"> Calculates a route matrix</a> given the following required parameters: <code>DeparturePositions</code> and <code>DestinationPositions</code>. <code>CalculateRouteMatrix</code> calculates routes and returns the travel time and travel distance from each departure position to each destination position in the request. For example, given departure positions A and B, and destination positions X and Y, <code>CalculateRouteMatrix</code> will return time and distance for routes from A to X, A to Y, B to X, and B to Y (in that order). The number of results returned (and routes calculated) will be the number of <code>DeparturePositions</code> times the number of <code>DestinationPositions</code>.</p> <note> <p>Your account is charged for each route calculated, not the number of requests.</p> </note> <p>Requires that you first <a href=\"https://docs.aws.amazon.com/location-routes/latest/APIReference/API_CreateRouteCalculator.html\">create a route calculator resource</a>.</p> <p>By default, a request that doesn't specify a departure time uses the best time of day to travel with the best traffic conditions when calculating routes.</p> <p>Additional options include:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/location/previous/developerguide/departure-time.html\"> Specifying a departure time</a> using either <code>DepartureTime</code> or <code>DepartNow</code>. This calculates routes based on predictive traffic data at the given time. </p> <note> <p>You can't specify both <code>DepartureTime</code> and <code>DepartNow</code> in a single request. Specifying both parameters returns a validation error.</p> </note> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/location/previous/developerguide/travel-mode.html\">Specifying a travel mode</a> using TravelMode sets the transportation mode used to calculate the routes. This also lets you specify additional route preferences in <code>CarModeOptions</code> if traveling by <code>Car</code>, or <code>TruckModeOptions</code> if traveling by <code>Truck</code>.</p> </li> </ul>",
-      "endpoint":{"hostPrefix":"routes."}
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend you upgrade to the <a href=\"/location/latest/APIReference/API_CalculateRouteMatrix.html\">V2 <code>CalculateRouteMatrix</code> </a> unless you require Grab data.</p> <ul> <li> <p>This version of <code>CalculateRouteMatrix</code> is part of a previous Amazon Location Service Routes API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The version 2 <code>CalculateRouteMatrix</code> operation gives better results for matrix routing calculations.</p> </li> <li> <p>If you are using an Amazon Web Services SDK or the Amazon Web Services CLI, note that the Routes API version 2 is found under <code>geo-routes</code> or <code>geo_routes</code>, not under <code>location</code>.</p> </li> <li> <p>Since Grab is not yet fully supported in Routes API version 2, we recommend you continue using API version 1 when using Grab.</p> </li> <li> <p>Start your version 2 API journey with the Routes V2 <a href=\"/location/latest/APIReference/API_Operations_Amazon_Location_Service_Routes_V2.html\">API Reference</a> or the <a href=\"/location/latest/developerguide/routes.html\">Developer Guide</a>.</p> </li> </ul> </important> <p> <a href=\"https://docs.aws.amazon.com/location/previous/developerguide/calculate-route-matrix.html\"> Calculates a route matrix</a> given the following required parameters: <code>DeparturePositions</code> and <code>DestinationPositions</code>. <code>CalculateRouteMatrix</code> calculates routes and returns the travel time and travel distance from each departure position to each destination position in the request. For example, given departure positions A and B, and destination positions X and Y, <code>CalculateRouteMatrix</code> will return time and distance for routes from A to X, A to Y, B to X, and B to Y (in that order). The number of results returned (and routes calculated) will be the number of <code>DeparturePositions</code> times the number of <code>DestinationPositions</code>.</p> <note> <p>Your account is charged for each route calculated, not the number of requests.</p> </note> <p>Requires that you first <a href=\"https://docs.aws.amazon.com/location-routes/latest/APIReference/API_CreateRouteCalculator.html\">create a route calculator resource</a>.</p> <p>By default, a request that doesn't specify a departure time uses the best time of day to travel with the best traffic conditions when calculating routes.</p> <p>Additional options include:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/location/previous/developerguide/departure-time.html\"> Specifying a departure time</a> using either <code>DepartureTime</code> or <code>DepartNow</code>. This calculates routes based on predictive traffic data at the given time. </p> <note> <p>You can't specify both <code>DepartureTime</code> and <code>DepartNow</code> in a single request. Specifying both parameters returns a validation error.</p> </note> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/location/previous/developerguide/travel-mode.html\">Specifying a travel mode</a> using TravelMode sets the transportation mode used to calculate the routes. This also lets you specify additional route preferences in <code>CarModeOptions</code> if traveling by <code>Car</code>, or <code>TruckModeOptions</code> if traveling by <code>Truck</code>.</p> </li> </ul></p>",
+      "endpoint":{"hostPrefix":"routes."},
+      "readonly":true
     },
     "CreateGeofenceCollection":{
       "name":"CreateGeofenceCollection",
@@ -224,7 +227,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates an API key resource in your Amazon Web Services account, which lets you grant actions for Amazon Location resources to the API key bearer.</p> <note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/previous/developerguide/using-apikeys.html\">Using API keys</a>.</p> </note>",
+      "documentation":"<p>Creates an API key resource in your Amazon Web Services account, which lets you grant actions for Amazon Location resources to the API key bearer.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">Use API keys to authenticate</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
       "endpoint":{"hostPrefix":"cp.metadata."},
       "idempotent":true
     },
@@ -245,7 +248,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a map resource in your Amazon Web Services account, which provides map tiles of different styles sourced from global location data providers.</p> <note> <p>If your application is tracking or routing assets you use in your business, such as delivery vehicles or employees, you must not use Esri as your geolocation provider. See section 82 of the <a href=\"http://aws.amazon.com/service-terms\">Amazon Web Services service terms</a> for more details.</p> </note>",
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend upgrading to the Maps API V2 unless you require <code>Grab</code> data.</p> <ul> <li> <p> <code>CreateMap</code> is part of a previous Amazon Location Service Maps API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The Maps API version 2 has a simplified interface that can be used without creating or managing map resources.</p> </li> <li> <p>If you are using an AWS SDK or the AWS CLI, note that the Maps API version 2 is found under <code>geo-maps</code> or <code>geo_maps</code>, not under <code>location</code>.</p> </li> <li> <p>Since <code>Grab</code> is not yet fully supported in Maps API version 2, we recommend you continue using API version 1 when using <code>Grab</code>.</p> </li> <li> <p>Start your version 2 API journey with the <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_Operations_Amazon_Location_Service_Maps_V2.html\">Maps V2 API Reference</a> or the <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/maps.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Creates a map resource in your Amazon Web Services account, which provides map tiles of different styles sourced from global location data providers.</p> <note> <p>If your application is tracking or routing assets you use in your business, such as delivery vehicles or employees, you must not use Esri as your geolocation provider. See section 82 of the <a href=\"http://aws.amazon.com/service-terms\">Amazon Web Services service terms</a> for more details.</p> </note></p>",
       "endpoint":{"hostPrefix":"cp.maps."},
       "idempotent":true
     },
@@ -266,7 +269,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a place index resource in your Amazon Web Services account. Use a place index resource to geocode addresses and other text queries by using the <code>SearchPlaceIndexForText</code> operation, and reverse geocode coordinates by using the <code>SearchPlaceIndexForPosition</code> operation, and enable autosuggestions by using the <code>SearchPlaceIndexForSuggestions</code> operation.</p> <note> <p>If your application is tracking or routing assets you use in your business, such as delivery vehicles or employees, you must not use Esri as your geolocation provider. See section 82 of the <a href=\"http://aws.amazon.com/service-terms\">Amazon Web Services service terms</a> for more details.</p> </note>",
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend you upgrade to the Places API V2 unless you require Grab data.</p> <ul> <li> <p> <code>CreatePlaceIndex</code> is part of a previous Amazon Location Service Places API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The Places API version 2 has a simplified interface that can be used without creating or managing place index resources.</p> </li> <li> <p>If you are using an Amazon Web Services SDK or the Amazon Web Services CLI, note that the Places API version 2 is found under <code>geo-places</code> or <code>geo_places</code>, not under <code>location</code>.</p> </li> <li> <p>Since Grab is not yet fully supported in Places API version 2, we recommend you continue using API version 1 when using Grab.</p> </li> <li> <p>Start your version 2 API journey with the Places V2 <a href=\"/location/latest/APIReference/API_Operations_Amazon_Location_Service_Places_V2.html\">API Reference</a> or the <a href=\"/location/latest/developerguide/places.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Creates a place index resource in your Amazon Web Services account. Use a place index resource to geocode addresses and other text queries by using the <code>SearchPlaceIndexForText</code> operation, and reverse geocode coordinates by using the <code>SearchPlaceIndexForPosition</code> operation, and enable autosuggestions by using the <code>SearchPlaceIndexForSuggestions</code> operation.</p> <note> <p>If your application is tracking or routing assets you use in your business, such as delivery vehicles or employees, you must not use Esri as your geolocation provider. See section 82 of the <a href=\"http://aws.amazon.com/service-terms\">Amazon Web Services service terms</a> for more details.</p> </note></p>",
       "endpoint":{"hostPrefix":"cp.places."},
       "idempotent":true
     },
@@ -287,7 +290,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a route calculator resource in your Amazon Web Services account.</p> <p>You can send requests to a route calculator resource to estimate travel time, distance, and get directions. A route calculator sources traffic and road network data from your chosen data provider.</p> <note> <p>If your application is tracking or routing assets you use in your business, such as delivery vehicles or employees, you must not use Esri as your geolocation provider. See section 82 of the <a href=\"http://aws.amazon.com/service-terms\">Amazon Web Services service terms</a> for more details.</p> </note>",
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend you upgrade to the Routes API V2 unless you require Grab data.</p> <ul> <li> <p> <code>CreateRouteCalculator</code> is part of a previous Amazon Location Service Routes API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The Routes API version 2 has a simplified interface that can be used without creating or managing route calculator resources.</p> </li> <li> <p>If you are using an Amazon Web Services SDK or the Amazon Web Services CLI, note that the Routes API version 2 is found under <code>geo-routes</code> or <code>geo_routes</code>, not under <code>location</code>.</p> </li> <li> <p>Since Grab is not yet fully supported in Routes API version 2, we recommend you continue using API version 1 when using Grab.</p> </li> <li> <p>Start your version 2 API journey with the Routes V2 <a href=\"/location/latest/APIReference/API_Operations_Amazon_Location_Service_Routes_V2.html\">API Reference</a> or the <a href=\"/location/latest/developerguide/routes.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Creates a route calculator resource in your Amazon Web Services account.</p> <p>You can send requests to a route calculator resource to estimate travel time, distance, and get directions. A route calculator sources traffic and road network data from your chosen data provider.</p> <note> <p>If your application is tracking or routing assets you use in your business, such as delivery vehicles or employees, you must not use Esri as your geolocation provider. See section 82 of the <a href=\"http://aws.amazon.com/service-terms\">Amazon Web Services service terms</a> for more details.</p> </note></p>",
       "endpoint":{"hostPrefix":"cp.routes."},
       "idempotent":true
     },
@@ -348,7 +351,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes the specified API key. The API key must have been deactivated more than 90 days previously.</p>",
+      "documentation":"<p>Deletes the specified API key. The API key must have been deactivated more than 90 days previously.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">Use API keys to authenticate</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
       "endpoint":{"hostPrefix":"cp.metadata."},
       "idempotent":true
     },
@@ -368,7 +371,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes a map resource from your Amazon Web Services account.</p> <note> <p>This operation deletes the resource permanently. If the map is being used in an application, the map may not render.</p> </note>",
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend upgrading to the Maps API V2 unless you require <code>Grab</code> data.</p> <ul> <li> <p> <code>DeleteMap</code> is part of a previous Amazon Location Service Maps API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The Maps API version 2 has a simplified interface that can be used without creating or managing map resources.</p> </li> <li> <p>If you are using an AWS SDK or the AWS CLI, note that the Maps API version 2 is found under <code>geo-maps</code> or <code>geo_maps</code>, not under <code>location</code>.</p> </li> <li> <p>Since <code>Grab</code> is not yet fully supported in Maps API version 2, we recommend you continue using API version 1 when using <code>Grab</code>.</p> </li> <li> <p>Start your version 2 API journey with the <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_Operations_Amazon_Location_Service_Maps_V2.html\">Maps V2 API Reference</a> or the <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/maps.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Deletes a map resource from your Amazon Web Services account.</p> <note> <p>This operation deletes the resource permanently. If the map is being used in an application, the map may not render.</p> </note></p>",
       "endpoint":{"hostPrefix":"cp.maps."},
       "idempotent":true
     },
@@ -388,7 +391,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes a place index resource from your Amazon Web Services account.</p> <note> <p>This operation deletes the resource permanently.</p> </note>",
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend you upgrade to the Places API V2 unless you require Grab data.</p> <ul> <li> <p> <code>DeletePlaceIndex</code> is part of a previous Amazon Location Service Places API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The Places API version 2 has a simplified interface that can be used without creating or managing place index resources.</p> </li> <li> <p>If you are using an Amazon Web Services SDK or the Amazon Web Services CLI, note that the Places API version 2 is found under <code>geo-places</code> or <code>geo_places</code>, not under <code>location</code>.</p> </li> <li> <p>Since Grab is not yet fully supported in Places API version 2, we recommend you continue using API version 1 when using Grab.</p> </li> <li> <p>Start your version 2 API journey with the Places V2 <a href=\"/location/latest/APIReference/API_Operations_Amazon_Location_Service_Places_V2.html\">API Reference</a> or the <a href=\"/location/latest/developerguide/places.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Deletes a place index resource from your Amazon Web Services account.</p> <note> <p>This operation deletes the resource permanently.</p> </note></p>",
       "endpoint":{"hostPrefix":"cp.places."},
       "idempotent":true
     },
@@ -408,7 +411,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes a route calculator resource from your Amazon Web Services account.</p> <note> <p>This operation deletes the resource permanently.</p> </note>",
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend you upgrade to the Routes API V2 unless you require Grab data.</p> <ul> <li> <p> <code>DeleteRouteCalculator</code> is part of a previous Amazon Location Service Routes API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The Routes API version 2 has a simplified interface that can be used without creating or managing route calculator resources.</p> </li> <li> <p>If you are using an Amazon Web Services SDK or the Amazon Web Services CLI, note that the Routes API version 2 is found under <code>geo-routes</code> or <code>geo_routes</code>, not under <code>location</code>.</p> </li> <li> <p>Since Grab is not yet fully supported in Routes API version 2, we recommend you continue using API version 1 when using Grab.</p> </li> <li> <p>Start your version 2 API journey with the Routes V2 <a href=\"/location/latest/APIReference/API_Operations_Amazon_Location_Service_Routes_V2.html\">API Reference</a> or the <a href=\"/location/latest/developerguide/routes.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Deletes a route calculator resource from your Amazon Web Services account.</p> <note> <p>This operation deletes the resource permanently.</p> </note></p>",
       "endpoint":{"hostPrefix":"cp.routes."},
       "idempotent":true
     },
@@ -449,7 +452,8 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Retrieves the geofence collection details.</p>",
-      "endpoint":{"hostPrefix":"cp.geofencing."}
+      "endpoint":{"hostPrefix":"cp.geofencing."},
+      "readonly":true
     },
     "DescribeKey":{
       "name":"DescribeKey",
@@ -467,8 +471,9 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves the API key resource details.</p>",
-      "endpoint":{"hostPrefix":"cp.metadata."}
+      "documentation":"<p>Retrieves the API key resource details.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">Use API keys to authenticate</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
+      "endpoint":{"hostPrefix":"cp.metadata."},
+      "readonly":true
     },
     "DescribeMap":{
       "name":"DescribeMap",
@@ -486,8 +491,9 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves the map resource details.</p>",
-      "endpoint":{"hostPrefix":"cp.maps."}
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend upgrading to the Maps API V2 unless you require <code>Grab</code> data.</p> <ul> <li> <p> <code>DescribeMap</code> is part of a previous Amazon Location Service Maps API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The Maps API version 2 has a simplified interface that can be used without creating or managing map resources.</p> </li> <li> <p>If you are using an AWS SDK or the AWS CLI, note that the Maps API version 2 is found under <code>geo-maps</code> or <code>geo_maps</code>, not under <code>location</code>.</p> </li> <li> <p>Since <code>Grab</code> is not yet fully supported in Maps API version 2, we recommend you continue using API version 1 when using <code>Grab</code>.</p> </li> <li> <p>Start your version 2 API journey with the <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_Operations_Amazon_Location_Service_Maps_V2.html\">Maps V2 API Reference</a> or the <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/maps.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Retrieves the map resource details.</p></p>",
+      "endpoint":{"hostPrefix":"cp.maps."},
+      "readonly":true
     },
     "DescribePlaceIndex":{
       "name":"DescribePlaceIndex",
@@ -505,8 +511,9 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves the place index resource details.</p>",
-      "endpoint":{"hostPrefix":"cp.places."}
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend you upgrade to the Places API V2 unless you require Grab data.</p> <ul> <li> <p> <code>DescribePlaceIndex</code> is part of a previous Amazon Location Service Places API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The Places API version 2 has a simplified interface that can be used without creating or managing place index resources.</p> </li> <li> <p>If you are using an Amazon Web Services SDK or the Amazon Web Services CLI, note that the Places API version 2 is found under <code>geo-places</code> or <code>geo_places</code>, not under <code>location</code>.</p> </li> <li> <p>Since Grab is not yet fully supported in Places API version 2, we recommend you continue using API version 1 when using Grab.</p> </li> <li> <p>Start your version 2 API journey with the Places V2 <a href=\"/location/latest/APIReference/API_Operations_Amazon_Location_Service_Places_V2.html\">API Reference</a> or the <a href=\"/location/latest/developerguide/places.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Retrieves the place index resource details.</p></p>",
+      "endpoint":{"hostPrefix":"cp.places."},
+      "readonly":true
     },
     "DescribeRouteCalculator":{
       "name":"DescribeRouteCalculator",
@@ -524,8 +531,9 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves the route calculator resource details.</p>",
-      "endpoint":{"hostPrefix":"cp.routes."}
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend you upgrade to the Routes API V2 unless you require Grab data.</p> <ul> <li> <p> <code>DescribeRouteCalculator</code> is part of a previous Amazon Location Service Routes API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The Routes API version 2 has a simplified interface that can be used without creating or managing route calculator resources.</p> </li> <li> <p>If you are using an Amazon Web Services SDK or the Amazon Web Services CLI, note that the Routes API version 2 is found under <code>geo-routes</code> or <code>geo_routes</code>, not under <code>location</code>.</p> </li> <li> <p>Since Grab is not yet fully supported in Routes API version 2, we recommend you continue using API version 1 when using Grab.</p> </li> <li> <p>Start your version 2 API journey with the Routes V2 <a href=\"/location/latest/APIReference/API_Operations_Amazon_Location_Service_Routes_V2.html\">API Reference</a> or the <a href=\"/location/latest/developerguide/routes.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Retrieves the route calculator resource details.</p></p>",
+      "endpoint":{"hostPrefix":"cp.routes."},
+      "readonly":true
     },
     "DescribeTracker":{
       "name":"DescribeTracker",
@@ -544,7 +552,8 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Retrieves the tracker resource details.</p>",
-      "endpoint":{"hostPrefix":"cp.tracking."}
+      "endpoint":{"hostPrefix":"cp.tracking."},
+      "readonly":true
     },
     "DisassociateTrackerConsumer":{
       "name":"DisassociateTrackerConsumer",
@@ -582,7 +591,8 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>This action forecasts future geofence events that are likely to occur within a specified time horizon if a device continues moving at its current speed. Each forecasted event is associated with a geofence from a provided geofence collection. A forecast event can have one of the following states:</p> <p> <code>ENTER</code>: The device position is outside the referenced geofence, but the device may cross into the geofence during the forecasting time horizon if it maintains its current speed.</p> <p> <code>EXIT</code>: The device position is inside the referenced geofence, but the device may leave the geofence during the forecasted time horizon if the device maintains it's current speed.</p> <p> <code>IDLE</code>:The device is inside the geofence, and it will remain inside the geofence through the end of the time horizon if the device maintains it's current speed.</p> <note> <p>Heading direction is not considered in the current version. The API takes a conservative approach and includes events that can occur for any heading.</p> </note>",
-      "endpoint":{"hostPrefix":"geofencing."}
+      "endpoint":{"hostPrefix":"geofencing."},
+      "readonly":true
     },
     "GetDevicePosition":{
       "name":"GetDevicePosition",
@@ -601,7 +611,8 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Retrieves a device's most recent position according to its sample time.</p> <note> <p>Device positions are deleted after 30 days.</p> </note>",
-      "endpoint":{"hostPrefix":"tracking."}
+      "endpoint":{"hostPrefix":"tracking."},
+      "readonly":true
     },
     "GetDevicePositionHistory":{
       "name":"GetDevicePositionHistory",
@@ -620,7 +631,8 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Retrieves the device position history from a tracker resource within a specified range of time.</p> <note> <p>Device positions are deleted after 30 days.</p> </note>",
-      "endpoint":{"hostPrefix":"tracking."}
+      "endpoint":{"hostPrefix":"tracking."},
+      "readonly":true
     },
     "GetGeofence":{
       "name":"GetGeofence",
@@ -639,7 +651,8 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Retrieves the geofence details from a geofence collection.</p> <note> <p>The returned geometry will always match the geometry format used when the geofence was created.</p> </note>",
-      "endpoint":{"hostPrefix":"geofencing."}
+      "endpoint":{"hostPrefix":"geofencing."},
+      "readonly":true
     },
     "GetMapGlyphs":{
       "name":"GetMapGlyphs",
@@ -657,8 +670,9 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves glyphs used to display labels on a map.</p>",
-      "endpoint":{"hostPrefix":"maps."}
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend upgrading to <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_geomaps_GetGlyphs.html\"> <code>GetGlyphs</code> </a> unless you require <code>Grab</code> data.</p> <ul> <li> <p> <code>GetMapGlyphs</code> is part of a previous Amazon Location Service Maps API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The version 2 <code>GetGlyphs</code> operation gives a better user experience and is compatible with the remainder of the V2 Maps API.</p> </li> <li> <p>If you are using an AWS SDK or the AWS CLI, note that the Maps API version 2 is found under <code>geo-maps</code> or <code>geo_maps</code>, not under <code>location</code>.</p> </li> <li> <p>Since <code>Grab</code> is not yet fully supported in Maps API version 2, we recommend you continue using API version 1 when using <code>Grab</code>.</p> </li> <li> <p>Start your version 2 API journey with the <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_Operations_Amazon_Location_Service_Maps_V2.html\">Maps V2 API Reference</a> or the <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/maps.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Retrieves glyphs used to display labels on a map.</p></p>",
+      "endpoint":{"hostPrefix":"maps."},
+      "readonly":true
     },
     "GetMapSprites":{
       "name":"GetMapSprites",
@@ -676,8 +690,9 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves the sprite sheet corresponding to a map resource. The sprite sheet is a PNG image paired with a JSON document describing the offsets of individual icons that will be displayed on a rendered map.</p>",
-      "endpoint":{"hostPrefix":"maps."}
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend upgrading to <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_geomaps_GetSprites.html\"> <code>GetSprites</code> </a> unless you require <code>Grab</code> data.</p> <ul> <li> <p> <code>GetMapSprites</code> is part of a previous Amazon Location Service Maps API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The version 2 <code>GetSprites</code> operation gives a better user experience and is compatible with the remainder of the V2 Maps API.</p> </li> <li> <p>If you are using an AWS SDK or the AWS CLI, note that the Maps API version 2 is found under <code>geo-maps</code> or <code>geo_maps</code>, not under <code>location</code>.</p> </li> <li> <p>Since <code>Grab</code> is not yet fully supported in Maps API version 2, we recommend you continue using API version 1 when using <code>Grab</code>.</p> </li> <li> <p>Start your version 2 API journey with the <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_Operations_Amazon_Location_Service_Maps_V2.html\">Maps V2 API Reference</a> or the <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/maps.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Retrieves the sprite sheet corresponding to a map resource. The sprite sheet is a PNG image paired with a JSON document describing the offsets of individual icons that will be displayed on a rendered map.</p></p>",
+      "endpoint":{"hostPrefix":"maps."},
+      "readonly":true
     },
     "GetMapStyleDescriptor":{
       "name":"GetMapStyleDescriptor",
@@ -695,8 +710,9 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves the map style descriptor from a map resource. </p> <p>The style descriptor contains speciﬁcations on how features render on a map. For example, what data to display, what order to display the data in, and the style for the data. Style descriptors follow the Mapbox Style Specification.</p>",
-      "endpoint":{"hostPrefix":"maps."}
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend upgrading to <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_geomaps_GetStyleDescriptor.html\"> <code>GetStyleDescriptor</code> </a> unless you require <code>Grab</code> data.</p> <ul> <li> <p> <code>GetMapStyleDescriptor</code> is part of a previous Amazon Location Service Maps API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The version 2 <code>GetStyleDescriptor</code> operation gives a better user experience and is compatible with the remainder of the V2 Maps API.</p> </li> <li> <p>If you are using an AWS SDK or the AWS CLI, note that the Maps API version 2 is found under <code>geo-maps</code> or <code>geo_maps</code>, not under <code>location</code>.</p> </li> <li> <p>Since <code>Grab</code> is not yet fully supported in Maps API version 2, we recommend you continue using API version 1 when using <code>Grab</code>.</p> </li> <li> <p>Start your version 2 API journey with the <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_Operations_Amazon_Location_Service_Maps_V2.html\">Maps V2 API Reference</a> or the <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/maps.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Retrieves the map style descriptor from a map resource. </p> <p>The style descriptor contains speciﬁcations on how features render on a map. For example, what data to display, what order to display the data in, and the style for the data. Style descriptors follow the Mapbox Style Specification.</p></p>",
+      "endpoint":{"hostPrefix":"maps."},
+      "readonly":true
     },
     "GetMapTile":{
       "name":"GetMapTile",
@@ -714,8 +730,9 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves a vector data tile from the map resource. Map tiles are used by clients to render a map. they're addressed using a grid arrangement with an X coordinate, Y coordinate, and Z (zoom) level. </p> <p>The origin (0, 0) is the top left of the map. Increasing the zoom level by 1 doubles both the X and Y dimensions, so a tile containing data for the entire world at (0/0/0) will be split into 4 tiles at zoom 1 (1/0/0, 1/0/1, 1/1/0, 1/1/1).</p>",
-      "endpoint":{"hostPrefix":"maps."}
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend upgrading to <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_geomaps_GetTile.html\"> <code>GetTile</code> </a> unless you require <code>Grab</code> data.</p> <ul> <li> <p> <code>GetMapTile</code> is part of a previous Amazon Location Service Maps API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The version 2 <code>GetTile</code> operation gives a better user experience and is compatible with the remainder of the V2 Maps API.</p> </li> <li> <p>If you are using an AWS SDK or the AWS CLI, note that the Maps API version 2 is found under <code>geo-maps</code> or <code>geo_maps</code>, not under <code>location</code>.</p> </li> <li> <p>Since <code>Grab</code> is not yet fully supported in Maps API version 2, we recommend you continue using API version 1 when using <code>Grab</code>.</p> </li> <li> <p>Start your version 2 API journey with the <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_Operations_Amazon_Location_Service_Maps_V2.html\">Maps V2 API Reference</a> or the <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/maps.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Retrieves a vector data tile from the map resource. Map tiles are used by clients to render a map. they're addressed using a grid arrangement with an X coordinate, Y coordinate, and Z (zoom) level. </p> <p>The origin (0, 0) is the top left of the map. Increasing the zoom level by 1 doubles both the X and Y dimensions, so a tile containing data for the entire world at (0/0/0) will be split into 4 tiles at zoom 1 (1/0/0, 1/0/1, 1/1/0, 1/1/1).</p></p>",
+      "endpoint":{"hostPrefix":"maps."},
+      "readonly":true
     },
     "GetPlace":{
       "name":"GetPlace",
@@ -733,8 +750,9 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Finds a place by its unique ID. A <code>PlaceId</code> is returned by other search operations.</p> <note> <p>A PlaceId is valid only if all of the following are the same in the original search request and the call to <code>GetPlace</code>.</p> <ul> <li> <p>Customer Amazon Web Services account</p> </li> <li> <p>Amazon Web Services Region</p> </li> <li> <p>Data provider specified in the place index resource</p> </li> </ul> </note> <note> <p>If your Place index resource is configured with Grab as your geolocation provider and Storage as Intended use, the GetPlace operation is unavailable. For more information, see <a href=\"http://aws.amazon.com/service-terms\">AWS service terms</a>.</p> </note>",
-      "endpoint":{"hostPrefix":"places."}
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend you upgrade to the <a href=\"/location/latest/APIReference/API_geoplaces_GetPlace.html\">V2 <code>GetPlace</code> </a> operation unless you require Grab data.</p> <ul> <li> <p>This version of <code>GetPlace</code> is part of a previous Amazon Location Service Places API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>Version 2 of the <code>GetPlace</code> operation interoperates with the rest of the Places V2 API, while this version does not.</p> </li> <li> <p>If you are using an Amazon Web Services SDK or the Amazon Web Services CLI, note that the Places API version 2 is found under <code>geo-places</code> or <code>geo_places</code>, not under <code>location</code>.</p> </li> <li> <p>Since Grab is not yet fully supported in Places API version 2, we recommend you continue using API version 1 when using Grab.</p> </li> <li> <p>Start your version 2 API journey with the Places V2 <a href=\"/location/latest/APIReference/API_Operations_Amazon_Location_Service_Places_V2.html\">API Reference</a> or the <a href=\"/location/latest/developerguide/places.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Finds a place by its unique ID. A <code>PlaceId</code> is returned by other search operations.</p> <note> <p>A PlaceId is valid only if all of the following are the same in the original search request and the call to <code>GetPlace</code>.</p> <ul> <li> <p>Customer Amazon Web Services account</p> </li> <li> <p>Amazon Web Services Region</p> </li> <li> <p>Data provider specified in the place index resource</p> </li> </ul> </note> <note> <p>If your Place index resource is configured with Grab as your geolocation provider and Storage as Intended use, the GetPlace operation is unavailable. For more information, see <a href=\"http://aws.amazon.com/service-terms\">AWS service terms</a>.</p> </note></p>",
+      "endpoint":{"hostPrefix":"places."},
+      "readonly":true
     },
     "ListDevicePositions":{
       "name":"ListDevicePositions",
@@ -752,7 +770,8 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>A batch request to retrieve all device positions.</p>",
-      "endpoint":{"hostPrefix":"tracking."}
+      "endpoint":{"hostPrefix":"tracking."},
+      "readonly":true
     },
     "ListGeofenceCollections":{
       "name":"ListGeofenceCollections",
@@ -770,7 +789,8 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists geofence collections in your Amazon Web Services account.</p>",
-      "endpoint":{"hostPrefix":"cp.geofencing."}
+      "endpoint":{"hostPrefix":"cp.geofencing."},
+      "readonly":true
     },
     "ListGeofences":{
       "name":"ListGeofences",
@@ -789,7 +809,8 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists geofences stored in a given geofence collection.</p>",
-      "endpoint":{"hostPrefix":"geofencing."}
+      "endpoint":{"hostPrefix":"geofencing."},
+      "readonly":true
     },
     "ListKeys":{
       "name":"ListKeys",
@@ -806,8 +827,9 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists API key resources in your Amazon Web Services account.</p>",
-      "endpoint":{"hostPrefix":"cp.metadata."}
+      "documentation":"<p>Lists API key resources in your Amazon Web Services account.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html\">Use API keys to authenticate</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
+      "endpoint":{"hostPrefix":"cp.metadata."},
+      "readonly":true
     },
     "ListMaps":{
       "name":"ListMaps",
@@ -824,8 +846,9 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists map resources in your Amazon Web Services account.</p>",
-      "endpoint":{"hostPrefix":"cp.maps."}
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend upgrading to the Maps API V2 unless you require <code>Grab</code> data.</p> <ul> <li> <p> <code>ListMaps</code> is part of a previous Amazon Location Service Maps API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The Maps API version 2 has a simplified interface that can be used without creating or managing map resources.</p> </li> <li> <p>If you are using an AWS SDK or the AWS CLI, note that the Maps API version 2 is found under <code>geo-maps</code> or <code>geo_maps</code>, not under <code>location</code>.</p> </li> <li> <p>Since <code>Grab</code> is not yet fully supported in Maps API version 2, we recommend you continue using API version 1 when using <code>Grab</code>.</p> </li> <li> <p>Start your version 2 API journey with the <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_Operations_Amazon_Location_Service_Maps_V2.html\">Maps V2 API Reference</a> or the <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/maps.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Lists map resources in your Amazon Web Services account.</p></p>",
+      "endpoint":{"hostPrefix":"cp.maps."},
+      "readonly":true
     },
     "ListPlaceIndexes":{
       "name":"ListPlaceIndexes",
@@ -842,8 +865,9 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists place index resources in your Amazon Web Services account.</p>",
-      "endpoint":{"hostPrefix":"cp.places."}
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend you upgrade to the Places API V2 unless you require Grab data.</p> <ul> <li> <p> <code>ListPlaceIndexes</code> is part of a previous Amazon Location Service Places API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The Places API version 2 has a simplified interface that can be used without creating or managing place index resources.</p> </li> <li> <p>If you are using an Amazon Web Services SDK or the Amazon Web Services CLI, note that the Places API version 2 is found under <code>geo-places</code> or <code>geo_places</code>, not under <code>location</code>.</p> </li> <li> <p>Since Grab is not yet fully supported in Places API version 2, we recommend you continue using API version 1 when using Grab.</p> </li> <li> <p>Start your version 2 API journey with the Places V2 <a href=\"/location/latest/APIReference/API_Operations_Amazon_Location_Service_Places_V2.html\">API Reference</a> or the <a href=\"/location/latest/developerguide/places.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Lists place index resources in your Amazon Web Services account.</p></p>",
+      "endpoint":{"hostPrefix":"cp.places."},
+      "readonly":true
     },
     "ListRouteCalculators":{
       "name":"ListRouteCalculators",
@@ -860,8 +884,9 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists route calculator resources in your Amazon Web Services account.</p>",
-      "endpoint":{"hostPrefix":"cp.routes."}
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend you upgrade to the Routes API V2 unless you require Grab data.</p> <ul> <li> <p> <code>ListRouteCalculators</code> is part of a previous Amazon Location Service Routes API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The Routes API version 2 has a simplified interface that can be used without creating or managing route calculator resources.</p> </li> <li> <p>If you are using an Amazon Web Services SDK or the Amazon Web Services CLI, note that the Routes API version 2 is found under <code>geo-routes</code> or <code>geo_routes</code>, not under <code>location</code>.</p> </li> <li> <p>Since Grab is not yet fully supported in Routes API version 2, we recommend you continue using API version 1 when using Grab.</p> </li> <li> <p>Start your version 2 API journey with the Routes V2 <a href=\"/location/latest/APIReference/API_Operations_Amazon_Location_Service_Routes_V2.html\">API Reference</a> or the <a href=\"/location/latest/developerguide/routes.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Lists route calculator resources in your Amazon Web Services account.</p></p>",
+      "endpoint":{"hostPrefix":"cp.routes."},
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -880,7 +905,8 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns a list of tags that are applied to the specified Amazon Location resource.</p>",
-      "endpoint":{"hostPrefix":"cp.metadata."}
+      "endpoint":{"hostPrefix":"cp.metadata."},
+      "readonly":true
     },
     "ListTrackerConsumers":{
       "name":"ListTrackerConsumers",
@@ -899,7 +925,8 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists geofence collections currently associated to the given tracker resource.</p>",
-      "endpoint":{"hostPrefix":"cp.tracking."}
+      "endpoint":{"hostPrefix":"cp.tracking."},
+      "readonly":true
     },
     "ListTrackers":{
       "name":"ListTrackers",
@@ -917,7 +944,8 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists tracker resources in your Amazon Web Services account.</p>",
-      "endpoint":{"hostPrefix":"cp.tracking."}
+      "endpoint":{"hostPrefix":"cp.tracking."},
+      "readonly":true
     },
     "PutGeofence":{
       "name":"PutGeofence",
@@ -930,8 +958,8 @@
       "output":{"shape":"PutGeofenceResponse"},
       "errors":[
         {"shape":"InternalServerException"},
-        {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
@@ -955,8 +983,9 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Reverse geocodes a given coordinate and returns a legible address. Allows you to search for Places or points of interest near a given position.</p>",
-      "endpoint":{"hostPrefix":"places."}
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend you upgrade to <a href=\"/location/latest/APIReference/API_geoplaces_ReverseGeocode.html\"> <code>ReverseGeocode</code> </a> or <a href=\"/location/latest/APIReference/API_geoplaces_SearchNearby.html\"> <code>SearchNearby</code> </a> unless you require Grab data.</p> <ul> <li> <p> <code>SearchPlaceIndexForPosition</code> is part of a previous Amazon Location Service Places API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The version 2 <code>ReverseGeocode</code> operation gives better results in the address reverse-geocoding use case, while the version 2 <code>SearchNearby</code> operation gives better results when searching for businesses and points of interest near a specific location.</p> </li> <li> <p>If you are using an Amazon Web Services SDK or the Amazon Web Services CLI, note that the Places API version 2 is found under <code>geo-places</code> or <code>geo_places</code>, not under <code>location</code>.</p> </li> <li> <p>Since Grab is not yet fully supported in Places API version 2, we recommend you continue using API version 1 when using Grab.</p> </li> </ul> </important> <p>Reverse geocodes a given coordinate and returns a legible address. Allows you to search for Places or points of interest near a given position.</p></p>",
+      "endpoint":{"hostPrefix":"places."},
+      "readonly":true
     },
     "SearchPlaceIndexForSuggestions":{
       "name":"SearchPlaceIndexForSuggestions",
@@ -974,8 +1003,9 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Generates suggestions for addresses and points of interest based on partial or misspelled free-form text. This operation is also known as autocomplete, autosuggest, or fuzzy matching.</p> <p>Optional parameters let you narrow your search results by bounding box or country, or bias your search toward a specific position on the globe.</p> <note> <p>You can search for suggested place names near a specified position by using <code>BiasPosition</code>, or filter results within a bounding box by using <code>FilterBBox</code>. These parameters are mutually exclusive; using both <code>BiasPosition</code> and <code>FilterBBox</code> in the same command returns an error.</p> </note>",
-      "endpoint":{"hostPrefix":"places."}
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend you upgrade to <a href=\"/location/latest/APIReference/API_geoplaces_Suggest.html\"> <code>Suggest</code> </a> or <a href=\"/location/latest/APIReference/API_geoplaces_Autocomplete.html\"> <code>Autocomplete</code> </a> unless you require Grab data.</p> <ul> <li> <p> <code>SearchPlaceIndexForSuggestions</code> is part of a previous Amazon Location Service Places API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The version 2 <code>Suggest</code> operation gives better results for typeahead place search suggestions with fuzzy matching, while the version 2 <code>Autocomplete</code> operation gives better results for address completion based on partial input.</p> </li> <li> <p>If you are using an Amazon Web Services SDK or the Amazon Web Services CLI, note that the Places API version 2 is found under <code>geo-places</code> or <code>geo_places</code>, not under <code>location</code>.</p> </li> <li> <p>Since Grab is not yet fully supported in Places API version 2, we recommend you continue using API version 1 when using Grab.</p> </li> </ul> </important> <p>Generates suggestions for addresses and points of interest based on partial or misspelled free-form text. This operation is also known as autocomplete, autosuggest, or fuzzy matching.</p> <p>Optional parameters let you narrow your search results by bounding box or country, or bias your search toward a specific position on the globe.</p> <note> <p>You can search for suggested place names near a specified position by using <code>BiasPosition</code>, or filter results within a bounding box by using <code>FilterBBox</code>. These parameters are mutually exclusive; using both <code>BiasPosition</code> and <code>FilterBBox</code> in the same command returns an error.</p> </note></p>",
+      "endpoint":{"hostPrefix":"places."},
+      "readonly":true
     },
     "SearchPlaceIndexForText":{
       "name":"SearchPlaceIndexForText",
@@ -993,8 +1023,9 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Geocodes free-form text, such as an address, name, city, or region to allow you to search for Places or points of interest. </p> <p>Optional parameters let you narrow your search results by bounding box or country, or bias your search toward a specific position on the globe.</p> <note> <p>You can search for places near a given position using <code>BiasPosition</code>, or filter results within a bounding box using <code>FilterBBox</code>. Providing both parameters simultaneously returns an error.</p> </note> <p>Search results are returned in order of highest to lowest relevance.</p>",
-      "endpoint":{"hostPrefix":"places."}
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend you upgrade to <a href=\"/location/latest/APIReference/API_geoplaces_Geocode.html\"> <code>Geocode</code> </a> or <a href=\"/location/latest/APIReference/API_geoplaces_SearchText.html\"> <code>SearchText</code> </a> unless you require Grab data.</p> <ul> <li> <p> <code>SearchPlaceIndexForText</code> is part of a previous Amazon Location Service Places API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The version 2 <code>Geocode</code> operation gives better results in the address geocoding use case, while the version 2 <code>SearchText</code> operation gives better results when searching for businesses and points of interest.</p> </li> <li> <p>If you are using an Amazon Web Services SDK or the Amazon Web Services CLI, note that the Places API version 2 is found under <code>geo-places</code> or <code>geo_places</code>, not under <code>location</code>.</p> </li> <li> <p>Since Grab is not yet fully supported in Places API version 2, we recommend you continue using API version 1 when using Grab.</p> </li> </ul> </important> <p>Geocodes free-form text, such as an address, name, city, or region to allow you to search for Places or points of interest. </p> <p>Optional parameters let you narrow your search results by bounding box or country, or bias your search toward a specific position on the globe.</p> <note> <p>You can search for places near a given position using <code>BiasPosition</code>, or filter results within a bounding box using <code>FilterBBox</code>. Providing both parameters simultaneously returns an error.</p> </note> <p>Search results are returned in order of highest to lowest relevance.</p></p>",
+      "endpoint":{"hostPrefix":"places."},
+      "readonly":true
     },
     "TagResource":{
       "name":"TagResource",
@@ -1091,7 +1122,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Updates the specified properties of a given map resource.</p>",
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend upgrading to the Maps API V2 unless you require <code>Grab</code> data.</p> <ul> <li> <p> <code>UpdateMap</code> is part of a previous Amazon Location Service Maps API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The Maps API version 2 has a simplified interface that can be used without creating or managing map resources.</p> </li> <li> <p>If you are using an AWS SDK or the AWS CLI, note that the Maps API version 2 is found under <code>geo-maps</code> or <code>geo_maps</code>, not under <code>location</code>.</p> </li> <li> <p>Since <code>Grab</code> is not yet fully supported in Maps API version 2, we recommend you continue using API version 1 when using <code>Grab</code>.</p> </li> <li> <p>Start your version 2 API journey with the <a href=\"https://docs.aws.amazon.com/location/latest/APIReference/API_Operations_Amazon_Location_Service_Maps_V2.html\">Maps V2 API Reference</a> or the <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/maps.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Updates the specified properties of a given map resource.</p></p>",
       "endpoint":{"hostPrefix":"cp.maps."},
       "idempotent":true
     },
@@ -1111,7 +1142,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Updates the specified properties of a given place index resource.</p>",
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend you upgrade to the Places API V2 unless you require Grab data.</p> <ul> <li> <p> <code>UpdatePlaceIndex</code> is part of a previous Amazon Location Service Places API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The Places API version 2 has a simplified interface that can be used without creating or managing place index resources.</p> </li> <li> <p>If you are using an Amazon Web Services SDK or the Amazon Web Services CLI, note that the Places API version 2 is found under <code>geo-places</code> or <code>geo_places</code>, not under <code>location</code>.</p> </li> <li> <p>Since Grab is not yet fully supported in Places API version 2, we recommend you continue using API version 1 when using Grab.</p> </li> <li> <p>Start your version 2 API journey with the Places V2 <a href=\"/location/latest/APIReference/API_Operations_Amazon_Location_Service_Places_V2.html\">API Reference</a> or the <a href=\"/location/latest/developerguide/places.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Updates the specified properties of a given place index resource.</p></p>",
       "endpoint":{"hostPrefix":"cp.places."},
       "idempotent":true
     },
@@ -1131,7 +1162,7 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Updates the specified properties for a given route calculator resource.</p>",
+      "documentation":"<p><important> <p>This operation is no longer current and may be deprecated in the future. We recommend you upgrade to the Routes API V2 unless you require Grab data.</p> <ul> <li> <p> <code>UpdateRouteCalculator</code> is part of a previous Amazon Location Service Routes API (version 1) which has been superseded by a more intuitive, powerful, and complete API (version 2).</p> </li> <li> <p>The Routes API version 2 has a simplified interface that can be used without creating or managing route calculator resources.</p> </li> <li> <p>If you are using an Amazon Web Services SDK or the Amazon Web Services CLI, note that the Routes API version 2 is found under <code>geo-routes</code> or <code>geo_routes</code>, not under <code>location</code>.</p> </li> <li> <p>Since Grab is not yet fully supported in Routes API version 2, we recommend you continue using API version 1 when using Grab.</p> </li> <li> <p>Start your version 2 API journey with the Routes V2 <a href=\"/location/latest/APIReference/API_Operations_Amazon_Location_Service_Routes_V2.html\">API Reference</a> or the <a href=\"/location/latest/developerguide/routes.html\">Developer Guide</a>.</p> </li> </ul> </important> <p>Updates the specified properties for a given route calculator resource.</p></p>",
       "endpoint":{"hostPrefix":"cp.routes."},
       "idempotent":true
     },
@@ -1192,6 +1223,30 @@
       },
       "exception":true
     },
+    "AndroidApp":{
+      "type":"structure",
+      "required":[
+        "Package",
+        "CertificateFingerprint"
+      ],
+      "members":{
+        "Package":{
+          "shape":"AndroidPackageName",
+          "documentation":"<p>Unique package name for an Android app.</p>"
+        },
+        "CertificateFingerprint":{
+          "shape":"Sha1CertificateFingerprint",
+          "documentation":"<p>20 byte SHA-1 certificate fingerprint associated with the Android app signing certificate.</p>"
+        }
+      },
+      "documentation":"<p>Unique identifying information for an Android app. Consists of a package name and a 20 byte SHA-1 certificate fingerprint.</p>"
+    },
+    "AndroidPackageName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"([A-Za-z][A-Za-z\\d_]*\\.)+[A-Za-z][A-Za-z\\d_]*"
+    },
     "ApiKey":{
       "type":"string",
       "max":1000,
@@ -1232,6 +1287,14 @@
         "AllowReferers":{
           "shape":"ApiKeyRestrictionsAllowReferersList",
           "documentation":"<p>An optional list of allowed HTTP referers for which requests must originate from. Requests using this API key from other domains will not be allowed.</p> <p>Requirements:</p> <ul> <li> <p>Contain only alphanumeric characters (A–Z, a–z, 0–9) or any symbols in this list <code>$\\-._+!*`(),;/?:@=&amp;</code> </p> </li> <li> <p>May contain a percent (%) if followed by 2 hexadecimal digits (A-F, a-f, 0-9); this is used for URL encoding purposes.</p> </li> <li> <p>May contain wildcard characters question mark (?) and asterisk (*).</p> <p>Question mark (?) will replace any single character (including hexadecimal digits).</p> <p>Asterisk (*) will replace any multiple characters (including multiple hexadecimal digits).</p> </li> <li> <p>No spaces allowed. For example, <code>https://example.com</code>.</p> </li> </ul>"
+        },
+        "AllowAndroidApps":{
+          "shape":"ApiKeyRestrictionsAllowAndroidAppsList",
+          "documentation":"<p>An optional list of allowed Android applications for which requests must originate from. Requests using this API key from other sources will not be allowed.</p>"
+        },
+        "AllowAppleApps":{
+          "shape":"ApiKeyRestrictionsAllowAppleAppsList",
+          "documentation":"<p>An optional list of allowed Apple applications for which requests must originate from. Requests using this API key from other sources will not be allowed.</p>"
         }
       },
       "documentation":"<p>API Restrictions on the allowed actions, resources, and referers for an API key resource.</p>"
@@ -1242,17 +1305,46 @@
       "max":24,
       "min":1
     },
+    "ApiKeyRestrictionsAllowAndroidAppsList":{
+      "type":"list",
+      "member":{"shape":"AndroidApp"},
+      "max":5,
+      "min":0
+    },
+    "ApiKeyRestrictionsAllowAppleAppsList":{
+      "type":"list",
+      "member":{"shape":"AppleApp"},
+      "max":5,
+      "min":0
+    },
     "ApiKeyRestrictionsAllowReferersList":{
       "type":"list",
       "member":{"shape":"RefererPattern"},
       "max":5,
-      "min":1
+      "min":0
     },
     "ApiKeyRestrictionsAllowResourcesList":{
       "type":"list",
       "member":{"shape":"GeoArnV2"},
       "max":8,
       "min":1
+    },
+    "AppleApp":{
+      "type":"structure",
+      "required":["BundleId"],
+      "members":{
+        "BundleId":{
+          "shape":"AppleBundleId",
+          "documentation":"<p>The unique identifier of the app across all Apple platforms (iOS, macOS, tvOS, watchOS, etc.)</p>"
+        }
+      },
+      "documentation":"<p>Unique identifying information for an Apple app (iOS, macOS, tvOS and watchOS). Consists of an Apple Bundle ID.</p>"
+    },
+    "AppleBundleId":{
+      "type":"string",
+      "max":155,
+      "min":1,
+      "pattern":"[A-Za-z0-9\\-]+(\\.[A-Za-z0-9\\-]+)+"
     },
     "Arn":{
       "type":"string",
@@ -1285,8 +1377,7 @@
     },
     "AssociateTrackerConsumerResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Base64EncodedGeobuf":{
       "type":"blob",
@@ -1752,11 +1843,11 @@
       "type":"structure",
       "members":{
         "AvoidFerries":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoids ferries when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>"
         },
         "AvoidTolls":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoids tolls when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>"
         }
       },
@@ -1793,7 +1884,7 @@
           "documentation":"<p>Specifies the desired time of departure. Uses the given time to calculate the route matrix. You can't set both <code>DepartureTime</code> and <code>DepartNow</code>. If neither is set, the best time of day to travel with the best traffic conditions is used to calculate the route matrix.</p> <note> <p>Setting a departure time in the past returns a <code>400 ValidationException</code> error.</p> </note> <ul> <li> <p>In <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. For example, <code>2020–07-2T12:15:20.000Z+01:00</code> </p> </li> </ul>"
         },
         "DepartNow":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Sets the time of departure as the current time. Uses the current time to calculate the route matrix. You can't set both <code>DepartureTime</code> and <code>DepartNow</code>. If neither is set, the best time of day to travel with the best traffic conditions is used to calculate the route matrix.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>"
         },
         "DistanceUnit":{
@@ -1941,7 +2032,7 @@
           "documentation":"<p>Specifies the desired time of departure. Uses the given time to calculate the route. Otherwise, the best time of day to travel with the best traffic conditions is used to calculate the route.</p> <ul> <li> <p>In <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format: <code>YYYY-MM-DDThh:mm:ss.sssZ</code>. For example, <code>2020–07-2T12:15:20.000Z+01:00</code> </p> </li> </ul>"
         },
         "DepartNow":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Sets the time of departure as the current time. Uses the current time to calculate a route. Otherwise, the best time of day to travel with the best traffic conditions is used to calculate the route.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>"
         },
         "DistanceUnit":{
@@ -1949,7 +2040,7 @@
           "documentation":"<p>Set the unit system to specify the distance.</p> <p>Default Value: <code>Kilometers</code> </p>"
         },
         "IncludeLegGeometry":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Set to include the geometry details in the result for each path between a pair of positions.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>"
         },
         "CarModeOptions":{
@@ -2036,22 +2127,24 @@
     "CalculateRouteSummaryDistanceDouble":{
       "type":"double",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "CalculateRouteSummaryDurationSecondsDouble":{
       "type":"double",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "CalculateRouteTruckModeOptions":{
       "type":"structure",
       "members":{
         "AvoidFerries":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoids ferries when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>"
         },
         "AvoidTolls":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoids tolls when calculating routes.</p> <p>Default Value: <code>false</code> </p> <p>Valid Values: <code>false</code> | <code>true</code> </p>"
         },
         "Dimensions":{
@@ -2527,8 +2620,7 @@
     },
     "DeleteGeofenceCollectionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteKeyRequest":{
       "type":"structure",
@@ -2550,8 +2642,7 @@
     },
     "DeleteKeyResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteMapRequest":{
       "type":"structure",
@@ -2567,8 +2658,7 @@
     },
     "DeleteMapResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeletePlaceIndexRequest":{
       "type":"structure",
@@ -2584,8 +2674,7 @@
     },
     "DeletePlaceIndexResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteRouteCalculatorRequest":{
       "type":"structure",
@@ -2601,8 +2690,7 @@
     },
     "DeleteRouteCalculatorResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteTrackerRequest":{
       "type":"structure",
@@ -2618,8 +2706,7 @@
     },
     "DeleteTrackerResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescribeGeofenceCollectionRequest":{
       "type":"structure",
@@ -3163,8 +3250,7 @@
     },
     "DisassociateTrackerConsumerResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DistanceUnit":{
       "type":"string",
@@ -3753,15 +3839,18 @@
     },
     "GetMapTileRequestXString":{
       "type":"string",
-      "pattern":".*\\d+.*"
+      "pattern":".*\\d+.*",
+      "sensitive":true
     },
     "GetMapTileRequestYString":{
       "type":"string",
-      "pattern":".*\\d+.*"
+      "pattern":".*\\d+.*",
+      "sensitive":true
     },
     "GetMapTileRequestZString":{
       "type":"string",
-      "pattern":".*\\d+.*"
+      "pattern":".*\\d+.*",
+      "sensitive":true
     },
     "GetMapTileResponse":{
       "type":"structure",
@@ -3938,12 +4027,14 @@
     "LegDistanceDouble":{
       "type":"double",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "LegDurationSecondsDouble":{
       "type":"double",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "LegGeometry":{
       "type":"structure",
@@ -4849,44 +4940,44 @@
       "required":["Geometry"],
       "members":{
         "Label":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The full name and address of the point of interest such as a city, region, or country. For example, <code>123 Any Street, Any Town, USA</code>.</p>"
         },
         "Geometry":{"shape":"PlaceGeometry"},
         "AddressNumber":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The numerical portion of an address, such as a building number. </p>"
         },
         "Street":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The name for a street or a road to identify a location. For example, <code>Main Street</code>.</p>"
         },
         "Neighborhood":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The name of a community district. For example, <code>Downtown</code>.</p>"
         },
         "Municipality":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>A name for a local area, such as a city or town name. For example, <code>Toronto</code>.</p>"
         },
         "SubRegion":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>A county, or an area that's part of a larger region. For example, <code>Metro Vancouver</code>.</p>"
         },
         "Region":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>A name for an area or geographical division, such as a province or state name. For example, <code>British Columbia</code>.</p>"
         },
         "Country":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>A country/region specified using <a href=\"https://www.iso.org/iso-3166-country-codes.html\">ISO 3166</a> 3-digit country/region code. For example, <code>CAN</code>.</p>"
         },
         "PostalCode":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>A group of numbers and letters in a country-specific format, which accompanies the address for the purpose of identifying a location. </p>"
         },
         "Interpolated":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p> <code>True</code> if the result is interpolated from other known places.</p> <p> <code>False</code> if the Place is a known place.</p> <p>Not returned when the partner does not provide the information.</p> <p>For example, returns <code>False</code> for an address location that is found in the partner data, but returns <code>True</code> if an address does not exist in the partner data and its location is calculated by interpolating between other known addresses. </p>"
         },
         "TimeZone":{
@@ -4894,11 +4985,11 @@
           "documentation":"<p>The time zone in which the <code>Place</code> is located. Returned only when using HERE or Grab as the selected partner.</p>"
         },
         "UnitType":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>For addresses with a <code>UnitNumber</code>, the type of unit. For example, <code>Apartment</code>.</p> <note> <p>Returned only for a place index that uses Esri as a data provider.</p> </note>"
         },
         "UnitNumber":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>For addresses with multiple units, the unit identifier. Can include numbers and letters, for example <code>3B</code> or <code>Unit 123</code>.</p> <note> <p>Returned only for a place index that uses Esri or Grab as a data provider. Is not returned for <code>SearchPlaceIndexForPosition</code>.</p> </note>"
         },
         "Categories":{
@@ -4910,7 +5001,7 @@
           "documentation":"<p>Categories from the data provider that describe the Place that are not mapped to any Amazon Location categories.</p>"
         },
         "SubMunicipality":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>An area that's part of a larger municipality. For example, <code>Blissville </code> is a submunicipality in the Queen County in New York.</p> <note> <p>This property supported by Esri and OpenData. The Esri property is <code>district</code>, and the OpenData property is <code>borough</code>.</p> </note>"
         }
       },
@@ -4919,7 +5010,8 @@
     "PlaceCategory":{
       "type":"string",
       "max":35,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "PlaceCategoryList":{
       "type":"list",
@@ -4937,7 +5029,10 @@
       },
       "documentation":"<p>Places uses a point geometry to specify a location or a Place.</p>"
     },
-    "PlaceId":{"type":"string"},
+    "PlaceId":{
+      "type":"string",
+      "sensitive":true
+    },
     "PlaceIndexSearchResultLimit":{
       "type":"integer",
       "box":true,
@@ -4947,7 +5042,8 @@
     "PlaceSupplementalCategory":{
       "type":"string",
       "max":35,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "PlaceSupplementalCategoryList":{
       "type":"list",
@@ -5088,7 +5184,7 @@
       "type":"string",
       "max":253,
       "min":0,
-      "pattern":"([$\\-._+!*\\x{60}(),;/?:@=&\\w]|%([0-9a-fA-F?]{2}|[0-9a-fA-F?]?[*]))+",
+      "pattern":"([\\w!$&()*+,./:;=?@\\x{60}-]|%([\\dA-Fa-f]{2}|[\\dA-Fa-f]?\\*))+",
       "sensitive":true
     },
     "ResourceDescription":{
@@ -5143,12 +5239,14 @@
     "RouteMatrixEntryDistanceDouble":{
       "type":"double",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteMatrixEntryDurationSecondsDouble":{
       "type":"double",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteMatrixEntryError":{
       "type":"structure",
@@ -5217,7 +5315,8 @@
     "SearchForPositionResultDistanceDouble":{
       "type":"double",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "SearchForPositionResultList":{
       "type":"list",
@@ -5228,7 +5327,7 @@
       "required":["Text"],
       "members":{
         "Text":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The text of the place suggestion, typically formatted as an address string.</p>"
         },
         "PlaceId":{
@@ -5276,7 +5375,8 @@
     "SearchForTextResultDistanceDouble":{
       "type":"double",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "SearchForTextResultList":{
       "type":"list",
@@ -5286,7 +5386,8 @@
       "type":"double",
       "box":true,
       "max":1,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "SearchPlaceIndexForPositionRequest":{
       "type":"structure",
@@ -5602,8 +5703,18 @@
       },
       "documentation":"<p>A summary of the request sent by using <code>SearchPlaceIndexForText</code>.</p>"
     },
+    "SensitiveBoolean":{
+      "type":"boolean",
+      "box":true,
+      "sensitive":true
+    },
     "SensitiveDouble":{
       "type":"double",
+      "box":true,
+      "sensitive":true
+    },
+    "SensitiveInteger":{
+      "type":"integer",
       "box":true,
       "sensitive":true
     },
@@ -5627,6 +5738,12 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "Sha1CertificateFingerprint":{
+      "type":"string",
+      "max":59,
+      "min":59,
+      "pattern":"([A-Fa-f0-9]{2}:){19}[A-Fa-f0-9]{2}"
     },
     "SpeedUnit":{
       "type":"string",
@@ -5677,12 +5794,14 @@
     "StepDistanceDouble":{
       "type":"double",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "StepDurationSecondsDouble":{
       "type":"double",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "StepGeometryOffsetInteger":{
       "type":"integer",
@@ -5734,8 +5853,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -5765,11 +5883,11 @@
       "required":["Name"],
       "members":{
         "Name":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The name of the time zone, following the <a href=\"https://www.iana.org/time-zones\"> IANA time zone standard</a>. For example, <code>America/Los_Angeles</code>.</p>"
         },
         "Offset":{
-          "shape":"Integer",
+          "shape":"SensitiveInteger",
           "documentation":"<p>The time zone's offset, in seconds, from UTC.</p>"
         }
       },
@@ -5830,17 +5948,20 @@
     "TruckDimensionsHeightDouble":{
       "type":"double",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "TruckDimensionsLengthDouble":{
       "type":"double",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "TruckDimensionsWidthDouble":{
       "type":"double",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "TruckWeight":{
       "type":"structure",
@@ -5859,7 +5980,8 @@
     "TruckWeightTotalDouble":{
       "type":"double",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -5884,8 +6006,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateGeofenceCollectionRequest":{
       "type":"structure",

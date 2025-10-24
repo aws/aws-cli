@@ -2,6 +2,62 @@
 CHANGELOG
 =========
 
+2.31.22
+=======
+
+* api-change:``datapipeline``: Update endpoint ruleset parameters casing
+* api-change:``vpc-lattice``: Update endpoint ruleset parameters casing
+* api-change:``chime-sdk-messaging``: Update endpoint ruleset parameters casing
+* api-change:``docdb``: Update endpoint ruleset parameters casing
+* api-change:``budgets``: Update endpoint ruleset parameters casing
+* api-change:``acm``: Update endpoint ruleset parameters casing
+* api-change:``snow-device-management``: Update endpoint ruleset parameters casing
+* api-change:``elb``: Update endpoint ruleset parameters casing
+* api-change:``payment-cryptography``: Update endpoint ruleset parameters casing
+* api-change:``location``: Added support for mobile app restrictions in Amazon Location API keys.
+* api-change:``amplifyuibuilder``: Update endpoint ruleset parameters casing
+* api-change:``kinesis-video-signaling``: Update endpoint ruleset parameters casing
+* api-change:``qbusiness``: Update endpoint ruleset parameters casing
+* api-change:``robomaker``: Update endpoint ruleset parameters casing
+* api-change:``workspaces-thin-client``: Update endpoint ruleset parameters casing
+* api-change:``evs``: Update endpoint ruleset parameters casing
+* api-change:``eks``: Update endpoint ruleset parameters casing
+* api-change:``sso-oidc``: Update endpoint ruleset parameters casing
+* api-change:``inspector``: Update endpoint ruleset parameters casing
+* api-change:``mediastore``: Update endpoint ruleset parameters casing
+* api-change:``route53domains``: Update endpoint ruleset parameters casing
+* api-change:``wisdom``: Update endpoint ruleset parameters casing
+* api-change:``verifiedpermissions``: Update endpoint ruleset parameters casing
+* api-change:``securityhub``: Release 3 layer filter support in GetFindingsV2, GetFindingStatisticsV2, GetResourcesV2,GetResourcesStatisticsV2, AutomationRule V2 APIs. Update filter casing in GetResourcesV2, GetResourcesStatisticsV2 APIs. Add new filters in GetFindingsV2, GetFindingStatisticsV2, AutomationRule V2 APIs.
+* api-change:``mediapackage``: Update endpoint ruleset parameters casing
+* api-change:``fis``: Update endpoint ruleset parameters casing
+* api-change:``rtbfabric``: Add support for custom rate limits.
+* api-change:``sagemaker-metrics``: Update endpoint ruleset parameters casing
+* api-change:``supplychain``: Update endpoint ruleset parameters casing
+* api-change:``iotwireless``: Update endpoint ruleset parameters casing
+* api-change:``datazone``: This release adds support for MLflow connections Creation in DataZone
+* api-change:``kinesisanalytics``: Update endpoint ruleset parameters casing
+* api-change:``servicediscovery``: Update endpoint ruleset parameters casing
+* api-change:``dynamodbstreams``: Update endpoint ruleset parameters casing
+* api-change:``lookoutvision``: Update endpoint ruleset parameters casing
+* api-change:``application-signals``: Update endpoint ruleset parameters casing
+* api-change:``sagemaker``: Added inference components model data caching feature
+* api-change:``mediastore-data``: Update endpoint ruleset parameters casing
+* api-change:``mq``: Update endpoint ruleset parameters casing
+* api-change:``billing``: Update endpoint ruleset parameters casing
+* api-change:``iot-managed-integrations``: Update endpoint ruleset parameters casing
+* api-change:``translate``: Update endpoint ruleset parameters casing
+* api-change:``panorama``: Update endpoint ruleset parameters casing
+* api-change:``s3tables``: Update endpoint ruleset parameters casing
+* api-change:``migrationhubstrategy``: Update endpoint ruleset parameters casing
+* api-change:``geo-maps``: Added support for optional AdditionalFeatures parameter in the V2 GetTile API.
+* api-change:``cloudtrail``: Update endpoint ruleset parameters casing
+* api-change:``codepipeline``: Update endpoint ruleset parameters casing
+* api-change:``pca-connector-ad``: Update endpoint ruleset parameters casing
+* api-change:``gameliftstreams``: Add status reasons for TERMINATED stream sessions
+* api-change:``payment-cryptography-data``: Update endpoint ruleset parameters casing
+
+
 2.31.21
 =======
 

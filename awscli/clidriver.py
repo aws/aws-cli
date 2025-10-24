@@ -119,7 +119,7 @@ def create_clidriver(args=None):
         session.full_config.get('plugins', {}),
         event_hooks=session.get_component('event_emitter'),
     )
-    error_handlers_chain = construct_cli_error_handlers_chain(session=session)
+    error_handlers_chain = construct_cli_error_handlers_chain()
     driver = CLIDriver(
         session=session, error_handler=error_handlers_chain, debug=debug
     )
@@ -275,10 +275,6 @@ class CLIDriver:
         config_store.set_config_provider(
             'cli_help_output', self._construct_cli_help_output_chain()
         )
-        config_store.set_config_provider(
-            'cli_error_format', self._construct_cli_error_format_chain()
-        )
-
 
     def _construct_cli_region_chain(self):
         providers = [
@@ -372,20 +368,6 @@ class CLIDriver:
         ]
         return ChainProvider(providers=providers)
 
-    def _construct_cli_error_format_chain(self):
-        providers = [
-            InstanceVarProvider(
-                instance_var='cli_error_format',
-                session=self.session,
-            ),
-            ScopedConfigProvider(
-                config_var_name='cli_error_format',
-                session=self.session,
-            ),
-            ConstantProvider(value='standard'),
-        ]
-        return ChainProvider(providers=providers)
-
     @property
     def subcommand_table(self):
         return self._get_command_table()
@@ -404,7 +386,6 @@ class CLIDriver:
         # we load it here once.
         if self._cli_data is None:
             self._cli_data = self.session.get_data('cli')
-            print("CLI Data:", self._cli_data)
         return self._cli_data
 
     def _get_command_table(self):

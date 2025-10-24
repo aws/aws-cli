@@ -29,8 +29,6 @@
   
   *   yaml-stream
   
-  *   off
-  
   
 ``--query`` (string)
   
@@ -97,14 +95,4 @@
 ``--no-cli-auto-prompt`` (boolean)
   
   Disable automatically prompt for CLI input parameters.
-  
-``--cli-error-format`` (string)
-  
-  The formatting style for error output. 'standard' displays modeled error details, 'legacy' shows only the traditional error message.
-  
-  
-  *   standard
-  
-  *   legacy
-  
   

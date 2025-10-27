@@ -20,7 +20,9 @@ import re
 import sys
 import xml
 
-from botocore.exceptions import ClientError
+from botocore.exceptions import ClientError, UnknownRegionError
+from botocore.loaders import Loader
+from botocore.regions import EndpointResolver
 
 from awscli.customizations.exceptions import ParamValidationError
 
@@ -208,12 +210,15 @@ def uni_print(statement, out_file=None):
 def get_policy_arn_suffix(region):
     """Method to return region value as expected by policy arn"""
     region_string = region.lower()
-    if region_string.startswith("cn-"):
-        return "aws-cn"
-    elif region_string.startswith("us-gov"):
-        return "aws-us-gov"
-    else:
-        return "aws"
+    loader = Loader()
+    endpoints_data = loader.load_data('endpoints')
+    resolver = EndpointResolver(endpoints_data)
+
+    try:
+        return resolver.get_partition_for_region(region_string)
+    except UnknownRegionError:
+        # Fallback to 'aws' if region is not found
+        return 'aws'
 
 
 def get_shape_doc_overview(shape):

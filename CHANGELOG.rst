@@ -2,6 +2,62 @@
 CHANGELOG
 =========
 
+1.42.60
+=======
+
+* api-change:``accessanalyzer``: Update endpoint ruleset parameters casing
+* api-change:``aiops``: Update endpoint ruleset parameters casing
+* api-change:``athena``: Update endpoint ruleset parameters casing
+* api-change:``backup-gateway``: Update endpoint ruleset parameters casing
+* api-change:``bedrock-data-automation``: Update endpoint ruleset parameters casing
+* api-change:``braket``: Update endpoint ruleset parameters casing
+* api-change:``ce``: Updated endpoint for eusc-de-east-1 region.
+* api-change:``chime-sdk-identity``: Update endpoint ruleset parameters casing
+* api-change:``chime-sdk-media-pipelines``: Update endpoint ruleset parameters casing
+* api-change:``codeartifact``: Update endpoint ruleset parameters casing
+* api-change:``codeguruprofiler``: Update endpoint ruleset parameters casing
+* api-change:``cognito-idp``: Update endpoint ruleset parameters casing
+* api-change:``comprehend``: Update endpoint ruleset parameters casing
+* api-change:``connectcampaigns``: Update endpoint ruleset parameters casing
+* api-change:``controltower``: Update endpoint ruleset parameters casing
+* api-change:``cost-optimization-hub``: Update endpoint ruleset parameters casing
+* api-change:``dax``: Update endpoint ruleset parameters casing
+* api-change:``elasticbeanstalk``: Update endpoint ruleset parameters casing
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``entityresolution``: Update endpoint ruleset parameters casing
+* api-change:``forecast``: Update endpoint ruleset parameters casing
+* api-change:``greengrass``: Update endpoint ruleset parameters casing
+* api-change:``iam``: Fixed missing SummaryMap keys in GetAccountSummary response that were being filtered out during deserialization in AWS Java SDK v2
+* api-change:``invoicing``: Update endpoint ruleset parameters casing
+* api-change:``kinesis``: Adds support for record sizes up to 10MiB and introduces new UpdateMaxRecordSize API to modify stream record size limits. Adds record size parameters to existing CreateStream and DescribeStreamSummary APIs for request and response payloads respectively.
+* api-change:``launch-wizard``: Update endpoint ruleset parameters casing
+* api-change:``lex-runtime``: Update endpoint ruleset parameters casing
+* api-change:``managedblockchain``: Update endpoint ruleset parameters casing
+* api-change:``mturk``: Update endpoint ruleset parameters casing
+* api-change:``neptune-graph``: Update endpoint ruleset parameters casing
+* api-change:``outposts``: Update endpoint ruleset parameters casing
+* api-change:``pinpoint``: Update endpoint ruleset parameters casing
+* api-change:``rbin``: Update endpoint ruleset parameters casing
+* api-change:``rds-data``: Update endpoint ruleset parameters casing
+* api-change:``redshift-serverless``: Update endpoint ruleset parameters casing
+* api-change:``rekognition``: Update endpoint ruleset parameters casing
+* api-change:``repostspace``: Update endpoint ruleset parameters casing
+* api-change:``route53profiles``: Update endpoint ruleset parameters casing
+* api-change:``route53resolver``: Update endpoint ruleset parameters casing
+* api-change:``s3vectors``: Update endpoint ruleset parameters casing
+* api-change:``scheduler``: Update endpoint ruleset parameters casing
+* api-change:``secretsmanager``: Update endpoint ruleset parameters casing
+* api-change:``ses``: Update endpoint ruleset parameters casing
+* api-change:``shield``: Update endpoint ruleset parameters casing
+* api-change:``simspaceweaver``: Update endpoint ruleset parameters casing
+* api-change:``socialmessaging``: Update endpoint ruleset parameters casing
+* api-change:``ssm-sap``: Update endpoint ruleset parameters casing
+* api-change:``sso-admin``: Update endpoint ruleset parameters casing
+* api-change:``stepfunctions``: Update endpoint ruleset parameters casing
+* api-change:``waf-regional``: Update endpoint ruleset parameters casing
+* api-change:``workmailmessageflow``: Update endpoint ruleset parameters casing
+
+
 1.42.59
 =======
 

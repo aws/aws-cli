@@ -5442,6 +5442,144 @@
         }
       ],
       "documentation": "Change some of the settings in an SdiSource."
+    },
+    "ListAlerts": {
+      "name": "ListAlerts",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/channels/{channelId}/alerts",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListAlertsRequest"
+      },
+      "output": {
+        "shape": "ListAlertsResponse",
+        "documentation": "List of alerts"
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to list the alerts."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error"
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The specified channel doesn't exist."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded for this operation."
+        }
+      ],
+      "documentation": "List the alerts for a channel with optional filtering based on alert state."
+    },
+    "ListClusterAlerts": {
+      "name": "ListClusterAlerts",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/clusters/{clusterId}/alerts",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListClusterAlertsRequest"
+      },
+      "output": {
+        "shape": "ListClusterAlertsResponse",
+        "documentation": "List of alerts"
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to list the alerts."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The specified cluster doesn't exist."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded for this operation."
+        }
+      ],
+      "documentation": "List the alerts for a cluster with optional filtering based on alert state."
+    },
+    "ListMultiplexAlerts": {
+      "name": "ListMultiplexAlerts",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/multiplexes/{multiplexId}/alerts",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListMultiplexAlertsRequest"
+      },
+      "output": {
+        "shape": "ListMultiplexAlertsResponse",
+        "documentation": "List of alerts"
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to list the alerts."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error"
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The specified multiplex doesn't exist."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded for this operation."
+        }
+      ],
+      "documentation": "List the alerts for a multiplex with optional filtering based on alert state."
     }
   },
   "shapes": {
@@ -29506,6 +29644,374 @@
       "min": 0,
       "max": 8000000,
       "documentation": "Placeholder documentation for __integerMin0Max8000000"
+    },
+    "ChannelAlert": {
+      "type": "structure",
+      "members": {
+        "AlertType": {
+          "shape": "__string",
+          "locationName": "alertType",
+          "documentation": "The type of the alert"
+        },
+        "ClearedTimestamp": {
+          "shape": "__timestampIso8601",
+          "locationName": "clearedTimestamp",
+          "documentation": "The time when the alert was cleared"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The unique ID for this alert instance"
+        },
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "The user facing alert message which can have more context"
+        },
+        "PipelineId": {
+          "shape": "__string",
+          "locationName": "pipelineId",
+          "documentation": "The ID of the pipeline this alert is associated with"
+        },
+        "SetTimestamp": {
+          "shape": "__timestampIso8601",
+          "locationName": "setTimestamp",
+          "documentation": "The time when the alert was set"
+        },
+        "State": {
+          "shape": "ChannelAlertState",
+          "locationName": "state",
+          "documentation": "The state of the alert"
+        }
+      },
+      "documentation": "An alert on a channel"
+    },
+    "ChannelAlertState": {
+      "type": "string",
+      "documentation": "The possible states of a channel alert. SET - The alert is actively happening. CLEARED - The alert is no longer happening.",
+      "enum": [
+        "SET",
+        "CLEARED"
+      ]
+    },
+    "ClusterAlert": {
+      "type": "structure",
+      "members": {
+        "AlertType": {
+          "shape": "__string",
+          "locationName": "alertType",
+          "documentation": "The type of the alert"
+        },
+        "ChannelId": {
+          "shape": "__string",
+          "locationName": "channelId",
+          "documentation": "The ID of the channel this alert is associated with"
+        },
+        "ClearedTimestamp": {
+          "shape": "__timestampIso8601",
+          "locationName": "clearedTimestamp",
+          "documentation": "The time when the alert was cleared"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The further subtype of this alert"
+        },
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "The user facing alert message which can have more context"
+        },
+        "NodeId": {
+          "shape": "__string",
+          "locationName": "nodeId",
+          "documentation": "The ID of the node this alert is associated with"
+        },
+        "SetTimestamp": {
+          "shape": "__timestampIso8601",
+          "locationName": "setTimestamp",
+          "documentation": "The time when the alert was set"
+        },
+        "State": {
+          "shape": "ClusterAlertState",
+          "locationName": "state",
+          "documentation": "The state of the alert"
+        }
+      },
+      "documentation": "An alert on a cluster"
+    },
+    "ClusterAlertState": {
+      "type": "string",
+      "documentation": "The possible states of a cluster alert. SET - The alert is actively happening. CLEARED - The alert is no longer happening.",
+      "enum": [
+        "SET",
+        "CLEARED"
+      ]
+    },
+    "ListAlertsRequest": {
+      "type": "structure",
+      "members": {
+        "ChannelId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "channelId",
+          "documentation": "The unique ID of the channel"
+        },
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "The maximum number of items to return"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "The next pagination token"
+        },
+        "StateFilter": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "stateFilter",
+          "documentation": "Specifies the set of alerts to return based on their state. SET - Return only alerts with SET state. CLEARED - Return only alerts with CLEARED state. ALL - Return all alerts."
+        }
+      },
+      "required": [
+        "ChannelId"
+      ],
+      "documentation": "Placeholder documentation for ListAlertsRequest"
+    },
+    "ListAlertsResponse": {
+      "type": "structure",
+      "members": {
+        "Alerts": {
+          "shape": "__listOfChannelAlert",
+          "locationName": "alerts",
+          "documentation": "The alerts found for this channel"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "The token to use to retrieve the next page of results"
+        }
+      },
+      "documentation": "Placeholder documentation for ListAlertsResponse"
+    },
+    "ListAlertsResultModel": {
+      "type": "structure",
+      "members": {
+        "Alerts": {
+          "shape": "__listOfChannelAlert",
+          "locationName": "alerts",
+          "documentation": "The alerts found for this channel"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "The token to use to retrieve the next page of results"
+        }
+      },
+      "documentation": "The result of a successful ListAlerts request"
+    },
+    "ListClusterAlertsRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterId",
+          "documentation": "The unique ID of the cluster"
+        },
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "The maximum number of items to return"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "The next pagination token"
+        },
+        "StateFilter": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "stateFilter",
+          "documentation": "Specifies the set of alerts to return based on their state. SET - Return only alerts with SET state. CLEARED - Return only alerts with CLEARED state. ALL - Return all alerts."
+        }
+      },
+      "required": [
+        "ClusterId"
+      ],
+      "documentation": "Placeholder documentation for ListClusterAlertsRequest"
+    },
+    "ListClusterAlertsResponse": {
+      "type": "structure",
+      "members": {
+        "Alerts": {
+          "shape": "__listOfClusterAlert",
+          "locationName": "alerts",
+          "documentation": "The alerts found for this cluster"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "The token to use to retrieve the next page of results"
+        }
+      },
+      "documentation": "Placeholder documentation for ListClusterAlertsResponse"
+    },
+    "ListClusterAlertsResultModel": {
+      "type": "structure",
+      "members": {
+        "Alerts": {
+          "shape": "__listOfClusterAlert",
+          "locationName": "alerts",
+          "documentation": "The alerts found for this cluster"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "The token to use to retrieve the next page of results"
+        }
+      },
+      "documentation": "The result of a successful ListClusterAlerts request"
+    },
+    "ListMultiplexAlertsRequest": {
+      "type": "structure",
+      "members": {
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "The maximum number of items to return"
+        },
+        "MultiplexId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "multiplexId",
+          "documentation": "The unique ID of the multiplex"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "The next pagination token"
+        },
+        "StateFilter": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "stateFilter",
+          "documentation": "Specifies the set of alerts to return based on their state. SET - Return only alerts with SET state. CLEARED - Return only alerts with CLEARED state. ALL - Return all alerts."
+        }
+      },
+      "required": [
+        "MultiplexId"
+      ],
+      "documentation": "Placeholder documentation for ListMultiplexAlertsRequest"
+    },
+    "ListMultiplexAlertsResponse": {
+      "type": "structure",
+      "members": {
+        "Alerts": {
+          "shape": "__listOfMultiplexAlert",
+          "locationName": "alerts",
+          "documentation": "The alerts found for this multiplex"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "The token to use to retrieve the next page of results"
+        }
+      },
+      "documentation": "Placeholder documentation for ListMultiplexAlertsResponse"
+    },
+    "ListMultiplexAlertsResultModel": {
+      "type": "structure",
+      "members": {
+        "Alerts": {
+          "shape": "__listOfMultiplexAlert",
+          "locationName": "alerts",
+          "documentation": "The alerts found for this multiplex"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "The token to use to retrieve the next page of results"
+        }
+      },
+      "documentation": "The result of a successful ListMultiplexAlerts request."
+    },
+    "MultiplexAlert": {
+      "type": "structure",
+      "members": {
+        "AlertType": {
+          "shape": "__string",
+          "locationName": "alertType",
+          "documentation": "The type of the alert"
+        },
+        "ClearedTimestamp": {
+          "shape": "__timestampIso8601",
+          "locationName": "clearedTimestamp",
+          "documentation": "The time when the alert was cleared"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The unique ID for this alert instance"
+        },
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "The user facing alert message which can have more context"
+        },
+        "PipelineId": {
+          "shape": "__string",
+          "locationName": "pipelineId",
+          "documentation": "The ID of the pipeline this alert is associated with"
+        },
+        "SetTimestamp": {
+          "shape": "__timestampIso8601",
+          "locationName": "setTimestamp",
+          "documentation": "The time when the alert was set"
+        },
+        "State": {
+          "shape": "MultiplexAlertState",
+          "locationName": "state",
+          "documentation": "The state of the alert"
+        }
+      },
+      "documentation": "An alert on a multiplex"
+    },
+    "MultiplexAlertState": {
+      "type": "string",
+      "documentation": "The possible states of a multiplex alert. SET - The alert is actively happening. CLEARED - The alert is no longer happening.",
+      "enum": [
+        "SET",
+        "CLEARED"
+      ]
+    },
+    "__listOfChannelAlert": {
+      "type": "list",
+      "member": {
+        "shape": "ChannelAlert"
+      },
+      "documentation": "Placeholder documentation for __listOfChannelAlert"
+    },
+    "__listOfClusterAlert": {
+      "type": "list",
+      "member": {
+        "shape": "ClusterAlert"
+      },
+      "documentation": "Placeholder documentation for __listOfClusterAlert"
+    },
+    "__listOfMultiplexAlert": {
+      "type": "list",
+      "member": {
+        "shape": "MultiplexAlert"
+      },
+      "documentation": "Placeholder documentation for __listOfMultiplexAlert"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

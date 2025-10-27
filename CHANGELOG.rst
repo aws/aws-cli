@@ -2,6 +2,180 @@
 CHANGELOG
 =========
 
+2.31.22
+=======
+
+* api-change:``datapipeline``: Update endpoint ruleset parameters casing
+* api-change:``vpc-lattice``: Update endpoint ruleset parameters casing
+* api-change:``chime-sdk-messaging``: Update endpoint ruleset parameters casing
+* api-change:``docdb``: Update endpoint ruleset parameters casing
+* api-change:``budgets``: Update endpoint ruleset parameters casing
+* api-change:``acm``: Update endpoint ruleset parameters casing
+* api-change:``snow-device-management``: Update endpoint ruleset parameters casing
+* api-change:``elb``: Update endpoint ruleset parameters casing
+* api-change:``payment-cryptography``: Update endpoint ruleset parameters casing
+* api-change:``location``: Added support for mobile app restrictions in Amazon Location API keys.
+* api-change:``amplifyuibuilder``: Update endpoint ruleset parameters casing
+* api-change:``kinesis-video-signaling``: Update endpoint ruleset parameters casing
+* api-change:``qbusiness``: Update endpoint ruleset parameters casing
+* api-change:``robomaker``: Update endpoint ruleset parameters casing
+* api-change:``workspaces-thin-client``: Update endpoint ruleset parameters casing
+* api-change:``evs``: Update endpoint ruleset parameters casing
+* api-change:``eks``: Update endpoint ruleset parameters casing
+* api-change:``sso-oidc``: Update endpoint ruleset parameters casing
+* api-change:``inspector``: Update endpoint ruleset parameters casing
+* api-change:``mediastore``: Update endpoint ruleset parameters casing
+* api-change:``route53domains``: Update endpoint ruleset parameters casing
+* api-change:``wisdom``: Update endpoint ruleset parameters casing
+* api-change:``verifiedpermissions``: Update endpoint ruleset parameters casing
+* api-change:``securityhub``: Release 3 layer filter support in GetFindingsV2, GetFindingStatisticsV2, GetResourcesV2,GetResourcesStatisticsV2, AutomationRule V2 APIs. Update filter casing in GetResourcesV2, GetResourcesStatisticsV2 APIs. Add new filters in GetFindingsV2, GetFindingStatisticsV2, AutomationRule V2 APIs.
+* api-change:``mediapackage``: Update endpoint ruleset parameters casing
+* api-change:``fis``: Update endpoint ruleset parameters casing
+* api-change:``rtbfabric``: Add support for custom rate limits.
+* api-change:``sagemaker-metrics``: Update endpoint ruleset parameters casing
+* api-change:``supplychain``: Update endpoint ruleset parameters casing
+* api-change:``iotwireless``: Update endpoint ruleset parameters casing
+* api-change:``datazone``: This release adds support for MLflow connections Creation in DataZone
+* api-change:``kinesisanalytics``: Update endpoint ruleset parameters casing
+* api-change:``servicediscovery``: Update endpoint ruleset parameters casing
+* api-change:``dynamodbstreams``: Update endpoint ruleset parameters casing
+* api-change:``lookoutvision``: Update endpoint ruleset parameters casing
+* api-change:``application-signals``: Update endpoint ruleset parameters casing
+* api-change:``sagemaker``: Added inference components model data caching feature
+* api-change:``mediastore-data``: Update endpoint ruleset parameters casing
+* api-change:``mq``: Update endpoint ruleset parameters casing
+* api-change:``billing``: Update endpoint ruleset parameters casing
+* api-change:``iot-managed-integrations``: Update endpoint ruleset parameters casing
+* api-change:``translate``: Update endpoint ruleset parameters casing
+* api-change:``panorama``: Update endpoint ruleset parameters casing
+* api-change:``s3tables``: Update endpoint ruleset parameters casing
+* api-change:``migrationhubstrategy``: Update endpoint ruleset parameters casing
+* api-change:``geo-maps``: Added support for optional AdditionalFeatures parameter in the V2 GetTile API.
+* api-change:``cloudtrail``: Update endpoint ruleset parameters casing
+* api-change:``codepipeline``: Update endpoint ruleset parameters casing
+* api-change:``pca-connector-ad``: Update endpoint ruleset parameters casing
+* api-change:``gameliftstreams``: Add status reasons for TERMINATED stream sessions
+* api-change:``payment-cryptography-data``: Update endpoint ruleset parameters casing
+
+
+2.31.21
+=======
+
+* api-change:``rum``: Update endpoint ruleset parameters casing
+* api-change:``bedrock-agentcore``: Fixing the service documentation name
+* api-change:``synthetics``: Update endpoint ruleset parameters casing
+* api-change:``codebuild``: Update endpoint ruleset parameters casing
+* api-change:``pinpoint-email``: Update endpoint ruleset parameters casing
+* api-change:``lambda``: Add NodeJs 24 (nodejs24.x) support to AWS Lambda.
+* api-change:``sagemaker``: Update endpoint ruleset parameters casing
+* api-change:``chime-sdk-voice``: Update endpoint ruleset parameters casing
+* api-change:``networkmonitor``: Update endpoint ruleset parameters casing
+* api-change:``macie2``: Update endpoint ruleset parameters casing
+* api-change:``drs``: Update endpoint ruleset parameters casing
+* api-change:``mgh``: Update endpoint ruleset parameters casing
+* api-change:``sesv2``: Update endpoint ruleset parameters casing
+* api-change:``internetmonitor``: Update endpoint ruleset parameters casing
+* api-change:``securitylake``: Update endpoint ruleset parameters casing
+* api-change:``mgn``: Update endpoint ruleset parameters casing
+* api-change:``marketplacecommerceanalytics``: Update endpoint ruleset parameters casing
+* api-change:``ecr-public``: Update endpoint ruleset parameters casing
+* api-change:``savingsplans``: Update endpoint ruleset parameters casing
+* api-change:``managedblockchain-query``: Update endpoint ruleset parameters casing
+* api-change:``pca-connector-scep``: Update endpoint ruleset parameters casing
+* api-change:``application-autoscaling``: Update endpoint ruleset parameters casing
+* api-change:``kinesis-video-archived-media``: Update endpoint ruleset parameters casing
+* api-change:``resiliencehub``: Update endpoint ruleset parameters casing
+* api-change:``healthlake``: Update endpoint ruleset parameters casing
+* api-change:``dms``: Update endpoint ruleset parameters casing
+* api-change:``mediatailor``: Update endpoint ruleset parameters casing
+* api-change:``personalize-events``: Update endpoint ruleset parameters casing
+* api-change:``docdb-elastic``: Update endpoint ruleset parameters casing
+* api-change:``cloudtrail-data``: Update endpoint ruleset parameters casing
+* api-change:``mpa``: Update endpoint ruleset parameters casing
+* api-change:``neptunedata``: Update endpoint ruleset parameters casing
+* api-change:``kinesis-video-webrtc-storage``: Update endpoint ruleset parameters casing
+* api-change:``account``: Update endpoint ruleset parameters casing
+* api-change:``discovery``: Update endpoint ruleset parameters casing
+* api-change:``opensearchserverless``: Update endpoint ruleset parameters casing
+* api-change:``sagemaker-edge``: Update endpoint ruleset parameters casing
+* api-change:``codestar-connections``: Update endpoint ruleset parameters casing
+* api-change:``iot-jobs-data``: Update endpoint ruleset parameters casing
+* api-change:``bedrock-agentcore-control``: Fixing the service documentation name
+* api-change:``config``: Update endpoint ruleset parameters casing
+* api-change:``odb``: Doc-only update that removes duplicate values from descriptions of ODB peering APIs.
+* api-change:``iotevents``: Update endpoint ruleset parameters casing
+* api-change:``ecr``: Update endpoint ruleset parameters casing
+* api-change:``omics``: Update endpoint ruleset parameters casing
+* api-change:``ebs``: Update endpoint ruleset parameters casing
+* api-change:``cur``: Update endpoint ruleset parameters casing
+* api-change:``storagegateway``: Update endpoint ruleset parameters casing
+* api-change:``connect-contact-lens``: Update endpoint ruleset parameters casing
+* api-change:``dsql``: Add support for resource-based policies for Aurora DSQL clusters. This will enable you to implement Block Public Access (BPA) which will help restrict access to your Aurora DSQL public or VPC endpoints.
+
+
+2.31.20
+=======
+
+* api-change:``workmail``: Update endpoint ruleset parameters casing
+* api-change:``iotanalytics``: Update endpoint ruleset parameters casing
+* api-change:``connectparticipant``: Update endpoint ruleset parameters casing
+* api-change:``medialive``: Add 3 API operations for fetching alerts: ListAlerts (Channels), ListClusterAlerts (MediaLive Anywhere), and ListMultiplexAlerts
+* api-change:``lexv2-models``: Update endpoint ruleset parameters casing
+* api-change:``ds-data``: Update endpoint ruleset parameters casing
+* api-change:``oam``: Update endpoint ruleset parameters casing
+* api-change:``cloudformation``: Update endpoint ruleset parameters casing
+* api-change:``directconnect``: Update endpoint ruleset parameters casing
+* api-change:``workspaces``: Update endpoint ruleset parameters casing
+* api-change:``autoscaling``: Update endpoint ruleset parameters casing
+* api-change:``connect``: This release added support for email address alias configuration and outbound campaign preview mode.
+* api-change:``pcs``: Update endpoint ruleset parameters casing
+* api-change:``sagemaker-a2i-runtime``: Update endpoint ruleset parameters casing
+* api-change:``marketplace-agreement``: Update endpoint ruleset parameters casing
+* api-change:``notificationscontacts``: Update endpoint ruleset parameters casing
+* api-change:``forecastquery``: Update endpoint ruleset parameters casing
+* api-change:``connectcampaignsv2``: Updated Amazon Connect Outbound Campaigns V2 SDK to support Preview Outbound Mode
+* api-change:``ssm-incidents``: Update endpoint ruleset parameters casing
+* api-change:``redshift-data``: Update endpoint ruleset parameters casing
+* api-change:``chatbot``: Update endpoint ruleset parameters casing
+* api-change:``cloudhsm``: Update endpoint ruleset parameters casing
+* api-change:``codeguru-reviewer``: Update endpoint ruleset parameters casing
+* api-change:``iotsecuretunneling``: Update endpoint ruleset parameters casing
+* api-change:``ivschat``: Update endpoint ruleset parameters casing
+* api-change:``workdocs``: Update endpoint ruleset parameters casing
+* api-change:``route53-recovery-cluster``: Update endpoint ruleset parameters casing
+* api-change:``ec2-instance-connect``: Update endpoint ruleset parameters casing
+* api-change:``mailmanager``: Update endpoint ruleset parameters casing
+* api-change:``iot``: Update endpoint ruleset parameters casing
+* api-change:``bcm-dashboards``: Update endpoint ruleset parameters casing
+* api-change:``sns``: Update endpoint ruleset parameters casing
+* api-change:``pinpoint-sms-voice-v2``: Update endpoint ruleset parameters casing
+* api-change:``inspector2``: Update endpoint ruleset parameters casing
+* api-change:``rtbfabric``: Update for general availability of AWS RTB Fabric service.
+* api-change:``kinesisanalyticsv2``: Update endpoint ruleset parameters casing
+* api-change:``ce``: Update endpoint ruleset parameters casing
+* api-change:``cognito-identity``: Update endpoint ruleset parameters casing
+* api-change:``cloudhsmv2``: Update endpoint ruleset parameters casing
+* api-change:``mwaa``: Update endpoint ruleset parameters casing
+* api-change:``iotsitewise``: Update endpoint ruleset parameters casing
+* api-change:``ec2``: This release adds AvailabilityZoneId support for CreateNetworkInterface and DescribeNetworkInterfaces APIs.
+* api-change:``b2bi``: Update endpoint ruleset parameters casing
+* api-change:``devicefarm``: This release adds support for optionally including an app as part of a CreateRemoteAccessSession request
+* api-change:``appfabric``: Update endpoint ruleset parameters casing
+* api-change:``iotfleetwise``: Update endpoint ruleset parameters casing
+* api-change:``comprehendmedical``: Update endpoint ruleset parameters casing
+* api-change:``iam``: Updated OIDC and SAML apis to reject multiple simultaneous requests to change a unique object.
+* api-change:``route53``: Amazon Route 53 now supports the ISOB West Region for private DNS for Amazon VPCs and cloudwatch healthchecks.
+
+
+2.31.19
+=======
+
+* api-change:``dynamodb``: Add AccountID based endpoint metric to endpoint rules.
+* api-change:``mediaconvert``: This release adds the ability to set resolution for the black video generator and also adds the StartJobsQuery and GetJobsQueryResults APIs which allow asynchronous search of job history using new filters.
+* api-change:``emr``: Added RECONFIGURING to the InstanceFleetState convenience enum.
+* api-change:``meteringmarketplace``: Added ClientToken parameter to MeterUsage API for specifying idempotent requests.
+
+
 2.31.18
 =======
 

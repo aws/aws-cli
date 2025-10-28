@@ -2619,6 +2619,16 @@
       "output":{"shape":"DescribeCapacityReservationFleetsResult"},
       "documentation":"<p>Describes one or more Capacity Reservation Fleets.</p>"
     },
+    "DescribeCapacityReservationTopology":{
+      "name":"DescribeCapacityReservationTopology",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeCapacityReservationTopologyRequest"},
+      "output":{"shape":"DescribeCapacityReservationTopologyResult"},
+      "documentation":"<p>Describes a tree-based hierarchy that represents the physical host placement of your pending or active Capacity Reservations within an Availability Zone or Local Zone. You can use this information to determine the relative proximity of your capacity within the Amazon Web Services network before it is launched and use this information to allocate capacity together to support your tightly coupled workloads.</p> <p>Capacity Reservation topology is supported for specific instance types only. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-topology-prerequisites.html\">Prerequisites for Amazon EC2 instance topology</a> in the <i>Amazon EC2 User Guide</i>.</p> <note> <p>The Amazon EC2 API follows an eventual consistency model due to the distributed nature of the system supporting it. As a result, when you call the DescribeCapacityReservationTopology API command immediately after launching instances, the response might return a <code>null</code> value for <code>capacityBlockId</code> because the data might not have fully propagated across all subsystems. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/eventual-consistency.html\">Eventual consistency in the Amazon EC2 API</a> in the <i>Amazon EC2 Developer Guide</i>.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-topology.html\">Amazon EC2 topology</a> in the <i>Amazon EC2 User Guide</i>.</p> <p/>"
+    },
     "DescribeCapacityReservations":{
       "name":"DescribeCapacityReservations",
       "http":{
@@ -3077,7 +3087,7 @@
       },
       "input":{"shape":"DescribeInstanceTopologyRequest"},
       "output":{"shape":"DescribeInstanceTopologyResult"},
-      "documentation":"<p>Describes a tree-based hierarchy that represents the physical host placement of your EC2 instances within an Availability Zone or Local Zone. You can use this information to determine the relative proximity of your EC2 instances within the Amazon Web Services network to support your tightly coupled workloads.</p> <p>Instance topology is supported for specific instance types only. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-topology-prerequisites.html\"> Prerequisites for Amazon EC2 instance topology</a> in the <i>Amazon EC2 User Guide</i>.</p> <note> <p>The Amazon EC2 API follows an eventual consistency model due to the distributed nature of the system supporting it. As a result, when you call the DescribeInstanceTopology API command immediately after launching instances, the response might return a <code>null</code> value for <code>capacityBlockId</code> because the data might not have fully propagated across all subsystems. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/eventual-consistency.html\">Eventual consistency in the Amazon EC2 API</a> in the <i>Amazon EC2 Developer Guide</i>.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-topology.html\">Amazon EC2 instance topology</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Describes a tree-based hierarchy that represents the physical host placement of your EC2 instances within an Availability Zone or Local Zone. You can use this information to determine the relative proximity of your EC2 instances within the Amazon Web Services network to support your tightly coupled workloads.</p> <p>Instance topology is supported for specific instance types only. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-topology-prerequisites.html\">Prerequisites for Amazon EC2 instance topology</a> in the <i>Amazon EC2 User Guide</i>.</p> <note> <p>The Amazon EC2 API follows an eventual consistency model due to the distributed nature of the system supporting it. As a result, when you call the DescribeInstanceTopology API command immediately after launching instances, the response might return a <code>null</code> value for <code>capacityBlockId</code> because the data might not have fully propagated across all subsystems. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/eventual-consistency.html\">Eventual consistency in the Amazon EC2 API</a> in the <i>Amazon EC2 Developer Guide</i>.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-topology.html\">Amazon EC2 topology</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "DescribeInstanceTypeOfferings":{
       "name":"DescribeInstanceTypeOfferings",
@@ -12535,6 +12545,59 @@
         "default",
         "dedicated"
       ]
+    },
+    "CapacityReservationTopology":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Capacity Reservation.</p>",
+          "locationName":"capacityReservationId"
+        },
+        "CapacityBlockId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Capacity Block. This parameter is only supported for UltraServer instances and identifies instances within the UltraServer domain.</p>",
+          "locationName":"capacityBlockId"
+        },
+        "State":{
+          "shape":"String",
+          "documentation":"<p>The current state of the Capacity Reservation. For the list of possible states, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeCapacityReservations.html\">DescribeCapacityReservations</a>.</p>",
+          "locationName":"state"
+        },
+        "InstanceType":{
+          "shape":"String",
+          "documentation":"<p>The instance type.</p>",
+          "locationName":"instanceType"
+        },
+        "GroupName":{
+          "shape":"String",
+          "documentation":"<p>The name of the placement group that the Capacity Reservation is in.</p>",
+          "locationName":"groupName"
+        },
+        "NetworkNodes":{
+          "shape":"NetworkNodeSet",
+          "documentation":"<p>The network nodes. The nodes are hashed based on your account. Capacity Reservations from different accounts running under the same server will return a different hashed list of strings.</p> <p>The value is <code>null</code> or empty if:</p> <ul> <li> <p>The instance type is not supported.</p> </li> <li> <p>The Capacity Reservation is in a state other than <code>active</code> or <code>pending</code>.</p> </li> </ul>",
+          "locationName":"networkNodeSet"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone or Local Zone that the Capacity Reservation is in.</p>",
+          "locationName":"availabilityZoneId"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The name of the Availability Zone or Local Zone that the Capacity Reservation is in.</p>",
+          "locationName":"availabilityZone"
+        }
+      },
+      "documentation":"<p>Information about the Capacity Reservation topology.</p>"
+    },
+    "CapacityReservationTopologySet":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityReservationTopology",
+        "locationName":"item"
+      }
     },
     "CapacityReservationType":{
       "type":"string",
@@ -22777,6 +22840,53 @@
           "shape":"String",
           "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
           "locationName":"nextToken"
+        }
+      }
+    },
+    "DescribeCapacityReservationTopologyMaxResults":{
+      "type":"integer",
+      "max":10,
+      "min":1
+    },
+    "DescribeCapacityReservationTopologyRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "MaxResults":{
+          "shape":"DescribeCapacityReservationTopologyMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p> <p>You can't specify this parameter and the Capacity Reservation IDs parameter in the same request.</p> <p>Default: <code>10</code> </p>"
+        },
+        "CapacityReservationIds":{
+          "shape":"CapacityReservationIdSet",
+          "documentation":"<p>The Capacity Reservation IDs.</p> <p>Default: Describes all your Capacity Reservations.</p> <p>Constraints: Maximum 100 explicitly specified Capacity Reservation IDs.</p>",
+          "locationName":"CapacityReservationId"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>availability-zone</code> - The name of the Availability Zone (for example, <code>us-west-2a</code>) or Local Zone (for example, <code>us-west-2-lax-1b</code>) that the Capacity Reservation is in.</p> </li> <li> <p> <code>instance-type</code> - The instance type (for example, <code>p4d.24xlarge</code>) or instance family (for example, <code>p4d*</code>). You can use the <code>*</code> wildcard to match zero or more characters, or the <code>?</code> wildcard to match zero or one character.</p> </li> </ul>",
+          "locationName":"Filter"
+        }
+      }
+    },
+    "DescribeCapacityReservationTopologyResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to include in another request to get the next page of items. This value is <code>null</code> when there are no more items to return.</p>",
+          "locationName":"nextToken"
+        },
+        "CapacityReservations":{
+          "shape":"CapacityReservationTopologySet",
+          "documentation":"<p>Information about the topology of each Capacity Reservation.</p>",
+          "locationName":"capacityReservationSet"
         }
       }
     },
@@ -42401,7 +42511,7 @@
         },
         "NetworkNodes":{
           "shape":"NetworkNodesList",
-          "documentation":"<p>The network nodes. The nodes are hashed based on your account. Instances from different accounts running under the same server will return a different hashed list of strings.</p>",
+          "documentation":"<p>The network nodes. The nodes are hashed based on your account. Instances from different accounts running under the same server will return a different hashed list of strings.</p> <p>The value is <code>null</code> or empty if:</p> <ul> <li> <p>The instance type is not supported.</p> </li> <li> <p>The instance is in a state other than <code>running</code>.</p> </li> </ul>",
           "locationName":"networkNodeSet"
         },
         "AvailabilityZone":{
@@ -42416,7 +42526,7 @@
         },
         "CapacityBlockId":{
           "shape":"String",
-          "documentation":"<p>The ID of the Capacity Block. This parameter is only supported for Ultraserver instances and identifies instances within the Ultraserver domain.</p>",
+          "documentation":"<p>The ID of the Capacity Block. This parameter is only supported for UltraServer instances and identifies instances within the UltraServer domain.</p>",
           "locationName":"capacityBlockId"
         }
       },
@@ -53796,6 +53906,13 @@
         "iot_rules_managed",
         "aws_codestar_connections_managed"
       ]
+    },
+    "NetworkNodeSet":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"item"
+      }
     },
     "NetworkNodesList":{
       "type":"list",

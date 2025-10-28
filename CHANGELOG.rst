@@ -2,6 +2,60 @@
 CHANGELOG
 =========
 
+1.42.61
+=======
+
+* api-change:``apigatewayv2``: Update endpoint ruleset parameters casing
+* api-change:``application-signals``: Added support for CloudWatch Synthetics Canary resources in ListAuditFindings API. This enhancement allows customers to retrieve audit findings specifically for CloudWatch Synthetics canaries and enables service-canary correlation analysis.
+* api-change:``backupsearch``: Update endpoint ruleset parameters casing
+* api-change:``bcm-pricing-calculator``: Update endpoint ruleset parameters casing
+* api-change:``bedrock-agent-runtime``: Update endpoint ruleset parameters casing
+* api-change:``bedrock-runtime``: Update endpoint ruleset parameters casing
+* api-change:``cleanroomsml``: Update endpoint ruleset parameters casing
+* api-change:``cloud9``: Update endpoint ruleset parameters casing
+* api-change:``cloudsearchdomain``: Update endpoint ruleset parameters casing
+* api-change:``codeconnections``: Update endpoint ruleset parameters casing
+* api-change:``codeguru-security``: Update endpoint ruleset parameters casing
+* api-change:``detective``: Update endpoint ruleset parameters casing
+* api-change:``ec2``: This released the DescribeCapacityReservationTopology API.
+* api-change:``ecs``: Amazon ECS supports native linear and canary service deployments, allowing you to shift traffic in increments for more control.
+* api-change:``efs``: Update endpoint ruleset parameters casing
+* api-change:``elastictranscoder``: Update endpoint ruleset parameters casing
+* api-change:``emr-containers``: Update endpoint ruleset parameters casing
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``gameliftstreams``: Add stream group expiration date and expired status
+* api-change:``glacier``: Update endpoint ruleset parameters casing
+* api-change:``groundstation``: Enable use of AzEl ephemerides
+* api-change:``inspector-scan``: Update endpoint ruleset parameters casing
+* api-change:``kafkaconnect``: Update endpoint ruleset parameters casing
+* api-change:``kendra``: Update endpoint ruleset parameters casing
+* api-change:``kinesisvideo``: Update endpoint ruleset parameters casing
+* api-change:``lambda``: Added SerializedRequestEntityTooLargeException to Lambda Invoke API
+* api-change:``marketplace-deployment``: Update endpoint ruleset parameters casing
+* api-change:``mediapackage-vod``: Update endpoint ruleset parameters casing
+* api-change:``migrationhuborchestrator``: Update endpoint ruleset parameters casing
+* api-change:``notifications``: Update endpoint ruleset parameters casing
+* api-change:``opensearch``: Update endpoint ruleset parameters casing
+* api-change:``organizations``: Added Account State field to the ListDelegatedAdministrators API response.
+* api-change:``partnercentral-selling``: Update endpoint ruleset parameters casing
+* api-change:``pipes``: Update endpoint ruleset parameters casing
+* api-change:``ram``: Update endpoint ruleset parameters casing
+* api-change:``resource-groups``: Update endpoint ruleset parameters casing
+* api-change:``s3``: Amazon Simple Storage Service / Features: Add conditional writes in CopyObject on destination key to prevent unintended object modifications.
+* api-change:``s3control``: Update endpoint ruleset parameters casing
+* api-change:``sagemaker``: Amazon SageMaker now supports deleting training and processing jobs in a terminal status.
+* api-change:``sagemaker-featurestore-runtime``: Update endpoint ruleset parameters casing
+* api-change:``security-ir``: Update endpoint ruleset parameters casing
+* api-change:``servicecatalog-appregistry``: Update endpoint ruleset parameters casing
+* api-change:``sqs``: Update endpoint ruleset parameters casing
+* api-change:``support-app``: Update endpoint ruleset parameters casing
+* api-change:``taxsettings``: Update endpoint ruleset parameters casing
+* api-change:``trustedadvisor``: Update endpoint ruleset parameters casing
+* api-change:``workspaces``: Added IPv6 address support for WorkSpaces using Dual-Stack subnets
+* api-change:``workspaces-instances``: Update endpoint ruleset parameters casing
+* api-change:``xray``: Update endpoint ruleset parameters casing
+
+
 1.42.60
 =======
 

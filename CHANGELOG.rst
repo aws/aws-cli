@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.31.25
+=======
+
+* api-change:``bedrock-runtime``: Add support for system tool and web citation response.
+* enhancement:Python: Upgrade bundled Python interpreter to 3.13.9
+
+
 2.31.24
 =======
 

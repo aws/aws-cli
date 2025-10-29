@@ -149,51 +149,61 @@ def _pagination_configs():
 @pytest.mark.parametrize(
     "operation_name, page_config, service_model", _pagination_configs()
 )
-def test_lint_pagination_configs(operation_name, page_config, service_model):
-    _validate_known_pagination_keys(page_config)
-    _validate_result_key_exists(page_config)
-    _validate_referenced_operation_exists(operation_name, service_model)
-    _validate_operation_has_output(operation_name, service_model)
-    _validate_input_keys_match(operation_name, page_config, service_model)
-    _validate_output_keys_match(operation_name, page_config, service_model)
-    _validate_new_numeric_keys(operation_name, page_config, service_model)
-
-
-def _validate_known_pagination_keys(page_config):
+def test_known_pagination_keys(operation_name, page_config, service_model):
     for key in page_config:
         if key not in KNOWN_PAGE_KEYS:
             raise AssertionError(
-                f"Unknown key '{key}' in pagination config: {page_config}"
+                f"Unknown key '{key}' in pagination config: {page_config}\n"
+                f"Target={operation_name}.{key}"
             )
 
 
-def _validate_result_key_exists(page_config):
+@pytest.mark.validates_models
+@pytest.mark.parametrize(
+    "operation_name, page_config, service_model", _pagination_configs()
+)
+def test_result_key_exists(operation_name, page_config, service_model):
     if 'result_key' not in page_config:
         raise AssertionError(
             "Required key 'result_key' is missing "
-            f"from pagination config: {page_config}"
+            f"from pagination config: {page_config}\n"
+            f"Code=ResultKeyMissing\nTarget={operation_name}.result_key"
         )
 
 
-def _validate_referenced_operation_exists(operation_name, service_model):
+@pytest.mark.validates_models
+@pytest.mark.parametrize(
+    "operation_name, page_config, service_model", _pagination_configs()
+)
+def test_referenced_operation_exists(operation_name, page_config, service_model):
     if operation_name not in service_model.operation_names:
         raise AssertionError(
             "Pagination config refers to operation that "
-            f"does not exist: {operation_name}"
+            f"does not exist: {operation_name}\n"
+            f"Target={operation_name}"
         )
 
 
-def _validate_operation_has_output(operation_name, service_model):
+@pytest.mark.validates_models
+@pytest.mark.parametrize(
+    "operation_name, page_config, service_model", _pagination_configs()
+)
+def test_operation_has_output(operation_name, page_config, service_model):
     op_model = service_model.operation_model(operation_name)
     output = op_model.output_shape
     if output is None or not output.members:
         raise AssertionError(
             "Pagination config refers to operation "
-            f"that does not have any output: {operation_name}"
+            f"that does not have any output: {operation_name}\n"
+            f"Target={operation_name}"
         )
 
 
-def _validate_input_keys_match(operation_name, page_config, service_model):
+@pytest.mark.validates_models
+@pytest.mark.parametrize(
+    "operation_name, page_config, service_model", _pagination_configs()
+)
+def test_input_keys_match(operation_name, page_config, service_model):
     input_tokens = page_config['input_token']
     if not isinstance(input_tokens, list):
         input_tokens = [input_tokens]
@@ -203,24 +213,27 @@ def _validate_input_keys_match(operation_name, page_config, service_model):
     for token in input_tokens:
         if token not in valid_input_names:
             raise AssertionError(
-                f"input_token '{token}' refers to a non existent "
-                f"input member for operation: {operation_name}"
+                f"input_token refers to a non existent "
+                f"input member for operation.\n"
+                f"Target={operation_name}.{token}"
             )
     if 'limit_key' in page_config:
         limit_key = page_config['limit_key']
         if limit_key not in valid_input_names:
+            valid_keys = ', '.join(list(valid_input_names))
             raise AssertionError(
-                "limit_key '{}' refers to a non existent "
-                "input member for operation: {}, valid keys: "
-                "{}".format(
-                    limit_key,
-                    operation_name,
-                    ', '.join(list(valid_input_names)),
-                )
+                f"limit_key '{limit_key}' refers to a non existent "
+                f"input member for operation: {operation_name}, valid keys: "
+                f"{valid_keys}.\n"
+                f"Target={operation_name}.{limit_key}"
             )
 
 
-def _validate_output_keys_match(operation_name, page_config, service_model):
+@pytest.mark.validates_models
+@pytest.mark.parametrize(
+    "operation_name, page_config, service_model", _pagination_configs()
+)
+def test_output_keys_match(operation_name, page_config, service_model):
     # NOTE: The original version of this function from translate.py had logic
     # to ensure that the entire set of output_members was accounted for in the
     # union of 'result_key', 'output_token', 'more_results', and
@@ -237,7 +250,8 @@ def _validate_output_keys_match(operation_name, page_config, service_model):
             if output_key not in output_members:
                 raise AssertionError(
                     f"Pagination key '{key_name}' refers to an output "
-                    f"member that does not exist: {output_key}"
+                    f"member that does not exist: {output_key}\n"
+                    f"Target={operation_name}.{output_key}"
                 )
             output_members.remove(output_key)
 
@@ -253,16 +267,18 @@ def _validate_output_keys_match(operation_name, page_config, service_model):
                 f.write(f"'{key}',\n")
         raise AssertionError(
             "There are member names in the output shape of "
-            "{} that are not accounted for in the pagination "
-            "config for service {}: {}".format(
-                operation_name,
-                service_model.service_name,
-                ', '.join(output_members),
-            )
+            f"{operation_name} that are not accounted for in the pagination "
+            f"config for service {service_model.service_name}: "
+            f"[{', '.join(output_members)}]\n"
+            f"Target={operation_name}[{', '.join(output_members)}]"
         )
 
 
-def _validate_new_numeric_keys(operation_name, page_config, service_model):
+@pytest.mark.validates_models
+@pytest.mark.parametrize(
+    "operation_name, page_config, service_model", _pagination_configs()
+)
+def test_new_numeric_keys(operation_name, page_config, service_model):
     output_shape = service_model.operation_model(operation_name).output_shape
     for key in _get_list_value(page_config, 'result_key'):
         current_shape = output_shape
@@ -282,7 +298,8 @@ def _validate_new_numeric_keys(operation_name, page_config, service_model):
                 f'{service_model.service_name} that is configured to sum '
                 'integer outputs across pages. Verify that this behavior is '
                 'correct before allow-listing, since whether or not it is '
-                'appropriate to sum depends on the subject matter.'
+                'appropriate to sum depends on the subject matter.\n'
+                f'Target={service_model.service_name}.{operation_name}'
             )
 
 

@@ -24,6 +24,7 @@ def test_no_event_stream_unless_allowed():
     driver = create_clidriver()
     help_command = driver.create_help_command()
     errors = []
+    targets = []
     for command_name, command_obj in help_command.command_table.items():
         sub_help = command_obj.create_help_command()
         if hasattr(sub_help, 'command_table'):
@@ -40,9 +41,12 @@ def test_no_event_stream_unless_allowed():
                             continue
                         supported_commands = '\n'.join(_ALLOWED_COMMANDS)
                         errors.append(
-                            'The "%s" command uses event streams '
+                            f'The {full_command} command uses event streams '
                             'which is only supported for these operations:\n'
-                            '%s' % (full_command, supported_commands)
+                            f'{supported_commands}\n\n'
                         )
+                        targets.append(full_command)
     if errors:
-        raise AssertionError('\n' + '\n'.join(errors))
+        raise AssertionError(
+            f"\n{'\n'.join(errors)}\nTarget=[{', '.join(targets)}]"
+        )

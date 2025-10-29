@@ -56,6 +56,7 @@ def test_no_shadowed_builtins(command_name, command_table, builtins):
 
     """
     errors = []
+    targets=[]
     for sub_name, sub_command in command_table.items():
         op_help = sub_command.create_help_command()
         arg_table = op_help.arg_table
@@ -64,7 +65,10 @@ def test_no_shadowed_builtins(command_name, command_table, builtins):
                 # Then we are shadowing or prefixing a top level argument
                 errors.append(
                     'Shadowing/Prefixing a top level option: '
-                    '%s.%s.%s' % (command_name, sub_name, arg_name)
+                    f'{command_name}.{sub_name}.{arg_name}'
                 )
+                targets.append(f'{command_name}.{sub_name}.{arg_name}')
     if errors:
-        raise AssertionError('\n' + '\n'.join(errors))
+        raise AssertionError(
+            f'\n{'\n'.join(errors)}\nTarget=[{','.join(targets)}]'
+        )

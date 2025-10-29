@@ -167,7 +167,7 @@ def test_result_key_exists(operation_name, page_config, service_model):
         raise AssertionError(
             "Required key 'result_key' is missing "
             f"from pagination config: {page_config}\n"
-            f"Code=ResultKeyMissing\nTarget={operation_name}.result_key"
+            f"Target={operation_name}.result_key"
         )
 
 

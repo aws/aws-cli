@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.42.62
+=======
+
+* api-change:``bedrock-runtime``: Add support for system tool and web citation response.
+
+
 1.42.61
 =======
 

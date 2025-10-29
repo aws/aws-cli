@@ -54,8 +54,8 @@ def test_services_with_protocols_trait_have_supported_protocol(
     service_name, supported_protocols
 ):
     message = (
-        f"No protocols supported for service {service_name}"
-        f"\nTarget={service_name}"
+        f"No protocols supported for service {service_name}\n"
+        f"Target={service_name}"
     )
     assert any(
         protocol in PRIORITY_ORDERED_SUPPORTED_PROTOCOLS
@@ -72,7 +72,7 @@ def test_services_without_protocols_trait_have_supported_protocol(
     service_name, supported_protocol
 ):
     message = (
-        f"Service protocol not supported for {service_name}"
-        f"\nTarget={service_name}"
+        f"Service protocol not supported for {service_name}\n"
+        f"Target={service_name}"
     )
     assert supported_protocol in PRIORITY_ORDERED_SUPPORTED_PROTOCOLS, message

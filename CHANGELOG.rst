@@ -2,6 +2,61 @@
 CHANGELOG
 =========
 
+2.31.26
+=======
+
+* api-change:``elasticache``: Update endpoint ruleset parameters casing
+* api-change:``codecatalyst``: Update endpoint ruleset parameters casing
+* api-change:``cloudwatch``: Update endpoint ruleset parameters casing
+* api-change:``auditmanager``: Update endpoint ruleset parameters casing
+* api-change:``ecs``: Amazon ECS Service Connect now supports Envoy access logs, providing deeper observability into request-level traffic patterns and service interactions.
+* api-change:``deadline``: Update endpoint ruleset parameters casing
+* api-change:``appmesh``: Update endpoint ruleset parameters casing
+* api-change:``marketplace-reporting``: Update endpoint ruleset parameters casing
+* api-change:``apigateway``: Update endpoint ruleset parameters casing
+* api-change:``cloudsearch``: Update endpoint ruleset parameters casing
+* api-change:``cleanrooms``: Added support for advanced Spark configurations to optimize SQL performance
+* api-change:``docdb``: Adding FailoverState and TagList to GlobalCluster and SynchronizationStatus to GlobalClusterMember.
+* api-change:``devops-guru``: Update endpoint ruleset parameters casing
+* api-change:``iot-managed-integrations``: Add a new GetManagedThingCertificate API to expose Iot ManagedIntegrations (MI) device certificate, and add  "-"  support for name, properties, actions and events in the CapabilityReportCapability object.
+* api-change:``amp``: Add Anomaly Detection APIs for Amazon Managed Prometheus
+* api-change:``neptune``: Update endpoint ruleset parameters casing
+* api-change:``eks-auth``: Update endpoint ruleset parameters casing
+* api-change:``frauddetector``: Update endpoint ruleset parameters casing
+* api-change:``s3outposts``: Update endpoint ruleset parameters casing
+* api-change:``connectcases``: Update endpoint ruleset parameters casing
+* api-change:``firehose``: Update endpoint ruleset parameters casing
+* api-change:``greengrassv2``: Update endpoint ruleset parameters casing
+* api-change:``appflow``: Update endpoint ruleset parameters casing
+* api-change:``sagemaker-runtime``: Update endpoint ruleset parameters casing
+* api-change:``servicecatalog``: Update endpoint ruleset parameters casing
+* api-change:``serverlessrepo``: Update endpoint ruleset parameters casing
+* api-change:``sso``: Update endpoint ruleset parameters casing
+* api-change:``glue``: This release adds the capability to enable User Background Sessions for customers running Trusted Identity Propagation enabled Interactive Sessions on AWS Glue.
+* api-change:``sts``: Update endpoint ruleset parameters casing
+* api-change:``chime``: Update endpoint ruleset parameters casing
+* api-change:``kms``: Add cross account VPC endpoint service connectivity support to CustomKeyStore.
+* api-change:``clouddirectory``: Update endpoint ruleset parameters casing
+* api-change:``license-manager-linux-subscriptions``: Update endpoint ruleset parameters casing
+* api-change:``cognito-sync``: Update endpoint ruleset parameters casing
+* api-change:``codecommit``: Update endpoint ruleset parameters casing
+* api-change:``keyspacesstreams``: Update endpoint ruleset parameters casing
+* api-change:``iotevents-data``: Update endpoint ruleset parameters casing
+* api-change:``emr-serverless``: This release adds the capability to enable User Background Sessions for customers running Trusted Identity Propagation enabled Interactive Sessions on EMR Serverless Applications.
+* api-change:``bedrock-agentcore-control``: Web-Bot-Auth support for AgentCore Browser tool to help reduce captcha challenges.
+* api-change:``appconfig``: Update endpoint ruleset parameters casing
+* api-change:``artifact``: Update endpoint ruleset parameters casing
+* api-change:``geo-places``: Update endpoint ruleset parameters casing
+* api-change:``schemas``: Update endpoint ruleset parameters casing
+* api-change:``bedrock-agent``: Update endpoint ruleset parameters casing
+* api-change:``applicationcostprofiler``: Update endpoint ruleset parameters casing
+* api-change:``cloudcontrol``: Update endpoint ruleset parameters casing
+* api-change:``codedeploy``: Update endpoint ruleset parameters casing
+* api-change:``compute-optimizer``: Update endpoint ruleset parameters casing
+* api-change:``appsync``: Update endpoint ruleset parameters casing
+* api-change:``rtbfabric``: RTB Fabric documentation update.
+
+
 2.31.25
 =======
 

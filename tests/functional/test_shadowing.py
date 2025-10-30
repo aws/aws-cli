@@ -70,5 +70,5 @@ def test_no_shadowed_builtins(command_name, command_table, builtins):
                 targets.append(f'{command_name}.{sub_name}.{arg_name}')
     if errors:
         raise AssertionError(
-            f'\n{'\n'.join(errors)}\nTarget=[{','.join(targets)}]'
+            '\n' + '\n'.join(errors) + '\nTarget=[' + ','.join(targets) + ']'
         )

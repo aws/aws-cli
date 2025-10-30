@@ -1498,6 +1498,28 @@
         "VPC"
       ]
     },
+    "BrowserSigningConfigInput":{
+      "type":"structure",
+      "required":["enabled"],
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether browser signing is enabled. When enabled, the browser will cryptographically sign HTTP requests to identify itself as an AI agent to bot control vendors.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for enabling browser signing capabilities that allow agents to cryptographically identify themselves to websites using HTTP message signatures.</p>"
+    },
+    "BrowserSigningConfigOutput":{
+      "type":"structure",
+      "required":["enabled"],
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether browser signing is currently enabled for cryptographic agent identification using HTTP message signatures.</p>"
+        }
+      },
+      "documentation":"<p>The current browser signing configuration that shows whether cryptographic agent identification is enabled for web bot authentication.</p>"
+    },
     "BrowserStatus":{
       "type":"string",
       "enum":[
@@ -1938,6 +1960,10 @@
         "recording":{
           "shape":"RecordingConfig",
           "documentation":"<p>The recording configuration for the browser. When enabled, browser sessions are recorded and stored in the specified Amazon S3 location.</p>"
+        },
+        "browserSigning":{
+          "shape":"BrowserSigningConfigInput",
+          "documentation":"<p>The browser signing configuration that enables cryptographic agent identification using HTTP message signatures for web bot authentication.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -3538,6 +3564,10 @@
         },
         "networkConfiguration":{"shape":"BrowserNetworkConfiguration"},
         "recording":{"shape":"RecordingConfig"},
+        "browserSigning":{
+          "shape":"BrowserSigningConfigOutput",
+          "documentation":"<p>The browser signing configuration that shows whether cryptographic agent identification is enabled for web bot authentication.</p>"
+        },
         "status":{
           "shape":"BrowserStatus",
           "documentation":"<p>The current status of the browser.</p>"
@@ -4008,7 +4038,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"(Authorization|X-Amzn-Bedrock-AgentCore-Runtime-Custom-[a-zA-Z0-9_-]+)"
+      "pattern":"(Authorization|X-Amzn-Bedrock-AgentCore-Runtime-Custom-[a-zA-Z0-9-]+)"
     },
     "IncludedOauth2ProviderConfigInput":{
       "type":"structure",
@@ -7248,5 +7278,5 @@
       "documentation":"<p>Contains information about a workload identity.</p>"
     }
   },
-  "documentation":"<p><note> <p> is in preview release and is subject to change.</p> </note> <p>Welcome to the Amazon Bedrock AgentCore Control plane API reference. Control plane actions configure, create, modify, and monitor Amazon Web Services resources.</p></p>"
+  "documentation":"<p>Welcome to the Amazon Bedrock AgentCore Control plane API reference. Control plane actions configure, create, modify, and monitor Amazon Web Services resources.</p>"
 }

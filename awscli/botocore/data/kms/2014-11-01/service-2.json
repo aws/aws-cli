@@ -1027,6 +1027,12 @@
   },
   "shapes":{
     "AWSAccountIdType":{"type":"string"},
+    "AccountIdType":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"[0-9]{12}"
+    },
     "AlgorithmSpec":{
       "type":"string",
       "enum":[
@@ -1282,6 +1288,10 @@
         "XksProxyVpcEndpointServiceName":{
           "shape":"XksProxyVpcEndpointServiceNameType",
           "documentation":"<p>Specifies the name of the Amazon VPC endpoint service for interface endpoints that is used to communicate with your external key store proxy (XKS proxy). This parameter is required when the value of <code>CustomKeyStoreType</code> is <code>EXTERNAL_KEY_STORE</code> and the value of <code>XksProxyConnectivity</code> is <code>VPC_ENDPOINT_SERVICE</code>.</p> <p>The Amazon VPC endpoint service must <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/create-xks-keystore.html#xks-requirements\">fulfill all requirements</a> for use with an external key store. </p> <p> <b>Uniqueness requirements:</b> </p> <ul> <li> <p>External key stores with <code>VPC_ENDPOINT_SERVICE</code> connectivity can share an Amazon VPC, but each external key store must have its own VPC endpoint service and private DNS name.</p> </li> </ul>"
+        },
+        "XksProxyVpcEndpointServiceOwner":{
+          "shape":"AccountIdType",
+          "documentation":"<p>Specifies the Amazon Web Services account ID that owns the Amazon VPC service endpoint for the interface that is used to communicate with your external key store proxy (XKS proxy). This parameter is optional. If not provided, the Amazon Web Services account ID calling the action will be used.</p>"
         },
         "XksProxyAuthenticationCredential":{
           "shape":"XksProxyAuthenticationCredentialType",
@@ -3874,6 +3884,10 @@
           "shape":"XksProxyVpcEndpointServiceNameType",
           "documentation":"<p>Changes the name that KMS uses to identify the Amazon VPC endpoint service for your external key store proxy (XKS proxy). This parameter is valid when the <code>CustomKeyStoreType</code> is <code>EXTERNAL_KEY_STORE</code> and the <code>XksProxyConnectivity</code> is <code>VPC_ENDPOINT_SERVICE</code>.</p> <p>To change this value, the external key store must be disconnected.</p>"
         },
+        "XksProxyVpcEndpointServiceOwner":{
+          "shape":"AccountIdType",
+          "documentation":"<p>Changes the Amazon Web Services account ID that KMS uses to identify the Amazon VPC endpoint service for your external key store proxy (XKS proxy). This parameter is optional. If not specified, the current Amazon Web Services account ID for the VPC endpoint service will not be updated.</p> <p>To change this value, the external key store must be disconnected.</p>"
+        },
         "XksProxyAuthenticationCredential":{
           "shape":"XksProxyAuthenticationCredentialType",
           "documentation":"<p>Changes the credentials that KMS uses to sign requests to the external key store proxy (XKS proxy). This parameter is valid only for custom key stores with a <code>CustomKeyStoreType</code> of <code>EXTERNAL_KEY_STORE</code>.</p> <p>You must specify both the <code>AccessKeyId</code> and <code>SecretAccessKey</code> value in the authentication credential, even if you are only updating one value.</p> <p>This parameter doesn't establish or change your authentication credentials on the proxy. It just tells KMS the credential that you established with your external key store proxy. For example, if you rotate the credential on your external key store proxy, you can use this parameter to update the credential in KMS.</p> <p>You can change this value when the external key store is connected or disconnected.</p>"
@@ -4133,6 +4147,10 @@
         "VpcEndpointServiceName":{
           "shape":"XksProxyVpcEndpointServiceNameType",
           "documentation":"<p>The Amazon VPC endpoint service used to communicate with the external key store proxy. This field appears only when the external key store proxy uses an Amazon VPC endpoint service to communicate with KMS.</p>"
+        },
+        "VpcEndpointServiceOwner":{
+          "shape":"AccountIdType",
+          "documentation":"<p>The Amazon Web Services account ID that owns the Amazon VPC endpoint service used to communicate with the external key store proxy (XKS). This field appears only when the XKS uses an VPC endpoint service to communicate with KMS.</p>"
         }
       },
       "documentation":"<p>Detailed information about the external key store proxy (XKS proxy). Your external key store proxy translates KMS requests into a format that your external key manager can understand. These fields appear in a <a>DescribeCustomKeyStores</a> response only when the <code>CustomKeyStoreType</code> is <code>EXTERNAL_KEY_STORE</code>.</p>"

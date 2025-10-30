@@ -18,7 +18,7 @@ import json
 from argparse import Namespace
 from datetime import datetime, timedelta
 
-import rsa
+from awscrt.crypto import RSASignatureAlgorithm
 from botocore.exceptions import ClientError
 from dateutil import parser, tz
 
@@ -44,6 +44,9 @@ from awscli.customizations.cloudtrail.validation import (
 )
 from awscli.schema import ParameterRequiredError
 from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
+from tests import PublicPrivateKeyLoader
+
+from . import get_private_key_path, get_public_key_path
 
 START_DATE = parser.parse('20140810T000000Z')
 END_DATE = parser.parse('20150810T000000Z')
@@ -543,15 +546,24 @@ class TestSha256RSADigestValidator(unittest.TestCase):
         self._digest_data['_signature'] = 'aeff'
 
     def test_validates_digests(self):
-        (public_key, private_key) = rsa.newkeys(512)
+        (
+            public_key,
+            private_key,
+        ) = PublicPrivateKeyLoader.load_private_key_and_public_key(
+            get_private_key_path(), get_public_key_path()
+        )
         sha256_hash = hashlib.sha256(self._inflated_digest)
         string_to_sign = f"{self._digest_data['digestEndTime']}\n{self._digest_data['digestS3Bucket']}/{self._digest_data['digestS3Object']}\n{sha256_hash.hexdigest()}\n{self._digest_data['previousDigestSignature']}"
-        signature = rsa.sign(string_to_sign.encode(), private_key, 'SHA-256')
+        to_sign = string_to_sign.encode()
+        signature = private_key.sign(
+            signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
+            digest=hashlib.sha256(to_sign).digest(),
+        )
+
         self._digest_data['_signature'] = binascii.hexlify(signature)
         validator = Sha256RSADigestValidator()
-        public_key_b64 = base64.b64encode(public_key.save_pkcs1(format='DER'))
         validator.validate(
-            'b', 'k', public_key_b64, self._digest_data, self._inflated_digest
+            'b', 'k', public_key, self._digest_data, self._inflated_digest
         )
 
     def test_does_not_expose_underlying_key_decoding_error(self):

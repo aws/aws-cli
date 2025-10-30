@@ -21,10 +21,9 @@ import zlib
 from datetime import datetime, timedelta
 from zlib import error as ZLibError
 
-import rsa
+from awscrt.crypto import RSA, RSASignatureAlgorithm
 from botocore.exceptions import ClientError
 from dateutil import parser, tz
-from pyasn1.error import PyAsn1Error
 
 from awscli.customizations.cloudtrail.utils import (
     get_account_id_from_arn,
@@ -807,20 +806,29 @@ class Sha256RSADigestValidator:
         """
         try:
             decoded_key = base64.b64decode(public_key)
-            public_key = rsa.PublicKey.load_pkcs1(decoded_key, format='DER')
-            to_sign = self._create_string_to_sign(digest_data, inflated_digest)
-            signature_bytes = binascii.unhexlify(digest_data['_signature'])
-            rsa.verify(to_sign, signature_bytes, public_key)
-        except PyAsn1Error:
+            public_key = RSA.new_public_key_from_der_data(decoded_key)
+        except RuntimeError:
             raise DigestError(
-                f'Digest file\ts3://{bucket}/{key}\tINVALID: Unable to load PKCS #1 key'
-                f' with fingerprint {digest_data["digestPublicKeyFingerprint"]}'
+                (
+                    'Digest file\ts3://{}/{}\tINVALID: Unable to load PKCS #1 key'
+                    ' with fingerprint {}'
+                ).format(
+                    bucket, key, digest_data['digestPublicKeyFingerprint']
+                )
             )
-        except rsa.pkcs1.VerificationError:
-            # Note from the Python-RSA docs: Never display the stack trace of
-            # a rsa.pkcs1.VerificationError exception. It shows where in the
-            # code the exception occurred, and thus leaks information about
-            # the key.
+
+        to_sign = self._create_string_to_sign(digest_data, inflated_digest)
+        signature_bytes = binascii.unhexlify(digest_data['_signature'])
+
+        result = public_key.verify(
+            signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
+            digest=hashlib.sha256(to_sign).digest(),
+            signature=signature_bytes,
+        )
+        if not result:
+            # The previous implementation caught a cryptography.exceptions.InvalidSignature
+            # exception here and re-raised the DigestSignatureError to avoid the stack trace
+            # leaking any information about the key.
             raise DigestSignatureError(bucket, key)
 
     def _create_string_to_sign(self, digest_data, inflated_digest):

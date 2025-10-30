@@ -48,5 +48,5 @@ def test_no_event_stream_unless_allowed():
                         targets.append(full_command)
     if errors:
         raise AssertionError(
-            f"\n{'\n'.join(errors)}\nTarget=[{', '.join(targets)}]"
+            '\n' + '\n'.join(errors) + '\nTarget=[' + ', '.join(targets) + ']'
         )

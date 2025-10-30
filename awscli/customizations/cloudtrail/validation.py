@@ -21,17 +21,17 @@ import zlib
 from datetime import datetime, timedelta
 from zlib import error as ZLibError
 
-from awscrt.crypto import RSA, RSASignatureAlgorithm
+import rsa
 from botocore.exceptions import ClientError
 from dateutil import parser, tz
+from pyasn1.error import PyAsn1Error
 
 from awscli.customizations.cloudtrail.utils import (
-    PublicKeyProvider,
     get_account_id_from_arn,
     get_trail_by_arn,
 )
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.exceptions import ParamValidationError
+from awscli.schema import ParameterRequiredError
 
 LOG = logging.getLogger(__name__)
 DATE_FORMAT = '%Y%m%dT%H%M%SZ'
@@ -53,23 +53,35 @@ def normalize_date(date):
     return date.replace(tzinfo=tz.tzutc())
 
 
+def is_backfill_digest_key(digest_key):
+    """Utility function to determine if a digest key represents a backfill digest file"""
+    return digest_key.endswith('_backfill.json.gz')
+
+
 def extract_digest_key_date(digest_s3_key):
     """Extract the timestamp portion of a manifest file.
 
     Manifest file names take the following form:
     AWSLogs/{account}/CloudTrail-Digest/{region}/{ymd}/{account}_CloudTrail \
     -Digest_{region}_{name}_region_{date}.json.gz
+
+    For backfill files:
+    AWSLogs/{account}/CloudTrail-Digest/{region}/{ymd}/{account}_CloudTrail \
+    -Digest_{region}_{name}_region_{date}_backfill.json.gz
     """
-    return digest_s3_key[-24:-8]
+    if is_backfill_digest_key(digest_s3_key):
+        # Backfill files have _backfill suffix before .json.gz
+        return digest_s3_key[-33:-17]
+    else:
+        # Regular digest files
+        return digest_s3_key[-24:-8]
 
 
 def parse_date(date_string):
     try:
         return parser.parse(date_string)
     except ValueError:
-        raise ParamValidationError(
-            f'Unable to parse date value: {date_string}'
-        )
+        raise ValueError(f'Unable to parse date value: {date_string}')
 
 
 def assert_cloudtrail_arn_is_valid(trail_arn):
@@ -78,7 +90,7 @@ def assert_cloudtrail_arn_is_valid(trail_arn):
     ARNs look like: arn:aws:cloudtrail:us-east-1:123456789012:trail/foo"""
     pattern = re.compile(r'arn:.+:cloudtrail:.+:\d{12}:trail/.+')
     if not pattern.match(trail_arn):
-        raise ParamValidationError(f'Invalid trail ARN provided: {trail_arn}')
+        raise ValueError(f'Invalid trail ARN provided: {trail_arn}')
 
 
 def create_digest_traverser(
@@ -134,13 +146,13 @@ def create_digest_traverser(
     if bucket is None:
         # Determine the bucket and prefix based on the trail arn.
         trail_info = get_trail_by_arn(cloudtrail_client, trail_arn)
-        LOG.debug('Loaded trail info: %s', trail_info)
+        LOG.debug(f'Loaded trail info: {trail_info}')
         bucket = trail_info['S3BucketName']
         prefix = trail_info.get('S3KeyPrefix', None)
         is_org_trail = trail_info.get('IsOrganizationTrail')
         if is_org_trail:
             if not account_id:
-                raise ParamValidationError(
+                raise ParameterRequiredError(
                     "Missing required parameter for organization "
                     "trail: '--account-id'"
                 )
@@ -205,7 +217,9 @@ class S3ClientProvider:
     def _create_client(self, region_name):
         """Creates an Amazon S3 client for the given region name"""
         if region_name not in self._client_cache:
-            client = self._session.create_client('s3', region_name)
+            client = client = self._session.create_client(
+                's3', region_name=region_name
+            )
             # Remove the CLI error event that prevents exceptions.
             self._client_cache[region_name] = client
         return self._client_cache[region_name]
@@ -225,7 +239,7 @@ class DigestSignatureError(DigestError):
             f'Digest file\ts3://{bucket}/{key}\tINVALID: signature verification '
             'failed'
         )
-        super(DigestSignatureError, self).__init__(message)
+        super().__init__(message)
 
 
 class InvalidDigestFormat(DigestError):
@@ -233,7 +247,32 @@ class InvalidDigestFormat(DigestError):
 
     def __init__(self, bucket, key):
         message = f'Digest file\ts3://{bucket}/{key}\tINVALID: invalid format'
-        super(InvalidDigestFormat, self).__init__(message)
+        super().__init__(message)
+
+
+class PublicKeyProvider:
+    """Retrieves public keys from CloudTrail within a date range."""
+
+    def __init__(self, cloudtrail_client):
+        self._cloudtrail_client = cloudtrail_client
+
+    def get_public_keys(self, start_date, end_date):
+        """Loads public keys in a date range into a returned dict.
+
+        :type start_date: datetime
+        :param start_date: Start date of a date range.
+        :type end_date: datetime
+        :param end_date: End date of a date range.
+        :rtype: dict
+        :return: Returns a dict where each key is the fingerprint of the
+            public key, and each value is a dict of public key data.
+        """
+        public_keys = self._cloudtrail_client.list_public_keys(
+            StartTime=start_date, EndTime=end_date
+        )
+        public_keys_in_range = public_keys['PublicKeyList']
+        LOG.debug(f'Loaded public keys in range: {public_keys_in_range}')
+        return dict((key['Fingerprint'], key) for key in public_keys_in_range)
 
 
 class DigestProvider:
@@ -261,23 +300,29 @@ class DigestProvider:
         self.trail_home_region = trail_home_region
         self.trail_source_region = trail_source_region or trail_home_region
         self.organization_id = organization_id
+        self._digest_cache = {}
 
-    def load_digest_keys_in_range(self, bucket, prefix, start_date, end_date):
-        """Returns a list of digest keys in the date range.
+    def load_all_digest_keys_in_range(
+        self, bucket, prefix, start_date, end_date
+    ):
+        """Load all digest keys and separate into standard and backfill lists.
 
-        This method uses a list_objects API call and provides a Marker
-        parameter that is calculated based on the start_date provided.
-        Amazon S3 then returns all keys in the bucket that start after
-        the given key (non-inclusive). We then iterate over the keys
-        until the date extracted from the yielded keys is greater than
-        the given end_date.
+        Performs a single S3 list operation and separates keys into standard
+        and backfill digest lists during iteration for optimal performance.
+
+        :param bucket: S3 bucket name
+        :param prefix: S3 key prefix
+        :param start_date: Start date for digest range
+        :param end_date: End date for digest range
+        :return: Tuple of (standard_digests, backfill_digests) lists
+        :rtype: tuple
         """
-        digests = []
+        standard_digests = []
+        backfill_digests = []
         marker = self._create_digest_key(start_date, prefix)
-        s3_digest_files_prefix = self._create_digest_prefix(start_date, prefix)
         client = self._client_provider.get_client(bucket)
         paginator = client.get_paginator('list_objects')
-        page_iterator = paginator.paginate(Bucket=bucket, Marker=marker, Prefix=s3_digest_files_prefix)
+        page_iterator = paginator.paginate(Bucket=bucket, Marker=marker)
         key_filter = page_iterator.search('Contents[*].Key')
         # Create a target start end end date
         target_start_date = format_date(normalize_date(start_date))
@@ -288,20 +333,62 @@ class DigestProvider:
         # Ensure digests are from the same trail.
         digest_key_regex = re.compile(self._create_digest_key_regex(prefix))
         for key in key_filter:
-            if key and digest_key_regex.match(key):
-                # Use a lexicographic comparison to know when to stop.
-                extracted_date = extract_digest_key_date(key)
-                if extracted_date > target_end_date:
-                    break
-                # Only append digests after the start date.
-                if extracted_date >= target_start_date:
-                    digests.append(key)
-        return digests
+            if not digest_key_regex.match(key):
+                continue
+            # Use a lexicographic comparison to know when to stop.
+            extracted_date = extract_digest_key_date(key)
+            if extracted_date > target_end_date:
+                break
+            # Only append digests after the start date.
+            if extracted_date < target_start_date:
+                continue
+            if is_backfill_digest_key(key):
+                backfill_digests.append(key)
+            else:
+                standard_digests.append(key)
+        return standard_digests, backfill_digests
+
+    def load_digest_keys_in_range(
+        self, bucket, prefix, start_date, end_date, is_backfill=False
+    ):
+        """Returns a list of digest keys in the date range.
+
+        This method uses caching to avoid duplicate S3 list operations.
+        On first call, it loads all digest keys and caches them separated
+        by type. Subsequent calls return the appropriate cached list.
+
+        :param bucket: S3 bucket name
+        :param prefix: S3 key prefix
+        :param start_date: Start date for digest range
+        :param end_date: End date for digest range
+        :param is_backfill: Optional filter - True for backfill digests only,
+                           False for standard digests only
+        :return: List of digest keys matching the specified type
+        :rtype: list
+        """
+        cache_key = (bucket, prefix, start_date, end_date)
+
+        if cache_key not in self._digest_cache:
+            standard_digests, backfill_digests = (
+                self.load_all_digest_keys_in_range(
+                    bucket, prefix, start_date, end_date
+                )
+            )
+            self._digest_cache[cache_key] = {
+                'standard': standard_digests,
+                'backfill': backfill_digests,
+            }
+
+        if is_backfill:
+            return self._digest_cache[cache_key]['backfill']
+        else:
+            return self._digest_cache[cache_key]['standard']
 
     def fetch_digest(self, bucket, key):
         """Loads a digest by key from S3.
 
         Returns the JSON decode data and GZIP inflated raw content.
+        For backfill digests, also extracts the backfill-generation-timestamp.
         """
         client = self._client_provider.get_client(bucket)
         result = client.get_object(Bucket=bucket, Key=key)
@@ -323,6 +410,15 @@ class DigestProvider:
         digest_data['_signature_algorithm'] = result['Metadata'][
             'signature-algorithm'
         ]
+
+        if is_backfill_digest_key(key):
+            if 'backfill-generation-timestamp' in result['Metadata']:
+                digest_data['_backfill_generation_timestamp'] = result[
+                    'Metadata'
+                ]['backfill-generation-timestamp']
+            else:
+                raise InvalidDigestFormat(bucket, key)
+
         return digest_data, digest
 
     def _create_digest_key(self, start_date, key_prefix):
@@ -337,65 +433,52 @@ class DigestProvider:
         """
         # Subtract one minute to ensure the dates are inclusive.
         date = start_date - timedelta(minutes=1)
-        template = 'AWSLogs/'
-        template_params = {
-            'account_id': self.account_id,
-            'date': format_date(date),
-            'ymd': date.strftime('%Y/%m/%d'),
-            'source_region': self.trail_source_region,
-            'home_region': self.trail_home_region,
-            'name': self.trail_name,
-        }
+        account_id = self.account_id
+        date_str = format_date(date)
+        ymd = date.strftime('%Y/%m/%d')
+        source_region = self.trail_source_region
+        home_region = self.trail_home_region
+        name = self.trail_name
+
         if self.organization_id:
-            template += '{organization_id}/'
-            template_params['organization_id'] = self.organization_id
-        template += (
-            '{account_id}/CloudTrail-Digest/{source_region}/'
-            '{ymd}/{account_id}_CloudTrail-Digest_{source_region}_{name}_'
-            '{home_region}_{date}.json.gz'
-        )
-        key = template.format(**template_params)
+            organization_id = self.organization_id
+            key = (
+                f'AWSLogs/{organization_id}/{account_id}/CloudTrail-Digest/'
+                f'{source_region}/{ymd}/{account_id}_CloudTrail-Digest_'
+                f'{source_region}_{name}_{home_region}_{date_str}.json.gz'
+            )
+        else:
+            key = (
+                f'AWSLogs/{account_id}/CloudTrail-Digest/{source_region}/'
+                f'{ymd}/{account_id}_CloudTrail-Digest_{source_region}_{name}_'
+                f'{home_region}_{date_str}.json.gz'
+            )
+
         if key_prefix:
             key = key_prefix + '/' + key
         return key
 
-    def _create_digest_prefix(self, start_date, key_prefix):
-        """Creates an S3 prefix to scope listing to trail's region.
-
-        :return: Returns a prefix string to limit S3 listing scope.
-        """
-        template = 'AWSLogs/'
-        template_params = {
-            'account_id': self.account_id,
-            'source_region': self.trail_source_region
-        }
-        if self.organization_id:
-            template += '{organization_id}/'
-            template_params['organization_id'] = self.organization_id
-        template += '{account_id}/CloudTrail-Digest/{source_region}'
-        prefix = template.format(**template_params)
-        if key_prefix:
-            prefix = key_prefix + '/' + prefix
-        return prefix
-
     def _create_digest_key_regex(self, key_prefix):
-        """Creates a regular expression used to match against S3 keys"""
-        template = 'AWSLogs/'
-        template_params = {
-            'account_id': re.escape(self.account_id),
-            'source_region': re.escape(self.trail_source_region),
-            'home_region': re.escape(self.trail_home_region),
-            'name': re.escape(self.trail_name),
-        }
+        """Creates a regular expression used to match against S3 keys for both standard and backfill digests"""
+        account_id = re.escape(self.account_id)
+        source_region = re.escape(self.trail_source_region)
+        home_region = re.escape(self.trail_home_region)
+        name = re.escape(self.trail_name)
+
         if self.organization_id:
-            template += '{organization_id}/'
-            template_params['organization_id'] = self.organization_id
-        template += (
-            '{account_id}/CloudTrail\\-Digest/{source_region}/'
-            '\\d+/\\d+/\\d+/{account_id}_CloudTrail\\-Digest_'
-            '{source_region}_{name}_{home_region}_.+\\.json\\.gz'
-        )
-        key = template.format(**template_params)
+            organization_id = self.organization_id
+            key = (
+                f'AWSLogs/{organization_id}/{account_id}/CloudTrail\\-Digest/'
+                f'{source_region}/\\d+/\\d+/\\d+/{account_id}_CloudTrail\\-Digest_'
+                f'{source_region}_{name}_{home_region}_.+(?:_backfill)?\\.json\\.gz'
+            )
+        else:
+            key = (
+                f'AWSLogs/{account_id}/CloudTrail\\-Digest/{source_region}/'
+                f'\\d+/\\d+/\\d+/{account_id}_CloudTrail\\-Digest_'
+                f'{source_region}_{name}_{home_region}_.+(?:_backfill)?\\.json\\.gz'
+            )
+
         if key_prefix:
             key = re.escape(key_prefix) + '/' + key
         return '^' + key + '$'
@@ -449,7 +532,7 @@ class DigestTraverser:
             digest_validator = Sha256RSADigestValidator()
         self._digest_validator = digest_validator
 
-    def traverse(self, start_date, end_date=None):
+    def traverse_digests(self, start_date, end_date=None, is_backfill=False):
         """Creates and returns a generator that yields validated digest data.
 
         Each yielded digest dictionary contains information about the digest
@@ -460,8 +543,10 @@ class DigestTraverser:
 
         :type start_date: datetime
         :param start_date: Date to start validating from (inclusive).
-        :type start_date: datetime
+        :type end_date: datetime
         :param end_date: Date to stop validating at (inclusive).
+        :type is_backfill: bool
+        :param is_backfill: Flag indicating whether to process backfill digests only.
         """
         if end_date is None:
             end_date = datetime.utcnow()
@@ -469,21 +554,53 @@ class DigestTraverser:
         start_date = normalize_date(start_date)
         bucket = self.starting_bucket
         prefix = self.starting_prefix
-        digests = self._load_digests(bucket, prefix, start_date, end_date)
-        public_keys = self._load_public_keys(start_date, end_date)
+
+        digests = self._load_digests(
+            bucket, prefix, start_date, end_date, is_backfill=is_backfill
+        )
+
+        # For regular digests, pre-load public keys. For backfill, start with empty dict
+        public_keys = (
+            {} if is_backfill else self._load_public_keys(start_date, end_date)
+        )
+
+        yield from self._traverse_digest_chain(
+            digests,
+            bucket,
+            prefix,
+            start_date,
+            public_keys,
+            is_backfill=is_backfill,
+        )
+
+    def _traverse_digest_chain(
+        self,
+        digests,
+        bucket,
+        prefix,
+        start_date,
+        public_keys,
+        is_backfill=False,
+    ):
+        """Traverses a single chain of digests
+
+        :param is_backfill: Boolean indicating whether this chain contains backfill digests
+        """
         key, end_date = self._get_last_digest(digests)
         last_start_date = end_date
+
         while key and start_date <= last_start_date:
             try:
                 digest, end_date = self._load_and_validate_digest(
-                    public_keys, bucket, key
+                    public_keys, bucket, key, is_backfill=is_backfill
                 )
                 last_start_date = normalize_date(
                     parse_date(digest['digestStartTime'])
                 )
                 previous_bucket = digest.get('previousDigestS3Bucket', None)
+                previous_key = digest.get('previousDigestS3Object', None)
                 yield digest
-                if previous_bucket is None:
+                if previous_bucket is None or previous_key is None:
                     # The chain is broken, so find next in digest store.
                     key, end_date = self._find_next_digest(
                         digests=digests,
@@ -492,14 +609,19 @@ class DigestTraverser:
                         last_start_date=last_start_date,
                         cb=self._on_gap,
                         is_cb_conditional=True,
+                        is_backfill=is_backfill,
                     )
                 else:
-                    key = digest['previousDigestS3Object']
+                    key = previous_key
                     if previous_bucket != bucket:
                         bucket = previous_bucket
                         # The bucket changed so reload the digest list.
                         digests = self._load_digests(
-                            bucket, prefix, start_date, end_date
+                            bucket,
+                            prefix,
+                            start_date,
+                            end_date,
+                            is_backfill=is_backfill,
                         )
             except ClientError as e:
                 if e.response['Error']['Code'] != 'NoSuchKey':
@@ -511,6 +633,7 @@ class DigestTraverser:
                     last_start_date=last_start_date,
                     cb=self._on_missing,
                     message=str(e),
+                    is_backfill=is_backfill,
                 )
             except DigestError as e:
                 key, end_date = self._find_next_digest(
@@ -520,6 +643,7 @@ class DigestTraverser:
                     last_start_date=last_start_date,
                     cb=self._on_invalid,
                     message=str(e),
+                    is_backfill=is_backfill,
                 )
             except Exception as e:
                 # Any other unexpected errors.
@@ -530,14 +654,18 @@ class DigestTraverser:
                     last_start_date=last_start_date,
                     cb=self._on_invalid,
                     message=f'Digest file\ts3://{bucket}/{key}\tINVALID: {str(e)}',
+                    is_backfill=is_backfill,
                 )
 
-    def _load_digests(self, bucket, prefix, start_date, end_date):
+    def _load_digests(
+        self, bucket, prefix, start_date, end_date, is_backfill=False
+    ):
         return self.digest_provider.load_digest_keys_in_range(
             bucket=bucket,
             prefix=prefix,
             start_date=start_date,
             end_date=end_date,
+            is_backfill=is_backfill,
         )
 
     def _find_next_digest(
@@ -549,6 +677,7 @@ class DigestTraverser:
         cb=None,
         is_cb_conditional=False,
         message=None,
+        is_backfill=False,
     ):
         """Finds the next digest in the bucket and invokes any callback."""
         next_key, next_end_date = self._get_last_digest(digests, last_key)
@@ -560,6 +689,7 @@ class DigestTraverser:
                 next_end_date=next_end_date,
                 last_start_date=last_start_date,
                 message=message,
+                is_backfill=is_backfill,
             )
         return next_key, next_end_date
 
@@ -586,22 +716,30 @@ class DigestTraverser:
                 parse_date(extract_digest_key_date(next_key))
             )
             if next_key_date < before_key_date:
-                LOG.debug("Next found key: %s", next_key)
+                LOG.debug(f"Next found key: {next_key}")
                 return next_key, next_key_date
         return None, None
 
-    def _load_and_validate_digest(self, public_keys, bucket, key):
+    def _load_and_validate_digest(
+        self, public_keys, bucket, key, is_backfill=False
+    ):
         """Loads and validates a digest from S3.
 
         :param public_keys: Public key dictionary of fingerprint to dict.
+        :param bucket: S3 bucket name
+        :param key: S3 key for the digest file
+        :param is_backfill: Flag indicating if this is a backfill digest
         :return: Returns a tuple of the digest data as a dict and end_date
         :rtype: tuple
         """
         digest_data, digest = self.digest_provider.fetch_digest(bucket, key)
+
+        # Validate required keys are present
         for required_key in self.required_digest_keys:
             if required_key not in digest_data:
                 raise InvalidDigestFormat(bucket, key)
-        # Ensure the bucket and key are the same as what's expected.
+
+        # Ensure the bucket and key are the same as what's expected
         if (
             digest_data['digestS3Bucket'] != bucket
             or digest_data['digestS3Object'] != key
@@ -610,17 +748,29 @@ class DigestTraverser:
                 f'Digest file\ts3://{bucket}/{key}\tINVALID: has been moved from its '
                 'original location'
             )
-        # Get the public keys in the given time range.
+
         fingerprint = digest_data['digestPublicKeyFingerprint']
+        if fingerprint not in public_keys and is_backfill:
+            # Backfill-specific logic to fetch public keys
+            backfill_timestamp = normalize_date(
+                parse_date(digest_data['_backfill_generation_timestamp'])
+            )
+            start_time = backfill_timestamp - timedelta(hours=1)
+            end_time = backfill_timestamp + timedelta(hours=1)
+            public_keys.update(self._load_public_keys(start_time, end_time))
+
         if fingerprint not in public_keys:
-            raise DigestError(
+            error_message = (
                 f'Digest file\ts3://{bucket}/{key}\tINVALID: public key not found in '
                 f'region {self.digest_provider.trail_home_region} for fingerprint {fingerprint}'
             )
+            raise DigestError(error_message)
+
         public_key_hex = public_keys[fingerprint]['Value']
         self._digest_validator.validate(
             bucket, key, public_key_hex, digest_data, digest
         )
+
         end_date = normalize_date(parse_date(digest_data['digestEndTime']))
         return digest_data, end_date
 
@@ -657,29 +807,20 @@ class Sha256RSADigestValidator:
         """
         try:
             decoded_key = base64.b64decode(public_key)
-            public_key = RSA.new_public_key_from_der_data(decoded_key)
-        except RuntimeError:
+            public_key = rsa.PublicKey.load_pkcs1(decoded_key, format='DER')
+            to_sign = self._create_string_to_sign(digest_data, inflated_digest)
+            signature_bytes = binascii.unhexlify(digest_data['_signature'])
+            rsa.verify(to_sign, signature_bytes, public_key)
+        except PyAsn1Error:
             raise DigestError(
-                (
-                    'Digest file\ts3://{}/{}\tINVALID: Unable to load PKCS #1 key'
-                    ' with fingerprint {}'
-                ).format(
-                    bucket, key, digest_data['digestPublicKeyFingerprint']
-                )
+                f'Digest file\ts3://{bucket}/{key}\tINVALID: Unable to load PKCS #1 key'
+                f' with fingerprint {digest_data["digestPublicKeyFingerprint"]}'
             )
-
-        to_sign = self._create_string_to_sign(digest_data, inflated_digest)
-        signature_bytes = binascii.unhexlify(digest_data['_signature'])
-
-        result = public_key.verify(
-            signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
-            digest=hashlib.sha256(to_sign).digest(),
-            signature=signature_bytes,
-        )
-        if not result:
-            # The previous implementation caught a cryptography.exceptions.InvalidSignature
-            # exception here and re-raised the DigestSignatureError to avoid the stack trace
-            # leaking any information about the key.
+        except rsa.pkcs1.VerificationError:
+            # Note from the Python-RSA docs: Never display the stack trace of
+            # a rsa.pkcs1.VerificationError exception. It shows where in the
+            # code the exception occurred, and thus leaks information about
+            # the key.
             raise DigestSignatureError(bucket, key)
 
     def _create_string_to_sign(self, digest_data, inflated_digest):
@@ -687,14 +828,9 @@ class Sha256RSADigestValidator:
         if previous_signature is None:
             # The value must be 'null' to match the Java implementation.
             previous_signature = 'null'
-        string_to_sign = "{}\n{}/{}\n{}\n{}".format(
-            digest_data['digestEndTime'],
-            digest_data['digestS3Bucket'],
-            digest_data['digestS3Object'],
-            hashlib.sha256(inflated_digest).hexdigest(),
-            previous_signature,
-        )
-        LOG.debug('Digest string to sign: %s', string_to_sign)
+
+        string_to_sign = f"{digest_data['digestEndTime']}\n{digest_data['digestS3Bucket']}/{digest_data['digestS3Object']}\n{hashlib.sha256(inflated_digest).hexdigest()}\n{previous_signature}"
+        LOG.debug(f'Digest string to sign: {string_to_sign}')
         return string_to_sign.encode()
 
 
@@ -708,7 +844,8 @@ class CloudTrailValidateLogs(BasicCommand):
     Validates CloudTrail logs for a given period of time.
 
     This command uses the digest files delivered to your S3 bucket to perform
-    the validation.
+    the validation. It supports validation of both digest files and
+    backfill digest files in a single run.
 
     The AWS CLI allows you to detect the following types of changes:
 
@@ -813,7 +950,7 @@ class CloudTrailValidateLogs(BasicCommand):
     ]
 
     def __init__(self, session):
-        super(CloudTrailValidateLogs, self).__init__(session)
+        super().__init__(session)
         self.trail_arn = None
         self.is_verbose = False
         self.start_time = None
@@ -826,6 +963,8 @@ class CloudTrailValidateLogs(BasicCommand):
         self._source_region = None
         self._valid_digests = 0
         self._invalid_digests = 0
+        self._valid_backfill_digests = 0
+        self._invalid_backfill_digests = 0
         self._valid_logs = 0
         self._invalid_logs = 0
         self._is_last_status_double_space = True
@@ -836,7 +975,10 @@ class CloudTrailValidateLogs(BasicCommand):
         self.handle_args(args)
         self.setup_services(parsed_globals)
         self._call()
-        if self._invalid_digests > 0 or self._invalid_logs > 0:
+        total_invalid_digests = (
+            self._invalid_digests + self._invalid_backfill_digests
+        )
+        if total_invalid_digests > 0 or self._invalid_logs > 0:
             return 1
         return 0
 
@@ -852,16 +994,10 @@ class CloudTrailValidateLogs(BasicCommand):
         else:
             self.end_time = normalize_date(datetime.utcnow())
         if self.start_time > self.end_time:
-            raise ParamValidationError(
+            raise ValueError(
                 'Invalid time range specified: start-time must '
                 'occur before end-time'
             )
-        # Found start time always defaults to the given start time. This value
-        # may change if the earliest found digest is after the given start
-        # time. Note that the summary output report of what date ranges were
-        # actually found is only shown if a valid digest is encountered,
-        # thereby setting self._found_end_time to a value.
-        self._found_start_time = self.start_time
 
     def setup_services(self, parsed_globals):
         self._source_region = parsed_globals.region
@@ -898,34 +1034,63 @@ class CloudTrailValidateLogs(BasicCommand):
             account_id=self.account_id,
         )
         self._write_startup_text()
-        digests = traverser.traverse(self.start_time, self.end_time)
+
+        digests = traverser.traverse_digests(
+            self.start_time, self.end_time, is_backfill=False
+        )
         for digest in digests:
             # Only valid digests are yielded and only valid digests can adjust
             # the found times that are reported in the CLI output summary.
             self._track_found_times(digest)
+
             self._valid_digests += 1
+
             self._write_status(
-                'Digest file\ts3://{}/{}\tvalid'.format(
-                    digest['digestS3Bucket'], digest['digestS3Object']
-                )
+                f'Digest file\ts3://{digest["digestS3Bucket"]}/{digest["digestS3Object"]}\tvalid'
             )
+
             if not digest['logFiles']:
                 continue
             for log in digest['logFiles']:
                 self._download_log(log)
+
+        backfill_digests = traverser.traverse_digests(
+            self.start_time, self.end_time, is_backfill=True
+        )
+        for digest in backfill_digests:
+            # Only valid digests are yielded and only valid digests can adjust
+            # the found times that are reported in the CLI output summary.
+            self._track_found_times(digest)
+
+            self._valid_backfill_digests += 1
+
+            self._write_status(
+                f'(backfill) Digest file\ts3://{digest["digestS3Bucket"]}/{digest["digestS3Object"]}\tvalid'
+            )
+
+            if not digest['logFiles']:
+                continue
+            for log in digest['logFiles']:
+                self._download_log(log)
+
         self._write_summary_text()
 
     def _track_found_times(self, digest):
         # Track the earliest found start time, but do not use a date before
         # the user supplied start date.
         digest_start_time = parse_date(digest['digestStartTime'])
-        if digest_start_time > self.start_time:
-            self._found_start_time = digest_start_time
-        # Only use the last found end time if it is less than the
-        # user supplied end time (or the current date).
-        if not self._found_end_time:
-            digest_end_time = parse_date(digest['digestEndTime'])
-            self._found_end_time = min(digest_end_time, self.end_time)
+        earliest_start_time = max(digest_start_time, self.start_time)
+        if (
+            not self._found_start_time
+            or earliest_start_time < self._found_start_time
+        ):
+            self._found_start_time = earliest_start_time
+        # Track the latest found end time from all digest types, but do not exceed
+        # the user supplied end time (or the current date).
+        digest_end_time = parse_date(digest['digestEndTime'])
+        latest_end_time = min(digest_end_time, self.end_time)
+        if not self._found_end_time or latest_end_time > self._found_end_time:
+            self._found_end_time = latest_end_time
 
     def _download_log(self, log):
         """Download a log, decompress, and compare SHA256 checksums"""
@@ -949,7 +1114,7 @@ class CloudTrailValidateLogs(BasicCommand):
             else:
                 self._valid_logs += 1
                 self._write_status(
-                    f"Log file\ts3://{log['s3Bucket']}/{log['s3Object']}\tvalid"
+                    f'Log file\ts3://{log["s3Bucket"]}/{log["s3Object"]}\tvalid'
                 )
         except ClientError as e:
             if e.response['Error']['Code'] != 'NoSuchKey':
@@ -980,7 +1145,15 @@ class CloudTrailValidateLogs(BasicCommand):
         sys.stdout.write(
             f'Results requested for {format_display_date(self.start_time)} to {format_display_date(self.end_time)}\n'
         )
-        if not self._valid_digests and not self._invalid_digests:
+
+        total_valid_digests = (
+            self._valid_digests + self._valid_backfill_digests
+        )
+        total_invalid_digests = (
+            self._invalid_digests + self._invalid_backfill_digests
+        )
+
+        if not total_valid_digests and not total_invalid_digests:
             sys.stdout.write('No digests found\n')
             return
         if not self._found_start_time or not self._found_end_time:
@@ -989,64 +1162,69 @@ class CloudTrailValidateLogs(BasicCommand):
             sys.stdout.write(
                 f'Results found for {format_display_date(self._found_start_time)} to {format_display_date(self._found_end_time)}:\n'
             )
+
         self._write_ratio(self._valid_digests, self._invalid_digests, 'digest')
+        self._write_ratio(
+            self._valid_backfill_digests,
+            self._invalid_backfill_digests,
+            'backfill digest',
+        )
         self._write_ratio(self._valid_logs, self._invalid_logs, 'log')
+
         sys.stdout.write('\n')
 
     def _write_ratio(self, valid, invalid, name):
         total = valid + invalid
         if total > 0:
-            sys.stdout.write('\n%d/%d %s files valid' % (valid, total, name))
+            sys.stdout.write(f'\n{valid}/{total} {name} files valid')
             if invalid > 0:
-                sys.stdout.write(
-                    ', %d/%d %s files INVALID' % (invalid, total, name)
-                )
+                sys.stdout.write(f', {invalid}/{total} {name} files INVALID')
 
-    def _on_missing_digest(self, bucket, last_key, **kwargs):
-        self._invalid_digests += 1
+    def _on_missing_digest(
+        self, bucket, last_key, is_backfill=False, **kwargs
+    ):
+        if is_backfill:
+            self._invalid_backfill_digests += 1
+        else:
+            self._invalid_digests += 1
+        digest_type = '(backfill) ' if is_backfill else ''
         self._write_status(
-            f'Digest file\ts3://{bucket}/{last_key}\tINVALID: not found',
+            f'{digest_type}Digest file\ts3://{bucket}/{last_key}\tINVALID: not found',
             True,
         )
 
-    def _on_digest_gap(self, **kwargs):
+    def _on_digest_gap(self, is_backfill=False, **kwargs):
+        log_type = '(backfill) ' if is_backfill else ''
         self._write_status(
-            'No log files were delivered by CloudTrail between {} and {}'.format(
-                format_display_date(kwargs['next_end_date']),
-                format_display_date(kwargs['last_start_date']),
-            ),
+            f'{log_type}No log files were delivered by CloudTrail between {format_display_date(kwargs["next_end_date"])} and {format_display_date(kwargs["last_start_date"])}',
             True,
         )
 
-    def _on_invalid_digest(self, message, **kwargs):
-        self._invalid_digests += 1
-        self._write_status(message, True)
+    def _on_invalid_digest(self, message, is_backfill=False, **kwargs):
+        if is_backfill:
+            self._invalid_backfill_digests += 1
+        else:
+            self._invalid_digests += 1
+        digest_type = '(backfill) ' if is_backfill else ''
+        self._write_status(f'{digest_type}{message}', True)
 
     def _on_invalid_log_format(self, log_data):
         self._invalid_logs += 1
         self._write_status(
-            (
-                'Log file\ts3://{}/{}\tINVALID: invalid format'.format(
-                    log_data['s3Bucket'], log_data['s3Object']
-                )
-            ),
+            f'Log file\ts3://{log_data["s3Bucket"]}/{log_data["s3Object"]}\tINVALID: invalid format',
             True,
         )
 
     def _on_log_invalid(self, log_data):
         self._invalid_logs += 1
         self._write_status(
-            "Log file\ts3://{}/{}\tINVALID: hash value doesn't match".format(
-                log_data['s3Bucket'], log_data['s3Object']
-            ),
+            f"Log file\ts3://{log_data['s3Bucket']}/{log_data['s3Object']}\tINVALID: hash value doesn't match",
             True,
         )
 
     def _on_missing_log(self, log_data):
         self._invalid_logs += 1
         self._write_status(
-            'Log file\ts3://{}/{}\tINVALID: not found'.format(
-                log_data['s3Bucket'], log_data['s3Object']
-            ),
+            f'Log file\ts3://{log_data["s3Bucket"]}/{log_data["s3Object"]}\tINVALID: not found',
             True,
         )

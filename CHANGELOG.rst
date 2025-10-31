@@ -2,6 +2,33 @@
 CHANGELOG
 =========
 
+1.42.64
+=======
+
+* api-change:``connectcases``: Added two new case rule types: Parent Child Field Options (restricts child field options based on parent field value) and Hidden (controls child field visibility based on parent field value). Both enable dynamic field behavior within templates.
+* api-change:``ec2``: Amazon VPC IP Address Manager (IPAM) now supports automated prefix list management, allowing you to create rules that automatically populate customer-managed prefix lists with CIDRs from your IPAM pools or AWS resources based on tags, Regions, or other criteria.
+* api-change:``emr``: Update endpoint ruleset parameters casing
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``fms``: Update endpoint ruleset parameters casing
+* api-change:``fsx``: Update endpoint ruleset parameters casing
+* api-change:``health``: Update endpoint ruleset parameters casing
+* api-change:``kinesis``: Update endpoint ruleset parameters casing
+* api-change:``lambda``: Add Python3.14 (python3.14) and Java 25 (java25) support to AWS Lambda
+* api-change:``logs``: Update endpoint ruleset parameters casing
+* api-change:``marketplace-catalog``: Update endpoint ruleset parameters casing
+* api-change:``mediaconvert``: Adds SlowPalPitchCorrection to audio pitch correction settings. Enables opacity for VideoOverlays. Adds REMUX_ALL option to enable multi-rendition passthrough to VideoSelector for allow listed accounts.
+* api-change:``omics``: Added WDL_LENIENT engine type that enables implicit typecasting of variable values to its compatible declared types
+* api-change:``payment-cryptography``: Allow additional characters in the CertificateSubject for GetCertificateSigningRequest API.
+* api-change:``redshift``: Update endpoint ruleset parameters casing
+* api-change:``resourcegroupstaggingapi``: Update endpoint ruleset parameters casing
+* api-change:``sagemaker``: Allow update of platform identifier via UpdateNotebookInstance operation.
+* api-change:``savingsplans``: Add dual-stack endpoint support for Savings Plans
+* api-change:``snowball``: Update endpoint ruleset parameters casing
+* api-change:``ssm-quicksetup``: Update endpoint ruleset parameters casing
+* api-change:``textract``: Update endpoint ruleset parameters casing
+* api-change:``waf``: Update endpoint ruleset parameters casing
+
+
 1.42.63
 =======
 

@@ -558,7 +558,7 @@
       },
       "input":{"shape":"CancelSpotFleetRequestsRequest"},
       "output":{"shape":"CancelSpotFleetRequestsResponse"},
-      "documentation":"<p>Cancels the specified Spot Fleet requests.</p> <p>After you cancel a Spot Fleet request, the Spot Fleet launches no new instances.</p> <p>You must also specify whether a canceled Spot Fleet request should terminate its instances. If you choose to terminate the instances, the Spot Fleet request enters the <code>cancelled_terminating</code> state. Otherwise, the Spot Fleet request enters the <code>cancelled_running</code> state and the instances continue to run until they are interrupted or you terminate them manually.</p> <p class=\"title\"> <b>Restrictions</b> </p> <ul> <li> <p>You can delete up to 100 fleets in a single request. If you exceed the specified number, no fleets are deleted.</p> </li> </ul>"
+      "documentation":"<p>Cancels the specified Spot Fleet requests.</p> <p>After you cancel a Spot Fleet request, the Spot Fleet launches no new instances.</p> <p>You must also specify whether a canceled Spot Fleet request should terminate its instances. If you choose to terminate the instances, the Spot Fleet request enters the <code>cancelled_terminating</code> state. Otherwise, the Spot Fleet request enters the <code>cancelled_running</code> state and the instances continue to run until they are interrupted or you terminate them manually.</p> <important> <p> <b>Terminating an instance is permanent and irreversible.</b> </p> <p>After you terminate an instance, you can no longer connect to it, and it can't be recovered. All attached Amazon EBS volumes that are configured to be deleted on termination are also permanently deleted and can't be recovered. All data stored on instance store volumes is permanently lost. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/how-ec2-instance-termination-works.html\"> How instance termination works</a>.</p> <p>Before you terminate an instance, ensure that you have backed up all data that you need to retain after the termination to persistent storage.</p> </important> <p class=\"title\"> <b>Restrictions</b> </p> <ul> <li> <p>You can delete up to 100 fleets in a single request. If you exceed the specified number, no fleets are deleted.</p> </li> </ul>"
     },
     "CancelSpotInstanceRequests":{
       "name":"CancelSpotInstanceRequests",
@@ -878,7 +878,7 @@
       },
       "input":{"shape":"CreateIpamExternalResourceVerificationTokenRequest"},
       "output":{"shape":"CreateIpamExternalResourceVerificationTokenResult"},
-      "documentation":"<p>Create a verification token. A verification token is an Amazon Web Services-generated random value that you can use to prove ownership of an external resource. For example, you can use a verification token to validate that you control a public IP address range when you bring an IP address range to Amazon Web Services (BYOIP). </p>"
+      "documentation":"<p>Create a verification token.</p> <p>A verification token is an Amazon Web Services-generated random value that you can use to prove ownership of an external resource. For example, you can use a verification token to validate that you control a public IP address range when you bring an IP address range to Amazon Web Services (BYOIP). </p>"
     },
     "CreateIpamPool":{
       "name":"CreateIpamPool",
@@ -889,6 +889,26 @@
       "input":{"shape":"CreateIpamPoolRequest"},
       "output":{"shape":"CreateIpamPoolResult"},
       "documentation":"<p>Create an IP address pool for Amazon VPC IP Address Manager (IPAM). In IPAM, a pool is a collection of contiguous IP addresses CIDRs. Pools enable you to organize your IP addresses according to your routing and security needs. For example, if you have separate routing and security needs for development and production applications, you can create a pool for each.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/create-top-ipam.html\">Create a top-level pool</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+    },
+    "CreateIpamPrefixListResolver":{
+      "name":"CreateIpamPrefixListResolver",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateIpamPrefixListResolverRequest"},
+      "output":{"shape":"CreateIpamPrefixListResolverResult"},
+      "documentation":"<p>Creates an IPAM prefix list resolver.</p> <p>An IPAM prefix list resolver is a component that manages the synchronization between IPAM's CIDR selection rules and customer-managed prefix lists. It automates connectivity configurations by selecting CIDRs from IPAM's database based on your business logic and synchronizing them with prefix lists used in resources such as VPC route tables and security groups.</p> <p>For more information about IPAM prefix list resolver, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/automate-prefix-list-updates.html\">Automate prefix list updates with IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+    },
+    "CreateIpamPrefixListResolverTarget":{
+      "name":"CreateIpamPrefixListResolverTarget",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateIpamPrefixListResolverTargetRequest"},
+      "output":{"shape":"CreateIpamPrefixListResolverTargetResult"},
+      "documentation":"<p>Creates an IPAM prefix list resolver target.</p> <p>An IPAM prefix list resolver target is an association between a specific customer-managed prefix list and an IPAM prefix list resolver. The target enables the resolver to synchronize CIDRs selected by its rules into the specified prefix list, which can then be referenced in Amazon Web Services resources.</p> <p>For more information about IPAM prefix list resolver, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/automate-prefix-list-updates.html\">Automate prefix list updates with IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
     },
     "CreateIpamResourceDiscovery":{
       "name":"CreateIpamResourceDiscovery",
@@ -1476,7 +1496,7 @@
       },
       "input":{"shape":"CreateVpcRequest"},
       "output":{"shape":"CreateVpcResult"},
-      "documentation":"<p>Creates a VPC with the specified CIDR blocks. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-ip-addressing.html\">IP addressing for your VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p> <p>You can optionally request an IPv6 CIDR block for the VPC. You can request an Amazon-provided IPv6 CIDR block from Amazon's pool of IPv6 addresses or an IPv6 CIDR block from an IPv6 address pool that you provisioned through bring your own IP addresses (<a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-byoip.html\">BYOIP</a>).</p> <p>By default, each instance that you launch in the VPC has the default DHCP options, which include only a default DNS server that we provide (AmazonProvidedDNS). For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_DHCP_Options.html\">DHCP option sets</a> in the <i>Amazon VPC User Guide</i>.</p> <p>You can specify the instance tenancy value for the VPC when you create it. You can't change this value for the VPC after you create it. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/dedicated-instance.html\">Dedicated Instances</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Creates a VPC with the specified CIDR blocks.</p> <p>A VPC must have an associated IPv4 CIDR block. You can choose an IPv4 CIDR block or an IPAM-allocated IPv4 CIDR block. You can optionally associate an IPv6 CIDR block with a VPC. You can choose an IPv6 CIDR block, an Amazon-provided IPv6 CIDR block, an IPAM-allocated IPv6 CIDR block, or an IPv6 CIDR block that you brought to Amazon Web Services. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/vpc-ip-addressing.html\">IP addressing for your VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p> <p>By default, each instance that you launch in the VPC has the default DHCP options, which include only a default DNS server that we provide (AmazonProvidedDNS). For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_DHCP_Options.html\">DHCP option sets</a> in the <i>Amazon VPC User Guide</i>.</p> <p>You can specify DNS options and tenancy for a VPC when you create it. You can't change the tenancy of a VPC after you create it. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/create-vpc-options.html\">VPC configuration options</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
     "CreateVpcBlockPublicAccessExclusion":{
       "name":"CreateVpcBlockPublicAccessExclusion",
@@ -1653,7 +1673,7 @@
       },
       "input":{"shape":"DeleteFleetsRequest"},
       "output":{"shape":"DeleteFleetsResult"},
-      "documentation":"<p>Deletes the specified EC2 Fleet request.</p> <p>After you delete an EC2 Fleet request, it launches no new instances.</p> <p>You must also specify whether a deleted EC2 Fleet request should terminate its instances. If you choose to terminate the instances, the EC2 Fleet request enters the <code>deleted_terminating</code> state. Otherwise, it enters the <code>deleted_running</code> state, and the instances continue to run until they are interrupted or you terminate them manually.</p> <p>A deleted <code>instant</code> fleet with running instances is not supported. When you delete an <code>instant</code> fleet, Amazon EC2 automatically terminates all its instances. For fleets with more than 1000 instances, the deletion request might fail. If your fleet has more than 1000 instances, first terminate most of the instances manually, leaving 1000 or fewer. Then delete the fleet, and the remaining instances will be terminated automatically.</p> <p class=\"title\"> <b>Restrictions</b> </p> <ul> <li> <p>You can delete up to 25 fleets of type <code>instant</code> in a single request.</p> </li> <li> <p>You can delete up to 100 fleets of type <code>maintain</code> or <code>request</code> in a single request.</p> </li> <li> <p>You can delete up to 125 fleets in a single request, provided you do not exceed the quota for each fleet type, as specified above.</p> </li> <li> <p>If you exceed the specified number of fleets to delete, no fleets are deleted.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/delete-fleet.html\">Delete an EC2 Fleet request and the instances in the fleet</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Deletes the specified EC2 Fleet request.</p> <p>After you delete an EC2 Fleet request, it launches no new instances.</p> <p>You must also specify whether a deleted EC2 Fleet request should terminate its instances. If you choose to terminate the instances, the EC2 Fleet request enters the <code>deleted_terminating</code> state. Otherwise, it enters the <code>deleted_running</code> state, and the instances continue to run until they are interrupted or you terminate them manually.</p> <p>A deleted <code>instant</code> fleet with running instances is not supported. When you delete an <code>instant</code> fleet, Amazon EC2 automatically terminates all its instances. For fleets with more than 1000 instances, the deletion request might fail. If your fleet has more than 1000 instances, first terminate most of the instances manually, leaving 1000 or fewer. Then delete the fleet, and the remaining instances will be terminated automatically.</p> <important> <p> <b>Terminating an instance is permanent and irreversible.</b> </p> <p>After you terminate an instance, you can no longer connect to it, and it can't be recovered. All attached Amazon EBS volumes that are configured to be deleted on termination are also permanently deleted and can't be recovered. All data stored on instance store volumes is permanently lost. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/how-ec2-instance-termination-works.html\"> How instance termination works</a>.</p> <p>Before you terminate an instance, ensure that you have backed up all data that you need to retain after the termination to persistent storage.</p> </important> <p class=\"title\"> <b>Restrictions</b> </p> <ul> <li> <p>You can delete up to 25 fleets of type <code>instant</code> in a single request.</p> </li> <li> <p>You can delete up to 100 fleets of type <code>maintain</code> or <code>request</code> in a single request.</p> </li> <li> <p>You can delete up to 125 fleets in a single request, provided you do not exceed the quota for each fleet type, as specified above.</p> </li> <li> <p>If you exceed the specified number of fleets to delete, no fleets are deleted.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/delete-fleet.html\">Delete an EC2 Fleet request and the instances in the fleet</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "DeleteFlowLogs":{
       "name":"DeleteFlowLogs",
@@ -1732,7 +1752,7 @@
       },
       "input":{"shape":"DeleteIpamExternalResourceVerificationTokenRequest"},
       "output":{"shape":"DeleteIpamExternalResourceVerificationTokenResult"},
-      "documentation":"<p>Delete a verification token. A verification token is an Amazon Web Services-generated random value that you can use to prove ownership of an external resource. For example, you can use a verification token to validate that you control a public IP address range when you bring an IP address range to Amazon Web Services (BYOIP). </p>"
+      "documentation":"<p>Delete a verification token.</p> <p>A verification token is an Amazon Web Services-generated random value that you can use to prove ownership of an external resource. For example, you can use a verification token to validate that you control a public IP address range when you bring an IP address range to Amazon Web Services (BYOIP). </p>"
     },
     "DeleteIpamPool":{
       "name":"DeleteIpamPool",
@@ -1743,6 +1763,26 @@
       "input":{"shape":"DeleteIpamPoolRequest"},
       "output":{"shape":"DeleteIpamPoolResult"},
       "documentation":"<p>Delete an IPAM pool.</p> <note> <p>You cannot delete an IPAM pool if there are allocations in it or CIDRs provisioned to it. To release allocations, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ReleaseIpamPoolAllocation.html\">ReleaseIpamPoolAllocation</a>. To deprovision pool CIDRs, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DeprovisionIpamPoolCidr.html\">DeprovisionIpamPoolCidr</a>.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/delete-pool-ipam.html\">Delete a pool</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+    },
+    "DeleteIpamPrefixListResolver":{
+      "name":"DeleteIpamPrefixListResolver",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteIpamPrefixListResolverRequest"},
+      "output":{"shape":"DeleteIpamPrefixListResolverResult"},
+      "documentation":"<p>Deletes an IPAM prefix list resolver. Before deleting a resolver, you must first delete all resolver targets associated with it.</p>"
+    },
+    "DeleteIpamPrefixListResolverTarget":{
+      "name":"DeleteIpamPrefixListResolverTarget",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteIpamPrefixListResolverTargetRequest"},
+      "output":{"shape":"DeleteIpamPrefixListResolverTargetResult"},
+      "documentation":"<p>Deletes an IPAM prefix list resolver target. This removes the association between the resolver and the managed prefix list, stopping automatic CIDR synchronization.</p> <p>For more information about IPAM prefix list resolver, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/automate-prefix-list-updates.html\">Automate prefix list updates with IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
     },
     "DeleteIpamResourceDiscovery":{
       "name":"DeleteIpamResourceDiscovery",
@@ -3158,6 +3198,26 @@
       "input":{"shape":"DescribeIpamPoolsRequest"},
       "output":{"shape":"DescribeIpamPoolsResult"},
       "documentation":"<p>Get information about your IPAM pools.</p>"
+    },
+    "DescribeIpamPrefixListResolverTargets":{
+      "name":"DescribeIpamPrefixListResolverTargets",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeIpamPrefixListResolverTargetsRequest"},
+      "output":{"shape":"DescribeIpamPrefixListResolverTargetsResult"},
+      "documentation":"<p>Describes one or more IPAM prefix list resolver Targets. Use this operation to view the configuration and status of resolver targets.</p>"
+    },
+    "DescribeIpamPrefixListResolvers":{
+      "name":"DescribeIpamPrefixListResolvers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeIpamPrefixListResolversRequest"},
+      "output":{"shape":"DescribeIpamPrefixListResolversResult"},
+      "documentation":"<p>Describes one or more IPAM prefix list resolvers. Use this operation to view the configuration, status, and properties of your resolvers.</p>"
     },
     "DescribeIpamResourceDiscoveries":{
       "name":"DescribeIpamResourceDiscoveries",
@@ -5171,6 +5231,36 @@
       "output":{"shape":"GetIpamPoolCidrsResult"},
       "documentation":"<p>Get the CIDRs provisioned to an IPAM pool.</p>"
     },
+    "GetIpamPrefixListResolverRules":{
+      "name":"GetIpamPrefixListResolverRules",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIpamPrefixListResolverRulesRequest"},
+      "output":{"shape":"GetIpamPrefixListResolverRulesResult"},
+      "documentation":"<p>Retrieves the CIDR selection rules for an IPAM prefix list resolver. Use this operation to view the business logic that determines which CIDRs are selected for synchronization with prefix lists.</p>"
+    },
+    "GetIpamPrefixListResolverVersionEntries":{
+      "name":"GetIpamPrefixListResolverVersionEntries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIpamPrefixListResolverVersionEntriesRequest"},
+      "output":{"shape":"GetIpamPrefixListResolverVersionEntriesResult"},
+      "documentation":"<p>Retrieves the CIDR entries for a specific version of an IPAM prefix list resolver. This shows the actual CIDRs that were selected and synchronized at a particular point in time.</p>"
+    },
+    "GetIpamPrefixListResolverVersions":{
+      "name":"GetIpamPrefixListResolverVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIpamPrefixListResolverVersionsRequest"},
+      "output":{"shape":"GetIpamPrefixListResolverVersionsResult"},
+      "documentation":"<p>Retrieves version information for an IPAM prefix list resolver.</p> <p>Each version is a snapshot of what CIDRs matched your rules at that moment in time. The version number increments every time the CIDR list changes due to infrastructure changes.</p> <p> <b>Version example:</b> </p> <p> <b>Initial State (Version 1)</b> </p> <p>Production environment:</p> <ul> <li> <p>vpc-prod-web (10.1.0.0/16) - tagged env=prod</p> </li> <li> <p>vpc-prod-db (10.2.0.0/16) - tagged env=prod</p> </li> </ul> <p>Resolver rule: Include all VPCs tagged env=prod</p> <p> <b>Version 1 CIDRs:</b> 10.1.0.0/16, 10.2.0.0/16</p> <p> <b>Infrastructure Change (Version 2)</b> </p> <p>New VPC added:</p> <ul> <li> <p>vpc-prod-api (10.3.0.0/16) - tagged env=prod</p> </li> </ul> <p>IPAM automatically detects the change and creates a new version.</p> <p> <b>Version 2 CIDRs:</b> 10.1.0.0/16, 10.2.0.0/16, 10.3.0.0/16</p>"
+    },
     "GetIpamResourceCidrs":{
       "name":"GetIpamResourceCidrs",
       "http":{
@@ -5816,6 +5906,26 @@
       "input":{"shape":"ModifyIpamPoolRequest"},
       "output":{"shape":"ModifyIpamPoolResult"},
       "documentation":"<p>Modify the configurations of an IPAM pool.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/mod-pool-ipam.html\">Modify a pool</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+    },
+    "ModifyIpamPrefixListResolver":{
+      "name":"ModifyIpamPrefixListResolver",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyIpamPrefixListResolverRequest"},
+      "output":{"shape":"ModifyIpamPrefixListResolverResult"},
+      "documentation":"<p>Modifies an IPAM prefix list resolver. You can update the description and CIDR selection rules. Changes to rules will trigger re-evaluation and potential updates to associated prefix lists.</p>"
+    },
+    "ModifyIpamPrefixListResolverTarget":{
+      "name":"ModifyIpamPrefixListResolverTarget",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyIpamPrefixListResolverTargetRequest"},
+      "output":{"shape":"ModifyIpamPrefixListResolverTargetResult"},
+      "documentation":"<p>Modifies an IPAM prefix list resolver target. You can update version tracking settings and the desired version of the target prefix list.</p>"
     },
     "ModifyIpamResourceCidr":{
       "name":"ModifyIpamResourceCidr",
@@ -6920,7 +7030,7 @@
       },
       "input":{"shape":"TerminateInstancesRequest"},
       "output":{"shape":"TerminateInstancesResult"},
-      "documentation":"<p>Shuts down the specified instances. This operation is <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">idempotent</a>; if you terminate an instance more than once, each call succeeds.</p> <p>If you specify multiple instances and the request fails (for example, because of a single incorrect instance ID), none of the instances are terminated.</p> <p>If you terminate multiple instances across multiple Availability Zones, and one or more of the specified instances are enabled for termination protection, the request fails with the following results:</p> <ul> <li> <p>The specified instances that are in the same Availability Zone as the protected instance are not terminated.</p> </li> <li> <p>The specified instances that are in different Availability Zones, where no other specified instances are protected, are successfully terminated.</p> </li> </ul> <p>For example, say you have the following instances:</p> <ul> <li> <p>Instance A: <code>us-east-1a</code>; Not protected</p> </li> <li> <p>Instance B: <code>us-east-1a</code>; Not protected</p> </li> <li> <p>Instance C: <code>us-east-1b</code>; Protected</p> </li> <li> <p>Instance D: <code>us-east-1b</code>; not protected</p> </li> </ul> <p>If you attempt to terminate all of these instances in the same request, the request reports failure with the following results:</p> <ul> <li> <p>Instance A and Instance B are successfully terminated because none of the specified instances in <code>us-east-1a</code> are enabled for termination protection.</p> </li> <li> <p>Instance C and Instance D fail to terminate because at least one of the specified instances in <code>us-east-1b</code> (Instance C) is enabled for termination protection.</p> </li> </ul> <p>Terminated instances remain visible after termination (for approximately one hour).</p> <p>By default, Amazon EC2 deletes all EBS volumes that were attached when the instance launched. Volumes attached after instance launch continue running.</p> <p>By default, the TerminateInstances operation includes a graceful operating system (OS) shutdown. To bypass the graceful shutdown, use the <code>skipOsShutdown</code> parameter; however, this might risk data integrity.</p> <p>You can stop, start, and terminate EBS-backed instances. You can only terminate instance store-backed instances. What happens to an instance differs if you stop or terminate it. For example, when you stop an instance, the root device and any other devices attached to the instance persist. When you terminate an instance, any attached EBS volumes with the <code>DeleteOnTermination</code> block device mapping parameter set to <code>true</code> are automatically deleted. For more information about the differences between stopping and terminating instances, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Amazon EC2 instance state changes</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>When you terminate an instance, we attempt to terminate it forcibly after a short while. If your instance appears stuck in the shutting-down state after a period of time, there might be an issue with the underlying host computer. For more information about terminating and troubleshooting terminating your instances, see <a href=\"https://docs.aws.amazon.com/\">Terminate Amazon EC2 instances</a> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstancesShuttingDown.html\">Troubleshooting terminating your instance</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Terminates (deletes) the specified instances. This operation is <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">idempotent</a>; if you terminate an instance more than once, each call succeeds.</p> <important> <p> <b>Terminating an instance is permanent and irreversible.</b> </p> <p>After you terminate an instance, you can no longer connect to it, and it can't be recovered. All attached Amazon EBS volumes that are configured to be deleted on termination are also permanently deleted and can't be recovered. All data stored on instance store volumes is permanently lost. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/how-ec2-instance-termination-works.html\"> How instance termination works</a>.</p> <p>Before you terminate an instance, ensure that you have backed up all data that you need to retain after the termination to persistent storage.</p> </important> <p>If you specify multiple instances and the request fails (for example, because of a single incorrect instance ID), none of the instances are terminated.</p> <p>If you terminate multiple instances across multiple Availability Zones, and one or more of the specified instances are enabled for termination protection, the request fails with the following results:</p> <ul> <li> <p>The specified instances that are in the same Availability Zone as the protected instance are not terminated.</p> </li> <li> <p>The specified instances that are in different Availability Zones, where no other specified instances are protected, are successfully terminated.</p> </li> </ul> <p>For example, say you have the following instances:</p> <ul> <li> <p>Instance A: <code>us-east-1a</code>; Not protected</p> </li> <li> <p>Instance B: <code>us-east-1a</code>; Not protected</p> </li> <li> <p>Instance C: <code>us-east-1b</code>; Protected</p> </li> <li> <p>Instance D: <code>us-east-1b</code>; not protected</p> </li> </ul> <p>If you attempt to terminate all of these instances in the same request, the request reports failure with the following results:</p> <ul> <li> <p>Instance A and Instance B are successfully terminated because none of the specified instances in <code>us-east-1a</code> are enabled for termination protection.</p> </li> <li> <p>Instance C and Instance D fail to terminate because at least one of the specified instances in <code>us-east-1b</code> (Instance C) is enabled for termination protection.</p> </li> </ul> <p>Terminated instances remain visible after termination (for approximately one hour).</p> <p>By default, Amazon EC2 deletes all EBS volumes that were attached when the instance launched. Volumes attached after instance launch continue running.</p> <p>By default, the TerminateInstances operation includes a graceful operating system (OS) shutdown. To bypass the graceful shutdown, use the <code>skipOsShutdown</code> parameter; however, this might risk data integrity.</p> <p>You can stop, start, and terminate EBS-backed instances. You can only terminate instance store-backed instances. What happens to an instance differs if you stop or terminate it. For example, when you stop an instance, the root device and any other devices attached to the instance persist. When you terminate an instance, any attached EBS volumes with the <code>DeleteOnTermination</code> block device mapping parameter set to <code>true</code> are automatically deleted. For more information about the differences between stopping and terminating instances, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Amazon EC2 instance state changes</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>When you terminate an instance, we attempt to terminate it forcibly after a short while. If your instance appears stuck in the shutting-down state after a period of time, there might be an issue with the underlying host computer. For more information about terminating and troubleshooting terminating your instances, see <a href=\"https://docs.aws.amazon.com/\">Terminate Amazon EC2 instances</a> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstancesShuttingDown.html\">Troubleshooting terminating your instance</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "UnassignIpv6Addresses":{
       "name":"UnassignIpv6Addresses",
@@ -11977,7 +12087,7 @@
         },
         "AvailabilityZoneId":{
           "shape":"String",
-          "documentation":"<p>The Availability Zone ID of the Capacity Reservation.</p>",
+          "documentation":"<p>The ID of the Availability Zone in which the capacity is reserved.</p>",
           "locationName":"availabilityZoneId"
         },
         "InstanceType":{
@@ -12027,12 +12137,12 @@
         },
         "StartDate":{
           "shape":"MillisecondDateTime",
-          "documentation":"<p>The date and time at which the Capacity Reservation was started.</p>",
+          "documentation":"<p>The date and time the Capacity Reservation was started.</p>",
           "locationName":"startDate"
         },
         "EndDate":{
           "shape":"DateTime",
-          "documentation":"<p>The date and time at which the Capacity Reservation expires. When a Capacity Reservation expires, the reserved capacity is released and you can no longer launch instances into it. The Capacity Reservation's state changes to <code>expired</code> when it reaches its end date and time.</p>",
+          "documentation":"<p>The date and time the Capacity Reservation expires. When a Capacity Reservation expires, the reserved capacity is released and you can no longer launch instances into it. The Capacity Reservation's state changes to <code>expired</code> when it reaches its end date and time.</p>",
           "locationName":"endDate"
         },
         "EndDateType":{
@@ -12047,7 +12157,7 @@
         },
         "CreateDate":{
           "shape":"DateTime",
-          "documentation":"<p>The date and time at which the Capacity Reservation was created.</p>",
+          "documentation":"<p>The date and time the Capacity Reservation was created.</p>",
           "locationName":"createDate"
         },
         "Tags":{
@@ -15720,6 +15830,111 @@
           "shape":"IpamPool",
           "documentation":"<p>Information about the IPAM pool created.</p>",
           "locationName":"ipamPool"
+        }
+      }
+    },
+    "CreateIpamPrefixListResolverRequest":{
+      "type":"structure",
+      "required":[
+        "IpamId",
+        "AddressFamily"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamId":{
+          "shape":"IpamId",
+          "documentation":"<p>The ID of the IPAM that will serve as the source of the IP address database for CIDR selection. The IPAM must be in the Advanced tier to use this feature.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description for the IPAM prefix list resolver to help you identify its purpose and configuration.</p>"
+        },
+        "AddressFamily":{
+          "shape":"AddressFamily",
+          "documentation":"<p>The address family for the IPAM prefix list resolver. Valid values are <code>ipv4</code> and <code>ipv6</code>. You must create separate resolvers for IPv4 and IPv6 CIDRs as they cannot be mixed in the same resolver.</p>"
+        },
+        "Rules":{
+          "shape":"IpamPrefixListResolverRuleRequestSet",
+          "documentation":"<p>The CIDR selection rules for the resolver.</p> <p>CIDR selection rules define the business logic for selecting CIDRs from IPAM. If a CIDR matches any of the rules, it will be included. If a rule has multiple conditions, the CIDR has to match every condition of that rule. You can create a prefix list resolver without any CIDR selection rules, but it will generate empty versions (containing no CIDRs) until you add rules.</p>",
+          "locationName":"Rule"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply to the IPAM prefix list resolver during creation. Tags help you organize and manage your Amazon Web Services resources.</p>",
+          "locationName":"TagSpecification"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateIpamPrefixListResolverResult":{
+      "type":"structure",
+      "members":{
+        "IpamPrefixListResolver":{
+          "shape":"IpamPrefixListResolver",
+          "documentation":"<p>Information about the IPAM prefix list resolver that was created.</p>",
+          "locationName":"ipamPrefixListResolver"
+        }
+      }
+    },
+    "CreateIpamPrefixListResolverTargetRequest":{
+      "type":"structure",
+      "required":[
+        "IpamPrefixListResolverId",
+        "PrefixListId",
+        "PrefixListRegion",
+        "TrackLatestVersion"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPrefixListResolverId":{
+          "shape":"IpamPrefixListResolverId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver that will manage the synchronization of CIDRs to the target prefix list.</p>"
+        },
+        "PrefixListId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the managed prefix list that will be synchronized with CIDRs selected by the IPAM prefix list resolver. This prefix list becomes an IPAM managed prefix list.</p> <p>An IPAM-managed prefix list is a customer-managed prefix list that has been associated with an IPAM prefix list resolver target. When a prefix list becomes IPAM managed, its CIDRs are automatically synchronized based on the IPAM prefix list resolver's CIDR selection rules, and direct CIDR modifications are restricted.</p>"
+        },
+        "PrefixListRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region where the prefix list is located. This is required when referencing a prefix list in a different Region.</p>"
+        },
+        "DesiredVersion":{
+          "shape":"BoxedLong",
+          "documentation":"<p>The specific version of the prefix list to target. If not specified, the resolver will target the latest version.</p>"
+        },
+        "TrackLatestVersion":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the resolver target should automatically track the latest version of the prefix list. When enabled, the target will always synchronize with the most current version of the prefix list.</p> <p>Choose this for automatic updates when you want your prefix lists to stay current with infrastructure changes without manual intervention.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply to the IPAM prefix list resolver target during creation. Tags help you organize and manage your Amazon Web Services resources.</p>",
+          "locationName":"TagSpecification"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateIpamPrefixListResolverTargetResult":{
+      "type":"structure",
+      "members":{
+        "IpamPrefixListResolverTarget":{
+          "shape":"IpamPrefixListResolverTarget",
+          "documentation":"<p>Information about the IPAM prefix list resolver target that was created.</p>",
+          "locationName":"ipamPrefixListResolverTarget"
         }
       }
     },
@@ -20166,6 +20381,54 @@
         }
       }
     },
+    "DeleteIpamPrefixListResolverRequest":{
+      "type":"structure",
+      "required":["IpamPrefixListResolverId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPrefixListResolverId":{
+          "shape":"IpamPrefixListResolverId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver to delete.</p>"
+        }
+      }
+    },
+    "DeleteIpamPrefixListResolverResult":{
+      "type":"structure",
+      "members":{
+        "IpamPrefixListResolver":{
+          "shape":"IpamPrefixListResolver",
+          "documentation":"<p>Information about the IPAM prefix list resolver that was deleted.</p>",
+          "locationName":"ipamPrefixListResolver"
+        }
+      }
+    },
+    "DeleteIpamPrefixListResolverTargetRequest":{
+      "type":"structure",
+      "required":["IpamPrefixListResolverTargetId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPrefixListResolverTargetId":{
+          "shape":"IpamPrefixListResolverTargetId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver target to delete.</p>"
+        }
+      }
+    },
+    "DeleteIpamPrefixListResolverTargetResult":{
+      "type":"structure",
+      "members":{
+        "IpamPrefixListResolverTarget":{
+          "shape":"IpamPrefixListResolverTarget",
+          "documentation":"<p>Information about the IPAM prefix list resolver target that was deleted.</p>",
+          "locationName":"ipamPrefixListResolverTarget"
+        }
+      }
+    },
     "DeleteIpamRequest":{
       "type":"structure",
       "required":["IpamId"],
@@ -24570,7 +24833,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>creation-time</code> - The time when the report was created, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2025-11-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2025-11-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>state</code> - The state of the report (<code>available</code> | <code>pending</code> | <code>error</code>).</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>creation-time</code> - The time when the report was created, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2025-11-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2025-11-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>state</code> - The state of the report (<code>available</code> | <code>pending</code> | <code>error</code>).</p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "DryRun":{
@@ -25365,6 +25628,94 @@
           "shape":"IpamPoolSet",
           "documentation":"<p>Information about the IPAM pools.</p>",
           "locationName":"ipamPoolSet"
+        }
+      }
+    },
+    "DescribeIpamPrefixListResolverTargetsRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters to limit the results.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "IpamPrefixListResolverTargetIds":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The IDs of the IPAM prefix list resolver Targets to describe. If not specified, all targets in your account are described.</p>",
+          "locationName":"IpamPrefixListResolverTargetId"
+        },
+        "IpamPrefixListResolverId":{
+          "shape":"IpamPrefixListResolverId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver to filter targets by. Only targets associated with this resolver will be returned.</p>"
+        }
+      }
+    },
+    "DescribeIpamPrefixListResolverTargetsResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        },
+        "IpamPrefixListResolverTargets":{
+          "shape":"IpamPrefixListResolverTargetSet",
+          "documentation":"<p>Information about the IPAM prefix list resolver Targets.</p>",
+          "locationName":"ipamPrefixListResolverTargetSet"
+        }
+      }
+    },
+    "DescribeIpamPrefixListResolversRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters to limit the results.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "IpamPrefixListResolverIds":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The IDs of the IPAM prefix list resolvers to describe. If not specified, all resolvers in your account are described.</p>",
+          "locationName":"IpamPrefixListResolverId"
+        }
+      }
+    },
+    "DescribeIpamPrefixListResolversResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        },
+        "IpamPrefixListResolvers":{
+          "shape":"IpamPrefixListResolverSet",
+          "documentation":"<p>Information about the IPAM prefix list resolvers.</p>",
+          "locationName":"ipamPrefixListResolverSet"
         }
       }
     },
@@ -27501,7 +27852,7 @@
       "members":{
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>Security group VPC association filters.</p> <ul> <li> <p> <code>group-id</code>: The security group ID.</p> </li> <li> <p> <code>group-owner-id</code>: The group owner ID.</p> </li> <li> <p> <code>vpc-id</code>: The ID of the associated VPC.</p> </li> <li> <p> <code>vpc-owner-id</code>: The account ID of the VPC owner.</p> </li> <li> <p> <code>state</code>: The state of the association.</p> </li> <li> <p> <code>tag:&lt;key&gt;</code>: The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code>: The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> </ul>",
+          "documentation":"<p>Security group VPC association filters.</p> <ul> <li> <p> <code>group-id</code>: The security group ID.</p> </li> <li> <p> <code>group-owner-id</code>: The group owner ID.</p> </li> <li> <p> <code>state</code>: The state of the association.</p> </li> <li> <p> <code>vpc-id</code>: The ID of the associated VPC.</p> </li> <li> <p> <code>vpc-owner-id</code>: The account ID of the VPC owner.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "NextToken":{
@@ -36633,6 +36984,139 @@
         }
       }
     },
+    "GetIpamPrefixListResolverRulesRequest":{
+      "type":"structure",
+      "required":["IpamPrefixListResolverId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPrefixListResolverId":{
+          "shape":"IpamPrefixListResolverId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver whose rules you want to retrieve.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters to limit the results.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "GetIpamPrefixListResolverRulesResult":{
+      "type":"structure",
+      "members":{
+        "Rules":{
+          "shape":"IpamPrefixListResolverRuleSet",
+          "documentation":"<p>The CIDR selection rules for the IPAM prefix list resolver.</p>",
+          "locationName":"ruleSet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "GetIpamPrefixListResolverVersionEntriesRequest":{
+      "type":"structure",
+      "required":[
+        "IpamPrefixListResolverId",
+        "IpamPrefixListResolverVersion"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPrefixListResolverId":{
+          "shape":"IpamPrefixListResolverId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver whose version entries you want to retrieve.</p>"
+        },
+        "IpamPrefixListResolverVersion":{
+          "shape":"Long",
+          "documentation":"<p>The version number of the resolver for which to retrieve CIDR entries. If not specified, the latest version is used.</p>"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "GetIpamPrefixListResolverVersionEntriesResult":{
+      "type":"structure",
+      "members":{
+        "Entries":{
+          "shape":"IpamPrefixListResolverVersionEntrySet",
+          "documentation":"<p>The CIDR entries for the specified resolver version.</p>",
+          "locationName":"entrySet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "GetIpamPrefixListResolverVersionsRequest":{
+      "type":"structure",
+      "required":["IpamPrefixListResolverId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPrefixListResolverId":{
+          "shape":"IpamPrefixListResolverId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver whose versions you want to retrieve.</p>"
+        },
+        "IpamPrefixListResolverVersions":{
+          "shape":"IpamPrefixListResolverVersionNumberSet",
+          "documentation":"<p>Specific version numbers to retrieve. If not specified, all versions are returned.</p>",
+          "locationName":"IpamPrefixListResolverVersion"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters to limit the results.</p>",
+          "locationName":"Filter"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "GetIpamPrefixListResolverVersionsResult":{
+      "type":"structure",
+      "members":{
+        "IpamPrefixListResolverVersions":{
+          "shape":"IpamPrefixListResolverVersionSet",
+          "documentation":"<p>Information about the IPAM prefix list resolver versions.</p>",
+          "locationName":"ipamPrefixListResolverVersionSet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "GetIpamResourceCidrsRequest":{
       "type":"structure",
       "required":["IpamScopeId"],
@@ -45087,6 +45571,416 @@
         "restore-in-progress"
       ]
     },
+    "IpamPrefixListResolver":{
+      "type":"structure",
+      "members":{
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the IPAM prefix list resolver.</p>",
+          "locationName":"ownerId"
+        },
+        "IpamPrefixListResolverId":{
+          "shape":"IpamPrefixListResolverId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver.</p>",
+          "locationName":"ipamPrefixListResolverId"
+        },
+        "IpamPrefixListResolverArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IPAM prefix list resolver.</p>",
+          "locationName":"ipamPrefixListResolverArn"
+        },
+        "IpamArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IPAM associated with this resolver.</p>",
+          "locationName":"ipamArn"
+        },
+        "IpamRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region where the associated IPAM is located.</p>",
+          "locationName":"ipamRegion"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the IPAM prefix list resolver.</p>",
+          "locationName":"description"
+        },
+        "AddressFamily":{
+          "shape":"AddressFamily",
+          "documentation":"<p>The address family (IPv4 or IPv6) for the IPAM prefix list resolver.</p>",
+          "locationName":"addressFamily"
+        },
+        "State":{
+          "shape":"IpamPrefixListResolverState",
+          "documentation":"<p>The current state of the IPAM prefix list resolver. Valid values include <code>create-in-progress</code>, <code>create-complete</code>, <code>create-failed</code>, <code>modify-in-progress</code>, <code>modify-complete</code>, <code>modify-failed</code>, <code>delete-in-progress</code>, <code>delete-complete</code>, and <code>delete-failed</code>.</p>",
+          "locationName":"state"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags assigned to the IPAM prefix list resolver.</p>",
+          "locationName":"tagSet"
+        },
+        "LastVersionCreationStatus":{
+          "shape":"IpamPrefixListResolverVersionCreationStatus",
+          "documentation":"<p>The status for the last time a version was created.</p> <p>Each version is a snapshot of what CIDRs matched your rules at that moment in time. The version number increments every time the CIDR list changes due to infrastructure changes.</p>",
+          "locationName":"lastVersionCreationStatus"
+        },
+        "LastVersionCreationStatusMessage":{
+          "shape":"String",
+          "documentation":"<p>The status message for the last time a version was created.</p> <p>Each version is a snapshot of what CIDRs matched your rules at that moment in time. The version number increments every time the CIDR list changes due to infrastructure changes.</p>",
+          "locationName":"lastVersionCreationStatusMessage"
+        }
+      },
+      "documentation":"<p>Describes an IPAM prefix list resolver.</p> <p>An IPAM prefix list resolver is a component that manages the synchronization between IPAM's CIDR selection rules and customer-managed prefix lists. It automates connectivity configurations by selecting CIDRs from IPAM's database based on your business logic and synchronizing them with prefix lists used in resources such as VPC route tables and security groups.</p>"
+    },
+    "IpamPrefixListResolverId":{"type":"string"},
+    "IpamPrefixListResolverRule":{
+      "type":"structure",
+      "members":{
+        "RuleType":{
+          "shape":"IpamPrefixListResolverRuleType",
+          "documentation":"<p>The type of CIDR selection rule. Valid values include <code>include</code> for selecting CIDRs that match the conditions, and <code>exclude</code> for excluding CIDRs that match the conditions.</p>",
+          "locationName":"ruleType"
+        },
+        "StaticCidr":{
+          "shape":"String",
+          "documentation":"<p>A fixed list of CIDRs that do not change (like a manual list replicated across Regions).</p>",
+          "locationName":"staticCidr"
+        },
+        "IpamScopeId":{
+          "shape":"IpamScopeId",
+          "documentation":"<p>The ID of the IPAM scope from which to select CIDRs. This determines whether to select from public or private IP address space.</p>",
+          "locationName":"ipamScopeId"
+        },
+        "ResourceType":{
+          "shape":"IpamResourceType",
+          "documentation":"<p>For rules of type <code>ipam-resource-cidr</code>, this is the resource type.</p>",
+          "locationName":"resourceType"
+        },
+        "Conditions":{
+          "shape":"IpamPrefixListResolverRuleConditionSet",
+          "documentation":"<p>The conditions that determine which CIDRs are selected by this rule. Conditions specify criteria such as resource type, tags, account IDs, and Regions.</p>",
+          "locationName":"conditionSet"
+        }
+      },
+      "documentation":"<p>Describes a CIDR selection rule.</p> <p>CIDR selection rules define the business logic for selecting CIDRs from IPAM. If a CIDR matches any of the rules, it will be included. If a rule has multiple conditions, the CIDR has to match every condition of that rule. You can create a prefix list resolver without any CIDR selection rules, but it will generate empty versions (containing no CIDRs) until you add rules.</p>"
+    },
+    "IpamPrefixListResolverRuleCondition":{
+      "type":"structure",
+      "members":{
+        "Operation":{
+          "shape":"IpamPrefixListResolverRuleConditionOperation",
+          "documentation":"<p>The operation to perform when evaluating this condition. Valid values include <code>equals</code>, <code>not-equals</code>, <code>contains</code>, and <code>not-contains</code>.</p>",
+          "locationName":"operation"
+        },
+        "IpamPoolId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the IPAM pool to match against. This condition selects CIDRs that belong to the specified IPAM pool.</p>",
+          "locationName":"ipamPoolId"
+        },
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services resource to match against. This condition selects CIDRs associated with the specified resource.</p>",
+          "locationName":"resourceId"
+        },
+        "ResourceOwner":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID that owns the resources to match against. This condition selects CIDRs from resources owned by the specified account.</p>",
+          "locationName":"resourceOwner"
+        },
+        "ResourceRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region where the resources are located. This condition selects CIDRs from resources in the specified Region.</p>",
+          "locationName":"resourceRegion"
+        },
+        "ResourceTag":{
+          "shape":"IpamResourceTag",
+          "documentation":"<p>A tag key-value pair to match against. This condition selects CIDRs from resources that have the specified tag.</p>",
+          "locationName":"resourceTag"
+        },
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>A CIDR block to match against. This condition selects CIDRs that fall within or match the specified CIDR range.</p>",
+          "locationName":"cidr"
+        }
+      },
+      "documentation":"<p>Describes a condition within a CIDR selection rule. Conditions define the criteria for selecting CIDRs from IPAM's database based on resource attributes.</p> <p>CIDR selection rules define the business logic for selecting CIDRs from IPAM. If a CIDR matches any of the rules, it will be included. If a rule has multiple conditions, the CIDR has to match every condition of that rule. You can create a prefix list resolver without any CIDR selection rules, but it will generate empty versions (containing no CIDRs) until you add rules.</p> <p>There are three rule types:</p> <ul> <li> <p> <b>Static CIDR</b>: A fixed list of CIDRs that do not change (like a manual list replicated across Regions).</p> </li> <li> <p> <b>IPAM pool CIDR</b>: CIDRs from specific IPAM pools (like all CIDRs from your IPAM production pool).</p> </li> <li> <p> <b>Scope resource CIDR</b>: CIDRs for Amazon Web Services resources like VPCs, subnets, and EIPs within a specific IPAM scope.</p> </li> </ul> <p>Condition availability by resource type:</p> <ul> <li> <p>Only 2 of the 3 rule types support conditions - <b>IPAM pool CIDR</b> and <b>Scope resource CIDR</b>. <b>Static CIDR</b> rules cannot have conditions.</p> <ul> <li> <p>Condition available for the <b>IPAM pool CIDR</b> resource type:</p> <ul> <li> <p>Property:</p> <ul> <li> <p>IPAM Pool ID</p> </li> <li> <p>CIDR (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p>Operation: Equals/Not equals</p> </li> <li> <p>Value: The value on which to match the condition</p> </li> </ul> </li> <li> <p>Conditions for the <b>Scope resource CIDR</b> resource type:</p> <ul> <li> <p>Property:</p> <ul> <li> <p>Resource ID: The unique ID of a resource (like vpc-1234567890abcdef0)</p> </li> <li> <p>Resource type (like VPC or Subnet)</p> </li> <li> <p>Resource owner (like 111122223333)</p> </li> <li> <p>Resource region (like us-east-1)</p> </li> <li> <p>Resource tag (like key: name, value: dev-vpc-1)</p> </li> <li> <p>CIDR (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p>Operation: Equals/Not equals</p> </li> <li> <p>Value: The value on which to match the condition</p> </li> </ul> </li> <li> <p>When setting conditions for a rule, one or more conditions is required.</p> </li> </ul> </li> </ul>"
+    },
+    "IpamPrefixListResolverRuleConditionOperation":{
+      "type":"string",
+      "enum":[
+        "equals",
+        "not-equals",
+        "subnet-of"
+      ]
+    },
+    "IpamPrefixListResolverRuleConditionRequest":{
+      "type":"structure",
+      "required":["Operation"],
+      "members":{
+        "Operation":{
+          "shape":"IpamPrefixListResolverRuleConditionOperation",
+          "documentation":"<p>The operation to perform when evaluating this condition.</p>"
+        },
+        "IpamPoolId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the IPAM pool to match against. This condition selects CIDRs that belong to the specified IPAM pool.</p>"
+        },
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services resource to match against. This condition selects CIDRs associated with the specified resource.</p>"
+        },
+        "ResourceOwner":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID that owns the resources to match against. This condition selects CIDRs from resources owned by the specified account.</p>"
+        },
+        "ResourceRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region where the resources are located. This condition selects CIDRs from resources in the specified Region.</p>"
+        },
+        "ResourceTag":{
+          "shape":"RequestIpamResourceTag",
+          "documentation":"<p>A tag key-value pair to match against. This condition selects CIDRs from resources that have the specified tag.</p>"
+        },
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>A CIDR block to match against. This condition selects CIDRs that fall within or match the specified CIDR range.</p>"
+        }
+      },
+      "documentation":"<p>Describes a condition used when creating or modifying resolver rules.</p> <p>CIDR selection rules define the business logic for selecting CIDRs from IPAM. If a CIDR matches any of the rules, it will be included. If a rule has multiple conditions, the CIDR has to match every condition of that rule. You can create a prefix list resolver without any CIDR selection rules, but it will generate empty versions (containing no CIDRs) until you add rules.</p> <p>There are three rule types:</p> <ul> <li> <p> <b>Static CIDR</b>: A fixed list of CIDRs that do not change (like a manual list replicated across Regions).</p> </li> <li> <p> <b>IPAM pool CIDR</b>: CIDRs from specific IPAM pools (like all CIDRs from your IPAM production pool).</p> </li> <li> <p> <b>Scope resource CIDR</b>: CIDRs for Amazon Web Services resources like VPCs, subnets, and EIPs within a specific IPAM scope.</p> </li> </ul> <p>Condition availability by resource type:</p> <ul> <li> <p>Only 2 of the 3 rule types support conditions - <b>IPAM pool CIDR</b> and <b>Scope resource CIDR</b>. <b>Static CIDR</b> rules cannot have conditions.</p> <ul> <li> <p>Condition available for the <b>IPAM pool CIDR</b> resource type:</p> <ul> <li> <p>Property:</p> <ul> <li> <p>IPAM Pool ID</p> </li> <li> <p>CIDR (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p>Operation: Equals/Not equals</p> </li> <li> <p>Value: The value on which to match the condition</p> </li> </ul> </li> <li> <p>Conditions for the <b>Scope resource CIDR</b> resource type:</p> <ul> <li> <p>Property:</p> <ul> <li> <p>Resource ID: The unique ID of a resource (like vpc-1234567890abcdef0)</p> </li> <li> <p>Resource type (like VPC or Subnet)</p> </li> <li> <p>Resource owner (like 111122223333)</p> </li> <li> <p>Resource region (like us-east-1)</p> </li> <li> <p>Resource tag (like key: name, value: dev-vpc-1)</p> </li> <li> <p>CIDR (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p>Operation: Equals/Not equals</p> </li> <li> <p>Value: The value on which to match the condition</p> </li> </ul> </li> <li> <p>When setting conditions for a rule, one or more conditions is required.</p> </li> </ul> </li> </ul>"
+    },
+    "IpamPrefixListResolverRuleConditionRequestSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamPrefixListResolverRuleConditionRequest",
+        "locationName":"Condition"
+      }
+    },
+    "IpamPrefixListResolverRuleConditionSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamPrefixListResolverRuleCondition",
+        "locationName":"item"
+      }
+    },
+    "IpamPrefixListResolverRuleRequest":{
+      "type":"structure",
+      "required":["RuleType"],
+      "members":{
+        "RuleType":{
+          "shape":"IpamPrefixListResolverRuleType",
+          "documentation":"<p>The type of CIDR selection rule. Valid values include <code>include</code> for selecting CIDRs that match the conditions, and <code>exclude</code> for excluding CIDRs that match the conditions.</p>"
+        },
+        "StaticCidr":{
+          "shape":"String",
+          "documentation":"<p>A fixed list of CIDRs that do not change (like a manual list replicated across Regions).</p>"
+        },
+        "IpamScopeId":{
+          "shape":"IpamScopeId",
+          "documentation":"<p>The ID of the IPAM scope from which to select CIDRs. This determines whether to select from public or private IP address space.</p>"
+        },
+        "ResourceType":{
+          "shape":"IpamResourceType",
+          "documentation":"<p>For rules of type <code>ipam-resource-cidr</code>, this is the resource type.</p>"
+        },
+        "Conditions":{
+          "shape":"IpamPrefixListResolverRuleConditionRequestSet",
+          "documentation":"<p>The conditions that determine which CIDRs are selected by this rule. Conditions specify criteria such as resource type, tags, account IDs, and Regions.</p>",
+          "locationName":"Condition"
+        }
+      },
+      "documentation":"<p>Describes a CIDR selection rule to include in a request. This is used when creating or modifying resolver rules.</p> <p>CIDR selection rules define the business logic for selecting CIDRs from IPAM. If a CIDR matches any of the rules, it will be included. If a rule has multiple conditions, the CIDR has to match every condition of that rule. You can create a prefix list resolver without any CIDR selection rules, but it will generate empty versions (containing no CIDRs) until you add rules.</p> <p>There are three rule types:</p> <ul> <li> <p> <b>Static CIDR</b>: A fixed list of CIDRs that do not change (like a manual list replicated across Regions).</p> </li> <li> <p> <b>IPAM pool CIDR</b>: CIDRs from specific IPAM pools (like all CIDRs from your IPAM production pool).</p> </li> <li> <p> <b>Scope resource CIDR</b>: CIDRs for Amazon Web Services resources like VPCs, subnets, and EIPs within a specific IPAM scope.</p> </li> </ul> <p>Condition availability by resource type:</p> <ul> <li> <p>Only 2 of the 3 rule types support conditions - <b>IPAM pool CIDR</b> and <b>Scope resource CIDR</b>. <b>Static CIDR</b> rules cannot have conditions.</p> <ul> <li> <p>Condition available for the <b>IPAM pool CIDR</b> resource type:</p> <ul> <li> <p>Property:</p> <ul> <li> <p>IPAM Pool ID</p> </li> <li> <p>CIDR (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p>Operation: Equals/Not equals</p> </li> <li> <p>Value: The value on which to match the condition</p> </li> </ul> </li> <li> <p>Conditions for the <b>Scope resource CIDR</b> resource type:</p> <ul> <li> <p>Property:</p> <ul> <li> <p>Resource ID: The unique ID of a resource (like vpc-1234567890abcdef0)</p> </li> <li> <p>Resource type (like VPC or Subnet)</p> </li> <li> <p>Resource owner (like 111122223333)</p> </li> <li> <p>Resource region (like us-east-1)</p> </li> <li> <p>Resource tag (like key: name, value: dev-vpc-1)</p> </li> <li> <p>CIDR (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p>Operation: Equals/Not equals</p> </li> <li> <p>Value: The value on which to match the condition</p> </li> </ul> </li> <li> <p>When setting conditions for a rule, one or more conditions is required.</p> </li> </ul> </li> </ul>"
+    },
+    "IpamPrefixListResolverRuleRequestSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamPrefixListResolverRuleRequest",
+        "locationName":"Rule"
+      }
+    },
+    "IpamPrefixListResolverRuleSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamPrefixListResolverRule",
+        "locationName":"item"
+      }
+    },
+    "IpamPrefixListResolverRuleType":{
+      "type":"string",
+      "enum":[
+        "static-cidr",
+        "ipam-resource-cidr",
+        "ipam-pool-cidr"
+      ]
+    },
+    "IpamPrefixListResolverSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamPrefixListResolver",
+        "locationName":"item"
+      }
+    },
+    "IpamPrefixListResolverState":{
+      "type":"string",
+      "enum":[
+        "create-in-progress",
+        "create-complete",
+        "create-failed",
+        "modify-in-progress",
+        "modify-complete",
+        "modify-failed",
+        "delete-in-progress",
+        "delete-complete",
+        "delete-failed",
+        "isolate-in-progress",
+        "isolate-complete",
+        "restore-in-progress"
+      ]
+    },
+    "IpamPrefixListResolverTarget":{
+      "type":"structure",
+      "members":{
+        "IpamPrefixListResolverTargetId":{
+          "shape":"IpamPrefixListResolverTargetId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver target.</p>",
+          "locationName":"ipamPrefixListResolverTargetId"
+        },
+        "IpamPrefixListResolverTargetArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IPAM prefix list resolver target.</p>",
+          "locationName":"ipamPrefixListResolverTargetArn"
+        },
+        "IpamPrefixListResolverId":{
+          "shape":"IpamPrefixListResolverId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver associated with this target.</p>",
+          "locationName":"ipamPrefixListResolverId"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the IPAM prefix list resolver target.</p>",
+          "locationName":"ownerId"
+        },
+        "PrefixListId":{
+          "shape":"PrefixListResourceId",
+          "documentation":"<p>The ID of the managed prefix list associated with this target.</p>",
+          "locationName":"prefixListId"
+        },
+        "PrefixListRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region where the prefix list associated with this target is located.</p>",
+          "locationName":"prefixListRegion"
+        },
+        "DesiredVersion":{
+          "shape":"BoxedLong",
+          "documentation":"<p>The desired version of the prefix list that this target should synchronize with.</p>",
+          "locationName":"desiredVersion"
+        },
+        "LastSyncedVersion":{
+          "shape":"BoxedLong",
+          "documentation":"<p>The version of the prefix list that was last successfully synchronized by this target.</p>",
+          "locationName":"lastSyncedVersion"
+        },
+        "TrackLatestVersion":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether this target automatically tracks the latest version of the prefix list.</p>",
+          "locationName":"trackLatestVersion"
+        },
+        "StateMessage":{
+          "shape":"String",
+          "documentation":"<p>A message describing the current state of the IPAM prefix list resolver target, including any error information.</p>",
+          "locationName":"stateMessage"
+        },
+        "State":{
+          "shape":"IpamPrefixListResolverTargetState",
+          "documentation":"<p>The current state of the IPAM prefix list resolver target. Valid values include <code>create-in-progress</code>, <code>create-complete</code>, <code>create-failed</code>, <code>modify-in-progress</code>, <code>modify-complete</code>, <code>modify-failed</code>, <code>delete-in-progress</code>, <code>delete-complete</code>, and <code>delete-failed</code>.</p>",
+          "locationName":"state"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags assigned to the IPAM prefix list resolver target.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes an IPAM prefix list resolver target.</p> <p>An IPAM prefix list resolver target is an association between a specific customer-managed prefix list and an IPAM prefix list resolver. The target enables the resolver to synchronize CIDRs selected by its rules into the specified prefix list, which can then be referenced in Amazon Web Services resources.</p>"
+    },
+    "IpamPrefixListResolverTargetId":{"type":"string"},
+    "IpamPrefixListResolverTargetSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamPrefixListResolverTarget",
+        "locationName":"item"
+      }
+    },
+    "IpamPrefixListResolverTargetState":{
+      "type":"string",
+      "enum":[
+        "create-in-progress",
+        "create-complete",
+        "create-failed",
+        "modify-in-progress",
+        "modify-complete",
+        "modify-failed",
+        "sync-in-progress",
+        "sync-complete",
+        "sync-failed",
+        "delete-in-progress",
+        "delete-complete",
+        "delete-failed",
+        "isolate-in-progress",
+        "isolate-complete",
+        "restore-in-progress"
+      ]
+    },
+    "IpamPrefixListResolverVersion":{
+      "type":"structure",
+      "members":{
+        "Version":{
+          "shape":"Long",
+          "documentation":"<p>The version number of the IPAM prefix list resolver.</p> <p>Each version is a snapshot of what CIDRs matched your rules at that moment in time. The version number increments every time the CIDR list changes due to infrastructure changes.</p>",
+          "locationName":"version"
+        }
+      },
+      "documentation":"<p>Describes a version of an IPAM prefix list resolver.</p> <p>Each version is a snapshot of what CIDRs matched your rules at that moment in time. The version number increments every time the CIDR list changes due to infrastructure changes.</p> <p> <b>Version example:</b> </p> <p> <b>Initial State (Version 1)</b> </p> <p>Production environment:</p> <ul> <li> <p>vpc-prod-web (10.1.0.0/16) - tagged env=prod</p> </li> <li> <p>vpc-prod-db (10.2.0.0/16) - tagged env=prod</p> </li> </ul> <p>Resolver rule: Include all VPCs tagged env=prod</p> <p> <b>Version 1 CIDRs:</b> 10.1.0.0/16, 10.2.0.0/16</p> <p> <b>Infrastructure Change (Version 2)</b> </p> <p>New VPC added:</p> <ul> <li> <p>vpc-prod-api (10.3.0.0/16) - tagged env=prod</p> </li> </ul> <p>IPAM automatically detects the change and creates a new version.</p> <p> <b>Version 2 CIDRs:</b> 10.1.0.0/16, 10.2.0.0/16, 10.3.0.0/16</p>"
+    },
+    "IpamPrefixListResolverVersionCreationStatus":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "success",
+        "failure"
+      ]
+    },
+    "IpamPrefixListResolverVersionEntry":{
+      "type":"structure",
+      "members":{
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The CIDR block that was selected and synchronized in this resolver version.</p>",
+          "locationName":"cidr"
+        }
+      },
+      "documentation":"<p>Describes a CIDR entry in a specific version of an IPAM prefix list resolver. This represents a CIDR that was selected and synchronized at a particular point in time.</p>"
+    },
+    "IpamPrefixListResolverVersionEntrySet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamPrefixListResolverVersionEntry",
+        "locationName":"item"
+      }
+    },
+    "IpamPrefixListResolverVersionNumberSet":{
+      "type":"list",
+      "member":{
+        "shape":"Long",
+        "locationName":"item"
+      }
+    },
+    "IpamPrefixListResolverVersionSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamPrefixListResolverVersion",
+        "locationName":"item"
+      }
+    },
     "IpamPublicAddressAssociationStatus":{
       "type":"string",
       "enum":[
@@ -45383,7 +46277,7 @@
         },
         "State":{
           "shape":"IpamResourceDiscoveryAssociationState",
-          "documentation":"<p>The lifecycle state of the association when you associate or disassociate a resource discovery.</p> <ul> <li> <p> <code>associate-in-progress</code> - Resource discovery is being associated.</p> </li> <li> <p> <code>associate-complete</code> - Resource discovery association is complete.</p> </li> <li> <p> <code>associate-failed</code> - Resource discovery association has failed.</p> </li> <li> <p> <code>disassociate-in-progress</code> - Resource discovery is being disassociated.</p> </li> <li> <p> <code>disassociate-complete</code> - Resource discovery disassociation is complete.</p> </li> <li> <p> <code>disassociate-failed </code> - Resource discovery disassociation has failed.</p> </li> <li> <p> <code>isolate-in-progress</code> - Amazon Web Services account that created the resource discovery association has been removed and the resource discovery associatation is being isolated.</p> </li> <li> <p> <code>isolate-complete</code> - Resource discovery isolation is complete..</p> </li> <li> <p> <code>restore-in-progress</code> - Resource discovery is being restored.</p> </li> </ul>",
+          "documentation":"<p>The lifecycle state of the association when you associate or disassociate a resource discovery.</p> <ul> <li> <p> <code>associate-in-progress</code> - Resource discovery is being associated.</p> </li> <li> <p> <code>associate-complete</code> - Resource discovery association is complete.</p> </li> <li> <p> <code>associate-failed</code> - Resource discovery association has failed.</p> </li> <li> <p> <code>disassociate-in-progress</code> - Resource discovery is being disassociated.</p> </li> <li> <p> <code>disassociate-complete</code> - Resource discovery disassociation is complete.</p> </li> <li> <p> <code>disassociate-failed </code> - Resource discovery disassociation has failed.</p> </li> <li> <p> <code>isolate-in-progress</code> - Amazon Web Services account that created the resource discovery association has been removed and the resource discovery association is being isolated.</p> </li> <li> <p> <code>isolate-complete</code> - Resource discovery isolation is complete.</p> </li> <li> <p> <code>restore-in-progress</code> - Resource discovery is being restored.</p> </li> </ul>",
           "locationName":"state"
         },
         "Tags":{
@@ -48615,6 +49509,16 @@
           "shape":"String",
           "documentation":"<p>The ID of the owner of the prefix list.</p>",
           "locationName":"ownerId"
+        },
+        "IpamPrefixListResolverTargetId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the IPAM prefix list resolver target associated with this managed prefix list. When set, this prefix list becomes an IPAM managed prefix list.</p> <p>An IPAM-managed prefix list is a customer-managed prefix list that has been associated with an IPAM prefix list resolver target. When a prefix list becomes IPAM managed, its CIDRs are automatically synchronized based on the IPAM prefix list resolver's CIDR selection rules, and direct CIDR modifications are restricted.</p>",
+          "locationName":"ipamPrefixListResolverTargetId"
+        },
+        "IpamPrefixListResolverSyncEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether synchronization with an IPAM prefix list resolver is enabled for this managed prefix list. When enabled, the prefix list CIDRs are automatically updated based on the resolver's CIDR selection rules.</p>",
+          "locationName":"ipamPrefixListResolverSyncEnabled"
         }
       },
       "documentation":"<p>Describes a managed prefix list.</p>"
@@ -50102,6 +51006,76 @@
         }
       }
     },
+    "ModifyIpamPrefixListResolverRequest":{
+      "type":"structure",
+      "required":["IpamPrefixListResolverId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPrefixListResolverId":{
+          "shape":"IpamPrefixListResolverId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver to modify.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A new description for the IPAM prefix list resolver.</p>"
+        },
+        "Rules":{
+          "shape":"IpamPrefixListResolverRuleRequestSet",
+          "documentation":"<p>The updated CIDR selection rules for the resolver. These rules replace the existing rules entirely.</p>",
+          "locationName":"Rule"
+        }
+      }
+    },
+    "ModifyIpamPrefixListResolverResult":{
+      "type":"structure",
+      "members":{
+        "IpamPrefixListResolver":{
+          "shape":"IpamPrefixListResolver",
+          "documentation":"<p>Information about the modified IPAM prefix list resolver.</p>",
+          "locationName":"ipamPrefixListResolver"
+        }
+      }
+    },
+    "ModifyIpamPrefixListResolverTargetRequest":{
+      "type":"structure",
+      "required":["IpamPrefixListResolverTargetId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPrefixListResolverTargetId":{
+          "shape":"IpamPrefixListResolverTargetId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver target to modify.</p>"
+        },
+        "DesiredVersion":{
+          "shape":"BoxedLong",
+          "documentation":"<p>The desired version of the prefix list to target. This allows you to pin the target to a specific version.</p>"
+        },
+        "TrackLatestVersion":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether the resolver target should automatically track the latest version of the prefix list. When enabled, the target will always synchronize with the most current version.</p> <p>Choose this for automatic updates when you want your prefix lists to stay current with infrastructure changes without manual intervention.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "ModifyIpamPrefixListResolverTargetResult":{
+      "type":"structure",
+      "members":{
+        "IpamPrefixListResolverTarget":{
+          "shape":"IpamPrefixListResolverTarget",
+          "documentation":"<p>Information about the modified IPAM prefix list resolver target.</p>",
+          "locationName":"ipamPrefixListResolverTarget"
+        }
+      }
+    },
     "ModifyIpamRequest":{
       "type":"structure",
       "required":["IpamId"],
@@ -50388,6 +51362,10 @@
         "MaxEntries":{
           "shape":"Integer",
           "documentation":"<p>The maximum number of entries for the prefix list. You cannot modify the entries of a prefix list and modify the size of a prefix list at the same time.</p> <p>If any of the resources that reference the prefix list cannot support the new maximum size, the modify operation fails. Check the state message for the IDs of the first ten resources that do not support the new maximum size.</p>"
+        },
+        "IpamPrefixListResolverSyncEnabled":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether synchronization with an IPAM prefix list resolver should be enabled for this managed prefix list. When enabled, the prefix list CIDRs are automatically updated based on the associated resolver's CIDR selection rules.</p>"
         }
       }
     },
@@ -58962,6 +59940,8 @@
         "ipam-external-resource-verification-token",
         "capacity-block",
         "mac-modification-task",
+        "ipam-prefix-list-resolver",
+        "ipam-prefix-list-resolver-target",
         "capacity-manager-data-export"
       ]
     },
@@ -70004,6 +70984,18 @@
         "VpcPeering":{
           "shape":"VpcEncryptionControlExclusion",
           "locationName":"vpcPeering"
+        },
+        "Lambda":{
+          "shape":"VpcEncryptionControlExclusion",
+          "locationName":"lambda"
+        },
+        "VpcLattice":{
+          "shape":"VpcEncryptionControlExclusion",
+          "locationName":"vpcLattice"
+        },
+        "ElasticFileSystem":{
+          "shape":"VpcEncryptionControlExclusion",
+          "locationName":"elasticFileSystem"
         }
       }
     },

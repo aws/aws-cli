@@ -20,11 +20,10 @@ _ALLOWED_COMMANDS = ['s3api select-object-content']
 
 
 @pytest.mark.validates_models
-def test_no_event_stream_unless_allowed():
+def test_no_event_stream_unless_allowed(record_property):
     driver = create_clidriver()
     help_command = driver.create_help_command()
     errors = []
-    targets = []
     for command_name, command_obj in help_command.command_table.items():
         sub_help = command_obj.create_help_command()
         if hasattr(sub_help, 'command_table'):
@@ -39,14 +38,21 @@ def test_no_event_stream_unless_allowed():
                     ):
                         if full_command in _ALLOWED_COMMANDS:
                             continue
+                        # Store the service and operation in
+                        # PyTest custom properties
+                        record_property(
+                            'aws_service',
+                            model.service_model.service_id
+                        )
+                        record_property(
+                            'aws_operation',
+                            model.name
+                        )
                         supported_commands = '\n'.join(_ALLOWED_COMMANDS)
                         errors.append(
                             f'The {full_command} command uses event streams '
                             'which is only supported for these operations:\n'
-                            f'{supported_commands}\n\n'
+                            f'{supported_commands}'
                         )
-                        targets.append(full_command)
     if errors:
-        raise AssertionError(
-            '\n' + '\n'.join(errors) + '\nTarget=[' + ', '.join(targets) + ']'
-        )
+        raise AssertionError('\n' + '\n'.join(errors))

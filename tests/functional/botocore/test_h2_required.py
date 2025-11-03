@@ -19,8 +19,8 @@ _KNOWN_SERVICES = {
     'qbusiness': ['Chat'],
     'kinesis': ['SubscribeToShard'],
     'lexv2-runtime': ['StartConversation'],
-     # Added only to keep a record of this feature being incompatible
-     'bedrock-runtime': ['InvokeModelWithBidirectionalStream'],
+    # Added only to keep a record of this feature being incompatible
+    'bedrock-runtime': ['InvokeModelWithBidirectionalStream'],
 }
 
 

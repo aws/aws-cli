@@ -149,17 +149,23 @@ def _pagination_configs():
 @pytest.mark.parametrize(
     "operation_name, page_config, service_model", _pagination_configs()
 )
-def test_lint_pagination_configs(operation_name, page_config, service_model, record_property):
+def test_lint_pagination_configs(
+    operation_name, page_config, service_model, record_property
+):
     # Store common details of the operation
     record_property('aws_service', service_model.service_id)
     record_property('aws_operation', operation_name)
     _validate_known_pagination_keys(page_config)
     _validate_result_key_exists(page_config)
     _validate_referenced_operation_exists(operation_name, service_model)
-    _validate_operation_has_output(operation_name, service_model, record_property)
+    _validate_operation_has_output(
+        operation_name, service_model, record_property
+    )
     _validate_input_keys_match(operation_name, page_config, service_model)
     _validate_output_keys_match(operation_name, page_config, service_model)
-    _validate_new_numeric_keys(operation_name, page_config, service_model, record_property)
+    _validate_new_numeric_keys(
+        operation_name, page_config, service_model, record_property
+    )
 
 
 def _validate_known_pagination_keys(page_config):
@@ -186,7 +192,9 @@ def _validate_referenced_operation_exists(operation_name, service_model):
         )
 
 
-def _validate_operation_has_output(operation_name, service_model, record_property):
+def _validate_operation_has_output(
+    operation_name, service_model, record_property
+):
     op_model = service_model.operation_model(operation_name)
     output = op_model.output_shape
     if output is None or not output.members:
@@ -261,7 +269,9 @@ def _validate_output_keys_match(operation_name, page_config, service_model):
         )
 
 
-def _validate_new_numeric_keys(operation_name, page_config, service_model, record_property):
+def _validate_new_numeric_keys(
+    operation_name, page_config, service_model, record_property
+):
     output_shape = service_model.operation_model(operation_name).output_shape
     for key in _get_list_value(page_config, 'result_key'):
         current_shape = output_shape

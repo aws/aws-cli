@@ -11,8 +11,8 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import pytest
-
 from botocore.model import OperationModel
+
 from awscli.clidriver import create_clidriver
 
 
@@ -31,10 +31,7 @@ def _generate_command_tests():
     "command_name, command_table, builtins", _generate_command_tests()
 )
 def test_no_shadowed_builtins(
-        command_name,
-        command_table,
-        builtins,
-        record_property
+    command_name, command_table, builtins, record_property
 ):
     """Verify no command params are shadowed or prefixed by the built in param.
 
@@ -72,13 +69,9 @@ def test_no_shadowed_builtins(
                     # Store the service and operation in
                     # PyTest custom properties
                     record_property(
-                        'aws_service',
-                        model.service_model.service_id
+                        'aws_service', model.service_model.service_id
                     )
-                    record_property(
-                        'aws_operation',
-                        model.name
-                    )
+                    record_property('aws_operation', model.name)
                 # Then we are shadowing or prefixing a top level argument
                 errors.append(
                     'Shadowing/Prefixing a top level option: '

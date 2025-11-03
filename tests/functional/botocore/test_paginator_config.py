@@ -158,7 +158,7 @@ def test_lint_pagination_configs(operation_name, page_config, service_model, rec
     _validate_referenced_operation_exists(operation_name, service_model)
     _validate_operation_has_output(operation_name, service_model, record_property)
     _validate_input_keys_match(operation_name, page_config, service_model)
-    _validate_output_keys_match(operation_name, page_config, service_model, record_property)
+    _validate_output_keys_match(operation_name, page_config, service_model)
     _validate_new_numeric_keys(operation_name, page_config, service_model, record_property)
 
 
@@ -207,21 +207,20 @@ def _validate_input_keys_match(operation_name, page_config, service_model):
     for token in input_tokens:
         if token not in valid_input_names:
             raise AssertionError(
-                f"input_token refers to a non existent "
-                f"input member for operation."
+                f"input_token '{token}' refers to a non existent "
+                f"input member for operation: {operation_name}"
             )
     if 'limit_key' in page_config:
         limit_key = page_config['limit_key']
         if limit_key not in valid_input_names:
-            valid_keys = ', '.join(list(valid_input_names))
             raise AssertionError(
                 f"limit_key '{limit_key}' refers to a non existent "
                 f"input member for operation: {operation_name}, valid keys: "
-                f"{valid_keys}."
+                f"{', '.join(list(valid_input_names))}."
             )
 
 
-def _validate_output_keys_match(operation_name, page_config, service_model, record_property):
+def _validate_output_keys_match(operation_name, page_config, service_model):
     # NOTE: The original version of this function from translate.py had logic
     # to ensure that the entire set of output_members was accounted for in the
     # union of 'result_key', 'output_token', 'more_results', and
@@ -257,7 +256,7 @@ def _validate_output_keys_match(operation_name, page_config, service_model, reco
             "There are member names in the output shape of "
             f"{operation_name} that are not accounted for in the pagination "
             f"config for service {service_model.service_name}: "
-            f"[{', '.join(output_members)}]"
+            f"{', '.join(output_members)}"
         )
 
 

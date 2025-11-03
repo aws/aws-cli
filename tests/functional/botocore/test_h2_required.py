@@ -70,5 +70,4 @@ def test_all_h2_operations_are_known(h2_service, operation, record_property):
     # Store the service name and operation in PyTest custom properties
     record_property('aws_service', h2_service)
     record_property('aws_operation', operation)
-
     assert operation in known_operations, message

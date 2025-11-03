@@ -189,8 +189,9 @@ def _validate_referenced_operation_exists(operation_name, service_model):
 def _validate_operation_has_output(operation_name, service_model, record_property):
     op_model = service_model.operation_model(operation_name)
     output = op_model.output_shape
-    record_property('shape', output.type_name)
     if output is None or not output.members:
+        if output:
+            record_property('shape', output.type_name)
         raise AssertionError(
             "Pagination config refers to operation "
             f"that does not have any output: {operation_name}"
@@ -275,6 +276,7 @@ def _validate_new_numeric_keys(operation_name, page_config, service_model, recor
             and (service_model.service_name, operation_name)
             not in KNOWN_PAGINATORS_WITH_INTEGER_OUTPUTS
         ):
+            record_property('shape', current_shape.name)
             raise AssertionError(
                 f'There is a new operation {operation_name} for service '
                 f'{service_model.service_name} that is configured to sum '

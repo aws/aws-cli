@@ -396,21 +396,21 @@ class TestCliDriver:
         assert rc == 252
         assert 1 == fake_stderr.getvalue().count('CLI version:')
 
-    @mock.patch('awscrt.io.init_logging')
+    @mock.patch('awscrt.io.set_log_level')
     def test_debug_enables_crt_logging(self, mock_init_logging):
         with contextlib.redirect_stderr(io.StringIO()):
             self.driver.main(
                 ['s3', 'list-objects', '--bucket', 'foo', '--debug']
             )
         mock_init_logging.assert_called_with(
-            awscrt.io.LogLevel.Debug, 'stderr'
+            awscrt.io.LogLevel.Debug,
         )
 
-    @mock.patch('awscrt.io.init_logging')
+    @mock.patch('awscrt.io.set_log_level')
     def test_no_debug_disables_crt_logging(self, mock_init_logging):
         self.driver.main(['s3', 'list-objects', '--bucket', 'foo'])
         mock_init_logging.assert_called_with(
-            awscrt.io.LogLevel.NoLogs, 'stderr'
+            awscrt.io.LogLevel.NoLogs,
         )
 
 
@@ -501,7 +501,9 @@ class TestCliDriverHooks(unittest.TestCase):
         )
         self.assertEqual(rc, 252)
         # Tell the user what went wrong.
-        self.assertIn("Found invalid choice 'list-objecst'", self.stderr.getvalue())
+        self.assertIn(
+            "Found invalid choice 'list-objecst'", self.stderr.getvalue()
+        )
         # Offer the user a suggestion.
         self.assertIn(
             "Maybe you meant:\n\n  * list-objects", self.stderr.getvalue()

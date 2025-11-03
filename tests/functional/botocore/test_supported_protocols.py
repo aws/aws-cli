@@ -53,9 +53,7 @@ def _single_protocol_test_cases():
 def test_services_with_protocols_trait_have_supported_protocol(
     service_name, supported_protocols, record_property
 ):
-    message = (
-        f"No protocols supported for service {service_name}"
-    )
+    message = f"No protocols supported for service {service_name}"
     # Store the service name in PyTest custom properties
     record_property('aws_service', service_name)
     assert any(
@@ -72,9 +70,7 @@ def test_services_with_protocols_trait_have_supported_protocol(
 def test_services_without_protocols_trait_have_supported_protocol(
     service_name, supported_protocol, record_property
 ):
-    message = (
-        f"Service protocol not supported for {service_name}"
-    )
+    message = f"Service protocol not supported for {service_name}"
     # Store the service name in PyTest custom properties
     record_property('aws_service', service_name)
     assert supported_protocol in PRIORITY_ORDERED_SUPPORTED_PROTOCOLS, message

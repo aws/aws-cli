@@ -31,7 +31,7 @@ def test_no_event_stream_unless_allowed(record_property):
                 op_help = sub_command.create_help_command()
                 model = op_help.obj
                 if isinstance(model, OperationModel):
-                    full_command = '%s %s' % (command_name, sub_name)
+                    full_command = f'{command_name} {sub_name}'
                     if (
                         model.has_event_stream_input
                         or model.has_event_stream_output

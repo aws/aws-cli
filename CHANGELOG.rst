@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.31.28
+=======
+
+* api-change:``budgets``: Fix the AWS Budgets endpoint for the aws-eusc partition.
+* api-change:``ecs``: Documentation-only update for LINEAR and CANARY deployment strategies.
+* api-change:``ec2``: Add Amazon EC2 trn2.3xlarge instance type.
+* api-change:``bedrock-agentcore-control``: Adds support for direct code deploy with CreateAgentRuntime and UpdateAgentRuntime
+* api-change:``kinesis``: Adds support for MinimumThroughputBillingCommitment with new UpdateAccountSettings API. Adds support to configure warm throughput for on-demand streams in new UpdateStreamWarmThroughput API and existing CreateStream API and UpdateStreamMode API.
+
+
 2.31.27
 =======
 

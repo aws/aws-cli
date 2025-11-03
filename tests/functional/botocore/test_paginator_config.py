@@ -153,7 +153,7 @@ def test_lint_pagination_configs(
     operation_name, page_config, service_model, record_property
 ):
     # Store common details of the operation
-    record_property('aws_service', service_model.service_id)
+    record_property('aws_service', service_model.service_name)
     record_property('aws_operation', operation_name)
     _validate_known_pagination_keys(page_config)
     _validate_result_key_exists(page_config)

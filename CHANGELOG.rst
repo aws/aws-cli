@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+1.42.66
+=======
+
+* api-change:``pinpoint-sms-voice-v2``: This release adds support for the CarrierLookup API, which returns information about a destination phone number including if the number is valid, the carrier, and more.
+
+
 1.42.65
 =======
 

@@ -25,8 +25,9 @@ try:
     awscrt.io.init_logging(awscrt.io.LogLevel.NoLogs, 'stderr')
 except RuntimeError:
     # Calling `init_logging` more than once raises a Runtime exception.
-    # Even though normal usage shouldn't call it more than once, we should
-    # still guard against it
+    # Even though normal usage shouldn't call it more than once in the
+    # case of multiple imports, we should still guard against it if
+    # something causes the module cache to be cleared between imports.
     pass
 
 

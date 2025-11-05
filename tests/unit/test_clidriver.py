@@ -709,6 +709,16 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             self.driver.main(['servicecatalog', 'create-constraint'])
         self.assertNotIn('--idempotency-token', self.stderr.getvalue())
 
+    def test_chaos2_restricted_service_error_message(self):
+        """Verify chaos2 service returns restricted error message."""
+        driver = create_clidriver()
+        with self.assertRaises(SystemExit):
+            driver.main(['chaos2', 'help'])
+        self.assertIn("service 'chaos2' does not exist",
+                      self.stderr.getvalue())
+        self.assertIn("Your curiosity has been logged",
+                      self.stderr.getvalue())
+
 class TestHowClientIsCreated(BaseAWSCommandParamsTest):
     def setUp(self):
         super(TestHowClientIsCreated, self).setUp()

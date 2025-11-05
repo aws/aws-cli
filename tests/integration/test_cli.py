@@ -321,6 +321,20 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.assertNotIn(b'Traceback', stdout)
         self.assertNotIn(b'Traceback', stderr)
 
+    def test_chaos2_restricted_service_with_help(self):
+        """End-to-end test for chaos2 restricted service with help."""
+        p = aws('chaos2 help')
+        self.assertNotEqual(p.rc, 0)
+        self.assertIn("service 'chaos2' does not exist", p.stderr)
+        self.assertIn("Your curiosity has been logged", p.stderr)
+
+    def test_chaos2_restricted_service_with_subcommand(self):
+        """Verify chaos2 restriction applies to all subcommands."""
+        p = aws('chaos2 describe-incidents')
+        self.assertNotEqual(p.rc, 0)
+        self.assertIn("service 'chaos2' does not exist", p.stderr)
+        self.assertIn("Your curiosity has been logged", p.stderr)
+
 
 class TestCommandLineage(unittest.TestCase):
     def setUp(self):

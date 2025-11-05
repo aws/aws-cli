@@ -82,6 +82,13 @@ class CLIArgParser(argparse.ArgumentParser):
         """
         # converted value must be one of the choices (if specified)
         if action.choices is not None and value not in action.choices:
+            # Check for restricted service identifiers
+            if value == 'chaos2':
+                msg = ("service 'chaos2' does not exist\n\n"
+                       "(But thank you for checking. Your curiosity has been logged.)")
+                raise argparse.ArgumentError(action, msg)
+
+            # Standard invalid choice handling continues unchanged
             msg = ['Invalid choice, valid choices are:\n']
             for i in range(len(action.choices))[:: self.ChoicesPerLine]:
                 current = []

@@ -7588,11 +7588,22 @@
           "shape":"ProjectProfileId",
           "documentation":"<p>The ID of the project profile.</p>"
         },
+        "resourceTags":{
+          "shape":"CreateProjectInputResourceTagsMap",
+          "documentation":"<p>The resource tags of the project.</p>"
+        },
         "userParameters":{
           "shape":"EnvironmentConfigurationUserParametersList",
           "documentation":"<p>The user parameters of the project.</p>"
         }
       }
+    },
+    "CreateProjectInputResourceTagsMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":25,
+      "min":0
     },
     "CreateProjectMembershipInput":{
       "type":"structure",
@@ -7690,6 +7701,10 @@
           "shape":"ProjectStatus",
           "documentation":"<p>The status of the Amazon DataZone project that was created.</p>"
         },
+        "resourceTags":{
+          "shape":"ResourceTags",
+          "documentation":"<p>The resource tags of the project.</p>"
+        },
         "userParameters":{
           "shape":"EnvironmentConfigurationUserParametersList",
           "documentation":"<p>The user parameters of the project.</p>"
@@ -7713,6 +7728,10 @@
         "name"
       ],
       "members":{
+        "allowCustomProjectResourceTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether custom project resource tags are supported.</p>"
+        },
         "description":{
           "shape":"Description",
           "documentation":"<p>A description of a project profile.</p>"
@@ -7735,6 +7754,14 @@
           "shape":"ProjectProfileName",
           "documentation":"<p>Project profile name.</p>"
         },
+        "projectResourceTags":{
+          "shape":"ProjectResourceTagParameters",
+          "documentation":"<p>The resource tags of the project profile.</p>"
+        },
+        "projectResourceTagsDescription":{
+          "shape":"Description",
+          "documentation":"<p>Field viewable through the UI that provides a project user with the allowed resource tag specifications.</p>"
+        },
         "status":{
           "shape":"Status",
           "documentation":"<p>Project profile status.</p>"
@@ -7750,6 +7777,10 @@
         "name"
       ],
       "members":{
+        "allowCustomProjectResourceTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether custom project resource tags are supported.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>A timestamp at which a project profile is created.</p>"
@@ -7785,6 +7816,14 @@
         "name":{
           "shape":"ProjectProfileName",
           "documentation":"<p>Project profile name.</p>"
+        },
+        "projectResourceTags":{
+          "shape":"ProjectResourceTagParameters",
+          "documentation":"<p>The resource tags of the project profile.</p>"
+        },
+        "projectResourceTagsDescription":{
+          "shape":"Description",
+          "documentation":"<p>Field viewable through the UI that provides a project user with the allowed resource tag specifications.</p>"
         },
         "status":{
           "shape":"Status",
@@ -13405,6 +13444,10 @@
           "shape":"ProjectStatus",
           "documentation":"<p>The status of the project.</p>"
         },
+        "resourceTags":{
+          "shape":"ResourceTags",
+          "documentation":"<p>The resource tags of the project.</p>"
+        },
         "userParameters":{
           "shape":"EnvironmentConfigurationUserParametersList",
           "documentation":"<p>The user parameters of a project.</p>"
@@ -13441,6 +13484,10 @@
         "name"
       ],
       "members":{
+        "allowCustomProjectResourceTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether custom project resource tags are supported.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp of when the project profile was created.</p>"
@@ -13476,6 +13523,14 @@
         "name":{
           "shape":"ProjectProfileName",
           "documentation":"<p>The name of the project profile.</p>"
+        },
+        "projectResourceTags":{
+          "shape":"ProjectResourceTagParameters",
+          "documentation":"<p>The resource tags of the project profile.</p>"
+        },
+        "projectResourceTagsDescription":{
+          "shape":"Description",
+          "documentation":"<p>Field viewable through the UI that provides a project user with the allowed resource tag specifications.</p>"
         },
         "status":{
           "shape":"Status",
@@ -18753,6 +18808,12 @@
       },
       "documentation":"<p>The summary of a project profile.</p>"
     },
+    "ProjectResourceTagParameters":{
+      "type":"list",
+      "member":{"shape":"ResourceTagParameter"},
+      "max":25,
+      "min":0
+    },
     "ProjectStatus":{
       "type":"string",
       "enum":[
@@ -19764,6 +19825,65 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ResourceTag":{
+      "type":"structure",
+      "required":[
+        "key",
+        "source",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"TagKey",
+          "documentation":"<p>The key of the resource tag of the project.</p>"
+        },
+        "source":{
+          "shape":"ResourceTagSource",
+          "documentation":"<p>The source of the resource tag of the project.</p>"
+        },
+        "value":{
+          "shape":"TagValue",
+          "documentation":"<p>The value of the resource tag of the project.</p>"
+        }
+      },
+      "documentation":"<p>The resource tag of the project.</p>"
+    },
+    "ResourceTagParameter":{
+      "type":"structure",
+      "required":[
+        "isValueEditable",
+        "key",
+        "value"
+      ],
+      "members":{
+        "isValueEditable":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the value of the resource tag parameter of the project profile is editable at the project level.</p>"
+        },
+        "key":{
+          "shape":"TagKey",
+          "documentation":"<p>The key of the resource tag parameter of the project profile.</p>"
+        },
+        "value":{
+          "shape":"TagValue",
+          "documentation":"<p>The value of the resource tag parameter key of the project profile.</p>"
+        }
+      },
+      "documentation":"<p>The resource tag parameter of the project profile.</p>"
+    },
+    "ResourceTagSource":{
+      "type":"string",
+      "enum":[
+        "PROJECT",
+        "PROJECT_PROFILE"
+      ]
+    },
+    "ResourceTags":{
+      "type":"list",
+      "member":{"shape":"ResourceTag"},
+      "max":25,
+      "min":0
     },
     "Revision":{
       "type":"string",
@@ -23698,11 +23818,22 @@
           "shape":"String",
           "documentation":"<p>The project profile version to which the project should be updated. You can only specify the following string for this parameter: <code>latest</code>.</p>"
         },
+        "resourceTags":{
+          "shape":"UpdateProjectInputResourceTagsMap",
+          "documentation":"<p>The resource tags of the project.</p>"
+        },
         "userParameters":{
           "shape":"EnvironmentConfigurationUserParametersList",
           "documentation":"<p>The user parameters of the project.</p>"
         }
       }
+    },
+    "UpdateProjectInputResourceTagsMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":25,
+      "min":0
     },
     "UpdateProjectOutput":{
       "type":"structure",
@@ -23765,6 +23896,10 @@
           "shape":"ProjectStatus",
           "documentation":"<p>The status of the project.</p>"
         },
+        "resourceTags":{
+          "shape":"ResourceTags",
+          "documentation":"<p>The resource tags of the project.</p>"
+        },
         "userParameters":{
           "shape":"EnvironmentConfigurationUserParametersList",
           "documentation":"<p>The user parameters of the project.</p>"
@@ -23778,6 +23913,10 @@
         "identifier"
       ],
       "members":{
+        "allowCustomProjectResourceTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether custom project resource tags are supported.</p>"
+        },
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of a project profile.</p>"
@@ -23806,6 +23945,14 @@
           "shape":"ProjectProfileName",
           "documentation":"<p>The name of a project profile.</p>"
         },
+        "projectResourceTags":{
+          "shape":"ProjectResourceTagParameters",
+          "documentation":"<p>The resource tags of the project profile.</p>"
+        },
+        "projectResourceTagsDescription":{
+          "shape":"Description",
+          "documentation":"<p>Field viewable through the UI that provides a project user with the allowed resource tag specifications.</p>"
+        },
         "status":{
           "shape":"Status",
           "documentation":"<p>The status of a project profile.</p>"
@@ -23821,6 +23968,10 @@
         "name"
       ],
       "members":{
+        "allowCustomProjectResourceTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether custom project resource tags are supported.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp at which a project profile is created.</p>"
@@ -23856,6 +24007,14 @@
         "name":{
           "shape":"ProjectProfileName",
           "documentation":"<p>The name of the project profile.</p>"
+        },
+        "projectResourceTags":{
+          "shape":"ProjectResourceTagParameters",
+          "documentation":"<p>The resource tags of the project profile.</p>"
+        },
+        "projectResourceTagsDescription":{
+          "shape":"Description",
+          "documentation":"<p>Field viewable through the UI that provides a project user with the allowed resource tag specifications.</p>"
         },
         "status":{
           "shape":"Status",

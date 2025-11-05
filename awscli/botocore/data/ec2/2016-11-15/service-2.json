@@ -10517,6 +10517,13 @@
       "documentation":"<p>Describes Availability Zones, Local Zones, and Wavelength Zones.</p>"
     },
     "AvailabilityZoneId":{"type":"string"},
+    "AvailabilityZoneIdStringList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"AvailabilityZoneId"
+      }
+    },
     "AvailabilityZoneList":{
       "type":"list",
       "member":{
@@ -24011,6 +24018,11 @@
           "documentation":"<p>The Availability Zone.</p>",
           "locationName":"availabilityZone"
         },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone.</p>",
+          "locationName":"availabilityZoneId"
+        },
         "State":{
           "shape":"FastSnapshotRestoreStateCode",
           "documentation":"<p>The state of fast snapshot restores.</p>",
@@ -24076,7 +24088,7 @@
       "members":{
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters. The possible values are:</p> <ul> <li> <p> <code>availability-zone</code>: The Availability Zone of the snapshot.</p> </li> <li> <p> <code>owner-id</code>: The ID of the Amazon Web Services account that enabled fast snapshot restore on the snapshot.</p> </li> <li> <p> <code>snapshot-id</code>: The ID of the snapshot.</p> </li> <li> <p> <code>state</code>: The state of fast snapshot restores for the snapshot (<code>enabling</code> | <code>optimizing</code> | <code>enabled</code> | <code>disabling</code> | <code>disabled</code>).</p> </li> </ul>",
+          "documentation":"<p>The filters. The possible values are:</p> <ul> <li> <p> <code>availability-zone</code>: The Availability Zone of the snapshot. For example, <code>us-east-2a</code>.</p> </li> <li> <p> <code>availability-zone-id</code>: The ID of the Availability Zone of the snapshot. For example, <code>use2-az1</code>.</p> </li> <li> <p> <code>owner-id</code>: The ID of the Amazon Web Services account that enabled fast snapshot restore on the snapshot.</p> </li> <li> <p> <code>snapshot-id</code>: The ID of the snapshot.</p> </li> <li> <p> <code>state</code>: The state of fast snapshot restores for the snapshot (<code>enabling</code> | <code>optimizing</code> | <code>enabled</code> | <code>disabling</code> | <code>disabled</code>).</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -30903,6 +30915,11 @@
           "documentation":"<p>The Availability Zone.</p>",
           "locationName":"availabilityZone"
         },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone.</p>",
+          "locationName":"availabilityZoneId"
+        },
         "Error":{
           "shape":"DisableFastSnapshotRestoreStateError",
           "documentation":"<p>The error.</p>",
@@ -30930,6 +30947,11 @@
           "shape":"String",
           "documentation":"<p>The Availability Zone.</p>",
           "locationName":"availabilityZone"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone.</p>",
+          "locationName":"availabilityZoneId"
         },
         "State":{
           "shape":"FastSnapshotRestoreStateCode",
@@ -30988,15 +31010,17 @@
     },
     "DisableFastSnapshotRestoresRequest":{
       "type":"structure",
-      "required":[
-        "AvailabilityZones",
-        "SourceSnapshotIds"
-      ],
+      "required":["SourceSnapshotIds"],
       "members":{
         "AvailabilityZones":{
           "shape":"AvailabilityZoneStringList",
-          "documentation":"<p>One or more Availability Zones. For example, <code>us-east-2a</code>.</p>",
+          "documentation":"<p>One or more Availability Zones. For example, <code>us-east-2a</code>.</p> <p>Either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code> must be specified in the request, but not both.</p>",
           "locationName":"AvailabilityZone"
+        },
+        "AvailabilityZoneIds":{
+          "shape":"AvailabilityZoneIdStringList",
+          "documentation":"<p>One or more Availability Zone IDs. For example, <code>use2-az1</code>.</p> <p>Either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code> must be specified in the request, but not both.</p>",
+          "locationName":"AvailabilityZoneId"
         },
         "SourceSnapshotIds":{
           "shape":"SnapshotIdStringList",
@@ -33114,6 +33138,11 @@
           "documentation":"<p>The Availability Zone.</p>",
           "locationName":"availabilityZone"
         },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone.</p>",
+          "locationName":"availabilityZoneId"
+        },
         "Error":{
           "shape":"EnableFastSnapshotRestoreStateError",
           "documentation":"<p>The error.</p>",
@@ -33141,6 +33170,11 @@
           "shape":"String",
           "documentation":"<p>The Availability Zone.</p>",
           "locationName":"availabilityZone"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone.</p>",
+          "locationName":"availabilityZoneId"
         },
         "State":{
           "shape":"FastSnapshotRestoreStateCode",
@@ -33199,15 +33233,17 @@
     },
     "EnableFastSnapshotRestoresRequest":{
       "type":"structure",
-      "required":[
-        "AvailabilityZones",
-        "SourceSnapshotIds"
-      ],
+      "required":["SourceSnapshotIds"],
       "members":{
         "AvailabilityZones":{
           "shape":"AvailabilityZoneStringList",
-          "documentation":"<p>One or more Availability Zones. For example, <code>us-east-2a</code>.</p>",
+          "documentation":"<p>One or more Availability Zones. For example, <code>us-east-2a</code>.</p> <p>Either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code> must be specified in the request, but not both.</p>",
           "locationName":"AvailabilityZone"
+        },
+        "AvailabilityZoneIds":{
+          "shape":"AvailabilityZoneIdStringList",
+          "documentation":"<p>One or more Availability Zone IDs. For example, <code>use2-az1</code>.</p> <p>Either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code> must be specified in the request, but not both.</p>",
+          "locationName":"AvailabilityZoneId"
         },
         "SourceSnapshotIds":{
           "shape":"SnapshotIdStringList",
@@ -45704,7 +45740,7 @@
           "locationName":"cidr"
         }
       },
-      "documentation":"<p>Describes a condition within a CIDR selection rule. Conditions define the criteria for selecting CIDRs from IPAM's database based on resource attributes.</p> <p>CIDR selection rules define the business logic for selecting CIDRs from IPAM. If a CIDR matches any of the rules, it will be included. If a rule has multiple conditions, the CIDR has to match every condition of that rule. You can create a prefix list resolver without any CIDR selection rules, but it will generate empty versions (containing no CIDRs) until you add rules.</p> <p>There are three rule types:</p> <ul> <li> <p> <b>Static CIDR</b>: A fixed list of CIDRs that do not change (like a manual list replicated across Regions).</p> </li> <li> <p> <b>IPAM pool CIDR</b>: CIDRs from specific IPAM pools (like all CIDRs from your IPAM production pool).</p> </li> <li> <p> <b>Scope resource CIDR</b>: CIDRs for Amazon Web Services resources like VPCs, subnets, and EIPs within a specific IPAM scope.</p> </li> </ul> <p>Condition availability by resource type:</p> <ul> <li> <p>Only 2 of the 3 rule types support conditions - <b>IPAM pool CIDR</b> and <b>Scope resource CIDR</b>. <b>Static CIDR</b> rules cannot have conditions.</p> <ul> <li> <p>Condition available for the <b>IPAM pool CIDR</b> resource type:</p> <ul> <li> <p>Property:</p> <ul> <li> <p>IPAM Pool ID</p> </li> <li> <p>CIDR (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p>Operation: Equals/Not equals</p> </li> <li> <p>Value: The value on which to match the condition</p> </li> </ul> </li> <li> <p>Conditions for the <b>Scope resource CIDR</b> resource type:</p> <ul> <li> <p>Property:</p> <ul> <li> <p>Resource ID: The unique ID of a resource (like vpc-1234567890abcdef0)</p> </li> <li> <p>Resource type (like VPC or Subnet)</p> </li> <li> <p>Resource owner (like 111122223333)</p> </li> <li> <p>Resource region (like us-east-1)</p> </li> <li> <p>Resource tag (like key: name, value: dev-vpc-1)</p> </li> <li> <p>CIDR (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p>Operation: Equals/Not equals</p> </li> <li> <p>Value: The value on which to match the condition</p> </li> </ul> </li> <li> <p>When setting conditions for a rule, one or more conditions is required.</p> </li> </ul> </li> </ul>"
+      "documentation":"<p>Describes a condition within a CIDR selection rule. Conditions define the criteria for selecting CIDRs from IPAM's database based on resource attributes.</p> <p>CIDR selection rules define the business logic for selecting CIDRs from IPAM. If a CIDR matches any of the rules, it will be included. If a rule has multiple conditions, the CIDR has to match every condition of that rule. You can create a prefix list resolver without any CIDR selection rules, but it will generate empty versions (containing no CIDRs) until you add rules.</p> <p>There are three rule types. Only 2 of the 3 rule types support conditions - <b>IPAM pool CIDR</b> and <b>Scope resource CIDR</b>. <b>Static CIDR</b> rules cannot have conditions.</p> <ul> <li> <p> <b>Static CIDR</b>: A fixed list of CIDRs that do not change (like a manual list replicated across Regions)</p> </li> <li> <p> <b>IPAM pool CIDR</b>: CIDRs from specific IPAM pools (like all CIDRs from your IPAM production pool)</p> <p>If you choose this option, choose the following:</p> <ul> <li> <p> <b>IPAM scope</b>: Select the IPAM scope to search for resources</p> </li> <li> <p> <b>Conditions:</b> </p> <ul> <li> <p> <b>Property</b> </p> <ul> <li> <p> <b>IPAM pool ID</b>: Select an IPAM pool that contains the resources</p> </li> <li> <p> <b>CIDR</b> (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p> <b>Operation</b>: Equals/Not equals</p> </li> <li> <p> <b>Value</b>: The value on which to match the condition</p> </li> </ul> </li> </ul> </li> <li> <p> <b>Scope resource CIDR</b>: CIDRs from Amazon Web Services resources like VPCs, subnets, EIPs within an IPAM scope</p> <p>If you choose this option, choose the following:</p> <ul> <li> <p> <b>IPAM scope</b>: Select the IPAM scope to search for resources</p> </li> <li> <p> <b>Resource type</b>: Select a resource, like a VPC or subnet.</p> </li> <li> <p> <b>Conditions</b>:</p> <ul> <li> <p> <b>Property</b>:</p> <ul> <li> <p>Resource ID: The unique ID of a resource (like vpc-1234567890abcdef0)</p> </li> <li> <p>Resource owner (like 111122223333)</p> </li> <li> <p>Resource region (like us-east-1)</p> </li> <li> <p>Resource tag (like key: name, value: dev-vpc-1)</p> </li> <li> <p>CIDR (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p> <b>Operation</b>: Equals/Not equals</p> </li> <li> <p> <b>Value</b>: The value on which to match the condition</p> </li> </ul> </li> </ul> </li> </ul>"
     },
     "IpamPrefixListResolverRuleConditionOperation":{
       "type":"string",
@@ -45747,7 +45783,7 @@
           "documentation":"<p>A CIDR block to match against. This condition selects CIDRs that fall within or match the specified CIDR range.</p>"
         }
       },
-      "documentation":"<p>Describes a condition used when creating or modifying resolver rules.</p> <p>CIDR selection rules define the business logic for selecting CIDRs from IPAM. If a CIDR matches any of the rules, it will be included. If a rule has multiple conditions, the CIDR has to match every condition of that rule. You can create a prefix list resolver without any CIDR selection rules, but it will generate empty versions (containing no CIDRs) until you add rules.</p> <p>There are three rule types:</p> <ul> <li> <p> <b>Static CIDR</b>: A fixed list of CIDRs that do not change (like a manual list replicated across Regions).</p> </li> <li> <p> <b>IPAM pool CIDR</b>: CIDRs from specific IPAM pools (like all CIDRs from your IPAM production pool).</p> </li> <li> <p> <b>Scope resource CIDR</b>: CIDRs for Amazon Web Services resources like VPCs, subnets, and EIPs within a specific IPAM scope.</p> </li> </ul> <p>Condition availability by resource type:</p> <ul> <li> <p>Only 2 of the 3 rule types support conditions - <b>IPAM pool CIDR</b> and <b>Scope resource CIDR</b>. <b>Static CIDR</b> rules cannot have conditions.</p> <ul> <li> <p>Condition available for the <b>IPAM pool CIDR</b> resource type:</p> <ul> <li> <p>Property:</p> <ul> <li> <p>IPAM Pool ID</p> </li> <li> <p>CIDR (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p>Operation: Equals/Not equals</p> </li> <li> <p>Value: The value on which to match the condition</p> </li> </ul> </li> <li> <p>Conditions for the <b>Scope resource CIDR</b> resource type:</p> <ul> <li> <p>Property:</p> <ul> <li> <p>Resource ID: The unique ID of a resource (like vpc-1234567890abcdef0)</p> </li> <li> <p>Resource type (like VPC or Subnet)</p> </li> <li> <p>Resource owner (like 111122223333)</p> </li> <li> <p>Resource region (like us-east-1)</p> </li> <li> <p>Resource tag (like key: name, value: dev-vpc-1)</p> </li> <li> <p>CIDR (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p>Operation: Equals/Not equals</p> </li> <li> <p>Value: The value on which to match the condition</p> </li> </ul> </li> <li> <p>When setting conditions for a rule, one or more conditions is required.</p> </li> </ul> </li> </ul>"
+      "documentation":"<p>Describes a condition used when creating or modifying resolver rules.</p> <p>CIDR selection rules define the business logic for selecting CIDRs from IPAM. If a CIDR matches any of the rules, it will be included. If a rule has multiple conditions, the CIDR has to match every condition of that rule. You can create a prefix list resolver without any CIDR selection rules, but it will generate empty versions (containing no CIDRs) until you add rules.</p> <p>There are three rule types. Only 2 of the 3 rule types support conditions - <b>IPAM pool CIDR</b> and <b>Scope resource CIDR</b>. <b>Static CIDR</b> rules cannot have conditions.</p> <ul> <li> <p> <b>Static CIDR</b>: A fixed list of CIDRs that do not change (like a manual list replicated across Regions)</p> </li> <li> <p> <b>IPAM pool CIDR</b>: CIDRs from specific IPAM pools (like all CIDRs from your IPAM production pool)</p> <p>If you choose this option, choose the following:</p> <ul> <li> <p> <b>IPAM scope</b>: Select the IPAM scope to search for resources</p> </li> <li> <p> <b>Conditions:</b> </p> <ul> <li> <p> <b>Property</b> </p> <ul> <li> <p> <b>IPAM pool ID</b>: Select an IPAM pool that contains the resources</p> </li> <li> <p> <b>CIDR</b> (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p> <b>Operation</b>: Equals/Not equals</p> </li> <li> <p> <b>Value</b>: The value on which to match the condition</p> </li> </ul> </li> </ul> </li> <li> <p> <b>Scope resource CIDR</b>: CIDRs from Amazon Web Services resources like VPCs, subnets, EIPs within an IPAM scope</p> <p>If you choose this option, choose the following:</p> <ul> <li> <p> <b>IPAM scope</b>: Select the IPAM scope to search for resources</p> </li> <li> <p> <b>Resource type</b>: Select a resource, like a VPC or subnet.</p> </li> <li> <p> <b>Conditions</b>:</p> <ul> <li> <p> <b>Property</b>:</p> <ul> <li> <p>Resource ID: The unique ID of a resource (like vpc-1234567890abcdef0)</p> </li> <li> <p>Resource owner (like 111122223333)</p> </li> <li> <p>Resource region (like us-east-1)</p> </li> <li> <p>Resource tag (like key: name, value: dev-vpc-1)</p> </li> <li> <p>CIDR (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p> <b>Operation</b>: Equals/Not equals</p> </li> <li> <p> <b>Value</b>: The value on which to match the condition</p> </li> </ul> </li> </ul> </li> </ul>"
     },
     "IpamPrefixListResolverRuleConditionRequestSet":{
       "type":"list",
@@ -45789,7 +45825,7 @@
           "locationName":"Condition"
         }
       },
-      "documentation":"<p>Describes a CIDR selection rule to include in a request. This is used when creating or modifying resolver rules.</p> <p>CIDR selection rules define the business logic for selecting CIDRs from IPAM. If a CIDR matches any of the rules, it will be included. If a rule has multiple conditions, the CIDR has to match every condition of that rule. You can create a prefix list resolver without any CIDR selection rules, but it will generate empty versions (containing no CIDRs) until you add rules.</p> <p>There are three rule types:</p> <ul> <li> <p> <b>Static CIDR</b>: A fixed list of CIDRs that do not change (like a manual list replicated across Regions).</p> </li> <li> <p> <b>IPAM pool CIDR</b>: CIDRs from specific IPAM pools (like all CIDRs from your IPAM production pool).</p> </li> <li> <p> <b>Scope resource CIDR</b>: CIDRs for Amazon Web Services resources like VPCs, subnets, and EIPs within a specific IPAM scope.</p> </li> </ul> <p>Condition availability by resource type:</p> <ul> <li> <p>Only 2 of the 3 rule types support conditions - <b>IPAM pool CIDR</b> and <b>Scope resource CIDR</b>. <b>Static CIDR</b> rules cannot have conditions.</p> <ul> <li> <p>Condition available for the <b>IPAM pool CIDR</b> resource type:</p> <ul> <li> <p>Property:</p> <ul> <li> <p>IPAM Pool ID</p> </li> <li> <p>CIDR (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p>Operation: Equals/Not equals</p> </li> <li> <p>Value: The value on which to match the condition</p> </li> </ul> </li> <li> <p>Conditions for the <b>Scope resource CIDR</b> resource type:</p> <ul> <li> <p>Property:</p> <ul> <li> <p>Resource ID: The unique ID of a resource (like vpc-1234567890abcdef0)</p> </li> <li> <p>Resource type (like VPC or Subnet)</p> </li> <li> <p>Resource owner (like 111122223333)</p> </li> <li> <p>Resource region (like us-east-1)</p> </li> <li> <p>Resource tag (like key: name, value: dev-vpc-1)</p> </li> <li> <p>CIDR (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p>Operation: Equals/Not equals</p> </li> <li> <p>Value: The value on which to match the condition</p> </li> </ul> </li> <li> <p>When setting conditions for a rule, one or more conditions is required.</p> </li> </ul> </li> </ul>"
+      "documentation":"<p>Describes a CIDR selection rule to include in a request. This is used when creating or modifying resolver rules.</p> <p>CIDR selection rules define the business logic for selecting CIDRs from IPAM. If a CIDR matches any of the rules, it will be included. If a rule has multiple conditions, the CIDR has to match every condition of that rule. You can create a prefix list resolver without any CIDR selection rules, but it will generate empty versions (containing no CIDRs) until you add rules.</p> <p>There are three rule types. Only 2 of the 3 rule types support conditions - <b>IPAM pool CIDR</b> and <b>Scope resource CIDR</b>. <b>Static CIDR</b> rules cannot have conditions.</p> <ul> <li> <p> <b>Static CIDR</b>: A fixed list of CIDRs that do not change (like a manual list replicated across Regions)</p> </li> <li> <p> <b>IPAM pool CIDR</b>: CIDRs from specific IPAM pools (like all CIDRs from your IPAM production pool)</p> <p>If you choose this option, choose the following:</p> <ul> <li> <p> <b>IPAM scope</b>: Select the IPAM scope to search for resources</p> </li> <li> <p> <b>Conditions:</b> </p> <ul> <li> <p> <b>Property</b> </p> <ul> <li> <p> <b>IPAM pool ID</b>: Select an IPAM pool that contains the resources</p> </li> <li> <p> <b>CIDR</b> (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p> <b>Operation</b>: Equals/Not equals</p> </li> <li> <p> <b>Value</b>: The value on which to match the condition</p> </li> </ul> </li> </ul> </li> <li> <p> <b>Scope resource CIDR</b>: CIDRs from Amazon Web Services resources like VPCs, subnets, EIPs within an IPAM scope</p> <p>If you choose this option, choose the following:</p> <ul> <li> <p> <b>IPAM scope</b>: Select the IPAM scope to search for resources</p> </li> <li> <p> <b>Resource type</b>: Select a resource, like a VPC or subnet.</p> </li> <li> <p> <b>Conditions</b>:</p> <ul> <li> <p> <b>Property</b>:</p> <ul> <li> <p>Resource ID: The unique ID of a resource (like vpc-1234567890abcdef0)</p> </li> <li> <p>Resource owner (like 111122223333)</p> </li> <li> <p>Resource region (like us-east-1)</p> </li> <li> <p>Resource tag (like key: name, value: dev-vpc-1)</p> </li> <li> <p>CIDR (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p> <b>Operation</b>: Equals/Not equals</p> </li> <li> <p> <b>Value</b>: The value on which to match the condition</p> </li> </ul> </li> </ul> </li> </ul>"
     },
     "IpamPrefixListResolverRuleRequestSet":{
       "type":"list",

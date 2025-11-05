@@ -8627,7 +8627,16 @@
         "DesiredImageId":{
           "shape":"ImageId",
           "documentation":"<p>The ID of the Amazon Machine Image (AMI) desired for the instance group.</p>"
-        }
+        },
+        "TargetStateCount":{
+          "shape":"ClusterInstanceCount",
+          "documentation":"<p>The number of nodes running a specific image ID since the last software update request.</p>"
+        },
+        "SoftwareUpdateStatus":{
+          "shape":"SoftwareUpdateStatus",
+          "documentation":"<p>Status of the last software udpate request.</p>"
+        },
+        "ActiveSoftwareUpdateConfig":{"shape":"DeploymentConfiguration"}
       },
       "documentation":"<p>Details of an instance group in a SageMaker HyperPod cluster.</p>"
     },
@@ -13029,10 +13038,8 @@
       "type":"structure",
       "required":[
         "TrainingJobName",
-        "AlgorithmSpecification",
         "RoleArn",
         "OutputDataConfig",
-        "ResourceConfig",
         "StoppingCondition"
       ],
       "members":{
@@ -39747,6 +39754,17 @@
       "max":2048,
       "min":0,
       "pattern":"arn:aws[a-z\\-]*:sns:[a-z0-9\\-]*:[0-9]{12}:[a-zA-Z0-9_.-]+"
+    },
+    "SoftwareUpdateStatus":{
+      "type":"string",
+      "enum":[
+        "Pending",
+        "InProgress",
+        "Succeeded",
+        "Failed",
+        "RollbackInProgress",
+        "RollbackComplete"
+      ]
     },
     "SortActionsBy":{
       "type":"string",

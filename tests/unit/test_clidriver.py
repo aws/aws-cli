@@ -719,6 +719,18 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertIn("Your curiosity has been logged",
                       self.stderr.getvalue())
 
+    def test_other_invalid_services_unchanged(self):
+        """Verify standard invalid service behavior unchanged."""
+        driver = create_clidriver()
+        with self.assertRaises(SystemExit):
+            driver.main(['notarealservice', 'help'])
+        stderr_output = self.stderr.getvalue()
+        self.assertIn("Invalid choice, valid choices are:",
+                      stderr_output)
+        # Ensure chaos2 message is NOT shown for other services
+        self.assertNotIn("Your curiosity has been logged",
+                         stderr_output)
+
 class TestHowClientIsCreated(BaseAWSCommandParamsTest):
     def setUp(self):
         super(TestHowClientIsCreated, self).setUp()

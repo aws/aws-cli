@@ -24,7 +24,6 @@ from botocore.exceptions import ClientError
 from botocore.loaders import Loader
 from botocore.endpoint_provider import RuleSetStandardLibary
 
-
 from awscli.customizations.exceptions import ParamValidationError
 
 _SENTENCE_DELIMETERS_REGEX = re.compile(r'[.:]+')

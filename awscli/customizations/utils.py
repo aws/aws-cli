@@ -17,9 +17,9 @@ Utility functions to make it easier to work with customizations.
 import copy
 import sys
 
-from botocore.exceptions import ClientError, UnknownRegionError
+from botocore.exceptions import ClientError
 from botocore.loaders import Loader
-from botocore.regions import EndpointResolver
+from botocore.endpoint_provider import RuleSetStandardLibary
 from awscli.utils import create_nested_client
 
 
@@ -223,13 +223,8 @@ def uni_print(statement, out_file=None):
 
 def get_policy_arn_suffix(region):
     """Method to return region value as expected by policy arn"""
-    region_string = region.lower()
     loader = Loader()
-    endpoints_data = loader.load_data('endpoints')
-    resolver = EndpointResolver(endpoints_data)
-
-    try:
-        return resolver.get_partition_for_region(region_string)
-    except UnknownRegionError:
-        # Fallback to 'aws' if region is not found
-        return 'aws'
+    partitions_data = loader.load_data('partitions')
+    rule_lib = RuleSetStandardLibary(partitions_data)
+    partition_result = rule_lib.aws_partition(region.lower())
+    return partition_result['name']

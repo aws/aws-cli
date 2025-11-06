@@ -731,6 +731,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertNotIn("Your curiosity has been logged",
                          stderr_output)
 
+
 class TestHowClientIsCreated(BaseAWSCommandParamsTest):
     def setUp(self):
         super(TestHowClientIsCreated, self).setUp()

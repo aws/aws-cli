@@ -2346,6 +2346,10 @@
         "LockDate":{
           "shape":"timestamp",
           "documentation":"<p>The date and time when Backup Vault Lock configuration becomes immutable, meaning it cannot be changed or deleted.</p> <p>If you applied Vault Lock to your vault without specifying a lock date, you can change your Vault Lock settings, or delete Vault Lock from the vault entirely, at any time.</p> <p>This value is in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "EncryptionKeyType":{
+          "shape":"EncryptionKeyType",
+          "documentation":"<p>The type of encryption key used for the backup vault. Valid values are CUSTOMER_MANAGED_KMS_KEY for customer-managed keys or Amazon Web Services_OWNED_KMS_KEY for Amazon Web Services-owned keys.</p>"
         }
       },
       "documentation":"<p>Contains metadata about a backup vault.</p>"
@@ -2989,6 +2993,10 @@
         "MaxRetentionDays":{
           "shape":"Long",
           "documentation":"<p>The maximum retention period that the vault retains its recovery points.</p>"
+        },
+        "EncryptionKeyArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the customer-managed KMS key to use for encrypting the logically air-gapped backup vault. If not specified, the vault will be encrypted with an Amazon Web Services-owned key managed by Amazon Web Services Backup.</p>"
         }
       }
     },
@@ -3199,7 +3207,7 @@
         },
         "RestoreTestingSelectionName":{
           "shape":"String",
-          "documentation":"<p>The name of the restore testing selection for the related restore testing plan.</p>"
+          "documentation":"<p>The name of the restore testing selection for the related restore testing plan.</p> <p>The name cannot be changed after creation. The name consists of only alphanumeric characters and underscores. Maximum length is 50.</p>"
         }
       }
     },
@@ -3646,6 +3654,10 @@
         "LatestMpaApprovalTeamUpdate":{
           "shape":"LatestMpaApprovalTeamUpdate",
           "documentation":"<p>Information about the latest update to the MPA approval team association for this backup vault.</p>"
+        },
+        "EncryptionKeyType":{
+          "shape":"EncryptionKeyType",
+          "documentation":"<p>The type of encryption key used for the backup vault. Valid values are CUSTOMER_MANAGED_KMS_KEY for customer-managed keys or Amazon Web Services_OWNED_KMS_KEY for Amazon Web Services-owned keys.</p>"
         }
       }
     },
@@ -3926,6 +3938,10 @@
         "IndexStatusMessage":{
           "shape":"string",
           "documentation":"<p>A string in the form of a detailed message explaining the status of a backup index associated with the recovery point.</p>"
+        },
+        "EncryptionKeyType":{
+          "shape":"EncryptionKeyType",
+          "documentation":"<p>The type of encryption key used for the recovery point. Valid values are CUSTOMER_MANAGED_KMS_KEY for customer-managed keys or Amazon Web Services_OWNED_KMS_KEY for Amazon Web Services-owned keys.</p>"
         }
       }
     },
@@ -4146,6 +4162,13 @@
           "locationName":"recoveryPointArn"
         }
       }
+    },
+    "EncryptionKeyType":{
+      "type":"string",
+      "enum":[
+        "AWS_OWNED_KMS_KEY",
+        "CUSTOMER_MANAGED_KMS_KEY"
+      ]
     },
     "ExportBackupPlanTemplateInput":{
       "type":"structure",
@@ -6630,6 +6653,10 @@
         "IndexStatusMessage":{
           "shape":"string",
           "documentation":"<p>A string in the form of a detailed message explaining the status of a backup index associated with the recovery point.</p>"
+        },
+        "EncryptionKeyType":{
+          "shape":"EncryptionKeyType",
+          "documentation":"<p>The type of encryption key used for the recovery point. Valid values are CUSTOMER_MANAGED_KMS_KEY for customer-managed keys or Amazon Web Services_OWNED_KMS_KEY for Amazon Web Services-owned keys.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about the recovery points stored in a backup vault.</p>"
@@ -6692,6 +6719,10 @@
         "IndexStatusMessage":{
           "shape":"string",
           "documentation":"<p>A string in the form of a detailed message explaining the status of a backup index associated with the recovery point.</p>"
+        },
+        "EncryptionKeyType":{
+          "shape":"EncryptionKeyType",
+          "documentation":"<p>The type of encryption key used for the recovery point. Valid values are CUSTOMER_MANAGED_KMS_KEY for customer-managed keys or Amazon Web Services_OWNED_KMS_KEY for Amazon Web Services-owned keys.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about a saved recovery point.</p>"
@@ -7440,7 +7471,7 @@
         },
         "RestoreTestingSelectionName":{
           "shape":"String",
-          "documentation":"<p>The unique name of the restore testing selection that belongs to the related restore testing plan.</p>"
+          "documentation":"<p>The unique name of the restore testing selection that belongs to the related restore testing plan.</p> <p>The name consists of only alphanumeric characters and underscores. Maximum length is 50.</p>"
         },
         "ValidationWindowHours":{
           "shape":"integer",
@@ -7493,7 +7524,7 @@
         },
         "RestoreTestingSelectionName":{
           "shape":"String",
-          "documentation":"<p>The unique name of the restore testing selection that belongs to the related restore testing plan.</p>"
+          "documentation":"<p>The unique name of the restore testing selection that belongs to the related restore testing plan.</p> <p>The name consists of only alphanumeric characters and underscores. Maximum length is 50.</p>"
         },
         "ValidationWindowHours":{
           "shape":"integer",
@@ -7530,7 +7561,7 @@
         },
         "RestoreTestingSelectionName":{
           "shape":"String",
-          "documentation":"<p>Unique name of a restore testing selection.</p>"
+          "documentation":"<p>Unique name of a restore testing selection.</p> <p>The name consists of only alphanumeric characters and underscores. Maximum length is 50.</p>"
         },
         "ValidationWindowHours":{
           "shape":"integer",

@@ -158,7 +158,8 @@
         {"shape":"InvalidDocumentContent"},
         {"shape":"DocumentLimitExceeded"},
         {"shape":"InvalidDocumentSchemaVersion"},
-        {"shape":"TooManyUpdates"}
+        {"shape":"TooManyUpdates"},
+        {"shape":"NoLongerSupportedException"}
       ],
       "documentation":"<p>Creates a Amazon Web Services Systems Manager (SSM document). An SSM document defines the actions that Systems Manager performs on your managed nodes. For more information about SSM documents, including information about supported schemas, features, and syntax, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/documents.html\">Amazon Web Services Systems Manager Documents</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
     },
@@ -1522,7 +1523,7 @@
         {"shape":"InvalidDocumentVersion"},
         {"shape":"InvalidNextToken"}
       ],
-      "documentation":"<p>Information about approval reviews for a version of a change template in Change Manager.</p>"
+      "documentation":"<important> <p>Amazon Web Services Systems Manager Change Manager will no longer be open to new customers starting November 7, 2025. If you would like to use Change Manager, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/change-manager-availability-change.html\">Amazon Web Services Systems Manager Change Manager availability change</a>.</p> </important> <p>Information about approval reviews for a version of a change template in Change Manager.</p>"
     },
     "ListDocumentVersions":{
       "name":"ListDocumentVersions",
@@ -2016,9 +2017,10 @@
         {"shape":"AutomationDefinitionVersionNotFoundException"},
         {"shape":"IdempotentParameterMismatch"},
         {"shape":"InternalServerError"},
-        {"shape":"AutomationDefinitionNotApprovedException"}
+        {"shape":"AutomationDefinitionNotApprovedException"},
+        {"shape":"NoLongerSupportedException"}
       ],
-      "documentation":"<p>Creates a change request for Change Manager. The Automation runbooks specified in the change request run only after all required approvals for the change request have been received.</p>"
+      "documentation":"<important> <p>Amazon Web Services Systems Manager Change Manager will no longer be open to new customers starting November 7, 2025. If you would like to use Change Manager, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/change-manager-availability-change.html\">Amazon Web Services Systems Manager Change Manager availability change</a>.</p> </important> <p>Creates a change request for Change Manager. The Automation runbooks specified in the change request run only after all required approvals for the change request have been received.</p>"
     },
     "StartExecutionPreview":{
       "name":"StartExecutionPreview",
@@ -2189,7 +2191,7 @@
         {"shape":"InvalidDocumentVersion"},
         {"shape":"TooManyUpdates"}
       ],
-      "documentation":"<p>Updates information related to approval reviews for a specific version of a change template in Change Manager.</p>"
+      "documentation":"<important> <p>Amazon Web Services Systems Manager Change Manager will no longer be open to new customers starting November 7, 2025. If you would like to use Change Manager, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/change-manager-availability-change.html\">Amazon Web Services Systems Manager Change Manager availability change</a>.</p> </important> <p>Updates information related to approval reviews for a specific version of a change template in Change Manager.</p>"
     },
     "UpdateMaintenanceWindow":{
       "name":"UpdateMaintenanceWindow",
@@ -5087,7 +5089,7 @@
         },
         "OpsItemType":{
           "shape":"OpsItemType",
-          "documentation":"<p>The type of OpsItem to create. Systems Manager supports the following types of OpsItems:</p> <ul> <li> <p> <code>/aws/issue</code> </p> <p>This type of OpsItem is used for default OpsItems created by OpsCenter. </p> </li> <li> <p> <code>/aws/changerequest</code> </p> <p>This type of OpsItem is used by Change Manager for reviewing and approving or rejecting change requests. </p> </li> <li> <p> <code>/aws/insight</code> </p> <p>This type of OpsItem is used by OpsCenter for aggregating and reporting on duplicate OpsItems. </p> </li> </ul>"
+          "documentation":"<p>The type of OpsItem to create. Systems Manager supports the following types of OpsItems:</p> <ul> <li> <p> <code>/aws/issue</code> </p> <p>This type of OpsItem is used for default OpsItems created by OpsCenter. </p> </li> <li> <p> <code>/aws/insight</code> </p> <p>This type of OpsItem is used by OpsCenter for aggregating and reporting on duplicate OpsItems. </p> </li> <li> <p> <code>/aws/changerequest</code> </p> <p>This type of OpsItem is used by Change Manager for reviewing and approving or rejecting change requests. </p> <important> <p>Amazon Web Services Systems Manager Change Manager will no longer be open to new customers starting November 7, 2025. If you would like to use Change Manager, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/change-manager-availability-change.html\">Amazon Web Services Systems Manager Change Manager availability change</a>.</p> </important> </li> </ul>"
         },
         "OperationalData":{
           "shape":"OpsItemOperationalData",
@@ -12226,6 +12228,14 @@
       "members":{}
     },
     "NextToken":{"type":"string"},
+    "NoLongerSupportedException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The requested operation is no longer supported by Systems Manager.</p>",
+      "exception":true
+    },
     "Node":{
       "type":"structure",
       "members":{
@@ -14436,12 +14446,12 @@
         },
         "ApproveAfterDays":{
           "shape":"ApproveAfterDays",
-          "documentation":"<p>The number of days after the release date of each patch matched by the rule that the patch is marked as approved in the patch baseline. For example, a value of <code>7</code> means that patches are approved seven days after they are released.</p> <p>This parameter is marked as <code>Required: No</code>, but your request must include a value for either <code>ApproveAfterDays</code> or <code>ApproveUntilDate</code>.</p> <p>Not supported for Debian Server or Ubuntu Server.</p> <important> <p>Use caution when setting this value for Windows Server patch baselines. Because patch updates that are replaced by later updates are removed, setting too broad a value for this parameter can result in crucial patches not being installed. For more information, see the <b>Windows Server</b> tab in the topic <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-selecting-patches.html\">How security patches are selected</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </important>",
+          "documentation":"<p>The number of days after the release date of each patch matched by the rule that the patch is marked as approved in the patch baseline. For example, a value of <code>7</code> means that patches are approved seven days after they are released.</p> <p>Patch Manager evaluates patch release dates using Coordinated Universal Time (UTC). If the day represented by <code>7</code> is <code>2025-11-16</code>, patches released between <code>2025-11-16T00:00:00Z</code> and <code>2025-11-16T23:59:59Z</code> will be included in the approval.</p> <p>This parameter is marked as <code>Required: No</code>, but your request must include a value for either <code>ApproveAfterDays</code> or <code>ApproveUntilDate</code>.</p> <p>Not supported for Debian Server or Ubuntu Server.</p> <important> <p>Use caution when setting this value for Windows Server patch baselines. Because patch updates that are replaced by later updates are removed, setting too broad a value for this parameter can result in crucial patches not being installed. For more information, see the <b>Windows Server</b> tab in the topic <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-selecting-patches.html\">How security patches are selected</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </important>",
           "box":true
         },
         "ApproveUntilDate":{
           "shape":"PatchStringDateTime",
-          "documentation":"<p>The cutoff date for auto approval of released patches. Any patches released on or before this date are installed automatically.</p> <p>Enter dates in the format <code>YYYY-MM-DD</code>. For example, <code>2024-12-31</code>.</p> <p>This parameter is marked as <code>Required: No</code>, but your request must include a value for either <code>ApproveUntilDate</code> or <code>ApproveAfterDays</code>.</p> <p>Not supported for Debian Server or Ubuntu Server.</p> <important> <p>Use caution when setting this value for Windows Server patch baselines. Because patch updates that are replaced by later updates are removed, setting too broad a value for this parameter can result in crucial patches not being installed. For more information, see the <b>Windows Server</b> tab in the topic <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-selecting-patches.html\">How security patches are selected</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </important>",
+          "documentation":"<p>The cutoff date for auto approval of released patches. Any patches released on or before this date are installed automatically.</p> <p>Enter dates in the format <code>YYYY-MM-DD</code>. For example, <code>2025-11-16</code>.</p> <p>Patch Manager evaluates patch release dates using Coordinated Universal Time (UTC). If you enter the date <code>2025-11-16</code>, patches released between <code>2025-11-16T00:00:00Z</code> and <code>2025-11-16T23:59:59Z</code> will be included in the approval.</p> <p>This parameter is marked as <code>Required: No</code>, but your request must include a value for either <code>ApproveUntilDate</code> or <code>ApproveAfterDays</code>.</p> <p>Not supported for Debian Server or Ubuntu Server.</p> <important> <p>Use caution when setting this value for Windows Server patch baselines. Because patch updates that are replaced by later updates are removed, setting too broad a value for this parameter can result in crucial patches not being installed. For more information, see the <b>Windows Server</b> tab in the topic <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-selecting-patches.html\">How security patches are selected</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </important>",
           "box":true
         },
         "EnableNonSecurity":{

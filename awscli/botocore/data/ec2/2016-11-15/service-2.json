@@ -16058,6 +16058,10 @@
           "shape":"String",
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency</a>.</p>",
           "idempotencyToken":true
+        },
+        "ExternalAuthorityConfiguration":{
+          "shape":"ExternalAuthorityConfiguration",
+          "documentation":"<p>The configuration that links an Amazon VPC IPAM scope to an external authority system. It specifies the type of external system and the external resource identifier that identifies your account or instance in that system.</p> <p>In IPAM, an external authority is a third-party IP address management system that provides CIDR blocks when you provision address space for top-level IPAM pools. This allows you to use your existing IP management system to control which address ranges are allocated to Amazon Web Services while using Amazon VPC IPAM to manage subnets within those ranges.</p>"
         }
       }
     },
@@ -32040,6 +32044,16 @@
           "shape":"Boolean",
           "documentation":"<p>Indicates whether to enable private DNS only for inbound endpoints.</p>",
           "locationName":"privateDnsOnlyForInboundResolverEndpoint"
+        },
+        "PrivateDnsPreference":{
+          "shape":"String",
+          "documentation":"<p> The preference for which private domains have a private hosted zone created for and associated with the specified VPC. Only supported when private DNS is enabled and when the VPC endpoint type is ServiceNetwork or Resource. </p> <ul> <li> <p> <code>ALL_DOMAINS</code> - VPC Lattice provisions private hosted zones for all custom domain names.</p> </li> <li> <p> <code>VERIFIED_DOMAINS_ONLY</code> - VPC Lattice provisions a private hosted zone only if custom domain name has been verified by the provider.</p> </li> <li> <p> <code>VERIFIED_DOMAINS_AND_SPECIFIED_DOMAINS</code> - VPC Lattice provisions private hosted zones for all verified custom domain names and other domain names that the resource consumer specifies. The resource consumer specifies the domain names in the PrivateDnsSpecifiedDomains parameter.</p> </li> <li> <p> <code>SPECIFIED_DOMAINS_ONLY</code> - VPC Lattice provisions a private hosted zone for domain names specified by the resource consumer. The resource consumer specifies the domain names in the PrivateDnsSpecifiedDomains parameter.</p> </li> </ul>",
+          "locationName":"privateDnsPreference"
+        },
+        "PrivateDnsSpecifiedDomains":{
+          "shape":"PrivateDnsSpecifiedDomainSet",
+          "documentation":"<p> Indicates which of the private domains to create private hosted zones for and associate with the specified VPC. Only supported when private DNS is enabled and the private DNS preference is <code>VERIFIED_DOMAINS_AND_SPECIFIED_DOMAINS</code> or <code>SPECIFIED_DOMAINS_ONLY</code>. </p>",
+          "locationName":"privateDnsSpecifiedDomainSet"
         }
       },
       "documentation":"<p>Describes the DNS options for an endpoint.</p>"
@@ -32054,6 +32068,15 @@
         "PrivateDnsOnlyForInboundResolverEndpoint":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether to enable private DNS only for inbound endpoints. This option is available only for services that support both gateway and interface endpoints. It routes traffic that originates from the VPC to the gateway endpoint and traffic that originates from on-premises to the interface endpoint.</p>"
+        },
+        "PrivateDnsPreference":{
+          "shape":"String",
+          "documentation":"<p> The preference for which private domains have a private hosted zone created for and associated with the specified VPC. Only supported when private DNS is enabled and when the VPC endpoint type is ServiceNetwork or Resource. </p> <ul> <li> <p> <code>ALL_DOMAINS</code> - VPC Lattice provisions private hosted zones for all custom domain names.</p> </li> <li> <p> <code>VERIFIED_DOMAINS_ONLY</code> - VPC Lattice provisions a private hosted zone only if custom domain name has been verified by the provider.</p> </li> <li> <p> <code>VERIFIED_DOMAINS_AND_SPECIFIED_DOMAINS</code> - VPC Lattice provisions private hosted zones for all verified custom domain names and other domain names that the resource consumer specifies. The resource consumer specifies the domain names in the PrivateDnsSpecifiedDomains parameter.</p> </li> <li> <p> <code>SPECIFIED_DOMAINS_ONLY</code> - VPC Lattice provisions a private hosted zone for domain names specified by the resource consumer. The resource consumer specifies the domain names in the PrivateDnsSpecifiedDomains parameter.</p> </li> </ul>"
+        },
+        "PrivateDnsSpecifiedDomains":{
+          "shape":"PrivateDnsSpecifiedDomainSet",
+          "documentation":"<p> Indicates which of the private domains to create private hosted zones for and associate with the specified VPC. Only supported when private DNS is enabled and the private DNS preference is verified-domains-and-specified-domains or specified-domains-only. </p>",
+          "locationName":"PrivateDnsSpecifiedDomain"
         }
       },
       "documentation":"<p>Describes the DNS options for an endpoint.</p>"
@@ -34476,6 +34499,20 @@
       }
     },
     "ExportVmTaskId":{"type":"string"},
+    "ExternalAuthorityConfiguration":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"IpamScopeExternalAuthorityType",
+          "documentation":"<p>The type of external authority.</p>"
+        },
+        "ExternalResourceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the external resource managing this scope. For Infoblox integrations, this is the Infoblox resource identifier in the format <code>&lt;version&gt;.identity.account.&lt;entity_realm&gt;.&lt;entity_id&gt;</code>.</p>"
+        }
+      },
+      "documentation":"<p>The configuration that links an Amazon VPC IPAM scope to an external authority system. It specifies the type of external system and the external resource identifier that identifies your account or instance in that system.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/integrate-infoblox-ipam.html\">Integrate VPC IPAM with Infoblox infrastructure</a> in the <i>Amazon VPC IPAM User Guide</i>..</p>"
+    },
     "FailedCapacityReservationFleetCancellationResult":{
       "type":"structure",
       "members":{
@@ -46475,9 +46512,34 @@
           "shape":"TagList",
           "documentation":"<p>The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>",
           "locationName":"tagSet"
+        },
+        "ExternalAuthorityConfiguration":{
+          "shape":"IpamScopeExternalAuthorityConfiguration",
+          "documentation":"<p>The external authority configuration for this IPAM scope, if configured.</p> <p>The configuration that links an Amazon VPC IPAM scope to an external authority system. It specifies the type of external system and the external resource identifier that identifies your account or instance in that system.</p> <p>In IPAM, an external authority is a third-party IP address management system that provides CIDR blocks when you provision address space for top-level IPAM pools. This allows you to use your existing IP management system to control which address ranges are allocated to Amazon Web Services while using Amazon VPC IPAM to manage subnets within those ranges.</p>",
+          "locationName":"externalAuthorityConfiguration"
         }
       },
       "documentation":"<p>In IPAM, a scope is the highest-level container within IPAM. An IPAM contains two default scopes. Each scope represents the IP space for a single network. The private scope is intended for all private IP address space. The public scope is intended for all public IP address space. Scopes enable you to reuse IP addresses across multiple unconnected networks without causing IP address overlap or conflict.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/how-it-works-ipam.html\">How IPAM works</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+    },
+    "IpamScopeExternalAuthorityConfiguration":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"IpamScopeExternalAuthorityType",
+          "documentation":"<p>The type of external authority managing this scope. Currently supports <code>Infoblox</code> for integration with Infoblox Universal DDI.</p>",
+          "locationName":"type"
+        },
+        "ExternalResourceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the external resource managing this scope. For Infoblox integrations, this is the Infoblox resource identifier in the format <code>&lt;version&gt;.identity.account.&lt;entity_realm&gt;.&lt;entity_id&gt;</code>.</p>",
+          "locationName":"externalResourceIdentifier"
+        }
+      },
+      "documentation":"<p>The configuration that links an Amazon VPC IPAM scope to an external authority system. It specifies the type of external system and the external resource identifier that identifies your account or instance in that system.</p> <p>In IPAM, an external authority is a third-party IP address management system that provides CIDR blocks when you provision address space for top-level IPAM pools. This allows you to use your existing IP management system to control which address ranges are allocated to Amazon Web Services while using Amazon VPC IPAM to manage subnets within those ranges.</p>"
+    },
+    "IpamScopeExternalAuthorityType":{
+      "type":"string",
+      "enum":["infoblox"]
     },
     "IpamScopeId":{"type":"string"},
     "IpamScopeSet":{
@@ -51288,6 +51350,14 @@
         "Description":{
           "shape":"String",
           "documentation":"<p>The description of the scope you want to modify.</p>"
+        },
+        "ExternalAuthorityConfiguration":{
+          "shape":"ExternalAuthorityConfiguration",
+          "documentation":"<p>The configuration that links an Amazon VPC IPAM scope to an external authority system. It specifies the type of external system and the external resource identifier that identifies your account or instance in that system.</p> <p>In IPAM, an external authority is a third-party IP address management system that provides CIDR blocks when you provision address space for top-level IPAM pools. This allows you to use your existing IP management system to control which address ranges are allocated to Amazon Web Services while using Amazon VPC IPAM to manage subnets within those ranges.</p>"
+        },
+        "RemoveExternalAuthorityConfiguration":{
+          "shape":"Boolean",
+          "documentation":"<p>Remove the external authority configuration. <code>true</code> to remove.</p>"
         }
       }
     },
@@ -56549,7 +56619,7 @@
       "members":{
         "State":{
           "shape":"DnsNameState",
-          "documentation":"<p>The verification state of the VPC endpoint service.</p> <p>&gt;Consumers of the endpoint service can use the private name only when the state is <code>verified</code>.</p>",
+          "documentation":"<p>The verification state of the VPC endpoint service.</p> <p>Consumers of the endpoint service can use the private name only when the state is <code>verified</code>.</p>",
           "locationName":"state"
         },
         "Type":{
@@ -56629,6 +56699,15 @@
         }
       },
       "documentation":"<p>Describes the options for instance hostnames.</p>"
+    },
+    "PrivateDnsSpecifiedDomainSet":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"item"
+      },
+      "max":10,
+      "min":0
     },
     "PrivateIpAddressConfigSet":{
       "type":"list",

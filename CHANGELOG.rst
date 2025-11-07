@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.31.32
+=======
+
+* api-change:``ec2``: Adds PrivateDnsPreference and PrivateDnsSpecifiedDomains to control private DNS resolution for resource and service network VPC endpoints and IpamScopeExternalAuthorityConfiguration to integrate Amazon VPC IPAM with a third-party IPAM service
+* api-change:``kms``: Added support for new ECC_NIST_EDWARDS25519 AWS KMS key spec
+* api-change:``controltower``: Added Parent Identifier support to ListEnabledControls and GetEnabledControl API. Implemented RemediationType support for Landing Zone operations: CreateLandingZone, UpdateLandingZone and GetLandingZone APIs
+* api-change:``vpc-lattice``: Amazon VPC Lattice now supports custom domain name for resource configurations
+* api-change:``opensearch``: This release introduces the Default Application feature, allowing users to set, change, or unset a preferred OpenSearch UI application on a per-region basis for a streamlined and consistent user experience.
+
+
 2.31.31
 =======
 

@@ -405,7 +405,7 @@ disk_throughput
 **Default** - ``10.0``
 
 The estimated target disk throughput. This value is only applied if
-``should_stream`` is set to ``true``.This value can be specified using
+``should_stream`` is set to ``true``. This value can be specified using
 the same semantics as ``target_throughput``, that is either as the
 number of bytes per second as an integer, or using a rate suffix.
 

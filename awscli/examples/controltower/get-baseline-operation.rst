@@ -1,6 +1,6 @@
-**To Get A Control Tower Baseline Operation**
+**To get a Control Tower baseline operation**
 
-The following ``get-baseline-operation`` example get details of an AWS Control Tower baseline operation::
+The following ``get-baseline-operation`` example get details of an AWS Control Tower baseline operation. ::
 
     aws controltower get-baseline-operation \
         --operation-identifier "51e190ac-8a37-4f6d-b63c-fb5104b5db38"
@@ -18,4 +18,4 @@ Output::
         }
     }
 
-For more information, see `AWS Control Tower Baselines <https://docs.aws.amazon.com/controltower/latest/userguide/types-of-baselines.html>`__ in the *AWS Control Tower User Guide*.
+For more information, see `Types of baselines <https://docs.aws.amazon.com/controltower/latest/userguide/types-of-baselines.html>`__ in the *AWS Control Tower User Guide*.

@@ -1,6 +1,6 @@
-**To Update Control Tower Enabled Baseline**
+**Example 1: To update a disabled Control Tower baseline**
 
-The following ``update-enabled-baseline`` example updates an AWS Control Tower enabled baseline if baseline 'IdentityCenterBaseline' is **not** enabled::
+The following ``update-enabled-baseline`` example updates an AWS Control Tower enabled baseline if baseline 'IdentityCenterBaseline' is disabled. ::
 
     aws controltower update-enabled-baseline \
         --baseline-version 4.0 \
@@ -12,7 +12,11 @@ Output::
         "operationIdentifier": "214cde95-5c39-46b9-b429-4fad550a7096"
     }
 
-The following ``update-enabled-baseline`` example updates an AWS Control Tower enabled baseline if baseline 'IdentityCenterBaseline' is enabled::
+For more information, see `Types of baselines <https://docs.aws.amazon.com/controltower/latest/userguide/types-of-baselines.html>`__ in the *AWS Control Tower User Guide*.
+
+**Example 2: To update an enabled Control Tower baseline**
+
+The following ``update-enabled-baseline`` example updates an AWS Control Tower enabled baseline if baseline 'IdentityCenterBaseline' is enabled. ::
 
     aws controltower update-enabled-baseline \
         --baseline-version 4.0 \
@@ -25,4 +29,4 @@ Output::
         "operationIdentifier": "b0f4a7c2-334d-48d9-971e-47fea9db3e8b"
     }
 
-For more information, see `AWS Control Tower Baselines <https://docs.aws.amazon.com/controltower/latest/userguide/types-of-baselines.html>`__ in the *AWS Control Tower User Guide*.
+For more information, see `Types of baselines <https://docs.aws.amazon.com/controltower/latest/userguide/types-of-baselines.html>`__ in the *AWS Control Tower User Guide*.

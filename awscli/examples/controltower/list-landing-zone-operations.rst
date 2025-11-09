@@ -1,6 +1,6 @@
-**To List Control Tower Landing Zone Operations**
+**To list Control Tower landing zone operations**
 
-The following ``list-landing-zone-operations`` example lists AWS Control Tower landing zone operations::
+The following ``list-landing-zone-operations`` example lists AWS Control Tower landing zone operations. ::
 
     aws controltower list-landing-zone-operations
 
@@ -31,4 +31,4 @@ Output::
         ]
     }
 
-For more information, see `AWS Control Tower Getting Started <https://docs.aws.amazon.com/controltower/latest/userguide/getting-started-with-control-tower.html>`__ in the *AWS Control Tower User Guide*.
+For more information, see `Getting started with AWS Control Tower <https://docs.aws.amazon.com/controltower/latest/userguide/getting-started-with-control-tower.html>`__ in the *AWS Control Tower User Guide*.

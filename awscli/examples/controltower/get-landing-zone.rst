@@ -1,6 +1,6 @@
-**To Describe A Control Tower Landing Zone**
+**To describe a Control Tower landing zone**
 
-The following ``get-landing-zone`` example get details of AWS Control Tower Landing Zone::
+The following ``get-landing-zone`` example gets details of an AWS Control Tower landing zone. ::
 
     aws controltower get-landing-zone \
         --landing-zone-identifier arn:aws:controltower:us-east-1:123456789012:landingzone/13CJG46WZKXXX4X5
@@ -48,4 +48,4 @@ Output::
             "version": "3.3"
         }
     }
-For more information, see `AWS Control Tower Getting Started <https://docs.aws.amazon.com/controltower/latest/userguide/getting-started-with-control-tower.html>`__ in the *AWS Control Tower User Guide*.
+For more information, see `Getting started with AWS Control Tower <https://docs.aws.amazon.com/controltower/latest/userguide/getting-started-with-control-tower.html>`__ in the *AWS Control Tower User Guide*.

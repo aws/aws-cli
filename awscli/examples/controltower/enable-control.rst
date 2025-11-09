@@ -1,6 +1,6 @@
-**To Enable Control Tower Control**
+**To enable a Control Tower control**
 
-The following ``enable-control`` example enables an AWS Control Tower control::
+The following ``enable-control`` example enables an AWS Control Tower control. ::
 
     aws controltower enable-control \
         --control-identifier arn:aws:controlcatalog:::control/497wrm2xnk1wxlf4obrxxxxxx \
@@ -13,4 +13,4 @@ Output::
         "operationIdentifier": "7691fc5a-de87-4540-8c95-b0aabd56382c"
     }
 
-For more information, see `AWS Control Tower Controls <https://docs.aws.amazon.com/controltower/latest/controlreference/controls.html>`__ in the *AWS Control Tower User Guide*.
+For more information, see `About controls in AWS Control Tower <https://docs.aws.amazon.com/controltower/latest/controlreference/controls.html>`__ in the *AWS Control Tower User Guide*.

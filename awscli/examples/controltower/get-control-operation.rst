@@ -1,6 +1,6 @@
-**To Get Control Tower Control Operations**
+**To get Control Tower control operations**
 
-The following ``get-control-operation`` example get details of an AWS Control Tower control operation::
+The following ``get-control-operation`` example get details of an AWS Control Tower control operation. ::
 
     aws controltower get-control-operation \
         --operation-identifier "7691fc5a-de87-4540-8c95-b0aabd56382c"
@@ -21,4 +21,4 @@ Output::
         }
     }
 
-For more information, see `AWS Control Tower Controls <https://docs.aws.amazon.com/controltower/latest/controlreference/controls.html>`__ in the *AWS Control Tower User Guide*.
+For more information, see `About controls in AWS Control Tower <https://docs.aws.amazon.com/controltower/latest/controlreference/controls.html>`__ in the *AWS Control Tower User Guide*.

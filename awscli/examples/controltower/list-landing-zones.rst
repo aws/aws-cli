@@ -1,6 +1,6 @@
-**To List Control Tower Landing Zone Identifier**
+**To list a Control Tower landing zone identifier**
 
-The following ``list-landing-zones`` example lists the Control Tower Landing Zone ``Identifier`` ::
+The following ``list-landing-zones`` example lists a Control Tower landing zone ``identifier``. ::
 
     aws controltower list-landing-zones
 
@@ -14,4 +14,4 @@ Output::
         ]
     }
 
-For more information, see `AWS Control Tower Getting Started <https://docs.aws.amazon.com/controltower/latest/userguide/getting-started-with-control-tower.html>`__ in the *AWS Control Tower User Guide*.
+For more information, see `Getting started with AWS Control Tower <https://docs.aws.amazon.com/controltower/latest/userguide/getting-started-with-control-tower.html>`__ in the *AWS Control Tower User Guide*.

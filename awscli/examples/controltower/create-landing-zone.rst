@@ -1,6 +1,6 @@
-**To Create Control Tower Landing Zone**
+**To create a Control Tower landing zone**
 
-The following ``create-landing-zone`` example creates AWS Control Tower Landing Zone ::
+The following ``create-landing-zone`` example creates AWS Control Tower landing zone. ::
 
     aws controltower create-landing-zone \
         --landing-zone-version 3.3 \
@@ -13,4 +13,4 @@ Output::
         "operationIdentifier": "55XXXXXX-e2XX-41XX-a7XX-446XXXXXXXXX"
     }
 
-For more information, see `AWS Control Tower Getting Started <https://docs.aws.amazon.com/controltower/latest/userguide/getting-started-with-control-tower.html>`__ in the *AWS Control Tower User Guide*.
+For more information, see `Getting started with AWS Control Tower <https://docs.aws.amazon.com/controltower/latest/userguide/getting-started-with-control-tower.html>`__ in the *AWS Control Tower User Guide*.

@@ -1,6 +1,6 @@
-**To List Control Tower Control Operations**
+**To list Control Tower control operations**
 
-The following ``list-control-operations`` example provides a list of details of AWS Control Tower controls in progress or queued::
+The following ``list-control-operations`` example lists details of AWS Control Tower controls in progress or queued. ::
 
     aws controltower list-control-operations
 
@@ -31,4 +31,4 @@ Output::
         ]
     }
 
-For more information, see `AWS Control Tower Controls <https://docs.aws.amazon.com/controltower/latest/controlreference/controls.html>`__ in the *AWS Control Tower User Guide*.
+For more information, see `About controls in AWS Control Tower <https://docs.aws.amazon.com/controltower/latest/controlreference/controls.html>`__ in the *AWS Control Tower User Guide*.

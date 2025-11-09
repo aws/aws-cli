@@ -1,6 +1,6 @@
-**To Disable Control Tower Control**
+**To disable a Control Tower control**
 
-The following ``disable-control`` example disables an AWS Control Tower enabled control::
+The following ``disable-control`` example disables an AWS Control Tower enabled control. ::
 
     aws controltower disable-control \
         --control-identifier arn:aws:controlcatalog:::control/497wrm2xnk1wxlf4obrxxxxxx \
@@ -12,4 +12,4 @@ Output::
         "operationIdentifier": "b8f0dxxx-08xx-43xx-a2xx-568e9922xxxx"
     }
 
-For more information, see `AWS Control Tower Controls <https://docs.aws.amazon.com/controltower/latest/controlreference/controls.html>`__ in the *AWS Control Tower User Guide*.
+For more information, see `About controls in AWS Control Tower <https://docs.aws.amazon.com/controltower/latest/controlreference/controls.html>`__ in the *AWS Control Tower User Guide*.

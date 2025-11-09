@@ -1,6 +1,6 @@
-**To Get A Control Tower Enabled Baseline**
+**To get a Control Tower enabled baseline**
 
-The following ``get-enabled-baseline`` example get details of an AWS Control Tower enabled baseline::
+The following ``get-enabled-baseline`` example get details of an AWS Control Tower enabled baseline. ::
 
     aws controltower get-enabled-baseline \
         --enabled-baseline-identifier arn:aws:controltower:us-east-1:123456789012:enabledbaseline/XOM12BEL4YD578CQ2
@@ -26,4 +26,4 @@ Output::
         }
     }
 
-For more information, see `AWS Control Tower Baselines <https://docs.aws.amazon.com/controltower/latest/userguide/types-of-baselines.html>`__ in the *AWS Control Tower User Guide*.
+For more information, see `Types of baselines <https://docs.aws.amazon.com/controltower/latest/userguide/types-of-baselines.html>`__ in the *AWS Control Tower User Guide*.

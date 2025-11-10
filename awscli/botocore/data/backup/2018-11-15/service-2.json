@@ -4102,6 +4102,14 @@
         "DeletionStatusMessage":{
           "shape":"string",
           "documentation":"<p>This describes the restore job deletion status.</p>"
+        },
+        "IsParent":{
+          "shape":"boolean",
+          "documentation":"<p>This is a boolean value indicating whether the restore job is a parent (composite) restore job.</p>"
+        },
+        "ParentJobId":{
+          "shape":"string",
+          "documentation":"<p>This is the unique identifier of the parent restore job for the selected restore job.</p>"
         }
       }
     },
@@ -6219,6 +6227,12 @@
           "documentation":"<p>This returns only restore testing jobs that match the specified resource Amazon Resource Name (ARN).</p>",
           "location":"querystring",
           "locationName":"restoreTestingPlanArn"
+        },
+        "ByParentJobId":{
+          "shape":"string",
+          "documentation":"<p>This is a filter to list child (nested) restore jobs based on parent restore job ID.</p>",
+          "location":"querystring",
+          "locationName":"parentJobId"
         }
       }
     },
@@ -7219,6 +7233,14 @@
         "RecoveryPointCreationDate":{
           "shape":"timestamp",
           "documentation":"<p>The date on which a recovery point was created.</p>"
+        },
+        "IsParent":{
+          "shape":"boolean",
+          "documentation":"<p>This is a boolean value indicating whether the restore job is a parent (composite) restore job.</p>"
+        },
+        "ParentJobId":{
+          "shape":"string",
+          "documentation":"<p>This is the unique identifier of the parent restore job for the selected restore job.</p>"
         },
         "CreatedBy":{
           "shape":"RestoreJobCreator",

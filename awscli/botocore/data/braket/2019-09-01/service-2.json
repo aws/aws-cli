@@ -110,7 +110,8 @@
         {"shape":"InternalServiceException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves the devices available in Amazon Braket.</p> <note> <p>For backwards compatibility with older versions of BraketSchemas, OpenQASM information is omitted from GetDevice API calls. To get this information the user-agent needs to present a recent version of the BraketSchemas (1.8.0 or later). The Braket SDK automatically reports this for you. If you do not see OpenQASM results in the GetDevice response when using a Braket SDK, you may need to set AWS_EXECUTION_ENV environment variable to configure user-agent. See the code examples provided below for how to do this for the AWS CLI, Boto3, and the Go, Java, and JavaScript/TypeScript SDKs.</p> </note>"
+      "documentation":"<p>Retrieves the devices available in Amazon Braket.</p> <note> <p>For backwards compatibility with older versions of BraketSchemas, OpenQASM information is omitted from GetDevice API calls. To get this information the user-agent needs to present a recent version of the BraketSchemas (1.8.0 or later). The Braket SDK automatically reports this for you. If you do not see OpenQASM results in the GetDevice response when using a Braket SDK, you may need to set AWS_EXECUTION_ENV environment variable to configure user-agent. See the code examples provided below for how to do this for the AWS CLI, Boto3, and the Go, Java, and JavaScript/TypeScript SDKs.</p> </note>",
+      "readonly":true
     },
     "GetJob":{
       "name":"GetJob",
@@ -128,7 +129,8 @@
         {"shape":"InternalServiceException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves the specified Amazon Braket hybrid job.</p>"
+      "documentation":"<p>Retrieves the specified Amazon Braket hybrid job.</p>",
+      "readonly":true
     },
     "GetQuantumTask":{
       "name":"GetQuantumTask",
@@ -146,7 +148,8 @@
         {"shape":"InternalServiceException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves the specified quantum task.</p>"
+      "documentation":"<p>Retrieves the specified quantum task.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -162,7 +165,8 @@
         {"shape":"InternalServiceException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Shows the tags associated with this resource.</p>"
+      "documentation":"<p>Shows the tags associated with this resource.</p>",
+      "readonly":true
     },
     "SearchDevices":{
       "name":"SearchDevices",
@@ -179,7 +183,8 @@
         {"shape":"InternalServiceException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Searches for devices using the specified filters.</p>"
+      "documentation":"<p>Searches for devices using the specified filters.</p>",
+      "readonly":true
     },
     "SearchJobs":{
       "name":"SearchJobs",
@@ -213,7 +218,8 @@
         {"shape":"InternalServiceException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Searches for tasks that match the specified filter values.</p>"
+      "documentation":"<p>Searches for tasks that match the specified filter values.</p>",
+      "readonly":true
     },
     "TagResource":{
       "name":"TagResource",
@@ -272,11 +278,11 @@
         },
         "programCount":{
           "shape":"Long",
-          "documentation":"<p>The number of programs in a program set. This is only available for a Program Set.</p>"
+          "documentation":"<p>The number of programs in a program set. This is only available for a program set.</p>"
         },
         "executableCount":{
           "shape":"Long",
-          "documentation":"<p>The number of executables in a program set. This is only available for a Program Set.</p>"
+          "documentation":"<p>The number of executables in a program set. This is only available for a program set.</p>"
         }
       },
       "documentation":"<p>Contains metadata about the quantum task action, including the action type and program statistics.</p>"
@@ -576,6 +582,10 @@
         "associations":{
           "shape":"CreateQuantumTaskRequestAssociationsList",
           "documentation":"<p>The list of Amazon Braket resources associated with the quantum task.</p>"
+        },
+        "experimentalCapabilities":{
+          "shape":"ExperimentalCapabilities",
+          "documentation":"<p>Enable experimental capabilities for the quantum task.</p>"
         }
       }
     },
@@ -742,6 +752,24 @@
       "enum":[
         "QPU",
         "SIMULATOR"
+      ]
+    },
+    "ExperimentalCapabilities":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"ExperimentalCapabilitiesEnablementType",
+          "documentation":"<p>Enabled experimental capabilities.</p>"
+        }
+      },
+      "documentation":"<p>Enabled experimental capabilities for quantum hardware. Note that the use of these features may impact device capabilities and performance beyond its standard specifications.</p>",
+      "union":true
+    },
+    "ExperimentalCapabilitiesEnablementType":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "NONE"
       ]
     },
     "GetDeviceRequest":{
@@ -1016,6 +1044,10 @@
         "actionMetadata":{
           "shape":"ActionMetadata",
           "documentation":"<p>Metadata about the action performed by the quantum task, including information about the type of action and program counts.</p>"
+        },
+        "experimentalCapabilities":{
+          "shape":"ExperimentalCapabilities",
+          "documentation":"<p>Enabled experimental capabilities for the quantum task, if any.</p>"
         }
       }
     },

@@ -1958,6 +1958,52 @@
       ],
       "documentation": "\n            <p>Updates the monitoring settings for the cluster. You can use this operation to specify which Apache Kafka metrics you want Amazon MSK to send to Amazon CloudWatch. You can also specify settings for open monitoring with Prometheus.</p>\n         "
     },
+    "UpdateRebalancing": {
+      "name": "UpdateRebalancing",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/v1/clusters/{clusterArn}/rebalancing",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "UpdateRebalancingRequest"
+      },
+      "output": {
+        "shape": "UpdateRebalancingResponse",
+        "documentation": "\n            <p>HTTP Status Code 200: OK.</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>The service cannot complete the request.</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>The request throughput limit was exceeded.</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Use this resource to update the intelligent rebalancing status of an Amazon MSK Provisioned cluster with Express brokers.</p>\n         "
+    },
     "UpdateReplicationInfo": {
       "name": "UpdateReplicationInfo",
       "http": {
@@ -2231,6 +2277,25 @@
         }
       }
     },
+    "Rebalancing": {
+      "type": "structure",
+      "documentation": "\n            <p>Specifies whether or not intelligent rebalancing is turned on for a newly created MSK Provisioned cluster with Express brokers. Intelligent rebalancing performs automatic partition balancing operations when you scale your clusters up or down. By default, intelligent rebalancing is ACTIVE for all new Express-based clusters.</p>\n         ",
+      "members": {
+        "Status": {
+          "shape": "RebalancingStatus",
+          "locationName": "status",
+          "documentation": "\n            <p>Intelligent rebalancing status. The default intelligent rebalancing status is ACTIVE for all new Express-based clusters.</p>\n         "
+        }
+      }
+    },
+    "RebalancingStatus": {
+      "type": "string",
+      "documentation": "\n            <p>Intelligent rebalancing status. The default intelligent rebalancing status is ACTIVE for all new Express-based clusters.</p>\n         ",
+      "enum": [
+        "PAUSED",
+        "ACTIVE"
+      ]
+    },
     "BrokerNodeGroupInfo": {
       "type": "structure",
       "members": {
@@ -2418,6 +2483,11 @@
           "shape": "BrokerNodeGroupInfo",
           "locationName": "brokerNodeGroupInfo",
           "documentation": "\n            <p>Information about the broker nodes.</p>\n         "
+        },
+        "Rebalancing": {
+          "shape": "Rebalancing",
+          "locationName": "rebalancing",
+          "documentation": "\n            <p>Contains information about intelligent rebalancing for new MSK Provisioned clusters with Express brokers. By default, intelligent rebalancing status is ACTIVE.</p>\n         "
         },
         "ClientAuthentication": {
           "shape": "ClientAuthentication",
@@ -2695,6 +2765,11 @@
           "locationName": "brokerNodeGroupInfo",
           "documentation": "\n            <p>Information about the brokers.</p>\n         "
         },
+        "Rebalancing": {
+          "shape": "Rebalancing",
+          "locationName": "rebalancing",
+          "documentation": "\n            <p>Specifies if intelligent rebalancing is turned on for your MSK Provisioned cluster with Express brokers. For all new Express-based clusters that you create, intelligent rebalancing is turned on by default.</p>\n         "
+        },
         "ClientAuthentication": {
           "shape": "ClientAuthentication",
           "locationName": "clientAuthentication",
@@ -2755,6 +2830,11 @@
           "shape": "BrokerNodeGroupInfo",
           "locationName": "brokerNodeGroupInfo",
           "documentation": "\n            <p>Information about the brokers.</p>\n         "
+        },
+        "Rebalancing": {
+          "shape": "Rebalancing",
+          "locationName": "rebalancing",
+          "documentation": "\n            <p>Specifies whether or not intelligent rebalancing is turned on for a newly created MSK Provisioned cluster with Express brokers. Intelligent rebalancing performs automatic partition balancing operations when you scale your clusters up or down.  By default, intelligent rebalancing is ACTIVE for all new Express-based clusters.</p>\n         "
         },
         "CurrentBrokerSoftwareInfo": {
           "shape": "BrokerSoftwareInfo",
@@ -3200,6 +3280,11 @@
           "shape": "BrokerNodeGroupInfo",
           "locationName": "brokerNodeGroupInfo",
           "documentation": "\n            <p>Information about the broker nodes in the cluster.</p>\n         "
+        },
+        "Rebalancing": {
+          "shape": "Rebalancing",
+          "locationName": "rebalancing",
+          "documentation": "\n            <p>Specifies if intelligent rebalancing should be turned on for the new MSK Provisioned cluster with Express brokers. By default, intelligent rebalancing status is ACTIVE for all new clusters.</p>\n         "
         },
         "ClientAuthentication": {
           "shape": "ClientAuthentication",
@@ -5168,6 +5253,11 @@
           "shape": "BrokerCountUpdateInfo",
           "locationName": "brokerCountUpdateInfo",
           "documentation": "\n            <p>Describes brokers being changed during a broker count update.</p>\n         "
+        },
+        "Rebalancing": {
+          "shape": "Rebalancing",
+          "locationName": "rebalancing",
+          "documentation": "\n            <p>Describes the intelligent rebalancing configuration of an MSK Provisioned cluster with Express brokers.</p>\n         "
         }
       },
       "documentation": "\n            <p>Information about cluster attributes that can be updated via update APIs.</p>\n         "
@@ -6298,6 +6388,47 @@
           "shape": "__string",
           "locationName": "clusterArn",
           "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
+        },
+        "ClusterOperationArn": {
+          "shape": "__string",
+          "locationName": "clusterOperationArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster operation.</p>\n         "
+        }
+      }
+    },
+    "UpdateRebalancingRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster.</p>\n         "
+        },
+        "CurrentVersion": {
+          "shape": "__string",
+          "locationName": "currentVersion",
+          "documentation": "\n            <p>The current version of the cluster.</p>\n         "
+        },
+        "Rebalancing": {
+          "shape": "Rebalancing",
+          "locationName": "rebalancing",
+          "documentation": "\n            <p>Specifies if intelligent rebalancing should be turned on for your cluster. The default intelligent rebalancing status is ACTIVE for all new MSK Provisioned clusters that you create with Express brokers.</p>\n         "
+        }
+      },
+      "required": [
+        "ClusterArn",
+        "CurrentVersion",
+        "Rebalancing"
+      ]
+    },
+    "UpdateRebalancingResponse": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the cluster whose intelligent rebalancing status you've updated.</p>\n         "
         },
         "ClusterOperationArn": {
           "shape": "__string",

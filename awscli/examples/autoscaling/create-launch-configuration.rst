@@ -11,9 +11,9 @@ This command produces no output.
 
 For more information, see `Creating a launch configuration <https://docs.aws.amazon.com/autoscaling/ec2/userguide/create-launch-config.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
 
-**Example 2: To create a launch configuration with a security group, key pair, and bootrapping script**
+**Example 2: To create a launch configuration with a security group, key pair, and bootstrapping script**
 
-This example creates a launch configuration with a security group, a key pair, and a bootrapping script contained in the user data. ::
+This example creates a launch configuration with a security group, a key pair, and a bootstrapping script contained in the user data. ::
 
     aws autoscaling create-launch-configuration \
         --launch-configuration-name my-lc \

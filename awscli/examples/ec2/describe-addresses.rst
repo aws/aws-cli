@@ -87,7 +87,7 @@ The following ``describe-addresses`` example displays details about the Elastic 
 
 **Example 5: To retrieve details about Elastic IP addresses in EC2-Classic**
 
-TThe following ``describe-addresses`` example displays details about your Elastic IP addresses for use in EC2-Classic. ::
+The following ``describe-addresses`` example displays details about your Elastic IP addresses for use in EC2-Classic. ::
 
     aws ec2 describe-addresses \
         --filters "Name=domain,Values=standard"

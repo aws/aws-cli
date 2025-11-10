@@ -1,6 +1,6 @@
 **To list your services**
 
-The following ``list-services`` example lists the servies owned or shared with the calling account. The ``--query`` option scopes the results to the Amazon Resource Names (ARN) of the services. ::
+The following ``list-services`` example lists the services owned or shared with the calling account. The ``--query`` option scopes the results to the Amazon Resource Names (ARN) of the services. ::
 
     aws vpc-lattice list-services \
         --query items[*].arn

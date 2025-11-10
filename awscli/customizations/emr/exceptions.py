@@ -50,7 +50,7 @@ class EmptyListError(EmrError):
 
     :ivar param: The provided list parameter
     """
-    fmt = ('aws: error: The prameter {param} cannot be an empty list.')
+    fmt = ('aws: error: The parameter {param} cannot be an empty list.')
 
 
 class MissingRequiredInstanceGroupsError(EmrError):

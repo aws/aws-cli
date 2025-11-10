@@ -1,6 +1,6 @@
 **To list resources with at least one pending maintenance action**
 
-The following ``describe-pending-maintenance-actions`` example lists the pending maintenace action for a DB instance. ::
+The following ``describe-pending-maintenance-actions`` example lists the pending maintenance action for a DB instance. ::
 
     aws rds describe-pending-maintenance-actions
 

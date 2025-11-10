@@ -574,14 +574,14 @@ class TestPayloadSerialzier(unittest.TestCase):
         self.assertEqual(encoded, reloaded)
 
     def test_can_serialize_non_utf_8_bytes_type(self):
-        original = b'\xfe\xed'  # Non utf-8 byte squence
+        original = b'\xfe\xed'  # Non utf-8 byte sequence
         encoded = '<Byte sequence>'
         string_value = json.dumps(original, cls=PayloadSerializer)
         reloaded = json.loads(string_value)
         self.assertEqual(encoded, reloaded)
 
     def test_does_preserve_utf_8_bytes_type(self):
-        original = b'foobar'  # utf-8 byte squence
+        original = b'foobar'  # utf-8 byte sequence
         encoded = 'foobar'
         string_value = json.dumps(original, cls=PayloadSerializer)
         reloaded = json.loads(string_value)

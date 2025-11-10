@@ -239,7 +239,7 @@ Contents of ``SampleMovieReview2.txt.out`` line indents for readability::
         "Line": 0
     }
 
-Contents of ``SampleMovieReview3.txt.out`` with line indents for readibility::
+Contents of ``SampleMovieReview3.txt.out`` with line indents for readability::
 
     {
         "Entities": [

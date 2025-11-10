@@ -79,32 +79,34 @@ This section is for anyone who wants to install the development version of the A
 * You are developing a feature for the AWS CLI Linter and plan on submitting a Pull Request.
 * You want to test the latest changes of the AWS CLI Linter before they make it into an official release.
 
-Run `make setup` to set up a virtual environment with the linter installed. Alternatively, 
-you can follow the steps below.
+Install [uv](https://docs.astral.sh/uv/) if you haven't already, then set up the development environment:
 
-1. Create a virtual environment:
 ```bash
-python3.12 -m venv venv
-source venv/bin/activate
+uv sync --extra dev
 ```
 
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-pip install -r requirements-dev-lock.txt
-```
-
-3. Install the package in development mode:
-```bash
-pip install -e .
-```
+This will create a virtual environment, install all dependencies, and install the package in development mode.
 
 ### Running tests
 ```bash
-make test
+uv run pytest tests/ -v
 ```
 
 ### Code formatting
 ```bash
-make format
+uv run ruff format awsclilinter tests
+uv run ruff check --select I --fix awsclilinter tests
+```
+
+### Code linting
+```bash
+uv run ruff format --check awsclilinter tests
+uv run ruff check awsclilinter tests
+```
+
+### Clean local workspace
+```bash
+rm -rf .venv build dist *.egg-info
+find . -type d -name __pycache__ -exec rm -rf {} +
+find . -type f -name "*.pyc" -delete
 ```

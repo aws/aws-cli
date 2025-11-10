@@ -27,8 +27,12 @@ class TestScriptLinter:
 
     def test_multiple_issues(self):
         """Test linter with multiple issues."""
-        script = """aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json
-            aws kinesis put-record --stream-name samplestream --data file://data --partition-key samplepartitionkey"""
+        script = (
+            "aws secretsmanager put-secret-value --secret-id secret1213 "
+            "--secret-binary file://data.json\n"
+            "            aws kinesis put-record --stream-name samplestream "
+            "--data file://data --partition-key samplepartitionkey"
+        )
         linter = ScriptLinter([Base64BinaryFormatRule()])
         findings = linter.lint(script)
 

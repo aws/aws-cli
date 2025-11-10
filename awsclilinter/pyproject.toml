@@ -31,8 +31,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0.0",
-    "black>=24.1.1",
-    "isort>=5.13.2",
+    "ruff>=0.8.0",
 ]
 
 [project.urls]
@@ -44,13 +43,16 @@ Documentation = "https://github.com/aws/aws-cli"
 [project.scripts]
 upgrade-aws-cli = "awsclilinter.cli:main"
 
-[tool.black]
+[tool.ruff]
 line-length = 100
-target-version = ['py312']
+target-version = "py312"
 
-[tool.isort]
-profile = "black"
-line_length = 100
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

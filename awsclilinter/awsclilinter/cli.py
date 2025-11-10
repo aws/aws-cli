@@ -36,7 +36,8 @@ def display_finding(finding: LintFinding, index: int, total: int, script_content
 
     if src_lines_removed != new_lines_added:
         raise RuntimeError(
-            f"Number of lines removed ({src_lines_removed}) does not match number of lines added ({new_lines_added})"
+            f"Number of lines removed ({src_lines_removed}) does not match "
+            f"number of lines added ({new_lines_added})"
         )
 
     # Create a map from line numbers to their indices within the full script file
@@ -70,7 +71,9 @@ def display_finding(finding: LintFinding, index: int, total: int, script_content
                 line_start_pos, _ = line_positions[i]
                 start_pos_in_line = max(0, finding.edit.start_pos - line_start_pos)
                 end_pos_in_line = min(len(line), finding.edit.end_pos - line_start_pos)
-                new_line = line[:start_pos_in_line] + finding.edit.inserted_text + line[end_pos_in_line:]
+                new_line = (
+                    line[:start_pos_in_line] + finding.edit.inserted_text + line[end_pos_in_line:]
+                )
                 # In case the inserted text takes up multiple lines,
                 # inject a + at the start of each line.
                 new_line = new_line.replace("\n", "\n+")

@@ -23,7 +23,10 @@ class TestBase64BinaryFormatRule:
 
     def test_no_detection_with_flag(self):
         """Test no detection when flag is present."""
-        script = "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json --cli-binary-format raw-in-base64-out"
+        script = (
+            "aws secretsmanager put-secret-value --secret-id secret1213 "
+            "--secret-binary file://data.json --cli-binary-format raw-in-base64-out"
+        )
         root = SgRoot(script, "bash")
         rule = Base64BinaryFormatRule()
         findings = rule.check(root)
@@ -34,7 +37,9 @@ class TestBase64BinaryFormatRule:
         """Test no detection when file:// is not used. Even though the breaking change may
         still occur without the use of file://, only the case where file:// is used can be detected
         statically."""
-        script = "aws secretsmanager put-secret-value --secret-id secret1213 --secret-string secret123"
+        script = (
+            "aws secretsmanager put-secret-value --secret-id secret1213 --secret-string secret123"
+        )
         root = SgRoot(script, "bash")
         rule = Base64BinaryFormatRule()
         findings = rule.check(root)

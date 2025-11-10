@@ -46,7 +46,9 @@ class TestCLI:
     def test_dry_run_mode(self, tmp_path, capsys):
         """Test dry run mode displays findings."""
         script_file = tmp_path / "test.sh"
-        script_file.write_text("aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json")
+        script_file.write_text(
+            "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json"
+        )
 
         with patch("sys.argv", ["upgrade-aws-cli", "--script", str(script_file)]):
             main()
@@ -57,7 +59,9 @@ class TestCLI:
     def test_fix_mode(self, tmp_path):
         """Test fix mode modifies the script."""
         script_file = tmp_path / "test.sh"
-        script_file.write_text("aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json")
+        script_file.write_text(
+            "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json"
+        )
 
         with patch("sys.argv", ["upgrade-aws-cli", "--script", str(script_file), "--fix"]):
             main()
@@ -68,7 +72,9 @@ class TestCLI:
         """Test output mode creates new file."""
         script_file = tmp_path / "test.sh"
         output_file = tmp_path / "output.sh"
-        script_file.write_text("aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json")
+        script_file.write_text(
+            "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json"
+        )
 
         with patch(
             "sys.argv",
@@ -145,7 +151,9 @@ class TestCLI:
     def test_interactive_mode_cancel(self, tmp_path):
         """Test interactive mode with 'x' to cancel."""
         script_file = tmp_path / "test.sh"
-        script_file.write_text("aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json")
+        script_file.write_text(
+            "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json"
+        )
 
         with patch("sys.argv", ["upgrade-aws-cli", "--script", str(script_file), "--interactive"]):
             with patch("builtins.input", return_value="q"):

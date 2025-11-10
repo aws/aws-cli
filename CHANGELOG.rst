@@ -2,6 +2,26 @@
 CHANGELOG
 =========
 
+2.31.33
+=======
+
+* api-change:``guardduty``: Include tags filed in CreatePublishingDestinationRequest and DescribePublishingDestinationResponse.
+* api-change:``ec2``: Amazon EC2 Fleet customers can now filter instance types based on encryption-in-transit support using Attribute-Based Instance Type Selection (ABIS), eliminating the manual effort of identifying and selecting compatible instance types for security-sensitive workloads.
+* api-change:``acm-pca``: Private Certificate Authority service now supports ML-DSA key algorithms.
+* api-change:``verifiedpermissions``: Amazon Verified Permissions / Features : Adds support for entity Cedar tags.
+* enhancement:awscrt: Exposes new CRT options for S3 file IO
+* api-change:``appstream``: AWS Appstream support for IPv6
+* api-change:``wafv2``: AWS WAF now supports CLOUDWATCH_TELEMETRY_RULE_MANAGED as a LogScope option, enabling automated logging configuration through Amazon CloudWatch Logs for telemetry data collection and analysis.
+* api-change:``sts``: Added GetDelegatedAccessToken API, which is not available for general use at this time.
+* api-change:``iam``: Added CreateDelegationRequest API, which is not available for general use at this time.
+* api-change:``datazone``: Remove trackingServerName from DataZone Connection MLflowProperties
+* api-change:``dsql``: Cluster endpoint added to CreateCluster and GetCluster API responses
+* api-change:``invoicing``: Added new invoicing get-invoice-pdf API Operation
+* api-change:``backup``: AWS Backup supports backups of Amazon EKS clusters, including Kubernetes cluster state and persistent storage attached to the EKS cluster via a persistent volume claim (EBS volumes, EFS file systems, and S3 buckets).
+* api-change:``kafka``: Amazon MSK now supports intelligent rebalancing for MSK Express brokers.
+* api-change:``braket``: Adds ExperimentalCapabilities field to CreateQuantumTask request and GetQuantumTask response objects. Enables use of experimental software capabilities when creating quantum tasks.
+
+
 2.31.32
 =======
 

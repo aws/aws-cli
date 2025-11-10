@@ -9,25 +9,33 @@ For a full list of the breaking changes introduced with AWS CLI v2, see
 
 ## Installation
 
-Run `make setup` to set up a virtual environment with the linter installed. Alternatively, 
-you can follow the steps below.
+Most users should install AWS CLI Linter via `pip` in a `virtualenv`:
 
-1. Create a virtual environment:
-```bash
-python3.12 -m venv venv
-source venv/bin/activate
+```shell
+$ python3 -m pip install awsclilinter
 ```
 
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-pip install -r requirements-dev-lock.txt
+or, if you are not installing in a `virtualenv`, to install globally:
+
+```shell
+$ sudo python3 -m pip install awsclilinter
 ```
 
-3. Install the package in development mode:
-```bash
-pip install -e .
+or for your user:
+
+```shell
+$ python3 -m pip install --user awsclilinter
 ```
+
+If you have the `awsclilinter` package installed and want to upgrade to the latest version, you can run:
+
+```shell
+$ python3 -m pip install --upgrade awscli
+```
+
+This will install the `awsclilinter` package as well as all dependencies.
+
+If you want to run `awsclilinter` from source, see the [Installing development versions](#installing-development-versions) section.
 
 ## Usage
 
@@ -62,6 +70,34 @@ In interactive mode, you can:
 - Press `q` to cancel and quit
 
 ## Development
+
+### Installing development versions
+
+If you are interested in using the latest released version of the AWS CLI Linter, please see the [Installation](#installation) section. 
+This section is for anyone who wants to install the development version of the AWS CLI Linter. You might need to do this if:
+
+* You are developing a feature for the AWS CLI Linter and plan on submitting a Pull Request.
+* You want to test the latest changes of the AWS CLI Linter before they make it into an official release.
+
+Run `make setup` to set up a virtual environment with the linter installed. Alternatively, 
+you can follow the steps below.
+
+1. Create a virtual environment:
+```bash
+python3.12 -m venv venv
+source venv/bin/activate
+```
+
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+pip install -r requirements-dev-lock.txt
+```
+
+3. Install the package in development mode:
+```bash
+pip install -e .
+```
 
 ### Running tests
 ```bash

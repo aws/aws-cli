@@ -29,11 +29,15 @@ def get_user_choice(prompt: str) -> str:
 def display_finding(finding: LintFinding, index: int, total: int, script_content: str):
     """Display a finding to the user with context."""
     src_lines = script_content.splitlines()
-    dest_lines = finding.edit.inserted_text.splitlines()
     start_line = finding.line_start
     end_line = finding.line_end
     src_lines_removed = end_line - start_line + 1
-    new_lines_added = len(dest_lines)
+    new_lines_added = end_line - start_line + 1
+
+    if src_lines_removed != new_lines_added:
+        raise RuntimeError(
+            f"Number of lines removed ({src_lines_removed}) does not match number of lines added ({new_lines_added})"
+        )
 
     # Create a map from line numbers to their indices within the full script file
     line_positions = []

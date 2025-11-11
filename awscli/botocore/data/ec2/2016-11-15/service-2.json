@@ -71899,6 +71899,11 @@
           "shape":"TunnelOptionsList",
           "documentation":"<p>Indicates the VPN tunnel options.</p>",
           "locationName":"tunnelOptionSet"
+        },
+        "TunnelBandwidth":{
+          "shape":"VpnTunnelBandwidth",
+          "documentation":"<p> The configured bandwidth for the VPN tunnel. Represents the current throughput capacity setting for the tunnel connection. <code>standard</code> tunnel bandwidth supports up to 1.25 Gbps per tunnel while <code>large</code> supports up to 5 Gbps per tunnel. If no tunnel bandwidth was specified for the connection, <code>standard</code> is used as the default value. </p>",
+          "locationName":"tunnelBandwidth"
         }
       },
       "documentation":"<p>Describes VPN connection options.</p>"
@@ -71941,6 +71946,10 @@
         "TransportTransitGatewayAttachmentId":{
           "shape":"TransitGatewayAttachmentId",
           "documentation":"<p>The transit gateway attachment ID to use for the VPN tunnel.</p> <p>Required if <code>OutsideIpAddressType</code> is set to <code>PrivateIpv4</code>.</p>"
+        },
+        "TunnelBandwidth":{
+          "shape":"VpnTunnelBandwidth",
+          "documentation":"<p> The desired bandwidth specification for the VPN tunnel, used when creating or modifying VPN connection options to set the tunnel's throughput capacity. <code>standard</code> supports up to 1.25 Gbps per tunnel, while <code>large</code> supports up to 5 Gbps per tunnel. The default value is <code>standard</code>. Existing VPN connections without a bandwidth setting will automatically default to <code>standard</code>. </p>"
         },
         "StaticRoutesOnly":{
           "shape":"Boolean",
@@ -72057,6 +72066,13 @@
     "VpnStaticRouteSource":{
       "type":"string",
       "enum":["Static"]
+    },
+    "VpnTunnelBandwidth":{
+      "type":"string",
+      "enum":[
+        "standard",
+        "large"
+      ]
     },
     "VpnTunnelLogOptions":{
       "type":"structure",

@@ -33,7 +33,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidTokenException"}
       ],
-      "documentation":"<p>Provides information on whether the supplied account IDs are associated with a membership.</p> <note> <p> AWS account ID's may appear less than 12 characters and need to be zero-prepended. An example would be <code>123123123</code> which is nine digits, and with zero-prepend would be <code>000123123123</code>. Not zero-prepending to 12 digits could result in errors. </p> </note>"
+      "documentation":"<p>Provides information on whether the supplied account IDs are associated with a membership.</p> <note> <p> AWS account ID's may appear less than 12 characters and need to be zero-prepended. An example would be <code>123123123</code> which is nine digits, and with zero-prepend would be <code>000123123123</code>. Not zero-prepending to 12 digits could result in errors. </p> </note>",
+      "readonly":true
     },
     "CancelMembership":{
       "name":"CancelMembership",
@@ -169,7 +170,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidTokenException"}
       ],
-      "documentation":"<p>Returns the attributes of a case.</p>"
+      "documentation":"<p>Returns the attributes of a case.</p>",
+      "readonly":true
     },
     "GetCaseAttachmentDownloadUrl":{
       "name":"GetCaseAttachmentDownloadUrl",
@@ -191,7 +193,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidTokenException"}
       ],
-      "documentation":"<p>Returns a Pre-Signed URL for uploading attachments into a case.</p>"
+      "documentation":"<p>Returns a Pre-Signed URL for uploading attachments into a case.</p>",
+      "readonly":true
     },
     "GetCaseAttachmentUploadUrl":{
       "name":"GetCaseAttachmentUploadUrl",
@@ -236,7 +239,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidTokenException"}
       ],
-      "documentation":"<p>Returns the attributes of a membership.</p>"
+      "documentation":"<p>Returns the attributes of a membership.</p>",
+      "readonly":true
     },
     "ListCaseEdits":{
       "name":"ListCaseEdits",
@@ -258,7 +262,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidTokenException"}
       ],
-      "documentation":"<p>Views the case history for edits made to a designated case.</p>"
+      "documentation":"<p>Views the case history for edits made to a designated case.</p>",
+      "readonly":true
     },
     "ListCases":{
       "name":"ListCases",
@@ -280,7 +285,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidTokenException"}
       ],
-      "documentation":"<p>Lists all cases the requester has access to.</p>"
+      "documentation":"<p>Lists all cases the requester has access to.</p>",
+      "readonly":true
     },
     "ListComments":{
       "name":"ListComments",
@@ -302,7 +308,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidTokenException"}
       ],
-      "documentation":"<p>Returns comments for a designated case.</p>"
+      "documentation":"<p>Returns comments for a designated case.</p>",
+      "readonly":true
     },
     "ListMemberships":{
       "name":"ListMemberships",
@@ -324,7 +331,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidTokenException"}
       ],
-      "documentation":"<p>Returns the memberships that the calling principal can access.</p>"
+      "documentation":"<p>Returns the memberships that the calling principal can access.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -346,7 +354,8 @@
         {"shape":"ConflictException"},
         {"shape":"InvalidTokenException"}
       ],
-      "documentation":"<p>Returns currently configured tags on a resource.</p>"
+      "documentation":"<p>Returns currently configured tags on a resource.</p>",
+      "readonly":true
     },
     "TagResource":{
       "name":"TagResource",
@@ -561,6 +570,7 @@
         "ap-southeast-3",
         "ap-southeast-4",
         "ap-southeast-5",
+        "ap-southeast-6",
         "ap-southeast-7",
         "ca-central-1",
         "ca-west-1",
@@ -813,6 +823,31 @@
       "max":6,
       "min":6,
       "pattern":"\\d{6}"
+    },
+    "CommunicationPreferences":{
+      "type":"list",
+      "member":{"shape":"CommunicationType"}
+    },
+    "CommunicationType":{
+      "type":"string",
+      "enum":[
+        "Case Created",
+        "Case Updated",
+        "Case Acknowledged",
+        "Case Closed",
+        "Case Updated To Service Managed",
+        "Case Status Updated",
+        "Case Pending Customer Action Reminder",
+        "Case Attachment Url Uploaded",
+        "Case Comment Added",
+        "Case Comment Updated",
+        "Membership Created",
+        "Membership Updated",
+        "Membership Cancelled",
+        "Register Delegated Administrator",
+        "Deregister Delegated Administrator",
+        "Disable AWS Service Access"
+      ]
     },
     "ConflictException":{
       "type":"structure",
@@ -1386,6 +1421,10 @@
         "email":{
           "shape":"EmailAddress",
           "documentation":"<p/>"
+        },
+        "communicationPreferences":{
+          "shape":"CommunicationPreferences",
+          "documentation":"<p/>"
         }
       },
       "documentation":"<p/>"
@@ -1903,7 +1942,7 @@
     },
     "PrincipalId":{
       "type":"string",
-      "pattern":".*((^AWS Responder)|(^\\d{12}$)|(^security-ir.amazonaws.com)).*"
+      "pattern":".*((^AWS Responder)|(^\\d{12}$)|(^arn:([^:]*aws[^:]*):(?:(?:iam)::\\d{12}:(?:user|role|group|root)(?:(?:/[^/]+)+)?|(?:sts)::\\d{12}:assumed-role/[^/]+/[^/]+)$)|(^security-ir.amazonaws.com)).*"
     },
     "ResolverType":{
       "type":"string",

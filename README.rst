@@ -54,6 +54,13 @@ AWS CLI v2 can easily be installed on most standard platforms:
 
 * `Windows MSI installer <https://awscli.amazonaws.com/AWSCLIV2.msi>`__
 
+* On Linux and MacOS, you can also use [mise](https://github.com/jdx/mise), the polyglot package manager, to install the AWS CLI:
+
+  .. code-block:: shell-session
+
+      $ mise install aws-cli@latest
+
+
 You can find more detailed installation instructions `here <https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html>`__.
 
 If you want to run the ``v2`` development branch of the CLI, see the

@@ -47,6 +47,12 @@ def display_finding(finding: LintFinding, index: int, total: int, script_content
     src_context = src_lines[context_start:context_end]
     dest_context = dest_lines[context_start:context_end]
 
+    if len(src_context) != len(dest_context):
+        raise RuntimeError(
+            f"Original and new context lengths must be equal. "
+            f"{len(src_context)} != {len(dest_context)}."
+        )
+
     print(f"\n[{index}/{total}] {finding.rule_name}")
     print(f"{finding.description}")
 

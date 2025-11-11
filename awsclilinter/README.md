@@ -30,7 +30,7 @@ $ python3 -m pip install --user awsclilinter
 If you have the `awsclilinter` package installed and want to upgrade to the latest version, you can run:
 
 ```shell
-$ python3 -m pip install --upgrade awscli
+$ python3 -m pip install --upgrade awsclilinter
 ```
 
 This will install the `awsclilinter` package as well as all dependencies.

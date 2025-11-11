@@ -43,7 +43,7 @@ setup_options = dict(
     scripts=['bin/aws', 'bin/aws.cmd',
              'bin/aws_completer', 'bin/aws_zsh_completer.sh',
              'bin/aws_bash_completer'],
-    packages=find_packages(exclude=['tests*']),
+    packages=find_packages(exclude=['tests*', 'awsclilinter']),
     include_package_data=True,
     install_requires=install_requires,
     extras_require={},

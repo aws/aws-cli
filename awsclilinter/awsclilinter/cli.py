@@ -59,10 +59,13 @@ def display_finding(finding: LintFinding, index: int, total: int, script_content
             # The 3rd line is the context control line.
             print(f"\n{CYAN}{line}{RESET}")
         elif line.startswith("-"):
+            # Removed line
             print(f"{RED}{line}{RESET}", end="")
         elif line.startswith("+"):
+            # Added line
             print(f"{GREEN}{line}{RESET}", end="")
         else:
+            # Context (unchanged) lines always start with whitespace.
             print(line, end="")
 
 

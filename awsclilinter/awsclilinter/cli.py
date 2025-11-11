@@ -30,7 +30,7 @@ def get_user_choice(prompt: str) -> str:
 def display_finding(finding: LintFinding, index: int, total: int, script_content: str):
     """Display a finding to the user with context."""
     src_lines = script_content.splitlines(keepends=True)
-    
+
     # Apply the edit to get the fixed content
     fixed_content = (
         script_content[: finding.edit.start_pos]

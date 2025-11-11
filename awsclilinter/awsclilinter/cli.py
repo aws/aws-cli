@@ -5,8 +5,8 @@ from pathlib import Path
 from typing import List
 
 from awsclilinter.linter import ScriptLinter
+from awsclilinter.rules import LintFinding
 from awsclilinter.rules.base64_rule import Base64BinaryFormatRule
-from awsclilinter.rules_base import LintFinding
 
 # ANSI color codes
 RED = "\033[31m"

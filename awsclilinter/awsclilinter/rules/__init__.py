@@ -1,3 +1,3 @@
-from awsclilinter.rules_base import LintFinding, LintRule
+from awsclilinter.rules.base import LintFinding, LintRule
 
 __all__ = ["LintRule", "LintFinding"]

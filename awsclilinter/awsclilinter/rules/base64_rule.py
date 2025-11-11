@@ -2,7 +2,7 @@ from typing import List
 
 from ast_grep_py.ast_grep_py import SgRoot
 
-from awsclilinter.rules_base import LintFinding, LintRule
+from awsclilinter.rules import LintFinding, LintRule
 
 
 class Base64BinaryFormatRule(LintRule):

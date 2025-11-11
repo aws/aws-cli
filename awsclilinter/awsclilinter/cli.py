@@ -1,4 +1,5 @@
 import argparse
+import difflib
 import sys
 from pathlib import Path
 from typing import List
@@ -28,60 +29,41 @@ def get_user_choice(prompt: str) -> str:
 
 def display_finding(finding: LintFinding, index: int, total: int, script_content: str):
     """Display a finding to the user with context."""
-    src_lines = script_content.splitlines()
+    src_lines = script_content.splitlines(keepends=True)
+    
+    # Apply the edit to get the fixed content
+    fixed_content = (
+        script_content[: finding.edit.start_pos]
+        + finding.edit.inserted_text
+        + script_content[finding.edit.end_pos :]
+    )
+    dest_lines = fixed_content.splitlines(keepends=True)
+
     start_line = finding.line_start
     end_line = finding.line_end
-    src_lines_removed = end_line - start_line + 1
-    new_lines_added = end_line - start_line + 1
-
-    if src_lines_removed != new_lines_added:
-        raise RuntimeError(
-            f"Number of lines removed ({src_lines_removed}) does not match "
-            f"number of lines added ({new_lines_added})"
-        )
-
-    # Create a map from line numbers to their indices within the full script file
-    line_positions = []
-    pos = 0
-    for i, line in enumerate(src_lines):
-        line_positions.append((pos, pos + len(line)))
-        pos += len(line) + 1
-
-    # Get context lines
     context_start = max(0, start_line - CONTEXT_SIZE)
     context_end = min(len(src_lines), end_line + CONTEXT_SIZE + 1)
-    src_context_size = context_end - context_start
-    dest_context_size = src_context_size + (new_lines_added - src_lines_removed)
+
+    src_context = src_lines[context_start:context_end]
+    dest_context = dest_lines[context_start:context_end]
 
     print(f"\n[{index}/{total}] {finding.rule_name}")
     print(f"{finding.description}")
-    print(
-        f"\n{CYAN}@@ -{context_start + 1},{src_context_size} "
-        f"+{context_start + 1},{dest_context_size} @@{RESET}"
-    )
 
-    for i in range(context_start, context_end):
-        line = src_lines[i] if i < len(src_lines) else ""
-
-        if start_line <= i <= end_line:
-            # This line is being modified
-            print(f"{RED}-{line}{RESET}")
-
-            if i == end_line:
-                line_start_pos, _ = line_positions[i]
-                start_pos_in_line = max(0, finding.edit.start_pos - line_start_pos)
-                end_pos_in_line = min(len(line), finding.edit.end_pos - line_start_pos)
-                new_line = (
-                    line[:start_pos_in_line] + finding.edit.inserted_text + line[end_pos_in_line:]
-                )
-                # In case the inserted text takes up multiple lines,
-                # inject a + at the start of each line.
-                new_line = new_line.replace("\n", "\n+")
-                # Print the new line suggestion.
-                print(f"{GREEN}+{new_line}{RESET}")
+    diff = difflib.unified_diff(src_context, dest_context, lineterm="")
+    for line_num, line in enumerate(diff):
+        if line_num < 2:
+            # First 2 lines are the --- and +++ lines, we don't print those.
+            continue
+        elif line_num == 2:
+            # The 3rd line is the context control line.
+            print(f"\n{CYAN}{line}{RESET}")
+        elif line.startswith("-"):
+            print(f"{RED}{line}{RESET}", end="")
+        elif line.startswith("+"):
+            print(f"{GREEN}{line}{RESET}", end="")
         else:
-            # Context line
-            print(f"{line}")
+            print(line, end="")
 
 
 def interactive_mode(findings: List[LintFinding], script_content: str) -> List[LintFinding]:

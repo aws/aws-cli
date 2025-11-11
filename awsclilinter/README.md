@@ -87,6 +87,16 @@ uv sync --extra dev
 
 This will create a virtual environment, install all dependencies, and install the package in development mode.
 
+Activate the virtual environment:
+```bash
+source .venv/bin/activate
+```
+
+### Running the CLI
+```bash
+upgrade-aws-cli --script <script.sh>
+```
+
 ### Running tests
 ```bash
 uv run pytest tests/ -v

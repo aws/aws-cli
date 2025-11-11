@@ -148,15 +148,29 @@ class TestCLI:
                 fixed_content = output_file.read_text()
                 assert fixed_content.count("--cli-binary-format") == 2
 
-    def test_interactive_mode_cancel(self, tmp_path):
-        """Test interactive mode with 'x' to cancel."""
+    def test_interactive_mode_save_and_exit(self, tmp_path):
+        """Test interactive mode with 's' to save and exit."""
         script_file = tmp_path / "test.sh"
+        output_file = tmp_path / "output.sh"
         script_file.write_text(
-            "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json"
+            "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json\n"
+            "aws kinesis put-record --stream-name samplestream --data file://data "
+            "--partition-key samplepartitionkey"
         )
 
-        with patch("sys.argv", ["upgrade-aws-cli", "--script", str(script_file), "--interactive"]):
-            with patch("builtins.input", return_value="q"):
-                with pytest.raises(SystemExit) as exc_info:
-                    main()
-                assert exc_info.value.code == 0
+        with patch(
+            "sys.argv",
+            [
+                "upgrade-aws-cli",
+                "--script",
+                str(script_file),
+                "--interactive",
+                "--output",
+                str(output_file),
+            ],
+        ):
+            with patch("builtins.input", side_effect=["y", "s"]):
+                main()
+                fixed_content = output_file.read_text()
+                # Only first change should be applied since we pressed 's' on the second
+                assert fixed_content.count("--cli-binary-format") == 1

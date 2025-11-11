@@ -21,9 +21,9 @@ def get_user_choice(prompt: str) -> str:
     """Get user input for interactive mode."""
     while True:
         choice = input(prompt).lower().strip()
-        if choice in ["y", "n", "u", "q"]:
+        if choice in ["y", "n", "u", "s"]:
             return choice
-        print("Invalid choice. Please enter y, n, u, or q.")
+        print("Invalid choice. Please enter y, n, u, or s.")
 
 
 def display_finding(finding: LintFinding, index: int, total: int, script_content: str):
@@ -89,16 +89,15 @@ def interactive_mode(findings: List[LintFinding], script_content: str) -> List[L
     accepted = []
     for i, finding in enumerate(findings, 1):
         display_finding(finding, i, len(findings), script_content)
-        choice = get_user_choice("\nApply this fix? [y]es, [n]o, [u]pdate all, [q]uit: ")
+        choice = get_user_choice("\nApply this fix? [y]es, [n]o, [u]pdate all, [s]ave and exit: ")
 
         if choice == "y":
             accepted.append(finding)
         elif choice == "u":
             accepted.extend(findings[i - 1 :])
             break
-        elif choice == "q":
-            print("Cancelled.")
-            sys.exit(0)
+        elif choice == "s":
+            break
 
     return accepted
 

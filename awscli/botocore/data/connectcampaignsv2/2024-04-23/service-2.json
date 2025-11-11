@@ -679,6 +679,16 @@
       },
       "exception":true
     },
+    "AgentAction":{
+      "type":"string",
+      "documentation":"<p>Actions that can performed on a contact by an agent</p>",
+      "enum":["DISCARD"]
+    },
+    "AgentActions":{
+      "type":"list",
+      "member":{"shape":"AgentAction"},
+      "documentation":"<p>Actions that can be performed by agent during preview phase.</p>"
+    },
     "AgentlessConfig":{
       "type":"structure",
       "members":{
@@ -788,8 +798,8 @@
       "type":"string",
       "documentation":"<p>Identifier representing a Campaign</p>",
       "max":256,
-      "min":0,
-      "pattern":"[a-zA-Z0-9\\-:/]*"
+      "min":1,
+      "pattern":"[-:/a-zA-Z0-9]+"
     },
     "CampaignName":{
       "type":"string",
@@ -1217,8 +1227,8 @@
       "type":"string",
       "documentation":"<p>Identifier representing a Dial request</p>",
       "max":256,
-      "min":0,
-      "pattern":"[a-zA-Z0-9_\\-.]*"
+      "min":1,
+      "pattern":"[-_.a-zA-Z0-9]+"
     },
     "EmailAddress":{
       "type":"string",
@@ -1514,8 +1524,8 @@
       "type":"string",
       "documentation":"<p>Amazon Connect Instance Id</p>",
       "max":256,
-      "min":0,
-      "pattern":"[a-zA-Z0-9_\\-.]*"
+      "min":1,
+      "pattern":"[-_.a-zA-Z0-9]+"
     },
     "InstanceIdFilter":{
       "type":"structure",
@@ -1842,6 +1852,19 @@
         "bandwidthAllocation":{"shape":"BandwidthAllocation"}
       },
       "documentation":"<p>Predictive config</p>"
+    },
+    "PreviewConfig":{
+      "type":"structure",
+      "required":[
+        "bandwidthAllocation",
+        "timeoutConfig"
+      ],
+      "members":{
+        "bandwidthAllocation":{"shape":"BandwidthAllocation"},
+        "timeoutConfig":{"shape":"TimeoutConfig"},
+        "agentActions":{"shape":"AgentActions"}
+      },
+      "documentation":"<p>Preview config</p>"
     },
     "ProfileId":{
       "type":"string",
@@ -2343,7 +2366,8 @@
       "members":{
         "progressive":{"shape":"ProgressiveConfig"},
         "predictive":{"shape":"PredictiveConfig"},
-        "agentless":{"shape":"AgentlessConfig"}
+        "agentless":{"shape":"AgentlessConfig"},
+        "preview":{"shape":"PreviewConfig"}
       },
       "documentation":"<p>Telephony Outbound Mode</p>",
       "union":true
@@ -2404,6 +2428,21 @@
       "max":50,
       "min":0,
       "pattern":"[a-zA-Z0-9_\\-/]*"
+    },
+    "TimeoutConfig":{
+      "type":"structure",
+      "required":["durationInSeconds"],
+      "members":{
+        "durationInSeconds":{"shape":"TimeoutDuration"}
+      },
+      "documentation":"<p>Timeout Config for preview contacts.</p>"
+    },
+    "TimeoutDuration":{
+      "type":"integer",
+      "documentation":"<p>Timeout duration for a preview contact in seconds.</p>",
+      "box":true,
+      "max":300,
+      "min":1
     },
     "UntagResourceRequest":{
       "type":"structure",

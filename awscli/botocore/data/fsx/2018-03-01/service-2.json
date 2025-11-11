@@ -2474,6 +2474,12 @@
       "type":"timestamp",
       "documentation":"<p>The time that the resource was created, in seconds (since 1970-01-01T00:00:00Z), also known as Unix time.</p>"
     },
+    "CustomerSecretsManagerARN":{
+      "type":"string",
+      "max":1024,
+      "min":64,
+      "pattern":"^arn:[^:]{1,63}:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+-[a-zA-Z0-9]{6}$"
+    },
     "DNSName":{
       "type":"string",
       "documentation":"<p>The file system's DNS name. You can mount your file system using its DNS name.</p>",
@@ -5624,6 +5630,10 @@
         "DnsIps":{
           "shape":"DnsIps",
           "documentation":"<p>A list of up to three IP addresses of DNS servers or domain controllers in the self-managed AD directory.</p>"
+        },
+        "DomainJoinServiceAccountSecret":{
+          "shape":"CustomerSecretsManagerARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret containing the service account credentials used to join the file system to your self-managed Active Directory domain.</p>"
         }
       },
       "documentation":"<p>The configuration of the self-managed Microsoft Active Directory (AD) directory to which the Windows File Server or ONTAP storage virtual machine (SVM) instance is joined.</p>"
@@ -5632,8 +5642,6 @@
       "type":"structure",
       "required":[
         "DomainName",
-        "UserName",
-        "Password",
         "DnsIps"
       ],
       "members":{
@@ -5660,6 +5668,10 @@
         "DnsIps":{
           "shape":"DnsIps",
           "documentation":"<p>A list of up to three IP addresses of DNS servers or domain controllers in the self-managed AD directory. </p>"
+        },
+        "DomainJoinServiceAccountSecret":{
+          "shape":"CustomerSecretsManagerARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret containing the self-managed Active Directory domain join service account credentials. When provided, Amazon FSx uses the credentials stored in this secret to join the file system to your self-managed Active Directory domain.</p> <p>The secret must contain two key-value pairs:</p> <ul> <li> <p> <code>CUSTOMER_MANAGED_ACTIVE_DIRECTORY_USERNAME</code> - The username for the service account</p> </li> <li> <p> <code>CUSTOMER_MANAGED_ACTIVE_DIRECTORY_PASSWORD</code> - The password for the service account</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/self-manage-prereqs.html\"> Using Amazon FSx for Windows with your self-managed Microsoft Active Directory</a> or <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/self-manage-prereqs.html\"> Using Amazon FSx for ONTAP with your self-managed Microsoft Active Directory</a>.</p>"
         }
       },
       "documentation":"<p>The configuration that Amazon FSx uses to join a FSx for Windows File Server file system or an FSx for ONTAP storage virtual machine (SVM) to a self-managed (including on-premises) Microsoft Active Directory (AD) directory. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/self-managed-AD.html\"> Using Amazon FSx for Windows with your self-managed Microsoft Active Directory</a> or <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-svms.html\">Managing FSx for ONTAP SVMs</a>.</p>"
@@ -5690,6 +5702,10 @@
         "FileSystemAdministratorsGroup":{
           "shape":"FileSystemAdministratorsGroupName",
           "documentation":"<p>For FSx for ONTAP file systems only - Specifies the updated name of the self-managed Active Directory domain group whose members are granted administrative privileges for the Amazon FSx resource.</p>"
+        },
+        "DomainJoinServiceAccountSecret":{
+          "shape":"CustomerSecretsManagerARN",
+          "documentation":"<p>Specifies the updated Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret containing the self-managed Active Directory domain join service account credentials. Amazon FSx uses this account to join to your self-managed Active Directory domain.</p>"
         }
       },
       "documentation":"<p>Specifies changes you are making to the self-managed Microsoft Active Directory configuration to which an FSx for Windows File Server file system or an FSx for ONTAP SVM is joined.</p>"

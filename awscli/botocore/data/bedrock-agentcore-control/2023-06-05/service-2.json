@@ -6,7 +6,7 @@
     "endpointPrefix":"bedrock-agentcore-control",
     "protocol":"rest-json",
     "protocols":["rest-json"],
-    "serviceFullName":"Amazon Bedrock Agent Core Control Plane Fronting Layer",
+    "serviceFullName":"Amazon Bedrock AgentCore Control",
     "serviceId":"Bedrock AgentCore Control",
     "signatureVersion":"v4",
     "signingName":"bedrock-agentcore",
@@ -1135,6 +1135,15 @@
       "max":256,
       "min":1
     },
+    "AgentManagedRuntimeType":{
+      "type":"string",
+      "enum":[
+        "PYTHON_3_10",
+        "PYTHON_3_11",
+        "PYTHON_3_12",
+        "PYTHON_3_13"
+      ]
+    },
     "AgentRuntime":{
       "type":"structure",
       "required":[
@@ -1188,6 +1197,10 @@
         "containerConfiguration":{
           "shape":"ContainerConfiguration",
           "documentation":"<p>The container configuration for the agent artifact.</p>"
+        },
+        "codeConfiguration":{
+          "shape":"CodeConfiguration",
+          "documentation":"<p>The code configuration for the agent runtime artifact, including the source code location and execution settings.</p>"
         }
       },
       "documentation":"<p>The artifact of the agent.</p>",
@@ -1498,6 +1511,28 @@
         "VPC"
       ]
     },
+    "BrowserSigningConfigInput":{
+      "type":"structure",
+      "required":["enabled"],
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether browser signing is enabled. When enabled, the browser will cryptographically sign HTTP requests to identify itself as an AI agent to bot control vendors.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for enabling browser signing capabilities that allow agents to cryptographically identify themselves to websites using HTTP message signatures.</p>"
+    },
+    "BrowserSigningConfigOutput":{
+      "type":"structure",
+      "required":["enabled"],
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether browser signing is currently enabled for cryptographic agent identification using HTTP message signatures.</p>"
+        }
+      },
+      "documentation":"<p>The current browser signing configuration that shows whether cryptographic agent identification is enabled for web bot authentication.</p>"
+    },
     "BrowserStatus":{
       "type":"string",
       "enum":[
@@ -1569,6 +1604,46 @@
       "max":256,
       "min":33,
       "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){0,256}"
+    },
+    "Code":{
+      "type":"structure",
+      "members":{
+        "s3":{
+          "shape":"S3Location",
+          "documentation":"<p>The Amazon Amazon S3 object that contains the source code for the agent runtime.</p>"
+        }
+      },
+      "documentation":"<p>The source code configuration that specifies the location and details of the code to be executed.</p>",
+      "union":true
+    },
+    "CodeConfiguration":{
+      "type":"structure",
+      "required":[
+        "code",
+        "runtime",
+        "entryPoint"
+      ],
+      "members":{
+        "code":{
+          "shape":"Code",
+          "documentation":"<p>The source code location and configuration details.</p>"
+        },
+        "runtime":{
+          "shape":"AgentManagedRuntimeType",
+          "documentation":"<p>The runtime environment for executing the code (for example, Python 3.9 or Node.js 18).</p>"
+        },
+        "entryPoint":{
+          "shape":"CodeConfigurationEntryPointList",
+          "documentation":"<p>The entry point for the code execution, specifying the function or method that should be invoked when the code runs.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the source code that defines how the agent runtime code should be executed, including the code location, runtime environment, and entry point.</p>"
+    },
+    "CodeConfigurationEntryPointList":{
+      "type":"list",
+      "member":{"shape":"entryPoint"},
+      "max":2,
+      "min":1
     },
     "CodeInterpreterArn":{
       "type":"string",
@@ -1938,6 +2013,10 @@
         "recording":{
           "shape":"RecordingConfig",
           "documentation":"<p>The recording configuration for the browser. When enabled, browser sessions are recorded and stored in the specified Amazon S3 location.</p>"
+        },
+        "browserSigning":{
+          "shape":"BrowserSigningConfigInput",
+          "documentation":"<p>The browser signing configuration that enables cryptographic agent identification using HTTP message signatures for web bot authentication.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -2754,6 +2833,13 @@
           "documentation":"<p>The unique identifier of the AgentCore Runtime to delete.</p>",
           "location":"uri",
           "locationName":"agentRuntimeId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, the service ignores the request but does not return an error.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
         }
       }
     },
@@ -3538,6 +3624,10 @@
         },
         "networkConfiguration":{"shape":"BrowserNetworkConfiguration"},
         "recording":{"shape":"RecordingConfig"},
+        "browserSigning":{
+          "shape":"BrowserSigningConfigOutput",
+          "documentation":"<p>The browser signing configuration that shows whether cryptographic agent identification is enabled for web bot authentication.</p>"
+        },
         "status":{
           "shape":"BrowserStatus",
           "documentation":"<p>The current status of the browser.</p>"
@@ -4008,7 +4098,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"(Authorization|X-Amzn-Bedrock-AgentCore-Runtime-Custom-[a-zA-Z0-9_-]+)"
+      "pattern":"(Authorization|X-Amzn-Bedrock-AgentCore-Runtime-Custom-[a-zA-Z0-9-]+)"
     },
     "IncludedOauth2ProviderConfigInput":{
       "type":"structure",
@@ -5523,6 +5613,10 @@
         "prefix":{
           "shape":"S3LocationPrefixString",
           "documentation":"<p>The prefix for objects in the Amazon S3 bucket. This prefix is added to the object keys to organize the data.</p>"
+        },
+        "versionId":{
+          "shape":"S3LocationVersionIdString",
+          "documentation":"<p>The version ID of the Amazon Amazon S3 object. If not specified, the latest version of the object is used.</p>"
         }
       },
       "documentation":"<p>The Amazon S3 location for storing data. This structure defines where in Amazon S3 data is stored.</p>"
@@ -5533,7 +5627,13 @@
     },
     "S3LocationPrefixString":{
       "type":"string",
+      "max":1024,
       "min":1
+    },
+    "S3LocationVersionIdString":{
+      "type":"string",
+      "max":1024,
+      "min":3
     },
     "SalesforceOauth2ProviderConfigInput":{
       "type":"structure",
@@ -7246,7 +7346,12 @@
         }
       },
       "documentation":"<p>Contains information about a workload identity.</p>"
+    },
+    "entryPoint":{
+      "type":"string",
+      "max":128,
+      "min":1
     }
   },
-  "documentation":"<p><note> <p> is in preview release and is subject to change.</p> </note> <p>Welcome to the Amazon Bedrock AgentCore Control plane API reference. Control plane actions configure, create, modify, and monitor Amazon Web Services resources.</p></p>"
+  "documentation":"<p>Welcome to the Amazon Bedrock AgentCore Control plane API reference. Control plane actions configure, create, modify, and monitor Amazon Web Services resources.</p>"
 }

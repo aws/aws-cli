@@ -9944,60 +9944,6 @@
             }
         },
         {
-            "documentation": "dual-stack error",
-            "expect": {
-                "error": "S3Express does not support Dual-stack."
-            },
-            "operationInputs": [
-                {
-                    "builtInParams": {
-                        "AWS::Region": "us-east-1",
-                        "AWS::UseDualStack": true
-                    },
-                    "operationName": "GetObject",
-                    "operationParams": {
-                        "Bucket": "mybucket--test-ab1--x-s3",
-                        "Key": "key"
-                    }
-                }
-            ],
-            "params": {
-                "Region": "us-east-1",
-                "Bucket": "mybucket--test-ab1--x-s3",
-                "UseFIPS": false,
-                "UseDualStack": true,
-                "Accelerate": false,
-                "UseS3ExpressControlEndpoint": false
-            }
-        },
-        {
-            "documentation": "dual-stack error with AP",
-            "expect": {
-                "error": "S3Express does not support Dual-stack."
-            },
-            "operationInputs": [
-                {
-                    "builtInParams": {
-                        "AWS::Region": "us-east-1",
-                        "AWS::UseDualStack": true
-                    },
-                    "operationName": "GetObject",
-                    "operationParams": {
-                        "Bucket": "myaccesspoint--test-ab1--xa-s3",
-                        "Key": "key"
-                    }
-                }
-            ],
-            "params": {
-                "Region": "us-east-1",
-                "Bucket": "myaccesspoint--test-ab1--xa-s3",
-                "UseFIPS": false,
-                "UseDualStack": true,
-                "Accelerate": false,
-                "UseS3ExpressControlEndpoint": false
-            }
-        },
-        {
             "documentation": "accelerate error",
             "expect": {
                 "error": "S3Express does not support S3 Accelerate."
@@ -10185,6 +10131,1265 @@
                 "Accelerate": false,
                 "Endpoint": "https://custom.com",
                 "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Control plane without bucket and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-east-1",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://s3express-control.dualstack.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "ListDirectoryBuckets"
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": true,
+                "DisableS3ExpressSessionAuth": false
+            }
+        },
+        {
+            "documentation": "Control plane without bucket, fips and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-east-1",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://s3express-control-fips.dualstack.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseFIPS": true,
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "ListDirectoryBuckets"
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": true,
+                "DisableS3ExpressSessionAuth": false
+            }
+        },
+        {
+            "documentation": "Data Plane with short AZ and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--usw2-az1--x-s3.s3express-usw2-az1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "GetObject",
+                    "operationParams": {
+                        "Bucket": "mybucket--usw2-az1--x-s3",
+                        "Key": "key"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--usw2-az1--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane with short AZ and FIPS with dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--usw2-az1--x-s3.s3express-fips-usw2-az1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2",
+                        "AWS::UseFIPS": true,
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "GetObject",
+                    "operationParams": {
+                        "Bucket": "mybucket--usw2-az1--x-s3",
+                        "Key": "key"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--usw2-az1--x-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane sigv4 auth with short AZ and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--usw2-az1--x-s3.s3express-usw2-az1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--usw2-az1--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane sigv4 auth with short AZ and FIPS with dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--usw2-az1--x-s3.s3express-fips-usw2-az1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--usw2-az1--x-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane with zone and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--usw2-az12--x-s3.s3express-usw2-az12.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--usw2-az12--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane with zone and FIPS with dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--usw2-az12--x-s3.s3express-fips-usw2-az12.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--usw2-az12--x-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane sigv4 auth with zone and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--usw2-az12--x-s3.s3express-usw2-az12.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--usw2-az12--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane sigv4 auth with 9-char zone and FIPS with dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--usw2-az12--x-s3.s3express-fips-usw2-az12.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--usw2-az12--x-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane with 13-char zone and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test-zone-ab1--x-s3.s3express-test-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test-zone-ab1--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane with 13-char zone and FIPS with dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test-zone-ab1--x-s3.s3express-fips-test-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test-zone-ab1--x-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane sigv4 auth with 13-char zone and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test-zone-ab1--x-s3.s3express-test-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test-zone-ab1--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane sigv4 auth with 13-char zone and FIPS with dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test-zone-ab1--x-s3.s3express-fips-test-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test-zone-ab1--x-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane with 14-char zone and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test1-zone-ab1--x-s3.s3express-test1-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-zone-ab1--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane with 14-char zone and FIPS with dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test1-zone-ab1--x-s3.s3express-fips-test1-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-zone-ab1--x-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane sigv4 auth with 14-char zone and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test1-zone-ab1--x-s3.s3express-test1-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-zone-ab1--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane sigv4 auth with 14-char zone and FIPS with dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test1-zone-ab1--x-s3.s3express-fips-test1-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-zone-ab1--x-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane with long zone (20 cha) and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test1-long1-zone-ab1--x-s3.s3express-test1-long1-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-long1-zone-ab1--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane with long zone (20 char) and FIPS with dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test1-long1-zone-ab1--x-s3.s3express-fips-test1-long1-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-long1-zone-ab1--x-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane sigv4 auth with long zone (20 char) and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test1-long1-zone-ab1--x-s3.s3express-test1-long1-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-long1-zone-ab1--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane sigv4 auth with long zone (20 char) and FIPS with dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://mybucket--test1-long1-zone-ab1--x-s3.s3express-fips-test1-long1-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "mybucket--test1-long1-zone-ab1--x-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Control plane and FIPS with dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-east-1",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://s3express-control-fips.dualstack.us-east-1.amazonaws.com/mybucket--test-ab1--x-s3"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseFIPS": true,
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "CreateBucket",
+                    "operationParams": {
+                        "Bucket": "mybucket--test-ab1--x-s3"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "Bucket": "mybucket--test-ab1--x-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": true
+            }
+        },
+        {
+            "documentation": "Data plane with zone and dualstack and AP",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--usw2-az1--xa-s3.s3express-usw2-az1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--usw2-az1--xa-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data plane with zone and FIPS with dualstack and AP",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--usw2-az1--xa-s3.s3express-fips-usw2-az1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--usw2-az1--xa-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane sigv4 auth with zone and dualstack and AP",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--usw2-az1--xa-s3.s3express-usw2-az1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--usw2-az1--xa-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane AP sigv4 auth with zone and FIPS with dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--usw2-az1--xa-s3.s3express-fips-usw2-az1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--usw2-az1--xa-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane with zone (9 char) and AP with dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--usw2-az12--xa-s3.s3express-usw2-az12.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--usw2-az12--xa-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane with zone (9 char) and FIPS with AP and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--usw2-az12--xa-s3.s3express-fips-usw2-az12.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--usw2-az12--xa-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane sigv4 auth with (9 char) zone and dualstack with AP",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--usw2-az12--xa-s3.s3express-usw2-az12.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--usw2-az12--xa-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Access Point sigv4 auth with (9 char) zone and FIPS with dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--usw2-az12--xa-s3.s3express-fips-usw2-az12.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--usw2-az12--xa-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane with zone (13 char) and AP with dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--test-zone-ab1--xa-s3.s3express-test-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--test-zone-ab1--xa-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane with zone (13 char) and AP with FIPS and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--test-zone-ab1--xa-s3.s3express-fips-test-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--test-zone-ab1--xa-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane sigv4 auth with (13 char) zone with AP and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--test-zone-ab1--xa-s3.s3express-test-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--test-zone-ab1--xa-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane sigv4 auth with (13 char) zone with AP and FIPS and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--test-zone-ab1--xa-s3.s3express-fips-test-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--test-zone-ab1--xa-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane with (14 char) zone and AP with dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--test1-zone-ab1--xa-s3.s3express-test1-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--test1-zone-ab1--xa-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane with (14 char) zone and AP with FIPS and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--test1-zone-ab1--xa-s3.s3express-fips-test1-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--test1-zone-ab1--xa-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane sigv4 auth with (14 char) zone and AP with dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--test1-zone-ab1--xa-s3.s3express-test1-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--test1-zone-ab1--xa-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane with (14 char) zone and AP with FIPS and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--test1-zone-ab1--xa-s3.s3express-fips-test1-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--test1-zone-ab1--xa-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data Plane with (20 char) zone and AP with dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--test1-long1-zone-ab1--xa-s3.s3express-test1-long1-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--test1-long1-zone-ab1--xa-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data Plane with (20 char) zone and AP with FIPS and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4-s3express",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--test1-long1-zone-ab1--xa-s3.s3express-fips-test1-long1-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--test1-long1-zone-ab1--xa-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": false
+            }
+        },
+        {
+            "documentation": "Data plane AP with sigv4 and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--test1-long1-zone-ab1--xa-s3.s3express-test1-long1-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--test1-long1-zone-ab1--xa-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Data plane AP sigv4 with fips and dualstack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-west-2",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://myaccesspoint--test1-long1-zone-ab1--xa-s3.s3express-fips-test1-long1-zone-ab1.dualstack.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "Bucket": "myaccesspoint--test1-long1-zone-ab1--xa-s3",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "DisableS3ExpressSessionAuth": true
+            }
+        },
+        {
+            "documentation": "Control plane with dualstack and bucket",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "s3express",
+                                "signingRegion": "us-east-1",
+                                "disableDoubleEncoding": true
+                            }
+                        ],
+                        "backend": "S3Express"
+                    },
+                    "url": "https://s3express-control.dualstack.us-east-1.amazonaws.com/mybucket--test-ab1--x-s3"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "CreateBucket",
+                    "operationParams": {
+                        "Bucket": "mybucket--test-ab1--x-s3"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "Bucket": "mybucket--test-ab1--x-s3",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Accelerate": false,
+                "UseS3ExpressControlEndpoint": true
             }
         }
     ],

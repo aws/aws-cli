@@ -1959,7 +1959,7 @@
     "AnalysisParameterList":{
       "type":"list",
       "member":{"shape":"AnalysisParameter"},
-      "max":10,
+      "max":50,
       "min":0
     },
     "AnalysisRule":{
@@ -4117,7 +4117,7 @@
         },
         "allowedColumns":{
           "shape":"AllowedColumnList",
-          "documentation":"<p>The columns within the underlying Glue table that can be utilized within collaborations.</p>"
+          "documentation":"<p>The columns within the underlying Glue table that can be used within collaborations.</p>"
         },
         "selectedAnalysisMethods":{
           "shape":"SelectedAnalysisMethods",
@@ -5632,7 +5632,7 @@
       "required":["name"],
       "members":{
         "name":{
-          "shape":"String",
+          "shape":"ColumnName",
           "documentation":"<p>The name of the column, such as user_id, that contains the unique identifier of your users, whose privacy you want to protect. If you want to turn on differential privacy for two or more tables in a collaboration, you must configure the same column as the user identifier column in both analysis rules.</p>"
         }
       },
@@ -9785,6 +9785,8 @@
     },
     "S3LocationKeyString":{
       "type":"string",
+      "max":1024,
+      "min":1,
       "pattern":"[a-zA-Z0-9!_.*'()-/]+"
     },
     "ScalarFunctions":{
@@ -10253,6 +10255,23 @@
         }
       },
       "documentation":"<p> The Snowflake table schema.</p>"
+    },
+    "SparkProperties":{
+      "type":"map",
+      "key":{"shape":"SparkPropertyKey"},
+      "value":{"shape":"SparkPropertyValue"},
+      "max":50,
+      "min":0
+    },
+    "SparkPropertyKey":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "SparkPropertyValue":{
+      "type":"string",
+      "max":500,
+      "min":0
     },
     "StartProtectedJobInput":{
       "type":"structure",
@@ -11076,6 +11095,10 @@
         "number":{
           "shape":"WorkerComputeConfigurationNumberInteger",
           "documentation":"<p> The number of workers.</p> <p>SQL queries support a minimum value of 2 and a maximum value of 400. </p> <p>PySpark jobs support a minimum value of 4 and a maximum value of 128.</p>"
+        },
+        "properties":{
+          "shape":"WorkerComputeConfigurationProperties",
+          "documentation":"<p>The configuration properties for the worker compute environment. These properties allow you to customize the compute settings for your Clean Rooms workloads.</p>"
         }
       },
       "documentation":"<p> The configuration of the compute resources for workers running an analysis with the Clean Rooms SQL analytics engine.</p>"
@@ -11085,6 +11108,17 @@
       "box":true,
       "max":400,
       "min":2
+    },
+    "WorkerComputeConfigurationProperties":{
+      "type":"structure",
+      "members":{
+        "spark":{
+          "shape":"SparkProperties",
+          "documentation":"<p>The Spark configuration properties for SQL workloads. This map contains key-value pairs that configure Apache Spark settings to optimize performance for your data processing jobs. You can specify up to 50 Spark properties, with each key being 1-200 characters and each value being 0-500 characters. These properties allow you to adjust compute capacity for large datasets and complex workloads.</p>"
+        }
+      },
+      "documentation":"<p>The configuration properties that define the compute environment settings for workers in Clean Rooms. These properties enable customization of the underlying compute environment to optimize performance for your specific workloads.</p>",
+      "union":true
     },
     "WorkerComputeType":{
       "type":"string",

@@ -878,7 +878,7 @@
       },
       "input":{"shape":"CreateIpamExternalResourceVerificationTokenRequest"},
       "output":{"shape":"CreateIpamExternalResourceVerificationTokenResult"},
-      "documentation":"<p>Create a verification token. A verification token is an Amazon Web Services-generated random value that you can use to prove ownership of an external resource. For example, you can use a verification token to validate that you control a public IP address range when you bring an IP address range to Amazon Web Services (BYOIP). </p>"
+      "documentation":"<p>Create a verification token.</p> <p>A verification token is an Amazon Web Services-generated random value that you can use to prove ownership of an external resource. For example, you can use a verification token to validate that you control a public IP address range when you bring an IP address range to Amazon Web Services (BYOIP). </p>"
     },
     "CreateIpamPool":{
       "name":"CreateIpamPool",
@@ -889,6 +889,26 @@
       "input":{"shape":"CreateIpamPoolRequest"},
       "output":{"shape":"CreateIpamPoolResult"},
       "documentation":"<p>Create an IP address pool for Amazon VPC IP Address Manager (IPAM). In IPAM, a pool is a collection of contiguous IP addresses CIDRs. Pools enable you to organize your IP addresses according to your routing and security needs. For example, if you have separate routing and security needs for development and production applications, you can create a pool for each.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/create-top-ipam.html\">Create a top-level pool</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+    },
+    "CreateIpamPrefixListResolver":{
+      "name":"CreateIpamPrefixListResolver",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateIpamPrefixListResolverRequest"},
+      "output":{"shape":"CreateIpamPrefixListResolverResult"},
+      "documentation":"<p>Creates an IPAM prefix list resolver.</p> <p>An IPAM prefix list resolver is a component that manages the synchronization between IPAM's CIDR selection rules and customer-managed prefix lists. It automates connectivity configurations by selecting CIDRs from IPAM's database based on your business logic and synchronizing them with prefix lists used in resources such as VPC route tables and security groups.</p> <p>For more information about IPAM prefix list resolver, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/automate-prefix-list-updates.html\">Automate prefix list updates with IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+    },
+    "CreateIpamPrefixListResolverTarget":{
+      "name":"CreateIpamPrefixListResolverTarget",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateIpamPrefixListResolverTargetRequest"},
+      "output":{"shape":"CreateIpamPrefixListResolverTargetResult"},
+      "documentation":"<p>Creates an IPAM prefix list resolver target.</p> <p>An IPAM prefix list resolver target is an association between a specific customer-managed prefix list and an IPAM prefix list resolver. The target enables the resolver to synchronize CIDRs selected by its rules into the specified prefix list, which can then be referenced in Amazon Web Services resources.</p> <p>For more information about IPAM prefix list resolver, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/automate-prefix-list-updates.html\">Automate prefix list updates with IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
     },
     "CreateIpamResourceDiscovery":{
       "name":"CreateIpamResourceDiscovery",
@@ -1732,7 +1752,7 @@
       },
       "input":{"shape":"DeleteIpamExternalResourceVerificationTokenRequest"},
       "output":{"shape":"DeleteIpamExternalResourceVerificationTokenResult"},
-      "documentation":"<p>Delete a verification token. A verification token is an Amazon Web Services-generated random value that you can use to prove ownership of an external resource. For example, you can use a verification token to validate that you control a public IP address range when you bring an IP address range to Amazon Web Services (BYOIP). </p>"
+      "documentation":"<p>Delete a verification token.</p> <p>A verification token is an Amazon Web Services-generated random value that you can use to prove ownership of an external resource. For example, you can use a verification token to validate that you control a public IP address range when you bring an IP address range to Amazon Web Services (BYOIP). </p>"
     },
     "DeleteIpamPool":{
       "name":"DeleteIpamPool",
@@ -1743,6 +1763,26 @@
       "input":{"shape":"DeleteIpamPoolRequest"},
       "output":{"shape":"DeleteIpamPoolResult"},
       "documentation":"<p>Delete an IPAM pool.</p> <note> <p>You cannot delete an IPAM pool if there are allocations in it or CIDRs provisioned to it. To release allocations, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ReleaseIpamPoolAllocation.html\">ReleaseIpamPoolAllocation</a>. To deprovision pool CIDRs, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DeprovisionIpamPoolCidr.html\">DeprovisionIpamPoolCidr</a>.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/delete-pool-ipam.html\">Delete a pool</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+    },
+    "DeleteIpamPrefixListResolver":{
+      "name":"DeleteIpamPrefixListResolver",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteIpamPrefixListResolverRequest"},
+      "output":{"shape":"DeleteIpamPrefixListResolverResult"},
+      "documentation":"<p>Deletes an IPAM prefix list resolver. Before deleting a resolver, you must first delete all resolver targets associated with it.</p>"
+    },
+    "DeleteIpamPrefixListResolverTarget":{
+      "name":"DeleteIpamPrefixListResolverTarget",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteIpamPrefixListResolverTargetRequest"},
+      "output":{"shape":"DeleteIpamPrefixListResolverTargetResult"},
+      "documentation":"<p>Deletes an IPAM prefix list resolver target. This removes the association between the resolver and the managed prefix list, stopping automatic CIDR synchronization.</p> <p>For more information about IPAM prefix list resolver, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/automate-prefix-list-updates.html\">Automate prefix list updates with IPAM</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
     },
     "DeleteIpamResourceDiscovery":{
       "name":"DeleteIpamResourceDiscovery",
@@ -2619,6 +2659,16 @@
       "output":{"shape":"DescribeCapacityReservationFleetsResult"},
       "documentation":"<p>Describes one or more Capacity Reservation Fleets.</p>"
     },
+    "DescribeCapacityReservationTopology":{
+      "name":"DescribeCapacityReservationTopology",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeCapacityReservationTopologyRequest"},
+      "output":{"shape":"DescribeCapacityReservationTopologyResult"},
+      "documentation":"<p>Describes a tree-based hierarchy that represents the physical host placement of your pending or active Capacity Reservations within an Availability Zone or Local Zone. You can use this information to determine the relative proximity of your capacity within the Amazon Web Services network before it is launched and use this information to allocate capacity together to support your tightly coupled workloads.</p> <p>Capacity Reservation topology is supported for specific instance types only. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-topology-prerequisites.html\">Prerequisites for Amazon EC2 instance topology</a> in the <i>Amazon EC2 User Guide</i>.</p> <note> <p>The Amazon EC2 API follows an eventual consistency model due to the distributed nature of the system supporting it. As a result, when you call the DescribeCapacityReservationTopology API command immediately after launching instances, the response might return a <code>null</code> value for <code>capacityBlockId</code> because the data might not have fully propagated across all subsystems. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/eventual-consistency.html\">Eventual consistency in the Amazon EC2 API</a> in the <i>Amazon EC2 Developer Guide</i>.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-topology.html\">Amazon EC2 topology</a> in the <i>Amazon EC2 User Guide</i>.</p> <p/>"
+    },
     "DescribeCapacityReservations":{
       "name":"DescribeCapacityReservations",
       "http":{
@@ -3077,7 +3127,7 @@
       },
       "input":{"shape":"DescribeInstanceTopologyRequest"},
       "output":{"shape":"DescribeInstanceTopologyResult"},
-      "documentation":"<p>Describes a tree-based hierarchy that represents the physical host placement of your EC2 instances within an Availability Zone or Local Zone. You can use this information to determine the relative proximity of your EC2 instances within the Amazon Web Services network to support your tightly coupled workloads.</p> <p>Instance topology is supported for specific instance types only. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-topology-prerequisites.html\"> Prerequisites for Amazon EC2 instance topology</a> in the <i>Amazon EC2 User Guide</i>.</p> <note> <p>The Amazon EC2 API follows an eventual consistency model due to the distributed nature of the system supporting it. As a result, when you call the DescribeInstanceTopology API command immediately after launching instances, the response might return a <code>null</code> value for <code>capacityBlockId</code> because the data might not have fully propagated across all subsystems. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/eventual-consistency.html\">Eventual consistency in the Amazon EC2 API</a> in the <i>Amazon EC2 Developer Guide</i>.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-topology.html\">Amazon EC2 instance topology</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+      "documentation":"<p>Describes a tree-based hierarchy that represents the physical host placement of your EC2 instances within an Availability Zone or Local Zone. You can use this information to determine the relative proximity of your EC2 instances within the Amazon Web Services network to support your tightly coupled workloads.</p> <p>Instance topology is supported for specific instance types only. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-topology-prerequisites.html\">Prerequisites for Amazon EC2 instance topology</a> in the <i>Amazon EC2 User Guide</i>.</p> <note> <p>The Amazon EC2 API follows an eventual consistency model due to the distributed nature of the system supporting it. As a result, when you call the DescribeInstanceTopology API command immediately after launching instances, the response might return a <code>null</code> value for <code>capacityBlockId</code> because the data might not have fully propagated across all subsystems. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/eventual-consistency.html\">Eventual consistency in the Amazon EC2 API</a> in the <i>Amazon EC2 Developer Guide</i>.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-topology.html\">Amazon EC2 topology</a> in the <i>Amazon EC2 User Guide</i>.</p>"
     },
     "DescribeInstanceTypeOfferings":{
       "name":"DescribeInstanceTypeOfferings",
@@ -3148,6 +3198,26 @@
       "input":{"shape":"DescribeIpamPoolsRequest"},
       "output":{"shape":"DescribeIpamPoolsResult"},
       "documentation":"<p>Get information about your IPAM pools.</p>"
+    },
+    "DescribeIpamPrefixListResolverTargets":{
+      "name":"DescribeIpamPrefixListResolverTargets",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeIpamPrefixListResolverTargetsRequest"},
+      "output":{"shape":"DescribeIpamPrefixListResolverTargetsResult"},
+      "documentation":"<p>Describes one or more IPAM prefix list resolver Targets. Use this operation to view the configuration and status of resolver targets.</p>"
+    },
+    "DescribeIpamPrefixListResolvers":{
+      "name":"DescribeIpamPrefixListResolvers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeIpamPrefixListResolversRequest"},
+      "output":{"shape":"DescribeIpamPrefixListResolversResult"},
+      "documentation":"<p>Describes one or more IPAM prefix list resolvers. Use this operation to view the configuration, status, and properties of your resolvers.</p>"
     },
     "DescribeIpamResourceDiscoveries":{
       "name":"DescribeIpamResourceDiscoveries",
@@ -5161,6 +5231,36 @@
       "output":{"shape":"GetIpamPoolCidrsResult"},
       "documentation":"<p>Get the CIDRs provisioned to an IPAM pool.</p>"
     },
+    "GetIpamPrefixListResolverRules":{
+      "name":"GetIpamPrefixListResolverRules",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIpamPrefixListResolverRulesRequest"},
+      "output":{"shape":"GetIpamPrefixListResolverRulesResult"},
+      "documentation":"<p>Retrieves the CIDR selection rules for an IPAM prefix list resolver. Use this operation to view the business logic that determines which CIDRs are selected for synchronization with prefix lists.</p>"
+    },
+    "GetIpamPrefixListResolverVersionEntries":{
+      "name":"GetIpamPrefixListResolverVersionEntries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIpamPrefixListResolverVersionEntriesRequest"},
+      "output":{"shape":"GetIpamPrefixListResolverVersionEntriesResult"},
+      "documentation":"<p>Retrieves the CIDR entries for a specific version of an IPAM prefix list resolver. This shows the actual CIDRs that were selected and synchronized at a particular point in time.</p>"
+    },
+    "GetIpamPrefixListResolverVersions":{
+      "name":"GetIpamPrefixListResolverVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIpamPrefixListResolverVersionsRequest"},
+      "output":{"shape":"GetIpamPrefixListResolverVersionsResult"},
+      "documentation":"<p>Retrieves version information for an IPAM prefix list resolver.</p> <p>Each version is a snapshot of what CIDRs matched your rules at that moment in time. The version number increments every time the CIDR list changes due to infrastructure changes.</p> <p> <b>Version example:</b> </p> <p> <b>Initial State (Version 1)</b> </p> <p>Production environment:</p> <ul> <li> <p>vpc-prod-web (10.1.0.0/16) - tagged env=prod</p> </li> <li> <p>vpc-prod-db (10.2.0.0/16) - tagged env=prod</p> </li> </ul> <p>Resolver rule: Include all VPCs tagged env=prod</p> <p> <b>Version 1 CIDRs:</b> 10.1.0.0/16, 10.2.0.0/16</p> <p> <b>Infrastructure Change (Version 2)</b> </p> <p>New VPC added:</p> <ul> <li> <p>vpc-prod-api (10.3.0.0/16) - tagged env=prod</p> </li> </ul> <p>IPAM automatically detects the change and creates a new version.</p> <p> <b>Version 2 CIDRs:</b> 10.1.0.0/16, 10.2.0.0/16, 10.3.0.0/16</p>"
+    },
     "GetIpamResourceCidrs":{
       "name":"GetIpamResourceCidrs",
       "http":{
@@ -5806,6 +5906,26 @@
       "input":{"shape":"ModifyIpamPoolRequest"},
       "output":{"shape":"ModifyIpamPoolResult"},
       "documentation":"<p>Modify the configurations of an IPAM pool.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/mod-pool-ipam.html\">Modify a pool</a> in the <i>Amazon VPC IPAM User Guide</i>. </p>"
+    },
+    "ModifyIpamPrefixListResolver":{
+      "name":"ModifyIpamPrefixListResolver",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyIpamPrefixListResolverRequest"},
+      "output":{"shape":"ModifyIpamPrefixListResolverResult"},
+      "documentation":"<p>Modifies an IPAM prefix list resolver. You can update the description and CIDR selection rules. Changes to rules will trigger re-evaluation and potential updates to associated prefix lists.</p>"
+    },
+    "ModifyIpamPrefixListResolverTarget":{
+      "name":"ModifyIpamPrefixListResolverTarget",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyIpamPrefixListResolverTargetRequest"},
+      "output":{"shape":"ModifyIpamPrefixListResolverTargetResult"},
+      "documentation":"<p>Modifies an IPAM prefix list resolver target. You can update version tracking settings and the desired version of the target prefix list.</p>"
     },
     "ModifyIpamResourceCidr":{
       "name":"ModifyIpamResourceCidr",
@@ -10397,6 +10517,13 @@
       "documentation":"<p>Describes Availability Zones, Local Zones, and Wavelength Zones.</p>"
     },
     "AvailabilityZoneId":{"type":"string"},
+    "AvailabilityZoneIdStringList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"AvailabilityZoneId"
+      }
+    },
     "AvailabilityZoneList":{
       "type":"list",
       "member":{
@@ -11967,7 +12094,7 @@
         },
         "AvailabilityZoneId":{
           "shape":"String",
-          "documentation":"<p>The Availability Zone ID of the Capacity Reservation.</p>",
+          "documentation":"<p>The ID of the Availability Zone in which the capacity is reserved.</p>",
           "locationName":"availabilityZoneId"
         },
         "InstanceType":{
@@ -12017,12 +12144,12 @@
         },
         "StartDate":{
           "shape":"MillisecondDateTime",
-          "documentation":"<p>The date and time at which the Capacity Reservation was started.</p>",
+          "documentation":"<p>The date and time the Capacity Reservation was started.</p>",
           "locationName":"startDate"
         },
         "EndDate":{
           "shape":"DateTime",
-          "documentation":"<p>The date and time at which the Capacity Reservation expires. When a Capacity Reservation expires, the reserved capacity is released and you can no longer launch instances into it. The Capacity Reservation's state changes to <code>expired</code> when it reaches its end date and time.</p>",
+          "documentation":"<p>The date and time the Capacity Reservation expires. When a Capacity Reservation expires, the reserved capacity is released and you can no longer launch instances into it. The Capacity Reservation's state changes to <code>expired</code> when it reaches its end date and time.</p>",
           "locationName":"endDate"
         },
         "EndDateType":{
@@ -12037,7 +12164,7 @@
         },
         "CreateDate":{
           "shape":"DateTime",
-          "documentation":"<p>The date and time at which the Capacity Reservation was created.</p>",
+          "documentation":"<p>The date and time the Capacity Reservation was created.</p>",
           "locationName":"createDate"
         },
         "Tags":{
@@ -12535,6 +12662,59 @@
         "default",
         "dedicated"
       ]
+    },
+    "CapacityReservationTopology":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Capacity Reservation.</p>",
+          "locationName":"capacityReservationId"
+        },
+        "CapacityBlockId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Capacity Block. This parameter is only supported for UltraServer instances and identifies instances within the UltraServer domain.</p>",
+          "locationName":"capacityBlockId"
+        },
+        "State":{
+          "shape":"String",
+          "documentation":"<p>The current state of the Capacity Reservation. For the list of possible states, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeCapacityReservations.html\">DescribeCapacityReservations</a>.</p>",
+          "locationName":"state"
+        },
+        "InstanceType":{
+          "shape":"String",
+          "documentation":"<p>The instance type.</p>",
+          "locationName":"instanceType"
+        },
+        "GroupName":{
+          "shape":"String",
+          "documentation":"<p>The name of the placement group that the Capacity Reservation is in.</p>",
+          "locationName":"groupName"
+        },
+        "NetworkNodes":{
+          "shape":"NetworkNodeSet",
+          "documentation":"<p>The network nodes. The nodes are hashed based on your account. Capacity Reservations from different accounts running under the same server will return a different hashed list of strings.</p> <p>The value is <code>null</code> or empty if:</p> <ul> <li> <p>The instance type is not supported.</p> </li> <li> <p>The Capacity Reservation is in a state other than <code>active</code> or <code>pending</code>.</p> </li> </ul>",
+          "locationName":"networkNodeSet"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone or Local Zone that the Capacity Reservation is in.</p>",
+          "locationName":"availabilityZoneId"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The name of the Availability Zone or Local Zone that the Capacity Reservation is in.</p>",
+          "locationName":"availabilityZone"
+        }
+      },
+      "documentation":"<p>Information about the Capacity Reservation topology.</p>"
+    },
+    "CapacityReservationTopologySet":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityReservationTopology",
+        "locationName":"item"
+      }
     },
     "CapacityReservationType":{
       "type":"string",
@@ -15660,6 +15840,111 @@
         }
       }
     },
+    "CreateIpamPrefixListResolverRequest":{
+      "type":"structure",
+      "required":[
+        "IpamId",
+        "AddressFamily"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamId":{
+          "shape":"IpamId",
+          "documentation":"<p>The ID of the IPAM that will serve as the source of the IP address database for CIDR selection. The IPAM must be in the Advanced tier to use this feature.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A description for the IPAM prefix list resolver to help you identify its purpose and configuration.</p>"
+        },
+        "AddressFamily":{
+          "shape":"AddressFamily",
+          "documentation":"<p>The address family for the IPAM prefix list resolver. Valid values are <code>ipv4</code> and <code>ipv6</code>. You must create separate resolvers for IPv4 and IPv6 CIDRs as they cannot be mixed in the same resolver.</p>"
+        },
+        "Rules":{
+          "shape":"IpamPrefixListResolverRuleRequestSet",
+          "documentation":"<p>The CIDR selection rules for the resolver.</p> <p>CIDR selection rules define the business logic for selecting CIDRs from IPAM. If a CIDR matches any of the rules, it will be included. If a rule has multiple conditions, the CIDR has to match every condition of that rule. You can create a prefix list resolver without any CIDR selection rules, but it will generate empty versions (containing no CIDRs) until you add rules.</p>",
+          "locationName":"Rule"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply to the IPAM prefix list resolver during creation. Tags help you organize and manage your Amazon Web Services resources.</p>",
+          "locationName":"TagSpecification"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateIpamPrefixListResolverResult":{
+      "type":"structure",
+      "members":{
+        "IpamPrefixListResolver":{
+          "shape":"IpamPrefixListResolver",
+          "documentation":"<p>Information about the IPAM prefix list resolver that was created.</p>",
+          "locationName":"ipamPrefixListResolver"
+        }
+      }
+    },
+    "CreateIpamPrefixListResolverTargetRequest":{
+      "type":"structure",
+      "required":[
+        "IpamPrefixListResolverId",
+        "PrefixListId",
+        "PrefixListRegion",
+        "TrackLatestVersion"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPrefixListResolverId":{
+          "shape":"IpamPrefixListResolverId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver that will manage the synchronization of CIDRs to the target prefix list.</p>"
+        },
+        "PrefixListId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the managed prefix list that will be synchronized with CIDRs selected by the IPAM prefix list resolver. This prefix list becomes an IPAM managed prefix list.</p> <p>An IPAM-managed prefix list is a customer-managed prefix list that has been associated with an IPAM prefix list resolver target. When a prefix list becomes IPAM managed, its CIDRs are automatically synchronized based on the IPAM prefix list resolver's CIDR selection rules, and direct CIDR modifications are restricted.</p>"
+        },
+        "PrefixListRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region where the prefix list is located. This is required when referencing a prefix list in a different Region.</p>"
+        },
+        "DesiredVersion":{
+          "shape":"BoxedLong",
+          "documentation":"<p>The specific version of the prefix list to target. If not specified, the resolver will target the latest version.</p>"
+        },
+        "TrackLatestVersion":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the resolver target should automatically track the latest version of the prefix list. When enabled, the target will always synchronize with the most current version of the prefix list.</p> <p>Choose this for automatic updates when you want your prefix lists to stay current with infrastructure changes without manual intervention.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply to the IPAM prefix list resolver target during creation. Tags help you organize and manage your Amazon Web Services resources.</p>",
+          "locationName":"TagSpecification"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateIpamPrefixListResolverTargetResult":{
+      "type":"structure",
+      "members":{
+        "IpamPrefixListResolverTarget":{
+          "shape":"IpamPrefixListResolverTarget",
+          "documentation":"<p>Information about the IPAM prefix list resolver target that was created.</p>",
+          "locationName":"ipamPrefixListResolverTarget"
+        }
+      }
+    },
     "CreateIpamRequest":{
       "type":"structure",
       "members":{
@@ -15773,6 +16058,10 @@
           "shape":"String",
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency</a>.</p>",
           "idempotencyToken":true
+        },
+        "ExternalAuthorityConfiguration":{
+          "shape":"ExternalAuthorityConfiguration",
+          "documentation":"<p>The configuration that links an Amazon VPC IPAM scope to an external authority system. It specifies the type of external system and the external resource identifier that identifies your account or instance in that system.</p> <p>In IPAM, an external authority is a third-party IP address management system that provides CIDR blocks when you provision address space for top-level IPAM pools. This allows you to use your existing IP management system to control which address ranges are allocated to Amazon Web Services while using Amazon VPC IPAM to manage subnets within those ranges.</p>"
         }
       }
     },
@@ -20103,6 +20392,54 @@
         }
       }
     },
+    "DeleteIpamPrefixListResolverRequest":{
+      "type":"structure",
+      "required":["IpamPrefixListResolverId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPrefixListResolverId":{
+          "shape":"IpamPrefixListResolverId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver to delete.</p>"
+        }
+      }
+    },
+    "DeleteIpamPrefixListResolverResult":{
+      "type":"structure",
+      "members":{
+        "IpamPrefixListResolver":{
+          "shape":"IpamPrefixListResolver",
+          "documentation":"<p>Information about the IPAM prefix list resolver that was deleted.</p>",
+          "locationName":"ipamPrefixListResolver"
+        }
+      }
+    },
+    "DeleteIpamPrefixListResolverTargetRequest":{
+      "type":"structure",
+      "required":["IpamPrefixListResolverTargetId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPrefixListResolverTargetId":{
+          "shape":"IpamPrefixListResolverTargetId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver target to delete.</p>"
+        }
+      }
+    },
+    "DeleteIpamPrefixListResolverTargetResult":{
+      "type":"structure",
+      "members":{
+        "IpamPrefixListResolverTarget":{
+          "shape":"IpamPrefixListResolverTarget",
+          "documentation":"<p>Information about the IPAM prefix list resolver target that was deleted.</p>",
+          "locationName":"ipamPrefixListResolverTarget"
+        }
+      }
+    },
     "DeleteIpamRequest":{
       "type":"structure",
       "required":["IpamId"],
@@ -22780,6 +23117,53 @@
         }
       }
     },
+    "DescribeCapacityReservationTopologyMaxResults":{
+      "type":"integer",
+      "max":10,
+      "min":1
+    },
+    "DescribeCapacityReservationTopologyRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "MaxResults":{
+          "shape":"DescribeCapacityReservationTopologyMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p> <p>You can't specify this parameter and the Capacity Reservation IDs parameter in the same request.</p> <p>Default: <code>10</code> </p>"
+        },
+        "CapacityReservationIds":{
+          "shape":"CapacityReservationIdSet",
+          "documentation":"<p>The Capacity Reservation IDs.</p> <p>Default: Describes all your Capacity Reservations.</p> <p>Constraints: Maximum 100 explicitly specified Capacity Reservation IDs.</p>",
+          "locationName":"CapacityReservationId"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>availability-zone</code> - The name of the Availability Zone (for example, <code>us-west-2a</code>) or Local Zone (for example, <code>us-west-2-lax-1b</code>) that the Capacity Reservation is in.</p> </li> <li> <p> <code>instance-type</code> - The instance type (for example, <code>p4d.24xlarge</code>) or instance family (for example, <code>p4d*</code>). You can use the <code>*</code> wildcard to match zero or more characters, or the <code>?</code> wildcard to match zero or one character.</p> </li> </ul>",
+          "locationName":"Filter"
+        }
+      }
+    },
+    "DescribeCapacityReservationTopologyResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to include in another request to get the next page of items. This value is <code>null</code> when there are no more items to return.</p>",
+          "locationName":"nextToken"
+        },
+        "CapacityReservations":{
+          "shape":"CapacityReservationTopologySet",
+          "documentation":"<p>Information about the topology of each Capacity Reservation.</p>",
+          "locationName":"capacityReservationSet"
+        }
+      }
+    },
     "DescribeCapacityReservationsMaxResults":{
       "type":"integer",
       "max":1000,
@@ -23638,6 +24022,11 @@
           "documentation":"<p>The Availability Zone.</p>",
           "locationName":"availabilityZone"
         },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone.</p>",
+          "locationName":"availabilityZoneId"
+        },
         "State":{
           "shape":"FastSnapshotRestoreStateCode",
           "documentation":"<p>The state of fast snapshot restores.</p>",
@@ -23703,7 +24092,7 @@
       "members":{
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters. The possible values are:</p> <ul> <li> <p> <code>availability-zone</code>: The Availability Zone of the snapshot.</p> </li> <li> <p> <code>owner-id</code>: The ID of the Amazon Web Services account that enabled fast snapshot restore on the snapshot.</p> </li> <li> <p> <code>snapshot-id</code>: The ID of the snapshot.</p> </li> <li> <p> <code>state</code>: The state of fast snapshot restores for the snapshot (<code>enabling</code> | <code>optimizing</code> | <code>enabled</code> | <code>disabling</code> | <code>disabled</code>).</p> </li> </ul>",
+          "documentation":"<p>The filters. The possible values are:</p> <ul> <li> <p> <code>availability-zone</code>: The Availability Zone of the snapshot. For example, <code>us-east-2a</code>.</p> </li> <li> <p> <code>availability-zone-id</code>: The ID of the Availability Zone of the snapshot. For example, <code>use2-az1</code>.</p> </li> <li> <p> <code>owner-id</code>: The ID of the Amazon Web Services account that enabled fast snapshot restore on the snapshot.</p> </li> <li> <p> <code>snapshot-id</code>: The ID of the snapshot.</p> </li> <li> <p> <code>state</code>: The state of fast snapshot restores for the snapshot (<code>enabling</code> | <code>optimizing</code> | <code>enabled</code> | <code>disabling</code> | <code>disabled</code>).</p> </li> </ul>",
           "locationName":"Filter"
         },
         "MaxResults":{
@@ -24460,7 +24849,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>creation-time</code> - The time when the report was created, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2025-11-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2025-11-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>state</code> - The state of the report (<code>available</code> | <code>pending</code> | <code>error</code>).</p> </li> </ul>",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>creation-time</code> - The time when the report was created, in the ISO 8601 format in the UTC time zone (YYYY-MM-DDThh:mm:ss.sssZ), for example, <code>2025-11-29T11:04:43.305Z</code>. You can use a wildcard (<code>*</code>), for example, <code>2025-11-29T*</code>, which matches an entire day.</p> </li> <li> <p> <code>state</code> - The state of the report (<code>available</code> | <code>pending</code> | <code>error</code>).</p> </li> <li> <p> <code>tag:&lt;key&gt;</code> - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> </ul>",
           "locationName":"Filter"
         },
         "DryRun":{
@@ -25255,6 +25644,94 @@
           "shape":"IpamPoolSet",
           "documentation":"<p>Information about the IPAM pools.</p>",
           "locationName":"ipamPoolSet"
+        }
+      }
+    },
+    "DescribeIpamPrefixListResolverTargetsRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters to limit the results.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "IpamPrefixListResolverTargetIds":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The IDs of the IPAM prefix list resolver Targets to describe. If not specified, all targets in your account are described.</p>",
+          "locationName":"IpamPrefixListResolverTargetId"
+        },
+        "IpamPrefixListResolverId":{
+          "shape":"IpamPrefixListResolverId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver to filter targets by. Only targets associated with this resolver will be returned.</p>"
+        }
+      }
+    },
+    "DescribeIpamPrefixListResolverTargetsResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        },
+        "IpamPrefixListResolverTargets":{
+          "shape":"IpamPrefixListResolverTargetSet",
+          "documentation":"<p>Information about the IPAM prefix list resolver Targets.</p>",
+          "locationName":"ipamPrefixListResolverTargetSet"
+        }
+      }
+    },
+    "DescribeIpamPrefixListResolversRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters to limit the results.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "IpamPrefixListResolverIds":{
+          "shape":"ValueStringList",
+          "documentation":"<p>The IDs of the IPAM prefix list resolvers to describe. If not specified, all resolvers in your account are described.</p>",
+          "locationName":"IpamPrefixListResolverId"
+        }
+      }
+    },
+    "DescribeIpamPrefixListResolversResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        },
+        "IpamPrefixListResolvers":{
+          "shape":"IpamPrefixListResolverSet",
+          "documentation":"<p>Information about the IPAM prefix list resolvers.</p>",
+          "locationName":"ipamPrefixListResolverSet"
         }
       }
     },
@@ -26519,7 +26996,7 @@
         },
         "Filters":{
           "shape":"FilterList",
-          "documentation":"<p>One or more filters.</p> <ul> <li> <p> <code>association.allocation-id</code> - The allocation ID returned when you allocated the Elastic IP address (IPv4) for your network interface.</p> </li> <li> <p> <code>association.association-id</code> - The association ID returned when the network interface was associated with an IPv4 address.</p> </li> <li> <p> <code>addresses.association.owner-id</code> - The owner ID of the addresses associated with the network interface.</p> </li> <li> <p> <code>addresses.association.public-ip</code> - The association ID returned when the network interface was associated with the Elastic IP address (IPv4).</p> </li> <li> <p> <code>addresses.primary</code> - Whether the private IPv4 address is the primary IP address associated with the network interface. </p> </li> <li> <p> <code>addresses.private-ip-address</code> - The private IPv4 addresses associated with the network interface.</p> </li> <li> <p> <code>association.ip-owner-id</code> - The owner of the Elastic IP address (IPv4) associated with the network interface.</p> </li> <li> <p> <code>association.public-ip</code> - The address of the Elastic IP address (IPv4) bound to the network interface.</p> </li> <li> <p> <code>association.public-dns-name</code> - The public DNS name for the network interface (IPv4).</p> </li> <li> <p> <code>attachment.attach-time</code> - The time that the network interface was attached to an instance.</p> </li> <li> <p> <code>attachment.attachment-id</code> - The ID of the interface attachment.</p> </li> <li> <p> <code>attachment.delete-on-termination</code> - Indicates whether the attachment is deleted when an instance is terminated.</p> </li> <li> <p> <code>attachment.device-index</code> - The device index to which the network interface is attached.</p> </li> <li> <p> <code>attachment.instance-id</code> - The ID of the instance to which the network interface is attached.</p> </li> <li> <p> <code>attachment.instance-owner-id</code> - The owner ID of the instance to which the network interface is attached.</p> </li> <li> <p> <code>attachment.status</code> - The status of the attachment (<code>attaching</code> | <code>attached</code> | <code>detaching</code> | <code>detached</code>).</p> </li> <li> <p> <code>availability-zone</code> - The Availability Zone of the network interface.</p> </li> <li> <p> <code>description</code> - The description of the network interface.</p> </li> <li> <p> <code>group-id</code> - The ID of a security group associated with the network interface.</p> </li> <li> <p> <code>ipv6-addresses.ipv6-address</code> - An IPv6 address associated with the network interface.</p> </li> <li> <p> <code>interface-type</code> - The type of network interface (<code>api_gateway_managed</code> | <code>aws_codestar_connections_managed</code> | <code>branch</code> | <code>ec2_instance_connect_endpoint</code> | <code>efa</code> | <code>efa-only</code> | <code>efs</code> | <code>evs</code> | <code>gateway_load_balancer</code> | <code>gateway_load_balancer_endpoint</code> | <code>global_accelerator_managed</code> | <code>interface</code> | <code>iot_rules_managed</code> | <code>lambda</code> | <code>load_balancer</code> | <code>nat_gateway</code> | <code>network_load_balancer</code> | <code>quicksight</code> | <code>transit_gateway</code> | <code>trunk</code> | <code>vpc_endpoint</code>).</p> </li> <li> <p> <code>mac-address</code> - The MAC address of the network interface.</p> </li> <li> <p> <code>network-interface-id</code> - The ID of the network interface.</p> </li> <li> <p> <code>operator.managed</code> - A Boolean that indicates whether this is a managed network interface.</p> </li> <li> <p> <code>operator.principal</code> - The principal that manages the network interface. Only valid for managed network interfaces, where <code>managed</code> is <code>true</code>.</p> </li> <li> <p> <code>owner-id</code> - The Amazon Web Services account ID of the network interface owner.</p> </li> <li> <p> <code>private-dns-name</code> - The private DNS name of the network interface (IPv4).</p> </li> <li> <p> <code>private-ip-address</code> - The private IPv4 address or addresses of the network interface.</p> </li> <li> <p> <code>requester-id</code> - The alias or Amazon Web Services account ID of the principal or service that created the network interface.</p> </li> <li> <p> <code>requester-managed</code> - Indicates whether the network interface is being managed by an Amazon Web Services service (for example, Amazon Web Services Management Console, Auto Scaling, and so on).</p> </li> <li> <p> <code>source-dest-check</code> - Indicates whether the network interface performs source/destination checking. A value of <code>true</code> means checking is enabled, and <code>false</code> means checking is disabled. The value must be <code>false</code> for the network interface to perform network address translation (NAT) in your VPC. </p> </li> <li> <p> <code>status</code> - The status of the network interface. If the network interface is not attached to an instance, the status is <code>available</code>; if a network interface is attached to an instance the status is <code>in-use</code>.</p> </li> <li> <p> <code>subnet-id</code> - The ID of the subnet for the network interface.</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>vpc-id</code> - The ID of the VPC for the network interface.</p> </li> </ul>",
+          "documentation":"<p>One or more filters.</p> <ul> <li> <p> <code>association.allocation-id</code> - The allocation ID returned when you allocated the Elastic IP address (IPv4) for your network interface.</p> </li> <li> <p> <code>association.association-id</code> - The association ID returned when the network interface was associated with an IPv4 address.</p> </li> <li> <p> <code>addresses.association.owner-id</code> - The owner ID of the addresses associated with the network interface.</p> </li> <li> <p> <code>addresses.association.public-ip</code> - The association ID returned when the network interface was associated with the Elastic IP address (IPv4).</p> </li> <li> <p> <code>addresses.primary</code> - Whether the private IPv4 address is the primary IP address associated with the network interface. </p> </li> <li> <p> <code>addresses.private-ip-address</code> - The private IPv4 addresses associated with the network interface.</p> </li> <li> <p> <code>association.ip-owner-id</code> - The owner of the Elastic IP address (IPv4) associated with the network interface.</p> </li> <li> <p> <code>association.public-ip</code> - The address of the Elastic IP address (IPv4) bound to the network interface.</p> </li> <li> <p> <code>association.public-dns-name</code> - The public DNS name for the network interface (IPv4).</p> </li> <li> <p> <code>attachment.attach-time</code> - The time that the network interface was attached to an instance.</p> </li> <li> <p> <code>attachment.attachment-id</code> - The ID of the interface attachment.</p> </li> <li> <p> <code>attachment.delete-on-termination</code> - Indicates whether the attachment is deleted when an instance is terminated.</p> </li> <li> <p> <code>attachment.device-index</code> - The device index to which the network interface is attached.</p> </li> <li> <p> <code>attachment.instance-id</code> - The ID of the instance to which the network interface is attached.</p> </li> <li> <p> <code>attachment.instance-owner-id</code> - The owner ID of the instance to which the network interface is attached.</p> </li> <li> <p> <code>attachment.status</code> - The status of the attachment (<code>attaching</code> | <code>attached</code> | <code>detaching</code> | <code>detached</code>).</p> </li> <li> <p> <code>availability-zone</code> - The Availability Zone of the network interface.</p> </li> <li> <p> <code>availability-zone-id</code> - The ID of the Availability Zone of the network interface.</p> </li> <li> <p> <code>description</code> - The description of the network interface.</p> </li> <li> <p> <code>group-id</code> - The ID of a security group associated with the network interface.</p> </li> <li> <p> <code>ipv6-addresses.ipv6-address</code> - An IPv6 address associated with the network interface.</p> </li> <li> <p> <code>interface-type</code> - The type of network interface (<code>api_gateway_managed</code> | <code>aws_codestar_connections_managed</code> | <code>branch</code> | <code>ec2_instance_connect_endpoint</code> | <code>efa</code> | <code>efa-only</code> | <code>efs</code> | <code>evs</code> | <code>gateway_load_balancer</code> | <code>gateway_load_balancer_endpoint</code> | <code>global_accelerator_managed</code> | <code>interface</code> | <code>iot_rules_managed</code> | <code>lambda</code> | <code>load_balancer</code> | <code>nat_gateway</code> | <code>network_load_balancer</code> | <code>quicksight</code> | <code>transit_gateway</code> | <code>trunk</code> | <code>vpc_endpoint</code>).</p> </li> <li> <p> <code>mac-address</code> - The MAC address of the network interface.</p> </li> <li> <p> <code>network-interface-id</code> - The ID of the network interface.</p> </li> <li> <p> <code>operator.managed</code> - A Boolean that indicates whether this is a managed network interface.</p> </li> <li> <p> <code>operator.principal</code> - The principal that manages the network interface. Only valid for managed network interfaces, where <code>managed</code> is <code>true</code>.</p> </li> <li> <p> <code>owner-id</code> - The Amazon Web Services account ID of the network interface owner.</p> </li> <li> <p> <code>private-dns-name</code> - The private DNS name of the network interface (IPv4).</p> </li> <li> <p> <code>private-ip-address</code> - The private IPv4 address or addresses of the network interface.</p> </li> <li> <p> <code>requester-id</code> - The alias or Amazon Web Services account ID of the principal or service that created the network interface.</p> </li> <li> <p> <code>requester-managed</code> - Indicates whether the network interface is being managed by an Amazon Web Services service (for example, Amazon Web Services Management Console, Auto Scaling, and so on).</p> </li> <li> <p> <code>source-dest-check</code> - Indicates whether the network interface performs source/destination checking. A value of <code>true</code> means checking is enabled, and <code>false</code> means checking is disabled. The value must be <code>false</code> for the network interface to perform network address translation (NAT) in your VPC. </p> </li> <li> <p> <code>status</code> - The status of the network interface. If the network interface is not attached to an instance, the status is <code>available</code>; if a network interface is attached to an instance the status is <code>in-use</code>.</p> </li> <li> <p> <code>subnet-id</code> - The ID of the subnet for the network interface.</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>vpc-id</code> - The ID of the VPC for the network interface.</p> </li> </ul>",
           "locationName":"filter"
         }
       },
@@ -30442,6 +30919,11 @@
           "documentation":"<p>The Availability Zone.</p>",
           "locationName":"availabilityZone"
         },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone.</p>",
+          "locationName":"availabilityZoneId"
+        },
         "Error":{
           "shape":"DisableFastSnapshotRestoreStateError",
           "documentation":"<p>The error.</p>",
@@ -30469,6 +30951,11 @@
           "shape":"String",
           "documentation":"<p>The Availability Zone.</p>",
           "locationName":"availabilityZone"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone.</p>",
+          "locationName":"availabilityZoneId"
         },
         "State":{
           "shape":"FastSnapshotRestoreStateCode",
@@ -30527,15 +31014,17 @@
     },
     "DisableFastSnapshotRestoresRequest":{
       "type":"structure",
-      "required":[
-        "AvailabilityZones",
-        "SourceSnapshotIds"
-      ],
+      "required":["SourceSnapshotIds"],
       "members":{
         "AvailabilityZones":{
           "shape":"AvailabilityZoneStringList",
-          "documentation":"<p>One or more Availability Zones. For example, <code>us-east-2a</code>.</p>",
+          "documentation":"<p>One or more Availability Zones. For example, <code>us-east-2a</code>.</p> <p>Either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code> must be specified in the request, but not both.</p>",
           "locationName":"AvailabilityZone"
+        },
+        "AvailabilityZoneIds":{
+          "shape":"AvailabilityZoneIdStringList",
+          "documentation":"<p>One or more Availability Zone IDs. For example, <code>use2-az1</code>.</p> <p>Either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code> must be specified in the request, but not both.</p>",
+          "locationName":"AvailabilityZoneId"
         },
         "SourceSnapshotIds":{
           "shape":"SnapshotIdStringList",
@@ -31555,6 +32044,16 @@
           "shape":"Boolean",
           "documentation":"<p>Indicates whether to enable private DNS only for inbound endpoints.</p>",
           "locationName":"privateDnsOnlyForInboundResolverEndpoint"
+        },
+        "PrivateDnsPreference":{
+          "shape":"String",
+          "documentation":"<p> The preference for which private domains have a private hosted zone created for and associated with the specified VPC. Only supported when private DNS is enabled and when the VPC endpoint type is ServiceNetwork or Resource. </p> <ul> <li> <p> <code>ALL_DOMAINS</code> - VPC Lattice provisions private hosted zones for all custom domain names.</p> </li> <li> <p> <code>VERIFIED_DOMAINS_ONLY</code> - VPC Lattice provisions a private hosted zone only if custom domain name has been verified by the provider.</p> </li> <li> <p> <code>VERIFIED_DOMAINS_AND_SPECIFIED_DOMAINS</code> - VPC Lattice provisions private hosted zones for all verified custom domain names and other domain names that the resource consumer specifies. The resource consumer specifies the domain names in the PrivateDnsSpecifiedDomains parameter.</p> </li> <li> <p> <code>SPECIFIED_DOMAINS_ONLY</code> - VPC Lattice provisions a private hosted zone for domain names specified by the resource consumer. The resource consumer specifies the domain names in the PrivateDnsSpecifiedDomains parameter.</p> </li> </ul>",
+          "locationName":"privateDnsPreference"
+        },
+        "PrivateDnsSpecifiedDomains":{
+          "shape":"PrivateDnsSpecifiedDomainSet",
+          "documentation":"<p> Indicates which of the private domains to create private hosted zones for and associate with the specified VPC. Only supported when private DNS is enabled and the private DNS preference is <code>VERIFIED_DOMAINS_AND_SPECIFIED_DOMAINS</code> or <code>SPECIFIED_DOMAINS_ONLY</code>. </p>",
+          "locationName":"privateDnsSpecifiedDomainSet"
         }
       },
       "documentation":"<p>Describes the DNS options for an endpoint.</p>"
@@ -31569,6 +32068,15 @@
         "PrivateDnsOnlyForInboundResolverEndpoint":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether to enable private DNS only for inbound endpoints. This option is available only for services that support both gateway and interface endpoints. It routes traffic that originates from the VPC to the gateway endpoint and traffic that originates from on-premises to the interface endpoint.</p>"
+        },
+        "PrivateDnsPreference":{
+          "shape":"String",
+          "documentation":"<p> The preference for which private domains have a private hosted zone created for and associated with the specified VPC. Only supported when private DNS is enabled and when the VPC endpoint type is ServiceNetwork or Resource. </p> <ul> <li> <p> <code>ALL_DOMAINS</code> - VPC Lattice provisions private hosted zones for all custom domain names.</p> </li> <li> <p> <code>VERIFIED_DOMAINS_ONLY</code> - VPC Lattice provisions a private hosted zone only if custom domain name has been verified by the provider.</p> </li> <li> <p> <code>VERIFIED_DOMAINS_AND_SPECIFIED_DOMAINS</code> - VPC Lattice provisions private hosted zones for all verified custom domain names and other domain names that the resource consumer specifies. The resource consumer specifies the domain names in the PrivateDnsSpecifiedDomains parameter.</p> </li> <li> <p> <code>SPECIFIED_DOMAINS_ONLY</code> - VPC Lattice provisions a private hosted zone for domain names specified by the resource consumer. The resource consumer specifies the domain names in the PrivateDnsSpecifiedDomains parameter.</p> </li> </ul>"
+        },
+        "PrivateDnsSpecifiedDomains":{
+          "shape":"PrivateDnsSpecifiedDomainSet",
+          "documentation":"<p> Indicates which of the private domains to create private hosted zones for and associate with the specified VPC. Only supported when private DNS is enabled and the private DNS preference is verified-domains-and-specified-domains or specified-domains-only. </p>",
+          "locationName":"PrivateDnsSpecifiedDomain"
         }
       },
       "documentation":"<p>Describes the DNS options for an endpoint.</p>"
@@ -32653,6 +33161,11 @@
           "documentation":"<p>The Availability Zone.</p>",
           "locationName":"availabilityZone"
         },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone.</p>",
+          "locationName":"availabilityZoneId"
+        },
         "Error":{
           "shape":"EnableFastSnapshotRestoreStateError",
           "documentation":"<p>The error.</p>",
@@ -32680,6 +33193,11 @@
           "shape":"String",
           "documentation":"<p>The Availability Zone.</p>",
           "locationName":"availabilityZone"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone.</p>",
+          "locationName":"availabilityZoneId"
         },
         "State":{
           "shape":"FastSnapshotRestoreStateCode",
@@ -32738,15 +33256,17 @@
     },
     "EnableFastSnapshotRestoresRequest":{
       "type":"structure",
-      "required":[
-        "AvailabilityZones",
-        "SourceSnapshotIds"
-      ],
+      "required":["SourceSnapshotIds"],
       "members":{
         "AvailabilityZones":{
           "shape":"AvailabilityZoneStringList",
-          "documentation":"<p>One or more Availability Zones. For example, <code>us-east-2a</code>.</p>",
+          "documentation":"<p>One or more Availability Zones. For example, <code>us-east-2a</code>.</p> <p>Either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code> must be specified in the request, but not both.</p>",
           "locationName":"AvailabilityZone"
+        },
+        "AvailabilityZoneIds":{
+          "shape":"AvailabilityZoneIdStringList",
+          "documentation":"<p>One or more Availability Zone IDs. For example, <code>use2-az1</code>.</p> <p>Either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code> must be specified in the request, but not both.</p>",
+          "locationName":"AvailabilityZoneId"
         },
         "SourceSnapshotIds":{
           "shape":"SnapshotIdStringList",
@@ -33979,6 +34499,20 @@
       }
     },
     "ExportVmTaskId":{"type":"string"},
+    "ExternalAuthorityConfiguration":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"IpamScopeExternalAuthorityType",
+          "documentation":"<p>The type of external authority.</p>"
+        },
+        "ExternalResourceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the external resource managing this scope. For Infoblox integrations, this is the Infoblox resource identifier in the format <code>&lt;version&gt;.identity.account.&lt;entity_realm&gt;.&lt;entity_id&gt;</code>.</p>"
+        }
+      },
+      "documentation":"<p>The configuration that links an Amazon VPC IPAM scope to an external authority system. It specifies the type of external system and the external resource identifier that identifies your account or instance in that system.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/integrate-infoblox-ipam.html\">Integrate VPC IPAM with Infoblox infrastructure</a> in the <i>Amazon VPC IPAM User Guide</i>..</p>"
+    },
     "FailedCapacityReservationFleetCancellationResult":{
       "type":"structure",
       "members":{
@@ -36515,6 +37049,139 @@
           "shape":"IpamPoolCidrSet",
           "documentation":"<p>Information about the CIDRs provisioned to an IPAM pool.</p>",
           "locationName":"ipamPoolCidrSet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "GetIpamPrefixListResolverRulesRequest":{
+      "type":"structure",
+      "required":["IpamPrefixListResolverId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPrefixListResolverId":{
+          "shape":"IpamPrefixListResolverId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver whose rules you want to retrieve.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters to limit the results.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "GetIpamPrefixListResolverRulesResult":{
+      "type":"structure",
+      "members":{
+        "Rules":{
+          "shape":"IpamPrefixListResolverRuleSet",
+          "documentation":"<p>The CIDR selection rules for the IPAM prefix list resolver.</p>",
+          "locationName":"ruleSet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "GetIpamPrefixListResolverVersionEntriesRequest":{
+      "type":"structure",
+      "required":[
+        "IpamPrefixListResolverId",
+        "IpamPrefixListResolverVersion"
+      ],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPrefixListResolverId":{
+          "shape":"IpamPrefixListResolverId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver whose version entries you want to retrieve.</p>"
+        },
+        "IpamPrefixListResolverVersion":{
+          "shape":"Long",
+          "documentation":"<p>The version number of the resolver for which to retrieve CIDR entries. If not specified, the latest version is used.</p>"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "GetIpamPrefixListResolverVersionEntriesResult":{
+      "type":"structure",
+      "members":{
+        "Entries":{
+          "shape":"IpamPrefixListResolverVersionEntrySet",
+          "documentation":"<p>The CIDR entries for the specified resolver version.</p>",
+          "locationName":"entrySet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "GetIpamPrefixListResolverVersionsRequest":{
+      "type":"structure",
+      "required":["IpamPrefixListResolverId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPrefixListResolverId":{
+          "shape":"IpamPrefixListResolverId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver whose versions you want to retrieve.</p>"
+        },
+        "IpamPrefixListResolverVersions":{
+          "shape":"IpamPrefixListResolverVersionNumberSet",
+          "documentation":"<p>Specific version numbers to retrieve. If not specified, all versions are returned.</p>",
+          "locationName":"IpamPrefixListResolverVersion"
+        },
+        "MaxResults":{
+          "shape":"IpamMaxResults",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Query-Requests.html#api-pagination\">Pagination</a>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters to limit the results.</p>",
+          "locationName":"Filter"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "GetIpamPrefixListResolverVersionsResult":{
+      "type":"structure",
+      "members":{
+        "IpamPrefixListResolverVersions":{
+          "shape":"IpamPrefixListResolverVersionSet",
+          "documentation":"<p>Information about the IPAM prefix list resolver versions.</p>",
+          "locationName":"ipamPrefixListResolverVersionSet"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -41950,6 +42617,11 @@
           "shape":"BaselinePerformanceFactors",
           "documentation":"<p>The baseline performance to consider, using an instance family as a baseline reference. The instance family establishes the lowest acceptable level of performance. Amazon EC2 uses this baseline to guide instance type selection, but there is no guarantee that the selected instance types will always exceed the baseline for every application. Currently, this parameter only supports CPU performance as a baseline performance factor. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-attribute-based-instance-type-selection.html#ec2fleet-abis-performance-protection\">Performance protection</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"baselinePerformanceFactors"
+        },
+        "RequireEncryptionInTransit":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether instance types must support encrypting in-transit traffic between instances. For more information, including the supported instance types, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/data-protection.html#encryption-transit\">Encryption in transit</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Default: <code>false</code> </p>",
+          "locationName":"requireEncryptionInTransit"
         }
       },
       "documentation":"<p>The attributes for the instance types. When you specify instance attributes, Amazon EC2 will identify instance types with these attributes.</p> <p>You must specify <code>VCpuCount</code> and <code>MemoryMiB</code>. All other attributes are optional. Any unspecified optional attribute is set to its default.</p> <p>When you specify multiple attributes, you get instance types that satisfy all of the specified attributes. If you specify multiple values for an attribute, you get instance types that satisfy any of the specified values.</p> <p>To limit the list of instance types from which Amazon EC2 can identify matching instance types, you can use one of the following parameters, but not both in the same request:</p> <ul> <li> <p> <code>AllowedInstanceTypes</code> - The instance types to include in the list. All other instance types are ignored, even if they match your specified attributes.</p> </li> <li> <p> <code>ExcludedInstanceTypes</code> - The instance types to exclude from the list, even if they match your specified attributes.</p> </li> </ul> <note> <p>If you specify <code>InstanceRequirements</code>, you can't specify <code>InstanceType</code>.</p> <p>Attribute-based instance type selection is only supported when using Auto Scaling groups, EC2 Fleet, and Spot Fleet to launch instances. If you plan to use the launch template in the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-instance-wizard.html\">launch instance wizard</a> or with the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RunInstances.html\">RunInstances API</a>, you can't specify <code>InstanceRequirements</code>.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/create-mixed-instances-group-attribute-based-instance-type-selection.html\">Create mixed instances group using attribute-based instance type selection</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>, and also <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-attribute-based-instance-type-selection.html\">Specify attributes for instance type selection for EC2 Fleet or Spot Fleet</a> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-placement-score.html\">Spot placement score</a> in the <i>Amazon EC2 User Guide</i>.</p>"
@@ -42068,6 +42740,10 @@
         "BaselinePerformanceFactors":{
           "shape":"BaselinePerformanceFactorsRequest",
           "documentation":"<p>The baseline performance to consider, using an instance family as a baseline reference. The instance family establishes the lowest acceptable level of performance. Amazon EC2 uses this baseline to guide instance type selection, but there is no guarantee that the selected instance types will always exceed the baseline for every application. Currently, this parameter only supports CPU performance as a baseline performance factor. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-attribute-based-instance-type-selection.html#ec2fleet-abis-performance-protection\">Performance protection</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+        },
+        "RequireEncryptionInTransit":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether instance types must support encrypting in-transit traffic between instances. For more information, including the supported instance types, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/data-protection.html#encryption-transit\">Encryption in transit</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Default: <code>false</code> </p>"
         }
       },
       "documentation":"<p>The attributes for the instance types. When you specify instance attributes, Amazon EC2 will identify instance types with these attributes.</p> <p>You must specify <code>VCpuCount</code> and <code>MemoryMiB</code>. All other attributes are optional. Any unspecified optional attribute is set to its default.</p> <p>When you specify multiple attributes, you get instance types that satisfy all of the specified attributes. If you specify multiple values for an attribute, you get instance types that satisfy any of the specified values.</p> <p>To limit the list of instance types from which Amazon EC2 can identify matching instance types, you can use one of the following parameters, but not both in the same request:</p> <ul> <li> <p> <code>AllowedInstanceTypes</code> - The instance types to include in the list. All other instance types are ignored, even if they match your specified attributes.</p> </li> <li> <p> <code>ExcludedInstanceTypes</code> - The instance types to exclude from the list, even if they match your specified attributes.</p> </li> </ul> <note> <p>If you specify <code>InstanceRequirements</code>, you can't specify <code>InstanceType</code>.</p> <p>Attribute-based instance type selection is only supported when using Auto Scaling groups, EC2 Fleet, and Spot Fleet to launch instances. If you plan to use the launch template in the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-launch-instance-wizard.html\">launch instance wizard</a>, or with the <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RunInstances.html\">RunInstances</a> API or <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-instance.html\">AWS::EC2::Instance</a> Amazon Web Services CloudFormation resource, you can't specify <code>InstanceRequirements</code>.</p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-attribute-based-instance-type-selection.html\">Specify attributes for instance type selection for EC2 Fleet or Spot Fleet</a> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-placement-score.html\">Spot placement score</a> in the <i>Amazon EC2 User Guide</i>.</p>"
@@ -42401,7 +43077,7 @@
         },
         "NetworkNodes":{
           "shape":"NetworkNodesList",
-          "documentation":"<p>The network nodes. The nodes are hashed based on your account. Instances from different accounts running under the same server will return a different hashed list of strings.</p>",
+          "documentation":"<p>The network nodes. The nodes are hashed based on your account. Instances from different accounts running under the same server will return a different hashed list of strings.</p> <p>The value is <code>null</code> or empty if:</p> <ul> <li> <p>The instance type is not supported.</p> </li> <li> <p>The instance is in a state other than <code>running</code>.</p> </li> </ul>",
           "locationName":"networkNodeSet"
         },
         "AvailabilityZone":{
@@ -42416,7 +43092,7 @@
         },
         "CapacityBlockId":{
           "shape":"String",
-          "documentation":"<p>The ID of the Capacity Block. This parameter is only supported for Ultraserver instances and identifies instances within the Ultraserver domain.</p>",
+          "documentation":"<p>The ID of the Capacity Block. This parameter is only supported for UltraServer instances and identifies instances within the UltraServer domain.</p>",
           "locationName":"capacityBlockId"
         }
       },
@@ -43496,7 +44172,20 @@
         "m8a.24xlarge",
         "m8a.48xlarge",
         "m8a.metal-24xl",
-        "m8a.metal-48xl"
+        "m8a.metal-48xl",
+        "trn2.3xlarge",
+        "r8a.medium",
+        "r8a.large",
+        "r8a.xlarge",
+        "r8a.2xlarge",
+        "r8a.4xlarge",
+        "r8a.8xlarge",
+        "r8a.12xlarge",
+        "r8a.16xlarge",
+        "r8a.24xlarge",
+        "r8a.48xlarge",
+        "r8a.metal-24xl",
+        "r8a.metal-48xl"
       ]
     },
     "InstanceTypeHypervisor":{
@@ -44977,6 +45666,416 @@
         "restore-in-progress"
       ]
     },
+    "IpamPrefixListResolver":{
+      "type":"structure",
+      "members":{
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the IPAM prefix list resolver.</p>",
+          "locationName":"ownerId"
+        },
+        "IpamPrefixListResolverId":{
+          "shape":"IpamPrefixListResolverId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver.</p>",
+          "locationName":"ipamPrefixListResolverId"
+        },
+        "IpamPrefixListResolverArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IPAM prefix list resolver.</p>",
+          "locationName":"ipamPrefixListResolverArn"
+        },
+        "IpamArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IPAM associated with this resolver.</p>",
+          "locationName":"ipamArn"
+        },
+        "IpamRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region where the associated IPAM is located.</p>",
+          "locationName":"ipamRegion"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>The description of the IPAM prefix list resolver.</p>",
+          "locationName":"description"
+        },
+        "AddressFamily":{
+          "shape":"AddressFamily",
+          "documentation":"<p>The address family (IPv4 or IPv6) for the IPAM prefix list resolver.</p>",
+          "locationName":"addressFamily"
+        },
+        "State":{
+          "shape":"IpamPrefixListResolverState",
+          "documentation":"<p>The current state of the IPAM prefix list resolver. Valid values include <code>create-in-progress</code>, <code>create-complete</code>, <code>create-failed</code>, <code>modify-in-progress</code>, <code>modify-complete</code>, <code>modify-failed</code>, <code>delete-in-progress</code>, <code>delete-complete</code>, and <code>delete-failed</code>.</p>",
+          "locationName":"state"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags assigned to the IPAM prefix list resolver.</p>",
+          "locationName":"tagSet"
+        },
+        "LastVersionCreationStatus":{
+          "shape":"IpamPrefixListResolverVersionCreationStatus",
+          "documentation":"<p>The status for the last time a version was created.</p> <p>Each version is a snapshot of what CIDRs matched your rules at that moment in time. The version number increments every time the CIDR list changes due to infrastructure changes.</p>",
+          "locationName":"lastVersionCreationStatus"
+        },
+        "LastVersionCreationStatusMessage":{
+          "shape":"String",
+          "documentation":"<p>The status message for the last time a version was created.</p> <p>Each version is a snapshot of what CIDRs matched your rules at that moment in time. The version number increments every time the CIDR list changes due to infrastructure changes.</p>",
+          "locationName":"lastVersionCreationStatusMessage"
+        }
+      },
+      "documentation":"<p>Describes an IPAM prefix list resolver.</p> <p>An IPAM prefix list resolver is a component that manages the synchronization between IPAM's CIDR selection rules and customer-managed prefix lists. It automates connectivity configurations by selecting CIDRs from IPAM's database based on your business logic and synchronizing them with prefix lists used in resources such as VPC route tables and security groups.</p>"
+    },
+    "IpamPrefixListResolverId":{"type":"string"},
+    "IpamPrefixListResolverRule":{
+      "type":"structure",
+      "members":{
+        "RuleType":{
+          "shape":"IpamPrefixListResolverRuleType",
+          "documentation":"<p>The type of CIDR selection rule. Valid values include <code>include</code> for selecting CIDRs that match the conditions, and <code>exclude</code> for excluding CIDRs that match the conditions.</p>",
+          "locationName":"ruleType"
+        },
+        "StaticCidr":{
+          "shape":"String",
+          "documentation":"<p>A fixed list of CIDRs that do not change (like a manual list replicated across Regions).</p>",
+          "locationName":"staticCidr"
+        },
+        "IpamScopeId":{
+          "shape":"IpamScopeId",
+          "documentation":"<p>The ID of the IPAM scope from which to select CIDRs. This determines whether to select from public or private IP address space.</p>",
+          "locationName":"ipamScopeId"
+        },
+        "ResourceType":{
+          "shape":"IpamResourceType",
+          "documentation":"<p>For rules of type <code>ipam-resource-cidr</code>, this is the resource type.</p>",
+          "locationName":"resourceType"
+        },
+        "Conditions":{
+          "shape":"IpamPrefixListResolverRuleConditionSet",
+          "documentation":"<p>The conditions that determine which CIDRs are selected by this rule. Conditions specify criteria such as resource type, tags, account IDs, and Regions.</p>",
+          "locationName":"conditionSet"
+        }
+      },
+      "documentation":"<p>Describes a CIDR selection rule.</p> <p>CIDR selection rules define the business logic for selecting CIDRs from IPAM. If a CIDR matches any of the rules, it will be included. If a rule has multiple conditions, the CIDR has to match every condition of that rule. You can create a prefix list resolver without any CIDR selection rules, but it will generate empty versions (containing no CIDRs) until you add rules.</p>"
+    },
+    "IpamPrefixListResolverRuleCondition":{
+      "type":"structure",
+      "members":{
+        "Operation":{
+          "shape":"IpamPrefixListResolverRuleConditionOperation",
+          "documentation":"<p>The operation to perform when evaluating this condition. Valid values include <code>equals</code>, <code>not-equals</code>, <code>contains</code>, and <code>not-contains</code>.</p>",
+          "locationName":"operation"
+        },
+        "IpamPoolId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the IPAM pool to match against. This condition selects CIDRs that belong to the specified IPAM pool.</p>",
+          "locationName":"ipamPoolId"
+        },
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services resource to match against. This condition selects CIDRs associated with the specified resource.</p>",
+          "locationName":"resourceId"
+        },
+        "ResourceOwner":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID that owns the resources to match against. This condition selects CIDRs from resources owned by the specified account.</p>",
+          "locationName":"resourceOwner"
+        },
+        "ResourceRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region where the resources are located. This condition selects CIDRs from resources in the specified Region.</p>",
+          "locationName":"resourceRegion"
+        },
+        "ResourceTag":{
+          "shape":"IpamResourceTag",
+          "documentation":"<p>A tag key-value pair to match against. This condition selects CIDRs from resources that have the specified tag.</p>",
+          "locationName":"resourceTag"
+        },
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>A CIDR block to match against. This condition selects CIDRs that fall within or match the specified CIDR range.</p>",
+          "locationName":"cidr"
+        }
+      },
+      "documentation":"<p>Describes a condition within a CIDR selection rule. Conditions define the criteria for selecting CIDRs from IPAM's database based on resource attributes.</p> <p>CIDR selection rules define the business logic for selecting CIDRs from IPAM. If a CIDR matches any of the rules, it will be included. If a rule has multiple conditions, the CIDR has to match every condition of that rule. You can create a prefix list resolver without any CIDR selection rules, but it will generate empty versions (containing no CIDRs) until you add rules.</p> <p>There are three rule types. Only 2 of the 3 rule types support conditions - <b>IPAM pool CIDR</b> and <b>Scope resource CIDR</b>. <b>Static CIDR</b> rules cannot have conditions.</p> <ul> <li> <p> <b>Static CIDR</b>: A fixed list of CIDRs that do not change (like a manual list replicated across Regions)</p> </li> <li> <p> <b>IPAM pool CIDR</b>: CIDRs from specific IPAM pools (like all CIDRs from your IPAM production pool)</p> <p>If you choose this option, choose the following:</p> <ul> <li> <p> <b>IPAM scope</b>: Select the IPAM scope to search for resources</p> </li> <li> <p> <b>Conditions:</b> </p> <ul> <li> <p> <b>Property</b> </p> <ul> <li> <p> <b>IPAM pool ID</b>: Select an IPAM pool that contains the resources</p> </li> <li> <p> <b>CIDR</b> (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p> <b>Operation</b>: Equals/Not equals</p> </li> <li> <p> <b>Value</b>: The value on which to match the condition</p> </li> </ul> </li> </ul> </li> <li> <p> <b>Scope resource CIDR</b>: CIDRs from Amazon Web Services resources like VPCs, subnets, EIPs within an IPAM scope</p> <p>If you choose this option, choose the following:</p> <ul> <li> <p> <b>IPAM scope</b>: Select the IPAM scope to search for resources</p> </li> <li> <p> <b>Resource type</b>: Select a resource, like a VPC or subnet.</p> </li> <li> <p> <b>Conditions</b>:</p> <ul> <li> <p> <b>Property</b>:</p> <ul> <li> <p>Resource ID: The unique ID of a resource (like vpc-1234567890abcdef0)</p> </li> <li> <p>Resource owner (like 111122223333)</p> </li> <li> <p>Resource region (like us-east-1)</p> </li> <li> <p>Resource tag (like key: name, value: dev-vpc-1)</p> </li> <li> <p>CIDR (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p> <b>Operation</b>: Equals/Not equals</p> </li> <li> <p> <b>Value</b>: The value on which to match the condition</p> </li> </ul> </li> </ul> </li> </ul>"
+    },
+    "IpamPrefixListResolverRuleConditionOperation":{
+      "type":"string",
+      "enum":[
+        "equals",
+        "not-equals",
+        "subnet-of"
+      ]
+    },
+    "IpamPrefixListResolverRuleConditionRequest":{
+      "type":"structure",
+      "required":["Operation"],
+      "members":{
+        "Operation":{
+          "shape":"IpamPrefixListResolverRuleConditionOperation",
+          "documentation":"<p>The operation to perform when evaluating this condition.</p>"
+        },
+        "IpamPoolId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the IPAM pool to match against. This condition selects CIDRs that belong to the specified IPAM pool.</p>"
+        },
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services resource to match against. This condition selects CIDRs associated with the specified resource.</p>"
+        },
+        "ResourceOwner":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID that owns the resources to match against. This condition selects CIDRs from resources owned by the specified account.</p>"
+        },
+        "ResourceRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region where the resources are located. This condition selects CIDRs from resources in the specified Region.</p>"
+        },
+        "ResourceTag":{
+          "shape":"RequestIpamResourceTag",
+          "documentation":"<p>A tag key-value pair to match against. This condition selects CIDRs from resources that have the specified tag.</p>"
+        },
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>A CIDR block to match against. This condition selects CIDRs that fall within or match the specified CIDR range.</p>"
+        }
+      },
+      "documentation":"<p>Describes a condition used when creating or modifying resolver rules.</p> <p>CIDR selection rules define the business logic for selecting CIDRs from IPAM. If a CIDR matches any of the rules, it will be included. If a rule has multiple conditions, the CIDR has to match every condition of that rule. You can create a prefix list resolver without any CIDR selection rules, but it will generate empty versions (containing no CIDRs) until you add rules.</p> <p>There are three rule types. Only 2 of the 3 rule types support conditions - <b>IPAM pool CIDR</b> and <b>Scope resource CIDR</b>. <b>Static CIDR</b> rules cannot have conditions.</p> <ul> <li> <p> <b>Static CIDR</b>: A fixed list of CIDRs that do not change (like a manual list replicated across Regions)</p> </li> <li> <p> <b>IPAM pool CIDR</b>: CIDRs from specific IPAM pools (like all CIDRs from your IPAM production pool)</p> <p>If you choose this option, choose the following:</p> <ul> <li> <p> <b>IPAM scope</b>: Select the IPAM scope to search for resources</p> </li> <li> <p> <b>Conditions:</b> </p> <ul> <li> <p> <b>Property</b> </p> <ul> <li> <p> <b>IPAM pool ID</b>: Select an IPAM pool that contains the resources</p> </li> <li> <p> <b>CIDR</b> (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p> <b>Operation</b>: Equals/Not equals</p> </li> <li> <p> <b>Value</b>: The value on which to match the condition</p> </li> </ul> </li> </ul> </li> <li> <p> <b>Scope resource CIDR</b>: CIDRs from Amazon Web Services resources like VPCs, subnets, EIPs within an IPAM scope</p> <p>If you choose this option, choose the following:</p> <ul> <li> <p> <b>IPAM scope</b>: Select the IPAM scope to search for resources</p> </li> <li> <p> <b>Resource type</b>: Select a resource, like a VPC or subnet.</p> </li> <li> <p> <b>Conditions</b>:</p> <ul> <li> <p> <b>Property</b>:</p> <ul> <li> <p>Resource ID: The unique ID of a resource (like vpc-1234567890abcdef0)</p> </li> <li> <p>Resource owner (like 111122223333)</p> </li> <li> <p>Resource region (like us-east-1)</p> </li> <li> <p>Resource tag (like key: name, value: dev-vpc-1)</p> </li> <li> <p>CIDR (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p> <b>Operation</b>: Equals/Not equals</p> </li> <li> <p> <b>Value</b>: The value on which to match the condition</p> </li> </ul> </li> </ul> </li> </ul>"
+    },
+    "IpamPrefixListResolverRuleConditionRequestSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamPrefixListResolverRuleConditionRequest",
+        "locationName":"Condition"
+      }
+    },
+    "IpamPrefixListResolverRuleConditionSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamPrefixListResolverRuleCondition",
+        "locationName":"item"
+      }
+    },
+    "IpamPrefixListResolverRuleRequest":{
+      "type":"structure",
+      "required":["RuleType"],
+      "members":{
+        "RuleType":{
+          "shape":"IpamPrefixListResolverRuleType",
+          "documentation":"<p>The type of CIDR selection rule. Valid values include <code>include</code> for selecting CIDRs that match the conditions, and <code>exclude</code> for excluding CIDRs that match the conditions.</p>"
+        },
+        "StaticCidr":{
+          "shape":"String",
+          "documentation":"<p>A fixed list of CIDRs that do not change (like a manual list replicated across Regions).</p>"
+        },
+        "IpamScopeId":{
+          "shape":"IpamScopeId",
+          "documentation":"<p>The ID of the IPAM scope from which to select CIDRs. This determines whether to select from public or private IP address space.</p>"
+        },
+        "ResourceType":{
+          "shape":"IpamResourceType",
+          "documentation":"<p>For rules of type <code>ipam-resource-cidr</code>, this is the resource type.</p>"
+        },
+        "Conditions":{
+          "shape":"IpamPrefixListResolverRuleConditionRequestSet",
+          "documentation":"<p>The conditions that determine which CIDRs are selected by this rule. Conditions specify criteria such as resource type, tags, account IDs, and Regions.</p>",
+          "locationName":"Condition"
+        }
+      },
+      "documentation":"<p>Describes a CIDR selection rule to include in a request. This is used when creating or modifying resolver rules.</p> <p>CIDR selection rules define the business logic for selecting CIDRs from IPAM. If a CIDR matches any of the rules, it will be included. If a rule has multiple conditions, the CIDR has to match every condition of that rule. You can create a prefix list resolver without any CIDR selection rules, but it will generate empty versions (containing no CIDRs) until you add rules.</p> <p>There are three rule types. Only 2 of the 3 rule types support conditions - <b>IPAM pool CIDR</b> and <b>Scope resource CIDR</b>. <b>Static CIDR</b> rules cannot have conditions.</p> <ul> <li> <p> <b>Static CIDR</b>: A fixed list of CIDRs that do not change (like a manual list replicated across Regions)</p> </li> <li> <p> <b>IPAM pool CIDR</b>: CIDRs from specific IPAM pools (like all CIDRs from your IPAM production pool)</p> <p>If you choose this option, choose the following:</p> <ul> <li> <p> <b>IPAM scope</b>: Select the IPAM scope to search for resources</p> </li> <li> <p> <b>Conditions:</b> </p> <ul> <li> <p> <b>Property</b> </p> <ul> <li> <p> <b>IPAM pool ID</b>: Select an IPAM pool that contains the resources</p> </li> <li> <p> <b>CIDR</b> (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p> <b>Operation</b>: Equals/Not equals</p> </li> <li> <p> <b>Value</b>: The value on which to match the condition</p> </li> </ul> </li> </ul> </li> <li> <p> <b>Scope resource CIDR</b>: CIDRs from Amazon Web Services resources like VPCs, subnets, EIPs within an IPAM scope</p> <p>If you choose this option, choose the following:</p> <ul> <li> <p> <b>IPAM scope</b>: Select the IPAM scope to search for resources</p> </li> <li> <p> <b>Resource type</b>: Select a resource, like a VPC or subnet.</p> </li> <li> <p> <b>Conditions</b>:</p> <ul> <li> <p> <b>Property</b>:</p> <ul> <li> <p>Resource ID: The unique ID of a resource (like vpc-1234567890abcdef0)</p> </li> <li> <p>Resource owner (like 111122223333)</p> </li> <li> <p>Resource region (like us-east-1)</p> </li> <li> <p>Resource tag (like key: name, value: dev-vpc-1)</p> </li> <li> <p>CIDR (like 10.24.34.0/23)</p> </li> </ul> </li> <li> <p> <b>Operation</b>: Equals/Not equals</p> </li> <li> <p> <b>Value</b>: The value on which to match the condition</p> </li> </ul> </li> </ul> </li> </ul>"
+    },
+    "IpamPrefixListResolverRuleRequestSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamPrefixListResolverRuleRequest",
+        "locationName":"Rule"
+      }
+    },
+    "IpamPrefixListResolverRuleSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamPrefixListResolverRule",
+        "locationName":"item"
+      }
+    },
+    "IpamPrefixListResolverRuleType":{
+      "type":"string",
+      "enum":[
+        "static-cidr",
+        "ipam-resource-cidr",
+        "ipam-pool-cidr"
+      ]
+    },
+    "IpamPrefixListResolverSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamPrefixListResolver",
+        "locationName":"item"
+      }
+    },
+    "IpamPrefixListResolverState":{
+      "type":"string",
+      "enum":[
+        "create-in-progress",
+        "create-complete",
+        "create-failed",
+        "modify-in-progress",
+        "modify-complete",
+        "modify-failed",
+        "delete-in-progress",
+        "delete-complete",
+        "delete-failed",
+        "isolate-in-progress",
+        "isolate-complete",
+        "restore-in-progress"
+      ]
+    },
+    "IpamPrefixListResolverTarget":{
+      "type":"structure",
+      "members":{
+        "IpamPrefixListResolverTargetId":{
+          "shape":"IpamPrefixListResolverTargetId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver target.</p>",
+          "locationName":"ipamPrefixListResolverTargetId"
+        },
+        "IpamPrefixListResolverTargetArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IPAM prefix list resolver target.</p>",
+          "locationName":"ipamPrefixListResolverTargetArn"
+        },
+        "IpamPrefixListResolverId":{
+          "shape":"IpamPrefixListResolverId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver associated with this target.</p>",
+          "locationName":"ipamPrefixListResolverId"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the IPAM prefix list resolver target.</p>",
+          "locationName":"ownerId"
+        },
+        "PrefixListId":{
+          "shape":"PrefixListResourceId",
+          "documentation":"<p>The ID of the managed prefix list associated with this target.</p>",
+          "locationName":"prefixListId"
+        },
+        "PrefixListRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region where the prefix list associated with this target is located.</p>",
+          "locationName":"prefixListRegion"
+        },
+        "DesiredVersion":{
+          "shape":"BoxedLong",
+          "documentation":"<p>The desired version of the prefix list that this target should synchronize with.</p>",
+          "locationName":"desiredVersion"
+        },
+        "LastSyncedVersion":{
+          "shape":"BoxedLong",
+          "documentation":"<p>The version of the prefix list that was last successfully synchronized by this target.</p>",
+          "locationName":"lastSyncedVersion"
+        },
+        "TrackLatestVersion":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether this target automatically tracks the latest version of the prefix list.</p>",
+          "locationName":"trackLatestVersion"
+        },
+        "StateMessage":{
+          "shape":"String",
+          "documentation":"<p>A message describing the current state of the IPAM prefix list resolver target, including any error information.</p>",
+          "locationName":"stateMessage"
+        },
+        "State":{
+          "shape":"IpamPrefixListResolverTargetState",
+          "documentation":"<p>The current state of the IPAM prefix list resolver target. Valid values include <code>create-in-progress</code>, <code>create-complete</code>, <code>create-failed</code>, <code>modify-in-progress</code>, <code>modify-complete</code>, <code>modify-failed</code>, <code>delete-in-progress</code>, <code>delete-complete</code>, and <code>delete-failed</code>.</p>",
+          "locationName":"state"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags assigned to the IPAM prefix list resolver target.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes an IPAM prefix list resolver target.</p> <p>An IPAM prefix list resolver target is an association between a specific customer-managed prefix list and an IPAM prefix list resolver. The target enables the resolver to synchronize CIDRs selected by its rules into the specified prefix list, which can then be referenced in Amazon Web Services resources.</p>"
+    },
+    "IpamPrefixListResolverTargetId":{"type":"string"},
+    "IpamPrefixListResolverTargetSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamPrefixListResolverTarget",
+        "locationName":"item"
+      }
+    },
+    "IpamPrefixListResolverTargetState":{
+      "type":"string",
+      "enum":[
+        "create-in-progress",
+        "create-complete",
+        "create-failed",
+        "modify-in-progress",
+        "modify-complete",
+        "modify-failed",
+        "sync-in-progress",
+        "sync-complete",
+        "sync-failed",
+        "delete-in-progress",
+        "delete-complete",
+        "delete-failed",
+        "isolate-in-progress",
+        "isolate-complete",
+        "restore-in-progress"
+      ]
+    },
+    "IpamPrefixListResolverVersion":{
+      "type":"structure",
+      "members":{
+        "Version":{
+          "shape":"Long",
+          "documentation":"<p>The version number of the IPAM prefix list resolver.</p> <p>Each version is a snapshot of what CIDRs matched your rules at that moment in time. The version number increments every time the CIDR list changes due to infrastructure changes.</p>",
+          "locationName":"version"
+        }
+      },
+      "documentation":"<p>Describes a version of an IPAM prefix list resolver.</p> <p>Each version is a snapshot of what CIDRs matched your rules at that moment in time. The version number increments every time the CIDR list changes due to infrastructure changes.</p> <p> <b>Version example:</b> </p> <p> <b>Initial State (Version 1)</b> </p> <p>Production environment:</p> <ul> <li> <p>vpc-prod-web (10.1.0.0/16) - tagged env=prod</p> </li> <li> <p>vpc-prod-db (10.2.0.0/16) - tagged env=prod</p> </li> </ul> <p>Resolver rule: Include all VPCs tagged env=prod</p> <p> <b>Version 1 CIDRs:</b> 10.1.0.0/16, 10.2.0.0/16</p> <p> <b>Infrastructure Change (Version 2)</b> </p> <p>New VPC added:</p> <ul> <li> <p>vpc-prod-api (10.3.0.0/16) - tagged env=prod</p> </li> </ul> <p>IPAM automatically detects the change and creates a new version.</p> <p> <b>Version 2 CIDRs:</b> 10.1.0.0/16, 10.2.0.0/16, 10.3.0.0/16</p>"
+    },
+    "IpamPrefixListResolverVersionCreationStatus":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "success",
+        "failure"
+      ]
+    },
+    "IpamPrefixListResolverVersionEntry":{
+      "type":"structure",
+      "members":{
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The CIDR block that was selected and synchronized in this resolver version.</p>",
+          "locationName":"cidr"
+        }
+      },
+      "documentation":"<p>Describes a CIDR entry in a specific version of an IPAM prefix list resolver. This represents a CIDR that was selected and synchronized at a particular point in time.</p>"
+    },
+    "IpamPrefixListResolverVersionEntrySet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamPrefixListResolverVersionEntry",
+        "locationName":"item"
+      }
+    },
+    "IpamPrefixListResolverVersionNumberSet":{
+      "type":"list",
+      "member":{
+        "shape":"Long",
+        "locationName":"item"
+      }
+    },
+    "IpamPrefixListResolverVersionSet":{
+      "type":"list",
+      "member":{
+        "shape":"IpamPrefixListResolverVersion",
+        "locationName":"item"
+      }
+    },
     "IpamPublicAddressAssociationStatus":{
       "type":"string",
       "enum":[
@@ -45273,7 +46372,7 @@
         },
         "State":{
           "shape":"IpamResourceDiscoveryAssociationState",
-          "documentation":"<p>The lifecycle state of the association when you associate or disassociate a resource discovery.</p> <ul> <li> <p> <code>associate-in-progress</code> - Resource discovery is being associated.</p> </li> <li> <p> <code>associate-complete</code> - Resource discovery association is complete.</p> </li> <li> <p> <code>associate-failed</code> - Resource discovery association has failed.</p> </li> <li> <p> <code>disassociate-in-progress</code> - Resource discovery is being disassociated.</p> </li> <li> <p> <code>disassociate-complete</code> - Resource discovery disassociation is complete.</p> </li> <li> <p> <code>disassociate-failed </code> - Resource discovery disassociation has failed.</p> </li> <li> <p> <code>isolate-in-progress</code> - Amazon Web Services account that created the resource discovery association has been removed and the resource discovery associatation is being isolated.</p> </li> <li> <p> <code>isolate-complete</code> - Resource discovery isolation is complete..</p> </li> <li> <p> <code>restore-in-progress</code> - Resource discovery is being restored.</p> </li> </ul>",
+          "documentation":"<p>The lifecycle state of the association when you associate or disassociate a resource discovery.</p> <ul> <li> <p> <code>associate-in-progress</code> - Resource discovery is being associated.</p> </li> <li> <p> <code>associate-complete</code> - Resource discovery association is complete.</p> </li> <li> <p> <code>associate-failed</code> - Resource discovery association has failed.</p> </li> <li> <p> <code>disassociate-in-progress</code> - Resource discovery is being disassociated.</p> </li> <li> <p> <code>disassociate-complete</code> - Resource discovery disassociation is complete.</p> </li> <li> <p> <code>disassociate-failed </code> - Resource discovery disassociation has failed.</p> </li> <li> <p> <code>isolate-in-progress</code> - Amazon Web Services account that created the resource discovery association has been removed and the resource discovery association is being isolated.</p> </li> <li> <p> <code>isolate-complete</code> - Resource discovery isolation is complete.</p> </li> <li> <p> <code>restore-in-progress</code> - Resource discovery is being restored.</p> </li> </ul>",
           "locationName":"state"
         },
         "Tags":{
@@ -45422,9 +46521,34 @@
           "shape":"TagList",
           "documentation":"<p>The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p>",
           "locationName":"tagSet"
+        },
+        "ExternalAuthorityConfiguration":{
+          "shape":"IpamScopeExternalAuthorityConfiguration",
+          "documentation":"<p>The external authority configuration for this IPAM scope, if configured.</p> <p>The configuration that links an Amazon VPC IPAM scope to an external authority system. It specifies the type of external system and the external resource identifier that identifies your account or instance in that system.</p> <p>In IPAM, an external authority is a third-party IP address management system that provides CIDR blocks when you provision address space for top-level IPAM pools. This allows you to use your existing IP management system to control which address ranges are allocated to Amazon Web Services while using Amazon VPC IPAM to manage subnets within those ranges.</p>",
+          "locationName":"externalAuthorityConfiguration"
         }
       },
       "documentation":"<p>In IPAM, a scope is the highest-level container within IPAM. An IPAM contains two default scopes. Each scope represents the IP space for a single network. The private scope is intended for all private IP address space. The public scope is intended for all public IP address space. Scopes enable you to reuse IP addresses across multiple unconnected networks without causing IP address overlap or conflict.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/ipam/how-it-works-ipam.html\">How IPAM works</a> in the <i>Amazon VPC IPAM User Guide</i>.</p>"
+    },
+    "IpamScopeExternalAuthorityConfiguration":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"IpamScopeExternalAuthorityType",
+          "documentation":"<p>The type of external authority managing this scope. Currently supports <code>Infoblox</code> for integration with Infoblox Universal DDI.</p>",
+          "locationName":"type"
+        },
+        "ExternalResourceIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the external resource managing this scope. For Infoblox integrations, this is the Infoblox resource identifier in the format <code>&lt;version&gt;.identity.account.&lt;entity_realm&gt;.&lt;entity_id&gt;</code>.</p>",
+          "locationName":"externalResourceIdentifier"
+        }
+      },
+      "documentation":"<p>The configuration that links an Amazon VPC IPAM scope to an external authority system. It specifies the type of external system and the external resource identifier that identifies your account or instance in that system.</p> <p>In IPAM, an external authority is a third-party IP address management system that provides CIDR blocks when you provision address space for top-level IPAM pools. This allows you to use your existing IP management system to control which address ranges are allocated to Amazon Web Services while using Amazon VPC IPAM to manage subnets within those ranges.</p>"
+    },
+    "IpamScopeExternalAuthorityType":{
+      "type":"string",
+      "enum":["infoblox"]
     },
     "IpamScopeId":{"type":"string"},
     "IpamScopeSet":{
@@ -48505,6 +49629,16 @@
           "shape":"String",
           "documentation":"<p>The ID of the owner of the prefix list.</p>",
           "locationName":"ownerId"
+        },
+        "IpamPrefixListResolverTargetId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the IPAM prefix list resolver target associated with this managed prefix list. When set, this prefix list becomes an IPAM managed prefix list.</p> <p>An IPAM-managed prefix list is a customer-managed prefix list that has been associated with an IPAM prefix list resolver target. When a prefix list becomes IPAM managed, its CIDRs are automatically synchronized based on the IPAM prefix list resolver's CIDR selection rules, and direct CIDR modifications are restricted.</p>",
+          "locationName":"ipamPrefixListResolverTargetId"
+        },
+        "IpamPrefixListResolverSyncEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether synchronization with an IPAM prefix list resolver is enabled for this managed prefix list. When enabled, the prefix list CIDRs are automatically updated based on the resolver's CIDR selection rules.</p>",
+          "locationName":"ipamPrefixListResolverSyncEnabled"
         }
       },
       "documentation":"<p>Describes a managed prefix list.</p>"
@@ -49992,6 +51126,76 @@
         }
       }
     },
+    "ModifyIpamPrefixListResolverRequest":{
+      "type":"structure",
+      "required":["IpamPrefixListResolverId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPrefixListResolverId":{
+          "shape":"IpamPrefixListResolverId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver to modify.</p>"
+        },
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>A new description for the IPAM prefix list resolver.</p>"
+        },
+        "Rules":{
+          "shape":"IpamPrefixListResolverRuleRequestSet",
+          "documentation":"<p>The updated CIDR selection rules for the resolver. These rules replace the existing rules entirely.</p>",
+          "locationName":"Rule"
+        }
+      }
+    },
+    "ModifyIpamPrefixListResolverResult":{
+      "type":"structure",
+      "members":{
+        "IpamPrefixListResolver":{
+          "shape":"IpamPrefixListResolver",
+          "documentation":"<p>Information about the modified IPAM prefix list resolver.</p>",
+          "locationName":"ipamPrefixListResolver"
+        }
+      }
+    },
+    "ModifyIpamPrefixListResolverTargetRequest":{
+      "type":"structure",
+      "required":["IpamPrefixListResolverTargetId"],
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>A check for whether you have the required permissions for the action without actually making the request and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "IpamPrefixListResolverTargetId":{
+          "shape":"IpamPrefixListResolverTargetId",
+          "documentation":"<p>The ID of the IPAM prefix list resolver target to modify.</p>"
+        },
+        "DesiredVersion":{
+          "shape":"BoxedLong",
+          "documentation":"<p>The desired version of the prefix list to target. This allows you to pin the target to a specific version.</p>"
+        },
+        "TrackLatestVersion":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether the resolver target should automatically track the latest version of the prefix list. When enabled, the target will always synchronize with the most current version.</p> <p>Choose this for automatic updates when you want your prefix lists to stay current with infrastructure changes without manual intervention.</p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "ModifyIpamPrefixListResolverTargetResult":{
+      "type":"structure",
+      "members":{
+        "IpamPrefixListResolverTarget":{
+          "shape":"IpamPrefixListResolverTarget",
+          "documentation":"<p>Information about the modified IPAM prefix list resolver target.</p>",
+          "locationName":"ipamPrefixListResolverTarget"
+        }
+      }
+    },
     "ModifyIpamRequest":{
       "type":"structure",
       "required":["IpamId"],
@@ -50155,6 +51359,14 @@
         "Description":{
           "shape":"String",
           "documentation":"<p>The description of the scope you want to modify.</p>"
+        },
+        "ExternalAuthorityConfiguration":{
+          "shape":"ExternalAuthorityConfiguration",
+          "documentation":"<p>The configuration that links an Amazon VPC IPAM scope to an external authority system. It specifies the type of external system and the external resource identifier that identifies your account or instance in that system.</p> <p>In IPAM, an external authority is a third-party IP address management system that provides CIDR blocks when you provision address space for top-level IPAM pools. This allows you to use your existing IP management system to control which address ranges are allocated to Amazon Web Services while using Amazon VPC IPAM to manage subnets within those ranges.</p>"
+        },
+        "RemoveExternalAuthorityConfiguration":{
+          "shape":"Boolean",
+          "documentation":"<p>Remove the external authority configuration. <code>true</code> to remove.</p>"
         }
       }
     },
@@ -50278,6 +51490,10 @@
         "MaxEntries":{
           "shape":"Integer",
           "documentation":"<p>The maximum number of entries for the prefix list. You cannot modify the entries of a prefix list and modify the size of a prefix list at the same time.</p> <p>If any of the resources that reference the prefix list cannot support the new maximum size, the modify operation fails. Check the state message for the IDs of the first ten resources that do not support the new maximum size.</p>"
+        },
+        "IpamPrefixListResolverSyncEnabled":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p>Indicates whether synchronization with an IPAM prefix list resolver should be enabled for this managed prefix list. When enabled, the prefix list CIDRs are automatically updated based on the associated resolver's CIDR selection rules.</p>"
         }
       }
     },
@@ -53428,6 +54644,11 @@
           "shape":"AssociatedSubnetList",
           "documentation":"<p>The subnets associated with this network interface.</p>",
           "locationName":"associatedSubnetSet"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone.</p>",
+          "locationName":"availabilityZoneId"
         }
       },
       "documentation":"<p>Describes a network interface.</p>"
@@ -53791,6 +55012,13 @@
         "iot_rules_managed",
         "aws_codestar_connections_managed"
       ]
+    },
+    "NetworkNodeSet":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"item"
+      }
     },
     "NetworkNodesList":{
       "type":"list",
@@ -55400,7 +56628,7 @@
       "members":{
         "State":{
           "shape":"DnsNameState",
-          "documentation":"<p>The verification state of the VPC endpoint service.</p> <p>&gt;Consumers of the endpoint service can use the private name only when the state is <code>verified</code>.</p>",
+          "documentation":"<p>The verification state of the VPC endpoint service.</p> <p>Consumers of the endpoint service can use the private name only when the state is <code>verified</code>.</p>",
           "locationName":"state"
         },
         "Type":{
@@ -55480,6 +56708,15 @@
         }
       },
       "documentation":"<p>Describes the options for instance hostnames.</p>"
+    },
+    "PrivateDnsSpecifiedDomainSet":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"item"
+      },
+      "max":10,
+      "min":0
     },
     "PrivateIpAddressConfigSet":{
       "type":"list",
@@ -58840,6 +60077,8 @@
         "ipam-external-resource-verification-token",
         "capacity-block",
         "mac-modification-task",
+        "ipam-prefix-list-resolver",
+        "ipam-prefix-list-resolver-target",
         "capacity-manager-data-export"
       ]
     },
@@ -69882,6 +71121,18 @@
         "VpcPeering":{
           "shape":"VpcEncryptionControlExclusion",
           "locationName":"vpcPeering"
+        },
+        "Lambda":{
+          "shape":"VpcEncryptionControlExclusion",
+          "locationName":"lambda"
+        },
+        "VpcLattice":{
+          "shape":"VpcEncryptionControlExclusion",
+          "locationName":"vpcLattice"
+        },
+        "ElasticFileSystem":{
+          "shape":"VpcEncryptionControlExclusion",
+          "locationName":"elasticFileSystem"
         }
       }
     },

@@ -886,7 +886,7 @@
         {"shape":"DistributionNotDisabled"},
         {"shape":"InvalidIfMatchVersion"}
       ],
-      "documentation":"<p>Delete a distribution.</p>"
+      "documentation":"<p>Delete a distribution.</p> <important> <p>Before you can delete a distribution, you must disable it, which requires permission to update the distribution. Once deleted, a distribution cannot be recovered.</p> </important>"
     },
     "DeleteDistributionTenant":{
       "name":"DeleteDistributionTenant2020_05_31",
@@ -1079,6 +1079,28 @@
         {"shape":"RealtimeLogConfigInUse"}
       ],
       "documentation":"<p>Deletes a real-time log configuration.</p> <p>You cannot delete a real-time log configuration if it's attached to a cache behavior. First update your distributions to remove the real-time log configuration from all cache behaviors, then delete the real-time log configuration.</p> <p>To delete a real-time log configuration, you can provide the configuration's name or its Amazon Resource Name (ARN). You must provide at least one. If you provide both, CloudFront uses the name to identify the real-time log configuration to delete.</p>"
+    },
+    "DeleteResourcePolicy":{
+      "name":"DeleteResourcePolicy2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/delete-resource-policy",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"DeleteResourcePolicyRequest",
+        "locationName":"DeleteResourcePolicyRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "errors":[
+        {"shape":"PreconditionFailed"},
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"IllegalDelete"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Deletes the resource policy attached to the CloudFront resource.</p>"
     },
     "DeleteResponseHeadersPolicy":{
       "name":"DeleteResponseHeadersPolicy2020_05_31",
@@ -1678,6 +1700,27 @@
       ],
       "documentation":"<p>Gets a real-time log configuration.</p> <p>To get a real-time log configuration, you can provide the configuration's name or its Amazon Resource Name (ARN). You must provide at least one. If you provide both, CloudFront uses the name to identify the real-time log configuration to get.</p>"
     },
+    "GetResourcePolicy":{
+      "name":"GetResourcePolicy2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/get-resource-policy",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"GetResourcePolicyRequest",
+        "locationName":"GetResourcePolicyRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"GetResourcePolicyResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Retrieves the resource policy for the specified CloudFront resource that you own and have shared.</p>"
+    },
     "GetResponseHeadersPolicy":{
       "name":"GetResponseHeadersPolicy2020_05_31",
       "http":{
@@ -1985,6 +2028,23 @@
         {"shape":"InvalidArgument"}
       ],
       "documentation":"<p>Gets a list of distribution IDs for distributions that have a cache behavior that's associated with the specified origin request policy.</p> <p>You can optionally specify the maximum number of items to receive in the response. If the total number of items in the list exceeds the maximum that you specify, or the default maximum, the response is paginated. To get the next page of items, send a subsequent request that specifies the <code>NextMarker</code> value from the current response as the <code>Marker</code> value in the subsequent request.</p>"
+    },
+    "ListDistributionsByOwnedResource":{
+      "name":"ListDistributionsByOwnedResource2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/distributionsByOwnedResource/{ResourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDistributionsByOwnedResourceRequest"},
+      "output":{"shape":"ListDistributionsByOwnedResourceResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Lists the CloudFront distributions that are associated with the specified resource that you own.</p>"
     },
     "ListDistributionsByRealtimeLogConfig":{
       "name":"ListDistributionsByRealtimeLogConfig2020_05_31",
@@ -2319,6 +2379,29 @@
       ],
       "documentation":"<p>Publishes a CloudFront function by copying the function code from the <code>DEVELOPMENT</code> stage to <code>LIVE</code>. This automatically updates all cache behaviors that are using this function to use the newly published copy in the <code>LIVE</code> stage.</p> <p>When a function is published to the <code>LIVE</code> stage, you can attach the function to a distribution's cache behavior, using the function's Amazon Resource Name (ARN).</p> <p>To publish a function, you must provide the function's name and version (<code>ETag</code> value). To get these values, you can use <code>ListFunctions</code> and <code>DescribeFunction</code>.</p>"
     },
+    "PutResourcePolicy":{
+      "name":"PutResourcePolicy2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/put-resource-policy",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"PutResourcePolicyRequest",
+        "locationName":"PutResourcePolicyRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"PutResourcePolicyResult"},
+      "errors":[
+        {"shape":"PreconditionFailed"},
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"},
+        {"shape":"IllegalUpdate"}
+      ],
+      "documentation":"<p>Creates a resource control policy for a given CloudFront resource.</p>"
+    },
     "TagResource":{
       "name":"TagResource2020_05_31",
       "http":{
@@ -2372,6 +2455,29 @@
         {"shape":"NoSuchResource"}
       ],
       "documentation":"<p>Remove tags from a CloudFront resource. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/tagging.html\">Tagging a distribution</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
+    },
+    "UpdateAnycastIpList":{
+      "name":"UpdateAnycastIpList2020_05_31",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2020-05-31/anycast-ip-list/{Id}",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"UpdateAnycastIpListRequest",
+        "locationName":"UpdateAnycastIpListRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"UpdateAnycastIpListResult"},
+      "errors":[
+        {"shape":"PreconditionFailed"},
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Updates an Anycast static IP list.</p>"
     },
     "UpdateCachePolicy":{
       "name":"UpdateCachePolicy2020_05_31",
@@ -3137,6 +3243,10 @@
           "shape":"string",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Anycast static IP list.</p>"
         },
+        "IpAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type for the Anycast static IP list.</p>"
+        },
         "AnycastIps":{
           "shape":"AnycastIps",
           "documentation":"<p>The static IP addresses that are allocated to the Anycast static IP list.</p>"
@@ -3235,6 +3345,14 @@
         "LastModifiedTime":{
           "shape":"timestamp",
           "documentation":"<p>The last time the Anycast static IP list was modified.</p>"
+        },
+        "IpAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type for the Anycast static IP list.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version (ETag value) of the Anycast static IP list.</p>"
         }
       },
       "documentation":"<p>An abbreviated version of the <a>AnycastIpList</a> structure. Omits the allocated static IP addresses (<a>AnycastIpList$AnycastIps</a>).</p>"
@@ -4410,7 +4528,11 @@
           "shape":"integer",
           "documentation":"<p>The number of static IP addresses that are allocated to the Anycast static IP list. Valid values: 21 or 3.</p>"
         },
-        "Tags":{"shape":"Tags"}
+        "Tags":{"shape":"Tags"},
+        "IpAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type for the Anycast static IP list. You can specify one of the following options:</p> <ul> <li> <p> <code>ipv4</code> - Allocate a list of only IPv4 addresses</p> </li> <li> <p> <code>ipv6</code> - Allocate a list of only IPv4 addresses</p> </li> <li> <p> <code>dualstack</code> - Allocate a list of both IPv4 and IPv6 addresses</p> </li> </ul>"
+        }
       }
     },
     "CreateAnycastIpListResult":{
@@ -5817,6 +5939,16 @@
         }
       }
     },
+    "DeleteResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudFront resource for which the resource policy should be deleted.</p>"
+        }
+      }
+    },
     "DeleteResponseHeadersPolicyRequest":{
       "type":"structure",
       "required":["Id"],
@@ -6247,6 +6379,67 @@
         "shape":"string",
         "locationName":"DistributionId"
       }
+    },
+    "DistributionIdOwner":{
+      "type":"structure",
+      "required":[
+        "DistributionId",
+        "OwnerAccountId"
+      ],
+      "members":{
+        "DistributionId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution.</p>"
+        },
+        "OwnerAccountId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the distribution. </p>"
+        }
+      },
+      "documentation":"<p>A structure that pairs a CloudFront distribution ID with its owning Amazon Web Services account ID.</p>"
+    },
+    "DistributionIdOwnerItemList":{
+      "type":"list",
+      "member":{
+        "shape":"DistributionIdOwner",
+        "locationName":"DistributionIdOwner"
+      }
+    },
+    "DistributionIdOwnerList":{
+      "type":"structure",
+      "required":[
+        "Marker",
+        "MaxItems",
+        "IsTruncated",
+        "Quantity"
+      ],
+      "members":{
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>Use this field when paginating results to indicate where to begin in your list of <code>DistributionIdOwner</code> objects. The response includes distributions in the list that occur after the marker. To get the next page of the list, set this field's value to the value of <code>NextMarker</code> from the current page's response.</p>"
+        },
+        "NextMarker":{
+          "shape":"string",
+          "documentation":"<p>A token used for pagination of results returned in the response. You can use the token from the previous request to define where the current request should begin.</p>"
+        },
+        "MaxItems":{
+          "shape":"integer",
+          "documentation":"<p>The maximum number of <code>DistributionIdOwner</code> objects to return.</p>"
+        },
+        "IsTruncated":{
+          "shape":"boolean",
+          "documentation":"<p>A flag that indicates whether more <code>DistributionIdOwner</code> objects remain to be listed. If your results were truncated, you can make a follow-up pagination request using the <code>Marker</code> request parameter to retrieve more results in the list.</p>"
+        },
+        "Quantity":{
+          "shape":"integer",
+          "documentation":"<p>Specifies the actual number of <code>DistributionIdOwner</code> objects included in the list for the current page.</p>"
+        },
+        "Items":{
+          "shape":"DistributionIdOwnerItemList",
+          "documentation":"<p>The number of <code>DistributionIdOwner</code> objects.</p>"
+        }
+      },
+      "documentation":"<p>The list of distribution IDs and the Amazon Web Services accounts that they belong to.</p>"
     },
     "DistributionList":{
       "type":"structure",
@@ -8309,6 +8502,29 @@
         }
       }
     },
+    "GetResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudFront resource that is associated with the resource policy.</p>"
+        }
+      }
+    },
+    "GetResourcePolicyResult":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudFront resource that is associated with the resource policy.</p>"
+        },
+        "PolicyDocument":{
+          "shape":"string",
+          "documentation":"<p>The resource policy in JSON format.</p>"
+        }
+      }
+    },
     "GetResponseHeadersPolicyConfigRequest":{
       "type":"structure",
       "required":["Id"],
@@ -9772,6 +9988,40 @@
         }
       },
       "payload":"DistributionIdList"
+    },
+    "ListDistributionsByOwnedResourceRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"string",
+          "documentation":"<p>The ARN of the CloudFront resource that you've shared with other Amazon Web Services accounts.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        },
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>Use this field when paginating results to indicate where to begin in your list of distributions. The response includes distributions in the list that occur after the marker. To get the next page of the list, set this field's value to the value of <code>NextMarker</code> from the current page's response.</p>",
+          "location":"querystring",
+          "locationName":"Marker"
+        },
+        "MaxItems":{
+          "shape":"string",
+          "documentation":"<p>The maximum number of distributions to return.</p>",
+          "location":"querystring",
+          "locationName":"MaxItems"
+        }
+      }
+    },
+    "ListDistributionsByOwnedResourceResult":{
+      "type":"structure",
+      "members":{
+        "DistributionList":{
+          "shape":"DistributionIdOwnerList",
+          "documentation":"<p>The list of distributions that are using the shared resource.</p>"
+        }
+      },
+      "payload":"DistributionList"
     },
     "ListDistributionsByRealtimeLogConfigRequest":{
       "type":"structure",
@@ -11719,6 +11969,32 @@
         }
       },
       "payload":"FunctionSummary"
+    },
+    "PutResourcePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "PolicyDocument"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudFront resource for which the policy is being created.</p>"
+        },
+        "PolicyDocument":{
+          "shape":"string",
+          "documentation":"<p>The JSON-formatted resource policy to create.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyResult":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudFront resource for which the policy was created.</p>"
+        }
+      }
     },
     "QueryArgProfile":{
       "type":"structure",
@@ -13877,6 +14153,44 @@
       "documentation":"<p>The request to remove tags from a CloudFront resource.</p>",
       "payload":"TagKeys"
     },
+    "UpdateAnycastIpListRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "IfMatch"
+      ],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the Anycast static IP list.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "IpAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type for the Anycast static IP list. You can specify one of the following options:</p> <ul> <li> <p> <code>ipv4</code> - Allocate a list of only IPv4 addresses</p> </li> <li> <p> <code>ipv6</code> - Allocate a list of only IPv4 addresses</p> </li> <li> <p> <code>dualstack</code> - Allocate a list of both IPv4 and IPv6 addresses</p> </li> </ul>"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The current version (ETag value) of the Anycast static IP list that you are updating.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      }
+    },
+    "UpdateAnycastIpListResult":{
+      "type":"structure",
+      "members":{
+        "AnycastIpList":{"shape":"AnycastIpList"},
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version of the Anycast static IP list.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"AnycastIpList"
+    },
     "UpdateCachePolicyRequest":{
       "type":"structure",
       "required":[
@@ -14888,6 +15202,10 @@
           "shape":"string",
           "documentation":"<p>The VPC origin ARN.</p>"
         },
+        "AccountId":{
+          "shape":"string",
+          "documentation":"<p>The account ID of the Amazon Web Services account that owns the VPC origin.</p>"
+        },
         "Status":{
           "shape":"string",
           "documentation":"<p>The VPC origin status.</p>"
@@ -14914,6 +15232,10 @@
         "VpcOriginId":{
           "shape":"string",
           "documentation":"<p>The VPC origin ID.</p>"
+        },
+        "OwnerAccountId":{
+          "shape":"string",
+          "documentation":"<p>The account ID of the Amazon Web Services account that owns the VPC origin.</p>"
         },
         "OriginReadTimeout":{
           "shape":"integer",
@@ -15031,6 +15353,10 @@
         "Arn":{
           "shape":"string",
           "documentation":"<p>The VPC origin summary ARN.</p>"
+        },
+        "AccountId":{
+          "shape":"string",
+          "documentation":"<p>The account ID of the Amazon Web Services account that owns the VPC origin.</p>"
         },
         "OriginEndpointArn":{
           "shape":"string",

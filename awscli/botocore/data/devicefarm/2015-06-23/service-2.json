@@ -1383,6 +1383,12 @@
       "type":"list",
       "member":{"shape":"Artifact"}
     },
+    "AuxiliaryAppArnList":{
+      "type":"list",
+      "member":{"shape":"AmazonResourceName"},
+      "max":3,
+      "min":0
+    },
     "BillingMethod":{
       "type":"string",
       "enum":[
@@ -1635,6 +1641,10 @@
     "CreateRemoteAccessSessionConfiguration":{
       "type":"structure",
       "members":{
+        "auxiliaryApps":{
+          "shape":"AuxiliaryAppArnList",
+          "documentation":"<p>A list of upload ARNs for app packages to be installed onto your device. (Maximum 3)</p>"
+        },
         "billingMethod":{
           "shape":"BillingMethod",
           "documentation":"<p>The billing method for the remote access session.</p>"
@@ -1664,6 +1674,10 @@
         "deviceArn":{
           "shape":"AmazonResourceName",
           "documentation":"<p>The ARN of the device for which you want to create a remote access session.</p>"
+        },
+        "appArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the app to create the remote access session.</p>"
         },
         "instanceArn":{
           "shape":"AmazonResourceName",
@@ -4319,6 +4333,10 @@
         "deviceProxy":{
           "shape":"DeviceProxy",
           "documentation":"<p>The device proxy configured for the remote access session.</p>"
+        },
+        "appUpload":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The ARN for the app to be installed onto your device.</p>"
         }
       },
       "documentation":"<p>Represents information about the remote access session.</p>"

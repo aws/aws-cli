@@ -1542,6 +1542,19 @@
       ],
       "documentation":"<p>Deletes a pipeline if there are no running instances of the pipeline. To delete a pipeline, you must stop all running instances of the pipeline using the <code>StopPipelineExecution</code> API. When you delete a pipeline, all instances of the pipeline are deleted.</p>"
     },
+    "DeleteProcessingJob":{
+      "name":"DeleteProcessingJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteProcessingJobRequest"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceInUse"}
+      ],
+      "documentation":"<p>Deletes a processing job. After Amazon SageMaker deletes a processing job, all of the metadata for the processing job is lost. You can delete only processing jobs that are in a terminal state (<code>Stopped</code>, <code>Failed</code>, or <code>Completed</code>). You cannot delete a job that is in the <code>InProgress</code> or <code>Stopping</code> state. After deleting the job, you can reuse its name to create another processing job.</p>"
+    },
     "DeleteProject":{
       "name":"DeleteProject",
       "http":{
@@ -1589,6 +1602,19 @@
       "input":{"shape":"DeleteTagsInput"},
       "output":{"shape":"DeleteTagsOutput"},
       "documentation":"<p>Deletes the specified tags from an SageMaker resource.</p> <p>To list a resource's tags, use the <code>ListTags</code> API. </p> <note> <p>When you call this API to delete tags from a hyperparameter tuning job, the deleted tags are not removed from training jobs that the hyperparameter tuning job launched before you called this API.</p> </note> <note> <p>When you call this API to delete tags from a SageMaker Domain or User Profile, the deleted tags are not removed from Apps that the SageMaker Domain or User Profile launched before you called this API.</p> </note>"
+    },
+    "DeleteTrainingJob":{
+      "name":"DeleteTrainingJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteTrainingJobRequest"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceInUse"}
+      ],
+      "documentation":"<p>Deletes a training job. After SageMaker deletes a training job, all of the metadata for the training job is lost. You can delete only training jobs that are in a terminal state (<code>Stopped</code>, <code>Failed</code>, or <code>Completed</code>) and don't retain an <code>Available</code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/train-warm-pools.html\">managed warm pool</a>. You cannot delete a job that is in the <code>InProgress</code> or <code>Stopping</code> state. After deleting the job, you can reuse its name to create another training job.</p>"
     },
     "DeleteTrial":{
       "name":"DeleteTrial",
@@ -8601,7 +8627,16 @@
         "DesiredImageId":{
           "shape":"ImageId",
           "documentation":"<p>The ID of the Amazon Machine Image (AMI) desired for the instance group.</p>"
-        }
+        },
+        "TargetStateCount":{
+          "shape":"ClusterInstanceCount",
+          "documentation":"<p>The number of nodes running a specific image ID since the last software update request.</p>"
+        },
+        "SoftwareUpdateStatus":{
+          "shape":"SoftwareUpdateStatus",
+          "documentation":"<p>Status of the last software udpate request.</p>"
+        },
+        "ActiveSoftwareUpdateConfig":{"shape":"DeploymentConfiguration"}
       },
       "documentation":"<p>Details of an instance group in a SageMaker HyperPod cluster.</p>"
     },
@@ -12446,7 +12481,7 @@
         },
         "PlatformIdentifier":{
           "shape":"PlatformIdentifier",
-          "documentation":"<p>The platform identifier of the notebook instance runtime environment.</p>"
+          "documentation":"<p>The platform identifier of the notebook instance runtime environment. The default value is <code>notebook-al2-v2</code>.</p>"
         },
         "InstanceMetadataServiceConfiguration":{
           "shape":"InstanceMetadataServiceConfiguration",
@@ -13003,10 +13038,8 @@
       "type":"structure",
       "required":[
         "TrainingJobName",
-        "AlgorithmSpecification",
         "RoleArn",
         "OutputDataConfig",
-        "ResourceConfig",
         "StoppingCondition"
       ],
       "members":{
@@ -14682,6 +14715,16 @@
         }
       }
     },
+    "DeleteProcessingJobRequest":{
+      "type":"structure",
+      "required":["ProcessingJobName"],
+      "members":{
+        "ProcessingJobName":{
+          "shape":"ProcessingJobName",
+          "documentation":"<p>The name of the processing job to delete.</p>"
+        }
+      }
+    },
     "DeleteProjectInput":{
       "type":"structure",
       "required":["ProjectName"],
@@ -14739,6 +14782,16 @@
     "DeleteTagsOutput":{
       "type":"structure",
       "members":{}
+    },
+    "DeleteTrainingJobRequest":{
+      "type":"structure",
+      "required":["TrainingJobName"],
+      "members":{
+        "TrainingJobName":{
+          "shape":"TrainingJobName",
+          "documentation":"<p>The name of the training job to delete.</p>"
+        }
+      }
     },
     "DeleteTrialComponentRequest":{
       "type":"structure",
@@ -21172,6 +21225,7 @@
       },
       "documentation":"<p>The configuration parameters that specify the IAM roles assumed by the execution role of SageMaker (assumable roles) and the cluster instances or job execution environments (execution roles or runtime roles) to manage and access resources required for running Amazon EMR clusters or Amazon EMR Serverless applications.</p>"
     },
+    "EnableCaching":{"type":"boolean"},
     "EnableCapture":{"type":"boolean"},
     "EnableInfraCheck":{
       "type":"boolean",
@@ -24706,6 +24760,30 @@
       "box":true,
       "min":0
     },
+    "InferenceComponentDataCacheConfig":{
+      "type":"structure",
+      "required":["EnableCaching"],
+      "members":{
+        "EnableCaching":{
+          "shape":"EnableCaching",
+          "documentation":"<p>Sets whether the endpoint that hosts the inference component caches the model artifacts and container image.</p> <p>With caching enabled, the endpoint caches this data in each instance that it provisions for the inference component. That way, the inference component deploys faster during the auto scaling process. If caching isn't enabled, the inference component takes longer to deploy because of the time it spends downloading the data.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Settings that affect how the inference component caches data.</p>"
+    },
+    "InferenceComponentDataCacheConfigSummary":{
+      "type":"structure",
+      "required":["EnableCaching"],
+      "members":{
+        "EnableCaching":{
+          "shape":"EnableCaching",
+          "documentation":"<p>Indicates whether the inference component caches model artifacts as part of the auto scaling process.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Settings that affect how the inference component caches data.</p>"
+    },
     "InferenceComponentDeploymentConfig":{
       "type":"structure",
       "required":["RollingUpdatePolicy"],
@@ -24811,6 +24889,10 @@
         "BaseInferenceComponentName":{
           "shape":"InferenceComponentName",
           "documentation":"<p>The name of an existing inference component that is to contain the inference component that you're creating with your request.</p> <p>Specify this parameter only if your request is meant to create an adapter inference component. An adapter inference component contains the path to an adapter model. The purpose of the adapter model is to tailor the inference output of a base foundation model, which is hosted by the base inference component. The adapter inference component uses the compute resources that you assigned to the base inference component.</p> <p>When you create an adapter inference component, use the <code>Container</code> parameter to specify the location of the adapter artifacts. In the parameter value, use the <code>ArtifactUrl</code> parameter of the <code>InferenceComponentContainerSpecification</code> data type.</p> <p>Before you can create an adapter inference component, you must have an existing inference component that contains the foundation model that you want to adapt.</p>"
+        },
+        "DataCacheConfig":{
+          "shape":"InferenceComponentDataCacheConfig",
+          "documentation":"<p>Settings that affect how the inference component caches data.</p>"
         }
       },
       "documentation":"<p>Details about the resources to deploy with this inference component, including the model, container, and compute resources.</p>"
@@ -24837,6 +24919,10 @@
         "BaseInferenceComponentName":{
           "shape":"InferenceComponentName",
           "documentation":"<p>The name of the base inference component that contains this inference component.</p>"
+        },
+        "DataCacheConfig":{
+          "shape":"InferenceComponentDataCacheConfigSummary",
+          "documentation":"<p>Settings that affect how the inference component caches data.</p>"
         }
       },
       "documentation":"<p>Details about the resources that are deployed with this inference component.</p>"
@@ -36136,7 +36222,7 @@
         },
         "S3DataDistributionType":{
           "shape":"ProcessingS3DataDistributionType",
-          "documentation":"<p>Whether to distribute the data from Amazon S3 to all processing instances with <code>FullyReplicated</code>, or whether the data from Amazon S3 is shared by Amazon S3 key, downloading one shard of data to each processing instance.</p>"
+          "documentation":"<p>Whether to distribute the data from Amazon S3 to all processing instances with <code>FullyReplicated</code>, or whether the data from Amazon S3 is sharded by Amazon S3 key, downloading one shard of data to each processing instance.</p>"
         },
         "S3CompressionType":{
           "shape":"ProcessingS3CompressionType",
@@ -39669,6 +39755,17 @@
       "min":0,
       "pattern":"arn:aws[a-z\\-]*:sns:[a-z0-9\\-]*:[0-9]{12}:[a-zA-Z0-9_.-]+"
     },
+    "SoftwareUpdateStatus":{
+      "type":"string",
+      "enum":[
+        "Pending",
+        "InProgress",
+        "Succeeded",
+        "Failed",
+        "RollbackInProgress",
+        "RollbackComplete"
+      ]
+    },
     "SortActionsBy":{
       "type":"string",
       "enum":[
@@ -41973,7 +42070,8 @@
         "Completed",
         "Failed",
         "Stopping",
-        "Stopped"
+        "Stopped",
+        "Deleting"
       ]
     },
     "TrainingJobStatusCounter":{
@@ -42544,7 +42642,15 @@
         "ml.inf2.xlarge",
         "ml.inf2.8xlarge",
         "ml.inf2.24xlarge",
-        "ml.inf2.48xlarge"
+        "ml.inf2.48xlarge",
+        "ml.g6.xlarge",
+        "ml.g6.2xlarge",
+        "ml.g6.4xlarge",
+        "ml.g6.8xlarge",
+        "ml.g6.12xlarge",
+        "ml.g6.16xlarge",
+        "ml.g6.24xlarge",
+        "ml.g6.48xlarge"
       ]
     },
     "TransformInstanceTypes":{
@@ -43703,6 +43809,10 @@
           "shape":"ClusterInstanceGroupsToDelete",
           "documentation":"<p>Specify the names of the instance groups to delete. Use a single <code>,</code> as the separator between multiple names.</p>"
         },
+        "NodeProvisioningMode":{
+          "shape":"ClusterNodeProvisioningMode",
+          "documentation":"<p>Determines how instance provisioning is handled during cluster operations. In <code>Continuous</code> mode, the cluster provisions available instances incrementally and retries until the target count is reached. The cluster becomes operational once cluster-level resources are ready. Use <code>CurrentCount</code> and <code>TargetCount</code> in <code>DescribeCluster</code> to track provisioning progress.</p>"
+        },
         "ClusterRole":{
           "shape":"RoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that HyperPod assumes for cluster autoscaling operations. Cannot be updated while autoscaling is enabled.</p>"
@@ -44004,6 +44114,10 @@
         "TagPropagation":{
           "shape":"TagPropagation",
           "documentation":"<p>Indicates whether custom tag propagation is supported for the domain. Defaults to <code>DISABLED</code>.</p>"
+        },
+        "VpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The identifier for the VPC used by the domain for network communication. Use this field only when adding VPC configuration to a SageMaker AI domain used in Amazon SageMaker Unified Studio that was created without VPC settings. SageMaker AI doesn't automatically apply VPC updates to existing applications. Stop and restart your applications to apply the changes.</p>"
         }
       }
     },
@@ -44717,6 +44831,10 @@
         "IpAddressType":{
           "shape":"IPAddressType",
           "documentation":"<p>The IP address type for the notebook instance. Specify <code>ipv4</code> for IPv4-only connectivity or <code>dualstack</code> for both IPv4 and IPv6 connectivity. The notebook instance must be stopped before updating this setting. When you specify <code>dualstack</code>, the subnet must support IPv6 addressing.</p>"
+        },
+        "PlatformIdentifier":{
+          "shape":"PlatformIdentifier",
+          "documentation":"<p>The platform identifier of the notebook instance runtime environment.</p>"
         },
         "RoleArn":{
           "shape":"RoleArn",

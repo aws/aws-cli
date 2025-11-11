@@ -179,6 +179,8 @@
     },
     "GetGlyphsRequestFontUnicodeRangeString":{
       "type":"string",
+      "max":50,
+      "min":0,
       "pattern":"[0-9]+-[0-9]+\\.pbf"
     },
     "GetGlyphsResponse":{
@@ -285,13 +287,13 @@
       ],
       "members":{
         "BoundingBox":{
-          "shape":"PositionListString",
+          "shape":"GetStaticMapRequestBoundingBoxString",
           "documentation":"<p>Takes in two pairs of coordinates in World Geodetic System (WGS 84) format: [longitude, latitude], denoting south-westerly and north-easterly edges of the image. The underlying area becomes the view of the image. </p> <p>Example: -123.17075,49.26959,-123.08125,49.31429</p>",
           "location":"querystring",
           "locationName":"bounding-box"
         },
         "BoundedPositions":{
-          "shape":"PositionListString",
+          "shape":"GetStaticMapRequestBoundedPositionsString",
           "documentation":"<p>Takes in two or more pair of coordinates in World Geodetic System (WGS 84) format: [longitude, latitude], with each coordinate separated by a comma. The API will generate an image to encompass all of the provided coordinates. </p> <note> <p>Cannot be used with <code>Zoom</code> and or <code>Radius</code> </p> </note> <p>Example: 97.170451,78.039098,99.045536,27.176178</p>",
           "location":"querystring",
           "locationName":"bounded-positions"
@@ -351,7 +353,7 @@
           "locationName":"lang"
         },
         "Padding":{
-          "shape":"SensitiveInteger",
+          "shape":"GetStaticMapRequestPaddingInteger",
           "documentation":"<p>Applies additional space (in pixels) around overlay feature to prevent them from being cut or obscured.</p> <note> <p>Value for max and min is determined by:</p> <p>Min: <code>1</code> </p> <p>Max: <code>min(height, width)/4</code> </p> </note> <p>Example: <code>100</code> </p>",
           "location":"querystring",
           "locationName":"padding"
@@ -407,6 +409,20 @@
         }
       }
     },
+    "GetStaticMapRequestBoundedPositionsString":{
+      "type":"string",
+      "max":2000,
+      "min":0,
+      "pattern":"(-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?)(,(-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?))*",
+      "sensitive":true
+    },
+    "GetStaticMapRequestBoundingBoxString":{
+      "type":"string",
+      "max":100,
+      "min":0,
+      "pattern":"(-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?)(,(-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?))*",
+      "sensitive":true
+    },
     "GetStaticMapRequestFileNameString":{
       "type":"string",
       "pattern":"map(@2x)?"
@@ -416,6 +432,13 @@
       "box":true,
       "max":1400,
       "min":64,
+      "sensitive":true
+    },
+    "GetStaticMapRequestPaddingInteger":{
+      "type":"integer",
+      "box":true,
+      "max":350,
+      "min":0,
       "sensitive":true
     },
     "GetStaticMapRequestWidthInteger":{
@@ -558,6 +581,12 @@
         "Y"
       ],
       "members":{
+        "AdditionalFeatures":{
+          "shape":"TileAdditionalFeatureList",
+          "documentation":"<p>A list of optional additional parameters such as map styles that can be requested for each result.</p>",
+          "location":"querystring",
+          "locationName":"additional-features"
+        },
         "Tileset":{
           "shape":"Tileset",
           "documentation":"<p>Specifies the desired tile set.</p> <p>Valid Values: <code>raster.satellite | vector.basemap</code> </p>",
@@ -592,16 +621,22 @@
     },
     "GetTileRequestXString":{
       "type":"string",
+      "max":7,
+      "min":0,
       "pattern":".*\\d+.*",
       "sensitive":true
     },
     "GetTileRequestYString":{
       "type":"string",
+      "max":7,
+      "min":0,
       "pattern":".*\\d+.*",
       "sensitive":true
     },
     "GetTileRequestZString":{
       "type":"string",
+      "max":2,
+      "min":0,
       "pattern":".*\\d+.*",
       "sensitive":true
     },
@@ -683,12 +718,6 @@
         "Satellite"
       ]
     },
-    "PositionListString":{
-      "type":"string",
-      "min":7,
-      "pattern":"(-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?)(,(-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?))*",
-      "sensitive":true
-    },
     "PositionString":{
       "type":"string",
       "max":36,
@@ -721,11 +750,6 @@
         "MilesKilometers"
       ]
     },
-    "SensitiveInteger":{
-      "type":"integer",
-      "box":true,
-      "sensitive":true
-    },
     "StaticMapStyle":{
       "type":"string",
       "enum":[
@@ -755,6 +779,21 @@
       "exception":true,
       "retryable":{"throttling":false}
     },
+    "TileAdditionalFeature":{
+      "type":"string",
+      "enum":[
+        "ContourLines",
+        "Hillshade",
+        "Logistics",
+        "Transit"
+      ]
+    },
+    "TileAdditionalFeatureList":{
+      "type":"list",
+      "member":{"shape":"TileAdditionalFeature"},
+      "max":4,
+      "min":0
+    },
     "Tileset":{
       "type":"string",
       "max":100,
@@ -774,7 +813,9 @@
     },
     "TravelModeList":{
       "type":"list",
-      "member":{"shape":"TravelMode"}
+      "member":{"shape":"TravelMode"},
+      "max":2,
+      "min":0
     },
     "ValidationException":{
       "type":"structure",

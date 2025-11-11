@@ -5,30 +5,192 @@
             "builtIn": "AWS::Region",
             "required": false,
             "documentation": "The AWS region used to dispatch the request.",
-            "type": "String"
+            "type": "string"
         },
         "UseDualStack": {
             "builtIn": "AWS::UseDualStack",
             "required": true,
             "default": false,
             "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
-            "type": "Boolean"
+            "type": "boolean"
         },
         "UseFIPS": {
             "builtIn": "AWS::UseFIPS",
             "required": true,
             "default": false,
             "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
-            "type": "Boolean"
+            "type": "boolean"
         },
         "Endpoint": {
             "builtIn": "SDK::Endpoint",
             "required": false,
             "documentation": "Override the endpoint used to send this request",
-            "type": "String"
+            "type": "string"
         }
     },
     "rules": [
+        {
+            "conditions": [
+                {
+                    "fn": "not",
+                    "argv": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Endpoint"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseFIPS"
+                        },
+                        false
+                    ]
+                },
+                {
+                    "fn": "booleanEquals",
+                    "argv": [
+                        {
+                            "ref": "UseDualStack"
+                        },
+                        true
+                    ]
+                }
+            ],
+            "rules": [
+                {
+                    "conditions": [
+                        {
+                            "fn": "isSet",
+                            "argv": [
+                                {
+                                    "ref": "Region"
+                                }
+                            ]
+                        },
+                        {
+                            "fn": "aws.partition",
+                            "argv": [
+                                {
+                                    "ref": "Region"
+                                }
+                            ],
+                            "assign": "PartitionResult"
+                        }
+                    ],
+                    "rules": [
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "stringEquals",
+                                    "argv": [
+                                        {
+                                            "fn": "getAttr",
+                                            "argv": [
+                                                {
+                                                    "ref": "PartitionResult"
+                                                },
+                                                "name"
+                                            ]
+                                        },
+                                        "aws"
+                                    ]
+                                }
+                            ],
+                            "endpoint": {
+                                "url": "https://savingsplans.global.api.aws",
+                                "properties": {
+                                    "authSchemes": [
+                                        {
+                                            "name": "sigv4",
+                                            "signingName": "savingsplans",
+                                            "signingRegion": "us-east-1"
+                                        }
+                                    ]
+                                },
+                                "headers": {}
+                            },
+                            "type": "endpoint"
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "booleanEquals",
+                                    "argv": [
+                                        {
+                                            "fn": "getAttr",
+                                            "argv": [
+                                                {
+                                                    "ref": "PartitionResult"
+                                                },
+                                                "supportsDualStack"
+                                            ]
+                                        },
+                                        true
+                                    ]
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [],
+                                    "endpoint": {
+                                        "url": "https://savingsplans.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                        "properties": {},
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
+                                }
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "DualStack is enabled but this partition does not support DualStack",
+                            "type": "error"
+                        }
+                    ],
+                    "type": "tree"
+                },
+                {
+                    "conditions": [
+                        {
+                            "fn": "not",
+                            "argv": [
+                                {
+                                    "fn": "isSet",
+                                    "argv": [
+                                        {
+                                            "ref": "Region"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "endpoint": {
+                        "url": "https://savingsplans.global.api.aws",
+                        "properties": {
+                            "authSchemes": [
+                                {
+                                    "name": "sigv4",
+                                    "signingName": "savingsplans",
+                                    "signingRegion": "us-east-1"
+                                }
+                            ]
+                        },
+                        "headers": {}
+                    },
+                    "type": "endpoint"
+                }
+            ],
+            "type": "tree"
+        },
         {
             "conditions": [
                 {

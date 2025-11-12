@@ -6566,11 +6566,24 @@
         },
         "PeriodicSessionDuration":{
           "shape":"AccessTokenDuration",
-          "documentation":"<p>The short lived session duration configuration for users logged in to Amazon Connect, in minutes. This value determines the maximum possible time before an agent is authenticated. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/authentication-profiles.html#configure-session-timeouts\">Configure the session duration</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+          "documentation":"<p>The short lived session duration configuration for users logged in to Amazon Connect, in minutes. This value determines the maximum possible time before an agent is authenticated. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/authentication-profiles.html#configure-session-timeouts\">Configure the session duration</a> in the <i>Amazon Connect Administrator Guide</i>.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"PeriodicSessionDuration is deprecated. Use SessionInactivityDuration instead.",
+          "deprecatedSince":"10/31/2025"
         },
         "MaxSessionDuration":{
           "shape":"RefreshTokenDuration",
           "documentation":"<p>The long lived session duration for users logged in to Amazon Connect, in minutes. After this time period, users must log in again. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/authentication-profiles.html#configure-session-timeouts\">Configure the session duration</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+        },
+        "SessionInactivityDuration":{
+          "shape":"InactivityDuration",
+          "documentation":"<p>The period, in minutes, before an agent is automatically signed out of the contact center when they go inactive.</p>",
+          "box":true
+        },
+        "SessionInactivityHandlingEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Determines if automatic logout on user inactivity is enabled.</p>",
+          "box":true
         }
       },
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change. To request access to this API, contact Amazon Web Services Support.</p> <p>Information about an authentication profile. An authentication profile is a resource that stores the authentication settings for users in your contact center. You use authentication profiles to set up IP address range restrictions and session timeouts. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/authentication-profiles.html\">Set IP address restrictions or session timeouts</a>. </p>"
@@ -16113,6 +16126,12 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the phone number.</p>"
         }
       }
+    },
+    "InactivityDuration":{
+      "type":"integer",
+      "box":true,
+      "max":720,
+      "min":15
     },
     "InboundAdditionalRecipients":{
       "type":"structure",
@@ -26457,6 +26476,19 @@
         "PeriodicSessionDuration":{
           "shape":"AccessTokenDuration",
           "documentation":"<p>The short lived session duration configuration for users logged in to Amazon Connect, in minutes. This value determines the maximum possible time before an agent is authenticated. For more information, For more information on how to configure IP addresses, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/authentication-profiles.html#configure-session-timeouts\">Configure session timeouts</a> in the <i>Amazon Connect Administrator Guide</i>. </p>",
+          "box":true,
+          "deprecated":true,
+          "deprecatedMessage":"PeriodicSessionDuration is deprecated. Use SessionInactivityDuration instead.",
+          "deprecatedSince":"10/31/2025"
+        },
+        "SessionInactivityDuration":{
+          "shape":"InactivityDuration",
+          "documentation":"<p>The period, in minutes, before an agent is automatically signed out of the contact center when they go inactive.</p>",
+          "box":true
+        },
+        "SessionInactivityHandlingEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Determines if automatic logout on user inactivity is enabled.</p>",
           "box":true
         }
       }

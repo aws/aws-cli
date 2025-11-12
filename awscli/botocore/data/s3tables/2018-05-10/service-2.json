@@ -146,6 +146,25 @@
       "documentation":"<p>Deletes the encryption configuration for a table bucket.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:DeleteTableBucketEncryption</code> permission to use this operation.</p> </dd> </dl>",
       "idempotent":true
     },
+    "DeleteTableBucketMetricsConfiguration":{
+      "name":"DeleteTableBucketMetricsConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/buckets/{tableBucketARN}/metrics",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteTableBucketMetricsConfigurationRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Deletes the metrics configuration for a table bucket.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:DeleteTableBucketMetricsConfiguration</code> permission to use this operation.</p> </dd> </dl>",
+      "idempotent":true
+    },
     "DeleteTableBucketPolicy":{
       "name":"DeleteTableBucketPolicy",
       "http":{
@@ -285,6 +304,26 @@
         {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Gets details about a maintenance configuration for a given table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-table-buckets-maintenance.html\">Amazon S3 table bucket maintenance</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableBucketMaintenanceConfiguration</code> permission to use this operation. </p> </dd> </dl>",
+      "readonly":true
+    },
+    "GetTableBucketMetricsConfiguration":{
+      "name":"GetTableBucketMetricsConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/buckets/{tableBucketARN}/metrics",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTableBucketMetricsConfigurationRequest"},
+      "output":{"shape":"GetTableBucketMetricsConfigurationResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Gets the metrics configuration for a table bucket.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:GetTableBucketMetricsConfiguration</code> permission to use this operation.</p> </dd> </dl>",
       "readonly":true
     },
     "GetTableBucketPolicy":{
@@ -525,6 +564,25 @@
         {"shape":"BadRequestException"}
       ],
       "documentation":"<p>Creates a new maintenance configuration or replaces an existing maintenance configuration for a table bucket. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/s3-table-buckets-maintenance.html\">Amazon S3 table bucket maintenance</a> in the <i>Amazon Simple Storage Service User Guide</i>.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:PutTableBucketMaintenanceConfiguration</code> permission to use this operation. </p> </dd> </dl>"
+    },
+    "PutTableBucketMetricsConfiguration":{
+      "name":"PutTableBucketMetricsConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/buckets/{tableBucketARN}/metrics",
+        "responseCode":204
+      },
+      "input":{"shape":"PutTableBucketMetricsConfigurationRequest"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Sets the metrics configuration for a table bucket.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:PutTableBucketMetricsConfiguration</code> permission to use this operation.</p> </dd> </dl>",
+      "idempotent":true
     },
     "PutTableBucketPolicy":{
       "name":"PutTableBucketPolicy",
@@ -870,6 +928,18 @@
         }
       }
     },
+    "DeleteTableBucketMetricsConfigurationRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
     "DeleteTableBucketPolicyRequest":{
       "type":"structure",
       "required":["tableBucketARN"],
@@ -1094,6 +1164,32 @@
         "configuration":{
           "shape":"TableBucketMaintenanceConfiguration",
           "documentation":"<p>Details about the maintenance configuration for the table bucket.</p>"
+        }
+      }
+    },
+    "GetTableBucketMetricsConfigurationRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
+        }
+      }
+    },
+    "GetTableBucketMetricsConfigurationResponse":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>"
+        },
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the metrics configuration.</p>"
         }
       }
     },
@@ -1908,6 +2004,18 @@
         "value":{
           "shape":"TableBucketMaintenanceConfigurationValue",
           "documentation":"<p>Defines the values of the maintenance configuration for the table bucket.</p>"
+        }
+      }
+    },
+    "PutTableBucketMetricsConfigurationRequest":{
+      "type":"structure",
+      "required":["tableBucketARN"],
+      "members":{
+        "tableBucketARN":{
+          "shape":"TableBucketARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the table bucket.</p>",
+          "location":"uri",
+          "locationName":"tableBucketARN"
         }
       }
     },

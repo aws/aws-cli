@@ -32,10 +32,8 @@ class PaginationRule(LintRule):
 
         findings = []
         for stmt in nodes:
-            # Skip nodes before start_pos
             if stmt.range().start.index < start_pos:
                 continue
-
             original = stmt.text()
             suggested = original + " --no-cli-paginate"
             edit = stmt.replace(suggested)

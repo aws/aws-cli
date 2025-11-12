@@ -99,13 +99,15 @@ def apply_all_fixes(
 
     for i in range(start_index, len(findings_with_rules)):
         finding, rule = findings_with_rules[i]
+        root = None
 
         if changes_made:
-            finding = linter.refresh_finding(current_script, rule, cursors[rule.name])
-            if not finding:
+            result = linter.refresh_finding(current_script, rule, cursors[rule.name])
+            if not result:
                 continue
+            finding, root = result
 
-        current_script = linter.apply_single_fix(current_script, finding)
+        current_script = linter.apply_single_fix(current_script, finding, root)
         cursors[rule.name] = finding.edit.start_pos + len(finding.edit.inserted_text)
         changes_made = True
 
@@ -129,11 +131,12 @@ def interactive_mode(
 
     while i < len(findings_with_rules):
         finding, rule = findings_with_rules[i]
+        root = None
 
         if changes_made:
-            refreshed = linter.refresh_finding(current_script, rule, cursors[rule.name])
-            if refreshed:
-                finding = refreshed
+            result = linter.refresh_finding(current_script, rule, cursors[rule.name])
+            if result:
+                finding, root = result
                 findings_with_rules[i] = (finding, rule)
             else:
                 i += 1
@@ -145,7 +148,7 @@ def interactive_mode(
         )
 
         if choice == "y":
-            current_script = linter.apply_single_fix(current_script, finding)
+            current_script = linter.apply_single_fix(current_script, finding, root)
             cursors[rule.name] = finding.edit.start_pos + len(finding.edit.inserted_text)
             changes_made = True
             i += 1

@@ -34,7 +34,6 @@ class Base64BinaryFormatRule(LintRule):
 
         findings = []
         for stmt in base64_broken_nodes:
-            # Skip nodes before start_pos
             if stmt.range().start.index < start_pos:
                 continue
             original = stmt.text()

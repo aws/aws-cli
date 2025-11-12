@@ -7,6 +7,7 @@ from typing import Dict, List, Tuple
 from awsclilinter.linter import ScriptLinter
 from awsclilinter.rules import LintFinding, LintRule
 from awsclilinter.rules.base64_rule import Base64BinaryFormatRule
+from awsclilinter.rules.pagination_rule import PaginationRule
 
 # ANSI color codes
 RED = "\033[31m"
@@ -86,6 +87,7 @@ def interactive_mode(
         Tuple of (modified_script, changes_made)
     """
     current_script = script_content
+    # Track the position where we've processed up to for each rule
     cursors: Dict[str, int] = {rule.name: 0 for rule in linter.rules}
     changes_made = False
     i = 0
@@ -93,14 +95,16 @@ def interactive_mode(
     while i < len(findings_with_rules):
         finding, rule = findings_with_rules[i]
 
-        # Refresh finding if cursor has moved past it
-        if finding.edit.start_pos < cursors[rule.name]:
+        # After any script modification, we need fresh findings from the current cursor position
+        # because all positions after the modification have shifted
+        if changes_made:
+            # Get a fresh finding for this rule starting from where we left off
             refreshed = linter.refresh_finding(current_script, rule, cursors[rule.name])
             if refreshed:
                 finding = refreshed
                 findings_with_rules[i] = (finding, rule)
             else:
-                # No more findings for this rule
+                # No more findings for this rule from this position
                 i += 1
                 continue
 
@@ -110,23 +114,27 @@ def interactive_mode(
         )
 
         if choice == "y":
+            # Apply the fix
             current_script = linter.apply_single_fix(current_script, finding)
-            cursors[rule.name] = finding.edit.end_pos + len(finding.edit.inserted_text)
+            # Update cursor to the end of what we just fixed
+            cursors[rule.name] = finding.edit.start_pos + len(finding.edit.inserted_text)
             changes_made = True
             i += 1
         elif choice == "n":
-            cursors[rule.name] = finding.edit.start_pos + len(finding.original_text)
+            # Skip this fix, move cursor past it
+            cursors[rule.name] = finding.edit.end_pos
             i += 1
         elif choice == "u":
-            # Accept all remaining
+            # Accept all remaining findings
             for j in range(i, len(findings_with_rules)):
                 f, r = findings_with_rules[j]
-                if f.edit.start_pos < cursors[r.name]:
+                # Refresh if we've made changes
+                if changes_made:
                     f = linter.refresh_finding(current_script, r, cursors[r.name])
                     if not f:
                         continue
                 current_script = linter.apply_single_fix(current_script, f)
-                cursors[r.name] = f.edit.end_pos + len(f.edit.inserted_text)
+                cursors[r.name] = f.edit.start_pos + len(f.edit.inserted_text)
                 changes_made = True
             break
         elif choice == "s":
@@ -172,7 +180,7 @@ def main():
 
     script_content = script_path.read_text()
 
-    rules = [Base64BinaryFormatRule()]
+    rules = [Base64BinaryFormatRule(), PaginationRule()]
     linter = ScriptLinter(rules)
     findings_with_rules = linter.lint(script_content)
 
@@ -192,13 +200,19 @@ def main():
         # Auto-accept all findings
         current_script = script_content
         cursors: Dict[str, int] = {rule.name: 0 for rule in linter.rules}
-        for finding, rule in findings_with_rules:
-            if finding.edit.start_pos < cursors[rule.name]:
+        changes_made = False
+
+        for i, (finding, rule) in enumerate(findings_with_rules):
+            # Refresh if we've made changes
+            if changes_made:
                 finding = linter.refresh_finding(current_script, rule, cursors[rule.name])
                 if not finding:
                     continue
+
             current_script = linter.apply_single_fix(current_script, finding)
-            cursors[rule.name] = finding.edit.end_pos + len(finding.edit.inserted_text)
+            cursors[rule.name] = finding.edit.start_pos + len(finding.edit.inserted_text)
+            changes_made = True
+
         output_path = Path(args.output) if args.output else script_path
         output_path.write_text(current_script)
         print(f"Fixed script written to: {output_path}")

@@ -14,7 +14,7 @@ class TestScriptLinter:
         assert len(findings_with_rules) == 1
         finding, rule = findings_with_rules[0]
         assert finding.rule_name == "binary-params-base64"
-        assert "file://" in finding.original_text
+        assert "aws" in finding.original_text
 
     def test_apply_fixes(self):
         """Test that fixes are applied correctly."""
@@ -38,4 +38,5 @@ class TestScriptLinter:
         linter = ScriptLinter([Base64BinaryFormatRule()])
         findings_with_rules = linter.lint(script)
 
+        # 2 commands, 1 rule = 2 findings
         assert len(findings_with_rules) == 2

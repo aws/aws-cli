@@ -6,9 +6,8 @@ from awsclilinter.rules import LintFinding, LintRule
 
 
 class Base64BinaryFormatRule(LintRule):
-    """Detects AWS CLI commands with file:// that need --cli-binary-format. This is a best-effort
-    attempt at statically detecting the breaking change with how AWS CLI v2 treats binary
-    parameters."""
+    """Detects any AWS CLI command that does not specify the --cli-binary-format. This mitigates
+    the breaking change with how AWS CLI v2 treats binary parameters."""
 
     @property
     def name(self) -> str:
@@ -23,13 +22,13 @@ class Base64BinaryFormatRule(LintRule):
         )
 
     def check(self, root: SgRoot) -> List[LintFinding]:
-        """Check for AWS CLI commands with file:// missing --cli-binary-format."""
+        """Check for AWS CLI commands missing --cli-binary-format."""
         node = root.root()
         base64_broken_nodes = node.find_all(
             all=[
                 {"kind": "command"},
                 {"pattern": "aws $SERVICE $OPERATION $$$ARGS"},
-                {"has": {"kind": "word", "regex": r"\Afile://"}},
+                {"kind": "command"},
                 {"not": {"has": {"kind": "word", "pattern": "--cli-binary-format"}}},
             ]
         )

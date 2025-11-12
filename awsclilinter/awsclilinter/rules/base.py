@@ -33,6 +33,11 @@ class LintRule(ABC):
         pass
 
     @abstractmethod
-    def check(self, root: SgRoot) -> List[LintFinding]:
-        """Check the AST root for violations and return findings."""
+    def check(self, root: SgRoot, start_pos: int = 0) -> List[LintFinding]:
+        """Check the AST root for violations and return findings.
+
+        Args:
+            root: The AST root to check
+            start_pos: Starting position in the script to begin checking from
+        """
         pass

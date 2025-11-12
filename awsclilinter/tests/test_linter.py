@@ -9,18 +9,20 @@ class TestScriptLinter:
         """Test that linter finds issues in script."""
         script = "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json"
         linter = ScriptLinter([Base64BinaryFormatRule()])
-        findings = linter.lint(script)
+        findings_with_rules = linter.lint(script)
 
-        assert len(findings) == 1
-        assert findings[0].rule_name == "binary-params-base64"
-        assert "file://" in findings[0].original_text
+        assert len(findings_with_rules) == 1
+        finding, rule = findings_with_rules[0]
+        assert finding.rule_name == "binary-params-base64"
+        assert "file://" in finding.original_text
 
     def test_apply_fixes(self):
         """Test that fixes are applied correctly."""
         script = "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json"
         linter = ScriptLinter([Base64BinaryFormatRule()])
-        findings = linter.lint(script)
-        fixed = linter.apply_fixes(script, findings)
+        findings_with_rules = linter.lint(script)
+        finding, _ = findings_with_rules[0]
+        fixed = linter.apply_single_fix(script, finding)
 
         assert "--cli-binary-format raw-in-base64-out" in fixed
         assert "file://data.json" in fixed
@@ -34,6 +36,6 @@ class TestScriptLinter:
             "--data file://data --partition-key samplepartitionkey"
         )
         linter = ScriptLinter([Base64BinaryFormatRule()])
-        findings = linter.lint(script)
+        findings_with_rules = linter.lint(script)
 
-        assert len(findings) == 2
+        assert len(findings_with_rules) == 2

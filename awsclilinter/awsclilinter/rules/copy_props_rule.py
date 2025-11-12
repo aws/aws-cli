@@ -5,42 +5,36 @@ from ast_grep_py.ast_grep_py import SgRoot
 from awsclilinter.rules import LintFinding, LintRule
 
 
-class Base64BinaryFormatRule(LintRule):
-    """Detects any AWS CLI command that does not specify the --cli-binary-format. This mitigates
-    the breaking change with how AWS CLI v2 treats binary parameters."""
+class CopyPropsRule(LintRule):
+    """Dummy test rule that adds --copy-props none to every AWS CLI command."""
 
     @property
     def name(self) -> str:
-        return "binary-params-base64"
+        return "copy-props-none"
 
     @property
     def description(self) -> str:
-        return (
-            "In AWS CLI v2, an input parameter typed as binary large object (BLOB) expects "
-            "the input to be base64-encoded. To retain v1 behavior after upgrading to AWS CLI v2, "
-            "add `--cli-binary-format raw-in-base64-out`."
-        )
+        return "Add --copy-props none to AWS CLI commands for testing multiple rules."
 
     def check(self, root: SgRoot, start_pos: int = 0) -> List[LintFinding]:
-        """Check for AWS CLI commands missing --cli-binary-format."""
+        """Check for AWS CLI commands missing --copy-props none."""
         node = root.root()
-        base64_broken_nodes = node.find_all(
+        nodes = node.find_all(
             all=[
                 {"kind": "command"},
                 {"pattern": "aws $SERVICE $OPERATION $$$ARGS"},
-                {"not": {"has": {"kind": "word", "pattern": "--cli-binary-format"}}},
+                {"not": {"has": {"kind": "word", "pattern": "--copy-props"}}},
             ]
         )
 
         findings = []
-        for stmt in base64_broken_nodes:
+        for stmt in nodes:
             # Skip nodes before start_pos
             if stmt.range().start.index < start_pos:
                 continue
+
             original = stmt.text()
-            # To retain v1 behavior after migrating to v2, append
-            # --cli-binary-format raw-in-base64-out
-            suggested = original + " --cli-binary-format raw-in-base64-out"
+            suggested = original + " --copy-props none"
             edit = stmt.replace(suggested)
 
             findings.append(

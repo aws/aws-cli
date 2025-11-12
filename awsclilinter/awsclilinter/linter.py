@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 from ast_grep_py import SgRoot
 
@@ -11,16 +11,28 @@ class ScriptLinter:
     def __init__(self, rules: List[LintRule]):
         self.rules = rules
 
-    def lint(self, script_content: str) -> List[LintFinding]:
-        """Lint the script and return all findings."""
+    def lint(self, script_content: str) -> List[Tuple[LintFinding, LintRule]]:
+        """Lint the script and return all findings with their associated rules."""
         root = SgRoot(script_content, "bash")
-        findings = []
+        findings_with_rules = []
         for rule in self.rules:
-            findings.extend(rule.check(root))
-        return sorted(findings, key=lambda f: (f.line_start, f.line_end))
+            findings = rule.check(root)
+            for finding in findings:
+                findings_with_rules.append((finding, rule))
+        return sorted(
+            findings_with_rules, key=lambda fr: (fr[0].edit.start_pos, fr[0].edit.end_pos)
+        )
 
-    def apply_fixes(self, script_content: str, findings: List[LintFinding]) -> str:
-        """Apply fixes to the script content."""
+    def apply_single_fix(self, script_content: str, finding: LintFinding) -> str:
+        """Apply a single fix to the script content."""
         root = SgRoot(script_content, "bash")
         node = root.root()
-        return node.commit_edits([f.edit for f in findings])
+        return node.commit_edits([finding.edit])
+
+    def refresh_finding(
+        self, script_content: str, rule: LintRule, cursor_pos: int
+    ) -> LintFinding | None:
+        """Re-lint from cursor position and return the first finding for this rule."""
+        root = SgRoot(script_content, "bash")
+        findings = rule.check(root, start_pos=cursor_pos)
+        return findings[0] if findings else None

@@ -76,6 +76,42 @@ def display_finding(finding: LintFinding, index: int, total: int, script_content
             print(line, end="")
 
 
+def apply_all_fixes(
+    findings_with_rules: List[Tuple[LintFinding, LintRule]],
+    script_content: str,
+    linter: ScriptLinter,
+    start_index: int = 0,
+) -> str:
+    """Apply all fixes from start_index onwards with cursor-based refresh.
+
+    Args:
+        findings_with_rules: List of findings and their rules
+        script_content: Current script content
+        linter: The linter instance
+        start_index: Index to start applying fixes from
+
+    Returns:
+        Modified script content
+    """
+    current_script = script_content
+    cursors: Dict[str, int] = {rule.name: 0 for rule in linter.rules}
+    changes_made = start_index > 0  # If we're starting mid-list, changes were already made
+
+    for i in range(start_index, len(findings_with_rules)):
+        finding, rule = findings_with_rules[i]
+
+        if changes_made:
+            finding = linter.refresh_finding(current_script, rule, cursors[rule.name])
+            if not finding:
+                continue
+
+        current_script = linter.apply_single_fix(current_script, finding)
+        cursors[rule.name] = finding.edit.start_pos + len(finding.edit.inserted_text)
+        changes_made = True
+
+    return current_script
+
+
 def interactive_mode(
     findings_with_rules: List[Tuple[LintFinding, LintRule]],
     script_content: str,
@@ -87,7 +123,6 @@ def interactive_mode(
         Tuple of (modified_script, changes_made)
     """
     current_script = script_content
-    # Track the position where we've processed up to for each rule
     cursors: Dict[str, int] = {rule.name: 0 for rule in linter.rules}
     changes_made = False
     i = 0
@@ -95,16 +130,12 @@ def interactive_mode(
     while i < len(findings_with_rules):
         finding, rule = findings_with_rules[i]
 
-        # After any script modification, we need fresh findings from the current cursor position
-        # because all positions after the modification have shifted
         if changes_made:
-            # Get a fresh finding for this rule starting from where we left off
             refreshed = linter.refresh_finding(current_script, rule, cursors[rule.name])
             if refreshed:
                 finding = refreshed
                 findings_with_rules[i] = (finding, rule)
             else:
-                # No more findings for this rule from this position
                 i += 1
                 continue
 
@@ -114,28 +145,16 @@ def interactive_mode(
         )
 
         if choice == "y":
-            # Apply the fix
             current_script = linter.apply_single_fix(current_script, finding)
-            # Update cursor to the end of what we just fixed
             cursors[rule.name] = finding.edit.start_pos + len(finding.edit.inserted_text)
             changes_made = True
             i += 1
         elif choice == "n":
-            # Skip this fix, move cursor past it
             cursors[rule.name] = finding.edit.end_pos
             i += 1
         elif choice == "u":
-            # Accept all remaining findings
-            for j in range(i, len(findings_with_rules)):
-                f, r = findings_with_rules[j]
-                # Refresh if we've made changes
-                if changes_made:
-                    f = linter.refresh_finding(current_script, r, cursors[r.name])
-                    if not f:
-                        continue
-                current_script = linter.apply_single_fix(current_script, f)
-                cursors[r.name] = f.edit.start_pos + len(f.edit.inserted_text)
-                changes_made = True
+            current_script = apply_all_fixes(findings_with_rules, current_script, linter, i)
+            changes_made = True
             break
         elif choice == "s":
             break
@@ -197,24 +216,9 @@ def main():
         output_path.write_text(fixed_content)
         print(f"Fixed script written to: {output_path}")
     elif args.fix or args.output:
-        # Auto-accept all findings
-        current_script = script_content
-        cursors: Dict[str, int] = {rule.name: 0 for rule in linter.rules}
-        changes_made = False
-
-        for i, (finding, rule) in enumerate(findings_with_rules):
-            # Refresh if we've made changes
-            if changes_made:
-                finding = linter.refresh_finding(current_script, rule, cursors[rule.name])
-                if not finding:
-                    continue
-
-            current_script = linter.apply_single_fix(current_script, finding)
-            cursors[rule.name] = finding.edit.start_pos + len(finding.edit.inserted_text)
-            changes_made = True
-
+        fixed_content = apply_all_fixes(findings_with_rules, script_content, linter)
         output_path = Path(args.output) if args.output else script_path
-        output_path.write_text(current_script)
+        output_path.write_text(fixed_content)
         print(f"Fixed script written to: {output_path}")
     else:
         print(f"\nFound {len(findings_with_rules)} issue(s):\n")

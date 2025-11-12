@@ -453,7 +453,7 @@
         {"shape":"RuleNotFoundException"},
         {"shape":"UnsupportedProtocolException"}
       ],
-      "documentation":"<p>Describes the specified rules or the rules for the specified listener. You must specify either a listener or one or more rules.</p>"
+      "documentation":"<p>Describes the specified rules or the rules for the specified listener. You must specify either a listener or rules.</p>"
     },
     "DescribeSSLPolicies":{
       "name":"DescribeSSLPolicies",
@@ -998,7 +998,7 @@
         },
         "TargetGroupArn":{
           "shape":"TargetGroupArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the target group. Specify only when <code>Type</code> is <code>forward</code> and you want to route to a single target group. To route to one or more target groups, use <code>ForwardConfig</code> instead.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the target group. Specify only when <code>Type</code> is <code>forward</code> and you want to route to a single target group. To route to multiple target groups, you must use <code>ForwardConfig</code> instead.</p>"
         },
         "AuthenticateOidcConfig":{
           "shape":"AuthenticateOidcActionConfig",
@@ -1022,10 +1022,14 @@
         },
         "ForwardConfig":{
           "shape":"ForwardActionConfig",
-          "documentation":"<p>Information for creating an action that distributes requests among one or more target groups. For Network Load Balancers, you can specify a single target group. Specify only when <code>Type</code> is <code>forward</code>. If you specify both <code>ForwardConfig</code> and <code>TargetGroupArn</code>, you can specify only one target group using <code>ForwardConfig</code> and it must be the same target group specified in <code>TargetGroupArn</code>.</p>"
+          "documentation":"<p>Information for creating an action that distributes requests among multiple target groups. Specify only when <code>Type</code> is <code>forward</code>.</p> <p>If you specify both <code>ForwardConfig</code> and <code>TargetGroupArn</code>, you can specify only one target group using <code>ForwardConfig</code> and it must be the same target group specified in <code>TargetGroupArn</code>.</p>"
+        },
+        "JwtValidationConfig":{
+          "shape":"JwtValidationActionConfig",
+          "documentation":"<p>[HTTPS listeners] Information for validating JWT access tokens in client requests. Specify only when <code>Type</code> is <code>jwt-validation</code>.</p>"
         }
       },
-      "documentation":"<p>Information about an action.</p> <p>Each rule must include exactly one of the following types of actions: <code>forward</code>, <code>fixed-response</code>, or <code>redirect</code>, and it must be the last action to be performed.</p>"
+      "documentation":"<p>Information about an action.</p> <p>Each rule must include exactly one of the following routing actions: <code>forward</code>, <code>fixed-response</code>, or <code>redirect</code>, and it must be the last action to be performed.</p> <p>Optionally, a rule for an HTTPS listener can also include one of the following user authentication actions: <code>authenticate-oidc</code>, <code>authenticate-cognito</code>, or <code>jwt-validation</code>.</p>"
     },
     "ActionOrder":{
       "type":"integer",
@@ -1039,7 +1043,8 @@
         "authenticate-oidc",
         "authenticate-cognito",
         "redirect",
-        "fixed-response"
+        "fixed-response",
+        "jwt-validation"
       ]
     },
     "Actions":{
@@ -2512,7 +2517,7 @@
       "members":{
         "TargetGroups":{
           "shape":"TargetGroupList",
-          "documentation":"<p>The target groups. For Network Load Balancers, you can specify a single target group.</p>"
+          "documentation":"<p>The target groups.</p>"
         },
         "TargetGroupStickinessConfig":{
           "shape":"TargetGroupStickinessConfig",
@@ -2803,6 +2808,71 @@
       "documentation":"<p>An IPAM pool is a collection of IP address CIDRs. IPAM pools enable you to organize your IP addresses according to your routing and security needs.</p>"
     },
     "IsDefault":{"type":"boolean"},
+    "JwtValidationActionAdditionalClaim":{
+      "type":"structure",
+      "required":[
+        "Format",
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Format":{
+          "shape":"JwtValidationActionAdditionalClaimFormatEnum",
+          "documentation":"<p>The format of the claim value.</p>"
+        },
+        "Name":{
+          "shape":"JwtValidationActionAdditionalClaimName",
+          "documentation":"<p>The name of the claim. You can't specify <code>exp</code>, <code>iss</code>, <code>nbf</code>, or <code>iat</code> because we validate them by default.</p>"
+        },
+        "Values":{
+          "shape":"JwtValidationActionAdditionalClaimValues",
+          "documentation":"<p>The claim value. The maximum size of the list is 10. Each value can be up to 256 characters in length. If the format is <code>space-separated-values</code>, the values can't include spaces.</p>"
+        }
+      },
+      "documentation":"<p>Information about an additional claim to validate.</p>"
+    },
+    "JwtValidationActionAdditionalClaimFormatEnum":{
+      "type":"string",
+      "enum":[
+        "single-string",
+        "string-array",
+        "space-separated-values"
+      ]
+    },
+    "JwtValidationActionAdditionalClaimName":{"type":"string"},
+    "JwtValidationActionAdditionalClaimValue":{"type":"string"},
+    "JwtValidationActionAdditionalClaimValues":{
+      "type":"list",
+      "member":{"shape":"JwtValidationActionAdditionalClaimValue"}
+    },
+    "JwtValidationActionAdditionalClaims":{
+      "type":"list",
+      "member":{"shape":"JwtValidationActionAdditionalClaim"}
+    },
+    "JwtValidationActionConfig":{
+      "type":"structure",
+      "required":[
+        "JwksEndpoint",
+        "Issuer"
+      ],
+      "members":{
+        "JwksEndpoint":{
+          "shape":"JwtValidationActionJwksEndpoint",
+          "documentation":"<p>The JSON Web Key Set (JWKS) endpoint. This endpoint contains JSON Web Keys (JWK) that are used to validate signatures from the provider.</p> <p>This must be a full URL, including the HTTPS protocol, the domain, and the path. The maximum length is 256 characters.</p>"
+        },
+        "Issuer":{
+          "shape":"JwtValidationActionIssuer",
+          "documentation":"<p>The issuer of the JWT. The maximum length is 256 characters.</p>"
+        },
+        "AdditionalClaims":{
+          "shape":"JwtValidationActionAdditionalClaims",
+          "documentation":"<p>Additional claims to validate. The maximum size of the list is 10. We validate the <code>exp</code>, <code>iss</code>, <code>nbf</code>, and <code>iat</code> claims by default.</p>"
+        }
+      },
+      "documentation":"<p>Information about a JSON Web Token (JWT) validation action.</p>"
+    },
+    "JwtValidationActionIssuer":{"type":"string"},
+    "JwtValidationActionJwksEndpoint":{"type":"string"},
     "LastModifiedTime":{"type":"timestamp"},
     "Limit":{
       "type":"structure",
@@ -4073,7 +4143,7 @@
         },
         "EnforceSecurityGroupInboundRulesOnPrivateLinkTraffic":{
           "shape":"EnforceSecurityGroupInboundRulesOnPrivateLinkTrafficEnum",
-          "documentation":"<p>Indicates whether to evaluate inbound security group rules for traffic sent to a Network Load Balancer through Amazon Web Services PrivateLink. The default is <code>on</code>.</p>"
+          "documentation":"<p>Indicates whether to evaluate inbound security group rules for traffic sent to a Network Load Balancer through Amazon Web Services PrivateLink. Applies only if the load balancer has an associated security group. The default is <code>on</code>.</p>"
         }
       }
     },
@@ -4482,7 +4552,7 @@
         },
         "DurationSeconds":{
           "shape":"TargetGroupStickinessDurationSeconds",
-          "documentation":"<p>The time period, in seconds, during which requests from a client should be routed to the same target group. The range is 1-604800 seconds (7 days). You must specify this value when enabling target group stickiness.</p>"
+          "documentation":"<p>[Application Load Balancers] The time period, in seconds, during which requests from a client should be routed to the same target group. The range is 1-604800 seconds (7 days). You must specify this value when enabling target group stickiness.</p>"
         }
       },
       "documentation":"<p>Information about the target group stickiness for a rule.</p>"
@@ -4517,7 +4587,7 @@
         },
         "Reason":{
           "shape":"TargetHealthReasonEnum",
-          "documentation":"<p>The reason code.</p> <p>If the target state is <code>healthy</code>, a reason code is not provided.</p> <p>If the target state is <code>initial</code>, the reason code can be one of the following values:</p> <ul> <li> <p> <code>Elb.RegistrationInProgress</code> - The target is in the process of being registered with the load balancer.</p> </li> <li> <p> <code>Elb.InitialHealthChecking</code> - The load balancer is still sending the target the minimum number of health checks required to determine its health status.</p> </li> </ul> <p>If the target state is <code>unhealthy</code>, the reason code can be one of the following values:</p> <ul> <li> <p> <code>Target.ResponseCodeMismatch</code> - The health checks did not return an expected HTTP code. Applies only to Application Load Balancers and Gateway Load Balancers.</p> </li> <li> <p> <code>Target.Timeout</code> - The health check requests timed out. Applies only to Application Load Balancers and Gateway Load Balancers.</p> </li> <li> <p> <code>Target.FailedHealthChecks</code> - The load balancer received an error while establishing a connection to the target or the target response was malformed.</p> </li> <li> <p> <code>Elb.InternalError</code> - The health checks failed due to an internal error. Applies only to Application Load Balancers.</p> </li> </ul> <p>If the target state is <code>unused</code>, the reason code can be one of the following values:</p> <ul> <li> <p> <code>Target.NotRegistered</code> - The target is not registered with the target group.</p> </li> <li> <p> <code>Target.NotInUse</code> - The target group is not used by any load balancer or the target is in an Availability Zone that is not enabled for its load balancer.</p> </li> <li> <p> <code>Target.InvalidState</code> - The target is in the stopped or terminated state.</p> </li> <li> <p> <code>Target.IpUnusable</code> - The target IP address is reserved for use by a load balancer.</p> </li> </ul> <p>If the target state is <code>draining</code>, the reason code can be the following value:</p> <ul> <li> <p> <code>Target.DeregistrationInProgress</code> - The target is in the process of being deregistered and the deregistration delay period has not expired.</p> </li> </ul> <p>If the target state is <code>unavailable</code>, the reason code can be the following value:</p> <ul> <li> <p> <code>Target.HealthCheckDisabled</code> - Health checks are disabled for the target group. Applies only to Application Load Balancers.</p> </li> <li> <p> <code>Elb.InternalError</code> - Target health is unavailable due to an internal error. Applies only to Network Load Balancers.</p> </li> </ul>"
+          "documentation":"<p>The reason code.</p> <p>If the target state is <code>healthy</code>, a reason code is not provided.</p> <p>If the target state is <code>initial</code>, the reason code can be one of the following values:</p> <ul> <li> <p> <code>Elb.RegistrationInProgress</code> - The target is in the process of being registered with the load balancer.</p> </li> <li> <p> <code>Elb.InitialHealthChecking</code> - The load balancer is still sending the target the minimum number of health checks required to determine its health status.</p> </li> </ul> <p>If the target state is <code>unhealthy</code>, the reason code can be one of the following values:</p> <ul> <li> <p> <code>Target.ResponseCodeMismatch</code> - The health checks did not return an expected HTTP code.</p> </li> <li> <p> <code>Target.Timeout</code> - The health check requests timed out.</p> </li> <li> <p> <code>Target.FailedHealthChecks</code> - The load balancer received an error while establishing a connection to the target or the target response was malformed.</p> </li> <li> <p> <code>Elb.InternalError</code> - The health checks failed due to an internal error.</p> </li> </ul> <p>If the target state is <code>unused</code>, the reason code can be one of the following values:</p> <ul> <li> <p> <code>Target.NotRegistered</code> - The target is not registered with the target group.</p> </li> <li> <p> <code>Target.NotInUse</code> - The target group is not used by any load balancer or the target is in an Availability Zone that is not enabled for its load balancer.</p> </li> <li> <p> <code>Target.InvalidState</code> - The target is in the stopped or terminated state.</p> </li> <li> <p> <code>Target.IpUnusable</code> - The target IP address is reserved for use by a load balancer.</p> </li> </ul> <p>If the target state is <code>draining</code>, the reason code can be the following value:</p> <ul> <li> <p> <code>Target.DeregistrationInProgress</code> - The target is in the process of being deregistered and the deregistration delay period has not expired.</p> </li> </ul> <p>If the target state is <code>unavailable</code>, the reason code can be the following value:</p> <ul> <li> <p> <code>Target.HealthCheckDisabled</code> - Health checks are disabled for the target group.</p> </li> <li> <p> <code>Elb.InternalError</code> - Target health is unavailable due to an internal error.</p> </li> </ul>"
         },
         "Description":{
           "shape":"Description",

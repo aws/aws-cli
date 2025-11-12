@@ -5121,6 +5121,16 @@
       "output":{"shape":"GetHostReservationPurchasePreviewResult"},
       "documentation":"<p>Preview a reservation purchase with configurations that match those of your Dedicated Host. You must have active Dedicated Hosts in your account before you purchase a reservation.</p> <p>This is a preview of the <a>PurchaseHostReservation</a> action and does not result in the offering being purchased.</p>"
     },
+    "GetImageAncestry":{
+      "name":"GetImageAncestry",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetImageAncestryRequest"},
+      "output":{"shape":"GetImageAncestryResult"},
+      "documentation":"<p>Retrieves the ancestry chain of the specified AMI, tracing its lineage back to the root AMI. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-ancestry.html\">AMI ancestry</a> in <i>Amazon EC2 User Guide</i>.</p>"
+    },
     "GetImageBlockPublicAccessState":{
       "name":"GetImageBlockPublicAccessState",
       "http":{
@@ -36578,6 +36588,30 @@
         }
       }
     },
+    "GetImageAncestryRequest":{
+      "type":"structure",
+      "required":["ImageId"],
+      "members":{
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the AMI whose ancestry you want to trace.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetImageAncestryResult":{
+      "type":"structure",
+      "members":{
+        "ImageAncestryEntries":{
+          "shape":"ImageAncestryEntryList",
+          "documentation":"<p>A list of entries in the AMI ancestry chain, from the specified AMI to the root AMI.</p>",
+          "locationName":"imageAncestryEntrySet"
+        }
+      }
+    },
     "GetImageBlockPublicAccessStateRequest":{
       "type":"structure",
       "members":{
@@ -39302,6 +39336,44 @@
         }
       },
       "documentation":"<p>Describes an image.</p>"
+    },
+    "ImageAncestryEntry":{
+      "type":"structure",
+      "members":{
+        "CreationDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when this AMI was created.</p>",
+          "locationName":"creationDate"
+        },
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of this AMI.</p>",
+          "locationName":"imageId"
+        },
+        "ImageOwnerAlias":{
+          "shape":"String",
+          "documentation":"<p>The owner alias (<code>amazon</code> | <code>aws-backup-vault</code> | <code>aws-marketplace</code> ) of this AMI, if one is assigned. Otherwise, the value is <code>null</code>.</p>",
+          "locationName":"imageOwnerAlias"
+        },
+        "SourceImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the parent AMI.</p>",
+          "locationName":"sourceImageId"
+        },
+        "SourceImageRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region of the parent AMI.</p>",
+          "locationName":"sourceImageRegion"
+        }
+      },
+      "documentation":"<p>Information about a single AMI in the ancestry chain and its source (parent) AMI.</p>"
+    },
+    "ImageAncestryEntryList":{
+      "type":"list",
+      "member":{
+        "shape":"ImageAncestryEntry",
+        "locationName":"item"
+      }
     },
     "ImageAttribute":{
       "type":"structure",

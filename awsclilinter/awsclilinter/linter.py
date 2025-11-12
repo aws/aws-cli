@@ -40,13 +40,24 @@ class ScriptLinter:
 
     def refresh_finding(
         self, script_content: str, rule: LintRule, cursor_pos: int
-    ) -> Tuple[LintFinding, SgRoot] | None:
+    ) -> Tuple[LintFinding, SgRoot]:
         """Re-lint from cursor position and return the first finding and parsed root.
 
         Returns:
-            Tuple of (finding, root) if found, None otherwise. The root can be reused
-            in apply_single_fix to avoid re-parsing.
+            Tuple of (finding, root). The root can be reused in apply_single_fix to
+            avoid re-parsing.
+
+        Raises:
+            RuntimeError: If no finding is found after cursor_pos. This should never
+            happen as our rules are designed such that fixing one finding never
+            inadvertently resolves another.
         """
         root = SgRoot(script_content, "bash")
         findings = rule.check(root, start_pos=cursor_pos)
-        return (findings[0], root) if findings else None
+        if not findings:
+            raise RuntimeError(
+                f"Expected to find at least one issue for rule '{rule.name}' after position "
+                f"{cursor_pos}, but found none. This indicates a rule fix inadvertently "
+                f"resolved another finding, which should not happen."
+            )
+        return (findings[0], root)

@@ -174,3 +174,29 @@ class TestCLI:
                 fixed_content = output_file.read_text()
                 # Only first change should be applied since we pressed 's' on the second
                 assert fixed_content.count("--cli-binary-format") == 1
+
+    def test_interactive_mode_quit(self, tmp_path):
+        """Test interactive mode with 'q' to quit without saving."""
+        script_file = tmp_path / "test.sh"
+        output_file = tmp_path / "output.sh"
+        script_file.write_text(
+            "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json"
+        )
+
+        with patch(
+            "sys.argv",
+            [
+                "upgrade-aws-cli",
+                "--script",
+                str(script_file),
+                "--interactive",
+                "--output",
+                str(output_file),
+            ],
+        ):
+            with patch("builtins.input", return_value="q"):
+                with pytest.raises(SystemExit) as exc_info:
+                    main()
+                assert exc_info.value.code == 0
+                # Output file should not exist since we quit without saving
+                assert not output_file.exists()

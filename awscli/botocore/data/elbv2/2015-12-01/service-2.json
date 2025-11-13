@@ -3630,7 +3630,9 @@
         "TLS",
         "UDP",
         "TCP_UDP",
-        "GENEVE"
+        "GENEVE",
+        "QUIC",
+        "TCP_QUIC"
       ]
     },
     "ProtocolVersion":{"type":"string"},
@@ -3661,6 +3663,11 @@
     "QueryStringKeyValuePairList":{
       "type":"list",
       "member":{"shape":"QueryStringKeyValuePair"}
+    },
+    "QuicServerId":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "RedirectActionConfig":{
       "type":"structure",
@@ -4390,6 +4397,10 @@
         "AvailabilityZone":{
           "shape":"ZoneName",
           "documentation":"<p>An Availability Zone or <code>all</code>. This determines whether the target receives traffic from the load balancer nodes in the specified Availability Zone or from all enabled Availability Zones for the load balancer.</p> <p>For Application Load Balancer target groups, the specified Availability Zone value is only applicable when cross-zone load balancing is off. Otherwise the parameter is ignored and treated as <code>all</code>.</p> <p>This parameter is not supported if the target type of the target group is <code>instance</code> or <code>alb</code>.</p> <p>If the target type is <code>ip</code> and the IP address is in a subnet of the VPC for the target group, the Availability Zone is automatically detected and this parameter is optional. If the IP address is outside the VPC, this parameter is required.</p> <p>For Application Load Balancer target groups with cross-zone load balancing off, if the target type is <code>ip</code> and the IP address is outside of the VPC for the target group, this should be an Availability Zone inside the VPC for the target group.</p> <p>If the target type is <code>lambda</code>, this parameter is optional and the only supported value is <code>all</code>.</p>"
+        },
+        "QuicServerId":{
+          "shape":"QuicServerId",
+          "documentation":"<p>The server ID for the targets. This value is required if the protocol is <code>QUIC</code> or <code>TCP_QUIC</code> and can't be used with other protocols.</p> <p>The ID consists of the <code>0x</code> prefix followed by 16 hexadecimal characters. Any letters must be lowercase. The value must be unique at the listener level. You can't modify the server ID for a registered target. You must deregister the target and then provide a new server ID when you register the target again.</p>"
         }
       },
       "documentation":"<p>Information about a target.</p>"

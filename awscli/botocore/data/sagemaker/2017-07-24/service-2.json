@@ -5654,6 +5654,12 @@
         "Line"
       ]
     },
+    "AssignedGroupPatternsList":{
+      "type":"list",
+      "member":{"shape":"GroupNamePattern"},
+      "max":10,
+      "min":0
+    },
     "AssociateTrialComponentRequest":{
       "type":"structure",
       "required":[
@@ -6814,6 +6820,20 @@
       "type":"integer",
       "box":true,
       "min":0
+    },
+    "AvailableUpgrade":{
+      "type":"structure",
+      "members":{
+        "Version":{
+          "shape":"MajorMinorVersion",
+          "documentation":"<p>The semantic version number of the available upgrade for the SageMaker Partner AI App.</p>"
+        },
+        "ReleaseNotes":{
+          "shape":"ReleaseNotesList",
+          "documentation":"<p>A list of release notes describing the changes and improvements included in the available upgrade version.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an available upgrade for a SageMaker Partner AI App, including the version number and release notes.</p>"
     },
     "AwsManagedHumanLoopRequestSource":{
       "type":"string",
@@ -12663,6 +12683,11 @@
         "EnableIamSessionBasedIdentity":{
           "shape":"Boolean",
           "documentation":"<p>When set to <code>TRUE</code>, the SageMaker Partner AI App sets the Amazon Web Services IAM session name or the authenticated IAM user as the identity of the SageMaker Partner AI App user.</p>",
+          "box":true
+        },
+        "EnableAutoMinorVersionUpgrade":{
+          "shape":"Boolean",
+          "documentation":"<p>When set to <code>TRUE</code>, the SageMaker Partner AI App is automatically upgraded to the latest minor version during the next scheduled maintenance window, if one is available. Default is <code>FALSE</code>.</p>",
           "box":true
         },
         "ClientToken":{
@@ -18717,6 +18742,11 @@
         "Arn":{
           "shape":"PartnerAppArn",
           "documentation":"<p>The ARN of the SageMaker Partner AI App to describe.</p>"
+        },
+        "IncludeAvailableUpgrade":{
+          "shape":"Boolean",
+          "documentation":"<p>When set to <code>TRUE</code>, the response includes available upgrade information for the SageMaker Partner AI App. Default is <code>FALSE</code>.</p>",
+          "box":true
         }
       }
     },
@@ -18787,6 +18817,19 @@
         "Error":{
           "shape":"ErrorInfo",
           "documentation":"<p>This is an error field object that contains the error code and the reason for an operation failure.</p>"
+        },
+        "EnableAutoMinorVersionUpgrade":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the SageMaker Partner AI App is configured for automatic minor version upgrades during scheduled maintenance windows.</p>",
+          "box":true
+        },
+        "CurrentVersionEolDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end-of-life date for the current version of the SageMaker Partner AI App.</p>"
+        },
+        "AvailableUpgrade":{
+          "shape":"AvailableUpgrade",
+          "documentation":"<p>A map of available minor version upgrades for the SageMaker Partner AI App. The key is the semantic version number, and the value is a list of release notes for that version. A null value indicates no upgrades are available.</p>"
         }
       }
     },
@@ -22994,6 +23037,18 @@
       "max":63,
       "min":1,
       "pattern":"[\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]+"
+    },
+    "GroupNamePattern":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\w+=,.@*-]+"
+    },
+    "GroupPatternsList":{
+      "type":"list",
+      "member":{"shape":"GroupNamePattern"},
+      "max":10,
+      "min":1
     },
     "GroupingAttributeName":{
       "type":"string",
@@ -30870,6 +30925,12 @@
       "min":1,
       "pattern":"[a-zA-Z]+ ?\\d+\\.\\d+(\\.\\d+)?"
     },
+    "MajorMinorVersion":{
+      "type":"string",
+      "max":64,
+      "min":0,
+      "pattern":"\\d+\\.\\d+"
+    },
     "ManagedInstanceScalingMaxInstanceCount":{
       "type":"integer",
       "box":true,
@@ -32320,7 +32381,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]{9,16}:[0-9]{12}:model-package/[\\S]{1,2048}"
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]{9,16}:[0-9]{12}:model-package/[\\S]{1,2048}"
     },
     "ModelPackageArnList":{
       "type":"list",
@@ -34907,6 +34968,14 @@
         "Arguments":{
           "shape":"PartnerAppArguments",
           "documentation":"<p>This is a map of required inputs for a SageMaker Partner AI App. Based on the application type, the map is populated with a key and value pair that is specific to the user and application.</p>"
+        },
+        "AssignedGroupPatterns":{
+          "shape":"AssignedGroupPatternsList",
+          "documentation":"<p>A list of Amazon Web Services IAM Identity Center group patterns that can access the SageMaker Partner AI App. Group names support wildcard matching using <code>*</code>. An empty list indicates the app will not use Identity Center group features. All groups specified in <code>RoleGroupAssignments</code> must match patterns in this list.</p>"
+        },
+        "RoleGroupAssignments":{
+          "shape":"RoleGroupAssignmentsList",
+          "documentation":"<p>A map of in-app roles to Amazon Web Services IAM Identity Center group patterns. Groups assigned to specific roles receive those permissions, while groups in <code>AssignedGroupPatterns</code> but not in this map receive default in-app role depending on app type. Group patterns support wildcard matching using <code>*</code>. Currently supported by Fiddler version 1.3 and later with roles: <code>ORG_MEMBER</code> (default) and <code>ORG_ADMIN</code>.</p>"
         }
       },
       "documentation":"<p>Configuration settings for the SageMaker Partner AI App.</p>"
@@ -38096,6 +38165,12 @@
       "min":1,
       "pattern":".*"
     },
+    "ReleaseNotesList":{
+      "type":"list",
+      "member":{"shape":"String1024"},
+      "max":10,
+      "min":0
+    },
     "RemoteDebugConfig":{
       "type":"structure",
       "members":{
@@ -38748,6 +38823,30 @@
       "max":2048,
       "min":20,
       "pattern":"arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+"
+    },
+    "RoleGroupAssignment":{
+      "type":"structure",
+      "required":[
+        "RoleName",
+        "GroupPatterns"
+      ],
+      "members":{
+        "RoleName":{
+          "shape":"NonEmptyString256",
+          "documentation":"<p>The name of the in-app role within the SageMaker Partner AI App. The specific roles available depend on the app type and version.</p>"
+        },
+        "GroupPatterns":{
+          "shape":"GroupPatternsList",
+          "documentation":"<p>A list of AWS IAM Identity Center group patterns that should be assigned to the specified role. Group patterns support wildcard matching using <code>*</code>.</p>"
+        }
+      },
+      "documentation":"<p>Defines the mapping between an in-app role and the AWS IAM Identity Center group patterns that should be assigned to that role within the SageMaker Partner AI App.</p>"
+    },
+    "RoleGroupAssignmentsList":{
+      "type":"list",
+      "member":{"shape":"RoleGroupAssignment"},
+      "max":10,
+      "min":0
     },
     "RollingDeploymentPolicy":{
       "type":"structure",
@@ -44937,6 +45036,15 @@
           "shape":"Boolean",
           "documentation":"<p>When set to <code>TRUE</code>, the SageMaker Partner AI App sets the Amazon Web Services IAM session name or the authenticated IAM user as the identity of the SageMaker Partner AI App user.</p>",
           "box":true
+        },
+        "EnableAutoMinorVersionUpgrade":{
+          "shape":"Boolean",
+          "documentation":"<p>When set to <code>TRUE</code>, the SageMaker Partner AI App is automatically upgraded to the latest minor version during the next scheduled maintenance window, if one is available.</p>",
+          "box":true
+        },
+        "AppVersion":{
+          "shape":"MajorMinorVersion",
+          "documentation":"<p>The semantic version to upgrade the SageMaker Partner AI App to. Must be the same semantic version returned in the <code>AvailableUpgrade</code> field from <code>DescribePartnerApp</code>. Version skipping and downgrades are not supported.</p>"
         },
         "ClientToken":{
           "shape":"ClientToken",

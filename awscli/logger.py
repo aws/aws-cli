@@ -17,6 +17,20 @@ import awscrt.io
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
 
+try:
+    # Initializing CRT logging isn't thread-safe, but setting/updating it is.
+    # So we always initialize logging when this module is imported so
+    # subsequent enable/disable CRT logging calls can safely assume it's
+    # already initialized.
+    awscrt.io.init_logging(awscrt.io.LogLevel.NoLogs, 'stderr')
+except RuntimeError:
+    # Calling `init_logging` more than once raises a Runtime exception.
+    # Even though normal usage shouldn't call it more than once in the
+    # case of multiple imports, we should still guard against it if
+    # something causes the module cache to be cleared between imports.
+    pass
+
+
 def set_stream_logger(logger_name, log_level, stream=None, format_string=None):
     """
     Convenience method to configure a stream logger.
@@ -77,8 +91,8 @@ def remove_stream_logger(logger_name):
 
 
 def enable_crt_logging():
-    awscrt.io.init_logging(awscrt.io.LogLevel.Debug, 'stderr')
+    awscrt.io.set_log_level(awscrt.io.LogLevel.Debug)
 
 
 def disable_crt_logging():
-    awscrt.io.init_logging(awscrt.io.LogLevel.NoLogs, 'stderr')
+    awscrt.io.set_log_level(awscrt.io.LogLevel.NoLogs)

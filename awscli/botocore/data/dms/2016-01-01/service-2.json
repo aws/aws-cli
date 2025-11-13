@@ -56,6 +56,36 @@
       ],
       "documentation":"<important> <p> End of support notice: On May 20, 2026, Amazon Web Services will end support for Amazon Web Services DMS Fleet Advisor;. After May 20, 2026, you will no longer be able to access the Amazon Web Services DMS Fleet Advisor; console or Amazon Web Services DMS Fleet Advisor; resources. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/dms_fleet.advisor-end-of-support.html\">Amazon Web Services DMS Fleet Advisor end of support</a>. </p> </important> <p>Starts the analysis of up to 20 source databases to recommend target engines for each source database. This is a batch version of <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_StartRecommendations.html\">StartRecommendations</a>.</p> <p>The result of analysis of each source database is reported individually in the response. Because the batch request can result in a combination of successful and unsuccessful actions, you should check for batch errors even when the call returns an HTTP status code of <code>200</code>.</p>"
     },
+    "CancelMetadataModelConversion":{
+      "name":"CancelMetadataModelConversion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelMetadataModelConversionMessage"},
+      "output":{"shape":"CancelMetadataModelConversionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"AccessDeniedFault"}
+      ],
+      "documentation":"<p>Cancels a single metadata model conversion operation that was started with <code>StartMetadataModelConversion</code>.</p>"
+    },
+    "CancelMetadataModelCreation":{
+      "name":"CancelMetadataModelCreation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelMetadataModelCreationMessage"},
+      "output":{"shape":"CancelMetadataModelCreationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"AccessDeniedFault"}
+      ],
+      "documentation":"<p>Cancels a single metadata model creation operation that was started with <code>StartMetadataModelCreation</code>.</p>"
+    },
     "CancelReplicationTaskAssessmentRun":{
       "name":"CancelReplicationTaskAssessmentRun",
       "http":{
@@ -764,6 +794,20 @@
       ],
       "documentation":"<p>Returns a paginated list of instance profiles for your account in the current region.</p>"
     },
+    "DescribeMetadataModel":{
+      "name":"DescribeMetadataModel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeMetadataModelMessage"},
+      "output":{"shape":"DescribeMetadataModelResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"AccessDeniedFault"}
+      ],
+      "documentation":"<p>Gets detailed information about the specified metadata model, including its definition and corresponding converted objects in the target database if applicable.</p>"
+    },
     "DescribeMetadataModelAssessments":{
       "name":"DescribeMetadataModelAssessments",
       "http":{
@@ -777,6 +821,20 @@
       ],
       "documentation":"<p>Returns a paginated list of metadata model assessments for your account in the current region.</p>"
     },
+    "DescribeMetadataModelChildren":{
+      "name":"DescribeMetadataModelChildren",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeMetadataModelChildrenMessage"},
+      "output":{"shape":"DescribeMetadataModelChildrenResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"AccessDeniedFault"}
+      ],
+      "documentation":"<p>Gets a list of child metadata models for the specified metadata model in the database hierarchy.</p>"
+    },
     "DescribeMetadataModelConversions":{
       "name":"DescribeMetadataModelConversions",
       "http":{
@@ -789,6 +847,20 @@
         {"shape":"ResourceNotFoundFault"}
       ],
       "documentation":"<p>Returns a paginated list of metadata model conversions for a migration project.</p>"
+    },
+    "DescribeMetadataModelCreations":{
+      "name":"DescribeMetadataModelCreations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeMetadataModelCreationsMessage"},
+      "output":{"shape":"DescribeMetadataModelCreationsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"AccessDeniedFault"}
+      ],
+      "documentation":"<p>Returns a paginated list of metadata model creation requests for a migration project.</p>"
     },
     "DescribeMetadataModelExportsAsScript":{
       "name":"DescribeMetadataModelExportsAsScript",
@@ -1082,6 +1154,21 @@
         {"shape":"ResourceNotFoundFault"}
       ],
       "documentation":"<p>Saves a copy of a database migration assessment report to your Amazon S3 bucket. DMS can save your assessment report as a comma-separated value (CSV) or a PDF file. </p>"
+    },
+    "GetTargetSelectionRules":{
+      "name":"GetTargetSelectionRules",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetTargetSelectionRulesMessage"},
+      "output":{"shape":"GetTargetSelectionRulesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"AccessDeniedFault"}
+      ],
+      "documentation":"<p>Converts source selection rules into their target counterparts for schema conversion operations.</p>"
     },
     "ImportCertificate":{
       "name":"ImportCertificate",
@@ -1483,6 +1570,22 @@
       ],
       "documentation":"<p>Converts your source database objects to a format compatible with the target database. </p>"
     },
+    "StartMetadataModelCreation":{
+      "name":"StartMetadataModelCreation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartMetadataModelCreationMessage"},
+      "output":{"shape":"StartMetadataModelCreationResponse"},
+      "errors":[
+        {"shape":"ResourceAlreadyExistsFault"},
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"ResourceQuotaExceededFault"},
+        {"shape":"AccessDeniedFault"}
+      ],
+      "documentation":"<p>Creates source metadata model of the given type with the specified properties for schema conversion operations.</p> <note> <p>This action supports only these directions: from SQL Server to Aurora PostgreSQL, or from SQL Server to RDS for PostgreSQL.</p> </note>"
+    },
     "StartMetadataModelExportAsScript":{
       "name":"StartMetadataModelExportAsScript",
       "http":{
@@ -1882,6 +1985,52 @@
     },
     "Boolean":{"type":"boolean"},
     "BooleanOptional":{"type":"boolean"},
+    "CancelMetadataModelConversionMessage":{
+      "type":"structure",
+      "required":[
+        "MigrationProjectIdentifier",
+        "RequestIdentifier"
+      ],
+      "members":{
+        "MigrationProjectIdentifier":{
+          "shape":"MigrationProjectIdentifier",
+          "documentation":"<p>The migration project name or Amazon Resource Name (ARN).</p>"
+        },
+        "RequestIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the metadata model conversion operation to cancel. This operation was initiated by StartMetadataModelConversion.</p>"
+        }
+      }
+    },
+    "CancelMetadataModelConversionResponse":{
+      "type":"structure",
+      "members":{
+        "Request":{"shape":"SchemaConversionRequest"}
+      }
+    },
+    "CancelMetadataModelCreationMessage":{
+      "type":"structure",
+      "required":[
+        "MigrationProjectIdentifier",
+        "RequestIdentifier"
+      ],
+      "members":{
+        "MigrationProjectIdentifier":{
+          "shape":"MigrationProjectIdentifier",
+          "documentation":"<p>The migration project name or Amazon Resource Name (ARN).</p>"
+        },
+        "RequestIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the metadata model creation operation to cancel. This operation was initiated by <code>StartMetadataModelCreation</code>.</p>"
+        }
+      }
+    },
+    "CancelMetadataModelCreationResponse":{
+      "type":"structure",
+      "members":{
+        "Request":{"shape":"SchemaConversionRequest"}
+      }
+    },
     "CancelReplicationTaskAssessmentRunMessage":{
       "type":"structure",
       "required":["ReplicationTaskAssessmentRunArn"],
@@ -4286,6 +4435,49 @@
         }
       }
     },
+    "DescribeMetadataModelChildrenMessage":{
+      "type":"structure",
+      "required":[
+        "SelectionRules",
+        "MigrationProjectIdentifier",
+        "Origin"
+      ],
+      "members":{
+        "SelectionRules":{
+          "shape":"String",
+          "documentation":"<p>The JSON string that specifies which metadata model's children to retrieve. Only one selection rule with \"rule-action\": \"explicit\" can be provided. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TableMapping.SelectionTransformation.Selections.html\">Selection Rules</a> in the DMS User Guide.</p>"
+        },
+        "MigrationProjectIdentifier":{
+          "shape":"MigrationProjectIdentifier",
+          "documentation":"<p>The migration project name or Amazon Resource Name (ARN).</p>"
+        },
+        "Origin":{
+          "shape":"OriginTypeValue",
+          "documentation":"<p>Specifies whether to retrieve metadata from the source or target tree. Valid values: SOURCE | TARGET</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>Specifies the unique pagination token that indicates where the next page should start. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of metadata model children to include in the response. If more items exist than the specified MaxRecords value, a marker is included in the response so that the remaining results can be retrieved.</p>"
+        }
+      }
+    },
+    "DescribeMetadataModelChildrenResponse":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>Specifies the unique pagination token that makes it possible to display the next page of metadata model children. If a marker is returned, there are more metadata model children available.</p>"
+        },
+        "MetadataModelChildren":{
+          "shape":"MetadataModelReferenceList",
+          "documentation":"<p>A list of child metadata models.</p>"
+        }
+      }
+    },
     "DescribeMetadataModelConversionsMessage":{
       "type":"structure",
       "required":["MigrationProjectIdentifier"],
@@ -4318,6 +4510,41 @@
         "Requests":{
           "shape":"SchemaConversionRequestList",
           "documentation":"<p>A paginated list of metadata model conversions.</p>"
+        }
+      }
+    },
+    "DescribeMetadataModelCreationsMessage":{
+      "type":"structure",
+      "required":["MigrationProjectIdentifier"],
+      "members":{
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>Filters applied to the metadata model creation requests described in the form of key-value pairs. The supported filters are request-id and status.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>Specifies the unique pagination token that makes it possible to display the next page of metadata model creation requests. If Marker is returned by a previous response, there are more metadata model creation requests available.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of metadata model creation requests to include in the response. If more requests exist than the specified MaxRecords value, a pagination token is provided in the response so that you can retrieve the remaining results.</p>"
+        },
+        "MigrationProjectIdentifier":{
+          "shape":"MigrationProjectIdentifier",
+          "documentation":"<p>The migration project name or Amazon Resource Name (ARN).</p>"
+        }
+      }
+    },
+    "DescribeMetadataModelCreationsResponse":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>Specifies the unique pagination token that makes it possible to display the next page of metadata model creation requests. If Marker is returned, there are more metadata model creation requests available.</p>"
+        },
+        "Requests":{
+          "shape":"SchemaConversionRequestList",
+          "documentation":"<p>A list of metadata model creation requests. The ExportSqlDetails field will never be populated for the DescribeMetadataModelCreations operation.</p>"
         }
       }
     },
@@ -4423,6 +4650,49 @@
         "Requests":{
           "shape":"SchemaConversionRequestList",
           "documentation":"<p>A paginated list of metadata model imports.</p>"
+        }
+      }
+    },
+    "DescribeMetadataModelMessage":{
+      "type":"structure",
+      "required":[
+        "SelectionRules",
+        "MigrationProjectIdentifier",
+        "Origin"
+      ],
+      "members":{
+        "SelectionRules":{
+          "shape":"String",
+          "documentation":"<p>The JSON string that specifies which metadata model to retrieve. Only one selection rule with \"rule-action\": \"explicit\" can be provided. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TableMapping.SelectionTransformation.Selections.html\">Selection Rules</a> in the DMS User Guide.</p>"
+        },
+        "MigrationProjectIdentifier":{
+          "shape":"MigrationProjectIdentifier",
+          "documentation":"<p>The migration project name or Amazon Resource Name (ARN).</p>"
+        },
+        "Origin":{
+          "shape":"OriginTypeValue",
+          "documentation":"<p>Specifies whether to retrieve metadata from the source or target tree. Valid values: SOURCE | TARGET</p>"
+        }
+      }
+    },
+    "DescribeMetadataModelResponse":{
+      "type":"structure",
+      "members":{
+        "MetadataModelName":{
+          "shape":"String",
+          "documentation":"<p>The name of the metadata model.</p>"
+        },
+        "MetadataModelType":{
+          "shape":"String",
+          "documentation":"<p>The type of the metadata model.</p>"
+        },
+        "TargetMetadataModels":{
+          "shape":"MetadataModelReferenceList",
+          "documentation":"<p>A list of counterpart metadata models in the target. This field is populated only when Origin is SOURCE and after the object has been converted by DMS Schema Conversion.</p>"
+        },
+        "Definition":{
+          "shape":"String",
+          "documentation":"<p>The SQL text of the metadata model. This field might not be populated for some metadata models.</p>"
         }
       }
     },
@@ -5759,6 +6029,32 @@
       },
       "documentation":"<p>Settings in JSON format for the source GCP MySQL endpoint.</p>"
     },
+    "GetTargetSelectionRulesMessage":{
+      "type":"structure",
+      "required":[
+        "MigrationProjectIdentifier",
+        "SelectionRules"
+      ],
+      "members":{
+        "MigrationProjectIdentifier":{
+          "shape":"MigrationProjectIdentifier",
+          "documentation":"<p>The migration project name or Amazon Resource Name (ARN).</p>"
+        },
+        "SelectionRules":{
+          "shape":"String",
+          "documentation":"<p>The JSON string representing the source selection rules for conversion. Selection rules must contain only supported metadata model types. For more information, see Selection Rules in the DMS User Guide.</p>"
+        }
+      }
+    },
+    "GetTargetSelectionRulesResponse":{
+      "type":"structure",
+      "members":{
+        "TargetSelectionRules":{
+          "shape":"String",
+          "documentation":"<p>The JSON string representing the counterpart selection rules in the target.</p>"
+        }
+      }
+    },
     "IBMDb2Settings":{
       "type":"structure",
       "members":{
@@ -6403,6 +6699,35 @@
         "json",
         "json-unformatted"
       ]
+    },
+    "MetadataModelProperties":{
+      "type":"structure",
+      "members":{
+        "StatementProperties":{
+          "shape":"StatementProperties",
+          "documentation":"<p>The properties of the statement.</p>"
+        }
+      },
+      "documentation":"<p>The properties of metadata model in JSON format. This object is a Union. Only one member of this object can be specified or returned.</p>",
+      "union":true
+    },
+    "MetadataModelReference":{
+      "type":"structure",
+      "members":{
+        "MetadataModelName":{
+          "shape":"String",
+          "documentation":"<p>The name of the metadata model.</p>"
+        },
+        "SelectionRules":{
+          "shape":"String",
+          "documentation":"<p>The JSON string representing metadata model location.</p>"
+        }
+      },
+      "documentation":"<p>A reference to a metadata model, including its name and selection rules for location identification.</p>"
+    },
+    "MetadataModelReferenceList":{
+      "type":"list",
+      "member":{"shape":"MetadataModelReference"}
     },
     "MicrosoftSQLServerSettings":{
       "type":"structure",
@@ -9913,6 +10238,42 @@
         }
       }
     },
+    "StartMetadataModelCreationMessage":{
+      "type":"structure",
+      "required":[
+        "MigrationProjectIdentifier",
+        "SelectionRules",
+        "MetadataModelName",
+        "Properties"
+      ],
+      "members":{
+        "MigrationProjectIdentifier":{
+          "shape":"MigrationProjectIdentifier",
+          "documentation":"<p>The migration project name or Amazon Resource Name (ARN).</p>"
+        },
+        "SelectionRules":{
+          "shape":"String",
+          "documentation":"<p>The JSON string that specifies the location where the metadata model will be created. Selection rules must specify a single schema. For more information, see Selection Rules in the DMS User Guide.</p>"
+        },
+        "MetadataModelName":{
+          "shape":"String",
+          "documentation":"<p>The name of the metadata model.</p>"
+        },
+        "Properties":{
+          "shape":"MetadataModelProperties",
+          "documentation":"<p>The properties of metadata model in JSON format. This object is a Union. Only one member of this object can be specified or returned.</p>"
+        }
+      }
+    },
+    "StartMetadataModelCreationResponse":{
+      "type":"structure",
+      "members":{
+        "RequestIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the metadata model creation operation.</p>"
+        }
+      }
+    },
     "StartMetadataModelExportAsScriptMessage":{
       "type":"structure",
       "required":[
@@ -10235,6 +10596,17 @@
         "reload-target"
       ]
     },
+    "StatementProperties":{
+      "type":"structure",
+      "required":["Definition"],
+      "members":{
+        "Definition":{
+          "shape":"String",
+          "documentation":"<p>The SQL text of the statement.</p>"
+        }
+      },
+      "documentation":"<p>The properties of the statement for metadata model creation.</p>"
+    },
     "StopDataMigrationMessage":{
       "type":"structure",
       "required":["DataMigrationIdentifier"],
@@ -10420,9 +10792,9 @@
     "TablePreparationMode":{
       "type":"string",
       "enum":[
-        "do-nothing",
+        "drop-tables-on-target",
         "truncate",
-        "drop-tables-on-target"
+        "do-nothing"
       ]
     },
     "TableStatistics":{

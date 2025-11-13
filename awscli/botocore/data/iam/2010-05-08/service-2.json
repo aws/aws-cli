@@ -160,6 +160,26 @@
       ],
       "documentation":"<p>Creates an alias for your Amazon Web Services account. For information about using an Amazon Web Services account alias, see <a href=\"https://docs.aws.amazon.com/signin/latest/userguide/CreateAccountAlias.html\">Creating, deleting, and listing an Amazon Web Services account alias</a> in the <i>Amazon Web Services Sign-In User Guide</i>.</p>"
     },
+    "CreateDelegationRequest":{
+      "name":"CreateDelegationRequest",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateDelegationRequestRequest"},
+      "output":{
+        "shape":"CreateDelegationRequestResponse",
+        "resultWrapper":"CreateDelegationRequestResult"
+      },
+      "errors":[
+        {"shape":"EntityAlreadyExistsException"},
+        {"shape":"ServiceFailureException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>This API is currently unavailable for general use.</p>"
+    },
     "CreateGroup":{
       "name":"CreateGroup",
       "http":{
@@ -3133,6 +3153,67 @@
         }
       }
     },
+    "CreateDelegationRequestRequest":{
+      "type":"structure",
+      "required":[
+        "Description",
+        "Permissions",
+        "RequestorWorkflowId",
+        "NotificationChannel",
+        "SessionDuration"
+      ],
+      "members":{
+        "OwnerAccountId":{
+          "shape":"accountIdType",
+          "documentation":"<p/>"
+        },
+        "Description":{
+          "shape":"delegationRequestDescriptionType",
+          "documentation":"<p/>"
+        },
+        "Permissions":{
+          "shape":"DelegationPermission",
+          "documentation":"<p/>"
+        },
+        "RequestMessage":{
+          "shape":"requestMessageType",
+          "documentation":"<p/>"
+        },
+        "RequestorWorkflowId":{
+          "shape":"requestorWorkflowIdType",
+          "documentation":"<p/>"
+        },
+        "RedirectUrl":{
+          "shape":"redirectUrlType",
+          "documentation":"<p/>"
+        },
+        "NotificationChannel":{
+          "shape":"notificationChannelType",
+          "documentation":"<p/>"
+        },
+        "SessionDuration":{
+          "shape":"sessionDurationType",
+          "documentation":"<p/>"
+        },
+        "OnlySendByOwner":{
+          "shape":"booleanType",
+          "documentation":"<p/>"
+        }
+      }
+    },
+    "CreateDelegationRequestResponse":{
+      "type":"structure",
+      "members":{
+        "ConsoleDeepLink":{
+          "shape":"consoleDeepLinkType",
+          "documentation":"<p/>"
+        },
+        "DelegationRequestId":{
+          "shape":"delegationRequestIdType",
+          "documentation":"<p/>"
+        }
+      }
+    },
     "CreateGroupRequest":{
       "type":"structure",
       "required":["GroupName"],
@@ -3582,6 +3663,17 @@
           "documentation":"<p>The serial number that uniquely identifies the MFA device. For virtual MFA devices, the serial number is the device ARN.</p> <p>This parameter allows (through its <a href=\"http://wikipedia.org/wiki/regex\">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: =,.@:/-</p>"
         }
       }
+    },
+    "DelegationPermission":{
+      "type":"structure",
+      "members":{
+        "PolicyTemplateArn":{"shape":"arnType"},
+        "Parameters":{
+          "shape":"policyParameterListType",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
     },
     "DeleteAccessKeyRequest":{
       "type":"structure",
@@ -6995,6 +7087,31 @@
       },
       "exception":true
     },
+    "PolicyParameter":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"policyParameterNameType",
+          "documentation":"<p/>"
+        },
+        "Values":{
+          "shape":"policyParameterValuesListType",
+          "documentation":"<p/>"
+        },
+        "Type":{
+          "shape":"PolicyParameterTypeEnum",
+          "documentation":"<p/>"
+        }
+      },
+      "documentation":"<p/>"
+    },
+    "PolicyParameterTypeEnum":{
+      "type":"string",
+      "enum":[
+        "string",
+        "stringList"
+      ]
+    },
     "PolicyRole":{
       "type":"structure",
       "members":{
@@ -8985,6 +9102,10 @@
       "min":3,
       "pattern":"^[a-z0-9]([a-z0-9]|-(?!-)){1,61}[a-z0-9]$"
     },
+    "accountIdType":{
+      "type":"string",
+      "pattern":"\\d{12}"
+    },
     "allUsers":{
       "type":"boolean",
       "box":true
@@ -9058,6 +9179,11 @@
       "max":255,
       "min":1
     },
+    "consoleDeepLinkType":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
     "credentialAgeDays":{
       "type":"integer",
       "max":36600,
@@ -9073,6 +9199,17 @@
       "pattern":"[\\w+=,.@-]+"
     },
     "dateType":{"type":"timestamp"},
+    "delegationRequestDescriptionType":{
+      "type":"string",
+      "max":1000,
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]*"
+    },
+    "delegationRequestIdType":{
+      "type":"string",
+      "max":128,
+      "min":16,
+      "pattern":"[\\w-]+"
+    },
     "deleteConflictMessage":{"type":"string"},
     "duplicateCertificateMessage":{"type":"string"},
     "duplicateSSHPublicKeyMessage":{"type":"string"},
@@ -9203,6 +9340,11 @@
       "min":6
     },
     "noSuchEntityMessage":{"type":"string"},
+    "notificationChannelType":{
+      "type":"string",
+      "max":400,
+      "min":2
+    },
     "openIdIdpCommunicationErrorExceptionMessage":{"type":"string"},
     "organizationsEntityPathType":{
       "type":"string",
@@ -9287,6 +9429,21 @@
         "GROUP"
       ]
     },
+    "policyParameterListType":{
+      "type":"list",
+      "member":{"shape":"PolicyParameter"},
+      "max":50
+    },
+    "policyParameterNameType":{
+      "type":"string",
+      "max":256,
+      "min":5
+    },
+    "policyParameterValueType":{"type":"string"},
+    "policyParameterValuesListType":{
+      "type":"list",
+      "member":{"shape":"policyParameterValueType"}
+    },
     "policyPathType":{
       "type":"string",
       "max":512,
@@ -9348,7 +9505,23 @@
       "min":1,
       "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+"
     },
+    "redirectUrlType":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^http(s?)://[a-zA-Z0-9._/-]*(\\?[a-zA-Z0-9._=&-]*)?(#[a-zA-Z0-9._/-]*)?$"
+    },
     "reportGenerationLimitExceededMessage":{"type":"string"},
+    "requestMessageType":{
+      "type":"string",
+      "max":200,
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]*"
+    },
+    "requestorWorkflowIdType":{
+      "type":"string",
+      "max":400,
+      "min":5
+    },
     "responseMarkerType":{"type":"string"},
     "roleDescriptionType":{
       "type":"string",
@@ -9432,6 +9605,11 @@
       "max":200,
       "min":0,
       "pattern":"[\\w+=,.@-]*"
+    },
+    "sessionDurationType":{
+      "type":"integer",
+      "max":43200,
+      "min":3600
     },
     "sortKeyType":{
       "type":"string",

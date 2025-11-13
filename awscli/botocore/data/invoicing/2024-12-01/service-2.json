@@ -30,7 +30,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>This gets the invoice profile associated with a set of accounts. The accounts must be linked accounts under the requester management account organization.</p>"
+      "documentation":"<p>This gets the invoice profile associated with a set of accounts. The accounts must be linked accounts under the requester management account organization.</p>",
+      "readonly":true
     },
     "CreateInvoiceUnit":{
       "name":"CreateInvoiceUnit",
@@ -65,6 +66,24 @@
       ],
       "documentation":"<p>This deletes an invoice unit with the provided invoice unit ARN. </p>"
     },
+    "GetInvoicePDF":{
+      "name":"GetInvoicePDF",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetInvoicePDFRequest"},
+      "output":{"shape":"GetInvoicePDFResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a URL to download the invoice document and supplemental documents associated with an invoice. The URLs are pre-signed and have expiration time. For special cases like Brazil, where Amazon Web Services generated invoice identifiers and government provided identifiers do not match, use the Amazon Web Services generated invoice identifier when making API requests. To grant IAM permission to use this operation, the caller needs the <code>invoicing:GetInvoicePDF</code> policy action.</p>",
+      "readonly":true
+    },
     "GetInvoiceUnit":{
       "name":"GetInvoiceUnit",
       "http":{
@@ -80,7 +99,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>This retrieves the invoice unit definition.</p>"
+      "documentation":"<p>This retrieves the invoice unit definition.</p>",
+      "readonly":true
     },
     "ListInvoiceSummaries":{
       "name":"ListInvoiceSummaries",
@@ -113,7 +133,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>This fetches a list of all invoice unit definitions for a given account, as of the provided <code>AsOf</code> date.</p>"
+      "documentation":"<p>This fetches a list of all invoice unit definitions for a given account, as of the provided <code>AsOf</code> date.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -130,7 +151,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the tags for a resource. </p>"
+      "documentation":"<p>Lists the tags for a resource. </p>",
+      "readonly":true
     },
     "TagResource":{
       "name":"TagResource",
@@ -489,6 +511,25 @@
       },
       "documentation":"<p>An optional input to the list API. If multiple filters are specified, the returned list will be a configuration that match all of the provided filters. Supported filter types are <code>InvoiceReceivers</code>, <code>Names</code>, and <code>Accounts</code>. </p>"
     },
+    "GetInvoicePDFRequest":{
+      "type":"structure",
+      "required":["InvoiceId"],
+      "members":{
+        "InvoiceId":{
+          "shape":"StringWithoutNewLine",
+          "documentation":"<p> Your unique invoice ID. </p>"
+        }
+      }
+    },
+    "GetInvoicePDFResponse":{
+      "type":"structure",
+      "members":{
+        "InvoicePDF":{
+          "shape":"InvoicePDF",
+          "documentation":"<p> The invoice document and supplemental documents associated with the invoice. </p>"
+        }
+      }
+    },
     "GetInvoiceUnitRequest":{
       "type":"structure",
       "required":["InvoiceUnitArn"],
@@ -576,6 +617,28 @@
         }
       },
       "documentation":"<p> The amount charged after taxes, in the preferred currency. </p>"
+    },
+    "InvoicePDF":{
+      "type":"structure",
+      "members":{
+        "InvoiceId":{
+          "shape":"StringWithoutNewLine",
+          "documentation":"<p> Your unique invoice ID. </p>"
+        },
+        "DocumentUrl":{
+          "shape":"StringWithoutNewLine",
+          "documentation":"<p>The pre-signed URL to download the invoice document. </p>"
+        },
+        "DocumentUrlExpirationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The pre-signed URL expiration date of the invoice document.</p>"
+        },
+        "SupplementalDocuments":{
+          "shape":"SupplementalDocuments",
+          "documentation":"<p>List of supplemental documents associated with the invoice.</p>"
+        }
+      },
+      "documentation":"<p> Invoice document data. </p>"
     },
     "InvoiceProfile":{
       "type":"structure",
@@ -1014,6 +1077,24 @@
       "min":0,
       "pattern":".*"
     },
+    "SupplementalDocument":{
+      "type":"structure",
+      "members":{
+        "DocumentUrl":{
+          "shape":"StringWithoutNewLine",
+          "documentation":"<p>The pre-signed URL to download invoice supplemental document.</p>"
+        },
+        "DocumentUrlExpirationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The pre-signed URL expiration date of invoice supplemental document.</p>"
+        }
+      },
+      "documentation":"<p>Supplemental document associated with the invoice.</p>"
+    },
+    "SupplementalDocuments":{
+      "type":"list",
+      "member":{"shape":"SupplementalDocument"}
+    },
     "TagResourceRequest":{
       "type":"structure",
       "required":[
@@ -1033,8 +1114,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagrisArn":{
       "type":"string",
@@ -1107,8 +1187,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateInvoiceUnitRequest":{
       "type":"structure",

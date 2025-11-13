@@ -2,6 +2,95 @@
 CHANGELOG
 =========
 
+2.31.35
+=======
+
+* api-change:``sagemaker``: Add support for trn2.3xlarge instance type for SageMaker Hyperpod
+* api-change:``connect``: Updated Authentication Profile APIs to add support for automatic logout on user inactivity
+* api-change:``amp``: Add VPC source configuration support enabling Amazon Managed Service for Prometheus Collector to collect metrics from MSK clusters.
+* api-change:``ec2``: Adds complete AMI ancestry tracing from immediate parent through each preceding generation back to the root AMI
+* api-change:``dms``: Added support of SQL statements creation, metadata model discovery and selection rules transformation.
+* api-change:``s3tables``: Adds support for request metrics metrics APIs for S3 Tables
+* api-change:``redshift``: Added GetIdentityCenterAuthToken API to retrieve encrypted authentication tokens for Identity Center integrated applications. This API enables programmatic access to secure Identity Center tokens with proper error handling and parameter validation across supported SDK languages.
+* api-change:``elbv2``: This release expands ALB Authentication to support JWT verification and adds support for a new JWT validation action in listener rule.
+
+
+2.31.34
+=======
+
+* api-change:``medical-imaging``: Added new fields in existing APIs.
+* api-change:``rtbfabric``: Added LogSettings and LinkAttribute fields to external links
+* api-change:``ec2``: AWS Site-to-Site VPN now supports VPN connections with up to 5 Gbps bandwidth per tunnel, a 4x improvement from existing limit of 1.25 Gbps.
+* api-change:``security-ir``: Added support for configuring communication preferences as well as clearly displaying case comment author identities.
+* api-change:``batch``: Documentation-only update: update API and doc descriptions per EKS ImageType default value switch from AL2 to AL2023.
+* api-change:``bedrock-data-automation``: Added support for Language Expansion feature for BDA Audio modality.
+
+
+2.31.33
+=======
+
+* api-change:``guardduty``: Include tags filed in CreatePublishingDestinationRequest and DescribePublishingDestinationResponse.
+* api-change:``ec2``: Amazon EC2 Fleet customers can now filter instance types based on encryption-in-transit support using Attribute-Based Instance Type Selection (ABIS), eliminating the manual effort of identifying and selecting compatible instance types for security-sensitive workloads.
+* api-change:``acm-pca``: Private Certificate Authority service now supports ML-DSA key algorithms.
+* api-change:``verifiedpermissions``: Amazon Verified Permissions / Features : Adds support for entity Cedar tags.
+* enhancement:awscrt: Exposes new CRT options for S3 file IO
+* api-change:``appstream``: AWS Appstream support for IPv6
+* api-change:``wafv2``: AWS WAF now supports CLOUDWATCH_TELEMETRY_RULE_MANAGED as a LogScope option, enabling automated logging configuration through Amazon CloudWatch Logs for telemetry data collection and analysis.
+* api-change:``sts``: Added GetDelegatedAccessToken API, which is not available for general use at this time.
+* api-change:``iam``: Added CreateDelegationRequest API, which is not available for general use at this time.
+* api-change:``datazone``: Remove trackingServerName from DataZone Connection MLflowProperties
+* api-change:``dsql``: Cluster endpoint added to CreateCluster and GetCluster API responses
+* api-change:``invoicing``: Added new invoicing get-invoice-pdf API Operation
+* api-change:``backup``: AWS Backup supports backups of Amazon EKS clusters, including Kubernetes cluster state and persistent storage attached to the EKS cluster via a persistent volume claim (EBS volumes, EFS file systems, and S3 buckets).
+* api-change:``kafka``: Amazon MSK now supports intelligent rebalancing for MSK Express brokers.
+* api-change:``braket``: Adds ExperimentalCapabilities field to CreateQuantumTask request and GetQuantumTask response objects. Enables use of experimental software capabilities when creating quantum tasks.
+
+
+2.31.32
+=======
+
+* api-change:``ec2``: Adds PrivateDnsPreference and PrivateDnsSpecifiedDomains to control private DNS resolution for resource and service network VPC endpoints and IpamScopeExternalAuthorityConfiguration to integrate Amazon VPC IPAM with a third-party IPAM service
+* api-change:``kms``: Added support for new ECC_NIST_EDWARDS25519 AWS KMS key spec
+* api-change:``controltower``: Added Parent Identifier support to ListEnabledControls and GetEnabledControl API. Implemented RemediationType support for Landing Zone operations: CreateLandingZone, UpdateLandingZone and GetLandingZone APIs
+* api-change:``vpc-lattice``: Amazon VPC Lattice now supports custom domain name for resource configurations
+* api-change:``opensearch``: This release introduces the Default Application feature, allowing users to set, change, or unset a preferred OpenSearch UI application on a per-region basis for a streamlined and consistent user experience.
+
+
+2.31.31
+=======
+
+* api-change:``sagemaker``: Added NodeProvisioningMode parameter to UpdateCluster API to determine how instance provisioning is handled during cluster operations; in Continuous mode. Added VpcId field in UpdateDomain request for SageMaker Unified Studio domains with no VPC to add a customer VPC.
+* api-change:``accessanalyzer``: New field totalActiveErrors added to getFindingsStatistics response.
+* api-change:``connect``: Added support for Conditional Questions in Evaluation Forms. Introduced Auto Evaluation capability for Evaluation Forms and Contact Evaluations. Added new API operations: SearchEvaluationForms and SearchContactEvaluations.
+* api-change:``ssm``: Provides NoLongerSupportedException error message
+* api-change:``s3tables``: Adds support for tagging APIs for S3 Tables
+* api-change:``identitystore``: IdentityStore API: added new KMSExceptionReason fields to the Exception object; added multiple new fields to the User APIs - UserStatus, Birthdate, Website and Photos; added multiple new metadata fields for User, Groups and Membership APIs - CreatedAt, CreatedBy, UpdatedAt and UpdatedBy.
+* api-change:``ec2``: Add Amazon EC2 R8a instance types
+* api-change:``quicksight``: Support for New Data Prep Experience
+* api-change:``s3vectors``: Amazon S3 Vectors provides cost-effective, elastic, and durable vector storage for queries based on semantic meaning and similarity.
+* api-change:``backup``: AWS Backup now supports customer-managed keys (CMK) for logically air-gapped vaults, enabling customers to maintain full control over their encryption key lifecycle. This feature helps organizations meet specific internal governance requirements or external regulatory compliance standards.
+* api-change:``gamelift``: Amazon GameLift Servers now supports game builds that use the Windows 2022 operating system.
+* enhancement:``awscrt``: Update awscrt version to 0.28.4
+
+
+2.31.30
+=======
+
+* api-change:``ec2``: This release adds AvailabilityZoneId support for DescribeFastSnapshotRestores, DisableFastSnapshotRestores, and EnableFastSnapshotRestores APIs.
+* api-change:``fsx``: Amazon FSx now enables secure management of Active Directory credentials through AWS Secrets Manager integration. Customers can use Secret ARNs instead of direct credentials when joining resources to Active Directory domains.
+* api-change:``cloudfront``: This release adds new and updated API operations. You can now use the IpAddressType field to specify either ipv4 or dualstack for your Anycast static IP list. You can also enable cross-account resource sharing to share your VPC origins with other AWS accounts
+* api-change:``s3``: Launch IPv6 dual-stack support for S3 Express
+* api-change:``groundstation``: Introduce CreateDataflowEndpointGroupV2 action
+* api-change:``sagemaker``: Add new fields in SageMaker Hyperpod DescribeCluster API response: TargetStateCount, SoftwareUpdateStatus and ActiveSoftwareDeploymentConfig to provide AMI update progress visibility .
+* api-change:``datazone``: Added support for Project Resource Tags
+
+
+2.31.29
+=======
+
+* api-change:``pinpoint-sms-voice-v2``: This release adds support for the CarrierLookup API, which returns information about a destination phone number including if the number is valid, the carrier, and more.
+
+
 2.31.28
 =======
 

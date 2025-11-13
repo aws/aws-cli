@@ -63,6 +63,23 @@
       ],
       "documentation":"<p>Creates a <code>DataflowEndpoint</code> group containing the specified list of <code>DataflowEndpoint</code> objects.</p> <p>The <code>name</code> field in each endpoint is used in your mission profile <code>DataflowEndpointConfig</code> to specify which endpoints to use during a contact.</p> <p>When a contact uses multiple <code>DataflowEndpointConfig</code> objects, each <code>Config</code> must match a <code>DataflowEndpoint</code> in the same group.</p>"
     },
+    "CreateDataflowEndpointGroupV2":{
+      "name":"CreateDataflowEndpointGroupV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/dataflowEndpointGroupV2",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateDataflowEndpointGroupV2Request"},
+      "output":{"shape":"CreateDataflowEndpointGroupV2Response"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"DependencyException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates a <code>DataflowEndpointGroupV2</code> containing the specified list of <code>DataflowEndpoint</code> objects.</p> <p>The <code>name</code> field in each endpoint is used in your mission profile <code>DataflowEndpointConfig</code> to specify which endpoints to use during a contact.</p> <p>When a contact uses multiple <code>DataflowEndpointConfig</code> objects, each <code>Config</code> must match a <code>DataflowEndpoint</code> in the same group.</p>"
+    },
     "CreateEphemeris":{
       "name":"CreateEphemeris",
       "http":{
@@ -213,6 +230,23 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p><note> <p> For use by AWS Ground Station Agent and shouldn't be called directly.</p> </note> <p>Gets the latest configuration information for a registered agent.</p></p>",
+      "readonly":true
+    },
+    "GetAgentTaskResponseUrl":{
+      "name":"GetAgentTaskResponseUrl",
+      "http":{
+        "method":"GET",
+        "requestUri":"/agentResponseUrl/{agentId}/{taskId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAgentTaskResponseUrlRequest"},
+      "output":{"shape":"GetAgentTaskResponseUrlResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"DependencyException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p><note> <p> For use by AWS Ground Station Agent and shouldn't be called directly.</p> </note> <p>Gets a presigned URL for uploading agent task response logs.</p></p>",
       "readonly":true
     },
     "GetConfig":{
@@ -1270,6 +1304,58 @@
       },
       "documentation":"<p/>"
     },
+    "CreateDataflowEndpointGroupV2Request":{
+      "type":"structure",
+      "required":["endpoints"],
+      "members":{
+        "endpoints":{
+          "shape":"CreateEndpointDetailsList",
+          "documentation":"<p>Dataflow endpoint group's endpoint definitions</p>"
+        },
+        "contactPrePassDurationSeconds":{
+          "shape":"DataflowEndpointGroupDurationInSeconds",
+          "documentation":"<p>Amount of time, in seconds, before a contact starts that the Ground Station Dataflow Endpoint Group will be in a <code>PREPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>PREPASS</code> state.</p>"
+        },
+        "contactPostPassDurationSeconds":{
+          "shape":"DataflowEndpointGroupDurationInSeconds",
+          "documentation":"<p>Amount of time, in seconds, after a contact ends that the Ground Station Dataflow Endpoint Group will be in a <code>POSTPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>POSTPASS</code> state.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags of a V2 dataflow endpoint group.</p>"
+        }
+      }
+    },
+    "CreateDataflowEndpointGroupV2Response":{
+      "type":"structure",
+      "members":{
+        "dataflowEndpointGroupId":{
+          "shape":"Uuid",
+          "documentation":"<p>Dataflow endpoint group ID</p>"
+        }
+      }
+    },
+    "CreateEndpointDetails":{
+      "type":"structure",
+      "members":{
+        "uplinkAwsGroundStationAgentEndpoint":{
+          "shape":"UplinkAwsGroundStationAgentEndpoint",
+          "documentation":"<p>Definition for an uplink agent endpoint</p>"
+        },
+        "downlinkAwsGroundStationAgentEndpoint":{
+          "shape":"DownlinkAwsGroundStationAgentEndpoint",
+          "documentation":"<p>Definition for a downlink agent endpoint</p>"
+        }
+      },
+      "documentation":"<p>Endpoint definition used for creating a dataflow endpoint</p>",
+      "union":true
+    },
+    "CreateEndpointDetailsList":{
+      "type":"list",
+      "member":{"shape":"CreateEndpointDetails"},
+      "max":12,
+      "min":1
+    },
     "CreateEphemerisRequest":{
       "type":"structure",
       "required":["name"],
@@ -1441,7 +1527,7 @@
       "type":"integer",
       "box":true,
       "max":480,
-      "min":120
+      "min":30
     },
     "DataflowEndpointGroupIdResponse":{
       "type":"structure",
@@ -1778,6 +1864,73 @@
       "type":"double",
       "box":true
     },
+    "DownlinkAwsGroundStationAgentEndpoint":{
+      "type":"structure",
+      "required":[
+        "name",
+        "dataflowDetails"
+      ],
+      "members":{
+        "name":{
+          "shape":"SafeName",
+          "documentation":"<p>Downlink dataflow endpoint name</p>"
+        },
+        "dataflowDetails":{
+          "shape":"DownlinkDataflowDetails",
+          "documentation":"<p>Dataflow details for the downlink endpoint</p>"
+        }
+      },
+      "documentation":"<p>Definition for a downlink agent endpoint</p>"
+    },
+    "DownlinkAwsGroundStationAgentEndpointDetails":{
+      "type":"structure",
+      "required":[
+        "name",
+        "dataflowDetails"
+      ],
+      "members":{
+        "name":{
+          "shape":"SafeName",
+          "documentation":"<p>Downlink dataflow endpoint name</p>"
+        },
+        "dataflowDetails":{
+          "shape":"DownlinkDataflowDetails",
+          "documentation":"<p>Dataflow details for the downlink endpoint</p>"
+        },
+        "agentStatus":{
+          "shape":"AgentStatus",
+          "documentation":"<p>Status of the agent associated with the downlink dataflow endpoint</p>"
+        },
+        "auditResults":{
+          "shape":"AuditResults",
+          "documentation":"<p>Health audit results for the downlink dataflow endpoint</p>"
+        }
+      },
+      "documentation":"<p>Details for a downlink agent endpoint</p>"
+    },
+    "DownlinkConnectionDetails":{
+      "type":"structure",
+      "required":[
+        "agentIpAndPortAddress",
+        "egressAddressAndPort"
+      ],
+      "members":{
+        "agentIpAndPortAddress":{"shape":"RangedConnectionDetails"},
+        "egressAddressAndPort":{"shape":"ConnectionDetails"}
+      },
+      "documentation":"<p>Connection details for Ground Station to Agent and Agent to customer</p>"
+    },
+    "DownlinkDataflowDetails":{
+      "type":"structure",
+      "members":{
+        "agentConnectionDetails":{
+          "shape":"DownlinkConnectionDetails",
+          "documentation":"<p>Downlink connection details for customer to Agent and Agent to Ground Station</p>"
+        }
+      },
+      "documentation":"<p>Dataflow details for a downlink endpoint</p>",
+      "union":true
+    },
     "DurationInSeconds":{
       "type":"integer",
       "box":true,
@@ -1838,6 +1991,14 @@
         "awsGroundStationAgentEndpoint":{
           "shape":"AwsGroundStationAgentEndpoint",
           "documentation":"<p>An agent endpoint.</p>"
+        },
+        "uplinkAwsGroundStationAgentEndpoint":{
+          "shape":"UplinkAwsGroundStationAgentEndpointDetails",
+          "documentation":"<p>Definition for an uplink agent endpoint</p>"
+        },
+        "downlinkAwsGroundStationAgentEndpoint":{
+          "shape":"DownlinkAwsGroundStationAgentEndpointDetails",
+          "documentation":"<p>Definition for a downlink agent endpoint</p>"
         },
         "healthStatus":{
           "shape":"CapabilityHealth",
@@ -2189,6 +2350,49 @@
         "taskingDocument":{
           "shape":"String",
           "documentation":"<p>Tasking document for agent.</p>"
+        }
+      }
+    },
+    "GetAgentTaskResponseUrlRequest":{
+      "type":"structure",
+      "required":[
+        "agentId",
+        "taskId"
+      ],
+      "members":{
+        "agentId":{
+          "shape":"Uuid",
+          "documentation":"<p>UUID of agent requesting the response URL.</p>",
+          "location":"uri",
+          "locationName":"agentId"
+        },
+        "taskId":{
+          "shape":"Uuid",
+          "documentation":"<p>GUID of the agent task for which the response URL is being requested.</p>",
+          "location":"uri",
+          "locationName":"taskId"
+        }
+      }
+    },
+    "GetAgentTaskResponseUrlResponse":{
+      "type":"structure",
+      "required":[
+        "agentId",
+        "taskId",
+        "presignedLogUrl"
+      ],
+      "members":{
+        "agentId":{
+          "shape":"Uuid",
+          "documentation":"<p>UUID of the agent.</p>"
+        },
+        "taskId":{
+          "shape":"Uuid",
+          "documentation":"<p>GUID of the agent task.</p>"
+        },
+        "presignedLogUrl":{
+          "shape":"String",
+          "documentation":"<p>Presigned URL for uploading agent task response logs.</p>"
         }
       }
     },
@@ -3293,6 +3497,22 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"},
+        "parameterName":{
+          "shape":"String",
+          "documentation":"<p>Parameter name that caused the exception</p>"
+        }
+      },
+      "documentation":"<p>Request would cause a service quota to be exceeded.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "SignatureMap":{
       "type":"map",
       "key":{"shape":"String"},
@@ -3709,6 +3929,73 @@
         }
       },
       "documentation":"<p/>"
+    },
+    "UplinkAwsGroundStationAgentEndpoint":{
+      "type":"structure",
+      "required":[
+        "name",
+        "dataflowDetails"
+      ],
+      "members":{
+        "name":{
+          "shape":"SafeName",
+          "documentation":"<p>Uplink dataflow endpoint name</p>"
+        },
+        "dataflowDetails":{
+          "shape":"UplinkDataflowDetails",
+          "documentation":"<p>Dataflow details for the uplink endpoint</p>"
+        }
+      },
+      "documentation":"<p>Definition for an uplink agent endpoint</p>"
+    },
+    "UplinkAwsGroundStationAgentEndpointDetails":{
+      "type":"structure",
+      "required":[
+        "name",
+        "dataflowDetails"
+      ],
+      "members":{
+        "name":{
+          "shape":"SafeName",
+          "documentation":"<p>Uplink dataflow endpoint name</p>"
+        },
+        "dataflowDetails":{
+          "shape":"UplinkDataflowDetails",
+          "documentation":"<p>Dataflow details for the uplink endpoint</p>"
+        },
+        "agentStatus":{
+          "shape":"AgentStatus",
+          "documentation":"<p>Status of the agent associated with the uplink dataflow endpoint</p>"
+        },
+        "auditResults":{
+          "shape":"AuditResults",
+          "documentation":"<p>Health audit results for the uplink dataflow endpoint</p>"
+        }
+      },
+      "documentation":"<p>Details for an uplink agent endpoint</p>"
+    },
+    "UplinkConnectionDetails":{
+      "type":"structure",
+      "required":[
+        "ingressAddressAndPort",
+        "agentIpAndPortAddress"
+      ],
+      "members":{
+        "ingressAddressAndPort":{"shape":"ConnectionDetails"},
+        "agentIpAndPortAddress":{"shape":"RangedConnectionDetails"}
+      },
+      "documentation":"<p>Connection details for customer to Agent and Agent to Ground Station</p>"
+    },
+    "UplinkDataflowDetails":{
+      "type":"structure",
+      "members":{
+        "agentConnectionDetails":{
+          "shape":"UplinkConnectionDetails",
+          "documentation":"<p>Uplink connection details for customer to Agent and Agent to Ground Station</p>"
+        }
+      },
+      "documentation":"<p>Dataflow details for an uplink endpoint</p>",
+      "union":true
     },
     "UplinkEchoConfig":{
       "type":"structure",

@@ -721,6 +721,23 @@
       ],
       "documentation":"<p>Retrieves information about a direct query data source.</p>"
     },
+    "GetDefaultApplicationSetting":{
+      "name":"GetDefaultApplicationSetting",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-01-01/opensearch/defaultApplicationSetting",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDefaultApplicationSettingRequest"},
+      "output":{"shape":"GetDefaultApplicationSettingResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets the ARN of the current default application.</p> <p> If the default application isn't set, the operation returns a resource not found error.</p>"
+    },
     "GetDirectQueryDataSource":{
       "name":"GetDirectQueryDataSource",
       "http":{
@@ -1054,6 +1071,23 @@
         {"shape":"InternalException"}
       ],
       "documentation":"<p>Allows you to purchase Amazon OpenSearch Service Reserved Instances.</p>"
+    },
+    "PutDefaultApplicationSetting":{
+      "name":"PutDefaultApplicationSetting",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2021-01-01/opensearch/defaultApplicationSetting",
+        "responseCode":200
+      },
+      "input":{"shape":"PutDefaultApplicationSettingRequest"},
+      "output":{"shape":"PutDefaultApplicationSettingResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Sets the default application to the application with the specified ARN.</p> <p> To remove the default application, use the <code>GetDefaultApplicationSetting</code> operation to get the current default and then call the <code>PutDefaultApplicationSetting</code> with the current applications ARN and the <code>setAsDefault</code> parameter set to <code>false</code>.</p>"
     },
     "RejectInboundConnection":{
       "name":"RejectInboundConnection",
@@ -1602,7 +1636,7 @@
         },
         "IAMFederationOptions":{
           "shape":"IAMFederationOptionsOutput",
-          "documentation":"<p>Container for information about the IAM federation configuration for an OpenSearch UI application.</p>"
+          "documentation":"<p>Configuration options for IAM identity federation in advanced security settings.</p>"
         },
         "AnonymousAuthDisableDate":{
           "shape":"DisableTimestamp",
@@ -1640,7 +1674,7 @@
         },
         "IAMFederationOptions":{
           "shape":"IAMFederationOptionsInput",
-          "documentation":"<p>Container for information about the IAM federation configuration for an OpenSearch UI application.</p>"
+          "documentation":"<p>Input configuration for IAM identity federation within advanced security options.</p>"
         },
         "AnonymousAuthEnabled":{
           "shape":"Boolean",
@@ -4667,6 +4701,16 @@
       },
       "documentation":"<p>The result of a <code>GetDataSource</code> operation.</p>"
     },
+    "GetDefaultApplicationSettingRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetDefaultApplicationSettingResponse":{
+      "type":"structure",
+      "members":{
+        "applicationArn":{"shape":"ARN"}
+      }
+    },
     "GetDirectQueryDataSourceRequest":{
       "type":"structure",
       "required":["DataSourceName"],
@@ -4875,36 +4919,36 @@
       "members":{
         "Enabled":{
           "shape":"Boolean",
-          "documentation":"<p>True to enable IAM federation authentication for a domain.</p>"
+          "documentation":"<p>Specifies whether IAM identity federation is enabled for the OpenSearch domain.</p>"
         },
         "SubjectKey":{
           "shape":"IAMFederationSubjectKey",
-          "documentation":"<p>Element of the IAM federation assertion to use for the user name. Default is <code>sub</code>.</p>"
+          "documentation":"<p>The key in the SAML assertion that contains the user's subject identifier.</p>"
         },
         "RolesKey":{
           "shape":"IAMFederationRolesKey",
-          "documentation":"<p>Element of the IAM federation assertion to use for backend roles. Default is <code>roles</code>.</p>"
+          "documentation":"<p>The key in the SAML assertion that contains the user's role information.</p>"
         }
       },
-      "documentation":"<p>The IAM federation authentication configuration for an Amazon OpenSearch Service domain.</p>"
+      "documentation":"<p>Input parameters for configuring IAM identity federation settings.</p>"
     },
     "IAMFederationOptionsOutput":{
       "type":"structure",
       "members":{
         "Enabled":{
           "shape":"Boolean",
-          "documentation":"<p>True if IAM federation is enabled.</p>"
+          "documentation":"<p>Indicates whether IAM identity federation is currently enabled for the domain.</p>"
         },
         "SubjectKey":{
           "shape":"IAMFederationSubjectKey",
-          "documentation":"<p>The key used for matching the IAM federation subject attribute.</p>"
+          "documentation":"<p>The configured key in the SAML assertion for the user's subject identifier.</p>"
         },
         "RolesKey":{
           "shape":"IAMFederationRolesKey",
-          "documentation":"<p>The key used for matching the IAM federation roles attribute.</p>"
+          "documentation":"<p>The configured key in the SAML assertion for the user's role information.</p>"
         }
       },
-      "documentation":"<p>Describes the IAM federation options configured for the domain.</p>"
+      "documentation":"<p>Output parameters showing the current IAM identity federation configuration.</p>"
     },
     "IAMFederationRolesKey":{
       "type":"string",
@@ -6760,6 +6804,26 @@
         }
       },
       "documentation":"<p>Represents the output of a <code>PurchaseReservedInstanceOffering</code> operation.</p>"
+    },
+    "PutDefaultApplicationSettingRequest":{
+      "type":"structure",
+      "required":[
+        "applicationArn",
+        "setAsDefault"
+      ],
+      "members":{
+        "applicationArn":{"shape":"ARN"},
+        "setAsDefault":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true to set the specified ARN as the default application. Set to false to clear the default application.</p>"
+        }
+      }
+    },
+    "PutDefaultApplicationSettingResponse":{
+      "type":"structure",
+      "members":{
+        "applicationArn":{"shape":"ARN"}
+      }
     },
     "RecurringCharge":{
       "type":"structure",

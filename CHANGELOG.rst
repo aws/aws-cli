@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+2.31.36
+=======
+
+* api-change:``iotwireless``: Integration of Device Location with Amazon Sidewalk network for Amazon Sidewalk enabled devices
+* api-change:``sagemaker``: Added support for minor version upgrades and AWS Identity Center integration for SageMaker Hadron Partner Apps, enabling automated version management and IdC group-based access control.
+* api-change:``ec2``: Added support for new accelerator types ("media") and accelerator names ("L4", "L40s", "GAUDI_HL_205", "INFERENTIA2", "TRAINIUM", "TRAINIUM2", "U30") in Attributes Based Instance Type Selection for launched instance types.
+* api-change:``controlcatalog``: Added support for related control mappings with new RELATED_CONTROL mapping type in ListControlMappings API.
+* api-change:``ecr``: Add Amazon ECR FIPS PrivateLink endpoint support
+* api-change:``cloudformation``: CloudFormation now supports GetHookResult API with annotations to retrieve structured compliance check results and remediation guidance for each evaluated resource, replacing the previous single-message limitation with detailed validation outcomes.
+* api-change:``elbv2``: QUIC and TCP_QUIC protocol support for Network Load Balancer (NLB). This capability enables customers to forward QUIC traffic to their targets with ultra-low latency while maintaining session stickiness using QUIC Connection IDs.
+* api-change:``workspaces-web``: Support for managing web content filtering for defining, tracking and regulating type of content accessed with WorkSpaces Secure Browser as part of browser settings.
+* api-change:``mediaconvert``: Lowers minimum duration for black video generator. Adds support for embedding and signing C2PA content credentials in DASH and CMAF HLS outputs.
+* api-change:``rds``: Updated endpoint and service metadata
+
+
 2.31.35
 =======
 

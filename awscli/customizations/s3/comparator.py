@@ -31,7 +31,7 @@ class Comparator(object):
 
     def call(self, src_files, dest_files):
         """
-        This function preforms the actual comparisons.  The parameters it takes
+        This function performs the actual comparisons.  The parameters it takes
         are the generated files for both the source and the destination.  The
         key concept in this function is that no matter the type of where the
         files are coming from, they are listed in the same order, least to

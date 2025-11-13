@@ -153,7 +153,7 @@ class TestWaitHelpOutput(BaseAWSHelpOutputTest):
 class TestWait(BaseAWSCommandParamsTest):
     """ This is merely a smoke test.
 
-    Its purpose is to test that the wait command can be run proberly for
+    Its purpose is to test that the wait command can be run properly for
     various services. It is by no means exhaustive.
     """
     def test_ec2_instance_running(self):

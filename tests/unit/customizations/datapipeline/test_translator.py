@@ -19,7 +19,7 @@ from botocore.compat import OrderedDict, json
 from awscli.customizations.datapipeline import translator
 
 
-# Thoughout these tests, 'df' refers to the condensed JSON definition format
+# Throughout these tests, 'df' refers to the condensed JSON definition format
 # that the user provides and API refers to the format expected by the API.
 
 class TestTranslatePipelineDefinitions(unittest.TestCase):

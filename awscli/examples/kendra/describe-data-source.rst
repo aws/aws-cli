@@ -1,6 +1,6 @@
 **To get information about an Amazon Kendra data source connector**
 
-The following ``describe-data-source`` gets information about an Amazon Kendra data soource connector. You can view the configuration of a data source connector, and read any error messages if the status shows a data source connector "FAILED" to completely create. ::
+The following ``describe-data-source`` gets information about an Amazon Kendra data source connector. You can view the configuration of a data source connector, and read any error messages if the status shows a data source connector "FAILED" to completely create. ::
 
     aws kendra describe-data-source \
         --id exampledatasource1 \

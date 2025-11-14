@@ -9,13 +9,14 @@ The following ``get-datastore`` code example gets a data store's properties. ::
 Output::
 
     {
-        "datastoreProperties": {
-            "datastoreId": "12345678901234567890123456789012",
-            "datastoreName": "TestDatastore123",
-            "datastoreStatus": "ACTIVE",
-            "datastoreArn": "arn:aws:medical-imaging:us-east-1:123456789012:datastore/12345678901234567890123456789012",
-            "createdAt": "2022-11-15T23:33:09.643000+00:00",
-            "updatedAt": "2022-11-15T23:33:09.643000+00:00"
+    "datastoreProperties": {
+        "datastoreId": "12345678901234567890123456789012",
+        "datastoreName": "TestDatastore123",
+        "datastoreStatus": "ACTIVE",
+        "losslessStorageFormat": "JPEG_2000_LOSSLESS",
+        "datastoreArn": "arn:aws:medical-imaging:us-east-1:123456789012:datastore/12345678901234567890123456789012",
+        "createdAt": "2022-11-15T23:33:09.643000+00:00",
+        "updatedAt": "2022-11-15T23:33:09.643000+00:00"
         }
     }
 

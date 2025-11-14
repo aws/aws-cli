@@ -76,6 +76,7 @@ from awscli.logger import (
 )
 from awscli.plugin import load_plugins
 from awscli.telemetry import add_session_id_component_to_user_agent_extra
+from awscli.structured_error import StructuredErrorHandler
 from awscli.utils import (
     IMDSRegionProvider,
     OutputStreamFactory,
@@ -275,6 +276,12 @@ class CLIDriver:
         config_store.set_config_provider(
             'cli_help_output', self._construct_cli_help_output_chain()
         )
+        config_store.set_config_provider(
+            'cli_error_format', self._construct_cli_error_format_chain()
+        )
+        config_store.set_config_provider(
+            'cli_hide_error_details', self._construct_cli_hide_error_details_chain()
+        )
 
     def _construct_cli_region_chain(self):
         providers = [
@@ -365,6 +372,34 @@ class CLIDriver:
                 config_var_name='cli_auto_prompt', session=self.session
             ),
             ConstantProvider(value='off'),
+        ]
+        return ChainProvider(providers=providers)
+
+    def _construct_cli_error_format_chain(self):
+        providers = [
+            EnvironmentProvider(
+                name='AWS_CLI_ERROR_FORMAT',
+                env=os.environ,
+            ),
+            ScopedConfigProvider(
+                config_var_name='cli_error_format',
+                session=self.session,
+            ),
+            ConstantProvider(value='STANDARD'),
+        ]
+        return ChainProvider(providers=providers)
+
+    def _construct_cli_hide_error_details_chain(self):
+        providers = [
+            EnvironmentProvider(
+                name='AWS_CLI_HIDE_ERROR_DETAILS',
+                env=os.environ,
+            ),
+            ScopedConfigProvider(
+                config_var_name='cli_hide_error_details',
+                session=self.session,
+            ),
+            ConstantProvider(value='false'),
         ]
         return ChainProvider(providers=providers)
 
@@ -983,6 +1018,9 @@ class CLIOperationCaller:
     def __init__(self, session):
         self._session = session
         self._output_stream_factory = OutputStreamFactory(session)
+        self._structured_error_handler = StructuredErrorHandler(
+            session, self._output_stream_factory
+        )
 
     def invoke(self, service_name, operation_name, parameters, parsed_globals):
         """Invoke an operation and format the response.
@@ -1023,15 +1061,50 @@ class CLIOperationCaller:
     def _make_client_call(
         self, client, operation_name, parameters, parsed_globals
     ):
-        py_operation_name = xform_name(operation_name)
-        if client.can_paginate(py_operation_name) and parsed_globals.paginate:
-            paginator = client.get_paginator(py_operation_name)
-            response = paginator.paginate(**parameters)
-        else:
-            response = getattr(client, xform_name(operation_name))(
-                **parameters
-            )
-        return response
+        service_id = client._service_model.service_id.hyphenize()
+        operation_model = client._service_model.operation_model(
+            operation_name
+        )
+
+        event_name = f'after-call-error.{service_id}.{operation_model.name}'
+
+        def error_handler(**kwargs):
+            try:
+                exception = kwargs.get('exception')
+                if exception:
+                    handler = self._structured_error_handler
+                    error_response = handler.extract_error_response(
+                        exception
+                    )
+                    if error_response:
+                        handler.handle_error(
+                            error_response, parsed_globals
+                        )
+            except Exception as e:
+                # Don't let structured error display break error handling
+                LOG.debug(
+                    'Failed to display structured error: %s',
+                    e,
+                    exc_info=True,
+                )
+
+        client.meta.events.register(event_name, error_handler)
+
+        try:
+            py_operation_name = xform_name(operation_name)
+            if (
+                client.can_paginate(py_operation_name)
+                and parsed_globals.paginate
+            ):
+                paginator = client.get_paginator(py_operation_name)
+                response = paginator.paginate(**parameters)
+            else:
+                response = getattr(client, xform_name(operation_name))(
+                    **parameters
+                )
+            return response
+        finally:
+            client.meta.events.unregister(event_name, error_handler)
 
     def _display_response(self, command_name, response, parsed_globals):
         output = parsed_globals.output

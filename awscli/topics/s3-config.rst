@@ -15,6 +15,11 @@ are provided in the case where you need to modify one of these values, either
 for performance reasons or to account for the specific environment where these
 ``aws s3`` commands are being run.
 
+.. warning::
+   S3 commands have a parameter ``--endpoint-url`` that overrides the command's
+   default URL with the given URL. Avoid using the S3 Global Endpoint
+   (s3.amazonaws.com) as the value for this parameter to prevent redirect
+   issues and other unintended behavior or errors from S3.
 
 Configuration Values
 ====================

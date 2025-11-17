@@ -1018,6 +1018,22 @@
       ],
       "documentation":"<p>Lists the trusted entity sets associated with the specified GuardDuty detector ID. If you use this operation from a member account, the trusted entity sets that are returned as a response, belong to the administrator account.</p>"
     },
+    "SendObjectMalwareScan":{
+      "name":"SendObjectMalwareScan",
+      "http":{
+        "method":"POST",
+        "requestUri":"/object-malware-scan/send",
+        "responseCode":200
+      },
+      "input":{"shape":"SendObjectMalwareScanRequest"},
+      "output":{"shape":"SendObjectMalwareScanResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Initiates a malware scan for a specific S3 object. This API allows you to perform on-demand malware scanning of individual objects in S3 buckets that have Malware Protection for S3 enabled.</p> <p>When you use this API, the Amazon Web Services service terms for GuardDuty Malware Protection apply. For more information, see <a href=\"http://aws.amazon.com/service-terms/#87._Amazon_GuardDuty\">Amazon Web Services service terms for GuardDuty Malware Protection</a>.</p>"
+    },
     "StartMalwareScan":{
       "name":"StartMalwareScan",
       "http":{
@@ -9297,6 +9313,27 @@
       "type":"list",
       "member":{"shape":"S3ObjectDetail"}
     },
+    "S3ObjectForSendObjectMalwareScan":{
+      "type":"structure",
+      "members":{
+        "Bucket":{
+          "shape":"String",
+          "documentation":"<p>The name of the S3 bucket containing the object to scan. The bucket must have GuardDuty Malware Protection enabled.</p>",
+          "locationName":"bucket"
+        },
+        "Key":{
+          "shape":"String",
+          "documentation":"<p>The key (name) of the S3 object to scan for malware. This must be the full key path of the object within the bucket.</p>",
+          "locationName":"key"
+        },
+        "VersionId":{
+          "shape":"String",
+          "documentation":"<p>The version ID of the S3 object to scan. If not specified, the latest version of the object is scanned.</p>",
+          "locationName":"versionId"
+        }
+      },
+      "documentation":"<p>The S3 object path to initiate a scan, including bucket name, object key, and optional version ID.</p>"
+    },
     "S3ObjectUids":{
       "type":"list",
       "member":{"shape":"String"}
@@ -9636,6 +9673,20 @@
     "SecurityGroups":{
       "type":"list",
       "member":{"shape":"SecurityGroup"}
+    },
+    "SendObjectMalwareScanRequest":{
+      "type":"structure",
+      "members":{
+        "S3Object":{
+          "shape":"S3ObjectForSendObjectMalwareScan",
+          "documentation":"<p>The S3 object information for the object you want to scan. The bucket must have a Malware Protection plan configured to use this API.</p>",
+          "locationName":"s3Object"
+        }
+      }
+    },
+    "SendObjectMalwareScanResponse":{
+      "type":"structure",
+      "members":{}
     },
     "SensitiveString":{
       "type":"string",

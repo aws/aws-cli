@@ -2081,6 +2081,10 @@
           "shape":"BackupVaultName",
           "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>"
         },
+        "TargetLogicallyAirGappedBackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of a logically air-gapped vault. ARN must be in the same account and Region. If provided, supported fully managed resources back up directly to logically air-gapped vault, while other supported resources create a temporary (billable) snapshot in backup vault, then copy it to logically air-gapped vault. Unsupported resources only back up to the specified backup vault.</p>"
+        },
         "ScheduleExpression":{
           "shape":"CronExpression",
           "documentation":"<p>A cron expression in UTC specifying when Backup initiates a backup job. When no CRON expression is provided, Backup will use the default expression <code>cron(0 5 ? * * *)</code>.</p> <p>For more information about Amazon Web Services cron expressions, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html\">Schedule Expressions for Rules</a> in the <i>Amazon CloudWatch Events User Guide</i>.</p> <p>Two examples of Amazon Web Services cron expressions are <code> 15 * ? * * *</code> (take a backup every hour at 15 minutes past the hour) and <code>0 12 * * ? *</code> (take a backup every day at 12 noon UTC).</p> <p>For a table of examples, click the preceding link and scroll down the page.</p>"
@@ -2138,6 +2142,10 @@
         "TargetBackupVaultName":{
           "shape":"BackupVaultName",
           "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>"
+        },
+        "TargetLogicallyAirGappedBackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of a logically air-gapped vault. ARN must be in the same account and Region. If provided, supported fully managed resources back up directly to logically air-gapped vault, while other supported resources create a temporary (billable) snapshot in backup vault, then copy it to logically air-gapped vault. Unsupported resources only back up to the specified backup vault.</p>"
         },
         "ScheduleExpression":{
           "shape":"CronExpression",
@@ -2618,6 +2626,10 @@
           "documentation":"<p>Specifies the IAM role ARN used to copy the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.</p>"
         },
         "CreatedBy":{"shape":"RecoveryPointCreator"},
+        "CreatedByBackupJobId":{
+          "shape":"string",
+          "documentation":"<p>The backup job ID that initiated this copy job. Only applicable to scheduled copy jobs and automatic copy jobs to logically air-gapped vault.</p>"
+        },
         "ResourceType":{
           "shape":"ResourceType",
           "documentation":"<p>The type of Amazon Web Services resource to be copied; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database.</p>"
@@ -3740,7 +3752,7 @@
       "members":{
         "GlobalSettings":{
           "shape":"GlobalSettings",
-          "documentation":"<p>The status of the flags <code>isCrossAccountBackupEnabled</code> and <code>isMpaEnabled</code> ('Mpa' refers to multi-party approval).</p>"
+          "documentation":"<p>The status of the flags <code>isCrossAccountBackupEnabled</code>, <code>isMpaEnabled</code> ('Mpa' refers to multi-party approval), and <code>isDelegatedAdministratorEnabled</code>.</p>"
         },
         "LastUpdateTime":{
           "shape":"timestamp",
@@ -5052,9 +5064,17 @@
         "OptInToArchiveForSupportedResources":{
           "shape":"Boolean",
           "documentation":"<p>If the value is true, your backup plan transitions supported resources to archive (cold) storage tier in accordance with your lifecycle settings.</p>"
+        },
+        "DeleteAfterEvent":{
+          "shape":"LifecycleDeleteAfterEvent",
+          "documentation":"<p>The event after which a recovery point is deleted. A recovery point with both <code>DeleteAfterDays</code> and <code>DeleteAfterEvent</code> will delete after whichever condition is satisfied first. Not valid as an input.</p>"
         }
       },
       "documentation":"<p>Specifies the time period, in days, before a recovery point transitions to cold storage or is deleted.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, on the console, the retention setting must be 90 days greater than the transition to cold after days setting. The transition to cold after days setting can't be changed after a backup has been transitioned to cold.</p> <p>Resource types that can transition to cold storage are listed in the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource\">Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p> <p>To remove the existing lifecycle and retention periods and keep your recovery points indefinitely, specify -1 for <code>MoveToColdStorageAfterDays</code> and <code>DeleteAfterDays</code>.</p>"
+    },
+    "LifecycleDeleteAfterEvent":{
+      "type":"string",
+      "enum":["DELETE_AFTER_COPY"]
     },
     "LimitExceededException":{
       "type":"structure",
@@ -5559,6 +5579,12 @@
           "documentation":"<p>This is an optional parameter that can be used to filter out jobs with a MessageCategory which matches the value you input.</p> <p>Example strings may include <code>AccessDenied</code>, <code>SUCCESS</code>, <code>AGGREGATE_ALL</code>, and <code>INVALIDPARAMETERS</code>.</p> <p>View <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of accepted strings.</p> <p>The the value ANY returns count of all message categories.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all message categories and returns the sum.</p>",
           "location":"querystring",
           "locationName":"messageCategory"
+        },
+        "BySourceRecoveryPointArn":{
+          "shape":"string",
+          "documentation":"<p>Filters copy jobs by the specified source recovery point ARN.</p>",
+          "location":"querystring",
+          "locationName":"sourceRecoveryPointArn"
         }
       }
     },
@@ -7724,6 +7750,10 @@
           "shape":"BackupVaultName",
           "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>"
         },
+        "LogicallyAirGappedBackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of a logically air-gapped vault. ARN must be in the same account and Region. If provided, supported fully managed resources back up directly to logically air-gapped vault, while other supported resources create a temporary (billable) snapshot in backup vault, then copy it to logically air-gapped vault. Unsupported resources only back up to the specified backup vault.</p>"
+        },
         "ResourceArn":{
           "shape":"ARN",
           "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a resource. The format of the ARN depends on the resource type.</p>"
@@ -8068,7 +8098,7 @@
       "members":{
         "GlobalSettings":{
           "shape":"GlobalSettings",
-          "documentation":"<p>Inputs can include:</p> <p>A value for <code>isCrossAccountBackupEnabled</code> and a Region. Example: <code>update-global-settings --global-settings isCrossAccountBackupEnabled=false --region us-west-2</code>.</p> <p>A value for Multi-party approval, styled as \"Mpa\": <code>isMpaEnabled</code>. Values can be true or false. Example: <code>update-global-settings --global-settings isMpaEnabled=false --region us-west-2</code>.</p>"
+          "documentation":"<p>Inputs can include:</p> <p>A value for <code>isCrossAccountBackupEnabled</code> and a Region. Example: <code>update-global-settings --global-settings isCrossAccountBackupEnabled=false --region us-west-2</code>.</p> <p>A value for Multi-party approval, styled as \"Mpa\": <code>isMpaEnabled</code>. Values can be true or false. Example: <code>update-global-settings --global-settings isMpaEnabled=false --region us-west-2</code>.</p> <p>A value for Backup Service-Linked Role creation, styled as<code>isDelegatedAdministratorEnabled</code>. Values can be true or false. Example: <code>update-global-settings --global-settings isDelegatedAdministratorEnabled=false --region us-west-2</code>.</p>"
         }
       }
     },

@@ -2394,7 +2394,7 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, <code>db2</code>, <code>db2-zos</code> and <code>docdb</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
+          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, <code>db2</code>, <code>db2-zos</code>, <code>docdb</code>, and <code>sybase</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
         },
         "Virtual":{
           "shape":"BooleanOptional",
@@ -3209,7 +3209,7 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, <code>db2</code>, <code>db2-zos</code> and <code>docdb</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
+          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, <code>db2</code>, <code>db2-zos</code>, <code>docdb</code>, and <code>sybase</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
         },
         "Virtual":{
           "shape":"BooleanOptional",
@@ -3282,6 +3282,7 @@
         "PostgreSqlSettings":{"shape":"PostgreSqlDataProviderSettings"},
         "MySqlSettings":{"shape":"MySqlDataProviderSettings"},
         "OracleSettings":{"shape":"OracleDataProviderSettings"},
+        "SybaseAseSettings":{"shape":"SybaseAseDataProviderSettings"},
         "MicrosoftSqlServerSettings":{"shape":"MicrosoftSqlServerDataProviderSettings"},
         "DocDbSettings":{"shape":"DocDbDataProviderSettings"},
         "MariaDbSettings":{
@@ -6998,7 +6999,7 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, <code>db2</code>, <code>db2-zos</code> and <code>docdb</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
+          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, <code>db2</code>, <code>db2-zos</code>, <code>docdb</code>, and <code>sybase</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
         },
         "Virtual":{
           "shape":"BooleanOptional",
@@ -8357,6 +8358,46 @@
     "PremigrationAssessmentStatusList":{
       "type":"list",
       "member":{"shape":"PremigrationAssessmentStatus"}
+    },
+    "ProcessedObject":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the database object.</p>"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The type of the database object. For example, a table, view, procedure, and so on.</p>"
+        },
+        "EndpointType":{
+          "shape":"String",
+          "documentation":"<p>The type of the data provider. This parameter can store one of the following values: <code>\"SOURCE\"</code> or <code>\"TARGET\"</code>.</p>"
+        }
+      },
+      "documentation":"<p>The database object that the schema conversion operation currently uses.</p>"
+    },
+    "Progress":{
+      "type":"structure",
+      "members":{
+        "ProgressPercent":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The percent complete for the current step of the schema conversion operation.</p>"
+        },
+        "TotalObjects":{
+          "shape":"Long",
+          "documentation":"<p>The number of objects in this schema conversion operation.</p>"
+        },
+        "ProgressStep":{
+          "shape":"String",
+          "documentation":"<p>The step of the schema conversion operation. This parameter can store one of the following values:</p> <ul> <li> <p> <code>IN_PROGRESS</code> – The operation is running.</p> </li> <li> <p> <code>LOADING_METADATA</code> – Loads metadata from the source database.</p> </li> <li> <p> <code>COUNTING_OBJECTS</code> – Determines the number of objects involved in the operation.</p> </li> <li> <p> <code>ANALYZING</code> – Analyzes the source database objects.</p> </li> <li> <p> <code>CONVERTING</code> – Converts the source database objects to a format compatible with the target database.</p> </li> <li> <p> <code>APPLYING</code> – Applies the converted code to the target database.</p> </li> <li> <p> <code>FINISHED</code> – The operation completed successfully.</p> </li> </ul>"
+        },
+        "ProcessedObject":{
+          "shape":"ProcessedObject",
+          "documentation":"<p>The name of the database object that the schema conversion operation currently uses.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the progress of the schema conversion operation.</p>"
     },
     "ProvisionData":{
       "type":"structure",
@@ -9994,7 +10035,8 @@
           "documentation":"<p>The migration project ARN.</p>"
         },
         "Error":{"shape":"ErrorDetails"},
-        "ExportSqlDetails":{"shape":"ExportSqlDetails"}
+        "ExportSqlDetails":{"shape":"ExportSqlDetails"},
+        "Progress":{"shape":"Progress"}
       },
       "documentation":"<p>Provides information about a schema conversion action.</p>"
     },
@@ -10749,6 +10791,36 @@
     "SupportedEndpointTypeList":{
       "type":"list",
       "member":{"shape":"SupportedEndpointType"}
+    },
+    "SybaseAseDataProviderSettings":{
+      "type":"structure",
+      "members":{
+        "ServerName":{
+          "shape":"String",
+          "documentation":"<p>The name of the SAP ASE server.</p>"
+        },
+        "Port":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The port value for the SAP ASE data provider.</p>"
+        },
+        "DatabaseName":{
+          "shape":"String",
+          "documentation":"<p>The database name on the SAP ASE data provider.</p>"
+        },
+        "SslMode":{
+          "shape":"DmsSslModeValue",
+          "documentation":"<p>The SSL mode used to connect to the SAP ASE data provider. The default value is <code>none</code>.</p>"
+        },
+        "EncryptPassword":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to encrypt the password when connecting to the Sybase ASE database. When set to true, the connection password is encrypted during transmission. Default is true.</p>"
+        },
+        "CertificateArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate used for SSL connection.</p>"
+        }
+      },
+      "documentation":"<p>Provides information that defines an SAP ASE data provider.</p>"
     },
     "SybaseSettings":{
       "type":"structure",

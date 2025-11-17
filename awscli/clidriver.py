@@ -22,6 +22,7 @@ import botocore.session
 import distro
 from botocore import xform_name
 from botocore.compat import OrderedDict, copy_kwargs
+from botocore.exceptions import ClientError
 from botocore.configprovider import (
     ChainProvider,
     ConstantProvider,
@@ -1061,35 +1062,6 @@ class CLIOperationCaller:
     def _make_client_call(
         self, client, operation_name, parameters, parsed_globals
     ):
-        service_id = client._service_model.service_id.hyphenize()
-        operation_model = client._service_model.operation_model(
-            operation_name
-        )
-
-        event_name = f'after-call-error.{service_id}.{operation_model.name}'
-
-        def error_handler(**kwargs):
-            try:
-                exception = kwargs.get('exception')
-                if exception:
-                    handler = self._structured_error_handler
-                    error_response = handler.extract_error_response(
-                        exception
-                    )
-                    if error_response:
-                        handler.handle_error(
-                            error_response, parsed_globals
-                        )
-            except Exception as e:
-                # Don't let structured error display break error handling
-                LOG.debug(
-                    'Failed to display structured error: %s',
-                    e,
-                    exc_info=True,
-                )
-
-        client.meta.events.register(event_name, error_handler)
-
         try:
             py_operation_name = xform_name(operation_name)
             if (
@@ -1099,12 +1071,35 @@ class CLIOperationCaller:
                 paginator = client.get_paginator(py_operation_name)
                 response = paginator.paginate(**parameters)
             else:
-                response = getattr(client, xform_name(operation_name))(
-                    **parameters
-                )
+                response = getattr(client, py_operation_name)(**parameters)
             return response
-        finally:
-            client.meta.events.unregister(event_name, error_handler)
+        except ClientError as e:
+            # Display structured error output before re-raising
+            self._display_structured_error_for_exception(
+                e, parsed_globals
+            )
+            raise
+
+    def _display_structured_error_for_exception(
+        self, exception, parsed_globals
+    ):
+        try:
+            error_response = (
+                self._structured_error_handler.extract_error_response(
+                    exception
+                )
+            )
+            if error_response:
+                self._structured_error_handler.handle_error(
+                    error_response, parsed_globals
+                )
+        except Exception as e:
+            # Don't let structured error display break error handling
+            LOG.debug(
+                'Failed to display structured error: %s',
+                e,
+                exc_info=True,
+            )
 
     def _display_response(self, command_name, response, parsed_globals):
         output = parsed_globals.output

@@ -166,3 +166,33 @@ class TestStructuredErrorHandler:
         self.handler._output_stream_factory = mock_stream_factory
 
         self.handler.display(error_response, parsed_globals)
+
+    def test_should_display_with_parsed_globals_output_none(self):
+        error_response = {
+            'Code': 'NoSuchBucket',
+            'Message': 'Error',
+            'BucketName': 'test',
+        }
+        parsed_globals = mock.Mock()
+        parsed_globals.output = None
+
+        with mock.patch.object(
+            self.session, 'get_config_variable', return_value='off'
+        ):
+            assert not self.handler.should_display(
+                error_response, parsed_globals
+            )
+
+    def test_should_display_with_parsed_globals_output_none_json(self):
+        error_response = {
+            'Code': 'NoSuchBucket',
+            'Message': 'Error',
+            'BucketName': 'test',
+        }
+        parsed_globals = mock.Mock()
+        parsed_globals.output = None
+
+        with mock.patch.object(
+            self.session, 'get_config_variable', return_value='json'
+        ):
+            assert self.handler.should_display(error_response, parsed_globals)

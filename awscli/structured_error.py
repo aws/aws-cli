@@ -39,21 +39,18 @@ class StructuredErrorHandler:
             filtered_error_info = self._filter_sensitive_fields(error_info)
             self.display(filtered_error_info, parsed_globals)
 
-    def should_display(self, error_response, parsed_globals):
-        if not self._has_additional_error_members(error_response):
+    def should_display(self, error_info, parsed_globals):
+        if not self._has_additional_error_members(error_info):
             return False
 
         config_store = self._session.get_component('config_store')
         hide_details = config_store.get_config_variable(
             'cli_hide_error_details'
         )
-        try:
-            if isinstance(hide_details, str):
-                hide_details = hide_details.lower() != 'false'
-            else:
-                hide_details = bool(hide_details) if hide_details else False
-        except (AttributeError, ValueError):
-            hide_details = False
+        if isinstance(hide_details, str):
+            hide_details = hide_details.lower() == 'true'
+        else:
+            hide_details = bool(hide_details) if hide_details else False
 
         if hide_details:
             return False
@@ -62,18 +59,14 @@ class StructuredErrorHandler:
         if error_format == 'LEGACY':
             return False
 
-        output = parsed_globals.output
-        if output is None:
-            output = self._session.get_config_variable('output')
+        output = self._get_output_format(parsed_globals)
         if output == 'off':
             return False
 
         return True
 
     def display(self, error_response, parsed_globals):
-        output = parsed_globals.output
-        if output is None:
-            output = self._session.get_config_variable('output')
+        output = self._get_output_format(parsed_globals)
 
         try:
             formatter = get_formatter(output, parsed_globals)
@@ -87,6 +80,12 @@ class StructuredErrorHandler:
                 e,
                 exc_info=True,
             )
+
+    def _get_output_format(self, parsed_globals):
+        output = parsed_globals.output
+        if output is None:
+            output = self._session.get_config_variable('output')
+        return output
 
     def _filter_sensitive_fields(self, error_info):
         """Filter sensitive fields from error response before display.

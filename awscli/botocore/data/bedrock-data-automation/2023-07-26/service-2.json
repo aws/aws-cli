@@ -127,7 +127,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Gets an existing Amazon Bedrock Data Automation Blueprint</p>"
+      "documentation":"<p>Gets an existing Amazon Bedrock Data Automation Blueprint</p>",
+      "readonly":true
     },
     "GetDataAutomationProject":{
       "name":"GetDataAutomationProject",
@@ -145,7 +146,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Gets an existing Amazon Bedrock Data Automation Project</p>"
+      "documentation":"<p>Gets an existing Amazon Bedrock Data Automation Project</p>",
+      "readonly":true
     },
     "ListBlueprints":{
       "name":"ListBlueprints",
@@ -163,7 +165,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists all existing Amazon Bedrock Data Automation Blueprints</p>"
+      "documentation":"<p>Lists all existing Amazon Bedrock Data Automation Blueprints</p>",
+      "readonly":true
     },
     "ListDataAutomationProjects":{
       "name":"ListDataAutomationProjects",
@@ -181,7 +184,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists all existing Amazon Bedrock Data Automation Projects</p>"
+      "documentation":"<p>Lists all existing Amazon Bedrock Data Automation Projects</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -323,10 +327,36 @@
       "member":{"shape":"AudioExtractionCategoryType"},
       "documentation":"<p>List of Audio Extraction Category Type</p>"
     },
+    "AudioGenerativeOutputLanguage":{
+      "type":"string",
+      "documentation":"<p>Configuration for Audio output language</p>",
+      "enum":[
+        "DEFAULT",
+        "EN"
+      ]
+    },
+    "AudioInputLanguages":{
+      "type":"list",
+      "member":{"shape":"Language"},
+      "documentation":"<p>List of supported audio languages</p>"
+    },
+    "AudioLanguageConfiguration":{
+      "type":"structure",
+      "members":{
+        "inputLanguages":{"shape":"AudioInputLanguages"},
+        "generativeOutputLanguage":{"shape":"AudioGenerativeOutputLanguage"},
+        "identifyMultipleLanguages":{
+          "shape":"Boolean",
+          "documentation":"<p>Enable multiple language identification in audio</p>"
+        }
+      },
+      "documentation":"<p>Optional configuration for audio language settings</p>"
+    },
     "AudioOverrideConfiguration":{
       "type":"structure",
       "members":{
-        "modalityProcessing":{"shape":"ModalityProcessingConfiguration"}
+        "modalityProcessing":{"shape":"ModalityProcessingConfiguration"},
+        "languageConfiguration":{"shape":"AudioLanguageConfiguration"}
       },
       "documentation":"<p>Override Configuration of Audio</p>"
     },
@@ -483,6 +513,10 @@
       "type":"list",
       "member":{"shape":"BlueprintSummary"},
       "documentation":"<p>List of Blueprints</p>"
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
     },
     "ChannelLabelingConfiguration":{
       "type":"structure",
@@ -1052,6 +1086,23 @@
       "max":2048,
       "min":1,
       "pattern":"[A-Za-z0-9][A-Za-z0-9:_/+=,@.-]+"
+    },
+    "Language":{
+      "type":"string",
+      "documentation":"<p>Supported input languages</p>",
+      "enum":[
+        "EN",
+        "DE",
+        "ES",
+        "FR",
+        "IT",
+        "PT",
+        "JA",
+        "KO",
+        "CN",
+        "TW",
+        "HK"
+      ]
     },
     "ListBlueprintsRequest":{
       "type":"structure",

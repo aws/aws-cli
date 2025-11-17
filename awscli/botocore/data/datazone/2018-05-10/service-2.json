@@ -49,6 +49,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
@@ -719,6 +720,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
@@ -3504,6 +3506,10 @@
         "identifier"
       ],
       "members":{
+        "assetPermissions":{
+          "shape":"AssetPermissions",
+          "documentation":"<p>The asset permissions of the accept subscription request.</p>"
+        },
         "assetScopes":{
           "shape":"AcceptedAssetScopes",
           "documentation":"<p>The asset scopes of the accept subscription request.</p>"
@@ -4403,6 +4409,28 @@
       "max":256,
       "min":1,
       "sensitive":true
+    },
+    "AssetPermission":{
+      "type":"structure",
+      "required":[
+        "assetId",
+        "permissions"
+      ],
+      "members":{
+        "assetId":{
+          "shape":"AssetId",
+          "documentation":"<p>The asset ID as part of the asset permissions.</p>"
+        },
+        "permissions":{
+          "shape":"Permissions",
+          "documentation":"<p>The details as part of the asset permissions.</p>"
+        }
+      },
+      "documentation":"<p>The asset permissions.</p>"
+    },
+    "AssetPermissions":{
+      "type":"list",
+      "member":{"shape":"AssetPermission"}
     },
     "AssetRevision":{
       "type":"structure",
@@ -8005,6 +8033,10 @@
           "shape":"DomainId",
           "documentation":"<p>The ID of the Amazon DataZone domain in which the subscription grant is created.</p>"
         },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The environment ID for which subscription grant is created.</p>"
+        },
         "grantedEntity":{
           "shape":"GrantedEntity",
           "documentation":"<p>The entity to which the subscription is granted.</p>"
@@ -8046,6 +8078,14 @@
         "subscribedPrincipals"
       ],
       "members":{
+        "assetPermissions":{
+          "shape":"AssetPermissions",
+          "documentation":"<p>The asset permissions of the subscription request.</p>"
+        },
+        "assetScopes":{
+          "shape":"AcceptedAssetScopes",
+          "documentation":"<p>The asset scopes of the subscription request.</p>"
+        },
         "clientToken":{
           "shape":"String",
           "documentation":"<p>A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.</p>",
@@ -8329,7 +8369,10 @@
     "CreateUserProfileOutput":{
       "type":"structure",
       "members":{
-        "details":{"shape":"UserProfileDetails"},
+        "details":{
+          "shape":"UserProfileDetails",
+          "documentation":"<p>The user profile details.</p>"
+        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The identifier of the Amazon DataZone domain in which a user profile is created.</p>"
@@ -9768,6 +9811,10 @@
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The ID of the Amazon DataZone domain in which the subscription grant is deleted.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The ID of the environment in which the subscription grant is deleted.</p>"
         },
         "grantedEntity":{
           "shape":"GrantedEntity",
@@ -13690,6 +13737,10 @@
           "shape":"DomainId",
           "documentation":"<p>The ID of the Amazon DataZone domain in which the subscription grant exists.</p>"
         },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The environment ID of the subscription grant.</p>"
+        },
         "grantedEntity":{
           "shape":"GrantedEntity",
           "documentation":"<p>The entity to which the subscription is granted.</p>"
@@ -14111,7 +14162,10 @@
     "GetUserProfileOutput":{
       "type":"structure",
       "members":{
-        "details":{"shape":"UserProfileDetails"},
+        "details":{
+          "shape":"UserProfileDetails",
+          "documentation":"<p>The user profile details.</p>"
+        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>the identifier of the Amazon DataZone domain of which you want to get the user profile.</p>"
@@ -14952,14 +15006,14 @@
       "members":{
         "arn":{
           "shape":"String",
-          "documentation":"<p>The ARN of an IAM user profile in Amazon DataZone.</p>"
+          "documentation":"<p>The ARN of the IAM user.</p>"
         },
         "principalId":{
           "shape":"String",
-          "documentation":"<p>Principal ID of the IAM user.</p>"
+          "documentation":"<p>The principal ID as part of the IAM user profile details.</p>"
         }
       },
-      "documentation":"<p>The details of an IAM user profile in Amazon DataZone.</p>"
+      "documentation":"<p/>"
     },
     "Import":{
       "type":"structure",
@@ -17124,15 +17178,29 @@
           "location":"querystring",
           "locationName":"nextToken"
         },
+        "owningGroupId":{
+          "shape":"GroupProfileId",
+          "documentation":"<p>The ID of the owning group.</p>",
+          "location":"querystring",
+          "locationName":"owningGroupId"
+        },
         "owningProjectId":{
           "shape":"ProjectId",
           "documentation":"<p>The ID of the owning project of the subscription grants.</p>",
           "location":"querystring",
           "locationName":"owningProjectId"
         },
+        "owningUserId":{
+          "shape":"UserProfileId",
+          "documentation":"<p>The ID of the owning user.</p>",
+          "location":"querystring",
+          "locationName":"owningUserId"
+        },
         "sortBy":{
           "shape":"SortKey",
           "documentation":"<p>Specifies the way of sorting the results of this action.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Results are always sorted by updatedAt",
           "location":"querystring",
           "locationName":"sortBy"
         },
@@ -17204,15 +17272,29 @@
           "location":"querystring",
           "locationName":"nextToken"
         },
+        "owningGroupId":{
+          "shape":"GroupProfileId",
+          "documentation":"<p>The ID of the owning group.</p>",
+          "location":"querystring",
+          "locationName":"owningGroupId"
+        },
         "owningProjectId":{
           "shape":"ProjectId",
           "documentation":"<p>The identifier of the project for the subscription requests.</p>",
           "location":"querystring",
           "locationName":"owningProjectId"
         },
+        "owningUserId":{
+          "shape":"UserProfileId",
+          "documentation":"<p>The ID of the owning user.</p>",
+          "location":"querystring",
+          "locationName":"owningUserId"
+        },
         "sortBy":{
           "shape":"SortKey",
           "documentation":"<p>Specifies the way to sort the results of this action.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Results are always sorted by updatedAt",
           "location":"querystring",
           "locationName":"sortBy"
         },
@@ -17337,15 +17419,29 @@
           "location":"querystring",
           "locationName":"nextToken"
         },
+        "owningGroupId":{
+          "shape":"GroupProfileId",
+          "documentation":"<p>The ID of the owning group.</p>",
+          "location":"querystring",
+          "locationName":"owningGroupId"
+        },
         "owningProjectId":{
           "shape":"ProjectId",
           "documentation":"<p>The identifier of the owning project.</p>",
           "location":"querystring",
           "locationName":"owningProjectId"
         },
+        "owningUserId":{
+          "shape":"UserProfileId",
+          "documentation":"<p>The ID of the owning user.</p>",
+          "location":"querystring",
+          "locationName":"owningUserId"
+        },
         "sortBy":{
           "shape":"SortKey",
           "documentation":"<p>Specifies the way in which the results of this action are to be sorted.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Results are always sorted by updatedAt",
           "location":"querystring",
           "locationName":"sortBy"
         },
@@ -18340,6 +18436,17 @@
       "max":64,
       "min":0,
       "sensitive":true
+    },
+    "Permissions":{
+      "type":"structure",
+      "members":{
+        "s3":{
+          "shape":"S3Permissions",
+          "documentation":"<p>The S3 details of the asset permissions.</p>"
+        }
+      },
+      "documentation":"<p>The asset permissions.</p>",
+      "union":true
     },
     "PhysicalConnectionRequirements":{
       "type":"structure",
@@ -20246,6 +20353,18 @@
       "max":20,
       "min":0
     },
+    "S3Permission":{
+      "type":"string",
+      "enum":[
+        "READ",
+        "WRITE"
+      ]
+    },
+    "S3Permissions":{
+      "type":"list",
+      "member":{"shape":"S3Permission"},
+      "documentation":"<p>S3 permissions as a simple enum list.</p>"
+    },
     "S3PropertiesInput":{
       "type":"structure",
       "required":["s3Uri"],
@@ -21269,18 +21388,18 @@
       "members":{
         "firstName":{
           "shape":"FirstName",
-          "documentation":"<p>The first name included in the single sign-on details of the user profile.</p>"
+          "documentation":"<p>The first name as part of the SSO user profile detail.</p>"
         },
         "lastName":{
           "shape":"LastName",
-          "documentation":"<p>The last name included in the single sign-on details of the user profile.</p>"
+          "documentation":"<p>The last name as part of the SSO user profile detail.</p>"
         },
         "username":{
           "shape":"UserProfileName",
-          "documentation":"<p>The username included in the single sign-on details of the user profile.</p>"
+          "documentation":"<p>The username as part of the SSO user profile detail. </p>"
         }
       },
-      "documentation":"<p>The single sign-on details of the user profile.</p>"
+      "documentation":"<p>The SSO user profile detail.</p>"
     },
     "StartDataSourceRunInput":{
       "type":"structure",
@@ -21502,6 +21621,10 @@
           "shape":"Timestamp",
           "documentation":"<p>The timestamp of when the subscription grant to the asset is created.</p>"
         },
+        "permissions":{
+          "shape":"Permissions",
+          "documentation":"<p>The asset permissions.</p>"
+        },
         "status":{
           "shape":"SubscriptionGrantStatus",
           "documentation":"<p>The status of the asset for which the subscription grant is created.</p>"
@@ -21539,6 +21662,10 @@
         "glossaryTerms":{
           "shape":"DetailedGlossaryTerms",
           "documentation":"<p>The glossary terms attached to the published asset for which the subscription grant is created.</p>"
+        },
+        "permissions":{
+          "shape":"Permissions",
+          "documentation":"<p>The asset permissions.</p>"
         }
       },
       "documentation":"<p>The details of the published asset for which the subscription grant is created.</p>"
@@ -21546,6 +21673,30 @@
     "SubscribedAssets":{
       "type":"list",
       "member":{"shape":"SubscribedAsset"}
+    },
+    "SubscribedGroup":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"GroupProfileId",
+          "documentation":"<p>The ID of the subscribed group.</p>"
+        },
+        "name":{
+          "shape":"GroupProfileName",
+          "documentation":"<p>The name of the subscribed group.</p>"
+        }
+      },
+      "documentation":"<p>The group that subscribes to the asset.</p>"
+    },
+    "SubscribedGroupInput":{
+      "type":"structure",
+      "members":{
+        "identifier":{
+          "shape":"GroupProfileId",
+          "documentation":"<p>The ID of the subscribed group.</p>"
+        }
+      },
+      "documentation":"<p>The details of the subscribed group.</p>"
     },
     "SubscribedListing":{
       "type":"structure",
@@ -21623,9 +21774,17 @@
     "SubscribedPrincipal":{
       "type":"structure",
       "members":{
+        "group":{
+          "shape":"SubscribedGroup",
+          "documentation":"<p>The subscribed group.</p>"
+        },
         "project":{
           "shape":"SubscribedProject",
           "documentation":"<p>The project that has the subscription grant.</p>"
+        },
+        "user":{
+          "shape":"SubscribedUser",
+          "documentation":"<p>The subscribed user.</p>"
         }
       },
       "documentation":"<p>The principal that has the subscription grant for the asset.</p>",
@@ -21634,9 +21793,17 @@
     "SubscribedPrincipalInput":{
       "type":"structure",
       "members":{
+        "group":{
+          "shape":"SubscribedGroupInput",
+          "documentation":"<p>The subscribed group.</p>"
+        },
         "project":{
           "shape":"SubscribedProjectInput",
           "documentation":"<p>The project that is to be given a subscription grant.</p>"
+        },
+        "user":{
+          "shape":"SubscribedUserInput",
+          "documentation":"<p>The subscribed user.</p>"
         }
       },
       "documentation":"<p>The principal that is to be given a subscriptiong grant.</p>",
@@ -21702,6 +21869,30 @@
       },
       "documentation":"<p>The project that is to be given a subscription grant.</p>"
     },
+    "SubscribedUser":{
+      "type":"structure",
+      "members":{
+        "details":{
+          "shape":"UserProfileDetails",
+          "documentation":"<p>The subscribed user details.</p>"
+        },
+        "id":{
+          "shape":"UserProfileId",
+          "documentation":"<p>The ID of the subscribed user.</p>"
+        }
+      },
+      "documentation":"<p>The subscribed user.</p>"
+    },
+    "SubscribedUserInput":{
+      "type":"structure",
+      "members":{
+        "identifier":{
+          "shape":"UserProfileId",
+          "documentation":"<p>The ID of the subscribed user.</p>"
+        }
+      },
+      "documentation":"<p>The subscribed user.</p>"
+    },
     "SubscriptionGrantId":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9_-]{1,36}$"
@@ -21759,6 +21950,10 @@
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The identifier of the Amazon DataZone domain in which a subscription grant exists.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The environment ID of the subscription grant.</p>"
         },
         "grantedEntity":{
           "shape":"GrantedEntity",
@@ -24192,6 +24387,10 @@
           "shape":"DomainId",
           "documentation":"<p>The identifier of the Amazon DataZone domain in which a subscription grant status is to be updated.</p>"
         },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The ID of the environment in which the subscription grant is updated.</p>"
+        },
         "grantedEntity":{
           "shape":"GrantedEntity",
           "documentation":"<p>The granted entity to be updated as part of the <code>UpdateSubscriptionGrantStatus</code> action.</p>"
@@ -24498,7 +24697,10 @@
     "UpdateUserProfileOutput":{
       "type":"structure",
       "members":{
-        "details":{"shape":"UserProfileDetails"},
+        "details":{
+          "shape":"UserProfileDetails",
+          "documentation":"<p>The results of the UpdateUserProfile action.</p>"
+        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The identifier of the Amazon DataZone domain in which a user profile is updated.</p>"
@@ -24581,14 +24783,14 @@
       "members":{
         "iam":{
           "shape":"IamUserProfileDetails",
-          "documentation":"<p>The IAM details included in the user profile details.</p>"
+          "documentation":"<p>The IAM details of the user profile.</p>"
         },
         "sso":{
           "shape":"SsoUserProfileDetails",
-          "documentation":"<p>The single sign-on details included in the user profile details.</p>"
+          "documentation":"<p>The SSO details of the user profile.</p>"
         }
       },
-      "documentation":"<p>The details of the user profile in Amazon DataZone.</p>",
+      "documentation":"<p>The user profile details.</p>",
       "union":true
     },
     "UserProfileId":{

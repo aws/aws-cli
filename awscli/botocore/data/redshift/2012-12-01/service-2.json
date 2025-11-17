@@ -1780,6 +1780,25 @@
       ],
       "documentation":"<p>Returns a database user name and temporary password with temporary authorization to log in to an Amazon Redshift database. The database user is mapped 1:1 to the source Identity and Access Management (IAM) identity. For more information about IAM identities, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id.html\">IAM Identities (users, user groups, and roles)</a> in the Amazon Web Services Identity and Access Management User Guide.</p> <p>The Identity and Access Management (IAM) identity that runs this operation must have an IAM policy attached that allows access to all necessary actions and resources. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-identity-based.html\">Using identity-based policies (IAM policies)</a> in the Amazon Redshift Cluster Management Guide. </p>"
     },
+    "GetIdentityCenterAuthToken":{
+      "name":"GetIdentityCenterAuthToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIdentityCenterAuthTokenRequest"},
+      "output":{
+        "shape":"GetIdentityCenterAuthTokenResponse",
+        "resultWrapper":"GetIdentityCenterAuthTokenResult"
+      },
+      "errors":[
+        {"shape":"ClusterNotFoundFault"},
+        {"shape":"InvalidClusterStateFault"},
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"RedshiftInvalidParameterFault"}
+      ],
+      "documentation":"<p>Generates an encrypted authentication token that propagates the caller's Amazon Web Services IAM Identity Center identity to Amazon Redshift clusters. This API extracts the Amazon Web Services IAM Identity Center identity from enhanced credentials and creates a secure token that Amazon Redshift drivers can use for authentication.</p> <p>The token is encrypted using Key Management Service (KMS) and can only be decrypted by the specified Amazon Redshift clusters. The token contains the caller's Amazon Web Services IAM Identity Center identity information and is valid for a limited time period.</p> <p>This API is exclusively for use with Amazon Web Services IAM Identity Center enhanced credentials. If the caller is not using enhanced credentials with embedded Amazon Web Services IAM Identity Center identity, the API will return an error.</p>"
+    },
     "GetReservedNodeExchangeConfigurationOptions":{
       "name":"GetReservedNodeExchangeConfigurationOptions",
       "http":{
@@ -3541,6 +3560,13 @@
       "member":{
         "shape":"ClusterIamRole",
         "locationName":"ClusterIamRole"
+      }
+    },
+    "ClusterIdentifierList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"ClusterIdentifier"
       }
     },
     "ClusterList":{
@@ -7215,6 +7241,31 @@
         }
       }
     },
+    "GetIdentityCenterAuthTokenRequest":{
+      "type":"structure",
+      "required":["ClusterIds"],
+      "members":{
+        "ClusterIds":{
+          "shape":"ClusterIdentifierList",
+          "documentation":"<p>A list of cluster identifiers that the generated token can be used with. The token will be scoped to only allow authentication to the specified clusters.</p> <p>Constraints:</p> <ul> <li> <p> <code>ClusterIds</code> must contain at least 1 cluster identifier.</p> </li> <li> <p> <code>ClusterIds</code> can hold a maximum of 20 cluster identifiers.</p> </li> <li> <p>Cluster identifiers must be 1 to 63 characters in length.</p> </li> <li> <p>The characters accepted for cluster identifiers are the following:</p> <ul> <li> <p>Alphanumeric characters</p> </li> <li> <p>Hyphens</p> </li> </ul> </li> <li> <p>Cluster identifiers must start with a letter.</p> </li> <li> <p>Cluster identifiers can't end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The request parameters for <code>GetIdentityCenterAuthToken</code>.</p>"
+    },
+    "GetIdentityCenterAuthTokenResponse":{
+      "type":"structure",
+      "members":{
+        "Token":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The encrypted authentication token containing the caller's Amazon Web Services IAM Identity Center identity information. This token is encrypted using Key Management Service and can only be decrypted by the specified Amazon Redshift clusters. Use this token with Amazon Redshift drivers to authenticate using your Amazon Web Services IAM Identity Center identity.</p>"
+        },
+        "ExpirationTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The time (UTC) when the token expires. After this timestamp, the token will no longer be valid for authentication.</p>"
+        }
+      },
+      "documentation":"<p>The response from GetIdentityCenterAuthToken containing the encrypted authentication token and expiration time.</p>"
+    },
     "GetReservedNodeExchangeConfigurationOptionsInputMessage":{
       "type":"structure",
       "required":["ActionType"],
@@ -9704,6 +9755,17 @@
       "documentation":"<p>The maximum number of Redshift IAM Identity Center applications was exceeded.</p>",
       "error":{
         "code":"RedshiftIdcApplicationQuotaExceeded",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "RedshiftInvalidParameterFault":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The request contains one or more invalid parameters. This error occurs when required parameters are missing, parameter values are outside acceptable ranges, or parameter formats are incorrect.</p>",
+      "error":{
+        "code":"RedshiftInvalidParameter",
         "httpStatusCode":400,
         "senderFault":true
       },

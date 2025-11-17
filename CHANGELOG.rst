@@ -2,6 +2,54 @@
 CHANGELOG
 =========
 
+2.31.37
+=======
+
+* api-change:``imagebuilder``: EC2 Image Builder now supports invoking Lambda functions and executing Step Functions state machine through image workflows.
+* api-change:``ec2``: This release adds AvailabilityZoneId support for CreateInstanceConnectEndpoint, DescribeInstanceConnectEndpoints, and DeleteInstanceConnectEndpoint APIs.
+* api-change:``datazone``: Adds support for granting read and write access to Amazon S3 general purpose buckets using CreateSubscriptionRequest and AcceptSubscriptionRequest APIs. Also adds search filters for SSOUser and SSOGroup to ListSubscriptions APIs and deprecates "sortBy" parameter for ListSubscriptions APIs.
+* api-change:``medialive``: Removed all the value constraint (min/max) for the shape definitions (e.g. integerMin0Max3600) on the C2j models to get rid of the need to request an exemption from the SDK team whenever a shape definition (e.g. integerMin0Max3600) is changed.
+
+
+2.31.36
+=======
+
+* api-change:``iotwireless``: Integration of Device Location with Amazon Sidewalk network for Amazon Sidewalk enabled devices
+* api-change:``sagemaker``: Added support for minor version upgrades and AWS Identity Center integration for SageMaker Hadron Partner Apps, enabling automated version management and IdC group-based access control.
+* api-change:``ec2``: Added support for new accelerator types ("media") and accelerator names ("L4", "L40s", "GAUDI_HL_205", "INFERENTIA2", "TRAINIUM", "TRAINIUM2", "U30") in Attributes Based Instance Type Selection for launched instance types.
+* api-change:``controlcatalog``: Added support for related control mappings with new RELATED_CONTROL mapping type in ListControlMappings API.
+* api-change:``ecr``: Add Amazon ECR FIPS PrivateLink endpoint support
+* api-change:``cloudformation``: CloudFormation now supports GetHookResult API with annotations to retrieve structured compliance check results and remediation guidance for each evaluated resource, replacing the previous single-message limitation with detailed validation outcomes.
+* api-change:``elbv2``: QUIC and TCP_QUIC protocol support for Network Load Balancer (NLB). This capability enables customers to forward QUIC traffic to their targets with ultra-low latency while maintaining session stickiness using QUIC Connection IDs.
+* api-change:``workspaces-web``: Support for managing web content filtering for defining, tracking and regulating type of content accessed with WorkSpaces Secure Browser as part of browser settings.
+* api-change:``mediaconvert``: Lowers minimum duration for black video generator. Adds support for embedding and signing C2PA content credentials in DASH and CMAF HLS outputs.
+* api-change:``rds``: Updated endpoint and service metadata
+
+
+2.31.35
+=======
+
+* api-change:``sagemaker``: Add support for trn2.3xlarge instance type for SageMaker Hyperpod
+* api-change:``connect``: Updated Authentication Profile APIs to add support for automatic logout on user inactivity
+* api-change:``amp``: Add VPC source configuration support enabling Amazon Managed Service for Prometheus Collector to collect metrics from MSK clusters.
+* api-change:``ec2``: Adds complete AMI ancestry tracing from immediate parent through each preceding generation back to the root AMI
+* api-change:``dms``: Added support of SQL statements creation, metadata model discovery and selection rules transformation.
+* api-change:``s3tables``: Adds support for request metrics metrics APIs for S3 Tables
+* api-change:``redshift``: Added GetIdentityCenterAuthToken API to retrieve encrypted authentication tokens for Identity Center integrated applications. This API enables programmatic access to secure Identity Center tokens with proper error handling and parameter validation across supported SDK languages.
+* api-change:``elbv2``: This release expands ALB Authentication to support JWT verification and adds support for a new JWT validation action in listener rule.
+
+
+2.31.34
+=======
+
+* api-change:``medical-imaging``: Added new fields in existing APIs.
+* api-change:``rtbfabric``: Added LogSettings and LinkAttribute fields to external links
+* api-change:``ec2``: AWS Site-to-Site VPN now supports VPN connections with up to 5 Gbps bandwidth per tunnel, a 4x improvement from existing limit of 1.25 Gbps.
+* api-change:``security-ir``: Added support for configuring communication preferences as well as clearly displaying case comment author identities.
+* api-change:``batch``: Documentation-only update: update API and doc descriptions per EKS ImageType default value switch from AL2 to AL2023.
+* api-change:``bedrock-data-automation``: Added support for Language Expansion feature for BDA Audio modality.
+
+
 2.31.33
 =======
 

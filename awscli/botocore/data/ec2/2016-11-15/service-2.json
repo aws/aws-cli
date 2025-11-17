@@ -5121,6 +5121,16 @@
       "output":{"shape":"GetHostReservationPurchasePreviewResult"},
       "documentation":"<p>Preview a reservation purchase with configurations that match those of your Dedicated Host. You must have active Dedicated Hosts in your account before you purchase a reservation.</p> <p>This is a preview of the <a>PurchaseHostReservation</a> action and does not result in the offering being purchased.</p>"
     },
+    "GetImageAncestry":{
+      "name":"GetImageAncestry",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetImageAncestryRequest"},
+      "output":{"shape":"GetImageAncestryResult"},
+      "documentation":"<p>Retrieves the ancestry chain of the specified AMI, tracing its lineage back to the root AMI. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-ancestry.html\">AMI ancestry</a> in <i>Amazon EC2 User Guide</i>.</p>"
+    },
     "GetImageBlockPublicAccessState":{
       "name":"GetImageBlockPublicAccessState",
       "http":{
@@ -7184,7 +7194,14 @@
         "v100",
         "a10g",
         "h100",
-        "t4g"
+        "t4g",
+        "l40s",
+        "l4",
+        "gaudi-hl-205",
+        "inferentia2",
+        "trainium",
+        "trainium2",
+        "u30"
       ]
     },
     "AcceleratorNameSet":{
@@ -7229,7 +7246,8 @@
       "enum":[
         "gpu",
         "fpga",
-        "inference"
+        "inference",
+        "media"
       ]
     },
     "AcceleratorTypeSet":{
@@ -32529,6 +32547,11 @@
           "shape":"InstanceConnectEndpointPublicDnsNames",
           "documentation":"<p>The public DNS names of the endpoint.</p>",
           "locationName":"publicDnsNames"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The ID of the Availability Zone of the EC2 Instance Connect Endpoint.</p>",
+          "locationName":"availabilityZoneId"
         }
       },
       "documentation":"<p>Describes an EC2 Instance Connect Endpoint.</p>"
@@ -36578,6 +36601,30 @@
         }
       }
     },
+    "GetImageAncestryRequest":{
+      "type":"structure",
+      "required":["ImageId"],
+      "members":{
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the AMI whose ancestry you want to trace.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "GetImageAncestryResult":{
+      "type":"structure",
+      "members":{
+        "ImageAncestryEntries":{
+          "shape":"ImageAncestryEntryList",
+          "documentation":"<p>A list of entries in the AMI ancestry chain, from the specified AMI to the root AMI.</p>",
+          "locationName":"imageAncestryEntrySet"
+        }
+      }
+    },
     "GetImageBlockPublicAccessStateRequest":{
       "type":"structure",
       "members":{
@@ -39302,6 +39349,44 @@
         }
       },
       "documentation":"<p>Describes an image.</p>"
+    },
+    "ImageAncestryEntry":{
+      "type":"structure",
+      "members":{
+        "CreationDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The date and time when this AMI was created.</p>",
+          "locationName":"creationDate"
+        },
+        "ImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of this AMI.</p>",
+          "locationName":"imageId"
+        },
+        "ImageOwnerAlias":{
+          "shape":"String",
+          "documentation":"<p>The owner alias (<code>amazon</code> | <code>aws-backup-vault</code> | <code>aws-marketplace</code> ) of this AMI, if one is assigned. Otherwise, the value is <code>null</code>.</p>",
+          "locationName":"imageOwnerAlias"
+        },
+        "SourceImageId":{
+          "shape":"ImageId",
+          "documentation":"<p>The ID of the parent AMI.</p>",
+          "locationName":"sourceImageId"
+        },
+        "SourceImageRegion":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region of the parent AMI.</p>",
+          "locationName":"sourceImageRegion"
+        }
+      },
+      "documentation":"<p>Information about a single AMI in the ancestry chain and its source (parent) AMI.</p>"
+    },
+    "ImageAncestryEntryList":{
+      "type":"list",
+      "member":{
+        "shape":"ImageAncestryEntry",
+        "locationName":"item"
+      }
     },
     "ImageAttribute":{
       "type":"structure",
@@ -42575,7 +42660,7 @@
         },
         "AcceleratorTypes":{
           "shape":"AcceleratorTypeSet",
-          "documentation":"<p>The accelerator types that must be on the instance type.</p> <ul> <li> <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p> </li> <li> <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p> </li> <li> <p>For instance types with Inference accelerators, specify <code>inference</code>.</p> </li> </ul> <p>Default: Any accelerator type</p>",
+          "documentation":"<p>The accelerator types that must be on the instance type.</p> <ul> <li> <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p> </li> <li> <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p> </li> <li> <p>For instance types with Inference accelerators, specify <code>inference</code>.</p> </li> <li> <p>For instance types with Media accelerators, specify <code>media</code>.</p> </li> </ul> <p>Default: Any accelerator type</p>",
           "locationName":"acceleratorTypeSet"
         },
         "AcceleratorCount":{
@@ -42590,7 +42675,7 @@
         },
         "AcceleratorNames":{
           "shape":"AcceleratorNameSet",
-          "documentation":"<p>The accelerators that must be on the instance type.</p> <ul> <li> <p>For instance types with NVIDIA A10G GPUs, specify <code>a10g</code>.</p> </li> <li> <p>For instance types with NVIDIA A100 GPUs, specify <code>a100</code>.</p> </li> <li> <p>For instance types with NVIDIA H100 GPUs, specify <code>h100</code>.</p> </li> <li> <p>For instance types with Amazon Web Services Inferentia chips, specify <code>inferentia</code>.</p> </li> <li> <p>For instance types with NVIDIA GRID K520 GPUs, specify <code>k520</code>.</p> </li> <li> <p>For instance types with NVIDIA K80 GPUs, specify <code>k80</code>.</p> </li> <li> <p>For instance types with NVIDIA M60 GPUs, specify <code>m60</code>.</p> </li> <li> <p>For instance types with AMD Radeon Pro V520 GPUs, specify <code>radeon-pro-v520</code>.</p> </li> <li> <p>For instance types with NVIDIA T4 GPUs, specify <code>t4</code>.</p> </li> <li> <p>For instance types with NVIDIA T4G GPUs, specify <code>t4g</code>.</p> </li> <li> <p>For instance types with Xilinx VU9P FPGAs, specify <code>vu9p</code>.</p> </li> <li> <p>For instance types with NVIDIA V100 GPUs, specify <code>v100</code>.</p> </li> </ul> <p>Default: Any accelerator</p>",
+          "documentation":"<p>The accelerators that must be on the instance type.</p> <ul> <li> <p>For instance types with NVIDIA A10G GPUs, specify <code>a10g</code>.</p> </li> <li> <p>For instance types with NVIDIA A100 GPUs, specify <code>a100</code>.</p> </li> <li> <p>For instance types with NVIDIA H100 GPUs, specify <code>h100</code>.</p> </li> <li> <p>For instance types with Amazon Web Services Inferentia chips, specify <code>inferentia</code>.</p> </li> <li> <p>For instance types with Amazon Web Services Inferentia2 chips, specify <code>inferentia2</code>.</p> </li> <li> <p>For instance types with Habana Gaudi HL-205 GPUs, specify <code>gaudi-hl-205</code>.</p> </li> <li> <p>For instance types with NVIDIA GRID K520 GPUs, specify <code>k520</code>.</p> </li> <li> <p>For instance types with NVIDIA K80 GPUs, specify <code>k80</code>.</p> </li> <li> <p>For instance types with NVIDIA L4 GPUs, specify <code>l4</code>.</p> </li> <li> <p>For instance types with NVIDIA L40S GPUs, specify <code>l40s</code>.</p> </li> <li> <p>For instance types with NVIDIA M60 GPUs, specify <code>m60</code>.</p> </li> <li> <p>For instance types with AMD Radeon Pro V520 GPUs, specify <code>radeon-pro-v520</code>.</p> </li> <li> <p>For instance types with Amazon Web Services Trainium chips, specify <code>trainium</code>.</p> </li> <li> <p>For instance types with Amazon Web Services Trainium2 chips, specify <code>trainium2</code>.</p> </li> <li> <p>For instance types with NVIDIA T4 GPUs, specify <code>t4</code>.</p> </li> <li> <p>For instance types with NVIDIA T4G GPUs, specify <code>t4g</code>.</p> </li> <li> <p>For instance types with Xilinx U30 cards, specify <code>u30</code>.</p> </li> <li> <p>For instance types with Xilinx VU9P FPGAs, specify <code>vu9p</code>.</p> </li> <li> <p>For instance types with NVIDIA V100 GPUs, specify <code>v100</code>.</p> </li> </ul> <p>Default: Any accelerator</p>",
           "locationName":"acceleratorNameSet"
         },
         "AcceleratorTotalMemoryMiB":{
@@ -42703,7 +42788,7 @@
         },
         "AcceleratorTypes":{
           "shape":"AcceleratorTypeSet",
-          "documentation":"<p>The accelerator types that must be on the instance type.</p> <ul> <li> <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p> </li> <li> <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p> </li> <li> <p>For instance types with Inference accelerators, specify <code>inference</code>.</p> </li> </ul> <p>Default: Any accelerator type</p>",
+          "documentation":"<p>The accelerator types that must be on the instance type.</p> <ul> <li> <p>For instance types with FPGA accelerators, specify <code>fpga</code>.</p> </li> <li> <p>For instance types with GPU accelerators, specify <code>gpu</code>.</p> </li> <li> <p>For instance types with Inference accelerators, specify <code>inference</code>.</p> </li> <li> <p>For instance types with Media accelerators, specify <code>media</code>.</p> </li> </ul> <p>Default: Any accelerator type</p>",
           "locationName":"AcceleratorType"
         },
         "AcceleratorCount":{
@@ -42717,7 +42802,7 @@
         },
         "AcceleratorNames":{
           "shape":"AcceleratorNameSet",
-          "documentation":"<p>The accelerators that must be on the instance type.</p> <ul> <li> <p>For instance types with NVIDIA A10G GPUs, specify <code>a10g</code>.</p> </li> <li> <p>For instance types with NVIDIA A100 GPUs, specify <code>a100</code>.</p> </li> <li> <p>For instance types with NVIDIA H100 GPUs, specify <code>h100</code>.</p> </li> <li> <p>For instance types with Amazon Web Services Inferentia chips, specify <code>inferentia</code>.</p> </li> <li> <p>For instance types with NVIDIA GRID K520 GPUs, specify <code>k520</code>.</p> </li> <li> <p>For instance types with NVIDIA K80 GPUs, specify <code>k80</code>.</p> </li> <li> <p>For instance types with NVIDIA M60 GPUs, specify <code>m60</code>.</p> </li> <li> <p>For instance types with AMD Radeon Pro V520 GPUs, specify <code>radeon-pro-v520</code>.</p> </li> <li> <p>For instance types with NVIDIA T4 GPUs, specify <code>t4</code>.</p> </li> <li> <p>For instance types with NVIDIA T4G GPUs, specify <code>t4g</code>.</p> </li> <li> <p>For instance types with Xilinx VU9P FPGAs, specify <code>vu9p</code>.</p> </li> <li> <p>For instance types with NVIDIA V100 GPUs, specify <code>v100</code>.</p> </li> </ul> <p>Default: Any accelerator</p>",
+          "documentation":"<p>The accelerators that must be on the instance type.</p> <ul> <li> <p>For instance types with NVIDIA A10G GPUs, specify <code>a10g</code>.</p> </li> <li> <p>For instance types with NVIDIA A100 GPUs, specify <code>a100</code>.</p> </li> <li> <p>For instance types with NVIDIA H100 GPUs, specify <code>h100</code>.</p> </li> <li> <p>For instance types with Amazon Web Services Inferentia chips, specify <code>inferentia</code>.</p> </li> <li> <p>For instance types with Amazon Web Services Inferentia2 chips, specify <code>inferentia2</code>.</p> </li> <li> <p>For instance types with Habana Gaudi HL-205 GPUs, specify <code>gaudi-hl-205</code>.</p> </li> <li> <p>For instance types with NVIDIA GRID K520 GPUs, specify <code>k520</code>.</p> </li> <li> <p>For instance types with NVIDIA K80 GPUs, specify <code>k80</code>.</p> </li> <li> <p>For instance types with NVIDIA L4 GPUs, specify <code>l4</code>.</p> </li> <li> <p>For instance types with NVIDIA L40S GPUs, specify <code>l40s</code>.</p> </li> <li> <p>For instance types with NVIDIA M60 GPUs, specify <code>m60</code>.</p> </li> <li> <p>For instance types with AMD Radeon Pro V520 GPUs, specify <code>radeon-pro-v520</code>.</p> </li> <li> <p>For instance types with Amazon Web Services Trainium chips, specify <code>trainium</code>.</p> </li> <li> <p>For instance types with Amazon Web Services Trainium2 chips, specify <code>trainium2</code>.</p> </li> <li> <p>For instance types with NVIDIA T4 GPUs, specify <code>t4</code>.</p> </li> <li> <p>For instance types with NVIDIA T4G GPUs, specify <code>t4g</code>.</p> </li> <li> <p>For instance types with Xilinx U30 cards, specify <code>u30</code>.</p> </li> <li> <p>For instance types with Xilinx VU9P FPGAs, specify <code>vu9p</code>.</p> </li> <li> <p>For instance types with NVIDIA V100 GPUs, specify <code>v100</code>.</p> </li> </ul> <p>Default: Any accelerator</p>",
           "locationName":"AcceleratorName"
         },
         "AcceleratorTotalMemoryMiB":{
@@ -71899,6 +71984,11 @@
           "shape":"TunnelOptionsList",
           "documentation":"<p>Indicates the VPN tunnel options.</p>",
           "locationName":"tunnelOptionSet"
+        },
+        "TunnelBandwidth":{
+          "shape":"VpnTunnelBandwidth",
+          "documentation":"<p> The configured bandwidth for the VPN tunnel. Represents the current throughput capacity setting for the tunnel connection. <code>standard</code> tunnel bandwidth supports up to 1.25 Gbps per tunnel while <code>large</code> supports up to 5 Gbps per tunnel. If no tunnel bandwidth was specified for the connection, <code>standard</code> is used as the default value. </p>",
+          "locationName":"tunnelBandwidth"
         }
       },
       "documentation":"<p>Describes VPN connection options.</p>"
@@ -71941,6 +72031,10 @@
         "TransportTransitGatewayAttachmentId":{
           "shape":"TransitGatewayAttachmentId",
           "documentation":"<p>The transit gateway attachment ID to use for the VPN tunnel.</p> <p>Required if <code>OutsideIpAddressType</code> is set to <code>PrivateIpv4</code>.</p>"
+        },
+        "TunnelBandwidth":{
+          "shape":"VpnTunnelBandwidth",
+          "documentation":"<p> The desired bandwidth specification for the VPN tunnel, used when creating or modifying VPN connection options to set the tunnel's throughput capacity. <code>standard</code> supports up to 1.25 Gbps per tunnel, while <code>large</code> supports up to 5 Gbps per tunnel. The default value is <code>standard</code>. Existing VPN connections without a bandwidth setting will automatically default to <code>standard</code>. </p>"
         },
         "StaticRoutesOnly":{
           "shape":"Boolean",
@@ -72057,6 +72151,13 @@
     "VpnStaticRouteSource":{
       "type":"string",
       "enum":["Static"]
+    },
+    "VpnTunnelBandwidth":{
+      "type":"string",
+      "enum":[
+        "standard",
+        "large"
+      ]
     },
     "VpnTunnelLogOptions":{
       "type":"structure",

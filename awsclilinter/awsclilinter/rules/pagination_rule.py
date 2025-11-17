@@ -19,7 +19,7 @@ class PaginationRule(LintRule):
             "Add --no-cli-paginate to disable pagination and match v1 behavior."
         )
 
-    def check(self, root: SgRoot, start_pos: int = 0) -> List[LintFinding]:
+    def check(self, root: SgRoot) -> List[LintFinding]:
         """Check for AWS CLI commands missing --no-cli-paginate."""
         node = root.root()
         nodes = node.find_all(
@@ -32,8 +32,6 @@ class PaginationRule(LintRule):
 
         findings = []
         for stmt in nodes:
-            if stmt.range().start.index < start_pos:
-                continue
             original = stmt.text()
             suggested = original + " --no-cli-paginate"
             edit = stmt.replace(suggested)

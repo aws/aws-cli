@@ -21,7 +21,7 @@ class Base64BinaryFormatRule(LintRule):
             "add `--cli-binary-format raw-in-base64-out`."
         )
 
-    def check(self, root: SgRoot, start_pos: int = 0) -> List[LintFinding]:
+    def check(self, root: SgRoot) -> List[LintFinding]:
         """Check for AWS CLI commands missing --cli-binary-format."""
         node = root.root()
         base64_broken_nodes = node.find_all(
@@ -34,8 +34,6 @@ class Base64BinaryFormatRule(LintRule):
 
         findings = []
         for stmt in base64_broken_nodes:
-            if stmt.range().start.index < start_pos:
-                continue
             original = stmt.text()
             # To retain v1 behavior after migrating to v2, append
             # --cli-binary-format raw-in-base64-out

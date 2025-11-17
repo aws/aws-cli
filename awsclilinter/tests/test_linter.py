@@ -21,8 +21,8 @@ class TestScriptLinter:
         script = "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json"
         linter = ScriptLinter([Base64BinaryFormatRule()])
         findings_with_rules = linter.lint(script)
-        finding, _ = findings_with_rules[0]
-        fixed = linter.apply_single_fix(script, finding)
+        findings = [f for f, _ in findings_with_rules]
+        fixed = linter.apply_fixes(script, findings)
 
         assert "--cli-binary-format raw-in-base64-out" in fixed
         assert "file://data.json" in fixed

@@ -33,7 +33,7 @@ class LintRule(ABC):
         pass
 
     @abstractmethod
-    def check(self, root: SgRoot, start_pos: int = 0) -> List[LintFinding]:
+    def check(self, root: SgRoot) -> List[LintFinding]:
         """Check the AST root for violations and return findings.
 
         Args:

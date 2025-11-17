@@ -44,17 +44,6 @@ class StructuredErrorHandler:
             return False
 
         config_store = self._session.get_component('config_store')
-        hide_details = config_store.get_config_variable(
-            'cli_hide_error_details'
-        )
-        if isinstance(hide_details, str):
-            hide_details = hide_details.lower() == 'true'
-        else:
-            hide_details = bool(hide_details) if hide_details else False
-
-        if hide_details:
-            return False
-
         error_format = config_store.get_config_variable('cli_error_format')
         if error_format == 'LEGACY':
             return False
@@ -92,7 +81,7 @@ class StructuredErrorHandler:
 
         TODO: Implement sensitive output mitigation to filter fields
         marked with the sensitive trait according to AWS CLI sensitive
-        output mitigation design.
+        output mitigation design when finalized.
         """
         # Currently returns unfiltered
         return error_info

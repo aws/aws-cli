@@ -280,9 +280,6 @@ class CLIDriver:
         config_store.set_config_provider(
             'cli_error_format', self._construct_cli_error_format_chain()
         )
-        config_store.set_config_provider(
-            'cli_hide_error_details', self._construct_cli_hide_error_details_chain()
-        )
 
     def _construct_cli_region_chain(self):
         providers = [
@@ -387,20 +384,6 @@ class CLIDriver:
                 session=self.session,
             ),
             ConstantProvider(value='STANDARD'),
-        ]
-        return ChainProvider(providers=providers)
-
-    def _construct_cli_hide_error_details_chain(self):
-        providers = [
-            EnvironmentProvider(
-                name='AWS_CLI_HIDE_ERROR_DETAILS',
-                env=os.environ,
-            ),
-            ScopedConfigProvider(
-                config_var_name='cli_hide_error_details',
-                session=self.session,
-            ),
-            ConstantProvider(value='false'),
         ]
         return ChainProvider(providers=providers)
 

@@ -83,21 +83,6 @@ class TestStructuredErrorHandler:
 
         assert not self.handler.should_display(error_response, parsed_globals)
 
-    def test_should_display_respects_hide_details(self):
-        error_response = {
-            'Code': 'NoSuchBucket',
-            'Message': 'Error',
-            'BucketName': 'test',
-        }
-        parsed_globals = mock.Mock()
-        parsed_globals.output = 'json'
-
-        self.session.config_store.set_config_provider(
-            'cli_hide_error_details', mock.Mock(provide=lambda: True)
-        )
-
-        assert not self.handler.should_display(error_response, parsed_globals)
-
     def test_should_display_respects_legacy_format(self):
         error_response = {
             'Code': 'NoSuchBucket',

@@ -2,6 +2,23 @@
 CHANGELOG
 =========
 
+1.42.76
+=======
+
+* api-change:``autoscaling``: This release adds the new LaunchInstances API, which can launch instances synchronously in an AutoScaling group. The API also returns instances info and launch error back immediately.
+* api-change:``backup``: AWS Backup now supports a low-cost warm storage tier for Amazon S3 backup data.
+* api-change:``bedrock-runtime``: Amazon Bedrock Runtime Service Tier Support Launch
+* api-change:``cloudformation``: New CloudFormation DescribeEvents API with operation ID tracking and failure filtering capabilities to quickly identify root causes of deployment failures. Also, a DeploymentMode parameter for the CreateChangeSet API that enables creation of drift-aware change sets for safe drift management.
+* api-change:``connect``: This release added support for ring timer configuration for campaign calls.
+* api-change:``ec2``: AWS Site-to-Site VPN now supports VPN Concentrator, a new feature that enables customers to connect multiple low-bandwidth sites connections through a single attachment, simplifying multi-site connectivity for distributed enterprises.
+* api-change:``iam``: Added the AssociateDelegationRequest, GetDelegationRequest, AcceptDelegationRequest, RejectDelegatonRequest, ListDelegationRequests, UpdateDelegationRequest, SendDelegationToken and GetHumanReadableSummary APIs for the IAM temporary delegation feature.
+* api-change:``kafka``: Amazon MSK adds three new APIs, ListTopics, DescribeTopic, and DescribeTopicPartitions for viewing Kafka topics in your MSK clusters.
+* api-change:``logs``: CloudWatch Logs updates: Added capability to setup a recurring schedule for log insights queries. Logs introduced Scheduled Queries (managed through Create/Update/Get/Delete/List/History Scheduled Query APIs). For more information, see CloudWatch Logs API documentation.
+* api-change:``resourcegroupstaggingapi``: Add support for new ListRequiredTags API used to retrieve the required tags specified in a customer's effective tag policy.
+* api-change:``storagegateway``: Adds support for European Sovereign Cloud ARNs in Storage Gateway API parameters.
+* api-change:``wafv2``: AssociateWebACL, UpdateWebACL and PutLoggingConfiguration will now throw WAFFeatureNotIncludedInPricingPlanException when the request contains a feature that is not included in the CloudFront pricing plan of the WebACL.
+
+
 1.42.75
 =======
 

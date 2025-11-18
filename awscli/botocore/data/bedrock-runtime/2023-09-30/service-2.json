@@ -869,6 +869,10 @@
         "performanceConfig":{
           "shape":"PerformanceConfiguration",
           "documentation":"<p>Model performance settings for the request.</p>"
+        },
+        "serviceTier":{
+          "shape":"ServiceTier",
+          "documentation":"<p>Specifies the processing tier configuration used for serving the request.</p>"
         }
       }
     },
@@ -919,6 +923,10 @@
         "performanceConfig":{
           "shape":"PerformanceConfiguration",
           "documentation":"<p>Model performance settings for the request.</p>"
+        },
+        "serviceTier":{
+          "shape":"ServiceTier",
+          "documentation":"<p>Specifies the processing tier configuration used for serving the request.</p>"
         }
       }
     },
@@ -944,6 +952,10 @@
         "performanceConfig":{
           "shape":"PerformanceConfiguration",
           "documentation":"<p>Model performance configuration metadata for the conversation stream event.</p>"
+        },
+        "serviceTier":{
+          "shape":"ServiceTier",
+          "documentation":"<p>Specifies the processing tier configuration used for serving the request.</p>"
         }
       },
       "documentation":"<p>A conversation stream metadata event.</p>",
@@ -1060,6 +1072,10 @@
         "performanceConfig":{
           "shape":"PerformanceConfiguration",
           "documentation":"<p>Model performance settings for the request.</p>"
+        },
+        "serviceTier":{
+          "shape":"ServiceTier",
+          "documentation":"<p>Specifies the processing tier configuration used for serving the request.</p>"
         }
       }
     },
@@ -1108,6 +1124,14 @@
         "system":{
           "shape":"SystemContentBlocks",
           "documentation":"<p>The system content blocks to count tokens for. System content provides instructions or context to the model about how it should behave or respond. The token count will include any system content provided.</p>"
+        },
+        "toolConfig":{
+          "shape":"ToolConfiguration",
+          "documentation":"<p>The toolConfig of Converse input request to count tokens for. Configuration information for the tools that the model can use when generating a response.</p>"
+        },
+        "additionalModelRequestFields":{
+          "shape":"Document",
+          "documentation":"<p>The additionalModelRequestFields of Converse input request to count tokens for. Use this field when you want to pass additional parameters that the model supports.</p>"
         }
       },
       "documentation":"<p>The inputs from a <code>Converse</code> API request for token counting.</p> <p>This structure mirrors the input format for the <code>Converse</code> operation, allowing you to count tokens for conversation-based inference requests.</p>"
@@ -2838,6 +2862,12 @@
           "documentation":"<p>Model performance settings for the request.</p>",
           "location":"header",
           "locationName":"X-Amzn-Bedrock-PerformanceConfig-Latency"
+        },
+        "serviceTier":{
+          "shape":"ServiceTierType",
+          "documentation":"<p>Specifies the processing tier type used for serving the request.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-Service-Tier"
         }
       },
       "payload":"body"
@@ -2864,6 +2894,12 @@
           "documentation":"<p>Model performance settings for the request.</p>",
           "location":"header",
           "locationName":"X-Amzn-Bedrock-PerformanceConfig-Latency"
+        },
+        "serviceTier":{
+          "shape":"ServiceTierType",
+          "documentation":"<p>Specifies the processing tier type used for serving the request.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-Service-Tier"
         }
       },
       "payload":"body"
@@ -3005,6 +3041,12 @@
           "documentation":"<p>Model performance settings for the request.</p>",
           "location":"header",
           "locationName":"X-Amzn-Bedrock-PerformanceConfig-Latency"
+        },
+        "serviceTier":{
+          "shape":"ServiceTierType",
+          "documentation":"<p>Specifies the processing tier type used for serving the request.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-Service-Tier"
         }
       },
       "payload":"body"
@@ -3031,6 +3073,12 @@
           "documentation":"<p>Model performance settings for the request.</p>",
           "location":"header",
           "locationName":"X-Amzn-Bedrock-PerformanceConfig-Latency"
+        },
+        "serviceTier":{
+          "shape":"ServiceTierType",
+          "documentation":"<p>Specifies the processing tier type used for serving the request.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-Service-Tier"
         }
       },
       "payload":"body"
@@ -3473,6 +3521,25 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ServiceTier":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"ServiceTierType",
+          "documentation":"<p>Specifies the processing tier type used for serving the request.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the processing tier configuration used for serving the request.</p>"
+    },
+    "ServiceTierType":{
+      "type":"string",
+      "enum":[
+        "priority",
+        "default",
+        "flex"
+      ]
     },
     "ServiceUnavailableException":{
       "type":"structure",

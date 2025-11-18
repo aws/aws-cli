@@ -1548,6 +1548,16 @@
       "output":{"shape":"CreateVpcPeeringConnectionResult"},
       "documentation":"<p>Requests a VPC peering connection between two VPCs: a requester VPC that you own and an accepter VPC with which to create the connection. The accepter VPC can belong to another Amazon Web Services account and can be in a different Region to the requester VPC. The requester VPC and accepter VPC cannot have overlapping CIDR blocks.</p> <note> <p>Limitations and rules apply to a VPC peering connection. For more information, see the <a href=\"https://docs.aws.amazon.com/vpc/latest/peering/vpc-peering-basics.html#vpc-peering-limitations\">VPC peering limitations</a> in the <i>VPC Peering Guide</i>.</p> </note> <p>The owner of the accepter VPC must accept the peering request to activate the peering connection. The VPC peering connection request expires after 7 days, after which it cannot be accepted or rejected.</p> <p>If you create a VPC peering connection request between VPCs with overlapping CIDR blocks, the VPC peering connection has a status of <code>failed</code>.</p>"
     },
+    "CreateVpnConcentrator":{
+      "name":"CreateVpnConcentrator",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateVpnConcentratorRequest"},
+      "output":{"shape":"CreateVpnConcentratorResult"},
+      "documentation":"<p>Creates a VPN concentrator that aggregates multiple VPN connections to a transit gateway.</p>"
+    },
     "CreateVpnConnection":{
       "name":"CreateVpnConnection",
       "http":{
@@ -2381,6 +2391,16 @@
       "input":{"shape":"DeleteVpcPeeringConnectionRequest"},
       "output":{"shape":"DeleteVpcPeeringConnectionResult"},
       "documentation":"<p>Deletes a VPC peering connection. Either the owner of the requester VPC or the owner of the accepter VPC can delete the VPC peering connection if it's in the <code>active</code> state. The owner of the requester VPC can delete a VPC peering connection in the <code>pending-acceptance</code> state. You cannot delete a VPC peering connection that's in the <code>failed</code> or <code>rejected</code> state.</p>"
+    },
+    "DeleteVpnConcentrator":{
+      "name":"DeleteVpnConcentrator",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteVpnConcentratorRequest"},
+      "output":{"shape":"DeleteVpnConcentratorResult"},
+      "documentation":"<p>Deletes the specified VPN concentrator.</p>"
     },
     "DeleteVpnConnection":{
       "name":"DeleteVpnConnection",
@@ -4248,6 +4268,16 @@
       "input":{"shape":"DescribeVpcsRequest"},
       "output":{"shape":"DescribeVpcsResult"},
       "documentation":"<p>Describes your VPCs. The default is to describe all your VPCs. Alternatively, you can specify specific VPC IDs or filter the results to include only the VPCs that match specific criteria.</p>"
+    },
+    "DescribeVpnConcentrators":{
+      "name":"DescribeVpnConcentrators",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeVpnConcentratorsRequest"},
+      "output":{"shape":"DescribeVpnConcentratorsResult"},
+      "documentation":"<p>Describes one or more of your VPN concentrators.</p>"
     },
     "DescribeVpnConnections":{
       "name":"DescribeVpnConnections",
@@ -19490,6 +19520,39 @@
         }
       }
     },
+    "CreateVpnConcentratorRequest":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"VpnConcentratorType",
+          "documentation":"<p>The type of VPN concentrator to create.</p>"
+        },
+        "TransitGatewayId":{
+          "shape":"TransitGatewayId",
+          "documentation":"<p>The ID of the transit gateway to attach the VPN concentrator to.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to apply to the VPN concentrator during creation.</p>",
+          "locationName":"TagSpecification"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "CreateVpnConcentratorResult":{
+      "type":"structure",
+      "members":{
+        "VpnConcentrator":{
+          "shape":"VpnConcentrator",
+          "documentation":"<p>Information about the VPN concentrator.</p>",
+          "locationName":"vpnConcentrator"
+        }
+      }
+    },
     "CreateVpnConnectionRequest":{
       "type":"structure",
       "required":[
@@ -19512,6 +19575,10 @@
         "TransitGatewayId":{
           "shape":"TransitGatewayId",
           "documentation":"<p>The ID of the transit gateway. If you specify a transit gateway, you cannot specify a virtual private gateway.</p>"
+        },
+        "VpnConcentratorId":{
+          "shape":"VpnConcentratorId",
+          "documentation":"<p>The ID of the VPN concentrator to associate with the VPN connection.</p>"
         },
         "TagSpecifications":{
           "shape":"TagSpecificationList",
@@ -22131,6 +22198,30 @@
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>",
           "locationName":"dryRun"
+        }
+      }
+    },
+    "DeleteVpnConcentratorRequest":{
+      "type":"structure",
+      "required":["VpnConcentratorId"],
+      "members":{
+        "VpnConcentratorId":{
+          "shape":"VpnConcentratorId",
+          "documentation":"<p>The ID of the VPN concentrator to delete.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DeleteVpnConcentratorResult":{
+      "type":"structure",
+      "members":{
+        "Return":{
+          "shape":"Boolean",
+          "documentation":"<p>Returns <code>true</code> if the request succeeds; otherwise, it returns an error.</p>",
+          "locationName":"return"
         }
       }
     },
@@ -30400,6 +30491,48 @@
           "shape":"VpcList",
           "documentation":"<p>Information about the VPCs.</p>",
           "locationName":"vpcSet"
+        }
+      }
+    },
+    "DescribeVpnConcentratorsRequest":{
+      "type":"structure",
+      "members":{
+        "VpnConcentratorIds":{
+          "shape":"VpnConcentratorIdStringList",
+          "documentation":"<p>One or more VPN concentrator IDs.</p>",
+          "locationName":"VpnConcentratorId"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>One or more filters to limit the results.</p>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"GVCDMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "DescribeVpnConcentratorsResult":{
+      "type":"structure",
+      "members":{
+        "VpnConcentrators":{
+          "shape":"VpnConcentratorList",
+          "documentation":"<p>Information about the VPN concentrators.</p>",
+          "locationName":"vpnConcentratorSet"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
         }
       }
     },
@@ -60421,7 +60554,8 @@
         "mac-modification-task",
         "ipam-prefix-list-resolver",
         "ipam-prefix-list-resolver-target",
-        "capacity-manager-data-export"
+        "capacity-manager-data-export",
+        "vpn-concentrator"
       ]
     },
     "ResourceTypeOption":{
@@ -67182,6 +67316,7 @@
       "enum":[
         "vpc",
         "vpn",
+        "vpn-concentrator",
         "direct-connect-gateway",
         "connect",
         "peering",
@@ -72061,6 +72196,61 @@
       "type":"string",
       "enum":["default"]
     },
+    "VpnConcentrator":{
+      "type":"structure",
+      "members":{
+        "VpnConcentratorId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the VPN concentrator.</p>",
+          "locationName":"vpnConcentratorId"
+        },
+        "State":{
+          "shape":"String",
+          "documentation":"<p>The current state of the VPN concentrator.</p>",
+          "locationName":"state"
+        },
+        "TransitGatewayId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the transit gateway associated with the VPN concentrator.</p>",
+          "locationName":"transitGatewayId"
+        },
+        "TransitGatewayAttachmentId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the transit gateway attachment for the VPN concentrator.</p>",
+          "locationName":"transitGatewayAttachmentId"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The type of VPN concentrator.</p>",
+          "locationName":"type"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Any tags assigned to the VPN concentrator.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes a VPN concentrator.</p>"
+    },
+    "VpnConcentratorId":{"type":"string"},
+    "VpnConcentratorIdStringList":{
+      "type":"list",
+      "member":{
+        "shape":"VpnConcentratorId",
+        "locationName":"VpnConcentratorId"
+      }
+    },
+    "VpnConcentratorList":{
+      "type":"list",
+      "member":{
+        "shape":"VpnConcentrator",
+        "locationName":"item"
+      }
+    },
+    "VpnConcentratorType":{
+      "type":"string",
+      "enum":["ipsec.1"]
+    },
     "VpnConnection":{
       "type":"structure",
       "members":{
@@ -72073,6 +72263,11 @@
           "shape":"String",
           "documentation":"<p>The ID of the transit gateway associated with the VPN connection.</p>",
           "locationName":"transitGatewayId"
+        },
+        "VpnConcentratorId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the VPN concentrator associated with the VPN connection.</p>",
+          "locationName":"vpnConcentratorId"
         },
         "CoreNetworkArn":{
           "shape":"String",

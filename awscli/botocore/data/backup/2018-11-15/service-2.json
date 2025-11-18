@@ -235,6 +235,25 @@
       "documentation":"<p>This request can be sent after CreateRestoreTestingPlan request returns successfully. This is the second part of creating a resource testing plan, and it must be completed sequentially.</p> <p>This consists of <code>RestoreTestingSelectionName</code>, <code>ProtectedResourceType</code>, and one of the following:</p> <ul> <li> <p> <code>ProtectedResourceArns</code> </p> </li> <li> <p> <code>ProtectedResourceConditions</code> </p> </li> </ul> <p>Each protected resource type can have one single value.</p> <p>A restore testing selection can include a wildcard value (\"*\") for <code>ProtectedResourceArns</code> along with <code>ProtectedResourceConditions</code>. Alternatively, you can include up to 30 specific protected resource ARNs in <code>ProtectedResourceArns</code>.</p> <p>Cannot select by both protected resource types AND specific ARNs. Request will fail if both are included.</p>",
       "idempotent":true
     },
+    "CreateTieringConfiguration":{
+      "name":"CreateTieringConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/tiering-configurations"
+      },
+      "input":{"shape":"CreateTieringConfigurationInput"},
+      "output":{"shape":"CreateTieringConfigurationOutput"},
+      "errors":[
+        {"shape":"AlreadyExistsException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Creates a tiering configuration.</p> <p>A tiering configuration enables automatic movement of backup data to a lower-cost storage tier based on the age of backed-up objects in the backup vault.</p> <p>Each vault can only have one vault-specific tiering configuration, in addition to any global configuration that applies to all vaults.</p>",
+      "idempotent":true
+    },
     "DeleteBackupPlan":{
       "name":"DeleteBackupPlan",
       "http":{
@@ -412,6 +431,23 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Input the Restore Testing Plan name and Restore Testing Selection name.</p> <p>All testing selections associated with a restore testing plan must be deleted before the restore testing plan can be deleted.</p>",
+      "idempotent":true
+    },
+    "DeleteTieringConfiguration":{
+      "name":"DeleteTieringConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tiering-configurations/{tieringConfigurationName}"
+      },
+      "input":{"shape":"DeleteTieringConfigurationInput"},
+      "output":{"shape":"DeleteTieringConfigurationOutput"},
+      "errors":[
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Deletes the tiering configuration specified by a tiering configuration name.</p>",
       "idempotent":true
     },
     "DescribeBackupJob":{
@@ -886,6 +922,23 @@
       ],
       "documentation":"<p>Returns the Amazon Web Services resource types supported by Backup.</p>"
     },
+    "GetTieringConfiguration":{
+      "name":"GetTieringConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tiering-configurations/{tieringConfigurationName}"
+      },
+      "input":{"shape":"GetTieringConfigurationInput"},
+      "output":{"shape":"GetTieringConfigurationOutput"},
+      "errors":[
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns <code>TieringConfiguration</code> details for the specified <code>TieringConfigurationName</code>. The details are the body of a tiering configuration in JSON format, in addition to configuration metadata.</p>",
+      "idempotent":true
+    },
     "ListBackupJobSummaries":{
       "name":"ListBackupJobSummaries",
       "http":{
@@ -1292,6 +1345,21 @@
       "documentation":"<p>Returns the tags assigned to the resource, such as a target recovery point, backup plan, or backup vault.</p> <p>This operation returns results depending on the resource type used in the value for <code>resourceArn</code>. For example, recovery points of Amazon DynamoDB with Advanced Settings have an ARN (Amazon Resource Name) that begins with <code>arn:aws:backup</code>. Recovery points (backups) of DynamoDB without Advanced Settings enabled have an ARN that begins with <code>arn:aws:dynamodb</code>.</p> <p>When this operation is called and when you include values of <code>resourceArn</code> that have an ARN other than <code>arn:aws:backup</code>, it may return one of the exceptions listed below. To prevent this exception, include only values representing resource types that are fully managed by Backup. These have an ARN that begins <code>arn:aws:backup</code> and they are noted in the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource\">Feature availability by resource</a> table.</p>",
       "idempotent":true
     },
+    "ListTieringConfigurations":{
+      "name":"ListTieringConfigurations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tiering-configurations/"
+      },
+      "input":{"shape":"ListTieringConfigurationsInput"},
+      "output":{"shape":"ListTieringConfigurationsOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns a list of tiering configurations.</p>",
+      "idempotent":true
+    },
     "PutBackupVaultAccessPolicy":{
       "name":"PutBackupVaultAccessPolicy",
       "http":{
@@ -1653,6 +1721,26 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Updates the specified restore testing selection.</p> <p>Most elements except the <code>RestoreTestingSelectionName</code> can be updated with this request.</p> <p>You can use either protected resource ARNs or conditions, but not both.</p>",
+      "idempotent":true
+    },
+    "UpdateTieringConfiguration":{
+      "name":"UpdateTieringConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/tiering-configurations/{tieringConfigurationName}"
+      },
+      "input":{"shape":"UpdateTieringConfigurationInput"},
+      "output":{"shape":"UpdateTieringConfigurationOutput"},
+      "errors":[
+        {"shape":"AlreadyExistsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This request will send changes to your specified tiering configuration. <code>TieringConfigurationName</code> cannot be updated after it is created.</p> <p> <code>ResourceSelection</code> can contain:</p> <ul> <li> <p> <code>Resources</code> </p> </li> <li> <p> <code>TieringDownSettingsInDays</code> </p> </li> <li> <p> <code>ResourceType</code> </p> </li> </ul>",
       "idempotent":true
     }
   },
@@ -2365,6 +2453,10 @@
     "BackupVaultName":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9\\-\\_]{2,50}$"
+    },
+    "BackupVaultNameOrWildcard":{
+      "type":"string",
+      "pattern":"^(\\*|[a-zA-Z0-9\\-\\_]{2,50})$"
     },
     "Boolean":{"type":"boolean"},
     "CalculatedLifecycle":{
@@ -3223,6 +3315,43 @@
         }
       }
     },
+    "CreateTieringConfigurationInput":{
+      "type":"structure",
+      "required":["TieringConfiguration"],
+      "members":{
+        "TieringConfiguration":{
+          "shape":"TieringConfigurationInputForCreate",
+          "documentation":"<p>A tiering configuration must contain a unique <code>TieringConfigurationName</code> string you create and must contain a <code>BackupVaultName</code> and <code>ResourceSelection</code>. You may optionally include a <code>CreatorRequestId</code> string.</p> <p>The <code>TieringConfigurationName</code> is a unique string that is the name of the tiering configuration. This cannot be changed after creation, and it must consist of only alphanumeric characters and underscores.</p>"
+        },
+        "TieringConfigurationTags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags to assign to the tiering configuration.</p>"
+        },
+        "CreatorRequestId":{
+          "shape":"CreatorRequestId",
+          "documentation":"<p>This is a unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional. If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateTieringConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "TieringConfigurationArn":{
+          "shape":"ARN",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the created tiering configuration.</p>"
+        },
+        "TieringConfigurationName":{
+          "shape":"string",
+          "documentation":"<p>This unique string is the name of the tiering configuration.</p> <p>The name cannot be changed after creation. The name consists of only alphanumeric characters and underscores. Maximum length is 200.</p>"
+        },
+        "CreationTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time a tiering configuration was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087AM.</p>"
+        }
+      }
+    },
+    "CreatorRequestId":{"type":"string"},
     "CronExpression":{"type":"string"},
     "DateRange":{
       "type":"structure",
@@ -3421,6 +3550,22 @@
           "locationName":"RestoreTestingSelectionName"
         }
       }
+    },
+    "DeleteTieringConfigurationInput":{
+      "type":"structure",
+      "required":["TieringConfigurationName"],
+      "members":{
+        "TieringConfigurationName":{
+          "shape":"TieringConfigurationName",
+          "documentation":"<p>The unique name of a tiering configuration.</p>",
+          "location":"uri",
+          "locationName":"tieringConfigurationName"
+        }
+      }
+    },
+    "DeleteTieringConfigurationOutput":{
+      "type":"structure",
+      "members":{}
     },
     "DependencyFailureException":{
       "type":"structure",
@@ -4789,6 +4934,27 @@
         "ResourceTypes":{
           "shape":"ResourceTypes",
           "documentation":"<p>Contains a string with the supported Amazon Web Services resource types:</p> <ul> <li> <p> <code>Aurora</code> for Amazon Aurora</p> </li> <li> <p> <code>CloudFormation</code> for CloudFormation</p> </li> <li> <p> <code>DocumentDB</code> for Amazon DocumentDB (with MongoDB compatibility)</p> </li> <li> <p> <code>DynamoDB</code> for Amazon DynamoDB</p> </li> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code> for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>EFS</code> for Amazon Elastic File System</p> </li> <li> <p> <code>FSx</code> for Amazon FSx</p> </li> <li> <p> <code>Neptune</code> for Amazon Neptune</p> </li> <li> <p> <code>RDS</code> for Amazon Relational Database Service</p> </li> <li> <p> <code>Redshift</code> for Amazon Redshift</p> </li> <li> <p> <code>S3</code> for Amazon Simple Storage Service (Amazon S3)</p> </li> <li> <p> <code>SAP HANA on Amazon EC2</code> for SAP HANA databases on Amazon Elastic Compute Cloud instances</p> </li> <li> <p> <code>Storage Gateway</code> for Storage Gateway</p> </li> <li> <p> <code>Timestream</code> for Amazon Timestream</p> </li> <li> <p> <code>VirtualMachine</code> for VMware virtual machines</p> </li> </ul>"
+        }
+      }
+    },
+    "GetTieringConfigurationInput":{
+      "type":"structure",
+      "required":["TieringConfigurationName"],
+      "members":{
+        "TieringConfigurationName":{
+          "shape":"TieringConfigurationName",
+          "documentation":"<p>The unique name of a tiering configuration.</p>",
+          "location":"uri",
+          "locationName":"tieringConfigurationName"
+        }
+      }
+    },
+    "GetTieringConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "TieringConfiguration":{
+          "shape":"TieringConfiguration",
+          "documentation":"<p>Specifies the body of a tiering configuration. Includes <code>TieringConfigurationName</code>.</p>"
         }
       }
     },
@@ -6393,6 +6559,36 @@
         }
       }
     },
+    "ListTieringConfigurationsInput":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to be returned.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListTieringConfigurationsOutput":{
+      "type":"structure",
+      "members":{
+        "TieringConfigurations":{
+          "shape":"TieringConfigurationsList",
+          "documentation":"<p>An array of tiering configurations returned by the <code>ListTieringConfigurations</code> call.</p>"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        }
+      }
+    },
     "Long":{"type":"long"},
     "MaxFrameworkInputs":{
       "type":"integer",
@@ -7056,6 +7252,33 @@
       },
       "documentation":"<p>A resource that is required for the action doesn't exist.</p>",
       "exception":true
+    },
+    "ResourceSelection":{
+      "type":"structure",
+      "required":[
+        "Resources",
+        "TieringDownSettingsInDays",
+        "ResourceType"
+      ],
+      "members":{
+        "Resources":{
+          "shape":"ResourceArns",
+          "documentation":"<p>An array of strings that either contains ARNs of the associated resources or contains a wildcard <code>*</code> to specify all resources. You can specify up to 100 specific resources per tiering configuration.</p>"
+        },
+        "TieringDownSettingsInDays":{
+          "shape":"TieringDownSettingsInDays",
+          "documentation":"<p>The number of days after creation within a backup vault that an object can transition to the low cost warm storage tier. Must be a positive integer between 60 and 36500 days.</p>"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of Amazon Web Services resource; for example, <code>S3</code> for Amazon S3. For tiering configurations, this is currently limited to <code>S3</code>.</p>"
+        }
+      },
+      "documentation":"<p>This contains metadata about resource selection for tiering configurations.</p> <p>You can specify up to 5 different resource selections per tiering configuration. Data moved to lower-cost tier remains there until deletion (one-way transition).</p>"
+    },
+    "ResourceSelections":{
+      "type":"list",
+      "member":{"shape":"ResourceSelection"}
     },
     "ResourceType":{
       "type":"string",
@@ -7986,6 +8209,126 @@
       "value":{"shape":"TagValue"},
       "sensitive":true
     },
+    "TieringConfiguration":{
+      "type":"structure",
+      "required":[
+        "TieringConfigurationName",
+        "BackupVaultName",
+        "ResourceSelection"
+      ],
+      "members":{
+        "TieringConfigurationName":{
+          "shape":"TieringConfigurationName",
+          "documentation":"<p>The unique name of the tiering configuration. This cannot be changed after creation, and it must consist of only alphanumeric characters and underscores.</p>"
+        },
+        "TieringConfigurationArn":{
+          "shape":"ARN",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the tiering configuration.</p>"
+        },
+        "BackupVaultName":{
+          "shape":"BackupVaultNameOrWildcard",
+          "documentation":"<p>The name of the backup vault where the tiering configuration applies. Use <code>*</code> to apply to all backup vaults.</p>"
+        },
+        "ResourceSelection":{
+          "shape":"ResourceSelections",
+          "documentation":"<p>An array of resource selection objects that specify which resources are included in the tiering configuration and their tiering settings.</p>"
+        },
+        "CreatorRequestId":{
+          "shape":"CreatorRequestId",
+          "documentation":"<p>This is a unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice.</p>"
+        },
+        "CreationTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time a tiering configuration was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087AM.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time a tiering configuration was updated, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastUpdatedTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087AM.</p>"
+        }
+      },
+      "documentation":"<p>This contains metadata about a tiering configuration.</p>"
+    },
+    "TieringConfigurationInputForCreate":{
+      "type":"structure",
+      "required":[
+        "TieringConfigurationName",
+        "BackupVaultName",
+        "ResourceSelection"
+      ],
+      "members":{
+        "TieringConfigurationName":{
+          "shape":"TieringConfigurationName",
+          "documentation":"<p>The unique name of the tiering configuration. This cannot be changed after creation, and it must consist of only alphanumeric characters and underscores.</p>"
+        },
+        "BackupVaultName":{
+          "shape":"BackupVaultNameOrWildcard",
+          "documentation":"<p>The name of the backup vault where the tiering configuration applies. Use <code>*</code> to apply to all backup vaults.</p>"
+        },
+        "ResourceSelection":{
+          "shape":"ResourceSelections",
+          "documentation":"<p>An array of resource selection objects that specify which resources are included in the tiering configuration and their tiering settings.</p>"
+        }
+      },
+      "documentation":"<p>This contains metadata about a tiering configuration for create operations.</p>"
+    },
+    "TieringConfigurationInputForUpdate":{
+      "type":"structure",
+      "required":[
+        "ResourceSelection",
+        "BackupVaultName"
+      ],
+      "members":{
+        "ResourceSelection":{
+          "shape":"ResourceSelections",
+          "documentation":"<p>An array of resource selection objects that specify which resources are included in the tiering configuration and their tiering settings.</p>"
+        },
+        "BackupVaultName":{
+          "shape":"BackupVaultNameOrWildcard",
+          "documentation":"<p>The name of the backup vault where the tiering configuration applies. Use <code>*</code> to apply to all backup vaults.</p>"
+        }
+      },
+      "documentation":"<p>This contains metadata about a tiering configuration for update operations.</p>"
+    },
+    "TieringConfigurationName":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_]{1,200}$"
+    },
+    "TieringConfigurationsList":{
+      "type":"list",
+      "member":{"shape":"TieringConfigurationsListMember"},
+      "documentation":"<p>A list of tiering configurations.</p>"
+    },
+    "TieringConfigurationsListMember":{
+      "type":"structure",
+      "members":{
+        "TieringConfigurationArn":{
+          "shape":"ARN",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the tiering configuration.</p>"
+        },
+        "TieringConfigurationName":{
+          "shape":"TieringConfigurationName",
+          "documentation":"<p>The unique name of the tiering configuration.</p>"
+        },
+        "BackupVaultName":{
+          "shape":"BackupVaultNameOrWildcard",
+          "documentation":"<p>The name of the backup vault where the tiering configuration applies. Use <code>*</code> to apply to all backup vaults.</p>"
+        },
+        "CreationTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time a tiering configuration was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087AM.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time a tiering configuration was updated, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastUpdatedTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087AM.</p>"
+        }
+      },
+      "documentation":"<p>This contains metadata about a tiering configuration returned in a list.</p>"
+    },
+    "TieringDownSettingsInDays":{
+      "type":"integer",
+      "max":36500,
+      "min":60
+    },
     "Timestamp":{"type":"timestamp"},
     "Timezone":{"type":"string"},
     "UntagResourceInput":{
@@ -8359,6 +8702,46 @@
         "UpdateTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the update completed for the restore testing selection.</p>"
+        }
+      }
+    },
+    "UpdateTieringConfigurationInput":{
+      "type":"structure",
+      "required":[
+        "TieringConfigurationName",
+        "TieringConfiguration"
+      ],
+      "members":{
+        "TieringConfigurationName":{
+          "shape":"TieringConfigurationName",
+          "documentation":"<p>The name of a tiering configuration to update.</p>",
+          "location":"uri",
+          "locationName":"tieringConfigurationName"
+        },
+        "TieringConfiguration":{
+          "shape":"TieringConfigurationInputForUpdate",
+          "documentation":"<p>Specifies the body of a tiering configuration.</p>"
+        }
+      }
+    },
+    "UpdateTieringConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "TieringConfigurationArn":{
+          "shape":"ARN",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the updated tiering configuration.</p>"
+        },
+        "TieringConfigurationName":{
+          "shape":"TieringConfigurationName",
+          "documentation":"<p>This unique string is the name of the tiering configuration.</p>"
+        },
+        "CreationTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time a tiering configuration was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087AM.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time a tiering configuration was updated, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastUpdatedTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087AM.</p>"
         }
       }
     },

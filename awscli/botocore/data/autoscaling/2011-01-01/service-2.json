@@ -794,6 +794,23 @@
       ],
       "documentation":"<p>Retrieves the forecast data for a predictive scaling policy.</p> <p>Load forecasts are predictions of the hourly load values using historical load data from CloudWatch and an analysis of historical trends. Capacity forecasts are represented as predicted values for the minimum capacity that is needed on an hourly basis, based on the hourly load forecast.</p> <p>A minimum of 24 hours of data is required to create the initial forecasts. However, having a full 14 days of historical data results in more accurate forecasts.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-predictive-scaling.html\">Predictive scaling for Amazon EC2 Auto Scaling</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
     },
+    "LaunchInstances":{
+      "name":"LaunchInstances",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"LaunchInstancesRequest"},
+      "output":{
+        "shape":"LaunchInstancesResult",
+        "resultWrapper":"LaunchInstancesResult"
+      },
+      "errors":[
+        {"shape":"ResourceContentionFault"},
+        {"shape":"IdempotentParameterMismatchError"}
+      ],
+      "documentation":"<p> Launches a specified number of instances in an Auto Scaling group. Returns instance IDs and other details if launch is successful or error details if launch is unsuccessful. </p>"
+    },
     "PutLifecycleHook":{
       "name":"PutLifecycleHook",
       "http":{
@@ -1679,6 +1696,11 @@
       },
       "documentation":"<p> Describes an Availability Zone distribution. </p>"
     },
+    "AvailabilityZoneIdsLimit1":{
+      "type":"list",
+      "member":{"shape":"XmlStringMaxLen255"},
+      "max":1
+    },
     "AvailabilityZoneImpairmentPolicy":{
       "type":"structure",
       "members":{
@@ -1696,6 +1718,11 @@
     "AvailabilityZones":{
       "type":"list",
       "member":{"shape":"XmlStringMaxLen255"}
+    },
+    "AvailabilityZonesLimit1":{
+      "type":"list",
+      "member":{"shape":"XmlStringMaxLen255"},
+      "max":1
     },
     "BakeTime":{
       "type":"integer",
@@ -1950,6 +1977,12 @@
     "ClassicLinkVPCSecurityGroups":{
       "type":"list",
       "member":{"shape":"XmlStringMaxLen255"}
+    },
+    "ClientToken":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9\\-_\\/]+"
     },
     "CompleteLifecycleActionAnswer":{
       "type":"structure",
@@ -3173,6 +3206,19 @@
     "HealthCheckGracePeriod":{"type":"integer"},
     "HeartbeatTimeout":{"type":"integer"},
     "HonorCooldown":{"type":"boolean"},
+    "IdempotentParameterMismatchError":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"XmlStringMaxLen255"}
+      },
+      "documentation":"<p> Indicates that the parameters in the current request do not match the parameters from a previous request with the same client token within the idempotency window. </p>",
+      "error":{
+        "code":"IdempotentParameterMismatch",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "ImpairedZoneHealthCheckBehavior":{
       "type":"string",
       "enum":[
@@ -3230,6 +3276,40 @@
         }
       },
       "documentation":"<p>Describes an EC2 instance.</p>"
+    },
+    "InstanceCollection":{
+      "type":"structure",
+      "members":{
+        "InstanceType":{
+          "shape":"XmlStringMaxLen255",
+          "documentation":"<p> The instance type of the launched instances. </p>"
+        },
+        "MarketType":{
+          "shape":"XmlStringMaxLen64",
+          "documentation":"<p> The market type for the instances (On-Demand or Spot). </p>"
+        },
+        "SubnetId":{
+          "shape":"XmlStringMaxLen255",
+          "documentation":"<p> The ID of the subnet where the instances were launched. </p>"
+        },
+        "AvailabilityZone":{
+          "shape":"XmlStringMaxLen255",
+          "documentation":"<p> The Availability Zone where the instances were launched. </p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"XmlStringMaxLen255",
+          "documentation":"<p> The Availability Zone ID where the instances in this collection were launched. </p>"
+        },
+        "InstanceIds":{
+          "shape":"InstanceIds",
+          "documentation":"<p> A list of instance IDs for the successfully launched instances. </p>"
+        }
+      },
+      "documentation":"<p> Contains details about a collection of instances launched in the Auto Scaling group. </p>"
+    },
+    "InstanceCollections":{
+      "type":"list",
+      "member":{"shape":"InstanceCollection"}
     },
     "InstanceGeneration":{
       "type":"string",
@@ -3785,6 +3865,104 @@
         "NextToken":{
           "shape":"XmlString",
           "documentation":"<p>A string that indicates that the response contains more items than can be returned in a single response. To receive additional items, specify this string for the <code>NextToken</code> value when requesting the next set of items. This value is null when there are no more items to return.</p>"
+        }
+      }
+    },
+    "LaunchInstancesError":{
+      "type":"structure",
+      "members":{
+        "InstanceType":{
+          "shape":"XmlStringMaxLen255",
+          "documentation":"<p> The instance type that failed to launch. </p>"
+        },
+        "MarketType":{
+          "shape":"XmlStringMaxLen64",
+          "documentation":"<p> The market type (On-Demand or Spot) that encountered the launch error. </p>"
+        },
+        "SubnetId":{
+          "shape":"XmlStringMaxLen255",
+          "documentation":"<p> The subnet ID where the instance launch was attempted. </p>"
+        },
+        "AvailabilityZone":{
+          "shape":"XmlStringMaxLen255",
+          "documentation":"<p> The Availability Zone where the instance launch was attempted. </p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"XmlStringMaxLen255",
+          "documentation":"<p> The Availability Zone ID where the launch error occurred. </p>"
+        },
+        "ErrorCode":{
+          "shape":"XmlStringMaxLen64",
+          "documentation":"<p> The error code representing the type of error encountered (e.g., InsufficientInstanceCapacity). </p>"
+        },
+        "ErrorMessage":{
+          "shape":"XmlString",
+          "documentation":"<p> A descriptive message providing details about the error encountered during the launch attempt. </p>"
+        }
+      },
+      "documentation":"<p> Contains details about errors encountered during instance launch attempts. </p>"
+    },
+    "LaunchInstancesErrors":{
+      "type":"list",
+      "member":{"shape":"LaunchInstancesError"}
+    },
+    "LaunchInstancesRequest":{
+      "type":"structure",
+      "required":[
+        "AutoScalingGroupName",
+        "RequestedCapacity",
+        "ClientToken"
+      ],
+      "members":{
+        "AutoScalingGroupName":{
+          "shape":"XmlStringMaxLen255",
+          "documentation":"<p> The name of the Auto Scaling group to launch instances into. </p>"
+        },
+        "RequestedCapacity":{
+          "shape":"RequestedCapacity",
+          "documentation":"<p> The number of instances to launch. Although this value can exceed 100 for instance weights, the actual instance count is limited to 100 instances per launch. </p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p> A unique, case-sensitive identifier to ensure idempotency of the request. </p>",
+          "idempotencyToken":true
+        },
+        "AvailabilityZones":{
+          "shape":"AvailabilityZonesLimit1",
+          "documentation":"<p> The Availability Zones for the instance launch. Must match or be included in the Auto Scaling group's Availability Zone configuration. Either <code>AvailabilityZones</code> or <code>SubnetIds</code> must be specified for groups with multiple Availability Zone configurations. </p>"
+        },
+        "AvailabilityZoneIds":{
+          "shape":"AvailabilityZoneIdsLimit1",
+          "documentation":"<p> A list of Availability Zone IDs where instances should be launched. Must match or be included in the group's AZ configuration. You cannot specify both AvailabilityZones and AvailabilityZoneIds. Required for multi-AZ groups, optional for single-AZ groups. </p>"
+        },
+        "SubnetIds":{
+          "shape":"SubnetIdsLimit1",
+          "documentation":"<p> The subnet IDs for the instance launch. Either <code>AvailabilityZones</code> or <code>SubnetIds</code> must be specified. If both are specified, the subnets must reside in the specified Availability Zones. </p>"
+        },
+        "RetryStrategy":{
+          "shape":"RetryStrategy",
+          "documentation":"<p> Specifies whether to retry asynchronously if the synchronous launch fails. Valid values are NONE (default, no async retry) and RETRY_WITH_GROUP_CONFIGURATION (increase desired capacity and retry with group configuration). </p>"
+        }
+      }
+    },
+    "LaunchInstancesResult":{
+      "type":"structure",
+      "members":{
+        "AutoScalingGroupName":{
+          "shape":"XmlStringMaxLen255",
+          "documentation":"<p> The name of the Auto Scaling group where the instances were launched. </p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p> The idempotency token used for the request, either customer-specified or auto-generated. </p>"
+        },
+        "Instances":{
+          "shape":"InstanceCollections",
+          "documentation":"<p> A list of successfully launched instances including details such as instance type, Availability Zone, subnet, lifecycle state, and instance IDs. </p>"
+        },
+        "Errors":{
+          "shape":"LaunchInstancesErrors",
+          "documentation":"<p> A list of errors encountered during the launch attempt including details about failed instance launches with their corresponding error codes and messages. </p>"
         }
       }
     },
@@ -4976,6 +5154,10 @@
       "type":"string",
       "enum":["Rolling"]
     },
+    "RequestedCapacity":{
+      "type":"integer",
+      "min":1
+    },
     "ResourceContentionFault":{
       "type":"structure",
       "members":{
@@ -5013,6 +5195,13 @@
       "max":1600,
       "min":1,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
+    },
+    "RetryStrategy":{
+      "type":"string",
+      "enum":[
+        "retry-with-group-configuration",
+        "none"
+      ]
     },
     "ReturnData":{"type":"boolean"},
     "ReuseOnScaleIn":{"type":"boolean"},
@@ -5464,6 +5653,11 @@
       "member":{"shape":"StepAdjustment"}
     },
     "String":{"type":"string"},
+    "SubnetIdsLimit1":{
+      "type":"list",
+      "member":{"shape":"XmlStringMaxLen255"},
+      "max":1
+    },
     "SuspendedProcess":{
       "type":"structure",
       "members":{

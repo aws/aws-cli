@@ -29,7 +29,8 @@
         {"shape":"WAFNonexistentItemException"},
         {"shape":"WAFUnavailableEntityException"},
         {"shape":"WAFInvalidOperationException"},
-        {"shape":"WAFLimitsExceededException"}
+        {"shape":"WAFLimitsExceededException"},
+        {"shape":"WAFFeatureNotIncludedInPricingPlanException"}
       ],
       "documentation":"<p>Associates a web ACL with a resource, to protect the resource. </p> <p>Use this for all resource types except for Amazon CloudFront distributions. For Amazon CloudFront, call <code>UpdateDistribution</code> for the distribution and provide the Amazon Resource Name (ARN) of the web ACL in the web ACL ID. For information, see <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_UpdateDistribution.html\">UpdateDistribution</a> in the <i>Amazon CloudFront Developer Guide</i>. </p> <p> <b>Required permissions for customer-managed IAM policies</b> </p> <p>This call requires permissions that are specific to the protected resource type. For details, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/security_iam_service-with-iam.html#security_iam_action-AssociateWebACL\">Permissions for AssociateWebACL</a> in the <i>WAF Developer Guide</i>. </p> <p> <b>Temporary inconsistencies during updates</b> </p> <p>When you create or change a web ACL or other WAF resources, the changes take a small amount of time to propagate to all areas where the resources are stored. The propagation time can be from a few seconds to a number of minutes. </p> <p>The following are examples of the temporary inconsistencies that you might notice during change propagation: </p> <ul> <li> <p>After you create a web ACL, if you try to associate it with a resource, you might get an exception indicating that the web ACL is unavailable. </p> </li> <li> <p>After you add a rule group to a web ACL, the new rule group rules might be in effect in one area where the web ACL is used and not in another.</p> </li> <li> <p>After you change a rule action setting, you might see the old action in some places and the new action in others. </p> </li> <li> <p>After you add an IP address to an IP set that is in use in a blocking rule, the new address might be blocked in one area while still allowed in another.</p> </li> </ul>"
     },
@@ -780,7 +781,8 @@
         {"shape":"WAFInvalidParameterException"},
         {"shape":"WAFInvalidOperationException"},
         {"shape":"WAFLimitsExceededException"},
-        {"shape":"WAFLogDestinationPermissionIssueException"}
+        {"shape":"WAFLogDestinationPermissionIssueException"},
+        {"shape":"WAFFeatureNotIncludedInPricingPlanException"}
       ],
       "documentation":"<p>Enables the specified <a>LoggingConfiguration</a>, to start logging from a web ACL, according to the configuration provided. </p> <p>If you configure data protection for the web ACL, the protection applies to the data that WAF sends to the logs. </p> <note> <p>This operation completely replaces any mutable specifications that you already have for a logging configuration with the ones that you provide to this call. </p> <p>To modify an existing logging configuration, do the following: </p> <ol> <li> <p>Retrieve it by calling <a>GetLoggingConfiguration</a> </p> </li> <li> <p>Update its settings as needed</p> </li> <li> <p>Provide the complete logging configuration specification to this call</p> </li> </ol> </note> <note> <p>You can define one logging destination per web ACL.</p> </note> <p>You can access information about the traffic that WAF inspects using the following steps:</p> <ol> <li> <p>Create your logging destination. You can use an Amazon CloudWatch Logs log group, an Amazon Simple Storage Service (Amazon S3) bucket, or an Amazon Kinesis Data Firehose. </p> <p>The name that you give the destination must start with <code>aws-waf-logs-</code>. Depending on the type of destination, you might need to configure additional settings or permissions. </p> <p>For configuration requirements and pricing information for each destination type, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/logging.html\">Logging web ACL traffic</a> in the <i>WAF Developer Guide</i>.</p> </li> <li> <p>Associate your logging destination to your web ACL using a <code>PutLoggingConfiguration</code> request.</p> </li> </ol> <p>When you successfully enable logging using a <code>PutLoggingConfiguration</code> request, WAF creates an additional role or policy that is required to write logs to the logging destination. For an Amazon CloudWatch Logs log group, WAF creates a resource policy on the log group. For an Amazon S3 bucket, WAF creates a bucket policy. For an Amazon Kinesis Data Firehose, WAF creates a service-linked role.</p> <p>For additional information about web ACL logging, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/logging.html\">Logging web ACL traffic information</a> in the <i>WAF Developer Guide</i>.</p>"
     },
@@ -951,7 +953,8 @@
         {"shape":"WAFSubscriptionNotFoundException"},
         {"shape":"WAFInvalidOperationException"},
         {"shape":"WAFExpiredManagedRuleGroupVersionException"},
-        {"shape":"WAFConfigurationWarningException"}
+        {"shape":"WAFConfigurationWarningException"},
+        {"shape":"WAFFeatureNotIncludedInPricingPlanException"}
       ],
       "documentation":"<p>Updates the specified <a>WebACL</a>. While updating a web ACL, WAF provides continuous coverage to the resources that you have associated with the web ACL. </p> <note> <p>This operation completely replaces the mutable specifications that you already have for the web ACL with the ones that you provide to this call. </p> <p>To modify a web ACL, do the following: </p> <ol> <li> <p>Retrieve it by calling <a>GetWebACL</a> </p> </li> <li> <p>Update its settings as needed</p> </li> <li> <p>Provide the complete web ACL specification to this call</p> </li> </ol> </note> <p> A web ACL defines a collection of rules to use to inspect and control web requests. Each rule has a statement that defines what to look for in web requests and an action that WAF applies to requests that match the statement. In the web ACL, you assign a default action to take (allow, block) for any request that does not match any of the rules. The rules in a web ACL can be a combination of the types <a>Rule</a>, <a>RuleGroup</a>, and managed rule group. You can associate a web ACL with one or more Amazon Web Services resources to protect. The resource types include Amazon CloudFront distribution, Amazon API Gateway REST API, Application Load Balancer, AppSync GraphQL API, Amazon Cognito user pool, App Runner service, Amplify application, and Amazon Web Services Verified Access instance. </p> <p> <b>Temporary inconsistencies during updates</b> </p> <p>When you create or change a web ACL or other WAF resources, the changes take a small amount of time to propagate to all areas where the resources are stored. The propagation time can be from a few seconds to a number of minutes. </p> <p>The following are examples of the temporary inconsistencies that you might notice during change propagation: </p> <ul> <li> <p>After you create a web ACL, if you try to associate it with a resource, you might get an exception indicating that the web ACL is unavailable. </p> </li> <li> <p>After you add a rule group to a web ACL, the new rule group rules might be in effect in one area where the web ACL is used and not in another.</p> </li> <li> <p>After you change a rule action setting, you might see the old action in some places and the new action in others. </p> </li> <li> <p>After you add an IP address to an IP set that is in use in a blocking rule, the new address might be blocked in one area while still allowed in another.</p> </li> </ul>"
     }
@@ -2520,6 +2523,25 @@
           "documentation":"<p>The labels that one or more rules in this rule group match against in label match statements. These labels are defined in a <code>LabelMatchStatement</code> specification, in the <a>Statement</a> definition of a rule. </p>"
         }
       }
+    },
+    "DisallowedFeature":{
+      "type":"structure",
+      "members":{
+        "Feature":{
+          "shape":"PricingPlanFeatureName",
+          "documentation":"<p>The name of the disallowed WAF feature.</p>"
+        },
+        "RequiredPricingPlan":{
+          "shape":"RequiredPricingPlanName",
+          "documentation":"<p>The name of the CloudFront pricing plan required to use the WAF feature.</p>"
+        }
+      },
+      "documentation":"<p>A WAF feature that is not supported by the CloudFront pricing plan associated with the web ACL.</p>"
+    },
+    "DisallowedFeatures":{
+      "type":"list",
+      "member":{"shape":"DisallowedFeature"},
+      "min":1
     },
     "DisassociateWebACLRequest":{
       "type":"structure",
@@ -4715,6 +4737,12 @@
         "CONTAINS_WORD"
       ]
     },
+    "PricingPlanFeatureName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[\\w\\-]+$"
+    },
     "ProductDescription":{
       "type":"string",
       "min":1,
@@ -5302,6 +5330,12 @@
         }
       },
       "documentation":"<p>The criteria for inspecting account creation requests, used by the ACFP rule group to validate and track account creation attempts. </p> <p>This is part of the <code>AWSManagedRulesACFPRuleSet</code> configuration in <code>ManagedRuleGroupConfig</code>.</p> <p>In these settings, you specify how your application accepts account creation attempts by providing the request payload type and the names of the fields within the request body where the username, password, email, and primary address and phone number fields are provided. </p>"
+    },
+    "RequiredPricingPlanName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[\\w\\-]+$"
     },
     "ResourceArn":{
       "type":"string",
@@ -6585,6 +6619,18 @@
         "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>The operation failed because the specified version for the managed rule group has expired. You can retrieve the available versions for the managed rule group by calling <a>ListAvailableManagedRuleGroupVersions</a>.</p>",
+      "exception":true
+    },
+    "WAFFeatureNotIncludedInPricingPlanException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"},
+        "DisallowedFeatures":{
+          "shape":"DisallowedFeatures",
+          "documentation":"<p>The names of the disallowed WAF features.</p>"
+        }
+      },
+      "documentation":"<p>The operation failed because the specified WAF feature isn't supported by the CloudFront pricing plan associated with the web ACL.</p>",
       "exception":true
     },
     "WAFInternalErrorException":{

@@ -4107,22 +4107,22 @@ def test_add_account_id_to_response_with_invalid_arn(
     assert 'Unable to extract account ID from Arn' in caplog.text
 
 
+def load_login_test_cases():
+    test_dir = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        'login',
+        'login-provider-test-cases.json',
+    )
+    with open(test_dir) as f:
+        data = json.load(f)
+    return data
+
+
 class TestLoginProvider:
     FROZEN_TIME = datetime(2025, 11, 19, 0, 0, 0, tzinfo=tzutc())
 
-    @staticmethod
-    def load_test_cases():
-        test_dir = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            'login',
-            'login-provider-test-cases.json',
-        )
-        with open(test_dir) as f:
-            data = json.load(f)
-        return data
-
     @pytest.mark.parametrize(
-        "test_case", load_test_cases(), ids=lambda x: x["documentation"]
+        "test_case", load_login_test_cases(), ids=lambda x: x["documentation"]
     )
     def test_login_credentials(self, test_case):
         tempdir = tempfile.mkdtemp()
@@ -4305,8 +4305,12 @@ def test_login_provider_feature_ids_in_context(client_context):
         }
     }
 
-    with mock.patch('botocore.credentials.LoginCredentialsLoader'), \
-         mock.patch('botocore.credentials.LoginCredentialFetcher') as mock_fetcher_class:
+    with (
+        mock.patch('botocore.credentials.LoginCredentialsLoader'),
+        mock.patch(
+            'botocore.credentials.LoginCredentialFetcher'
+        ) as mock_fetcher_class,
+    ):
         mock_fetcher = mock.Mock()
         date_in_future = datetime.utcnow() + timedelta(hours=1)
         expiry_time = date_in_future.isoformat() + 'Z'

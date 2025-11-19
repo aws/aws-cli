@@ -177,7 +177,8 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Describes the specific campaign.</p>"
+      "documentation":"<p>Describes the specific campaign.</p>",
+      "readonly":true
     },
     "GetCampaignState":{
       "name":"GetCampaignState",
@@ -229,7 +230,8 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Get the specific Connect instance config.</p>"
+      "documentation":"<p>Get the specific Connect instance config.</p>",
+      "readonly":true
     },
     "GetInstanceCommunicationLimits":{
       "name":"GetInstanceCommunicationLimits",
@@ -246,7 +248,8 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Get the instance communication limits.</p>"
+      "documentation":"<p>Get the instance communication limits.</p>",
+      "readonly":true
     },
     "GetInstanceOnboardingJobStatus":{
       "name":"GetInstanceOnboardingJobStatus",
@@ -263,7 +266,8 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Get the specific instance onboarding job status.</p>"
+      "documentation":"<p>Get the specific instance onboarding job status.</p>",
+      "readonly":true
     },
     "ListCampaigns":{
       "name":"ListCampaigns",
@@ -279,7 +283,8 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Provides summary information about the campaigns under the specified Amazon Connect account.</p>"
+      "documentation":"<p>Provides summary information about the campaigns under the specified Amazon Connect account.</p>",
+      "readonly":true
     },
     "ListConnectInstanceIntegrations":{
       "name":"ListConnectInstanceIntegrations",
@@ -297,7 +302,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Provides summary information about the integration under the specified Connect instance.</p>"
+      "documentation":"<p>Provides summary information about the integration under the specified Connect instance.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -691,8 +697,7 @@
     },
     "AgentlessConfig":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Agentless config</p>"
     },
     "AnswerMachineDetectionConfig":{
@@ -2089,6 +2094,13 @@
       },
       "documentation":"<p>The request for ResumeCampaign API.</p>"
     },
+    "RingTimeout":{
+      "type":"integer",
+      "documentation":"<p>Ring timeout for outbound calls</p>",
+      "box":true,
+      "max":60,
+      "min":15
+    },
     "Schedule":{
       "type":"structure",
       "required":[
@@ -2347,7 +2359,8 @@
         "destinationPhoneNumber":{"shape":"DestinationPhoneNumber"},
         "attributes":{"shape":"Attributes"},
         "connectSourcePhoneNumber":{"shape":"SourcePhoneNumber"},
-        "answerMachineDetectionConfig":{"shape":"AnswerMachineDetectionConfig"}
+        "answerMachineDetectionConfig":{"shape":"AnswerMachineDetectionConfig"},
+        "ringTimeout":{"shape":"RingTimeout"}
       },
       "documentation":"<p>Parameters for the Telephony Channel Subtype</p>"
     },
@@ -2357,7 +2370,8 @@
       "members":{
         "connectContactFlowId":{"shape":"ContactFlowId"},
         "connectSourcePhoneNumber":{"shape":"SourcePhoneNumber"},
-        "answerMachineDetectionConfig":{"shape":"AnswerMachineDetectionConfig"}
+        "answerMachineDetectionConfig":{"shape":"AnswerMachineDetectionConfig"},
+        "ringTimeout":{"shape":"RingTimeout"}
       },
       "documentation":"<p>Default Telephony Outbound config</p>"
     },

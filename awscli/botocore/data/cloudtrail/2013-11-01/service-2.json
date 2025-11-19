@@ -138,7 +138,8 @@
         {"shape":"NotOrganizationMasterAccountException"},
         {"shape":"OrganizationsNotInUseException"},
         {"shape":"OrganizationNotInAllFeaturesModeException"},
-        {"shape":"NoManagementAccountSLRExistsException"}
+        {"shape":"NoManagementAccountSLRExistsException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Creates a new event data store.</p>"
     },
@@ -287,7 +288,7 @@
         {"shape":"NoManagementAccountSLRExistsException"},
         {"shape":"InsufficientDependencyServiceAccessPermissionException"}
       ],
-      "documentation":"<p>Deletes a trail. This operation must be called from the Region in which the trail was created. <code>DeleteTrail</code> cannot be called on the shadow trails (replicated trails in other Regions) of a trail that is enabled in all Regions.</p>",
+      "documentation":"<p>Deletes a trail. This operation must be called from the Region in which the trail was created. <code>DeleteTrail</code> cannot be called on the shadow trails (replicated trails in other Regions) of a trail that is enabled in all Regions.</p> <important> <p> While deleting a CloudTrail trail is an irreversible action, CloudTrail does not delete log files in the Amazon S3 bucket for that trail, the Amazon S3 bucket itself, or the CloudWatchlog group to which the trail delivers events. Deleting a multi-Region trail will stop logging of events in all Amazon Web Services Regions enabled in your Amazon Web Services account. Deleting a single-Region trail will stop logging of events in that Region only. It will not stop logging of events in other Regions even if the trails in those other Regions have identical names to the deleted trail. </p> <p>For information about account closure and deletion of CloudTrail trails, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-account-closure.html\">https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-account-closure.html</a>.</p> </important>",
       "idempotent":true
     },
     "DeregisterOrganizationDelegatedAdmin":{
@@ -556,7 +557,7 @@
         {"shape":"NoManagementAccountSLRExistsException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Describes the settings for the Insights event selectors that you configured for your trail or event data store. <code>GetInsightSelectors</code> shows if CloudTrail Insights event logging is enabled on the trail or event data store, and if it is, which Insights types are enabled. If you run <code>GetInsightSelectors</code> on a trail or event data store that does not have Insights events enabled, the operation throws the exception <code>InsightNotEnabledException</code> </p> <p>Specify either the <code>EventDataStore</code> parameter to get Insights event selectors for an event data store, or the <code>TrailName</code> parameter to the get Insights event selectors for a trail. You cannot specify these parameters together.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-insights-events-with-cloudtrail.html\">Working with CloudTrail Insights</a> in the <i>CloudTrail User Guide</i>.</p>",
+      "documentation":"<p>Describes the settings for the Insights event selectors that you configured for your trail or event data store. <code>GetInsightSelectors</code> shows if CloudTrail Insights logging is enabled and which Insights types are configured with corresponding event categories. If you run <code>GetInsightSelectors</code> on a trail or event data store that does not have Insights events enabled, the operation throws the exception <code>InsightNotEnabledException</code> </p> <p>Specify either the <code>EventDataStore</code> parameter to get Insights event selectors for an event data store, or the <code>TrailName</code> parameter to the get Insights event selectors for a trail. You cannot specify these parameters together.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-insights-events-with-cloudtrail.html\">Working with CloudTrail Insights</a> in the <i>CloudTrail User Guide</i>.</p>",
       "idempotent":true
     },
     "GetQueryResults":{
@@ -720,6 +721,22 @@
       "documentation":"<p> Returns information on all imports, or a select set of imports by <code>ImportStatus</code> or <code>Destination</code>. </p>",
       "idempotent":true
     },
+    "ListInsightsData":{
+      "name":"ListInsightsData",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListInsightsDataRequest"},
+      "output":{"shape":"ListInsightsDataResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"UnsupportedOperationException"}
+      ],
+      "documentation":"<p>Returns Insights events generated on a trail that logs data events. You can list Insights events that occurred in a Region within the last 90 days.</p> <p>ListInsightsData supports the following Dimensions for Insights events:</p> <ul> <li> <p>Event ID</p> </li> <li> <p>Event name</p> </li> <li> <p>Event source</p> </li> </ul> <p>All dimensions are optional. The default number of results returned is 50, with a maximum of 50 possible. The response includes a token that you can use to get the next page of results.</p> <p>The rate of ListInsightsData requests is limited to two per second, per account, per Region. If this limit is exceeded, a throttling error occurs.</p>",
+      "idempotent":true
+    },
     "ListInsightsMetricData":{
       "name":"ListInsightsMetricData",
       "http":{
@@ -730,10 +747,11 @@
       "output":{"shape":"ListInsightsMetricDataResponse"},
       "errors":[
         {"shape":"InvalidParameterException"},
+        {"shape":"InvalidTrailNameException"},
         {"shape":"OperationNotPermittedException"},
         {"shape":"UnsupportedOperationException"}
       ],
-      "documentation":"<p>Returns Insights metrics data for trails that have enabled Insights. The request must include the <code>EventSource</code>, <code>EventName</code>, and <code>InsightType</code> parameters.</p> <p>If the <code>InsightType</code> is set to <code>ApiErrorRateInsight</code>, the request must also include the <code>ErrorCode</code> parameter.</p> <p>The following are the available time periods for <code>ListInsightsMetricData</code>. Each cutoff is inclusive.</p> <ul> <li> <p>Data points with a period of 60 seconds (1-minute) are available for 15 days.</p> </li> <li> <p>Data points with a period of 300 seconds (5-minute) are available for 63 days.</p> </li> <li> <p>Data points with a period of 3600 seconds (1 hour) are available for 90 days.</p> </li> </ul> <p>Access to the <code>ListInsightsMetricData</code> API operation is linked to the <code>cloudtrail:LookupEvents</code> action. To use this operation, you must have permissions to perform the <code>cloudtrail:LookupEvents</code> action.</p>",
+      "documentation":"<p>Returns Insights metrics data for trails that have enabled Insights. The request must include the <code>EventSource</code>, <code>EventName</code>, and <code>InsightType</code> parameters.</p> <p>If the <code>InsightType</code> is set to <code>ApiErrorRateInsight</code>, the request must also include the <code>ErrorCode</code> parameter.</p> <p>The following are the available time periods for <code>ListInsightsMetricData</code>. Each cutoff is inclusive.</p> <ul> <li> <p>Data points with a period of 60 seconds (1-minute) are available for 15 days.</p> </li> <li> <p>Data points with a period of 300 seconds (5-minute) are available for 63 days.</p> </li> <li> <p>Data points with a period of 3600 seconds (1 hour) are available for 90 days.</p> </li> </ul> <p>To use <code>ListInsightsMetricData</code> operation, you must have the following permissions:</p> <ul> <li> <p>If <code>ListInsightsMetricData</code> is invoked with <code>TrailName</code> parameter, access to the <code>ListInsightsMetricData</code> API operation is linked to the <code>cloudtrail:LookupEvents</code> action and <code>cloudtrail:ListInsightsData</code>. To use this operation, you must have permissions to perform the <code>cloudtrail:LookupEvents</code> and <code>cloudtrail:ListInsightsData</code> action on the specific trail.</p> </li> <li> <p>If <code>ListInsightsMetricData</code> is invoked without <code>TrailName</code> parameter, access to the <code>ListInsightsMetricData</code> API operation is linked to the <code>cloudtrail:LookupEvents</code> action only. To use this operation, you must have permissions to perform the <code>cloudtrail:LookupEvents</code> action.</p> </li> </ul>",
       "idempotent":true
     },
     "ListPublicKeys":{
@@ -917,7 +935,7 @@
         {"shape":"NoManagementAccountSLRExistsException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lets you enable Insights event logging by specifying the Insights selectors that you want to enable on an existing trail or event data store. You also use <code>PutInsightSelectors</code> to turn off Insights event logging, by passing an empty list of Insights types. The valid Insights event types are <code>ApiErrorRateInsight</code> and <code>ApiCallRateInsight</code>.</p> <p>To enable Insights on an event data store, you must specify the ARNs (or ID suffix of the ARNs) for the source event data store (<code>EventDataStore</code>) and the destination event data store (<code>InsightsDestination</code>). The source event data store logs management events and enables Insights. The destination event data store logs Insights events based upon the management event activity of the source event data store. The source and destination event data stores must belong to the same Amazon Web Services account.</p> <p>To log Insights events for a trail, you must specify the name (<code>TrailName</code>) of the CloudTrail trail for which you want to change or add Insights selectors.</p> <p>To log CloudTrail Insights events on API call volume, the trail or event data store must log <code>write</code> management events. To log CloudTrail Insights events on API error rate, the trail or event data store must log <code>read</code> or <code>write</code> management events. You can call <code>GetEventSelectors</code> on a trail to check whether the trail logs management events. You can call <code>GetEventDataStore</code> on an event data store to check whether the event data store logs management events.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-insights-events-with-cloudtrail.html\">Working with CloudTrail Insights</a> in the <i>CloudTrail User Guide</i>.</p>",
+      "documentation":"<p>Lets you enable Insights event logging on specific event categories by specifying the Insights selectors that you want to enable on an existing trail or event data store. You also use <code>PutInsightSelectors</code> to turn off Insights event logging, by passing an empty list of Insights types. The valid Insights event types are <code>ApiErrorRateInsight</code> and <code>ApiCallRateInsight</code>, and valid EventCategories are <code>Management</code> and <code>Data</code>.</p> <note> <p> Insights on data events are not supported on event data stores. For event data stores, you can only enable Insights on management events. </p> </note> <p>To enable Insights on an event data store, you must specify the ARNs (or ID suffix of the ARNs) for the source event data store (<code>EventDataStore</code>) and the destination event data store (<code>InsightsDestination</code>). The source event data store logs management events and enables Insights. The destination event data store logs Insights events based upon the management event activity of the source event data store. The source and destination event data stores must belong to the same Amazon Web Services account.</p> <p>To log Insights events for a trail, you must specify the name (<code>TrailName</code>) of the CloudTrail trail for which you want to change or add Insights selectors.</p> <ul> <li> <p> For Management events Insights: To log CloudTrail Insights on the API call rate, the trail or event data store must log <code>write</code> management events. To log CloudTrail Insights on the API error rate, the trail or event data store must log <code>read</code> or <code>write</code> management events. </p> </li> <li> <p> For Data events Insights: To log CloudTrail Insights on the API call rate or API error rate, the trail must log <code>read</code> or <code>write</code> data events. Data events Insights are not supported on event data store. </p> </li> </ul> <p>To log CloudTrail Insights events on API call volume, the trail or event data store must log <code>write</code> management events. To log CloudTrail Insights events on API error rate, the trail or event data store must log <code>read</code> or <code>write</code> management events. You can call <code>GetEventSelectors</code> on a trail to check whether the trail logs management events. You can call <code>GetEventDataStore</code> on an event data store to check whether the event data store logs management events.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-insights-events-with-cloudtrail.html\">Working with CloudTrail Insights</a> in the <i>CloudTrail User Guide</i>.</p>",
       "idempotent":true
     },
     "PutResourcePolicy":{
@@ -1289,7 +1307,9 @@
         {"shape":"OrganizationsNotInUseException"},
         {"shape":"NotOrganizationMasterAccountException"},
         {"shape":"NoManagementAccountSLRExistsException"},
-        {"shape":"OrganizationNotInAllFeaturesModeException"}
+        {"shape":"OrganizationNotInAllFeaturesModeException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Updates an event data store. The required <code>EventDataStore</code> value is an ARN or the ID portion of the ARN. Other parameters are optional, but at least one optional parameter must be specified, or CloudTrail throws an error. <code>RetentionPeriod</code> is in days, and valid values are integers between 7 and 3653 if the <code>BillingMode</code> is set to <code>EXTENDABLE_RETENTION_PRICING</code>, or between 7 and 2557 if <code>BillingMode</code> is set to <code>FIXED_RETENTION_PRICING</code>. By default, <code>TerminationProtection</code> is enabled.</p> <p>For event data stores for CloudTrail events, <code>AdvancedEventSelectors</code> includes or excludes management, data, or network activity events in your event data store. For more information about <code>AdvancedEventSelectors</code>, see <a href=\"https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/API_AdvancedEventSelector.html\">AdvancedEventSelectors</a>.</p> <p> For event data stores for CloudTrail Insights events, Config configuration items, Audit Manager evidence, or non-Amazon Web Services events, <code>AdvancedEventSelectors</code> includes events of that type in your event data store.</p>",
       "idempotent":true
@@ -1875,7 +1895,7 @@
         },
         "KmsKeyId":{
           "shape":"String",
-          "documentation":"<p>Specifies the KMS key ID to use to encrypt the logs delivered by CloudTrail. The value can be an alias name prefixed by <code>alias/</code>, a fully specified ARN to an alias, a fully specified ARN to a key, or a globally unique identifier.</p> <p>CloudTrail also supports KMS multi-Region keys. For more information about multi-Region keys, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-overview.html\">Using multi-Region keys</a> in the <i>Key Management Service Developer Guide</i>.</p> <p>Examples:</p> <ul> <li> <p> <code>alias/MyAliasName</code> </p> </li> <li> <p> <code>arn:aws:kms:us-east-2:123456789012:alias/MyAliasName</code> </p> </li> <li> <p> <code>arn:aws:kms:us-east-2:123456789012:key/12345678-1234-1234-1234-123456789012</code> </p> </li> <li> <p> <code>12345678-1234-1234-1234-123456789012</code> </p> </li> </ul>"
+          "documentation":"<p>Specifies the KMS key ID to use to encrypt the logs and digest files delivered by CloudTrail. The value can be an alias name prefixed by <code>alias/</code>, a fully specified ARN to an alias, a fully specified ARN to a key, or a globally unique identifier.</p> <p>CloudTrail also supports KMS multi-Region keys. For more information about multi-Region keys, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-overview.html\">Using multi-Region keys</a> in the <i>Key Management Service Developer Guide</i>.</p> <p>Examples:</p> <ul> <li> <p> <code>alias/MyAliasName</code> </p> </li> <li> <p> <code>arn:aws:kms:us-east-2:123456789012:alias/MyAliasName</code> </p> </li> <li> <p> <code>arn:aws:kms:us-east-2:123456789012:key/12345678-1234-1234-1234-123456789012</code> </p> </li> <li> <p> <code>12345678-1234-1234-1234-123456789012</code> </p> </li> </ul>"
         },
         "IsOrganizationTrail":{
           "shape":"Boolean",
@@ -2900,7 +2920,7 @@
         },
         "InsightSelectors":{
           "shape":"InsightSelectors",
-          "documentation":"<p>A JSON string that contains the Insight types you want to log on a trail or event data store. <code>ApiErrorRateInsight</code> and <code>ApiCallRateInsight</code> are supported as Insights types.</p>"
+          "documentation":"<p>Contains the Insights types that are enabled on a trail or event data store. It also specifies the event categories on which a particular Insight type is enabled. <code>ApiCallRateInsight</code> and <code>ApiErrorRateInsight</code> are valid Insight types.The EventCategory field can specify <code>Management</code> or <code>Data</code> events or both. For event data store, you can log Insights for management events only.</p>"
         },
         "EventDataStoreArn":{
           "shape":"EventDataStoreArn",
@@ -3269,7 +3289,11 @@
       "members":{
         "InsightType":{
           "shape":"InsightType",
-          "documentation":"<p>The type of Insights events to log on a trail or event data store. <code>ApiCallRateInsight</code> and <code>ApiErrorRateInsight</code> are valid Insight types.</p> <p>The <code>ApiCallRateInsight</code> Insights type analyzes write-only management API calls that are aggregated per minute against a baseline API call volume.</p> <p>The <code>ApiErrorRateInsight</code> Insights type analyzes management API calls that result in error codes. The error is shown if the API call is unsuccessful.</p>"
+          "documentation":"<p>The type of Insights events to log on a trail or event data store. <code>ApiCallRateInsight</code> and <code>ApiErrorRateInsight</code> are valid Insight types.</p> <p>The <code>ApiCallRateInsight</code> Insights type analyzes write-only management API calls or read and write data API calls that are aggregated per minute against a baseline API call volume.</p> <p>The <code>ApiErrorRateInsight</code> Insights type analyzes management and data API calls that result in error codes. The error is shown if the API call is unsuccessful.</p>"
+        },
+        "EventCategories":{
+          "shape":"SourceEventCategories",
+          "documentation":"<p>Select the event category on which Insights should be enabled. </p> <ul> <li> <p>If EventCategories is not provided, the specified Insights types are enabled on management API calls by default.</p> </li> <li> <p>If EventCategories is provided, the given event categories will overwrite the existing ones. For example, if a trail already has Insights enabled on management events, and then a PutInsightSelectors request is made with only data events specified in EventCategories, Insights on management events will be disabled. </p> </li> </ul>"
         }
       },
       "documentation":"<p>A JSON string that contains a list of Insights types that are logged on a trail or event data store.</p>"
@@ -3693,6 +3717,85 @@
         }
       }
     },
+    "ListInsightsDataDimensionKey":{
+      "type":"string",
+      "enum":[
+        "EventId",
+        "EventName",
+        "EventSource"
+      ]
+    },
+    "ListInsightsDataDimensionValue":{
+      "type":"string",
+      "max":2000,
+      "min":1
+    },
+    "ListInsightsDataDimensions":{
+      "type":"map",
+      "key":{"shape":"ListInsightsDataDimensionKey"},
+      "value":{"shape":"ListInsightsDataDimensionValue"},
+      "max":1,
+      "min":1
+    },
+    "ListInsightsDataMaxResultsCount":{
+      "type":"integer",
+      "max":50,
+      "min":1
+    },
+    "ListInsightsDataRequest":{
+      "type":"structure",
+      "required":[
+        "InsightSource",
+        "DataType"
+      ],
+      "members":{
+        "InsightSource":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name(ARN) of the trail for which you want to retrieve Insights events.</p>"
+        },
+        "DataType":{
+          "shape":"ListInsightsDataType",
+          "documentation":"<p>Specifies the category of events returned. To fetch Insights events, specify <code>InsightsEvents</code> as the value of <code>DataType</code> </p>"
+        },
+        "Dimensions":{
+          "shape":"ListInsightsDataDimensions",
+          "documentation":"<p>Contains a map of dimensions. Currently the map can contain only one item.</p>"
+        },
+        "StartTime":{
+          "shape":"Date",
+          "documentation":"<p>Specifies that only events that occur after or at the specified time are returned. If the specified start time is after the specified end time, an error is returned.</p>"
+        },
+        "EndTime":{
+          "shape":"Date",
+          "documentation":"<p>Specifies that only events that occur before or at the specified time are returned. If the specified end time is before the specified start time, an error is returned.</p>"
+        },
+        "MaxResults":{
+          "shape":"ListInsightsDataMaxResultsCount",
+          "documentation":"<p>The number of events to return. Possible values are 1 through 50. The default is 50.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to get the next page of results after a previous API call. This token must be passed in with the same parameters that were specified in the original call. For example, if the original call specified a EventName as a dimension with <code>PutObject</code> as a value, the call with NextToken should include those same parameters. </p>"
+        }
+      }
+    },
+    "ListInsightsDataResponse":{
+      "type":"structure",
+      "members":{
+        "Events":{
+          "shape":"EventsList",
+          "documentation":"<p>A list of events returned based on the InsightSource, DataType or Dimensions specified. The events list is sorted by time. The most recent event is listed first.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to get the next page of results after a previous API call. If the token does not appear, there are no more results to return. The token must be passed in with the same parameters as the previous call. For example, if the original call specified a EventName as a dimension with <code>PutObject</code> as a value, the call with NextToken should include those same parameters. </p>"
+        }
+      }
+    },
+    "ListInsightsDataType":{
+      "type":"string",
+      "enum":["InsightsEvents"]
+    },
     "ListInsightsMetricDataRequest":{
       "type":"structure",
       "required":[
@@ -3701,6 +3804,10 @@
         "InsightType"
       ],
       "members":{
+        "TrailName":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name(ARN) or name of the trail for which you want to retrieve Insights metrics data. This parameter should only be provided to fetch Insights metrics data generated on trails logging data events. This parameter is not required for Insights metric data generated on trails logging management events.</p>"
+        },
         "EventSource":{
           "shape":"EventSource",
           "documentation":"<p>The Amazon Web Services service to which the request was made, such as <code>iam.amazonaws.com</code> or <code>s3.amazonaws.com</code>.</p>"
@@ -3746,6 +3853,10 @@
     "ListInsightsMetricDataResponse":{
       "type":"structure",
       "members":{
+        "TrailARN":{
+          "shape":"String",
+          "documentation":"<p>Specifies the ARN of the trail. This is only returned when Insights is enabled on a trail logging data events. </p>"
+        },
         "EventSource":{
           "shape":"EventSource",
           "documentation":"<p>The Amazon Web Services service to which the request was made, such as <code>iam.amazonaws.com</code> or <code>s3.amazonaws.com</code>.</p>"
@@ -4242,7 +4353,7 @@
         },
         "InsightSelectors":{
           "shape":"InsightSelectors",
-          "documentation":"<p>A JSON string that contains the Insights types you want to log on a trail or event data store. <code>ApiCallRateInsight</code> and <code>ApiErrorRateInsight</code> are valid Insight types.</p> <p>The <code>ApiCallRateInsight</code> Insights type analyzes write-only management API calls that are aggregated per minute against a baseline API call volume.</p> <p>The <code>ApiErrorRateInsight</code> Insights type analyzes management API calls that result in error codes. The error is shown if the API call is unsuccessful.</p>"
+          "documentation":"<p>Contains the Insights types you want to log on a specific category of events on a trail or event data store. <code>ApiCallRateInsight</code> and <code>ApiErrorRateInsight</code> are valid Insight types.The EventCategory field can specify <code>Management</code> or <code>Data</code> events or both. For event data store, you can log Insights for management events only.</p> <p>The <code>ApiCallRateInsight</code> Insights type analyzes write-only management API calls or read and write data API calls that are aggregated per minute against a baseline API call volume.</p> <p>The <code>ApiErrorRateInsight</code> Insights type analyzes management and data API calls that result in error codes. The error is shown if the API call is unsuccessful.</p>"
         },
         "EventDataStore":{
           "shape":"EventDataStoreArn",
@@ -4263,7 +4374,7 @@
         },
         "InsightSelectors":{
           "shape":"InsightSelectors",
-          "documentation":"<p>A JSON string that contains the Insights event types that you want to log on a trail or event data store. The valid Insights types are <code>ApiErrorRateInsight</code> and <code>ApiCallRateInsight</code>.</p>"
+          "documentation":"<p>Contains the Insights types you want to log on a specific category of events in a trail or event data store. <code>ApiCallRateInsight</code> and <code>ApiErrorRateInsight</code> are valid Insight types.The EventCategory field can specify <code>Management</code> or <code>Data</code> events or both. For event data store, you can only log Insights for management events only.</p>"
         },
         "EventDataStoreArn":{
           "shape":"EventDataStoreArn",
@@ -4863,6 +4974,17 @@
       },
       "documentation":"<p> Contains configuration information about the channel. </p>"
     },
+    "SourceEventCategories":{
+      "type":"list",
+      "member":{"shape":"SourceEventCategory"}
+    },
+    "SourceEventCategory":{
+      "type":"string",
+      "enum":[
+        "Management",
+        "Data"
+      ]
+    },
     "StartDashboardRefreshRequest":{
       "type":"structure",
       "required":["DashboardId"],
@@ -5204,7 +5326,7 @@
         },
         "KmsKeyId":{
           "shape":"String",
-          "documentation":"<p>Specifies the KMS key ID that encrypts the logs delivered by CloudTrail. The value is a fully specified ARN to a KMS key in the following format.</p> <p> <code>arn:aws:kms:us-east-2:123456789012:key/12345678-1234-1234-1234-123456789012</code> </p>"
+          "documentation":"<p>Specifies the KMS key ID that encrypts the logs and digest files delivered by CloudTrail. The value is a fully specified ARN to a KMS key in the following format.</p> <p> <code>arn:aws:kms:us-east-2:123456789012:key/12345678-1234-1234-1234-123456789012</code> </p>"
         },
         "HasCustomEventSelectors":{
           "shape":"Boolean",
@@ -5531,7 +5653,7 @@
         },
         "KmsKeyId":{
           "shape":"String",
-          "documentation":"<p>Specifies the KMS key ID to use to encrypt the logs delivered by CloudTrail. The value can be an alias name prefixed by \"alias/\", a fully specified ARN to an alias, a fully specified ARN to a key, or a globally unique identifier.</p> <p>CloudTrail also supports KMS multi-Region keys. For more information about multi-Region keys, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-overview.html\">Using multi-Region keys</a> in the <i>Key Management Service Developer Guide</i>.</p> <p>Examples:</p> <ul> <li> <p>alias/MyAliasName</p> </li> <li> <p>arn:aws:kms:us-east-2:123456789012:alias/MyAliasName</p> </li> <li> <p>arn:aws:kms:us-east-2:123456789012:key/12345678-1234-1234-1234-123456789012</p> </li> <li> <p>12345678-1234-1234-1234-123456789012</p> </li> </ul>"
+          "documentation":"<p>Specifies the KMS key ID to use to encrypt the logs and digest files delivered by CloudTrail. The value can be an alias name prefixed by \"alias/\", a fully specified ARN to an alias, a fully specified ARN to a key, or a globally unique identifier.</p> <p>CloudTrail also supports KMS multi-Region keys. For more information about multi-Region keys, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-overview.html\">Using multi-Region keys</a> in the <i>Key Management Service Developer Guide</i>.</p> <p>Examples:</p> <ul> <li> <p>alias/MyAliasName</p> </li> <li> <p>arn:aws:kms:us-east-2:123456789012:alias/MyAliasName</p> </li> <li> <p>arn:aws:kms:us-east-2:123456789012:key/12345678-1234-1234-1234-123456789012</p> </li> <li> <p>12345678-1234-1234-1234-123456789012</p> </li> </ul>"
         },
         "IsOrganizationTrail":{
           "shape":"Boolean",
@@ -5590,7 +5712,7 @@
         },
         "KmsKeyId":{
           "shape":"String",
-          "documentation":"<p>Specifies the KMS key ID that encrypts the logs delivered by CloudTrail. The value is a fully specified ARN to a KMS key in the following format.</p> <p> <code>arn:aws:kms:us-east-2:123456789012:key/12345678-1234-1234-1234-123456789012</code> </p>"
+          "documentation":"<p>Specifies the KMS key ID that encrypts the logs and digest files delivered by CloudTrail. The value is a fully specified ARN to a KMS key in the following format.</p> <p> <code>arn:aws:kms:us-east-2:123456789012:key/12345678-1234-1234-1234-123456789012</code> </p>"
         },
         "IsOrganizationTrail":{
           "shape":"Boolean",

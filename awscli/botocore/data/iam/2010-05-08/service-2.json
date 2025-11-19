@@ -888,6 +888,17 @@
       ],
       "documentation":"<p>Disables root user sessions for privileged tasks across member accounts in your organization. When you disable this feature, the management account and the delegated administrator for IAM can no longer perform privileged tasks on member accounts in your organization.</p>"
     },
+    "DisableOutboundWebIdentityFederation":{
+      "name":"DisableOutboundWebIdentityFederation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "errors":[
+        {"shape":"FeatureDisabledException"}
+      ],
+      "documentation":"<p>Disables the outbound identity federation feature for your Amazon Web Services account. When disabled, IAM principals in the account cannot use the <code>GetWebIdentityToken</code> API to obtain JSON Web Tokens (JWTs) for authentication with external services. This operation does not affect tokens that were issued before the feature was disabled.</p>"
+    },
     "EnableMFADevice":{
       "name":"EnableMFADevice",
       "http":{
@@ -945,6 +956,21 @@
         {"shape":"CallerIsNotManagementAccountException"}
       ],
       "documentation":"<p>Allows the management account or delegated administrator to perform privileged tasks on member accounts in your organization. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html#id_root-user-access-management\">Centrally manage root access for member accounts</a> in the <i>Identity and Access Management User Guide</i>.</p> <p>Before you enable this feature, you must have an account configured with the following settings:</p> <ul> <li> <p>You must manage your Amazon Web Services accounts in <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_introduction.html\">Organizations</a>.</p> </li> <li> <p>Enable trusted access for Identity and Access Management in Organizations. For details, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/services-that-can-integrate-ra.html\">IAM and Organizations</a> in the <i>Organizations User Guide</i>.</p> </li> </ul>"
+    },
+    "EnableOutboundWebIdentityFederation":{
+      "name":"EnableOutboundWebIdentityFederation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "output":{
+        "shape":"EnableOutboundWebIdentityFederationResponse",
+        "resultWrapper":"EnableOutboundWebIdentityFederationResult"
+      },
+      "errors":[
+        {"shape":"FeatureEnabledException"}
+      ],
+      "documentation":"<p>Enables the outbound identity federation feature for your Amazon Web Services account. When enabled, IAM principals in your account can use the <code>GetWebIdentityToken</code> API to obtain JSON Web Tokens (JWTs) for secure authentication with external services. This operation also generates a unique issuer URL for your Amazon Web Services account. </p>"
     },
     "GenerateCredentialReport":{
       "name":"GenerateCredentialReport",
@@ -1259,6 +1285,21 @@
         {"shape":"NoSuchEntityException"}
       ],
       "documentation":"<p>Retrieves the service last accessed data report for Organizations that was previously generated using the <code> <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GenerateOrganizationsAccessReport.html\">GenerateOrganizationsAccessReport</a> </code> operation. This operation retrieves the status of your report job and the report contents.</p> <p>Depending on the parameters that you passed when you generated the report, the data returned could include different information. For details, see <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GenerateOrganizationsAccessReport.html\">GenerateOrganizationsAccessReport</a>.</p> <p>To call this operation, you must be signed in to the management account in your organization. SCPs must be enabled for your organization root. You must have permissions to perform this operation. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html\">Refining permissions using service last accessed data</a> in the <i>IAM User Guide</i>.</p> <p>For each service that principals in an account (root user, IAM users, or IAM roles) could access using SCPs, the operation returns details about the most recent access attempt. If there was no attempt, the service is listed without details about the most recent attempt to access the service. If the operation fails, it returns the reason that it failed.</p> <p>By default, the list is sorted by service namespace.</p>"
+    },
+    "GetOutboundWebIdentityFederationInfo":{
+      "name":"GetOutboundWebIdentityFederationInfo",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "output":{
+        "shape":"GetOutboundWebIdentityFederationInfoResponse",
+        "resultWrapper":"GetOutboundWebIdentityFederationInfoResult"
+      },
+      "errors":[
+        {"shape":"FeatureDisabledException"}
+      ],
+      "documentation":"<p>Retrieves the configuration information for the outbound identity federation feature in your Amazon Web Services account. The response includes the unique issuer URL for your Amazon Web Services account and the current enabled/disabled status of the feature. Use this operation to obtain the issuer URL that you need to configure trust relationships with external services.</p>"
     },
     "GetPolicy":{
       "name":"GetPolicy",
@@ -4390,6 +4431,15 @@
         }
       }
     },
+    "EnableOutboundWebIdentityFederationResponse":{
+      "type":"structure",
+      "members":{
+        "IssuerIdentifier":{
+          "shape":"stringType",
+          "documentation":"<p>A unique issuer URL for your Amazon Web Services account that hosts the OpenID Connect (OIDC) discovery endpoints at <code>/.well-known/openid-configuration and /.well-known/jwks.json</code>. The OpenID Connect (OIDC) discovery endpoints contain verification keys and metadata necessary for token verification.</p>"
+        }
+      }
+    },
     "EntityAlreadyExistsException":{
       "type":"structure",
       "members":{
@@ -4548,6 +4598,34 @@
       "type":"list",
       "member":{"shape":"EvaluationResult"}
     },
+    "FeatureDisabledException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"FeatureDisabledMessage"}
+      },
+      "documentation":"<p>The request failed because outbound identity federation is already disabled for your Amazon Web Services account. You cannot disable the feature multiple times</p>",
+      "error":{
+        "code":"FeatureDisabled",
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "FeatureDisabledMessage":{"type":"string"},
+    "FeatureEnabledException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"FeatureEnabledMessage"}
+      },
+      "documentation":"<p>The request failed because outbound identity federation is already enabled for your Amazon Web Services account. You cannot enable the feature multiple times. To fetch the current configuration (including the unique issuer URL), use the <code>GetOutboundWebIdentityFederationInfo</code> operation.</p>",
+      "error":{
+        "code":"FeatureEnabled",
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "FeatureEnabledMessage":{"type":"string"},
     "FeatureType":{
       "type":"string",
       "enum":[
@@ -5084,6 +5162,19 @@
           "documentation":"<p>When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.</p>"
         },
         "ErrorDetails":{"shape":"ErrorDetails"}
+      }
+    },
+    "GetOutboundWebIdentityFederationInfoResponse":{
+      "type":"structure",
+      "members":{
+        "IssuerIdentifier":{
+          "shape":"stringType",
+          "documentation":"<p>A unique issuer URL for your Amazon Web Services account that hosts the OpenID Connect (OIDC) discovery endpoints at <code>/.well-known/openid-configuration and /.well-known/jwks.json</code>. The OpenID Connect (OIDC) discovery endpoints contain verification keys and metadata necessary for token verification.</p>"
+        },
+        "JwtVendingEnabled":{
+          "shape":"booleanType",
+          "documentation":"<p>Indicates whether outbound identity federation is currently enabled for your Amazon Web Services account. When true, IAM principals in the account can call the <code>GetWebIdentityToken</code> API to obtain JSON Web Tokens (JWTs) for authentication with external services. </p>"
+        }
       }
     },
     "GetPolicyRequest":{

@@ -2380,6 +2380,10 @@
         "propagateTags":{
           "shape":"PropagateMITags",
           "documentation":"<p>Specifies whether to propagate tags from the capacity provider to the Amazon ECS Managed Instances. When enabled, tags applied to the capacity provider are automatically applied to all instances launched by this provider.</p>"
+        },
+        "infrastructureOptimization":{
+          "shape":"InfrastructureOptimization",
+          "documentation":"<p>Defines how Amazon ECS Managed Instances optimizes the infrastastructure in your capacity provider. Provides control over the delay between when EC2 instances become idle or underutilized and when Amazon ECS optimizes them.</p>"
         }
       },
       "documentation":"<p>The configuration for creating a Amazon ECS Managed Instances provider. This specifies how Amazon ECS should manage Amazon EC2 instances, including the infrastructure role, instance launch template, and whether to propagate tags from the capacity provider to the instances.</p>"
@@ -3937,6 +3941,16 @@
       "type":"list",
       "member":{"shape":"InferenceAccelerator"}
     },
+    "InfrastructureOptimization":{
+      "type":"structure",
+      "members":{
+        "scaleInAfter":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>This parameter defines the number of seconds Amazon ECS Managed Instances waits before optimizing EC2 instances that have become idle or underutilized. A longer delay increases the likelihood of placing new tasks on idle or underutilized instances instances, reducing startup time. A shorter delay helps reduce infrastructure costs by optimizing idle or underutilized instances,instances more quickly.</p> <p>Valid values are:</p> <ul> <li> <p> <code>null</code> - Uses the default optimization behavior.</p> </li> <li> <p> <code>-1</code> - Disables automatic infrastructure optimization.</p> </li> <li> <p>A value between <code>0</code> and <code>3600</code> (inclusive) - Specifies the number of seconds to wait before optimizing instances.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The configuration that controls how Amazon ECS optimizes your infrastructure.</p>"
+    },
     "InstanceGeneration":{
       "type":"string",
       "enum":[
@@ -4857,6 +4871,10 @@
         "propagateTags":{
           "shape":"PropagateMITags",
           "documentation":"<p>Determines whether tags from the capacity provider are automatically applied to Amazon ECS Managed Instances. This helps with cost allocation and resource management by ensuring consistent tagging across your infrastructure.</p>"
+        },
+        "infrastructureOptimization":{
+          "shape":"InfrastructureOptimization",
+          "documentation":"<p>Defines how Amazon ECS Managed Instances optimizes the infrastastructure in your capacity provider. Configure it to turn on or off the infrastructure optimization in your capacity provider, and to control the idle or underutilized EC2 instances optimization delay.</p>"
         }
       },
       "documentation":"<p>The configuration for a Amazon ECS Managed Instances provider. Amazon ECS uses this configuration to automatically launch, manage, and terminate Amazon EC2 instances on your behalf. Managed instances provide access to the full range of Amazon EC2 instance types and features while offloading infrastructure management to Amazon Web Services.</p>"
@@ -8039,6 +8057,10 @@
         "propagateTags":{
           "shape":"PropagateMITags",
           "documentation":"<p>The updated tag propagation setting. When changed, this affects only new instances launched after the update.</p>"
+        },
+        "infrastructureOptimization":{
+          "shape":"InfrastructureOptimization",
+          "documentation":"<p>The updated infrastructure optimization configuration. Changes to this setting affect how Amazon ECS optimizes instances going forward.</p>"
         }
       },
       "documentation":"<p>The updated configuration for a Amazon ECS Managed Instances provider. You can modify the infrastructure role, instance launch template, and tag propagation settings. Changes apply to new instances launched after the update.</p>"

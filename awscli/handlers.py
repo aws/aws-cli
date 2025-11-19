@@ -93,6 +93,7 @@ from awscli.customizations.kinesis import (
 )
 from awscli.customizations.kms import register_fix_kms_create_grant_docs
 from awscli.customizations.lightsail import initialize as lightsail_initialize
+from awscli.customizations.login import register_login_cmds
 from awscli.customizations.logs import register_logs_commands
 from awscli.customizations.paginate import register_pagination
 from awscli.customizations.putmetricdata import register_put_metric_data
@@ -233,3 +234,4 @@ def awscli_initialize(event_handlers):
     register_kinesis_list_streams_pagination_backcompat(event_handlers)
     register_quicksight_asset_bundle_customizations(event_handlers)
     register_ec2_instance_connect_commands(event_handlers)
+    register_login_cmds(event_handlers)

@@ -628,6 +628,24 @@
       "documentation":"<p>Returns metadata associated with a restore job that is specified by a job ID.</p>",
       "idempotent":true
     },
+    "DescribeScanJob":{
+      "name":"DescribeScanJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/scan/jobs/{ScanJobId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeScanJobInput"},
+      "output":{"shape":"DescribeScanJobOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns scan job details for the specified ScanJobID.</p>",
+      "idempotent":true
+    },
     "DisassociateBackupVaultMpaApprovalTeam":{
       "name":"DisassociateBackupVaultMpaApprovalTeam",
       "http":{
@@ -1328,6 +1346,36 @@
       ],
       "documentation":"<p>Returns a list of restore testing selections. Can be filtered by <code>MaxResults</code> and <code>RestoreTestingPlanName</code>.</p>"
     },
+    "ListScanJobSummaries":{
+      "name":"ListScanJobSummaries",
+      "http":{
+        "method":"GET",
+        "requestUri":"/audit/scan-job-summaries"
+      },
+      "input":{"shape":"ListScanJobSummariesInput"},
+      "output":{"shape":"ListScanJobSummariesOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This is a request for a summary of scan jobs created or running within the most recent 30 days.</p>"
+    },
+    "ListScanJobs":{
+      "name":"ListScanJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/scan/jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListScanJobsInput"},
+      "output":{"shape":"ListScanJobsOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns a list of existing scan jobs for an authenticated account for the last 30 days.</p>",
+      "idempotent":true
+    },
     "ListTags":{
       "name":"ListTags",
       "http":{
@@ -1514,6 +1562,26 @@
         {"shape":"InvalidRequestException"}
       ],
       "documentation":"<p>Recovers the saved resource identified by an Amazon Resource Name (ARN).</p>",
+      "idempotent":true
+    },
+    "StartScanJob":{
+      "name":"StartScanJob",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/scan/job",
+        "responseCode":201
+      },
+      "input":{"shape":"StartScanJobInput"},
+      "output":{"shape":"StartScanJobOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Starts scanning jobs for specific resources.</p>",
       "idempotent":true
     },
     "StopBackupJob":{
@@ -1767,6 +1835,24 @@
     "AdvancedBackupSettings":{
       "type":"list",
       "member":{"shape":"AdvancedBackupSetting"}
+    },
+    "AggregatedScanResult":{
+      "type":"structure",
+      "members":{
+        "FailedScan":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value indicating whether any of the aggregated scans failed.</p>"
+        },
+        "Findings":{
+          "shape":"ScanFindings",
+          "documentation":"<p>An array of findings discovered across all aggregated scans.</p>"
+        },
+        "LastComputed":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the aggregated scan result was last computed, in Unix format and Coordinated Universal Time (UTC).</p>"
+        }
+      },
+      "documentation":"<p>Contains aggregated scan results across multiple scan operations, providing a summary of scan status and findings.</p>"
     },
     "AggregationPeriod":{
       "type":"string",
@@ -2059,6 +2145,10 @@
         "AdvancedBackupSettings":{
           "shape":"AdvancedBackupSettings",
           "documentation":"<p>Contains a list of <code>BackupOptions</code> for each resource type.</p>"
+        },
+        "ScanSettings":{
+          "shape":"ScanSettings",
+          "documentation":"<p>Contains your scanning configuration for the backup plan and includes the Malware scanner, your selected resources, and scanner role.</p>"
         }
       },
       "documentation":"<p>Contains an optional backup plan display name and an array of <code>BackupRule</code> objects, each of which specifies a backup rule. Each rule in a backup plan is a separate scheduled task and can back up a different selection of Amazon Web Services resources.</p>"
@@ -2081,6 +2171,10 @@
         "AdvancedBackupSettings":{
           "shape":"AdvancedBackupSettings",
           "documentation":"<p>Specifies a list of <code>BackupOptions</code> for each resource type. These settings are only available for Windows Volume Shadow Copy Service (VSS) backup jobs.</p>"
+        },
+        "ScanSettings":{
+          "shape":"ScanSettings",
+          "documentation":"<p>Contains your scanning configuration for the backup rule and includes the malware scanner, and scan mode of either full or incremental.</p>"
         }
       },
       "documentation":"<p>Contains an optional backup plan display name and an array of <code>BackupRule</code> objects, each of which specifies a backup rule. Each rule in a backup plan is a separate scheduled task. </p>"
@@ -2212,6 +2306,10 @@
         "IndexActions":{
           "shape":"IndexActions",
           "documentation":"<p>IndexActions is an array you use to specify how backup data should be indexed.</p> <p>eEach BackupRule can have 0 or 1 IndexAction, as each backup can have up to one index associated with it.</p> <p>Within the array is ResourceType. Only one will be accepted for each BackupRule.</p>"
+        },
+        "ScanActions":{
+          "shape":"ScanActions",
+          "documentation":"<p>Contains your scanning configuration for the backup rule and includes the malware scanner, and scan mode of either full or incremental.</p>"
         }
       },
       "documentation":"<p>Specifies a scheduled task used to back up a selection of resources.</p>"
@@ -2270,6 +2368,10 @@
         "IndexActions":{
           "shape":"IndexActions",
           "documentation":"<p>There can up to one IndexAction in each BackupRule, as each backup can have 0 or 1 backup index associated with it.</p> <p>Within the array is ResourceTypes. Only 1 resource type will be accepted for each BackupRule. Valid values:</p> <ul> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>S3</code> for Amazon Simple Storage Service (Amazon S3)</p> </li> </ul>"
+        },
+        "ScanActions":{
+          "shape":"ScanActions",
+          "documentation":"<p>Contains your scanning configuration for the backup rule and includes the malware scanner, and scan mode of either full or incremental.</p>"
         }
       },
       "documentation":"<p>Specifies a scheduled task used to back up a selection of resources.</p>"
@@ -3147,7 +3249,7 @@
         },
         "ReportSetting":{
           "shape":"ReportSetting",
-          "documentation":"<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p> <p>If the report template is <code>RESOURCE_COMPLIANCE_REPORT</code> or <code>CONTROL_COMPLIANCE_REPORT</code>, this API resource also describes the report coverage by Amazon Web Services Regions and frameworks.</p>"
+          "documentation":"<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT | SCAN_JOB_REPORT </code> </p> <p>If the report template is <code>RESOURCE_COMPLIANCE_REPORT</code> or <code>CONTROL_COMPLIANCE_REPORT</code>, this API resource also describes the report coverage by Amazon Web Services Regions and frameworks.</p>"
         },
         "ReportPlanTags":{
           "shape":"stringMap",
@@ -4099,6 +4201,10 @@
         "EncryptionKeyType":{
           "shape":"EncryptionKeyType",
           "documentation":"<p>The type of encryption key used for the recovery point. Valid values are CUSTOMER_MANAGED_KMS_KEY for customer-managed keys or Amazon Web Services_OWNED_KMS_KEY for Amazon Web Services-owned keys.</p>"
+        },
+        "ScanResults":{
+          "shape":"ScanResults",
+          "documentation":"<p>Contains the latest scanning results against the recovery point and currently include <code>MalwareScanner</code>, <code>ScanJobState</code>, <code>Findings</code>, and <code>LastScanTimestamp</code> </p>"
         }
       }
     },
@@ -4267,6 +4373,117 @@
         "ParentJobId":{
           "shape":"string",
           "documentation":"<p>This is the unique identifier of the parent restore job for the selected restore job.</p>"
+        }
+      }
+    },
+    "DescribeScanJobInput":{
+      "type":"structure",
+      "required":["ScanJobId"],
+      "members":{
+        "ScanJobId":{
+          "shape":"String",
+          "documentation":"<p>Uniquely identifies a request to Backup to scan a resource.</p>",
+          "location":"uri",
+          "locationName":"ScanJobId"
+        }
+      }
+    },
+    "DescribeScanJobOutput":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "BackupVaultArn",
+        "BackupVaultName",
+        "CreatedBy",
+        "CreationDate",
+        "IamRoleArn",
+        "MalwareScanner",
+        "RecoveryPointArn",
+        "ResourceArn",
+        "ResourceName",
+        "ResourceType",
+        "ScanJobId",
+        "ScanMode",
+        "ScannerRoleArn",
+        "State"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"String",
+          "documentation":"<p>Returns the account ID that owns the scan job.</p> <p>Pattern: <code>^[0-9]{12}$</code> </p>"
+        },
+        "BackupVaultArn":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code> </p>"
+        },
+        "BackupVaultName":{
+          "shape":"String",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p> <p>Pattern: <code>^[a-zA-Z0-9\\-\\_\\.]{2,50}$</code> </p>"
+        },
+        "CompletionDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that a backup index finished creation, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "CreatedBy":{"shape":"ScanJobCreator"},
+        "CreationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that a backup index finished creation, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "IamRoleArn":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.</p>"
+        },
+        "MalwareScanner":{
+          "shape":"MalwareScanner",
+          "documentation":"<p>The scanning engine used for the corresponding scan job. Currently only <code>GUARDUTY</code> is supported.</p>"
+        },
+        "RecoveryPointArn":{
+          "shape":"String",
+          "documentation":"<p>An ARN that uniquely identifies the target recovery point for scanning.; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
+        },
+        "ResourceArn":{
+          "shape":"String",
+          "documentation":"<p>An ARN that uniquely identifies the source resource of the corresponding recovery point ARN.</p>"
+        },
+        "ResourceName":{
+          "shape":"String",
+          "documentation":"<p>The non-unique name of the resource that belongs to the specified backup.</p>"
+        },
+        "ResourceType":{
+          "shape":"ScanResourceType",
+          "documentation":"<p>The type of Amazon Web Services Resource to be backed up; for example, an Amazon Elastic Block Store (Amazon EBS) volume.</p> <p>Pattern: <code>^[a-zA-Z0-9\\-\\_\\.]{1,50}$</code> </p>"
+        },
+        "ScanBaseRecoveryPointArn":{
+          "shape":"String",
+          "documentation":"<p>An ARN that uniquely identifies the base recovery point for scanning. This field will only be populated when an incremental scan job has taken place.</p>"
+        },
+        "ScanId":{
+          "shape":"String",
+          "documentation":"<p>The scan ID generated by Amazon GuardDuty for the corresponding Scan Job ID request from Backup.</p>"
+        },
+        "ScanJobId":{
+          "shape":"String",
+          "documentation":"<p>The scan job ID that uniquely identified the request to Backup.</p>"
+        },
+        "ScanMode":{
+          "shape":"ScanMode",
+          "documentation":"<p>Specifies the scan type used for the scan job.</p>"
+        },
+        "ScanResult":{
+          "shape":"ScanResultInfo",
+          "documentation":"<p> Contains the <code>ScanResultsStatus</code> for the scanning job and returns <code>THREATS_FOUND</code> or <code>NO_THREATS_FOUND</code> for completed jobs.</p>"
+        },
+        "ScannerRoleArn":{
+          "shape":"String",
+          "documentation":"<p>Specifies the scanner IAM role ARN used to for the scan job.</p>"
+        },
+        "State":{
+          "shape":"ScanState",
+          "documentation":"<p>The current state of a scan job.</p>"
+        },
+        "StatusMessage":{
+          "shape":"String",
+          "documentation":"<p>A detailed message explaining the status of the job to back up a resource.</p>"
         }
       }
     },
@@ -6146,7 +6363,7 @@
         },
         "ByStatus":{
           "shape":"string",
-          "documentation":"<p>Returns only report jobs that are in the specified status. The statuses are:</p> <p> <code>CREATED | RUNNING | COMPLETED | FAILED</code> </p>",
+          "documentation":"<p>Returns only report jobs that are in the specified status. The statuses are:</p> <p> <code>CREATED | RUNNING | COMPLETED | FAILED | COMPLETED_WITH_ISSUES</code> </p> <p> Please note that only scanning jobs finish with state completed with issues. For backup jobs this is a console interpretation of a job that finishes in completed state and has a status message.</p>",
           "location":"querystring",
           "locationName":"Status"
         },
@@ -6522,6 +6739,173 @@
         }
       }
     },
+    "ListScanJobSummariesInput":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>Returns the job count for the specified account.</p> <p>If the request is sent from a member account or an account not part of Amazon Web Services Organizations, jobs within requestor's account will be returned.</p> <p>Root, admin, and delegated administrator accounts can use the value <code>ANY</code> to return job counts from every account in the organization.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts from all accounts within the authenticated organization, then returns the sum.</p>",
+          "location":"querystring",
+          "locationName":"AccountId"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>Returns the job count for the specified resource type. Use request <code>GetSupportedResourceTypes</code> to obtain strings for supported resource types.</p> <p>The the value <code>ANY</code> returns count of all resource types.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all resource types and returns the sum.</p>",
+          "location":"querystring",
+          "locationName":"ResourceType"
+        },
+        "MalwareScanner":{
+          "shape":"MalwareScanner",
+          "documentation":"<p>Returns only the scan jobs for the specified malware scanner. Currently the only MalwareScanner is <code>GUARDDUTY</code>. But the field also supports <code>ANY</code>, and <code>AGGREGATE_ALL</code>.</p>",
+          "location":"querystring",
+          "locationName":"MalwareScanner"
+        },
+        "ScanResultStatus":{
+          "shape":"ScanResultStatus",
+          "documentation":"<p>Returns only the scan jobs for the specified scan results.</p>",
+          "location":"querystring",
+          "locationName":"ScanResultStatus"
+        },
+        "State":{
+          "shape":"ScanJobStatus",
+          "documentation":"<p>Returns only the scan jobs for the specified scanning job state.</p>",
+          "location":"querystring",
+          "locationName":"State"
+        },
+        "AggregationPeriod":{
+          "shape":"AggregationPeriod",
+          "documentation":"<p>The period for the returned results.</p> <ul> <li> <p> <code>ONE_DAY</code>The daily job count for the prior 1 day.</p> </li> <li> <p> <code>SEVEN_DAYS</code>The daily job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code>The daily job count for the prior 14 days.</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"AggregationPeriod"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to be returned.</p> <p>The value is an integer. Range of accepted values is from 1 to 500.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListScanJobSummariesOutput":{
+      "type":"structure",
+      "members":{
+        "ScanJobSummaries":{
+          "shape":"ScanJobSummaryList",
+          "documentation":"<p>The summary information.</p>"
+        },
+        "AggregationPeriod":{
+          "shape":"string",
+          "documentation":"<p>The period for the returned results.</p> <ul> <li> <p> <code>ONE_DAY</code>The daily job count for the prior 1 day.</p> </li> <li> <p> <code>SEVEN_DAYS</code>The daily job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code>The daily job count for the prior 14 days.</p> </li> </ul> <p>Valid Values: <code>'ONE_DAY'</code> | <code>'SEVEN_DAYS'</code> | <code>'FOURTEEN_DAYS'</code> </p>"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        }
+      }
+    },
+    "ListScanJobsInput":{
+      "type":"structure",
+      "members":{
+        "ByAccountId":{
+          "shape":"String",
+          "documentation":"<p>The account ID to list the jobs from. Returns only backup jobs associated with the specified account ID.</p> <p>If used from an Amazon Web Services Organizations management account, passing <code>*</code> returns all jobs across the organization.</p> <p>Pattern: <code>^[0-9]{12}$</code> </p>",
+          "location":"querystring",
+          "locationName":"ByAccountId"
+        },
+        "ByBackupVaultName":{
+          "shape":"String",
+          "documentation":"<p>Returns only scan jobs that will be stored in the specified backup vault. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p> <p>Pattern: <code>^[a-zA-Z0-9\\-\\_\\.]{2,50}$</code> </p>",
+          "location":"querystring",
+          "locationName":"ByBackupVaultName"
+        },
+        "ByCompleteAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Returns only scan jobs completed after a date expressed in Unix format and Coordinated Universal Time (UTC).</p>",
+          "location":"querystring",
+          "locationName":"ByCompleteAfter"
+        },
+        "ByCompleteBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Returns only backup jobs completed before a date expressed in Unix format and Coordinated Universal Time (UTC).</p>",
+          "location":"querystring",
+          "locationName":"ByCompleteBefore"
+        },
+        "ByMalwareScanner":{
+          "shape":"MalwareScanner",
+          "documentation":"<p>Returns only the scan jobs for the specified malware scanner. Currently only supports <code>GUARDDUTY</code>.</p>",
+          "location":"querystring",
+          "locationName":"ByMalwareScanner"
+        },
+        "ByRecoveryPointArn":{
+          "shape":"String",
+          "documentation":"<p>Returns only the scan jobs that are ran against the specified recovery point.</p>",
+          "location":"querystring",
+          "locationName":"ByRecoveryPointArn"
+        },
+        "ByResourceArn":{
+          "shape":"String",
+          "documentation":"<p>Returns only scan jobs that match the specified resource Amazon Resource Name (ARN).</p>",
+          "location":"querystring",
+          "locationName":"ByResourceArn"
+        },
+        "ByResourceType":{
+          "shape":"ScanResourceType",
+          "documentation":"<p>Returns restore testing selections by the specified restore testing plan name.</p> <ul> <li> <p> <code>EBS</code>for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code>for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>S3</code>for Amazon Simple Storage Service (Amazon S3)</p> </li> </ul> <p>Pattern: <code>^[a-zA-Z0-9\\-\\_\\.]{1,50}$</code> </p>",
+          "location":"querystring",
+          "locationName":"ByResourceType"
+        },
+        "ByScanResultStatus":{
+          "shape":"ScanResultStatus",
+          "documentation":"<p>Returns only the scan jobs for the specified scan results:</p> <ul> <li> <p> <code>THREATS_FOUND</code> </p> </li> <li> <p> <code>NO_THREATS_FOUND</code> </p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"ByScanResultStatus"
+        },
+        "ByState":{
+          "shape":"ScanState",
+          "documentation":"<p>Returns only the scan jobs for the specified scanning job state.</p>",
+          "location":"querystring",
+          "locationName":"ByState"
+        },
+        "MaxResults":{
+          "shape":"ListScanJobsInputMaxResultsInteger",
+          "documentation":"<p>The maximum number of items to be returned.</p> <p>Valid Range: Minimum value of 1. Maximum value of 1000.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListScanJobsInputMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListScanJobsOutput":{
+      "type":"structure",
+      "required":["ScanJobs"],
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        },
+        "ScanJobs":{
+          "shape":"ScanJobs",
+          "documentation":"<p>An array of structures containing metadata about your scan jobs returned in JSON format.</p>"
+        }
+      }
+    },
     "ListTagsInput":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -6590,6 +6974,10 @@
       }
     },
     "Long":{"type":"long"},
+    "MalwareScanner":{
+      "type":"string",
+      "enum":["GUARDDUTY"]
+    },
     "MaxFrameworkInputs":{
       "type":"integer",
       "max":1000,
@@ -6893,6 +7281,10 @@
         "EncryptionKeyType":{
           "shape":"EncryptionKeyType",
           "documentation":"<p>The type of encryption key used for the recovery point. Valid values are CUSTOMER_MANAGED_KMS_KEY for customer-managed keys or Amazon Web Services_OWNED_KMS_KEY for Amazon Web Services-owned keys.</p>"
+        },
+        "AggregatedScanResult":{
+          "shape":"AggregatedScanResult",
+          "documentation":"<p>Contains the latest scanning results against the recovery point and currently include <code>FailedScan</code>, <code>Findings</code>, <code>LastComputed</code>.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about the recovery points stored in a backup vault.</p>"
@@ -6959,6 +7351,10 @@
         "EncryptionKeyType":{
           "shape":"EncryptionKeyType",
           "documentation":"<p>The type of encryption key used for the recovery point. Valid values are CUSTOMER_MANAGED_KMS_KEY for customer-managed keys or Amazon Web Services_OWNED_KMS_KEY for Amazon Web Services-owned keys.</p>"
+        },
+        "AggregatedScanResult":{
+          "shape":"AggregatedScanResult",
+          "documentation":"<p>Contains the latest scanning results against the recovery point and currently include <code>FailedScan</code>, <code>Findings</code>, <code>LastComputed</code>.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about a saved recovery point.</p>"
@@ -7199,7 +7595,7 @@
       "members":{
         "ReportTemplate":{
           "shape":"string",
-          "documentation":"<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p>"
+          "documentation":"<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT | SCAN_JOB_REPORT</code> </p>"
         },
         "FrameworkArns":{
           "shape":"stringList",
@@ -7915,6 +8311,328 @@
         "CONTINUOUS_AND_SNAPSHOTS"
       ]
     },
+    "ScanAction":{
+      "type":"structure",
+      "members":{
+        "MalwareScanner":{
+          "shape":"MalwareScanner",
+          "documentation":"<p>The malware scanner to use for the scan action. Currently only <code>GUARDDUTY</code> is supported.</p>"
+        },
+        "ScanMode":{
+          "shape":"ScanMode",
+          "documentation":"<p>The scanning mode to use for the scan action.</p> <p>Valid values: <code>FULL_SCAN</code> | <code>INCREMENTAL_SCAN</code>.</p>"
+        }
+      },
+      "documentation":"<p>Defines a scanning action that specifies the malware scanner and scan mode to use.</p>"
+    },
+    "ScanActions":{
+      "type":"list",
+      "member":{"shape":"ScanAction"}
+    },
+    "ScanFinding":{
+      "type":"string",
+      "enum":["MALWARE"]
+    },
+    "ScanFindings":{
+      "type":"list",
+      "member":{"shape":"ScanFinding"}
+    },
+    "ScanJob":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "BackupVaultArn",
+        "BackupVaultName",
+        "CreatedBy",
+        "CreationDate",
+        "IamRoleArn",
+        "MalwareScanner",
+        "RecoveryPointArn",
+        "ResourceArn",
+        "ResourceName",
+        "ResourceType",
+        "ScanJobId",
+        "ScanMode",
+        "ScannerRoleArn"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"String",
+          "documentation":"<p>The account ID that owns the scan job.</p>"
+        },
+        "BackupVaultArn":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
+        },
+        "BackupVaultName":{
+          "shape":"String",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>"
+        },
+        "CompletionDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that a scan job is completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "CreatedBy":{
+          "shape":"ScanJobCreator",
+          "documentation":"<p>Contains identifying information about the creation of a scan job.</p>"
+        },
+        "CreationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that a scan job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "IamRoleArn":{
+          "shape":"String",
+          "documentation":"<p>Specifies the IAM role ARN used to create the scan job; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.</p>"
+        },
+        "MalwareScanner":{
+          "shape":"MalwareScanner",
+          "documentation":"<p>The scanning engine used for the scan job. Currently only <code>GUARDDUTY</code> is supported.</p>"
+        },
+        "RecoveryPointArn":{
+          "shape":"String",
+          "documentation":"<p>An ARN that uniquely identifies the recovery point being scanned; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
+        },
+        "ResourceArn":{
+          "shape":"String",
+          "documentation":"<p>An ARN that uniquely identifies the source resource of the recovery point being scanned.</p>"
+        },
+        "ResourceName":{
+          "shape":"String",
+          "documentation":"<p>The non-unique name of the resource that belongs to the specified backup.</p>"
+        },
+        "ResourceType":{
+          "shape":"ScanResourceType",
+          "documentation":"<p>The type of Amazon Web Services resource being scanned; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database.</p>"
+        },
+        "ScanBaseRecoveryPointArn":{
+          "shape":"String",
+          "documentation":"<p>An ARN that uniquely identifies the base recovery point for scanning. This field is populated when an incremental scan job has taken place.</p>"
+        },
+        "ScanId":{
+          "shape":"String",
+          "documentation":"<p>The scan ID generated by the malware scanner for the corresponding scan job.</p>"
+        },
+        "ScanJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier that identifies the scan job request to Backup.</p>"
+        },
+        "ScanMode":{
+          "shape":"ScanMode",
+          "documentation":"<p>Specifies the scan type use for the scan job.</p> <p>Includes:</p> <p> <code>FULL_SCAN</code> will scan the entire data lineage within the backup.</p> <p> <code>INCREMENTAL_SCAN</code> will scan the data difference between the target recovery point and base recovery point ARN.</p>"
+        },
+        "ScanResult":{
+          "shape":"ScanResultInfo",
+          "documentation":"<p>Contains the scan results information, including the status of threats found during scanning.</p>"
+        },
+        "ScannerRoleArn":{
+          "shape":"String",
+          "documentation":"<p>Specifies the scanner IAM role ARN used for the scan job.</p>"
+        },
+        "State":{
+          "shape":"ScanState",
+          "documentation":"<p>The current state of the scan job.</p> <p>Valid values: <code>CREATED</code> | <code>RUNNING</code> | <code>COMPLETED</code> | <code>COMPLETED_WITH_ISSUES</code> | <code>FAILED</code> | <code>CANCELED</code>.</p>"
+        },
+        "StatusMessage":{
+          "shape":"String",
+          "documentation":"<p>A detailed message explaining the status of the scan job.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata about a scan job, including information about the scanning process, results, and associated resources.</p>"
+    },
+    "ScanJobCreator":{
+      "type":"structure",
+      "required":[
+        "BackupPlanArn",
+        "BackupPlanId",
+        "BackupPlanVersion",
+        "BackupRuleId"
+      ],
+      "members":{
+        "BackupPlanArn":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, <code>arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50</code>.</p>"
+        },
+        "BackupPlanId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the backup plan.</p>"
+        },
+        "BackupPlanVersion":{
+          "shape":"String",
+          "documentation":"<p>Unique, randomly generated, Unicode, UTF-8 encoded strings that are at most 1,024 bytes long. Version IDs cannot be edited.</p>"
+        },
+        "BackupRuleId":{
+          "shape":"String",
+          "documentation":"<p>Uniquely identifies the backup rule that initiated the scan job.</p>"
+        }
+      },
+      "documentation":"<p>Contains identifying information about the creation of a scan job, including the backup plan and rule that initiated the scan.</p>"
+    },
+    "ScanJobState":{
+      "type":"string",
+      "enum":[
+        "COMPLETED",
+        "COMPLETED_WITH_ISSUES",
+        "FAILED",
+        "CANCELED"
+      ]
+    },
+    "ScanJobStatus":{
+      "type":"string",
+      "enum":[
+        "CREATED",
+        "COMPLETED",
+        "COMPLETED_WITH_ISSUES",
+        "RUNNING",
+        "FAILED",
+        "CANCELED",
+        "AGGREGATE_ALL",
+        "ANY"
+      ]
+    },
+    "ScanJobSummary":{
+      "type":"structure",
+      "members":{
+        "Region":{
+          "shape":"Region",
+          "documentation":"<p>The Amazon Web Services Region where the scan jobs were executed.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID that owns the scan jobs included in this summary.</p>"
+        },
+        "State":{
+          "shape":"ScanJobStatus",
+          "documentation":"<p>The state of the scan jobs included in this summary.</p> <p>Valid values: <code>CREATED</code> | <code>RUNNING</code> | <code>COMPLETED</code> | <code>COMPLETED_WITH_ISSUES</code> | <code>FAILED</code> | <code>CANCELED</code>.</p>"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of Amazon Web Services resource for the scan jobs included in this summary.</p>"
+        },
+        "Count":{
+          "shape":"integer",
+          "documentation":"<p>The number of scan jobs that match the specified criteria.</p>"
+        },
+        "StartTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The value of time in number format of a job start time.</p> <p>This value is the time in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "EndTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The value of time in number format of a job end time.</p> <p>This value is the time in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "MalwareScanner":{
+          "shape":"MalwareScanner",
+          "documentation":"<p>Specifies the malware scanner used during the scan job. Currently only supports <code>GUARDDUTY</code>.</p>"
+        },
+        "ScanResultStatus":{
+          "shape":"ScanResultStatus",
+          "documentation":"<p>The scan result status for the scan jobs included in this summary.</p> <p>Valid values: <code>THREATS_FOUND</code> | <code>NO_THREATS_FOUND</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about scan jobs, including counts and metadata for a specific time period and criteria.</p>"
+    },
+    "ScanJobSummaryList":{
+      "type":"list",
+      "member":{"shape":"ScanJobSummary"}
+    },
+    "ScanJobs":{
+      "type":"list",
+      "member":{"shape":"ScanJob"}
+    },
+    "ScanMode":{
+      "type":"string",
+      "enum":[
+        "FULL_SCAN",
+        "INCREMENTAL_SCAN"
+      ]
+    },
+    "ScanResourceType":{
+      "type":"string",
+      "enum":[
+        "EBS",
+        "EC2",
+        "S3"
+      ]
+    },
+    "ScanResult":{
+      "type":"structure",
+      "members":{
+        "MalwareScanner":{
+          "shape":"MalwareScanner",
+          "documentation":"<p>The malware scanner used to perform the scan. Currently only <code>GUARDDUTY</code> is supported.</p>"
+        },
+        "ScanJobState":{
+          "shape":"ScanJobState",
+          "documentation":"<p>The final state of the scan job.</p> <p>Valid values: <code>COMPLETED</code> | <code>FAILED</code> | <code>CANCELED</code>.</p>"
+        },
+        "LastScanTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the last scan was performed, in Unix format and Coordinated Universal Time (UTC).</p>"
+        },
+        "Findings":{
+          "shape":"ScanFindings",
+          "documentation":"<p>An array of findings discovered during the scan.</p>"
+        }
+      },
+      "documentation":"<p>Contains the results of a security scan, including scanner information, scan state, and any findings discovered.</p>"
+    },
+    "ScanResultInfo":{
+      "type":"structure",
+      "required":["ScanResultStatus"],
+      "members":{
+        "ScanResultStatus":{
+          "shape":"ScanResultStatus",
+          "documentation":"<p>The status of the scan results.</p> <p>Valid values: <code>THREATS_FOUND</code> | <code>NO_THREATS_FOUND</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the results of a scan job.</p>"
+    },
+    "ScanResultStatus":{
+      "type":"string",
+      "enum":[
+        "NO_THREATS_FOUND",
+        "THREATS_FOUND"
+      ]
+    },
+    "ScanResults":{
+      "type":"list",
+      "member":{"shape":"ScanResult"},
+      "max":5,
+      "min":0
+    },
+    "ScanSetting":{
+      "type":"structure",
+      "members":{
+        "MalwareScanner":{
+          "shape":"MalwareScanner",
+          "documentation":"<p>The malware scanner to use for scanning. Currently only <code>GUARDDUTY</code> is supported.</p>"
+        },
+        "ResourceTypes":{
+          "shape":"ResourceTypes",
+          "documentation":"<p>An array of resource types to be scanned for malware.</p>"
+        },
+        "ScannerRoleArn":{
+          "shape":"IAMRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the scanner uses to access resources; for example, <code>arn:aws:iam::123456789012:role/ScannerRole</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration settings for malware scanning, including the scanner type, target resource types, and scanner role.</p>"
+    },
+    "ScanSettings":{
+      "type":"list",
+      "member":{"shape":"ScanSetting"}
+    },
+    "ScanState":{
+      "type":"string",
+      "enum":[
+        "CANCELED",
+        "COMPLETED",
+        "COMPLETED_WITH_ISSUES",
+        "CREATED",
+        "FAILED",
+        "RUNNING"
+      ]
+    },
     "ScheduledPlanExecutionMember":{
       "type":"structure",
       "members":{
@@ -8156,6 +8874,68 @@
         }
       }
     },
+    "StartScanJobInput":{
+      "type":"structure",
+      "required":[
+        "BackupVaultName",
+        "IamRoleArn",
+        "MalwareScanner",
+        "RecoveryPointArn",
+        "ScanMode",
+        "ScannerRoleArn"
+      ],
+      "members":{
+        "BackupVaultName":{
+          "shape":"String",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p> <p>Pattern: <code>^[a-zA-Z0-9\\-\\_]{2,50}$</code> </p>"
+        },
+        "IamRoleArn":{
+          "shape":"String",
+          "documentation":"<p>Specifies the IAM role ARN used to create the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.</p>"
+        },
+        "IdempotencyToken":{
+          "shape":"String",
+          "documentation":"<p>A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>StartScanJob</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.</p>"
+        },
+        "MalwareScanner":{
+          "shape":"MalwareScanner",
+          "documentation":"<p>Specifies the malware scanner used during the scan job. Currently only supports <code>GUARDDUTY</code>.</p>"
+        },
+        "RecoveryPointArn":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a recovery point. This is your target recovery point for a full scan. If you are running an incremental scan, this will be your a recovery point which has been created after your base recovery point selection.</p>"
+        },
+        "ScanBaseRecoveryPointArn":{
+          "shape":"String",
+          "documentation":"<p>An ARN that uniquely identifies the base recovery point to be used for incremental scanning.</p>"
+        },
+        "ScanMode":{
+          "shape":"ScanMode",
+          "documentation":"<p>Specifies the scan type use for the scan job.</p> <p>Includes:</p> <ul> <li> <p> <code>FULL_SCAN</code> will scan the entire data lineage within the backup.</p> </li> <li> <p> <code>INCREMENTAL_SCAN</code> will scan the data difference between the target recovery point and base recovery point ARN.</p> </li> </ul>"
+        },
+        "ScannerRoleArn":{
+          "shape":"String",
+          "documentation":"<p>Specified the IAM scanner role ARN.</p>"
+        }
+      }
+    },
+    "StartScanJobOutput":{
+      "type":"structure",
+      "required":[
+        "CreationDate",
+        "ScanJobId"
+      ],
+      "members":{
+        "CreationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that a backup job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "ScanJobId":{
+          "shape":"String",
+          "documentation":"<p>Uniquely identifies a request to Backup to back up a resource.</p>"
+        }
+      }
+    },
     "StopBackupJobInput":{
       "type":"structure",
       "required":["BackupJobId"],
@@ -8391,6 +9171,10 @@
         "AdvancedBackupSettings":{
           "shape":"AdvancedBackupSettings",
           "documentation":"<p>Contains a list of <code>BackupOptions</code> for each resource type.</p>"
+        },
+        "ScanSettings":{
+          "shape":"ScanSettings",
+          "documentation":"<p>Contains your scanning configuration for the backup plan and includes the Malware scanner, your selected resources, and scanner role.</p>"
         }
       }
     },

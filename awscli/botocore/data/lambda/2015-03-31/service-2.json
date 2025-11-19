@@ -1457,7 +1457,7 @@
         },
         "InvokedViaFunctionUrl":{
           "shape":"InvokedViaFunctionUrl",
-          "documentation":"<p>Restricts the <code>lambda:InvokeFunction</code> action to function URL calls. When set to <code>true</code>, this prevents the principal from invoking the function by any means other than the function URL. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\">Control access to Lambda function URLs</a>.</p>"
+          "documentation":"<p>Restricts the <code>lambda:InvokeFunction</code> action to function URL calls. When specified, this option prevents the principal from invoking the function by any means other than the function URL. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\">Control access to Lambda function URLs</a>.</p>"
         }
       }
     },
@@ -1960,7 +1960,7 @@
         },
         "ProvisionedPollerConfig":{
           "shape":"ProvisionedPollerConfig",
-          "documentation":"<p>(Amazon MSK and self-managed Apache Kafka only) The provisioned mode configuration for the event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html#invocation-eventsourcemapping-provisioned-mode\">provisioned mode</a>.</p>"
+          "documentation":"<p>(Amazon SQS, Amazon MSK, and self-managed Apache Kafka only) The provisioned mode configuration for the event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html#invocation-eventsourcemapping-provisioned-mode\">provisioned mode</a>.</p>"
         }
       }
     },
@@ -2067,6 +2067,10 @@
         "LoggingConfig":{
           "shape":"LoggingConfig",
           "documentation":"<p>The function's Amazon CloudWatch Logs configuration settings.</p>"
+        },
+        "TenancyConfig":{
+          "shape":"TenancyConfig",
+          "documentation":"<p>Configuration for multi-tenant applications that use Lambda functions. Defines tenant isolation settings and resource allocations. Required for functions supporting multiple tenants.</p>"
         }
       }
     },
@@ -2696,7 +2700,7 @@
         },
         "ProvisionedPollerConfig":{
           "shape":"ProvisionedPollerConfig",
-          "documentation":"<p>(Amazon MSK and self-managed Apache Kafka only) The provisioned mode configuration for the event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html#invocation-eventsourcemapping-provisioned-mode\">provisioned mode</a>.</p>"
+          "documentation":"<p>(Amazon SQS, Amazon MSK, and self-managed Apache Kafka only) The provisioned mode configuration for the event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html#invocation-eventsourcemapping-provisioned-mode\">provisioned mode</a>.</p>"
         }
       },
       "documentation":"<p>A mapping between an Amazon Web Services resource and a Lambda function. For details, see <a>CreateEventSourceMapping</a>.</p>"
@@ -3036,6 +3040,10 @@
         "LoggingConfig":{
           "shape":"LoggingConfig",
           "documentation":"<p>The function's Amazon CloudWatch Logs configuration settings.</p>"
+        },
+        "TenancyConfig":{
+          "shape":"TenancyConfig",
+          "documentation":"<p>The function's tenant isolation configuration settings. Determines whether the Lambda function runs on a shared or dedicated infrastructure per unique tenant.</p>"
         }
       },
       "documentation":"<p>Details about a function's configuration.</p>"
@@ -3858,6 +3866,12 @@
           "documentation":"<p>Specify a version or alias to invoke a published version of the function.</p>",
           "location":"querystring",
           "locationName":"Qualifier"
+        },
+        "TenantId":{
+          "shape":"TenantId",
+          "documentation":"<p>The identifier of the tenant in a multi-tenant Lambda function.</p>",
+          "location":"header",
+          "locationName":"X-Amz-Tenant-Id"
         }
       },
       "payload":"Payload"
@@ -4011,6 +4025,12 @@
         "Payload":{
           "shape":"Blob",
           "documentation":"<p>The JSON that you want to provide to your Lambda function as input.</p> <p>You can enter the JSON directly. For example, <code>--payload '{ \"key\": \"value\" }'</code>. You can also specify a file path. For example, <code>--payload file://payload.json</code>.</p>"
+        },
+        "TenantId":{
+          "shape":"TenantId",
+          "documentation":"<p>The identifier of the tenant in a multi-tenant Lambda function.</p>",
+          "location":"header",
+          "locationName":"X-Amz-Tenant-Id"
         }
       },
       "payload":"Payload"
@@ -5177,14 +5197,14 @@
       "members":{
         "MinimumPollers":{
           "shape":"MinimumNumberOfPollers",
-          "documentation":"<p>The minimum number of event pollers this event source can scale down to.</p>"
+          "documentation":"<p>The minimum number of event pollers this event source can scale down to. For Amazon SQS events source mappings, default is 2, and minimum 2 required. For Amazon MSK and self-managed Apache Kafka event source mappings, default is 1.</p>"
         },
         "MaximumPollers":{
           "shape":"MaximumNumberOfPollers",
-          "documentation":"<p>The maximum number of event pollers this event source can scale up to.</p>"
+          "documentation":"<p>The maximum number of event pollers this event source can scale up to. For Amazon SQS events source mappings, default is 200, and minimum value allowed is 2. For Amazon MSK and self-managed Apache Kafka event source mappings, default is 200, and minimum value allowed is 1.</p>"
         }
       },
-      "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html#invocation-eventsourcemapping-provisioned-mode\"> provisioned mode</a> configuration for the event source. Use Provisioned Mode to customize the minimum and maximum number of event pollers for your event source. An event poller is a compute unit that provides approximately 5 MBps of throughput.</p>"
+      "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html#invocation-eventsourcemapping-provisioned-mode\"> provisioned mode</a> configuration for the event source. Use Provisioned Mode to customize the minimum and maximum number of event pollers for your event source.</p>"
     },
     "PublishLayerVersionRequest":{
       "type":"structure",
@@ -5754,9 +5774,9 @@
         "java21",
         "python3.13",
         "nodejs22.x",
-        "java25",
         "nodejs24.x",
-        "python3.14"
+        "python3.14",
+        "java25"
       ]
     },
     "RuntimeVersionArn":{
@@ -6160,6 +6180,27 @@
       "min":84,
       "pattern":".*"
     },
+    "TenancyConfig":{
+      "type":"structure",
+      "required":["TenantIsolationMode"],
+      "members":{
+        "TenantIsolationMode":{
+          "shape":"TenantIsolationMode",
+          "documentation":"<p>Tenant isolation mode allows for invocation to be sent to a corresponding execution environment dedicated to a specific tenant ID.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the tenant isolation mode configuration for a Lambda function. This allows you to configure specific tenant isolation strategies for your function invocations. Tenant isolation configuration cannot be modified after function creation.</p>"
+    },
+    "TenantId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\._:\\/=+\\-@ ]+"
+    },
+    "TenantIsolationMode":{
+      "type":"string",
+      "enum":["PER_TENANT"]
+    },
     "ThrottleReason":{
       "type":"string",
       "enum":[
@@ -6446,7 +6487,7 @@
         },
         "ProvisionedPollerConfig":{
           "shape":"ProvisionedPollerConfig",
-          "documentation":"<p>(Amazon MSK and self-managed Apache Kafka only) The provisioned mode configuration for the event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html#invocation-eventsourcemapping-provisioned-mode\">provisioned mode</a>.</p>"
+          "documentation":"<p>(Amazon SQS, Amazon MSK, and self-managed Apache Kafka only) The provisioned mode configuration for the event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html#invocation-eventsourcemapping-provisioned-mode\">provisioned mode</a>.</p>"
         }
       }
     },

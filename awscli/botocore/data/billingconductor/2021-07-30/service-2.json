@@ -307,7 +307,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves the margin summary report, which includes the Amazon Web Services cost and charged amount (pro forma cost) by Amazon Web Services service for a specific billing group.</p>"
+      "documentation":"<p>Retrieves the margin summary report, which includes the Amazon Web Services cost and charged amount (pro forma cost) by Amazon Web Services service for a specific billing group.</p>",
+      "readonly":true
     },
     "ListAccountAssociations":{
       "name":"ListAccountAssociations",
@@ -325,7 +326,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> This is a paginated call to list linked accounts that are linked to the payer account for the specified time period. If no information is provided, the current billing period is used. The response will optionally include the billing group that's associated with the linked account.</p>"
+      "documentation":"<p> This is a paginated call to list linked accounts that are linked to the payer account for the specified time period. If no information is provided, the current billing period is used. The response will optionally include the billing group that's associated with the linked account.</p>",
+      "readonly":true
     },
     "ListBillingGroupCostReports":{
       "name":"ListBillingGroupCostReports",
@@ -343,7 +345,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>A paginated call to retrieve a summary report of actual Amazon Web Services charges and the calculated Amazon Web Services charges based on the associated pricing plan of a billing group.</p>"
+      "documentation":"<p>A paginated call to retrieve a summary report of actual Amazon Web Services charges and the calculated Amazon Web Services charges based on the associated pricing plan of a billing group.</p>",
+      "readonly":true
     },
     "ListBillingGroups":{
       "name":"ListBillingGroups",
@@ -361,7 +364,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>A paginated call to retrieve a list of billing groups for the given billing period. If you don't provide a billing group, the current billing period is used.</p>"
+      "documentation":"<p>A paginated call to retrieve a list of billing groups for the given billing period. If you don't provide a billing group, the current billing period is used.</p>",
+      "readonly":true
     },
     "ListCustomLineItemVersions":{
       "name":"ListCustomLineItemVersions",
@@ -378,7 +382,8 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>A paginated call to get a list of all custom line item versions.</p>"
+      "documentation":"<p>A paginated call to get a list of all custom line item versions.</p>",
+      "readonly":true
     },
     "ListCustomLineItems":{
       "name":"ListCustomLineItems",
@@ -396,7 +401,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> A paginated call to get a list of all custom line items (FFLIs) for the given billing period. If you don't provide a billing period, the current billing period is used. </p>"
+      "documentation":"<p> A paginated call to get a list of all custom line items (FFLIs) for the given billing period. If you don't provide a billing period, the current billing period is used. </p>",
+      "readonly":true
     },
     "ListPricingPlans":{
       "name":"ListPricingPlans",
@@ -413,7 +419,8 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>A paginated call to get pricing plans for the given billing period. If you don't provide a billing period, the current billing period is used. </p>"
+      "documentation":"<p>A paginated call to get pricing plans for the given billing period. If you don't provide a billing period, the current billing period is used. </p>",
+      "readonly":true
     },
     "ListPricingPlansAssociatedWithPricingRule":{
       "name":"ListPricingPlansAssociatedWithPricingRule",
@@ -431,7 +438,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> A list of the pricing plans that are associated with a pricing rule. </p>"
+      "documentation":"<p> A list of the pricing plans that are associated with a pricing rule. </p>",
+      "readonly":true
     },
     "ListPricingRules":{
       "name":"ListPricingRules",
@@ -448,7 +456,8 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Describes a pricing rule that can be associated to a pricing plan, or set of pricing plans. </p>"
+      "documentation":"<p> Describes a pricing rule that can be associated to a pricing plan, or set of pricing plans. </p>",
+      "readonly":true
     },
     "ListPricingRulesAssociatedToPricingPlan":{
       "name":"ListPricingRulesAssociatedToPricingPlan",
@@ -466,7 +475,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Lists the pricing rules that are associated with a pricing plan. </p>"
+      "documentation":"<p> Lists the pricing rules that are associated with a pricing plan. </p>",
+      "readonly":true
     },
     "ListResourcesAssociatedToCustomLineItem":{
       "name":"ListResourcesAssociatedToCustomLineItem",
@@ -484,7 +494,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> List the resources that are associated to a custom line item. </p>"
+      "documentation":"<p> List the resources that are associated to a custom line item. </p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -667,7 +678,6 @@
     },
     "AccountGrouping":{
       "type":"structure",
-      "required":["LinkedAccountIds"],
       "members":{
         "LinkedAccountIds":{
           "shape":"AccountIdList",
@@ -676,6 +686,10 @@
         "AutoAssociate":{
           "shape":"Boolean",
           "documentation":"<p>Specifies if this billing group will automatically associate newly added Amazon Web Services accounts that join your consolidated billing family.</p>"
+        },
+        "ResponsibilityTransferArn":{
+          "shape":"ResponsibilityTransferArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) that identifies the transfer relationship owned by the Bill Transfer account (caller account). When specified, the PrimaryAccountId is no longer required. </p>"
         }
       },
       "documentation":"<p>The set of accounts that will be under the billing group. The set of accounts resemble the linked accounts in a consolidated billing family.</p>"
@@ -694,7 +708,7 @@
       "type":"list",
       "member":{"shape":"AccountId"},
       "max":30,
-      "min":1
+      "min":0
     },
     "AccountName":{
       "type":"string",
@@ -802,7 +816,7 @@
     },
     "Association":{
       "type":"string",
-      "pattern":"((arn:aws(-cn)?:billingconductor::[0-9]{12}:billinggroup/)?[0-9]{12}|MONITORED|UNMONITORED)"
+      "pattern":"((arn:aws(-cn)?:billingconductor::[0-9]{12}:billinggroup/)?[a-zA-Z0-9]{10,12}|MONITORED|UNMONITORED)"
     },
     "Attribute":{
       "type":"structure",
@@ -1027,6 +1041,10 @@
         "AccountGrouping":{
           "shape":"ListBillingGroupAccountGrouping",
           "documentation":"<p>Specifies if the billing group has automatic account association (<code>AutoAssociate</code>) enabled.</p>"
+        },
+        "BillingGroupType":{
+          "shape":"BillingGroupType",
+          "documentation":"<p> The type of billing group. </p>"
         }
       },
       "documentation":"<p>A representation of a billing group.</p>"
@@ -1042,7 +1060,8 @@
       "type":"string",
       "enum":[
         "ACTIVE",
-        "PRIMARY_ACCOUNT_MISSING"
+        "PRIMARY_ACCOUNT_MISSING",
+        "PENDING"
       ]
     },
     "BillingGroupStatusList":{
@@ -1052,6 +1071,19 @@
       "min":1
     },
     "BillingGroupStatusReason":{"type":"string"},
+    "BillingGroupType":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "TRANSFER_BILLING"
+      ]
+    },
+    "BillingGroupTypeList":{
+      "type":"list",
+      "member":{"shape":"BillingGroupType"},
+      "max":2,
+      "min":1
+    },
     "BillingPeriod":{
       "type":"string",
       "pattern":"\\d{4}-(0?[1-9]|1[012])"
@@ -1233,8 +1265,14 @@
           "shape":"AccountId",
           "documentation":"<p>The Amazon Web Services account in which this custom line item will be applied to.</p>"
         },
-        "ComputationRule":{"shape":"ComputationRuleEnum"},
-        "PresentationDetails":{"shape":"PresentationObject"}
+        "ComputationRule":{
+          "shape":"ComputationRuleEnum",
+          "documentation":"<p> Specifies how the custom line item charges are computed. </p>"
+        },
+        "PresentationDetails":{
+          "shape":"PresentationObject",
+          "documentation":"<p> Details controlling how the custom line item charges are presented in the bill. Contains specifications for which service the charges will be shown under. </p>"
+        }
       }
     },
     "CreateCustomLineItemOutput":{
@@ -1530,11 +1568,11 @@
         },
         "ComputationRule":{
           "shape":"ComputationRuleEnum",
-          "documentation":"<p>The display settings of the custom line item</p>"
+          "documentation":"<p> The computation rule that determines how the custom line item charges are computed and reflected in the bill. </p>"
         },
         "PresentationDetails":{
           "shape":"PresentationObject",
-          "documentation":"<p>The presentation configuration of the custom line item</p>"
+          "documentation":"<p> Configuration details specifying how the custom line item charges are presented, including which service the charges are shown under. </p>"
         }
       },
       "documentation":"<p>A representation of a custom line item.</p>"
@@ -1654,11 +1692,11 @@
         },
         "ComputationRule":{
           "shape":"ComputationRuleEnum",
-          "documentation":"<p>The display settings of the custom line item</p>"
+          "documentation":"<p> The computation rule for a specific version of a custom line item, determining how charges are computed and reflected in the bill. </p>"
         },
         "PresentationDetails":{
           "shape":"PresentationObject",
-          "documentation":"<p>The presentation configuration of the custom line item</p>"
+          "documentation":"<p> Presentation configuration for a specific version of a custom line item, specifying how charges are displayed in the bill. </p>"
         }
       },
       "documentation":"<p>A representation of a custom line item version.</p>"
@@ -1907,10 +1945,10 @@
         },
         "Values":{
           "shape":"LineItemFilterValuesList",
-          "documentation":"<p>The values of the line item filter. This specifies the values to filter on. Currently, you can only exclude Savings Plan discounts.</p>"
+          "documentation":"<p>The values of the line item filter. This specifies the values to filter on. Currently, you can only exclude Savings Plans discounts.</p>"
         }
       },
-      "documentation":"<p>A representation of the line item filter for your custom line item. You can use line item filters to include or exclude specific resource values from the billing group's total cost. For example, if you create a custom line item and you want to filter out a value, such as Savings Plan discounts, you can update <code>LineItemFilter</code> to exclude it.</p>"
+      "documentation":"<p>A representation of the line item filter for your custom line item. You can use line item filters to include or exclude specific resource values from the billing group's total cost. For example, if you create a custom line item and you want to filter out a value, such as Savings Plans discounts, you can update <code>LineItemFilter</code> to exclude it.</p>"
     },
     "LineItemFilterAttributeName":{
       "type":"string",
@@ -1924,7 +1962,7 @@
       "type":"list",
       "member":{"shape":"LineItemFilterValue"},
       "max":1,
-      "min":1
+      "min":0
     },
     "LineItemFiltersList":{
       "type":"list",
@@ -1986,6 +2024,10 @@
         "AutoAssociate":{
           "shape":"Boolean",
           "documentation":"<p>Specifies if this billing group will automatically associate newly added Amazon Web Services accounts that join your consolidated billing family.</p>"
+        },
+        "ResponsibilityTransferArn":{
+          "shape":"ResponsibilityTransferArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) that identifies the transfer relationship for the billing group. </p>"
         }
       },
       "documentation":"<p>Specifies if the billing group has the following features enabled.</p>"
@@ -2052,6 +2094,22 @@
         "AutoAssociate":{
           "shape":"Boolean",
           "documentation":"<p>Specifies if this billing group will automatically associate newly added Amazon Web Services accounts that join your consolidated billing family.</p>"
+        },
+        "PrimaryAccountIds":{
+          "shape":"PrimaryAccountIdList",
+          "documentation":"<p> A list of primary account IDs to filter the billing groups. </p>"
+        },
+        "BillingGroupTypes":{
+          "shape":"BillingGroupTypeList",
+          "documentation":"<p> Filter billing groups by their type. </p>"
+        },
+        "Names":{
+          "shape":"StringSearches",
+          "documentation":"<p> Filter billing groups by their names. </p>"
+        },
+        "ResponsibilityTransferArns":{
+          "shape":"ResponsibilityTransferArnsList",
+          "documentation":"<p> Filter billing groups by their responsibility transfer ARNs. </p>"
         }
       },
       "documentation":"<p>The filter that specifies the billing groups and pricing plans to retrieve billing group information.</p>"
@@ -2597,10 +2655,10 @@
       "members":{
         "Service":{
           "shape":"Service",
-          "documentation":"<p>This defines the service of where the custom line item is presented</p>"
+          "documentation":"<p> The service under which the custom line item charges will be presented. Must be a string between 1 and 128 characters matching the pattern \"<code>^[a-zA-Z0-9]+$</code>\". </p>"
         }
       },
-      "documentation":"<p>The presentation configuration of the custom line item</p>"
+      "documentation":"<p> An object that defines how custom line item charges are presented in the bill, containing specifications for service presentation. </p>"
     },
     "PricingPlanArn":{
       "type":"string",
@@ -2781,6 +2839,12 @@
         "TIERING"
       ]
     },
+    "PrimaryAccountIdList":{
+      "type":"list",
+      "member":{"shape":"AccountId"},
+      "max":100,
+      "min":1
+    },
     "ProformaCost":{"type":"string"},
     "ResourceNotFoundException":{
       "type":"structure",
@@ -2807,7 +2871,27 @@
       },
       "exception":true
     },
+    "ResponsibilityTransferArn":{
+      "type":"string",
+      "pattern":"arn:[a-z0-9][a-z0-9-.]{0,62}:organizations::\\d{12}:transfer/o-[a-z0-9]{10,32}/(billing)/(inbound|outbound)/rt-[0-9a-z]{8,32}"
+    },
+    "ResponsibilityTransferArnsList":{
+      "type":"list",
+      "member":{"shape":"ResponsibilityTransferArn"},
+      "max":30,
+      "min":1
+    },
     "RetryAfterSeconds":{"type":"integer"},
+    "SearchOption":{
+      "type":"string",
+      "enum":["STARTS_WITH"]
+    },
+    "SearchValue":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_\\+=\\.\\-@ ]+"
+    },
     "Service":{
       "type":"string",
       "max":128,
@@ -2848,6 +2932,30 @@
       "exception":true
     },
     "String":{"type":"string"},
+    "StringSearch":{
+      "type":"structure",
+      "required":[
+        "SearchOption",
+        "SearchValue"
+      ],
+      "members":{
+        "SearchOption":{
+          "shape":"SearchOption",
+          "documentation":"<p> The search option to be applied when performing the string search. </p>"
+        },
+        "SearchValue":{
+          "shape":"SearchValue",
+          "documentation":"<p> The value to search for within the specified string field. </p>"
+        }
+      },
+      "documentation":"<p> A structure that defines string search parameters. </p>"
+    },
+    "StringSearches":{
+      "type":"list",
+      "member":{"shape":"StringSearch"},
+      "max":1,
+      "min":1
+    },
     "TagKey":{
       "type":"string",
       "max":128,
@@ -2960,6 +3068,10 @@
         "AutoAssociate":{
           "shape":"Boolean",
           "documentation":"<p>Specifies if this billing group will automatically associate newly added Amazon Web Services accounts that join your consolidated billing family.</p>"
+        },
+        "ResponsibilityTransferArn":{
+          "shape":"ResponsibilityTransferArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) that identifies the transfer relationship. Note: Modifications to the ResponsibilityTransferArn are not permitted for existing billing groups. </p>"
         }
       },
       "documentation":"<p>Specifies if the billing group has the following features enabled.</p>"
@@ -3391,6 +3503,7 @@
         "ILLEGAL_BILLING_ENTITY",
         "ILLEGAL_MODIFIER_PERCENTAGE",
         "ILLEGAL_TYPE",
+        "ILLEGAL_BILLING_GROUP_TYPE",
         "ILLEGAL_ENDED_BILLINGGROUP",
         "ILLEGAL_TIERING_INPUT",
         "ILLEGAL_OPERATION",

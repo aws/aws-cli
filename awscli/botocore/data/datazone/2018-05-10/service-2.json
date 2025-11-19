@@ -140,6 +140,46 @@
       ],
       "documentation":"<p>Associates governed terms with an asset.</p>"
     },
+    "BatchGetAttributesMetadata":{
+      "name":"BatchGetAttributesMetadata",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/attributes-metadata",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetAttributesMetadataInput"},
+      "output":{"shape":"BatchGetAttributesMetadataOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Gets the attribute metadata.</p>"
+    },
+    "BatchPutAttributesMetadata":{
+      "name":"BatchPutAttributesMetadata",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/attributes-metadata",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchPutAttributesMetadataInput"},
+      "output":{"shape":"BatchPutAttributesMetadataOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Writes the attribute metadata.</p>",
+      "idempotent":true
+    },
     "CancelMetadataGenerationRun":{
       "name":"CancelMetadataGenerationRun",
       "http":{
@@ -3287,6 +3327,27 @@
       "documentation":"<p>Updates a project profile.</p>",
       "idempotent":true
     },
+    "UpdateRootDomainUnitOwner":{
+      "name":"UpdateRootDomainUnitOwner",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v2/domains/{domainIdentifier}/root-domain-unit-owner",
+        "responseCode":204
+      },
+      "input":{"shape":"UpdateRootDomainUnitOwnerInput"},
+      "output":{"shape":"UpdateRootDomainUnitOwnerOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Updates the owner of the root domain unit.</p>",
+      "idempotent":true
+    },
     "UpdateRule":{
       "name":"UpdateRule",
       "http":{
@@ -4722,6 +4783,75 @@
       "max":128,
       "min":1
     },
+    "AttributeEntityType":{
+      "type":"string",
+      "enum":[
+        "ASSET",
+        "LISTING"
+      ]
+    },
+    "AttributeError":{
+      "type":"structure",
+      "required":[
+        "attributeIdentifier",
+        "code",
+        "message"
+      ],
+      "members":{
+        "attributeIdentifier":{
+          "shape":"AttributeIdentifier",
+          "documentation":"<p>The attribute ID as part of the attribute error.</p>"
+        },
+        "code":{
+          "shape":"String",
+          "documentation":"<p>The code generated as part of the attribute error.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The message generated as part of the attribute error.</p>"
+        }
+      },
+      "documentation":"<p>The attribute error.</p>"
+    },
+    "AttributeIdentifier":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "AttributeInput":{
+      "type":"structure",
+      "required":[
+        "attributeIdentifier",
+        "forms"
+      ],
+      "members":{
+        "attributeIdentifier":{
+          "shape":"AttributeIdentifier",
+          "documentation":"<p>The ID of the attribute.</p>"
+        },
+        "forms":{
+          "shape":"FormInputList",
+          "documentation":"<p>The metadata forms as part of the attribute input.</p>"
+        }
+      },
+      "documentation":"<p>The attribute input.</p>"
+    },
+    "Attributes":{
+      "type":"list",
+      "member":{"shape":"AttributeInput"},
+      "max":5,
+      "min":0
+    },
+    "AttributesErrors":{
+      "type":"list",
+      "member":{"shape":"AttributeError"}
+    },
+    "AttributesList":{
+      "type":"list",
+      "member":{"shape":"AttributeIdentifier"},
+      "max":5,
+      "min":1
+    },
     "AuthType":{
       "type":"string",
       "enum":[
@@ -4946,6 +5076,146 @@
       "max":512,
       "min":0,
       "pattern":"^\\S+$"
+    },
+    "BatchGetAttributeItems":{
+      "type":"list",
+      "member":{"shape":"BatchGetAttributeOutput"}
+    },
+    "BatchGetAttributeOutput":{
+      "type":"structure",
+      "required":["attributeIdentifier"],
+      "members":{
+        "attributeIdentifier":{
+          "shape":"AttributeIdentifier",
+          "documentation":"<p>The attribute ID.</p>"
+        },
+        "forms":{
+          "shape":"FormOutputList",
+          "documentation":"<p>The metadata forms that are part of the results of the BatchGetAttribute action.</p>"
+        }
+      },
+      "documentation":"<p>The results of the BatchGetAttribute action.</p>"
+    },
+    "BatchGetAttributesMetadataInput":{
+      "type":"structure",
+      "required":[
+        "attributeIdentifiers",
+        "domainIdentifier",
+        "entityIdentifier",
+        "entityType"
+      ],
+      "members":{
+        "attributeIdentifiers":{
+          "shape":"AttributesList",
+          "documentation":"<p>The attribute identifier.</p>",
+          "location":"querystring",
+          "locationName":"attributeIdentifier"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The domain ID where you want to get the attribute metadata.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "entityIdentifier":{
+          "shape":"EntityId",
+          "documentation":"<p>The entity ID for which you want to get attribute metadata.</p>",
+          "location":"uri",
+          "locationName":"entityIdentifier"
+        },
+        "entityRevision":{
+          "shape":"Revision",
+          "documentation":"<p>The entity revision for which you want to get attribute metadata.</p>",
+          "location":"querystring",
+          "locationName":"entityRevision"
+        },
+        "entityType":{
+          "shape":"AttributeEntityType",
+          "documentation":"<p>The entity type for which you want to get attribute metadata.</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        }
+      }
+    },
+    "BatchGetAttributesMetadataOutput":{
+      "type":"structure",
+      "required":["errors"],
+      "members":{
+        "attributes":{
+          "shape":"BatchGetAttributeItems",
+          "documentation":"<p>The results of the BatchGetAttributesMetadata action.</p>"
+        },
+        "errors":{
+          "shape":"AttributesErrors",
+          "documentation":"<p>The errors generated when the BatchGetAttributesMetadata action is invoked.</p>"
+        }
+      }
+    },
+    "BatchPutAttributeItems":{
+      "type":"list",
+      "member":{"shape":"BatchPutAttributeOutput"}
+    },
+    "BatchPutAttributeOutput":{
+      "type":"structure",
+      "required":["attributeIdentifier"],
+      "members":{
+        "attributeIdentifier":{
+          "shape":"AttributeIdentifier",
+          "documentation":"<p>The attribute ID.</p>"
+        }
+      },
+      "documentation":"<p>The results of the BatchPutAttribute action.</p>"
+    },
+    "BatchPutAttributesMetadataInput":{
+      "type":"structure",
+      "required":[
+        "attributes",
+        "domainIdentifier",
+        "entityIdentifier",
+        "entityType"
+      ],
+      "members":{
+        "attributes":{
+          "shape":"Attributes",
+          "documentation":"<p>The attributes of the metadata.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request. This field is automatically populated if not provided.</p>",
+          "idempotencyToken":true
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The domain ID where you want to write the attribute metadata.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "entityIdentifier":{
+          "shape":"EntityId",
+          "documentation":"<p>The entity ID for which you want to write the attribute metadata.</p>",
+          "location":"uri",
+          "locationName":"entityIdentifier"
+        },
+        "entityType":{
+          "shape":"AttributeEntityType",
+          "documentation":"<p>The entity type for which you want to write the attribute metadata.</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        }
+      }
+    },
+    "BatchPutAttributesMetadataOutput":{
+      "type":"structure",
+      "members":{
+        "attributes":{
+          "shape":"BatchPutAttributeItems",
+          "documentation":"<p>The results of the BatchPutAttributeMetadata action.</p>"
+        },
+        "errors":{
+          "shape":"AttributesErrors",
+          "documentation":"<p>The errors generated when the BatchPutAttributeMetadata action is invoked.</p>"
+        }
+      }
     },
     "Boolean":{
       "type":"boolean",
@@ -14283,9 +14553,25 @@
         "ENABLED"
       ]
     },
+    "GlossaryTermEnforcementDetail":{
+      "type":"structure",
+      "members":{
+        "requiredGlossaryTermIds":{
+          "shape":"GlossaryTermIdentifiers",
+          "documentation":"<p>The ID of the required glossary term.</p>"
+        }
+      },
+      "documentation":"<p>The enforcement details of a glossary term.</p>"
+    },
     "GlossaryTermId":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
+    "GlossaryTermIdentifiers":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermId"},
+      "max":5,
+      "min":1
     },
     "GlossaryTermItem":{
       "type":"structure",
@@ -15013,7 +15299,7 @@
           "documentation":"<p>The principal ID as part of the IAM user profile details.</p>"
         }
       },
-      "documentation":"<p/>"
+      "documentation":"<p>The details of the IAM user profile.</p>"
     },
     "Import":{
       "type":"structure",
@@ -20187,6 +20473,10 @@
     "RuleDetail":{
       "type":"structure",
       "members":{
+        "glossaryTermEnforcementDetail":{
+          "shape":"GlossaryTermEnforcementDetail",
+          "documentation":"<p>The enforcement details of a glossary term that's part of the metadata rule.</p>"
+        },
         "metadataFormEnforcementDetail":{
           "shape":"MetadataFormEnforcementDetail",
           "documentation":"<p>The enforcement detail of the metadata form.</p>"
@@ -20303,7 +20593,10 @@
     },
     "RuleType":{
       "type":"string",
-      "enum":["METADATA_FORM_ENFORCEMENT"]
+      "enum":[
+        "METADATA_FORM_ENFORCEMENT",
+        "GLOSSARY_TERM_ENFORCEMENT"
+      ]
     },
     "RunIdentifier":{
       "type":"string",
@@ -24204,6 +24497,39 @@
           "documentation":"<p>The status of the project profile.</p>"
         }
       }
+    },
+    "UpdateRootDomainUnitOwnerInput":{
+      "type":"structure",
+      "required":[
+        "currentOwner",
+        "domainIdentifier",
+        "newOwner"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request. This field is automatically populated if not provided.</p>",
+          "idempotencyToken":true
+        },
+        "currentOwner":{
+          "shape":"UserIdentifier",
+          "documentation":"<p>The current owner of the root domain unit.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the root domain unit owner is to be updated.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "newOwner":{
+          "shape":"String",
+          "documentation":"<p>The new owner of the root domain unit.</p>"
+        }
+      }
+    },
+    "UpdateRootDomainUnitOwnerOutput":{
+      "type":"structure",
+      "members":{}
     },
     "UpdateRuleInput":{
       "type":"structure",

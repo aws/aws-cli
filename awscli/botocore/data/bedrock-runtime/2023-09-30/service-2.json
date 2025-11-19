@@ -505,6 +505,10 @@
           "shape":"String",
           "documentation":"<p>The title or identifier of the source document being cited.</p>"
         },
+        "source":{
+          "shape":"String",
+          "documentation":"<p>The source from the original search result that provided the cited content.</p>"
+        },
         "sourceContent":{
           "shape":"CitationSourceContentList",
           "documentation":"<p>The specific content from the source document that was referenced or cited in the generated response.</p>"
@@ -549,6 +553,10 @@
         "documentChunk":{
           "shape":"DocumentChunkLocation",
           "documentation":"<p>The chunk-level location within the document where the cited content is found, typically used for documents that have been segmented into logical chunks.</p>"
+        },
+        "searchResultLocation":{
+          "shape":"SearchResultLocation",
+          "documentation":"<p>The search result location where the cited content is found, including the search result index and block positions within the content array.</p>"
         }
       },
       "documentation":"<p>Specifies the precise location within a source document where cited content can be found. This can include character-level positions, page numbers, or document chunks depending on the document type and indexing method.</p>",
@@ -619,6 +627,10 @@
           "shape":"String",
           "documentation":"<p>The title or identifier of the source document being cited.</p>"
         },
+        "source":{
+          "shape":"String",
+          "documentation":"<p>The source from the original search result that provided the cited content.</p>"
+        },
         "sourceContent":{
           "shape":"CitationSourceContentListDelta",
           "documentation":"<p>The specific content from the source document that was referenced or cited in the generated response.</p>"
@@ -684,6 +696,10 @@
         "citationsContent":{
           "shape":"CitationsContentBlock",
           "documentation":"<p>A content block that contains both generated text and associated citation information, providing traceability between the response and source documents.</p>"
+        },
+        "searchResult":{
+          "shape":"SearchResultBlock",
+          "documentation":"<p>Search result to include in the message.</p>"
         }
       },
       "documentation":"<p>A block of content for a message that you pass to, or receive from, a model with the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> or <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a> API operations.</p>",
@@ -3510,6 +3526,81 @@
       "min":1,
       "pattern":"s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"
     },
+    "SearchResultBlock":{
+      "type":"structure",
+      "required":[
+        "source",
+        "title",
+        "content"
+      ],
+      "members":{
+        "source":{
+          "shape":"String",
+          "documentation":"<p>The source URL or identifier for the content.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>A descriptive title for the search result.</p>"
+        },
+        "content":{
+          "shape":"SearchResultContentBlocks",
+          "documentation":"<p>An array of search result content block.</p>"
+        },
+        "citations":{
+          "shape":"CitationsConfig",
+          "documentation":"<p>Configuration setting for citations</p>"
+        }
+      },
+      "documentation":"<p>A search result block that enables natural citations with proper source attribution for retrieved content.</p> <note> <p>This field is only supported by Anthropic Claude Opus 4.1, Opus 4, Sonnet 4.5, Sonnet 4, Sonnet 3.7, and 3.5 Haiku models.</p> </note>"
+    },
+    "SearchResultContentBlock":{
+      "type":"structure",
+      "required":["text"],
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p>The actual text content</p>"
+        }
+      },
+      "documentation":"<p>A block within a search result that contains the content.</p>"
+    },
+    "SearchResultContentBlocks":{
+      "type":"list",
+      "member":{"shape":"SearchResultContentBlock"}
+    },
+    "SearchResultLocation":{
+      "type":"structure",
+      "members":{
+        "searchResultIndex":{
+          "shape":"SearchResultLocationSearchResultIndexInteger",
+          "documentation":"<p>The index of the search result content block where the cited content is found.</p>"
+        },
+        "start":{
+          "shape":"SearchResultLocationStartInteger",
+          "documentation":"<p>The starting position in the content array where the cited content begins.</p>"
+        },
+        "end":{
+          "shape":"SearchResultLocationEndInteger",
+          "documentation":"<p>The ending position in the content array where the cited content ends.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a search result location within the content array, providing positioning information for cited content using search result index and block positions.</p>"
+    },
+    "SearchResultLocationEndInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "SearchResultLocationSearchResultIndexInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "SearchResultLocationStartInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -3940,6 +4031,10 @@
         "video":{
           "shape":"VideoBlock",
           "documentation":"<p>A tool result that is video.</p>"
+        },
+        "searchResult":{
+          "shape":"SearchResultBlock",
+          "documentation":"<p>A tool result that is a search result.</p>"
         }
       },
       "documentation":"<p>The tool result content block. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>",

@@ -5221,6 +5221,12 @@
       "documentation":"<p>The query string is not valid. Details about this error are displayed in a <code>QueryCompileError</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_QueryCompileError.html\">QueryCompileError</a>.</p> <p>For more information about valid query syntax, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html\">CloudWatch Logs Insights Query Syntax</a>.</p>",
       "exception":true
     },
+    "MappingVersion":{
+      "type":"string",
+      "max":10,
+      "min":1,
+      "pattern":"^\\d+\\.\\d+(\\.\\d+)?$"
+    },
     "MatchPattern":{
       "type":"string",
       "min":1
@@ -5401,7 +5407,10 @@
     },
     "OCSFVersion":{
       "type":"string",
-      "enum":["V1.1"]
+      "enum":[
+        "V1.1",
+        "V1.5"
+      ]
     },
     "OpenSearchApplication":{
       "type":"structure",
@@ -5800,9 +5809,13 @@
         "ocsfVersion":{
           "shape":"OCSFVersion",
           "documentation":"<p>Specify which version of the OCSF schema to use for the transformed log events.</p>"
+        },
+        "mappingVersion":{
+          "shape":"MappingVersion",
+          "documentation":"<p>Identifies the specific release of the Open Cybersecurity Schema Framework (OCSF) transformer being used to parse OCSF data. Defaults to the latest version if not specified. Does not automatically update.</p>"
         }
       },
-      "documentation":"<p>This processor converts logs into <a href=\"https://ocsf.io\">Open Cybersecurity Schema Framework (OCSF)</a> events.</p> <p>For more information about this processor including examples, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation.html#CloudWatch-Logs-Transformation-parseToOCSF\"> parseToOSCF</a> in the <i>CloudWatch Logs User Guide</i>.</p>"
+      "documentation":"<p>This processor converts logs into <a href=\"https://ocsf.io\">Open Cybersecurity Schema Framework (OCSF)</a> events.</p> <p>For more information about this processor including examples, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation.html#CloudWatch-Logs-Transformation-parseToOCSF\">parseToOCSF</a> in the <i>CloudWatch Logs User Guide</i>.</p>"
     },
     "ParseVPC":{
       "type":"structure",
@@ -6170,7 +6183,7 @@
         },
         "logType":{
           "shape":"LogType",
-          "documentation":"<p>Defines the type of log that the source is sending.</p> <ul> <li> <p>For Amazon Bedrock Agents, the valid values are <code>APPLICATION_LOGS</code> and <code>EVENT_LOGS</code>.</p> </li> <li> <p>For Amazon Bedrock Knowledge Bases, the valid value is <code>APPLICATION_LOGS</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Runtime, the valid values are <code>APPLICATION_LOGS</code>, <code>USAGE_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Tools, the valid values are <code>APPLICATION_LOGS</code>, <code>USAGE_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Identity, the valid values are <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Gateway, the valid values are <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For CloudFront, the valid value is <code>ACCESS_LOGS</code>.</p> </li> <li> <p>For Amazon CodeWhisperer, the valid value is <code>EVENT_LOGS</code>.</p> </li> <li> <p>For Elemental MediaPackage, the valid values are <code>EGRESS_ACCESS_LOGS</code> and <code>INGRESS_ACCESS_LOGS</code>.</p> </li> <li> <p>For Elemental MediaTailor, the valid values are <code>AD_DECISION_SERVER_LOGS</code>, <code>MANIFEST_SERVICE_LOGS</code>, and <code>TRANSCODE_LOGS</code>.</p> </li> <li> <p>For Entity Resolution, the valid value is <code>WORKFLOW_LOGS</code>.</p> </li> <li> <p>For IAM Identity Center, the valid value is <code>ERROR_LOGS</code>.</p> </li> <li> <p>For PCS, the valid values are <code>PCS_SCHEDULER_LOGS</code> and <code>PCS_JOBCOMP_LOGS</code>.</p> </li> <li> <p>For Amazon Q, the valid values are <code>EVENT_LOGS</code> and <code>SYNC_JOB_LOGS</code>.</p> </li> <li> <p>For Amazon SES mail manager, the valid values are <code>APPLICATION_LOGS</code> and <code>TRAFFIC_POLICY_DEBUG_LOGS</code>.</p> </li> <li> <p>For Amazon WorkMail, the valid values are <code>ACCESS_CONTROL_LOGS</code>, <code>AUTHENTICATION_LOGS</code>, <code>WORKMAIL_AVAILABILITY_PROVIDER_LOGS</code>, <code>WORKMAIL_MAILBOX_ACCESS_LOGS</code>, and <code>WORKMAIL_PERSONAL_ACCESS_TOKEN_LOGS</code>.</p> </li> <li> <p>For Amazon VPC Route Server, the valid value is <code>EVENT_LOGS</code>.</p> </li> </ul>"
+          "documentation":"<p>Defines the type of log that the source is sending.</p> <ul> <li> <p>For Amazon Bedrock Agents, the valid values are <code>APPLICATION_LOGS</code> and <code>EVENT_LOGS</code>.</p> </li> <li> <p>For Amazon Bedrock Knowledge Bases, the valid value is <code>APPLICATION_LOGS</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Runtime, the valid values are <code>APPLICATION_LOGS</code>, <code>USAGE_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Tools, the valid values are <code>APPLICATION_LOGS</code>, <code>USAGE_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Identity, the valid values are <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Gateway, the valid values are <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For CloudFront, the valid value is <code>ACCESS_LOGS</code>.</p> </li> <li> <p>For Amazon CodeWhisperer, the valid value is <code>EVENT_LOGS</code>.</p> </li> <li> <p>For Elemental MediaPackage, the valid values are <code>EGRESS_ACCESS_LOGS</code> and <code>INGRESS_ACCESS_LOGS</code>.</p> </li> <li> <p>For Elemental MediaTailor, the valid values are <code>AD_DECISION_SERVER_LOGS</code>, <code>MANIFEST_SERVICE_LOGS</code>, and <code>TRANSCODE_LOGS</code>.</p> </li> <li> <p>For Entity Resolution, the valid value is <code>WORKFLOW_LOGS</code>.</p> </li> <li> <p>For IAM Identity Center, the valid value is <code>ERROR_LOGS</code>.</p> </li> <li> <p>For Network Load Balancer, the valid value is <code>NLB_ACCESS_LOGS</code>.</p> </li> <li> <p>For PCS, the valid values are <code>PCS_SCHEDULER_LOGS</code> and <code>PCS_JOBCOMP_LOGS</code>.</p> </li> <li> <p>For Amazon Web Services RTB Fabric, the valid values is <code>APPLICATION_LOGS</code>.</p> </li> <li> <p>For Amazon Q, the valid values are <code>EVENT_LOGS</code> and <code>SYNC_JOB_LOGS</code>.</p> </li> <li> <p>For Amazon SES mail manager, the valid values are <code>APPLICATION_LOGS</code> and <code>TRAFFIC_POLICY_DEBUG_LOGS</code>.</p> </li> <li> <p>For Amazon WorkMail, the valid values are <code>ACCESS_CONTROL_LOGS</code>, <code>AUTHENTICATION_LOGS</code>, <code>WORKMAIL_AVAILABILITY_PROVIDER_LOGS</code>, <code>WORKMAIL_MAILBOX_ACCESS_LOGS</code>, and <code>WORKMAIL_PERSONAL_ACCESS_TOKEN_LOGS</code>.</p> </li> <li> <p>For Amazon VPC Route Server, the valid value is <code>EVENT_LOGS</code>.</p> </li> </ul>"
         },
         "tags":{
           "shape":"Tags",
@@ -6980,11 +6993,11 @@
       "members":{
         "destinationType":{
           "shape":"ScheduledQueryDestinationType",
-          "documentation":"<p>The type of destination (S3 or EVENTBRIDGE).</p>"
+          "documentation":"<p>The type of destination (S3).</p>"
         },
         "destinationIdentifier":{
           "shape":"String",
-          "documentation":"<p>The destination identifier (S3 URI or EventBridge ARN).</p>"
+          "documentation":"<p>The destination identifier (S3 URI).</p>"
         },
         "status":{
           "shape":"ActionStatus",
@@ -6992,7 +7005,7 @@
         },
         "processedIdentifier":{
           "shape":"String",
-          "documentation":"<p>The processed identifier returned for the destination (S3 key or event ID).</p>"
+          "documentation":"<p>The processed identifier returned for the destination (S3 key).</p>"
         },
         "errorMessage":{
           "shape":"String",
@@ -7708,7 +7721,7 @@
         },
         "executionStatus":{
           "shape":"ExecutionStatus",
-          "documentation":"<p>The status of the query execution (SUCCEEDED, FAILED, TIMEOUT, or INVALID_QUERY).</p>"
+          "documentation":"<p>The status of the query execution (Running, Complete, Failed, Timeout, or InvalidQuery).</p>"
         },
         "triggeredTimestamp":{
           "shape":"Timestamp",
@@ -7720,7 +7733,7 @@
         },
         "destinations":{
           "shape":"ScheduledQueryDestinationList",
-          "documentation":"<p>The list of destinations where the scheduled query results were delivered for this execution. This includes S3 buckets and EventBridge targets configured for the scheduled query.</p>"
+          "documentation":"<p>The list of destinations where the scheduled query results were delivered for this execution. This includes S3 buckets configured for the scheduled query.</p>"
         }
       },
       "documentation":"<p>A record of a scheduled query execution, including its status and destination processing information.</p>"

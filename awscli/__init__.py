@@ -20,7 +20,7 @@ import importlib.abc
 import os
 import sys
 
-__version__ = '2.31.39'
+__version__ = '2.32.0'
 
 #
 # Get our data path to be added to botocore's search path

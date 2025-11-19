@@ -2,6 +2,50 @@
 CHANGELOG
 =========
 
+2.32.0
+======
+
+* api-change:``route53``: Add dual-stack endpoint support for Route53
+* api-change:``mediaconnect``: This release adds support for global routing in AWS Elemental MediaConnect. You can now use router inputs and router outputs to manage global video and audio routing workflows both within the AWS-Cloud and over the public internet.
+* api-change:``iam``: Added the EnableOutboundWebIdentityFederation, DisableOutboundWebIdentityFederation and GetOutboundWebIdentityFederationInfo APIs for the IAM outbound federation feature.
+* api-change:``fsx``: Adding File Server Resource Manager configuration to FSx Windows
+* api-change:``ec2``: This launch adds support for two new features: Regional NAT Gateway and IPAM Policies. IPAM policies offers customers central control for public IPv4 assignments across AWS services. Regional NAT is a single NAT Gateway that automatically expands across AZs in a VPC to maintain high availability.
+* api-change:``apigateway``: API Gateway now supports response streaming and new security policies for REST APIs and custom domain names.
+* api-change:``network-firewall``: Partner Managed Rulegroup feature support
+* api-change:``s3``: Adds support for blocking SSE-C writes to general purpose buckets.
+* api-change:``billingconductor``: This release adds support for Billing Transfers, enabling management of billing transfers with billing groups on AWS Billing Conductor.
+* api-change:``bcm-pricing-calculator``: Add GroupSharingPreference, CostCategoryGroupSharingPreferenceArn, and CostCategoryGroupSharingPreferenceEffectiveDate to Bill Estimate. Add GroupSharingPreference and CostCategoryGroupSharingPreferenceArn to Bill Scenario.
+* api-change:``medialive``: MediaLive is adding support for MediaConnect Router by supporting a new input type called MEDIACONNECT_ROUTER. This new input type will provide seamless encrypted transport between MediaConnect Router and your MediaLive channel.
+* api-change:``apigatewayv2``: Support for API Gateway portals and portal products.
+* api-change:``stepfunctions``: Adds support to TestState for mocked results and exceptions, along with additional inspection data.
+* api-change:``sagemaker``: Added support for enhanced metrics for SageMaker AI Endpoints. This features provides Utilization Metrics at instance and container granularity and also provides easy configuration of metric publish frequency from 10 sec -> 5 mins
+* api-change:``connectcampaignsv2``: This release added support for ring timer configuration for campaign calls.
+* api-change:``dynamodb``: Extended Global Secondary Index (GSI) composite keys to support up to 8 attributes.
+* api-change:``datazone``: Amazon DataZone now supports business metadata (readme and metadata forms) at the individual attribute (column) level, a new rule type for glossary terms, and the ability to update the owner of the root domain unit.
+* api-change:``secretsmanager``: Adds support to create, update, retrieve, rotate, and delete managed external secrets.
+* api-change:``health``: Adds actionability and personas properties to Health events exposed through DescribeEvents, DescribeEventsForOrganization, DescribeEventDetails, and DescribeEventTypes APIs. Adds filtering by actionabilities and personas in EventFilter, OrganizationEventFilter, EventTypeFilter.
+* api-change:``sts``: IAM now supports outbound identity federation via the STS GetWebIdentityToken API, enabling AWS workloads to securely authenticate with external services using short-lived JSON Web Tokens.
+* api-change:``inspector2``: This release introduces BLOCKED_BY_ORGANIZATION_POLICY error code and IMAGE_ARCHIVED scanStatusReason. BLOCKED_BY_ORGANIZATION_POLICY error code is returned when an operation is blocked by an AWS Organizations policy. IMAGE_ARCHIVED scanStatusReason is returned when an Image is archived in ECR.
+* api-change:``bedrock-runtime``: This release includes support for Search Results.
+* api-change:``ecs``: Added support for Amazon ECS Managed Instances infrastructure optimization configuration.
+* api-change:``rum``: CloudWatch RUM now supports mobile application monitoring for Android and iOS platforms
+* api-change:``ecr``: Add support for ECR archival storage class and Inspector org policy for scanning
+* api-change:``partnercentral-channel``: Initial GA launch of Partner Central Channel
+* api-change:``cost-optimization-hub``: Release ListEfficiencyMetrics API
+* api-change:``signin``: AWS Sign-In manages authentication for AWS services. This service provides secure authentication flows for accessing AWS resources from the console and developer tools. This release adds the CreateOAuth2Token API, which can be used to fetch OAuth2 access tokens and refresh tokens from Sign-In.
+* api-change:``cloudtrail``: AWS CloudTrail now supports Insights for data events, expanding beyond management events to automatically detect unusual activity on data plane operations.
+* api-change:``billing``: Added name filtering support to ListBillingViews API through the new names parameter to efficiently filter billing views by name.
+* api-change:``logs``: Adding support for ocsf version 1.5, add optional parameter MappingVersion
+* feature:credentials: Adds the ``aws login`` command, which allows you to use your AWS Management Console credentials for CLI and SDK authentication.
+* api-change:``ce``: Add support for COST_CATEGORY, TAG, and LINKED_ACCOUNT AWS managed cost anomaly detection monitors
+* api-change:``lambda``: Added support for creating and invoking Tenant Isolated functions in AWS Lambda APIs.
+* api-change:``guardduty``: Add support for scanning and viewing scan results for backup resource types
+* api-change:``backup``: Amazon GuardDuty Malware Protection now supports AWS Backup, extending malware detection capabilities to EC2, EBS, and S3 backups.
+* api-change:``networkflowmonitor``: Added new enum value (AWS::EKS::Cluster) for type field under MonitorLocalResource
+* api-change:``invoicing``: Add support for adding Billing transfers in Invoice configuration
+* api-change:``emr``: Add CloudWatch Logs integration for Spark driver, executor and step logs
+
+
 2.31.39
 =======
 

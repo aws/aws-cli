@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.32.1
+======
+
+* bugfix:Source Distribution: Fix Python 3.9 - 3.11 incompatibility that was introduced in 2.32.0
+
+
 2.32.0
 ======
 

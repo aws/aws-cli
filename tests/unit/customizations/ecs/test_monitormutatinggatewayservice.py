@@ -72,8 +72,12 @@ class TestMonitorMutatingGatewayService:
     """Test the event handler for monitoring gateway service mutations."""
 
     def setup_method(self):
+        self.mock_watcher_class = Mock()
+        self.mock_watcher_class.is_monitoring_available.return_value = True
         self.handler = MonitorMutatingGatewayService(
-            'create-gateway-service', 'DEPLOYMENT'
+            'create-gateway-service',
+            'DEPLOYMENT',
+            watcher_class=self.mock_watcher_class,
         )
 
     def test_init(self):
@@ -242,6 +246,7 @@ class TestMonitorMutatingGatewayService:
             'https://ecs.us-west-2.amazonaws.com'
         )
         mock_parsed_globals.verify_ssl = True
+        mock_parsed_globals.color = 'off'
         handler.session = mock_session
         handler.parsed_globals = mock_parsed_globals
 
@@ -272,10 +277,60 @@ class TestMonitorMutatingGatewayService:
             mock_client,
             service_arn,
             'DEPLOYMENT',
-            exit_hook=ANY,
             use_color=False,
         )
         mock_watcher.exec.assert_called_once()
+        # Verify parsed response was cleared
+        assert parsed == {}
+
+    def test_after_call_monitoring_not_available(self, capsys):
+        """Test that monitoring is skipped when not available (no TTY)."""
+        # Setup handler state
+        mock_watcher_class = Mock()
+        mock_watcher_class.is_monitoring_available.return_value = False
+
+        handler = MonitorMutatingGatewayService(
+            'create-gateway-service',
+            'DEPLOYMENT',
+            watcher_class=mock_watcher_class,
+        )
+        handler.effective_resource_view = 'DEPLOYMENT'
+
+        mock_session = Mock()
+        mock_parsed_globals = Mock()
+        mock_parsed_globals.region = 'us-west-2'
+        mock_parsed_globals.endpoint_url = (
+            'https://ecs.us-west-2.amazonaws.com'
+        )
+        mock_parsed_globals.verify_ssl = True
+        mock_parsed_globals.color = 'off'
+        handler.session = mock_session
+        handler.parsed_globals = mock_parsed_globals
+
+        # Setup mocks
+        mock_client = Mock()
+        mock_session.create_client.return_value = mock_client
+
+        # Setup call parameters
+        service_arn = 'arn:aws:ecs:us-west-2:123456789012:service/test-service'
+        parsed = {'service': {'serviceArn': service_arn}}
+        original_parsed = dict(parsed)
+        context = Mock()
+        http_response = Mock()
+        http_response.status_code = 200
+
+        # Execute
+        handler.after_call(parsed, context, http_response)
+
+        # Verify parsed response was not cleared
+        assert parsed == original_parsed
+
+        # Verify warning message was printed
+        captured = capsys.readouterr()
+        assert (
+            "Monitoring is not available (requires TTY). Skipping monitoring.\n"
+            in captured.err
+        )
 
     def test_after_call_exception_handling(self, capsys):
         """Test exception handling in after_call method."""
@@ -299,6 +354,7 @@ class TestMonitorMutatingGatewayService:
             'https://ecs.us-west-2.amazonaws.com'
         )
         mock_parsed_globals.verify_ssl = True
+        mock_parsed_globals.color = 'off'
         handler.session = mock_session
         handler.parsed_globals = mock_parsed_globals
 
@@ -319,47 +375,6 @@ class TestMonitorMutatingGatewayService:
         captured = capsys.readouterr()
         assert "Encountered an error, terminating monitoring" in captured.err
         assert "Test exception" in captured.err
-
-    def test_exit_hook_functionality(self):
-        """Test that exit hook properly updates parsed response."""
-        # Setup handler state
-        self.handler.effective_resource_view = 'DEPLOYMENT'
-        mock_session = Mock()
-        mock_parsed_globals = Mock()
-        mock_parsed_globals.region = 'us-west-2'
-        mock_parsed_globals.endpoint_url = (
-            'https://ecs.us-west-2.amazonaws.com'
-        )
-        mock_parsed_globals.verify_ssl = True
-        self.handler.session = mock_session
-        self.handler.parsed_globals = mock_parsed_globals
-
-        # Setup mocks
-        mock_client = Mock()
-        mock_session.create_client.return_value = mock_client
-
-        # Test exit hook functionality by directly calling it
-        service_arn = 'arn:aws:ecs:us-west-2:123456789012:service/test-service'
-        parsed = {'service': {'serviceArn': service_arn}}
-
-        # Create a simple exit hook function
-        def test_exit_hook(new_response):
-            if new_response:
-                parsed.clear()
-                parsed.update(new_response)
-
-        # Test with new response
-        new_response = {
-            'service': {'serviceArn': service_arn, 'status': 'ACTIVE'}
-        }
-        test_exit_hook(new_response)
-
-        assert parsed == new_response
-
-        # Test with None response (should not update)
-        original_parsed = dict(parsed)
-        test_exit_hook(None)
-        assert parsed == original_parsed
 
     def test_events(self):
         """Test that correct events are returned for CLI integration."""

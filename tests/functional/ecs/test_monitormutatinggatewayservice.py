@@ -32,8 +32,12 @@ class TestMonitoringResourcesArgument:
 
 class TestMonitorMutatingGatewayService:
     def setup_method(self):
+        self.mock_watcher_class = Mock()
+        self.mock_watcher_class.is_monitoring_available.return_value = True
         self.handler = MonitorMutatingGatewayService(
-            'create-gateway-service', 'DEPLOYMENT'
+            'create-gateway-service',
+            'DEPLOYMENT',
+            watcher_class=self.mock_watcher_class,
         )
 
     def test_init(self):

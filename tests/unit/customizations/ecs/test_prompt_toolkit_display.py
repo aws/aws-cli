@@ -1,7 +1,10 @@
 import asyncio
+import sys
 from unittest.mock import Mock, patch
 
 import pytest
+from prompt_toolkit.application import create_app_session
+from prompt_toolkit.output import DummyOutput
 
 from awscli.customizations.ecs.prompt_toolkit_display import Display
 
@@ -9,7 +12,8 @@ from awscli.customizations.ecs.prompt_toolkit_display import Display
 class TestPromptToolkitDisplay:
     @pytest.fixture
     def display(self):
-        return Display()
+        with create_app_session(output=DummyOutput()):
+            return Display()
 
     def test_init(self, display):
         """Test Display initialization."""
@@ -18,6 +22,7 @@ class TestPromptToolkitDisplay:
         assert display.status_control is not None
         assert display.app is not None
         assert display.content_lines == 0
+        assert display.raw_text == ""
 
     def test_display_updates_content(self, display):
         """Test display method updates content and line count."""
@@ -27,6 +32,7 @@ class TestPromptToolkitDisplay:
         display.display(test_text, test_status)
 
         assert display.content_lines == 3
+        assert display.raw_text == test_text
         assert display.status_control.text == test_status
 
     def test_display_without_status(self, display):
@@ -36,6 +42,7 @@ class TestPromptToolkitDisplay:
         display.display(test_text)
 
         assert display.content_lines == 1
+        assert display.raw_text == test_text
 
     @patch('awscli.customizations.ecs.prompt_toolkit_display.ANSI')
     def test_display_uses_ansi_formatting(self, mock_ansi, display):
@@ -45,6 +52,7 @@ class TestPromptToolkitDisplay:
         display.display(test_text)
 
         mock_ansi.assert_called_once_with(test_text)
+        assert display.raw_text == test_text
 
     def test_scroll_bounds_calculation(self, display):
         """Test that content_lines is calculated correctly for scroll bounds."""
@@ -93,3 +101,68 @@ class TestPromptToolkitDisplay:
         assert display.content_lines == 3
         # Verify the content is set correctly
         assert display.control.text is not None
+
+    def test_display_handles_ansi_content_without_errors(self, display):
+        """Test that display handles ANSI-colored content without errors."""
+        # Content with various ANSI codes
+        ansi_text = "\x1b[32mGreen\x1b[0m\n\x1b[31mRed\x1b[32mGreen\x1b[0m\n\x1b[1m\x1b[41mBold on Red\x1b[0m"
+
+        # Should not raise any exceptions
+        display.display(ansi_text)
+
+        # Content should be stored and processed
+        assert display.raw_text == ansi_text
+        assert display.content_lines == 3
+
+    def test_scroll_validation_with_ansi_content(self):
+        """Test scroll position validation works with ANSI-colored content."""
+        display = Display()
+        # Mock the app output for terminal size
+        mock_output = Mock()
+        mock_output.get_size.return_value = Mock(rows=20, columns=80)
+        display.app.output = mock_output
+
+        # Set content with ANSI codes
+        ansi_text = "\x1b[32mShort line\x1b[0m\n\x1b[31mAnother line\x1b[0m"
+
+        # Should not raise an exception and content should be stored
+        display.display(ansi_text)
+        assert display.raw_text == ansi_text
+
+    def test_scroll_validation_handles_missing_output(self):
+        """Test scroll validation gracefully handles missing app output."""
+        display = Display()
+        # Set up display without proper app output
+        display.app.output = None
+
+        # Should not raise an exception
+        display.display("Test content")
+        assert display.raw_text == "Test content"
+
+    def test_scroll_validation_handles_exceptions(self):
+        """Test scroll validation clamps scroll position on terminal size exceptions."""
+        display = Display()
+        mock_output = Mock()
+        mock_output.get_size.side_effect = OSError("Terminal unavailable")
+        display.app.output = mock_output
+
+        display.window.vertical_scroll = 5
+
+        display.display("Test content")
+        assert display.window.vertical_scroll == 5
+
+    def test_scroll_validation_with_long_lines(self):
+        """Test scroll validation with lines that wrap."""
+        display = Display()
+        # Mock the app output for terminal size
+        mock_output = Mock()
+        mock_output.get_size.return_value = Mock(rows=20, columns=80)
+        display.app.output = mock_output
+
+        # Create content with very long lines that will wrap
+        long_line = "A" * 100  # Longer than terminal width
+        content = f"Short\n{long_line}\nShort again"
+
+        # Should handle wrapping without errors
+        display.display(content)
+        assert display.raw_text == content

@@ -105,6 +105,22 @@ class TestECSMonitorExpressGatewayServiceCommand:
 class TestECSExpressGatewayServiceWatcher:
     """Test the watcher class through public interface"""
 
+    @patch('sys.stdout.isatty')
+    def test_is_monitoring_available_with_tty(self, mock_isatty):
+        """Test is_monitoring_available returns True when TTY is available"""
+        mock_isatty.return_value = True
+        assert (
+            ECSExpressGatewayServiceWatcher.is_monitoring_available() is True
+        )
+
+    @patch('sys.stdout.isatty')
+    def test_is_monitoring_available_without_tty(self, mock_isatty):
+        """Test is_monitoring_available returns False when TTY is not available"""
+        mock_isatty.return_value = False
+        assert (
+            ECSExpressGatewayServiceWatcher.is_monitoring_available() is False
+        )
+
     def setup_method(self):
         self.mock_client = Mock()
         self.service_arn = (

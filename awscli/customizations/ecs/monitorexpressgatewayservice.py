@@ -182,7 +182,6 @@ class ECSExpressGatewayServiceWatcher:
         service_arn (str): ARN of the service to monitor
         mode (str): Monitoring mode - 'RESOURCE' or 'DEPLOYMENT'
         timeout_minutes (int): Maximum monitoring time in minutes (default: 30)
-        exit_hook (callable): Optional callback function on exit
     """
 
     def __init__(
@@ -191,7 +190,6 @@ class ECSExpressGatewayServiceWatcher:
         service_arn,
         mode,
         timeout_minutes=30,
-        exit_hook=None,
         display=None,
         use_color=True,
     ):
@@ -199,7 +197,6 @@ class ECSExpressGatewayServiceWatcher:
         self.service_arn = service_arn
         self.mode = mode
         self.timeout_minutes = timeout_minutes
-        self.exit_hook = exit_hook or self._default_exit_hook
         self.last_described_gateway_service_response = None
         self.last_execution_time = 0
         self.cached_monitor_result = None
@@ -207,8 +204,10 @@ class ECSExpressGatewayServiceWatcher:
         self.use_color = use_color
         self.display = display or Display()
 
-    def _default_exit_hook(self, x):
-        return x
+    @staticmethod
+    def is_monitoring_available():
+        """Check if monitoring is available (requires TTY)."""
+        return sys.stdout.isatty()
 
     def exec(self):
         """Start monitoring the express gateway service with progress display."""
@@ -226,7 +225,13 @@ class ECSExpressGatewayServiceWatcher:
         """Execute monitoring loop with animated progress display."""
         spinner_chars = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
         spinner_index = 0
-        current_output = "Waiting for initial data"
+
+        # Initialize with basic service resource
+        service_resource = ManagedResource("Service", self.service_arn)
+        initial_output = service_resource.get_status_string(
+            spinner_char="{SPINNER}", use_color=self.use_color
+        )
+        current_output = initial_output
 
         async def update_data():
             nonlocal current_output

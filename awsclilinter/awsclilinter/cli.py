@@ -2,7 +2,7 @@ import argparse
 import difflib
 import sys
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Optional, Tuple
 
 from ast_grep_py.ast_grep_py import SgRoot
 
@@ -25,9 +25,11 @@ CONTEXT_SIZE = 3
 def prompt_user_choice_interactive_mode() -> str:
     """Get user input for interactive mode."""
     while True:
-        choice = input(
-            "\nApply this fix? [y]es, [n]o, [u]pdate all, [s]ave and exit, [q]uit: "
-        ).lower().strip()
+        choice = (
+            input("\nApply this fix? [y]es, [n]o, [u]pdate all, [s]ave and exit, [q]uit: ")
+            .lower()
+            .strip()
+        )
         if choice in ["y", "n", "u", "s", "q"]:
             return choice
         print("Invalid choice. Please enter y, n, u, s, or q.")
@@ -148,25 +150,19 @@ def interactive_mode_for_rule(
             # Accept this and all remaining findings for this rule.
             accepted_findings.extend(findings[i:])
             if accepted_findings:
-                ast = parse(
-                    linter.apply_fixes(ast, accepted_findings)
-                )
+                ast = parse(linter.apply_fixes(ast, accepted_findings))
             return ast, True, last_choice
         elif last_choice == "s":
             # Apply accepted findings and stop processing
             if accepted_findings:
-                ast = parse(
-                    linter.apply_fixes(ast, accepted_findings)
-                )
+                ast = parse(linter.apply_fixes(ast, accepted_findings))
             return ast, len(accepted_findings) > 0, last_choice
         elif last_choice == "q":
             print("Quit without saving.")
             sys.exit(0)
 
     if accepted_findings:
-        ast = parse(
-            linter.apply_fixes(ast, accepted_findings)
-        )
+        ast = parse(linter.apply_fixes(ast, accepted_findings))
         return ast, True, last_choice
 
     return ast, False, last_choice
@@ -238,15 +234,16 @@ def main():
             )
 
             if changes_made:
+                current_script = current_ast.root().text()
                 any_changes = True
 
             finding_offset += len(rule_findings)
 
-            if last_choice == 's':
+            if last_choice == "s":
                 break
 
             # If user chose 'u', auto-apply all remaining rules
-            if last_choice == 'u':
+            if last_choice == "u":
                 for remaining_rule in rules[rule_index + 1 :]:
                     remaining_findings = linter.lint_for_rule(current_ast, remaining_rule)
                     if remaining_findings:

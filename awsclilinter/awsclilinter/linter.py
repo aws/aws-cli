@@ -7,7 +7,8 @@ from awsclilinter.rules import LintFinding, LintRule
 
 def parse(script_content: str) -> SgRoot:
     """Parse the bash script content into an AST."""
-    return SgRoot(script_content, 'bash')
+    return SgRoot(script_content, "bash")
+
 
 def lint(ast: SgRoot, rules: List[LintRule]) -> List[Tuple[LintFinding, LintRule]]:
     """Lint the AST and return all findings with their associated rules."""
@@ -16,9 +17,8 @@ def lint(ast: SgRoot, rules: List[LintRule]) -> List[Tuple[LintFinding, LintRule
         findings = rule.check(ast)
         for finding in findings:
             findings_with_rules.append((finding, rule))
-    return sorted(
-        findings_with_rules, key=lambda fr: (fr[0].edit.start_pos, fr[0].edit.end_pos)
-    )
+    return sorted(findings_with_rules, key=lambda fr: (fr[0].edit.start_pos, fr[0].edit.end_pos))
+
 
 def lint_for_rule(ast: SgRoot, rule: LintRule) -> List[LintFinding]:
     """Lint the script for a single rule.
@@ -32,6 +32,7 @@ def lint_for_rule(ast: SgRoot, rule: LintRule) -> List[LintFinding]:
     """
     findings = rule.check(ast)
     return sorted(findings, key=lambda f: (f.edit.start_pos, f.edit.end_pos))
+
 
 def apply_fixes(ast: SgRoot, findings: List[LintFinding]) -> str:
     """Apply to the AST for a single rule.
@@ -49,4 +50,5 @@ def apply_fixes(ast: SgRoot, findings: List[LintFinding]) -> str:
 
     # Collect all edits - they should be non-overlapping within a single rule
     edits = [f.edit for f in findings]
+    print(edits)
     return root.commit_edits(edits)

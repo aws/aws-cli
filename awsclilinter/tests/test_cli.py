@@ -113,6 +113,7 @@ class TestCLI:
             with patch("builtins.input", side_effect=["y", "y", "y", "y"]):
                 main()
                 fixed_content = output_file.read_text()
+                print(fixed_content)
                 # 2 commands, 2 rules = 4 findings, so 2 of each flag
                 assert fixed_content.count("--cli-binary-format") == 2
                 assert fixed_content.count("--no-cli-paginate") == 2

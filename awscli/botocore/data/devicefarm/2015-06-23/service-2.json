@@ -1296,6 +1296,12 @@
       "type":"list",
       "member":{"shape":"AmazonResourceName"}
     },
+    "AmazonRoleResourceName":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws:iam::[0-9]{12}:role/.+"
+    },
     "AndroidPaths":{
       "type":"list",
       "member":{"shape":"String"}
@@ -1619,6 +1625,14 @@
         "vpcConfig":{
           "shape":"VpcConfig",
           "documentation":"<p>The VPC security groups and subnets that are attached to a project.</p>"
+        },
+        "environmentVariables":{
+          "shape":"EnvironmentVariables",
+          "documentation":"<p> A set of environment variables which are used by default for all runs in the project. These environment variables are applied to the test run during the execution of a test spec file. </p> <p> For more information about using test spec files, please see <a href=\"https://docs.aws.amazon.com/devicefarm/latest/developerguide/custom-test-environments.html\">Custom test environments </a> in <i>AWS Device Farm.</i> </p>"
+        },
+        "executionRoleArn":{
+          "shape":"AmazonRoleResourceName",
+          "documentation":"<p>An IAM role to be assumed by the test host for all runs in the project.</p>"
         }
       },
       "documentation":"<p>Represents a request to the create project operation.</p>"
@@ -2376,6 +2390,41 @@
       "member":{"shape":"Device"}
     },
     "Double":{"type":"double"},
+    "EnvironmentVariable":{
+      "type":"structure",
+      "required":[
+        "name",
+        "value"
+      ],
+      "members":{
+        "name":{
+          "shape":"EnvironmentVariableName",
+          "documentation":"<p>The name of the environment variable.</p>"
+        },
+        "value":{
+          "shape":"EnvironmentVariableValue",
+          "documentation":"<p>The value of the environment variable.</p>"
+        }
+      },
+      "documentation":"<p>Information about an environment variable for a project or a run.</p>"
+    },
+    "EnvironmentVariableName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z_][a-zA-Z_0-9]*"
+    },
+    "EnvironmentVariableValue":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "EnvironmentVariables":{
+      "type":"list",
+      "member":{"shape":"EnvironmentVariable"},
+      "max":32,
+      "min":1
+    },
     "ExceptionMessage":{"type":"string"},
     "ExecutionConfiguration":{
       "type":"structure",
@@ -3490,7 +3539,7 @@
       "members":{
         "ResourceARN":{
           "shape":"DeviceFarmArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource or resources for which to list tags. You can associate tags with the following Device Farm resources: <code>PROJECT</code>, <code>RUN</code>, <code>NETWORK_PROFILE</code>, <code>INSTANCE_PROFILE</code>, <code>DEVICE_INSTANCE</code>, <code>SESSION</code>, <code>DEVICE_POOL</code>, <code>DEVICE</code>, and <code>VPCE_CONFIGURATION</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource or resources for which to list tags. You can associate tags with the following Device Farm resources: <code>PROJECT</code>, <code>TESTGRID_PROJECT</code>, <code>RUN</code>, <code>NETWORK_PROFILE</code>, <code>INSTANCE_PROFILE</code>, <code>DEVICE_INSTANCE</code>, <code>SESSION</code>, <code>DEVICE_POOL</code>, <code>DEVICE</code>, and <code>VPCE_CONFIGURATION</code>.</p>"
         }
       }
     },
@@ -4127,6 +4176,14 @@
         "vpcConfig":{
           "shape":"VpcConfig",
           "documentation":"<p>The VPC security groups and subnets that are attached to a project.</p>"
+        },
+        "environmentVariables":{
+          "shape":"EnvironmentVariables",
+          "documentation":"<p>Environment variables associated with the project.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"AmazonRoleResourceName",
+          "documentation":"<p>The IAM execution role associated with the project.</p>"
         }
       },
       "documentation":"<p>Represents an operating-system neutral workspace for running and managing tests.</p>"
@@ -4552,6 +4609,14 @@
         "vpcConfig":{
           "shape":"VpcConfig",
           "documentation":"<p>The VPC security groups and subnets that are attached to a project.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"AmazonRoleResourceName",
+          "documentation":"<p>The IAM role associated with the run.</p>"
+        },
+        "environmentVariables":{
+          "shape":"EnvironmentVariables",
+          "documentation":"<p>Environment variables associated with the run.</p>"
         }
       },
       "documentation":"<p>Represents a test run on a set of devices with a given app package, test parameters, and so on.</p>"
@@ -4646,6 +4711,14 @@
         "billingMethod":{
           "shape":"BillingMethod",
           "documentation":"<p>Specifies the billing method for a test run: <code>metered</code> or <code>unmetered</code>. If the parameter is not specified, the default value is <code>metered</code>.</p> <note> <p>If you have purchased unmetered device slots, you must set this parameter to <code>unmetered</code> to make use of them. Otherwise, your run counts against your metered time.</p> </note>"
+        },
+        "environmentVariables":{
+          "shape":"EnvironmentVariables",
+          "documentation":"<p>Environment variables associated with the run.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"AmazonRoleResourceName",
+          "documentation":"<p>An IAM role to be assumed by the test host for the run.</p>"
         }
       },
       "documentation":"<p>Represents the settings for a run. Includes things like location, radio states, auxiliary apps, and network profiles.</p>"
@@ -4956,7 +5029,7 @@
       "members":{
         "ResourceARN":{
           "shape":"DeviceFarmArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource or resources to which to add tags. You can associate tags with the following Device Farm resources: <code>PROJECT</code>, <code>RUN</code>, <code>NETWORK_PROFILE</code>, <code>INSTANCE_PROFILE</code>, <code>DEVICE_INSTANCE</code>, <code>SESSION</code>, <code>DEVICE_POOL</code>, <code>DEVICE</code>, and <code>VPCE_CONFIGURATION</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource or resources to which to add tags. You can associate tags with the following Device Farm resources: <code>PROJECT</code>, <code>TESTGRID_PROJECT</code>, <code>RUN</code>, <code>NETWORK_PROFILE</code>, <code>INSTANCE_PROFILE</code>, <code>DEVICE_INSTANCE</code>, <code>SESSION</code>, <code>DEVICE_POOL</code>, <code>DEVICE</code>, and <code>VPCE_CONFIGURATION</code>.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -5282,7 +5355,7 @@
       "members":{
         "ResourceARN":{
           "shape":"DeviceFarmArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource or resources from which to delete tags. You can associate tags with the following Device Farm resources: <code>PROJECT</code>, <code>RUN</code>, <code>NETWORK_PROFILE</code>, <code>INSTANCE_PROFILE</code>, <code>DEVICE_INSTANCE</code>, <code>SESSION</code>, <code>DEVICE_POOL</code>, <code>DEVICE</code>, and <code>VPCE_CONFIGURATION</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource or resources from which to delete tags. You can associate tags with the following Device Farm resources: <code>PROJECT</code>, <code>TESTGRID_PROJECT</code>, <code>RUN</code>, <code>NETWORK_PROFILE</code>, <code>INSTANCE_PROFILE</code>, <code>DEVICE_INSTANCE</code>, <code>SESSION</code>, <code>DEVICE_POOL</code>, <code>DEVICE</code>, and <code>VPCE_CONFIGURATION</code>.</p>"
         },
         "TagKeys":{
           "shape":"TagKeyList",
@@ -5483,6 +5556,14 @@
         "vpcConfig":{
           "shape":"VpcConfig",
           "documentation":"<p>The VPC security groups and subnets that are attached to a project.</p>"
+        },
+        "environmentVariables":{
+          "shape":"EnvironmentVariables",
+          "documentation":"<p> A set of environment variables which are used by default for all runs in the project. These environment variables are applied to the test run during the execution of a test spec file. </p> <p> For more information about using test spec files, please see <a href=\"https://docs.aws.amazon.com/devicefarm/latest/developerguide/custom-test-environments.html\">Custom test environments </a> in <i>AWS Device Farm.</i> </p>"
+        },
+        "executionRoleArn":{
+          "shape":"AmazonRoleResourceName",
+          "documentation":"<p>An IAM role to be assumed by the test host for all runs in the project.</p>"
         }
       },
       "documentation":"<p>Represents a request to the update project operation.</p>"

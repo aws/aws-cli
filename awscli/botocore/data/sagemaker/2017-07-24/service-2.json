@@ -104,6 +104,32 @@
       "output":{"shape":"BatchDescribeModelPackageOutput"},
       "documentation":"<p>This action batch describes a list of versioned model packages</p>"
     },
+    "BatchRebootClusterNodes":{
+      "name":"BatchRebootClusterNodes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchRebootClusterNodesRequest"},
+      "output":{"shape":"BatchRebootClusterNodesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Reboots specific nodes within a SageMaker HyperPod cluster using a soft recovery mechanism. <code>BatchRebootClusterNodes</code> performs a graceful reboot of the specified nodes by calling the Amazon Elastic Compute Cloud <code>RebootInstances</code> API, which attempts to cleanly shut down the operating system before restarting the instance.</p> <p>This operation is useful for recovering from transient issues or applying certain configuration changes that require a restart.</p> <note> <ul> <li> <p>Rebooting a node may cause temporary service interruption for workloads running on that node. Ensure your workloads can handle node restarts or use appropriate scheduling to minimize impact.</p> </li> <li> <p>You can reboot up to 25 nodes in a single request.</p> </li> <li> <p>For SageMaker HyperPod clusters using the Slurm workload manager, ensure rebooting nodes will not disrupt critical cluster operations.</p> </li> </ul> </note>"
+    },
+    "BatchReplaceClusterNodes":{
+      "name":"BatchReplaceClusterNodes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchReplaceClusterNodesRequest"},
+      "output":{"shape":"BatchReplaceClusterNodesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Replaces specific nodes within a SageMaker HyperPod cluster with new hardware. <code>BatchReplaceClusterNodes</code> terminates the specified instances and provisions new replacement instances with the same configuration but fresh hardware. The Amazon Machine Image (AMI) and instance configuration remain the same.</p> <p>This operation is useful for recovering from hardware failures or persistent issues that cannot be resolved through a reboot.</p> <important> <ul> <li> <p> <b>Data Loss Warning:</b> Replacing nodes destroys all instance volumes, including both root and secondary volumes. All data stored on these volumes will be permanently lost and cannot be recovered.</p> </li> <li> <p>To safeguard your work, back up your data to Amazon S3 or an FSx for Lustre file system before invoking the API on a worker node group. This will help prevent any potential data loss from the instance root volume. For more information about backup, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-operate-cli-command.html#sagemaker-hyperpod-operate-cli-command-update-cluster-software-backup\">Use the backup script provided by SageMaker HyperPod</a>.</p> </li> <li> <p>If you want to invoke this API on an existing cluster, you'll first need to patch the cluster by running the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateClusterSoftware.html\">UpdateClusterSoftware API</a>. For more information about patching a cluster, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-operate-cli-command.html#sagemaker-hyperpod-operate-cli-command-update-cluster-software\">Update the SageMaker HyperPod platform software of a cluster</a>.</p> </li> <li> <p>You can replace up to 25 nodes in a single request.</p> </li> </ul> </important>"
+    },
     "CreateAction":{
       "name":"CreateAction",
       "http":{
@@ -4587,6 +4613,30 @@
     }
   },
   "shapes":{
+    "AcceleratorPartitionConfig":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "Count"
+      ],
+      "members":{
+        "Type":{
+          "shape":"MIGProfileType",
+          "documentation":"<p>The Multi-Instance GPU (MIG) profile type that defines the partition configuration. The profile specifies the compute and memory allocation for each partition instance. The available profile types depend on the instance type specified in the compute quota configuration.</p>"
+        },
+        "Count":{
+          "shape":"AcceleratorPartitionConfigCountInteger",
+          "documentation":"<p>The number of accelerator partitions to allocate with the specified partition type. If you don't specify a value for vCPU and MemoryInGiB, SageMaker AI automatically allocates ratio-based values for those parameters based on the accelerator partition count you provide.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Configuration for allocating accelerator partitions.</p>"
+    },
+    "AcceleratorPartitionConfigCountInteger":{
+      "type":"integer",
+      "max":10000000,
+      "min":0
+    },
     "AcceleratorsAmount":{
       "type":"integer",
       "box":true,
@@ -7153,6 +7203,242 @@
       },
       "documentation":"<p>Provides summary information about the model package.</p>"
     },
+    "BatchRebootClusterNodeLogicalIdsError":{
+      "type":"structure",
+      "required":[
+        "NodeLogicalId",
+        "ErrorCode",
+        "Message"
+      ],
+      "members":{
+        "NodeLogicalId":{
+          "shape":"ClusterNodeLogicalId",
+          "documentation":"<p>The logical node ID of the node that encountered an error during the reboot operation.</p>"
+        },
+        "ErrorCode":{
+          "shape":"BatchRebootClusterNodesErrorCode",
+          "documentation":"<p>The error code associated with the error encountered when rebooting a node by logical node ID.</p> <p>Possible values:</p> <ul> <li> <p> <code>InstanceIdNotFound</code>: The node does not exist in the specified cluster.</p> </li> <li> <p> <code>InvalidInstanceStatus</code>: The node is in a state that does not allow rebooting. Wait for the node to finish any ongoing changes before retrying.</p> </li> <li> <p> <code>InstanceIdInUse</code>: Another operation is already in progress for this node. Wait for the operation to complete before retrying.</p> </li> <li> <p> <code>InternalServerError</code>: An internal error occurred while processing this node.</p> </li> </ul>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable message describing the error encountered when rebooting a node by logical node ID.</p>"
+        }
+      },
+      "documentation":"<p>Represents an error encountered when rebooting a node (identified by its logical node ID) from a SageMaker HyperPod cluster.</p>"
+    },
+    "BatchRebootClusterNodeLogicalIdsErrors":{
+      "type":"list",
+      "member":{"shape":"BatchRebootClusterNodeLogicalIdsError"},
+      "max":25,
+      "min":0
+    },
+    "BatchRebootClusterNodesError":{
+      "type":"structure",
+      "required":[
+        "NodeId",
+        "ErrorCode",
+        "Message"
+      ],
+      "members":{
+        "NodeId":{
+          "shape":"ClusterNodeId",
+          "documentation":"<p>The EC2 instance ID of the node that encountered an error during the reboot operation.</p>"
+        },
+        "ErrorCode":{
+          "shape":"BatchRebootClusterNodesErrorCode",
+          "documentation":"<p>The error code associated with the error encountered when rebooting a node.</p> <p>Possible values:</p> <ul> <li> <p> <code>InstanceIdNotFound</code>: The instance does not exist in the specified cluster.</p> </li> <li> <p> <code>InvalidInstanceStatus</code>: The instance is in a state that does not allow rebooting. Wait for the instance to finish any ongoing changes before retrying.</p> </li> <li> <p> <code>InstanceIdInUse</code>: Another operation is already in progress for this node. Wait for the operation to complete before retrying.</p> </li> <li> <p> <code>InternalServerError</code>: An internal error occurred while processing this node.</p> </li> </ul>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable message describing the error encountered when rebooting a node.</p>"
+        }
+      },
+      "documentation":"<p>Represents an error encountered when rebooting a node from a SageMaker HyperPod cluster.</p>"
+    },
+    "BatchRebootClusterNodesErrorCode":{
+      "type":"string",
+      "enum":[
+        "InstanceIdNotFound",
+        "InvalidInstanceStatus",
+        "InstanceIdInUse",
+        "InternalServerError"
+      ]
+    },
+    "BatchRebootClusterNodesErrors":{
+      "type":"list",
+      "member":{"shape":"BatchRebootClusterNodesError"},
+      "max":25,
+      "min":0
+    },
+    "BatchRebootClusterNodesRequest":{
+      "type":"structure",
+      "required":["ClusterName"],
+      "members":{
+        "ClusterName":{
+          "shape":"ClusterNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the SageMaker HyperPod cluster containing the nodes to reboot.</p>"
+        },
+        "NodeIds":{
+          "shape":"BatchRebootClusterNodesRequestNodeIdsList",
+          "documentation":"<p>A list of EC2 instance IDs to reboot using soft recovery. You can specify between 1 and 25 instance IDs.</p> <note> <ul> <li> <p>Either <code>NodeIds</code> or <code>NodeLogicalIds</code> must be provided (or both), but at least one is required.</p> </li> <li> <p>Each instance ID must follow the pattern <code>i-</code> followed by 17 hexadecimal characters (for example, <code>i-0123456789abcdef0</code>).</p> </li> </ul> </note>"
+        },
+        "NodeLogicalIds":{
+          "shape":"BatchRebootClusterNodesRequestNodeLogicalIdsList",
+          "documentation":"<p>A list of logical node IDs to reboot using soft recovery. You can specify between 1 and 25 logical node IDs.</p> <p>The <code>NodeLogicalId</code> is a unique identifier that persists throughout the node's lifecycle and can be used to track nodes that are still being provisioned and don't yet have an EC2 instance ID assigned.</p> <important> <ul> <li> <p>This parameter is only supported for clusters using <code>Continuous</code> as the <code>NodeProvisioningMode</code>. For clusters using the default provisioning mode, use <code>NodeIds</code> instead.</p> </li> <li> <p>Either <code>NodeIds</code> or <code>NodeLogicalIds</code> must be provided (or both), but at least one is required.</p> </li> </ul> </important>"
+        }
+      }
+    },
+    "BatchRebootClusterNodesRequestNodeIdsList":{
+      "type":"list",
+      "member":{"shape":"ClusterNodeId"},
+      "max":25,
+      "min":1
+    },
+    "BatchRebootClusterNodesRequestNodeLogicalIdsList":{
+      "type":"list",
+      "member":{"shape":"ClusterNodeLogicalId"},
+      "max":25,
+      "min":1
+    },
+    "BatchRebootClusterNodesResponse":{
+      "type":"structure",
+      "members":{
+        "Successful":{
+          "shape":"ClusterNodeIds",
+          "documentation":"<p>A list of EC2 instance IDs for which the reboot operation was successfully initiated.</p>"
+        },
+        "Failed":{
+          "shape":"BatchRebootClusterNodesErrors",
+          "documentation":"<p>A list of errors encountered for EC2 instance IDs that could not be rebooted. Each error includes the instance ID, an error code, and a descriptive message.</p>"
+        },
+        "FailedNodeLogicalIds":{
+          "shape":"BatchRebootClusterNodeLogicalIdsErrors",
+          "documentation":"<p>A list of errors encountered for logical node IDs that could not be rebooted. Each error includes the logical node ID, an error code, and a descriptive message. This field is only present when <code>NodeLogicalIds</code> were provided in the request.</p>"
+        },
+        "SuccessfulNodeLogicalIds":{
+          "shape":"ClusterNodeLogicalIdList",
+          "documentation":"<p>A list of logical node IDs for which the reboot operation was successfully initiated. This field is only present when <code>NodeLogicalIds</code> were provided in the request.</p>"
+        }
+      }
+    },
+    "BatchReplaceClusterNodeLogicalIdsError":{
+      "type":"structure",
+      "required":[
+        "NodeLogicalId",
+        "ErrorCode",
+        "Message"
+      ],
+      "members":{
+        "NodeLogicalId":{
+          "shape":"ClusterNodeLogicalId",
+          "documentation":"<p>The logical node ID of the node that encountered an error during the replacement operation.</p>"
+        },
+        "ErrorCode":{
+          "shape":"BatchReplaceClusterNodesErrorCode",
+          "documentation":"<p>The error code associated with the error encountered when replacing a node by logical node ID.</p> <p>Possible values:</p> <ul> <li> <p> <code>InstanceIdNotFound</code>: The node does not exist in the specified cluster.</p> </li> <li> <p> <code>InvalidInstanceStatus</code>: The node is in a state that does not allow replacement. Wait for the node to finish any ongoing changes before retrying.</p> </li> <li> <p> <code>InstanceIdInUse</code>: Another operation is already in progress for this node. Wait for the operation to complete before retrying.</p> </li> <li> <p> <code>InternalServerError</code>: An internal error occurred while processing this node.</p> </li> </ul>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable message describing the error encountered when replacing a node by logical node ID.</p>"
+        }
+      },
+      "documentation":"<p>Represents an error encountered when replacing a node (identified by its logical node ID) in a SageMaker HyperPod cluster.</p>"
+    },
+    "BatchReplaceClusterNodeLogicalIdsErrors":{
+      "type":"list",
+      "member":{"shape":"BatchReplaceClusterNodeLogicalIdsError"},
+      "max":25,
+      "min":0
+    },
+    "BatchReplaceClusterNodesError":{
+      "type":"structure",
+      "required":[
+        "NodeId",
+        "ErrorCode",
+        "Message"
+      ],
+      "members":{
+        "NodeId":{
+          "shape":"ClusterNodeId",
+          "documentation":"<p>The EC2 instance ID of the node that encountered an error during the replacement operation.</p>"
+        },
+        "ErrorCode":{
+          "shape":"BatchReplaceClusterNodesErrorCode",
+          "documentation":"<p>The error code associated with the error encountered when replacing a node.</p> <p>Possible values:</p> <ul> <li> <p> <code>InstanceIdNotFound</code>: The instance does not exist in the specified cluster.</p> </li> <li> <p> <code>InvalidInstanceStatus</code>: The instance is in a state that does not allow replacement. Wait for the instance to finish any ongoing changes before retrying.</p> </li> <li> <p> <code>InstanceIdInUse</code>: Another operation is already in progress for this node. Wait for the operation to complete before retrying.</p> </li> <li> <p> <code>InternalServerError</code>: An internal error occurred while processing this node.</p> </li> </ul>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable message describing the error encountered when replacing a node.</p>"
+        }
+      },
+      "documentation":"<p>Represents an error encountered when replacing a node in a SageMaker HyperPod cluster.</p>"
+    },
+    "BatchReplaceClusterNodesErrorCode":{
+      "type":"string",
+      "enum":[
+        "InstanceIdNotFound",
+        "InvalidInstanceStatus",
+        "InstanceIdInUse",
+        "InternalServerError"
+      ]
+    },
+    "BatchReplaceClusterNodesErrors":{
+      "type":"list",
+      "member":{"shape":"BatchReplaceClusterNodesError"},
+      "max":25,
+      "min":0
+    },
+    "BatchReplaceClusterNodesRequest":{
+      "type":"structure",
+      "required":["ClusterName"],
+      "members":{
+        "ClusterName":{
+          "shape":"ClusterNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the SageMaker HyperPod cluster containing the nodes to replace.</p>"
+        },
+        "NodeIds":{
+          "shape":"BatchReplaceClusterNodesRequestNodeIdsList",
+          "documentation":"<p>A list of EC2 instance IDs to replace with new hardware. You can specify between 1 and 25 instance IDs.</p> <important> <p>Replace operations destroy all instance volumes (root and secondary). Ensure you have backed up any important data before proceeding.</p> </important> <note> <ul> <li> <p>Either <code>NodeIds</code> or <code>NodeLogicalIds</code> must be provided (or both), but at least one is required.</p> </li> <li> <p>Each instance ID must follow the pattern <code>i-</code> followed by 17 hexadecimal characters (for example, <code>i-0123456789abcdef0</code>).</p> </li> <li> <p>For SageMaker HyperPod clusters using the Slurm workload manager, you cannot replace instances that are configured as Slurm controller nodes.</p> </li> </ul> </note>"
+        },
+        "NodeLogicalIds":{
+          "shape":"BatchReplaceClusterNodesRequestNodeLogicalIdsList",
+          "documentation":"<p>A list of logical node IDs to replace with new hardware. You can specify between 1 and 25 logical node IDs.</p> <p>The <code>NodeLogicalId</code> is a unique identifier that persists throughout the node's lifecycle and can be used to track nodes that are still being provisioned and don't yet have an EC2 instance ID assigned.</p> <important> <ul> <li> <p>Replace operations destroy all instance volumes (root and secondary). Ensure you have backed up any important data before proceeding.</p> </li> <li> <p>This parameter is only supported for clusters using <code>Continuous</code> as the <code>NodeProvisioningMode</code>. For clusters using the default provisioning mode, use <code>NodeIds</code> instead.</p> </li> <li> <p>Either <code>NodeIds</code> or <code>NodeLogicalIds</code> must be provided (or both), but at least one is required.</p> </li> </ul> </important>"
+        }
+      }
+    },
+    "BatchReplaceClusterNodesRequestNodeIdsList":{
+      "type":"list",
+      "member":{"shape":"ClusterNodeId"},
+      "max":25,
+      "min":1
+    },
+    "BatchReplaceClusterNodesRequestNodeLogicalIdsList":{
+      "type":"list",
+      "member":{"shape":"ClusterNodeLogicalId"},
+      "max":25,
+      "min":1
+    },
+    "BatchReplaceClusterNodesResponse":{
+      "type":"structure",
+      "members":{
+        "Successful":{
+          "shape":"ClusterNodeIds",
+          "documentation":"<p>A list of EC2 instance IDs for which the replacement operation was successfully initiated.</p>"
+        },
+        "Failed":{
+          "shape":"BatchReplaceClusterNodesErrors",
+          "documentation":"<p>A list of errors encountered for EC2 instance IDs that could not be replaced. Each error includes the instance ID, an error code, and a descriptive message.</p>"
+        },
+        "FailedNodeLogicalIds":{
+          "shape":"BatchReplaceClusterNodeLogicalIdsErrors",
+          "documentation":"<p>A list of errors encountered for logical node IDs that could not be replaced. Each error includes the logical node ID, an error code, and a descriptive message. This field is only present when <code>NodeLogicalIds</code> were provided in the request.</p>"
+        },
+        "SuccessfulNodeLogicalIds":{
+          "shape":"ClusterNodeLogicalIdList",
+          "documentation":"<p>A list of logical node IDs for which the replacement operation was successfully initiated. This field is only present when <code>NodeLogicalIds</code> were provided in the request.</p>"
+        }
+      }
+    },
     "BatchStrategy":{
       "type":"string",
       "enum":[
@@ -9138,6 +9424,10 @@
         "UltraServerInfo":{
           "shape":"UltraServerInfo",
           "documentation":"<p>Contains information about the UltraServer.</p>"
+        },
+        "PrivateDnsHostname":{
+          "shape":"ClusterPrivateDnsHostname",
+          "documentation":"<p>The private DNS hostname of the SageMaker HyperPod cluster node.</p>"
         }
       },
       "documentation":"<p>Lists a summary of the properties of an instance (also called a <i>node</i> interchangeably) of a SageMaker HyperPod cluster.</p>"
@@ -9819,6 +10109,10 @@
         "MemoryInGiB":{
           "shape":"MemoryInGiBAmount",
           "documentation":"<p>The amount of memory in GiB to allocate. If you specify a value only for this parameter, SageMaker AI automatically allocates a ratio-based value for vCPU based on this memory that you provide. For example, if you allocate 200 out of 400 total memory in GiB, SageMaker AI uses the ratio of 0.5 and allocates values to vCPU. Accelerators are set to 0.</p>"
+        },
+        "AcceleratorPartition":{
+          "shape":"AcceleratorPartitionConfig",
+          "documentation":"<p>The accelerator partition configuration for fractional GPU allocation.</p>"
         }
       },
       "documentation":"<p>Configuration of the resources used for the compute allocation definition.</p>"
@@ -19647,7 +19941,7 @@
         },
         "TargetResources":{
           "shape":"SageMakerResourceNames",
-          "documentation":"<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod) that can use this training plan.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> </ul>"
+          "documentation":"<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints) that can use this training plan.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> </ul>"
         },
         "ReservedCapacitySummaries":{
           "shape":"ReservedCapacitySummaries",
@@ -30935,6 +31229,39 @@
       "min":0,
       "pattern":"(https|s3)://([^/]+)/?(.*)"
     },
+    "MIGProfileType":{
+      "type":"string",
+      "enum":[
+        "mig-1g.5gb",
+        "mig-1g.10gb",
+        "mig-1g.18gb",
+        "mig-1g.20gb",
+        "mig-1g.23gb",
+        "mig-1g.35gb",
+        "mig-1g.45gb",
+        "mig-1g.47gb",
+        "mig-2g.10gb",
+        "mig-2g.20gb",
+        "mig-2g.35gb",
+        "mig-2g.45gb",
+        "mig-2g.47gb",
+        "mig-3g.20gb",
+        "mig-3g.40gb",
+        "mig-3g.71gb",
+        "mig-3g.90gb",
+        "mig-3g.93gb",
+        "mig-4g.20gb",
+        "mig-4g.40gb",
+        "mig-4g.71gb",
+        "mig-4g.90gb",
+        "mig-4g.93gb",
+        "mig-7g.40gb",
+        "mig-7g.80gb",
+        "mig-7g.141gb",
+        "mig-7g.180gb",
+        "mig-7g.186gb"
+      ]
+    },
     "MLFramework":{
       "type":"string",
       "max":128,
@@ -39164,7 +39491,8 @@
       "type":"string",
       "enum":[
         "training-job",
-        "hyperpod-cluster"
+        "hyperpod-cluster",
+        "endpoint"
       ]
     },
     "SageMakerResourceNames":{
@@ -39504,7 +39832,7 @@
         },
         "TargetResources":{
           "shape":"SageMakerResourceNames",
-          "documentation":"<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod) to search for in the offerings.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> </ul>"
+          "documentation":"<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints) to search for in the offerings.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> </ul>"
         }
       }
     },
@@ -42375,7 +42703,7 @@
         },
         "TargetResources":{
           "shape":"SageMakerResourceNames",
-          "documentation":"<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod) for this training plan offering.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> </ul>"
+          "documentation":"<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints) for this training plan offering.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> </ul>"
         },
         "RequestedStartTimeAfter":{
           "shape":"Timestamp",
@@ -42519,7 +42847,7 @@
         },
         "TargetResources":{
           "shape":"SageMakerResourceNames",
-          "documentation":"<p>The target resources (e.g., training jobs, HyperPod clusters) that can use this training plan.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> </ul>"
+          "documentation":"<p>The target resources (e.g., training jobs, HyperPod clusters, Endpoints) that can use this training plan.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> </ul>"
         },
         "ReservedCapacitySummaries":{
           "shape":"ReservedCapacitySummaries",

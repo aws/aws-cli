@@ -5065,6 +5065,20 @@
       },
       "documentation":"<p> The result of the <a>RunJobFlow</a> operation. </p>"
     },
+    "S3MonitoringConfiguration":{
+      "type":"structure",
+      "members":{
+        "LogUri":{
+          "shape":"XmlString",
+          "documentation":"<p>The Amazon S3 destination URI for log publishing.</p>"
+        },
+        "EncryptionKeyArn":{
+          "shape":"XmlString",
+          "documentation":"<p>The KMS key ARN to encrypt the logs published to the given Amazon S3 destination.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 configuration for monitoring log publishing. You can configure your step to send log information to Amazon S3. When it's specified, it takes precedence over the cluster's logging configuration. If you don't specify this configuration entirely, or omit individual fields, EMR falls back to cluster-level logging behavior.</p>"
+    },
     "ScaleDownBehavior":{
       "type":"string",
       "enum":[
@@ -5539,6 +5553,14 @@
         "ExecutionRoleArn":{
           "shape":"OptionalArnType",
           "documentation":"<p>The Amazon Resource Name (ARN) of the runtime role for a step on the cluster. The runtime role can be a cross-account IAM role. The runtime role ARN is a combination of account ID, role name, and role type using the following format: <code>arn:partition:service:region:account:resource</code>. </p> <p>For example, <code>arn:aws:IAM::1234567890:role/ReadOnly</code> is a correctly formatted runtime role ARN.</p>"
+        },
+        "LogUri":{
+          "shape":"String",
+          "documentation":"<p>The Amazon S3 destination URI for log publishing.</p>"
+        },
+        "EncryptionKeyArn":{
+          "shape":"String",
+          "documentation":"<p>The KMS key ARN to encrypt the logs published to the given Amazon S3 destination.</p>"
         }
       },
       "documentation":"<p>This represents a step in a cluster.</p>"
@@ -5568,6 +5590,10 @@
         "HadoopJarStep":{
           "shape":"HadoopJarStepConfig",
           "documentation":"<p>The JAR file used for the step.</p>"
+        },
+        "StepMonitoringConfiguration":{
+          "shape":"StepMonitoringConfiguration",
+          "documentation":"<p>Object that holds configuration properties for logging.</p>"
         }
       },
       "documentation":"<p>Specification for a cluster (job flow) step.</p>"
@@ -5644,6 +5670,16 @@
     "StepIdsList":{
       "type":"list",
       "member":{"shape":"XmlStringMaxLen256"}
+    },
+    "StepMonitoringConfiguration":{
+      "type":"structure",
+      "members":{
+        "S3MonitoringConfiguration":{
+          "shape":"S3MonitoringConfiguration",
+          "documentation":"<p>The Amazon S3 configuration for monitoring log publishing. You can configure your step to send log information to Amazon S3. When it's specified, it takes precedence over the cluster's logging configuration. If you don't specify this configuration entirely, or omit individual fields, EMR falls back to cluster-level logging behavior. </p>"
+        }
+      },
+      "documentation":"<p>Object that holds configuration properties for logging.</p>"
     },
     "StepState":{
       "type":"string",
@@ -5723,6 +5759,14 @@
         "Status":{
           "shape":"StepStatus",
           "documentation":"<p>The current execution status details of the cluster step.</p>"
+        },
+        "LogUri":{
+          "shape":"String",
+          "documentation":"<p>The Amazon S3 destination URI for log publishing.</p>"
+        },
+        "EncryptionKeyArn":{
+          "shape":"String",
+          "documentation":"<p>The KMS key ARN to encrypt the logs published to the given Amazon S3 destination.</p>"
         }
       },
       "documentation":"<p>The summary of the cluster step.</p>"

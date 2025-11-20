@@ -469,6 +469,8 @@
       "input":{"shape":"GetEventConfigurationRequest"},
       "output":{"shape":"GetEventConfigurationResponse"},
       "errors":[
+        {"shape":"TrailNotFoundException"},
+        {"shape":"InvalidTrailNameException"},
         {"shape":"CloudTrailARNInvalidException"},
         {"shape":"UnsupportedOperationException"},
         {"shape":"OperationNotPermittedException"},
@@ -480,7 +482,7 @@
         {"shape":"NoManagementAccountSLRExistsException"},
         {"shape":"InvalidParameterCombinationException"}
       ],
-      "documentation":"<p>Retrieves the current event configuration settings for the specified event data store, including details about maximum event size and context key selectors configured for the event data store.</p>",
+      "documentation":"<p>Retrieves the current event configuration settings for the specified event data store or trail. The response includes maximum event size configuration, the context key selectors configured for the event data store, and any aggregation settings configured for the trail.</p>",
       "idempotent":true
     },
     "GetEventDataStore":{
@@ -864,6 +866,11 @@
       "input":{"shape":"PutEventConfigurationRequest"},
       "output":{"shape":"PutEventConfigurationResponse"},
       "errors":[
+        {"shape":"TrailNotFoundException"},
+        {"shape":"InvalidTrailNameException"},
+        {"shape":"CloudTrailARNInvalidException"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"InvalidHomeRegionException"},
         {"shape":"EventDataStoreARNInvalidException"},
         {"shape":"EventDataStoreNotFoundException"},
         {"shape":"InvalidEventDataStoreStatusException"},
@@ -873,15 +880,13 @@
         {"shape":"OperationNotPermittedException"},
         {"shape":"ThrottlingException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"InvalidParameterCombinationException"},
-        {"shape":"CloudTrailARNInvalidException"},
         {"shape":"ConflictException"},
         {"shape":"NotOrganizationMasterAccountException"},
         {"shape":"NoManagementAccountSLRExistsException"},
         {"shape":"InsufficientDependencyServiceAccessPermissionException"},
         {"shape":"InsufficientIAMAccessPermissionException"}
       ],
-      "documentation":"<p>Updates the event configuration settings for the specified event data store. You can update the maximum event size and context key selectors.</p>",
+      "documentation":"<p>Updates the event configuration settings for the specified event data store or trail. This operation supports updating the maximum event size, adding or modifying context key selectors for event data store, and configuring aggregation settings for the trail.</p>",
       "idempotent":true
     },
     "PutEventSelectors":{
@@ -1479,6 +1484,29 @@
       "type":"list",
       "member":{"shape":"AdvancedFieldSelector"},
       "min":1
+    },
+    "AggregationConfiguration":{
+      "type":"structure",
+      "required":[
+        "Templates",
+        "EventCategory"
+      ],
+      "members":{
+        "Templates":{
+          "shape":"Templates",
+          "documentation":"<p>A list of aggregation templates that can be used to configure event aggregation.</p>"
+        },
+        "EventCategory":{
+          "shape":"EventCategoryAggregation",
+          "documentation":"<p>Specifies the event category for which aggregation should be performed.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains configuration settings for aggregating events.</p>"
+    },
+    "AggregationConfigurations":{
+      "type":"list",
+      "member":{"shape":"AggregationConfiguration"},
+      "max":1
     },
     "BillingMode":{
       "type":"string",
@@ -2381,7 +2409,12 @@
     },
     "EventCategory":{
       "type":"string",
+      "documentation":"<p>Specifies the event category for which aggregation configuration is enabled. Valid value is Data.</p>",
       "enum":["insight"]
+    },
+    "EventCategoryAggregation":{
+      "type":"string",
+      "enum":["Data"]
     },
     "EventDataStore":{
       "type":"structure",
@@ -2722,6 +2755,10 @@
     "GetEventConfigurationRequest":{
       "type":"structure",
       "members":{
+        "TrailName":{
+          "shape":"String",
+          "documentation":"<p>The name of the trail for which you want to retrieve event configuration settings.</p>"
+        },
         "EventDataStore":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) or ID suffix of the ARN of the event data store for which you want to retrieve event configuration settings.</p>"
@@ -2731,6 +2768,10 @@
     "GetEventConfigurationResponse":{
       "type":"structure",
       "members":{
+        "TrailARN":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trail for which the event configuration settings are returned.</p>"
+        },
         "EventDataStoreArn":{
           "shape":"EventDataStoreArn",
           "documentation":"<p>The Amazon Resource Name (ARN) or ID suffix of the ARN of the event data store for which the event configuration settings are returned.</p>"
@@ -2742,6 +2783,10 @@
         "ContextKeySelectors":{
           "shape":"ContextKeySelectors",
           "documentation":"<p>The list of context key selectors that are configured for the event data store.</p>"
+        },
+        "AggregationConfigurations":{
+          "shape":"AggregationConfigurations",
+          "documentation":"<p>The list of aggregation configurations that are configured for the trail.</p>"
         }
       }
     },
@@ -4272,14 +4317,14 @@
     },
     "PutEventConfigurationRequest":{
       "type":"structure",
-      "required":[
-        "MaxEventSize",
-        "ContextKeySelectors"
-      ],
       "members":{
+        "TrailName":{
+          "shape":"String",
+          "documentation":"<p>The name of the trail for which you want to update event configuration settings.</p>"
+        },
         "EventDataStore":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) or ID suffix of the ARN of the event data store for which you want to update event configuration settings.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) or ID suffix of the ARN of the event data store for which event configuration settings are updated.</p>"
         },
         "MaxEventSize":{
           "shape":"MaxEventSize",
@@ -4288,12 +4333,20 @@
         "ContextKeySelectors":{
           "shape":"ContextKeySelectors",
           "documentation":"<p>A list of context key selectors that will be included to provide enriched event data.</p>"
+        },
+        "AggregationConfigurations":{
+          "shape":"AggregationConfigurations",
+          "documentation":"<p>The list of aggregation configurations that you want to configure for the trail.</p>"
         }
       }
     },
     "PutEventConfigurationResponse":{
       "type":"structure",
       "members":{
+        "TrailARN":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the trail that has aggregation enabled.</p>"
+        },
         "EventDataStoreArn":{
           "shape":"EventDataStoreArn",
           "documentation":"<p>The Amazon Resource Name (ARN) or ID suffix of the ARN of the event data store for which the event configuration settings were updated.</p>"
@@ -4305,6 +4358,10 @@
         "ContextKeySelectors":{
           "shape":"ContextKeySelectors",
           "documentation":"<p>The list of context key selectors that are configured for the event data store.</p>"
+        },
+        "AggregationConfigurations":{
+          "shape":"AggregationConfigurations",
+          "documentation":"<p>A list of aggregation configurations that are configured for the trail.</p>"
         }
       }
     },
@@ -5256,6 +5313,21 @@
       "member":{"shape":"Tag"},
       "documentation":"<p>A list of tags.</p>",
       "max":200
+    },
+    "Template":{
+      "type":"string",
+      "documentation":"<p>Specifies the type of the aggregation templates in the aggregation configuration. Valid values include API_ACTIVITY, RESOURCE_ACCESS and USER_ACTIONS.</p>",
+      "enum":[
+        "API_ACTIVITY",
+        "RESOURCE_ACCESS",
+        "USER_ACTIONS"
+      ]
+    },
+    "Templates":{
+      "type":"list",
+      "member":{"shape":"Template"},
+      "max":50,
+      "min":1
     },
     "TerminationProtectionEnabled":{"type":"boolean"},
     "ThrottlingException":{

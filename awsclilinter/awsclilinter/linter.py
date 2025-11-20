@@ -50,5 +50,4 @@ def apply_fixes(ast: SgRoot, findings: List[LintFinding]) -> str:
 
     # Collect all edits - they should be non-overlapping within a single rule
     edits = [f.edit for f in findings]
-    print(edits)
     return root.commit_edits(edits)

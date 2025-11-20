@@ -122,7 +122,7 @@ class ZipFileArgument(CustomArgument):
 
 
 class ReplacedZipFileArgument(CLIArgument):
-    """A replacement arugment for nested ZipFile argument.
+    """A replacement argument for nested ZipFile argument.
 
     This prevents the use of a non-working nested argument that expects binary.
     Instead an instance of ZipFileArgument should be injected at the top level

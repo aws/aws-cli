@@ -7,7 +7,7 @@ The policy is attached to the model in account ``111122223333`` and allows accou
         --resource-arn arn:aws:comprehend:us-west-2:111122223333:document-classifier/example-classifier/version/1 \
         --resource-policy '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":"comprehend:ImportModel","Resource":"*","Principal":{"AWS":["arn:aws:iam::444455556666:root"]}}]}'
 
-Ouput::
+Output::
 
     {
         "PolicyRevisionId": "aaa111d069d07afaa2aa3106aEXAMPLE"

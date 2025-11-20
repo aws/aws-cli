@@ -1,6 +1,6 @@
 **To get the results of a celebrity recognition operation**
 
-The following ``get-celebrity-recognition`` command diplays the results of a celebrity recognition operation that you started previously by calling ``start-celebrity-recognition``. ::
+The following ``get-celebrity-recognition`` command displays the results of a celebrity recognition operation that you started previously by calling ``start-celebrity-recognition``. ::
 
     aws rekognition get-celebrity-recognition  \
         --job-id 1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef

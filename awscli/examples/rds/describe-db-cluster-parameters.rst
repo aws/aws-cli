@@ -103,7 +103,7 @@ Output::
         }
     ]
 
-**Example 4: To describe only the modifable Boolean parameters in a DB cluster parameter group**
+**Example 4: To describe only the modifiable Boolean parameters in a DB cluster parameter group**
 
 The following ``describe-db-cluster-parameters`` example retrieves the names of only the parameters that you can modify in a DB cluster parameter group and that have a Boolean data type. ::
 

@@ -73,7 +73,7 @@ COMMANDS = [
 # at least one command for each service.
 #
 # This verifies that service errors are properly displayed to the user, as
-# opposed to either silently failing or inproperly handling the error responses
+# opposed to either silently failing or improperly handling the error responses
 # and not displaying something useful.  Each command tries to call an operation
 # with an identifier that does not exist, and part of the identifier is also
 # randomly generated to help ensure that is the case.

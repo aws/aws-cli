@@ -306,7 +306,8 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                         'Key': 'mykey',
                         'LastModified': '00:00:00Z',
                         'Size': 100,
-                        'ChecksumAlgorithm': 'SHA1'
+                        'ChecksumAlgorithm': 'SHA1',
+                        'ETag': 'foo'
                     }
                 ],
                 'CommonPrefixes': []

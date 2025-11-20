@@ -389,10 +389,12 @@ class CopyPartTask(Task):
             )
         except ClientError as e:
             error_code = e.response.get('Error', {}).get('Code')
+            src_key = copy_source['Key']
+            src_bucket = copy_source['Bucket']
             if error_code == "PreconditionFailed":
                 raise S3CopyFailedError(
-                    f'Contents of stored object "{copy_source['Key']}" '
-                    f'in bucket "{copy_source['Bucket']}" did not match '
+                    f'Contents of stored object "{src_key}" '
+                    f'in bucket "{src_bucket}" did not match '
                     'expected ETag.'
                 )
             else:

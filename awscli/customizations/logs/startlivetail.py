@@ -620,6 +620,7 @@ class InteractiveUI(BaseLiveTailUI):
         log_events,
         session_metadata: LiveTailSessionMetadata,
         app_output=None,
+        app_input=None,
     ) -> None:
         self._log_events = log_events
         self._session_metadata = session_metadata
@@ -633,9 +634,9 @@ class InteractiveUI(BaseLiveTailUI):
             self._session_metadata,
             self._keywords_to_highlight,
         )
-        self._create_ui(app_output)
+        self._create_ui(app_output, app_input)
 
-    def _create_ui(self, app_output):
+    def _create_ui(self, app_output, app_input):
         prompt_buffer = Buffer()
         self._prompt_buffer_control = BufferControl(prompt_buffer)
         prompt_buffer_window = Window(self._prompt_buffer_control)
@@ -677,6 +678,7 @@ class InteractiveUI(BaseLiveTailUI):
             key_bindings=self._key_bindings,
             refresh_interval=1,
             output=app_output,
+            input=app_input,
         )
 
     @property

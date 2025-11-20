@@ -630,6 +630,7 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         # Make sure the subscriber applied are of the correct type and order
         ref_subscribers = [
             ProvideSizeSubscriber,
+            ProvideETagSubscriber,
             ProvideCopyContentTypeSubscriber,
             CopyResultSubscriber
         ]
@@ -663,6 +664,7 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
             copy_call_kwargs['extra_args'], {'ContentType': 'text/plain'})
         ref_subscribers = [
             ProvideSizeSubscriber,
+            ProvideETagSubscriber,
             CopyResultSubscriber
         ]
         actual_subscribers = copy_call_kwargs['subscribers']
@@ -680,6 +682,7 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         copy_call_kwargs = self.transfer_manager.copy.call_args[1]
         ref_subscribers = [
             ProvideSizeSubscriber,
+            ProvideETagSubscriber,
             CopyResultSubscriber
         ]
         actual_subscribers = copy_call_kwargs['subscribers']
@@ -797,6 +800,7 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.transfer_request_submitter.submit(fileinfo)
         ref_subscribers = [
             ProvideSizeSubscriber,
+            ProvideETagSubscriber,
             ProvideCopyContentTypeSubscriber,
             DeleteSourceObjectSubscriber,
             CopyResultSubscriber,

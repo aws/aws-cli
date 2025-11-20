@@ -48,7 +48,11 @@ class TestMvCommand(BaseS3TransferCommandTest):
 
     def test_metadata_directive_copy(self):
         self.parsed_responses = [
-            {"ContentLength": "100", "LastModified": "00:00:00Z"},
+            {
+                "ContentLength": "100",
+                "LastModified": "00:00:00Z",
+                "ETag": '"foo-1"',
+            },
             {'ETag': '"foo-1"'},
             {'ETag': '"foo-2"'}
         ]

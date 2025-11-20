@@ -1,4 +1,4 @@
-from awsclilinter.linter import ScriptLinter
+from awsclilinter import linter
 from awsclilinter.rules.base64_rule import Base64BinaryFormatRule
 
 
@@ -8,8 +8,7 @@ class TestScriptLinter:
     def test_lint_finds_issues(self):
         """Test that linter finds issues in script."""
         script = "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json"
-        linter = ScriptLinter([Base64BinaryFormatRule()])
-        findings_with_rules = linter.lint(script)
+        findings_with_rules = linter.lint(script, [Base64BinaryFormatRule()])
 
         assert len(findings_with_rules) == 1
         finding, rule = findings_with_rules[0]
@@ -19,8 +18,7 @@ class TestScriptLinter:
     def test_apply_fixes(self):
         """Test that fixes are applied correctly."""
         script = "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json"
-        linter = ScriptLinter([Base64BinaryFormatRule()])
-        findings_with_rules = linter.lint(script)
+        findings_with_rules = linter.lint(script, [Base64BinaryFormatRule()])
         findings = [f for f, _ in findings_with_rules]
         fixed = linter.apply_fixes(script, findings)
 
@@ -35,8 +33,7 @@ class TestScriptLinter:
             "            aws kinesis put-record --stream-name samplestream "
             "--data file://data --partition-key samplepartitionkey"
         )
-        linter = ScriptLinter([Base64BinaryFormatRule()])
-        findings_with_rules = linter.lint(script)
+        findings_with_rules = linter.lint(script, [Base64BinaryFormatRule()])
 
         # 2 commands, 1 rule = 2 findings
         assert len(findings_with_rules) == 2

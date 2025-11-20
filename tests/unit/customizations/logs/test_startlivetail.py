@@ -17,6 +17,7 @@ from prompt_toolkit.application import Application
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.key_binding import KeyPressEvent
 from prompt_toolkit.output import DummyOutput
+from prompt_toolkit.input import create_pipe_input
 
 from awscli.compat import StringIO
 from awscli.customizations.logs.startlivetail import (
@@ -607,7 +608,8 @@ class InteractiveUITest(unittest.IsolatedAsyncioTestCase):
         self.log_events = []
         self.session_metadata = LiveTailSessionMetadata()
         self.ui = InteractiveUI(
-            self.log_events, self.session_metadata, app_output=DummyOutput()
+            self.log_events, self.session_metadata, app_output=DummyOutput(),
+            app_input=create_pipe_input()
         )
 
     def test_update_toolbar(self):

@@ -38,6 +38,5 @@ class LintRule(ABC):
 
         Args:
             root: The AST root to check
-            start_pos: Starting position in the script to begin checking from
         """
         pass

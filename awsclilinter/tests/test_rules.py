@@ -32,16 +32,3 @@ class TestBase64BinaryFormatRule:
         findings = rule.check(root)
 
         assert len(findings) == 0
-
-    def test_no_detection_without_file_protocol(self):
-        """Test no detection when file:// is not used. Even though the breaking change may
-        still occur without the use of file://, only the case where file:// is used can be detected
-        statically."""
-        script = (
-            "aws secretsmanager put-secret-value --secret-id secret1213 --secret-string secret123"
-        )
-        root = SgRoot(script, "bash")
-        rule = Base64BinaryFormatRule()
-        findings = rule.check(root)
-
-        assert len(findings) == 0

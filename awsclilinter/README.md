@@ -67,7 +67,8 @@ In interactive mode, you can:
 - Press `y` to accept the current change
 - Press `n` to skip the current change
 - Press `u` to accept all remaining changes
-- Press `s` to save and exit (applies all accepted changes so far)
+- Press `s` to save and exit
+- Press `q` to quit without saving
 
 ## Development
 

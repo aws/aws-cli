@@ -34,5 +34,9 @@ class LintRule(ABC):
 
     @abstractmethod
     def check(self, root: SgRoot) -> List[LintFinding]:
-        """Check the AST root for violations and return findings."""
+        """Check the AST root for violations and return findings.
+
+        Args:
+            root: The AST root to check
+        """
         pass

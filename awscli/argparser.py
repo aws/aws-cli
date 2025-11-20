@@ -112,8 +112,10 @@ class CLIArgParser(argparse.ArgumentParser):
         If you override this in a subclass, it should not return -- it
         should raise an exception.
         """
+        from awscli.errorformat import format_error_message
+
         usage_message = self.format_usage()
-        error_message = f'{self.prog}: [ERROR]: {message}'
+        error_message = format_error_message(message, prog=self.prog)
         raise ArgParseException(f'{error_message}\n\n{usage_message}')
 
 

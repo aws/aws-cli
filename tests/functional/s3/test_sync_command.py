@@ -423,6 +423,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                     upload_id,
                     CopySourceRange=mock.ANY,
                     PartNumber=1,
+                    CopySourceIfMatch='"foo-1"',
                 ),
                 self.complete_mpu_request('bucket', 'key', upload_id, 1),
                 self.put_object_tagging_request(
@@ -451,6 +452,7 @@ class TestSyncCommand(BaseS3TransferCommandTest):
                         'LastModified': '00:00:00Z',
                         'Size': 100,
                         'ChecksumAlgorithm': 'SHA1',
+                        'ETag': 'myetag',
                     }
                 ],
                 'CommonPrefixes': [],

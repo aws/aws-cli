@@ -68,6 +68,9 @@ from awscli.customizations.ec2instanceconnect import (
 from awscli.customizations.ecr import register_ecr_commands
 from awscli.customizations.ecr_public import register_ecr_public_commands
 from awscli.customizations.ecs import initialize as ecs_initialize
+from awscli.customizations.ecs.monitormutatinggatewayservice import (
+    register_monitor_mutating_gateway_service,
+)
 from awscli.customizations.eks import initialize as eks_initialize
 from awscli.customizations.emr.emr import emr_initialize
 from awscli.customizations.emrcontainers import (
@@ -188,6 +191,7 @@ def awscli_initialize(event_handlers):
     emrcontainers_initialize(event_handlers)
     eks_initialize(event_handlers)
     ecs_initialize(event_handlers)
+    register_monitor_mutating_gateway_service(event_handlers)
     lightsail_initialize(event_handlers)
     register_cloudsearchdomain(event_handlers)
     register_generate_cli_skeleton(event_handlers)

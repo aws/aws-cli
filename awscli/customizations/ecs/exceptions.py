@@ -19,7 +19,7 @@ class ECSError(Exception):
 
     def __init__(self, **kwargs):
         msg = self.fmt.format(**kwargs)
-        super(ECSError, self).__init__(msg)
+        super().__init__(msg)
         self.kwargs = kwargs
 
 
@@ -48,3 +48,13 @@ class InvalidServiceError(ECSError):
 
 class ServiceClientError(ECSError):
     fmt = "Failed to {action}:\n{error}"
+
+
+class MonitoringError(ECSError):
+    """Custom exception for monitoring-specific errors."""
+
+    fmt = '{message}'
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(message=message)

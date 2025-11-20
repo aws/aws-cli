@@ -50,6 +50,26 @@
       ],
       "documentation":"<p>Creates a new Amazon ECS cluster. By default, your account receives a <code>default</code> cluster when you launch your first container instance. However, you can create your own cluster with a unique name.</p> <note> <p>When you call the <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateCluster.html\">CreateCluster</a> API operation, Amazon ECS attempts to create the Amazon ECS service-linked role for your account. This is so that it can manage required resources in other Amazon Web Services services on your behalf. However, if the user that makes the call doesn't have permissions to create the service-linked role, it isn't created. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using-service-linked-roles.html\">Using service-linked roles for Amazon ECS</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </note>"
     },
+    "CreateExpressGatewayService":{
+      "name":"CreateExpressGatewayService",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateExpressGatewayServiceRequest"},
+      "output":{"shape":"CreateExpressGatewayServiceResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"PlatformUnknownException"},
+        {"shape":"PlatformTaskDefinitionIncompatibilityException"},
+        {"shape":"ServerException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Creates an Express service that simplifies deploying containerized web applications on Amazon ECS with managed Amazon Web Services infrastructure. This operation provisions and configures Application Load Balancers, target groups, security groups, and auto-scaling policies automatically.</p> <p>Specify a primary container configuration with your application image and basic settings. Amazon ECS creates the necessary Amazon Web Services resources for traffic distribution, health monitoring, network access control, and capacity management.</p> <p>Provide an execution role for task operations and an infrastructure role for managing Amazon Web Services resources on your behalf.</p>"
+    },
     "CreateService":{
       "name":"CreateService",
       "http":{
@@ -161,6 +181,26 @@
         {"shape":"UpdateInProgressException"}
       ],
       "documentation":"<p>Deletes the specified cluster. The cluster transitions to the <code>INACTIVE</code> state. Clusters with an <code>INACTIVE</code> status might remain discoverable in your account for a period of time. However, this behavior is subject to change in the future. We don't recommend that you rely on <code>INACTIVE</code> clusters persisting.</p> <p>You must deregister all container instances from this cluster before you may delete it. You can list the container instances in a cluster with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListContainerInstances.html\">ListContainerInstances</a> and deregister them with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeregisterContainerInstance.html\">DeregisterContainerInstance</a>.</p>"
+    },
+    "DeleteExpressGatewayService":{
+      "name":"DeleteExpressGatewayService",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteExpressGatewayServiceRequest"},
+      "output":{"shape":"DeleteExpressGatewayServiceResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ServerException"},
+        {"shape":"ServiceNotFoundException"},
+        {"shape":"ServiceNotActiveException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Deletes an Express service and removes all associated Amazon Web Services resources. This operation stops service tasks, removes the Application Load Balancer, target groups, security groups, auto-scaling policies, and other managed infrastructure components.</p> <p>The service enters a <code>DRAINING</code> state where existing tasks complete current requests without starting new tasks. After all tasks stop, the service and infrastructure are permanently removed.</p> <p>This operation cannot be reversed. Back up important data and verify the service is no longer needed before deletion.</p>"
     },
     "DeleteService":{
       "name":"DeleteService",
@@ -294,6 +334,25 @@
         {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p>Describes one or more container instances. Returns metadata about each container instance requested.</p>"
+    },
+    "DescribeExpressGatewayService":{
+      "name":"DescribeExpressGatewayService",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeExpressGatewayServiceRequest"},
+      "output":{"shape":"DescribeExpressGatewayServiceResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServerException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about an Express service, including current status, configuration, managed infrastructure, and service revisions.</p> <p>Returns comprehensive service details, active service revisions, ingress paths with endpoints, and managed Amazon Web Services resource status including load balancers and auto-scaling policies.</p> <p>Use the <code>include</code> parameter to retrieve additional information such as resource tags.</p>"
     },
     "DescribeServiceDeployments":{
       "name":"DescribeServiceDeployments",
@@ -958,6 +1017,26 @@
       ],
       "documentation":"<p>Modifies the status of an Amazon ECS container instance.</p> <p>Once a container instance has reached an <code>ACTIVE</code> state, you can change the status of a container instance to <code>DRAINING</code> to manually remove an instance from a cluster, for example to perform system updates, update the Docker daemon, or scale down the cluster size.</p> <important> <p>A container instance can't be changed to <code>DRAINING</code> until it has reached an <code>ACTIVE</code> status. If the instance is in any other status, an error will be received.</p> </important> <p>When you set a container instance to <code>DRAINING</code>, Amazon ECS prevents new tasks from being scheduled for placement on the container instance and replacement service tasks are started on other container instances in the cluster if the resources are available. Service tasks on the container instance that are in the <code>PENDING</code> state are stopped immediately.</p> <p>Service tasks on the container instance that are in the <code>RUNNING</code> state are stopped and replaced according to the service's deployment configuration parameters, <code>minimumHealthyPercent</code> and <code>maximumPercent</code>. You can change the deployment configuration of your service using <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_UpdateService.html\">UpdateService</a>.</p> <ul> <li> <p>If <code>minimumHealthyPercent</code> is below 100%, the scheduler can ignore <code>desiredCount</code> temporarily during task replacement. For example, <code>desiredCount</code> is four tasks, a minimum of 50% allows the scheduler to stop two existing tasks before starting two new tasks. If the minimum is 100%, the service scheduler can't remove existing tasks until the replacement tasks are considered healthy. Tasks for services that do not use a load balancer are considered healthy if they're in the <code>RUNNING</code> state. Tasks for services that use a load balancer are considered healthy if they're in the <code>RUNNING</code> state and are reported as healthy by the load balancer.</p> </li> <li> <p>The <code>maximumPercent</code> parameter represents an upper limit on the number of running tasks during task replacement. You can use this to define the replacement batch size. For example, if <code>desiredCount</code> is four tasks, a maximum of 200% starts four new tasks before stopping the four tasks to be drained, provided that the cluster resources required to do this are available. If the maximum is 100%, then replacement tasks can't start until the draining tasks have stopped.</p> </li> </ul> <p>Any <code>PENDING</code> or <code>RUNNING</code> tasks that do not belong to a service aren't affected. You must wait for them to finish or stop them manually.</p> <p>A container instance has completed draining when it has no more <code>RUNNING</code> tasks. You can verify this using <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListTasks.html\">ListTasks</a>.</p> <p>When a container instance has been drained, you can set a container instance to <code>ACTIVE</code> status and once it has reached that status the Amazon ECS scheduler can begin scheduling tasks on the instance again.</p>"
     },
+    "UpdateExpressGatewayService":{
+      "name":"UpdateExpressGatewayService",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateExpressGatewayServiceRequest"},
+      "output":{"shape":"UpdateExpressGatewayServiceResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ServerException"},
+        {"shape":"ServiceNotFoundException"},
+        {"shape":"ServiceNotActiveException"},
+        {"shape":"UnsupportedFeatureException"}
+      ],
+      "documentation":"<p>Updates an existing Express service configuration. Modifies container settings, resource allocation, auto-scaling configuration, and other service parameters without recreating the service.</p> <p>Amazon ECS creates a new service revision with updated configuration and performs a rolling deployment to replace existing tasks. The service remains available during updates, ensuring zero-downtime deployments.</p> <p>Some parameters like the infrastructure role cannot be modified after service creation and require creating a new service.</p>"
+    },
     "UpdateService":{
       "name":"UpdateService",
       "http":{
@@ -1124,6 +1203,13 @@
       "members":{},
       "documentation":"<p>You don't have authorization to perform the requested action.</p>",
       "exception":true
+    },
+    "AccessType":{
+      "type":"string",
+      "enum":[
+        "PUBLIC",
+        "PRIVATE"
+      ]
     },
     "AdvancedConfiguration":{
       "type":"structure",
@@ -2362,6 +2448,73 @@
         }
       }
     },
+    "CreateExpressGatewayServiceRequest":{
+      "type":"structure",
+      "required":[
+        "executionRoleArn",
+        "infrastructureRoleArn",
+        "primaryContainer"
+      ],
+      "members":{
+        "executionRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the task execution role that grants the Amazon ECS container agent permission to make Amazon Web Services API calls on your behalf. This role is required for Amazon ECS to pull container images from Amazon ECR, send container logs to Amazon CloudWatch Logs, and retrieve sensitive data from Amazon Web Services Systems Manager Parameter Store or Amazon Web Services Secrets Manager.</p> <p>The execution role must include the <code>AmazonECSTaskExecutionRolePolicy</code> managed policy or equivalent permissions. For Express services, this role is used during task startup and runtime for container management operations.</p>"
+        },
+        "infrastructureRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the infrastructure role that grants Amazon ECS permission to create and manage Amazon Web Services resources on your behalf for the Express service. This role is used to provision and manage Application Load Balancers, target groups, security groups, auto-scaling policies, and other Amazon Web Services infrastructure components.</p> <p>The infrastructure role must include permissions for Elastic Load Balancing, Application Auto Scaling, Amazon EC2 (for security groups), and other services required for managed infrastructure. This role is only used during Express service creation, updates, and deletion operations.</p>"
+        },
+        "serviceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Express service. This name must be unique within the specified cluster and can contain up to 255 letters (uppercase and lowercase), numbers, underscores, and hyphens. The name is used to identify the service in the Amazon ECS console and API operations.</p> <p>If you don't specify a service name, Amazon ECS generates a unique name for the service. The service name becomes part of the service ARN and cannot be changed after the service is created.</p>"
+        },
+        "cluster":{
+          "shape":"String",
+          "documentation":"<p>The short name or full Amazon Resource Name (ARN) of the cluster on which to create the Express service. If you do not specify a cluster, the <code>default</code> cluster is assumed.</p>"
+        },
+        "healthCheckPath":{
+          "shape":"String",
+          "documentation":"<p>The path on the container that the Application Load Balancer uses for health checks. This should be a valid HTTP endpoint that returns a successful response (HTTP 200) when the application is healthy.</p> <p>If not specified, the default health check path is <code>/ping</code>. The health check path must start with a forward slash and can include query parameters. Examples: <code>/health</code>, <code>/api/status</code>, <code>/ping?format=json</code>.</p>"
+        },
+        "primaryContainer":{
+          "shape":"ExpressGatewayContainer",
+          "documentation":"<p>The primary container configuration for the Express service. This defines the main application container that will receive traffic from the Application Load Balancer.</p> <p>The primary container must specify at minimum a container image. You can also configure the container port (defaults to 80), logging configuration, environment variables, secrets, and startup commands. The container image can be from Amazon ECR, Docker Hub, or any other container registry accessible to your execution role.</p>"
+        },
+        "taskRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that containers in this task can assume. This role allows your application code to access other Amazon Web Services services securely.</p> <p>The task role is different from the execution role. While the execution role is used by the Amazon ECS agent to set up the task, the task role is used by your application code running inside the container to make Amazon Web Services API calls. If your application doesn't need to access Amazon Web Services services, you can omit this parameter.</p>"
+        },
+        "networkConfiguration":{
+          "shape":"ExpressGatewayServiceNetworkConfiguration",
+          "documentation":"<p>The network configuration for the Express service tasks. This specifies the VPC subnets and security groups for the tasks.</p> <p>For Express services, you can specify custom security groups and subnets. If not provided, Amazon ECS will use the default VPC configuration and create appropriate security groups automatically. The network configuration determines how your service integrates with your VPC and what network access it has.</p>"
+        },
+        "cpu":{
+          "shape":"String",
+          "documentation":"<p>The number of CPU units used by the task. This parameter determines the CPU allocation for each task in the Express service. The default value for an Express service is 256 (.25 vCPU).</p>"
+        },
+        "memory":{
+          "shape":"String",
+          "documentation":"<p>The amount of memory (in MiB) used by the task. This parameter determines the memory allocation for each task in the Express service. The default value for an express service is 512 MiB.</p>"
+        },
+        "scalingTarget":{
+          "shape":"ExpressGatewayScalingTarget",
+          "documentation":"<p>The auto-scaling configuration for the Express service. This defines how the service automatically adjusts the number of running tasks based on demand.</p> <p>You can specify the minimum and maximum number of tasks, the scaling metric (CPU utilization, memory utilization, or request count per target), and the target value for the metric. If not specified, the default target value for an Express service is 60.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The metadata that you apply to the Express service to help categorize and organize it. Each tag consists of a key and an optional value. You can apply up to 50 tags to a service.</p>"
+        }
+      }
+    },
+    "CreateExpressGatewayServiceResponse":{
+      "type":"structure",
+      "members":{
+        "service":{
+          "shape":"ECSExpressGatewayService",
+          "documentation":"<p>The full description of your Express service following the create operation.</p>"
+        }
+      }
+    },
     "CreateManagedInstancesProviderConfiguration":{
       "type":"structure",
       "required":[
@@ -2677,6 +2830,25 @@
         "cluster":{
           "shape":"Cluster",
           "documentation":"<p>The full description of the deleted cluster.</p>"
+        }
+      }
+    },
+    "DeleteExpressGatewayServiceRequest":{
+      "type":"structure",
+      "required":["serviceArn"],
+      "members":{
+        "serviceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Express service to delete. The ARN uniquely identifies the service within your Amazon Web Services account and region.</p>"
+        }
+      }
+    },
+    "DeleteExpressGatewayServiceResponse":{
+      "type":"structure",
+      "members":{
+        "service":{
+          "shape":"ECSExpressGatewayService",
+          "documentation":"<p>The full description of the deleted express service.</p>"
         }
       }
     },
@@ -3175,6 +3347,29 @@
         }
       }
     },
+    "DescribeExpressGatewayServiceRequest":{
+      "type":"structure",
+      "required":["serviceArn"],
+      "members":{
+        "serviceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Express service to describe. The ARN uniquely identifies the service within your Amazon Web Services account and region.</p>"
+        },
+        "include":{
+          "shape":"ExpressGatewayServiceIncludeList",
+          "documentation":"<p>Specifies additional information to include in the response. Valid values are <code>TAGS</code> to include resource tags associated with the Express service.</p>"
+        }
+      }
+    },
+    "DescribeExpressGatewayServiceResponse":{
+      "type":"structure",
+      "members":{
+        "service":{
+          "shape":"ECSExpressGatewayService",
+          "documentation":"<p>The full description of the described express service.</p>"
+        }
+      }
+    },
     "DescribeServiceDeploymentsRequest":{
       "type":"structure",
       "required":["serviceDeploymentArns"],
@@ -3488,6 +3683,78 @@
       "member":{"shape":"EBSTagSpecification"}
     },
     "EBSVolumeType":{"type":"string"},
+    "ECSExpressGatewayService":{
+      "type":"structure",
+      "members":{
+        "cluster":{
+          "shape":"String",
+          "documentation":"<p>The short name or full ARN of the cluster that hosts the Express service.</p>"
+        },
+        "serviceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Express service.</p>"
+        },
+        "serviceArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN that identifies the Express service.</p>"
+        },
+        "infrastructureRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the infrastructure role that manages Amazon Web Services resources for the Express service.</p>"
+        },
+        "status":{
+          "shape":"ExpressGatewayServiceStatus",
+          "documentation":"<p>The current status of the Express service.</p>"
+        },
+        "currentDeployment":{
+          "shape":"String",
+          "documentation":"<p>The current deployment configuration for the Express service.</p>"
+        },
+        "activeConfigurations":{
+          "shape":"ExpressGatewayServiceConfigurations",
+          "documentation":"<p>The list of active service configurations for the Express service.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>The metadata applied to the Express service.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for when the Express service was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for when the Express service was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Represents an Express service, which provides a simplified way to deploy containerized web applications on Amazon ECS with managed Amazon Web Services infrastructure. An Express service automatically provisions and manages Application Load Balancers, target groups, security groups, and auto-scaling policies.</p> <p>Express services use a service revision architecture where each service can have multiple active configurations, enabling blue-green deployments and gradual rollouts. The service maintains a list of active configurations and manages the lifecycle of the underlying Amazon Web Services resources.</p>"
+    },
+    "ECSManagedResources":{
+      "type":"structure",
+      "members":{
+        "ingressPaths":{
+          "shape":"ManagedIngressPaths",
+          "documentation":"<p>The ingress paths and endpoints for the Express service.</p>"
+        },
+        "autoScaling":{
+          "shape":"ManagedAutoScaling",
+          "documentation":"<p>The auto-scaling configuration and policies for the Express service.</p>"
+        },
+        "metricAlarms":{
+          "shape":"ManagedMetricAlarms",
+          "documentation":"<p>The CloudWatch metric alarms associated with the Express service.</p>"
+        },
+        "serviceSecurityGroups":{
+          "shape":"ManagedSecurityGroups",
+          "documentation":"<p>The security groups managed by the Express service.</p>"
+        },
+        "logGroups":{
+          "shape":"ManagedLogGroups",
+          "documentation":"<p>The log groups managed by the Express service.</p>"
+        }
+      },
+      "documentation":"<p>Represents the Amazon Web Services resources managed by Amazon ECS for an Express service, including ingress paths, auto-scaling policies, metric alarms, and security groups.</p>"
+    },
     "ECSVolumeName":{"type":"string"},
     "EFSAuthorizationConfig":{
       "type":"structure",
@@ -3706,6 +3973,197 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the task.</p>"
         }
       }
+    },
+    "ExpressGatewayContainer":{
+      "type":"structure",
+      "required":["image"],
+      "members":{
+        "image":{
+          "shape":"String",
+          "documentation":"<p>The image used to start a container. This string is passed directly to the Docker daemon. Images in the Docker Hub registry are available by default. Other repositories are specified with either <code>repository-url/image:tag</code> or <code>repository-url/image@digest</code>.</p> <p>For Express services, the image typically contains a web application that listens on the specified container port. The image can be stored in Amazon ECR, Docker Hub, or any other container registry accessible to your execution role.</p>"
+        },
+        "containerPort":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The port number on the container that receives traffic from the load balancer. Default is 80.</p>"
+        },
+        "awsLogsConfiguration":{
+          "shape":"ExpressGatewayServiceAwsLogsConfiguration",
+          "documentation":"<p>The log configuration for the container.</p>"
+        },
+        "repositoryCredentials":{
+          "shape":"ExpressGatewayRepositoryCredentials",
+          "documentation":"<p>The configuration for repository credentials for private registry authentication.</p>"
+        },
+        "command":{
+          "shape":"StringList",
+          "documentation":"<p>The command that is passed to the container.</p>"
+        },
+        "environment":{
+          "shape":"EnvironmentVariables",
+          "documentation":"<p>The environment variables to pass to the container.</p>"
+        },
+        "secrets":{
+          "shape":"SecretList",
+          "documentation":"<p>The secrets to pass to the container.</p>"
+        }
+      },
+      "documentation":"<p>Defines the configuration for the primary container in an Express service. This container receives traffic from the Application Load Balancer and runs your application code.</p> <p>The container configuration includes the container image, port mapping, logging settings, environment variables, and secrets. The container image is the only required parameter, with sensible defaults provided for other settings.</p>"
+    },
+    "ExpressGatewayRepositoryCredentials":{
+      "type":"structure",
+      "members":{
+        "credentialsParameter":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the secret containing the private repository credentials.</p>"
+        }
+      },
+      "documentation":"<p>The repository credentials for private registry authentication to pass to the container.</p>"
+    },
+    "ExpressGatewayScalingTarget":{
+      "type":"structure",
+      "members":{
+        "minTaskCount":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The minimum number of tasks to run in the Express service.</p>"
+        },
+        "maxTaskCount":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The maximum number of tasks to run in the Express service.</p>"
+        },
+        "autoScalingMetric":{
+          "shape":"ExpressGatewayServiceScalingMetric",
+          "documentation":"<p>The metric used for auto-scaling decisions. The default metric used for an Express service is <code>CPUUtilization</code>.</p>"
+        },
+        "autoScalingTargetValue":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The target value for the auto-scaling metric. The default value for an Express service is 60.</p>"
+        }
+      },
+      "documentation":"<p>Defines the auto-scaling configuration for an Express service. This determines how the service automatically adjusts the number of running tasks based on demand metrics such as CPU utilization, memory utilization, or request count per target.</p> <p>Auto-scaling helps ensure your application can handle varying levels of traffic while optimizing costs by scaling down during low-demand periods. You can specify the minimum and maximum number of tasks, the scaling metric, and the target value for that metric.</p>"
+    },
+    "ExpressGatewayServiceAwsLogsConfiguration":{
+      "type":"structure",
+      "required":[
+        "logGroup",
+        "logStreamPrefix"
+      ],
+      "members":{
+        "logGroup":{
+          "shape":"String",
+          "documentation":"<p>The name of the CloudWatch Logs log group to send container logs to.</p>"
+        },
+        "logStreamPrefix":{
+          "shape":"String",
+          "documentation":"<p>The prefix for the CloudWatch Logs log stream names. The default for an Express service is <code>ecs</code>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the Amazon CloudWatch Logs configuration for the Express service container.</p>"
+    },
+    "ExpressGatewayServiceConfiguration":{
+      "type":"structure",
+      "members":{
+        "serviceRevisionArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the service revision.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the task execution role for the service revision.</p>"
+        },
+        "taskRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the task role for the service revision.</p>"
+        },
+        "cpu":{
+          "shape":"String",
+          "documentation":"<p>The CPU allocation for tasks in this service revision.</p>"
+        },
+        "memory":{
+          "shape":"String",
+          "documentation":"<p>The memory allocation for tasks in this service revision.</p>"
+        },
+        "networkConfiguration":{
+          "shape":"ExpressGatewayServiceNetworkConfiguration",
+          "documentation":"<p>The network configuration for tasks in this service revision.</p>"
+        },
+        "healthCheckPath":{
+          "shape":"String",
+          "documentation":"<p>The health check path for this service revision.</p>"
+        },
+        "primaryContainer":{
+          "shape":"ExpressGatewayContainer",
+          "documentation":"<p>The primary container configuration for this service revision.</p>"
+        },
+        "scalingTarget":{
+          "shape":"ExpressGatewayScalingTarget",
+          "documentation":"<p>The auto-scaling configuration for this service revision.</p>"
+        },
+        "ingressPaths":{
+          "shape":"IngressPathSummaries",
+          "documentation":"<p>The entry point into this service revision.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for when this service revision was created.</p>"
+        }
+      },
+      "documentation":"<p>Represents a specific configuration revision of an Express service, containing all the settings and parameters for that revision.</p>"
+    },
+    "ExpressGatewayServiceConfigurations":{
+      "type":"list",
+      "member":{"shape":"ExpressGatewayServiceConfiguration"}
+    },
+    "ExpressGatewayServiceInclude":{
+      "type":"string",
+      "enum":["TAGS"]
+    },
+    "ExpressGatewayServiceIncludeList":{
+      "type":"list",
+      "member":{"shape":"ExpressGatewayServiceInclude"}
+    },
+    "ExpressGatewayServiceNetworkConfiguration":{
+      "type":"structure",
+      "members":{
+        "securityGroups":{
+          "shape":"StringList",
+          "documentation":"<p>The IDs of the security groups associated with the Express service.</p>"
+        },
+        "subnets":{
+          "shape":"StringList",
+          "documentation":"<p>The IDs of the subnets associated with the Express service.</p>"
+        }
+      },
+      "documentation":"<p>The network configuration for an Express service. By default, an Express service utilizes subnets and security groups associated with the default VPC.</p>"
+    },
+    "ExpressGatewayServiceScalingMetric":{
+      "type":"string",
+      "enum":[
+        "AVERAGE_CPU",
+        "AVERAGE_MEMORY",
+        "REQUEST_COUNT_PER_TARGET"
+      ]
+    },
+    "ExpressGatewayServiceStatus":{
+      "type":"structure",
+      "members":{
+        "statusCode":{
+          "shape":"ExpressGatewayServiceStatusCode",
+          "documentation":"<p>The status of the Express service.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Information about why the Express service is in the current status.</p>"
+        }
+      },
+      "documentation":"<p>An object that defines the status of Express service creation and information about the status of the service.</p>"
+    },
+    "ExpressGatewayServiceStatusCode":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "DRAINING",
+        "INACTIVE"
+      ]
     },
     "FSxWindowsFileServerAuthorizationConfig":{
       "type":"structure",
@@ -3950,6 +4408,28 @@
         }
       },
       "documentation":"<p>The configuration that controls how Amazon ECS optimizes your infrastructure.</p>"
+    },
+    "IngressPathSummaries":{
+      "type":"list",
+      "member":{"shape":"IngressPathSummary"}
+    },
+    "IngressPathSummary":{
+      "type":"structure",
+      "required":[
+        "accessType",
+        "endpoint"
+      ],
+      "members":{
+        "accessType":{
+          "shape":"AccessType",
+          "documentation":"<p>The type of access to the endpoint for the Express service.</p>"
+        },
+        "endpoint":{
+          "shape":"String",
+          "documentation":"<p>The endpoint for access to the service.</p>"
+        }
+      },
+      "documentation":"<p>The entry point into an Express service.</p>"
     },
     "InstanceGeneration":{
       "type":"string",
@@ -4520,6 +5000,10 @@
         "schedulingStrategy":{
           "shape":"SchedulingStrategy",
           "documentation":"<p>The scheduling strategy to use when filtering the <code>ListServices</code> results.</p>"
+        },
+        "resourceManagementType":{
+          "shape":"ResourceManagementType",
+          "documentation":"<p>The resourceManagementType type to use when filtering the <code>ListServices</code> results.</p>"
         }
       }
     },
@@ -4829,12 +5313,148 @@
       "type":"list",
       "member":{"shape":"ManagedAgent"}
     },
+    "ManagedApplicationAutoScalingPolicies":{
+      "type":"list",
+      "member":{"shape":"ManagedApplicationAutoScalingPolicy"}
+    },
+    "ManagedApplicationAutoScalingPolicy":{
+      "type":"structure",
+      "required":[
+        "status",
+        "updatedAt",
+        "policyType",
+        "targetValue",
+        "metric"
+      ],
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Application Auto Scaling policy associated with the Express service.</p>"
+        },
+        "status":{
+          "shape":"ManagedResourceStatus",
+          "documentation":"<p>The status of Application Auto Scaling policy creation.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Information about why the Application Auto Scaling policy is in the current status.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for when the Application Auto Scaling policy was last updated.</p>"
+        },
+        "policyType":{
+          "shape":"String",
+          "documentation":"<p>The type of Application Auto Scaling policy associated with the Express service. Valid values are <code>TargetTrackingScaling</code>, <code>StepScaling</code>, and <code>PredictiveScaling</code>.</p>"
+        },
+        "targetValue":{
+          "shape":"Double",
+          "documentation":"<p>The target value for the auto scaling metric.</p>"
+        },
+        "metric":{
+          "shape":"String",
+          "documentation":"<p>The metric used for auto scaling decisions. The available metrics are <code>ECSServiceAverageCPUUtilization</code>, <code>ECSServiceAverageMemoryUtilization</code>, and <code>ALBRequestCOuntPerTarget</code>.</p>"
+        }
+      },
+      "documentation":"<p>The Application Auto Scaling policy created by Amazon ECS when you create an Express service.</p>"
+    },
+    "ManagedAutoScaling":{
+      "type":"structure",
+      "members":{
+        "scalableTarget":{
+          "shape":"ManagedScalableTarget",
+          "documentation":"<p>Represents a scalable target.</p>"
+        },
+        "applicationAutoScalingPolicies":{
+          "shape":"ManagedApplicationAutoScalingPolicies",
+          "documentation":"<p>The policy used for auto scaling.</p>"
+        }
+      },
+      "documentation":"<p>The auto scaling configuration created by Amazon ECS for an Express service.</p>"
+    },
+    "ManagedCertificate":{
+      "type":"structure",
+      "required":[
+        "status",
+        "updatedAt",
+        "domainName"
+      ],
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ACM certificate.</p>"
+        },
+        "status":{
+          "shape":"ManagedResourceStatus",
+          "documentation":"<p>The status of the ACM; certificate.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Information about why the ACM certificate is in the current status.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for when the ACM certificate was last updated</p>"
+        },
+        "domainName":{
+          "shape":"String",
+          "documentation":"<p>The fully qualified domain name (FQDN) that is secured with this ACM certificate.</p>"
+        }
+      },
+      "documentation":"<p>The ACM certificate associated with the HTTPS domain created for the Express service.</p>"
+    },
     "ManagedDraining":{
       "type":"string",
       "enum":[
         "ENABLED",
         "DISABLED"
       ]
+    },
+    "ManagedIngressPath":{
+      "type":"structure",
+      "required":[
+        "accessType",
+        "endpoint"
+      ],
+      "members":{
+        "accessType":{
+          "shape":"AccessType",
+          "documentation":"<p>The type of access to the endpoint for the Express service.</p>"
+        },
+        "endpoint":{
+          "shape":"String",
+          "documentation":"<p>The endpoint for access to the Express service.</p>"
+        },
+        "loadBalancer":{
+          "shape":"ManagedLoadBalancer",
+          "documentation":"<p>The Application Load Balancer associated with the Express service.</p>"
+        },
+        "loadBalancerSecurityGroups":{
+          "shape":"ManagedSecurityGroups",
+          "documentation":"<p>The security groups associated with the Application Load Balancer.</p>"
+        },
+        "certificate":{
+          "shape":"ManagedCertificate",
+          "documentation":"<p>The ACM certificate for the Express service's domain.</p>"
+        },
+        "listener":{
+          "shape":"ManagedListener",
+          "documentation":"<p>The listeners associated with the Application Load Balancer.</p>"
+        },
+        "rule":{
+          "shape":"ManagedListenerRule",
+          "documentation":"<p>The listener rules for the Application Load Balancer.</p>"
+        },
+        "targetGroups":{
+          "shape":"ManagedTargetGroups",
+          "documentation":"<p>The target groups associated with the Application Load Balancer.</p>"
+        }
+      },
+      "documentation":"<p>The entry point into the Express service.</p>"
+    },
+    "ManagedIngressPaths":{
+      "type":"list",
+      "member":{"shape":"ManagedIngressPath"}
     },
     "ManagedInstancesMonitoringOptions":{
       "type":"string",
@@ -4889,6 +5509,208 @@
       },
       "documentation":"<p>The storage configuration for Amazon ECS Managed Instances. This defines the root volume configuration for the instances.</p>"
     },
+    "ManagedListener":{
+      "type":"structure",
+      "required":[
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the load balancer listener.</p>"
+        },
+        "status":{
+          "shape":"ManagedResourceStatus",
+          "documentation":"<p>The status of the load balancer listener.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Informaion about why the load balancer listener is in the current status.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for when this listener was most recently updated.</p>"
+        }
+      },
+      "documentation":"<p>The listeners associated with the Express service's Application Load Balancer.</p>"
+    },
+    "ManagedListenerRule":{
+      "type":"structure",
+      "required":[
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the load balancer listener rule.</p>"
+        },
+        "status":{
+          "shape":"ManagedResourceStatus",
+          "documentation":"<p>The status of the load balancer listener rule.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Information about why the load balancer listener rule is in the current status.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for when this listener rule was most recently updated.</p>"
+        }
+      },
+      "documentation":"<p>The listener rule associated with the Express service's Application Load Balancer.</p>"
+    },
+    "ManagedLoadBalancer":{
+      "type":"structure",
+      "required":[
+        "status",
+        "updatedAt",
+        "scheme"
+      ],
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the load balancer.</p>"
+        },
+        "status":{
+          "shape":"ManagedResourceStatus",
+          "documentation":"<p>The status of the load balancer.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Information about why the load balancer is in the current status.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for when this load balancer was most recently updated.</p>"
+        },
+        "scheme":{
+          "shape":"String",
+          "documentation":"<p>The scheme of the load balancer. By default, the scheme of the load balancer is <code>internet-facing</code>.</p>"
+        },
+        "subnetIds":{
+          "shape":"StringList",
+          "documentation":"<p>The IDs of the subnets associated with the load balancer.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"StringList",
+          "documentation":"<p>The IDs of the security groups associated with the load balancer.</p>"
+        }
+      },
+      "documentation":"<p>The Application Load Balancer associated with the Express service.</p>"
+    },
+    "ManagedLogGroup":{
+      "type":"structure",
+      "required":[
+        "status",
+        "updatedAt",
+        "logGroupName"
+      ],
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Cloudwatch Log Group associated with the Express service.</p>"
+        },
+        "status":{
+          "shape":"ManagedResourceStatus",
+          "documentation":"<p>The status of the Cloudwatch LogGroup.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Information about why the Cloudwatch LogGroup is in the current status.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for when the Cloudwatch LogGroup was last updated</p>"
+        },
+        "logGroupName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Cloudwatch Log Group associated with the Express service.</p>"
+        }
+      },
+      "documentation":"<p>The Cloudwatch Log Group created by Amazon ECS for an Express service.</p>"
+    },
+    "ManagedLogGroups":{
+      "type":"list",
+      "member":{"shape":"ManagedLogGroup"}
+    },
+    "ManagedMetricAlarm":{
+      "type":"structure",
+      "required":[
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudWatch metric alarm.</p>"
+        },
+        "status":{
+          "shape":"ManagedResourceStatus",
+          "documentation":"<p>The status of the CloudWatch metric alarm.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Information about why the CloudWatch metric alarm is in the current status.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for when the CloudWatch metric alarm was last updated.</p>"
+        }
+      },
+      "documentation":"<p>The CloudWatch metric alarm associated with the Express service's scaling policy.</p>"
+    },
+    "ManagedMetricAlarms":{
+      "type":"list",
+      "member":{"shape":"ManagedMetricAlarm"}
+    },
+    "ManagedResourceStatus":{
+      "type":"string",
+      "enum":[
+        "PROVISIONING",
+        "ACTIVE",
+        "DEPROVISIONING",
+        "DELETED",
+        "FAILED"
+      ]
+    },
+    "ManagedScalableTarget":{
+      "type":"structure",
+      "required":[
+        "status",
+        "updatedAt",
+        "minCapacity",
+        "maxCapacity"
+      ],
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the scalable target.</p>"
+        },
+        "status":{
+          "shape":"ManagedResourceStatus",
+          "documentation":"<p>The status of the scalable target.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Information about why the scalable target is in the current status.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for when the target was most recently updated.</p>"
+        },
+        "minCapacity":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum value to scale to in response to a scale-in activity.</p>"
+        },
+        "maxCapacity":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum value to scale to in response to a scale-out activity.</p>"
+        }
+      },
+      "documentation":"<p>Represents a scalable target.</p>"
+    },
     "ManagedScaling":{
       "type":"structure",
       "members":{
@@ -4937,6 +5759,36 @@
       "max":100,
       "min":1
     },
+    "ManagedSecurityGroup":{
+      "type":"structure",
+      "required":[
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the security group.</p>"
+        },
+        "status":{
+          "shape":"ManagedResourceStatus",
+          "documentation":"<p>The status of the security group.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Information about why the security group is in the current status.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for when the security group was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A security group associated with the Express service.</p>"
+    },
+    "ManagedSecurityGroups":{
+      "type":"list",
+      "member":{"shape":"ManagedSecurityGroup"}
+    },
     "ManagedStorageConfiguration":{
       "type":"structure",
       "members":{
@@ -4950,6 +5802,51 @@
         }
       },
       "documentation":"<p>The managed storage configuration for the cluster.</p>"
+    },
+    "ManagedTargetGroup":{
+      "type":"structure",
+      "required":[
+        "status",
+        "updatedAt",
+        "healthCheckPath",
+        "healthCheckPort",
+        "port"
+      ],
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the target group.</p>"
+        },
+        "status":{
+          "shape":"ManagedResourceStatus",
+          "documentation":"<p>The status of the target group.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Information about why the target group is in the current status.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for when the target group was last updated.</p>"
+        },
+        "healthCheckPath":{
+          "shape":"String",
+          "documentation":"<p>The destination for health checks on the targets.</p>"
+        },
+        "healthCheckPort":{
+          "shape":"Integer",
+          "documentation":"<p>The port the load balancer uses when performing health checks on targets.</p>"
+        },
+        "port":{
+          "shape":"Integer",
+          "documentation":"<p>The port on which the targets receive traffic.</p>"
+        }
+      },
+      "documentation":"<p>The target group associated with the Express service's Application Load Balancer. For more information about load balancer target groups, see <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/APIReference/API_CreateTargetGroup.html\">CreateTargetGroup</a> in the <i>Elastic Load Balancing API Reference</i> </p>"
+    },
+    "ManagedTargetGroups":{
+      "type":"list",
+      "member":{"shape":"ManagedTargetGroup"}
     },
     "ManagedTerminationProtection":{
       "type":"string",
@@ -5664,6 +6561,13 @@
       "documentation":"<p>The specified resource is in-use and can't be removed.</p>",
       "exception":true
     },
+    "ResourceManagementType":{
+      "type":"string",
+      "enum":[
+        "CUSTOMER",
+        "ECS"
+      ]
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{},
@@ -5984,6 +6888,14 @@
           "shape":"Timestamp",
           "documentation":"<p>The Unix timestamp for the time when the service was created.</p>"
         },
+        "currentServiceDeployment":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the current service deployment.</p>"
+        },
+        "currentServiceRevisions":{
+          "shape":"ServiceCurrentRevisionSummaryList",
+          "documentation":"<p>The list of the service revisions.</p>"
+        },
         "placementConstraints":{
           "shape":"PlacementConstraints",
           "documentation":"<p>The placement constraints for the tasks in the service.</p>"
@@ -6031,6 +6943,10 @@
         "availabilityZoneRebalancing":{
           "shape":"AvailabilityZoneRebalancing",
           "documentation":"<p>Indicates whether to use Availability Zone rebalancing for the service.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-rebalancing.html\">Balancing an Amazon ECS service across Availability Zones</a> in the <i> <i>Amazon Elastic Container Service Developer Guide</i> </i>.</p> <p>The default behavior of <code>AvailabilityZoneRebalancing</code> differs between create and update requests:</p> <ul> <li> <p>For create service requests, when no value is specified for <code>AvailabilityZoneRebalancing</code>, Amazon ECS defaults the value to <code>ENABLED</code>.</p> </li> <li> <p>For update service requests, when no value is specified for <code>AvailabilityZoneRebalancing</code>, Amazon ECS defaults to the existing service’s <code>AvailabilityZoneRebalancing</code> value. If the service never had an <code>AvailabilityZoneRebalancing</code> value set, Amazon ECS treats this as <code>DISABLED</code>.</p> </li> </ul>"
+        },
+        "resourceManagementType":{
+          "shape":"ResourceManagementType",
+          "documentation":"<p>Identifies whether an ECS Service is an Express Service managed by ECS, or managed by the customer. The valid values are <code>ECS</code> and <code>CUSTOMER</code> </p>"
         }
       },
       "documentation":"<p>Details on a service within a cluster.</p>"
@@ -6231,6 +7147,32 @@
         }
       },
       "documentation":"<p>The key that encrypts and decrypts your resources for Service Connect TLS.</p>"
+    },
+    "ServiceCurrentRevisionSummary":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the current service revision.</p>"
+        },
+        "requestedTaskCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of requested tasks in the current service revision</p>"
+        },
+        "runningTaskCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of running tasks of the current service revision</p>"
+        },
+        "pendingTaskCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of pending tasks in the current service revision</p>"
+        }
+      },
+      "documentation":"<p>The summary of the current service revision configuration</p>"
+    },
+    "ServiceCurrentRevisionSummaryList":{
+      "type":"list",
+      "member":{"shape":"ServiceCurrentRevisionSummary"}
     },
     "ServiceDeployment":{
       "type":"structure",
@@ -6625,6 +7567,10 @@
         "resolvedConfiguration":{
           "shape":"ResolvedConfiguration",
           "documentation":"<p>The resolved configuration for the service revision which contains the actual resources your service revision uses, such as which target groups serve traffic.</p>"
+        },
+        "ecsManagedResources":{
+          "shape":"ECSManagedResources",
+          "documentation":"<p>The resources created and managed by Amazon ECS when you create an Express service for Amazon ECS.</p>"
         }
       },
       "documentation":"<p>Information about the service revision.</p> <p>A service revision contains a record of the workload configuration Amazon ECS is attempting to deploy. Whenever you create or deploy a service, Amazon ECS automatically creates and captures the configuration that you're trying to deploy in the service revision. For information about service revisions, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-revision.html\">Amazon ECS service revisions</a> in the <i> <i>Amazon Elastic Container Service Developer Guide</i> </i>.</p>"
@@ -8033,6 +8979,57 @@
         }
       }
     },
+    "UpdateExpressGatewayServiceRequest":{
+      "type":"structure",
+      "required":["serviceArn"],
+      "members":{
+        "serviceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Express service to update.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the task execution role for the Express service.</p>"
+        },
+        "healthCheckPath":{
+          "shape":"String",
+          "documentation":"<p>The path on the container for Application Load Balancer health checks.</p>"
+        },
+        "primaryContainer":{
+          "shape":"ExpressGatewayContainer",
+          "documentation":"<p>The primary container configuration for the Express service.</p>"
+        },
+        "taskRoleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role for containers in this task.</p>"
+        },
+        "networkConfiguration":{
+          "shape":"ExpressGatewayServiceNetworkConfiguration",
+          "documentation":"<p>The network configuration for the Express service tasks. By default, the network configuration for an Express service uses the default VPC.</p>"
+        },
+        "cpu":{
+          "shape":"String",
+          "documentation":"<p>The number of CPU units used by the task.</p>"
+        },
+        "memory":{
+          "shape":"String",
+          "documentation":"<p>The amount of memory (in MiB) used by the task.</p>"
+        },
+        "scalingTarget":{
+          "shape":"ExpressGatewayScalingTarget",
+          "documentation":"<p>The auto-scaling configuration for the Express service.</p>"
+        }
+      }
+    },
+    "UpdateExpressGatewayServiceResponse":{
+      "type":"structure",
+      "members":{
+        "service":{
+          "shape":"UpdatedExpressGatewayService",
+          "documentation":"<p>The full description of your express gateway service following the update call.</p>"
+        }
+      }
+    },
     "UpdateInProgressException":{
       "type":"structure",
       "members":{},
@@ -8270,6 +9267,40 @@
           "documentation":"<p>Details about the task set.</p>"
         }
       }
+    },
+    "UpdatedExpressGatewayService":{
+      "type":"structure",
+      "members":{
+        "serviceArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the Express service that is being updated.</p>"
+        },
+        "cluster":{
+          "shape":"String",
+          "documentation":"<p>The cluster associated with the Express service that is being updated.</p>"
+        },
+        "serviceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Express service that is being updated.</p>"
+        },
+        "status":{
+          "shape":"ExpressGatewayServiceStatus",
+          "documentation":"<p>The status of the Express service that is being updated.</p>"
+        },
+        "targetConfiguration":{
+          "shape":"ExpressGatewayServiceConfiguration",
+          "documentation":"<p>The configuration to which the current Express service is being updated to.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for when the Express service that is being updated was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix timestamp for when the Express service that is being updated was most recently updated.</p>"
+        }
+      },
+      "documentation":"<p>An object that describes an Express service to be updated.</p>"
     },
     "VCpuCountRangeRequest":{
       "type":"structure",

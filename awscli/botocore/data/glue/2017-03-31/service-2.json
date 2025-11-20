@@ -13869,6 +13869,14 @@
       "max":128,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
     },
+    "FunctionType":{
+      "type":"string",
+      "enum":[
+        "REGULAR_FUNCTION",
+        "AGGREGATE_FUNCTION",
+        "STORED_PROCEDURE"
+      ]
+    },
     "Generic512CharString":{
       "type":"string",
       "max":512,
@@ -16664,6 +16672,10 @@
         "Pattern":{
           "shape":"NameString",
           "documentation":"<p>An optional function-name pattern string that filters the function definitions returned.</p>"
+        },
+        "FunctionType":{
+          "shape":"FunctionType",
+          "documentation":"<p>An optional function-type pattern string that filters the function definitions returned from Amazon Redshift Federated Permissions Catalog.</p> <p>Specify a value of <code>REGULAR_FUNCTION</code> or <code>STORED_PROCEDURE</code>. The <code>STORED_PROCEDURE</code> function type is only compatible with Amazon Redshift Federated Permissions Catalog. </p>"
         },
         "NextToken":{
           "shape":"Token",
@@ -28352,6 +28364,10 @@
           "shape":"NameString",
           "documentation":"<p>The owner of the function.</p>"
         },
+        "FunctionType":{
+          "shape":"FunctionType",
+          "documentation":"<p>The type of the function.</p>"
+        },
         "OwnerType":{
           "shape":"PrincipalType",
           "documentation":"<p>The owner type.</p>"
@@ -28385,6 +28401,10 @@
         "OwnerName":{
           "shape":"NameString",
           "documentation":"<p>The owner of the function.</p>"
+        },
+        "FunctionType":{
+          "shape":"FunctionType",
+          "documentation":"<p>The type of the function.</p>"
         },
         "OwnerType":{
           "shape":"PrincipalType",

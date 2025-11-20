@@ -1181,7 +1181,8 @@
       "errors":[
         {"shape":"ResourceAlreadyExistsFault"},
         {"shape":"InvalidCertificateFault"},
-        {"shape":"ResourceQuotaExceededFault"}
+        {"shape":"ResourceQuotaExceededFault"},
+        {"shape":"KMSKeyNotAccessibleFault"}
       ],
       "documentation":"<p>Uploads the specified certificate.</p>"
     },
@@ -2107,6 +2108,10 @@
         "KeyLength":{
           "shape":"IntegerOptional",
           "documentation":"<p>The key length of the cryptographic algorithm being used.</p>"
+        },
+        "KmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>An KMS key identifier that is used to encrypt the certificate.</p> <p>If you don't specify a value for the <code>KmsKeyId</code> parameter, then DMS uses your default encryption key.</p> <p>KMS creates the default encryption key for your Amazon Web Services account. Your Amazon Web Services account has a different default encryption key for each Amazon Web Services Region.</p>"
         }
       },
       "documentation":"<p>The SSL certificate that can be used to encrypt connections between the endpoints and the replication instance.</p>"
@@ -5521,6 +5526,10 @@
           "shape":"String",
           "documentation":"<p> Value returned by a call to CreateEndpoint that can be used for cross-account validation. Use it on a subsequent call to CreateEndpoint to create the endpoint with a cross-account. </p>"
         },
+        "IsReadOnly":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the endpoint is read-only. When set to <code>true</code>, this endpoint is managed by DMS as part of a zero-ETL integration and cannot be modified or deleted directly. You can only modify or delete read-only endpoints through their associated zero-ETL integration.</p>"
+        },
         "DynamoDbSettings":{
           "shape":"DynamoDbSettings",
           "documentation":"<p>The settings for the DynamoDB target endpoint. For more information, see the <code>DynamoDBSettings</code> structure.</p>"
@@ -5593,6 +5602,10 @@
         "TimestreamSettings":{
           "shape":"TimestreamSettings",
           "documentation":"<p>The settings for the Amazon Timestream target endpoint. For more information, see the <code>TimestreamSettings</code> structure.</p>"
+        },
+        "LakehouseSettings":{
+          "shape":"LakehouseSettings",
+          "documentation":"<p>Settings in JSON format for the target Lakehouse endpoint. This parameter applies to endpoints that are automatically created by DMS for a Lakehouse data warehouse as part of a zero-ETL integration.</p>"
         }
       },
       "documentation":"<p>Describes an endpoint of a database instance in response to operations such as the following:</p> <ul> <li> <p> <code>CreateEndpoint</code> </p> </li> <li> <p> <code>DescribeEndpoint</code> </p> </li> <li> <p> <code>ModifyEndpoint</code> </p> </li> </ul>"
@@ -6205,6 +6218,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The tags associated with the certificate.</p>"
+        },
+        "KmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>An KMS key identifier that is used to encrypt the certificate.</p> <p>If you don't specify a value for the <code>KmsKeyId</code> parameter, then DMS uses your default encryption key.</p> <p>KMS creates the default encryption key for your Amazon Web Services account. Your Amazon Web Services account has a different default encryption key for each Amazon Web Services Region.</p>"
         }
       }
     },
@@ -6591,6 +6608,17 @@
         }
       },
       "documentation":"<p>Provides information that describes an Amazon Kinesis Data Stream endpoint. This information includes the output format of records applied to the endpoint and details of transaction and control table data information.</p>"
+    },
+    "LakehouseSettings":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lakehouse resource that serves as the target for this endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Provides information that defines a Lakehouse endpoint. This endpoint type is used for zero-ETL integrations with Lakehouse data warehouses.</p>"
     },
     "Limitation":{
       "type":"structure",
@@ -9062,6 +9090,10 @@
         "ReplicationDeprovisionTime":{
           "shape":"TStamp",
           "documentation":"<p>The timestamp when DMS will deprovision the replication.</p>"
+        },
+        "IsReadOnly":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the serverless replication is read-only. When set to <code>true</code>, this replication is managed by DMS as part of a zero-ETL integration and cannot be modified or deleted directly. You can only modify or delete read-only replications through their associated zero-ETL integration.</p>"
         }
       },
       "documentation":"<p>Provides information that describes a serverless replication created by the <code>CreateReplication</code> operation.</p>"
@@ -9112,6 +9144,10 @@
         "ReplicationConfigUpdateTime":{
           "shape":"TStamp",
           "documentation":"<p>The time the serverless replication config was updated.</p>"
+        },
+        "IsReadOnly":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the replication configuration is read-only. When set to <code>true</code>, this replication configuration is managed by DMS as part of a zero-ETL integration and cannot be modified or deleted directly. You can only modify or delete read-only replication configurations through their associated zero-ETL integration.</p>"
         }
       },
       "documentation":"<p>This object provides configuration information about a serverless replication.</p>"
@@ -9387,6 +9423,10 @@
         "SupportedNetworkTypes":{
           "shape":"StringList",
           "documentation":"<p>The IP addressing protocol supported by the subnet group. This is used by a replication instance with values such as IPv4 only or Dual-stack that supports both IPv4 and IPv6 addressing. IPv6 only is not yet supported.</p>"
+        },
+        "IsReadOnly":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the replication subnet group is read-only. When set to <code>true</code>, this subnet group is managed by DMS as part of a zero-ETL integration and cannot be modified or deleted directly. You can only modify or delete read-only subnet groups through their associated zero-ETL integration.</p>"
         }
       },
       "documentation":"<p>Describes a subnet group in response to a request by the <code>DescribeReplicationSubnetGroups</code> operation.</p>"

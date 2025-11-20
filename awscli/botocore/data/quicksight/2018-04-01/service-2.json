@@ -7786,13 +7786,25 @@
     },
     "Boolean":{"type":"boolean"},
     "BooleanObject":{"type":"boolean"},
+    "BorderRadius":{
+      "type":"string",
+      "max":50
+    },
     "BorderStyle":{
       "type":"structure",
       "members":{
+        "Color":{
+          "shape":"Color",
+          "documentation":"<p>The option to add color for tile borders for visuals.</p>"
+        },
         "Show":{
           "shape":"Boolean",
           "documentation":"<p>The option to enable display of borders for visuals.</p>",
           "box":true
+        },
+        "Width":{
+          "shape":"Width",
+          "documentation":"<p>The option to set the width of tile borders for visuals.</p>"
         }
       },
       "documentation":"<p>The display options for tile borders for visuals.</p>"
@@ -8862,6 +8874,10 @@
       "type":"list",
       "member":{"shape":"CollectiveConstantEntry"},
       "max":2000
+    },
+    "Color":{
+      "type":"string",
+      "documentation":"String to encapsulate the most generic way Color can be formatted (words, hexStrings etc)"
     },
     "ColorFillType":{
       "type":"string",
@@ -20816,6 +20832,14 @@
         "LoadingAnimation":{
           "shape":"LoadingAnimation",
           "documentation":"<p>The loading animation configuration of a free-form layout element.</p>"
+        },
+        "BorderRadius":{
+          "shape":"BorderRadius",
+          "documentation":"<p>The border radius of a free-form layout element.</p>"
+        },
+        "Padding":{
+          "shape":"Padding",
+          "documentation":"<p>The padding of a free-form layout element.</p>"
         }
       },
       "documentation":"<p>An element within a free-form layout.</p>"
@@ -20844,6 +20868,10 @@
         "Color":{
           "shape":"HexColorWithTransparency",
           "documentation":"<p>The border color of a free-form layout element.</p>"
+        },
+        "Width":{
+          "shape":"Width",
+          "documentation":"<p>The border width of a free-form layout element.</p>"
         }
       },
       "documentation":"<p>The background style configuration of a free-form layout element.</p>"
@@ -22557,9 +22585,62 @@
         "RowSpan":{
           "shape":"GridLayoutElementRowSpan",
           "documentation":"<p>The height of a grid element expressed as a number of grid rows.</p>"
+        },
+        "BorderStyle":{
+          "shape":"GridLayoutElementBorderStyle",
+          "documentation":"<p>The border style configuration of a grid layout element.</p>"
+        },
+        "SelectedBorderStyle":{
+          "shape":"GridLayoutElementBorderStyle",
+          "documentation":"<p>The border style configuration of a grid layout element. This border style is used when the element is selected.</p>"
+        },
+        "BackgroundStyle":{
+          "shape":"GridLayoutElementBackgroundStyle",
+          "documentation":"<p>The background style configuration of a grid layout element.</p>"
+        },
+        "LoadingAnimation":{"shape":"LoadingAnimation"},
+        "BorderRadius":{
+          "shape":"BorderRadius",
+          "documentation":"<p>The border radius of a grid layout element.</p>"
+        },
+        "Padding":{
+          "shape":"Padding",
+          "documentation":"<p>The padding of a grid layout element.</p>"
         }
       },
       "documentation":"<p>An element within a grid layout.</p>"
+    },
+    "GridLayoutElementBackgroundStyle":{
+      "type":"structure",
+      "members":{
+        "Visibility":{
+          "shape":"Visibility",
+          "documentation":"<p>The background visibility of a grid layout element.</p>"
+        },
+        "Color":{
+          "shape":"HexColorWithTransparency",
+          "documentation":"<p>The background color of a grid layout element.</p>"
+        }
+      },
+      "documentation":"<p>The background style configuration of a grid layout element.</p>"
+    },
+    "GridLayoutElementBorderStyle":{
+      "type":"structure",
+      "members":{
+        "Visibility":{
+          "shape":"Visibility",
+          "documentation":"<p>The border visibility of a grid layout element.</p>"
+        },
+        "Color":{
+          "shape":"HexColorWithTransparency",
+          "documentation":"<p>The border color of a grid layout element.</p>"
+        },
+        "Width":{
+          "shape":"Width",
+          "documentation":"<p>The border width of a grid layout element.</p>"
+        }
+      },
+      "documentation":"<p>The border style configuration of a grid layout element.</p>"
     },
     "GridLayoutElementColumnIndex":{
       "type":"integer",
@@ -28217,6 +28298,10 @@
       },
       "documentation":"<p>A transform operation that overrides the dataset parameter values that are defined in another dataset.</p>"
     },
+    "Padding":{
+      "type":"string",
+      "max":200
+    },
     "PageNumber":{
       "type":"long",
       "min":0
@@ -33319,6 +33404,20 @@
       },
       "documentation":"<p>A <i>sheet</i>, which is an object that contains a set of visuals that are viewed together on one page in Quick Sight. Every analysis and dashboard contains at least one sheet. Each sheet contains at least one visualization widget, for example a chart, pivot table, or narrative insight. Sheets can be associated with other components, such as controls, filters, and so on.</p>"
     },
+    "SheetBackgroundStyle":{
+      "type":"structure",
+      "members":{
+        "Color":{
+          "shape":"Color",
+          "documentation":"<p>The solid color background option for sheets.</p>"
+        },
+        "Gradient":{
+          "shape":"String",
+          "documentation":"<p>The gradient background option for sheets.</p>"
+        }
+      },
+      "documentation":"<p>The background configuration for sheets.</p>"
+    },
     "SheetContentType":{
       "type":"string",
       "enum":[
@@ -33648,6 +33747,10 @@
         "TileLayout":{
           "shape":"TileLayoutStyle",
           "documentation":"<p>The layout options for tiles.</p>"
+        },
+        "Background":{
+          "shape":"SheetBackgroundStyle",
+          "documentation":"<p>The background for sheets.</p>"
         }
       },
       "documentation":"<p>The theme display options for sheets. </p>"
@@ -36079,6 +36182,10 @@
         "SINGLE_QUOTE"
       ]
     },
+    "TextTransform":{
+      "type":"string",
+      "enum":["CAPITALIZE"]
+    },
     "TextWrap":{
       "type":"string",
       "enum":[
@@ -36358,9 +36465,21 @@
     "TileStyle":{
       "type":"structure",
       "members":{
+        "BackgroundColor":{
+          "shape":"Color",
+          "documentation":"<p>The background color of a tile.</p>"
+        },
         "Border":{
           "shape":"BorderStyle",
           "documentation":"<p>The border around a tile.</p>"
+        },
+        "BorderRadius":{
+          "shape":"BorderRadius",
+          "documentation":"<p>The border radius of a tile.</p>"
+        },
+        "Padding":{
+          "shape":"Padding",
+          "documentation":"<p>The padding of a tile.</p>"
         }
       },
       "documentation":"<p>Display options related to tiles on a sheet.</p>"
@@ -38229,6 +38348,19 @@
         "FontFamilies":{
           "shape":"FontList",
           "documentation":"<p>Determines the list of font families.</p>"
+        },
+        "AxisTitleFontConfiguration":{"shape":"FontConfiguration"},
+        "AxisLabelFontConfiguration":{"shape":"FontConfiguration"},
+        "LegendTitleFontConfiguration":{"shape":"FontConfiguration"},
+        "LegendValueFontConfiguration":{"shape":"FontConfiguration"},
+        "DataLabelFontConfiguration":{"shape":"FontConfiguration"},
+        "VisualTitleFontConfiguration":{
+          "shape":"VisualTitleFontConfiguration",
+          "documentation":"<p>Configures the display properties of the visual title.</p>"
+        },
+        "VisualSubtitleFontConfiguration":{
+          "shape":"VisualSubtitleFontConfiguration",
+          "documentation":"<p>Configures the display properties of the visual sub-title.</p>"
         }
       },
       "documentation":"<p>Determines the typography options.</p>"
@@ -41696,6 +41828,21 @@
       "max":1024,
       "min":1
     },
+    "VisualSubtitleFontConfiguration":{
+      "type":"structure",
+      "members":{
+        "FontConfiguration":{"shape":"FontConfiguration"},
+        "TextAlignment":{
+          "shape":"HorizontalTextAlignment",
+          "documentation":"<p>Determines the alignment of visual sub-title.</p>"
+        },
+        "TextTransform":{
+          "shape":"TextTransform",
+          "documentation":"<p>Determines the text transformation of visual sub-title.</p>"
+        }
+      },
+      "documentation":"<p>Configures the display properties of the visual sub-title.</p>"
+    },
     "VisualSubtitleLabelOptions":{
       "type":"structure",
       "members":{
@@ -41714,6 +41861,21 @@
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "VisualTitleFontConfiguration":{
+      "type":"structure",
+      "members":{
+        "FontConfiguration":{"shape":"FontConfiguration"},
+        "TextAlignment":{
+          "shape":"HorizontalTextAlignment",
+          "documentation":"<p>Determines the alignment of visual title.</p>"
+        },
+        "TextTransform":{
+          "shape":"TextTransform",
+          "documentation":"<p>Determines the text transformation of visual title.</p>"
+        }
+      },
+      "documentation":"<p>Configures the display properties of the visual title.</p>"
     },
     "VisualTitleLabelOptions":{
       "type":"structure",
@@ -42058,6 +42220,11 @@
         "ENABLED",
         "DISABLED"
       ]
+    },
+    "Width":{
+      "type":"string",
+      "documentation":"String to encapsulate the most generic way Width can be formatted with whatever units (px, em etc)",
+      "max":50
     },
     "WordCloudAggregatedFieldWells":{
       "type":"structure",

@@ -94,6 +94,43 @@
       ],
       "documentation":"<p>Creates a quantum task.</p>"
     },
+    "CreateSpendingLimit":{
+      "name":"CreateSpendingLimit",
+      "http":{
+        "method":"POST",
+        "requestUri":"/spending-limit",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateSpendingLimitRequest"},
+      "output":{"shape":"CreateSpendingLimitResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"DeviceRetiredException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates a spending limit for a specified quantum device. Spending limits help you control costs by setting maximum amounts that can be spent on quantum computing tasks within a specified time period. Simulators do not support spending limits.</p>"
+    },
+    "DeleteSpendingLimit":{
+      "name":"DeleteSpendingLimit",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/spending-limit/{spendingLimitArn}/delete",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteSpendingLimitRequest"},
+      "output":{"shape":"DeleteSpendingLimitResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes an existing spending limit. This operation permanently removes the spending limit and cannot be undone. After deletion, the associated device becomes unrestricted for spending.</p>",
+      "idempotent":true
+    },
     "GetDevice":{
       "name":"GetDevice",
       "http":{
@@ -221,6 +258,24 @@
       "documentation":"<p>Searches for tasks that match the specified filter values.</p>",
       "readonly":true
     },
+    "SearchSpendingLimits":{
+      "name":"SearchSpendingLimits",
+      "http":{
+        "method":"POST",
+        "requestUri":"/spending-limits",
+        "responseCode":200
+      },
+      "input":{"shape":"SearchSpendingLimitsRequest"},
+      "output":{"shape":"SearchSpendingLimitsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Searches and lists spending limits based on specified filters. This operation supports pagination and allows filtering by various criteria to find specific spending limits. We recommend using pagination to ensure that the operation returns quickly and successfully.</p>",
+      "readonly":true
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -252,6 +307,25 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Remove tags from a resource.</p>",
+      "idempotent":true
+    },
+    "UpdateSpendingLimit":{
+      "name":"UpdateSpendingLimit",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/spending-limit/{spendingLimitArn}/update",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateSpendingLimitRequest"},
+      "output":{"shape":"UpdateSpendingLimitResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates an existing spending limit. You can modify the spending amount or time period. Changes take effect immediately.</p>",
       "idempotent":true
     }
   },
@@ -625,6 +699,52 @@
         }
       }
     },
+    "CreateSpendingLimitRequest":{
+      "type":"structure",
+      "required":[
+        "clientToken",
+        "deviceArn",
+        "spendingLimit"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"String64",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, Amazon Braket ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        },
+        "deviceArn":{
+          "shape":"DeviceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the quantum device to apply the spending limit to.</p>"
+        },
+        "spendingLimit":{
+          "shape":"CreateSpendingLimitRequestSpendingLimitString",
+          "documentation":"<p>The maximum amount that can be spent on the specified device, in USD.</p>"
+        },
+        "timePeriod":{
+          "shape":"TimePeriod",
+          "documentation":"<p>The time period during which the spending limit is active, including start and end dates.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags to apply to the spending limit. Each tag consists of a key and an optional value.</p>"
+        }
+      }
+    },
+    "CreateSpendingLimitRequestSpendingLimitString":{
+      "type":"string",
+      "min":1,
+      "pattern":"\\d+(\\.\\d{1,2})?"
+    },
+    "CreateSpendingLimitResponse":{
+      "type":"structure",
+      "required":["spendingLimitArn"],
+      "members":{
+        "spendingLimitArn":{
+          "shape":"SpendingLimitArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created spending limit.</p>"
+        }
+      }
+    },
     "DataSource":{
       "type":"structure",
       "required":["s3DataSource"],
@@ -635,6 +755,22 @@
         }
       },
       "documentation":"<p>Information about the source of the input data used by the Amazon Braket hybrid job.</p>"
+    },
+    "DeleteSpendingLimitRequest":{
+      "type":"structure",
+      "required":["spendingLimitArn"],
+      "members":{
+        "spendingLimitArn":{
+          "shape":"SpendingLimitArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the spending limit to delete.</p>",
+          "location":"uri",
+          "locationName":"spendingLimitArn"
+        }
+      }
+    },
+    "DeleteSpendingLimitResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DeviceArn":{
       "type":"string",
@@ -1846,6 +1982,82 @@
         }
       }
     },
+    "SearchSpendingLimitsFilter":{
+      "type":"structure",
+      "required":[
+        "name",
+        "values",
+        "operator"
+      ],
+      "members":{
+        "name":{
+          "shape":"String64",
+          "documentation":"<p>The name of the field to filter on. Currently only supports <code>deviceArn</code>.</p>"
+        },
+        "values":{
+          "shape":"SearchSpendingLimitsFilterValuesList",
+          "documentation":"<p>An array of values to match against the specified field.</p>"
+        },
+        "operator":{
+          "shape":"SearchSpendingLimitsFilterOperator",
+          "documentation":"<p>The comparison operator to use when filtering.</p>"
+        }
+      },
+      "documentation":"<p>Specifies filter criteria for searching spending limits. Use filters to narrow down results based on specific attributes.</p>"
+    },
+    "SearchSpendingLimitsFilterOperator":{
+      "type":"string",
+      "enum":["EQUAL"]
+    },
+    "SearchSpendingLimitsFilterValuesList":{
+      "type":"list",
+      "member":{"shape":"String256"},
+      "max":10,
+      "min":1
+    },
+    "SearchSpendingLimitsRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to retrieve the next page of results. This value is returned from a previous call to SearchSpendingLimits when there are more results available.</p>"
+        },
+        "maxResults":{
+          "shape":"SearchSpendingLimitsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in a single call. Minimum value of 1, maximum value of 100. Default is 20.</p>"
+        },
+        "filters":{
+          "shape":"SearchSpendingLimitsRequestFiltersList",
+          "documentation":"<p>The filters to apply when searching for spending limits. Use filters to narrow down the results based on specific criteria.</p>"
+        }
+      }
+    },
+    "SearchSpendingLimitsRequestFiltersList":{
+      "type":"list",
+      "member":{"shape":"SearchSpendingLimitsFilter"},
+      "max":10,
+      "min":0
+    },
+    "SearchSpendingLimitsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "SearchSpendingLimitsResponse":{
+      "type":"structure",
+      "required":["spendingLimits"],
+      "members":{
+        "spendingLimits":{
+          "shape":"SpendingLimitSummaryList",
+          "documentation":"<p>An array of spending limit summaries that match the specified filters.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -1857,6 +2069,68 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "SpendingLimitArn":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"arn:aws[a-z\\-]*:braket:[a-z0-9\\-]+:[0-9]{12}:spending-limit/.*"
+    },
+    "SpendingLimitSummary":{
+      "type":"structure",
+      "required":[
+        "spendingLimitArn",
+        "deviceArn",
+        "timePeriod",
+        "spendingLimit",
+        "queuedSpend",
+        "totalSpend",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "spendingLimitArn":{
+          "shape":"SpendingLimitArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the spending limit.</p>"
+        },
+        "deviceArn":{
+          "shape":"DeviceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the quantum device associated with this spending limit.</p>"
+        },
+        "timePeriod":{
+          "shape":"TimePeriod",
+          "documentation":"<p>The time period during which the spending limit is active.</p>"
+        },
+        "spendingLimit":{
+          "shape":"String",
+          "documentation":"<p>The maximum spending amount allowed for the device during the specified time period, in USD.</p>"
+        },
+        "queuedSpend":{
+          "shape":"String",
+          "documentation":"<p>The amount currently queued for spending on the device, in USD.</p>"
+        },
+        "totalSpend":{
+          "shape":"String",
+          "documentation":"<p>The total amount spent on the device so far during the current time period, in USD.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the spending limit was created, in epoch seconds.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the spending limit was last modified, in epoch seconds.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags associated with the spending limit. Each tag consists of a key and an optional value.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a spending limit, including current spending status and configuration details.</p>"
+    },
+    "SpendingLimitSummaryList":{
+      "type":"list",
+      "member":{"shape":"SpendingLimitSummary"}
     },
     "String":{"type":"string"},
     "String1024":{
@@ -1887,6 +2161,10 @@
     "SyntheticTimestamp_date_time":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
+    },
+    "SyntheticTimestamp_epoch_seconds":{
+      "type":"timestamp",
+      "timestampFormat":"unixTimestamp"
     },
     "TagKeys":{
       "type":"list",
@@ -1932,6 +2210,24 @@
       },
       "exception":true
     },
+    "TimePeriod":{
+      "type":"structure",
+      "required":[
+        "startAt",
+        "endAt"
+      ],
+      "members":{
+        "startAt":{
+          "shape":"SyntheticTimestamp_epoch_seconds",
+          "documentation":"<p>The start date and time for the spending limit period, in epoch seconds.</p>"
+        },
+        "endAt":{
+          "shape":"SyntheticTimestamp_epoch_seconds",
+          "documentation":"<p>The end date and time for the spending limit period, in epoch seconds.</p>"
+        }
+      },
+      "documentation":"<p>Defines a time range for spending limits, specifying when the limit is active.</p>"
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -1954,6 +2250,43 @@
       }
     },
     "UntagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateSpendingLimitRequest":{
+      "type":"structure",
+      "required":[
+        "spendingLimitArn",
+        "clientToken"
+      ],
+      "members":{
+        "spendingLimitArn":{
+          "shape":"SpendingLimitArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the spending limit to update.</p>",
+          "location":"uri",
+          "locationName":"spendingLimitArn"
+        },
+        "clientToken":{
+          "shape":"String64",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, Amazon Braket ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        },
+        "spendingLimit":{
+          "shape":"UpdateSpendingLimitRequestSpendingLimitString",
+          "documentation":"<p>The new maximum amount that can be spent on the specified device, in USD.</p>"
+        },
+        "timePeriod":{
+          "shape":"TimePeriod",
+          "documentation":"<p>The new time period during which the spending limit is active, including start and end dates.</p>"
+        }
+      }
+    },
+    "UpdateSpendingLimitRequestSpendingLimitString":{
+      "type":"string",
+      "min":1,
+      "pattern":"\\d+(\\.\\d{1,2})?"
+    },
+    "UpdateSpendingLimitResponse":{
       "type":"structure",
       "members":{}
     },

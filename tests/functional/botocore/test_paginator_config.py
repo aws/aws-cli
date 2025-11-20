@@ -149,14 +149,23 @@ def _pagination_configs():
 @pytest.mark.parametrize(
     "operation_name, page_config, service_model", _pagination_configs()
 )
-def test_lint_pagination_configs(operation_name, page_config, service_model):
+def test_lint_pagination_configs(
+    operation_name, page_config, service_model, record_property
+):
+    # Store common details of the operation
+    record_property('aws_service', service_model.service_name)
+    record_property('aws_operation', operation_name)
     _validate_known_pagination_keys(page_config)
     _validate_result_key_exists(page_config)
     _validate_referenced_operation_exists(operation_name, service_model)
-    _validate_operation_has_output(operation_name, service_model)
+    _validate_operation_has_output(
+        operation_name, service_model, record_property
+    )
     _validate_input_keys_match(operation_name, page_config, service_model)
     _validate_output_keys_match(operation_name, page_config, service_model)
-    _validate_new_numeric_keys(operation_name, page_config, service_model)
+    _validate_new_numeric_keys(
+        operation_name, page_config, service_model, record_property
+    )
 
 
 def _validate_known_pagination_keys(page_config):
@@ -183,10 +192,14 @@ def _validate_referenced_operation_exists(operation_name, service_model):
         )
 
 
-def _validate_operation_has_output(operation_name, service_model):
+def _validate_operation_has_output(
+    operation_name, service_model, record_property
+):
     op_model = service_model.operation_model(operation_name)
     output = op_model.output_shape
     if output is None or not output.members:
+        if output:
+            record_property('shape', output.type_name)
         raise AssertionError(
             "Pagination config refers to operation "
             f"that does not have any output: {operation_name}"
@@ -210,13 +223,9 @@ def _validate_input_keys_match(operation_name, page_config, service_model):
         limit_key = page_config['limit_key']
         if limit_key not in valid_input_names:
             raise AssertionError(
-                "limit_key '{}' refers to a non existent "
-                "input member for operation: {}, valid keys: "
-                "{}".format(
-                    limit_key,
-                    operation_name,
-                    ', '.join(list(valid_input_names)),
-                )
+                f"limit_key '{limit_key}' refers to a non existent "
+                f"input member for operation: {operation_name}, valid keys: "
+                f"{', '.join(list(valid_input_names))}."
             )
 
 
@@ -236,7 +245,8 @@ def _validate_output_keys_match(operation_name, page_config, service_model):
         else:
             if output_key not in output_members:
                 raise AssertionError(
-                    f"Pagination key '{key_name}' refers to an output "
+                    f"Pagination key '{key_name}' for operation "
+                    f"{operation_name} refers to an output "
                     f"member that does not exist: {output_key}"
                 )
             output_members.remove(output_key)
@@ -253,16 +263,15 @@ def _validate_output_keys_match(operation_name, page_config, service_model):
                 f.write(f"'{key}',\n")
         raise AssertionError(
             "There are member names in the output shape of "
-            "{} that are not accounted for in the pagination "
-            "config for service {}: {}".format(
-                operation_name,
-                service_model.service_name,
-                ', '.join(output_members),
-            )
+            f"{operation_name} that are not accounted for in the pagination "
+            f"config for service {service_model.service_name}: "
+            f"{', '.join(output_members)}"
         )
 
 
-def _validate_new_numeric_keys(operation_name, page_config, service_model):
+def _validate_new_numeric_keys(
+    operation_name, page_config, service_model, record_property
+):
     output_shape = service_model.operation_model(operation_name).output_shape
     for key in _get_list_value(page_config, 'result_key'):
         current_shape = output_shape
@@ -277,6 +286,7 @@ def _validate_new_numeric_keys(operation_name, page_config, service_model):
             and (service_model.service_name, operation_name)
             not in KNOWN_PAGINATORS_WITH_INTEGER_OUTPUTS
         ):
+            record_property('shape', current_shape.name)
             raise AssertionError(
                 f'There is a new operation {operation_name} for service '
                 f'{service_model.service_name} that is configured to sum '

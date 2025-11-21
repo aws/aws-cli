@@ -235,7 +235,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
             'ActionOnFailure=TERMINATE_CLUSTER,'
             'LogUri="TestLogUri",'
             'EncryptionKeyArn="TestEncryptionKeyArn",'
-            'Properties=k1=v1\,k2=v2\,k3'
+            'Properties=k1=v1\\,k2=v2\\,k3'
         )
         expected_result = {
             'JobFlowId': 'j-ABC',

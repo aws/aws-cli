@@ -10,7 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-
 import copy
 import os
 
@@ -230,11 +229,13 @@ class TestAddSteps(BaseAWSCommandParamsTest):
 
     def test_custom_jar_step_with_all_fields(self):
         cmd = self.prefix + (
-            r'Name=Custom,Type=Custom_jar,'
-            r'Jar=s3://mybucket/mytest.jar,'
-            r'Args=arg1,arg2,MainClass=mymainclass,'
-            r'ActionOnFailure=TERMINATE_CLUSTER,'
-            r'Properties=k1=v1\,k2=v2\,k3'
+            'Name=Custom,Type=Custom_jar,'
+            'Jar=s3://mybucket/mytest.jar,'
+            'Args=arg1,arg2,MainClass=mymainclass,'
+            'ActionOnFailure=TERMINATE_CLUSTER,'
+            'LogUri="TestLogUri",'
+            'EncryptionKeyArn="TestEncryptionKeyArn",'
+            'Properties=k1=v1\,k2=v2\,k3'
         )
         expected_result = {
             'JobFlowId': 'j-ABC',
@@ -251,6 +252,112 @@ class TestAddSteps(BaseAWSCommandParamsTest):
                             {'Key': 'k2', 'Value': 'v2'},
                             {'Key': 'k3', 'Value': ''},
                         ],
+                    },
+                    'StepMonitoringConfiguration': {
+                        'S3MonitoringConfiguration': {
+                            'LogUri': "TestLogUri",
+                            'EncryptionKeyArn': "TestEncryptionKeyArn",
+                        }
+                    },
+                }
+            ],
+        }
+
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd,
+            expected_result=expected_result,
+            expected_result_release=expected_result,
+        )
+
+    def test_custom_jar_step_with_step_monitoring_configuration_log_uri_only(
+        self,
+    ):
+        cmd = self.prefix + (
+            'Name=Custom,Type=Custom_jar,'
+            'Jar=s3://mybucket/mytest.jar,'
+            'Args=arg1,arg2,MainClass=mymainclass,'
+            'ActionOnFailure=TERMINATE_CLUSTER,'
+            'LogUri="TestLogUri"'
+        )
+        expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {
+                    'Name': 'Custom',
+                    'ActionOnFailure': 'TERMINATE_CLUSTER',
+                    'HadoopJarStep': {
+                        'Jar': 's3://mybucket/mytest.jar',
+                        'Args': ['arg1', 'arg2'],
+                        'MainClass': 'mymainclass',
+                    },
+                    'StepMonitoringConfiguration': {
+                        'S3MonitoringConfiguration': {'LogUri': "TestLogUri"}
+                    },
+                }
+            ],
+        }
+
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd,
+            expected_result=expected_result,
+            expected_result_release=expected_result,
+        )
+
+    def test_custom_jar_step_with_step_monitoring_configuration_encryption_key_arn_only(
+        self,
+    ):
+        cmd = self.prefix + (
+            'Name=Custom,Type=Custom_jar,'
+            'Jar=s3://mybucket/mytest.jar,'
+            'Args=arg1,arg2,MainClass=mymainclass,'
+            'ActionOnFailure=TERMINATE_CLUSTER,'
+            'EncryptionKeyArn="TestEncryptionKeyArn"'
+        )
+        expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {
+                    'Name': 'Custom',
+                    'ActionOnFailure': 'TERMINATE_CLUSTER',
+                    'HadoopJarStep': {
+                        'Jar': 's3://mybucket/mytest.jar',
+                        'Args': ['arg1', 'arg2'],
+                        'MainClass': 'mymainclass',
+                    },
+                    'StepMonitoringConfiguration': {
+                        'S3MonitoringConfiguration': {
+                            'EncryptionKeyArn': "TestEncryptionKeyArn"
+                        }
+                    },
+                }
+            ],
+        }
+
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd,
+            expected_result=expected_result,
+            expected_result_release=expected_result,
+        )
+
+    def test_custom_jar_step_with_step_monitoring_configuration_no_log_uri_or_encryption_key_arn(
+        self,
+    ):
+        cmd = self.prefix + (
+            'Name=Custom,Type=Custom_jar,'
+            'Jar=s3://mybucket/mytest.jar,'
+            'Args=arg1,arg2,MainClass=mymainclass,'
+            'ActionOnFailure=TERMINATE_CLUSTER'
+        )
+        expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {
+                    'Name': 'Custom',
+                    'ActionOnFailure': 'TERMINATE_CLUSTER',
+                    'HadoopJarStep': {
+                        'Jar': 's3://mybucket/mytest.jar',
+                        'Args': ['arg1', 'arg2'],
+                        'MainClass': 'mymainclass',
                     },
                 }
             ],
@@ -328,6 +435,123 @@ class TestAddSteps(BaseAWSCommandParamsTest):
             + 'Name=StreamingStepAllFields,'
             + 'ActionOnFailure=CANCEL_AND_WAIT,'
             + self.STREAMING_ARGS
+            + ','
+            + 'LogUri="TestLogUri",'
+            + 'EncryptionKeyArn="TestEncryptionKeyArn"'
+        )
+        cmd = self.prefix + test_step_config
+        expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {
+                    'Name': 'StreamingStepAllFields',
+                    'ActionOnFailure': 'CANCEL_AND_WAIT',
+                    'HadoopJarStep': self.STREAMING_HADOOP_SCRIPT_RUNNER_STEP,
+                    'StepMonitoringConfiguration': {
+                        'S3MonitoringConfiguration': {
+                            'LogUri': "TestLogUri",
+                            'EncryptionKeyArn': "TestEncryptionKeyArn",
+                        }
+                    },
+                }
+            ],
+        }
+
+        expected_result_release = copy.deepcopy(expected_result)
+        expected_result_release['Steps'][0]['HadoopJarStep'] = (
+            self.STREAMING_HADOOP_COMMAND_RUNNER_STEP
+        )
+
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd,
+            expected_result=expected_result,
+            expected_result_release=expected_result_release,
+        )
+
+    def test_streaming_jar_with_step_monitoring_configuration_log_uri_only(
+        self,
+    ):
+        test_step_config = (
+            'Type=Streaming,'
+            + 'Name=StreamingStepAllFields,'
+            + 'ActionOnFailure=CANCEL_AND_WAIT,'
+            + self.STREAMING_ARGS
+            + ','
+            + 'LogUri="TestLogUri"'
+        )
+        cmd = self.prefix + test_step_config
+        expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {
+                    'Name': 'StreamingStepAllFields',
+                    'ActionOnFailure': 'CANCEL_AND_WAIT',
+                    'HadoopJarStep': self.STREAMING_HADOOP_SCRIPT_RUNNER_STEP,
+                    'StepMonitoringConfiguration': {
+                        'S3MonitoringConfiguration': {'LogUri': "TestLogUri"}
+                    },
+                }
+            ],
+        }
+
+        expected_result_release = copy.deepcopy(expected_result)
+        expected_result_release['Steps'][0]['HadoopJarStep'] = (
+            self.STREAMING_HADOOP_COMMAND_RUNNER_STEP
+        )
+
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd,
+            expected_result=expected_result,
+            expected_result_release=expected_result_release,
+        )
+
+    def test_streaming_jar_with_step_monitoring_configuration_encryption_key_arn_only(
+        self,
+    ):
+        test_step_config = (
+            'Type=Streaming,'
+            + 'Name=StreamingStepAllFields,'
+            + 'ActionOnFailure=CANCEL_AND_WAIT,'
+            + self.STREAMING_ARGS
+            + ','
+            + 'EncryptionKeyArn="TestEncryptionKeyArn"'
+        )
+        cmd = self.prefix + test_step_config
+        expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {
+                    'Name': 'StreamingStepAllFields',
+                    'ActionOnFailure': 'CANCEL_AND_WAIT',
+                    'HadoopJarStep': self.STREAMING_HADOOP_SCRIPT_RUNNER_STEP,
+                    'StepMonitoringConfiguration': {
+                        'S3MonitoringConfiguration': {
+                            'EncryptionKeyArn': "TestEncryptionKeyArn"
+                        }
+                    },
+                }
+            ],
+        }
+
+        expected_result_release = copy.deepcopy(expected_result)
+        expected_result_release['Steps'][0]['HadoopJarStep'] = (
+            self.STREAMING_HADOOP_COMMAND_RUNNER_STEP
+        )
+
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd,
+            expected_result=expected_result,
+            expected_result_release=expected_result_release,
+        )
+
+    def test_streaming_jar_with_step_monitoring_configuration_no_log_uri_or_encryption_key_arn(
+        self,
+    ):
+        test_step_config = (
+            'Type=Streaming,'
+            + 'Name=StreamingStepAllFields,'
+            + 'ActionOnFailure=CANCEL_AND_WAIT,'
+            + self.STREAMING_ARGS
         )
         cmd = self.prefix + test_step_config
         expected_result = {
@@ -394,6 +618,120 @@ class TestAddSteps(BaseAWSCommandParamsTest):
             + 'ActionOnFailure=CANCEL_AND_WAIT,'
             + 'Name=HiveWithAllFields,'
             + self.HIVE_BASIC_ARGS
+            + ','
+            + 'LogUri="TestLogUri",'
+            + 'EncryptionKeyArn="TestEncryptionKeyArn"'
+        )
+        cmd = self.prefix + test_step_config
+        expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {
+                    'Name': 'HiveWithAllFields',
+                    'ActionOnFailure': 'CANCEL_AND_WAIT',
+                    'HadoopJarStep': self.HIVE_DEFAULT_SCRIPT_RUNNER_STEP,
+                    'StepMonitoringConfiguration': {
+                        'S3MonitoringConfiguration': {
+                            'LogUri': "TestLogUri",
+                            'EncryptionKeyArn': "TestEncryptionKeyArn",
+                        }
+                    },
+                }
+            ],
+        }
+        expected_result_release = copy.deepcopy(expected_result)
+        expected_result_release['Steps'][0]['HadoopJarStep'] = (
+            self.HIVE_DEFAULT_COMMAND_RUNNER_STEP
+        )
+
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd,
+            expected_result=expected_result,
+            expected_result_release=expected_result_release,
+        )
+
+    def test_hive_step_with_step_monitoring_configuration_log_uri_only(self):
+        test_step_config = (
+            'Type=Hive,'
+            + 'ActionOnFailure=CANCEL_AND_WAIT,'
+            + 'Name=HiveWithAllFields,'
+            + self.HIVE_BASIC_ARGS
+            + ','
+            + 'LogUri="TestLogUri"'
+        )
+        cmd = self.prefix + test_step_config
+        expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {
+                    'Name': 'HiveWithAllFields',
+                    'ActionOnFailure': 'CANCEL_AND_WAIT',
+                    'HadoopJarStep': self.HIVE_DEFAULT_SCRIPT_RUNNER_STEP,
+                    'StepMonitoringConfiguration': {
+                        'S3MonitoringConfiguration': {
+                            'LogUri': "TestLogUri",
+                        }
+                    },
+                }
+            ],
+        }
+        expected_result_release = copy.deepcopy(expected_result)
+        expected_result_release['Steps'][0]['HadoopJarStep'] = (
+            self.HIVE_DEFAULT_COMMAND_RUNNER_STEP
+        )
+
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd,
+            expected_result=expected_result,
+            expected_result_release=expected_result_release,
+        )
+
+    def test_hive_step_with_step_monitoring_configuration_encryption_key_arn_only(
+        self,
+    ):
+        test_step_config = (
+            'Type=Hive,'
+            + 'ActionOnFailure=CANCEL_AND_WAIT,'
+            + 'Name=HiveWithAllFields,'
+            + self.HIVE_BASIC_ARGS
+            + ','
+            + 'EncryptionKeyArn="TestEncryptionKeyArn"'
+        )
+        cmd = self.prefix + test_step_config
+        expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {
+                    'Name': 'HiveWithAllFields',
+                    'ActionOnFailure': 'CANCEL_AND_WAIT',
+                    'HadoopJarStep': self.HIVE_DEFAULT_SCRIPT_RUNNER_STEP,
+                    'StepMonitoringConfiguration': {
+                        'S3MonitoringConfiguration': {
+                            'EncryptionKeyArn': "TestEncryptionKeyArn"
+                        }
+                    },
+                }
+            ],
+        }
+        expected_result_release = copy.deepcopy(expected_result)
+        expected_result_release['Steps'][0]['HadoopJarStep'] = (
+            self.HIVE_DEFAULT_COMMAND_RUNNER_STEP
+        )
+
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd,
+            expected_result=expected_result,
+            expected_result_release=expected_result_release,
+        )
+
+    def test_hive_step_with_step_monitoring_configuration_no_log_uri_or_encryption_key_arn(
+        self,
+    ):
+        test_step_config = (
+            'Type=Hive,'
+            + 'ActionOnFailure=CANCEL_AND_WAIT,'
+            + 'Name=HiveWithAllFields,'
+            + self.HIVE_BASIC_ARGS
         )
         cmd = self.prefix + test_step_config
         expected_result = {
@@ -453,6 +791,118 @@ class TestAddSteps(BaseAWSCommandParamsTest):
         )
 
     def test_pig_step_with_all_fields(self):
+        test_step_config = (
+            'Name=PigWithAllFields,'
+            + 'Type=Pig,'
+            + self.PIG_BASIC_ARGS
+            + ','
+            + 'ActionOnFailure=CANCEL_AND_WAIT,'
+            + 'LogUri="TestLogUri",'
+            + 'EncryptionKeyArn="TestEncryptionKeyArn"'
+        )
+        cmd = self.prefix + test_step_config
+        expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {
+                    'Name': 'PigWithAllFields',
+                    'ActionOnFailure': 'CANCEL_AND_WAIT',
+                    'HadoopJarStep': self.PIG_DEFAULT_SCRIPT_RUNNER_STEP,
+                    'StepMonitoringConfiguration': {
+                        'S3MonitoringConfiguration': {
+                            'LogUri': "TestLogUri",
+                            'EncryptionKeyArn': "TestEncryptionKeyArn",
+                        }
+                    },
+                }
+            ],
+        }
+        expected_result_release = copy.deepcopy(expected_result)
+        expected_result_release['Steps'][0]['HadoopJarStep'] = (
+            self.PIG_DEFAULT_COMMAND_RUNNER_STEP
+        )
+
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd,
+            expected_result=expected_result,
+            expected_result_release=expected_result_release,
+        )
+
+    def test_pig_step_with_step_monitoring_configuration_log_uri_only(self):
+        test_step_config = (
+            'Name=PigWithAllFields,'
+            + 'Type=Pig,'
+            + self.PIG_BASIC_ARGS
+            + ','
+            + 'ActionOnFailure=CANCEL_AND_WAIT,'
+            + 'LogUri="TestLogUri"'
+        )
+        cmd = self.prefix + test_step_config
+        expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {
+                    'Name': 'PigWithAllFields',
+                    'ActionOnFailure': 'CANCEL_AND_WAIT',
+                    'HadoopJarStep': self.PIG_DEFAULT_SCRIPT_RUNNER_STEP,
+                    'StepMonitoringConfiguration': {
+                        'S3MonitoringConfiguration': {'LogUri': "TestLogUri"}
+                    },
+                }
+            ],
+        }
+        expected_result_release = copy.deepcopy(expected_result)
+        expected_result_release['Steps'][0]['HadoopJarStep'] = (
+            self.PIG_DEFAULT_COMMAND_RUNNER_STEP
+        )
+
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd,
+            expected_result=expected_result,
+            expected_result_release=expected_result_release,
+        )
+
+    def test_pig_step_with_step_monitoring_configuration_encryption_key_arn_only(
+        self,
+    ):
+        test_step_config = (
+            'Name=PigWithAllFields,'
+            + 'Type=Pig,'
+            + self.PIG_BASIC_ARGS
+            + ','
+            + 'ActionOnFailure=CANCEL_AND_WAIT,'
+            + 'EncryptionKeyArn="TestEncryptionKeyArn"'
+        )
+        cmd = self.prefix + test_step_config
+        expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {
+                    'Name': 'PigWithAllFields',
+                    'ActionOnFailure': 'CANCEL_AND_WAIT',
+                    'HadoopJarStep': self.PIG_DEFAULT_SCRIPT_RUNNER_STEP,
+                    'StepMonitoringConfiguration': {
+                        'S3MonitoringConfiguration': {
+                            'EncryptionKeyArn': "TestEncryptionKeyArn"
+                        }
+                    },
+                }
+            ],
+        }
+        expected_result_release = copy.deepcopy(expected_result)
+        expected_result_release['Steps'][0]['HadoopJarStep'] = (
+            self.PIG_DEFAULT_COMMAND_RUNNER_STEP
+        )
+
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd,
+            expected_result=expected_result,
+            expected_result_release=expected_result_release,
+        )
+
+    def test_pig_step_with_step_monitoring_configuration_no_log_uri_or_encryption_key_arn(
+        self,
+    ):
         test_step_config = (
             'Name=PigWithAllFields,'
             + 'Type=Pig,'
@@ -532,6 +982,135 @@ class TestAddSteps(BaseAWSCommandParamsTest):
             expected_result_release=expected_error_msg,
         )
 
+    def test_spark_step_with_step_monitoring_configuration(self):
+        cmd = (
+            self.prefix
+            + 'Type=SPARK,'
+            + self.SPARK_SUBMIT_BASIC_ARGS
+            + ','
+            + 'LogUri="TestLogUri",'
+            + 'EncryptionKeyArn="TestEncryptionKeyArn"'
+        )
+        expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {
+                    'Name': 'Spark application',
+                    'ActionOnFailure': 'CONTINUE',
+                    'HadoopJarStep': self.SPARK_SUBMIT_SCRIPT_RUNNER_STEP,
+                    'StepMonitoringConfiguration': {
+                        'S3MonitoringConfiguration': {
+                            'LogUri': "TestLogUri",
+                            'EncryptionKeyArn': "TestEncryptionKeyArn",
+                        }
+                    },
+                }
+            ],
+        }
+        expected_result_release = copy.deepcopy(expected_result)
+        expected_result_release['Steps'][0]['HadoopJarStep'] = (
+            self.SPARK_SUBMIT_COMMAND_RUNNER_STEP
+        )
+
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd,
+            expected_result=expected_result,
+            expected_result_release=expected_result_release,
+        )
+
+    def test_spark_step_with_step_monitoring_configuration_log_uri_only(self):
+        cmd = (
+            self.prefix
+            + 'Type=SPARK,'
+            + self.SPARK_SUBMIT_BASIC_ARGS
+            + ','
+            + 'LogUri="TestLogUri"'
+        )
+        expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {
+                    'Name': 'Spark application',
+                    'ActionOnFailure': 'CONTINUE',
+                    'HadoopJarStep': self.SPARK_SUBMIT_SCRIPT_RUNNER_STEP,
+                    'StepMonitoringConfiguration': {
+                        'S3MonitoringConfiguration': {'LogUri': "TestLogUri"}
+                    },
+                }
+            ],
+        }
+        expected_result_release = copy.deepcopy(expected_result)
+        expected_result_release['Steps'][0]['HadoopJarStep'] = (
+            self.SPARK_SUBMIT_COMMAND_RUNNER_STEP
+        )
+
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd,
+            expected_result=expected_result,
+            expected_result_release=expected_result_release,
+        )
+
+    def test_spark_step_with_step_monitoring_configuration_encryption_key_arn_only(
+        self,
+    ):
+        cmd = (
+            self.prefix
+            + 'Type=SPARK,'
+            + self.SPARK_SUBMIT_BASIC_ARGS
+            + ','
+            + 'EncryptionKeyArn="TestEncryptionKeyArn"'
+        )
+        expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {
+                    'Name': 'Spark application',
+                    'ActionOnFailure': 'CONTINUE',
+                    'HadoopJarStep': self.SPARK_SUBMIT_SCRIPT_RUNNER_STEP,
+                    'StepMonitoringConfiguration': {
+                        'S3MonitoringConfiguration': {
+                            'EncryptionKeyArn': "TestEncryptionKeyArn"
+                        }
+                    },
+                }
+            ],
+        }
+        expected_result_release = copy.deepcopy(expected_result)
+        expected_result_release['Steps'][0]['HadoopJarStep'] = (
+            self.SPARK_SUBMIT_COMMAND_RUNNER_STEP
+        )
+
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd,
+            expected_result=expected_result,
+            expected_result_release=expected_result_release,
+        )
+
+    def test_spark_step_with_step_monitoring_configuration_no_log_uri_or_encryption_key_arn(
+        self,
+    ):
+        cmd = self.prefix + 'Type=SPARK,' + self.SPARK_SUBMIT_BASIC_ARGS
+        expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {
+                    'Name': 'Spark application',
+                    'ActionOnFailure': 'CONTINUE',
+                    'HadoopJarStep': self.SPARK_SUBMIT_SCRIPT_RUNNER_STEP,
+                }
+            ],
+        }
+        expected_result_release = copy.deepcopy(expected_result)
+        expected_result_release['Steps'][0]['HadoopJarStep'] = (
+            self.SPARK_SUBMIT_COMMAND_RUNNER_STEP
+        )
+
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd,
+            expected_result=expected_result,
+            expected_result_release=expected_result_release,
+        )
+
     def test_impala_missing_args(self):
         cmd = self.prefix + 'Type=Impala'
         expected_error_msg = (
@@ -545,6 +1124,103 @@ class TestAddSteps(BaseAWSCommandParamsTest):
         )
 
     def test_impala_step_with_all_fields(self):
+        test_step_config = (
+            'Name=ImpalaWithAllFields,'
+            + 'Type=Impala,'
+            + self.IMPALA_BASIC_ARGS
+            + ','
+            + 'ActionOnFailure=CANCEL_AND_WAIT,'
+            + 'LogUri="TestLogUri",'
+            + 'EncryptionKeyArn="TestEncryptionKeyArn"'
+        )
+        cmd = self.prefix + test_step_config
+        expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {
+                    'Name': 'ImpalaWithAllFields',
+                    'ActionOnFailure': 'CANCEL_AND_WAIT',
+                    'HadoopJarStep': self.IMPALA_BASIC_SCRIPT_RUNNER_STEP,
+                    'StepMonitoringConfiguration': {
+                        'S3MonitoringConfiguration': {
+                            'LogUri': "TestLogUri",
+                            'EncryptionKeyArn': "TestEncryptionKeyArn",
+                        }
+                    },
+                }
+            ],
+        }
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd,
+            expected_result=expected_result,
+            expected_result_release=None,
+        )
+
+    def test_impala_step_with_step_monitoring_configuration_log_uri_only(self):
+        test_step_config = (
+            'Name=ImpalaWithAllFields,'
+            + 'Type=Impala,'
+            + self.IMPALA_BASIC_ARGS
+            + ','
+            + 'ActionOnFailure=CANCEL_AND_WAIT,'
+            + 'LogUri="TestLogUri"'
+        )
+        cmd = self.prefix + test_step_config
+        expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {
+                    'Name': 'ImpalaWithAllFields',
+                    'ActionOnFailure': 'CANCEL_AND_WAIT',
+                    'HadoopJarStep': self.IMPALA_BASIC_SCRIPT_RUNNER_STEP,
+                    'StepMonitoringConfiguration': {
+                        'S3MonitoringConfiguration': {'LogUri': "TestLogUri"}
+                    },
+                }
+            ],
+        }
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd,
+            expected_result=expected_result,
+            expected_result_release=None,
+        )
+
+    def test_impala_step_with_step_monitoring_configuration_encryption_key_arn_only(
+        self,
+    ):
+        test_step_config = (
+            'Name=ImpalaWithAllFields,'
+            + 'Type=Impala,'
+            + self.IMPALA_BASIC_ARGS
+            + ','
+            + 'ActionOnFailure=CANCEL_AND_WAIT,'
+            + 'EncryptionKeyArn="TestEncryptionKeyArn"'
+        )
+        cmd = self.prefix + test_step_config
+        expected_result = {
+            'JobFlowId': 'j-ABC',
+            'Steps': [
+                {
+                    'Name': 'ImpalaWithAllFields',
+                    'ActionOnFailure': 'CANCEL_AND_WAIT',
+                    'HadoopJarStep': self.IMPALA_BASIC_SCRIPT_RUNNER_STEP,
+                    'StepMonitoringConfiguration': {
+                        'S3MonitoringConfiguration': {
+                            'EncryptionKeyArn': "TestEncryptionKeyArn"
+                        }
+                    },
+                }
+            ],
+        }
+        self.assert_params_for_ami_and_release_based_clusters(
+            cmd=cmd,
+            expected_result=expected_result,
+            expected_result_release=None,
+        )
+
+    def test_impala_step_with_step_monitoring_configuration_no_log_uri_or_encryption_key_arn(
+        self,
+    ):
         test_step_config = (
             'Name=ImpalaWithAllFields,'
             + 'Type=Impala,'

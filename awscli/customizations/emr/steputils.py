@@ -76,6 +76,8 @@ def build_custom_jar_step(parsed_step):
         properties=emrutils.parse_key_value_string(
             parsed_step.get('Properties')
         ),
+        log_uri=parsed_step.get('LogUri'),
+        encryption_key_arn=parsed_step.get('EncryptionKeyArn'),
     )
 
 
@@ -105,7 +107,12 @@ def build_streaming_step(parsed_step, release_label):
     args_list += args
 
     return emrutils.build_step(
-        jar=jar, args=args_list, name=name, action_on_failure=action_on_failure
+        jar=jar,
+        args=args_list,
+        name=name,
+        action_on_failure=action_on_failure,
+        log_uri=parsed_step.get('LogUri'),
+        encryption_key_arn=parsed_step.get('EncryptionKeyArn'),
     )
 
 
@@ -128,6 +135,8 @@ def build_hive_step(parsed_step, release_label, region=None):
         args=_build_hive_args(args, release_label, region),
         name=name,
         action_on_failure=action_on_failure,
+        log_uri=parsed_step.get('LogUri'),
+        encryption_key_arn=parsed_step.get('EncryptionKeyArn'),
     )
 
 
@@ -173,6 +182,8 @@ def build_pig_step(parsed_step, release_label, region=None):
         args=_build_pig_args(args, release_label, region),
         name=name,
         action_on_failure=action_on_failure,
+        log_uri=parsed_step.get('LogUri'),
+        encryption_key_arn=parsed_step.get('EncryptionKeyArn'),
     )
 
 
@@ -226,6 +237,8 @@ def build_impala_step(parsed_step, release_label, region=None):
         args=args_list,
         name=name,
         action_on_failure=action_on_failure,
+        log_uri=parsed_step.get('LogUri'),
+        encryption_key_arn=parsed_step.get('EncryptionKeyArn'),
     )
 
 
@@ -247,6 +260,8 @@ def build_spark_step(parsed_step, release_label, region=None):
         args=_build_spark_args(args, release_label, region),
         name=name,
         action_on_failure=action_on_failure,
+        log_uri=parsed_step.get('LogUri'),
+        encryption_key_arn=parsed_step.get('EncryptionKeyArn'),
     )
 
 

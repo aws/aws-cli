@@ -30,7 +30,25 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>API used to get data automation status.</p>"
+      "documentation":"<p>API used to get data automation status.</p>",
+      "readonly":true
+    },
+    "InvokeDataAutomation":{
+      "name":"InvokeDataAutomation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"InvokeDataAutomationRequest"},
+      "output":{"shape":"InvokeDataAutomationResponse"},
+      "errors":[
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Sync API: Invoke data automation.</p>"
     },
     "InvokeDataAutomationAsync":{
       "name":"InvokeDataAutomationAsync",
@@ -133,6 +151,7 @@
         "ClientError"
       ]
     },
+    "Blob":{"type":"blob"},
     "Blueprint":{
       "type":"structure",
       "required":["blueprintArn"],
@@ -157,7 +176,7 @@
       "documentation":"<p>ARN of a Blueprint</p>",
       "max":128,
       "min":0,
-      "pattern":"arn:aws(|-cn|-us-gov):bedrock:[a-zA-Z0-9-]*:(aws|[0-9]{12}):blueprint/(bedrock-data-insights-public-[a-zA-Z0-9-_]{1,30}|bedrock-data-automation-public-[a-zA-Z0-9-_]{1,30}|[a-zA-Z0-9-]{12,36})"
+      "pattern":"arn:aws(|-cn|-iso|-iso-[a-z]|-us-gov):bedrock:[a-zA-Z0-9-]*:(aws|[0-9]{12}):blueprint/(bedrock-data-insights-public-[a-zA-Z0-9-_]{1,30}|bedrock-data-automation-public-[a-zA-Z0-9-_]{1,30}|[a-zA-Z0-9-]{12,36})"
     },
     "BlueprintList":{
       "type":"list",
@@ -188,12 +207,20 @@
       "type":"boolean",
       "box":true
     },
+    "CustomOutputStatus":{
+      "type":"string",
+      "documentation":"<p>Custom output status enum</p>",
+      "enum":[
+        "MATCH",
+        "NO_MATCH"
+      ]
+    },
     "DataAutomationArn":{
       "type":"string",
       "documentation":"<p>Data automation arn.</p>",
       "max":128,
       "min":1,
-      "pattern":"arn:aws(|-cn|-us-gov):bedrock:[a-zA-Z0-9-]*:(aws|[0-9]{12}):data-automation-project/[a-zA-Z0-9-_]+"
+      "pattern":"arn:aws(|-cn|-iso|-iso-[a-z]|-us-gov):bedrock:[a-zA-Z0-9-]*:(aws|[0-9]{12}):data-automation-project/[a-zA-Z0-9-_]+"
     },
     "DataAutomationConfiguration":{
       "type":"structure",
@@ -215,7 +242,7 @@
       "documentation":"<p>Data automation profile arn.</p>",
       "max":128,
       "min":1,
-      "pattern":"arn:aws(|-cn|-us-gov):bedrock:[a-zA-Z0-9-]*:(aws|[0-9]{12}):data-automation-profile/[a-zA-Z0-9-_.]+"
+      "pattern":"arn:aws(|-cn|-iso|-iso-[a-z]|-us-gov):bedrock:[a-zA-Z0-9-]*:(aws|[0-9]{12}):data-automation-profile/[a-zA-Z0-9-_.]+"
     },
     "DataAutomationStage":{
       "type":"string",
@@ -310,7 +337,7 @@
       "documentation":"<p>Client specified token used for idempotency checks</p>",
       "max":256,
       "min":1,
-      "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9])*"
+      "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){1,256}"
     },
     "InputConfiguration":{
       "type":"structure",
@@ -341,7 +368,7 @@
       "documentation":"<p>Invocation arn.</p>",
       "max":128,
       "min":1,
-      "pattern":"arn:aws(|-cn|-us-gov):bedrock:[a-zA-Z0-9-]*:[0-9]{12}:(insights-invocation|data-automation-invocation)/[a-zA-Z0-9-_]+"
+      "pattern":"arn:aws(|-cn|-iso|-iso-[a-z]|-us-gov):bedrock:[a-zA-Z0-9-]*:[0-9]{12}:data-automation-invocation/[a-zA-Z0-9-_]+"
     },
     "InvokeDataAutomationAsyncRequest":{
       "type":"structure",
@@ -402,6 +429,54 @@
       },
       "documentation":"<p>Invoke Data Automation Async Response</p>"
     },
+    "InvokeDataAutomationRequest":{
+      "type":"structure",
+      "required":[
+        "inputConfiguration",
+        "dataAutomationProfileArn"
+      ],
+      "members":{
+        "inputConfiguration":{
+          "shape":"SyncInputConfiguration",
+          "documentation":"<p>Input configuration.</p>"
+        },
+        "dataAutomationConfiguration":{
+          "shape":"DataAutomationConfiguration",
+          "documentation":"<p>Data automation configuration.</p>"
+        },
+        "blueprints":{
+          "shape":"BlueprintList",
+          "documentation":"<p>Blueprint list.</p>"
+        },
+        "dataAutomationProfileArn":{
+          "shape":"DataAutomationProfileArn",
+          "documentation":"<p>Data automation profile ARN</p>"
+        },
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Encryption configuration.</p>"
+        }
+      },
+      "documentation":"<p>Invoke Data Automation Request</p>"
+    },
+    "InvokeDataAutomationResponse":{
+      "type":"structure",
+      "required":[
+        "semanticModality",
+        "outputSegments"
+      ],
+      "members":{
+        "semanticModality":{
+          "shape":"SemanticModality",
+          "documentation":"<p>Detected semantic modality</p>"
+        },
+        "outputSegments":{
+          "shape":"OutputSegmentList",
+          "documentation":"<p>List of outputs for each logical sub-doc</p>"
+        }
+      },
+      "documentation":"<p>Invoke Data Automation Response</p>"
+    },
     "KMSKeyId":{
       "type":"string",
       "max":2048,
@@ -447,6 +522,32 @@
       },
       "documentation":"<p>Output configuration.</p>"
     },
+    "OutputSegment":{
+      "type":"structure",
+      "members":{
+        "customOutputStatus":{
+          "shape":"CustomOutputStatus",
+          "documentation":"<p>Status of blueprint match</p>"
+        },
+        "customOutput":{
+          "shape":"String",
+          "documentation":"<p>Custom output response</p>"
+        },
+        "standardOutput":{
+          "shape":"String",
+          "documentation":"<p>Standard output response</p>"
+        }
+      },
+      "documentation":"<p>Results for an output segment</p>"
+    },
+    "OutputSegmentList":{
+      "type":"list",
+      "member":{
+        "shape":"OutputSegment",
+        "documentation":"<p>Output segment</p>"
+      },
+      "documentation":"<p>Output segment list</p>"
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -462,6 +563,16 @@
       "min":1,
       "pattern":"s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/[^\\x00-\\x1F\\x7F\\{^}%`\\]\">\\[~<#|]*)?"
     },
+    "SemanticModality":{
+      "type":"string",
+      "documentation":"<p>Semantic modality enum</p>",
+      "enum":[
+        "DOCUMENT",
+        "IMAGE",
+        "AUDIO",
+        "VIDEO"
+      ]
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -470,7 +581,30 @@
       "documentation":"<p>This exception will be thrown when service quota is exceeded.</p>",
       "exception":true
     },
+    "ServiceUnavailableException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"NonBlankString"}
+      },
+      "documentation":"<p>This exception will be thrown when service is temporarily unavailable.</p>",
+      "exception":true,
+      "fault":true
+    },
     "String":{"type":"string"},
+    "SyncInputConfiguration":{
+      "type":"structure",
+      "members":{
+        "bytes":{
+          "shape":"Blob",
+          "documentation":"<p>Input data as bytes</p>"
+        },
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>S3 URI of the input data</p>"
+        }
+      },
+      "documentation":"<p>Input configuration for synchronous API</p>"
+    },
     "Tag":{
       "type":"structure",
       "required":[
@@ -517,8 +651,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -532,7 +665,7 @@
       "documentation":"<p>ARN of a taggable resource</p>",
       "max":1011,
       "min":20,
-      "pattern":"arn:aws(|-cn|-us-gov):bedrock:[a-zA-Z0-9-]*:[0-9]{12}:data-automation-invocation/[a-zA-Z0-9-_]+"
+      "pattern":"arn:aws(|-cn|-iso|-iso-[a-z]|-us-gov):bedrock:[a-zA-Z0-9-]*:[0-9]{12}:data-automation-invocation/[a-zA-Z0-9-_]+"
     },
     "ThrottlingException":{
       "type":"structure",
@@ -583,8 +716,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "ValidationException":{
       "type":"structure",

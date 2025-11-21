@@ -74,7 +74,8 @@
         {"shape":"InvalidVersionNumberException"},
         {"shape":"ResourceInUseException"},
         {"shape":"InvalidParameterCombinationException"},
-        {"shape":"ServiceQuotaExceededException"}
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"DryRunOperationException"}
       ],
       "documentation":"<p>Creates a new component that can be used to build, validate, test, and assess your image. The component is based on a YAML document that you specify using exactly one of the following methods:</p> <ul> <li> <p>Inline, using the <code>data</code> property in the request body.</p> </li> <li> <p>A URL that points to a YAML document file stored in Amazon S3, using the <code>uri</code> property in the request body.</p> </li> </ul>"
     },
@@ -253,7 +254,8 @@
         {"shape":"InvalidVersionNumberException"},
         {"shape":"ResourceInUseException"},
         {"shape":"InvalidParameterCombinationException"},
-        {"shape":"ServiceQuotaExceededException"}
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"DryRunOperationException"}
       ],
       "documentation":"<p>Create a new workflow or a new version of an existing workflow.</p>"
     },
@@ -427,6 +429,30 @@
         {"shape":"ResourceDependencyException"}
       ],
       "documentation":"<p>Deletes a specific workflow resource.</p>"
+    },
+    "DistributeImage":{
+      "name":"DistributeImage",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/DistributeImage"
+      },
+      "input":{"shape":"DistributeImageRequest"},
+      "output":{"shape":"DistributeImageResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"CallRateLimitExceededException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>DistributeImage distributes existing AMIs to additional regions and accounts without rebuilding the image.</p>"
     },
     "GetComponent":{
       "name":"GetComponent",
@@ -1282,6 +1308,26 @@
       ],
       "documentation":"<p>Applies a policy to an image recipe. We recommend that you call the RAM API <a href=\"https://docs.aws.amazon.com/ram/latest/APIReference/API_CreateResourceShare.html\">CreateResourceShare</a> to share resources. If you call the Image Builder API <code>PutImageRecipePolicy</code>, you must also call the RAM API <a href=\"https://docs.aws.amazon.com/ram/latest/APIReference/API_PromoteResourceShareCreatedFromPolicy.html\">PromoteResourceShareCreatedFromPolicy</a> in order for the resource to be visible to all principals with whom the resource is shared.</p>"
     },
+    "RetryImage":{
+      "name":"RetryImage",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/RetryImage"
+      },
+      "input":{"shape":"RetryImageRequest"},
+      "output":{"shape":"RetryImageResponse"},
+      "errors":[
+        {"shape":"ServiceException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"CallRateLimitExceededException"},
+        {"shape":"ResourceInUseException"}
+      ],
+      "documentation":"<p>RetryImage retries an image distribution without rebuilding the image.</p>"
+    },
     "SendWorkflowStepAction":{
       "name":"SendWorkflowStepAction",
       "http":{
@@ -1460,6 +1506,15 @@
     }
   },
   "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>You do not have permissions to perform the requested operation.</p>",
+      "error":{"httpStatusCode":403},
+      "exception":true
+    },
     "AccountAggregation":{
       "type":"structure",
       "members":{
@@ -1632,7 +1687,7 @@
         },
         "imageBuildVersionArn":{
           "shape":"ImageBuildVersionArn",
-          "documentation":"<p>The ARN of the image whose creation this request canceled.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the image whose creation this request canceled.</p>"
         }
       }
     },
@@ -2142,7 +2197,7 @@
     },
     "ContainerRecipeArn":{
       "type":"string",
-      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws):container-recipe/[a-z0-9-_]+/[0-9]+\\.[0-9]+\\.[0-9]+$"
+      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws):container-recipe/[a-z0-9-_]+/(?:[0-9]+|x)\\.(?:[0-9]+|x)\\.(?:[0-9]+|x)$"
     },
     "ContainerRecipeSummary":{
       "type":"structure",
@@ -2251,6 +2306,10 @@
           "shape":"ClientToken",
           "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
           "idempotencyToken":true
+        },
+        "dryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Validates the required permissions for the operation and the request parameters, without actually making the request, and provides an error response. Upon a successful request, the error response is <code>DryRunOperationException</code>.</p>"
         }
       }
     },
@@ -2268,6 +2327,10 @@
         "componentBuildVersionArn":{
           "shape":"ComponentBuildVersionArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the component that the request created.</p>"
+        },
+        "latestVersionReferences":{
+          "shape":"LatestVersionReferences",
+          "documentation":"<p>The resource ARNs with different wildcard variations of semantic versioning.</p>"
         }
       }
     },
@@ -2295,7 +2358,7 @@
           "documentation":"<p>The description of the container recipe.</p>"
         },
         "semanticVersion":{
-          "shape":"VersionNumber",
+          "shape":"WildcardVersionNumber",
           "documentation":"<p>The semantic version of the container recipe. This version follows the semantic version syntax.</p> <note> <p>The semantic version has four nodes: &lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;/&lt;build&gt;. You can assign values for the first three, and can filter on all of them.</p> <p> <b>Assignment:</b> For the first three nodes you can assign any positive integer value, including zero, with an upper limit of 2^30-1, or 1073741823 for each node. Image Builder automatically assigns the build number to the fourth node.</p> <p> <b>Patterns:</b> You can use any numeric pattern that adheres to the assignment requirements for the nodes that you can assign. For example, you might choose a software version pattern, such as 1.0.0, or a date, such as 2021.01.01.</p> </note>"
         },
         "components":{
@@ -2363,6 +2426,10 @@
         "containerRecipeArn":{
           "shape":"ContainerRecipeArn",
           "documentation":"<p>Returns the Amazon Resource Name (ARN) of the container recipe that the request created.</p>"
+        },
+        "latestVersionReferences":{
+          "shape":"LatestVersionReferences",
+          "documentation":"<p>The resource ARNs with different wildcard variations of semantic versioning.</p>"
         }
       }
     },
@@ -2524,7 +2591,7 @@
           "documentation":"<p>The description of the image recipe.</p>"
         },
         "semanticVersion":{
-          "shape":"VersionNumber",
+          "shape":"WildcardVersionNumber",
           "documentation":"<p>The semantic version of the image recipe. This version follows the semantic version syntax.</p> <note> <p>The semantic version has four nodes: &lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;/&lt;build&gt;. You can assign values for the first three, and can filter on all of them.</p> <p> <b>Assignment:</b> For the first three nodes you can assign any positive integer value, including zero, with an upper limit of 2^30-1, or 1073741823 for each node. Image Builder automatically assigns the build number to the fourth node.</p> <p> <b>Patterns:</b> You can use any numeric pattern that adheres to the assignment requirements for the nodes that you can assign. For example, you might choose a software version pattern, such as 1.0.0, or a date, such as 2021.01.01.</p> </note>"
         },
         "components":{
@@ -2576,6 +2643,10 @@
         "imageRecipeArn":{
           "shape":"ImageRecipeArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the image recipe that was created by this request.</p>"
+        },
+        "latestVersionReferences":{
+          "shape":"LatestVersionReferences",
+          "documentation":"<p>The resource ARNs with different wildcard variations of semantic versioning.</p>"
         }
       }
     },
@@ -2651,6 +2722,10 @@
         "imageBuildVersionArn":{
           "shape":"ImageBuildVersionArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the image that the request created.</p>"
+        },
+        "latestVersionReferences":{
+          "shape":"LatestVersionReferences",
+          "documentation":"<p>The resource ARNs with different wildcard variations of semantic versioning.</p>"
         }
       }
     },
@@ -2854,6 +2929,10 @@
         "type":{
           "shape":"WorkflowType",
           "documentation":"<p>The phase in the image build process for which the workflow resource is responsible.</p>"
+        },
+        "dryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Validates the required permissions for the operation and the request parameters, without actually making the request, and provides an error response. Upon a successful request, the error response is <code>DryRunOperationException</code>.</p>"
         }
       }
     },
@@ -2867,6 +2946,10 @@
         "workflowBuildVersionArn":{
           "shape":"WorkflowBuildVersionArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the workflow resource that the request created.</p>"
+        },
+        "latestVersionReferences":{
+          "shape":"LatestVersionReferences",
+          "documentation":"<p>The resource ARNs with different wildcard variations of semantic versioning.</p>"
         }
       }
     },
@@ -2967,7 +3050,7 @@
         },
         "componentBuildVersionArn":{
           "shape":"ComponentBuildVersionArn",
-          "documentation":"<p>The ARN of the component build version that this request deleted.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the component build version that this request deleted.</p>"
         }
       }
     },
@@ -3092,7 +3175,7 @@
         },
         "imageBuildVersionArn":{
           "shape":"ImageBuildVersionArn",
-          "documentation":"<p>The ARN of the Image Builder image resource that this request deleted.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Image Builder image resource that this request deleted.</p>"
         }
       }
     },
@@ -3138,7 +3221,7 @@
       "members":{
         "lifecyclePolicyArn":{
           "shape":"LifecyclePolicyArn",
-          "documentation":"<p>The ARN of the lifecycle policy that was deleted.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the lifecycle policy that was deleted.</p>"
         }
       }
     },
@@ -3159,7 +3242,7 @@
       "members":{
         "workflowBuildVersionArn":{
           "shape":"WorkflowBuildVersionArn",
-          "documentation":"<p>The ARN of the workflow resource that this request deleted.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow resource that this request deleted.</p>"
         }
       }
     },
@@ -3170,6 +3253,55 @@
         "RAW",
         "VHD"
       ]
+    },
+    "DistributeImageRequest":{
+      "type":"structure",
+      "required":[
+        "sourceImage",
+        "distributionConfigurationArn",
+        "executionRole",
+        "clientToken"
+      ],
+      "members":{
+        "sourceImage":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The source image Amazon Resource Name (ARN) to distribute.</p>"
+        },
+        "distributionConfigurationArn":{
+          "shape":"DistributionConfigurationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the distribution configuration to use.</p>"
+        },
+        "executionRole":{
+          "shape":"RoleNameOrArn",
+          "documentation":"<p>The IAM role to use for the distribution.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to apply to the distributed image.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
+          "idempotencyToken":true
+        },
+        "loggingConfiguration":{
+          "shape":"ImageLoggingConfiguration",
+          "documentation":"<p>The logging configuration for the distribution.</p>"
+        }
+      }
+    },
+    "DistributeImageResponse":{
+      "type":"structure",
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client token that uniquely identifies the request.</p>"
+        },
+        "imageBuildVersionArn":{
+          "shape":"ImageBuildVersionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the image to be distributed.</p>"
+        }
+      }
     },
     "Distribution":{
       "type":"structure",
@@ -3301,6 +3433,15 @@
       "min":30
     },
     "DockerFileTemplate":{"type":"string"},
+    "DryRunOperationException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The dry run operation of the resource was successful, and no resources or mutations were actually performed due to the dry run flag in the request.</p>",
+      "error":{"httpStatusCode":412},
+      "exception":true
+    },
     "EbsInstanceBlockDeviceSpecification":{
       "type":"structure",
       "members":{
@@ -3537,6 +3678,10 @@
         "component":{
           "shape":"Component",
           "documentation":"<p>The component object specified in the request.</p>"
+        },
+        "latestVersionReferences":{
+          "shape":"LatestVersionReferences",
+          "documentation":"<p>The resource ARNs with different wildcard variations of semantic versioning.</p>"
         }
       }
     },
@@ -3587,6 +3732,10 @@
         "containerRecipe":{
           "shape":"ContainerRecipe",
           "documentation":"<p>The container recipe object that is returned.</p>"
+        },
+        "latestVersionReferences":{
+          "shape":"LatestVersionReferences",
+          "documentation":"<p>The resource ARNs with different wildcard variations of semantic versioning.</p>"
         }
       }
     },
@@ -3712,6 +3861,10 @@
         "imageRecipe":{
           "shape":"ImageRecipe",
           "documentation":"<p>The image recipe object.</p>"
+        },
+        "latestVersionReferences":{
+          "shape":"LatestVersionReferences",
+          "documentation":"<p>The resource ARNs with different wildcard variations of semantic versioning.</p>"
         }
       }
     },
@@ -3737,6 +3890,10 @@
         "image":{
           "shape":"Image",
           "documentation":"<p>The image object.</p>"
+        },
+        "latestVersionReferences":{
+          "shape":"LatestVersionReferences",
+          "documentation":"<p>The resource ARNs with different wildcard variations of semantic versioning.</p>"
         }
       }
     },
@@ -3805,7 +3962,7 @@
       "members":{
         "lifecyclePolicy":{
           "shape":"LifecyclePolicy",
-          "documentation":"<p>The ARN of the image lifecycle policy resource that was returned.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the image lifecycle policy resource that was returned.</p>"
         }
       }
     },
@@ -3938,6 +4095,10 @@
         "workflow":{
           "shape":"Workflow",
           "documentation":"<p>The workflow resource specified in the request.</p>"
+        },
+        "latestVersionReferences":{
+          "shape":"LatestVersionReferences",
+          "documentation":"<p>The resource ARNs with different wildcard variations of semantic versioning.</p>"
         }
       }
     },
@@ -4401,7 +4562,7 @@
     },
     "ImageRecipeArn":{
       "type":"string",
-      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws):image-recipe/[a-z0-9-_]+/[0-9]+\\.[0-9]+\\.[0-9]+$"
+      "pattern":"^arn:aws[^:]*:imagebuilder:[^:]+:(?:[0-9]{12}|aws):image-recipe/[a-z0-9-_]+/(?:[0-9]+|x)\\.(?:[0-9]+|x)\\.(?:[0-9]+|x)$"
     },
     "ImageRecipeSummary":{
       "type":"structure",
@@ -5289,6 +5450,28 @@
       "documentation":"<p>Your version number is out of bounds or does not follow the required syntax.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "LatestVersionReferences":{
+      "type":"structure",
+      "members":{
+        "latestVersionArn":{
+          "shape":"ImageBuilderArn",
+          "documentation":"<p>The latest version Amazon Resource Name (ARN) of the Image Builder resource.</p>"
+        },
+        "latestMajorVersionArn":{
+          "shape":"ImageBuilderArn",
+          "documentation":"<p>The latest version Amazon Resource Name (ARN) with the same <code>major</code> version of the Image Builder resource.</p>"
+        },
+        "latestMinorVersionArn":{
+          "shape":"ImageBuilderArn",
+          "documentation":"<p>The latest version Amazon Resource Name (ARN) with the same <code>minor</code> version of the Image Builder resource.</p>"
+        },
+        "latestPatchVersionArn":{
+          "shape":"ImageBuilderArn",
+          "documentation":"<p>The latest version Amazon Resource Name (ARN) with the same <code>patch</code> version of the Image Builder resource.</p>"
+        }
+      },
+      "documentation":"<p>The resource ARNs with different wildcard variations of semantic versioning.</p>"
     },
     "LaunchPermissionConfiguration":{
       "type":"structure",
@@ -6586,7 +6769,7 @@
         },
         "imageBuildVersionArn":{
           "shape":"ImageBuildVersionArn",
-          "documentation":"<p>The resource ARN of the image build version for which you requested a list of workflow runtime details.</p>"
+          "documentation":"<p>The resource Amazon Resource Name (ARN) of the image build version for which you requested a list of workflow runtime details.</p>"
         },
         "message":{
           "shape":"ImageBuildMessage",
@@ -6630,7 +6813,7 @@
         },
         "workflowBuildVersionArn":{
           "shape":"WorkflowBuildVersionArn",
-          "documentation":"<p>The build version ARN for the Image Builder workflow resource that defines the steps for this runtime instance of the workflow.</p>"
+          "documentation":"<p>The build version Amazon Resource Name (ARN) for the Image Builder workflow resource that defines the steps for this runtime instance of the workflow.</p>"
         },
         "workflowExecutionId":{
           "shape":"WorkflowExecutionId",
@@ -6638,7 +6821,7 @@
         },
         "imageBuildVersionArn":{
           "shape":"ImageBuildVersionArn",
-          "documentation":"<p>The image build version resource ARN that's associated with the specified runtime instance of the workflow.</p>"
+          "documentation":"<p>The image build version resource Amazon Resource Name (ARN) that's associated with the specified runtime instance of the workflow.</p>"
         },
         "message":{
           "shape":"ImageBuildMessage",
@@ -7194,6 +7377,37 @@
       "max":25,
       "min":1
     },
+    "RetryImageRequest":{
+      "type":"structure",
+      "required":[
+        "imageBuildVersionArn",
+        "clientToken"
+      ],
+      "members":{
+        "imageBuildVersionArn":{
+          "shape":"ImageBuildVersionArn",
+          "documentation":"<p>The source image Amazon Resource Name (ARN) to retry.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier you provide to ensure idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a> in the <i>Amazon EC2 API Reference</i>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "RetryImageResponse":{
+      "type":"structure",
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The client token that uniquely identifies the request.</p>"
+        },
+        "imageBuildVersionArn":{
+          "shape":"ImageBuildVersionArn",
+          "documentation":"<p>The ARN of the image to be retried.</p>"
+        }
+      }
+    },
     "RoleNameOrArn":{
       "type":"string",
       "max":2048,
@@ -7456,7 +7670,7 @@
       "members":{
         "resourceArn":{
           "shape":"ImageBuildVersionArn",
-          "documentation":"<p>The ARN of the Image Builder resource that is updated. The state update might also impact associated resources.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Image Builder resource that is updated. The state update might also impact associated resources.</p>"
         },
         "state":{
           "shape":"ResourceState",
@@ -7494,7 +7708,7 @@
         },
         "resourceArn":{
           "shape":"ImageBuildVersionArn",
-          "documentation":"<p>The requested ARN of the Image Builder resource for the asynchronous update.</p>"
+          "documentation":"<p>The requested Amazon Resource Name (ARN) of the Image Builder resource for the asynchronous update.</p>"
         }
       }
     },
@@ -7594,6 +7808,15 @@
       "max":100,
       "min":3,
       "pattern":"[a-zA-Z0-9]{2,}(?:\\/[a-zA-Z0-9-_+]+)*"
+    },
+    "TooManyRequestsException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>You have attempted too many requests for the specific operation.</p>",
+      "error":{"httpStatusCode":429},
+      "exception":true
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -7887,7 +8110,7 @@
       "members":{
         "lifecyclePolicyArn":{
           "shape":"LifecyclePolicyArn",
-          "documentation":"<p>The ARN of the image lifecycle policy resource that was updated.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the image lifecycle policy resource that was updated.</p>"
         }
       }
     },
@@ -7970,6 +8193,10 @@
     "VulnerablePackageList":{
       "type":"list",
       "member":{"shape":"VulnerablePackage"}
+    },
+    "WildcardVersionNumber":{
+      "type":"string",
+      "pattern":"^(?:[0-9]+|x)\\.(?:[0-9]+|x)\\.(?:[0-9]+|x)$"
     },
     "Workflow":{
       "type":"structure",
@@ -8121,6 +8348,10 @@
         "parallelGroup":{
           "shape":"ParallelGroup",
           "documentation":"<p>The name of the test group that included the test workflow resource at runtime.</p>"
+        },
+        "retried":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Indicates retry status for this runtime instance of the workflow.</p>"
         }
       },
       "documentation":"<p>Metadata that includes details and status from this runtime instance of the workflow.</p>"
@@ -8278,7 +8509,7 @@
         },
         "workflowBuildVersionArn":{
           "shape":"WorkflowBuildVersionArn",
-          "documentation":"<p>The ARN of the workflow resource that ran.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow resource that ran.</p>"
         },
         "name":{
           "shape":"WorkflowStepName",

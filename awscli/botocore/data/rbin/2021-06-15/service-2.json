@@ -219,7 +219,7 @@
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The resource type to be retained by the retention rule. Currently, only Amazon EBS snapshots and EBS-backed AMIs are supported. To retain snapshots, specify <code>EBS_SNAPSHOT</code>. To retain EBS-backed AMIs, specify <code>EC2_IMAGE</code>.</p>"
+          "documentation":"<p>The resource type to be retained by the retention rule. Currently, only EBS volumes, EBS snapshots, and EBS-backed AMIs are supported.</p> <ul> <li> <p>To retain EBS volumes, specify <code>EBS_VOLUME</code>.</p> </li> <li> <p>To retain EBS snapshots, specify <code>EBS_SNAPSHOT</code> </p> </li> <li> <p>To retain EBS-backed AMIs, specify <code>EC2_IMAGE</code>.</p> </li> </ul>"
         },
         "ResourceTags":{
           "shape":"ResourceTags",
@@ -393,7 +393,7 @@
         },
         "ResourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The resource type retained by the retention rule. Only retention rules that retain the specified resource type are listed. Currently, only Amazon EBS snapshots and EBS-backed AMIs are supported. To list retention rules that retain snapshots, specify <code>EBS_SNAPSHOT</code>. To list retention rules that retain EBS-backed AMIs, specify <code>EC2_IMAGE</code>.</p>"
+          "documentation":"<p>The resource type retained by the retention rule. Only retention rules that retain the specified resource type are listed. Currently, only EBS volumes, EBS snapshots, and EBS-backed AMIs are supported.</p> <ul> <li> <p>To list retention rules that retain EBS volumes, specify <code>EBS_VOLUME</code>.</p> </li> <li> <p>To list retention rules that retain EBS snapshots, specify <code>EBS_SNAPSHOT</code>.</p> </li> <li> <p>To list retention rules that retain EBS-backed AMIs, specify <code>EC2_IMAGE</code>.</p> </li> </ul>"
         },
         "ResourceTags":{
           "shape":"ResourceTags",
@@ -582,7 +582,8 @@
       "type":"string",
       "enum":[
         "EBS_SNAPSHOT",
-        "EC2_IMAGE"
+        "EC2_IMAGE",
+        "EBS_VOLUME"
       ]
     },
     "RetentionPeriod":{
@@ -594,7 +595,7 @@
       "members":{
         "RetentionPeriodValue":{
           "shape":"RetentionPeriodValue",
-          "documentation":"<p>The period value for which the retention rule is to retain resources. The period is measured using the unit specified for <b>RetentionPeriodUnit</b>.</p>"
+          "documentation":"<p>The period value for which the retention rule is to retain resources, measured in days. The supported retention periods are:</p> <ul> <li> <p>EBS volumes: 1 - 7 days</p> </li> <li> <p>EBS snapshots and EBS-backed AMIs: 1 - 365 days</p> </li> </ul>"
         },
         "RetentionPeriodUnit":{
           "shape":"RetentionPeriodUnit",
@@ -616,7 +617,7 @@
       "type":"string",
       "max":1011,
       "min":0,
-      "pattern":"^arn:aws(-[a-z]{1,3}){0,2}:rbin:[a-z\\-0-9]{0,63}:[0-9]{12}:rule/[0-9a-zA-Z]{11}{0,1011}$"
+      "pattern":"^arn:\\S+:rbin:[a-z\\-0-9]{0,63}:[0-9]{12}:rule/[0-9a-zA-Z]{11}{0,1011}$"
     },
     "RuleIdentifier":{
       "type":"string",
@@ -755,7 +756,7 @@
         },
         "UnlockDelayUnit":{
           "shape":"UnlockDelayUnit",
-          "documentation":"<p>The unit of time in which to measure the unlock delay. Currently, the unlock delay can be measure only in days.</p>"
+          "documentation":"<p>The unit of time in which to measure the unlock delay. Currently, the unlock delay can be measured only in days.</p>"
         }
       },
       "documentation":"<p>Information about the retention rule unlock delay. The unlock delay is the period after which a retention rule can be modified or edited after it has been unlocked by a user with the required permissions. The retention rule can't be modified or deleted during the unlock delay.</p>"
@@ -947,5 +948,5 @@
       ]
     }
   },
-  "documentation":"<p>This is the <i>Recycle Bin API Reference</i>. This documentation provides descriptions and syntax for each of the actions and data types in Recycle Bin.</p> <p>Recycle Bin is a resource recovery feature that enables you to restore accidentally deleted snapshots and EBS-backed AMIs. When using Recycle Bin, if your resources are deleted, they are retained in the Recycle Bin for a time period that you specify.</p> <p>You can restore a resource from the Recycle Bin at any time before its retention period expires. After you restore a resource from the Recycle Bin, the resource is removed from the Recycle Bin, and you can then use it in the same way you use any other resource of that type in your account. If the retention period expires and the resource is not restored, the resource is permanently deleted from the Recycle Bin and is no longer available for recovery. For more information about Recycle Bin, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin.html\"> Recycle Bin</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
+  "documentation":"<p>This is the <i>Recycle Bin API Reference</i>. This documentation provides descriptions and syntax for each of the actions and data types in Recycle Bin.</p> <p>Recycle Bin is a resource recovery feature that enables you to restore accidentally deleted EBS volumes, EBS snapshots, and EBS-backed AMIs. When using Recycle Bin, if your resources are deleted, they are retained in the Recycle Bin for a time period that you specify.</p> <p>You can restore a resource from the Recycle Bin at any time before its retention period expires. After you restore a resource from the Recycle Bin, the resource is removed from the Recycle Bin, and you can then use it in the same way you use any other resource of that type in your account. If the retention period expires and the resource is not restored, the resource is permanently deleted from the Recycle Bin and is no longer available for recovery. For more information about Recycle Bin, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin.html\"> Recycle Bin</a> in the <i>Amazon Elastic Compute Cloud User Guide</i>.</p>"
 }

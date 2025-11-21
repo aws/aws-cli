@@ -507,6 +507,10 @@
         "Accounts":{
           "shape":"AccountIdList",
           "documentation":"<p> You can specify a list of Amazon Web Services account IDs inside filters to return invoice units that match only the specified accounts. If multiple accounts are provided, the result is an <code>OR</code> condition (match any) of the specified accounts. The specified account IDs are matched with either the receiver or the linked accounts in the rules. </p>"
+        },
+        "BillSourceAccounts":{
+          "shape":"AccountIdList",
+          "documentation":"<p> A list of Amazon Web Services account account IDs used to filter invoice units. These are payer accounts from other Organizations that have delegated their billing responsibility to the receiver account through the billing transfer feature. </p>"
         }
       },
       "documentation":"<p>An optional input to the list API. If multiple filters are specified, the returned list will be a configuration that match all of the provided filters. Supported filter types are <code>InvoiceReceivers</code>, <code>Names</code>, and <code>Accounts</code>. </p>"
@@ -832,8 +836,12 @@
       "type":"structure",
       "members":{
         "LinkedAccounts":{
-          "shape":"AccountIdList",
+          "shape":"RuleAccountIdList",
           "documentation":"<p>The list of <code>LINKED_ACCOUNT</code> IDs where charges are included within the invoice unit. </p>"
+        },
+        "BillSourceAccounts":{
+          "shape":"RuleAccountIdList",
+          "documentation":"<p> A list of Amazon Web Services account account IDs that have delegated their billing responsibility to the receiver account through transfer billing. Unlike linked accounts, these bill source accounts can be payer accounts from other organizations that have authorized billing transfer to this account. </p>"
         }
       },
       "documentation":"<p> This is used to categorize the invoice unit. Values are Amazon Web Services account IDs. Currently, the only supported rule is <code>LINKED_ACCOUNT</code>. </p>"
@@ -1053,6 +1061,12 @@
     "ResourceTagValue":{
       "type":"string",
       "max":256,
+      "min":0
+    },
+    "RuleAccountIdList":{
+      "type":"list",
+      "member":{"shape":"AccountIdString"},
+      "max":1000,
       "min":0
     },
     "SensitiveBasicStringWithoutSpace":{

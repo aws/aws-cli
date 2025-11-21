@@ -68,6 +68,9 @@ from awscli.customizations.ec2instanceconnect import (
 from awscli.customizations.ecr import register_ecr_commands
 from awscli.customizations.ecr_public import register_ecr_public_commands
 from awscli.customizations.ecs import initialize as ecs_initialize
+from awscli.customizations.ecs.monitormutatinggatewayservice import (
+    register_monitor_mutating_gateway_service,
+)
 from awscli.customizations.eks import initialize as eks_initialize
 from awscli.customizations.emr.emr import emr_initialize
 from awscli.customizations.emrcontainers import (
@@ -93,6 +96,7 @@ from awscli.customizations.kinesis import (
 )
 from awscli.customizations.kms import register_fix_kms_create_grant_docs
 from awscli.customizations.lightsail import initialize as lightsail_initialize
+from awscli.customizations.login import register_login_cmds
 from awscli.customizations.logs import register_logs_commands
 from awscli.customizations.paginate import register_pagination
 from awscli.customizations.putmetricdata import register_put_metric_data
@@ -187,6 +191,7 @@ def awscli_initialize(event_handlers):
     emrcontainers_initialize(event_handlers)
     eks_initialize(event_handlers)
     ecs_initialize(event_handlers)
+    register_monitor_mutating_gateway_service(event_handlers)
     lightsail_initialize(event_handlers)
     register_cloudsearchdomain(event_handlers)
     register_generate_cli_skeleton(event_handlers)
@@ -233,3 +238,4 @@ def awscli_initialize(event_handlers):
     register_kinesis_list_streams_pagination_backcompat(event_handlers)
     register_quicksight_asset_bundle_customizations(event_handlers)
     register_ec2_instance_connect_commands(event_handlers)
+    register_login_cmds(event_handlers)

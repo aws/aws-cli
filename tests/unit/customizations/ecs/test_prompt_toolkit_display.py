@@ -63,7 +63,7 @@ class TestPromptToolkitDisplay:
         assert display.content_lines == 5
 
     @patch('awscli.customizations.ecs.prompt_toolkit_display.Application')
-    def test_run_calls_app_run_async(self, mock_app_class):
+    def test_run_calls_app_run_async(self, mock_app_class, display):
         """Test run method calls app.run_async()."""
         mock_app = Mock()
         mock_app_class.return_value = mock_app
@@ -74,7 +74,8 @@ class TestPromptToolkitDisplay:
 
         mock_app.run_async = mock_run_async
 
-        display = Display()
+        # Replace the display's app with our mock
+        display.app = mock_app
 
         # Run the async method
         asyncio.run(display.run())
@@ -114,9 +115,8 @@ class TestPromptToolkitDisplay:
         assert display.raw_text == ansi_text
         assert display.content_lines == 3
 
-    def test_scroll_validation_with_ansi_content(self):
+    def test_scroll_validation_with_ansi_content(self, display):
         """Test scroll position validation works with ANSI-colored content."""
-        display = Display()
         # Mock the app output for terminal size
         mock_output = Mock()
         mock_output.get_size.return_value = Mock(rows=20, columns=80)
@@ -129,9 +129,8 @@ class TestPromptToolkitDisplay:
         display.display(ansi_text)
         assert display.raw_text == ansi_text
 
-    def test_scroll_validation_handles_missing_output(self):
+    def test_scroll_validation_handles_missing_output(self, display):
         """Test scroll validation gracefully handles missing app output."""
-        display = Display()
         # Set up display without proper app output
         display.app.output = None
 
@@ -139,9 +138,8 @@ class TestPromptToolkitDisplay:
         display.display("Test content")
         assert display.raw_text == "Test content"
 
-    def test_scroll_validation_handles_exceptions(self):
+    def test_scroll_validation_handles_exceptions(self, display):
         """Test scroll validation clamps scroll position on terminal size exceptions."""
-        display = Display()
         mock_output = Mock()
         mock_output.get_size.side_effect = OSError("Terminal unavailable")
         display.app.output = mock_output
@@ -151,9 +149,8 @@ class TestPromptToolkitDisplay:
         display.display("Test content")
         assert display.window.vertical_scroll == 5
 
-    def test_scroll_validation_with_long_lines(self):
+    def test_scroll_validation_with_long_lines(self, display):
         """Test scroll validation with lines that wrap."""
-        display = Display()
         # Mock the app output for terminal size
         mock_output = Mock()
         mock_output.get_size.return_value = Mock(rows=20, columns=80)

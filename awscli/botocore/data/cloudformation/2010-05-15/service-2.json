@@ -376,6 +376,19 @@
       ],
       "documentation":"<p>Returns Hook-related information for the change set and a list of changes that CloudFormation makes when you run the change set.</p>"
     },
+    "DescribeEvents":{
+      "name":"DescribeEvents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeEventsInput"},
+      "output":{
+        "shape":"DescribeEventsOutput",
+        "resultWrapper":"DescribeEventsResult"
+      },
+      "documentation":"<p>Returns CloudFormation events based on flexible query criteria. Groups events by operation ID, enabling you to focus on individual stack operations during deployment.</p> <p>An operation is any action performed on a stack, including stack lifecycle actions (Create, Update, Delete, Rollback), change set creation, nested stack creation, and automatic rollbacks triggered by failures. Each operation has a unique identifier (Operation ID) and represents a discrete change attempt on the stack.</p> <p>Returns different types of events including:</p> <ul> <li> <p> <b>Progress events</b> - Status updates during stack operation execution.</p> </li> <li> <p> <b>Validation errors</b> - Failures from CloudFormation Early Validations.</p> </li> <li> <p> <b>Provisioning errors</b> - Resource creation and update failures.</p> </li> <li> <p> <b>Hook invocation errors</b> - Failures from CloudFormation Hook during stack operations.</p> </li> </ul> <note> <p>One of <code>ChangeSetName</code>, <code>OperationId</code> or <code>StackName</code> must be specified as input.</p> </note>"
+    },
     "DescribeGeneratedTemplate":{
       "name":"DescribeGeneratedTemplate",
       "http":{
@@ -736,7 +749,7 @@
       "errors":[
         {"shape":"HookResultNotFoundException"}
       ],
-      "documentation":"<p>Retrieves detailed information and remediation guidance for a Hook invocation result.</p>"
+      "documentation":"<p>Retrieves detailed information and remediation guidance for a Hook invocation result.</p> <p>If the Hook uses a KMS key to encrypt annotations, callers of the <code>GetHookResult</code> operation must have <code>kms:Decrypt</code> permissions. For more information, see <a href=\"https://docs.aws.amazon.com/cloudformation-cli/latest/hooks-userguide/hooks-kms-key-policy.html\">KMS key policy and permissions for encrypting CloudFormation Hooks results at rest</a> in the <i>CloudFormation Hooks User Guide</i>.</p>"
     },
     "GetStackPolicy":{
       "name":"GetStackPolicy",
@@ -1545,6 +1558,10 @@
     },
     "AfterContext":{"type":"string"},
     "AfterValue":{"type":"string"},
+    "AfterValueFrom":{
+      "type":"string",
+      "enum":["TEMPLATE"]
+    },
     "AllowedValue":{"type":"string"},
     "AllowedValues":{
       "type":"list",
@@ -1629,7 +1646,8 @@
       "enum":[
         "Add",
         "Remove",
-        "Modify"
+        "Modify",
+        "SyncWithActual"
       ]
     },
     "AutoDeployment":{
@@ -1697,8 +1715,23 @@
         }
       }
     },
+    "BeaconStackOperationStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "SUCCEEDED",
+        "FAILED"
+      ]
+    },
     "BeforeContext":{"type":"string"},
     "BeforeValue":{"type":"string"},
+    "BeforeValueFrom":{
+      "type":"string",
+      "enum":[
+        "PREVIOUS_DEPLOYMENT_STATE",
+        "ACTUAL_STATE"
+      ]
+    },
     "BoxedInteger":{
       "type":"integer",
       "box":true
@@ -1795,7 +1828,8 @@
         "Modify",
         "Remove",
         "Import",
-        "Dynamic"
+        "Dynamic",
+        "SyncWithActual"
       ]
     },
     "ChangeSetHook":{
@@ -1991,7 +2025,8 @@
         "ParameterReference",
         "ResourceAttribute",
         "DirectModification",
-        "Automatic"
+        "Automatic",
+        "NoModification"
       ]
     },
     "ChangeType":{
@@ -2153,6 +2188,10 @@
         "ImportExistingResources":{
           "shape":"ImportExistingResources",
           "documentation":"<p>Indicates if the change set auto-imports resources that already exist. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/import-resources-automatically.html\">Import Amazon Web Services resources into a CloudFormation stack automatically</a> in the <i>CloudFormation User Guide</i>.</p> <note> <p>This parameter can only import resources that have custom names in templates. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-name.html\">name type</a> in the <i>CloudFormation User Guide</i>. To import resources that do not accept custom names, such as EC2 instances, use the <code>ResourcesToImport</code> parameter instead.</p> </note>"
+        },
+        "DeploymentMode":{
+          "shape":"DeploymentMode",
+          "documentation":"<p>Determines how CloudFormation handles configuration drift during deployment.</p> <ul> <li> <p> <code>REVERT_DRIFT</code> – Creates a drift-aware change set that brings actual resource states in line with template definitions. Provides a three-way comparison between actual state, previous deployment state, and desired state.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/drift-aware-change-sets.html\">Using drift-aware change sets</a> in the <i>CloudFormation User Guide</i>.</p>"
         }
       },
       "documentation":"<p>The input for the <a>CreateChangeSet</a> action.</p>"
@@ -2338,6 +2377,10 @@
         "StackId":{
           "shape":"StackId",
           "documentation":"<p>Unique identifier of the stack.</p>"
+        },
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>A unique identifier for this stack operation that can be used to track the operation's progress and events.</p>"
         }
       },
       "documentation":"<p>The output for a <a>CreateStack</a> action.</p>"
@@ -2626,6 +2669,10 @@
       ]
     },
     "DeletionTime":{"type":"timestamp"},
+    "DeploymentMode":{
+      "type":"string",
+      "enum":["REVERT_DRIFT"]
+    },
     "DeploymentTargets":{
       "type":"structure",
       "members":{
@@ -2825,6 +2872,10 @@
           "shape":"ChangeSetStatusReason",
           "documentation":"<p>A description of the change set's status. For example, if your attempt to create a change set failed, CloudFormation shows the error message.</p>"
         },
+        "StackDriftStatus":{
+          "shape":"StackDriftStatus",
+          "documentation":"<p>The drift status of the stack when the change set was created. Valid values:</p> <ul> <li> <p> <code>DRIFTED</code> – The stack has drifted from its last deployment.</p> </li> <li> <p> <code>IN_SYNC</code> – The stack is in sync with its last deployment.</p> </li> <li> <p> <code>NOT_CHECKED</code> – CloudFormation doesn’t currently return this value.</p> </li> <li> <p> <code>UNKNOWN</code> – The drift status could not be determined.</p> </li> </ul> <p>Only present for drift-aware change sets.</p>"
+        },
         "NotificationARNs":{
           "shape":"NotificationARNs",
           "documentation":"<p>The ARNs of the Amazon SNS topics that will be associated with the stack if you execute the change set.</p>"
@@ -2868,9 +2919,51 @@
         "ImportExistingResources":{
           "shape":"ImportExistingResources",
           "documentation":"<p>Indicates if the change set imports resources that already exist.</p> <note> <p>This parameter can only import resources that have <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-name.html\">custom names</a> in templates. To import resources that do not accept custom names, such as EC2 instances, use the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import.html\">resource import</a> feature instead.</p> </note>"
+        },
+        "DeploymentMode":{
+          "shape":"DeploymentMode",
+          "documentation":"<p>The deployment mode specified when the change set was created. Valid value is <code>REVERT_DRIFT</code>. Only present for drift-aware change sets.</p>"
         }
       },
       "documentation":"<p>The output for the <a>DescribeChangeSet</a> action.</p>"
+    },
+    "DescribeEventsInput":{
+      "type":"structure",
+      "members":{
+        "StackName":{
+          "shape":"StackNameOrId",
+          "documentation":"<p>The name or unique stack ID for which you want to retrieve events.</p>"
+        },
+        "ChangeSetName":{
+          "shape":"ChangeSetNameOrId",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the change set for which you want to retrieve events.</p>"
+        },
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>The unique identifier of the operation for which you want to retrieve events.</p>"
+        },
+        "Filters":{
+          "shape":"EventFilter",
+          "documentation":"<p>Filters to apply when retrieving events.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
+        }
+      }
+    },
+    "DescribeEventsOutput":{
+      "type":"structure",
+      "members":{
+        "OperationEvents":{
+          "shape":"OperationEvents",
+          "documentation":"<p>A list of operation events that match the specified criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call <code>DescribeEvents</code> again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.</p>"
+        }
+      }
     },
     "DescribeGeneratedTemplateInput":{
       "type":"structure",
@@ -3641,6 +3734,13 @@
       ]
     },
     "DisableRollback":{"type":"boolean"},
+    "DriftIgnoredReason":{
+      "type":"string",
+      "enum":[
+        "MANAGED_BY_AWS",
+        "WRITE_ONLY_PROPERTY"
+      ]
+    },
     "DriftedStackInstancesCount":{
       "type":"integer",
       "min":0
@@ -3692,7 +3792,27 @@
         "Dynamic"
       ]
     },
+    "EventFilter":{
+      "type":"structure",
+      "members":{
+        "FailedEvents":{
+          "shape":"FailedEventsFilter",
+          "documentation":"<p>When set to true, only returns failed events within the operation. This helps quickly identify root causes for a failed operation.</p>"
+        }
+      },
+      "documentation":"<p>Event filter allows you to focus on specific events in an operation.</p>"
+    },
     "EventId":{"type":"string"},
+    "EventType":{
+      "type":"string",
+      "enum":[
+        "STACK_EVENT",
+        "PROGRESS_EVENT",
+        "VALIDATION_ERROR",
+        "PROVISIONING_ERROR",
+        "HOOK_INVOCATION_ERROR"
+      ]
+    },
     "ExecuteChangeSetInput":{
       "type":"structure",
       "required":["ChangeSetName"],
@@ -3777,6 +3897,7 @@
       "type":"list",
       "member":{"shape":"Export"}
     },
+    "FailedEventsFilter":{"type":"boolean"},
     "FailedStackInstancesCount":{
       "type":"integer",
       "min":0
@@ -4416,6 +4537,10 @@
     "JazzResourceIdentifierPropertyKey":{"type":"string"},
     "JazzResourceIdentifierPropertyValue":{"type":"string"},
     "Key":{"type":"string"},
+    "LastOperations":{
+      "type":"list",
+      "member":{"shape":"OperationEntry"}
+    },
     "LastUpdatedTime":{"type":"timestamp"},
     "LimitExceededException":{
       "type":"structure",
@@ -5211,6 +5336,24 @@
         }
       }
     },
+    "LiveResourceDrift":{
+      "type":"structure",
+      "members":{
+        "PreviousValue":{
+          "shape":"ResourceDriftPreviousValue",
+          "documentation":"<p>The configuration value from the previous CloudFormation deployment.</p>"
+        },
+        "ActualValue":{
+          "shape":"ResourceDriftActualValue",
+          "documentation":"<p>The current live configuration value of the resource property.</p>"
+        },
+        "DriftDetectionTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when drift was detected for this resource property.</p>"
+        }
+      },
+      "documentation":"<p>Contains drift information for a resource property, including actual value, previous deployment value, and drift detection timestamp.</p>"
+    },
     "LogGroupName":{
       "type":"string",
       "max":512,
@@ -5337,6 +5480,139 @@
         "DELETE"
       ]
     },
+    "OperationEntry":{
+      "type":"structure",
+      "members":{
+        "OperationType":{
+          "shape":"OperationType",
+          "documentation":"<p>The type of operation.</p>"
+        },
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>The unique identifier for the operation.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a CloudFormation operation.</p>"
+    },
+    "OperationEvent":{
+      "type":"structure",
+      "members":{
+        "EventId":{
+          "shape":"EventId",
+          "documentation":"<p>A unique identifier for this event.</p>"
+        },
+        "StackId":{
+          "shape":"StackId",
+          "documentation":"<p>The unique ID name of the instance of the stack.</p>"
+        },
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>The unique identifier of the operation this event belongs to.</p>"
+        },
+        "OperationType":{
+          "shape":"OperationType",
+          "documentation":"<p>The type of operation.</p>"
+        },
+        "OperationStatus":{
+          "shape":"BeaconStackOperationStatus",
+          "documentation":"<p>The current status of the operation.</p>"
+        },
+        "EventType":{
+          "shape":"EventType",
+          "documentation":"<p>The type of event.</p>"
+        },
+        "LogicalResourceId":{
+          "shape":"LogicalResourceId",
+          "documentation":"<p>The logical name of the resource as specified in the template.</p>"
+        },
+        "PhysicalResourceId":{
+          "shape":"PhysicalResourceId",
+          "documentation":"<p>The name or unique identifier that corresponds to a physical instance ID of a resource.</p>"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>Type of resource.</p>"
+        },
+        "Timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time the status was updated.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the event started.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the event ended.</p>"
+        },
+        "ResourceStatus":{
+          "shape":"ResourceStatus",
+          "documentation":"<p>Current status of the resource.</p>"
+        },
+        "ResourceStatusReason":{
+          "shape":"ResourceStatusReason",
+          "documentation":"<p>Success or failure message associated with the resource.</p>"
+        },
+        "ResourceProperties":{
+          "shape":"ResourceProperties",
+          "documentation":"<p>The properties used to create the resource.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>A unique identifier for the request that initiated this operation.</p>"
+        },
+        "HookType":{
+          "shape":"HookType",
+          "documentation":"<p>The type name of the Hook that was invoked.</p>"
+        },
+        "HookStatus":{
+          "shape":"HookStatus",
+          "documentation":"<p>The status of the Hook invocation. </p>"
+        },
+        "HookStatusReason":{
+          "shape":"HookStatusReason",
+          "documentation":"<p>Additional information about the Hook status.</p>"
+        },
+        "HookInvocationPoint":{
+          "shape":"HookInvocationPoint",
+          "documentation":"<p>The point in the operation lifecycle when the Hook was invoked.</p>"
+        },
+        "HookFailureMode":{
+          "shape":"HookFailureMode",
+          "documentation":"<p>Specifies how Hook failures are handled.</p>"
+        },
+        "DetailedStatus":{
+          "shape":"DetailedStatus",
+          "documentation":"<p>Additional status information about the operation.</p>"
+        },
+        "ValidationFailureMode":{
+          "shape":"HookFailureMode",
+          "documentation":"<p>Specifies how validation failures are handled.</p>"
+        },
+        "ValidationName":{
+          "shape":"ValidationName",
+          "documentation":"<p>The name of the validation that was performed.</p>"
+        },
+        "ValidationStatus":{
+          "shape":"ValidationStatus",
+          "documentation":"<p>The status of the validation.</p>"
+        },
+        "ValidationStatusReason":{
+          "shape":"ValidationStatusReason",
+          "documentation":"<p>Additional information about the validation status.</p>"
+        },
+        "ValidationPath":{
+          "shape":"ValidationPath",
+          "documentation":"<p>The path within the resource where the validation was applied.</p>"
+        }
+      },
+      "documentation":"<p>Contains detailed information about an event that occurred during a CloudFormation operation.</p>"
+    },
+    "OperationEvents":{
+      "type":"list",
+      "member":{"shape":"OperationEvent"}
+    },
+    "OperationId":{"type":"string"},
     "OperationIdAlreadyExistsException":{
       "type":"structure",
       "members":{},
@@ -5418,6 +5694,17 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "OperationType":{
+      "type":"string",
+      "enum":[
+        "CREATE_STACK",
+        "UPDATE_STACK",
+        "DELETE_STACK",
+        "CONTINUE_ROLLBACK",
+        "ROLLBACK",
+        "CREATE_CHANGESET"
+      ]
     },
     "OptionalSecureUrl":{
       "type":"string",
@@ -5583,6 +5870,7 @@
         "ReplaceAndSnapshot"
       ]
     },
+    "PreviousDeploymentContext":{"type":"string"},
     "PrivateTypeArn":{
       "type":"string",
       "max":1024,
@@ -5924,7 +6212,7 @@
         },
         "Action":{
           "shape":"ChangeAction",
-          "documentation":"<p>The action that CloudFormation takes on the resource, such as <code>Add</code> (adds a new resource), <code>Modify</code> (changes a resource), <code>Remove</code> (deletes a resource), <code>Import</code> (imports a resource), or <code>Dynamic</code> (exact action for the resource can't be determined).</p>"
+          "documentation":"<p>The action that CloudFormation takes on the resource, such as <code>Add</code> (adds a new resource), <code>Modify</code> (changes a resource), <code>Remove</code> (deletes a resource), <code>Import</code> (imports a resource), <code>Dynamic</code> (exact action for the resource can't be determined), or <code>SyncWithActual</code> (resource will not be changed, only CloudFormation metadata will change).</p>"
         },
         "LogicalResourceId":{
           "shape":"LogicalResourceId",
@@ -5946,6 +6234,14 @@
           "shape":"Scope",
           "documentation":"<p>For the <code>Modify</code> action, indicates which resource attribute is triggering this update, such as a change in the resource attribute's <code>Metadata</code>, <code>Properties</code>, or <code>Tags</code>.</p>"
         },
+        "ResourceDriftStatus":{
+          "shape":"StackResourceDriftStatus",
+          "documentation":"<p>The drift status of the resource. Valid values:</p> <ul> <li> <p> <code>IN_SYNC</code> – The resource matches its template definition.</p> </li> <li> <p> <code>MODIFIED</code> – Resource properties were modified outside CloudFormation.</p> </li> <li> <p> <code>DELETED</code> – The resource was deleted outside CloudFormation.</p> </li> <li> <p> <code>NOT_CHECKED</code> – CloudFormation doesn’t currently return this value.</p> </li> <li> <p> <code>UNKNOWN</code> – Drift status could not be determined.</p> </li> <li> <p> <code>UNSUPPORTED</code> – Resource type does not support actual state comparison.</p> </li> </ul> <p>Only present for drift-aware change sets.</p>"
+        },
+        "ResourceDriftIgnoredAttributes":{
+          "shape":"ResourceDriftIgnoredAttributes",
+          "documentation":"<p>List of resource attributes for which drift was ignored.</p>"
+        },
         "Details":{
           "shape":"ResourceChangeDetails",
           "documentation":"<p>For the <code>Modify</code> action, a list of <code>ResourceChangeDetail</code> structures that describes the changes that CloudFormation will make to the resource.</p>"
@@ -5965,6 +6261,10 @@
         "AfterContext":{
           "shape":"AfterContext",
           "documentation":"<p>An encoded JSON string that contains the context of the resource after the change is executed.</p>"
+        },
+        "PreviousDeploymentContext":{
+          "shape":"PreviousDeploymentContext",
+          "documentation":"<p>Information about the resource's state from the previous CloudFormation deployment.</p>"
         }
       },
       "documentation":"<p>The <code>ResourceChange</code> structure describes the resource and the action that CloudFormation will perform on it if you execute this change set.</p>"
@@ -5982,7 +6282,7 @@
         },
         "ChangeSource":{
           "shape":"ChangeSource",
-          "documentation":"<p>The group to which the <code>CausingEntity</code> value belongs. There are five entity groups:</p> <ul> <li> <p> <code>ResourceReference</code> entities are <code>Ref</code> intrinsic functions that refer to resources in the template, such as <code>{ \"Ref\" : \"MyEC2InstanceResource\" }</code>.</p> </li> <li> <p> <code>ParameterReference</code> entities are <code>Ref</code> intrinsic functions that get template parameter values, such as <code>{ \"Ref\" : \"MyPasswordParameter\" }</code>.</p> </li> <li> <p> <code>ResourceAttribute</code> entities are <code>Fn::GetAtt</code> intrinsic functions that get resource attribute values, such as <code>{ \"Fn::GetAtt\" : [ \"MyEC2InstanceResource\", \"PublicDnsName\" ] }</code>.</p> </li> <li> <p> <code>DirectModification</code> entities are changes that are made directly to the template.</p> </li> <li> <p> <code>Automatic</code> entities are <code>AWS::CloudFormation::Stack</code> resource types, which are also known as nested stacks. If you made no changes to the <code>AWS::CloudFormation::Stack</code> resource, CloudFormation sets the <code>ChangeSource</code> to <code>Automatic</code> because the nested stack's template might have changed. Changes to a nested stack's template aren't visible to CloudFormation until you run an update on the parent stack.</p> </li> </ul>"
+          "documentation":"<p>The group to which the <code>CausingEntity</code> value belongs. There are five entity groups:</p> <ul> <li> <p> <code>ResourceReference</code> entities are <code>Ref</code> intrinsic functions that refer to resources in the template, such as <code>{ \"Ref\" : \"MyEC2InstanceResource\" }</code>.</p> </li> <li> <p> <code>ParameterReference</code> entities are <code>Ref</code> intrinsic functions that get template parameter values, such as <code>{ \"Ref\" : \"MyPasswordParameter\" }</code>.</p> </li> <li> <p> <code>ResourceAttribute</code> entities are <code>Fn::GetAtt</code> intrinsic functions that get resource attribute values, such as <code>{ \"Fn::GetAtt\" : [ \"MyEC2InstanceResource\", \"PublicDnsName\" ] }</code>.</p> </li> <li> <p> <code>DirectModification</code> entities are changes that are made directly to the template.</p> </li> <li> <p> <code>Automatic</code> entities are <code>AWS::CloudFormation::Stack</code> resource types, which are also known as nested stacks. If you made no changes to the <code>AWS::CloudFormation::Stack</code> resource, CloudFormation sets the <code>ChangeSource</code> to <code>Automatic</code> because the nested stack's template might have changed. Changes to a nested stack's template aren't visible to CloudFormation until you run an update on the parent stack.</p> </li> <li> <p> <code>NoModification</code> entities are changes made to the template that matches the actual state of the resource.</p> </li> </ul>"
         },
         "CausingEntity":{
           "shape":"CausingEntity",
@@ -6059,6 +6359,26 @@
       "max":500,
       "min":1
     },
+    "ResourceDriftActualValue":{"type":"string"},
+    "ResourceDriftIgnoredAttribute":{
+      "type":"structure",
+      "members":{
+        "Path":{
+          "shape":"ResourcePropertyPath",
+          "documentation":"<p>Path of the resource attribute for which drift was ignored.</p>"
+        },
+        "Reason":{
+          "shape":"DriftIgnoredReason",
+          "documentation":"<p>Reason why drift was ignored for the attribute, can have 2 possible values:</p> <ul> <li> <p> <code>WRITE_ONLY_PROPERTY</code> - Property is not included in read response for the resource’s live state.</p> </li> <li> <p> <code>MANAGED_BY_AWS</code> - Property is managed by an Amazon Web Services service and is expected to be dynamically modified.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The <code>ResourceDriftIgnoredAttribute</code> data type.</p>"
+    },
+    "ResourceDriftIgnoredAttributes":{
+      "type":"list",
+      "member":{"shape":"ResourceDriftIgnoredAttribute"}
+    },
+    "ResourceDriftPreviousValue":{"type":"string"},
     "ResourceIdentifier":{"type":"string"},
     "ResourceIdentifierProperties":{
       "type":"map",
@@ -6309,9 +6629,21 @@
           "shape":"AfterValue",
           "documentation":"<p>The value of the property after the change is executed. Large values can be truncated.</p>"
         },
+        "BeforeValueFrom":{
+          "shape":"BeforeValueFrom",
+          "documentation":"<p>Indicates the source of the before value. Valid values:</p> <ul> <li> <p> <code>ACTUAL_STATE</code> – The before value represents current actual state.</p> </li> <li> <p> <code>PREVIOUS_DEPLOYMENT_STATE</code> – The before value represents the previous CloudFormation deployment state.</p> </li> </ul> <p>Only present for drift-aware change sets.</p>"
+        },
+        "AfterValueFrom":{
+          "shape":"AfterValueFrom",
+          "documentation":"<p>Indicates the source of the after value. Valid value:</p> <ul> <li> <p> <code>TEMPLATE</code> – The after value comes from the new template.</p> </li> </ul> <p>Only present for drift-aware change sets.</p>"
+        },
+        "Drift":{
+          "shape":"LiveResourceDrift",
+          "documentation":"<p>Detailed drift information for the resource property, including actual values, previous deployment values, and drift detection timestamps.</p>"
+        },
         "AttributeChangeType":{
           "shape":"AttributeChangeType",
-          "documentation":"<p>The type of change to be made to the property if the change is executed.</p> <ul> <li> <p> <code>Add</code> The item will be added.</p> </li> <li> <p> <code>Remove</code> The item will be removed.</p> </li> <li> <p> <code>Modify</code> The item will be modified.</p> </li> </ul>"
+          "documentation":"<p>The type of change to be made to the property if the change is executed.</p> <ul> <li> <p> <code>Add</code> The item will be added.</p> </li> <li> <p> <code>Remove</code> The item will be removed.</p> </li> <li> <p> <code>Modify</code> The item will be modified.</p> </li> <li> <p> <code>SyncWithActual</code> The drift status of this item will be reset but the item will not be modified.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The field that CloudFormation will change, such as the name of a resource's property, and whether the resource will be recreated.</p>"
@@ -6451,6 +6783,10 @@
         "StackId":{
           "shape":"StackId",
           "documentation":"<p>Unique identifier of the stack.</p>"
+        },
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>A unique identifier for this rollback operation that can be used to track the operation's progress and events.</p>"
         }
       }
     },
@@ -6773,6 +7109,10 @@
         "DetailedStatus":{
           "shape":"DetailedStatus",
           "documentation":"<p>The detailed status of the resource or stack. If <code>CONFIGURATION_COMPLETE</code> is present, the resource or resource configuration phase has completed and the stabilization of the resources is in progress. The StackSets <code>CONFIGURATION_COMPLETE</code> when all of the resources in the stack have reached that event. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stack-resource-configuration-complete.html\">Understand CloudFormation stack creation events</a> in the <i>CloudFormation User Guide</i>.</p>"
+        },
+        "LastOperations":{
+          "shape":"LastOperations",
+          "documentation":"<p>Information about the most recent operations performed on this stack.</p>"
         }
       },
       "documentation":"<p>The <code>Stack</code> data type.</p>"
@@ -6872,6 +7212,10 @@
         "StackName":{
           "shape":"StackName",
           "documentation":"<p>The name associated with a stack.</p>"
+        },
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>The unique identifier of the operation that generated this stack event.</p>"
         },
         "LogicalResourceId":{
           "shape":"LogicalResourceId",
@@ -7594,7 +7938,8 @@
         "MODIFIED",
         "DELETED",
         "NOT_CHECKED",
-        "UNKNOWN"
+        "UNKNOWN",
+        "UNSUPPORTED"
       ]
     },
     "StackResourceDriftStatusFilters":{
@@ -8191,6 +8536,10 @@
         "DriftInformation":{
           "shape":"StackDriftInformationSummary",
           "documentation":"<p>Summarizes information about whether a stack's actual configuration differs, or has <i>drifted</i>, from its expected configuration, as defined in the stack template and any values specified as template parameters. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html\">Detect unmanaged configuration changes to stacks and resources with drift detection</a>.</p>"
+        },
+        "LastOperations":{
+          "shape":"LastOperations",
+          "documentation":"<p>Information about the most recent operations performed on this stack.</p>"
         }
       },
       "documentation":"<p>The <code>StackSummary</code> Data Type</p>"
@@ -8977,6 +9326,10 @@
         "StackId":{
           "shape":"StackId",
           "documentation":"<p>Unique identifier of the stack.</p>"
+        },
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>A unique identifier for this update operation that can be used to track the operation's progress and events.</p>"
         }
       },
       "documentation":"<p>The output for an <a>UpdateStack</a> action.</p>"
@@ -9142,6 +9495,16 @@
       },
       "documentation":"<p>The output for <a>ValidateTemplate</a> action.</p>"
     },
+    "ValidationName":{"type":"string"},
+    "ValidationPath":{"type":"string"},
+    "ValidationStatus":{
+      "type":"string",
+      "enum":[
+        "FAILED",
+        "SKIPPED"
+      ]
+    },
+    "ValidationStatusReason":{"type":"string"},
     "Value":{"type":"string"},
     "Version":{"type":"string"},
     "VersionBump":{

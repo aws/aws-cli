@@ -7964,6 +7964,10 @@
         "SdiSources": {
           "shape": "InputSdiSources",
           "locationName": "sdiSources"
+        },
+        "RouterSettings": {
+          "shape": "RouterSettings",
+          "locationName": "routerSettings"
         }
       },
       "documentation": "Placeholder documentation for CreateInput"
@@ -8048,6 +8052,10 @@
         "SdiSources": {
           "shape": "InputSdiSources",
           "locationName": "sdiSources"
+        },
+        "RouterSettings": {
+          "shape": "RouterSettings",
+          "locationName": "routerSettings"
         }
       },
       "documentation": "The name of the input"
@@ -9232,6 +9240,11 @@
         "SdiSources": {
           "shape": "InputSdiSources",
           "locationName": "sdiSources"
+        },
+        "RouterSettings": {
+          "shape": "RouterInputSettings",
+          "locationName": "routerSettings",
+          "documentation": "Information about any MediaConnect router association with this input."
         }
       },
       "documentation": "Placeholder documentation for DescribeInputResponse"
@@ -11425,6 +11438,10 @@
         "Rec709Settings": {
           "shape": "Rec709Settings",
           "locationName": "rec709Settings"
+        },
+        "Hlg2020Settings": {
+          "shape": "Hlg2020Settings",
+          "locationName": "hlg2020Settings"
         }
       },
       "documentation": "H265 Color Space Settings"
@@ -12633,6 +12650,11 @@
         "SdiSources": {
           "shape": "InputSdiSources",
           "locationName": "sdiSources"
+        },
+        "RouterSettings": {
+          "shape": "RouterInputSettings",
+          "locationName": "routerSettings",
+          "documentation": "Information about any MediaConnect router association with this input."
         }
       },
       "documentation": "Placeholder documentation for Input"
@@ -13785,7 +13807,8 @@
         "SRT_CALLER",
         "MULTICAST",
         "SMPTE_2110_RECEIVER_GROUP",
-        "SDI"
+        "SDI",
+        "MEDIACONNECT_ROUTER"
       ]
     },
     "InputVpcRequest": {
@@ -19256,6 +19279,11 @@
         "SdiSources": {
           "shape": "InputSdiSources",
           "locationName": "sdiSources"
+        },
+        "SpecialRouterSettings": {
+          "shape": "SpecialRouterSettings",
+          "locationName": "specialRouterSettings",
+          "documentation": "When using MediaConnect Router as the source of a MediaLive input there's a special handoff that occurs when a router output\nis created. This group of settings is set on your behalf by the MediaConnect Router service using this set of settings. This\nsetting object can only by used by that service."
         }
       },
       "documentation": "Placeholder documentation for UpdateInput"
@@ -19469,6 +19497,11 @@
         "SdiSources": {
           "shape": "InputSdiSources",
           "locationName": "sdiSources"
+        },
+        "SpecialRouterSettings": {
+          "shape": "SpecialRouterSettings",
+          "locationName": "specialRouterSettings",
+          "documentation": "When using MediaConnect Router as the source of a MediaLive input there's a special handoff that occurs when a router output\nis created. This group of settings is set on your behalf by the MediaConnect Router service using this set of settings. This\nsetting object can only by used by that service."
         }
       },
       "documentation": "A request to update an input.",
@@ -25868,6 +25901,16 @@
           "shape": "__integerMin0Max8000000",
           "locationName": "minBitrate",
           "documentation": "Used for QVBR rate control mode only.\nOptional.\nEnter a minimum bitrate if you want to keep the output bitrate about a threshold, in order to prevent the downstream system from de-allocating network bandwidth for this output."
+        },
+        "SpatialAq": {
+          "shape": "Av1SpatialAq",
+          "locationName": "spatialAq",
+          "documentation": "Spatial AQ makes adjustments within each frame based on spatial variation of content complexity. Enabled: MediaLive will determine the appropriate level of spatial AQ to apply. Disabled: No spatial AQ. For more information, see the topic about video adaptive quantization in the MediaLive user guide."
+        },
+        "TemporalAq": {
+          "shape": "Av1TemporalAq",
+          "locationName": "temporalAq",
+          "documentation": "Temporal AQ makes adjustments within each frame based on variations in content complexity over time. Enabled: MediaLive will determine the appropriate level of temporal AQ to apply. Disabled: No temporal AQ. For more information, see the topic about video adaptive quantization in the MediaLive user guide."
         }
       },
       "documentation": "Av1 Settings",
@@ -29830,6 +29873,130 @@
         "shape": "MultiplexAlert"
       },
       "documentation": "Placeholder documentation for __listOfMultiplexAlert"
+    },
+    "Av1SpatialAq": {
+      "type": "string",
+      "documentation": "Av1 Spatial Aq",
+      "enum": [
+        "DISABLED",
+        "ENABLED"
+      ]
+    },
+    "Av1TemporalAq": {
+      "type": "string",
+      "documentation": "Av1 Temporal Aq",
+      "enum": [
+        "DISABLED",
+        "ENABLED"
+      ]
+    },
+    "Hlg2020Settings": {
+      "type": "structure",
+      "members": {},
+      "documentation": "Hlg2020 Settings"
+    },
+    "RouterDestination": {
+      "type": "structure",
+      "members": {
+        "AvailabilityZoneName": {
+          "shape": "__string",
+          "locationName": "availabilityZoneName",
+          "documentation": "The Availability Zone (AZ) names of the AZs this destination is created in."
+        },
+        "RouterOutputArn": {
+          "shape": "__string",
+          "locationName": "routerOutputArn",
+          "documentation": "ARN of the output from MediaConnect Router currently connected to this input."
+        }
+      },
+      "documentation": "Placeholder documentation for RouterDestination"
+    },
+    "RouterDestinationSettings": {
+      "type": "structure",
+      "members": {
+        "AvailabilityZoneName": {
+          "shape": "__string",
+          "locationName": "availabilityZoneName",
+          "documentation": "Availability Zone for this MediaConnect Router destination."
+        }
+      },
+      "required": [
+        "AvailabilityZoneName"
+      ],
+      "documentation": "Placeholder documentation for RouterDestinationSettings"
+    },
+    "RouterEncryptionType": {
+      "type": "string",
+      "documentation": "Encryption configuration for MediaConnect router. When using SECRETS_MANAGER encryption, you must provide the ARN of the secret used to encrypt data in transit. When using AUTOMATIC encryption, a service-managed secret will be used instead.",
+      "enum": [
+        "AUTOMATIC",
+        "SECRETS_MANAGER"
+      ]
+    },
+    "RouterInputSettings": {
+      "type": "structure",
+      "members": {
+        "Destinations": {
+          "shape": "__listOfRouterDestination",
+          "locationName": "destinations",
+          "documentation": "MediaConnect Router destinations associated with the MediaLive Input."
+        },
+        "EncryptionType": {
+          "shape": "RouterEncryptionType",
+          "locationName": "encryptionType"
+        },
+        "SecretArn": {
+          "shape": "__string",
+          "locationName": "secretArn",
+          "documentation": "ARN of the secret used to encrypt this input."
+        }
+      },
+      "documentation": "The settings for a MediaConnect Router Input."
+    },
+    "RouterSettings": {
+      "type": "structure",
+      "members": {
+        "Destinations": {
+          "shape": "__listOfRouterDestinationSettings",
+          "locationName": "destinations",
+          "documentation": "Destinations for the input from MediaConnect Router. Provide one for a single-pipeline input and two for a standard input."
+        },
+        "EncryptionType": {
+          "shape": "RouterEncryptionType",
+          "locationName": "encryptionType"
+        },
+        "SecretArn": {
+          "shape": "__string",
+          "locationName": "secretArn",
+          "documentation": "ARN of the secret used to encrypt this input."
+        }
+      },
+      "documentation": "This is the collection of settings that are used during the creation of a MediaConnect router input."
+    },
+    "SpecialRouterSettings": {
+      "type": "structure",
+      "members": {
+        "RouterArn": {
+          "shape": "__string",
+          "locationName": "routerArn",
+          "documentation": "This is the arn of the MediaConnect Router resource being associated with the MediaLive Input."
+        }
+      },
+      "documentation": "When using MediaConnect Router as the source of a MediaLive input there's a special handoff that occurs when a router output\nis created. This group of settings is set on your behalf by the MediaConnect Router service using this set of settings. This\nsetting object can only by used by that service."
+    },
+    "__listOfRouterDestination": {
+      "type": "list",
+      "member": {
+        "shape": "RouterDestination"
+      },
+      "documentation": "Placeholder documentation for __listOfRouterDestination"
+    },
+    "__listOfRouterDestinationSettings": {
+      "type": "list",
+      "member": {
+        "shape": "RouterDestinationSettings"
+      },
+      "documentation": "Placeholder documentation for __listOfRouterDestinationSettings"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

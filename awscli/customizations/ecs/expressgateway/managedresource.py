@@ -1,0 +1,150 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You
+# may not use this file except in compliance with the License. A copy of
+# the License is located at
+#
+# http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+# ANY KIND, either express or implied. See the License for the specific
+# language governing permissions and limitations under the License.
+
+import sys
+from datetime import datetime
+
+import dateutil.parser
+
+from awscli.customizations.ecs.expressgateway.color_utils import ColorUtils
+
+MANAGED_RESOURCE_REASON_MESSAGE = "{indent}Reason: {reason}"
+MANAGED_RESOURCE_LAST_UPDATED_MESSAGE = (
+    "{indent}Last updated at: {last_updated_at}"
+)
+
+TERMINAL_RESOURCE_STATUSES = ["ACTIVE", "DELETED", "FAILED"]
+TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+
+
+class ManagedResource:
+    """
+    Represents a managed ECS resource.
+    """
+
+    def __init__(
+        self,
+        resource_type,
+        identifier,
+        status=None,
+        updated_at=None,
+        reason=None,
+        additional_info=None,
+    ):
+        self.resource_type = resource_type
+        self.identifier = identifier
+        self.status = status
+        if isinstance(updated_at, str):
+            dt = dateutil.parser.parse(updated_at)
+            self.updated_at = dt.timestamp()
+        else:
+            self.updated_at = updated_at
+        self.reason = reason
+        self.additional_info = additional_info
+
+    def is_terminal(self):
+        return self.status in TERMINAL_RESOURCE_STATUSES
+
+    def get_status_string(self, spinner_char, depth=0, use_color=True):
+        """Returns the resource information as a formatted string.
+
+        Args:
+            spinner_char (str): Character to display for in-progress resources
+            depth (int): Indentation depth for nested display (default: 0)
+            use_color (bool): Whether to use ANSI color codes (default: True)
+
+        Returns:
+            str: Formatted status string with resource information
+        """
+        lines = []
+        resource_header = " " * depth + ColorUtils.make_cyan(
+            self.resource_type, use_color
+        )
+
+        resource_header += ": " if self.identifier else " "
+        resource_header += ColorUtils.make_status_symbol(
+            self.status, spinner_char, use_color
+        )
+        if self.identifier:
+            resource_header += (
+                ColorUtils.color_by_status(
+                    self.identifier, self.status, use_color
+                )
+                + " "
+            )
+        if self.status:
+            resource_header += "- " + ColorUtils.color_by_status(
+                self.status, self.status, use_color
+            )
+        lines.append(resource_header)
+
+        if self.reason:
+            lines.append(
+                MANAGED_RESOURCE_REASON_MESSAGE.format(
+                    indent=" " * (depth + 1), reason=self.reason
+                )
+            )
+
+        if self.updated_at:
+            lines.append(
+                MANAGED_RESOURCE_LAST_UPDATED_MESSAGE.format(
+                    indent=" " * (depth + 1),
+                    last_updated_at=datetime.fromtimestamp(
+                        self.updated_at
+                    ).strftime(TIMESTAMP_FORMAT),
+                )
+            )
+
+        if self.additional_info:
+            lines.append(" " * (depth + 1) + self.additional_info)
+
+        # Spacing between resources
+        lines.append("")
+        return '\n'.join(lines)
+
+    def combine(self, other_resource):
+        """Returns the version of the resource which has the most up to date timestamp.
+
+        Args:
+            other_resource (ManagedResource): Resource to compare timestamps with
+
+        Returns:
+            ManagedResource: The resource with the latest timestamp
+        """
+        return (
+            self
+            if not other_resource
+            or not other_resource.updated_at
+            or self.updated_at >= other_resource.updated_at
+            else other_resource
+        )
+
+    def diff(self, other_resource):
+        """Returns a tuple of (self_diff, other_diff) for resources that are different.
+
+        Args:
+            other_resource (ManagedResource): Resource to compare against
+
+        Returns:
+            tuple: (self_diff, other_diff) where:
+                - self_diff (ManagedResource): This resource if different, None if same
+                - other_diff (ManagedResource): Other resource if different, None if same
+        """
+        if not other_resource:
+            return (self, None)
+        if (
+            self.resource_type != other_resource.resource_type
+            or self.identifier != other_resource.identifier
+        ):
+            return (self, other_resource)
+        return (None, None)

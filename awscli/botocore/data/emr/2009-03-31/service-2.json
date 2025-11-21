@@ -1256,6 +1256,33 @@
       },
       "documentation":"<p>The definition of a CloudWatch metric alarm, which determines when an automatic scaling activity is triggered. When the defined alarm conditions are satisfied, scaling activity begins.</p>"
     },
+    "CloudWatchLogConfiguration":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies if CloudWatch logging is enabled.</p>"
+        },
+        "LogGroupName":{
+          "shape":"XmlString",
+          "documentation":"<p>The name of the CloudWatch log group where logs are published.</p>"
+        },
+        "LogStreamNamePrefix":{
+          "shape":"XmlString",
+          "documentation":"<p>The prefix of the log stream name.</p>"
+        },
+        "EncryptionKeyArn":{
+          "shape":"XmlString",
+          "documentation":"<p>The ARN of the encryption key used to encrypt the logs.</p>"
+        },
+        "LogTypes":{
+          "shape":"LogTypesMap",
+          "documentation":"<p>A map of log types to file names for publishing logs to the standard output or standard error streams for CloudWatch. Valid log types include STEP_LOGS, SPARK_DRIVER, and SPARK_EXECUTOR. Valid file names for each type include STDOUT and STDERR.</p>"
+        }
+      },
+      "documentation":"<p>Holds CloudWatch log configuration settings and metadata that specify settings like log files to monitor and where to send them.</p>"
+    },
     "Cluster":{
       "type":"structure",
       "members":{
@@ -1398,6 +1425,10 @@
         "ExtendedSupport":{
           "shape":"BooleanObject",
           "documentation":"<p>Reserved.</p>"
+        },
+        "MonitoringConfiguration":{
+          "shape":"MonitoringConfiguration",
+          "documentation":"<p>Contains Cloudwatch log configuration metadata and settings.</p>"
         }
       },
       "documentation":"<p>The detailed description of the cluster.</p>"
@@ -2881,7 +2912,7 @@
         },
         "BidPrice":{
           "shape":"String",
-          "documentation":"<p>If specified, indicates that the instance group uses Spot Instances. This is the maximum price you are willing to pay for Spot Instances. Specify <code>OnDemandPrice</code> to set the amount equal to the On-Demand price, or specify an amount in USD.</p>"
+          "documentation":"<p>The bid price for each Amazon EC2 Spot Instance type as defined by <code>InstanceType</code>. Expressed in USD. If neither <code>BidPrice</code> nor <code>BidPriceAsPercentageOfOnDemandPrice</code> is provided, <code>BidPriceAsPercentageOfOnDemandPrice</code> defaults to 100%.</p>"
         },
         "InstanceType":{
           "shape":"InstanceType",
@@ -2960,7 +2991,7 @@
         },
         "BidPrice":{
           "shape":"XmlStringMaxLen256",
-          "documentation":"<p>If specified, indicates that the instance group uses Spot Instances. This is the maximum price you are willing to pay for Spot Instances. Specify <code>OnDemandPrice</code> to set the amount equal to the On-Demand price, or specify an amount in USD.</p>"
+          "documentation":"<p>The bid price for each Amazon EC2 Spot Instance type as defined by <code>InstanceType</code>. Expressed in USD. If neither <code>BidPrice</code> nor <code>BidPriceAsPercentageOfOnDemandPrice</code> is provided, <code>BidPriceAsPercentageOfOnDemandPrice</code> defaults to 100%.</p>"
         },
         "InstanceType":{
           "shape":"InstanceType",
@@ -3023,7 +3054,7 @@
         },
         "BidPrice":{
           "shape":"XmlStringMaxLen256",
-          "documentation":"<p>If specified, indicates that the instance group uses Spot Instances. This is the maximum price you are willing to pay for Spot Instances. Specify <code>OnDemandPrice</code> to set the amount equal to the On-Demand price, or specify an amount in USD.</p>"
+          "documentation":"<p>The bid price for each Amazon EC2 Spot Instance type as defined by <code>InstanceType</code>. Expressed in USD. If neither <code>BidPrice</code> nor <code>BidPriceAsPercentageOfOnDemandPrice</code> is provided, <code>BidPriceAsPercentageOfOnDemandPrice</code> defaults to 100%.</p>"
         },
         "InstanceType":{
           "shape":"InstanceType",
@@ -3370,7 +3401,7 @@
         },
         "BidPrice":{
           "shape":"XmlStringMaxLen256",
-          "documentation":"<p>The bid price for each Amazon EC2 Spot Instance type as defined by <code>InstanceType</code>. Expressed in USD.</p>"
+          "documentation":"<p>The bid price for each Amazon EC2 Spot Instance type as defined by <code>InstanceType</code>. Expressed in USD. If neither <code>BidPrice</code> nor <code>BidPriceAsPercentageOfOnDemandPrice</code> is provided, <code>BidPriceAsPercentageOfOnDemandPrice</code> defaults to 100%.</p>"
         },
         "BidPriceAsPercentageOfOnDemandPrice":{
           "shape":"NonNegativeDouble",
@@ -4138,6 +4169,11 @@
         }
       }
     },
+    "LogTypesMap":{
+      "type":"map",
+      "key":{"shape":"XmlString"},
+      "value":{"shape":"XmlStringList"}
+    },
     "Long":{"type":"long"},
     "ManagedScalingPolicy":{
       "type":"structure",
@@ -4249,6 +4285,16 @@
         }
       },
       "documentation":"<p>Change the size of some instance groups.</p>"
+    },
+    "MonitoringConfiguration":{
+      "type":"structure",
+      "members":{
+        "CloudWatchLogConfiguration":{
+          "shape":"CloudWatchLogConfiguration",
+          "documentation":"<p>CloudWatch log configuration settings and metadata that specify settings like log files to monitor and where to send them.</p>"
+        }
+      },
+      "documentation":"<p>Contains CloudWatch log configuration metadata and settings.</p>"
     },
     "NewSupportedProductsList":{
       "type":"list",
@@ -4997,6 +5043,10 @@
         "ExtendedSupport":{
           "shape":"BooleanObject",
           "documentation":"<p>Reserved.</p>"
+        },
+        "MonitoringConfiguration":{
+          "shape":"MonitoringConfiguration",
+          "documentation":"<p>Contains CloudWatch log configuration metadata and settings.</p>"
         }
       },
       "documentation":"<p> Input to the <a>RunJobFlow</a> operation. </p>"
@@ -5014,6 +5064,20 @@
         }
       },
       "documentation":"<p> The result of the <a>RunJobFlow</a> operation. </p>"
+    },
+    "S3MonitoringConfiguration":{
+      "type":"structure",
+      "members":{
+        "LogUri":{
+          "shape":"XmlString",
+          "documentation":"<p>The Amazon S3 destination URI for log publishing.</p>"
+        },
+        "EncryptionKeyArn":{
+          "shape":"XmlString",
+          "documentation":"<p>The KMS key ARN to encrypt the logs published to the given Amazon S3 destination.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 configuration for monitoring log publishing. You can configure your step to send log information to Amazon S3. When it's specified, it takes precedence over the cluster's logging configuration. If you don't specify this configuration entirely, or omit individual fields, EMR falls back to cluster-level logging behavior.</p>"
     },
     "ScaleDownBehavior":{
       "type":"string",
@@ -5489,6 +5553,14 @@
         "ExecutionRoleArn":{
           "shape":"OptionalArnType",
           "documentation":"<p>The Amazon Resource Name (ARN) of the runtime role for a step on the cluster. The runtime role can be a cross-account IAM role. The runtime role ARN is a combination of account ID, role name, and role type using the following format: <code>arn:partition:service:region:account:resource</code>. </p> <p>For example, <code>arn:aws:IAM::1234567890:role/ReadOnly</code> is a correctly formatted runtime role ARN.</p>"
+        },
+        "LogUri":{
+          "shape":"String",
+          "documentation":"<p>The Amazon S3 destination URI for log publishing.</p>"
+        },
+        "EncryptionKeyArn":{
+          "shape":"String",
+          "documentation":"<p>The KMS key ARN to encrypt the logs published to the given Amazon S3 destination.</p>"
         }
       },
       "documentation":"<p>This represents a step in a cluster.</p>"
@@ -5518,6 +5590,10 @@
         "HadoopJarStep":{
           "shape":"HadoopJarStepConfig",
           "documentation":"<p>The JAR file used for the step.</p>"
+        },
+        "StepMonitoringConfiguration":{
+          "shape":"StepMonitoringConfiguration",
+          "documentation":"<p>Object that holds configuration properties for logging.</p>"
         }
       },
       "documentation":"<p>Specification for a cluster (job flow) step.</p>"
@@ -5594,6 +5670,16 @@
     "StepIdsList":{
       "type":"list",
       "member":{"shape":"XmlStringMaxLen256"}
+    },
+    "StepMonitoringConfiguration":{
+      "type":"structure",
+      "members":{
+        "S3MonitoringConfiguration":{
+          "shape":"S3MonitoringConfiguration",
+          "documentation":"<p>The Amazon S3 configuration for monitoring log publishing. You can configure your step to send log information to Amazon S3. When it's specified, it takes precedence over the cluster's logging configuration. If you don't specify this configuration entirely, or omit individual fields, EMR falls back to cluster-level logging behavior. </p>"
+        }
+      },
+      "documentation":"<p>Object that holds configuration properties for logging.</p>"
     },
     "StepState":{
       "type":"string",
@@ -5673,6 +5759,14 @@
         "Status":{
           "shape":"StepStatus",
           "documentation":"<p>The current execution status details of the cluster step.</p>"
+        },
+        "LogUri":{
+          "shape":"String",
+          "documentation":"<p>The Amazon S3 destination URI for log publishing.</p>"
+        },
+        "EncryptionKeyArn":{
+          "shape":"String",
+          "documentation":"<p>The KMS key ARN to encrypt the logs published to the given Amazon S3 destination.</p>"
         }
       },
       "documentation":"<p>The summary of the cluster step.</p>"

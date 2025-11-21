@@ -2985,6 +2985,14 @@
       "enum":["UtteranceTimestamp"]
     },
     "AnswerField":{"type":"string"},
+    "AssistedNluMode":{
+      "type":"string",
+      "documentation":"<p>Defines the operational mode for Assisted Natural Language Understanding. This enum determines how the enhanced NLU capabilities integrate with standard intent recognition.</p>",
+      "enum":[
+        "Primary",
+        "Fallback"
+      ]
+    },
     "AssociatedTranscript":{
       "type":"structure",
       "members":{
@@ -10884,10 +10892,14 @@
       "members":{
         "enabled":{
           "shape":"Enabled",
-          "documentation":"<p>Specifies whether the assisted nlu feature is enabled.</p>"
+          "documentation":"<p>Determines whether the Assisted NLU feature is enabled for the bot. When set to <code>true</code>, Amazon Lex uses advanced models to improve intent recognition and slot resolution, with the default being <code>false</code>.</p>"
+        },
+        "assistedNluMode":{
+          "shape":"AssistedNluMode",
+          "documentation":"<p>Specifies the mode for Assisted NLU operation. Use <code>Primary</code> to make Assisted NLU the primary intent recognition method, or <code>Fallback</code> to use it only when standard NLU confidence is low.</p>"
         }
       },
-      "documentation":"<p>Specifies whether the assisted nlu feature is turned on or off.</p>"
+      "documentation":"<p>Configures the Assisted Natural Language Understanding (NLU) feature for your bot. This specification determines whether enhanced intent recognition and utterance understanding capabilities are active.</p>"
     },
     "NonEmptyString":{
       "type":"string",
@@ -11513,7 +11525,7 @@
         },
         "nluImprovement":{
           "shape":"NluImprovementSpecification",
-          "documentation":"<p>An object containing specifications for the assisted nlu feature.</p>"
+          "documentation":"<p>An object containing specifications for the Assisted NLU feature within the bot's runtime settings. These settings determine how the bot processes and interprets user utterances during conversations.</p>"
         }
       },
       "documentation":"<p>Contains specifications about the Amazon Lex runtime generative AI capabilities from Amazon Bedrock that you can turn on for your bot.</p>"

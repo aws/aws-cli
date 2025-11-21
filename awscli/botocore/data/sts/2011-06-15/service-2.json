@@ -153,9 +153,10 @@
       },
       "errors":[
         {"shape":"ExpiredTradeInTokenException"},
-        {"shape":"RegionDisabledException"}
+        {"shape":"RegionDisabledException"},
+        {"shape":"PackedPolicyTooLargeException"}
       ],
-      "documentation":"<p>This API is currently unavailable for general use.</p>"
+      "documentation":"<p>Exchanges a trade-in token for temporary Amazon Web Services credentials with the permissions associated with the assumed principal. This operation allows you to obtain credentials for a specific principal based on a trade-in token, enabling delegation of access to Amazon Web Services resources.</p>"
     },
     "GetFederationToken":{
       "name":"GetFederationToken",
@@ -190,6 +191,24 @@
         {"shape":"RegionDisabledException"}
       ],
       "documentation":"<p>Returns a set of temporary credentials for an Amazon Web Services account or IAM user. The credentials consist of an access key ID, a secret access key, and a security token. Typically, you use <code>GetSessionToken</code> if you want to use MFA to protect programmatic calls to specific Amazon Web Services API operations like Amazon EC2 <code>StopInstances</code>.</p> <p>MFA-enabled IAM users must call <code>GetSessionToken</code> and submit an MFA code that is associated with their MFA device. Using the temporary security credentials that the call returns, IAM users can then make programmatic calls to API operations that require MFA authentication. An incorrect MFA code causes the API to return an access denied error. For a comparison of <code>GetSessionToken</code> with the other API operations that produce temporary credentials, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_request.html\">Requesting Temporary Security Credentials</a> and <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_sts-comparison.html\">Compare STS credentials</a> in the <i>IAM User Guide</i>.</p> <note> <p>No permissions are required for users to perform this operation. The purpose of the <code>sts:GetSessionToken</code> operation is to authenticate the user using MFA. You cannot use policies to control authentication operations. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_control-access_getsessiontoken.html\">Permissions for GetSessionToken</a> in the <i>IAM User Guide</i>.</p> </note> <p> <b>Session Duration</b> </p> <p>The <code>GetSessionToken</code> operation must be called by using the long-term Amazon Web Services security credentials of an IAM user. Credentials that are created by IAM users are valid for the duration that you specify. This duration can range from 900 seconds (15 minutes) up to a maximum of 129,600 seconds (36 hours), with a default of 43,200 seconds (12 hours). Credentials based on account credentials can range from 900 seconds (15 minutes) up to 3,600 seconds (1 hour), with a default of 1 hour. </p> <p> <b>Permissions</b> </p> <p>The temporary security credentials created by <code>GetSessionToken</code> can be used to make API calls to any Amazon Web Services service with the following exceptions:</p> <ul> <li> <p>You cannot call any IAM API operations unless MFA authentication information is included in the request.</p> </li> <li> <p>You cannot call any STS API <i>except</i> <code>AssumeRole</code> or <code>GetCallerIdentity</code>.</p> </li> </ul> <p>The credentials that <code>GetSessionToken</code> returns are based on permissions associated with the IAM user whose credentials were used to call the operation. The temporary credentials have the same permissions as the IAM user.</p> <note> <p>Although it is possible to call <code>GetSessionToken</code> using the security credentials of an Amazon Web Services account root user rather than an IAM user, we do not recommend it. If <code>GetSessionToken</code> is called using root user credentials, the temporary credentials have root user permissions. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#lock-away-credentials\">Safeguard your root user credentials and don't use them for everyday tasks</a> in the <i>IAM User Guide</i> </p> </note> <p>For more information about using <code>GetSessionToken</code> to create temporary credentials, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_request.html#api_getsessiontoken\">Temporary Credentials for Users in Untrusted Environments</a> in the <i>IAM User Guide</i>. </p>"
+    },
+    "GetWebIdentityToken":{
+      "name":"GetWebIdentityToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetWebIdentityTokenRequest"},
+      "output":{
+        "shape":"GetWebIdentityTokenResponse",
+        "resultWrapper":"GetWebIdentityTokenResult"
+      },
+      "errors":[
+        {"shape":"SessionDurationEscalationException"},
+        {"shape":"OutboundWebIdentityFederationDisabledException"},
+        {"shape":"JWTPayloadSizeExceededException"}
+      ],
+      "documentation":"<p>Returns a signed JSON Web Token (JWT) that represents the calling Amazon Web Services identity. The returned JWT can be used to authenticate with external services that support OIDC discovery. The token is signed by Amazon Web Services STS and can be publicly verified using the verification keys published at the issuer's JWKS endpoint.</p>"
     }
   },
   "shapes":{
@@ -539,7 +558,7 @@
       "members":{
         "message":{"shape":"expiredTradeInTokenExceptionMessage"}
       },
-      "documentation":"<p/>",
+      "documentation":"<p>The trade-in token provided in the request has expired and can no longer be exchanged for credentials. Request a new token and retry the operation.</p>",
       "error":{
         "code":"ExpiredTradeInTokenException",
         "httpStatusCode":400,
@@ -612,7 +631,7 @@
       "members":{
         "TradeInToken":{
           "shape":"tradeInTokenType",
-          "documentation":"<p/>"
+          "documentation":"<p>The token to exchange for temporary Amazon Web Services credentials. This token must be valid and unexpired at the time of the request.</p>"
         }
       }
     },
@@ -622,11 +641,11 @@
         "Credentials":{"shape":"Credentials"},
         "PackedPolicySize":{
           "shape":"nonNegativeIntegerType",
-          "documentation":"<p/>"
+          "documentation":"<p>The percentage of the maximum policy size that is used by the session policy. The policy size is calculated as the sum of all the session policies and permission boundaries attached to the session. If the packed size exceeds 100%, the request fails.</p>"
         },
         "AssumedPrincipal":{
           "shape":"arnType",
-          "documentation":"<p/>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the principal that was assumed when obtaining the delegated access token. This ARN identifies the IAM entity whose permissions are granted by the temporary credentials.</p>"
         }
       }
     },
@@ -701,6 +720,44 @@
       },
       "documentation":"<p>Contains the response to a successful <a>GetSessionToken</a> request, including temporary Amazon Web Services credentials that can be used to make Amazon Web Services requests. </p>"
     },
+    "GetWebIdentityTokenRequest":{
+      "type":"structure",
+      "required":[
+        "Audience",
+        "SigningAlgorithm"
+      ],
+      "members":{
+        "Audience":{
+          "shape":"webIdentityTokenAudienceListType",
+          "documentation":"<p>The intended recipient of the web identity token. This value populates the <code>aud</code> claim in the JWT and should identify the service or application that will validate and use the token. The external service should verify this claim to ensure the token was intended for their use.</p>"
+        },
+        "DurationSeconds":{
+          "shape":"webIdentityTokenDurationSecondsType",
+          "documentation":"<p>The duration, in seconds, for which the JSON Web Token (JWT) will remain valid. The value can range from 60 seconds (1 minute) to 3600 seconds (1 hour). If not specified, the default duration is 300 seconds (5 minutes). The token is designed to be short-lived and should be used for proof of identity, then exchanged for credentials or short-lived tokens in the external service.</p>"
+        },
+        "SigningAlgorithm":{
+          "shape":"jwtAlgorithmType",
+          "documentation":"<p>The cryptographic algorithm to use for signing the JSON Web Token (JWT). Valid values are RS256 (RSA with SHA-256) and ES384 (ECDSA using P-384 curve with SHA-384). </p>"
+        },
+        "Tags":{
+          "shape":"tagListType",
+          "documentation":"<p>An optional list of tags to include in the JSON Web Token (JWT). These tags are added as custom claims to the JWT and can be used by the downstream service for authorization decisions. </p>"
+        }
+      }
+    },
+    "GetWebIdentityTokenResponse":{
+      "type":"structure",
+      "members":{
+        "WebIdentityToken":{
+          "shape":"webIdentityTokenType",
+          "documentation":"<p>A signed JSON Web Token (JWT) that represents the caller's Amazon Web Services identity. The token contains standard JWT claims such as subject, audience, expiration time, and additional identity attributes added by STS as custom claims. You can also add your own custom claims to the token by passing tags as request parameters to the <code>GetWebIdentityToken</code> API. The token is signed using the specified signing algorithm and can be verified using the verification keys available at the issuer's JWKS endpoint.</p>"
+        },
+        "Expiration":{
+          "shape":"dateType",
+          "documentation":"<p>The date and time when the web identity token expires, in UTC. The expiration is determined by adding the <code>DurationSeconds</code> value to the time the token was issued. After this time, the token should no longer be considered valid.</p>"
+        }
+      }
+    },
     "IDPCommunicationErrorException":{
       "type":"structure",
       "members":{
@@ -754,6 +811,19 @@
       "exception":true
     },
     "Issuer":{"type":"string"},
+    "JWTPayloadSizeExceededException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"jwtPayloadSizeExceededException"}
+      },
+      "documentation":"<p>The requested token payload size exceeds the maximum allowed size. Reduce the number of request tags included in the <code>GetWebIdentityToken</code> API call to reduce the token payload size.</p>",
+      "error":{
+        "code":"JWTPayloadSizeExceededException",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "MalformedPolicyDocumentException":{
       "type":"structure",
       "members":{
@@ -768,6 +838,19 @@
       "exception":true
     },
     "NameQualifier":{"type":"string"},
+    "OutboundWebIdentityFederationDisabledException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"outboundWebIdentityFederationDisabledException"}
+      },
+      "documentation":"<p>The outbound web identity federation feature is not enabled for this account. To use this feature, you must first enable it through the Amazon Web Services Management Console or API.</p>",
+      "error":{
+        "code":"OutboundWebIdentityFederationDisabledException",
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "PackedPolicyTooLargeException":{
       "type":"structure",
       "members":{
@@ -834,6 +917,19 @@
       "max":100000,
       "min":4,
       "sensitive":true
+    },
+    "SessionDurationEscalationException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"sessionDurationEscalationException"}
+      },
+      "documentation":"<p>The requested token duration would extend the session beyond its original expiration time. You cannot use this operation to extend the lifetime of a session beyond what was granted when the session was originally created.</p>",
+      "error":{
+        "code":"SessionDurationEscalationException",
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
     },
     "Subject":{"type":"string"},
     "SubjectType":{"type":"string"},
@@ -924,11 +1020,18 @@
     "idpRejectedClaimMessage":{"type":"string"},
     "invalidAuthorizationMessage":{"type":"string"},
     "invalidIdentityTokenMessage":{"type":"string"},
+    "jwtAlgorithmType":{
+      "type":"string",
+      "max":5,
+      "min":5
+    },
+    "jwtPayloadSizeExceededException":{"type":"string"},
     "malformedPolicyDocumentMessage":{"type":"string"},
     "nonNegativeIntegerType":{
       "type":"integer",
       "min":0
     },
+    "outboundWebIdentityFederationDisabledException":{"type":"string"},
     "packedPolicyTooLargeMessage":{"type":"string"},
     "policyDescriptorListType":{
       "type":"list",
@@ -952,6 +1055,7 @@
       "min":9,
       "pattern":"[\\w+=/:,.@-]*"
     },
+    "sessionDurationEscalationException":{"type":"string"},
     "sessionPolicyDocumentType":{
       "type":"string",
       "max":2048,
@@ -1018,6 +1122,26 @@
       "type":"string",
       "max":255,
       "min":6
+    },
+    "webIdentityTokenAudienceListType":{
+      "type":"list",
+      "member":{"shape":"webIdentityTokenAudienceStringType"},
+      "max":10,
+      "min":1
+    },
+    "webIdentityTokenAudienceStringType":{
+      "type":"string",
+      "max":1000,
+      "min":1
+    },
+    "webIdentityTokenDurationSecondsType":{
+      "type":"integer",
+      "max":3600,
+      "min":60
+    },
+    "webIdentityTokenType":{
+      "type":"string",
+      "sensitive":true
     }
   },
   "documentation":"<fullname>Security Token Service</fullname> <p>Security Token Service (STS) enables you to request temporary, limited-privilege credentials for users. This guide provides descriptions of the STS API. For more information about using this service, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html\">Temporary Security Credentials</a>.</p>"

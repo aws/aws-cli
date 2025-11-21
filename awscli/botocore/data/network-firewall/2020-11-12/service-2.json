@@ -807,7 +807,8 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalServerError"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidTokenException"}
       ],
       "documentation":"<p>Enables specific types of firewall analysis on a specific firewall you define.</p>"
     },
@@ -2151,6 +2152,18 @@
         "LastModifiedTime":{
           "shape":"LastUpdateTime",
           "documentation":"<p>A timestamp indicating when the rule group was last modified.</p>"
+        },
+        "VendorName":{
+          "shape":"VendorName",
+          "documentation":"<p>The name of the Amazon Web Services Marketplace vendor that provides this rule group.</p>"
+        },
+        "ProductId":{
+          "shape":"ProductId",
+          "documentation":"<p>The unique identifier for the product listing associated with this rule group.</p>"
+        },
+        "ListingName":{
+          "shape":"ListingName",
+          "documentation":"<p>The display name of the product listing for this rule group.</p>"
         }
       }
     },
@@ -3358,6 +3371,10 @@
           "shape":"ResourceManagedType",
           "documentation":"<p>Indicates the general category of the Amazon Web Services managed rule group.</p>"
         },
+        "SubscriptionStatus":{
+          "shape":"SubscriptionStatus",
+          "documentation":"<p>Filters the results to show only rule groups with the specified subscription status. Use this to find subscribed or unsubscribed rule groups.</p>"
+        },
         "Type":{
           "shape":"RuleGroupType",
           "documentation":"<p>Indicates whether the rule group is stateless or stateful. If the rule group is stateless, it contains stateless rules. If it is stateful, it contains stateful rules.</p>"
@@ -3464,6 +3481,7 @@
         }
       }
     },
+    "ListingName":{"type":"string"},
     "LogDestinationConfig":{
       "type":"structure",
       "required":[
@@ -3600,7 +3618,9 @@
       "enum":[
         "PENDING",
         "IN_SYNC",
-        "CAPACITY_CONSTRAINED"
+        "CAPACITY_CONSTRAINED",
+        "NOT_SUBSCRIBED",
+        "DEPRECATED"
       ]
     },
     "PolicyString":{
@@ -3672,6 +3692,7 @@
       "max":65535,
       "min":1
     },
+    "ProductId":{"type":"string"},
     "ProtocolNumber":{
       "type":"integer",
       "max":255,
@@ -3785,7 +3806,8 @@
       "enum":[
         "AWS_MANAGED_THREAT_SIGNATURES",
         "AWS_MANAGED_DOMAIN_LISTS",
-        "ACTIVE_THREAT_DEFENSE"
+        "ACTIVE_THREAT_DEFENSE",
+        "PARTNER_MANAGED"
       ]
     },
     "ResourceName":{
@@ -3878,6 +3900,10 @@
         "Arn":{
           "shape":"ResourceArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the rule group.</p>"
+        },
+        "VendorName":{
+          "shape":"VendorName",
+          "documentation":"<p>The name of the Amazon Web Services Marketplace seller that provides this rule group.</p>"
         }
       },
       "documentation":"<p>High-level information about a rule group, returned by <a>ListRuleGroups</a>. You can use the information provided in the metadata to retrieve and manage a rule group.</p>"
@@ -4559,6 +4585,13 @@
     "SubnetMappings":{
       "type":"list",
       "member":{"shape":"SubnetMapping"}
+    },
+    "SubscriptionStatus":{
+      "type":"string",
+      "enum":[
+        "NOT_SUBSCRIBED",
+        "SUBSCRIBED"
+      ]
     },
     "Summary":{
       "type":"structure",
@@ -5448,6 +5481,7 @@
       "type":"list",
       "member":{"shape":"VariableDefinition"}
     },
+    "VendorName":{"type":"string"},
     "VpcEndpointAssociation":{
       "type":"structure",
       "required":[

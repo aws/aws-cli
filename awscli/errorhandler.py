@@ -125,7 +125,7 @@ class NoRegionErrorHandler(FilteredExceptionHandler):
 class NoCredentialsErrorHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = NoCredentialsError
     RC = CONFIGURATION_ERROR_RC
-    MESSAGE = '%s. You can configure credentials by running "aws configure".'
+    MESSAGE = '%s. You can configure credentials by running "aws login".'
 
 
 class PagerErrorHandler(FilteredExceptionHandler):

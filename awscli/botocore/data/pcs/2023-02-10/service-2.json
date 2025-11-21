@@ -280,6 +280,7 @@
         "requestUri":"/"
       },
       "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
       "errors":[
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceNotFoundException"}
@@ -294,6 +295,7 @@
         "requestUri":"/"
       },
       "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
       "errors":[
         {"shape":"ResourceNotFoundException"}
       ],
@@ -523,9 +525,17 @@
           "shape":"SlurmAuthKey",
           "documentation":"<p>The shared Slurm key for authentication, also known as the <b>cluster secret</b>.</p>"
         },
+        "jwtAuth":{
+          "shape":"JwtAuth",
+          "documentation":"<p>The JWT authentication configuration for Slurm REST API access.</p>"
+        },
         "accounting":{
           "shape":"Accounting",
           "documentation":"<p>The accounting configuration includes configurable settings for Slurm accounting.</p>"
+        },
+        "slurmRest":{
+          "shape":"SlurmRest",
+          "documentation":"<p>The Slurm REST API configuration for the cluster.</p>"
         }
       },
       "documentation":"<p>Additional options related to the Slurm scheduler.</p>"
@@ -544,6 +554,10 @@
         "accounting":{
           "shape":"AccountingRequest",
           "documentation":"<p>The accounting configuration includes configurable settings for Slurm accounting.</p>"
+        },
+        "slurmRest":{
+          "shape":"SlurmRestRequest",
+          "documentation":"<p>The Slurm REST API configuration for the cluster.</p>"
         }
       },
       "documentation":"<p>Additional options related to the Slurm scheduler.</p>"
@@ -551,11 +565,13 @@
     "ClusterSlurmConfigurationRequestScaleDownIdleTimeInSecondsInteger":{
       "type":"integer",
       "box":true,
+      "max":10000000,
       "min":1
     },
     "ClusterSlurmConfigurationScaleDownIdleTimeInSecondsInteger":{
       "type":"integer",
       "box":true,
+      "max":10000000,
       "min":1
     },
     "ClusterStatus":{
@@ -1093,7 +1109,8 @@
       "type":"string",
       "enum":[
         "SLURMCTLD",
-        "SLURMDBD"
+        "SLURMDBD",
+        "SLURMRESTD"
       ]
     },
     "Endpoints":{
@@ -1215,6 +1232,34 @@
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
+    },
+    "JwtAuth":{
+      "type":"structure",
+      "members":{
+        "jwtKey":{
+          "shape":"JwtKey",
+          "documentation":"<p>The JWT key for Slurm REST API authentication.</p>"
+        }
+      },
+      "documentation":"<p>The JWT authentication configuration for Slurm REST API access.</p>"
+    },
+    "JwtKey":{
+      "type":"structure",
+      "required":[
+        "secretArn",
+        "secretVersion"
+      ],
+      "members":{
+        "secretArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Secrets Manager secret containing the JWT key.</p>"
+        },
+        "secretVersion":{
+          "shape":"String",
+          "documentation":"<p>The version of the AWS Secrets Manager secret containing the JWT key.</p>"
+        }
+      },
+      "documentation":"<p>The JWT key stored in AWS Secrets Manager for Slurm REST API authentication.</p>"
     },
     "ListClustersRequest":{
       "type":"structure",
@@ -1791,6 +1836,35 @@
       "type":"list",
       "member":{"shape":"SlurmCustomSetting"}
     },
+    "SlurmRest":{
+      "type":"structure",
+      "required":["mode"],
+      "members":{
+        "mode":{
+          "shape":"SlurmRestMode",
+          "documentation":"<p>The default value for <code>mode</code> is <code>STANDARD</code>. A value of <code>STANDARD</code> means the Slurm REST API is enabled.</p>"
+        }
+      },
+      "documentation":"<p>The Slurm REST API configuration includes settings for enabling and configuring the Slurm REST API. It's a property of the <b>ClusterSlurmConfiguration</b> object.</p>"
+    },
+    "SlurmRestMode":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "NONE"
+      ]
+    },
+    "SlurmRestRequest":{
+      "type":"structure",
+      "required":["mode"],
+      "members":{
+        "mode":{
+          "shape":"SlurmRestMode",
+          "documentation":"<p>The default value for <code>mode</code> is <code>STANDARD</code>. A value of <code>STANDARD</code> means the Slurm REST API is enabled.</p>"
+        }
+      },
+      "documentation":"<p>The Slurm REST API configuration includes settings for enabling and configuring the Slurm REST API. It's a property of the <b>ClusterSlurmConfiguration</b> object.</p>"
+    },
     "SpotAllocationStrategy":{
       "type":"string",
       "enum":[
@@ -1855,6 +1929,10 @@
         }
       }
     },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "TagValue":{
       "type":"string",
       "max":256,
@@ -1890,6 +1968,10 @@
           "documentation":"<p>1 or more tag keys to remove from the resource. Specify only tag keys and not tag values.</p>"
         }
       }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{}
     },
     "UpdateAccountingRequest":{
       "type":"structure",
@@ -1950,6 +2032,10 @@
         "accounting":{
           "shape":"UpdateAccountingRequest",
           "documentation":"<p>The accounting configuration includes configurable settings for Slurm accounting.</p>"
+        },
+        "slurmRest":{
+          "shape":"UpdateSlurmRestRequest",
+          "documentation":"<p>The Slurm REST API configuration for the cluster.</p>"
         }
       },
       "documentation":"<p>Additional options related to the Slurm scheduler.</p>"
@@ -1957,6 +2043,7 @@
     "UpdateClusterSlurmConfigurationRequestScaleDownIdleTimeInSecondsInteger":{
       "type":"integer",
       "box":true,
+      "max":10000000,
       "min":1
     },
     "UpdateComputeNodeGroupRequest":{
@@ -2068,6 +2155,16 @@
         }
       },
       "documentation":"<p>Additional options related to the Slurm scheduler.</p>"
+    },
+    "UpdateSlurmRestRequest":{
+      "type":"structure",
+      "members":{
+        "mode":{
+          "shape":"SlurmRestMode",
+          "documentation":"<p>The default value for <code>mode</code> is <code>STANDARD</code>. A value of <code>STANDARD</code> means the Slurm REST API is enabled.</p>"
+        }
+      },
+      "documentation":"<p>The Slurm REST API configuration includes settings for enabling and configuring the Slurm REST API.</p>"
     },
     "ValidationException":{
       "type":"structure",

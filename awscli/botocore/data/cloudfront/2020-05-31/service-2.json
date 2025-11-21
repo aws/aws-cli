@@ -3247,6 +3247,10 @@
           "shape":"IpAddressType",
           "documentation":"<p>The IP address type for the Anycast static IP list.</p>"
         },
+        "IpamConfig":{
+          "shape":"IpamConfig",
+          "documentation":"<p>The IPAM configuration for the Anycast static IP list, that contains the quantity and list of IPAM CIDR configurations.</p>"
+        },
         "AnycastIps":{
           "shape":"AnycastIps",
           "documentation":"<p>The static IP addresses that are allocated to the Anycast static IP list.</p>"
@@ -3353,6 +3357,10 @@
         "ETag":{
           "shape":"string",
           "documentation":"<p>The current version (ETag value) of the Anycast static IP list.</p>"
+        },
+        "IpamConfig":{
+          "shape":"IpamConfig",
+          "documentation":"<p>The IPAM configuration for the Anycast static IP list, that contains the quantity and list of IPAM CIDR configurations.</p>"
         }
       },
       "documentation":"<p>An abbreviated version of the <a>AnycastIpList</a> structure. Omits the allocated static IP addresses (<a>AnycastIpList$AnycastIps</a>).</p>"
@@ -4531,7 +4539,11 @@
         "Tags":{"shape":"Tags"},
         "IpAddressType":{
           "shape":"IpAddressType",
-          "documentation":"<p>The IP address type for the Anycast static IP list. You can specify one of the following options:</p> <ul> <li> <p> <code>ipv4</code> - Allocate a list of only IPv4 addresses</p> </li> <li> <p> <code>ipv6</code> - Allocate a list of only IPv4 addresses</p> </li> <li> <p> <code>dualstack</code> - Allocate a list of both IPv4 and IPv6 addresses</p> </li> </ul>"
+          "documentation":"<p>The IP address type for the Anycast static IP list. You can specify one of the following options:</p> <ul> <li> <p> <code>ipv4</code> only</p> </li> <li> <p> <code>ipv6</code> only </p> </li> <li> <p> <code>dualstack</code> - Allocate a list of both IPv4 and IPv6 addresses</p> </li> </ul>"
+        },
+        "IpamCidrConfigs":{
+          "shape":"IpamCidrConfigList",
+          "documentation":"<p> A list of IPAM CIDR configurations that specify the IP address ranges and IPAM pool settings for creating the Anycast static IP list. </p>"
         }
       }
     },
@@ -9244,6 +9256,74 @@
         "ipv6",
         "dualstack"
       ]
+    },
+    "IpamCidrConfig":{
+      "type":"structure",
+      "required":[
+        "Cidr",
+        "IpamPoolArn"
+      ],
+      "members":{
+        "Cidr":{
+          "shape":"string",
+          "documentation":"<p>The CIDR that specifies the IP address range for this IPAM configuration.</p>"
+        },
+        "IpamPoolArn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IPAM pool that the CIDR block is assigned to.</p>"
+        },
+        "AnycastIp":{
+          "shape":"string",
+          "documentation":"<p>The specified Anycast IP address allocated from the IPAM pool for this CIDR configuration.</p>"
+        },
+        "Status":{
+          "shape":"IpamCidrStatus",
+          "documentation":"<p>The current status of the IPAM CIDR configuration.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for an IPAM CIDR that defines a specific IP address range, IPAM pool, and associated Anycast IP address.</p>"
+    },
+    "IpamCidrConfigList":{
+      "type":"list",
+      "member":{
+        "shape":"IpamCidrConfig",
+        "locationName":"IpamCidrConfig"
+      }
+    },
+    "IpamCidrStatus":{
+      "type":"string",
+      "enum":[
+        "provisioned",
+        "failed-provision",
+        "provisioning",
+        "deprovisioned",
+        "failed-deprovision",
+        "deprovisioning",
+        "advertised",
+        "failed-advertise",
+        "advertising",
+        "withdrawn",
+        "failed-withdraw",
+        "withdrawing"
+      ]
+    },
+    "IpamConfig":{
+      "type":"structure",
+      "required":[
+        "Quantity",
+        "IpamCidrConfigs"
+      ],
+      "members":{
+        "Quantity":{
+          "shape":"integer",
+          "documentation":"<p>The number of IPAM CIDR configurations in the <code>IpamCidrConfigs</code> list.</p>"
+        },
+        "IpamCidrConfigs":{
+          "shape":"IpamCidrConfigList",
+          "documentation":"<p>A list of IPAM CIDR configurations that define the IP address ranges, IPAM pools, and associated Anycast IP addresses.</p>"
+        }
+      },
+      "documentation":"<p>The configuration IPAM settings that includes the quantity of CIDR configurations and the list of IPAM CIDR configurations.</p>"
     },
     "ItemSelection":{
       "type":"string",
@@ -14168,7 +14248,7 @@
         },
         "IpAddressType":{
           "shape":"IpAddressType",
-          "documentation":"<p>The IP address type for the Anycast static IP list. You can specify one of the following options:</p> <ul> <li> <p> <code>ipv4</code> - Allocate a list of only IPv4 addresses</p> </li> <li> <p> <code>ipv6</code> - Allocate a list of only IPv4 addresses</p> </li> <li> <p> <code>dualstack</code> - Allocate a list of both IPv4 and IPv6 addresses</p> </li> </ul>"
+          "documentation":"<p>The IP address type for the Anycast static IP list. You can specify one of the following options:</p> <ul> <li> <p> <code>ipv4</code> only</p> </li> <li> <p> <code>ipv6</code> only</p> </li> <li> <p> <code>dualstack</code> - Allocate a list of both IPv4 and IPv6 addresses</p> </li> </ul>"
         },
         "IfMatch":{
           "shape":"string",

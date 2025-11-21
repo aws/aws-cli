@@ -2161,6 +2161,10 @@
         "DiskIopsConfiguration":{
           "shape":"DiskIopsConfiguration",
           "documentation":"<p>The SSD IOPS (input/output operations per second) configuration for an Amazon FSx for Windows file system. By default, Amazon FSx automatically provisions 3 IOPS per GiB of storage capacity. You can provision additional IOPS per GiB of storage, up to the maximum limit associated with your chosen throughput capacity.</p>"
+        },
+        "FsrmConfiguration":{
+          "shape":"WindowsFsrmConfiguration",
+          "documentation":"<p>The File Server Resource Manager (FSRM) configuration that Amazon FSx for Windows File Server uses for the file system. FSRM is disabled by default.</p>"
         }
       },
       "documentation":"<p>The configuration object for the Microsoft Windows file system used in <code>CreateFileSystem</code> and <code>CreateFileSystemFromBackup</code> operations.</p>"
@@ -6639,6 +6643,10 @@
         "DiskIopsConfiguration":{
           "shape":"DiskIopsConfiguration",
           "documentation":"<p>The SSD IOPS (input/output operations per second) configuration for an Amazon FSx for Windows file system. By default, Amazon FSx automatically provisions 3 IOPS per GiB of storage capacity. You can provision additional IOPS per GiB of storage, up to the maximum limit associated with your chosen throughput capacity.</p>"
+        },
+        "FsrmConfiguration":{
+          "shape":"WindowsFsrmConfiguration",
+          "documentation":"<p>The File Server Resource Manager (FSRM) configuration that Amazon FSx for Windows File Server uses for the file system. FSRM is disabled by default.</p>"
         }
       },
       "documentation":"<p>Updates the configuration for an existing Amazon FSx for Windows File Server file system. Amazon FSx only overwrites existing properties with non-null values provided in the request.</p>"
@@ -7176,9 +7184,28 @@
         "PreferredFileServerIpv6":{
           "shape":"IpAddress",
           "documentation":"<p>For MULTI_AZ_1 deployment types, the IPv6 address of the primary, or preferred, file server. Use this IP address when mounting the file system on Linux SMB clients or Windows SMB clients that are not joined to a Microsoft Active Directory. Applicable for all Windows file system deployment types. This IPv6 address is temporarily unavailable when the file system is undergoing maintenance. For Linux and Windows SMB clients that are joined to an Active Directory, use the file system's DNSName instead.</p>"
+        },
+        "FsrmConfiguration":{
+          "shape":"WindowsFsrmConfiguration",
+          "documentation":"<p>The File Server Resource Manager (FSRM) configuration that Amazon FSx for Windows File Server uses for the file system. FSRM is disabled by default.</p>"
         }
       },
       "documentation":"<p>The configuration for this Microsoft Windows file system.</p>"
+    },
+    "WindowsFsrmConfiguration":{
+      "type":"structure",
+      "required":["FsrmServiceEnabled"],
+      "members":{
+        "FsrmServiceEnabled":{
+          "shape":"Flag",
+          "documentation":"<p>Specifies whether FSRM is enabled or disabled on the file system. When <code>TRUE</code>, the FSRM service is enabled and monitor file operations according to configured policies. When <code>FALSE</code> or omitted, FSRM is disabled. The default value is <code>FALSE</code>. </p>"
+        },
+        "EventLogDestination":{
+          "shape":"GeneralARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the destination of the FSRM event logs. The destination can be any Amazon CloudWatch Logs log group ARN or Amazon Kinesis Data Firehose delivery stream ARN.</p> <p>The name of the Amazon CloudWatch Logs log group must begin with the <code>/aws/fsx</code> prefix. The name of the Amazon Kinesis Data Firehose delivery stream must begin with the <code>aws-fsx</code> prefix.</p> <p>The destination ARN (either CloudWatch Logs log group or Kinesis Data Firehose delivery stream) must be in the same Amazon Web Services partition, Amazon Web Services Region, and Amazon Web Services account as your Amazon FSx file system.</p>"
+        }
+      },
+      "documentation":"<p>The File Server Resource Manager (FSRM) configuration that Amazon FSx for Windows File Server uses for the file system. When FSRM is enabled, you can manage and monitor storage quotas, file screening, storage reports, and file classification.</p>"
     }
   },
   "documentation":"<p>Amazon FSx is a fully managed service that makes it easy for storage and application administrators to launch and use shared file storage.</p>"

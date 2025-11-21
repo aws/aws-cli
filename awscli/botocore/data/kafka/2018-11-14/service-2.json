@@ -761,6 +761,82 @@
       ],
       "documentation": "<p>Describes a replicator.</p>"
     },
+    "DescribeTopic": {
+      "name": "DescribeTopic",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/clusters/{clusterArn}/topics/{topicName}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeTopicRequest"
+      },
+      "output": {
+        "shape": "DescribeTopicResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Returns topic details of this topic on a MSK cluster.</p>\n         "
+    },
+    "DescribeTopicPartitions": {
+      "name": "DescribeTopicPartitions",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/clusters/{clusterArn}/topics/{topicName}/partitions",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeTopicPartitionsRequest"
+      },
+      "output": {
+        "shape": "DescribeTopicPartitionsResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Returns partition details of this topic on a MSK cluster.</p>\n         "
+    },
     "DescribeVpcConnection": {
       "name": "DescribeVpcConnection",
       "http": {
@@ -1421,6 +1497,44 @@
         }
       ],
       "documentation": "\n            <p>Returns a list of all the VPC connections in this Region.</p>\n         "
+    },
+    "ListTopics": {
+      "name": "ListTopics",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/clusters/{clusterArn}/topics",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListTopicsRequest"
+      },
+      "output": {
+        "shape": "ListTopicsResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>List topics in a MSK cluster.</p>\n         "
     },
     "ListVpcConnections": {
       "name": "ListVpcConnections",
@@ -4102,6 +4216,136 @@
         }
       }
     },
+    "DescribeTopicRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>\n         "
+        },
+        "TopicName": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "topicName",
+          "documentation": "\n            <p>The Kafka topic name that uniquely identifies the topic.</p>\n         "
+        }
+      },
+      "required": [
+        "ClusterArn",
+        "TopicName"
+      ]
+    },
+    "DescribeTopicPartitionsRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>\n         "
+        },
+        "TopicName": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "topicName",
+          "documentation": "\n            <p>The Kafka topic name that uniquely identifies the topic.</p>\n         "
+        },
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "\n            <p>The maximum number of results to return in the response. If there are more results, the response includes a NextToken parameter.</p>\n         "
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "\n            <p>The paginated results marker. When the result of the operation is truncated, the call returns NextToken in the response. \n            To get the next batch, provide this token in your next request.</p>\n         "
+        }
+      },
+      "required": [
+        "ClusterArn",
+        "TopicName"
+      ]
+    },
+    "DescribeTopicResponse": {
+      "type": "structure",
+      "members": {
+        "TopicArn": {
+          "shape": "__string",
+          "locationName": "topicArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the topic.</p>\n         "
+        },
+        "TopicName": {
+          "shape": "__string",
+          "locationName": "topicName",
+          "documentation": "\n            <p>The Kafka topic name of the topic.</p>"
+        },
+        "ReplicationFactor": {
+          "shape": "__integer",
+          "locationName": "replicationFactor",
+          "documentation": "\n            <p>The replication factor of the topic.</p>"
+        },
+        "PartitionCount": {
+          "shape": "__integer",
+          "locationName": "partitionCount",
+          "documentation": "\n            <p>The partition count of the topic.</p>"
+        },
+        "Configs": {
+          "shape": "__string",
+          "locationName": "configs",
+          "documentation": "\n            <p>Topic configurations encoded as a Base64 string.</p>"
+        },
+        "Status": {
+          "shape": "TopicState",
+          "locationName": "status",
+          "documentation": "\n            <p>The status of the topic.</p>\n         "
+        }
+      }
+    },
+    "DescribeTopicPartitionsResponse": {
+      "type": "structure",
+      "members": {
+        "Partitions": {
+          "shape": "__listOfTopicPartitionInfo",
+          "locationName": "partitions",
+          "documentation": "<p>The list of partition information for the topic.</p>"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "\n            <p>The paginated results marker. When the result of a DescribeTopicPartitions operation is truncated, the call returns NextToken in the response. \n               To get another batch of configurations, provide this token in your next request.</p>\n         "
+        }
+      }
+    },
+    "TopicPartitionInfo": {
+      "type": "structure",
+      "documentation": "<p>Contains information about a topic partition.</p>",
+      "members": {
+        "Partition": {
+          "shape": "__integer",
+          "locationName": "partition",
+          "documentation": "<p>The partition ID.</p>"
+        },
+        "Leader": {
+          "shape": "__integer",
+          "locationName": "leader",
+          "documentation": "<p>The leader broker ID for the partition.</p>"
+        },
+        "Replicas": {
+          "shape": "__listOf__integer",
+          "locationName": "replicas",
+          "documentation": "<p>The list of replica broker IDs for the partition.</p>"
+        },
+        "Isr": {
+          "shape": "__listOf__integer",
+          "locationName": "isr",
+          "documentation": "<p>The list of in-sync replica broker IDs for the partition.</p>"
+        }
+      }
+    },
     "DescribeVpcConnectionRequest": {
       "type": "structure",
       "members": {
@@ -5113,6 +5357,53 @@
         }
       }
     },
+    "ListTopicsRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>\n         "
+        },
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "\n            <p>The maximum number of results to return in the response. If there are more results, the response includes a NextToken parameter.</p>\n         "
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "\n            <p>The paginated results marker. When the result of the operation is truncated, the call returns NextToken in the response. \n            To get the next batch, provide this token in your next request.</p>\n         "
+        },
+        "TopicNameFilter": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "topicNameFilter",
+          "documentation": "\n            <p>Returns topics starting with given name.</p>\n         "
+        }
+      },
+      "required": [
+        "ClusterArn"
+      ]
+    },
+    "ListTopicsResponse": {
+      "type": "structure",
+      "members": {
+        "Topics": {
+          "shape": "__listOfTopicInfo",
+          "locationName": "topics",
+          "documentation": "\n            <p>List containing topics info.</p>\n         "
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "\n            <p>The paginated results marker. When the result of a ListTopics operation is truncated, the call returns NextToken in the response. \n               To get another batch of configurations, provide this token in your next request.</p>\n         "
+        }
+      }
+    },
     "ListVpcConnectionsRequest": {
       "type": "structure",
       "members": {
@@ -5951,6 +6242,37 @@
       },
       "documentation": "\n            <p>Details for client authentication using TLS.</p>\n         "
     },
+    "TopicInfo": {
+      "type": "structure",
+      "members": {
+        "TopicArn": {
+          "shape": "__string",
+          "locationName": "topicArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the topic.</p>\n          "
+        },
+        "TopicName": {
+          "shape": "__string",
+          "locationName": "topicName",
+          "documentation": "\n            <p>Name for a topic.</p>\n          "
+        },
+        "ReplicationFactor": {
+          "shape": "__integer",
+          "locationName": "replicationFactor",
+          "documentation": "\n            <p>Replication factor for a topic.</p>\n          "
+        },
+        "PartitionCount": {
+          "shape": "__integer",
+          "locationName": "partitionCount",
+          "documentation": "\n            <p>Partition count for a topic.</p>\n          "
+        },
+        "OutOfSyncReplicaCount": {
+          "shape": "__integer",
+          "locationName": "outOfSyncReplicaCount",
+          "documentation": "\n            <p>Number of out-of-sync replicas for a topic.</p>\n          "
+        }
+      },
+      "documentation": "\n            <p>Includes identification info about the topic.</p>\n         "
+    },
     "VpcConnectivityTls": {
       "type": "structure",
       "members": {
@@ -6749,6 +7071,16 @@
       },
       "documentation": "Description of the VPC connection."
     },
+    "TopicState": {
+      "type": "string",
+      "documentation": "\n            <p>The state of a topic request.</p>\n         ",
+      "enum": [
+        "CREATING",
+        "UPDATING",
+        "DELETING",
+        "ACTIVE"
+      ]
+    },
     "VpcConnectionState": {
       "type": "string",
       "documentation": "\n            <p>The state of a VPC connection.</p>\n         ",
@@ -6826,6 +7158,10 @@
       "type": "integer",
       "min": 1,
       "max": 16384
+    },
+    "__integerMin1": {
+      "type": "integer",
+      "min": 1
     },
     "__listOfBrokerEBSVolumeInfo": {
       "type": "list",
@@ -6947,6 +7283,18 @@
         "shape": "ReplicatorSummary"
       }
     },
+    "__listOfTopicInfo": {
+      "type": "list",
+      "member": {
+        "shape": "TopicInfo"
+      }
+    },
+    "__listOfTopicPartitionInfo": {
+      "type": "list",
+      "member": {
+        "shape": "TopicPartitionInfo"
+      }
+    },
     "__listOfVpcConnection": {
       "type": "list",
       "member": {
@@ -6969,6 +7317,12 @@
       "type": "list",
       "member": {
         "shape": "__string"
+      }
+    },
+    "__listOf__integer": {
+      "type": "list",
+      "member": {
+        "shape": "__integer"
       }
     },
     "__long": {

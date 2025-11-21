@@ -311,6 +311,29 @@
       "documentation":"<p>Returns comments for a designated case.</p>",
       "readonly":true
     },
+    "ListInvestigations":{
+      "name":"ListInvestigations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/cases/{caseId}/list-investigations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListInvestigationsRequest"},
+      "output":{"shape":"ListInvestigationsResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"SecurityIncidentResponseNotActiveException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidTokenException"}
+      ],
+      "documentation":"<p>Investigation performed by an agent for a security incident...</p>",
+      "readonly":true
+    },
     "ListMemberships":{
       "name":"ListMemberships",
       "http":{
@@ -356,6 +379,28 @@
       ],
       "documentation":"<p>Returns currently configured tags on a resource.</p>",
       "readonly":true
+    },
+    "SendFeedback":{
+      "name":"SendFeedback",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/cases/{caseId}/feedback/{resultId}/send-feedback",
+        "responseCode":200
+      },
+      "input":{"shape":"SendFeedbackRequest"},
+      "output":{"shape":"SendFeedbackResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"SecurityIncidentResponseNotActiveException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidTokenException"}
+      ],
+      "documentation":"<p>Send feedback based on response investigation action</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -543,6 +588,14 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ActionType":{
+      "type":"string",
+      "enum":[
+        "Evidence",
+        "Investigation",
+        "Summarization"
+      ]
     },
     "Arn":{
       "type":"string",
@@ -759,6 +812,40 @@
       "max":32,
       "min":10,
       "pattern":"\\d{10,32}.*"
+    },
+    "CaseMetadata":{
+      "type":"list",
+      "member":{"shape":"CaseMetadataEntry"},
+      "max":30,
+      "min":1
+    },
+    "CaseMetadataEntry":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"CaseMetadataEntryKeyString",
+          "documentation":"<p>The identifier for the metadata field. This key uniquely identifies the type of metadata being stored, such as \"severity\", \"category\", or \"assignee\".</p>"
+        },
+        "value":{
+          "shape":"CaseMetadataEntryValueString",
+          "documentation":"<p>The value associated with the metadata key. This contains the actual data for the metadata field identified by the key.</p>"
+        }
+      },
+      "documentation":"<p>Represents a single metadata entry associated with a case. Each entry consists of a key-value pair that provides additional contextual information about the case, such as classification tags, custom attributes, or system-generated properties. </p>"
+    },
+    "CaseMetadataEntryKeyString":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "CaseMetadataEntryValueString":{
+      "type":"string",
+      "max":2000,
+      "min":1
     },
     "CaseStatus":{
       "type":"string",
@@ -1070,6 +1157,22 @@
         "Investigation"
       ]
     },
+    "ExecutionStatus":{
+      "type":"string",
+      "enum":[
+        "Pending",
+        "InProgress",
+        "Waiting",
+        "Completed",
+        "Failed",
+        "Cancelled"
+      ]
+    },
+    "FeedbackComment":{
+      "type":"string",
+      "max":1000,
+      "min":1
+    },
     "FileName":{
       "type":"string",
       "max":255,
@@ -1242,6 +1345,10 @@
         "closedDate":{
           "shape":"Timestamp",
           "documentation":"<p>Response element for GetCase that provides the date a specified case was closed.</p>"
+        },
+        "caseMetadata":{
+          "shape":"CaseMetadata",
+          "documentation":"<p>Case response metadata</p>"
         }
       }
     },
@@ -1483,6 +1590,84 @@
       "exception":true,
       "retryable":{"throttling":false}
     },
+    "InvestigationAction":{
+      "type":"structure",
+      "required":[
+        "investigationId",
+        "actionType",
+        "title",
+        "content",
+        "status",
+        "lastUpdated"
+      ],
+      "members":{
+        "investigationId":{
+          "shape":"InvestigationId",
+          "documentation":"<p>The unique identifier for this investigation action. This ID is used to track and reference the specific investigation throughout its lifecycle.</p>"
+        },
+        "actionType":{
+          "shape":"ActionType",
+          "documentation":"<p>The type of investigation action being performed. This categorizes the investigation method or approach used in the case.</p>"
+        },
+        "title":{
+          "shape":"InvestigationTitle",
+          "documentation":"<p>Human-readable summary of the investigation focus. This provides a brief description of what the investigation is examining or analyzing.</p>"
+        },
+        "content":{
+          "shape":"InvestigationContent",
+          "documentation":"<p>Detailed investigation results in rich markdown format. This field contains the comprehensive findings, analysis, and conclusions from the investigation.</p>"
+        },
+        "status":{
+          "shape":"ExecutionStatus",
+          "documentation":"<p>The current execution status of the investigation. This indicates whether the investigation is pending, in progress, completed, or failed.</p>"
+        },
+        "lastUpdated":{
+          "shape":"Timestamp",
+          "documentation":"<p>ISO 8601 timestamp of the most recent status update. This indicates when the investigation was last modified or when its status last changed.</p>"
+        },
+        "feedback":{
+          "shape":"InvestigationFeedback",
+          "documentation":"<p>User feedback for this investigation result. This contains the user's assessment and comments about the quality and usefulness of the investigation findings.</p>"
+        }
+      },
+      "documentation":"<p>Represents an investigation action performed within a case. This structure captures the details of an automated or manual investigation, including its status, results, and user feedback.</p>"
+    },
+    "InvestigationActionList":{
+      "type":"list",
+      "member":{"shape":"InvestigationAction"}
+    },
+    "InvestigationContent":{
+      "type":"string",
+      "max":5000,
+      "min":1
+    },
+    "InvestigationFeedback":{
+      "type":"structure",
+      "members":{
+        "usefulness":{
+          "shape":"UsefulnessRating",
+          "documentation":"<p>User assessment of the investigation result's quality and helpfulness. This rating indicates how valuable the investigation findings were in addressing the case.</p>"
+        },
+        "comment":{
+          "shape":"FeedbackComment",
+          "documentation":"<p>Optional user comments providing additional context about the investigation feedback. This allows users to explain their rating or provide suggestions for improvement.</p>"
+        },
+        "submittedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>ISO 8601 timestamp when the feedback was submitted. This records when the user provided their assessment of the investigation results.</p>"
+        }
+      },
+      "documentation":"<p>Represents user feedback for an investigation result. This structure captures the user's evaluation of the investigation's quality, usefulness, and any additional comments.</p>"
+    },
+    "InvestigationId":{
+      "type":"string",
+      "pattern":"inv-[a-z0-9]{10,32}"
+    },
+    "InvestigationTitle":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
     "JobTitle":{
       "type":"string",
       "max":50,
@@ -1709,6 +1894,55 @@
         "total":{
           "shape":"Integer",
           "documentation":"<p>Response element for ListComments identifying the number of responses.</p>"
+        }
+      }
+    },
+    "ListInvestigationsRequest":{
+      "type":"structure",
+      "required":["caseId"],
+      "members":{
+        "nextToken":{
+          "shape":"ListInvestigationsRequestNextTokenString",
+          "documentation":"<p>Investigation performed by an agent for a security incident request</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListInvestigationsRequestMaxResultsInteger",
+          "documentation":"<p>Investigation performed by an agent for a security incident request, returning max results</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "caseId":{
+          "shape":"CaseId",
+          "documentation":"<p>Investigation performed by an agent for a security incident per caseID</p>",
+          "location":"uri",
+          "locationName":"caseId"
+        }
+      }
+    },
+    "ListInvestigationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":25,
+      "min":1
+    },
+    "ListInvestigationsRequestNextTokenString":{
+      "type":"string",
+      "max":2000,
+      "min":0
+    },
+    "ListInvestigationsResponse":{
+      "type":"structure",
+      "required":["investigationActions"],
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>Investigation performed by an agent for a security incident for next Token</p>"
+        },
+        "investigationActions":{
+          "shape":"InvestigationActionList",
+          "documentation":"<p>Investigation performed by an agent for a security incid…Unique identifier for the specific investigation&gt;</p>"
         }
       }
     },
@@ -1967,6 +2201,10 @@
       },
       "exception":true
     },
+    "ResultId":{
+      "type":"string",
+      "pattern":"inv-[a-z0-9]{10,32}"
+    },
     "SecurityIncidentResponseNotActiveException":{
       "type":"structure",
       "required":["message"],
@@ -1991,6 +2229,40 @@
         "Containment, Eradication and Recovery",
         "Post-incident Activities"
       ]
+    },
+    "SendFeedbackRequest":{
+      "type":"structure",
+      "required":[
+        "caseId",
+        "resultId",
+        "usefulness"
+      ],
+      "members":{
+        "caseId":{
+          "shape":"CaseId",
+          "documentation":"<p>Send feedback based on request caseID</p>",
+          "location":"uri",
+          "locationName":"caseId"
+        },
+        "resultId":{
+          "shape":"ResultId",
+          "documentation":"<p>Send feedback based on request result ID</p>",
+          "location":"uri",
+          "locationName":"resultId"
+        },
+        "usefulness":{
+          "shape":"UsefulnessRating",
+          "documentation":"<p>Required enum value indicating user assessment of result q.....</p>"
+        },
+        "comment":{
+          "shape":"FeedbackComment",
+          "documentation":"<p>Send feedback based on request comments</p>"
+        }
+      }
+    },
+    "SendFeedbackResponse":{
+      "type":"structure",
+      "members":{}
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -2262,6 +2534,10 @@
         "impactedAccountsToDelete":{
           "shape":"ImpactedAccounts",
           "documentation":"<p>Optional element for UpdateCase to provide content to add accounts impacted.</p> <note> <p> AWS account ID's may appear less than 12 characters and need to be zero-prepended. An example would be <code>123123123</code> which is nine digits, and with zero-prepend would be <code>000123123123</code>. Not zero-prepending to 12 digits could result in errors. </p> </note>"
+        },
+        "caseMetadata":{
+          "shape":"CaseMetadata",
+          "documentation":"<p>Update the case request with case metadata</p>"
         }
       }
     },
@@ -2374,6 +2650,13 @@
       "type":"string",
       "pattern":"https?://(?:www.)?[a-zA-Z0-9@:._+~#=-]{2,256}\\.[a-z]{2,6}\\b(?:[-a-zA-Z0-9@:%_+.~#?&/=]{0,2048})",
       "sensitive":true
+    },
+    "UsefulnessRating":{
+      "type":"string",
+      "enum":[
+        "USEFUL",
+        "NOT_USEFUL"
+      ]
     },
     "UserAgent":{
       "type":"string",

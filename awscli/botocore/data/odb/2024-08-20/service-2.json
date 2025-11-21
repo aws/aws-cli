@@ -33,6 +33,24 @@
       "documentation":"<p>Registers the Amazon Web Services Marketplace token for your Amazon Web Services account to activate your Oracle Database@Amazon Web Services subscription.</p>",
       "idempotent":true
     },
+    "AssociateIamRoleToResource":{
+      "name":"AssociateIamRoleToResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateIamRoleToResourceInput"},
+      "output":{"shape":"AssociateIamRoleToResourceOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Associates an Amazon Web Services Identity and Access Management (IAM) service role with a specified resource to enable Amazon Web Services service integration.</p>"
+    },
     "CreateCloudAutonomousVmCluster":{
       "name":"CreateCloudAutonomousVmCluster",
       "http":{
@@ -220,6 +238,24 @@
       ],
       "documentation":"<p>Deletes an ODB peering connection.</p> <p>When you delete an ODB peering connection, the underlying VPC peering connection is also deleted.</p>",
       "idempotent":true
+    },
+    "DisassociateIamRoleFromResource":{
+      "name":"DisassociateIamRoleFromResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateIamRoleFromResourceInput"},
+      "output":{"shape":"DisassociateIamRoleFromResourceOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Disassociates an Amazon Web Services Identity and Access Management (IAM) service role from a specified resource to disable Amazon Web Services service integration.</p>"
     },
     "GetCloudAutonomousVmCluster":{
       "name":"GetCloudAutonomousVmCluster",
@@ -772,6 +808,38 @@
       },
       "documentation":"<p>You don't have sufficient access to perform this action. Make sure you have the required permissions and try again.</p>",
       "exception":true
+    },
+    "AssociateIamRoleToResourceInput":{
+      "type":"structure",
+      "required":[
+        "iamRoleArn",
+        "awsIntegration",
+        "resourceArn"
+      ],
+      "members":{
+        "iamRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role to associate with the resource.</p>"
+        },
+        "awsIntegration":{
+          "shape":"SupportedAwsIntegration",
+          "documentation":"<p>The Amazon Web Services integration configuration settings for the IAM service role association.</p>"
+        },
+        "resourceArn":{
+          "shape":"AssociateIamRoleToResourceInputResourceArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the target resource to associate with the IAM service role.</p>"
+        }
+      }
+    },
+    "AssociateIamRoleToResourceInputResourceArnString":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:(?:aws|aws-cn|aws-us-gov|aws-iso-[a-z]?|aws-iso):odb:[a-z0-9-]+:\\d{12}:cloud-vm-cluster/[a-z0-9-_]+"
+    },
+    "AssociateIamRoleToResourceOutput":{
+      "type":"structure",
+      "members":{}
     },
     "AutonomousVirtualMachineList":{
       "type":"list",
@@ -1786,6 +1854,10 @@
         "computeModel":{
           "shape":"ComputeModel",
           "documentation":"<p>The OCI model compute model used when you create or clone an instance: ECPU or OCPU. An ECPU is an abstracted measure of compute resources. ECPUs are based on the number of cores elastically allocated from a pool of compute and storage servers. An OCPU is a legacy physical measure of compute resources. OCPUs are based on the physical core of a processor with hyper-threading enabled. </p>"
+        },
+        "iamRoles":{
+          "shape":"IamRoleList",
+          "documentation":"<p>The Amazon Web Services Identity and Access Management (IAM) service roles associated with the VM cluster.</p>"
         }
       },
       "documentation":"<p>Information about a VM cluster.</p>"
@@ -1951,6 +2023,10 @@
         "computeModel":{
           "shape":"ComputeModel",
           "documentation":"<p>The OCI model compute model used when you create or clone an instance: ECPU or OCPU. An ECPU is an abstracted measure of compute resources. ECPUs are based on the number of cores elastically allocated from a pool of compute and storage servers. An OCPU is a legacy physical measure of compute resources. OCPUs are based on the physical core of a processor with hyper-threading enabled. </p>"
+        },
+        "iamRoles":{
+          "shape":"IamRoleList",
+          "documentation":"<p>The Amazon Web Services Identity and Access Management (IAM) service roles associated with the VM cluster in the summary information.</p>"
         }
       },
       "documentation":"<p>Information about a VM cluster.</p>"
@@ -2466,9 +2542,29 @@
           "shape":"Access",
           "documentation":"<p>Specifies the configuration for Zero-ETL access from the ODB network.</p>"
         },
+        "stsAccess":{
+          "shape":"Access",
+          "documentation":"<p>The Amazon Web Services Security Token Service (STS) access configuration for the ODB network.</p>"
+        },
+        "kmsAccess":{
+          "shape":"Access",
+          "documentation":"<p>The Amazon Web Services Key Management Service (KMS) access configuration for the ODB network.</p>"
+        },
         "s3PolicyDocument":{
           "shape":"PolicyDocument",
           "documentation":"<p>Specifies the endpoint policy for Amazon S3 access from the ODB network.</p>"
+        },
+        "stsPolicyDocument":{
+          "shape":"PolicyDocument",
+          "documentation":"<p>The STS policy document that defines permissions for token service usage within the ODB network.</p>"
+        },
+        "kmsPolicyDocument":{
+          "shape":"PolicyDocument",
+          "documentation":"<p>The KMS policy document that defines permissions for key usage within the ODB network.</p>"
+        },
+        "crossRegionS3RestoreSourcesToEnable":{
+          "shape":"StringList",
+          "documentation":"<p>The cross-Region Amazon S3 restore sources to enable for the ODB network.</p>"
         },
         "tags":{
           "shape":"RequestTagMap",
@@ -2596,6 +2692,28 @@
           "documentation":"<p>The unique identifier of the ODB peering connection.</p>"
         }
       }
+    },
+    "CrossRegionS3RestoreSourcesAccess":{
+      "type":"structure",
+      "members":{
+        "region":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region for cross-Region S3 restore access.</p>"
+        },
+        "ipv4Addresses":{
+          "shape":"StringList",
+          "documentation":"<p>The IPv4 addresses allowed for cross-Region S3 restore access.</p>"
+        },
+        "status":{
+          "shape":"ManagedResourceStatus",
+          "documentation":"<p>The current status of the cross-Region S3 restore access configuration.</p>"
+        }
+      },
+      "documentation":"<p>The configuration access for the cross-Region Amazon S3 database restore source for the ODB network.</p>"
+    },
+    "CrossRegionS3RestoreSourcesAccessList":{
+      "type":"list",
+      "member":{"shape":"CrossRegionS3RestoreSourcesAccess"}
     },
     "CustomerContact":{
       "type":"structure",
@@ -3320,6 +3438,38 @@
       "type":"structure",
       "members":{}
     },
+    "DisassociateIamRoleFromResourceInput":{
+      "type":"structure",
+      "required":[
+        "iamRoleArn",
+        "awsIntegration",
+        "resourceArn"
+      ],
+      "members":{
+        "iamRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role to disassociate from the resource.</p>"
+        },
+        "awsIntegration":{
+          "shape":"SupportedAwsIntegration",
+          "documentation":"<p>The Amazon Web Services integration configuration settings for the IAM service role disassociation.</p>"
+        },
+        "resourceArn":{
+          "shape":"DisassociateIamRoleFromResourceInputResourceArnString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the target resource to disassociate from the IAM service role.</p>"
+        }
+      }
+    },
+    "DisassociateIamRoleFromResourceInputResourceArnString":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:(?:aws|aws-cn|aws-us-gov|aws-iso-[a-z]?|aws-iso):odb:[a-z0-9-]+:\\d{12}:cloud-vm-cluster/[a-z0-9-_]+"
+    },
+    "DisassociateIamRoleFromResourceOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "DiskRedundancy":{
       "type":"string",
       "enum":[
@@ -3501,6 +3651,10 @@
         "newTenancyActivationLink":{
           "shape":"String",
           "documentation":"<p>A new OCI tenancy activation link for your Amazon Web Services account.</p>"
+        },
+        "ociIdentityDomain":{
+          "shape":"OciIdentityDomain",
+          "documentation":"<p>The Oracle Cloud Infrastructure (OCI) identity domain information in the onboarding status response.</p>"
         }
       }
     },
@@ -3557,9 +3711,52 @@
       "type":"list",
       "member":{"shape":"Integer"}
     },
+    "IamRole":{
+      "type":"structure",
+      "members":{
+        "iamRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM service role.</p>"
+        },
+        "status":{
+          "shape":"IamRoleStatus",
+          "documentation":"<p>The current status of the IAM service role.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Additional information about the current status of the IAM service role, if applicable.</p>"
+        },
+        "awsIntegration":{
+          "shape":"SupportedAwsIntegration",
+          "documentation":"<p>The Amazon Web Services integration configuration settings for the IAM service role.</p>"
+        }
+      },
+      "documentation":"<p>Information about an Amazon Web Services Identity and Access Management (IAM) service role associated with a resource.</p>"
+    },
+    "IamRoleList":{
+      "type":"list",
+      "member":{"shape":"IamRole"}
+    },
+    "IamRoleStatus":{
+      "type":"string",
+      "enum":[
+        "ASSOCIATING",
+        "DISASSOCIATING",
+        "FAILED",
+        "CONNECTED",
+        "DISCONNECTED",
+        "PARTIALLY_CONNECTED",
+        "UNKNOWN"
+      ]
+    },
     "InitializeServiceInput":{
       "type":"structure",
-      "members":{}
+      "members":{
+        "ociIdentityDomain":{
+          "shape":"Boolean",
+          "documentation":"<p>The Oracle Cloud Infrastructure (OCI) identity domain configuration for service initialization.</p>"
+        }
+      }
     },
     "InitializeServiceOutput":{
       "type":"structure",
@@ -3593,6 +3790,28 @@
         "FAILED",
         "UPDATING"
       ]
+    },
+    "KmsAccess":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"ManagedResourceStatus",
+          "documentation":"<p>The current status of the KMS access configuration.</p>"
+        },
+        "ipv4Addresses":{
+          "shape":"StringList",
+          "documentation":"<p>The IPv4 addresses allowed for KMS access.</p>"
+        },
+        "domainName":{
+          "shape":"String",
+          "documentation":"<p>The domain name for KMS access configuration.</p>"
+        },
+        "kmsPolicyDocument":{
+          "shape":"String",
+          "documentation":"<p>The KMS policy document that defines permissions for key usage.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for Amazon Web Services Key Management Service (KMS) access from the ODB network.</p>"
     },
     "LicenseModel":{
       "type":"string",
@@ -4225,6 +4444,18 @@
         "s3Access":{
           "shape":"S3Access",
           "documentation":"<p>The Amazon S3 access configuration.</p>"
+        },
+        "stsAccess":{
+          "shape":"StsAccess",
+          "documentation":"<p>The Amazon Web Services Security Token Service (STS) access configuration for managed services.</p>"
+        },
+        "kmsAccess":{
+          "shape":"KmsAccess",
+          "documentation":"<p>The Amazon Web Services Key Management Service (KMS) access configuration for managed services.</p>"
+        },
+        "crossRegionS3RestoreSourcesAccess":{
+          "shape":"CrossRegionS3RestoreSourcesAccessList",
+          "documentation":"<p>The access configuration for the cross-Region Amazon S3 database restore source.</p>"
         }
       },
       "documentation":"<p>The managed services configuration for the ODB network.</p>"
@@ -4292,6 +4523,36 @@
     "OciDnsForwardingConfigList":{
       "type":"list",
       "member":{"shape":"OciDnsForwardingConfig"}
+    },
+    "OciIdentityDomain":{
+      "type":"structure",
+      "members":{
+        "ociIdentityDomainId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the OCI identity domain.</p>"
+        },
+        "ociIdentityDomainResourceUrl":{
+          "shape":"String",
+          "documentation":"<p>The resource URL for accessing the OCI identity domain.</p>"
+        },
+        "ociIdentityDomainUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL of the OCI identity domain.</p>"
+        },
+        "status":{
+          "shape":"ResourceStatus",
+          "documentation":"<p>The current status of the OCI identity domain.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Additional information about the current status of the OCI identity domain, if applicable.</p>"
+        },
+        "accountSetupCloudFormationUrl":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services CloudFormation URL for setting up the account integration with the OCI identity domain.</p>"
+        }
+      },
+      "documentation":"<p>Information about an Oracle Cloud Infrastructure (OCI) identity domain configuration.</p>"
     },
     "OciOnboardingStatus":{
       "type":"string",
@@ -4818,6 +5079,12 @@
       "max":200,
       "min":0
     },
+    "RoleArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:(?:aws|aws-cn|aws-us-gov|aws-iso-{0,1}[a-z]{0,1}):iam::[0-9]{12}:role/.+"
+    },
     "S3Access":{
       "type":"structure",
       "members":{
@@ -4973,6 +5240,32 @@
       "member":{"shape":"String"},
       "max":1024,
       "min":1
+    },
+    "StsAccess":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"ManagedResourceStatus",
+          "documentation":"<p>The current status of the STS access configuration.</p>"
+        },
+        "ipv4Addresses":{
+          "shape":"StringList",
+          "documentation":"<p>The IPv4 addresses allowed for STS access.</p>"
+        },
+        "domainName":{
+          "shape":"String",
+          "documentation":"<p>The domain name for STS access configuration.</p>"
+        },
+        "stsPolicyDocument":{
+          "shape":"String",
+          "documentation":"<p>The STS policy document that defines permissions for token service usage.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for Amazon Web Services Security Token Service (STS) access from the ODB network.</p>"
+    },
+    "SupportedAwsIntegration":{
+      "type":"string",
+      "enum":["KmsTde"]
     },
     "SyntheticTimestamp_date_time":{
       "type":"timestamp",
@@ -5132,9 +5425,33 @@
           "shape":"Access",
           "documentation":"<p>Specifies the updated configuration for Zero-ETL access from the ODB network.</p>"
         },
+        "stsAccess":{
+          "shape":"Access",
+          "documentation":"<p>The Amazon Web Services Security Token Service (STS) access configuration for the ODB network.</p>"
+        },
+        "kmsAccess":{
+          "shape":"Access",
+          "documentation":"<p>The Amazon Web Services Key Management Service (KMS) access configuration for the ODB network.</p>"
+        },
         "s3PolicyDocument":{
           "shape":"PolicyDocument",
           "documentation":"<p>Specifies the updated endpoint policy for Amazon S3 access from the ODB network.</p>"
+        },
+        "stsPolicyDocument":{
+          "shape":"PolicyDocument",
+          "documentation":"<p>The STS policy document that defines permissions for token service usage within the ODB network.</p>"
+        },
+        "kmsPolicyDocument":{
+          "shape":"PolicyDocument",
+          "documentation":"<p>The KMS policy document that defines permissions for key usage within the ODB network.</p>"
+        },
+        "crossRegionS3RestoreSourcesToEnable":{
+          "shape":"StringList",
+          "documentation":"<p>The cross-Region Amazon S3 restore sources to enable for the ODB network.</p>"
+        },
+        "crossRegionS3RestoreSourcesToDisable":{
+          "shape":"StringList",
+          "documentation":"<p>The cross-Region Amazon S3 restore sources to disable for the ODB network.</p>"
         }
       }
     },

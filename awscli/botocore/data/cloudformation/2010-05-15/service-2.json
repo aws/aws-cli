@@ -1660,6 +1660,10 @@
         "RetainStacksOnAccountRemoval":{
           "shape":"RetainStacksOnAccountRemovalNullable",
           "documentation":"<p>If set to <code>true</code>, stack resources are retained when an account is removed from a target organization or OU. If set to <code>false</code>, stack resources are deleted. Specify only if <code>Enabled</code> is set to <code>True</code>.</p>"
+        },
+        "DependsOn":{
+          "shape":"StackSetARNList",
+          "documentation":"<p>A list of StackSet ARNs that this StackSet depends on for auto-deployment operations. When auto-deployment is triggered, operations will be sequenced to ensure all dependencies complete successfully before this StackSet's operation begins.</p>"
         }
       },
       "documentation":"<p>Describes whether StackSets automatically deploys to Organizations accounts that are added to a target organization or organizational unit (OU). For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-manage-auto-deployment.html\">Enable or disable automatic deployments for StackSets in Organizations</a> in the <i>CloudFormation User Guide</i>.</p>"
@@ -6993,7 +6997,7 @@
         },
         "UniqueId":{
           "shape":"ResourceSignalUniqueId",
-          "documentation":"<p>A unique ID of the signal. When you signal Amazon EC2 instances or Auto Scaling groups, specify the instance ID that you are signaling as the unique ID. If you send multiple signals to a single resource (such as signaling a wait condition), each signal requires a different unique ID.</p>"
+          "documentation":"<p>A unique ID of the signal. When you signal Amazon EC2 instances or Amazon EC2 Auto Scaling groups, specify the instance ID that you are signaling as the unique ID. If you send multiple signals to a single resource (such as signaling a wait condition), each signal requires a different unique ID.</p>"
         },
         "Status":{
           "shape":"ResourceSignalStatus",
@@ -8080,6 +8084,10 @@
       "documentation":"<p>A structure that contains information about a StackSet. With StackSets, you can provision stacks across Amazon Web Services accounts and Regions from a single CloudFormation template. Each stack is based on the same CloudFormation template, but you can customize individual stacks using parameters.</p>"
     },
     "StackSetARN":{"type":"string"},
+    "StackSetARNList":{
+      "type":"list",
+      "member":{"shape":"StackSetARN"}
+    },
     "StackSetAutoDeploymentTargetSummaries":{
       "type":"list",
       "member":{"shape":"StackSetAutoDeploymentTargetSummary"}
@@ -9582,5 +9590,5 @@
       "documentation":"<p>Contains any warnings returned by the <code>GetTemplateSummary</code> API action.</p>"
     }
   },
-  "documentation":"<fullname>CloudFormation</fullname> <p>CloudFormation allows you to create and manage Amazon Web Services infrastructure deployments predictably and repeatedly. You can use CloudFormation to leverage Amazon Web Services products, such as Amazon Elastic Compute Cloud, Amazon Elastic Block Store, Amazon Simple Notification Service, Elastic Load Balancing, and Amazon EC2 Auto Scaling to build highly reliable, highly scalable, cost-effective applications without creating or configuring the underlying Amazon Web Services infrastructure.</p> <p>With CloudFormation, you declare all your resources and dependencies in a template file. The template defines a collection of resources as a single unit called a stack. CloudFormation creates and deletes all member resources of the stack together and manages all dependencies between the resources for you.</p> <p>For more information about CloudFormation, see the <a href=\"http://aws.amazon.com/cloudformation/\">CloudFormation product page</a>.</p> <p>CloudFormation makes use of other Amazon Web Services products. If you need additional technical information about a specific Amazon Web Services product, you can find the product's technical documentation at <a href=\"https://docs.aws.amazon.com/\">docs.aws.amazon.com</a>.</p>"
+  "documentation":"<fullname>CloudFormation</fullname> <p>CloudFormation allows you to create and manage Amazon Web Services infrastructure deployments predictably and repeatedly. You can use CloudFormation to leverage Amazon Web Services products, such as Amazon Elastic Compute Cloud, Amazon Elastic Block Store, Amazon Simple Notification Service, ELB, and Amazon EC2 Auto Scaling to build highly reliable, highly scalable, cost-effective applications without creating or configuring the underlying Amazon Web Services infrastructure.</p> <p>With CloudFormation, you declare all your resources and dependencies in a template file. The template defines a collection of resources as a single unit called a stack. CloudFormation creates and deletes all member resources of the stack together and manages all dependencies between the resources for you.</p> <p>For more information about CloudFormation, see the <a href=\"http://aws.amazon.com/cloudformation/\">CloudFormation product page</a>.</p> <p>CloudFormation makes use of other Amazon Web Services products. If you need additional technical information about a specific Amazon Web Services product, you can find the product's technical documentation at <a href=\"https://docs.aws.amazon.com/\">docs.aws.amazon.com</a>.</p>"
 }

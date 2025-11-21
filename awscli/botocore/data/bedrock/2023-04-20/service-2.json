@@ -514,6 +514,25 @@
       "documentation":"<p>Deletes a custom model deployment. This operation stops the deployment and removes it from your account. After deletion, the deployment ARN can no longer be used for inference requests.</p> <p>The following actions are related to the <code>DeleteCustomModelDeployment</code> operation:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_CreateCustomModelDeployment.html\">CreateCustomModelDeployment</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetCustomModelDeployment.html\">GetCustomModelDeployment</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListCustomModelDeployments.html\">ListCustomModelDeployments</a> </p> </li> </ul>",
       "idempotent":true
     },
+    "DeleteEnforcedGuardrailConfiguration":{
+      "name":"DeleteEnforcedGuardrailConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/enforcedGuardrailsConfiguration/{configId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteEnforcedGuardrailConfigurationRequest"},
+      "output":{"shape":"DeleteEnforcedGuardrailConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes the account-level enforced guardrail configuration.</p>",
+      "idempotent":true
+    },
     "DeleteFoundationModelAgreement":{
       "name":"DeleteFoundationModelAgreement",
       "http":{
@@ -1272,6 +1291,25 @@
       "documentation":"<p>Returns a list of the custom models that you have created with the <code>CreateModelCustomizationJob</code> operation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
       "readonly":true
     },
+    "ListEnforcedGuardrailsConfiguration":{
+      "name":"ListEnforcedGuardrailsConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/enforcedGuardrailsConfiguration",
+        "responseCode":200
+      },
+      "input":{"shape":"ListEnforcedGuardrailsConfigurationRequest"},
+      "output":{"shape":"ListEnforcedGuardrailsConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the account-level enforced guardrail configurations.</p>",
+      "readonly":true
+    },
     "ListEvaluationJobs":{
       "name":"ListEvaluationJobs",
       "http":{
@@ -1527,6 +1565,26 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>List the tags associated with the specified resource.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Tagging resources</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
+    },
+    "PutEnforcedGuardrailConfiguration":{
+      "name":"PutEnforcedGuardrailConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/enforcedGuardrailsConfiguration",
+        "responseCode":200
+      },
+      "input":{"shape":"PutEnforcedGuardrailConfigurationRequest"},
+      "output":{"shape":"PutEnforcedGuardrailConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Sets the account-level enforced guardrail configuration.</p>",
+      "idempotent":true
     },
     "PutModelInvocationLoggingConfiguration":{
       "name":"PutModelInvocationLoggingConfiguration",
@@ -1852,6 +1910,85 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "AccountEnforcedGuardrailConfigurationId":{
+      "type":"string",
+      "pattern":"[a-z0-9]+"
+    },
+    "AccountEnforcedGuardrailInferenceInputConfiguration":{
+      "type":"structure",
+      "required":[
+        "guardrailIdentifier",
+        "guardrailVersion",
+        "inputTags"
+      ],
+      "members":{
+        "guardrailIdentifier":{
+          "shape":"GuardrailIdentifier",
+          "documentation":"<p>Identifier for the guardrail, could be the ID or the ARN.</p>"
+        },
+        "guardrailVersion":{
+          "shape":"GuardrailNumericalVersion",
+          "documentation":"<p>Numerical guardrail version.</p>"
+        },
+        "inputTags":{
+          "shape":"InputTags",
+          "documentation":"<p>Whether to honor or ignore input tags at runtime.</p>"
+        }
+      },
+      "documentation":"<p>Account-level enforced guardrail input configuration.</p>"
+    },
+    "AccountEnforcedGuardrailOutputConfiguration":{
+      "type":"structure",
+      "members":{
+        "configId":{
+          "shape":"AccountEnforcedGuardrailConfigurationId",
+          "documentation":"<p>Unique ID for the account enforced configuration.</p>"
+        },
+        "guardrailArn":{
+          "shape":"GuardrailArn",
+          "documentation":"<p>ARN representation for the guardrail.</p>"
+        },
+        "guardrailId":{
+          "shape":"GuardrailId",
+          "documentation":"<p>Unique ID for the guardrail.</p>"
+        },
+        "inputTags":{
+          "shape":"InputTags",
+          "documentation":"<p>Whether to honor or ignore input tags at runtime.</p>"
+        },
+        "guardrailVersion":{
+          "shape":"GuardrailNumericalVersion",
+          "documentation":"<p>Numerical guardrail version.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp.</p>"
+        },
+        "createdBy":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the role used to update the configuration.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp.</p>"
+        },
+        "updatedBy":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the role used to update the configuration.</p>"
+        },
+        "owner":{
+          "shape":"ConfigurationOwner",
+          "documentation":"<p>Configuration owner type.</p>"
+        }
+      },
+      "documentation":"<p>Account enforced guardrail output configuration.</p>"
+    },
+    "AccountEnforcedGuardrailsOutputConfiguration":{
+      "type":"list",
+      "member":{"shape":"AccountEnforcedGuardrailOutputConfiguration"},
+      "max":1,
+      "min":1
     },
     "AccountId":{
       "type":"string",
@@ -3981,6 +4118,10 @@
         "SixMonths"
       ]
     },
+    "ConfigurationOwner":{
+      "type":"string",
+      "enum":["ACCOUNT"]
+    },
     "ConflictException":{
       "type":"structure",
       "members":{
@@ -5274,6 +5415,22 @@
       }
     },
     "DeleteCustomModelResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteEnforcedGuardrailConfigurationRequest":{
+      "type":"structure",
+      "required":["configId"],
+      "members":{
+        "configId":{
+          "shape":"AccountEnforcedGuardrailConfigurationId",
+          "documentation":"<p>Unique ID for the account enforced configuration.</p>",
+          "location":"uri",
+          "locationName":"configId"
+        }
+      }
+    },
+    "DeleteEnforcedGuardrailConfigurationResponse":{
       "type":"structure",
       "members":{}
     },
@@ -9203,6 +9360,13 @@
       "type":"list",
       "member":{"shape":"InferenceType"}
     },
+    "InputTags":{
+      "type":"string",
+      "enum":[
+        "HONOR",
+        "IGNORE"
+      ]
+    },
     "InstanceCount":{
       "type":"integer",
       "box":true,
@@ -9722,6 +9886,31 @@
         "modelSummaries":{
           "shape":"CustomModelSummaryList",
           "documentation":"<p>Model summaries.</p>"
+        }
+      }
+    },
+    "ListEnforcedGuardrailsConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Opaque continuation token of previous paginated response.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListEnforcedGuardrailsConfigurationResponse":{
+      "type":"structure",
+      "required":["guardrailsConfig"],
+      "members":{
+        "guardrailsConfig":{
+          "shape":"AccountEnforcedGuardrailsOutputConfiguration",
+          "documentation":"<p>Array of AccountEnforcedGuardrailOutputConfiguration objects.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Opaque continuation token of previous paginated response.</p>"
         }
       }
     },
@@ -11467,6 +11656,37 @@
         }
       },
       "documentation":"<p>A summary of information about a Provisioned Throughput.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListProvisionedModelThroughputs.html#API_ListProvisionedModelThroughputs_ResponseSyntax\">ListProvisionedThroughputs response</a> </p> </li> </ul>"
+    },
+    "PutEnforcedGuardrailConfigurationRequest":{
+      "type":"structure",
+      "required":["guardrailInferenceConfig"],
+      "members":{
+        "configId":{
+          "shape":"AccountEnforcedGuardrailConfigurationId",
+          "documentation":"<p>Unique ID for the account enforced configuration.</p>"
+        },
+        "guardrailInferenceConfig":{
+          "shape":"AccountEnforcedGuardrailInferenceInputConfiguration",
+          "documentation":"<p>Account-level enforced guardrail input configuration.</p>"
+        }
+      }
+    },
+    "PutEnforcedGuardrailConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "configId":{
+          "shape":"AccountEnforcedGuardrailConfigurationId",
+          "documentation":"<p>Unique ID for the account enforced configuration.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp.</p>"
+        },
+        "updatedBy":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the role used to update the configuration.</p>"
+        }
+      }
     },
     "PutModelInvocationLoggingConfigurationRequest":{
       "type":"structure",

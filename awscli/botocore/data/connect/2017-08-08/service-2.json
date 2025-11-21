@@ -520,6 +520,45 @@
       ],
       "documentation":"<p>Creates a flow module for the specified Amazon Connect instance. </p>"
     },
+    "CreateContactFlowModuleAlias":{
+      "name":"CreateContactFlowModuleAlias",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/alias"
+      },
+      "input":{"shape":"CreateContactFlowModuleAliasRequest"},
+      "output":{"shape":"CreateContactFlowModuleAliasResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"DuplicateResourceException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a named alias that points to a specific version of a contact flow module.</p>"
+    },
+    "CreateContactFlowModuleVersion":{
+      "name":"CreateContactFlowModuleVersion",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/version"
+      },
+      "input":{"shape":"CreateContactFlowModuleVersionRequest"},
+      "output":{"shape":"CreateContactFlowModuleVersionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an immutable snapshot of a contact flow module, preserving its content and settings at a specific point in time for version control and rollback capabilities.</p>"
+    },
     "CreateContactFlowVersion":{
       "name":"CreateContactFlowVersion",
       "http":{
@@ -1079,6 +1118,42 @@
       ],
       "documentation":"<p>Deletes the specified flow module.</p>"
     },
+    "DeleteContactFlowModuleAlias":{
+      "name":"DeleteContactFlowModuleAlias",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/alias/{AliasId}"
+      },
+      "input":{"shape":"DeleteContactFlowModuleAliasRequest"},
+      "output":{"shape":"DeleteContactFlowModuleAliasResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Removes an alias reference, breaking the named connection to the underlying module version without affecting the version itself.</p>"
+    },
+    "DeleteContactFlowModuleVersion":{
+      "name":"DeleteContactFlowModuleVersion",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/version/{ContactFlowModuleVersion}"
+      },
+      "input":{"shape":"DeleteContactFlowModuleVersionRequest"},
+      "output":{"shape":"DeleteContactFlowModuleVersionResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Removes a specific version of a contact flow module.</p>"
+    },
     "DeleteContactFlowVersion":{
       "name":"DeleteContactFlowVersion",
       "http":{
@@ -1569,6 +1644,24 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Describes the specified flow module.</p> <p>Use the <code>$SAVED</code> alias in the request to describe the <code>SAVED</code> content of a Flow. For example, <code>arn:aws:.../contact-flow/{id}:$SAVED</code>. After a flow is published, <code>$SAVED</code> needs to be supplied to view saved content that has not been published.</p>"
+    },
+    "DescribeContactFlowModuleAlias":{
+      "name":"DescribeContactFlowModuleAlias",
+      "http":{
+        "method":"GET",
+        "requestUri":"/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/alias/{AliasId}"
+      },
+      "input":{"shape":"DescribeContactFlowModuleAliasRequest"},
+      "output":{"shape":"DescribeContactFlowModuleAliasResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a specific alias, including which version it currently points to and its metadata.</p>"
     },
     "DescribeEmailAddress":{
       "name":"DescribeEmailAddress",
@@ -2548,6 +2641,42 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Lists contact evaluations in the specified Amazon Connect instance.</p>"
+    },
+    "ListContactFlowModuleAliases":{
+      "name":"ListContactFlowModuleAliases",
+      "http":{
+        "method":"GET",
+        "requestUri":"/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/aliases"
+      },
+      "input":{"shape":"ListContactFlowModuleAliasesRequest"},
+      "output":{"shape":"ListContactFlowModuleAliasesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists all aliases associated with a contact flow module, showing their current version mappings and metadata.</p>"
+    },
+    "ListContactFlowModuleVersions":{
+      "name":"ListContactFlowModuleVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/versions"
+      },
+      "input":{"shape":"ListContactFlowModuleVersionsRequest"},
+      "output":{"shape":"ListContactFlowModuleVersionsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of all versions for a specific contact flow module.</p>"
     },
     "ListContactFlowModules":{
       "name":"ListContactFlowModules",
@@ -4269,6 +4398,26 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Updates metadata about specified flow.</p>"
+    },
+    "UpdateContactFlowModuleAlias":{
+      "name":"UpdateContactFlowModuleAlias",
+      "http":{
+        "method":"POST",
+        "requestUri":"/contact-flow-modules/{InstanceId}/{ContactFlowModuleId}/alias/{AliasId}"
+      },
+      "input":{"shape":"UpdateContactFlowModuleAliasRequest"},
+      "output":{"shape":"UpdateContactFlowModuleAliasResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConditionalOperationFailedException"},
+        {"shape":"DuplicateResourceException"}
+      ],
+      "documentation":"<p>Updates a specific Aliases metadata, including the version it’s tied to, it’s name, and description.</p>"
     },
     "UpdateContactFlowModuleContent":{
       "name":"UpdateContactFlowModuleContent",
@@ -7807,9 +7956,107 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        },
+        "FlowModuleContentSha256":{
+          "shape":"FlowModuleContentSha256",
+          "documentation":"<p>Hash of the module content for integrity verification.</p>"
+        },
+        "Version":{
+          "shape":"ResourceVersion",
+          "documentation":"<p>The version of the flow module.</p>"
+        },
+        "VersionDescription":{
+          "shape":"ContactFlowModuleDescription",
+          "documentation":"<p>Description of the version.</p>"
+        },
+        "Settings":{
+          "shape":"FlowModuleSettings",
+          "documentation":"<p>The configuration settings for the flow module.</p>"
+        },
+        "ExternalInvocationConfiguration":{
+          "shape":"ExternalInvocationConfiguration",
+          "documentation":"<p>The external invocation configuration for the flow module</p>"
         }
       },
       "documentation":"<p>Contains information about a flow module.</p>"
+    },
+    "ContactFlowModuleAlias":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"^([$0-9a-zA-Z][_-]?)+$"
+    },
+    "ContactFlowModuleAliasInfo":{
+      "type":"structure",
+      "members":{
+        "ContactFlowModuleId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the flow module.</p>"
+        },
+        "ContactFlowModuleArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the flow module.</p>"
+        },
+        "AliasId":{
+          "shape":"ContactFlowModuleAlias",
+          "documentation":"<p>The identifier of the alias.</p>"
+        },
+        "Version":{
+          "shape":"ResourceVersion",
+          "documentation":"<p>The version of the flow module.</p>"
+        },
+        "Name":{
+          "shape":"ContactFlowModuleAlias",
+          "documentation":"<p>The name of the alias.</p>"
+        },
+        "Description":{
+          "shape":"ContactFlowModuleDescription",
+          "documentation":"<p>The description of the alias.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The Amazon Web Services Region where this resource was last modified.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this resource was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an alias.</p>"
+    },
+    "ContactFlowModuleAliasSummary":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the flow module alias.</p>"
+        },
+        "AliasId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the alias.</p>"
+        },
+        "Version":{
+          "shape":"ResourceVersion",
+          "documentation":"<p>The version of the flow module.</p>"
+        },
+        "AliasName":{
+          "shape":"ContactFlowModuleName",
+          "documentation":"<p>The name of the alias.</p>"
+        },
+        "AliasDescription":{
+          "shape":"ContactFlowModuleDescription",
+          "documentation":"<p>The description of the alias.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this resource was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an alias.</p>"
+    },
+    "ContactFlowModuleAliasSummaryList":{
+      "type":"list",
+      "member":{"shape":"ContactFlowModuleAliasSummary"}
     },
     "ContactFlowModuleContent":{
       "type":"string",
@@ -7906,6 +8153,28 @@
         }
       },
       "documentation":"<p>Contains summary information about a flow.</p>"
+    },
+    "ContactFlowModuleVersionSummary":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the flow module version.</p>"
+        },
+        "VersionDescription":{
+          "shape":"ContactFlowModuleDescription",
+          "documentation":"<p>The description of the flow module version.</p>"
+        },
+        "Version":{
+          "shape":"ResourceVersion",
+          "documentation":"<p>The version of the flow module.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a version.</p>"
+    },
+    "ContactFlowModuleVersionSummaryList":{
+      "type":"list",
+      "member":{"shape":"ContactFlowModuleVersionSummary"}
     },
     "ContactFlowModulesSummaryList":{
       "type":"list",
@@ -8437,6 +8706,54 @@
       },
       "documentation":"<p>The <code>CreateCase</code> action definition.</p>"
     },
+    "CreateContactFlowModuleAliasRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactFlowModuleId",
+        "ContactFlowModuleVersion",
+        "AliasName"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceIdOrArn",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Description":{
+          "shape":"ContactFlowDescription",
+          "documentation":"<p>The description of the alias.</p>"
+        },
+        "ContactFlowModuleId":{
+          "shape":"ContactFlowModuleId",
+          "documentation":"<p>The identifier of the flow module.</p>",
+          "location":"uri",
+          "locationName":"ContactFlowModuleId"
+        },
+        "ContactFlowModuleVersion":{
+          "shape":"ResourceVersion",
+          "documentation":"<p>The version of the flow module.</p>"
+        },
+        "AliasName":{
+          "shape":"ContactFlowModuleAlias",
+          "documentation":"<p>The name of the alias.</p>"
+        }
+      }
+    },
+    "CreateContactFlowModuleAliasResponse":{
+      "type":"structure",
+      "members":{
+        "ContactFlowModuleArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the flow module.</p>"
+        },
+        "Id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the alias.</p>"
+        }
+      }
+    },
     "CreateContactFlowModuleRequest":{
       "type":"structure",
       "required":[
@@ -8471,6 +8788,14 @@
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
           "idempotencyToken":true
+        },
+        "Settings":{
+          "shape":"FlowModuleSettings",
+          "documentation":"<p>The configuration settings for the flow module.</p>"
+        },
+        "ExternalInvocationConfiguration":{
+          "shape":"ExternalInvocationConfiguration",
+          "documentation":"<p>The external invocation configuration for the flow module.</p>"
         }
       }
     },
@@ -8484,6 +8809,48 @@
         "Arn":{
           "shape":"ARN",
           "documentation":"<p>The Amazon Resource Name (ARN) of the flow module.</p>"
+        }
+      }
+    },
+    "CreateContactFlowModuleVersionRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactFlowModuleId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Description":{
+          "shape":"ContactFlowModuleDescription",
+          "documentation":"<p>The description of the flow module version.</p>"
+        },
+        "ContactFlowModuleId":{
+          "shape":"ARN",
+          "documentation":"<p>The identifier of the flow module.</p>",
+          "location":"uri",
+          "locationName":"ContactFlowModuleId"
+        },
+        "FlowModuleContentSha256":{
+          "shape":"FlowModuleContentSha256",
+          "documentation":"<p>Indicates the checksum value of the flow module content.</p>"
+        }
+      }
+    },
+    "CreateContactFlowModuleVersionResponse":{
+      "type":"structure",
+      "members":{
+        "ContactFlowModuleArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the flow module.</p>"
+        },
+        "Version":{
+          "shape":"ResourceVersion",
+          "documentation":"<p>The version of the flow module.</p>"
         }
       }
     },
@@ -10372,6 +10739,38 @@
         }
       }
     },
+    "DeleteContactFlowModuleAliasRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactFlowModuleId",
+        "AliasId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceIdOrArn",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactFlowModuleId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the flow module.</p>",
+          "location":"uri",
+          "locationName":"ContactFlowModuleId"
+        },
+        "AliasId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the alias.</p>",
+          "location":"uri",
+          "locationName":"AliasId"
+        }
+      }
+    },
+    "DeleteContactFlowModuleAliasResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteContactFlowModuleRequest":{
       "type":"structure",
       "required":[
@@ -10394,6 +10793,38 @@
       }
     },
     "DeleteContactFlowModuleResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteContactFlowModuleVersionRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactFlowModuleId",
+        "ContactFlowModuleVersion"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactFlowModuleId":{
+          "shape":"ARN",
+          "documentation":"<p>The identifier of the flow module.</p>",
+          "location":"uri",
+          "locationName":"ContactFlowModuleId"
+        },
+        "ContactFlowModuleVersion":{
+          "shape":"ResourceVersion",
+          "documentation":"<p>The version of the flow module to delete.</p>",
+          "location":"uri",
+          "locationName":"ContactFlowModuleVersion"
+        }
+      }
+    },
+    "DeleteContactFlowModuleVersionResponse":{
       "type":"structure",
       "members":{}
     },
@@ -11081,6 +11512,43 @@
         "EvaluationForm":{
           "shape":"EvaluationFormContent",
           "documentation":"<p>Information about the evaluation form.</p>"
+        }
+      }
+    },
+    "DescribeContactFlowModuleAliasRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactFlowModuleId",
+        "AliasId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceIdOrArn",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactFlowModuleId":{
+          "shape":"ContactFlowModuleId",
+          "documentation":"<p>The identifier of the flow module.</p>",
+          "location":"uri",
+          "locationName":"ContactFlowModuleId"
+        },
+        "AliasId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the alias.</p>",
+          "location":"uri",
+          "locationName":"AliasId"
+        }
+      }
+    },
+    "DescribeContactFlowModuleAliasResponse":{
+      "type":"structure",
+      "members":{
+        "ContactFlowModuleAlias":{
+          "shape":"ContactFlowModuleAliasInfo",
+          "documentation":"<p>Information about the flow module alias.</p>"
         }
       }
     },
@@ -14473,6 +14941,16 @@
       "type":"list",
       "member":{"shape":"Expression"}
     },
+    "ExternalInvocationConfiguration":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enable external invocation.</p>"
+        }
+      },
+      "documentation":"<p>The external invocation configuration for the flow module</p>"
+    },
     "FailedRequest":{
       "type":"structure",
       "members":{
@@ -14693,6 +15171,13 @@
       "min":1,
       "pattern":"^[a-zA-Z0-9]{64}$"
     },
+    "FlowModuleContentSha256":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9]{64}$"
+    },
+    "FlowModuleSettings":{"type":"string"},
     "FormId":{"type":"string"},
     "FragmentNumber":{
       "type":"string",
@@ -17123,6 +17608,100 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>If there are additional results, this is the token for the next set of results.</p> <important> <p>This is always returned as null in the response.</p> </important>"
+        }
+      }
+    },
+    "ListContactFlowModuleAliasesRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactFlowModuleId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceIdOrArn",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactFlowModuleId":{
+          "shape":"ARN",
+          "documentation":"<p>The identifier of the flow module.</p>",
+          "location":"uri",
+          "locationName":"ContactFlowModuleId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult1000",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListContactFlowModuleAliasesResponse":{
+      "type":"structure",
+      "members":{
+        "ContactFlowModuleAliasSummaryList":{
+          "shape":"ContactFlowModuleAliasSummaryList",
+          "documentation":"<p>Information about the flow module aliases.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListContactFlowModuleVersionsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactFlowModuleId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactFlowModuleId":{
+          "shape":"ARN",
+          "documentation":"<p>The identifier of the flow module.</p>",
+          "location":"uri",
+          "locationName":"ContactFlowModuleId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult1000",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListContactFlowModuleVersionsResponse":{
+      "type":"structure",
+      "members":{
+        "ContactFlowModuleVersionSummaryList":{
+          "shape":"ContactFlowModuleVersionSummaryList",
+          "documentation":"<p>Information about the flow module versions.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
         }
       }
     },
@@ -26664,12 +27243,55 @@
       "type":"structure",
       "members":{}
     },
-    "UpdateContactFlowModuleContentRequest":{
+    "UpdateContactFlowModuleAliasRequest":{
       "type":"structure",
       "required":[
         "InstanceId",
         "ContactFlowModuleId",
-        "Content"
+        "AliasId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceIdOrArn",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ContactFlowModuleId":{
+          "shape":"ContactFlowModuleId",
+          "documentation":"<p>The identifier of the flow module.</p>",
+          "location":"uri",
+          "locationName":"ContactFlowModuleId"
+        },
+        "AliasId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the alias.</p>",
+          "location":"uri",
+          "locationName":"AliasId"
+        },
+        "Name":{
+          "shape":"ContactFlowModuleName",
+          "documentation":"<p>The name of the alias.</p>"
+        },
+        "Description":{
+          "shape":"ContactFlowModuleDescription",
+          "documentation":"<p>The description of the alias.</p>"
+        },
+        "ContactFlowModuleVersion":{
+          "shape":"ResourceVersion",
+          "documentation":"<p>The version of the flow module.</p>"
+        }
+      }
+    },
+    "UpdateContactFlowModuleAliasResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateContactFlowModuleContentRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "ContactFlowModuleId"
       ],
       "members":{
         "InstanceId":{
@@ -26687,6 +27309,10 @@
         "Content":{
           "shape":"ContactFlowModuleContent",
           "documentation":"<p>The JSON string that represents the content of the flow. For an example, see <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/flow-language-example.html\">Example flow in Amazon Connect Flow language</a>. </p>"
+        },
+        "Settings":{
+          "shape":"FlowModuleSettings",
+          "documentation":"<p>Serialized JSON string of the flow module Settings schema.</p>"
         }
       }
     },

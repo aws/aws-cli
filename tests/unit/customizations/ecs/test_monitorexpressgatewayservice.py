@@ -10,6 +10,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 from botocore.exceptions import ClientError
+from prompt_toolkit.application import create_app_session
+from prompt_toolkit.output import DummyOutput
 
 from awscli.customizations.ecs.exceptions import MonitoringError
 from awscli.customizations.ecs.monitorexpressgatewayservice import (
@@ -105,11 +107,33 @@ class TestECSMonitorExpressGatewayServiceCommand:
 class TestECSExpressGatewayServiceWatcher:
     """Test the watcher class through public interface"""
 
+    @patch('sys.stdout.isatty')
+    def test_is_monitoring_available_with_tty(self, mock_isatty):
+        """Test is_monitoring_available returns True when TTY is available"""
+        mock_isatty.return_value = True
+        assert (
+            ECSExpressGatewayServiceWatcher.is_monitoring_available() is True
+        )
+
+    @patch('sys.stdout.isatty')
+    def test_is_monitoring_available_without_tty(self, mock_isatty):
+        """Test is_monitoring_available returns False when TTY is not available"""
+        mock_isatty.return_value = False
+        assert (
+            ECSExpressGatewayServiceWatcher.is_monitoring_available() is False
+        )
+
     def setup_method(self):
+        self.app_session = create_app_session(output=DummyOutput())
+        self.app_session.__enter__()
         self.mock_client = Mock()
         self.service_arn = (
             "arn:aws:ecs:us-west-2:123456789012:service/my-cluster/my-service"
         )
+
+    def teardown_method(self):
+        if hasattr(self, 'app_session'):
+            self.app_session.__exit__(None, None, None)
 
     def _create_watcher_with_mocks(self, resource_view="RESOURCE", timeout=1):
         """Helper to create watcher with mocked display"""
@@ -723,6 +747,14 @@ class TestMonitoringError:
 
 class TestColorSupport:
     """Test color support functionality"""
+
+    def setup_method(self):
+        self.app_session = create_app_session(output=DummyOutput())
+        self.app_session.__enter__()
+
+    def teardown_method(self):
+        if hasattr(self, 'app_session'):
+            self.app_session.__exit__(None, None, None)
 
     def test_should_use_color_on(self):
         """Test _should_use_color returns True when color is 'on'"""

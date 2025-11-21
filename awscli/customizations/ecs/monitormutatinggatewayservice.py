@@ -171,6 +171,14 @@ class MonitorMutatingGatewayService:
         ).get('serviceArn'):
             return
 
+        # Check monitoring availability
+        if not self._watcher_class.is_monitoring_available():
+            uni_print(
+                "Monitoring is not available (requires TTY). Skipping monitoring.\n",
+                out_file=sys.stderr,
+            )
+            return
+
         if not self.session or not self.parsed_globals:
             uni_print(
                 "Unable to create ECS client. Skipping monitoring.",
@@ -188,22 +196,15 @@ class MonitorMutatingGatewayService:
         # Get service ARN from response
         service_arn = parsed.get('service', {}).get('serviceArn')
 
-        # Define exit hook to replace parsed response
-        def exit_hook(new_response):
-            if new_response:
-                parsed.clear()
-                parsed.update(new_response)
+        # Clear output when monitoring is invoked
+        parsed.clear()
 
         try:
-            # Determine if color should be used
-            use_color = self._should_use_color(self.parsed_globals)
-
             self._watcher_class(
                 ecs_client,
                 service_arn,
                 self.effective_resource_view,
-                exit_hook=exit_hook,
-                use_color=use_color,
+                use_color=self._should_use_color(self.parsed_globals),
             ).exec()
         except Exception as e:
             uni_print(

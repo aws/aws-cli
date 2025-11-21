@@ -189,7 +189,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
     def test_unknown_step_type(self):
         cmd = self.prefix + 'Type=unknown'
         expected_error_msg = (
-            '\naws: error: ' + 'The step type unknown is not supported.\n'
+            '\naws: [ERROR]: ' + 'The step type unknown is not supported.\n'
         )
         self.assert_error_for_ami_and_release_based_clusters(
             cmd=cmd,
@@ -219,7 +219,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
     def test_custom_jar_step_missing_jar(self):
         cmd = self.prefix + 'Name=CustomJarMissingJar'
         expected_error_msg = (
-            '\naws: error: The following '
+            '\naws: [ERROR]: The following '
             + 'required parameters are missing for CustomJARStepConfig: Jar.\n'
         )
         self.assert_error_for_ami_and_release_based_clusters(
@@ -313,7 +313,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
     def test_streaming_step_missing_args(self):
         cmd = self.prefix + 'Type=Streaming'
         expected_error_msg = (
-            '\naws: error: The following '
+            '\naws: [ERROR]: The following '
             + 'required parameters are missing for StreamingStepConfig: Args.\n'
         )
         self.assert_error_for_ami_and_release_based_clusters(
@@ -378,7 +378,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
     def test_hive_step_missing_args(self):
         cmd = self.prefix + 'Type=Hive'
         expected_error_msg = (
-            '\naws: error: The following '
+            '\naws: [ERROR]: The following '
             + 'required parameters are missing for HiveStepConfig: Args.\n'
         )
 
@@ -443,7 +443,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
     def test_pig_missing_args(self):
         cmd = self.prefix + 'Type=Pig'
         expected_error_msg = (
-            '\naws: error: The following '
+            '\naws: [ERROR]: The following '
             + 'required parameters are missing for PigStepConfig: Args.\n'
         )
         self.assert_error_for_ami_and_release_based_clusters(
@@ -523,7 +523,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
     def test_spark_missing_arg(self):
         cmd = self.prefix + 'Type=SPARK'
         expected_error_msg = (
-            '\naws: error: The following '
+            '\naws: [ERROR]: The following '
             + 'required parameters are missing for SparkStepConfig: Args.\n'
         )
         self.assert_error_for_ami_and_release_based_clusters(
@@ -535,7 +535,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
     def test_impala_missing_args(self):
         cmd = self.prefix + 'Type=Impala'
         expected_error_msg = (
-            '\naws: error: The following '
+            '\naws: [ERROR]: The following '
             + 'required parameters are missing for ImpalaStepConfig: Args.\n'
         )
         self.assert_error_for_ami_and_release_based_clusters(
@@ -573,7 +573,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
         test_step_config = 'Type=Impala,' + self.IMPALA_BASIC_ARGS
         cmd = self.prefix + test_step_config
         expected_result_release = (
-            '\naws: error: The step type impala ' + 'is not supported.\n'
+            '\naws: [ERROR]: The step type impala ' + 'is not supported.\n'
         )
 
         self.assert_error_for_ami_and_release_based_clusters(
@@ -585,7 +585,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
     def test_empty_step_args(self):
         cmd = self.prefix + 'Type=Streaming,Args='
         expected_error_msg = (
-            '\naws: error: The prameter Args cannot ' 'be an empty list.\n'
+            '\naws: [ERROR]: The prameter Args cannot ' 'be an empty list.\n'
         )
         self.assert_error_for_ami_and_release_based_clusters(
             cmd=cmd,
@@ -609,7 +609,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
 
         cmd = self.prefix + 'Args='
         expected_error_msg = (
-            '\naws: error: The following required parameters'
+            '\naws: [ERROR]: The following required parameters'
             ' are missing for CustomJARStepConfig: Jar.\n'
         )
         self.assert_error_for_ami_and_release_based_clusters(

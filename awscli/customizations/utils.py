@@ -18,6 +18,8 @@ import copy
 import sys
 
 from botocore.exceptions import ClientError
+from botocore.loaders import Loader
+from botocore.endpoint_provider import RuleSetStandardLibary
 from awscli.utils import create_nested_client
 
 
@@ -221,10 +223,8 @@ def uni_print(statement, out_file=None):
 
 def get_policy_arn_suffix(region):
     """Method to return region value as expected by policy arn"""
-    region_string = region.lower()
-    if region_string.startswith("cn-"):
-        return "aws-cn"
-    elif region_string.startswith("us-gov"):
-        return "aws-us-gov"
-    else:
-        return "aws"
+    loader = Loader()
+    partitions_data = loader.load_data('partitions')
+    rule_lib = RuleSetStandardLibary(partitions_data)
+    partition_result = rule_lib.aws_partition(region.lower())
+    return partition_result['name']

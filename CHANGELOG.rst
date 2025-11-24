@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.43.3
+======
+
+* api-change:``cloudfront``: Add TrustStore, ConnectionFunction APIs to CloudFront SDK
+* api-change:``logs``: New CloudWatch Logs feature - LogGroup Deletion Protection, a capability that allows customers to safeguard their critical CloudWatch log groups from accidental or unintended deletion.
+
+
 1.43.2
 ======
 

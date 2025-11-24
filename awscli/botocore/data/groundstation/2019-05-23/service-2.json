@@ -2,16 +2,15 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2019-05-23",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"groundstation",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
     "protocols":["rest-json"],
     "serviceFullName":"AWS Ground Station",
     "serviceId":"GroundStation",
     "signatureVersion":"v4",
     "signingName":"groundstation",
-    "uid":"groundstation-2019-05-23",
-    "auth":["aws.auth#sigv4"]
+    "uid":"groundstation-2019-05-23"
   },
   "operations":{
     "CancelContact":{
@@ -64,6 +63,23 @@
       ],
       "documentation":"<p>Creates a <code>DataflowEndpoint</code> group containing the specified list of <code>DataflowEndpoint</code> objects.</p> <p>The <code>name</code> field in each endpoint is used in your mission profile <code>DataflowEndpointConfig</code> to specify which endpoints to use during a contact.</p> <p>When a contact uses multiple <code>DataflowEndpointConfig</code> objects, each <code>Config</code> must match a <code>DataflowEndpoint</code> in the same group.</p>"
     },
+    "CreateDataflowEndpointGroupV2":{
+      "name":"CreateDataflowEndpointGroupV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/dataflowEndpointGroupV2",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateDataflowEndpointGroupV2Request"},
+      "output":{"shape":"CreateDataflowEndpointGroupV2Response"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"DependencyException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates a <code>DataflowEndpointGroupV2</code> containing the specified list of <code>DataflowEndpoint</code> objects.</p> <p>The <code>name</code> field in each endpoint is used in your mission profile <code>DataflowEndpointConfig</code> to specify which endpoints to use during a contact.</p> <p>When a contact uses multiple <code>DataflowEndpointConfig</code> objects, each <code>Config</code> must match a <code>DataflowEndpoint</code> in the same group.</p>"
+    },
     "CreateEphemeris":{
       "name":"CreateEphemeris",
       "http":{
@@ -78,7 +94,7 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Creates an Ephemeris with the specified <code>EphemerisData</code>.</p>"
+      "documentation":"<p>Create an ephemeris with your specified <a>EphemerisData</a>.</p>"
     },
     "CreateMissionProfile":{
       "name":"CreateMissionProfile",
@@ -142,9 +158,10 @@
       "errors":[
         {"shape":"InvalidParameterException"},
         {"shape":"DependencyException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"}
       ],
-      "documentation":"<p>Deletes an ephemeris</p>",
+      "documentation":"<p>Delete an ephemeris.</p>",
       "idempotent":true
     },
     "DeleteMissionProfile":{
@@ -178,7 +195,8 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Describes an existing contact.</p>"
+      "documentation":"<p>Describes an existing contact.</p>",
+      "readonly":true
     },
     "DescribeEphemeris":{
       "name":"DescribeEphemeris",
@@ -194,7 +212,8 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Describes an existing ephemeris.</p>"
+      "documentation":"<p>Retrieve information about an existing ephemeris.</p>",
+      "readonly":true
     },
     "GetAgentConfiguration":{
       "name":"GetAgentConfiguration",
@@ -210,7 +229,25 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<note> <p> For use by AWS Ground Station Agent and shouldn't be called directly.</p> </note> <p>Gets the latest configuration information for a registered agent.</p>"
+      "documentation":"<p><note> <p> For use by AWS Ground Station Agent and shouldn't be called directly.</p> </note> <p>Gets the latest configuration information for a registered agent.</p></p>",
+      "readonly":true
+    },
+    "GetAgentTaskResponseUrl":{
+      "name":"GetAgentTaskResponseUrl",
+      "http":{
+        "method":"GET",
+        "requestUri":"/agentResponseUrl/{agentId}/{taskId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAgentTaskResponseUrlRequest"},
+      "output":{"shape":"GetAgentTaskResponseUrlResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"DependencyException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p><note> <p> For use by AWS Ground Station Agent and shouldn't be called directly.</p> </note> <p>Gets a presigned URL for uploading agent task response logs.</p></p>",
+      "readonly":true
     },
     "GetConfig":{
       "name":"GetConfig",
@@ -226,7 +263,8 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns <code>Config</code> information.</p> <p>Only one <code>Config</code> response can be returned.</p>"
+      "documentation":"<p>Returns <code>Config</code> information.</p> <p>Only one <code>Config</code> response can be returned.</p>",
+      "readonly":true
     },
     "GetDataflowEndpointGroup":{
       "name":"GetDataflowEndpointGroup",
@@ -242,7 +280,8 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns the dataflow endpoint group.</p>"
+      "documentation":"<p>Returns the dataflow endpoint group.</p>",
+      "readonly":true
     },
     "GetMinuteUsage":{
       "name":"GetMinuteUsage",
@@ -258,7 +297,8 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns the number of reserved minutes used by account.</p>"
+      "documentation":"<p>Returns the number of reserved minutes used by account.</p>",
+      "readonly":true
     },
     "GetMissionProfile":{
       "name":"GetMissionProfile",
@@ -274,7 +314,8 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns a mission profile.</p>"
+      "documentation":"<p>Returns a mission profile.</p>",
+      "readonly":true
     },
     "GetSatellite":{
       "name":"GetSatellite",
@@ -290,7 +331,8 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns a satellite.</p>"
+      "documentation":"<p>Returns a satellite.</p>",
+      "readonly":true
     },
     "ListConfigs":{
       "name":"ListConfigs",
@@ -306,7 +348,8 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns a list of <code>Config</code> objects.</p>"
+      "documentation":"<p>Returns a list of <code>Config</code> objects.</p>",
+      "readonly":true
     },
     "ListContacts":{
       "name":"ListContacts",
@@ -322,7 +365,8 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns a list of contacts.</p> <p>If <code>statusList</code> contains AVAILABLE, the request must include <code>groundStation</code>, <code>missionprofileArn</code>, and <code>satelliteArn</code>. </p>"
+      "documentation":"<p>Returns a list of contacts.</p> <p>If <code>statusList</code> contains AVAILABLE, the request must include <code>groundStation</code>, <code>missionprofileArn</code>, and <code>satelliteArn</code>. </p>",
+      "readonly":true
     },
     "ListDataflowEndpointGroups":{
       "name":"ListDataflowEndpointGroups",
@@ -338,7 +382,8 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns a list of <code>DataflowEndpoint</code> groups.</p>"
+      "documentation":"<p>Returns a list of <code>DataflowEndpoint</code> groups.</p>",
+      "readonly":true
     },
     "ListEphemerides":{
       "name":"ListEphemerides",
@@ -354,7 +399,8 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>List existing ephemerides.</p>"
+      "documentation":"<p>List your existing ephemerides.</p>",
+      "readonly":true
     },
     "ListGroundStations":{
       "name":"ListGroundStations",
@@ -370,7 +416,8 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns a list of ground stations. </p>"
+      "documentation":"<p>Returns a list of ground stations. </p>",
+      "readonly":true
     },
     "ListMissionProfiles":{
       "name":"ListMissionProfiles",
@@ -386,7 +433,8 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns a list of mission profiles.</p>"
+      "documentation":"<p>Returns a list of mission profiles.</p>",
+      "readonly":true
     },
     "ListSatellites":{
       "name":"ListSatellites",
@@ -402,7 +450,8 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns a list of satellites.</p>"
+      "documentation":"<p>Returns a list of satellites.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -418,7 +467,8 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns a list of tags for a specified resource.</p>"
+      "documentation":"<p>Returns a list of tags for a specified resource.</p>",
+      "readonly":true
     },
     "RegisterAgent":{
       "name":"RegisterAgent",
@@ -434,7 +484,7 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<note> <p> For use by AWS Ground Station Agent and shouldn't be called directly.</p> </note> <p> Registers a new agent with AWS Ground Station. </p>"
+      "documentation":"<p><note> <p> For use by AWS Ground Station Agent and shouldn't be called directly.</p> </note> <p> Registers a new agent with AWS Ground Station. </p></p>"
     },
     "ReserveContact":{
       "name":"ReserveContact",
@@ -448,6 +498,7 @@
       "errors":[
         {"shape":"InvalidParameterException"},
         {"shape":"DependencyException"},
+        {"shape":"ResourceLimitExceededException"},
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Reserves a contact using specified parameters.</p>"
@@ -499,7 +550,7 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<note> <p> For use by AWS Ground Station Agent and shouldn't be called directly.</p> </note> <p>Update the status of the agent.</p>",
+      "documentation":"<p><note> <p> For use by AWS Ground Station Agent and shouldn't be called directly.</p> </note> <p>Update the status of the agent.</p></p>",
       "idempotent":true
     },
     "UpdateConfig":{
@@ -533,7 +584,7 @@
         {"shape":"DependencyException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Updates an existing ephemeris</p>",
+      "documentation":"<p>Update an existing ephemeris.</p>",
       "idempotent":true
     },
     "UpdateMissionProfile":{
@@ -559,7 +610,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^[\\w-]+$"
+      "pattern":"[\\w-]+"
     },
     "AgentCpuCoresList":{
       "type":"list",
@@ -571,22 +622,14 @@
       "type":"structure",
       "required":[
         "agentVersion",
-        "componentVersions",
         "instanceId",
-        "instanceType"
+        "instanceType",
+        "componentVersions"
       ],
       "members":{
-        "agentCpuCores":{
-          "shape":"AgentCpuCoresList",
-          "documentation":"<p>List of CPU cores reserved for the agent.</p>"
-        },
         "agentVersion":{
           "shape":"VersionString",
           "documentation":"<p>Current agent version.</p>"
-        },
-        "componentVersions":{
-          "shape":"ComponentVersionList",
-          "documentation":"<p>List of versions being used by agent components.</p>"
         },
         "instanceId":{
           "shape":"InstanceId",
@@ -598,7 +641,15 @@
         },
         "reservedCpuCores":{
           "shape":"AgentCpuCoresList",
-          "documentation":"<note> <p>This field should not be used. Use agentCpuCores instead.</p> </note> <p>List of CPU cores reserved for processes other than the agent running on the EC2 instance.</p>"
+          "documentation":"<p><note> <p>This field should not be used. Use agentCpuCores instead.</p> </note> <p>List of CPU cores reserved for processes other than the agent running on the EC2 instance.</p></p>"
+        },
+        "agentCpuCores":{
+          "shape":"AgentCpuCoresList",
+          "documentation":"<p>List of CPU cores reserved for the agent.</p>"
+        },
+        "componentVersions":{
+          "shape":"ComponentVersionList",
+          "documentation":"<p>List of versions being used by agent components.</p>"
         }
       },
       "documentation":"<p>Detailed information about the agent.</p>"
@@ -616,13 +667,13 @@
       "type":"structure",
       "required":["status"],
       "members":{
-        "signatureMap":{
-          "shape":"SignatureMap",
-          "documentation":"<p>Sparse map of failure signatures.</p>"
-        },
         "status":{
           "shape":"AgentStatus",
           "documentation":"<p>Aggregate status.</p>"
+        },
+        "signatureMap":{
+          "shape":"SignatureMap",
+          "documentation":"<p>Sparse map of failure signatures.</p>"
         }
       },
       "documentation":"<p>Aggregate status of Agent components.</p>"
@@ -658,22 +709,22 @@
     "AntennaDownlinkDemodDecodeConfig":{
       "type":"structure",
       "required":[
-        "decodeConfig",
+        "spectrumConfig",
         "demodulationConfig",
-        "spectrumConfig"
+        "decodeConfig"
       ],
       "members":{
-        "decodeConfig":{
-          "shape":"DecodeConfig",
-          "documentation":"<p>Information about the decode <code>Config</code>.</p>"
+        "spectrumConfig":{
+          "shape":"SpectrumConfig",
+          "documentation":"<p>Information about the spectral <code>Config</code>.</p>"
         },
         "demodulationConfig":{
           "shape":"DemodulationConfig",
           "documentation":"<p>Information about the demodulation <code>Config</code>.</p>"
         },
-        "spectrumConfig":{
-          "shape":"SpectrumConfig",
-          "documentation":"<p>Information about the spectral <code>Config</code>.</p>"
+        "decodeConfig":{
+          "shape":"DecodeConfig",
+          "documentation":"<p>Information about the decode <code>Config</code>.</p>"
         }
       },
       "documentation":"<p>Information about how AWS Ground Station should conﬁgure an antenna for downlink demod decode during a contact.</p>"
@@ -685,6 +736,10 @@
         "targetEirp"
       ],
       "members":{
+        "transmitDisabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether or not uplink transmit is disabled.</p>"
+        },
         "spectrumConfig":{
           "shape":"UplinkSpectrumConfig",
           "documentation":"<p>Information about the uplink spectral <code>Config</code>.</p>"
@@ -692,10 +747,6 @@
         "targetEirp":{
           "shape":"Eirp",
           "documentation":"<p>EIRP of the target.</p>"
-        },
-        "transmitDisabled":{
-          "shape":"Boolean",
-          "documentation":"<p>Whether or not uplink transmit is disabled.</p>"
         }
       },
       "documentation":"<p>Information about the uplink <code>Config</code> of an antenna.</p>"
@@ -704,7 +755,7 @@
       "type":"string",
       "max":1024,
       "min":5,
-      "pattern":"^(arn:aws:)[\\s\\S]{0,1024}$"
+      "pattern":"(arn:aws:)[\\s\\S]{0,1024}"
     },
     "AuditResults":{
       "type":"string",
@@ -716,18 +767,14 @@
     "AwsGroundStationAgentEndpoint":{
       "type":"structure",
       "required":[
+        "name",
         "egressAddress",
-        "ingressAddress",
-        "name"
+        "ingressAddress"
       ],
       "members":{
-        "agentStatus":{
-          "shape":"AgentStatus",
-          "documentation":"<p>The status of AgentEndpoint.</p>"
-        },
-        "auditResults":{
-          "shape":"AuditResults",
-          "documentation":"<p>The results of the audit.</p>"
+        "name":{
+          "shape":"SafeName",
+          "documentation":"<p>Name string associated with AgentEndpoint. Used as a human-readable identifier for AgentEndpoint.</p>"
         },
         "egressAddress":{
           "shape":"ConnectionDetails",
@@ -737,12 +784,118 @@
           "shape":"RangedConnectionDetails",
           "documentation":"<p>The ingress address of AgentEndpoint.</p>"
         },
-        "name":{
-          "shape":"SafeName",
-          "documentation":"<p>Name string associated with AgentEndpoint. Used as a human-readable identifier for AgentEndpoint.</p>"
+        "agentStatus":{
+          "shape":"AgentStatus",
+          "documentation":"<p>The status of AgentEndpoint.</p>"
+        },
+        "auditResults":{
+          "shape":"AuditResults",
+          "documentation":"<p>The results of the audit.</p>"
         }
       },
       "documentation":"<p>Information about AwsGroundStationAgentEndpoint.</p>"
+    },
+    "AzElEphemeris":{
+      "type":"structure",
+      "required":[
+        "groundStation",
+        "data"
+      ],
+      "members":{
+        "groundStation":{
+          "shape":"GroundStationName",
+          "documentation":"<p>The ground station name for which you're providing azimuth elevation data.</p> <p>This ephemeris is specific to this ground station and can't be used at other locations.</p>"
+        },
+        "data":{
+          "shape":"AzElSegmentsData",
+          "documentation":"<p>Azimuth elevation segment data.</p> <p>You can provide data inline in the request or through an Amazon S3 object reference.</p>"
+        }
+      },
+      "documentation":"<p>Azimuth elevation ephemeris data.</p> <p> Use this ephemeris type to provide pointing angles directly, rather than satellite orbital elements. Use this when you need precise antenna pointing but have imprecise or unknown satellite trajectory information. </p> <p> The azimuth elevation data specifies the antenna pointing direction at specific times relative to a ground station location. AWS Ground Station uses 4th order Lagrange interpolation to compute pointing angles between the provided data points. </p> <p> AWS Ground Station automatically filters interpolated pointing angles, including only those that are above the site mask elevation of the specified ground station. </p> <p> For more detail about providing azimuth elevation ephemerides to AWS Ground Station, see the <a href=\"https://docs.aws.amazon.com/ground-station/latest/ug/providing-azimuth-elevation-ephemeris-data.html\">azimuth elevation ephemeris section</a> of the AWS Ground Station User Guide. </p>"
+    },
+    "AzElEphemerisFilter":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"Uuid",
+          "documentation":"<p>Unique identifier of the azimuth elevation ephemeris.</p>"
+        }
+      },
+      "documentation":"<p>Filter for selecting contacts that use a specific <a>AzElEphemeris</a>.</p>"
+    },
+    "AzElProgramTrackSettings":{
+      "type":"structure",
+      "required":["ephemerisId"],
+      "members":{
+        "ephemerisId":{
+          "shape":"Uuid",
+          "documentation":"<p>Unique identifier of the azimuth elevation ephemeris.</p>"
+        }
+      },
+      "documentation":"<p>Program track settings for <a>AzElEphemeris</a>.</p>"
+    },
+    "AzElSegment":{
+      "type":"structure",
+      "required":[
+        "referenceEpoch",
+        "validTimeRange",
+        "azElList"
+      ],
+      "members":{
+        "referenceEpoch":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The reference time for this segment in ISO 8601 format in Coordinated Universal Time (UTC).</p> <p>All time values within the segment's <a>AzElSegment$azElList</a> are specified as offsets in atomic seconds from this reference epoch.</p> <p>Example: <code>2024-01-15T12:00:00.000Z</code> </p>"
+        },
+        "validTimeRange":{
+          "shape":"ISO8601TimeRange",
+          "documentation":"<p>The valid time range for this segment.</p> <p> Specifies the start and end timestamps in ISO 8601 format in Coordinated Universal Time (UTC). The segment's pointing data must cover this entire time range. </p>"
+        },
+        "azElList":{
+          "shape":"TimeAzElList",
+          "documentation":"<p>List of time-tagged azimuth elevation data points.</p> <p> Must contain at least five points to support 4th order Lagrange interpolation. Points must be in chronological order with no duplicates. </p>"
+        }
+      },
+      "documentation":"<p>A time segment containing azimuth elevation pointing data.</p> <p> Each segment defines a continuous time period with pointing angle data points. AWS Ground Station uses 4th order Lagrange interpolation between the provided points, so each segment must contain at least five data points. </p>"
+    },
+    "AzElSegmentList":{
+      "type":"list",
+      "member":{"shape":"AzElSegment"},
+      "max":100,
+      "min":1
+    },
+    "AzElSegments":{
+      "type":"structure",
+      "required":[
+        "angleUnit",
+        "azElSegmentList"
+      ],
+      "members":{
+        "angleUnit":{
+          "shape":"AngleUnits",
+          "documentation":"<p>The unit of measure for azimuth and elevation angles. All angles in all segments must use the same unit.</p>"
+        },
+        "azElSegmentList":{
+          "shape":"AzElSegmentList",
+          "documentation":"<p>List of azimuth elevation segments.</p> <p>Must contain between 1 and 100 segments. Segments must be in chronological order with no overlaps.</p>"
+        }
+      },
+      "documentation":"<p>Azimuth elevation segment collection.</p> <p>Contains five or more time-ordered segments that define antenna pointing angles over the ephemeris validity period.</p>"
+    },
+    "AzElSegmentsData":{
+      "type":"structure",
+      "members":{
+        "s3Object":{
+          "shape":"S3Object",
+          "documentation":"<p>The Amazon S3 object containing azimuth elevation segment data.</p> <p>The Amazon S3 object must contain JSON-formatted azimuth elevation data matching the <a>AzElSegments</a> structure.</p>"
+        },
+        "azElData":{
+          "shape":"AzElSegments",
+          "documentation":"<p>Azimuth elevation segment data provided directly in the request.</p> <p>Use this option for smaller datasets or when Amazon S3 access is not available.</p>"
+        }
+      },
+      "documentation":"<p>Container for azimuth elevation segment data.</p> <p>Specify either <a>AzElSegmentsData$s3Object</a> to reference data in Amazon S3, or <a>AzElSegmentsData$azElData</a> to provide data inline.</p>",
+      "union":true
     },
     "BandwidthUnits":{
       "type":"string",
@@ -805,39 +958,39 @@
     "ComponentStatusData":{
       "type":"structure",
       "required":[
-        "capabilityArn",
         "componentType",
-        "dataflowId",
-        "status"
+        "capabilityArn",
+        "status",
+        "dataflowId"
       ],
       "members":{
-        "bytesReceived":{
-          "shape":"Long",
-          "documentation":"<p>Bytes received by the component.</p>"
-        },
-        "bytesSent":{
-          "shape":"Long",
-          "documentation":"<p>Bytes sent by the component.</p>"
+        "componentType":{
+          "shape":"ComponentTypeString",
+          "documentation":"<p>The Component type.</p>"
         },
         "capabilityArn":{
           "shape":"CapabilityArn",
           "documentation":"<p>Capability ARN of the component.</p>"
         },
-        "componentType":{
-          "shape":"ComponentTypeString",
-          "documentation":"<p>The Component type.</p>"
+        "status":{
+          "shape":"AgentStatus",
+          "documentation":"<p>Component status.</p>"
         },
-        "dataflowId":{
-          "shape":"Uuid",
-          "documentation":"<p>Dataflow UUID associated with the component.</p>"
+        "bytesSent":{
+          "shape":"Long",
+          "documentation":"<p>Bytes sent by the component.</p>"
+        },
+        "bytesReceived":{
+          "shape":"Long",
+          "documentation":"<p>Bytes received by the component.</p>"
         },
         "packetsDropped":{
           "shape":"Long",
           "documentation":"<p>Packets dropped by component.</p>"
         },
-        "status":{
-          "shape":"AgentStatus",
-          "documentation":"<p>Component status.</p>"
+        "dataflowId":{
+          "shape":"Uuid",
+          "documentation":"<p>Dataflow UUID associated with the component.</p>"
         }
       },
       "documentation":"<p>Data on the status of agent components.</p>"
@@ -850,7 +1003,7 @@
     },
     "ComponentTypeString":{
       "type":"string",
-      "pattern":"^[a-zA-Z0-9_]{1,64}$"
+      "pattern":"[a-zA-Z0-9_]{1,64}"
     },
     "ComponentVersion":{
       "type":"structure",
@@ -880,7 +1033,7 @@
       "type":"string",
       "max":424,
       "min":82,
-      "pattern":"^arn:aws:groundstation:[-a-z0-9]{1,50}:[0-9]{12}:config/[a-z0-9]+(-[a-z0-9]+){0,4}/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(/.{1,256})?$"
+      "pattern":"arn:aws:groundstation:[-a-z0-9]{1,50}:[0-9]{12}:config/[a-z0-9]+(-[a-z0-9]+){0,4}/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(/.{1,256})?"
     },
     "ConfigCapabilityType":{
       "type":"string",
@@ -897,11 +1050,11 @@
     "ConfigDetails":{
       "type":"structure",
       "members":{
+        "endpointDetails":{"shape":"EndpointDetails"},
         "antennaDemodDecodeDetails":{
           "shape":"AntennaDemodDecodeDetails",
           "documentation":"<p>Details for antenna demod decode <code>Config</code> in a contact.</p>"
         },
-        "endpointDetails":{"shape":"EndpointDetails"},
         "s3RecordingDetails":{
           "shape":"S3RecordingDetails",
           "documentation":"<p>Details for an S3 recording <code>Config</code> in a contact.</p>"
@@ -913,10 +1066,6 @@
     "ConfigIdResponse":{
       "type":"structure",
       "members":{
-        "configArn":{
-          "shape":"ConfigArn",
-          "documentation":"<p>ARN of a <code>Config</code>.</p>"
-        },
         "configId":{
           "shape":"String",
           "documentation":"<p>UUID of a <code>Config</code>.</p>"
@@ -924,6 +1073,10 @@
         "configType":{
           "shape":"ConfigCapabilityType",
           "documentation":"<p>Type of a <code>Config</code>.</p>"
+        },
+        "configArn":{
+          "shape":"ConfigArn",
+          "documentation":"<p>ARN of a <code>Config</code>.</p>"
         }
       },
       "documentation":"<p/>"
@@ -935,10 +1088,6 @@
     "ConfigListItem":{
       "type":"structure",
       "members":{
-        "configArn":{
-          "shape":"ConfigArn",
-          "documentation":"<p>ARN of a <code>Config</code>.</p>"
-        },
         "configId":{
           "shape":"String",
           "documentation":"<p>UUID of a <code>Config</code>.</p>"
@@ -946,6 +1095,10 @@
         "configType":{
           "shape":"ConfigCapabilityType",
           "documentation":"<p>Type of a <code>Config</code>.</p>"
+        },
+        "configArn":{
+          "shape":"ConfigArn",
+          "documentation":"<p>ARN of a <code>Config</code>.</p>"
         },
         "name":{
           "shape":"String",
@@ -961,6 +1114,14 @@
           "shape":"AntennaDownlinkConfig",
           "documentation":"<p>Information about how AWS Ground Station should configure an antenna for downlink during a contact.</p>"
         },
+        "trackingConfig":{
+          "shape":"TrackingConfig",
+          "documentation":"<p>Object that determines whether tracking should be used during a contact executed with this <code>Config</code> in the mission profile. </p>"
+        },
+        "dataflowEndpointConfig":{
+          "shape":"DataflowEndpointConfig",
+          "documentation":"<p>Information about the dataflow endpoint <code>Config</code>.</p>"
+        },
         "antennaDownlinkDemodDecodeConfig":{
           "shape":"AntennaDownlinkDemodDecodeConfig",
           "documentation":"<p>Information about how AWS Ground Station should conﬁgure an antenna for downlink demod decode during a contact.</p>"
@@ -969,21 +1130,13 @@
           "shape":"AntennaUplinkConfig",
           "documentation":"<p>Information about how AWS Ground Station should conﬁgure an antenna for uplink during a contact.</p>"
         },
-        "dataflowEndpointConfig":{
-          "shape":"DataflowEndpointConfig",
-          "documentation":"<p>Information about the dataflow endpoint <code>Config</code>.</p>"
+        "uplinkEchoConfig":{
+          "shape":"UplinkEchoConfig",
+          "documentation":"<p>Information about an uplink echo <code>Config</code>.</p> <p>Parameters from the <code>AntennaUplinkConfig</code>, corresponding to the specified <code>AntennaUplinkConfigArn</code>, are used when this <code>UplinkEchoConfig</code> is used in a contact.</p>"
         },
         "s3RecordingConfig":{
           "shape":"S3RecordingConfig",
           "documentation":"<p>Information about an S3 recording <code>Config</code>.</p>"
-        },
-        "trackingConfig":{
-          "shape":"TrackingConfig",
-          "documentation":"<p>Object that determines whether tracking should be used during a contact executed with this <code>Config</code> in the mission profile. </p>"
-        },
-        "uplinkEchoConfig":{
-          "shape":"UplinkEchoConfig",
-          "documentation":"<p>Information about an uplink echo <code>Config</code>.</p> <p>Parameters from the <code>AntennaUplinkConfig</code>, corresponding to the specified <code>AntennaUplinkConfigArn</code>, are used when this <code>UplinkEchoConfig</code> is used in a contact.</p>"
         }
       },
       "documentation":"<p>Object containing the parameters of a <code>Config</code>.</p> <p>See the subtype definitions for what each type of <code>Config</code> contains.</p>",
@@ -993,13 +1146,13 @@
       "type":"structure",
       "required":["socketAddress"],
       "members":{
-        "mtu":{
-          "shape":"Integer",
-          "documentation":"<p>Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.</p>"
-        },
         "socketAddress":{
           "shape":"SocketAddress",
           "documentation":"<p>A socket address.</p>"
+        },
+        "mtu":{
+          "shape":"Integer",
+          "documentation":"<p>Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.</p>"
         }
       },
       "documentation":"<p>Egress address of AgentEndpoint with an optional mtu.</p>"
@@ -1011,41 +1164,9 @@
           "shape":"Uuid",
           "documentation":"<p>UUID of a contact.</p>"
         },
-        "contactStatus":{
-          "shape":"ContactStatus",
-          "documentation":"<p>Status of a contact.</p>"
-        },
-        "endTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>End time of a contact in UTC.</p>"
-        },
-        "errorMessage":{
-          "shape":"String",
-          "documentation":"<p>Error message of a contact.</p>"
-        },
-        "groundStation":{
-          "shape":"String",
-          "documentation":"<p>Name of a ground station.</p>"
-        },
-        "maximumElevation":{
-          "shape":"Elevation",
-          "documentation":"<p>Maximum elevation angle of a contact.</p>"
-        },
         "missionProfileArn":{
           "shape":"MissionProfileArn",
           "documentation":"<p>ARN of a mission profile.</p>"
-        },
-        "postPassEndTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>Amount of time after a contact ends that you’d like to receive a CloudWatch event indicating the pass has finished.</p>"
-        },
-        "prePassStartTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>Amount of time prior to contact start you’d like to receive a CloudWatch event indicating an upcoming pass.</p>"
-        },
-        "region":{
-          "shape":"String",
-          "documentation":"<p>Region of a contact.</p>"
         },
         "satelliteArn":{
           "shape":"satelliteArn",
@@ -1055,17 +1176,53 @@
           "shape":"Timestamp",
           "documentation":"<p>Start time of a contact in UTC.</p>"
         },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>End time of a contact in UTC.</p>"
+        },
+        "prePassStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Amount of time prior to contact start you’d like to receive a CloudWatch event indicating an upcoming pass.</p>"
+        },
+        "postPassEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Amount of time after a contact ends that you’d like to receive a CloudWatch event indicating the pass has finished.</p>"
+        },
+        "groundStation":{
+          "shape":"String",
+          "documentation":"<p>Name of a ground station.</p>"
+        },
+        "contactStatus":{
+          "shape":"ContactStatus",
+          "documentation":"<p>Status of a contact.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>Error message of a contact.</p>"
+        },
+        "maximumElevation":{
+          "shape":"Elevation",
+          "documentation":"<p>Maximum elevation angle of a contact.</p>"
+        },
+        "region":{
+          "shape":"String",
+          "documentation":"<p>Region of a contact.</p>"
+        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Tags assigned to a contact.</p>"
+        },
+        "visibilityStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> Projected time in UTC your satellite will rise above the <a href=\"https://docs.aws.amazon.com/ground-station/latest/ug/site-masks.html\">receive mask</a>. This time is based on the satellite's current active ephemeris for future contacts and the ephemeris that was active during contact execution for completed contacts. <i>This field is not present for contacts with a <code>SCHEDULING</code> or <code>SCHEDULED</code> status.</i> </p>"
         },
         "visibilityEndTime":{
           "shape":"Timestamp",
           "documentation":"<p> Projected time in UTC your satellite will set below the <a href=\"https://docs.aws.amazon.com/ground-station/latest/ug/site-masks.html\">receive mask</a>. This time is based on the satellite's current active ephemeris for future contacts and the ephemeris that was active during contact execution for completed contacts. <i>This field is not present for contacts with a <code>SCHEDULING</code> or <code>SCHEDULED</code> status.</i> </p>"
         },
-        "visibilityStartTime":{
-          "shape":"Timestamp",
-          "documentation":"<p> Projected time in UTC your satellite will rise above the <a href=\"https://docs.aws.amazon.com/ground-station/latest/ug/site-masks.html\">receive mask</a>. This time is based on the satellite's current active ephemeris for future contacts and the ephemeris that was active during contact execution for completed contacts. <i>This field is not present for contacts with a <code>SCHEDULING</code> or <code>SCHEDULED</code> status.</i> </p>"
+        "ephemeris":{
+          "shape":"EphemerisResponseData",
+          "documentation":"<p>The ephemeris that determines antenna pointing for the contact.</p>"
         }
       },
       "documentation":"<p>Data describing a contact.</p>"
@@ -1105,17 +1262,17 @@
     "CreateConfigRequest":{
       "type":"structure",
       "required":[
-        "configData",
-        "name"
+        "name",
+        "configData"
       ],
       "members":{
-        "configData":{
-          "shape":"ConfigTypeData",
-          "documentation":"<p>Parameters of a <code>Config</code>.</p>"
-        },
         "name":{
           "shape":"SafeName",
           "documentation":"<p>Name of a <code>Config</code>.</p>"
+        },
+        "configData":{
+          "shape":"ConfigTypeData",
+          "documentation":"<p>Parameters of a <code>Config</code>.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -1128,59 +1285,108 @@
       "type":"structure",
       "required":["endpointDetails"],
       "members":{
-        "contactPostPassDurationSeconds":{
-          "shape":"DataflowEndpointGroupDurationInSeconds",
-          "documentation":"<p>Amount of time, in seconds, after a contact ends that the Ground Station Dataflow Endpoint Group will be in a <code>POSTPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>POSTPASS</code> state.</p>"
+        "endpointDetails":{
+          "shape":"EndpointDetailsList",
+          "documentation":"<p>Endpoint details of each endpoint in the dataflow endpoint group. All dataflow endpoints within a single dataflow endpoint group must be of the same type. You cannot mix <a href=\"https://docs.aws.amazon.com/ground-station/latest/APIReference/API_AwsGroundStationAgentEndpoint.html\"> AWS Ground Station Agent endpoints</a> with <a href=\"https://docs.aws.amazon.com/ground-station/latest/APIReference/API_DataflowEndpoint.html\">Dataflow endpoints</a> in the same group. If your use case requires both types of endpoints, you must create separate dataflow endpoint groups for each type. </p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags of a dataflow endpoint group.</p>"
         },
         "contactPrePassDurationSeconds":{
           "shape":"DataflowEndpointGroupDurationInSeconds",
           "documentation":"<p>Amount of time, in seconds, before a contact starts that the Ground Station Dataflow Endpoint Group will be in a <code>PREPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>PREPASS</code> state.</p>"
         },
-        "endpointDetails":{
-          "shape":"EndpointDetailsList",
-          "documentation":"<p>Endpoint details of each endpoint in the dataflow endpoint group. <pre><code> All dataflow endpoints within a single dataflow endpoint group must be of the same type. You cannot mix &lt;a href=&quot;https://docs.aws.amazon.com/ground-station/latest/APIReference/API_AwsGroundStationAgentEndpoint.html&quot;&gt; AWS Ground Station Agent endpoints&lt;/a&gt; with &lt;a href=&quot;https://docs.aws.amazon.com/ground-station/latest/APIReference/API_DataflowEndpoint.html&quot;&gt;Dataflow endpoints&lt;/a&gt; in the same group. If your use case requires both types of endpoints, you must create separate dataflow endpoint groups for each type. &lt;/p&gt; </code></pre>"
-        },
-        "tags":{
-          "shape":"TagsMap",
-          "documentation":"<p>Tags of a dataflow endpoint group.</p>"
+        "contactPostPassDurationSeconds":{
+          "shape":"DataflowEndpointGroupDurationInSeconds",
+          "documentation":"<p>Amount of time, in seconds, after a contact ends that the Ground Station Dataflow Endpoint Group will be in a <code>POSTPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>POSTPASS</code> state.</p>"
         }
       },
       "documentation":"<p/>"
     },
+    "CreateDataflowEndpointGroupV2Request":{
+      "type":"structure",
+      "required":["endpoints"],
+      "members":{
+        "endpoints":{
+          "shape":"CreateEndpointDetailsList",
+          "documentation":"<p>Dataflow endpoint group's endpoint definitions</p>"
+        },
+        "contactPrePassDurationSeconds":{
+          "shape":"DataflowEndpointGroupDurationInSeconds",
+          "documentation":"<p>Amount of time, in seconds, before a contact starts that the Ground Station Dataflow Endpoint Group will be in a <code>PREPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>PREPASS</code> state.</p>"
+        },
+        "contactPostPassDurationSeconds":{
+          "shape":"DataflowEndpointGroupDurationInSeconds",
+          "documentation":"<p>Amount of time, in seconds, after a contact ends that the Ground Station Dataflow Endpoint Group will be in a <code>POSTPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>POSTPASS</code> state.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags of a V2 dataflow endpoint group.</p>"
+        }
+      }
+    },
+    "CreateDataflowEndpointGroupV2Response":{
+      "type":"structure",
+      "members":{
+        "dataflowEndpointGroupId":{
+          "shape":"Uuid",
+          "documentation":"<p>Dataflow endpoint group ID</p>"
+        }
+      }
+    },
+    "CreateEndpointDetails":{
+      "type":"structure",
+      "members":{
+        "uplinkAwsGroundStationAgentEndpoint":{
+          "shape":"UplinkAwsGroundStationAgentEndpoint",
+          "documentation":"<p>Definition for an uplink agent endpoint</p>"
+        },
+        "downlinkAwsGroundStationAgentEndpoint":{
+          "shape":"DownlinkAwsGroundStationAgentEndpoint",
+          "documentation":"<p>Definition for a downlink agent endpoint</p>"
+        }
+      },
+      "documentation":"<p>Endpoint definition used for creating a dataflow endpoint</p>",
+      "union":true
+    },
+    "CreateEndpointDetailsList":{
+      "type":"list",
+      "member":{"shape":"CreateEndpointDetails"},
+      "max":12,
+      "min":1
+    },
     "CreateEphemerisRequest":{
       "type":"structure",
-      "required":[
-        "name",
-        "satelliteId"
-      ],
+      "required":["name"],
       "members":{
+        "satelliteId":{
+          "shape":"Uuid",
+          "documentation":"<p>The satellite ID that associates this ephemeris with a satellite in AWS Ground Station.</p>"
+        },
         "enabled":{
           "shape":"Boolean",
-          "documentation":"<p>Whether to set the ephemeris status to <code>ENABLED</code> after validation.</p> <p>Setting this to false will set the ephemeris status to <code>DISABLED</code> after validation.</p>"
+          "documentation":"<p>Set to <code>true</code> to enable the ephemeris after validation. Set to <code>false</code> to keep it disabled.</p>"
         },
-        "ephemeris":{
-          "shape":"EphemerisData",
-          "documentation":"<p>Ephemeris data.</p>"
+        "priority":{
+          "shape":"CustomerEphemerisPriority",
+          "documentation":"<p>A priority score that determines which ephemeris to use when multiple ephemerides overlap.</p> <p>Higher numbers take precedence. The default is 1. Must be 1 or greater.</p>"
         },
         "expirationTime":{
           "shape":"Timestamp",
           "documentation":"<p>An overall expiration time for the ephemeris in UTC, after which it will become <code>EXPIRED</code>.</p>"
         },
-        "kmsKeyArn":{
-          "shape":"KeyArn",
-          "documentation":"<p>The ARN of a KMS key used to encrypt the ephemeris in Ground Station.</p>"
-        },
         "name":{
           "shape":"SafeName",
-          "documentation":"<p>A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.</p>"
+          "documentation":"<p>A name that you can use to identify the ephemeris.</p>"
         },
-        "priority":{
-          "shape":"CustomerEphemerisPriority",
-          "documentation":"<p>Customer-provided priority score to establish the order in which overlapping ephemerides should be used.</p> <p>The default for customer-provided ephemeris priority is 1, and higher numbers take precedence.</p> <p>Priority must be 1 or greater</p>"
+        "kmsKeyArn":{
+          "shape":"KeyArn",
+          "documentation":"<p>The ARN of the KMS key to use for encrypting the ephemeris.</p>"
         },
-        "satelliteId":{
-          "shape":"Uuid",
-          "documentation":"<p>AWS Ground Station satellite ID for this ephemeris.</p>"
+        "ephemeris":{
+          "shape":"EphemerisData",
+          "documentation":"<p>Ephemeris data.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -1191,31 +1397,39 @@
     "CreateMissionProfileRequest":{
       "type":"structure",
       "required":[
-        "dataflowEdges",
-        "minimumViableContactDurationSeconds",
         "name",
+        "minimumViableContactDurationSeconds",
+        "dataflowEdges",
         "trackingConfigArn"
       ],
       "members":{
-        "contactPostPassDurationSeconds":{
-          "shape":"DurationInSeconds",
-          "documentation":"<p>Amount of time after a contact ends that you’d like to receive a Ground Station Contact State Change event indicating the pass has finished.</p>"
+        "name":{
+          "shape":"SafeName",
+          "documentation":"<p>Name of a mission profile.</p>"
         },
         "contactPrePassDurationSeconds":{
           "shape":"DurationInSeconds",
           "documentation":"<p>Amount of time prior to contact start you’d like to receive a Ground Station Contact State Change event indicating an upcoming pass.</p>"
         },
-        "dataflowEdges":{
-          "shape":"DataflowEdgeList",
-          "documentation":"<p>A list of lists of ARNs. Each list of ARNs is an edge, with a <i>from</i> <code>Config</code> and a <i>to</i> <code>Config</code>.</p>"
+        "contactPostPassDurationSeconds":{
+          "shape":"DurationInSeconds",
+          "documentation":"<p>Amount of time after a contact ends that you’d like to receive a Ground Station Contact State Change event indicating the pass has finished.</p>"
         },
         "minimumViableContactDurationSeconds":{
           "shape":"PositiveDurationInSeconds",
           "documentation":"<p>Smallest amount of time in seconds that you’d like to see for an available contact. AWS Ground Station will not present you with contacts shorter than this duration.</p>"
         },
-        "name":{
-          "shape":"SafeName",
-          "documentation":"<p>Name of a mission profile.</p>"
+        "dataflowEdges":{
+          "shape":"DataflowEdgeList",
+          "documentation":"<p>A list of lists of ARNs. Each list of ARNs is an edge, with a <i>from</i> <code>Config</code> and a <i>to</i> <code>Config</code>.</p>"
+        },
+        "trackingConfigArn":{
+          "shape":"ConfigArn",
+          "documentation":"<p>ARN of a tracking <code>Config</code>.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags assigned to a mission profile.</p>"
         },
         "streamsKmsKey":{
           "shape":"KmsKey",
@@ -1224,14 +1438,6 @@
         "streamsKmsRole":{
           "shape":"RoleArn",
           "documentation":"<p>Role to use for encrypting streams with KMS key.</p>"
-        },
-        "tags":{
-          "shape":"TagsMap",
-          "documentation":"<p>Tags assigned to a mission profile.</p>"
-        },
-        "trackingConfigArn":{
-          "shape":"ConfigArn",
-          "documentation":"<p>ARN of a tracking <code>Config</code>.</p>"
         }
       },
       "documentation":"<p/>"
@@ -1253,12 +1459,12 @@
     "DataflowDetail":{
       "type":"structure",
       "members":{
+        "source":{"shape":"Source"},
         "destination":{"shape":"Destination"},
         "errorMessage":{
           "shape":"String",
           "documentation":"<p>Error message for a dataflow.</p>"
-        },
-        "source":{"shape":"Source"}
+        }
       },
       "documentation":"<p>Information about a dataflow edge used in a contact.</p>"
     },
@@ -1277,21 +1483,21 @@
     "DataflowEndpoint":{
       "type":"structure",
       "members":{
-        "address":{
-          "shape":"SocketAddress",
-          "documentation":"<p>Socket address of a dataflow endpoint.</p>"
-        },
-        "mtu":{
-          "shape":"DataflowEndpointMtuInteger",
-          "documentation":"<p>Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.</p>"
-        },
         "name":{
           "shape":"SafeName",
           "documentation":"<p>Name of a dataflow endpoint.</p>"
         },
+        "address":{
+          "shape":"SocketAddress",
+          "documentation":"<p>Socket address of a dataflow endpoint.</p>"
+        },
         "status":{
           "shape":"EndpointStatus",
           "documentation":"<p>Status of a dataflow endpoint.</p>"
+        },
+        "mtu":{
+          "shape":"DataflowEndpointMtuInteger",
+          "documentation":"<p>Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.</p>"
         }
       },
       "documentation":"<p>Information about a dataflow endpoint.</p>"
@@ -1315,13 +1521,13 @@
       "type":"string",
       "max":146,
       "min":97,
-      "pattern":"^arn:aws:groundstation:[-a-z0-9]{1,50}:[0-9]{12}:dataflow-endpoint-group/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+      "pattern":"arn:aws:groundstation:[-a-z0-9]{1,50}:[0-9]{12}:dataflow-endpoint-group/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
     },
     "DataflowEndpointGroupDurationInSeconds":{
       "type":"integer",
       "box":true,
       "max":480,
-      "min":120
+      "min":30
     },
     "DataflowEndpointGroupIdResponse":{
       "type":"structure",
@@ -1340,13 +1546,13 @@
     "DataflowEndpointListItem":{
       "type":"structure",
       "members":{
-        "dataflowEndpointGroupArn":{
-          "shape":"DataflowEndpointGroupArn",
-          "documentation":"<p>ARN of a dataflow endpoint group.</p>"
-        },
         "dataflowEndpointGroupId":{
           "shape":"Uuid",
           "documentation":"<p>UUID of a dataflow endpoint group.</p>"
+        },
+        "dataflowEndpointGroupArn":{
+          "shape":"DataflowEndpointGroupArn",
+          "documentation":"<p>ARN of a dataflow endpoint group.</p>"
         }
       },
       "documentation":"<p>Item in a list of <code>DataflowEndpoint</code> groups.</p>"
@@ -1477,45 +1683,9 @@
           "shape":"Uuid",
           "documentation":"<p>UUID of a contact.</p>"
         },
-        "contactStatus":{
-          "shape":"ContactStatus",
-          "documentation":"<p>Status of a contact.</p>"
-        },
-        "dataflowList":{
-          "shape":"DataflowList",
-          "documentation":"<p>List describing source and destination details for each dataflow edge.</p>"
-        },
-        "endTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>End time of a contact in UTC.</p>"
-        },
-        "errorMessage":{
-          "shape":"String",
-          "documentation":"<p>Error message for a contact.</p>"
-        },
-        "groundStation":{
-          "shape":"String",
-          "documentation":"<p>Ground station for a contact.</p>"
-        },
-        "maximumElevation":{
-          "shape":"Elevation",
-          "documentation":"<p>Maximum elevation angle of a contact.</p>"
-        },
         "missionProfileArn":{
           "shape":"MissionProfileArn",
           "documentation":"<p>ARN of a mission profile.</p>"
-        },
-        "postPassEndTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>Amount of time after a contact ends that you’d like to receive a CloudWatch event indicating the pass has finished.</p>"
-        },
-        "prePassStartTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>Amount of time prior to contact start you’d like to receive a CloudWatch event indicating an upcoming pass.</p>"
-        },
-        "region":{
-          "shape":"String",
-          "documentation":"<p>Region of a contact.</p>"
         },
         "satelliteArn":{
           "shape":"satelliteArn",
@@ -1525,17 +1695,61 @@
           "shape":"Timestamp",
           "documentation":"<p>Start time of a contact in UTC.</p>"
         },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>End time of a contact in UTC.</p>"
+        },
+        "prePassStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Amount of time prior to contact start you’d like to receive a CloudWatch event indicating an upcoming pass.</p>"
+        },
+        "postPassEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Amount of time after a contact ends that you’d like to receive a CloudWatch event indicating the pass has finished.</p>"
+        },
+        "groundStation":{
+          "shape":"String",
+          "documentation":"<p>Ground station for a contact.</p>"
+        },
+        "contactStatus":{
+          "shape":"ContactStatus",
+          "documentation":"<p>Status of a contact.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>Error message for a contact.</p>"
+        },
+        "maximumElevation":{
+          "shape":"Elevation",
+          "documentation":"<p>Maximum elevation angle of a contact.</p>"
+        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Tags assigned to a contact.</p>"
+        },
+        "region":{
+          "shape":"String",
+          "documentation":"<p>Region of a contact.</p>"
+        },
+        "dataflowList":{
+          "shape":"DataflowList",
+          "documentation":"<p>List describing source and destination details for each dataflow edge.</p>"
+        },
+        "visibilityStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> Projected time in UTC your satellite will rise above the <a href=\"https://docs.aws.amazon.com/ground-station/latest/ug/site-masks.html\">receive mask</a>. This time is based on the satellite's current active ephemeris for future contacts and the ephemeris that was active during contact execution for completed contacts. </p>"
         },
         "visibilityEndTime":{
           "shape":"Timestamp",
           "documentation":"<p> Projected time in UTC your satellite will set below the <a href=\"https://docs.aws.amazon.com/ground-station/latest/ug/site-masks.html\">receive mask</a>. This time is based on the satellite's current active ephemeris for future contacts and the ephemeris that was active during contact execution for completed contacts. </p>"
         },
-        "visibilityStartTime":{
-          "shape":"Timestamp",
-          "documentation":"<p> Projected time in UTC your satellite will rise above the <a href=\"https://docs.aws.amazon.com/ground-station/latest/ug/site-masks.html\">receive mask</a>. This time is based on the satellite's current active ephemeris for future contacts and the ephemeris that was active during contact execution for completed contacts. </p>"
+        "trackingOverrides":{
+          "shape":"TrackingOverrides",
+          "documentation":"<p>Tracking configuration overrides specified when the contact was reserved.</p>"
+        },
+        "ephemeris":{
+          "shape":"EphemerisResponseData",
+          "documentation":"<p>The ephemeris that determines antenna pointing directions for the contact.</p>"
         }
       },
       "documentation":"<p/>"
@@ -1555,29 +1769,9 @@
     "DescribeEphemerisResponse":{
       "type":"structure",
       "members":{
-        "creationTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time the ephemeris was uploaded in UTC.</p>"
-        },
-        "enabled":{
-          "shape":"Boolean",
-          "documentation":"<p>Whether or not the ephemeris is enabled.</p>"
-        },
         "ephemerisId":{
           "shape":"Uuid",
           "documentation":"<p>The AWS Ground Station ephemeris ID.</p>"
-        },
-        "invalidReason":{
-          "shape":"EphemerisInvalidReason",
-          "documentation":"<p>Reason that an ephemeris failed validation. Only provided for ephemerides with <code>INVALID</code> status.</p>"
-        },
-        "name":{
-          "shape":"SafeName",
-          "documentation":"<p>A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.</p>"
-        },
-        "priority":{
-          "shape":"EphemerisPriority",
-          "documentation":"<p>Customer-provided priority score to establish the order in which overlapping ephemerides should be used.</p> <p>The default for customer-provided ephemeris priority is 1, and higher numbers take precedence.</p> <p>Priority must be 1 or greater</p>"
         },
         "satelliteId":{
           "shape":"Uuid",
@@ -1587,30 +1781,54 @@
           "shape":"EphemerisStatus",
           "documentation":"<p>The status of the ephemeris.</p>"
         },
-        "suppliedData":{
-          "shape":"EphemerisTypeDescription",
-          "documentation":"<p>Supplied ephemeris data.</p>"
+        "priority":{
+          "shape":"EphemerisPriority",
+          "documentation":"<p>A priority score that determines which ephemeris to use when multiple ephemerides overlap.</p> <p>Higher numbers take precedence. The default is 1. Must be 1 or greater.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the ephemeris was uploaded in UTC.</p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether or not the ephemeris is enabled.</p>"
+        },
+        "name":{
+          "shape":"SafeName",
+          "documentation":"<p>A name that you can use to identify the ephemeris.</p>"
         },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Tags assigned to an ephemeris.</p>"
+        },
+        "suppliedData":{
+          "shape":"EphemerisTypeDescription",
+          "documentation":"<p>Supplied ephemeris data.</p>"
+        },
+        "invalidReason":{
+          "shape":"EphemerisInvalidReason",
+          "documentation":"<p>Reason that an ephemeris failed validation. Appears only when the status is <code>INVALID</code>.</p>"
+        },
+        "errorReasons":{
+          "shape":"EphemerisErrorReasonList",
+          "documentation":"<p>Detailed error information for ephemerides with <code>INVALID</code> status.</p> <p>Provides specific error codes and messages to help diagnose validation failures.</p>"
         }
       }
     },
     "Destination":{
       "type":"structure",
       "members":{
-        "configDetails":{
-          "shape":"ConfigDetails",
-          "documentation":"<p>Additional details for a <code>Config</code>, if type is dataflow endpoint or antenna demod decode.</p>"
+        "configType":{
+          "shape":"ConfigCapabilityType",
+          "documentation":"<p>Type of a <code>Config</code>.</p>"
         },
         "configId":{
           "shape":"Uuid",
           "documentation":"<p>UUID of a <code>Config</code>.</p>"
         },
-        "configType":{
-          "shape":"ConfigCapabilityType",
-          "documentation":"<p>Type of a <code>Config</code>.</p>"
+        "configDetails":{
+          "shape":"ConfigDetails",
+          "documentation":"<p>Additional details for a <code>Config</code>, if type is dataflow endpoint or antenna demod decode.</p>"
         },
         "dataflowDestinationRegion":{
           "shape":"String",
@@ -1622,22 +1840,22 @@
     "DiscoveryData":{
       "type":"structure",
       "required":[
-        "capabilityArns",
+        "publicIpAddresses",
         "privateIpAddresses",
-        "publicIpAddresses"
+        "capabilityArns"
       ],
       "members":{
-        "capabilityArns":{
-          "shape":"CapabilityArnList",
-          "documentation":"<p>List of capabilities to associate with agent.</p>"
+        "publicIpAddresses":{
+          "shape":"IpAddressList",
+          "documentation":"<p>List of public IP addresses to associate with agent.</p>"
         },
         "privateIpAddresses":{
           "shape":"IpAddressList",
           "documentation":"<p>List of private IP addresses to associate with agent.</p>"
         },
-        "publicIpAddresses":{
-          "shape":"IpAddressList",
-          "documentation":"<p>List of public IP addresses to associate with agent.</p>"
+        "capabilityArns":{
+          "shape":"CapabilityArnList",
+          "documentation":"<p>List of capabilities to associate with agent.</p>"
         }
       },
       "documentation":"<p>Data for agent discovery.</p>"
@@ -1645,6 +1863,73 @@
     "Double":{
       "type":"double",
       "box":true
+    },
+    "DownlinkAwsGroundStationAgentEndpoint":{
+      "type":"structure",
+      "required":[
+        "name",
+        "dataflowDetails"
+      ],
+      "members":{
+        "name":{
+          "shape":"SafeName",
+          "documentation":"<p>Downlink dataflow endpoint name</p>"
+        },
+        "dataflowDetails":{
+          "shape":"DownlinkDataflowDetails",
+          "documentation":"<p>Dataflow details for the downlink endpoint</p>"
+        }
+      },
+      "documentation":"<p>Definition for a downlink agent endpoint</p>"
+    },
+    "DownlinkAwsGroundStationAgentEndpointDetails":{
+      "type":"structure",
+      "required":[
+        "name",
+        "dataflowDetails"
+      ],
+      "members":{
+        "name":{
+          "shape":"SafeName",
+          "documentation":"<p>Downlink dataflow endpoint name</p>"
+        },
+        "dataflowDetails":{
+          "shape":"DownlinkDataflowDetails",
+          "documentation":"<p>Dataflow details for the downlink endpoint</p>"
+        },
+        "agentStatus":{
+          "shape":"AgentStatus",
+          "documentation":"<p>Status of the agent associated with the downlink dataflow endpoint</p>"
+        },
+        "auditResults":{
+          "shape":"AuditResults",
+          "documentation":"<p>Health audit results for the downlink dataflow endpoint</p>"
+        }
+      },
+      "documentation":"<p>Details for a downlink agent endpoint</p>"
+    },
+    "DownlinkConnectionDetails":{
+      "type":"structure",
+      "required":[
+        "agentIpAndPortAddress",
+        "egressAddressAndPort"
+      ],
+      "members":{
+        "agentIpAndPortAddress":{"shape":"RangedConnectionDetails"},
+        "egressAddressAndPort":{"shape":"ConnectionDetails"}
+      },
+      "documentation":"<p>Connection details for Ground Station to Agent and Agent to customer</p>"
+    },
+    "DownlinkDataflowDetails":{
+      "type":"structure",
+      "members":{
+        "agentConnectionDetails":{
+          "shape":"DownlinkConnectionDetails",
+          "documentation":"<p>Downlink connection details for customer to Agent and Agent to Ground Station</p>"
+        }
+      },
+      "documentation":"<p>Dataflow details for a downlink endpoint</p>",
+      "union":true
     },
     "DurationInSeconds":{
       "type":"integer",
@@ -1655,17 +1940,17 @@
     "Eirp":{
       "type":"structure",
       "required":[
-        "units",
-        "value"
+        "value",
+        "units"
       ],
       "members":{
-        "units":{
-          "shape":"EirpUnits",
-          "documentation":"<p>Units of an EIRP.</p>"
-        },
         "value":{
           "shape":"Double",
           "documentation":"<p>Value of an EIRP. Valid values are between 20.0 to 50.0 dBW.</p>"
+        },
+        "units":{
+          "shape":"EirpUnits",
+          "documentation":"<p>Units of an EIRP.</p>"
         }
       },
       "documentation":"<p>Object that represents EIRP.</p>"
@@ -1677,17 +1962,17 @@
     "Elevation":{
       "type":"structure",
       "required":[
-        "unit",
-        "value"
+        "value",
+        "unit"
       ],
       "members":{
-        "unit":{
-          "shape":"AngleUnits",
-          "documentation":"<p>Elevation angle units.</p>"
-        },
         "value":{
           "shape":"Double",
           "documentation":"<p>Elevation angle value.</p>"
+        },
+        "unit":{
+          "shape":"AngleUnits",
+          "documentation":"<p>Elevation angle units.</p>"
         }
       },
       "documentation":"<p>Elevation angle of the satellite in the sky during a contact.</p>"
@@ -1695,25 +1980,33 @@
     "EndpointDetails":{
       "type":"structure",
       "members":{
-        "awsGroundStationAgentEndpoint":{
-          "shape":"AwsGroundStationAgentEndpoint",
-          "documentation":"<p>An agent endpoint.</p>"
+        "securityDetails":{
+          "shape":"SecurityDetails",
+          "documentation":"<p>Endpoint security details including a list of subnets, a list of security groups and a role to connect streams to instances.</p>"
         },
         "endpoint":{
           "shape":"DataflowEndpoint",
           "documentation":"<p>A dataflow endpoint.</p>"
         },
-        "healthReasons":{
-          "shape":"CapabilityHealthReasonList",
-          "documentation":"<p>Health reasons for a dataflow endpoint. This field is ignored when calling <code>CreateDataflowEndpointGroup</code>.</p>"
+        "awsGroundStationAgentEndpoint":{
+          "shape":"AwsGroundStationAgentEndpoint",
+          "documentation":"<p>An agent endpoint.</p>"
+        },
+        "uplinkAwsGroundStationAgentEndpoint":{
+          "shape":"UplinkAwsGroundStationAgentEndpointDetails",
+          "documentation":"<p>Definition for an uplink agent endpoint</p>"
+        },
+        "downlinkAwsGroundStationAgentEndpoint":{
+          "shape":"DownlinkAwsGroundStationAgentEndpointDetails",
+          "documentation":"<p>Definition for a downlink agent endpoint</p>"
         },
         "healthStatus":{
           "shape":"CapabilityHealth",
           "documentation":"<p>A dataflow endpoint health status. This field is ignored when calling <code>CreateDataflowEndpointGroup</code>.</p>"
         },
-        "securityDetails":{
-          "shape":"SecurityDetails",
-          "documentation":"<p>Endpoint security details including a list of subnets, a list of security groups and a role to connect streams to instances.</p>"
+        "healthReasons":{
+          "shape":"CapabilityHealthReasonList",
+          "documentation":"<p>Health reasons for a dataflow endpoint. This field is ignored when calling <code>CreateDataflowEndpointGroup</code>.</p>"
         }
       },
       "documentation":"<p>Information about the endpoint details.</p>"
@@ -1743,8 +2036,9 @@
     "EphemerisData":{
       "type":"structure",
       "members":{
+        "tle":{"shape":"TLEEphemeris"},
         "oem":{"shape":"OEMEphemeris"},
-        "tle":{"shape":"TLEEphemeris"}
+        "azEl":{"shape":"AzElEphemeris"}
       },
       "documentation":"<p>Ephemeris data.</p>",
       "union":true
@@ -1752,16 +2046,94 @@
     "EphemerisDescription":{
       "type":"structure",
       "members":{
+        "sourceS3Object":{
+          "shape":"S3Object",
+          "documentation":"<p>Source Amazon S3 object used for the ephemeris.</p>"
+        },
         "ephemerisData":{
           "shape":"UnboundedString",
           "documentation":"<p>Supplied ephemeris data.</p>"
-        },
-        "sourceS3Object":{
-          "shape":"S3Object",
-          "documentation":"<p>Source S3 object used for the ephemeris.</p>"
         }
       },
       "documentation":"<p>Description of ephemeris.</p>"
+    },
+    "EphemerisErrorCode":{
+      "type":"string",
+      "enum":[
+        "INTERNAL_ERROR",
+        "MISMATCHED_SATCAT_ID",
+        "OEM_VERSION_UNSUPPORTED",
+        "ORIGINATOR_MISSING",
+        "CREATION_DATE_MISSING",
+        "OBJECT_NAME_MISSING",
+        "OBJECT_ID_MISSING",
+        "REF_FRAME_UNSUPPORTED",
+        "REF_FRAME_EPOCH_UNSUPPORTED",
+        "TIME_SYSTEM_UNSUPPORTED",
+        "CENTER_BODY_UNSUPPORTED",
+        "INTERPOLATION_MISSING",
+        "INTERPOLATION_DEGREE_INVALID",
+        "AZ_EL_SEGMENT_LIST_MISSING",
+        "INSUFFICIENT_TIME_AZ_EL",
+        "START_TIME_IN_FUTURE",
+        "END_TIME_IN_PAST",
+        "EXPIRATION_TIME_TOO_EARLY",
+        "START_TIME_METADATA_TOO_EARLY",
+        "STOP_TIME_METADATA_TOO_LATE",
+        "AZ_EL_SEGMENT_END_TIME_BEFORE_START_TIME",
+        "AZ_EL_SEGMENT_TIMES_OVERLAP",
+        "AZ_EL_SEGMENTS_OUT_OF_ORDER",
+        "TIME_AZ_EL_ITEMS_OUT_OF_ORDER",
+        "MEAN_MOTION_INVALID",
+        "TIME_AZ_EL_AZ_RADIAN_RANGE_INVALID",
+        "TIME_AZ_EL_EL_RADIAN_RANGE_INVALID",
+        "TIME_AZ_EL_AZ_DEGREE_RANGE_INVALID",
+        "TIME_AZ_EL_EL_DEGREE_RANGE_INVALID",
+        "TIME_AZ_EL_ANGLE_UNITS_INVALID",
+        "INSUFFICIENT_KMS_PERMISSIONS",
+        "FILE_FORMAT_INVALID",
+        "AZ_EL_SEGMENT_REFERENCE_EPOCH_INVALID",
+        "AZ_EL_SEGMENT_START_TIME_INVALID",
+        "AZ_EL_SEGMENT_END_TIME_INVALID",
+        "AZ_EL_SEGMENT_VALID_TIME_RANGE_INVALID",
+        "AZ_EL_SEGMENT_END_TIME_TOO_LATE",
+        "AZ_EL_TOTAL_DURATION_EXCEEDED"
+      ]
+    },
+    "EphemerisErrorReason":{
+      "type":"structure",
+      "required":[
+        "errorCode",
+        "errorMessage"
+      ],
+      "members":{
+        "errorCode":{
+          "shape":"EphemerisErrorCode",
+          "documentation":"<p>The error code identifying the type of validation failure.</p> <p>See the <a href=\"https://docs.aws.amazon.com/ground-station/latest/ug/troubleshooting-invalid-ephemerides.html\">Troubleshooting Invalid Ephemerides guide</a> for error code details.</p>"
+        },
+        "errorMessage":{
+          "shape":"ErrorString",
+          "documentation":"<p>A human-readable message describing the validation failure.</p> <p>Provides specific details about what failed and may include suggestions for remediation.</p>"
+        }
+      },
+      "documentation":"<p>Detailed error information for ephemeris validation failures.</p> <p>Provides an error code and descriptive message to help diagnose and resolve validation issues.</p>"
+    },
+    "EphemerisErrorReasonList":{
+      "type":"list",
+      "member":{"shape":"EphemerisErrorReason"},
+      "max":50,
+      "min":1
+    },
+    "EphemerisFilter":{
+      "type":"structure",
+      "members":{
+        "azEl":{
+          "shape":"AzElEphemerisFilter",
+          "documentation":"<p>Filter for <a>AzElEphemeris</a>.</p>"
+        }
+      },
+      "documentation":"<p>Filter for selecting contacts that use a specific ephemeris\".</p>",
+      "union":true
     },
     "EphemerisIdResponse":{
       "type":"structure",
@@ -1785,33 +2157,37 @@
     "EphemerisItem":{
       "type":"structure",
       "members":{
-        "creationTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The time the ephemeris was uploaded in UTC.</p>"
+        "ephemerisId":{
+          "shape":"Uuid",
+          "documentation":"<p>The AWS Ground Station ephemeris ID.</p>"
+        },
+        "ephemerisType":{
+          "shape":"EphemerisType",
+          "documentation":"<p>The type of ephemeris.</p>"
+        },
+        "status":{
+          "shape":"EphemerisStatus",
+          "documentation":"<p>The status of the ephemeris.</p>"
+        },
+        "priority":{
+          "shape":"EphemerisPriority",
+          "documentation":"<p>A priority score that determines which ephemeris to use when multiple ephemerides overlap.</p> <p>Higher numbers take precedence. The default is 1. Must be 1 or greater.</p>"
         },
         "enabled":{
           "shape":"Boolean",
           "documentation":"<p>Whether or not the ephemeris is enabled.</p>"
         },
-        "ephemerisId":{
-          "shape":"Uuid",
-          "documentation":"<p>The AWS Ground Station ephemeris ID.</p>"
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the ephemeris was uploaded in UTC.</p>"
         },
         "name":{
           "shape":"SafeName",
-          "documentation":"<p>A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.</p>"
-        },
-        "priority":{
-          "shape":"EphemerisPriority",
-          "documentation":"<p>Customer-provided priority score to establish the order in which overlapping ephemerides should be used.</p> <p>The default for customer-provided ephemeris priority is 1, and higher numbers take precedence.</p> <p>Priority must be 1 or greater</p>"
+          "documentation":"<p>A name that you can use to identify the ephemeris.</p>"
         },
         "sourceS3Object":{
           "shape":"S3Object",
-          "documentation":"<p>Source S3 object used for the ephemeris.</p>"
-        },
-        "status":{
-          "shape":"EphemerisStatus",
-          "documentation":"<p>The status of the ephemeris.</p>"
+          "documentation":"<p>Source Amazon S3 object used for the ephemeris.</p>"
         }
       },
       "documentation":"<p>Ephemeris item.</p>"
@@ -1820,6 +2196,10 @@
       "type":"structure",
       "required":["source"],
       "members":{
+        "source":{
+          "shape":"EphemerisSource",
+          "documentation":"<p>The <code>EphemerisSource</code> that generated a given ephemeris.</p>"
+        },
         "ephemerisId":{
           "shape":"Uuid",
           "documentation":"<p>UUID of a customer-provided ephemeris.</p> <p>This field is not populated for default ephemerides from Space Track.</p>"
@@ -1831,10 +2211,6 @@
         "name":{
           "shape":"SafeName",
           "documentation":"<p>A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.</p> <p>A name is only returned for customer-provider ephemerides that have a name associated.</p>"
-        },
-        "source":{
-          "shape":"EphemerisSource",
-          "documentation":"<p>The <code>EphemerisSource</code> that generated a given ephemeris.</p>"
         }
       },
       "documentation":"<p>Metadata describing a particular ephemeris.</p>"
@@ -1844,6 +2220,21 @@
       "box":true,
       "max":99999,
       "min":0
+    },
+    "EphemerisResponseData":{
+      "type":"structure",
+      "required":["ephemerisType"],
+      "members":{
+        "ephemerisId":{
+          "shape":"Uuid",
+          "documentation":"<p>Unique identifier of the ephemeris. Appears only for custom ephemerides.</p>"
+        },
+        "ephemerisType":{
+          "shape":"EphemerisType",
+          "documentation":"<p>Type of ephemeris.</p>"
+        }
+      },
+      "documentation":"<p>Ephemeris data for a contact.</p>"
     },
     "EphemerisSource":{
       "type":"string",
@@ -1869,29 +2260,44 @@
       "max":500,
       "min":0
     },
+    "EphemerisType":{
+      "type":"string",
+      "enum":[
+        "TLE",
+        "OEM",
+        "AZ_EL",
+        "SERVICE_MANAGED"
+      ]
+    },
     "EphemerisTypeDescription":{
       "type":"structure",
       "members":{
+        "tle":{"shape":"EphemerisDescription"},
         "oem":{"shape":"EphemerisDescription"},
-        "tle":{"shape":"EphemerisDescription"}
+        "azEl":{"shape":"EphemerisDescription"}
       },
       "documentation":"<p/>",
       "union":true
     },
+    "ErrorString":{
+      "type":"string",
+      "max":1000,
+      "min":0
+    },
     "Frequency":{
       "type":"structure",
       "required":[
-        "units",
-        "value"
+        "value",
+        "units"
       ],
       "members":{
-        "units":{
-          "shape":"FrequencyUnits",
-          "documentation":"<p>Frequency units.</p>"
-        },
         "value":{
           "shape":"Double",
           "documentation":"<p>Frequency value. Valid values are between 2200 to 2300 MHz and 7750 to 8400 MHz for downlink and 2025 to 2120 MHz for uplink.</p>"
+        },
+        "units":{
+          "shape":"FrequencyUnits",
+          "documentation":"<p>Frequency units.</p>"
         }
       },
       "documentation":"<p>Object that describes the frequency.</p>"
@@ -1899,17 +2305,17 @@
     "FrequencyBandwidth":{
       "type":"structure",
       "required":[
-        "units",
-        "value"
+        "value",
+        "units"
       ],
       "members":{
-        "units":{
-          "shape":"BandwidthUnits",
-          "documentation":"<p>Frequency bandwidth units.</p>"
-        },
         "value":{
           "shape":"Double",
           "documentation":"<p>Frequency bandwidth value. AWS Ground Station currently has the following bandwidth limitations:</p> <ul> <li> <p>For <code>AntennaDownlinkDemodDecodeconfig</code>, valid values are between 125 kHz to 650 MHz.</p> </li> <li> <p>For <code>AntennaDownlinkconfig</code>, valid values are between 10 kHz to 54 MHz.</p> </li> <li> <p>For <code>AntennaUplinkConfig</code>, valid values are between 10 kHz to 54 MHz.</p> </li> </ul>"
+        },
+        "units":{
+          "shape":"BandwidthUnits",
+          "documentation":"<p>Frequency bandwidth units.</p>"
         }
       },
       "documentation":"<p>Object that describes the frequency bandwidth. </p>"
@@ -1947,6 +2353,49 @@
         }
       }
     },
+    "GetAgentTaskResponseUrlRequest":{
+      "type":"structure",
+      "required":[
+        "agentId",
+        "taskId"
+      ],
+      "members":{
+        "agentId":{
+          "shape":"Uuid",
+          "documentation":"<p>UUID of agent requesting the response URL.</p>",
+          "location":"uri",
+          "locationName":"agentId"
+        },
+        "taskId":{
+          "shape":"Uuid",
+          "documentation":"<p>GUID of the agent task for which the response URL is being requested.</p>",
+          "location":"uri",
+          "locationName":"taskId"
+        }
+      }
+    },
+    "GetAgentTaskResponseUrlResponse":{
+      "type":"structure",
+      "required":[
+        "agentId",
+        "taskId",
+        "presignedLogUrl"
+      ],
+      "members":{
+        "agentId":{
+          "shape":"Uuid",
+          "documentation":"<p>UUID of the agent.</p>"
+        },
+        "taskId":{
+          "shape":"Uuid",
+          "documentation":"<p>GUID of the agent task.</p>"
+        },
+        "presignedLogUrl":{
+          "shape":"String",
+          "documentation":"<p>Presigned URL for uploading agent task response logs.</p>"
+        }
+      }
+    },
     "GetConfigRequest":{
       "type":"structure",
       "required":[
@@ -1972,31 +2421,31 @@
     "GetConfigResponse":{
       "type":"structure",
       "required":[
-        "configArn",
-        "configData",
         "configId",
-        "name"
+        "configArn",
+        "name",
+        "configData"
       ],
       "members":{
+        "configId":{
+          "shape":"String",
+          "documentation":"<p>UUID of a <code>Config</code>.</p>"
+        },
         "configArn":{
           "shape":"ConfigArn",
           "documentation":"<p>ARN of a <code>Config</code> </p>"
         },
-        "configData":{
-          "shape":"ConfigTypeData",
-          "documentation":"<p>Data elements in a <code>Config</code>.</p>"
-        },
-        "configId":{
+        "name":{
           "shape":"String",
-          "documentation":"<p>UUID of a <code>Config</code>.</p>"
+          "documentation":"<p>Name of a <code>Config</code>.</p>"
         },
         "configType":{
           "shape":"ConfigCapabilityType",
           "documentation":"<p>Type of a <code>Config</code>.</p>"
         },
-        "name":{
-          "shape":"String",
-          "documentation":"<p>Name of a <code>Config</code>.</p>"
+        "configData":{
+          "shape":"ConfigTypeData",
+          "documentation":"<p>Data elements in a <code>Config</code>.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -2021,21 +2470,13 @@
     "GetDataflowEndpointGroupResponse":{
       "type":"structure",
       "members":{
-        "contactPostPassDurationSeconds":{
-          "shape":"DataflowEndpointGroupDurationInSeconds",
-          "documentation":"<p>Amount of time, in seconds, after a contact ends that the Ground Station Dataflow Endpoint Group will be in a <code>POSTPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>POSTPASS</code> state.</p>"
-        },
-        "contactPrePassDurationSeconds":{
-          "shape":"DataflowEndpointGroupDurationInSeconds",
-          "documentation":"<p>Amount of time, in seconds, before a contact starts that the Ground Station Dataflow Endpoint Group will be in a <code>PREPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>PREPASS</code> state.</p>"
+        "dataflowEndpointGroupId":{
+          "shape":"Uuid",
+          "documentation":"<p>UUID of a dataflow endpoint group.</p>"
         },
         "dataflowEndpointGroupArn":{
           "shape":"DataflowEndpointGroupArn",
           "documentation":"<p>ARN of a dataflow endpoint group.</p>"
-        },
-        "dataflowEndpointGroupId":{
-          "shape":"Uuid",
-          "documentation":"<p>UUID of a dataflow endpoint group.</p>"
         },
         "endpointsDetails":{
           "shape":"EndpointDetailsList",
@@ -2044,6 +2485,14 @@
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Tags assigned to a dataflow endpoint group.</p>"
+        },
+        "contactPrePassDurationSeconds":{
+          "shape":"DataflowEndpointGroupDurationInSeconds",
+          "documentation":"<p>Amount of time, in seconds, before a contact starts that the Ground Station Dataflow Endpoint Group will be in a <code>PREPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>PREPASS</code> state.</p>"
+        },
+        "contactPostPassDurationSeconds":{
+          "shape":"DataflowEndpointGroupDurationInSeconds",
+          "documentation":"<p>Amount of time, in seconds, after a contact ends that the Ground Station Dataflow Endpoint Group will be in a <code>POSTPASS</code> state. A Ground Station Dataflow Endpoint Group State Change event will be emitted when the Dataflow Endpoint Group enters and exits the <code>POSTPASS</code> state.</p>"
         }
       },
       "documentation":"<p/>"
@@ -2069,10 +2518,6 @@
     "GetMinuteUsageResponse":{
       "type":"structure",
       "members":{
-        "estimatedMinutesRemaining":{
-          "shape":"Integer",
-          "documentation":"<p>Estimated number of minutes remaining for an account, specific to the month being requested.</p>"
-        },
         "isReservedMinutesCustomer":{
           "shape":"Boolean",
           "documentation":"<p>Returns whether or not an account has signed up for the reserved minutes pricing plan, specific to the month being requested.</p>"
@@ -2081,13 +2526,17 @@
           "shape":"Integer",
           "documentation":"<p>Total number of reserved minutes allocated, specific to the month being requested.</p>"
         },
+        "upcomingMinutesScheduled":{
+          "shape":"Integer",
+          "documentation":"<p>Upcoming minutes scheduled for an account, specific to the month being requested.</p>"
+        },
         "totalScheduledMinutes":{
           "shape":"Integer",
           "documentation":"<p>Total scheduled minutes for an account, specific to the month being requested.</p>"
         },
-        "upcomingMinutesScheduled":{
+        "estimatedMinutesRemaining":{
           "shape":"Integer",
-          "documentation":"<p>Upcoming minutes scheduled for an account, specific to the month being requested.</p>"
+          "documentation":"<p>Estimated number of minutes remaining for an account, specific to the month being requested.</p>"
         }
       },
       "documentation":"<p/>"
@@ -2108,29 +2557,13 @@
     "GetMissionProfileResponse":{
       "type":"structure",
       "members":{
-        "contactPostPassDurationSeconds":{
-          "shape":"DurationInSeconds",
-          "documentation":"<p>Amount of time after a contact ends that you’d like to receive a CloudWatch event indicating the pass has finished.</p>"
-        },
-        "contactPrePassDurationSeconds":{
-          "shape":"DurationInSeconds",
-          "documentation":"<p>Amount of time prior to contact start you’d like to receive a CloudWatch event indicating an upcoming pass.</p>"
-        },
-        "dataflowEdges":{
-          "shape":"DataflowEdgeList",
-          "documentation":"<p>A list of lists of ARNs. Each list of ARNs is an edge, with a <i>from</i> <code>Config</code> and a <i>to</i> <code>Config</code>.</p>"
-        },
-        "minimumViableContactDurationSeconds":{
-          "shape":"PositiveDurationInSeconds",
-          "documentation":"<p>Smallest amount of time in seconds that you’d like to see for an available contact. AWS Ground Station will not present you with contacts shorter than this duration.</p>"
+        "missionProfileId":{
+          "shape":"Uuid",
+          "documentation":"<p>UUID of a mission profile.</p>"
         },
         "missionProfileArn":{
           "shape":"MissionProfileArn",
           "documentation":"<p>ARN of a mission profile.</p>"
-        },
-        "missionProfileId":{
-          "shape":"Uuid",
-          "documentation":"<p>UUID of a mission profile.</p>"
         },
         "name":{
           "shape":"SafeName",
@@ -2140,6 +2573,30 @@
           "shape":"AWSRegion",
           "documentation":"<p>Region of a mission profile.</p>"
         },
+        "contactPrePassDurationSeconds":{
+          "shape":"DurationInSeconds",
+          "documentation":"<p>Amount of time prior to contact start you’d like to receive a CloudWatch event indicating an upcoming pass.</p>"
+        },
+        "contactPostPassDurationSeconds":{
+          "shape":"DurationInSeconds",
+          "documentation":"<p>Amount of time after a contact ends that you’d like to receive a CloudWatch event indicating the pass has finished.</p>"
+        },
+        "minimumViableContactDurationSeconds":{
+          "shape":"PositiveDurationInSeconds",
+          "documentation":"<p>Smallest amount of time in seconds that you’d like to see for an available contact. AWS Ground Station will not present you with contacts shorter than this duration.</p>"
+        },
+        "dataflowEdges":{
+          "shape":"DataflowEdgeList",
+          "documentation":"<p>A list of lists of ARNs. Each list of ARNs is an edge, with a <i>from</i> <code>Config</code> and a <i>to</i> <code>Config</code>.</p>"
+        },
+        "trackingConfigArn":{
+          "shape":"ConfigArn",
+          "documentation":"<p>ARN of a tracking <code>Config</code>.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags assigned to a mission profile.</p>"
+        },
         "streamsKmsKey":{
           "shape":"KmsKey",
           "documentation":"<p>KMS key to use for encrypting streams.</p>"
@@ -2147,14 +2604,6 @@
         "streamsKmsRole":{
           "shape":"RoleArn",
           "documentation":"<p>Role to use for encrypting streams with KMS key.</p>"
-        },
-        "tags":{
-          "shape":"TagsMap",
-          "documentation":"<p>Tags assigned to a mission profile.</p>"
-        },
-        "trackingConfigArn":{
-          "shape":"ConfigArn",
-          "documentation":"<p>ARN of a tracking <code>Config</code>.</p>"
         }
       },
       "documentation":"<p/>"
@@ -2175,25 +2624,25 @@
     "GetSatelliteResponse":{
       "type":"structure",
       "members":{
-        "currentEphemeris":{
-          "shape":"EphemerisMetaData",
-          "documentation":"<p>The current ephemeris being used to compute the trajectory of the satellite.</p>"
-        },
-        "groundStations":{
-          "shape":"GroundStationIdList",
-          "documentation":"<p>A list of ground stations to which the satellite is on-boarded.</p>"
-        },
-        "noradSatelliteID":{
-          "shape":"noradSatelliteID",
-          "documentation":"<p>NORAD satellite ID number.</p>"
+        "satelliteId":{
+          "shape":"Uuid",
+          "documentation":"<p>UUID of a satellite.</p>"
         },
         "satelliteArn":{
           "shape":"satelliteArn",
           "documentation":"<p>ARN of a satellite.</p>"
         },
-        "satelliteId":{
-          "shape":"Uuid",
-          "documentation":"<p>UUID of a satellite.</p>"
+        "noradSatelliteID":{
+          "shape":"noradSatelliteID",
+          "documentation":"<p>NORAD satellite ID number.</p>"
+        },
+        "groundStations":{
+          "shape":"GroundStationIdList",
+          "documentation":"<p>A list of ground stations to which the satellite is on-boarded.</p>"
+        },
+        "currentEphemeris":{
+          "shape":"EphemerisMetaData",
+          "documentation":"<p>The current ephemeris being used to compute the trajectory of the satellite.</p>"
         }
       },
       "documentation":"<p/>"
@@ -2230,19 +2679,37 @@
       "type":"string",
       "max":500,
       "min":4,
-      "pattern":"^[ a-zA-Z0-9-._:=]{4,256}$"
+      "pattern":"[ a-zA-Z0-9-._:=]{4,256}"
+    },
+    "ISO8601TimeRange":{
+      "type":"structure",
+      "required":[
+        "startTime",
+        "endTime"
+      ],
+      "members":{
+        "startTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>Start time in ISO 8601 format in Coordinated Universal Time (UTC).</p> <p>Example: <code>2026-11-15T10:28:48.000Z</code> </p>"
+        },
+        "endTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>End time in ISO 8601 format in Coordinated Universal Time (UTC).</p> <p>Example: <code>2024-01-15T12:00:00.000Z</code> </p>"
+        }
+      },
+      "documentation":"<p>Time range specified using ISO 8601 format timestamps.</p>"
     },
     "InstanceId":{
       "type":"string",
       "max":64,
       "min":10,
-      "pattern":"^[a-z0-9-]{10,64}$"
+      "pattern":"[a-z0-9-]{10,64}"
     },
     "InstanceType":{
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^[a-z0-9.-]{1,64}$"
+      "pattern":"[a-z0-9.-]{1,64}"
     },
     "Integer":{
       "type":"integer",
@@ -2251,17 +2718,17 @@
     "IntegerRange":{
       "type":"structure",
       "required":[
-        "maximum",
-        "minimum"
+        "minimum",
+        "maximum"
       ],
       "members":{
-        "maximum":{
-          "shape":"Integer",
-          "documentation":"<p>A maximum value.</p>"
-        },
         "minimum":{
           "shape":"Integer",
           "documentation":"<p>A minimum value.</p>"
+        },
+        "maximum":{
+          "shape":"Integer",
+          "documentation":"<p>A maximum value.</p>"
         }
       },
       "documentation":"<p>An integer range that has a minimum and maximum value.</p>"
@@ -2292,30 +2759,34 @@
       "type":"string",
       "max":16,
       "min":7,
-      "pattern":"^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$"
+      "pattern":"\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}"
     },
     "JsonString":{
       "type":"string",
       "max":8192,
       "min":2,
-      "pattern":"^[{}\\[\\]:.,\"0-9A-Za-z\\-_\\s]{2,8192}$"
+      "pattern":"[{}\\[\\]:.,\"0-9A-Za-z\\-_\\s]{2,8192}"
     },
     "KeyAliasArn":{
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"^arn:aws[a-zA-Z-]{0,16}:kms:[-a-z0-9]{1,50}:[0-9]{12}:((alias/[a-zA-Z0-9:/_-]{1,256}))$"
+      "pattern":"arn:aws[a-zA-Z-]{0,16}:kms:[-a-z0-9]{1,50}:[0-9]{12}:((alias/[a-zA-Z0-9:/_-]{1,256}))"
     },
     "KeyAliasName":{
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"^alias/[a-zA-Z0-9:/_-]+$"
+      "pattern":"alias/[a-zA-Z0-9:/_-]+"
     },
     "KeyArn":{"type":"string"},
     "KmsKey":{
       "type":"structure",
       "members":{
+        "kmsKeyArn":{
+          "shape":"KeyArn",
+          "documentation":"<p>KMS Key Arn.</p>"
+        },
         "kmsAliasArn":{
           "shape":"KeyAliasArn",
           "documentation":"<p>KMS Alias Arn.</p>"
@@ -2323,10 +2794,6 @@
         "kmsAliasName":{
           "shape":"KeyAliasName",
           "documentation":"<p>KMS Alias Name.</p>"
-        },
-        "kmsKeyArn":{
-          "shape":"KeyArn",
-          "documentation":"<p>KMS Key Arn.</p>"
         }
       },
       "documentation":"<p>KMS key info.</p>",
@@ -2353,13 +2820,13 @@
     "ListConfigsResponse":{
       "type":"structure",
       "members":{
-        "configList":{
-          "shape":"ConfigList",
-          "documentation":"<p>List of <code>Config</code> items.</p>"
-        },
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>Next token returned in the response of a previous <code>ListConfigs</code> call. Used to get the next page of results.</p>"
+        },
+        "configList":{
+          "shape":"ConfigList",
+          "documentation":"<p>List of <code>Config</code> items.</p>"
         }
       },
       "documentation":"<p/>"
@@ -2367,11 +2834,27 @@
     "ListContactsRequest":{
       "type":"structure",
       "required":[
-        "endTime",
+        "statusList",
         "startTime",
-        "statusList"
+        "endTime"
       ],
       "members":{
+        "maxResults":{
+          "shape":"PaginationMaxResults",
+          "documentation":"<p>Maximum number of contacts returned.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Next token returned in the request of a previous <code>ListContacts</code> call. Used to get the next page of results.</p>"
+        },
+        "statusList":{
+          "shape":"StatusList",
+          "documentation":"<p>Status of a contact reservation.</p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Start time of a contact in UTC.</p>"
+        },
         "endTime":{
           "shape":"Timestamp",
           "documentation":"<p>End time of a contact in UTC.</p>"
@@ -2380,29 +2863,17 @@
           "shape":"GroundStationName",
           "documentation":"<p>Name of a ground station.</p>"
         },
-        "maxResults":{
-          "shape":"PaginationMaxResults",
-          "documentation":"<p>Maximum number of contacts returned.</p>"
+        "satelliteArn":{
+          "shape":"satelliteArn",
+          "documentation":"<p>ARN of a satellite.</p>"
         },
         "missionProfileArn":{
           "shape":"MissionProfileArn",
           "documentation":"<p>ARN of a mission profile.</p>"
         },
-        "nextToken":{
-          "shape":"PaginationToken",
-          "documentation":"<p>Next token returned in the request of a previous <code>ListContacts</code> call. Used to get the next page of results.</p>"
-        },
-        "satelliteArn":{
-          "shape":"satelliteArn",
-          "documentation":"<p>ARN of a satellite.</p>"
-        },
-        "startTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>Start time of a contact in UTC.</p>"
-        },
-        "statusList":{
-          "shape":"StatusList",
-          "documentation":"<p>Status of a contact reservation.</p>"
+        "ephemeris":{
+          "shape":"EphemerisFilter",
+          "documentation":"<p>Filter for selecting contacts that use a specific ephemeris\".</p>"
         }
       },
       "documentation":"<p/>"
@@ -2410,13 +2881,13 @@
     "ListContactsResponse":{
       "type":"structure",
       "members":{
-        "contactList":{
-          "shape":"ContactList",
-          "documentation":"<p>List of contacts.</p>"
-        },
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>Next token returned in the response of a previous <code>ListContacts</code> call. Used to get the next page of results.</p>"
+        },
+        "contactList":{
+          "shape":"ContactList",
+          "documentation":"<p>List of contacts.</p>"
         }
       },
       "documentation":"<p/>"
@@ -2442,13 +2913,13 @@
     "ListDataflowEndpointGroupsResponse":{
       "type":"structure",
       "members":{
-        "dataflowEndpointGroupList":{
-          "shape":"DataflowEndpointGroupList",
-          "documentation":"<p>A list of dataflow endpoint groups.</p>"
-        },
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>Next token returned in the response of a previous <code>ListDataflowEndpointGroups</code> call. Used to get the next page of results.</p>"
+        },
+        "dataflowEndpointGroupList":{
+          "shape":"DataflowEndpointGroupList",
+          "documentation":"<p>A list of dataflow endpoint groups.</p>"
         }
       },
       "documentation":"<p/>"
@@ -2456,14 +2927,29 @@
     "ListEphemeridesRequest":{
       "type":"structure",
       "required":[
-        "endTime",
-        "satelliteId",
-        "startTime"
+        "startTime",
+        "endTime"
       ],
       "members":{
+        "satelliteId":{
+          "shape":"Uuid",
+          "documentation":"<p>The AWS Ground Station satellite ID to list ephemeris for.</p>"
+        },
+        "ephemerisType":{
+          "shape":"EphemerisType",
+          "documentation":"<p>Filter ephemerides by type. If not specified, all ephemeris types will be returned.</p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time for the list operation in UTC. Returns ephemerides with expiration times within your specified time range.</p>"
+        },
         "endTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The end time to list in UTC. The operation will return an ephemeris if its expiration time is within the time range defined by the <code>startTime</code> and <code>endTime</code>.</p>"
+          "documentation":"<p>The end time for the list operation in UTC. Returns ephemerides with expiration times within your specified time range.</p>"
+        },
+        "statusList":{
+          "shape":"EphemerisStatusList",
+          "documentation":"<p>The list of ephemeris status to return.</p>"
         },
         "maxResults":{
           "shape":"PaginationMaxResults",
@@ -2476,37 +2962,31 @@
           "documentation":"<p>Pagination token.</p>",
           "location":"querystring",
           "locationName":"nextToken"
-        },
-        "satelliteId":{
-          "shape":"Uuid",
-          "documentation":"<p>The AWS Ground Station satellite ID to list ephemeris for.</p>"
-        },
-        "startTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The start time to list in UTC. The operation will return an ephemeris if its expiration time is within the time range defined by the <code>startTime</code> and <code>endTime</code>.</p>"
-        },
-        "statusList":{
-          "shape":"EphemerisStatusList",
-          "documentation":"<p>The list of ephemeris status to return.</p>"
         }
       }
     },
     "ListEphemeridesResponse":{
       "type":"structure",
       "members":{
-        "ephemerides":{
-          "shape":"EphemeridesList",
-          "documentation":"<p>List of ephemerides.</p>"
-        },
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>Pagination token.</p>"
+        },
+        "ephemerides":{
+          "shape":"EphemeridesList",
+          "documentation":"<p>List of ephemerides.</p>"
         }
       }
     },
     "ListGroundStationsRequest":{
       "type":"structure",
       "members":{
+        "satelliteId":{
+          "shape":"Uuid",
+          "documentation":"<p>Satellite ID to retrieve on-boarded ground stations.</p>",
+          "location":"querystring",
+          "locationName":"satelliteId"
+        },
         "maxResults":{
           "shape":"PaginationMaxResults",
           "documentation":"<p>Maximum number of ground stations returned.</p>",
@@ -2518,12 +2998,6 @@
           "documentation":"<p>Next token that can be supplied in the next call to get the next page of ground stations.</p>",
           "location":"querystring",
           "locationName":"nextToken"
-        },
-        "satelliteId":{
-          "shape":"Uuid",
-          "documentation":"<p>Satellite ID to retrieve on-boarded ground stations.</p>",
-          "location":"querystring",
-          "locationName":"satelliteId"
         }
       },
       "documentation":"<p/>"
@@ -2531,13 +3005,13 @@
     "ListGroundStationsResponse":{
       "type":"structure",
       "members":{
-        "groundStationList":{
-          "shape":"GroundStationList",
-          "documentation":"<p>List of ground stations.</p>"
-        },
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>Next token that can be supplied in the next call to get the next page of ground stations.</p>"
+        },
+        "groundStationList":{
+          "shape":"GroundStationList",
+          "documentation":"<p>List of ground stations.</p>"
         }
       },
       "documentation":"<p/>"
@@ -2563,13 +3037,13 @@
     "ListMissionProfilesResponse":{
       "type":"structure",
       "members":{
-        "missionProfileList":{
-          "shape":"MissionProfileList",
-          "documentation":"<p>List of mission profiles.</p>"
-        },
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>Next token returned in the response of a previous <code>ListMissionProfiles</code> call. Used to get the next page of results.</p>"
+        },
+        "missionProfileList":{
+          "shape":"MissionProfileList",
+          "documentation":"<p>List of mission profiles.</p>"
         }
       },
       "documentation":"<p/>"
@@ -2637,7 +3111,7 @@
       "type":"string",
       "max":138,
       "min":89,
-      "pattern":"^arn:aws:groundstation:[-a-z0-9]{1,50}:[0-9]{12}:mission-profile/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+      "pattern":"arn:aws:groundstation:[-a-z0-9]{1,50}:[0-9]{12}:mission-profile/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
     },
     "MissionProfileIdResponse":{
       "type":"structure",
@@ -2656,21 +3130,21 @@
     "MissionProfileListItem":{
       "type":"structure",
       "members":{
-        "missionProfileArn":{
-          "shape":"MissionProfileArn",
-          "documentation":"<p>ARN of a mission profile.</p>"
-        },
         "missionProfileId":{
           "shape":"Uuid",
           "documentation":"<p>UUID of a mission profile.</p>"
         },
-        "name":{
-          "shape":"SafeName",
-          "documentation":"<p>Name of a mission profile.</p>"
+        "missionProfileArn":{
+          "shape":"MissionProfileArn",
+          "documentation":"<p>ARN of a mission profile.</p>"
         },
         "region":{
           "shape":"AWSRegion",
           "documentation":"<p>Region of a mission profile.</p>"
+        },
+        "name":{
+          "shape":"SafeName",
+          "documentation":"<p>Name of a mission profile.</p>"
         }
       },
       "documentation":"<p>Item in a list of mission profiles.</p>"
@@ -2684,16 +3158,16 @@
     "OEMEphemeris":{
       "type":"structure",
       "members":{
-        "oemData":{
-          "shape":"UnboundedString",
-          "documentation":"<p>The data for an OEM ephemeris, supplied directly in the request rather than through an S3 object.</p>"
-        },
         "s3Object":{
           "shape":"S3Object",
-          "documentation":"<p>Identifies the S3 object to be used as the ephemeris.</p>"
+          "documentation":"<p>The Amazon S3 object that contains the ephemeris data.</p>"
+        },
+        "oemData":{
+          "shape":"UnboundedString",
+          "documentation":"<p>OEM data that you provide directly instead of using an Amazon S3 object.</p>"
         }
       },
-      "documentation":"<p> Ephemeris data in Orbit Ephemeris Message (OEM) format. </p> <p> AWS Ground Station processes OEM Customer Provided Ephemerides according to the <a href=\"https://public.ccsds.org/Pubs/502x0b3e1.pdf\">CCSDS standard</a> with some extra restrictions. OEM files should be in KVN format. For more detail about the OEM format that AWS Ground Station supports, see <a href=\"https://docs.aws.amazon.com/ground-station/latest/ug/providing-custom-ephemeris-data.html#oem-ephemeris-format\">OEM ephemeris format</a> in the AWS Ground Station user guide. </p>"
+      "documentation":"<p>Ephemeris data in Orbit Ephemeris Message (OEM) format.</p> <p> AWS Ground Station processes OEM ephemerides according to the <a href=\"https://ccsds.org/wp-content/uploads/gravity_forms/5-448e85c647331d9cbaf66c096458bdd5/2025/01//502x0b3e1.pdf\">CCSDS standard</a> with some extra restrictions. OEM files should be in KVN format. For more detail about the OEM format that AWS Ground Station supports, see <a href=\"https://docs.aws.amazon.com/ground-station/latest/ug/providing-oem-ephemeris-data.html#oem-ephemeris-format\">OEM ephemeris format</a> in the AWS Ground Station user guide. </p>"
     },
     "PaginationMaxResults":{
       "type":"integer",
@@ -2705,7 +3179,7 @@
       "type":"string",
       "max":1000,
       "min":3,
-      "pattern":"^[A-Za-z0-9-/+_.=]+$"
+      "pattern":"[A-Za-z0-9-/+_.=]+"
     },
     "Polarization":{
       "type":"string",
@@ -2721,17 +3195,28 @@
       "max":21600,
       "min":1
     },
+    "ProgramTrackSettings":{
+      "type":"structure",
+      "members":{
+        "azEl":{
+          "shape":"AzElProgramTrackSettings",
+          "documentation":"<p>Program track settings for <a>AzElEphemeris</a>.</p>"
+        }
+      },
+      "documentation":"<p>Program track settings for an antenna during a contact.</p>",
+      "union":true
+    },
     "RangedConnectionDetails":{
       "type":"structure",
       "required":["socketAddress"],
       "members":{
-        "mtu":{
-          "shape":"RangedConnectionDetailsMtuInteger",
-          "documentation":"<p>Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.</p>"
-        },
         "socketAddress":{
           "shape":"RangedSocketAddress",
           "documentation":"<p>A ranged socket address.</p>"
+        },
+        "mtu":{
+          "shape":"RangedConnectionDetailsMtuInteger",
+          "documentation":"<p>Maximum transmission unit (MTU) size in bytes of a dataflow endpoint.</p>"
         }
       },
       "documentation":"<p>Ingress address of AgentEndpoint with a port range and an optional mtu.</p>"
@@ -2763,17 +3248,17 @@
     "RegisterAgentRequest":{
       "type":"structure",
       "required":[
-        "agentDetails",
-        "discoveryData"
+        "discoveryData",
+        "agentDetails"
       ],
       "members":{
-        "agentDetails":{
-          "shape":"AgentDetails",
-          "documentation":"<p>Detailed information about the agent being registered.</p>"
-        },
         "discoveryData":{
           "shape":"DiscoveryData",
           "documentation":"<p>Data for associating an agent with the capabilities it is managing.</p>"
+        },
+        "agentDetails":{
+          "shape":"AgentDetails",
+          "documentation":"<p>Detailed information about the agent being registered.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -2793,21 +3278,12 @@
     "ReserveContactRequest":{
       "type":"structure",
       "required":[
-        "endTime",
-        "groundStation",
         "missionProfileArn",
-        "satelliteArn",
-        "startTime"
+        "startTime",
+        "endTime",
+        "groundStation"
       ],
       "members":{
-        "endTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>End time of a contact in UTC.</p>"
-        },
-        "groundStation":{
-          "shape":"GroundStationName",
-          "documentation":"<p>Name of a ground station.</p>"
-        },
         "missionProfileArn":{
           "shape":"MissionProfileArn",
           "documentation":"<p>ARN of a mission profile.</p>"
@@ -2820,12 +3296,36 @@
           "shape":"Timestamp",
           "documentation":"<p>Start time of a contact in UTC.</p>"
         },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>End time of a contact in UTC.</p>"
+        },
+        "groundStation":{
+          "shape":"GroundStationName",
+          "documentation":"<p>Name of a ground station.</p>"
+        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Tags assigned to a contact.</p>"
+        },
+        "trackingOverrides":{
+          "shape":"TrackingOverrides",
+          "documentation":"<p>Tracking configuration overrides for the contact.</p>"
         }
       },
       "documentation":"<p/>"
+    },
+    "ResourceInUseException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The specified resource is in use by non-terminal state contacts and cannot be modified or deleted.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
     },
     "ResourceLimitExceededException":{
       "type":"structure",
@@ -2860,13 +3360,13 @@
       "type":"string",
       "max":63,
       "min":3,
-      "pattern":"^[a-z0-9.-]{3,63}$"
+      "pattern":"[a-z0-9.-]{3,63}"
     },
     "S3KeyPrefix":{
       "type":"string",
       "max":900,
       "min":1,
-      "pattern":"^([a-zA-Z0-9_\\-=/]|\\{satellite_id\\}|\\{config\\-name}|\\{s3\\-config-id}|\\{year\\}|\\{month\\}|\\{day\\}){1,900}$"
+      "pattern":"([a-zA-Z0-9_\\-=/]|\\{satellite_id\\}|\\{config\\-name}|\\{s3\\-config-id}|\\{year\\}|\\{month\\}|\\{day\\}){1,900}"
     },
     "S3Object":{
       "type":"structure",
@@ -2881,16 +3381,16 @@
         },
         "version":{
           "shape":"S3VersionId",
-          "documentation":"<p>For versioned S3 objects, the version to use for the ephemeris.</p>"
+          "documentation":"<p>For versioned Amazon S3 objects, the version to use for the ephemeris.</p>"
         }
       },
-      "documentation":"<p>Object stored in S3 containing ephemeris data.</p>"
+      "documentation":"<p>Object stored in Amazon S3 containing ephemeris data.</p>"
     },
     "S3ObjectKey":{
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"^[a-zA-Z0-9!*'\\)\\(./_-]{1,1024}$"
+      "pattern":"[a-zA-Z0-9!*'\\)\\(./_-]{1,1024}"
     },
     "S3RecordingConfig":{
       "type":"structure",
@@ -2903,13 +3403,13 @@
           "shape":"BucketArn",
           "documentation":"<p>ARN of the bucket to record to.</p>"
         },
-        "prefix":{
-          "shape":"S3KeyPrefix",
-          "documentation":"<p>S3 Key prefix to prefice data files.</p>"
-        },
         "roleArn":{
           "shape":"RoleArn",
           "documentation":"<p>ARN of the role Ground Station assumes to write data to the bucket.</p>"
+        },
+        "prefix":{
+          "shape":"S3KeyPrefix",
+          "documentation":"<p>S3 Key prefix to prefice data files.</p>"
         }
       },
       "documentation":"<p>Information about an S3 recording <code>Config</code>.</p>"
@@ -2932,13 +3432,13 @@
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"^[\\s\\S]{1,1024}$"
+      "pattern":"[\\s\\S]{1,1024}"
     },
     "SafeName":{
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"^[ a-zA-Z0-9_:-]{1,256}$"
+      "pattern":"[ a-zA-Z0-9_:-]{1,256}"
     },
     "SatelliteList":{
       "type":"list",
@@ -2947,25 +3447,25 @@
     "SatelliteListItem":{
       "type":"structure",
       "members":{
-        "currentEphemeris":{
-          "shape":"EphemerisMetaData",
-          "documentation":"<p>The current ephemeris being used to compute the trajectory of the satellite.</p>"
-        },
-        "groundStations":{
-          "shape":"GroundStationIdList",
-          "documentation":"<p>A list of ground stations to which the satellite is on-boarded.</p>"
-        },
-        "noradSatelliteID":{
-          "shape":"noradSatelliteID",
-          "documentation":"<p>NORAD satellite ID number.</p>"
+        "satelliteId":{
+          "shape":"Uuid",
+          "documentation":"<p>UUID of a satellite.</p>"
         },
         "satelliteArn":{
           "shape":"satelliteArn",
           "documentation":"<p>ARN of a satellite.</p>"
         },
-        "satelliteId":{
-          "shape":"Uuid",
-          "documentation":"<p>UUID of a satellite.</p>"
+        "noradSatelliteID":{
+          "shape":"noradSatelliteID",
+          "documentation":"<p>NORAD satellite ID number.</p>"
+        },
+        "groundStations":{
+          "shape":"GroundStationIdList",
+          "documentation":"<p>A list of ground stations to which the satellite is on-boarded.</p>"
+        },
+        "currentEphemeris":{
+          "shape":"EphemerisMetaData",
+          "documentation":"<p>The current ephemeris being used to compute the trajectory of the satellite.</p>"
         }
       },
       "documentation":"<p>Item in a list of satellites.</p>"
@@ -2973,22 +3473,22 @@
     "SecurityDetails":{
       "type":"structure",
       "required":[
-        "roleArn",
+        "subnetIds",
         "securityGroupIds",
-        "subnetIds"
+        "roleArn"
       ],
       "members":{
-        "roleArn":{
-          "shape":"RoleArn",
-          "documentation":"<p>ARN to a role needed for connecting streams to your instances. </p>"
+        "subnetIds":{
+          "shape":"SubnetList",
+          "documentation":"<p>A list of subnets where AWS Ground Station places elastic network interfaces to send streams to your instances.</p>"
         },
         "securityGroupIds":{
           "shape":"SecurityGroupIdList",
           "documentation":"<p>The security groups to attach to the elastic network interfaces.</p>"
         },
-        "subnetIds":{
-          "shape":"SubnetList",
-          "documentation":"<p>A list of subnets where AWS Ground Station places elastic network interfaces to send streams to your instances.</p>"
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>ARN to a role needed for connecting streams to your instances. </p>"
         }
       },
       "documentation":"<p>Information about endpoints.</p>"
@@ -2996,6 +3496,22 @@
     "SecurityGroupIdList":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"},
+        "parameterName":{
+          "shape":"String",
+          "documentation":"<p>Parameter name that caused the exception</p>"
+        }
+      },
+      "documentation":"<p>Request would cause a service quota to be exceeded.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
     },
     "SignatureMap":{
       "type":"map",
@@ -3023,17 +3539,17 @@
     "Source":{
       "type":"structure",
       "members":{
-        "configDetails":{
-          "shape":"ConfigDetails",
-          "documentation":"<p>Additional details for a <code>Config</code>, if type is <code>dataflow-endpoint</code> or <code>antenna-downlink-demod-decode</code> </p>"
+        "configType":{
+          "shape":"ConfigCapabilityType",
+          "documentation":"<p>Type of a <code>Config</code>.</p>"
         },
         "configId":{
           "shape":"String",
           "documentation":"<p>UUID of a <code>Config</code>.</p>"
         },
-        "configType":{
-          "shape":"ConfigCapabilityType",
-          "documentation":"<p>Type of a <code>Config</code>.</p>"
+        "configDetails":{
+          "shape":"ConfigDetails",
+          "documentation":"<p>Additional details for a <code>Config</code>, if type is <code>dataflow-endpoint</code> or <code>antenna-downlink-demod-decode</code> </p>"
         },
         "dataflowSourceRegion":{
           "shape":"String",
@@ -3045,17 +3561,17 @@
     "SpectrumConfig":{
       "type":"structure",
       "required":[
-        "bandwidth",
-        "centerFrequency"
+        "centerFrequency",
+        "bandwidth"
       ],
       "members":{
-        "bandwidth":{
-          "shape":"FrequencyBandwidth",
-          "documentation":"<p>Bandwidth of a spectral <code>Config</code>. AWS Ground Station currently has the following bandwidth limitations:</p> <ul> <li> <p>For <code>AntennaDownlinkDemodDecodeconfig</code>, valid values are between 125 kHz to 650 MHz.</p> </li> <li> <p>For <code>AntennaDownlinkconfig</code> valid values are between 10 kHz to 54 MHz.</p> </li> <li> <p>For <code>AntennaUplinkConfig</code>, valid values are between 10 kHz to 54 MHz.</p> </li> </ul>"
-        },
         "centerFrequency":{
           "shape":"Frequency",
           "documentation":"<p>Center frequency of a spectral <code>Config</code>. Valid values are between 2200 to 2300 MHz and 7750 to 8400 MHz for downlink and 2025 to 2120 MHz for uplink.</p>"
+        },
+        "bandwidth":{
+          "shape":"FrequencyBandwidth",
+          "documentation":"<p>Bandwidth of a spectral <code>Config</code>. AWS Ground Station currently has the following bandwidth limitations:</p> <ul> <li> <p>For <code>AntennaDownlinkDemodDecodeconfig</code>, valid values are between 125 kHz to 650 MHz.</p> </li> <li> <p>For <code>AntennaDownlinkconfig</code> valid values are between 10 kHz to 54 MHz.</p> </li> <li> <p>For <code>AntennaUplinkConfig</code>, valid values are between 10 kHz to 54 MHz.</p> </li> </ul>"
         },
         "polarization":{
           "shape":"Polarization",
@@ -3075,6 +3591,10 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "SyntheticTimestamp_date_time":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
     "TLEData":{
       "type":"structure",
       "required":[
@@ -3093,7 +3613,7 @@
         },
         "validTimeRange":{
           "shape":"TimeRange",
-          "documentation":"<p>The valid time range for the TLE. Gaps or overlap are not permitted.</p>"
+          "documentation":"<p>The valid time range for the TLE. Time ranges must be continuous without gaps or overlaps.</p>"
         }
       },
       "documentation":"<p>Two-line element set (TLE) data.</p>"
@@ -3109,14 +3629,14 @@
       "members":{
         "s3Object":{
           "shape":"S3Object",
-          "documentation":"<p>Identifies the S3 object to be used as the ephemeris.</p>"
+          "documentation":"<p>The Amazon S3 object that contains the ephemeris data.</p>"
         },
         "tleData":{
           "shape":"TLEDataList",
-          "documentation":"<p>The data for a TLE ephemeris, supplied directly in the request rather than through an S3 object.</p>"
+          "documentation":"<p>TLE data that you provide directly instead of using an Amazon S3 object.</p>"
         }
       },
-      "documentation":"<p>Two-line element set (TLE) ephemeris.</p>"
+      "documentation":"<p>Two-line element set (TLE) ephemeris.</p> <p> For more detail about providing Two-line element sets to AWS Ground Station, see the <a href=\"https://docs.aws.amazon.com/ground-station/latest/ug/providing-tle-ephemeris-data.html\">TLE section</a> of the AWS Ground Station user guide. </p>"
     },
     "TagKeys":{
       "type":"list",
@@ -3146,8 +3666,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p/>"
     },
     "TagsMap":{
@@ -3155,20 +3674,48 @@
       "key":{"shape":"String"},
       "value":{"shape":"String"}
     },
+    "TimeAzEl":{
+      "type":"structure",
+      "required":[
+        "dt",
+        "az",
+        "el"
+      ],
+      "members":{
+        "dt":{
+          "shape":"Double",
+          "documentation":"<p>Time offset in atomic seconds from the segment's reference epoch.</p> <p>All <code>dt</code> values within a segment must be in ascending order with no duplicates.</p> <p> <code>dt</code> values may be:</p> <ul> <li> <p>negative</p> </li> <li> <p>expressed as fractions of a second</p> </li> <li> <p>expressed in scientific notation</p> </li> </ul>"
+        },
+        "az":{
+          "shape":"Double",
+          "documentation":"<p>Azimuth angle at the specified time.</p> <p>Valid ranges by unit:</p> <ul> <li> <p> <code>DEGREE_ANGLE</code>: -180 to 360 degrees, measured clockwise from true north</p> </li> <li> <p> <code>RADIAN</code>: -π to 2π radians, measured clockwise from true north</p> </li> </ul>"
+        },
+        "el":{
+          "shape":"Double",
+          "documentation":"<p>Elevation angle at the specified time.</p> <p>Valid ranges by unit:</p> <ul> <li> <p> <code>DEGREE_ANGLE</code>: -90 to 90 degrees, where 0 is the horizon, 90 is zenith, and negative values are below the horizon </p> </li> <li> <p> <code>RADIAN</code>: -π/2 to π/2 radians, where 0 is the horizon, π/2 is zenith, and negative values are below the horizon </p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Time-tagged azimuth elevation pointing data.</p> <p>Specifies the antenna pointing direction at a specific time offset from the segment's reference epoch.</p>"
+    },
+    "TimeAzElList":{
+      "type":"list",
+      "member":{"shape":"TimeAzEl"},
+      "min":5
+    },
     "TimeRange":{
       "type":"structure",
       "required":[
-        "endTime",
-        "startTime"
+        "startTime",
+        "endTime"
       ],
       "members":{
-        "endTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>Time in UTC at which the time range ends.</p>"
-        },
         "startTime":{
           "shape":"Timestamp",
-          "documentation":"<p>Time in UTC at which the time range starts.</p>"
+          "documentation":"<p>Unix epoch timestamp in UTC at which the time range starts.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Unix epoch timestamp in UTC at which the time range ends.</p>"
         }
       },
       "documentation":"<p>A time range with a start and end time.</p>"
@@ -3178,13 +3725,13 @@
       "type":"string",
       "max":69,
       "min":69,
-      "pattern":"^1 [ 0-9]{5}[A-Z] [ 0-9]{5}[ A-Z]{3} [ 0-9]{5}[.][ 0-9]{8} (?:(?:[ 0+-][.][ 0-9]{8})|(?: [ +-][.][ 0-9]{7})) [ +-][ 0-9]{5}[+-][ 0-9] [ +-][ 0-9]{5}[+-][ 0-9] [ 0-9] [ 0-9]{4}[ 0-9]$"
+      "pattern":"1 [ 0-9]{5}[A-Z] [ 0-9]{5}[ A-Z]{3} [ 0-9]{5}[.][ 0-9]{8} (?:(?:[ 0+-][.][ 0-9]{8})|(?: [ +-][.][ 0-9]{7})) [ +-][ 0-9]{5}[+-][ 0-9] [ +-][ 0-9]{5}[+-][ 0-9] [ 0-9] [ 0-9]{4}[ 0-9]"
     },
     "TleLineTwo":{
       "type":"string",
       "max":69,
       "min":69,
-      "pattern":"^2 [ 0-9]{5} [ 0-9]{3}[.][ 0-9]{4} [ 0-9]{3}[.][ 0-9]{4} [ 0-9]{7} [ 0-9]{3}[.][ 0-9]{4} [ 0-9]{3}[.][ 0-9]{4} [ 0-9]{2}[.][ 0-9]{13}[ 0-9]$"
+      "pattern":"2 [ 0-9]{5} [ 0-9]{3}[.][ 0-9]{4} [ 0-9]{3}[.][ 0-9]{4} [ 0-9]{7} [ 0-9]{3}[.][ 0-9]{4} [ 0-9]{3}[.][ 0-9]{4} [ 0-9]{2}[.][ 0-9]{13}[ 0-9]"
     },
     "TrackingConfig":{
       "type":"structure",
@@ -3197,10 +3744,21 @@
       },
       "documentation":"<p>Object that determines whether tracking should be used during a contact executed with this <code>Config</code> in the mission profile.</p>"
     },
+    "TrackingOverrides":{
+      "type":"structure",
+      "required":["programTrackSettings"],
+      "members":{
+        "programTrackSettings":{
+          "shape":"ProgramTrackSettings",
+          "documentation":"<p>Program track settings to override for antenna tracking during the contact.</p>"
+        }
+      },
+      "documentation":"<p>Overrides the default tracking configuration on an antenna during a contact.</p>"
+    },
     "UnboundedString":{
       "type":"string",
       "min":1,
-      "pattern":"^[\\s\\S]+$"
+      "pattern":"[\\s\\S]+"
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -3226,17 +3784,16 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p/>"
     },
     "UpdateAgentStatusRequest":{
       "type":"structure",
       "required":[
         "agentId",
+        "taskId",
         "aggregateStatus",
-        "componentStatuses",
-        "taskId"
+        "componentStatuses"
       ],
       "members":{
         "agentId":{
@@ -3245,6 +3802,10 @@
           "location":"uri",
           "locationName":"agentId"
         },
+        "taskId":{
+          "shape":"Uuid",
+          "documentation":"<p>GUID of agent task.</p>"
+        },
         "aggregateStatus":{
           "shape":"AggregateStatus",
           "documentation":"<p>Aggregate status for agent.</p>"
@@ -3252,10 +3813,6 @@
         "componentStatuses":{
           "shape":"ComponentStatusList",
           "documentation":"<p>List of component statuses for agent.</p>"
-        },
-        "taskId":{
-          "shape":"Uuid",
-          "documentation":"<p>GUID of agent task.</p>"
         }
       }
     },
@@ -3272,21 +3829,21 @@
     "UpdateConfigRequest":{
       "type":"structure",
       "required":[
-        "configData",
         "configId",
+        "name",
         "configType",
-        "name"
+        "configData"
       ],
       "members":{
-        "configData":{
-          "shape":"ConfigTypeData",
-          "documentation":"<p>Parameters of a <code>Config</code>.</p>"
-        },
         "configId":{
           "shape":"Uuid",
           "documentation":"<p>UUID of a <code>Config</code>.</p>",
           "location":"uri",
           "locationName":"configId"
+        },
+        "name":{
+          "shape":"SafeName",
+          "documentation":"<p>Name of a <code>Config</code>.</p>"
         },
         "configType":{
           "shape":"ConfigCapabilityType",
@@ -3294,9 +3851,9 @@
           "location":"uri",
           "locationName":"configType"
         },
-        "name":{
-          "shape":"SafeName",
-          "documentation":"<p>Name of a <code>Config</code>.</p>"
+        "configData":{
+          "shape":"ConfigTypeData",
+          "documentation":"<p>Parameters of a <code>Config</code>.</p>"
         }
       },
       "documentation":"<p/>"
@@ -3304,27 +3861,27 @@
     "UpdateEphemerisRequest":{
       "type":"structure",
       "required":[
-        "enabled",
-        "ephemerisId"
+        "ephemerisId",
+        "enabled"
       ],
       "members":{
-        "enabled":{
-          "shape":"Boolean",
-          "documentation":"<p>Whether the ephemeris is enabled or not. Changing this value will not require the ephemeris to be re-validated.</p>"
-        },
         "ephemerisId":{
           "shape":"Uuid",
           "documentation":"<p>The AWS Ground Station ephemeris ID.</p>",
           "location":"uri",
           "locationName":"ephemerisId"
         },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enable or disable the ephemeris. Changing this value doesn't require re-validation.</p>"
+        },
         "name":{
           "shape":"SafeName",
-          "documentation":"<p>A name string associated with the ephemeris. Used as a human-readable identifier for the ephemeris.</p>"
+          "documentation":"<p>A name that you can use to identify the ephemeris.</p>"
         },
         "priority":{
           "shape":"EphemerisPriority",
-          "documentation":"<p>Customer-provided priority score to establish the order in which overlapping ephemerides should be used.</p> <p>The default for customer-provided ephemeris priority is 1, and higher numbers take precedence.</p> <p>Priority must be 1 or greater</p>"
+          "documentation":"<p>A priority score that determines which ephemeris to use when multiple ephemerides overlap.</p> <p>Higher numbers take precedence. The default is 1. Must be 1 or greater.</p>"
         }
       }
     },
@@ -3332,22 +3889,6 @@
       "type":"structure",
       "required":["missionProfileId"],
       "members":{
-        "contactPostPassDurationSeconds":{
-          "shape":"DurationInSeconds",
-          "documentation":"<p>Amount of time after a contact ends that you’d like to receive a Ground Station Contact State Change event indicating the pass has finished.</p>"
-        },
-        "contactPrePassDurationSeconds":{
-          "shape":"DurationInSeconds",
-          "documentation":"<p>Amount of time after a contact ends that you’d like to receive a Ground Station Contact State Change event indicating the pass has finished.</p>"
-        },
-        "dataflowEdges":{
-          "shape":"DataflowEdgeList",
-          "documentation":"<p>A list of lists of ARNs. Each list of ARNs is an edge, with a <i>from</i> <code>Config</code> and a <i>to</i> <code>Config</code>.</p>"
-        },
-        "minimumViableContactDurationSeconds":{
-          "shape":"PositiveDurationInSeconds",
-          "documentation":"<p>Smallest amount of time in seconds that you’d like to see for an available contact. AWS Ground Station will not present you with contacts shorter than this duration.</p>"
-        },
         "missionProfileId":{
           "shape":"Uuid",
           "documentation":"<p>UUID of a mission profile.</p>",
@@ -3358,6 +3899,26 @@
           "shape":"SafeName",
           "documentation":"<p>Name of a mission profile.</p>"
         },
+        "contactPrePassDurationSeconds":{
+          "shape":"DurationInSeconds",
+          "documentation":"<p>Amount of time after a contact ends that you’d like to receive a Ground Station Contact State Change event indicating the pass has finished.</p>"
+        },
+        "contactPostPassDurationSeconds":{
+          "shape":"DurationInSeconds",
+          "documentation":"<p>Amount of time after a contact ends that you’d like to receive a Ground Station Contact State Change event indicating the pass has finished.</p>"
+        },
+        "minimumViableContactDurationSeconds":{
+          "shape":"PositiveDurationInSeconds",
+          "documentation":"<p>Smallest amount of time in seconds that you’d like to see for an available contact. AWS Ground Station will not present you with contacts shorter than this duration.</p>"
+        },
+        "dataflowEdges":{
+          "shape":"DataflowEdgeList",
+          "documentation":"<p>A list of lists of ARNs. Each list of ARNs is an edge, with a <i>from</i> <code>Config</code> and a <i>to</i> <code>Config</code>.</p>"
+        },
+        "trackingConfigArn":{
+          "shape":"ConfigArn",
+          "documentation":"<p>ARN of a tracking <code>Config</code>.</p>"
+        },
         "streamsKmsKey":{
           "shape":"KmsKey",
           "documentation":"<p>KMS key to use for encrypting streams.</p>"
@@ -3365,28 +3926,91 @@
         "streamsKmsRole":{
           "shape":"RoleArn",
           "documentation":"<p>Role to use for encrypting streams with KMS key.</p>"
-        },
-        "trackingConfigArn":{
-          "shape":"ConfigArn",
-          "documentation":"<p>ARN of a tracking <code>Config</code>.</p>"
         }
       },
       "documentation":"<p/>"
     },
+    "UplinkAwsGroundStationAgentEndpoint":{
+      "type":"structure",
+      "required":[
+        "name",
+        "dataflowDetails"
+      ],
+      "members":{
+        "name":{
+          "shape":"SafeName",
+          "documentation":"<p>Uplink dataflow endpoint name</p>"
+        },
+        "dataflowDetails":{
+          "shape":"UplinkDataflowDetails",
+          "documentation":"<p>Dataflow details for the uplink endpoint</p>"
+        }
+      },
+      "documentation":"<p>Definition for an uplink agent endpoint</p>"
+    },
+    "UplinkAwsGroundStationAgentEndpointDetails":{
+      "type":"structure",
+      "required":[
+        "name",
+        "dataflowDetails"
+      ],
+      "members":{
+        "name":{
+          "shape":"SafeName",
+          "documentation":"<p>Uplink dataflow endpoint name</p>"
+        },
+        "dataflowDetails":{
+          "shape":"UplinkDataflowDetails",
+          "documentation":"<p>Dataflow details for the uplink endpoint</p>"
+        },
+        "agentStatus":{
+          "shape":"AgentStatus",
+          "documentation":"<p>Status of the agent associated with the uplink dataflow endpoint</p>"
+        },
+        "auditResults":{
+          "shape":"AuditResults",
+          "documentation":"<p>Health audit results for the uplink dataflow endpoint</p>"
+        }
+      },
+      "documentation":"<p>Details for an uplink agent endpoint</p>"
+    },
+    "UplinkConnectionDetails":{
+      "type":"structure",
+      "required":[
+        "ingressAddressAndPort",
+        "agentIpAndPortAddress"
+      ],
+      "members":{
+        "ingressAddressAndPort":{"shape":"ConnectionDetails"},
+        "agentIpAndPortAddress":{"shape":"RangedConnectionDetails"}
+      },
+      "documentation":"<p>Connection details for customer to Agent and Agent to Ground Station</p>"
+    },
+    "UplinkDataflowDetails":{
+      "type":"structure",
+      "members":{
+        "agentConnectionDetails":{
+          "shape":"UplinkConnectionDetails",
+          "documentation":"<p>Uplink connection details for customer to Agent and Agent to Ground Station</p>"
+        }
+      },
+      "documentation":"<p>Dataflow details for an uplink endpoint</p>",
+      "union":true
+    },
     "UplinkEchoConfig":{
       "type":"structure",
       "required":[
-        "antennaUplinkConfigArn",
-        "enabled"
+        "enabled",
+        "antennaUplinkConfigArn"
       ],
       "members":{
-        "antennaUplinkConfigArn":{
-          "shape":"ConfigArn",
-          "documentation":"<p>ARN of an uplink <code>Config</code>.</p>"
-        },
         "enabled":{
           "shape":"Boolean",
           "documentation":"<p>Whether or not an uplink <code>Config</code> is enabled.</p>"
+        },
+        "antennaUplinkConfigArn":{
+          "shape":"ConfigArn",
+          "documentation":"<p>ARN of an uplink <code>Config</code>.</p>"
         }
       },
       "documentation":"<p>Information about an uplink echo <code>Config</code>.</p> <p>Parameters from the <code>AntennaUplinkConfig</code>, corresponding to the specified <code>AntennaUplinkConfigArn</code>, are used when this <code>UplinkEchoConfig</code> is used in a contact.</p>"
@@ -3410,13 +4034,13 @@
       "type":"string",
       "max":36,
       "min":36,
-      "pattern":"^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
     },
     "VersionString":{
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^(0|[1-9]\\d*)(\\.(0|[1-9]\\d*))*$"
+      "pattern":"(0|[1-9]\\d*)(\\.(0|[1-9]\\d*))*"
     },
     "VersionStringList":{
       "type":"list",
@@ -3439,7 +4063,7 @@
       "type":"string",
       "max":132,
       "min":82,
-      "pattern":"^arn:aws:groundstation:([-a-z0-9]{1,50})?:[0-9]{12}:satellite/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+      "pattern":"arn:aws:groundstation:([-a-z0-9]{1,50})?:[0-9]{12}:satellite/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
     }
   },
   "documentation":"<p>Welcome to the AWS Ground Station API Reference. AWS Ground Station is a fully managed service that enables you to control satellite communications, downlink and process satellite data, and scale your satellite operations efficiently and cost-effectively without having to build or manage your own ground station infrastructure.</p>"

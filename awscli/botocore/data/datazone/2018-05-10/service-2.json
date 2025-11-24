@@ -49,6 +49,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
@@ -138,6 +139,46 @@
         {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Associates governed terms with an asset.</p>"
+    },
+    "BatchGetAttributesMetadata":{
+      "name":"BatchGetAttributesMetadata",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/attributes-metadata",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetAttributesMetadataInput"},
+      "output":{"shape":"BatchGetAttributesMetadataOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Gets the attribute metadata.</p>"
+    },
+    "BatchPutAttributesMetadata":{
+      "name":"BatchPutAttributesMetadata",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v2/domains/{domainIdentifier}/entities/{entityType}/{entityIdentifier}/attributes-metadata",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchPutAttributesMetadataInput"},
+      "output":{"shape":"BatchPutAttributesMetadataOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Writes the attribute metadata.</p>",
+      "idempotent":true
     },
     "CancelMetadataGenerationRun":{
       "name":"CancelMetadataGenerationRun",
@@ -719,6 +760,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"ConflictException"},
         {"shape":"ValidationException"},
         {"shape":"UnauthorizedException"}
@@ -3285,6 +3327,27 @@
       "documentation":"<p>Updates a project profile.</p>",
       "idempotent":true
     },
+    "UpdateRootDomainUnitOwner":{
+      "name":"UpdateRootDomainUnitOwner",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v2/domains/{domainIdentifier}/root-domain-unit-owner",
+        "responseCode":204
+      },
+      "input":{"shape":"UpdateRootDomainUnitOwnerInput"},
+      "output":{"shape":"UpdateRootDomainUnitOwnerOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Updates the owner of the root domain unit.</p>",
+      "idempotent":true
+    },
     "UpdateRule":{
       "name":"UpdateRule",
       "http":{
@@ -3504,6 +3567,10 @@
         "identifier"
       ],
       "members":{
+        "assetPermissions":{
+          "shape":"AssetPermissions",
+          "documentation":"<p>The asset permissions of the accept subscription request.</p>"
+        },
         "assetScopes":{
           "shape":"AcceptedAssetScopes",
           "documentation":"<p>The asset scopes of the accept subscription request.</p>"
@@ -4404,6 +4471,28 @@
       "min":1,
       "sensitive":true
     },
+    "AssetPermission":{
+      "type":"structure",
+      "required":[
+        "assetId",
+        "permissions"
+      ],
+      "members":{
+        "assetId":{
+          "shape":"AssetId",
+          "documentation":"<p>The asset ID as part of the asset permissions.</p>"
+        },
+        "permissions":{
+          "shape":"Permissions",
+          "documentation":"<p>The details as part of the asset permissions.</p>"
+        }
+      },
+      "documentation":"<p>The asset permissions.</p>"
+    },
+    "AssetPermissions":{
+      "type":"list",
+      "member":{"shape":"AssetPermission"}
+    },
     "AssetRevision":{
       "type":"structure",
       "members":{
@@ -4694,6 +4783,75 @@
       "max":128,
       "min":1
     },
+    "AttributeEntityType":{
+      "type":"string",
+      "enum":[
+        "ASSET",
+        "LISTING"
+      ]
+    },
+    "AttributeError":{
+      "type":"structure",
+      "required":[
+        "attributeIdentifier",
+        "code",
+        "message"
+      ],
+      "members":{
+        "attributeIdentifier":{
+          "shape":"AttributeIdentifier",
+          "documentation":"<p>The attribute ID as part of the attribute error.</p>"
+        },
+        "code":{
+          "shape":"String",
+          "documentation":"<p>The code generated as part of the attribute error.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The message generated as part of the attribute error.</p>"
+        }
+      },
+      "documentation":"<p>The attribute error.</p>"
+    },
+    "AttributeIdentifier":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "AttributeInput":{
+      "type":"structure",
+      "required":[
+        "attributeIdentifier",
+        "forms"
+      ],
+      "members":{
+        "attributeIdentifier":{
+          "shape":"AttributeIdentifier",
+          "documentation":"<p>The ID of the attribute.</p>"
+        },
+        "forms":{
+          "shape":"FormInputList",
+          "documentation":"<p>The metadata forms as part of the attribute input.</p>"
+        }
+      },
+      "documentation":"<p>The attribute input.</p>"
+    },
+    "Attributes":{
+      "type":"list",
+      "member":{"shape":"AttributeInput"},
+      "max":5,
+      "min":0
+    },
+    "AttributesErrors":{
+      "type":"list",
+      "member":{"shape":"AttributeError"}
+    },
+    "AttributesList":{
+      "type":"list",
+      "member":{"shape":"AttributeIdentifier"},
+      "max":5,
+      "min":1
+    },
     "AuthType":{
       "type":"string",
       "enum":[
@@ -4918,6 +5076,146 @@
       "max":512,
       "min":0,
       "pattern":"^\\S+$"
+    },
+    "BatchGetAttributeItems":{
+      "type":"list",
+      "member":{"shape":"BatchGetAttributeOutput"}
+    },
+    "BatchGetAttributeOutput":{
+      "type":"structure",
+      "required":["attributeIdentifier"],
+      "members":{
+        "attributeIdentifier":{
+          "shape":"AttributeIdentifier",
+          "documentation":"<p>The attribute ID.</p>"
+        },
+        "forms":{
+          "shape":"FormOutputList",
+          "documentation":"<p>The metadata forms that are part of the results of the BatchGetAttribute action.</p>"
+        }
+      },
+      "documentation":"<p>The results of the BatchGetAttribute action.</p>"
+    },
+    "BatchGetAttributesMetadataInput":{
+      "type":"structure",
+      "required":[
+        "attributeIdentifiers",
+        "domainIdentifier",
+        "entityIdentifier",
+        "entityType"
+      ],
+      "members":{
+        "attributeIdentifiers":{
+          "shape":"AttributesList",
+          "documentation":"<p>The attribute identifier.</p>",
+          "location":"querystring",
+          "locationName":"attributeIdentifier"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The domain ID where you want to get the attribute metadata.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "entityIdentifier":{
+          "shape":"EntityId",
+          "documentation":"<p>The entity ID for which you want to get attribute metadata.</p>",
+          "location":"uri",
+          "locationName":"entityIdentifier"
+        },
+        "entityRevision":{
+          "shape":"Revision",
+          "documentation":"<p>The entity revision for which you want to get attribute metadata.</p>",
+          "location":"querystring",
+          "locationName":"entityRevision"
+        },
+        "entityType":{
+          "shape":"AttributeEntityType",
+          "documentation":"<p>The entity type for which you want to get attribute metadata.</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        }
+      }
+    },
+    "BatchGetAttributesMetadataOutput":{
+      "type":"structure",
+      "required":["errors"],
+      "members":{
+        "attributes":{
+          "shape":"BatchGetAttributeItems",
+          "documentation":"<p>The results of the BatchGetAttributesMetadata action.</p>"
+        },
+        "errors":{
+          "shape":"AttributesErrors",
+          "documentation":"<p>The errors generated when the BatchGetAttributesMetadata action is invoked.</p>"
+        }
+      }
+    },
+    "BatchPutAttributeItems":{
+      "type":"list",
+      "member":{"shape":"BatchPutAttributeOutput"}
+    },
+    "BatchPutAttributeOutput":{
+      "type":"structure",
+      "required":["attributeIdentifier"],
+      "members":{
+        "attributeIdentifier":{
+          "shape":"AttributeIdentifier",
+          "documentation":"<p>The attribute ID.</p>"
+        }
+      },
+      "documentation":"<p>The results of the BatchPutAttribute action.</p>"
+    },
+    "BatchPutAttributesMetadataInput":{
+      "type":"structure",
+      "required":[
+        "attributes",
+        "domainIdentifier",
+        "entityIdentifier",
+        "entityType"
+      ],
+      "members":{
+        "attributes":{
+          "shape":"Attributes",
+          "documentation":"<p>The attributes of the metadata.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request. This field is automatically populated if not provided.</p>",
+          "idempotencyToken":true
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The domain ID where you want to write the attribute metadata.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "entityIdentifier":{
+          "shape":"EntityId",
+          "documentation":"<p>The entity ID for which you want to write the attribute metadata.</p>",
+          "location":"uri",
+          "locationName":"entityIdentifier"
+        },
+        "entityType":{
+          "shape":"AttributeEntityType",
+          "documentation":"<p>The entity type for which you want to write the attribute metadata.</p>",
+          "location":"uri",
+          "locationName":"entityType"
+        }
+      }
+    },
+    "BatchPutAttributesMetadataOutput":{
+      "type":"structure",
+      "members":{
+        "attributes":{
+          "shape":"BatchPutAttributeItems",
+          "documentation":"<p>The results of the BatchPutAttributeMetadata action.</p>"
+        },
+        "errors":{
+          "shape":"AttributesErrors",
+          "documentation":"<p>The errors generated when the BatchPutAttributeMetadata action is invoked.</p>"
+        }
+      }
     },
     "Boolean":{
       "type":"boolean",
@@ -7588,11 +7886,22 @@
           "shape":"ProjectProfileId",
           "documentation":"<p>The ID of the project profile.</p>"
         },
+        "resourceTags":{
+          "shape":"CreateProjectInputResourceTagsMap",
+          "documentation":"<p>The resource tags of the project.</p>"
+        },
         "userParameters":{
           "shape":"EnvironmentConfigurationUserParametersList",
           "documentation":"<p>The user parameters of the project.</p>"
         }
       }
+    },
+    "CreateProjectInputResourceTagsMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":25,
+      "min":0
     },
     "CreateProjectMembershipInput":{
       "type":"structure",
@@ -7690,6 +7999,10 @@
           "shape":"ProjectStatus",
           "documentation":"<p>The status of the Amazon DataZone project that was created.</p>"
         },
+        "resourceTags":{
+          "shape":"ResourceTags",
+          "documentation":"<p>The resource tags of the project.</p>"
+        },
         "userParameters":{
           "shape":"EnvironmentConfigurationUserParametersList",
           "documentation":"<p>The user parameters of the project.</p>"
@@ -7713,6 +8026,10 @@
         "name"
       ],
       "members":{
+        "allowCustomProjectResourceTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether custom project resource tags are supported.</p>"
+        },
         "description":{
           "shape":"Description",
           "documentation":"<p>A description of a project profile.</p>"
@@ -7735,6 +8052,14 @@
           "shape":"ProjectProfileName",
           "documentation":"<p>Project profile name.</p>"
         },
+        "projectResourceTags":{
+          "shape":"ProjectResourceTagParameters",
+          "documentation":"<p>The resource tags of the project profile.</p>"
+        },
+        "projectResourceTagsDescription":{
+          "shape":"Description",
+          "documentation":"<p>Field viewable through the UI that provides a project user with the allowed resource tag specifications.</p>"
+        },
         "status":{
           "shape":"Status",
           "documentation":"<p>Project profile status.</p>"
@@ -7750,6 +8075,10 @@
         "name"
       ],
       "members":{
+        "allowCustomProjectResourceTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether custom project resource tags are supported.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>A timestamp at which a project profile is created.</p>"
@@ -7785,6 +8114,14 @@
         "name":{
           "shape":"ProjectProfileName",
           "documentation":"<p>Project profile name.</p>"
+        },
+        "projectResourceTags":{
+          "shape":"ProjectResourceTagParameters",
+          "documentation":"<p>The resource tags of the project profile.</p>"
+        },
+        "projectResourceTagsDescription":{
+          "shape":"Description",
+          "documentation":"<p>Field viewable through the UI that provides a project user with the allowed resource tag specifications.</p>"
         },
         "status":{
           "shape":"Status",
@@ -7966,6 +8303,10 @@
           "shape":"DomainId",
           "documentation":"<p>The ID of the Amazon DataZone domain in which the subscription grant is created.</p>"
         },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The environment ID for which subscription grant is created.</p>"
+        },
         "grantedEntity":{
           "shape":"GrantedEntity",
           "documentation":"<p>The entity to which the subscription is granted.</p>"
@@ -8007,6 +8348,14 @@
         "subscribedPrincipals"
       ],
       "members":{
+        "assetPermissions":{
+          "shape":"AssetPermissions",
+          "documentation":"<p>The asset permissions of the subscription request.</p>"
+        },
+        "assetScopes":{
+          "shape":"AcceptedAssetScopes",
+          "documentation":"<p>The asset scopes of the subscription request.</p>"
+        },
         "clientToken":{
           "shape":"String",
           "documentation":"<p>A unique, case-sensitive identifier that is provided to ensure the idempotency of the request.</p>",
@@ -8290,7 +8639,10 @@
     "CreateUserProfileOutput":{
       "type":"structure",
       "members":{
-        "details":{"shape":"UserProfileDetails"},
+        "details":{
+          "shape":"UserProfileDetails",
+          "documentation":"<p>The user profile details.</p>"
+        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The identifier of the Amazon DataZone domain in which a user profile is created.</p>"
@@ -9729,6 +10081,10 @@
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The ID of the Amazon DataZone domain in which the subscription grant is deleted.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The ID of the environment in which the subscription grant is deleted.</p>"
         },
         "grantedEntity":{
           "shape":"GrantedEntity",
@@ -13405,6 +13761,10 @@
           "shape":"ProjectStatus",
           "documentation":"<p>The status of the project.</p>"
         },
+        "resourceTags":{
+          "shape":"ResourceTags",
+          "documentation":"<p>The resource tags of the project.</p>"
+        },
         "userParameters":{
           "shape":"EnvironmentConfigurationUserParametersList",
           "documentation":"<p>The user parameters of a project.</p>"
@@ -13441,6 +13801,10 @@
         "name"
       ],
       "members":{
+        "allowCustomProjectResourceTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether custom project resource tags are supported.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp of when the project profile was created.</p>"
@@ -13476,6 +13840,14 @@
         "name":{
           "shape":"ProjectProfileName",
           "documentation":"<p>The name of the project profile.</p>"
+        },
+        "projectResourceTags":{
+          "shape":"ProjectResourceTagParameters",
+          "documentation":"<p>The resource tags of the project profile.</p>"
+        },
+        "projectResourceTagsDescription":{
+          "shape":"Description",
+          "documentation":"<p>Field viewable through the UI that provides a project user with the allowed resource tag specifications.</p>"
         },
         "status":{
           "shape":"Status",
@@ -13634,6 +14006,10 @@
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The ID of the Amazon DataZone domain in which the subscription grant exists.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The environment ID of the subscription grant.</p>"
         },
         "grantedEntity":{
           "shape":"GrantedEntity",
@@ -14056,7 +14432,10 @@
     "GetUserProfileOutput":{
       "type":"structure",
       "members":{
-        "details":{"shape":"UserProfileDetails"},
+        "details":{
+          "shape":"UserProfileDetails",
+          "documentation":"<p>The user profile details.</p>"
+        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>the identifier of the Amazon DataZone domain of which you want to get the user profile.</p>"
@@ -14174,9 +14553,25 @@
         "ENABLED"
       ]
     },
+    "GlossaryTermEnforcementDetail":{
+      "type":"structure",
+      "members":{
+        "requiredGlossaryTermIds":{
+          "shape":"GlossaryTermIdentifiers",
+          "documentation":"<p>The ID of the required glossary term.</p>"
+        }
+      },
+      "documentation":"<p>The enforcement details of a glossary term.</p>"
+    },
     "GlossaryTermId":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9_-]{1,36}$"
+    },
+    "GlossaryTermIdentifiers":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermId"},
+      "max":5,
+      "min":1
     },
     "GlossaryTermItem":{
       "type":"structure",
@@ -14897,14 +15292,14 @@
       "members":{
         "arn":{
           "shape":"String",
-          "documentation":"<p>The ARN of an IAM user profile in Amazon DataZone.</p>"
+          "documentation":"<p>The ARN of the IAM user.</p>"
         },
         "principalId":{
           "shape":"String",
-          "documentation":"<p>Principal ID of the IAM user.</p>"
+          "documentation":"<p>The principal ID as part of the IAM user profile details.</p>"
         }
       },
-      "documentation":"<p>The details of an IAM user profile in Amazon DataZone.</p>"
+      "documentation":"<p>The details of the IAM user profile.</p>"
     },
     "Import":{
       "type":"structure",
@@ -17069,15 +17464,29 @@
           "location":"querystring",
           "locationName":"nextToken"
         },
+        "owningGroupId":{
+          "shape":"GroupProfileId",
+          "documentation":"<p>The ID of the owning group.</p>",
+          "location":"querystring",
+          "locationName":"owningGroupId"
+        },
         "owningProjectId":{
           "shape":"ProjectId",
           "documentation":"<p>The ID of the owning project of the subscription grants.</p>",
           "location":"querystring",
           "locationName":"owningProjectId"
         },
+        "owningUserId":{
+          "shape":"UserProfileId",
+          "documentation":"<p>The ID of the owning user.</p>",
+          "location":"querystring",
+          "locationName":"owningUserId"
+        },
         "sortBy":{
           "shape":"SortKey",
           "documentation":"<p>Specifies the way of sorting the results of this action.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Results are always sorted by updatedAt",
           "location":"querystring",
           "locationName":"sortBy"
         },
@@ -17149,15 +17558,29 @@
           "location":"querystring",
           "locationName":"nextToken"
         },
+        "owningGroupId":{
+          "shape":"GroupProfileId",
+          "documentation":"<p>The ID of the owning group.</p>",
+          "location":"querystring",
+          "locationName":"owningGroupId"
+        },
         "owningProjectId":{
           "shape":"ProjectId",
           "documentation":"<p>The identifier of the project for the subscription requests.</p>",
           "location":"querystring",
           "locationName":"owningProjectId"
         },
+        "owningUserId":{
+          "shape":"UserProfileId",
+          "documentation":"<p>The ID of the owning user.</p>",
+          "location":"querystring",
+          "locationName":"owningUserId"
+        },
         "sortBy":{
           "shape":"SortKey",
           "documentation":"<p>Specifies the way to sort the results of this action.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Results are always sorted by updatedAt",
           "location":"querystring",
           "locationName":"sortBy"
         },
@@ -17282,15 +17705,29 @@
           "location":"querystring",
           "locationName":"nextToken"
         },
+        "owningGroupId":{
+          "shape":"GroupProfileId",
+          "documentation":"<p>The ID of the owning group.</p>",
+          "location":"querystring",
+          "locationName":"owningGroupId"
+        },
         "owningProjectId":{
           "shape":"ProjectId",
           "documentation":"<p>The identifier of the owning project.</p>",
           "location":"querystring",
           "locationName":"owningProjectId"
         },
+        "owningUserId":{
+          "shape":"UserProfileId",
+          "documentation":"<p>The ID of the owning user.</p>",
+          "location":"querystring",
+          "locationName":"owningUserId"
+        },
         "sortBy":{
           "shape":"SortKey",
           "documentation":"<p>Specifies the way in which the results of this action are to be sorted.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Results are always sorted by updatedAt",
           "location":"querystring",
           "locationName":"sortBy"
         },
@@ -17835,10 +18272,6 @@
         "trackingServerArn":{
           "shape":"String",
           "documentation":"<p>The tracking server ARN as part of the MLflow properties of a connection.</p>"
-        },
-        "trackingServerName":{
-          "shape":"String",
-          "documentation":"<p>The name of the tracking server as part of the MLflow properties of a connection.</p>"
         }
       },
       "documentation":"<p>The MLflow properties of a connection.</p>"
@@ -17849,10 +18282,6 @@
         "trackingServerArn":{
           "shape":"String",
           "documentation":"<p>The tracking server ARN as part of the MLflow properties of a connection.</p>"
-        },
-        "trackingServerName":{
-          "shape":"String",
-          "documentation":"<p>The name of the tracking server as part of the MLflow properties of a connection.</p>"
         }
       },
       "documentation":"<p>The MLflow properties of a connection.</p>"
@@ -17863,10 +18292,6 @@
         "trackingServerArn":{
           "shape":"String",
           "documentation":"<p>The tracking server ARN as part of the MLflow properties of a connection.</p>"
-        },
-        "trackingServerName":{
-          "shape":"String",
-          "documentation":"<p>The name of the tracking server as part of the MLflow properties of a connection.</p>"
         }
       },
       "documentation":"<p>The MLflow properties of a connection.</p>"
@@ -18297,6 +18722,17 @@
       "max":64,
       "min":0,
       "sensitive":true
+    },
+    "Permissions":{
+      "type":"structure",
+      "members":{
+        "s3":{
+          "shape":"S3Permissions",
+          "documentation":"<p>The S3 details of the asset permissions.</p>"
+        }
+      },
+      "documentation":"<p>The asset permissions.</p>",
+      "union":true
     },
     "PhysicalConnectionRequirements":{
       "type":"structure",
@@ -18752,6 +19188,12 @@
         }
       },
       "documentation":"<p>The summary of a project profile.</p>"
+    },
+    "ProjectResourceTagParameters":{
+      "type":"list",
+      "member":{"shape":"ResourceTagParameter"},
+      "max":25,
+      "min":0
     },
     "ProjectStatus":{
       "type":"string",
@@ -19765,6 +20207,65 @@
       },
       "exception":true
     },
+    "ResourceTag":{
+      "type":"structure",
+      "required":[
+        "key",
+        "source",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"TagKey",
+          "documentation":"<p>The key of the resource tag of the project.</p>"
+        },
+        "source":{
+          "shape":"ResourceTagSource",
+          "documentation":"<p>The source of the resource tag of the project.</p>"
+        },
+        "value":{
+          "shape":"TagValue",
+          "documentation":"<p>The value of the resource tag of the project.</p>"
+        }
+      },
+      "documentation":"<p>The resource tag of the project.</p>"
+    },
+    "ResourceTagParameter":{
+      "type":"structure",
+      "required":[
+        "isValueEditable",
+        "key",
+        "value"
+      ],
+      "members":{
+        "isValueEditable":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the value of the resource tag parameter of the project profile is editable at the project level.</p>"
+        },
+        "key":{
+          "shape":"TagKey",
+          "documentation":"<p>The key of the resource tag parameter of the project profile.</p>"
+        },
+        "value":{
+          "shape":"TagValue",
+          "documentation":"<p>The value of the resource tag parameter key of the project profile.</p>"
+        }
+      },
+      "documentation":"<p>The resource tag parameter of the project profile.</p>"
+    },
+    "ResourceTagSource":{
+      "type":"string",
+      "enum":[
+        "PROJECT",
+        "PROJECT_PROFILE"
+      ]
+    },
+    "ResourceTags":{
+      "type":"list",
+      "member":{"shape":"ResourceTag"},
+      "max":25,
+      "min":0
+    },
     "Revision":{
       "type":"string",
       "max":64,
@@ -19972,6 +20473,10 @@
     "RuleDetail":{
       "type":"structure",
       "members":{
+        "glossaryTermEnforcementDetail":{
+          "shape":"GlossaryTermEnforcementDetail",
+          "documentation":"<p>The enforcement details of a glossary term that's part of the metadata rule.</p>"
+        },
         "metadataFormEnforcementDetail":{
           "shape":"MetadataFormEnforcementDetail",
           "documentation":"<p>The enforcement detail of the metadata form.</p>"
@@ -20088,7 +20593,10 @@
     },
     "RuleType":{
       "type":"string",
-      "enum":["METADATA_FORM_ENFORCEMENT"]
+      "enum":[
+        "METADATA_FORM_ENFORCEMENT",
+        "GLOSSARY_TERM_ENFORCEMENT"
+      ]
     },
     "RunIdentifier":{
       "type":"string",
@@ -20137,6 +20645,18 @@
       "member":{"shape":"S3Location"},
       "max":20,
       "min":0
+    },
+    "S3Permission":{
+      "type":"string",
+      "enum":[
+        "READ",
+        "WRITE"
+      ]
+    },
+    "S3Permissions":{
+      "type":"list",
+      "member":{"shape":"S3Permission"},
+      "documentation":"<p>S3 permissions as a simple enum list.</p>"
     },
     "S3PropertiesInput":{
       "type":"structure",
@@ -21161,18 +21681,18 @@
       "members":{
         "firstName":{
           "shape":"FirstName",
-          "documentation":"<p>The first name included in the single sign-on details of the user profile.</p>"
+          "documentation":"<p>The first name as part of the SSO user profile detail.</p>"
         },
         "lastName":{
           "shape":"LastName",
-          "documentation":"<p>The last name included in the single sign-on details of the user profile.</p>"
+          "documentation":"<p>The last name as part of the SSO user profile detail.</p>"
         },
         "username":{
           "shape":"UserProfileName",
-          "documentation":"<p>The username included in the single sign-on details of the user profile.</p>"
+          "documentation":"<p>The username as part of the SSO user profile detail. </p>"
         }
       },
-      "documentation":"<p>The single sign-on details of the user profile.</p>"
+      "documentation":"<p>The SSO user profile detail.</p>"
     },
     "StartDataSourceRunInput":{
       "type":"structure",
@@ -21394,6 +21914,10 @@
           "shape":"Timestamp",
           "documentation":"<p>The timestamp of when the subscription grant to the asset is created.</p>"
         },
+        "permissions":{
+          "shape":"Permissions",
+          "documentation":"<p>The asset permissions.</p>"
+        },
         "status":{
           "shape":"SubscriptionGrantStatus",
           "documentation":"<p>The status of the asset for which the subscription grant is created.</p>"
@@ -21431,6 +21955,10 @@
         "glossaryTerms":{
           "shape":"DetailedGlossaryTerms",
           "documentation":"<p>The glossary terms attached to the published asset for which the subscription grant is created.</p>"
+        },
+        "permissions":{
+          "shape":"Permissions",
+          "documentation":"<p>The asset permissions.</p>"
         }
       },
       "documentation":"<p>The details of the published asset for which the subscription grant is created.</p>"
@@ -21438,6 +21966,30 @@
     "SubscribedAssets":{
       "type":"list",
       "member":{"shape":"SubscribedAsset"}
+    },
+    "SubscribedGroup":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"GroupProfileId",
+          "documentation":"<p>The ID of the subscribed group.</p>"
+        },
+        "name":{
+          "shape":"GroupProfileName",
+          "documentation":"<p>The name of the subscribed group.</p>"
+        }
+      },
+      "documentation":"<p>The group that subscribes to the asset.</p>"
+    },
+    "SubscribedGroupInput":{
+      "type":"structure",
+      "members":{
+        "identifier":{
+          "shape":"GroupProfileId",
+          "documentation":"<p>The ID of the subscribed group.</p>"
+        }
+      },
+      "documentation":"<p>The details of the subscribed group.</p>"
     },
     "SubscribedListing":{
       "type":"structure",
@@ -21515,9 +22067,17 @@
     "SubscribedPrincipal":{
       "type":"structure",
       "members":{
+        "group":{
+          "shape":"SubscribedGroup",
+          "documentation":"<p>The subscribed group.</p>"
+        },
         "project":{
           "shape":"SubscribedProject",
           "documentation":"<p>The project that has the subscription grant.</p>"
+        },
+        "user":{
+          "shape":"SubscribedUser",
+          "documentation":"<p>The subscribed user.</p>"
         }
       },
       "documentation":"<p>The principal that has the subscription grant for the asset.</p>",
@@ -21526,9 +22086,17 @@
     "SubscribedPrincipalInput":{
       "type":"structure",
       "members":{
+        "group":{
+          "shape":"SubscribedGroupInput",
+          "documentation":"<p>The subscribed group.</p>"
+        },
         "project":{
           "shape":"SubscribedProjectInput",
           "documentation":"<p>The project that is to be given a subscription grant.</p>"
+        },
+        "user":{
+          "shape":"SubscribedUserInput",
+          "documentation":"<p>The subscribed user.</p>"
         }
       },
       "documentation":"<p>The principal that is to be given a subscriptiong grant.</p>",
@@ -21594,6 +22162,30 @@
       },
       "documentation":"<p>The project that is to be given a subscription grant.</p>"
     },
+    "SubscribedUser":{
+      "type":"structure",
+      "members":{
+        "details":{
+          "shape":"UserProfileDetails",
+          "documentation":"<p>The subscribed user details.</p>"
+        },
+        "id":{
+          "shape":"UserProfileId",
+          "documentation":"<p>The ID of the subscribed user.</p>"
+        }
+      },
+      "documentation":"<p>The subscribed user.</p>"
+    },
+    "SubscribedUserInput":{
+      "type":"structure",
+      "members":{
+        "identifier":{
+          "shape":"UserProfileId",
+          "documentation":"<p>The ID of the subscribed user.</p>"
+        }
+      },
+      "documentation":"<p>The subscribed user.</p>"
+    },
     "SubscriptionGrantId":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9_-]{1,36}$"
@@ -21651,6 +22243,10 @@
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The identifier of the Amazon DataZone domain in which a subscription grant exists.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The environment ID of the subscription grant.</p>"
         },
         "grantedEntity":{
           "shape":"GrantedEntity",
@@ -23698,11 +24294,22 @@
           "shape":"String",
           "documentation":"<p>The project profile version to which the project should be updated. You can only specify the following string for this parameter: <code>latest</code>.</p>"
         },
+        "resourceTags":{
+          "shape":"UpdateProjectInputResourceTagsMap",
+          "documentation":"<p>The resource tags of the project.</p>"
+        },
         "userParameters":{
           "shape":"EnvironmentConfigurationUserParametersList",
           "documentation":"<p>The user parameters of the project.</p>"
         }
       }
+    },
+    "UpdateProjectInputResourceTagsMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":25,
+      "min":0
     },
     "UpdateProjectOutput":{
       "type":"structure",
@@ -23765,6 +24372,10 @@
           "shape":"ProjectStatus",
           "documentation":"<p>The status of the project.</p>"
         },
+        "resourceTags":{
+          "shape":"ResourceTags",
+          "documentation":"<p>The resource tags of the project.</p>"
+        },
         "userParameters":{
           "shape":"EnvironmentConfigurationUserParametersList",
           "documentation":"<p>The user parameters of the project.</p>"
@@ -23778,6 +24389,10 @@
         "identifier"
       ],
       "members":{
+        "allowCustomProjectResourceTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether custom project resource tags are supported.</p>"
+        },
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of a project profile.</p>"
@@ -23806,6 +24421,14 @@
           "shape":"ProjectProfileName",
           "documentation":"<p>The name of a project profile.</p>"
         },
+        "projectResourceTags":{
+          "shape":"ProjectResourceTagParameters",
+          "documentation":"<p>The resource tags of the project profile.</p>"
+        },
+        "projectResourceTagsDescription":{
+          "shape":"Description",
+          "documentation":"<p>Field viewable through the UI that provides a project user with the allowed resource tag specifications.</p>"
+        },
         "status":{
           "shape":"Status",
           "documentation":"<p>The status of a project profile.</p>"
@@ -23821,6 +24444,10 @@
         "name"
       ],
       "members":{
+        "allowCustomProjectResourceTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether custom project resource tags are supported.</p>"
+        },
         "createdAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The timestamp at which a project profile is created.</p>"
@@ -23857,11 +24484,52 @@
           "shape":"ProjectProfileName",
           "documentation":"<p>The name of the project profile.</p>"
         },
+        "projectResourceTags":{
+          "shape":"ProjectResourceTagParameters",
+          "documentation":"<p>The resource tags of the project profile.</p>"
+        },
+        "projectResourceTagsDescription":{
+          "shape":"Description",
+          "documentation":"<p>Field viewable through the UI that provides a project user with the allowed resource tag specifications.</p>"
+        },
         "status":{
           "shape":"Status",
           "documentation":"<p>The status of the project profile.</p>"
         }
       }
+    },
+    "UpdateRootDomainUnitOwnerInput":{
+      "type":"structure",
+      "required":[
+        "currentOwner",
+        "domainIdentifier",
+        "newOwner"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request. This field is automatically populated if not provided.</p>",
+          "idempotencyToken":true
+        },
+        "currentOwner":{
+          "shape":"UserIdentifier",
+          "documentation":"<p>The current owner of the root domain unit.</p>"
+        },
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the domain where the root domain unit owner is to be updated.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "newOwner":{
+          "shape":"String",
+          "documentation":"<p>The new owner of the root domain unit.</p>"
+        }
+      }
+    },
+    "UpdateRootDomainUnitOwnerOutput":{
+      "type":"structure",
+      "members":{}
     },
     "UpdateRuleInput":{
       "type":"structure",
@@ -24044,6 +24712,10 @@
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The identifier of the Amazon DataZone domain in which a subscription grant status is to be updated.</p>"
+        },
+        "environmentId":{
+          "shape":"EnvironmentId",
+          "documentation":"<p>The ID of the environment in which the subscription grant is updated.</p>"
         },
         "grantedEntity":{
           "shape":"GrantedEntity",
@@ -24351,7 +25023,10 @@
     "UpdateUserProfileOutput":{
       "type":"structure",
       "members":{
-        "details":{"shape":"UserProfileDetails"},
+        "details":{
+          "shape":"UserProfileDetails",
+          "documentation":"<p>The results of the UpdateUserProfile action.</p>"
+        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The identifier of the Amazon DataZone domain in which a user profile is updated.</p>"
@@ -24434,14 +25109,14 @@
       "members":{
         "iam":{
           "shape":"IamUserProfileDetails",
-          "documentation":"<p>The IAM details included in the user profile details.</p>"
+          "documentation":"<p>The IAM details of the user profile.</p>"
         },
         "sso":{
           "shape":"SsoUserProfileDetails",
-          "documentation":"<p>The single sign-on details included in the user profile details.</p>"
+          "documentation":"<p>The SSO details of the user profile.</p>"
         }
       },
-      "documentation":"<p>The details of the user profile in Amazon DataZone.</p>",
+      "documentation":"<p>The user profile details.</p>",
       "union":true
     },
     "UserProfileId":{

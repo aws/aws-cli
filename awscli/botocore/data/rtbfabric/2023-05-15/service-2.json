@@ -32,7 +32,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Accepts a link request between RTB applications.</p> <p>When a requester RTB application requests to link with a responder RTB application, the responder can use this operation to accept the link request and establish the connection.</p>",
+      "documentation":"<p>Accepts a link request between gateways.</p> <p>When a requester gateway requests to link with a responder gateway, the responder can use this operation to accept the link request and establish the connection.</p>",
       "idempotent":true
     },
     "CreateInboundExternalLink":{
@@ -74,7 +74,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Creates a new link between RTB applications.</p> <p>Establishes a connection that allows RTB applications to communicate and exchange bid requests and responses.</p>",
+      "documentation":"<p>Creates a new link between gateways.</p> <p>Establishes a connection that allows gateways to communicate and exchange bid requests and responses.</p>",
       "idempotent":true
     },
     "CreateOutboundExternalLink":{
@@ -134,7 +134,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Creates a responder gateway.</p>",
+      "documentation":"<p>Creates a responder gateway.</p> <important> <p>A domain name or managed endpoint is required.</p> </important>",
       "idempotent":true
     },
     "DeleteInboundExternalLink":{
@@ -174,7 +174,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Deletes a link between RTB applications.</p> <p>Permanently removes the connection between RTB applications. This action cannot be undone.</p>",
+      "documentation":"<p>Deletes a link between gateways.</p> <p>Permanently removes the connection between gateways. This action cannot be undone.</p>",
       "idempotent":true
     },
     "DeleteOutboundExternalLink":{
@@ -271,7 +271,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves information about a link between RTB applications.</p> <p>Returns detailed information about the link configuration, status, and associated RTB applications.</p>",
+      "documentation":"<p>Retrieves information about a link between gateways.</p> <p>Returns detailed information about the link configuration, status, and associated gateways.</p>",
       "readonly":true
     },
     "GetOutboundExternalLink":{
@@ -347,7 +347,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Lists links associated with an RTB application.</p> <p>Returns a list of all links for the specified RTB application, including their status and configuration details.</p>",
+      "documentation":"<p>Lists links associated with gateways.</p> <p>Returns a list of all links for the specified gateways, including their status and configuration details.</p>",
       "readonly":true
     },
     "ListRequesterGateways":{
@@ -418,7 +418,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Rejects a link request between RTB applications.</p> <p>When a requester RTB application requests to link with a responder RTB application, the responder can use this operation to decline the link request.</p>",
+      "documentation":"<p>Rejects a link request between gateways.</p> <p>When a requester gateway requests to link with a responder gateway, the responder can use this operation to decline the link request.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -476,7 +476,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Updates the configuration of a link between RTB applications.</p> <p>Allows you to modify settings and parameters for an existing link.</p>",
+      "documentation":"<p>Updates the configuration of a link between gateways.</p> <p>Allows you to modify settings and parameters for an existing link.</p>",
       "idempotent":true
     },
     "UpdateLinkModuleFlow":{
@@ -709,7 +709,8 @@
       "type":"structure",
       "required":[
         "clientToken",
-        "gatewayId"
+        "gatewayId",
+        "logSettings"
       ],
       "members":{
         "clientToken":{
@@ -727,6 +728,7 @@
           "shape":"LinkAttributes",
           "documentation":"<p>Attributes of the link.</p>"
         },
+        "logSettings":{"shape":"LinkLogSettings"},
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of the key-value pairs of the tag or tags to assign to the resource.</p>"
@@ -862,7 +864,8 @@
       "required":[
         "clientToken",
         "gatewayId",
-        "publicEndpoint"
+        "publicEndpoint",
+        "logSettings"
       ],
       "members":{
         "clientToken":{
@@ -876,10 +879,12 @@
           "location":"uri",
           "locationName":"gatewayId"
         },
+        "attributes":{"shape":"LinkAttributes"},
         "publicEndpoint":{
           "shape":"URL",
           "documentation":"<p>The public endpoint of the link.</p>"
         },
+        "logSettings":{"shape":"LinkLogSettings"},
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of the key-value pairs of the tag or tags to assign to the resource.</p>"
@@ -1437,7 +1442,8 @@
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of the key-value pairs for the tag or tags assigned to the specified resource.</p>"
-        }
+        },
+        "logSettings":{"shape":"LinkLogSettings"}
       }
     },
     "GetLinkRequest":{
@@ -1579,7 +1585,8 @@
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of the key-value pairs for the tag or tags assigned to the specified resource.</p>"
-        }
+        },
+        "logSettings":{"shape":"LinkLogSettings"}
       }
     },
     "GetRequesterGatewayRequest":{

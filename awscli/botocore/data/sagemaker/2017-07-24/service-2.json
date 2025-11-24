@@ -104,6 +104,32 @@
       "output":{"shape":"BatchDescribeModelPackageOutput"},
       "documentation":"<p>This action batch describes a list of versioned model packages</p>"
     },
+    "BatchRebootClusterNodes":{
+      "name":"BatchRebootClusterNodes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchRebootClusterNodesRequest"},
+      "output":{"shape":"BatchRebootClusterNodesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Reboots specific nodes within a SageMaker HyperPod cluster using a soft recovery mechanism. <code>BatchRebootClusterNodes</code> performs a graceful reboot of the specified nodes by calling the Amazon Elastic Compute Cloud <code>RebootInstances</code> API, which attempts to cleanly shut down the operating system before restarting the instance.</p> <p>This operation is useful for recovering from transient issues or applying certain configuration changes that require a restart.</p> <note> <ul> <li> <p>Rebooting a node may cause temporary service interruption for workloads running on that node. Ensure your workloads can handle node restarts or use appropriate scheduling to minimize impact.</p> </li> <li> <p>You can reboot up to 25 nodes in a single request.</p> </li> <li> <p>For SageMaker HyperPod clusters using the Slurm workload manager, ensure rebooting nodes will not disrupt critical cluster operations.</p> </li> </ul> </note>"
+    },
+    "BatchReplaceClusterNodes":{
+      "name":"BatchReplaceClusterNodes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"BatchReplaceClusterNodesRequest"},
+      "output":{"shape":"BatchReplaceClusterNodesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Replaces specific nodes within a SageMaker HyperPod cluster with new hardware. <code>BatchReplaceClusterNodes</code> terminates the specified instances and provisions new replacement instances with the same configuration but fresh hardware. The Amazon Machine Image (AMI) and instance configuration remain the same.</p> <p>This operation is useful for recovering from hardware failures or persistent issues that cannot be resolved through a reboot.</p> <important> <ul> <li> <p> <b>Data Loss Warning:</b> Replacing nodes destroys all instance volumes, including both root and secondary volumes. All data stored on these volumes will be permanently lost and cannot be recovered.</p> </li> <li> <p>To safeguard your work, back up your data to Amazon S3 or an FSx for Lustre file system before invoking the API on a worker node group. This will help prevent any potential data loss from the instance root volume. For more information about backup, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-operate-cli-command.html#sagemaker-hyperpod-operate-cli-command-update-cluster-software-backup\">Use the backup script provided by SageMaker HyperPod</a>.</p> </li> <li> <p>If you want to invoke this API on an existing cluster, you'll first need to patch the cluster by running the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_UpdateClusterSoftware.html\">UpdateClusterSoftware API</a>. For more information about patching a cluster, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-operate-cli-command.html#sagemaker-hyperpod-operate-cli-command-update-cluster-software\">Update the SageMaker HyperPod platform software of a cluster</a>.</p> </li> <li> <p>You can replace up to 25 nodes in a single request.</p> </li> </ul> </important>"
+    },
     "CreateAction":{
       "name":"CreateAction",
       "http":{
@@ -1542,6 +1568,19 @@
       ],
       "documentation":"<p>Deletes a pipeline if there are no running instances of the pipeline. To delete a pipeline, you must stop all running instances of the pipeline using the <code>StopPipelineExecution</code> API. When you delete a pipeline, all instances of the pipeline are deleted.</p>"
     },
+    "DeleteProcessingJob":{
+      "name":"DeleteProcessingJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteProcessingJobRequest"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceInUse"}
+      ],
+      "documentation":"<p>Deletes a processing job. After Amazon SageMaker deletes a processing job, all of the metadata for the processing job is lost. You can delete only processing jobs that are in a terminal state (<code>Stopped</code>, <code>Failed</code>, or <code>Completed</code>). You cannot delete a job that is in the <code>InProgress</code> or <code>Stopping</code> state. After deleting the job, you can reuse its name to create another processing job.</p>"
+    },
     "DeleteProject":{
       "name":"DeleteProject",
       "http":{
@@ -1589,6 +1628,19 @@
       "input":{"shape":"DeleteTagsInput"},
       "output":{"shape":"DeleteTagsOutput"},
       "documentation":"<p>Deletes the specified tags from an SageMaker resource.</p> <p>To list a resource's tags, use the <code>ListTags</code> API. </p> <note> <p>When you call this API to delete tags from a hyperparameter tuning job, the deleted tags are not removed from training jobs that the hyperparameter tuning job launched before you called this API.</p> </note> <note> <p>When you call this API to delete tags from a SageMaker Domain or User Profile, the deleted tags are not removed from Apps that the SageMaker Domain or User Profile launched before you called this API.</p> </note>"
+    },
+    "DeleteTrainingJob":{
+      "name":"DeleteTrainingJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteTrainingJobRequest"},
+      "errors":[
+        {"shape":"ResourceNotFound"},
+        {"shape":"ResourceInUse"}
+      ],
+      "documentation":"<p>Deletes a training job. After SageMaker deletes a training job, all of the metadata for the training job is lost. You can delete only training jobs that are in a terminal state (<code>Stopped</code>, <code>Failed</code>, or <code>Completed</code>) and don't retain an <code>Available</code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/train-warm-pools.html\">managed warm pool</a>. You cannot delete a job that is in the <code>InProgress</code> or <code>Stopping</code> state. After deleting the job, you can reuse its name to create another training job.</p>"
     },
     "DeleteTrial":{
       "name":"DeleteTrial",
@@ -4561,6 +4613,30 @@
     }
   },
   "shapes":{
+    "AcceleratorPartitionConfig":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "Count"
+      ],
+      "members":{
+        "Type":{
+          "shape":"MIGProfileType",
+          "documentation":"<p>The Multi-Instance GPU (MIG) profile type that defines the partition configuration. The profile specifies the compute and memory allocation for each partition instance. The available profile types depend on the instance type specified in the compute quota configuration.</p>"
+        },
+        "Count":{
+          "shape":"AcceleratorPartitionConfigCountInteger",
+          "documentation":"<p>The number of accelerator partitions to allocate with the specified partition type. If you don't specify a value for vCPU and MemoryInGiB, SageMaker AI automatically allocates ratio-based values for those parameters based on the accelerator partition count you provide.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Configuration for allocating accelerator partitions.</p>"
+    },
+    "AcceleratorPartitionConfigCountInteger":{
+      "type":"integer",
+      "max":10000000,
+      "min":0
+    },
     "AcceleratorsAmount":{
       "type":"integer",
       "box":true,
@@ -4660,6 +4736,20 @@
         "Enabled",
         "Disabled"
       ]
+    },
+    "ActiveClusterOperationCount":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "ActiveClusterOperationName":{
+      "type":"string",
+      "enum":["Scaling"]
+    },
+    "ActiveOperations":{
+      "type":"map",
+      "key":{"shape":"ActiveClusterOperationName"},
+      "value":{"shape":"ActiveClusterOperationCount"}
     },
     "AddAssociationRequest":{
       "type":"structure",
@@ -4948,7 +5038,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:aws(-cn|-us-gov|-iso-f)?:sagemaker:[a-z0-9\\-]{9,16}:[0-9]{12}:algorithm/[\\S]{1,2048}"
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]{9,16}:[0-9]{12}:algorithm/[\\S]{1,2048}"
     },
     "AlgorithmImage":{
       "type":"string",
@@ -5627,6 +5717,12 @@
         "None",
         "Line"
       ]
+    },
+    "AssignedGroupPatternsList":{
+      "type":"list",
+      "member":{"shape":"GroupNamePattern"},
+      "max":10,
+      "min":0
     },
     "AssociateTrialComponentRequest":{
       "type":"structure",
@@ -6789,6 +6885,20 @@
       "box":true,
       "min":0
     },
+    "AvailableUpgrade":{
+      "type":"structure",
+      "members":{
+        "Version":{
+          "shape":"MajorMinorVersion",
+          "documentation":"<p>The semantic version number of the available upgrade for the SageMaker Partner AI App.</p>"
+        },
+        "ReleaseNotes":{
+          "shape":"ReleaseNotesList",
+          "documentation":"<p>A list of release notes describing the changes and improvements included in the available upgrade version.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an available upgrade for a SageMaker Partner AI App, including the version number and release notes.</p>"
+    },
     "AwsManagedHumanLoopRequestSource":{
       "type":"string",
       "enum":[
@@ -7106,6 +7216,242 @@
         }
       },
       "documentation":"<p>Provides summary information about the model package.</p>"
+    },
+    "BatchRebootClusterNodeLogicalIdsError":{
+      "type":"structure",
+      "required":[
+        "NodeLogicalId",
+        "ErrorCode",
+        "Message"
+      ],
+      "members":{
+        "NodeLogicalId":{
+          "shape":"ClusterNodeLogicalId",
+          "documentation":"<p>The logical node ID of the node that encountered an error during the reboot operation.</p>"
+        },
+        "ErrorCode":{
+          "shape":"BatchRebootClusterNodesErrorCode",
+          "documentation":"<p>The error code associated with the error encountered when rebooting a node by logical node ID.</p> <p>Possible values:</p> <ul> <li> <p> <code>InstanceIdNotFound</code>: The node does not exist in the specified cluster.</p> </li> <li> <p> <code>InvalidInstanceStatus</code>: The node is in a state that does not allow rebooting. Wait for the node to finish any ongoing changes before retrying.</p> </li> <li> <p> <code>InstanceIdInUse</code>: Another operation is already in progress for this node. Wait for the operation to complete before retrying.</p> </li> <li> <p> <code>InternalServerError</code>: An internal error occurred while processing this node.</p> </li> </ul>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable message describing the error encountered when rebooting a node by logical node ID.</p>"
+        }
+      },
+      "documentation":"<p>Represents an error encountered when rebooting a node (identified by its logical node ID) from a SageMaker HyperPod cluster.</p>"
+    },
+    "BatchRebootClusterNodeLogicalIdsErrors":{
+      "type":"list",
+      "member":{"shape":"BatchRebootClusterNodeLogicalIdsError"},
+      "max":25,
+      "min":0
+    },
+    "BatchRebootClusterNodesError":{
+      "type":"structure",
+      "required":[
+        "NodeId",
+        "ErrorCode",
+        "Message"
+      ],
+      "members":{
+        "NodeId":{
+          "shape":"ClusterNodeId",
+          "documentation":"<p>The EC2 instance ID of the node that encountered an error during the reboot operation.</p>"
+        },
+        "ErrorCode":{
+          "shape":"BatchRebootClusterNodesErrorCode",
+          "documentation":"<p>The error code associated with the error encountered when rebooting a node.</p> <p>Possible values:</p> <ul> <li> <p> <code>InstanceIdNotFound</code>: The instance does not exist in the specified cluster.</p> </li> <li> <p> <code>InvalidInstanceStatus</code>: The instance is in a state that does not allow rebooting. Wait for the instance to finish any ongoing changes before retrying.</p> </li> <li> <p> <code>InstanceIdInUse</code>: Another operation is already in progress for this node. Wait for the operation to complete before retrying.</p> </li> <li> <p> <code>InternalServerError</code>: An internal error occurred while processing this node.</p> </li> </ul>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable message describing the error encountered when rebooting a node.</p>"
+        }
+      },
+      "documentation":"<p>Represents an error encountered when rebooting a node from a SageMaker HyperPod cluster.</p>"
+    },
+    "BatchRebootClusterNodesErrorCode":{
+      "type":"string",
+      "enum":[
+        "InstanceIdNotFound",
+        "InvalidInstanceStatus",
+        "InstanceIdInUse",
+        "InternalServerError"
+      ]
+    },
+    "BatchRebootClusterNodesErrors":{
+      "type":"list",
+      "member":{"shape":"BatchRebootClusterNodesError"},
+      "max":25,
+      "min":0
+    },
+    "BatchRebootClusterNodesRequest":{
+      "type":"structure",
+      "required":["ClusterName"],
+      "members":{
+        "ClusterName":{
+          "shape":"ClusterNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the SageMaker HyperPod cluster containing the nodes to reboot.</p>"
+        },
+        "NodeIds":{
+          "shape":"BatchRebootClusterNodesRequestNodeIdsList",
+          "documentation":"<p>A list of EC2 instance IDs to reboot using soft recovery. You can specify between 1 and 25 instance IDs.</p> <note> <ul> <li> <p>Either <code>NodeIds</code> or <code>NodeLogicalIds</code> must be provided (or both), but at least one is required.</p> </li> <li> <p>Each instance ID must follow the pattern <code>i-</code> followed by 17 hexadecimal characters (for example, <code>i-0123456789abcdef0</code>).</p> </li> </ul> </note>"
+        },
+        "NodeLogicalIds":{
+          "shape":"BatchRebootClusterNodesRequestNodeLogicalIdsList",
+          "documentation":"<p>A list of logical node IDs to reboot using soft recovery. You can specify between 1 and 25 logical node IDs.</p> <p>The <code>NodeLogicalId</code> is a unique identifier that persists throughout the node's lifecycle and can be used to track nodes that are still being provisioned and don't yet have an EC2 instance ID assigned.</p> <important> <ul> <li> <p>This parameter is only supported for clusters using <code>Continuous</code> as the <code>NodeProvisioningMode</code>. For clusters using the default provisioning mode, use <code>NodeIds</code> instead.</p> </li> <li> <p>Either <code>NodeIds</code> or <code>NodeLogicalIds</code> must be provided (or both), but at least one is required.</p> </li> </ul> </important>"
+        }
+      }
+    },
+    "BatchRebootClusterNodesRequestNodeIdsList":{
+      "type":"list",
+      "member":{"shape":"ClusterNodeId"},
+      "max":25,
+      "min":1
+    },
+    "BatchRebootClusterNodesRequestNodeLogicalIdsList":{
+      "type":"list",
+      "member":{"shape":"ClusterNodeLogicalId"},
+      "max":25,
+      "min":1
+    },
+    "BatchRebootClusterNodesResponse":{
+      "type":"structure",
+      "members":{
+        "Successful":{
+          "shape":"ClusterNodeIds",
+          "documentation":"<p>A list of EC2 instance IDs for which the reboot operation was successfully initiated.</p>"
+        },
+        "Failed":{
+          "shape":"BatchRebootClusterNodesErrors",
+          "documentation":"<p>A list of errors encountered for EC2 instance IDs that could not be rebooted. Each error includes the instance ID, an error code, and a descriptive message.</p>"
+        },
+        "FailedNodeLogicalIds":{
+          "shape":"BatchRebootClusterNodeLogicalIdsErrors",
+          "documentation":"<p>A list of errors encountered for logical node IDs that could not be rebooted. Each error includes the logical node ID, an error code, and a descriptive message. This field is only present when <code>NodeLogicalIds</code> were provided in the request.</p>"
+        },
+        "SuccessfulNodeLogicalIds":{
+          "shape":"ClusterNodeLogicalIdList",
+          "documentation":"<p>A list of logical node IDs for which the reboot operation was successfully initiated. This field is only present when <code>NodeLogicalIds</code> were provided in the request.</p>"
+        }
+      }
+    },
+    "BatchReplaceClusterNodeLogicalIdsError":{
+      "type":"structure",
+      "required":[
+        "NodeLogicalId",
+        "ErrorCode",
+        "Message"
+      ],
+      "members":{
+        "NodeLogicalId":{
+          "shape":"ClusterNodeLogicalId",
+          "documentation":"<p>The logical node ID of the node that encountered an error during the replacement operation.</p>"
+        },
+        "ErrorCode":{
+          "shape":"BatchReplaceClusterNodesErrorCode",
+          "documentation":"<p>The error code associated with the error encountered when replacing a node by logical node ID.</p> <p>Possible values:</p> <ul> <li> <p> <code>InstanceIdNotFound</code>: The node does not exist in the specified cluster.</p> </li> <li> <p> <code>InvalidInstanceStatus</code>: The node is in a state that does not allow replacement. Wait for the node to finish any ongoing changes before retrying.</p> </li> <li> <p> <code>InstanceIdInUse</code>: Another operation is already in progress for this node. Wait for the operation to complete before retrying.</p> </li> <li> <p> <code>InternalServerError</code>: An internal error occurred while processing this node.</p> </li> </ul>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable message describing the error encountered when replacing a node by logical node ID.</p>"
+        }
+      },
+      "documentation":"<p>Represents an error encountered when replacing a node (identified by its logical node ID) in a SageMaker HyperPod cluster.</p>"
+    },
+    "BatchReplaceClusterNodeLogicalIdsErrors":{
+      "type":"list",
+      "member":{"shape":"BatchReplaceClusterNodeLogicalIdsError"},
+      "max":25,
+      "min":0
+    },
+    "BatchReplaceClusterNodesError":{
+      "type":"structure",
+      "required":[
+        "NodeId",
+        "ErrorCode",
+        "Message"
+      ],
+      "members":{
+        "NodeId":{
+          "shape":"ClusterNodeId",
+          "documentation":"<p>The EC2 instance ID of the node that encountered an error during the replacement operation.</p>"
+        },
+        "ErrorCode":{
+          "shape":"BatchReplaceClusterNodesErrorCode",
+          "documentation":"<p>The error code associated with the error encountered when replacing a node.</p> <p>Possible values:</p> <ul> <li> <p> <code>InstanceIdNotFound</code>: The instance does not exist in the specified cluster.</p> </li> <li> <p> <code>InvalidInstanceStatus</code>: The instance is in a state that does not allow replacement. Wait for the instance to finish any ongoing changes before retrying.</p> </li> <li> <p> <code>InstanceIdInUse</code>: Another operation is already in progress for this node. Wait for the operation to complete before retrying.</p> </li> <li> <p> <code>InternalServerError</code>: An internal error occurred while processing this node.</p> </li> </ul>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable message describing the error encountered when replacing a node.</p>"
+        }
+      },
+      "documentation":"<p>Represents an error encountered when replacing a node in a SageMaker HyperPod cluster.</p>"
+    },
+    "BatchReplaceClusterNodesErrorCode":{
+      "type":"string",
+      "enum":[
+        "InstanceIdNotFound",
+        "InvalidInstanceStatus",
+        "InstanceIdInUse",
+        "InternalServerError"
+      ]
+    },
+    "BatchReplaceClusterNodesErrors":{
+      "type":"list",
+      "member":{"shape":"BatchReplaceClusterNodesError"},
+      "max":25,
+      "min":0
+    },
+    "BatchReplaceClusterNodesRequest":{
+      "type":"structure",
+      "required":["ClusterName"],
+      "members":{
+        "ClusterName":{
+          "shape":"ClusterNameOrArn",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the SageMaker HyperPod cluster containing the nodes to replace.</p>"
+        },
+        "NodeIds":{
+          "shape":"BatchReplaceClusterNodesRequestNodeIdsList",
+          "documentation":"<p>A list of EC2 instance IDs to replace with new hardware. You can specify between 1 and 25 instance IDs.</p> <important> <p>Replace operations destroy all instance volumes (root and secondary). Ensure you have backed up any important data before proceeding.</p> </important> <note> <ul> <li> <p>Either <code>NodeIds</code> or <code>NodeLogicalIds</code> must be provided (or both), but at least one is required.</p> </li> <li> <p>Each instance ID must follow the pattern <code>i-</code> followed by 17 hexadecimal characters (for example, <code>i-0123456789abcdef0</code>).</p> </li> <li> <p>For SageMaker HyperPod clusters using the Slurm workload manager, you cannot replace instances that are configured as Slurm controller nodes.</p> </li> </ul> </note>"
+        },
+        "NodeLogicalIds":{
+          "shape":"BatchReplaceClusterNodesRequestNodeLogicalIdsList",
+          "documentation":"<p>A list of logical node IDs to replace with new hardware. You can specify between 1 and 25 logical node IDs.</p> <p>The <code>NodeLogicalId</code> is a unique identifier that persists throughout the node's lifecycle and can be used to track nodes that are still being provisioned and don't yet have an EC2 instance ID assigned.</p> <important> <ul> <li> <p>Replace operations destroy all instance volumes (root and secondary). Ensure you have backed up any important data before proceeding.</p> </li> <li> <p>This parameter is only supported for clusters using <code>Continuous</code> as the <code>NodeProvisioningMode</code>. For clusters using the default provisioning mode, use <code>NodeIds</code> instead.</p> </li> <li> <p>Either <code>NodeIds</code> or <code>NodeLogicalIds</code> must be provided (or both), but at least one is required.</p> </li> </ul> </important>"
+        }
+      }
+    },
+    "BatchReplaceClusterNodesRequestNodeIdsList":{
+      "type":"list",
+      "member":{"shape":"ClusterNodeId"},
+      "max":25,
+      "min":1
+    },
+    "BatchReplaceClusterNodesRequestNodeLogicalIdsList":{
+      "type":"list",
+      "member":{"shape":"ClusterNodeLogicalId"},
+      "max":25,
+      "min":1
+    },
+    "BatchReplaceClusterNodesResponse":{
+      "type":"structure",
+      "members":{
+        "Successful":{
+          "shape":"ClusterNodeIds",
+          "documentation":"<p>A list of EC2 instance IDs for which the replacement operation was successfully initiated.</p>"
+        },
+        "Failed":{
+          "shape":"BatchReplaceClusterNodesErrors",
+          "documentation":"<p>A list of errors encountered for EC2 instance IDs that could not be replaced. Each error includes the instance ID, an error code, and a descriptive message.</p>"
+        },
+        "FailedNodeLogicalIds":{
+          "shape":"BatchReplaceClusterNodeLogicalIdsErrors",
+          "documentation":"<p>A list of errors encountered for logical node IDs that could not be replaced. Each error includes the logical node ID, an error code, and a descriptive message. This field is only present when <code>NodeLogicalIds</code> were provided in the request.</p>"
+        },
+        "SuccessfulNodeLogicalIds":{
+          "shape":"ClusterNodeLogicalIdList",
+          "documentation":"<p>A list of logical node IDs for which the replacement operation was successfully initiated. This field is only present when <code>NodeLogicalIds</code> were provided in the request.</p>"
+        }
+      }
     },
     "BatchStrategy":{
       "type":"string",
@@ -8383,6 +8729,27 @@
       "type":"string",
       "pattern":"[a-z]{3}\\d-az\\d"
     },
+    "ClusterCapacityRequirements":{
+      "type":"structure",
+      "members":{
+        "Spot":{
+          "shape":"ClusterSpotOptions",
+          "documentation":"<p>Configuration options specific to Spot instances.</p>"
+        },
+        "OnDemand":{
+          "shape":"ClusterOnDemandOptions",
+          "documentation":"<p>Configuration options specific to On-Demand instances.</p>"
+        }
+      },
+      "documentation":"<p>Defines the instance capacity requirements for an instance group, including configurations for both Spot and On-Demand capacity types. </p>"
+    },
+    "ClusterCapacityType":{
+      "type":"string",
+      "enum":[
+        "Spot",
+        "OnDemand"
+      ]
+    },
     "ClusterConfigMode":{
       "type":"string",
       "enum":[
@@ -8546,6 +8913,10 @@
           "shape":"ClusterInstanceCount",
           "documentation":"<p>The number of instances you specified to add to the instance group of a SageMaker HyperPod cluster.</p>"
         },
+        "MinCount":{
+          "shape":"ClusterInstanceCount",
+          "documentation":"<p>The minimum number of instances that must be available in the instance group of a SageMaker HyperPod cluster before it transitions to <code>InService</code> status. </p>"
+        },
         "InstanceGroupName":{
           "shape":"ClusterInstanceGroupName",
           "documentation":"<p>The name of the instance group of a SageMaker HyperPod cluster.</p>"
@@ -8601,7 +8972,28 @@
         "DesiredImageId":{
           "shape":"ImageId",
           "documentation":"<p>The ID of the Amazon Machine Image (AMI) desired for the instance group.</p>"
-        }
+        },
+        "ActiveOperations":{
+          "shape":"ActiveOperations",
+          "documentation":"<p>A map indicating active operations currently in progress for the instance group of a SageMaker HyperPod cluster. When there is a scaling operation in progress, this map contains a key <code>Scaling</code> with value 1. </p>"
+        },
+        "KubernetesConfig":{
+          "shape":"ClusterKubernetesConfigDetails",
+          "documentation":"<p>The Kubernetes configuration for the instance group that contains labels and taints to be applied for the nodes in this instance group. </p>"
+        },
+        "CapacityRequirements":{
+          "shape":"ClusterCapacityRequirements",
+          "documentation":"<p>The instance capacity requirements for the instance group.</p>"
+        },
+        "TargetStateCount":{
+          "shape":"ClusterInstanceCount",
+          "documentation":"<p>The number of nodes running a specific image ID since the last software update request.</p>"
+        },
+        "SoftwareUpdateStatus":{
+          "shape":"SoftwareUpdateStatus",
+          "documentation":"<p>Status of the last software udpate request.</p>"
+        },
+        "ActiveSoftwareUpdateConfig":{"shape":"DeploymentConfiguration"}
       },
       "documentation":"<p>Details of an instance group in a SageMaker HyperPod cluster.</p>"
     },
@@ -8628,6 +9020,10 @@
         "InstanceCount":{
           "shape":"ClusterInstanceCount",
           "documentation":"<p>Specifies the number of instances to add to the instance group of a SageMaker HyperPod cluster.</p>"
+        },
+        "MinInstanceCount":{
+          "shape":"ClusterInstanceCount",
+          "documentation":"<p>Defines the minimum number of instances required for an instance group to become <code>InService</code>. If this threshold isn't met within 3 hours, the instance group rolls back to its previous state - zero instances for new instance groups, or previous settings for existing instance groups. <code>MinInstanceCount</code> only affects the initial transition to <code>InService</code> and does not guarantee maintaining this minimum afterward. </p>"
         },
         "InstanceGroupName":{
           "shape":"ClusterInstanceGroupName",
@@ -8672,6 +9068,14 @@
         "ImageId":{
           "shape":"ImageId",
           "documentation":"<p>When configuring your HyperPod cluster, you can specify an image ID using one of the following options:</p> <ul> <li> <p> <code>HyperPodPublicAmiId</code>: Use a HyperPod public AMI</p> </li> <li> <p> <code>CustomAmiId</code>: Use your custom AMI</p> </li> <li> <p> <code>default</code>: Use the default latest system image</p> </li> </ul> <p>If you choose to use a custom AMI (<code>CustomAmiId</code>), ensure it meets the following requirements:</p> <ul> <li> <p>Encryption: The custom AMI must be unencrypted.</p> </li> <li> <p>Ownership: The custom AMI must be owned by the same Amazon Web Services account that is creating the HyperPod cluster.</p> </li> <li> <p>Volume support: Only the primary AMI snapshot volume is supported; additional AMI volumes are not supported.</p> </li> </ul> <p>When updating the instance group's AMI through the <code>UpdateClusterSoftware</code> operation, if an instance group uses a custom AMI, you must provide an <code>ImageId</code> or use the default as input. Note that if you don't specify an instance group in your <code>UpdateClusterSoftware</code> request, then all of the instance groups are patched with the specified image.</p>"
+        },
+        "KubernetesConfig":{
+          "shape":"ClusterKubernetesConfig",
+          "documentation":"<p>Specifies the Kubernetes configuration for the instance group. You describe what you want the labels and taints to look like, and the cluster works to reconcile the actual state with the declared state for nodes in this instance group. </p>"
+        },
+        "CapacityRequirements":{
+          "shape":"ClusterCapacityRequirements",
+          "documentation":"<p>Specifies the capacity requirements for the instance group.</p>"
         }
       },
       "documentation":"<p>The specifications of an instance group that you need to define.</p>"
@@ -8815,6 +9219,7 @@
         "ml.p5e.48xlarge",
         "ml.p5en.48xlarge",
         "ml.p6-b200.48xlarge",
+        "ml.trn2.3xlarge",
         "ml.trn2.48xlarge",
         "ml.c6i.large",
         "ml.c6i.xlarge",
@@ -8869,6 +9274,131 @@
         "ml.r7i.24xlarge",
         "ml.r7i.48xlarge"
       ]
+    },
+    "ClusterKubernetesConfig":{
+      "type":"structure",
+      "members":{
+        "Labels":{
+          "shape":"ClusterKubernetesLabels",
+          "documentation":"<p>Key-value pairs of labels to be applied to cluster nodes.</p>"
+        },
+        "Taints":{
+          "shape":"ClusterKubernetesTaints",
+          "documentation":"<p>List of taints to be applied to cluster nodes.</p>"
+        }
+      },
+      "documentation":"<p>Kubernetes configuration that specifies labels and taints to be applied to cluster nodes in an instance group. </p>"
+    },
+    "ClusterKubernetesConfigDetails":{
+      "type":"structure",
+      "members":{
+        "CurrentLabels":{
+          "shape":"ClusterKubernetesLabels",
+          "documentation":"<p>The current labels applied to cluster nodes of an instance group.</p>"
+        },
+        "DesiredLabels":{
+          "shape":"ClusterKubernetesLabels",
+          "documentation":"<p>The desired labels to be applied to cluster nodes of an instance group.</p>"
+        },
+        "CurrentTaints":{
+          "shape":"ClusterKubernetesTaints",
+          "documentation":"<p>The current taints applied to cluster nodes of an instance group.</p>"
+        },
+        "DesiredTaints":{
+          "shape":"ClusterKubernetesTaints",
+          "documentation":"<p>The desired taints to be applied to cluster nodes of an instance group.</p>"
+        }
+      },
+      "documentation":"<p>Detailed Kubernetes configuration showing both the current and desired state of labels and taints for cluster nodes. </p>"
+    },
+    "ClusterKubernetesConfigNodeDetails":{
+      "type":"structure",
+      "members":{
+        "CurrentLabels":{
+          "shape":"ClusterKubernetesLabels",
+          "documentation":"<p>The current labels applied to the cluster node.</p>"
+        },
+        "DesiredLabels":{
+          "shape":"ClusterKubernetesLabels",
+          "documentation":"<p>The desired labels to be applied to the cluster node.</p>"
+        },
+        "CurrentTaints":{
+          "shape":"ClusterKubernetesTaints",
+          "documentation":"<p>The current taints applied to the cluster node.</p>"
+        },
+        "DesiredTaints":{
+          "shape":"ClusterKubernetesTaints",
+          "documentation":"<p>The desired taints to be applied to the cluster node.</p>"
+        }
+      },
+      "documentation":"<p>Node-specific Kubernetes configuration showing both current and desired state of labels and taints for an individual cluster node. </p>"
+    },
+    "ClusterKubernetesLabelKey":{
+      "type":"string",
+      "max":317,
+      "min":1,
+      "pattern":"([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?[A-Za-z0-9]([-A-Za-z0-9_.]*[A-Za-z0-9])?"
+    },
+    "ClusterKubernetesLabelValue":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?"
+    },
+    "ClusterKubernetesLabels":{
+      "type":"map",
+      "key":{"shape":"ClusterKubernetesLabelKey"},
+      "value":{"shape":"ClusterKubernetesLabelValue"},
+      "max":50,
+      "min":0
+    },
+    "ClusterKubernetesTaint":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Effect"
+      ],
+      "members":{
+        "Key":{
+          "shape":"ClusterKubernetesTaintKey",
+          "documentation":"<p>The key of the taint.</p>"
+        },
+        "Value":{
+          "shape":"ClusterKubernetesTaintValue",
+          "documentation":"<p>The value of the taint.</p>"
+        },
+        "Effect":{
+          "shape":"ClusterKubernetesTaintEffect",
+          "documentation":"<p>The effect of the taint. Valid values are <code>NoSchedule</code>, <code>PreferNoSchedule</code>, and <code>NoExecute</code>. </p>"
+        }
+      },
+      "documentation":"<p>A Kubernetes taint that can be applied to cluster nodes.</p>"
+    },
+    "ClusterKubernetesTaintEffect":{
+      "type":"string",
+      "enum":[
+        "NoSchedule",
+        "PreferNoSchedule",
+        "NoExecute"
+      ]
+    },
+    "ClusterKubernetesTaintKey":{
+      "type":"string",
+      "max":317,
+      "min":1,
+      "pattern":"([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?[A-Za-z0-9]([-A-Za-z0-9_.]*[A-Za-z0-9])?"
+    },
+    "ClusterKubernetesTaintValue":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?"
+    },
+    "ClusterKubernetesTaints":{
+      "type":"list",
+      "member":{"shape":"ClusterKubernetesTaint"},
+      "max":50,
+      "min":0
     },
     "ClusterLifeCycleConfig":{
       "type":"structure",
@@ -8998,6 +9528,14 @@
         "UltraServerInfo":{
           "shape":"UltraServerInfo",
           "documentation":"<p>Contains information about the UltraServer.</p>"
+        },
+        "KubernetesConfig":{
+          "shape":"ClusterKubernetesConfigNodeDetails",
+          "documentation":"<p>The Kubernetes configuration applied to this node, showing both the current and desired state of labels and taints. The cluster works to reconcile the actual state with the declared state. </p>"
+        },
+        "CapacityType":{
+          "shape":"ClusterCapacityType",
+          "documentation":"<p>The capacity type of the node. Valid values are <code>OnDemand</code> and <code>Spot</code>. When set to <code>OnDemand</code>, the node is launched as an On-Demand instance. When set to <code>Spot</code>, the node is launched as a Spot instance. </p>"
         }
       },
       "documentation":"<p>Details of an instance (also called a <i>node</i> interchangeably) in a SageMaker HyperPod cluster.</p>"
@@ -9082,6 +9620,10 @@
         "UltraServerInfo":{
           "shape":"UltraServerInfo",
           "documentation":"<p>Contains information about the UltraServer.</p>"
+        },
+        "PrivateDnsHostname":{
+          "shape":"ClusterPrivateDnsHostname",
+          "documentation":"<p>The private DNS hostname of the SageMaker HyperPod cluster node.</p>"
         }
       },
       "documentation":"<p>Lists a summary of the properties of an instance (also called a <i>node</i> interchangeably) of a SageMaker HyperPod cluster.</p>"
@@ -9090,6 +9632,11 @@
       "type":"integer",
       "box":true,
       "min":0
+    },
+    "ClusterOnDemandOptions":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Configuration options specific to On-Demand instances.</p>"
     },
     "ClusterOrchestrator":{
       "type":"structure",
@@ -9314,6 +9861,11 @@
         "NAME"
       ]
     },
+    "ClusterSpotOptions":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Configuration options specific to Spot instances.</p>"
+    },
     "ClusterStatus":{
       "type":"string",
       "enum":[
@@ -9435,7 +9987,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:aws(-cn|-us-gov|-iso-f)?:sagemaker:[a-z0-9\\-]{9,16}:[0-9]{12}:code-repository/[\\S]{1,2048}"
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]{9,16}:[0-9]{12}:code-repository/[\\S]{1,2048}"
     },
     "CodeRepositoryContains":{
       "type":"string",
@@ -9763,6 +10315,10 @@
         "MemoryInGiB":{
           "shape":"MemoryInGiBAmount",
           "documentation":"<p>The amount of memory in GiB to allocate. If you specify a value only for this parameter, SageMaker AI automatically allocates a ratio-based value for vCPU based on this memory that you provide. For example, if you allocate 200 out of 400 total memory in GiB, SageMaker AI uses the ratio of 0.5 and allocates values to vCPU. Accelerators are set to 0.</p>"
+        },
+        "AcceleratorPartition":{
+          "shape":"AcceleratorPartitionConfig",
+          "documentation":"<p>The accelerator partition configuration for fractional GPU allocation.</p>"
         }
       },
       "documentation":"<p>Configuration of the resources used for the compute allocation definition.</p>"
@@ -11143,6 +11699,10 @@
           "shape":"Boolean",
           "documentation":"<p>Sets whether all model containers deployed to the endpoint are isolated. If they are, no inbound or outbound network calls can be made to or from the model containers.</p>",
           "box":true
+        },
+        "MetricsConfig":{
+          "shape":"MetricsConfig",
+          "documentation":"<p>The configuration parameters for utilization metrics.</p>"
         }
       }
     },
@@ -12522,6 +13082,10 @@
           "shape":"OptimizationJobDeploymentInstanceType",
           "documentation":"<p>The type of instance that hosts the optimized model that you create with the optimization job.</p>"
         },
+        "MaxInstanceCount":{
+          "shape":"OptimizationJobMaxInstanceCount",
+          "documentation":"<p>The maximum number of instances to use for the optimization job.</p>"
+        },
         "OptimizationEnvironment":{
           "shape":"OptimizationJobEnvironmentVariables",
           "documentation":"<p>The environment variables to set in the model container.</p>"
@@ -12627,6 +13191,11 @@
         "EnableIamSessionBasedIdentity":{
           "shape":"Boolean",
           "documentation":"<p>When set to <code>TRUE</code>, the SageMaker Partner AI App sets the Amazon Web Services IAM session name or the authenticated IAM user as the identity of the SageMaker Partner AI App user.</p>",
+          "box":true
+        },
+        "EnableAutoMinorVersionUpgrade":{
+          "shape":"Boolean",
+          "documentation":"<p>When set to <code>TRUE</code>, the SageMaker Partner AI App is automatically upgraded to the latest minor version during the next scheduled maintenance window, if one is available. Default is <code>FALSE</code>.</p>",
           "box":true
         },
         "ClientToken":{
@@ -13003,11 +13572,8 @@
       "type":"structure",
       "required":[
         "TrainingJobName",
-        "AlgorithmSpecification",
         "RoleArn",
-        "OutputDataConfig",
-        "ResourceConfig",
-        "StoppingCondition"
+        "OutputDataConfig"
       ],
       "members":{
         "TrainingJobName":{
@@ -14682,6 +15248,16 @@
         }
       }
     },
+    "DeleteProcessingJobRequest":{
+      "type":"structure",
+      "required":["ProcessingJobName"],
+      "members":{
+        "ProcessingJobName":{
+          "shape":"ProcessingJobName",
+          "documentation":"<p>The name of the processing job to delete.</p>"
+        }
+      }
+    },
     "DeleteProjectInput":{
       "type":"structure",
       "required":["ProjectName"],
@@ -14739,6 +15315,16 @@
     "DeleteTagsOutput":{
       "type":"structure",
       "members":{}
+    },
+    "DeleteTrainingJobRequest":{
+      "type":"structure",
+      "required":["TrainingJobName"],
+      "members":{
+        "TrainingJobName":{
+          "shape":"TrainingJobName",
+          "documentation":"<p>The name of the training job to delete.</p>"
+        }
+      }
     },
     "DeleteTrialComponentRequest":{
       "type":"structure",
@@ -16543,6 +17129,10 @@
           "shape":"Boolean",
           "documentation":"<p>Indicates whether all model containers deployed to the endpoint are isolated. If they are, no inbound or outbound network calls can be made to or from the model containers.</p>",
           "box":true
+        },
+        "MetricsConfig":{
+          "shape":"MetricsConfig",
+          "documentation":"<p>The configuration parameters for utilization metrics.</p>"
         }
       }
     },
@@ -16618,6 +17208,10 @@
         "ShadowProductionVariants":{
           "shape":"ProductionVariantSummaryList",
           "documentation":"<p>An array of <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ProductionVariantSummary.html\">ProductionVariantSummary</a> objects, one for each model that you want to host at this endpoint in shadow mode with production traffic replicated from the model specified on <code>ProductionVariants</code>.</p>"
+        },
+        "MetricsConfig":{
+          "shape":"MetricsConfig",
+          "documentation":"<p>The configuration parameters for utilization metrics.</p>"
         }
       }
     },
@@ -18634,6 +19228,10 @@
           "shape":"OptimizationJobDeploymentInstanceType",
           "documentation":"<p>The type of instance that hosts the optimized model that you create with the optimization job.</p>"
         },
+        "MaxInstanceCount":{
+          "shape":"OptimizationJobMaxInstanceCount",
+          "documentation":"<p>The maximum number of instances to use for the optimization job.</p>"
+        },
         "OptimizationConfigs":{
           "shape":"OptimizationConfigs",
           "documentation":"<p>Settings for each of the optimization techniques that the job applies.</p>"
@@ -18664,6 +19262,11 @@
         "Arn":{
           "shape":"PartnerAppArn",
           "documentation":"<p>The ARN of the SageMaker Partner AI App to describe.</p>"
+        },
+        "IncludeAvailableUpgrade":{
+          "shape":"Boolean",
+          "documentation":"<p>When set to <code>TRUE</code>, the response includes available upgrade information for the SageMaker Partner AI App. Default is <code>FALSE</code>.</p>",
+          "box":true
         }
       }
     },
@@ -18734,6 +19337,19 @@
         "Error":{
           "shape":"ErrorInfo",
           "documentation":"<p>This is an error field object that contains the error code and the reason for an operation failure.</p>"
+        },
+        "EnableAutoMinorVersionUpgrade":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the SageMaker Partner AI App is configured for automatic minor version upgrades during scheduled maintenance windows.</p>",
+          "box":true
+        },
+        "CurrentVersionEolDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end-of-life date for the current version of the SageMaker Partner AI App.</p>"
+        },
+        "AvailableUpgrade":{
+          "shape":"AvailableUpgrade",
+          "documentation":"<p>A map of available minor version upgrades for the SageMaker Partner AI App. The key is the semantic version number, and the value is a list of release notes for that version. A null value indicates no upgrades are available.</p>"
         }
       }
     },
@@ -19289,8 +19905,6 @@
         "ModelArtifacts",
         "TrainingJobStatus",
         "SecondaryStatus",
-        "AlgorithmSpecification",
-        "ResourceConfig",
         "StoppingCondition",
         "CreationTime"
       ],
@@ -19541,7 +20155,7 @@
         },
         "TargetResources":{
           "shape":"SageMakerResourceNames",
-          "documentation":"<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod) that can use this training plan.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> </ul>"
+          "documentation":"<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints) that can use this training plan.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> </ul>"
         },
         "ReservedCapacitySummaries":{
           "shape":"ReservedCapacitySummaries",
@@ -21174,6 +21788,10 @@
     },
     "EnableCaching":{"type":"boolean"},
     "EnableCapture":{"type":"boolean"},
+    "EnableEnhancedMetrics":{
+      "type":"boolean",
+      "box":true
+    },
     "EnableInfraCheck":{
       "type":"boolean",
       "box":true
@@ -22943,6 +23561,18 @@
       "max":63,
       "min":1,
       "pattern":"[\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}]+"
+    },
+    "GroupNamePattern":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\w+=,.@*-]+"
+    },
+    "GroupPatternsList":{
+      "type":"list",
+      "member":{"shape":"GroupNamePattern"},
+      "max":10,
+      "min":1
     },
     "GroupingAttributeName":{
       "type":"string",
@@ -25465,6 +26095,10 @@
         "TargetCount":{
           "shape":"TargetCount",
           "documentation":"<p>The desired number of instances for the group after scaling.</p>"
+        },
+        "MinCount":{
+          "shape":"InstanceCount",
+          "documentation":"<p>Minimum instance count of the instance group.</p>"
         },
         "FailureMessage":{
           "shape":"String",
@@ -30813,11 +31447,50 @@
       "min":0,
       "pattern":"(https|s3)://([^/]+)/?(.*)"
     },
+    "MIGProfileType":{
+      "type":"string",
+      "enum":[
+        "mig-1g.5gb",
+        "mig-1g.10gb",
+        "mig-1g.18gb",
+        "mig-1g.20gb",
+        "mig-1g.23gb",
+        "mig-1g.35gb",
+        "mig-1g.45gb",
+        "mig-1g.47gb",
+        "mig-2g.10gb",
+        "mig-2g.20gb",
+        "mig-2g.35gb",
+        "mig-2g.45gb",
+        "mig-2g.47gb",
+        "mig-3g.20gb",
+        "mig-3g.40gb",
+        "mig-3g.71gb",
+        "mig-3g.90gb",
+        "mig-3g.93gb",
+        "mig-4g.20gb",
+        "mig-4g.40gb",
+        "mig-4g.71gb",
+        "mig-4g.90gb",
+        "mig-4g.93gb",
+        "mig-7g.40gb",
+        "mig-7g.80gb",
+        "mig-7g.141gb",
+        "mig-7g.180gb",
+        "mig-7g.186gb"
+      ]
+    },
     "MLFramework":{
       "type":"string",
       "max":128,
       "min":1,
       "pattern":"[a-zA-Z]+ ?\\d+\\.\\d+(\\.\\d+)?"
+    },
+    "MajorMinorVersion":{
+      "type":"string",
+      "max":64,
+      "min":0,
+      "pattern":"\\d+\\.\\d+"
     },
     "ManagedInstanceScalingMaxInstanceCount":{
       "type":"integer",
@@ -31089,6 +31762,10 @@
       "min":1,
       "pattern":".+"
     },
+    "MetricPublishFrequencyInSeconds":{
+      "type":"integer",
+      "box":true
+    },
     "MetricRegex":{
       "type":"string",
       "max":500,
@@ -31119,6 +31796,20 @@
       "union":true
     },
     "MetricValue":{"type":"float"},
+    "MetricsConfig":{
+      "type":"structure",
+      "members":{
+        "EnableEnhancedMetrics":{
+          "shape":"EnableEnhancedMetrics",
+          "documentation":"<p>Specifies whether to enable enhanced metrics for the endpoint. Enhanced metrics provide utilization data at instance and container granularity. Container granularity is supported for Inference Components. The default is <code>False</code>.</p>"
+        },
+        "MetricPublishFrequencyInSeconds":{
+          "shape":"MetricPublishFrequencyInSeconds",
+          "documentation":"<p>The frequency, in seconds, at which utilization metrics are published to Amazon CloudWatch. The default is <code>60</code> seconds.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for Utilization metrics.</p>"
+    },
     "MetricsSource":{
       "type":"structure",
       "required":[
@@ -31151,7 +31842,7 @@
       "type":"string",
       "max":258,
       "min":20,
-      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:ml-reservation/.*"
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:[a-z0-9\\-]{1,14}/.*"
     },
     "MlTools":{
       "type":"string",
@@ -32269,7 +32960,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:aws(-cn|-us-gov|-iso-f)?:sagemaker:[a-z0-9\\-]{9,16}:[0-9]{12}:model-package/[\\S]{1,2048}"
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]{9,16}:[0-9]{12}:model-package/[\\S]{1,2048}"
     },
     "ModelPackageArnList":{
       "type":"list",
@@ -32279,7 +32970,6 @@
     },
     "ModelPackageContainerDefinition":{
       "type":"structure",
-      "required":["Image"],
       "members":{
         "ContainerHostname":{
           "shape":"ContainerHostname",
@@ -32383,7 +33073,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:aws(-cn|-us-gov|-iso-f)?:sagemaker:[a-z0-9\\-]{9,16}:[0-9]{12}:model-package-group/[\\S]{1,2048}"
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]{9,16}:[0-9]{12}:model-package-group/[\\S]{1,2048}"
     },
     "ModelPackageGroupSortBy":{
       "type":"string",
@@ -32765,6 +33455,50 @@
         "Name",
         "CreationTime"
       ]
+    },
+    "ModelSpeculativeDecodingConfig":{
+      "type":"structure",
+      "required":["Technique"],
+      "members":{
+        "Technique":{
+          "shape":"ModelSpeculativeDecodingTechnique",
+          "documentation":"<p>The speculative decoding technique to apply during model optimization.</p>"
+        },
+        "TrainingDataSource":{
+          "shape":"ModelSpeculativeDecodingTrainingDataSource",
+          "documentation":"<p>The location of the training data to use for speculative decoding. The data must be formatted as ShareGPT, OpenAI Completions or OpenAI Chat Completions. The input can also be unencrypted captured data from a SageMaker endpoint as long as the endpoint uses one of the above formats.</p>"
+        }
+      },
+      "documentation":"<p>Settings for the model speculative decoding technique that's applied by a model optimization job.</p>"
+    },
+    "ModelSpeculativeDecodingS3DataType":{
+      "type":"string",
+      "enum":[
+        "S3Prefix",
+        "ManifestFile"
+      ]
+    },
+    "ModelSpeculativeDecodingTechnique":{
+      "type":"string",
+      "enum":["EAGLE"]
+    },
+    "ModelSpeculativeDecodingTrainingDataSource":{
+      "type":"structure",
+      "required":[
+        "S3Uri",
+        "S3DataType"
+      ],
+      "members":{
+        "S3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI that points to the training data for speculative decoding.</p>"
+        },
+        "S3DataType":{
+          "shape":"ModelSpeculativeDecodingS3DataType",
+          "documentation":"<p>The type of data stored in the Amazon S3 location. Valid values are <code>S3Prefix</code> or <code>ManifestFile</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the training data source for speculative decoding.</p>"
     },
     "ModelStepMetadata":{
       "type":"structure",
@@ -34315,6 +35049,10 @@
         "ModelShardingConfig":{
           "shape":"ModelShardingConfig",
           "documentation":"<p>Settings for the model sharding technique that's applied by a model optimization job.</p>"
+        },
+        "ModelSpeculativeDecodingConfig":{
+          "shape":"ModelSpeculativeDecodingConfig",
+          "documentation":"<p>Settings for the model speculative decoding technique that's applied by a model optimization job.</p>"
         }
       },
       "documentation":"<p>Settings for an optimization technique that you apply with a model optimization job.</p>",
@@ -34344,6 +35082,8 @@
         "ml.p4d.24xlarge",
         "ml.p4de.24xlarge",
         "ml.p5.48xlarge",
+        "ml.p5e.48xlarge",
+        "ml.p5en.48xlarge",
         "ml.g5.xlarge",
         "ml.g5.2xlarge",
         "ml.g5.4xlarge",
@@ -34384,12 +35124,21 @@
       "max":25,
       "min":0
     },
+    "OptimizationJobMaxInstanceCount":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
     "OptimizationJobModelSource":{
       "type":"structure",
       "members":{
         "S3":{
           "shape":"OptimizationJobModelSourceS3",
           "documentation":"<p>The Amazon S3 location of a source model to optimize with an optimization job.</p>"
+        },
+        "SageMakerModel":{
+          "shape":"OptimizationSageMakerModel",
+          "documentation":"<p>The name of an existing SageMaker model to optimize with an optimization job.</p>"
         }
       },
       "documentation":"<p>The location of the source model to optimize with an optimization job.</p>"
@@ -34419,6 +35168,10 @@
         "S3OutputLocation":{
           "shape":"S3Uri",
           "documentation":"<p>The Amazon S3 URI for where to store the optimized model that you create with an optimization job.</p>"
+        },
+        "SageMakerModel":{
+          "shape":"OptimizationSageMakerModel",
+          "documentation":"<p>The name of a SageMaker model to use as the output destination for an optimization job.</p>"
         }
       },
       "documentation":"<p>Details for where to store the optimized model that you create with the optimization job.</p>"
@@ -34481,6 +35234,10 @@
           "shape":"OptimizationJobDeploymentInstanceType",
           "documentation":"<p>The type of instance that hosts the optimized model that you create with the optimization job.</p>"
         },
+        "MaxInstanceCount":{
+          "shape":"OptimizationJobMaxInstanceCount",
+          "documentation":"<p>The maximum number of instances to use for the optimization job.</p>"
+        },
         "OptimizationTypes":{
           "shape":"OptimizationTypes",
           "documentation":"<p>The optimization techniques that are applied by the optimization job.</p>"
@@ -34510,6 +35267,16 @@
         }
       },
       "documentation":"<p>Output values produced by an optimization job.</p>"
+    },
+    "OptimizationSageMakerModel":{
+      "type":"structure",
+      "members":{
+        "ModelName":{
+          "shape":"ModelName",
+          "documentation":"<p>The name of a SageMaker model.</p>"
+        }
+      },
+      "documentation":"<p>A SageMaker model to use as the source or destination for an optimization job.</p>"
     },
     "OptimizationType":{"type":"string"},
     "OptimizationTypes":{
@@ -34857,6 +35624,14 @@
         "Arguments":{
           "shape":"PartnerAppArguments",
           "documentation":"<p>This is a map of required inputs for a SageMaker Partner AI App. Based on the application type, the map is populated with a key and value pair that is specific to the user and application.</p>"
+        },
+        "AssignedGroupPatterns":{
+          "shape":"AssignedGroupPatternsList",
+          "documentation":"<p>A list of Amazon Web Services IAM Identity Center group patterns that can access the SageMaker Partner AI App. Group names support wildcard matching using <code>*</code>. An empty list indicates the app will not use Identity Center group features. All groups specified in <code>RoleGroupAssignments</code> must match patterns in this list.</p>"
+        },
+        "RoleGroupAssignments":{
+          "shape":"RoleGroupAssignmentsList",
+          "documentation":"<p>A map of in-app roles to Amazon Web Services IAM Identity Center group patterns. Groups assigned to specific roles receive those permissions, while groups in <code>AssignedGroupPatterns</code> but not in this map receive default in-app role depending on app type. Group patterns support wildcard matching using <code>*</code>. Currently supported by Fiddler version 1.3 and later with roles: <code>ORG_MEMBER</code> (default) and <code>ORG_ADMIN</code>.</p>"
         }
       },
       "documentation":"<p>Configuration settings for the SageMaker Partner AI App.</p>"
@@ -37046,7 +37821,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:aws(-cn|-us-gov|-iso-f)?:sagemaker:[a-z0-9\\-]{9,16}:[0-9]{12}:project/[\\S]{1,2048}"
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]{9,16}:[0-9]{12}:project/[\\S]{1,2048}"
     },
     "ProjectEntityName":{
       "type":"string",
@@ -38046,6 +38821,12 @@
       "min":1,
       "pattern":".*"
     },
+    "ReleaseNotesList":{
+      "type":"list",
+      "member":{"shape":"String1024"},
+      "max":10,
+      "min":0
+    },
     "RemoteDebugConfig":{
       "type":"structure",
       "members":{
@@ -38428,7 +39209,6 @@
     },
     "ResourceConfig":{
       "type":"structure",
-      "required":["VolumeSizeInGB"],
       "members":{
         "InstanceType":{
           "shape":"TrainingInstanceType",
@@ -38440,7 +39220,7 @@
           "box":true
         },
         "VolumeSizeInGB":{
-          "shape":"VolumeSizeInGB",
+          "shape":"OptionalVolumeSizeInGB",
           "documentation":"<p>The size of the ML storage volume that you want to provision. </p> <p>ML storage volumes store model artifacts and incremental states. Training algorithms might also use the ML storage volume for scratch space. If you want to store the training data in the ML storage volume, choose <code>File</code> as the <code>TrainingInputMode</code> in the algorithm specification. </p> <p>When using an ML instance with <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ssd-instance-store.html#nvme-ssd-volumes\">NVMe SSD volumes</a>, SageMaker doesn't provision Amazon EBS General Purpose SSD (gp2) storage. Available storage is fixed to the NVMe-type instance's storage capacity. SageMaker configures storage paths for training datasets, checkpoints, model artifacts, and outputs to use the entire capacity of the instance storage. For example, ML instance families with the NVMe-type instance storage include <code>ml.p4d</code>, <code>ml.g4dn</code>, and <code>ml.g5</code>. </p> <p>When using an ML instance with the EBS-only storage option and without instance storage, you must define the size of EBS volume through <code>VolumeSizeInGB</code> in the <code>ResourceConfig</code> API. For example, ML instance families that use EBS volumes include <code>ml.c5</code> and <code>ml.p2</code>. </p> <p>To look up instance types and their instance storage types and volumes, see <a href=\"http://aws.amazon.com/ec2/instance-types/\">Amazon EC2 Instance Types</a>.</p> <p>To find the default local paths defined by the SageMaker training platform, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-train-storage.html\">Amazon SageMaker Training Storage Folders for Training Datasets, Checkpoints, Model Artifacts, and Outputs</a>.</p>",
           "box":true
         },
@@ -38698,6 +39478,30 @@
       "max":2048,
       "min":20,
       "pattern":"arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+"
+    },
+    "RoleGroupAssignment":{
+      "type":"structure",
+      "required":[
+        "RoleName",
+        "GroupPatterns"
+      ],
+      "members":{
+        "RoleName":{
+          "shape":"NonEmptyString256",
+          "documentation":"<p>The name of the in-app role within the SageMaker Partner AI App. The specific roles available depend on the app type and version.</p>"
+        },
+        "GroupPatterns":{
+          "shape":"GroupPatternsList",
+          "documentation":"<p>A list of Amazon Web Services IAM Identity Center group patterns that should be assigned to the specified role. Group patterns support wildcard matching using <code>*</code>.</p>"
+        }
+      },
+      "documentation":"<p>Defines the mapping between an in-app role and the Amazon Web Services IAM Identity Center group patterns that should be assigned to that role within the SageMaker Partner AI App.</p>"
+    },
+    "RoleGroupAssignmentsList":{
+      "type":"list",
+      "member":{"shape":"RoleGroupAssignment"},
+      "max":10,
+      "min":0
     },
     "RollingDeploymentPolicy":{
       "type":"structure",
@@ -38982,7 +39786,8 @@
       "type":"string",
       "enum":[
         "training-job",
-        "hyperpod-cluster"
+        "hyperpod-cluster",
+        "endpoint"
       ]
     },
     "SageMakerResourceNames":{
@@ -39322,7 +40127,7 @@
         },
         "TargetResources":{
           "shape":"SageMakerResourceNames",
-          "documentation":"<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod) to search for in the offerings.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> </ul>"
+          "documentation":"<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints) to search for in the offerings.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> </ul>"
         }
       }
     },
@@ -39701,6 +40506,17 @@
       "max":2048,
       "min":0,
       "pattern":"arn:aws[a-z\\-]*:sns:[a-z0-9\\-]*:[0-9]{12}:[a-zA-Z0-9_.-]+"
+    },
+    "SoftwareUpdateStatus":{
+      "type":"string",
+      "enum":[
+        "Pending",
+        "InProgress",
+        "Succeeded",
+        "Failed",
+        "RollbackInProgress",
+        "RollbackComplete"
+      ]
     },
     "SortActionsBy":{
       "type":"string",
@@ -42006,7 +42822,8 @@
         "Completed",
         "Failed",
         "Stopping",
-        "Stopped"
+        "Stopped",
+        "Deleting"
       ]
     },
     "TrainingJobStatusCounter":{
@@ -42181,7 +42998,7 @@
         },
         "TargetResources":{
           "shape":"SageMakerResourceNames",
-          "documentation":"<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod) for this training plan offering.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> </ul>"
+          "documentation":"<p>The target resources (e.g., SageMaker Training Jobs, SageMaker HyperPod, SageMaker Endpoints) for this training plan offering.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> </ul>"
         },
         "RequestedStartTimeAfter":{
           "shape":"Timestamp",
@@ -42325,7 +43142,7 @@
         },
         "TargetResources":{
           "shape":"SageMakerResourceNames",
-          "documentation":"<p>The target resources (e.g., training jobs, HyperPod clusters) that can use this training plan.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> </ul>"
+          "documentation":"<p>The target resources (e.g., training jobs, HyperPod clusters, Endpoints) that can use this training plan.</p> <p>Training plans are specific to their target resource.</p> <ul> <li> <p>A training plan designed for SageMaker training jobs can only be used to schedule and run training jobs.</p> </li> <li> <p>A training plan for HyperPod clusters can be used exclusively to provide compute resources to a cluster's instance group.</p> </li> <li> <p>A training plan for SageMaker endpoints can be used exclusively to provide compute resources to SageMaker endpoints for model deployment.</p> </li> </ul>"
         },
         "ReservedCapacitySummaries":{
           "shape":"ReservedCapacitySummaries",
@@ -42577,7 +43394,15 @@
         "ml.inf2.xlarge",
         "ml.inf2.8xlarge",
         "ml.inf2.24xlarge",
-        "ml.inf2.48xlarge"
+        "ml.inf2.48xlarge",
+        "ml.g6.xlarge",
+        "ml.g6.2xlarge",
+        "ml.g6.4xlarge",
+        "ml.g6.8xlarge",
+        "ml.g6.12xlarge",
+        "ml.g6.16xlarge",
+        "ml.g6.24xlarge",
+        "ml.g6.48xlarge"
       ]
     },
     "TransformInstanceTypes":{
@@ -43736,6 +44561,10 @@
           "shape":"ClusterInstanceGroupsToDelete",
           "documentation":"<p>Specify the names of the instance groups to delete. Use a single <code>,</code> as the separator between multiple names.</p>"
         },
+        "NodeProvisioningMode":{
+          "shape":"ClusterNodeProvisioningMode",
+          "documentation":"<p>Determines how instance provisioning is handled during cluster operations. In <code>Continuous</code> mode, the cluster provisions available instances incrementally and retries until the target count is reached. The cluster becomes operational once cluster-level resources are ready. Use <code>CurrentCount</code> and <code>TargetCount</code> in <code>DescribeCluster</code> to track provisioning progress.</p>"
+        },
         "ClusterRole":{
           "shape":"RoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that HyperPod assumes for cluster autoscaling operations. Cannot be updated while autoscaling is enabled.</p>"
@@ -44037,6 +44866,10 @@
         "TagPropagation":{
           "shape":"TagPropagation",
           "documentation":"<p>Indicates whether custom tag propagation is supported for the domain. Defaults to <code>DISABLED</code>.</p>"
+        },
+        "VpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The identifier for the VPC used by the domain for network communication. Use this field only when adding VPC configuration to a SageMaker AI domain used in Amazon SageMaker Unified Studio that was created without VPC settings. SageMaker AI doesn't automatically apply VPC updates to existing applications. Stop and restart your applications to apply the changes.</p>"
         }
       }
     },
@@ -44751,6 +45584,10 @@
           "shape":"IPAddressType",
           "documentation":"<p>The IP address type for the notebook instance. Specify <code>ipv4</code> for IPv4-only connectivity or <code>dualstack</code> for both IPv4 and IPv6 connectivity. The notebook instance must be stopped before updating this setting. When you specify <code>dualstack</code>, the subnet must support IPv6 addressing.</p>"
         },
+        "PlatformIdentifier":{
+          "shape":"PlatformIdentifier",
+          "documentation":"<p>The platform identifier of the notebook instance runtime environment.</p>"
+        },
         "RoleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that SageMaker AI can assume to access the notebook instance. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html\">SageMaker AI Roles</a>. </p> <note> <p>To be able to pass this role to SageMaker AI, the caller of this API must have the <code>iam:PassRole</code> permission.</p> </note>"
@@ -44855,6 +45692,15 @@
           "shape":"Boolean",
           "documentation":"<p>When set to <code>TRUE</code>, the SageMaker Partner AI App sets the Amazon Web Services IAM session name or the authenticated IAM user as the identity of the SageMaker Partner AI App user.</p>",
           "box":true
+        },
+        "EnableAutoMinorVersionUpgrade":{
+          "shape":"Boolean",
+          "documentation":"<p>When set to <code>TRUE</code>, the SageMaker Partner AI App is automatically upgraded to the latest minor version during the next scheduled maintenance window, if one is available.</p>",
+          "box":true
+        },
+        "AppVersion":{
+          "shape":"MajorMinorVersion",
+          "documentation":"<p>The semantic version to upgrade the SageMaker Partner AI App to. Must be the same semantic version returned in the <code>AvailableUpgrade</code> field from <code>DescribePartnerApp</code>. Version skipping and downgrades are not supported.</p>"
         },
         "ClientToken":{
           "shape":"ClientToken",

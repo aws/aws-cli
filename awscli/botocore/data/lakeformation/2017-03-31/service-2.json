@@ -47,7 +47,7 @@
         {"shape":"EntityNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Allows a caller to assume an IAM role decorated as the SAML user specified in the SAML assertion included in the request. This decoration allows Lake Formation to enforce access policies against the SAML users and groups. This API operation requires SAML federation setup in the caller’s account as it can only be called with valid SAML assertions. Lake Formation does not scope down the permission of the assumed role. All permissions attached to the role via the SAML federation setup will be included in the role session. </p> <p> This decorated role is expected to access data in Amazon S3 by getting temporary access from Lake Formation which is authorized via the virtual API <code>GetDataAccess</code>. Therefore, all SAML roles that can be assumed via <code>AssumeDecoratedRoleWithSAML</code> must at a minimum include <code>lakeformation:GetDataAccess</code> in their role policies. A typical IAM policy attached to such a role would look as follows: </p>"
+      "documentation":"<p>Allows a caller to assume an IAM role decorated as the SAML user specified in the SAML assertion included in the request. This decoration allows Lake Formation to enforce access policies against the SAML users and groups. This API operation requires SAML federation setup in the caller’s account as it can only be called with valid SAML assertions. Lake Formation does not scope down the permission of the assumed role. All permissions attached to the role via the SAML federation setup will be included in the role session. </p> <p> This decorated role is expected to access data in Amazon S3 by getting temporary access from Lake Formation which is authorized via the virtual API <code>GetDataAccess</code>. Therefore, all SAML roles that can be assumed via <code>AssumeDecoratedRoleWithSAML</code> must at a minimum include <code>lakeformation:GetDataAccess</code> in their role policies. A typical IAM policy attached to such a role would include the following actions: </p> <ul> <li> <p>glue:*Database*</p> </li> <li> <p>glue:*Table*</p> </li> <li> <p>glue:*Partition*</p> </li> <li> <p>glue:*UserDefinedFunction*</p> </li> <li> <p>lakeformation:GetDataAccess</p> </li> </ul>"
     },
     "BatchGrantPermissions":{
       "name":"BatchGrantPermissions",
@@ -238,7 +238,7 @@
         {"shape":"OperationTimeoutException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Deletes the specified LF-tag given a key name. If the input parameter tag key was not found, then the operation will throw an exception. When you delete an LF-tag, the <code>LFTagPolicy</code> attached to the LF-tag becomes invalid. If the deleted LF-tag was still assigned to any resource, the tag policy attach to the deleted LF-tag will no longer be applied to the resource.</p>"
+      "documentation":"<p> Deletes an LF-tag by its key name. The operation fails if the specified tag key doesn't exist. When you delete an LF-Tag: </p> <ul> <li> <p>The associated LF-Tag policy becomes invalid.</p> </li> <li> <p> Resources that had this tag assigned will no longer have the tag policy applied to them.</p> </li> </ul>"
     },
     "DeleteLFTagExpression":{
       "name":"DeleteLFTagExpression",
@@ -736,7 +736,7 @@
         {"shape":"OperationTimeoutException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Returns a list of the principal permissions on the resource, filtered by the permissions of the caller. For example, if you are granted an ALTER permission, you are able to see only the principal permissions for ALTER.</p> <p>This operation returns only those permissions that have been explicitly granted.</p> <p>For information about permissions, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/security-data-access.html\">Security and Access Control to Metadata and Data</a>.</p>"
+      "documentation":"<p>Returns a list of the principal permissions on the resource, filtered by the permissions of the caller. For example, if you are granted an ALTER permission, you are able to see only the principal permissions for ALTER.</p> <p>This operation returns only those permissions that have been explicitly granted. If both <code>Principal</code> and <code>Resource</code> parameters are provided, the response returns effective permissions rather than the explicitly granted permissions.</p> <p>For information about permissions, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/security-data-access.html\">Security and Access Control to Metadata and Data</a>.</p>"
     },
     "ListResources":{
       "name":"ListResources",
@@ -1527,6 +1527,10 @@
         "ShareRecipients":{
           "shape":"DataLakePrincipalList",
           "documentation":"<p>A list of Amazon Web Services account IDs and/or Amazon Web Services organization/organizational unit ARNs that are allowed to access data managed by Lake Formation. </p> <p>If the <code>ShareRecipients</code> list includes valid values, a resource share is created with the principals you want to have access to the resources.</p> <p>If the <code>ShareRecipients</code> value is null or the list is empty, no resource share is created.</p>"
+        },
+        "ServiceIntegrations":{
+          "shape":"ServiceIntegrationList",
+          "documentation":"<p>A list of service integrations for enabling trusted identity propagation with external services such as Redshift.</p>"
         }
       }
     },
@@ -1939,6 +1943,10 @@
         "ShareRecipients":{
           "shape":"DataLakePrincipalList",
           "documentation":"<p>A list of Amazon Web Services account IDs or Amazon Web Services organization/organizational unit ARNs that are allowed to access data managed by Lake Formation. </p> <p>If the <code>ShareRecipients</code> list includes valid values, a resource share is created with the principals you want to have access to the resources as the <code>ShareRecipients</code>.</p> <p>If the <code>ShareRecipients</code> value is null or the list is empty, no resource share is created.</p>"
+        },
+        "ServiceIntegrations":{
+          "shape":"ServiceIntegrationList",
+          "documentation":"<p>A list of service integrations for enabling trusted identity propagation with external services such as Redshift.</p>"
         },
         "ResourceShare":{
           "shape":"RAMResourceShareArn",
@@ -3109,7 +3117,7 @@
         },
         "IncludeRelated":{
           "shape":"TrueFalseString",
-          "documentation":"<p>Indicates that related permissions should be included in the results.</p>"
+          "documentation":"<p>Indicates that related permissions should be included in the results when listing permissions on a table resource.</p> <p>Set the field to <code>TRUE</code> to show the cell filters on a table resource. Default is <code>FALSE</code>. The Principal parameter must not be specified when requesting cell filter information.</p>"
         }
       }
     },
@@ -3565,6 +3573,33 @@
       ]
     },
     "RAMResourceShareArn":{"type":"string"},
+    "RedshiftConnect":{
+      "type":"structure",
+      "required":["Authorization"],
+      "members":{
+        "Authorization":{
+          "shape":"ServiceAuthorization",
+          "documentation":"<p>The authorization status for Redshift Connect. Valid values are ENABLED or DISABLED.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for enabling trusted identity propagation with Redshift Connect.</p>"
+    },
+    "RedshiftScopeUnion":{
+      "type":"structure",
+      "members":{
+        "RedshiftConnect":{
+          "shape":"RedshiftConnect",
+          "documentation":"<p>Configuration for Redshift Connect integration.</p>"
+        }
+      },
+      "documentation":"<p>A union structure representing different Redshift integration scopes.</p>",
+      "union":true
+    },
+    "RedshiftServiceIntegrations":{
+      "type":"list",
+      "member":{"shape":"RedshiftScopeUnion"},
+      "documentation":"<p>A list of Redshift service integration configurations.</p>"
+    },
     "RegisterResourceRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -3658,7 +3693,7 @@
         },
         "LFTag":{
           "shape":"LFTagKeyResource",
-          "documentation":"<p>The LF-tag key and values attached to a resource.</p>"
+          "documentation":"<p>The LF-Tag key and values attached to a resource.</p>"
         },
         "LFTagPolicy":{
           "shape":"LFTagPolicyResource",
@@ -3888,6 +3923,30 @@
       }
     },
     "SecretAccessKeyString":{"type":"string"},
+    "ServiceAuthorization":{
+      "type":"string",
+      "documentation":"<p>Authorization status for service integrations. Specify a value of <code>ENABLED</code> or <code>DISABLED</code>.</p>",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "ServiceIntegrationList":{
+      "type":"list",
+      "member":{"shape":"ServiceIntegrationUnion"},
+      "documentation":"<p>A list of service integrations for trusted identity propagation.</p>"
+    },
+    "ServiceIntegrationUnion":{
+      "type":"structure",
+      "members":{
+        "Redshift":{
+          "shape":"RedshiftServiceIntegrations",
+          "documentation":"<p>Redshift service integration configuration.</p>"
+        }
+      },
+      "documentation":"<p>A union structure representing different service integration types.</p>",
+      "union":true
+    },
     "SessionTokenString":{"type":"string"},
     "StartQueryPlanningRequest":{
       "type":"structure",
@@ -4345,6 +4404,10 @@
         "ShareRecipients":{
           "shape":"DataLakePrincipalList",
           "documentation":"<p>A list of Amazon Web Services account IDs or Amazon Web Services organization/organizational unit ARNs that are allowed to access to access data managed by Lake Formation. </p> <p>If the <code>ShareRecipients</code> list includes valid values, then the resource share is updated with the principals you want to have access to the resources.</p> <p>If the <code>ShareRecipients</code> value is null, both the list of share recipients and the resource share remain unchanged.</p> <p>If the <code>ShareRecipients</code> value is an empty list, then the existing share recipients list will be cleared, and the resource share will be deleted.</p>"
+        },
+        "ServiceIntegrations":{
+          "shape":"ServiceIntegrationList",
+          "documentation":"<p>A list of service integrations for enabling trusted identity propagation with external services such as Redshift.</p>"
         },
         "ApplicationStatus":{
           "shape":"ApplicationStatus",

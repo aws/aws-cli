@@ -374,7 +374,20 @@
       "errors":[
         {"shape":"ChangeSetNotFoundException"}
       ],
-      "documentation":"<p>Returns hook-related information for the change set and a list of changes that CloudFormation makes when you run the change set.</p>"
+      "documentation":"<p>Returns Hook-related information for the change set and a list of changes that CloudFormation makes when you run the change set.</p>"
+    },
+    "DescribeEvents":{
+      "name":"DescribeEvents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeEventsInput"},
+      "output":{
+        "shape":"DescribeEventsOutput",
+        "resultWrapper":"DescribeEventsResult"
+      },
+      "documentation":"<p>Returns CloudFormation events based on flexible query criteria. Groups events by operation ID, enabling you to focus on individual stack operations during deployment.</p> <p>An operation is any action performed on a stack, including stack lifecycle actions (Create, Update, Delete, Rollback), change set creation, nested stack creation, and automatic rollbacks triggered by failures. Each operation has a unique identifier (Operation ID) and represents a discrete change attempt on the stack.</p> <p>Returns different types of events including:</p> <ul> <li> <p> <b>Progress events</b> - Status updates during stack operation execution.</p> </li> <li> <p> <b>Validation errors</b> - Failures from CloudFormation Early Validations.</p> </li> <li> <p> <b>Provisioning errors</b> - Resource creation and update failures.</p> </li> <li> <p> <b>Hook invocation errors</b> - Failures from CloudFormation Hook during stack operations.</p> </li> </ul> <note> <p>One of <code>ChangeSetName</code>, <code>OperationId</code> or <code>StackName</code> must be specified as input.</p> </note>"
     },
     "DescribeGeneratedTemplate":{
       "name":"DescribeGeneratedTemplate",
@@ -721,6 +734,22 @@
         {"shape":"GeneratedTemplateNotFoundException"}
       ],
       "documentation":"<p>Retrieves a generated template. If the template is in an <code>InProgress</code> or <code>Pending</code> status then the template returned will be the template when the template was last in a <code>Complete</code> status. If the template has not yet been in a <code>Complete</code> status then an empty template will be returned.</p>"
+    },
+    "GetHookResult":{
+      "name":"GetHookResult",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetHookResultInput"},
+      "output":{
+        "shape":"GetHookResultOutput",
+        "resultWrapper":"GetHookResultResult"
+      },
+      "errors":[
+        {"shape":"HookResultNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves detailed information and remediation guidance for a Hook invocation result.</p> <p>If the Hook uses a KMS key to encrypt annotations, callers of the <code>GetHookResult</code> operation must have <code>kms:Decrypt</code> permissions. For more information, see <a href=\"https://docs.aws.amazon.com/cloudformation-cli/latest/hooks-userguide/hooks-kms-key-policy.html\">KMS key policy and permissions for encrypting CloudFormation Hooks results at rest</a> in the <i>CloudFormation Hooks User Guide</i>.</p>"
     },
     "GetStackPolicy":{
       "name":"GetStackPolicy",
@@ -1529,6 +1558,10 @@
     },
     "AfterContext":{"type":"string"},
     "AfterValue":{"type":"string"},
+    "AfterValueFrom":{
+      "type":"string",
+      "enum":["TEMPLATE"]
+    },
     "AllowedValue":{"type":"string"},
     "AllowedValues":{
       "type":"list",
@@ -1545,13 +1578,76 @@
       },
       "exception":true
     },
+    "Annotation":{
+      "type":"structure",
+      "members":{
+        "AnnotationName":{
+          "shape":"AnnotationName",
+          "documentation":"<p>An identifier for the evaluation logic that was used when invoking the Hook. For Control Tower, this is the control ID. For Guard, this is the rule ID. For Lambda and custom Hooks, this is a user-defined identifier.</p>"
+        },
+        "Status":{
+          "shape":"AnnotationStatus",
+          "documentation":"<p>The status of the Hook invocation from the downstream service.</p>"
+        },
+        "StatusMessage":{
+          "shape":"RemediationMessageStatusMessage",
+          "documentation":"<p>The explanation for the specific status assigned to this Hook invocation. For example, \"Bucket does not block public access\".</p>"
+        },
+        "RemediationMessage":{
+          "shape":"RemediationMessageRemediationMessage",
+          "documentation":"<p>Suggests what to change if your Hook returns a <code>FAILED</code> status. For example, \"Block public access to the bucket\".</p>"
+        },
+        "RemediationLink":{
+          "shape":"AnnotationRemediationLink",
+          "documentation":"<p>A URL that you can access for additional remediation guidance.</p>"
+        },
+        "SeverityLevel":{
+          "shape":"AnnotationSeverityLevel",
+          "documentation":"<p>The relative risk associated with any violations of this type.</p>"
+        }
+      },
+      "documentation":"<p>The <code>Annotation</code> data type.</p> <p>A <code>GetHookResult</code> call returns detailed information and remediation guidance from Control Tower, Guard, Lambda, or custom Hooks for a Hook invocation result.</p>"
+    },
+    "AnnotationList":{
+      "type":"list",
+      "member":{"shape":"Annotation"}
+    },
+    "AnnotationName":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "AnnotationRemediationLink":{
+      "type":"string",
+      "max":5120,
+      "min":1
+    },
+    "AnnotationSeverityLevel":{
+      "type":"string",
+      "enum":[
+        "INFORMATIONAL",
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ]
+    },
+    "AnnotationStatus":{
+      "type":"string",
+      "enum":[
+        "PASSED",
+        "FAILED",
+        "SKIPPED"
+      ]
+    },
     "Arn":{"type":"string"},
     "AttributeChangeType":{
       "type":"string",
       "enum":[
         "Add",
         "Remove",
-        "Modify"
+        "Modify",
+        "SyncWithActual"
       ]
     },
     "AutoDeployment":{
@@ -1564,6 +1660,10 @@
         "RetainStacksOnAccountRemoval":{
           "shape":"RetainStacksOnAccountRemovalNullable",
           "documentation":"<p>If set to <code>true</code>, stack resources are retained when an account is removed from a target organization or OU. If set to <code>false</code>, stack resources are deleted. Specify only if <code>Enabled</code> is set to <code>True</code>.</p>"
+        },
+        "DependsOn":{
+          "shape":"StackSetARNList",
+          "documentation":"<p>A list of StackSet ARNs that this StackSet depends on for auto-deployment operations. When auto-deployment is triggered, operations will be sequenced to ensure all dependencies complete successfully before this StackSet's operation begins.</p>"
         }
       },
       "documentation":"<p>Describes whether StackSets automatically deploys to Organizations accounts that are added to a target organization or organizational unit (OU). For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-orgs-manage-auto-deployment.html\">Enable or disable automatic deployments for StackSets in Organizations</a> in the <i>CloudFormation User Guide</i>.</p>"
@@ -1619,8 +1719,23 @@
         }
       }
     },
+    "BeaconStackOperationStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "SUCCEEDED",
+        "FAILED"
+      ]
+    },
     "BeforeContext":{"type":"string"},
     "BeforeValue":{"type":"string"},
+    "BeforeValueFrom":{
+      "type":"string",
+      "enum":[
+        "PREVIOUS_DEPLOYMENT_STATE",
+        "ACTUAL_STATE"
+      ]
+    },
     "BoxedInteger":{
       "type":"integer",
       "box":true
@@ -1717,7 +1832,8 @@
         "Modify",
         "Remove",
         "Import",
-        "Dynamic"
+        "Dynamic",
+        "SyncWithActual"
       ]
     },
     "ChangeSetHook":{
@@ -1773,7 +1889,7 @@
       "members":{
         "TargetType":{
           "shape":"HookTargetType",
-          "documentation":"<p>The name of the type.</p>"
+          "documentation":"<p>The Hook target type.</p>"
         },
         "ResourceTargetDetails":{
           "shape":"ChangeSetHookResourceTargetDetails",
@@ -1913,7 +2029,8 @@
         "ParameterReference",
         "ResourceAttribute",
         "DirectModification",
-        "Automatic"
+        "Automatic",
+        "NoModification"
       ]
     },
     "ChangeType":{
@@ -2006,15 +2123,15 @@
         },
         "TemplateBody":{
           "shape":"TemplateBody",
-          "documentation":"<p>A structure that contains the body of the revised template, with a minimum length of 1 byte and a maximum length of 51,200 bytes. CloudFormation generates the change set by comparing this template with the template of the stack that you specified.</p> <p>Conditional: You must specify only <code>TemplateBody</code> or <code>TemplateURL</code>.</p>"
+          "documentation":"<p>A structure that contains the body of the revised template, with a minimum length of 1 byte and a maximum length of 51,200 bytes. CloudFormation generates the change set by comparing this template with the template of the stack that you specified.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code>, <code>TemplateURL</code>, or set the <code>UsePreviousTemplate</code> to <code>true</code>.</p>"
         },
         "TemplateURL":{
           "shape":"TemplateURL",
-          "documentation":"<p>The URL of the file that contains the revised template. The URL must point to a template (max size: 1 MB) that's located in an Amazon S3 bucket or a Systems Manager document. CloudFormation generates the change set by comparing this template with the stack that you specified. The location for an Amazon S3 bucket must start with <code>https://</code>. URLs from S3 static websites are not supported.</p> <p>Conditional: You must specify only <code>TemplateBody</code> or <code>TemplateURL</code>.</p>"
+          "documentation":"<p>The URL of the file that contains the revised template. The URL must point to a template (max size: 1 MB) that's located in an Amazon S3 bucket or a Systems Manager document. CloudFormation generates the change set by comparing this template with the stack that you specified. The location for an Amazon S3 bucket must start with <code>https://</code>. URLs from S3 static websites are not supported.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code>, <code>TemplateURL</code>, or set the <code>UsePreviousTemplate</code> to <code>true</code>.</p>"
         },
         "UsePreviousTemplate":{
           "shape":"UsePreviousTemplate",
-          "documentation":"<p>Whether to reuse the template that's associated with the stack to create the change set.</p>"
+          "documentation":"<p>Whether to reuse the template that's associated with the stack to create the change set.</p> <p>When using templates with the <code>AWS::LanguageExtensions</code> transform, provide the template instead of using <code>UsePreviousTemplate</code> to ensure new parameter values and Systems Manager parameter updates are applied correctly. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/transform-aws-languageextensions.html\">AWS::LanguageExtensions transform</a>.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code>, <code>TemplateURL</code>, or set the <code>UsePreviousTemplate</code> to <code>true</code>.</p>"
         },
         "Parameters":{
           "shape":"Parameters",
@@ -2022,11 +2139,11 @@
         },
         "Capabilities":{
           "shape":"Capabilities",
-          "documentation":"<p>In some cases, you must explicitly acknowledge that your stack template contains certain capabilities in order for CloudFormation to create the stack.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account; for example, by creating new IAM users. For those stacks, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don't specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we suggest that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-iam-accesskey.html\"> AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-iam-group.html\"> AWS::IAM::Group</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-iam-instanceprofile.html\">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-iam-managedpolicy.html\"> AWS::IAM::ManagedPolicy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-iam-policy.html\"> AWS::IAM::Policy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-iam-role.html\"> AWS::IAM::Role</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-iam-user.html\"> AWS::IAM::User</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-iam-usertogroupaddition.html\">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html#using-iam-capabilities\">Acknowledging IAM resources in CloudFormation templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some template contain macros. Macros perform custom processing on templates; this can include simple actions like find-and-replace operations, all the way to extensive transformations of entire templates. Because of this, users typically create a change set from the processed template, so that they can review the changes resulting from the macros before actually creating the stack. If your stack template contains one or more macros, and you choose to create a stack directly from the processed template, without first reviewing the resulting changes in a change set, you must acknowledge this capability. This includes the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-include.html\">AWS::Include</a> and <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-serverless.html\">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.</p> <note> <p>This capacity doesn't apply to creating change sets, and specifying it when creating change sets has no effect.</p> <p>If you want to create a stack from a stack template that contains macros <i>and</i> nested stacks, you must create or update the stack directly from the template using the <a>CreateStack</a> or <a>UpdateStack</a> action, and specifying this capability.</p> </note> <p>For more information about macros, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-macros.html\">Perform custom processing on CloudFormation templates with template macros</a>.</p> </li> </ul> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
+          "documentation":"<p>In some cases, you must explicitly acknowledge that your stack template contains certain capabilities in order for CloudFormation to create the stack.</p> <ul> <li> <p> <code>CAPABILITY_IAM</code> and <code>CAPABILITY_NAMED_IAM</code> </p> <p>Some stack templates might include resources that can affect permissions in your Amazon Web Services account, for example, by creating new IAM users. For those stacks, you must explicitly acknowledge this by specifying one of these capabilities.</p> <p>The following IAM resources require you to specify either the <code>CAPABILITY_IAM</code> or <code>CAPABILITY_NAMED_IAM</code> capability.</p> <ul> <li> <p>If you have IAM resources, you can specify either capability.</p> </li> <li> <p>If you have IAM resources with custom names, you <i>must</i> specify <code>CAPABILITY_NAMED_IAM</code>.</p> </li> <li> <p>If you don't specify either of these capabilities, CloudFormation returns an <code>InsufficientCapabilities</code> error.</p> </li> </ul> <p>If your stack template contains these resources, we suggest that you review all permissions associated with them and edit their permissions if necessary.</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-iam-accesskey.html\"> AWS::IAM::AccessKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-iam-group.html\"> AWS::IAM::Group</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-iam-instanceprofile.html\">AWS::IAM::InstanceProfile</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-iam-managedpolicy.html\"> AWS::IAM::ManagedPolicy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-iam-policy.html\"> AWS::IAM::Policy</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-iam-role.html\"> AWS::IAM::Role</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-iam-user.html\"> AWS::IAM::User</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-iam-usertogroupaddition.html\">AWS::IAM::UserToGroupAddition</a> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html#using-iam-capabilities\">Acknowledging IAM resources in CloudFormation templates</a>.</p> </li> <li> <p> <code>CAPABILITY_AUTO_EXPAND</code> </p> <p>Some template contain macros. Macros perform custom processing on templates; this can include simple actions like find-and-replace operations, all the way to extensive transformations of entire templates. Because of this, users typically create a change set from the processed template, so that they can review the changes resulting from the macros before actually creating the stack. If your stack template contains one or more macros, and you choose to create a stack directly from the processed template, without first reviewing the resulting changes in a change set, you must acknowledge this capability. This includes the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-include.html\">AWS::Include</a> and <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-aws-serverless.html\">AWS::Serverless</a> transforms, which are macros hosted by CloudFormation.</p> <note> <p>This capacity doesn't apply to creating change sets, and specifying it when creating change sets has no effect.</p> <p>If you want to create a stack from a stack template that contains macros <i>and</i> nested stacks, you must create or update the stack directly from the template using the <a>CreateStack</a> or <a>UpdateStack</a> action, and specifying this capability.</p> </note> <p>For more information about macros, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-macros.html\">Perform custom processing on CloudFormation templates with template macros</a>.</p> </li> </ul> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
         },
         "ResourceTypes":{
           "shape":"ResourceTypes",
-          "documentation":"<p>The template resource types that you have permissions to work with if you execute this change set, such as <code>AWS::EC2::Instance</code>, <code>AWS::EC2::*</code>, or <code>Custom::MyCustomInstance</code>.</p> <p>If the list of resource types doesn't include a resource type that you're updating, the stack update fails. By default, CloudFormation grants permissions to all resource types. IAM uses this parameter for condition keys in IAM policies for CloudFormation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html\">Control access with Identity and Access Management</a> in the <i>CloudFormation User Guide</i>.</p> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
+          "documentation":"<p>Specifies which resource types you can work with, such as <code>AWS::EC2::Instance</code> or <code>Custom::MyCustomInstance</code>.</p> <p>If the list of resource types doesn't include a resource type that you're updating, the stack update fails. By default, CloudFormation grants permissions to all resource types. IAM uses this parameter for condition keys in IAM policies for CloudFormation. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html\">Control CloudFormation access with Identity and Access Management</a> in the <i>CloudFormation User Guide</i>.</p> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
         },
         "RoleARN":{
           "shape":"RoleARN",
@@ -2075,6 +2192,10 @@
         "ImportExistingResources":{
           "shape":"ImportExistingResources",
           "documentation":"<p>Indicates if the change set auto-imports resources that already exist. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/import-resources-automatically.html\">Import Amazon Web Services resources into a CloudFormation stack automatically</a> in the <i>CloudFormation User Guide</i>.</p> <note> <p>This parameter can only import resources that have custom names in templates. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-name.html\">name type</a> in the <i>CloudFormation User Guide</i>. To import resources that do not accept custom names, such as EC2 instances, use the <code>ResourcesToImport</code> parameter instead.</p> </note>"
+        },
+        "DeploymentMode":{
+          "shape":"DeploymentMode",
+          "documentation":"<p>Determines how CloudFormation handles configuration drift during deployment.</p> <ul> <li> <p> <code>REVERT_DRIFT</code> – Creates a drift-aware change set that brings actual resource states in line with template definitions. Provides a three-way comparison between actual state, previous deployment state, and desired state.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/drift-aware-change-sets.html\">Using drift-aware change sets</a> in the <i>CloudFormation User Guide</i>.</p>"
         }
       },
       "documentation":"<p>The input for the <a>CreateChangeSet</a> action.</p>"
@@ -2166,7 +2287,7 @@
         },
         "ResourceTypes":{
           "shape":"ResourceTypes",
-          "documentation":"<p>The template resource types that you have permissions to work with for this create stack action, such as <code>AWS::EC2::Instance</code>, <code>AWS::EC2::*</code>, or <code>Custom::MyCustomInstance</code>. Use the following syntax to describe template resource types: <code>AWS::*</code> (for all Amazon Web Services resources), <code>Custom::*</code> (for all custom resources), <code>Custom::<i>logical_ID</i> </code> (for a specific custom resource), <code>AWS::<i>service_name</i>::*</code> (for all resources of a particular Amazon Web Services service), and <code>AWS::<i>service_name</i>::<i>resource_logical_ID</i> </code> (for a specific Amazon Web Services resource).</p> <p>If the list of resource types doesn't include a resource that you're creating, the stack creation fails. By default, CloudFormation grants permissions to all resource types. IAM uses this parameter for CloudFormation-specific condition keys in IAM policies. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html\">Control access with Identity and Access Management</a>.</p> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
+          "documentation":"<p>Specifies which resource types you can work with, such as <code>AWS::EC2::Instance</code> or <code>Custom::MyCustomInstance</code>.</p> <p>If the list of resource types doesn't include a resource that you're creating, the stack creation fails. By default, CloudFormation grants permissions to all resource types. IAM uses this parameter for CloudFormation-specific condition keys in IAM policies. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html\">Control CloudFormation access with Identity and Access Management</a>.</p> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
         },
         "RoleARN":{
           "shape":"RoleARN",
@@ -2260,6 +2381,10 @@
         "StackId":{
           "shape":"StackId",
           "documentation":"<p>Unique identifier of the stack.</p>"
+        },
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>A unique identifier for this stack operation that can be used to track the operation's progress and events.</p>"
         }
       },
       "documentation":"<p>The output for a <a>CreateStack</a> action.</p>"
@@ -2548,6 +2673,10 @@
       ]
     },
     "DeletionTime":{"type":"timestamp"},
+    "DeploymentMode":{
+      "type":"string",
+      "enum":["REVERT_DRIFT"]
+    },
     "DeploymentTargets":{
       "type":"structure",
       "members":{
@@ -2607,7 +2736,7 @@
       "members":{
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A string that identifies the next page of limits that you want to retrieve.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         }
       },
       "documentation":"<p>The input for the <a>DescribeAccountLimits</a> action.</p>"
@@ -2640,7 +2769,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A string, provided by the <code>DescribeChangeSetHooks</code> response output, that identifies the next page of information that you want to retrieve.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         },
         "LogicalResourceId":{
           "shape":"LogicalResourceId",
@@ -2665,7 +2794,7 @@
         },
         "Status":{
           "shape":"ChangeSetHooksStatus",
-          "documentation":"<p>Provides the status of the change set hook.</p>"
+          "documentation":"<p>Provides the status of the change set Hook.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -2695,7 +2824,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A string (provided by the <a>DescribeChangeSet</a> response output) that identifies the next page of information that you want to retrieve.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         },
         "IncludePropertyValues":{
           "shape":"IncludePropertyValues",
@@ -2747,6 +2876,10 @@
           "shape":"ChangeSetStatusReason",
           "documentation":"<p>A description of the change set's status. For example, if your attempt to create a change set failed, CloudFormation shows the error message.</p>"
         },
+        "StackDriftStatus":{
+          "shape":"StackDriftStatus",
+          "documentation":"<p>The drift status of the stack when the change set was created. Valid values:</p> <ul> <li> <p> <code>DRIFTED</code> – The stack has drifted from its last deployment.</p> </li> <li> <p> <code>IN_SYNC</code> – The stack is in sync with its last deployment.</p> </li> <li> <p> <code>NOT_CHECKED</code> – CloudFormation doesn’t currently return this value.</p> </li> <li> <p> <code>UNKNOWN</code> – The drift status could not be determined.</p> </li> </ul> <p>Only present for drift-aware change sets.</p>"
+        },
         "NotificationARNs":{
           "shape":"NotificationARNs",
           "documentation":"<p>The ARNs of the Amazon SNS topics that will be associated with the stack if you execute the change set.</p>"
@@ -2790,9 +2923,51 @@
         "ImportExistingResources":{
           "shape":"ImportExistingResources",
           "documentation":"<p>Indicates if the change set imports resources that already exist.</p> <note> <p>This parameter can only import resources that have <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-name.html\">custom names</a> in templates. To import resources that do not accept custom names, such as EC2 instances, use the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import.html\">resource import</a> feature instead.</p> </note>"
+        },
+        "DeploymentMode":{
+          "shape":"DeploymentMode",
+          "documentation":"<p>The deployment mode specified when the change set was created. Valid value is <code>REVERT_DRIFT</code>. Only present for drift-aware change sets.</p>"
         }
       },
       "documentation":"<p>The output for the <a>DescribeChangeSet</a> action.</p>"
+    },
+    "DescribeEventsInput":{
+      "type":"structure",
+      "members":{
+        "StackName":{
+          "shape":"StackNameOrId",
+          "documentation":"<p>The name or unique stack ID for which you want to retrieve events.</p>"
+        },
+        "ChangeSetName":{
+          "shape":"ChangeSetNameOrId",
+          "documentation":"<p>The name or Amazon Resource Name (ARN) of the change set for which you want to retrieve events.</p>"
+        },
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>The unique identifier of the operation for which you want to retrieve events.</p>"
+        },
+        "Filters":{
+          "shape":"EventFilter",
+          "documentation":"<p>Filters to apply when retrieving events.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
+        }
+      }
+    },
+    "DescribeEventsOutput":{
+      "type":"structure",
+      "members":{
+        "OperationEvents":{
+          "shape":"OperationEvents",
+          "documentation":"<p>A list of operation events that match the specified criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call <code>DescribeEvents</code> again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.</p>"
+        }
+      }
     },
     "DescribeGeneratedTemplateInput":{
       "type":"structure",
@@ -3007,6 +3182,7 @@
     },
     "DescribeStackEventsInput":{
       "type":"structure",
+      "required":["StackName"],
       "members":{
         "StackName":{
           "shape":"StackName",
@@ -3014,7 +3190,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A string that identifies the next page of events that you want to retrieve.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         }
       },
       "documentation":"<p>The input for <a>DescribeStackEvents</a> action.</p>"
@@ -3125,7 +3301,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A string that identifies the next page of stack resource drift results.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         },
         "MaxResults":{
           "shape":"BoxedMaxResults",
@@ -3265,7 +3441,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A string that identifies the next page of stacks that you want to retrieve.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         }
       },
       "documentation":"<p>The input for <a>DescribeStacks</a> action.</p>"
@@ -3562,6 +3738,13 @@
       ]
     },
     "DisableRollback":{"type":"boolean"},
+    "DriftIgnoredReason":{
+      "type":"string",
+      "enum":[
+        "MANAGED_BY_AWS",
+        "WRITE_ONLY_PROPERTY"
+      ]
+    },
     "DriftedStackInstancesCount":{
       "type":"integer",
       "min":0
@@ -3613,7 +3796,27 @@
         "Dynamic"
       ]
     },
+    "EventFilter":{
+      "type":"structure",
+      "members":{
+        "FailedEvents":{
+          "shape":"FailedEventsFilter",
+          "documentation":"<p>When set to true, only returns failed events within the operation. This helps quickly identify root causes for a failed operation.</p>"
+        }
+      },
+      "documentation":"<p>Event filter allows you to focus on specific events in an operation.</p>"
+    },
     "EventId":{"type":"string"},
+    "EventType":{
+      "type":"string",
+      "enum":[
+        "STACK_EVENT",
+        "PROGRESS_EVENT",
+        "VALIDATION_ERROR",
+        "PROVISIONING_ERROR",
+        "HOOK_INVOCATION_ERROR"
+      ]
+    },
     "ExecuteChangeSetInput":{
       "type":"structure",
       "required":["ChangeSetName"],
@@ -3698,6 +3901,7 @@
       "type":"list",
       "member":{"shape":"Export"}
     },
+    "FailedEventsFilter":{"type":"boolean"},
     "FailedStackInstancesCount":{
       "type":"integer",
       "min":0
@@ -3795,6 +3999,72 @@
         }
       }
     },
+    "GetHookResultInput":{
+      "type":"structure",
+      "members":{
+        "HookResultId":{
+          "shape":"HookInvocationId",
+          "documentation":"<p>The unique identifier (ID) of the Hook invocation result that you want details about. You can get the ID from the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_ListHookResults.html\">ListHookResults</a> operation.</p>"
+        }
+      }
+    },
+    "GetHookResultOutput":{
+      "type":"structure",
+      "members":{
+        "HookResultId":{
+          "shape":"HookInvocationId",
+          "documentation":"<p>The unique identifier of the Hook result.</p>"
+        },
+        "InvocationPoint":{
+          "shape":"HookInvocationPoint",
+          "documentation":"<p>The specific point in the provisioning process where the Hook is invoked.</p>"
+        },
+        "FailureMode":{
+          "shape":"HookFailureMode",
+          "documentation":"<p>The failure mode of the invocation.</p>"
+        },
+        "TypeName":{
+          "shape":"HookTypeName",
+          "documentation":"<p>The name of the Hook that was invoked.</p>"
+        },
+        "OriginalTypeName":{
+          "shape":"HookTypeName",
+          "documentation":"<p>The original public type name of the Hook when an alias is used.</p> <p>For example, if you activate <code>AWS::Hooks::GuardHook</code> with alias <code>MyCompany::Custom::GuardHook</code>, then <code>TypeName</code> will be <code>MyCompany::Custom::GuardHook</code> and <code>OriginalTypeName</code> will be <code>AWS::Hooks::GuardHook</code>. </p>"
+        },
+        "TypeVersionId":{
+          "shape":"HookTypeVersionId",
+          "documentation":"<p>The version identifier of the Hook that was invoked.</p>"
+        },
+        "TypeConfigurationVersionId":{
+          "shape":"HookTypeConfigurationVersionId",
+          "documentation":"<p>The version identifier of the Hook configuration data that was used during invocation.</p>"
+        },
+        "TypeArn":{
+          "shape":"HookTypeArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Hook.</p>"
+        },
+        "Status":{
+          "shape":"HookStatus",
+          "documentation":"<p>The status of the Hook invocation. The following statuses are possible:</p> <ul> <li> <p> <code>HOOK_IN_PROGRESS</code>: The Hook is currently running.</p> </li> <li> <p> <code>HOOK_COMPLETE_SUCCEEDED</code>: The Hook completed successfully.</p> </li> <li> <p> <code>HOOK_COMPLETE_FAILED</code>: The Hook completed but failed validation.</p> </li> <li> <p> <code>HOOK_FAILED</code>: The Hook encountered an error during execution.</p> </li> </ul>"
+        },
+        "HookStatusReason":{
+          "shape":"HookStatusReason",
+          "documentation":"<p>A message that provides additional details about the Hook invocation status.</p>"
+        },
+        "InvokedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the Hook was invoked.</p>"
+        },
+        "Target":{
+          "shape":"HookTarget",
+          "documentation":"<p>Information about the target of the Hook invocation.</p>"
+        },
+        "Annotations":{
+          "shape":"AnnotationList",
+          "documentation":"<p>A list of objects with additional information and guidance that can help you resolve a failed Hook invocation.</p>"
+        }
+      }
+    },
     "GetStackPolicyInput":{
       "type":"structure",
       "required":["StackName"],
@@ -3811,7 +4081,7 @@
       "members":{
         "StackPolicyBody":{
           "shape":"StackPolicyBody",
-          "documentation":"<p>Structure that contains the stack policy body. (For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html\">Prevent updates to stack resources</a> in the <i>CloudFormation User Guide</i>.)</p>"
+          "documentation":"<p>Structure that contains the stack policy body. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/protect-stack-resources.html\">Prevent updates to stack resources</a> in the <i>CloudFormation User Guide</i>.</p>"
         }
       },
       "documentation":"<p>The output for the <a>GetStackPolicy</a> action.</p>"
@@ -4044,10 +4314,10 @@
         },
         "HookExecutionTarget":{
           "shape":"HookResultId",
-          "documentation":"<p>The ARN of the target stack or request token of the Cloud Control API operation.</p> <p>Only shown in responses when the request does not specify <code>TargetType</code> and <code>TargetId</code> filters.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the target stack or request token of the Cloud Control API operation.</p> <p>Only shown in responses when the request does not specify <code>TargetType</code> and <code>TargetId</code> filters.</p>"
         }
       },
-      "documentation":"<p>Describes a Hook invocation, its status, and the reason for its status.</p>"
+      "documentation":"<p>A <code>ListHookResults</code> call returns a summary of a Hook invocation.</p>"
     },
     "HookStatus":{
       "type":"string",
@@ -4062,6 +4332,49 @@
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "HookTarget":{
+      "type":"structure",
+      "required":[
+        "TargetType",
+        "TargetTypeName",
+        "TargetId",
+        "Action"
+      ],
+      "members":{
+        "TargetType":{
+          "shape":"HookTargetType",
+          "documentation":"<p>The target type.</p>"
+        },
+        "TargetTypeName":{
+          "shape":"HookTargetTypeName",
+          "documentation":"<p>The target name, for example, <code>AWS::S3::Bucket</code>.</p>"
+        },
+        "TargetId":{
+          "shape":"HookTargetId",
+          "documentation":"<p>The unique identifier of the Hook invocation target.</p>"
+        },
+        "Action":{
+          "shape":"HookTargetAction",
+          "documentation":"<p>The action that invoked the Hook.</p>"
+        }
+      },
+      "documentation":"<p>The <code>HookTarget</code> data type.</p>"
+    },
+    "HookTargetAction":{
+      "type":"string",
+      "enum":[
+        "CREATE",
+        "UPDATE",
+        "DELETE",
+        "IMPORT"
+      ]
+    },
+    "HookTargetId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[^_]*"
     },
     "HookTargetType":{
       "type":"string",
@@ -4228,6 +4541,10 @@
     "JazzResourceIdentifierPropertyKey":{"type":"string"},
     "JazzResourceIdentifierPropertyValue":{"type":"string"},
     "Key":{"type":"string"},
+    "LastOperations":{
+      "type":"list",
+      "member":{"shape":"OperationEntry"}
+    },
     "LastUpdatedTime":{"type":"timestamp"},
     "LimitExceededException":{
       "type":"structure",
@@ -4252,7 +4569,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A string (provided by the <a>ListChangeSets</a> response output) that identifies the next page of change sets that you want to retrieve.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         }
       },
       "documentation":"<p>The input for the <a>ListChangeSets</a> action.</p>"
@@ -4276,7 +4593,7 @@
       "members":{
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A string (provided by the <a>ListExports</a> response output) that identifies the next page of exported output values that you asked to retrieve.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         }
       }
     },
@@ -4298,7 +4615,7 @@
       "members":{
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A string that identifies the next page of resource scan results.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -4340,7 +4657,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A string that identifies the next page of events that you want to retrieve.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         }
       }
     },
@@ -4384,7 +4701,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A string (provided by the <a>ListImports</a> response output) that identifies the next page of stacks that are importing the specified exported output value.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         }
       }
     },
@@ -4418,7 +4735,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A string that identifies the next page of resource scan results.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         },
         "MaxResults":{
           "shape":"BoxedMaxResults",
@@ -4465,7 +4782,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A string that identifies the next page of resource scan results.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         },
         "MaxResults":{
           "shape":"ResourceScannerMaxResults",
@@ -4491,7 +4808,7 @@
       "members":{
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A string that identifies the next page of resource scan results.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         },
         "MaxResults":{
           "shape":"ResourceScannerMaxResults",
@@ -4531,7 +4848,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If the previous paginated request didn't return all of the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -4582,7 +4899,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If the previous request didn't return all the remaining results, the response's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call <code>ListStackInstances</code> again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -4629,7 +4946,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -4660,7 +4977,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -4692,7 +5009,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A string that identifies the next page of stack resources that you want to retrieve.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         }
       },
       "documentation":"<p>The input for the <a>ListStackResource</a> action.</p>"
@@ -4721,7 +5038,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A string that identifies the next page of deployment targets that you want to retrieve.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -4763,7 +5080,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If the previous request didn't return all the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call <code>ListStackSetOperationResults</code> again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -4802,7 +5119,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If the previous paginated request didn't return all of the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call <code>ListStackSetOperations</code> again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -4832,7 +5149,7 @@
       "members":{
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If the previous paginated request didn't return all the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call <code>ListStackSets</code> again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         },
         "MaxResults":{
           "shape":"MaxResults",
@@ -4866,7 +5183,7 @@
       "members":{
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A string that identifies the next page of stacks that you want to retrieve.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         },
         "StackStatusFilter":{
           "shape":"StackStatusFilter",
@@ -4914,7 +5231,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If the previous paginated request didn't return all the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         }
       }
     },
@@ -4952,7 +5269,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If the previous paginated request didn't return all of the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         },
         "DeprecatedStatus":{
           "shape":"DeprecatedStatus",
@@ -5006,7 +5323,7 @@
         },
         "NextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If the previous paginated request didn't return all the remaining results, the response object's <code>NextToken</code> parameter value is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If there are no remaining results, the previous response object's <code>NextToken</code> parameter is set to <code>null</code>.</p>"
+          "documentation":"<p>The token for the next set of items to return. (You received this token from a previous call.)</p>"
         }
       }
     },
@@ -5022,6 +5339,24 @@
           "documentation":"<p>If the request doesn't return all the remaining results, <code>NextToken</code> is set to a token. To retrieve the next set of results, call this action again and assign that token to the request object's <code>NextToken</code> parameter. If the request returns all results, <code>NextToken</code> is set to <code>null</code>.</p>"
         }
       }
+    },
+    "LiveResourceDrift":{
+      "type":"structure",
+      "members":{
+        "PreviousValue":{
+          "shape":"ResourceDriftPreviousValue",
+          "documentation":"<p>The configuration value from the previous CloudFormation deployment.</p>"
+        },
+        "ActualValue":{
+          "shape":"ResourceDriftActualValue",
+          "documentation":"<p>The current live configuration value of the resource property.</p>"
+        },
+        "DriftDetectionTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when drift was detected for this resource property.</p>"
+        }
+      },
+      "documentation":"<p>Contains drift information for a resource property, including actual value, previous deployment value, and drift detection timestamp.</p>"
     },
     "LogGroupName":{
       "type":"string",
@@ -5149,6 +5484,139 @@
         "DELETE"
       ]
     },
+    "OperationEntry":{
+      "type":"structure",
+      "members":{
+        "OperationType":{
+          "shape":"OperationType",
+          "documentation":"<p>The type of operation.</p>"
+        },
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>The unique identifier for the operation.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a CloudFormation operation.</p>"
+    },
+    "OperationEvent":{
+      "type":"structure",
+      "members":{
+        "EventId":{
+          "shape":"EventId",
+          "documentation":"<p>A unique identifier for this event.</p>"
+        },
+        "StackId":{
+          "shape":"StackId",
+          "documentation":"<p>The unique ID name of the instance of the stack.</p>"
+        },
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>The unique identifier of the operation this event belongs to.</p>"
+        },
+        "OperationType":{
+          "shape":"OperationType",
+          "documentation":"<p>The type of operation.</p>"
+        },
+        "OperationStatus":{
+          "shape":"BeaconStackOperationStatus",
+          "documentation":"<p>The current status of the operation.</p>"
+        },
+        "EventType":{
+          "shape":"EventType",
+          "documentation":"<p>The type of event.</p>"
+        },
+        "LogicalResourceId":{
+          "shape":"LogicalResourceId",
+          "documentation":"<p>The logical name of the resource as specified in the template.</p>"
+        },
+        "PhysicalResourceId":{
+          "shape":"PhysicalResourceId",
+          "documentation":"<p>The name or unique identifier that corresponds to a physical instance ID of a resource.</p>"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>Type of resource.</p>"
+        },
+        "Timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time the status was updated.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the event started.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the event ended.</p>"
+        },
+        "ResourceStatus":{
+          "shape":"ResourceStatus",
+          "documentation":"<p>Current status of the resource.</p>"
+        },
+        "ResourceStatusReason":{
+          "shape":"ResourceStatusReason",
+          "documentation":"<p>Success or failure message associated with the resource.</p>"
+        },
+        "ResourceProperties":{
+          "shape":"ResourceProperties",
+          "documentation":"<p>The properties used to create the resource.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>A unique identifier for the request that initiated this operation.</p>"
+        },
+        "HookType":{
+          "shape":"HookType",
+          "documentation":"<p>The type name of the Hook that was invoked.</p>"
+        },
+        "HookStatus":{
+          "shape":"HookStatus",
+          "documentation":"<p>The status of the Hook invocation. </p>"
+        },
+        "HookStatusReason":{
+          "shape":"HookStatusReason",
+          "documentation":"<p>Additional information about the Hook status.</p>"
+        },
+        "HookInvocationPoint":{
+          "shape":"HookInvocationPoint",
+          "documentation":"<p>The point in the operation lifecycle when the Hook was invoked.</p>"
+        },
+        "HookFailureMode":{
+          "shape":"HookFailureMode",
+          "documentation":"<p>Specifies how Hook failures are handled.</p>"
+        },
+        "DetailedStatus":{
+          "shape":"DetailedStatus",
+          "documentation":"<p>Additional status information about the operation.</p>"
+        },
+        "ValidationFailureMode":{
+          "shape":"HookFailureMode",
+          "documentation":"<p>Specifies how validation failures are handled.</p>"
+        },
+        "ValidationName":{
+          "shape":"ValidationName",
+          "documentation":"<p>The name of the validation that was performed.</p>"
+        },
+        "ValidationStatus":{
+          "shape":"ValidationStatus",
+          "documentation":"<p>The status of the validation.</p>"
+        },
+        "ValidationStatusReason":{
+          "shape":"ValidationStatusReason",
+          "documentation":"<p>Additional information about the validation status.</p>"
+        },
+        "ValidationPath":{
+          "shape":"ValidationPath",
+          "documentation":"<p>The path within the resource where the validation was applied.</p>"
+        }
+      },
+      "documentation":"<p>Contains detailed information about an event that occurred during a CloudFormation operation.</p>"
+    },
+    "OperationEvents":{
+      "type":"list",
+      "member":{"shape":"OperationEvent"}
+    },
+    "OperationId":{"type":"string"},
     "OperationIdAlreadyExistsException":{
       "type":"structure",
       "members":{},
@@ -5231,6 +5699,17 @@
       },
       "exception":true
     },
+    "OperationType":{
+      "type":"string",
+      "enum":[
+        "CREATE_STACK",
+        "UPDATE_STACK",
+        "DELETE_STACK",
+        "CONTINUE_ROLLBACK",
+        "ROLLBACK",
+        "CREATE_CHANGESET"
+      ]
+    },
     "OptionalSecureUrl":{
       "type":"string",
       "max":4096
@@ -5271,7 +5750,7 @@
           "documentation":"<p>The name of the export associated with the output.</p>"
         }
       },
-      "documentation":"<p>The Output data type.</p>"
+      "documentation":"<p>The <code>Output</code> data type.</p>"
     },
     "OutputKey":{"type":"string"},
     "OutputValue":{"type":"string"},
@@ -5299,7 +5778,7 @@
           "documentation":"<p>Read-only. The value that corresponds to a Systems Manager parameter key. This field is returned only for Systems Manager parameter types in the template. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-supplied-parameter-types.html\">Specify existing resources at runtime with CloudFormation-supplied parameter types</a> in the <i>CloudFormation User Guide</i>.</p>"
         }
       },
-      "documentation":"<p>The Parameter data type.</p>"
+      "documentation":"<p>The <code>Parameter</code> data type.</p>"
     },
     "ParameterConstraints":{
       "type":"structure",
@@ -5339,7 +5818,7 @@
           "documentation":"<p>The criteria that CloudFormation uses to validate parameter values.</p>"
         }
       },
-      "documentation":"<p>The ParameterDeclaration data type.</p>"
+      "documentation":"<p>The <code>ParameterDeclaration</code> data type.</p>"
     },
     "ParameterDeclarations":{
       "type":"list",
@@ -5395,6 +5874,7 @@
         "ReplaceAndSnapshot"
       ]
     },
+    "PreviousDeploymentContext":{"type":"string"},
     "PrivateTypeArn":{
       "type":"string",
       "max":1024,
@@ -5656,6 +6136,16 @@
       "type":"list",
       "member":{"shape":"ScannedResource"}
     },
+    "RemediationMessageRemediationMessage":{
+      "type":"string",
+      "max":16384,
+      "min":1
+    },
+    "RemediationMessageStatusMessage":{
+      "type":"string",
+      "max":16384,
+      "min":1
+    },
     "Replacement":{
       "type":"string",
       "enum":[
@@ -5726,7 +6216,7 @@
         },
         "Action":{
           "shape":"ChangeAction",
-          "documentation":"<p>The action that CloudFormation takes on the resource, such as <code>Add</code> (adds a new resource), <code>Modify</code> (changes a resource), <code>Remove</code> (deletes a resource), <code>Import</code> (imports a resource), or <code>Dynamic</code> (exact action for the resource can't be determined).</p>"
+          "documentation":"<p>The action that CloudFormation takes on the resource, such as <code>Add</code> (adds a new resource), <code>Modify</code> (changes a resource), <code>Remove</code> (deletes a resource), <code>Import</code> (imports a resource), <code>Dynamic</code> (exact action for the resource can't be determined), or <code>SyncWithActual</code> (resource will not be changed, only CloudFormation metadata will change).</p>"
         },
         "LogicalResourceId":{
           "shape":"LogicalResourceId",
@@ -5748,6 +6238,14 @@
           "shape":"Scope",
           "documentation":"<p>For the <code>Modify</code> action, indicates which resource attribute is triggering this update, such as a change in the resource attribute's <code>Metadata</code>, <code>Properties</code>, or <code>Tags</code>.</p>"
         },
+        "ResourceDriftStatus":{
+          "shape":"StackResourceDriftStatus",
+          "documentation":"<p>The drift status of the resource. Valid values:</p> <ul> <li> <p> <code>IN_SYNC</code> – The resource matches its template definition.</p> </li> <li> <p> <code>MODIFIED</code> – Resource properties were modified outside CloudFormation.</p> </li> <li> <p> <code>DELETED</code> – The resource was deleted outside CloudFormation.</p> </li> <li> <p> <code>NOT_CHECKED</code> – CloudFormation doesn’t currently return this value.</p> </li> <li> <p> <code>UNKNOWN</code> – Drift status could not be determined.</p> </li> <li> <p> <code>UNSUPPORTED</code> – Resource type does not support actual state comparison.</p> </li> </ul> <p>Only present for drift-aware change sets.</p>"
+        },
+        "ResourceDriftIgnoredAttributes":{
+          "shape":"ResourceDriftIgnoredAttributes",
+          "documentation":"<p>List of resource attributes for which drift was ignored.</p>"
+        },
         "Details":{
           "shape":"ResourceChangeDetails",
           "documentation":"<p>For the <code>Modify</code> action, a list of <code>ResourceChangeDetail</code> structures that describes the changes that CloudFormation will make to the resource.</p>"
@@ -5767,6 +6265,10 @@
         "AfterContext":{
           "shape":"AfterContext",
           "documentation":"<p>An encoded JSON string that contains the context of the resource after the change is executed.</p>"
+        },
+        "PreviousDeploymentContext":{
+          "shape":"PreviousDeploymentContext",
+          "documentation":"<p>Information about the resource's state from the previous CloudFormation deployment.</p>"
         }
       },
       "documentation":"<p>The <code>ResourceChange</code> structure describes the resource and the action that CloudFormation will perform on it if you execute this change set.</p>"
@@ -5784,7 +6286,7 @@
         },
         "ChangeSource":{
           "shape":"ChangeSource",
-          "documentation":"<p>The group to which the <code>CausingEntity</code> value belongs. There are five entity groups:</p> <ul> <li> <p> <code>ResourceReference</code> entities are <code>Ref</code> intrinsic functions that refer to resources in the template, such as <code>{ \"Ref\" : \"MyEC2InstanceResource\" }</code>.</p> </li> <li> <p> <code>ParameterReference</code> entities are <code>Ref</code> intrinsic functions that get template parameter values, such as <code>{ \"Ref\" : \"MyPasswordParameter\" }</code>.</p> </li> <li> <p> <code>ResourceAttribute</code> entities are <code>Fn::GetAtt</code> intrinsic functions that get resource attribute values, such as <code>{ \"Fn::GetAtt\" : [ \"MyEC2InstanceResource\", \"PublicDnsName\" ] }</code>.</p> </li> <li> <p> <code>DirectModification</code> entities are changes that are made directly to the template.</p> </li> <li> <p> <code>Automatic</code> entities are <code>AWS::CloudFormation::Stack</code> resource types, which are also known as nested stacks. If you made no changes to the <code>AWS::CloudFormation::Stack</code> resource, CloudFormation sets the <code>ChangeSource</code> to <code>Automatic</code> because the nested stack's template might have changed. Changes to a nested stack's template aren't visible to CloudFormation until you run an update on the parent stack.</p> </li> </ul>"
+          "documentation":"<p>The group to which the <code>CausingEntity</code> value belongs. There are five entity groups:</p> <ul> <li> <p> <code>ResourceReference</code> entities are <code>Ref</code> intrinsic functions that refer to resources in the template, such as <code>{ \"Ref\" : \"MyEC2InstanceResource\" }</code>.</p> </li> <li> <p> <code>ParameterReference</code> entities are <code>Ref</code> intrinsic functions that get template parameter values, such as <code>{ \"Ref\" : \"MyPasswordParameter\" }</code>.</p> </li> <li> <p> <code>ResourceAttribute</code> entities are <code>Fn::GetAtt</code> intrinsic functions that get resource attribute values, such as <code>{ \"Fn::GetAtt\" : [ \"MyEC2InstanceResource\", \"PublicDnsName\" ] }</code>.</p> </li> <li> <p> <code>DirectModification</code> entities are changes that are made directly to the template.</p> </li> <li> <p> <code>Automatic</code> entities are <code>AWS::CloudFormation::Stack</code> resource types, which are also known as nested stacks. If you made no changes to the <code>AWS::CloudFormation::Stack</code> resource, CloudFormation sets the <code>ChangeSource</code> to <code>Automatic</code> because the nested stack's template might have changed. Changes to a nested stack's template aren't visible to CloudFormation until you run an update on the parent stack.</p> </li> <li> <p> <code>NoModification</code> entities are changes made to the template that matches the actual state of the resource.</p> </li> </ul>"
         },
         "CausingEntity":{
           "shape":"CausingEntity",
@@ -5861,6 +6363,26 @@
       "max":500,
       "min":1
     },
+    "ResourceDriftActualValue":{"type":"string"},
+    "ResourceDriftIgnoredAttribute":{
+      "type":"structure",
+      "members":{
+        "Path":{
+          "shape":"ResourcePropertyPath",
+          "documentation":"<p>Path of the resource attribute for which drift was ignored.</p>"
+        },
+        "Reason":{
+          "shape":"DriftIgnoredReason",
+          "documentation":"<p>Reason why drift was ignored for the attribute, can have 2 possible values:</p> <ul> <li> <p> <code>WRITE_ONLY_PROPERTY</code> - Property is not included in read response for the resource’s live state.</p> </li> <li> <p> <code>MANAGED_BY_AWS</code> - Property is managed by an Amazon Web Services service and is expected to be dynamically modified.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The <code>ResourceDriftIgnoredAttribute</code> data type.</p>"
+    },
+    "ResourceDriftIgnoredAttributes":{
+      "type":"list",
+      "member":{"shape":"ResourceDriftIgnoredAttribute"}
+    },
+    "ResourceDriftPreviousValue":{"type":"string"},
     "ResourceIdentifier":{"type":"string"},
     "ResourceIdentifierProperties":{
       "type":"map",
@@ -6111,9 +6633,21 @@
           "shape":"AfterValue",
           "documentation":"<p>The value of the property after the change is executed. Large values can be truncated.</p>"
         },
+        "BeforeValueFrom":{
+          "shape":"BeforeValueFrom",
+          "documentation":"<p>Indicates the source of the before value. Valid values:</p> <ul> <li> <p> <code>ACTUAL_STATE</code> – The before value represents current actual state.</p> </li> <li> <p> <code>PREVIOUS_DEPLOYMENT_STATE</code> – The before value represents the previous CloudFormation deployment state.</p> </li> </ul> <p>Only present for drift-aware change sets.</p>"
+        },
+        "AfterValueFrom":{
+          "shape":"AfterValueFrom",
+          "documentation":"<p>Indicates the source of the after value. Valid value:</p> <ul> <li> <p> <code>TEMPLATE</code> – The after value comes from the new template.</p> </li> </ul> <p>Only present for drift-aware change sets.</p>"
+        },
+        "Drift":{
+          "shape":"LiveResourceDrift",
+          "documentation":"<p>Detailed drift information for the resource property, including actual values, previous deployment values, and drift detection timestamps.</p>"
+        },
         "AttributeChangeType":{
           "shape":"AttributeChangeType",
-          "documentation":"<p>The type of change to be made to the property if the change is executed.</p> <ul> <li> <p> <code>Add</code> The item will be added.</p> </li> <li> <p> <code>Remove</code> The item will be removed.</p> </li> <li> <p> <code>Modify</code> The item will be modified.</p> </li> </ul>"
+          "documentation":"<p>The type of change to be made to the property if the change is executed.</p> <ul> <li> <p> <code>Add</code> The item will be added.</p> </li> <li> <p> <code>Remove</code> The item will be removed.</p> </li> <li> <p> <code>Modify</code> The item will be modified.</p> </li> <li> <p> <code>SyncWithActual</code> The drift status of this item will be reset but the item will not be modified.</p> </li> </ul>"
         }
       },
       "documentation":"<p>The field that CloudFormation will change, such as the name of a resource's property, and whether the resource will be recreated.</p>"
@@ -6253,6 +6787,10 @@
         "StackId":{
           "shape":"StackId",
           "documentation":"<p>Unique identifier of the stack.</p>"
+        },
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>A unique identifier for this rollback operation that can be used to track the operation's progress and events.</p>"
         }
       }
     },
@@ -6459,7 +6997,7 @@
         },
         "UniqueId":{
           "shape":"ResourceSignalUniqueId",
-          "documentation":"<p>A unique ID of the signal. When you signal Amazon EC2 instances or Auto Scaling groups, specify the instance ID that you are signaling as the unique ID. If you send multiple signals to a single resource (such as signaling a wait condition), each signal requires a different unique ID.</p>"
+          "documentation":"<p>A unique ID of the signal. When you signal Amazon EC2 instances or Amazon EC2 Auto Scaling groups, specify the instance ID that you are signaling as the unique ID. If you send multiple signals to a single resource (such as signaling a wait condition), each signal requires a different unique ID.</p>"
         },
         "Status":{
           "shape":"ResourceSignalStatus",
@@ -6575,9 +7113,13 @@
         "DetailedStatus":{
           "shape":"DetailedStatus",
           "documentation":"<p>The detailed status of the resource or stack. If <code>CONFIGURATION_COMPLETE</code> is present, the resource or resource configuration phase has completed and the stabilization of the resources is in progress. The StackSets <code>CONFIGURATION_COMPLETE</code> when all of the resources in the stack have reached that event. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stack-resource-configuration-complete.html\">Understand CloudFormation stack creation events</a> in the <i>CloudFormation User Guide</i>.</p>"
+        },
+        "LastOperations":{
+          "shape":"LastOperations",
+          "documentation":"<p>Information about the most recent operations performed on this stack.</p>"
         }
       },
-      "documentation":"<p>The Stack data type.</p>"
+      "documentation":"<p>The <code>Stack</code> data type.</p>"
     },
     "StackDefinition":{
       "type":"structure",
@@ -6675,6 +7217,10 @@
           "shape":"StackName",
           "documentation":"<p>The name associated with a stack.</p>"
         },
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>The unique identifier of the operation that generated this stack event.</p>"
+        },
         "LogicalResourceId":{
           "shape":"LogicalResourceId",
           "documentation":"<p>The logical name of the resource specified in the template.</p>"
@@ -6736,7 +7282,7 @@
           "documentation":"<p>An optional field that contains information about the detailed status of the stack event.</p> <ul> <li> <p> <code>CONFIGURATION_COMPLETE</code> - all of the resources in the stack have reached that event. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stack-resource-configuration-complete.html\">Understand CloudFormation stack creation events</a> in the <i>CloudFormation User Guide</i>.</p> </li> </ul> <ul> <li> <p> <code>VALIDATION_FAILED</code> - template validation failed because of invalid properties in the template. The <code>ResourceStatusReason</code> field shows what properties are defined incorrectly.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>The StackEvent data type.</p>"
+      "documentation":"<p>The <code>StackEvent</code> data type.</p>"
     },
     "StackEvents":{
       "type":"list",
@@ -7236,7 +7782,7 @@
           "documentation":"<p>Contains information about the module from which the resource was created, if the resource was created from a module included in the stack template.</p>"
         }
       },
-      "documentation":"<p>The StackResource data type.</p>"
+      "documentation":"<p>The <code>StackResource</code> data type.</p>"
     },
     "StackResourceDetail":{
       "type":"structure",
@@ -7396,7 +7942,8 @@
         "MODIFIED",
         "DELETED",
         "NOT_CHECKED",
-        "UNKNOWN"
+        "UNKNOWN",
+        "UNSUPPORTED"
       ]
     },
     "StackResourceDriftStatusFilters":{
@@ -7537,6 +8084,10 @@
       "documentation":"<p>A structure that contains information about a StackSet. With StackSets, you can provision stacks across Amazon Web Services accounts and Regions from a single CloudFormation template. Each stack is based on the same CloudFormation template, but you can customize individual stacks using parameters.</p>"
     },
     "StackSetARN":{"type":"string"},
+    "StackSetARNList":{
+      "type":"list",
+      "member":{"shape":"StackSetARN"}
+    },
     "StackSetAutoDeploymentTargetSummaries":{
       "type":"list",
       "member":{"shape":"StackSetAutoDeploymentTargetSummary"}
@@ -7993,9 +8544,13 @@
         "DriftInformation":{
           "shape":"StackDriftInformationSummary",
           "documentation":"<p>Summarizes information about whether a stack's actual configuration differs, or has <i>drifted</i>, from its expected configuration, as defined in the stack template and any values specified as template parameters. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift.html\">Detect unmanaged configuration changes to stacks and resources with drift detection</a>.</p>"
+        },
+        "LastOperations":{
+          "shape":"LastOperations",
+          "documentation":"<p>Information about the most recent operations performed on this stack.</p>"
         }
       },
-      "documentation":"<p>The StackSummary Data Type</p>"
+      "documentation":"<p>The <code>StackSummary</code> Data Type</p>"
     },
     "Stacks":{
       "type":"list",
@@ -8155,7 +8710,7 @@
           "documentation":"<p>User defined description associated with the parameter.</p>"
         }
       },
-      "documentation":"<p>The TemplateParameter data type.</p>"
+      "documentation":"<p>The <code>TemplateParameter</code> data type.</p>"
     },
     "TemplateParameters":{
       "type":"list",
@@ -8661,7 +9216,7 @@
         },
         "UsePreviousTemplate":{
           "shape":"UsePreviousTemplate",
-          "documentation":"<p>Reuse the existing template that is associated with the stack that you are updating.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code>, <code>TemplateURL</code>, or set the <code>UsePreviousTemplate</code> to <code>true</code>.</p>"
+          "documentation":"<p>Reuse the existing template that is associated with the stack that you are updating.</p> <p>When using templates with the <code>AWS::LanguageExtensions</code> transform, provide the template instead of using <code>UsePreviousTemplate</code> to ensure new parameter values and Systems Manager parameter updates are applied correctly. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/transform-aws-languageextensions.html\">AWS::LanguageExtensions transform</a>.</p> <p>Conditional: You must specify only one of the following parameters: <code>TemplateBody</code>, <code>TemplateURL</code>, or set the <code>UsePreviousTemplate</code> to <code>true</code>.</p>"
         },
         "StackPolicyDuringUpdateBody":{
           "shape":"StackPolicyDuringUpdateBody",
@@ -8681,7 +9236,7 @@
         },
         "ResourceTypes":{
           "shape":"ResourceTypes",
-          "documentation":"<p>The template resource types that you have permissions to work with for this update stack action, such as <code>AWS::EC2::Instance</code>, <code>AWS::EC2::*</code>, or <code>Custom::MyCustomInstance</code>.</p> <p>If the list of resource types doesn't include a resource that you're updating, the stack update fails. By default, CloudFormation grants permissions to all resource types. IAM uses this parameter for CloudFormation-specific condition keys in IAM policies. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html\">Control access with Identity and Access Management</a>.</p> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
+          "documentation":"<p>Specifies which resource types you can work with, such as <code>AWS::EC2::Instance</code> or <code>Custom::MyCustomInstance</code>.</p> <p>If the list of resource types doesn't include a resource that you're updating, the stack update fails. By default, CloudFormation grants permissions to all resource types. IAM uses this parameter for CloudFormation-specific condition keys in IAM policies. For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/control-access-with-iam.html\">Control CloudFormation access with Identity and Access Management</a>.</p> <note> <p>Only one of the <code>Capabilities</code> and <code>ResourceType</code> parameters can be specified.</p> </note>"
         },
         "RoleARN":{
           "shape":"RoleARN",
@@ -8779,6 +9334,10 @@
         "StackId":{
           "shape":"StackId",
           "documentation":"<p>Unique identifier of the stack.</p>"
+        },
+        "OperationId":{
+          "shape":"OperationId",
+          "documentation":"<p>A unique identifier for this update operation that can be used to track the operation's progress and events.</p>"
         }
       },
       "documentation":"<p>The output for an <a>UpdateStack</a> action.</p>"
@@ -8944,6 +9503,16 @@
       },
       "documentation":"<p>The output for <a>ValidateTemplate</a> action.</p>"
     },
+    "ValidationName":{"type":"string"},
+    "ValidationPath":{"type":"string"},
+    "ValidationStatus":{
+      "type":"string",
+      "enum":[
+        "FAILED",
+        "SKIPPED"
+      ]
+    },
+    "ValidationStatusReason":{"type":"string"},
     "Value":{"type":"string"},
     "Version":{"type":"string"},
     "VersionBump":{
@@ -9021,5 +9590,5 @@
       "documentation":"<p>Contains any warnings returned by the <code>GetTemplateSummary</code> API action.</p>"
     }
   },
-  "documentation":"<fullname>CloudFormation</fullname> <p>CloudFormation allows you to create and manage Amazon Web Services infrastructure deployments predictably and repeatedly. You can use CloudFormation to leverage Amazon Web Services products, such as Amazon Elastic Compute Cloud, Amazon Elastic Block Store, Amazon Simple Notification Service, Elastic Load Balancing, and Amazon EC2 Auto Scaling to build highly reliable, highly scalable, cost-effective applications without creating or configuring the underlying Amazon Web Services infrastructure.</p> <p>With CloudFormation, you declare all your resources and dependencies in a template file. The template defines a collection of resources as a single unit called a stack. CloudFormation creates and deletes all member resources of the stack together and manages all dependencies between the resources for you.</p> <p>For more information about CloudFormation, see the <a href=\"http://aws.amazon.com/cloudformation/\">CloudFormation product page</a>.</p> <p>CloudFormation makes use of other Amazon Web Services products. If you need additional technical information about a specific Amazon Web Services product, you can find the product's technical documentation at <a href=\"https://docs.aws.amazon.com/\">docs.aws.amazon.com</a>.</p>"
+  "documentation":"<fullname>CloudFormation</fullname> <p>CloudFormation allows you to create and manage Amazon Web Services infrastructure deployments predictably and repeatedly. You can use CloudFormation to leverage Amazon Web Services products, such as Amazon Elastic Compute Cloud, Amazon Elastic Block Store, Amazon Simple Notification Service, ELB, and Amazon EC2 Auto Scaling to build highly reliable, highly scalable, cost-effective applications without creating or configuring the underlying Amazon Web Services infrastructure.</p> <p>With CloudFormation, you declare all your resources and dependencies in a template file. The template defines a collection of resources as a single unit called a stack. CloudFormation creates and deletes all member resources of the stack together and manages all dependencies between the resources for you.</p> <p>For more information about CloudFormation, see the <a href=\"http://aws.amazon.com/cloudformation/\">CloudFormation product page</a>.</p> <p>CloudFormation makes use of other Amazon Web Services products. If you need additional technical information about a specific Amazon Web Services product, you can find the product's technical documentation at <a href=\"https://docs.aws.amazon.com/\">docs.aws.amazon.com</a>.</p>"
 }

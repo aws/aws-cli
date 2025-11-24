@@ -396,21 +396,21 @@ class TestCliDriver:
         assert rc == 252
         assert 1 == fake_stderr.getvalue().count('CLI version:')
 
-    @mock.patch('awscrt.io.init_logging')
+    @mock.patch('awscrt.io.set_log_level')
     def test_debug_enables_crt_logging(self, mock_init_logging):
         with contextlib.redirect_stderr(io.StringIO()):
             self.driver.main(
                 ['s3', 'list-objects', '--bucket', 'foo', '--debug']
             )
         mock_init_logging.assert_called_with(
-            awscrt.io.LogLevel.Debug, 'stderr'
+            awscrt.io.LogLevel.Debug,
         )
 
-    @mock.patch('awscrt.io.init_logging')
+    @mock.patch('awscrt.io.set_log_level')
     def test_no_debug_disables_crt_logging(self, mock_init_logging):
         self.driver.main(['s3', 'list-objects', '--bucket', 'foo'])
         mock_init_logging.assert_called_with(
-            awscrt.io.LogLevel.NoLogs, 'stderr'
+            awscrt.io.LogLevel.NoLogs,
         )
 
 
@@ -501,7 +501,9 @@ class TestCliDriverHooks(unittest.TestCase):
         )
         self.assertEqual(rc, 252)
         # Tell the user what went wrong.
-        self.assertIn("Found invalid choice 'list-objecst'", self.stderr.getvalue())
+        self.assertIn(
+            "Found invalid choice 'list-objecst'", self.stderr.getvalue()
+        )
         # Offer the user a suggestion.
         self.assertIn(
             "Maybe you meant:\n\n  * list-objects", self.stderr.getvalue()
@@ -523,13 +525,13 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
     # These tests will simulate running actual aws commands
     # but with the http part mocked out.
     def setUp(self):
-        super(TestAWSCommand, self).setUp()
+        super().setUp()
         self.stderr = StringIO()
         self.stderr_patch = mock.patch('sys.stderr', self.stderr)
         self.stderr_patch.start()
 
     def tearDown(self):
-        super(TestAWSCommand, self).tearDown()
+        super().tearDown()
         self.stderr_patch.stop()
 
     def inject_new_param(self, argument_table, **kwargs):
@@ -724,7 +726,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(
             f.write.call_args_list[1][0][0],
             'Unable to locate credentials. '
-            'You can configure credentials by running "aws configure".',
+            'You can configure credentials by running "aws login".',
         )
 
     def test_override_calling_command(self):
@@ -815,7 +817,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
 
 class TestHowClientIsCreated(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestHowClientIsCreated, self).setUp()
+        super().setUp()
         self.endpoint_creator_patch = mock.patch(
             'botocore.args.EndpointCreator'
         )
@@ -830,7 +832,7 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
         self.endpoint.make_request.return_value = (http_response, {})
 
     def tearDown(self):
-        super(TestHowClientIsCreated, self).tearDown()
+        super().tearDown()
         self.endpoint_creator_patch.stop()
 
     def test_aws_with_endpoint_url(self):
@@ -923,7 +925,7 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
 
 class TestVerifyArgument(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestVerifyArgument, self).setUp()
+        super().setUp()
         self.driver.session.register('top-level-args-parsed', self.record_args)
         self.recorded_args = None
 
@@ -1173,13 +1175,13 @@ class TextCreateCLIDriver(unittest.TestCase):
     def test_create_cli_driver_parse_args(self):
         stderr = io.StringIO()
         with contextlib.redirect_stderr(stderr):
-            driver = create_clidriver(['--debug'])
+            create_clidriver(['--debug'])
         self.assertIn('CLI version', stderr.getvalue())
 
     def test_create_cli_driver_wo_args(self):
         stderr = io.StringIO()
         with contextlib.redirect_stderr(stderr):
-            driver = create_clidriver()
+            create_clidriver()
         self.assertIn('', stderr.getvalue())
 
 

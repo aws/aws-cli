@@ -56,6 +56,36 @@
       ],
       "documentation":"<important> <p> End of support notice: On May 20, 2026, Amazon Web Services will end support for Amazon Web Services DMS Fleet Advisor;. After May 20, 2026, you will no longer be able to access the Amazon Web Services DMS Fleet Advisor; console or Amazon Web Services DMS Fleet Advisor; resources. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/dms_fleet.advisor-end-of-support.html\">Amazon Web Services DMS Fleet Advisor end of support</a>. </p> </important> <p>Starts the analysis of up to 20 source databases to recommend target engines for each source database. This is a batch version of <a href=\"https://docs.aws.amazon.com/dms/latest/APIReference/API_StartRecommendations.html\">StartRecommendations</a>.</p> <p>The result of analysis of each source database is reported individually in the response. Because the batch request can result in a combination of successful and unsuccessful actions, you should check for batch errors even when the call returns an HTTP status code of <code>200</code>.</p>"
     },
+    "CancelMetadataModelConversion":{
+      "name":"CancelMetadataModelConversion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelMetadataModelConversionMessage"},
+      "output":{"shape":"CancelMetadataModelConversionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"AccessDeniedFault"}
+      ],
+      "documentation":"<p>Cancels a single metadata model conversion operation that was started with <code>StartMetadataModelConversion</code>.</p>"
+    },
+    "CancelMetadataModelCreation":{
+      "name":"CancelMetadataModelCreation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelMetadataModelCreationMessage"},
+      "output":{"shape":"CancelMetadataModelCreationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"AccessDeniedFault"}
+      ],
+      "documentation":"<p>Cancels a single metadata model creation operation that was started with <code>StartMetadataModelCreation</code>.</p>"
+    },
     "CancelReplicationTaskAssessmentRun":{
       "name":"CancelReplicationTaskAssessmentRun",
       "http":{
@@ -764,6 +794,20 @@
       ],
       "documentation":"<p>Returns a paginated list of instance profiles for your account in the current region.</p>"
     },
+    "DescribeMetadataModel":{
+      "name":"DescribeMetadataModel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeMetadataModelMessage"},
+      "output":{"shape":"DescribeMetadataModelResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"AccessDeniedFault"}
+      ],
+      "documentation":"<p>Gets detailed information about the specified metadata model, including its definition and corresponding converted objects in the target database if applicable.</p>"
+    },
     "DescribeMetadataModelAssessments":{
       "name":"DescribeMetadataModelAssessments",
       "http":{
@@ -777,6 +821,20 @@
       ],
       "documentation":"<p>Returns a paginated list of metadata model assessments for your account in the current region.</p>"
     },
+    "DescribeMetadataModelChildren":{
+      "name":"DescribeMetadataModelChildren",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeMetadataModelChildrenMessage"},
+      "output":{"shape":"DescribeMetadataModelChildrenResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"AccessDeniedFault"}
+      ],
+      "documentation":"<p>Gets a list of child metadata models for the specified metadata model in the database hierarchy.</p>"
+    },
     "DescribeMetadataModelConversions":{
       "name":"DescribeMetadataModelConversions",
       "http":{
@@ -789,6 +847,20 @@
         {"shape":"ResourceNotFoundFault"}
       ],
       "documentation":"<p>Returns a paginated list of metadata model conversions for a migration project.</p>"
+    },
+    "DescribeMetadataModelCreations":{
+      "name":"DescribeMetadataModelCreations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeMetadataModelCreationsMessage"},
+      "output":{"shape":"DescribeMetadataModelCreationsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"AccessDeniedFault"}
+      ],
+      "documentation":"<p>Returns a paginated list of metadata model creation requests for a migration project.</p>"
     },
     "DescribeMetadataModelExportsAsScript":{
       "name":"DescribeMetadataModelExportsAsScript",
@@ -1083,6 +1155,21 @@
       ],
       "documentation":"<p>Saves a copy of a database migration assessment report to your Amazon S3 bucket. DMS can save your assessment report as a comma-separated value (CSV) or a PDF file. </p>"
     },
+    "GetTargetSelectionRules":{
+      "name":"GetTargetSelectionRules",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetTargetSelectionRulesMessage"},
+      "output":{"shape":"GetTargetSelectionRulesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"InvalidResourceStateFault"},
+        {"shape":"AccessDeniedFault"}
+      ],
+      "documentation":"<p>Converts source selection rules into their target counterparts for schema conversion operations.</p>"
+    },
     "ImportCertificate":{
       "name":"ImportCertificate",
       "http":{
@@ -1094,7 +1181,8 @@
       "errors":[
         {"shape":"ResourceAlreadyExistsFault"},
         {"shape":"InvalidCertificateFault"},
-        {"shape":"ResourceQuotaExceededFault"}
+        {"shape":"ResourceQuotaExceededFault"},
+        {"shape":"KMSKeyNotAccessibleFault"}
       ],
       "documentation":"<p>Uploads the specified certificate.</p>"
     },
@@ -1482,6 +1570,22 @@
         {"shape":"S3AccessDeniedFault"}
       ],
       "documentation":"<p>Converts your source database objects to a format compatible with the target database. </p>"
+    },
+    "StartMetadataModelCreation":{
+      "name":"StartMetadataModelCreation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartMetadataModelCreationMessage"},
+      "output":{"shape":"StartMetadataModelCreationResponse"},
+      "errors":[
+        {"shape":"ResourceAlreadyExistsFault"},
+        {"shape":"ResourceNotFoundFault"},
+        {"shape":"ResourceQuotaExceededFault"},
+        {"shape":"AccessDeniedFault"}
+      ],
+      "documentation":"<p>Creates source metadata model of the given type with the specified properties for schema conversion operations.</p> <note> <p>This action supports only these directions: from SQL Server to Aurora PostgreSQL, or from SQL Server to RDS for PostgreSQL.</p> </note>"
     },
     "StartMetadataModelExportAsScript":{
       "name":"StartMetadataModelExportAsScript",
@@ -1882,6 +1986,52 @@
     },
     "Boolean":{"type":"boolean"},
     "BooleanOptional":{"type":"boolean"},
+    "CancelMetadataModelConversionMessage":{
+      "type":"structure",
+      "required":[
+        "MigrationProjectIdentifier",
+        "RequestIdentifier"
+      ],
+      "members":{
+        "MigrationProjectIdentifier":{
+          "shape":"MigrationProjectIdentifier",
+          "documentation":"<p>The migration project name or Amazon Resource Name (ARN).</p>"
+        },
+        "RequestIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the metadata model conversion operation to cancel. This operation was initiated by StartMetadataModelConversion.</p>"
+        }
+      }
+    },
+    "CancelMetadataModelConversionResponse":{
+      "type":"structure",
+      "members":{
+        "Request":{"shape":"SchemaConversionRequest"}
+      }
+    },
+    "CancelMetadataModelCreationMessage":{
+      "type":"structure",
+      "required":[
+        "MigrationProjectIdentifier",
+        "RequestIdentifier"
+      ],
+      "members":{
+        "MigrationProjectIdentifier":{
+          "shape":"MigrationProjectIdentifier",
+          "documentation":"<p>The migration project name or Amazon Resource Name (ARN).</p>"
+        },
+        "RequestIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the metadata model creation operation to cancel. This operation was initiated by <code>StartMetadataModelCreation</code>.</p>"
+        }
+      }
+    },
+    "CancelMetadataModelCreationResponse":{
+      "type":"structure",
+      "members":{
+        "Request":{"shape":"SchemaConversionRequest"}
+      }
+    },
     "CancelReplicationTaskAssessmentRunMessage":{
       "type":"structure",
       "required":["ReplicationTaskAssessmentRunArn"],
@@ -1958,6 +2108,10 @@
         "KeyLength":{
           "shape":"IntegerOptional",
           "documentation":"<p>The key length of the cryptographic algorithm being used.</p>"
+        },
+        "KmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>An KMS key identifier that is used to encrypt the certificate.</p> <p>If you don't specify a value for the <code>KmsKeyId</code> parameter, then DMS uses your default encryption key.</p> <p>KMS creates the default encryption key for your Amazon Web Services account. Your Amazon Web Services account has a different default encryption key for each Amazon Web Services Region.</p>"
         }
       },
       "documentation":"<p>The SSL certificate that can be used to encrypt connections between the endpoints and the replication instance.</p>"
@@ -2245,7 +2399,7 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, <code>db2</code>, <code>db2-zos</code> and <code>docdb</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
+          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, <code>db2</code>, <code>db2-zos</code>, <code>docdb</code>, and <code>sybase</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
         },
         "Virtual":{
           "shape":"BooleanOptional",
@@ -3060,7 +3214,7 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, <code>db2</code>, <code>db2-zos</code> and <code>docdb</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
+          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, <code>db2</code>, <code>db2-zos</code>, <code>docdb</code>, and <code>sybase</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
         },
         "Virtual":{
           "shape":"BooleanOptional",
@@ -3133,6 +3287,7 @@
         "PostgreSqlSettings":{"shape":"PostgreSqlDataProviderSettings"},
         "MySqlSettings":{"shape":"MySqlDataProviderSettings"},
         "OracleSettings":{"shape":"OracleDataProviderSettings"},
+        "SybaseAseSettings":{"shape":"SybaseAseDataProviderSettings"},
         "MicrosoftSqlServerSettings":{"shape":"MicrosoftSqlServerDataProviderSettings"},
         "DocDbSettings":{"shape":"DocDbDataProviderSettings"},
         "MariaDbSettings":{
@@ -4286,6 +4441,49 @@
         }
       }
     },
+    "DescribeMetadataModelChildrenMessage":{
+      "type":"structure",
+      "required":[
+        "SelectionRules",
+        "MigrationProjectIdentifier",
+        "Origin"
+      ],
+      "members":{
+        "SelectionRules":{
+          "shape":"String",
+          "documentation":"<p>The JSON string that specifies which metadata model's children to retrieve. Only one selection rule with \"rule-action\": \"explicit\" can be provided. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TableMapping.SelectionTransformation.Selections.html\">Selection Rules</a> in the DMS User Guide.</p>"
+        },
+        "MigrationProjectIdentifier":{
+          "shape":"MigrationProjectIdentifier",
+          "documentation":"<p>The migration project name or Amazon Resource Name (ARN).</p>"
+        },
+        "Origin":{
+          "shape":"OriginTypeValue",
+          "documentation":"<p>Specifies whether to retrieve metadata from the source or target tree. Valid values: SOURCE | TARGET</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>Specifies the unique pagination token that indicates where the next page should start. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by MaxRecords.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of metadata model children to include in the response. If more items exist than the specified MaxRecords value, a marker is included in the response so that the remaining results can be retrieved.</p>"
+        }
+      }
+    },
+    "DescribeMetadataModelChildrenResponse":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>Specifies the unique pagination token that makes it possible to display the next page of metadata model children. If a marker is returned, there are more metadata model children available.</p>"
+        },
+        "MetadataModelChildren":{
+          "shape":"MetadataModelReferenceList",
+          "documentation":"<p>A list of child metadata models.</p>"
+        }
+      }
+    },
     "DescribeMetadataModelConversionsMessage":{
       "type":"structure",
       "required":["MigrationProjectIdentifier"],
@@ -4318,6 +4516,41 @@
         "Requests":{
           "shape":"SchemaConversionRequestList",
           "documentation":"<p>A paginated list of metadata model conversions.</p>"
+        }
+      }
+    },
+    "DescribeMetadataModelCreationsMessage":{
+      "type":"structure",
+      "required":["MigrationProjectIdentifier"],
+      "members":{
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>Filters applied to the metadata model creation requests described in the form of key-value pairs. The supported filters are request-id and status.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>Specifies the unique pagination token that makes it possible to display the next page of metadata model creation requests. If Marker is returned by a previous response, there are more metadata model creation requests available.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of metadata model creation requests to include in the response. If more requests exist than the specified MaxRecords value, a pagination token is provided in the response so that you can retrieve the remaining results.</p>"
+        },
+        "MigrationProjectIdentifier":{
+          "shape":"MigrationProjectIdentifier",
+          "documentation":"<p>The migration project name or Amazon Resource Name (ARN).</p>"
+        }
+      }
+    },
+    "DescribeMetadataModelCreationsResponse":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>Specifies the unique pagination token that makes it possible to display the next page of metadata model creation requests. If Marker is returned, there are more metadata model creation requests available.</p>"
+        },
+        "Requests":{
+          "shape":"SchemaConversionRequestList",
+          "documentation":"<p>A list of metadata model creation requests. The ExportSqlDetails field will never be populated for the DescribeMetadataModelCreations operation.</p>"
         }
       }
     },
@@ -4423,6 +4656,49 @@
         "Requests":{
           "shape":"SchemaConversionRequestList",
           "documentation":"<p>A paginated list of metadata model imports.</p>"
+        }
+      }
+    },
+    "DescribeMetadataModelMessage":{
+      "type":"structure",
+      "required":[
+        "SelectionRules",
+        "MigrationProjectIdentifier",
+        "Origin"
+      ],
+      "members":{
+        "SelectionRules":{
+          "shape":"String",
+          "documentation":"<p>The JSON string that specifies which metadata model to retrieve. Only one selection rule with \"rule-action\": \"explicit\" can be provided. For more information, see <a href=\"https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TableMapping.SelectionTransformation.Selections.html\">Selection Rules</a> in the DMS User Guide.</p>"
+        },
+        "MigrationProjectIdentifier":{
+          "shape":"MigrationProjectIdentifier",
+          "documentation":"<p>The migration project name or Amazon Resource Name (ARN).</p>"
+        },
+        "Origin":{
+          "shape":"OriginTypeValue",
+          "documentation":"<p>Specifies whether to retrieve metadata from the source or target tree. Valid values: SOURCE | TARGET</p>"
+        }
+      }
+    },
+    "DescribeMetadataModelResponse":{
+      "type":"structure",
+      "members":{
+        "MetadataModelName":{
+          "shape":"String",
+          "documentation":"<p>The name of the metadata model.</p>"
+        },
+        "MetadataModelType":{
+          "shape":"String",
+          "documentation":"<p>The type of the metadata model.</p>"
+        },
+        "TargetMetadataModels":{
+          "shape":"MetadataModelReferenceList",
+          "documentation":"<p>A list of counterpart metadata models in the target. This field is populated only when Origin is SOURCE and after the object has been converted by DMS Schema Conversion.</p>"
+        },
+        "Definition":{
+          "shape":"String",
+          "documentation":"<p>The SQL text of the metadata model. This field might not be populated for some metadata models.</p>"
         }
       }
     },
@@ -5250,6 +5526,10 @@
           "shape":"String",
           "documentation":"<p> Value returned by a call to CreateEndpoint that can be used for cross-account validation. Use it on a subsequent call to CreateEndpoint to create the endpoint with a cross-account. </p>"
         },
+        "IsReadOnly":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the endpoint is read-only. When set to <code>true</code>, this endpoint is managed by DMS as part of a zero-ETL integration and cannot be modified or deleted directly. You can only modify or delete read-only endpoints through their associated zero-ETL integration.</p>"
+        },
         "DynamoDbSettings":{
           "shape":"DynamoDbSettings",
           "documentation":"<p>The settings for the DynamoDB target endpoint. For more information, see the <code>DynamoDBSettings</code> structure.</p>"
@@ -5322,6 +5602,10 @@
         "TimestreamSettings":{
           "shape":"TimestreamSettings",
           "documentation":"<p>The settings for the Amazon Timestream target endpoint. For more information, see the <code>TimestreamSettings</code> structure.</p>"
+        },
+        "LakehouseSettings":{
+          "shape":"LakehouseSettings",
+          "documentation":"<p>Settings in JSON format for the target Lakehouse endpoint. This parameter applies to endpoints that are automatically created by DMS for a Lakehouse data warehouse as part of a zero-ETL integration.</p>"
         }
       },
       "documentation":"<p>Describes an endpoint of a database instance in response to operations such as the following:</p> <ul> <li> <p> <code>CreateEndpoint</code> </p> </li> <li> <p> <code>DescribeEndpoint</code> </p> </li> <li> <p> <code>ModifyEndpoint</code> </p> </li> </ul>"
@@ -5759,6 +6043,32 @@
       },
       "documentation":"<p>Settings in JSON format for the source GCP MySQL endpoint.</p>"
     },
+    "GetTargetSelectionRulesMessage":{
+      "type":"structure",
+      "required":[
+        "MigrationProjectIdentifier",
+        "SelectionRules"
+      ],
+      "members":{
+        "MigrationProjectIdentifier":{
+          "shape":"MigrationProjectIdentifier",
+          "documentation":"<p>The migration project name or Amazon Resource Name (ARN).</p>"
+        },
+        "SelectionRules":{
+          "shape":"String",
+          "documentation":"<p>The JSON string representing the source selection rules for conversion. Selection rules must contain only supported metadata model types. For more information, see Selection Rules in the DMS User Guide.</p>"
+        }
+      }
+    },
+    "GetTargetSelectionRulesResponse":{
+      "type":"structure",
+      "members":{
+        "TargetSelectionRules":{
+          "shape":"String",
+          "documentation":"<p>The JSON string representing the counterpart selection rules in the target.</p>"
+        }
+      }
+    },
     "IBMDb2Settings":{
       "type":"structure",
       "members":{
@@ -5908,6 +6218,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The tags associated with the certificate.</p>"
+        },
+        "KmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>An KMS key identifier that is used to encrypt the certificate.</p> <p>If you don't specify a value for the <code>KmsKeyId</code> parameter, then DMS uses your default encryption key.</p> <p>KMS creates the default encryption key for your Amazon Web Services account. Your Amazon Web Services account has a different default encryption key for each Amazon Web Services Region.</p>"
         }
       }
     },
@@ -6295,6 +6609,17 @@
       },
       "documentation":"<p>Provides information that describes an Amazon Kinesis Data Stream endpoint. This information includes the output format of records applied to the endpoint and details of transaction and control table data information.</p>"
     },
+    "LakehouseSettings":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lakehouse resource that serves as the target for this endpoint.</p>"
+        }
+      },
+      "documentation":"<p>Provides information that defines a Lakehouse endpoint. This endpoint type is used for zero-ETL integrations with Lakehouse data warehouses.</p>"
+    },
     "Limitation":{
       "type":"structure",
       "members":{
@@ -6403,6 +6728,35 @@
         "json",
         "json-unformatted"
       ]
+    },
+    "MetadataModelProperties":{
+      "type":"structure",
+      "members":{
+        "StatementProperties":{
+          "shape":"StatementProperties",
+          "documentation":"<p>The properties of the statement.</p>"
+        }
+      },
+      "documentation":"<p>The properties of metadata model in JSON format. This object is a Union. Only one member of this object can be specified or returned.</p>",
+      "union":true
+    },
+    "MetadataModelReference":{
+      "type":"structure",
+      "members":{
+        "MetadataModelName":{
+          "shape":"String",
+          "documentation":"<p>The name of the metadata model.</p>"
+        },
+        "SelectionRules":{
+          "shape":"String",
+          "documentation":"<p>The JSON string representing metadata model location.</p>"
+        }
+      },
+      "documentation":"<p>A reference to a metadata model, including its name and selection rules for location identification.</p>"
+    },
+    "MetadataModelReferenceList":{
+      "type":"list",
+      "member":{"shape":"MetadataModelReference"}
     },
     "MicrosoftSQLServerSettings":{
       "type":"structure",
@@ -6673,7 +7027,7 @@
         },
         "Engine":{
           "shape":"String",
-          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, <code>db2</code>, <code>db2-zos</code> and <code>docdb</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
+          "documentation":"<p>The type of database engine for the data provider. Valid values include <code>\"aurora\"</code>, <code>\"aurora-postgresql\"</code>, <code>\"mysql\"</code>, <code>\"oracle\"</code>, <code>\"postgres\"</code>, <code>\"sqlserver\"</code>, <code>redshift</code>, <code>mariadb</code>, <code>mongodb</code>, <code>db2</code>, <code>db2-zos</code>, <code>docdb</code>, and <code>sybase</code>. A value of <code>\"aurora\"</code> represents Amazon Aurora MySQL-Compatible Edition.</p>"
         },
         "Virtual":{
           "shape":"BooleanOptional",
@@ -8033,6 +8387,46 @@
       "type":"list",
       "member":{"shape":"PremigrationAssessmentStatus"}
     },
+    "ProcessedObject":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the database object.</p>"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The type of the database object. For example, a table, view, procedure, and so on.</p>"
+        },
+        "EndpointType":{
+          "shape":"String",
+          "documentation":"<p>The type of the data provider. This parameter can store one of the following values: <code>\"SOURCE\"</code> or <code>\"TARGET\"</code>.</p>"
+        }
+      },
+      "documentation":"<p>The database object that the schema conversion operation currently uses.</p>"
+    },
+    "Progress":{
+      "type":"structure",
+      "members":{
+        "ProgressPercent":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>The percent complete for the current step of the schema conversion operation.</p>"
+        },
+        "TotalObjects":{
+          "shape":"Long",
+          "documentation":"<p>The number of objects in this schema conversion operation.</p>"
+        },
+        "ProgressStep":{
+          "shape":"String",
+          "documentation":"<p>The step of the schema conversion operation. This parameter can store one of the following values:</p> <ul> <li> <p> <code>IN_PROGRESS</code> – The operation is running.</p> </li> <li> <p> <code>LOADING_METADATA</code> – Loads metadata from the source database.</p> </li> <li> <p> <code>COUNTING_OBJECTS</code> – Determines the number of objects involved in the operation.</p> </li> <li> <p> <code>ANALYZING</code> – Analyzes the source database objects.</p> </li> <li> <p> <code>CONVERTING</code> – Converts the source database objects to a format compatible with the target database.</p> </li> <li> <p> <code>APPLYING</code> – Applies the converted code to the target database.</p> </li> <li> <p> <code>FINISHED</code> – The operation completed successfully.</p> </li> </ul>"
+        },
+        "ProcessedObject":{
+          "shape":"ProcessedObject",
+          "documentation":"<p>The name of the database object that the schema conversion operation currently uses.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the progress of the schema conversion operation.</p>"
+    },
     "ProvisionData":{
       "type":"structure",
       "members":{
@@ -8696,6 +9090,10 @@
         "ReplicationDeprovisionTime":{
           "shape":"TStamp",
           "documentation":"<p>The timestamp when DMS will deprovision the replication.</p>"
+        },
+        "IsReadOnly":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the serverless replication is read-only. When set to <code>true</code>, this replication is managed by DMS as part of a zero-ETL integration and cannot be modified or deleted directly. You can only modify or delete read-only replications through their associated zero-ETL integration.</p>"
         }
       },
       "documentation":"<p>Provides information that describes a serverless replication created by the <code>CreateReplication</code> operation.</p>"
@@ -8746,6 +9144,10 @@
         "ReplicationConfigUpdateTime":{
           "shape":"TStamp",
           "documentation":"<p>The time the serverless replication config was updated.</p>"
+        },
+        "IsReadOnly":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the replication configuration is read-only. When set to <code>true</code>, this replication configuration is managed by DMS as part of a zero-ETL integration and cannot be modified or deleted directly. You can only modify or delete read-only replication configurations through their associated zero-ETL integration.</p>"
         }
       },
       "documentation":"<p>This object provides configuration information about a serverless replication.</p>"
@@ -9021,6 +9423,10 @@
         "SupportedNetworkTypes":{
           "shape":"StringList",
           "documentation":"<p>The IP addressing protocol supported by the subnet group. This is used by a replication instance with values such as IPv4 only or Dual-stack that supports both IPv4 and IPv6 addressing. IPv6 only is not yet supported.</p>"
+        },
+        "IsReadOnly":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the replication subnet group is read-only. When set to <code>true</code>, this subnet group is managed by DMS as part of a zero-ETL integration and cannot be modified or deleted directly. You can only modify or delete read-only subnet groups through their associated zero-ETL integration.</p>"
         }
       },
       "documentation":"<p>Describes a subnet group in response to a request by the <code>DescribeReplicationSubnetGroups</code> operation.</p>"
@@ -9669,7 +10075,8 @@
           "documentation":"<p>The migration project ARN.</p>"
         },
         "Error":{"shape":"ErrorDetails"},
-        "ExportSqlDetails":{"shape":"ExportSqlDetails"}
+        "ExportSqlDetails":{"shape":"ExportSqlDetails"},
+        "Progress":{"shape":"Progress"}
       },
       "documentation":"<p>Provides information about a schema conversion action.</p>"
     },
@@ -9910,6 +10317,42 @@
         "RequestIdentifier":{
           "shape":"String",
           "documentation":"<p>The identifier for the conversion operation.</p>"
+        }
+      }
+    },
+    "StartMetadataModelCreationMessage":{
+      "type":"structure",
+      "required":[
+        "MigrationProjectIdentifier",
+        "SelectionRules",
+        "MetadataModelName",
+        "Properties"
+      ],
+      "members":{
+        "MigrationProjectIdentifier":{
+          "shape":"MigrationProjectIdentifier",
+          "documentation":"<p>The migration project name or Amazon Resource Name (ARN).</p>"
+        },
+        "SelectionRules":{
+          "shape":"String",
+          "documentation":"<p>The JSON string that specifies the location where the metadata model will be created. Selection rules must specify a single schema. For more information, see Selection Rules in the DMS User Guide.</p>"
+        },
+        "MetadataModelName":{
+          "shape":"String",
+          "documentation":"<p>The name of the metadata model.</p>"
+        },
+        "Properties":{
+          "shape":"MetadataModelProperties",
+          "documentation":"<p>The properties of metadata model in JSON format. This object is a Union. Only one member of this object can be specified or returned.</p>"
+        }
+      }
+    },
+    "StartMetadataModelCreationResponse":{
+      "type":"structure",
+      "members":{
+        "RequestIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The identifier for the metadata model creation operation.</p>"
         }
       }
     },
@@ -10235,6 +10678,17 @@
         "reload-target"
       ]
     },
+    "StatementProperties":{
+      "type":"structure",
+      "required":["Definition"],
+      "members":{
+        "Definition":{
+          "shape":"String",
+          "documentation":"<p>The SQL text of the statement.</p>"
+        }
+      },
+      "documentation":"<p>The properties of the statement for metadata model creation.</p>"
+    },
     "StopDataMigrationMessage":{
       "type":"structure",
       "required":["DataMigrationIdentifier"],
@@ -10378,6 +10832,36 @@
       "type":"list",
       "member":{"shape":"SupportedEndpointType"}
     },
+    "SybaseAseDataProviderSettings":{
+      "type":"structure",
+      "members":{
+        "ServerName":{
+          "shape":"String",
+          "documentation":"<p>The name of the SAP ASE server.</p>"
+        },
+        "Port":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The port value for the SAP ASE data provider.</p>"
+        },
+        "DatabaseName":{
+          "shape":"String",
+          "documentation":"<p>The database name on the SAP ASE data provider.</p>"
+        },
+        "SslMode":{
+          "shape":"DmsSslModeValue",
+          "documentation":"<p>The SSL mode used to connect to the SAP ASE data provider. The default value is <code>none</code>.</p>"
+        },
+        "EncryptPassword":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to encrypt the password when connecting to the Sybase ASE database. When set to true, the connection password is encrypted during transmission. Default is true.</p>"
+        },
+        "CertificateArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the certificate used for SSL connection.</p>"
+        }
+      },
+      "documentation":"<p>Provides information that defines an SAP ASE data provider.</p>"
+    },
     "SybaseSettings":{
       "type":"structure",
       "members":{
@@ -10420,9 +10904,9 @@
     "TablePreparationMode":{
       "type":"string",
       "enum":[
-        "do-nothing",
+        "drop-tables-on-target",
         "truncate",
-        "drop-tables-on-target"
+        "do-nothing"
       ]
     },
     "TableStatistics":{

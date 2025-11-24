@@ -453,7 +453,7 @@
         {"shape":"RuleNotFoundException"},
         {"shape":"UnsupportedProtocolException"}
       ],
-      "documentation":"<p>Describes the specified rules or the rules for the specified listener. You must specify either a listener or one or more rules.</p>"
+      "documentation":"<p>Describes the specified rules or the rules for the specified listener. You must specify either a listener or rules.</p>"
     },
     "DescribeSSLPolicies":{
       "name":"DescribeSSLPolicies",
@@ -998,7 +998,7 @@
         },
         "TargetGroupArn":{
           "shape":"TargetGroupArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the target group. Specify only when <code>Type</code> is <code>forward</code> and you want to route to a single target group. To route to one or more target groups, use <code>ForwardConfig</code> instead.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the target group. Specify only when <code>Type</code> is <code>forward</code> and you want to route to a single target group. To route to multiple target groups, you must use <code>ForwardConfig</code> instead.</p>"
         },
         "AuthenticateOidcConfig":{
           "shape":"AuthenticateOidcActionConfig",
@@ -1022,10 +1022,14 @@
         },
         "ForwardConfig":{
           "shape":"ForwardActionConfig",
-          "documentation":"<p>Information for creating an action that distributes requests among one or more target groups. For Network Load Balancers, you can specify a single target group. Specify only when <code>Type</code> is <code>forward</code>. If you specify both <code>ForwardConfig</code> and <code>TargetGroupArn</code>, you can specify only one target group using <code>ForwardConfig</code> and it must be the same target group specified in <code>TargetGroupArn</code>.</p>"
+          "documentation":"<p>Information for creating an action that distributes requests among multiple target groups. Specify only when <code>Type</code> is <code>forward</code>.</p> <p>If you specify both <code>ForwardConfig</code> and <code>TargetGroupArn</code>, you can specify only one target group using <code>ForwardConfig</code> and it must be the same target group specified in <code>TargetGroupArn</code>.</p>"
+        },
+        "JwtValidationConfig":{
+          "shape":"JwtValidationActionConfig",
+          "documentation":"<p>[HTTPS listeners] Information for validating JWT access tokens in client requests. Specify only when <code>Type</code> is <code>jwt-validation</code>.</p>"
         }
       },
-      "documentation":"<p>Information about an action.</p> <p>Each rule must include exactly one of the following types of actions: <code>forward</code>, <code>fixed-response</code>, or <code>redirect</code>, and it must be the last action to be performed.</p>"
+      "documentation":"<p>Information about an action.</p> <p>Each rule must include exactly one of the following routing actions: <code>forward</code>, <code>fixed-response</code>, or <code>redirect</code>, and it must be the last action to be performed.</p> <p>Optionally, a rule for an HTTPS listener can also include one of the following user authentication actions: <code>authenticate-oidc</code>, <code>authenticate-cognito</code>, or <code>jwt-validation</code>.</p>"
     },
     "ActionOrder":{
       "type":"integer",
@@ -1039,7 +1043,8 @@
         "authenticate-oidc",
         "authenticate-cognito",
         "redirect",
-        "fixed-response"
+        "fixed-response",
+        "jwt-validation"
       ]
     },
     "Actions":{
@@ -1507,7 +1512,7 @@
         },
         "Protocol":{
           "shape":"ProtocolEnum",
-          "documentation":"<p>The protocol for connections from clients to the load balancer. For Application Load Balancers, the supported protocols are HTTP and HTTPS. For Network Load Balancers, the supported protocols are TCP, TLS, UDP, and TCP_UDP. You can’t specify the UDP or TCP_UDP protocol if dual-stack mode is enabled. You can't specify a protocol for a Gateway Load Balancer.</p>"
+          "documentation":"<p>The protocol for connections from clients to the load balancer. For Application Load Balancers, the supported protocols are HTTP and HTTPS. For Network Load Balancers, the supported protocols are TCP, TLS, UDP, TCP_UDP, QUIC, and TCP_QUIC. You can’t specify the UDP, TCP_UDP, QUIC, or TCP_QUIC protocol if dual-stack mode is enabled. You can't specify a protocol for a Gateway Load Balancer.</p>"
         },
         "Port":{
           "shape":"Port",
@@ -1661,7 +1666,7 @@
         },
         "Protocol":{
           "shape":"ProtocolEnum",
-          "documentation":"<p>The protocol to use for routing traffic to the targets. For Application Load Balancers, the supported protocols are HTTP and HTTPS. For Network Load Balancers, the supported protocols are TCP, TLS, UDP, or TCP_UDP. For Gateway Load Balancers, the supported protocol is GENEVE. A TCP_UDP listener must be associated with a TCP_UDP target group. If the target is a Lambda function, this parameter does not apply.</p>"
+          "documentation":"<p>The protocol to use for routing traffic to the targets. For Application Load Balancers, the supported protocols are HTTP and HTTPS. For Network Load Balancers, the supported protocols are TCP, TLS, UDP, TCP_UDP, QUIC, or TCP_QUIC. For Gateway Load Balancers, the supported protocol is GENEVE. A TCP_UDP listener must be associated with a TCP_UDP target group. A TCP_QUIC listener must be associated with a TCP_QUIC target group. If the target is a Lambda function, this parameter does not apply.</p>"
         },
         "ProtocolVersion":{
           "shape":"ProtocolVersion",
@@ -1677,11 +1682,11 @@
         },
         "HealthCheckProtocol":{
           "shape":"ProtocolEnum",
-          "documentation":"<p>The protocol the load balancer uses when performing health checks on targets. For Application Load Balancers, the default is HTTP. For Network Load Balancers and Gateway Load Balancers, the default is TCP. The TCP protocol is not supported for health checks if the protocol of the target group is HTTP or HTTPS. The GENEVE, TLS, UDP, and TCP_UDP protocols are not supported for health checks.</p>"
+          "documentation":"<p>The protocol the load balancer uses when performing health checks on targets. For Application Load Balancers, the default is HTTP. For Network Load Balancers and Gateway Load Balancers, the default is TCP. The TCP protocol is not supported for health checks if the protocol of the target group is HTTP or HTTPS. The GENEVE, TLS, UDP, TCP_UDP, QUIC, and TCP_QUIC protocols are not supported for health checks.</p>"
         },
         "HealthCheckPort":{
           "shape":"HealthCheckPort",
-          "documentation":"<p>The port the load balancer uses when performing health checks on targets. If the protocol is HTTP, HTTPS, TCP, TLS, UDP, or TCP_UDP, the default is <code>traffic-port</code>, which is the port on which each target receives traffic from the load balancer. If the protocol is GENEVE, the default is port 80.</p>"
+          "documentation":"<p>The port the load balancer uses when performing health checks on targets. If the protocol is HTTP, HTTPS, TCP, TLS, UDP, TCP_UDP, QUIC, or TCP_QUIC the default is <code>traffic-port</code>, which is the port on which each target receives traffic from the load balancer. If the protocol is GENEVE, the default is port 80.</p>"
         },
         "HealthCheckEnabled":{
           "shape":"HealthCheckEnabled",
@@ -1693,7 +1698,7 @@
         },
         "HealthCheckIntervalSeconds":{
           "shape":"HealthCheckIntervalSeconds",
-          "documentation":"<p>The approximate amount of time, in seconds, between health checks of an individual target. The range is 5-300. If the target group protocol is TCP, TLS, UDP, TCP_UDP, HTTP or HTTPS, the default is 30 seconds. If the target group protocol is GENEVE, the default is 10 seconds. If the target type is <code>lambda</code>, the default is 35 seconds.</p>"
+          "documentation":"<p>The approximate amount of time, in seconds, between health checks of an individual target. The range is 5-300. If the target group protocol is TCP, TLS, UDP, TCP_UDP, QUIC, TCP_QUIC, HTTP or HTTPS, the default is 30 seconds. If the target group protocol is GENEVE, the default is 10 seconds. If the target type is <code>lambda</code>, the default is 35 seconds.</p>"
         },
         "HealthCheckTimeoutSeconds":{
           "shape":"HealthCheckTimeoutSeconds",
@@ -1705,11 +1710,11 @@
         },
         "UnhealthyThresholdCount":{
           "shape":"HealthCheckThresholdCount",
-          "documentation":"<p>The number of consecutive health check failures required before considering a target unhealthy. The range is 2-10. If the target group protocol is TCP, TCP_UDP, UDP, TLS, HTTP or HTTPS, the default is 2. For target groups with a protocol of GENEVE, the default is 2. If the target type is <code>lambda</code>, the default is 5.</p>"
+          "documentation":"<p>The number of consecutive health check failures required before considering a target unhealthy. The range is 2-10. If the target group protocol is TCP, TCP_UDP, UDP, TLS, QUIC, TCP_QUIC, HTTP or HTTPS, the default is 2. For target groups with a protocol of GENEVE, the default is 2. If the target type is <code>lambda</code>, the default is 5.</p>"
         },
         "Matcher":{
           "shape":"Matcher",
-          "documentation":"<p>[HTTP/HTTPS health checks] The HTTP or gRPC codes to use when checking for a successful response from a target. For target groups with a protocol of TCP, TCP_UDP, UDP or TLS the range is 200-599. For target groups with a protocol of HTTP or HTTPS, the range is 200-499. For target groups with a protocol of GENEVE, the range is 200-399.</p>"
+          "documentation":"<p>[HTTP/HTTPS health checks] The HTTP or gRPC codes to use when checking for a successful response from a target. For target groups with a protocol of TCP, TCP_UDP, UDP, QUIC, TCP_QUIC, or TLS the range is 200-599. For target groups with a protocol of HTTP or HTTPS, the range is 200-499. For target groups with a protocol of GENEVE, the range is 200-399.</p>"
         },
         "TargetType":{
           "shape":"TargetTypeEnum",
@@ -1722,6 +1727,10 @@
         "IpAddressType":{
           "shape":"TargetGroupIpAddressTypeEnum",
           "documentation":"<p>The IP address type. The default value is <code>ipv4</code>.</p>"
+        },
+        "TargetControlPort":{
+          "shape":"TargetControlPort",
+          "documentation":"<p>The port on which the target control agent and application load balancer exchange management traffic for the target optimizer feature.</p>"
         }
       }
     },
@@ -2512,7 +2521,7 @@
       "members":{
         "TargetGroups":{
           "shape":"TargetGroupList",
-          "documentation":"<p>The target groups. For Network Load Balancers, you can specify a single target group.</p>"
+          "documentation":"<p>The target groups.</p>"
         },
         "TargetGroupStickinessConfig":{
           "shape":"TargetGroupStickinessConfig",
@@ -2803,6 +2812,71 @@
       "documentation":"<p>An IPAM pool is a collection of IP address CIDRs. IPAM pools enable you to organize your IP addresses according to your routing and security needs.</p>"
     },
     "IsDefault":{"type":"boolean"},
+    "JwtValidationActionAdditionalClaim":{
+      "type":"structure",
+      "required":[
+        "Format",
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Format":{
+          "shape":"JwtValidationActionAdditionalClaimFormatEnum",
+          "documentation":"<p>The format of the claim value.</p>"
+        },
+        "Name":{
+          "shape":"JwtValidationActionAdditionalClaimName",
+          "documentation":"<p>The name of the claim. You can't specify <code>exp</code>, <code>iss</code>, <code>nbf</code>, or <code>iat</code> because we validate them by default.</p>"
+        },
+        "Values":{
+          "shape":"JwtValidationActionAdditionalClaimValues",
+          "documentation":"<p>The claim value. The maximum size of the list is 10. Each value can be up to 256 characters in length. If the format is <code>space-separated-values</code>, the values can't include spaces.</p>"
+        }
+      },
+      "documentation":"<p>Information about an additional claim to validate.</p>"
+    },
+    "JwtValidationActionAdditionalClaimFormatEnum":{
+      "type":"string",
+      "enum":[
+        "single-string",
+        "string-array",
+        "space-separated-values"
+      ]
+    },
+    "JwtValidationActionAdditionalClaimName":{"type":"string"},
+    "JwtValidationActionAdditionalClaimValue":{"type":"string"},
+    "JwtValidationActionAdditionalClaimValues":{
+      "type":"list",
+      "member":{"shape":"JwtValidationActionAdditionalClaimValue"}
+    },
+    "JwtValidationActionAdditionalClaims":{
+      "type":"list",
+      "member":{"shape":"JwtValidationActionAdditionalClaim"}
+    },
+    "JwtValidationActionConfig":{
+      "type":"structure",
+      "required":[
+        "JwksEndpoint",
+        "Issuer"
+      ],
+      "members":{
+        "JwksEndpoint":{
+          "shape":"JwtValidationActionJwksEndpoint",
+          "documentation":"<p>The JSON Web Key Set (JWKS) endpoint. This endpoint contains JSON Web Keys (JWK) that are used to validate signatures from the provider.</p> <p>This must be a full URL, including the HTTPS protocol, the domain, and the path. The maximum length is 256 characters.</p>"
+        },
+        "Issuer":{
+          "shape":"JwtValidationActionIssuer",
+          "documentation":"<p>The issuer of the JWT. The maximum length is 256 characters.</p>"
+        },
+        "AdditionalClaims":{
+          "shape":"JwtValidationActionAdditionalClaims",
+          "documentation":"<p>Additional claims to validate. The maximum size of the list is 10. We validate the <code>exp</code>, <code>iss</code>, <code>nbf</code>, and <code>iat</code> claims by default.</p>"
+        }
+      },
+      "documentation":"<p>Information about a JSON Web Token (JWT) validation action.</p>"
+    },
+    "JwtValidationActionIssuer":{"type":"string"},
+    "JwtValidationActionJwksEndpoint":{"type":"string"},
     "LastModifiedTime":{"type":"timestamp"},
     "Limit":{
       "type":"structure",
@@ -3022,7 +3096,7 @@
       "members":{
         "Key":{
           "shape":"LoadBalancerAttributeKey",
-          "documentation":"<p>The name of the attribute.</p> <p>The following attributes are supported by all load balancers:</p> <ul> <li> <p> <code>deletion_protection.enabled</code> - Indicates whether deletion protection is enabled. The value is <code>true</code> or <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>load_balancing.cross_zone.enabled</code> - Indicates whether cross-zone load balancing is enabled. The possible values are <code>true</code> and <code>false</code>. The default for Network Load Balancers and Gateway Load Balancers is <code>false</code>. The default for Application Load Balancers is <code>true</code>, and can't be changed.</p> </li> </ul> <p>The following attributes are supported by both Application Load Balancers and Network Load Balancers:</p> <ul> <li> <p> <code>access_logs.s3.enabled</code> - Indicates whether access logs are enabled. The value is <code>true</code> or <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>access_logs.s3.bucket</code> - The name of the S3 bucket for the access logs. This attribute is required if access logs are enabled. The bucket must exist in the same region as the load balancer and have a bucket policy that grants Elastic Load Balancing permissions to write to the bucket.</p> </li> <li> <p> <code>access_logs.s3.prefix</code> - The prefix for the location in the S3 bucket for the access logs.</p> </li> <li> <p> <code>ipv6.deny_all_igw_traffic</code> - Blocks internet gateway (IGW) access to the load balancer. It is set to <code>false</code> for internet-facing load balancers and <code>true</code> for internal load balancers, preventing unintended access to your internal load balancer through an internet gateway.</p> </li> <li> <p> <code>zonal_shift.config.enabled</code> - Indicates whether zonal shift is enabled. The possible values are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> </ul> <p>The following attributes are supported by only Application Load Balancers:</p> <ul> <li> <p> <code>idle_timeout.timeout_seconds</code> - The idle timeout value, in seconds. The valid range is 1-4000 seconds. The default is 60 seconds.</p> </li> <li> <p> <code>client_keep_alive.seconds</code> - The client keep alive value, in seconds. The valid range is 60-604800 seconds. The default is 3600 seconds.</p> </li> <li> <p> <code>connection_logs.s3.enabled</code> - Indicates whether connection logs are enabled. The value is <code>true</code> or <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>connection_logs.s3.bucket</code> - The name of the S3 bucket for the connection logs. This attribute is required if connection logs are enabled. The bucket must exist in the same region as the load balancer and have a bucket policy that grants Elastic Load Balancing permissions to write to the bucket.</p> </li> <li> <p> <code>connection_logs.s3.prefix</code> - The prefix for the location in the S3 bucket for the connection logs.</p> </li> <li> <p> <code>routing.http.desync_mitigation_mode</code> - Determines how the load balancer handles requests that might pose a security risk to your application. The possible values are <code>monitor</code>, <code>defensive</code>, and <code>strictest</code>. The default is <code>defensive</code>.</p> </li> <li> <p> <code>routing.http.drop_invalid_header_fields.enabled</code> - Indicates whether HTTP headers with invalid header fields are removed by the load balancer (<code>true</code>) or routed to targets (<code>false</code>). The default is <code>false</code>.</p> </li> <li> <p> <code>routing.http.preserve_host_header.enabled</code> - Indicates whether the Application Load Balancer should preserve the <code>Host</code> header in the HTTP request and send it to the target without any change. The possible values are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>routing.http.x_amzn_tls_version_and_cipher_suite.enabled</code> - Indicates whether the two headers (<code>x-amzn-tls-version</code> and <code>x-amzn-tls-cipher-suite</code>), which contain information about the negotiated TLS version and cipher suite, are added to the client request before sending it to the target. The <code>x-amzn-tls-version</code> header has information about the TLS protocol version negotiated with the client, and the <code>x-amzn-tls-cipher-suite</code> header has information about the cipher suite negotiated with the client. Both headers are in OpenSSL format. The possible values for the attribute are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>routing.http.xff_client_port.enabled</code> - Indicates whether the <code>X-Forwarded-For</code> header should preserve the source port that the client used to connect to the load balancer. The possible values are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>routing.http.xff_header_processing.mode</code> - Enables you to modify, preserve, or remove the <code>X-Forwarded-For</code> header in the HTTP request before the Application Load Balancer sends the request to the target. The possible values are <code>append</code>, <code>preserve</code>, and <code>remove</code>. The default is <code>append</code>.</p> <ul> <li> <p>If the value is <code>append</code>, the Application Load Balancer adds the client IP address (of the last hop) to the <code>X-Forwarded-For</code> header in the HTTP request before it sends it to targets.</p> </li> <li> <p>If the value is <code>preserve</code> the Application Load Balancer preserves the <code>X-Forwarded-For</code> header in the HTTP request, and sends it to targets without any change.</p> </li> <li> <p>If the value is <code>remove</code>, the Application Load Balancer removes the <code>X-Forwarded-For</code> header in the HTTP request before it sends it to targets.</p> </li> </ul> </li> <li> <p> <code>routing.http2.enabled</code> - Indicates whether clients can connect to the load balancer using HTTP/2. If <code>true</code>, clients can connect using HTTP/2 or HTTP/1.1. However, all client requests are subject to the stricter HTTP/2 header validation rules. For example, message header names must contain only alphanumeric characters and hyphens. If <code>false</code>, clients must connect using HTTP/1.1. The default is <code>true</code>.</p> </li> <li> <p> <code>waf.fail_open.enabled</code> - Indicates whether to allow a WAF-enabled load balancer to route requests to targets if it is unable to forward the request to Amazon Web Services WAF. The possible values are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> </ul> <p>The following attributes are supported by only Network Load Balancers:</p> <ul> <li> <p> <code>dns_record.client_routing_policy</code> - Indicates how traffic is distributed among the load balancer Availability Zones. The possible values are <code>availability_zone_affinity</code> with 100 percent zonal affinity, <code>partial_availability_zone_affinity</code> with 85 percent zonal affinity, and <code>any_availability_zone</code> with 0 percent zonal affinity.</p> </li> <li> <p> <code>secondary_ips.auto_assigned.per_subnet</code> - The number of secondary IP addresses to configure for your load balancer nodes. Use to address port allocation errors if you can't add targets. The valid range is 0 to 7. The default is 0. After you set this value, you can't decrease it.</p> </li> </ul>"
+          "documentation":"<p>The name of the attribute.</p> <p>The following attributes are supported by all load balancers:</p> <ul> <li> <p> <code>deletion_protection.enabled</code> - Indicates whether deletion protection is enabled. The value is <code>true</code> or <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>load_balancing.cross_zone.enabled</code> - Indicates whether cross-zone load balancing is enabled. The possible values are <code>true</code> and <code>false</code>. The default for Network Load Balancers and Gateway Load Balancers is <code>false</code>. The default for Application Load Balancers is <code>true</code>, and can't be changed.</p> </li> </ul> <p>The following attributes are supported by both Application Load Balancers and Network Load Balancers:</p> <ul> <li> <p> <code>access_logs.s3.enabled</code> - Indicates whether access logs are enabled. The value is <code>true</code> or <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>access_logs.s3.bucket</code> - The name of the S3 bucket for the access logs. This attribute is required if access logs are enabled. The bucket must exist in the same region as the load balancer and have a bucket policy that grants Elastic Load Balancing permissions to write to the bucket.</p> </li> <li> <p> <code>access_logs.s3.prefix</code> - The prefix for the location in the S3 bucket for the access logs.</p> </li> <li> <p> <code>ipv6.deny_all_igw_traffic</code> - Blocks internet gateway (IGW) access to the load balancer. It is set to <code>false</code> for internet-facing load balancers and <code>true</code> for internal load balancers, preventing unintended access to your internal load balancer through an internet gateway.</p> </li> <li> <p> <code>zonal_shift.config.enabled</code> - Indicates whether zonal shift is enabled. The possible values are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> </ul> <p>The following attributes are supported by only Application Load Balancers:</p> <ul> <li> <p> <code>idle_timeout.timeout_seconds</code> - The idle timeout value, in seconds. The valid range is 1-4000 seconds. The default is 60 seconds.</p> </li> <li> <p> <code>client_keep_alive.seconds</code> - The client keep alive value, in seconds. The valid range is 60-604800 seconds. The default is 3600 seconds.</p> </li> <li> <p> <code>connection_logs.s3.enabled</code> - Indicates whether connection logs are enabled. The value is <code>true</code> or <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>connection_logs.s3.bucket</code> - The name of the S3 bucket for the connection logs. This attribute is required if connection logs are enabled. The bucket must exist in the same region as the load balancer and have a bucket policy that grants Elastic Load Balancing permissions to write to the bucket.</p> </li> <li> <p> <code>connection_logs.s3.prefix</code> - The prefix for the location in the S3 bucket for the connection logs.</p> </li> <li> <p> <code>health_check_logs.s3.enabled</code> - Indicates whether health check logs are enabled. The value is <code>true</code> or <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>health_check_logs.s3.bucket</code> - The name of the S3 bucket for the health check logs. This attribute is required if health check logs are enabled. The bucket must exist in the same region as the load balancer and have a bucket policy that grants Elastic Load Balancing permissions to write to the bucket.</p> </li> <li> <p> <code>health_check_logs.s3.prefix</code> - The prefix for the location in the S3 bucket for the health check logs.</p> </li> <li> <p> <code>routing.http.desync_mitigation_mode</code> - Determines how the load balancer handles requests that might pose a security risk to your application. The possible values are <code>monitor</code>, <code>defensive</code>, and <code>strictest</code>. The default is <code>defensive</code>.</p> </li> <li> <p> <code>routing.http.drop_invalid_header_fields.enabled</code> - Indicates whether HTTP headers with invalid header fields are removed by the load balancer (<code>true</code>) or routed to targets (<code>false</code>). The default is <code>false</code>.</p> </li> <li> <p> <code>routing.http.preserve_host_header.enabled</code> - Indicates whether the Application Load Balancer should preserve the <code>Host</code> header in the HTTP request and send it to the target without any change. The possible values are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>routing.http.x_amzn_tls_version_and_cipher_suite.enabled</code> - Indicates whether the two headers (<code>x-amzn-tls-version</code> and <code>x-amzn-tls-cipher-suite</code>), which contain information about the negotiated TLS version and cipher suite, are added to the client request before sending it to the target. The <code>x-amzn-tls-version</code> header has information about the TLS protocol version negotiated with the client, and the <code>x-amzn-tls-cipher-suite</code> header has information about the cipher suite negotiated with the client. Both headers are in OpenSSL format. The possible values for the attribute are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>routing.http.xff_client_port.enabled</code> - Indicates whether the <code>X-Forwarded-For</code> header should preserve the source port that the client used to connect to the load balancer. The possible values are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> <li> <p> <code>routing.http.xff_header_processing.mode</code> - Enables you to modify, preserve, or remove the <code>X-Forwarded-For</code> header in the HTTP request before the Application Load Balancer sends the request to the target. The possible values are <code>append</code>, <code>preserve</code>, and <code>remove</code>. The default is <code>append</code>.</p> <ul> <li> <p>If the value is <code>append</code>, the Application Load Balancer adds the client IP address (of the last hop) to the <code>X-Forwarded-For</code> header in the HTTP request before it sends it to targets.</p> </li> <li> <p>If the value is <code>preserve</code> the Application Load Balancer preserves the <code>X-Forwarded-For</code> header in the HTTP request, and sends it to targets without any change.</p> </li> <li> <p>If the value is <code>remove</code>, the Application Load Balancer removes the <code>X-Forwarded-For</code> header in the HTTP request before it sends it to targets.</p> </li> </ul> </li> <li> <p> <code>routing.http2.enabled</code> - Indicates whether clients can connect to the load balancer using HTTP/2. If <code>true</code>, clients can connect using HTTP/2 or HTTP/1.1. However, all client requests are subject to the stricter HTTP/2 header validation rules. For example, message header names must contain only alphanumeric characters and hyphens. If <code>false</code>, clients must connect using HTTP/1.1. The default is <code>true</code>.</p> </li> <li> <p> <code>waf.fail_open.enabled</code> - Indicates whether to allow a WAF-enabled load balancer to route requests to targets if it is unable to forward the request to Amazon Web Services WAF. The possible values are <code>true</code> and <code>false</code>. The default is <code>false</code>.</p> </li> </ul> <p>The following attributes are supported by only Network Load Balancers:</p> <ul> <li> <p> <code>dns_record.client_routing_policy</code> - Indicates how traffic is distributed among the load balancer Availability Zones. The possible values are <code>availability_zone_affinity</code> with 100 percent zonal affinity, <code>partial_availability_zone_affinity</code> with 85 percent zonal affinity, and <code>any_availability_zone</code> with 0 percent zonal affinity.</p> </li> <li> <p> <code>secondary_ips.auto_assigned.per_subnet</code> - The number of secondary IP addresses to configure for your load balancer nodes. Use to address port allocation errors if you can't add targets. The valid range is 0 to 7. The default is 0. After you set this value, you can't decrease it.</p> </li> </ul>"
         },
         "Value":{
           "shape":"LoadBalancerAttributeValue",
@@ -3244,7 +3318,7 @@
         },
         "Protocol":{
           "shape":"ProtocolEnum",
-          "documentation":"<p>The protocol for connections from clients to the load balancer. Application Load Balancers support the HTTP and HTTPS protocols. Network Load Balancers support the TCP, TLS, UDP, and TCP_UDP protocols. You can’t change the protocol to UDP or TCP_UDP if dual-stack mode is enabled. You can't specify a protocol for a Gateway Load Balancer.</p>"
+          "documentation":"<p>The protocol for connections from clients to the load balancer. Application Load Balancers support the HTTP and HTTPS protocols. Network Load Balancers support the TCP, TLS, UDP, TCP_UDP, QUIC, and TCP_QUIC protocols. You can’t change the protocol to UDP, TCP_UDP, QUIC, or TCP_QUIC if dual-stack mode is enabled. You can't specify a protocol for a Gateway Load Balancer.</p>"
         },
         "SslPolicy":{
           "shape":"SslPolicyName",
@@ -3374,7 +3448,7 @@
         },
         "HealthCheckProtocol":{
           "shape":"ProtocolEnum",
-          "documentation":"<p>The protocol the load balancer uses when performing health checks on targets. For Application Load Balancers, the default is HTTP. For Network Load Balancers and Gateway Load Balancers, the default is TCP. The TCP protocol is not supported for health checks if the protocol of the target group is HTTP or HTTPS. It is supported for health checks only if the protocol of the target group is TCP, TLS, UDP, or TCP_UDP. The GENEVE, TLS, UDP, and TCP_UDP protocols are not supported for health checks.</p>"
+          "documentation":"<p>The protocol the load balancer uses when performing health checks on targets. For Application Load Balancers, the default is HTTP. For Network Load Balancers and Gateway Load Balancers, the default is TCP. The TCP protocol is not supported for health checks if the protocol of the target group is HTTP or HTTPS. It is supported for health checks only if the protocol of the target group is TCP, TLS, UDP, or TCP_UDP. The GENEVE, TLS, UDP, TCP_UDP, QUIC, and TCP_QUIC protocols are not supported for health checks.</p>"
         },
         "HealthCheckPort":{
           "shape":"HealthCheckPort",
@@ -3560,7 +3634,9 @@
         "TLS",
         "UDP",
         "TCP_UDP",
-        "GENEVE"
+        "GENEVE",
+        "QUIC",
+        "TCP_QUIC"
       ]
     },
     "ProtocolVersion":{"type":"string"},
@@ -3591,6 +3667,11 @@
     "QueryStringKeyValuePairList":{
       "type":"list",
       "member":{"shape":"QueryStringKeyValuePair"}
+    },
+    "QuicServerId":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "RedirectActionConfig":{
       "type":"structure",
@@ -4073,7 +4154,7 @@
         },
         "EnforceSecurityGroupInboundRulesOnPrivateLinkTraffic":{
           "shape":"EnforceSecurityGroupInboundRulesOnPrivateLinkTrafficEnum",
-          "documentation":"<p>Indicates whether to evaluate inbound security group rules for traffic sent to a Network Load Balancer through Amazon Web Services PrivateLink. The default is <code>on</code>.</p>"
+          "documentation":"<p>Indicates whether to evaluate inbound security group rules for traffic sent to a Network Load Balancer through Amazon Web Services PrivateLink. Applies only if the load balancer has an associated security group. The default is <code>on</code>.</p>"
         }
       }
     },
@@ -4305,6 +4386,11 @@
         "zonal_shift_delegated_to_dns"
       ]
     },
+    "TargetControlPort":{
+      "type":"integer",
+      "max":65535,
+      "min":1
+    },
     "TargetDescription":{
       "type":"structure",
       "required":["Id"],
@@ -4320,6 +4406,10 @@
         "AvailabilityZone":{
           "shape":"ZoneName",
           "documentation":"<p>An Availability Zone or <code>all</code>. This determines whether the target receives traffic from the load balancer nodes in the specified Availability Zone or from all enabled Availability Zones for the load balancer.</p> <p>For Application Load Balancer target groups, the specified Availability Zone value is only applicable when cross-zone load balancing is off. Otherwise the parameter is ignored and treated as <code>all</code>.</p> <p>This parameter is not supported if the target type of the target group is <code>instance</code> or <code>alb</code>.</p> <p>If the target type is <code>ip</code> and the IP address is in a subnet of the VPC for the target group, the Availability Zone is automatically detected and this parameter is optional. If the IP address is outside the VPC, this parameter is required.</p> <p>For Application Load Balancer target groups with cross-zone load balancing off, if the target type is <code>ip</code> and the IP address is outside of the VPC for the target group, this should be an Availability Zone inside the VPC for the target group.</p> <p>If the target type is <code>lambda</code>, this parameter is optional and the only supported value is <code>all</code>.</p>"
+        },
+        "QuicServerId":{
+          "shape":"QuicServerId",
+          "documentation":"<p>The server ID for the targets. This value is required if the protocol is <code>QUIC</code> or <code>TCP_QUIC</code> and can't be used with other protocols.</p> <p>The ID consists of the <code>0x</code> prefix followed by 16 hexadecimal characters. Any letters must be lowercase. The value must be unique at the listener level. You can't modify the server ID for a registered target. You must deregister the target and then provide a new server ID when you register the target again.</p>"
         }
       },
       "documentation":"<p>Information about a target.</p>"
@@ -4402,6 +4492,10 @@
         "IpAddressType":{
           "shape":"TargetGroupIpAddressTypeEnum",
           "documentation":"<p>The IP address type. The default value is <code>ipv4</code>.</p>"
+        },
+        "TargetControlPort":{
+          "shape":"TargetControlPort",
+          "documentation":"<p>The port on which the target control agent and application load balancer exchange management traffic for the target optimizer feature.</p>"
         }
       },
       "documentation":"<p>Information about a target group.</p>"
@@ -4482,7 +4576,7 @@
         },
         "DurationSeconds":{
           "shape":"TargetGroupStickinessDurationSeconds",
-          "documentation":"<p>The time period, in seconds, during which requests from a client should be routed to the same target group. The range is 1-604800 seconds (7 days). You must specify this value when enabling target group stickiness.</p>"
+          "documentation":"<p>[Application Load Balancers] The time period, in seconds, during which requests from a client should be routed to the same target group. The range is 1-604800 seconds (7 days). You must specify this value when enabling target group stickiness.</p>"
         }
       },
       "documentation":"<p>Information about the target group stickiness for a rule.</p>"
@@ -4517,7 +4611,7 @@
         },
         "Reason":{
           "shape":"TargetHealthReasonEnum",
-          "documentation":"<p>The reason code.</p> <p>If the target state is <code>healthy</code>, a reason code is not provided.</p> <p>If the target state is <code>initial</code>, the reason code can be one of the following values:</p> <ul> <li> <p> <code>Elb.RegistrationInProgress</code> - The target is in the process of being registered with the load balancer.</p> </li> <li> <p> <code>Elb.InitialHealthChecking</code> - The load balancer is still sending the target the minimum number of health checks required to determine its health status.</p> </li> </ul> <p>If the target state is <code>unhealthy</code>, the reason code can be one of the following values:</p> <ul> <li> <p> <code>Target.ResponseCodeMismatch</code> - The health checks did not return an expected HTTP code. Applies only to Application Load Balancers and Gateway Load Balancers.</p> </li> <li> <p> <code>Target.Timeout</code> - The health check requests timed out. Applies only to Application Load Balancers and Gateway Load Balancers.</p> </li> <li> <p> <code>Target.FailedHealthChecks</code> - The load balancer received an error while establishing a connection to the target or the target response was malformed.</p> </li> <li> <p> <code>Elb.InternalError</code> - The health checks failed due to an internal error. Applies only to Application Load Balancers.</p> </li> </ul> <p>If the target state is <code>unused</code>, the reason code can be one of the following values:</p> <ul> <li> <p> <code>Target.NotRegistered</code> - The target is not registered with the target group.</p> </li> <li> <p> <code>Target.NotInUse</code> - The target group is not used by any load balancer or the target is in an Availability Zone that is not enabled for its load balancer.</p> </li> <li> <p> <code>Target.InvalidState</code> - The target is in the stopped or terminated state.</p> </li> <li> <p> <code>Target.IpUnusable</code> - The target IP address is reserved for use by a load balancer.</p> </li> </ul> <p>If the target state is <code>draining</code>, the reason code can be the following value:</p> <ul> <li> <p> <code>Target.DeregistrationInProgress</code> - The target is in the process of being deregistered and the deregistration delay period has not expired.</p> </li> </ul> <p>If the target state is <code>unavailable</code>, the reason code can be the following value:</p> <ul> <li> <p> <code>Target.HealthCheckDisabled</code> - Health checks are disabled for the target group. Applies only to Application Load Balancers.</p> </li> <li> <p> <code>Elb.InternalError</code> - Target health is unavailable due to an internal error. Applies only to Network Load Balancers.</p> </li> </ul>"
+          "documentation":"<p>The reason code.</p> <p>If the target state is <code>healthy</code>, a reason code is not provided.</p> <p>If the target state is <code>initial</code>, the reason code can be one of the following values:</p> <ul> <li> <p> <code>Elb.RegistrationInProgress</code> - The target is in the process of being registered with the load balancer.</p> </li> <li> <p> <code>Elb.InitialHealthChecking</code> - The load balancer is still sending the target the minimum number of health checks required to determine its health status.</p> </li> </ul> <p>If the target state is <code>unhealthy</code>, the reason code can be one of the following values:</p> <ul> <li> <p> <code>Target.ResponseCodeMismatch</code> - The health checks did not return an expected HTTP code.</p> </li> <li> <p> <code>Target.Timeout</code> - The health check requests timed out.</p> </li> <li> <p> <code>Target.FailedHealthChecks</code> - The load balancer received an error while establishing a connection to the target or the target response was malformed.</p> </li> <li> <p> <code>Elb.InternalError</code> - The health checks failed due to an internal error.</p> </li> </ul> <p>If the target state is <code>unused</code>, the reason code can be one of the following values:</p> <ul> <li> <p> <code>Target.NotRegistered</code> - The target is not registered with the target group.</p> </li> <li> <p> <code>Target.NotInUse</code> - The target group is not used by any load balancer or the target is in an Availability Zone that is not enabled for its load balancer.</p> </li> <li> <p> <code>Target.InvalidState</code> - The target is in the stopped or terminated state.</p> </li> <li> <p> <code>Target.IpUnusable</code> - The target IP address is reserved for use by a load balancer.</p> </li> </ul> <p>If the target state is <code>draining</code>, the reason code can be the following value:</p> <ul> <li> <p> <code>Target.DeregistrationInProgress</code> - The target is in the process of being deregistered and the deregistration delay period has not expired.</p> </li> </ul> <p>If the target state is <code>unavailable</code>, the reason code can be the following value:</p> <ul> <li> <p> <code>Target.HealthCheckDisabled</code> - Health checks are disabled for the target group.</p> </li> <li> <p> <code>Elb.InternalError</code> - Target health is unavailable due to an internal error.</p> </li> </ul>"
         },
         "Description":{
           "shape":"Description",
@@ -4925,5 +5019,5 @@
     },
     "ZoneName":{"type":"string"}
   },
-  "documentation":"<fullname>Elastic Load Balancing</fullname> <p>A load balancer distributes incoming traffic across targets, such as your EC2 instances. This enables you to increase the availability of your application. The load balancer also monitors the health of its registered targets and ensures that it routes traffic only to healthy targets. You configure your load balancer to accept incoming traffic by specifying one or more listeners, which are configured with a protocol and port number for connections from clients to the load balancer. You configure a target group with a protocol and port number for connections from the load balancer to the targets, and with health check settings to be used when checking the health status of the targets.</p> <p>Elastic Load Balancing supports the following types of load balancers: Application Load Balancers, Network Load Balancers, Gateway Load Balancers, and Classic Load Balancers. This reference covers the following load balancer types:</p> <ul> <li> <p>Application Load Balancer - Operates at the application layer (layer 7) and supports HTTP and HTTPS.</p> </li> <li> <p>Network Load Balancer - Operates at the transport layer (layer 4) and supports TCP, TLS, and UDP.</p> </li> <li> <p>Gateway Load Balancer - Operates at the network layer (layer 3).</p> </li> </ul> <p>For more information, see the <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/\">Elastic Load Balancing User Guide</a>.</p> <p>All Elastic Load Balancing operations are idempotent, which means that they complete at most one time. If you repeat an operation, it succeeds.</p>"
+  "documentation":"<fullname>Elastic Load Balancing</fullname> <p>A load balancer distributes incoming traffic across targets, such as your EC2 instances. This enables you to increase the availability of your application. The load balancer also monitors the health of its registered targets and ensures that it routes traffic only to healthy targets. You configure your load balancer to accept incoming traffic by specifying one or more listeners, which are configured with a protocol and port number for connections from clients to the load balancer. You configure a target group with a protocol and port number for connections from the load balancer to the targets, and with health check settings to be used when checking the health status of the targets.</p> <p>Elastic Load Balancing supports the following types of load balancers: Application Load Balancers, Network Load Balancers, Gateway Load Balancers, and Classic Load Balancers. This reference covers the following load balancer types:</p> <ul> <li> <p>Application Load Balancer - Operates at the application layer (layer 7) and supports HTTP and HTTPS.</p> </li> <li> <p>Network Load Balancer - Operates at the transport layer (layer 4) and supports TCP, TLS, UDP, and QUIC.</p> </li> <li> <p>Gateway Load Balancer - Operates at the network layer (layer 3).</p> </li> </ul> <p>For more information, see the <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/\">Elastic Load Balancing User Guide</a>.</p> <p>All Elastic Load Balancing operations are idempotent, which means that they complete at most one time. If you repeat an operation, it succeeds.</p>"
 }

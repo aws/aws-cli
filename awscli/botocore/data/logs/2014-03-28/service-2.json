@@ -129,6 +129,25 @@
       ],
       "documentation":"<p>Creates a log stream for the specified log group. A log stream is a sequence of log events that originate from a single source, such as an application instance or a resource that is being monitored.</p> <p>There is no limit on the number of log streams that you can create for a log group. There is a limit of 50 TPS on <code>CreateLogStream</code> operations, after which transactions are throttled.</p> <p>You must use the following guidelines when naming a log stream:</p> <ul> <li> <p>Log stream names must be unique within the log group.</p> </li> <li> <p>Log stream names can be between 1 and 512 characters long.</p> </li> <li> <p>Don't use ':' (colon) or '*' (asterisk) characters.</p> </li> </ul>"
     },
+    "CreateScheduledQuery":{
+      "name":"CreateScheduledQuery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateScheduledQueryRequest"},
+      "output":{"shape":"CreateScheduledQueryResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a new Scheduled Query that runs CloudWatch Logs Insights queries on a schedule and delivers results to specified destinations.</p>"
+    },
     "DeleteAccountPolicy":{
       "name":"DeleteAccountPolicy",
       "http":{
@@ -299,7 +318,8 @@
         {"shape":"InvalidParameterException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"OperationAbortedException"},
-        {"shape":"ServiceUnavailableException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Deletes the specified log group and permanently deletes all the archived log events associated with the log group.</p>"
     },
@@ -314,7 +334,8 @@
         {"shape":"InvalidParameterException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"OperationAbortedException"},
-        {"shape":"ServiceUnavailableException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Deletes the specified log stream and permanently deletes all the archived log events associated with the log stream.</p>"
     },
@@ -377,6 +398,23 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Deletes the specified retention policy.</p> <p>Log events do not expire if they belong to log groups without a retention policy.</p>"
+    },
+    "DeleteScheduledQuery":{
+      "name":"DeleteScheduledQuery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteScheduledQueryRequest"},
+      "output":{"shape":"DeleteScheduledQueryResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes an existing scheduled query and all its associated configurations. This operation permanently removes the scheduled query and cannot be undone.</p>"
     },
     "DeleteSubscriptionFilter":{
       "name":"DeleteSubscriptionFilter",
@@ -876,6 +914,40 @@
       ],
       "documentation":"<p>Returns the results from the specified query.</p> <p>Only the fields requested in the query are returned, along with a <code>@ptr</code> field, which is the identifier for the log record. You can use the value of <code>@ptr</code> in a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogRecord.html\">GetLogRecord</a> operation to get the full log record.</p> <p> <code>GetQueryResults</code> does not start running a query. To run a query, use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_StartQuery.html\">StartQuery</a>. For more information about how long results of previous queries are available, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/cloudwatch_limits_cwl.html\">CloudWatch Logs quotas</a>.</p> <p>If the value of the <code>Status</code> field in the output is <code>Running</code>, this operation returns only partial results. If you see a value of <code>Scheduled</code> or <code>Running</code> for the status, you can retry the operation later to see the final results. </p> <p>If you are using CloudWatch cross-account observability, you can use this operation in a monitoring account to start queries in linked source accounts. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Unified-Cross-Account.html\">CloudWatch cross-account observability</a>.</p>"
     },
+    "GetScheduledQuery":{
+      "name":"GetScheduledQuery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetScheduledQueryRequest"},
+      "output":{"shape":"GetScheduledQueryResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns detailed information about a specified scheduled query, including its configuration, current state, and execution history.</p>"
+    },
+    "GetScheduledQueryHistory":{
+      "name":"GetScheduledQueryHistory",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetScheduledQueryHistoryRequest"},
+      "output":{"shape":"GetScheduledQueryHistoryResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the execution history of a scheduled query within a specified time range, including execution status and destination processing metadata.</p>"
+    },
     "GetTransformer":{
       "name":"GetTransformer",
       "http":{
@@ -968,6 +1040,22 @@
       ],
       "documentation":"<p>Returns a list of the log groups that were analyzed during a single CloudWatch Logs Insights query. This can be useful for queries that use log group name prefixes or the <code>filterIndex</code> command, because the log groups are dynamically selected in these cases.</p> <p>For more information about field indexes, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatchLogs-Field-Indexing.html\">Create field indexes to improve query performance and reduce costs</a>.</p>"
     },
+    "ListScheduledQueries":{
+      "name":"ListScheduledQueries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListScheduledQueriesRequest"},
+      "output":{"shape":"ListScheduledQueriesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all scheduled queries in the current AWS account and region with optional filtering by state.</p>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -1013,7 +1101,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"LimitExceededException"}
       ],
-      "documentation":"<p>Creates an account-level data protection policy, subscription filter policy, field index policy, transformer policy, or metric extraction policy that applies to all log groups or a subset of log groups in the account.</p> <p>To use this operation, you must be signed on with the correct permissions depending on the type of policy that you are creating.</p> <ul> <li> <p>To create a data protection policy, you must have the <code>logs:PutDataProtectionPolicy</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> <li> <p>To create a subscription filter policy, you must have the <code>logs:PutSubscriptionFilter</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> <li> <p>To create a transformer policy, you must have the <code>logs:PutTransformer</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> <li> <p>To create a field index policy, you must have the <code>logs:PutIndexPolicy</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> <li> <p>To create a metric extraction policy, you must have the <code>logs:PutMetricExtractionPolicy</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> </ul> <p> <b>Data protection policy</b> </p> <p>A data protection policy can help safeguard sensitive data that's ingested by your log groups by auditing and masking the sensitive log data. Each account can have only one account-level data protection policy.</p> <important> <p>Sensitive data is detected and masked when it is ingested into a log group. When you set a data protection policy, log events ingested into the log groups before that time are not masked.</p> </important> <p>If you use <code>PutAccountPolicy</code> to create a data protection policy for your whole account, it applies to both existing log groups and all log groups that are created later in this account. The account-level policy is applied to existing log groups with eventual consistency. It might take up to 5 minutes before sensitive data in existing log groups begins to be masked.</p> <p>By default, when a user views a log event that includes masked data, the sensitive data is replaced by asterisks. A user who has the <code>logs:Unmask</code> permission can use a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogEvents.html\">GetLogEvents</a> or <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_FilterLogEvents.html\">FilterLogEvents</a> operation with the <code>unmask</code> parameter set to <code>true</code> to view the unmasked log events. Users with the <code>logs:Unmask</code> can also view unmasked data in the CloudWatch Logs console by running a CloudWatch Logs Insights query with the <code>unmask</code> query command.</p> <p>For more information, including a list of types of data that can be audited and masked, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/mask-sensitive-log-data.html\">Protect sensitive log data with masking</a>.</p> <p>To use the <code>PutAccountPolicy</code> operation for a data protection policy, you must be signed on with the <code>logs:PutDataProtectionPolicy</code> and <code>logs:PutAccountPolicy</code> permissions.</p> <p>The <code>PutAccountPolicy</code> operation applies to all log groups in the account. You can use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDataProtectionPolicy.html\">PutDataProtectionPolicy</a> to create a data protection policy that applies to just one log group. If a log group has its own data protection policy and the account also has an account-level data protection policy, then the two policies are cumulative. Any sensitive term specified in either policy is masked.</p> <p> <b>Subscription filter policy</b> </p> <p>A subscription filter policy sets up a real-time feed of log events from CloudWatch Logs to other Amazon Web Services services. Account-level subscription filter policies apply to both existing log groups and log groups that are created later in this account. Supported destinations are Kinesis Data Streams, Firehose, and Lambda. When log events are sent to the receiving service, they are Base64 encoded and compressed with the GZIP format.</p> <p>The following destinations are supported for subscription filters:</p> <ul> <li> <p>An Kinesis Data Streams data stream in the same account as the subscription policy, for same-account delivery.</p> </li> <li> <p>An Firehose data stream in the same account as the subscription policy, for same-account delivery.</p> </li> <li> <p>A Lambda function in the same account as the subscription policy, for same-account delivery.</p> </li> <li> <p>A logical destination in a different account created with <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDestination.html\">PutDestination</a>, for cross-account delivery. Kinesis Data Streams and Firehose are supported as logical destinations.</p> </li> </ul> <p>Each account can have one account-level subscription filter policy per Region. If you are updating an existing filter, you must specify the correct name in <code>PolicyName</code>. To perform a <code>PutAccountPolicy</code> subscription filter operation for any destination except a Lambda function, you must also have the <code>iam:PassRole</code> permission.</p> <p> <b>Transformer policy</b> </p> <p>Creates or updates a <i>log transformer policy</i> for your account. You use log transformers to transform log events into a different format, making them easier for you to process and analyze. You can also transform logs from different sources into standardized formats that contain relevant, source-specific information. After you have created a transformer, CloudWatch Logs performs this transformation at the time of log ingestion. You can then refer to the transformed versions of the logs during operations such as querying with CloudWatch Logs Insights or creating metric filters or subscription filters.</p> <p>You can also use a transformer to copy metadata from metadata keys into the log events themselves. This metadata can include log group name, log stream name, account ID and Region.</p> <p>A transformer for a log group is a series of processors, where each processor applies one type of transformation to the log events ingested into this log group. For more information about the available processors to use in a transformer, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation.html#CloudWatch-Logs-Transformation-Processors\"> Processors that you can use</a>.</p> <p>Having log events in standardized format enables visibility across your applications for your log analysis, reporting, and alarming needs. CloudWatch Logs provides transformation for common log types with out-of-the-box transformation templates for major Amazon Web Services log sources such as VPC flow logs, Lambda, and Amazon RDS. You can use pre-built transformation templates or create custom transformation policies.</p> <p>You can create transformers only for the log groups in the Standard log class.</p> <p>You can have one account-level transformer policy that applies to all log groups in the account. Or you can create as many as 20 account-level transformer policies that are each scoped to a subset of log groups with the <code>selectionCriteria</code> parameter. If you have multiple account-level transformer policies with selection criteria, no two of them can use the same or overlapping log group name prefixes. For example, if you have one policy filtered to log groups that start with <code>my-log</code>, you can't have another field index policy filtered to <code>my-logpprod</code> or <code>my-logging</code>.</p> <p>CloudWatch Logs provides default field indexes for all log groups in the Standard log class. Default field indexes are automatically available for the following fields: </p> <ul> <li> <p> <code>@aws.region</code> </p> </li> <li> <p> <code>@aws.account</code> </p> </li> <li> <p> <code>@source.log</code> </p> </li> <li> <p> <code>traceId</code> </p> </li> </ul> <p>Default field indexes are in addition to any custom field indexes you define within your policy. Default field indexes are not counted towards your field index quota. </p> <p>You can also set up a transformer at the log-group level. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutTransformer.html\">PutTransformer</a>. If there is both a log-group level transformer created with <code>PutTransformer</code> and an account-level transformer that could apply to the same log group, the log group uses only the log-group level transformer. It ignores the account-level transformer.</p> <p> <b>Field index policy</b> </p> <p>You can use field index policies to create indexes on fields found in log events in the log group. Creating field indexes can help lower the scan volume for CloudWatch Logs Insights queries that reference those fields, because these queries attempt to skip the processing of log events that are known to not match the indexed field. Good fields to index are fields that you often need to query for and fields or values that match only a small fraction of the total log events. Common examples of indexes include request ID, session ID, user IDs, or instance IDs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatchLogs-Field-Indexing.html\">Create field indexes to improve query performance and reduce costs</a> </p> <p>To find the fields that are in your log group events, use the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogGroupFields.html\">GetLogGroupFields</a> operation.</p> <p>For example, suppose you have created a field index for <code>requestId</code>. Then, any CloudWatch Logs Insights query on that log group that includes <code>requestId = <i>value</i> </code> or <code>requestId in [<i>value</i>, <i>value</i>, ...]</code> will attempt to process only the log events where the indexed field matches the specified value.</p> <p>Matches of log events to the names of indexed fields are case-sensitive. For example, an indexed field of <code>RequestId</code> won't match a log event containing <code>requestId</code>.</p> <p>You can have one account-level field index policy that applies to all log groups in the account. Or you can create as many as 20 account-level field index policies that are each scoped to a subset of log groups with the <code>selectionCriteria</code> parameter. If you have multiple account-level index policies with selection criteria, no two of them can use the same or overlapping log group name prefixes. For example, if you have one policy filtered to log groups that start with <code>my-log</code>, you can't have another field index policy filtered to <code>my-logpprod</code> or <code>my-logging</code>.</p> <p>If you create an account-level field index policy in a monitoring account in cross-account observability, the policy is applied only to the monitoring account and not to any source accounts.</p> <p>If you want to create a field index policy for a single log group, you can use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutIndexPolicy.html\">PutIndexPolicy</a> instead of <code>PutAccountPolicy</code>. If you do so, that log group will use only that log-group level policy, and will ignore the account-level policy that you create with <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutAccountPolicy.html\">PutAccountPolicy</a>.</p> <p> <b>Metric extraction policy</b> </p> <p>A metric extraction policy controls whether CloudWatch Metrics can be created through the Embedded Metrics Format (EMF) for log groups in your account. By default, EMF metric creation is enabled for all log groups. You can use metric extraction policies to disable EMF metric creation for your entire account or specific log groups.</p> <p>When a policy disables EMF metric creation for a log group, log events in the EMF format are still ingested, but no CloudWatch Metrics are created from them.</p> <important> <p>Creating a policy disables metrics for AWS features that use EMF to create metrics, such as CloudWatch Container Insights and CloudWatch Application Signals. To prevent turning off those features by accident, we recommend that you exclude the underlying log-groups through a selection-criteria such as <code>LogGroupNamePrefix NOT IN [\"/aws/containerinsights\", \"/aws/ecs/containerinsights\", \"/aws/application-signals/data\"]</code>.</p> </important> <p>Each account can have either one account-level metric extraction policy that applies to all log groups, or up to 5 policies that are each scoped to a subset of log groups with the <code>selectionCriteria</code> parameter. The selection criteria supports filtering by <code>LogGroupName</code> and <code>LogGroupNamePrefix</code> using the operators <code>IN</code> and <code>NOT IN</code>. You can specify up to 50 values in each <code>IN</code> or <code>NOT IN</code> list.</p> <p>The selection criteria can be specified in these formats:</p> <p> <code>LogGroupName IN [\"log-group-1\", \"log-group-2\"]</code> </p> <p> <code>LogGroupNamePrefix NOT IN [\"/aws/prefix1\", \"/aws/prefix2\"]</code> </p> <p>If you have multiple account-level metric extraction policies with selection criteria, no two of them can have overlapping criteria. For example, if you have one policy with selection criteria <code>LogGroupNamePrefix IN [\"my-log\"]</code>, you can't have another metric extraction policy with selection criteria <code>LogGroupNamePrefix IN [\"/my-log-prod\"]</code> or <code>LogGroupNamePrefix IN [\"/my-logging\"]</code>, as the set of log groups matching these prefixes would be a subset of the log groups matching the first policy's prefix, creating an overlap.</p> <p>When using <code>NOT IN</code>, only one policy with this operator is allowed per account.</p> <p>When combining policies with <code>IN</code> and <code>NOT IN</code> operators, the overlap check ensures that policies don't have conflicting effects. Two policies with <code>IN</code> and <code>NOT IN</code> operators do not overlap if and only if every value in the <code>IN </code>policy is completely contained within some value in the <code>NOT IN</code> policy. For example:</p> <ul> <li> <p>If you have a <code>NOT IN</code> policy for prefix <code>\"/aws/lambda\"</code>, you can create an <code>IN</code> policy for the exact log group name <code>\"/aws/lambda/function1\"</code> because the set of log groups matching <code>\"/aws/lambda/function1\"</code> is a subset of the log groups matching <code>\"/aws/lambda\"</code>.</p> </li> <li> <p>If you have a <code>NOT IN</code> policy for prefix <code>\"/aws/lambda\"</code>, you cannot create an <code>IN</code> policy for prefix <code>\"/aws\"</code> because the set of log groups matching <code>\"/aws\"</code> is not a subset of the log groups matching <code>\"/aws/lambda\"</code>.</p> </li> </ul>"
+      "documentation":"<p>Creates an account-level data protection policy, subscription filter policy, field index policy, transformer policy, or metric extraction policy that applies to all log groups or a subset of log groups in the account.</p> <p>To use this operation, you must be signed on with the correct permissions depending on the type of policy that you are creating.</p> <ul> <li> <p>To create a data protection policy, you must have the <code>logs:PutDataProtectionPolicy</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> <li> <p>To create a subscription filter policy, you must have the <code>logs:PutSubscriptionFilter</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> <li> <p>To create a transformer policy, you must have the <code>logs:PutTransformer</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> <li> <p>To create a field index policy, you must have the <code>logs:PutIndexPolicy</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> <li> <p>To create a metric extraction policy, you must have the <code>logs:PutMetricExtractionPolicy</code> and <code>logs:PutAccountPolicy</code> permissions.</p> </li> </ul> <p> <b>Data protection policy</b> </p> <p>A data protection policy can help safeguard sensitive data that's ingested by your log groups by auditing and masking the sensitive log data. Each account can have only one account-level data protection policy.</p> <important> <p>Sensitive data is detected and masked when it is ingested into a log group. When you set a data protection policy, log events ingested into the log groups before that time are not masked.</p> </important> <p>If you use <code>PutAccountPolicy</code> to create a data protection policy for your whole account, it applies to both existing log groups and all log groups that are created later in this account. The account-level policy is applied to existing log groups with eventual consistency. It might take up to 5 minutes before sensitive data in existing log groups begins to be masked.</p> <p>By default, when a user views a log event that includes masked data, the sensitive data is replaced by asterisks. A user who has the <code>logs:Unmask</code> permission can use a <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogEvents.html\">GetLogEvents</a> or <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_FilterLogEvents.html\">FilterLogEvents</a> operation with the <code>unmask</code> parameter set to <code>true</code> to view the unmasked log events. Users with the <code>logs:Unmask</code> can also view unmasked data in the CloudWatch Logs console by running a CloudWatch Logs Insights query with the <code>unmask</code> query command.</p> <p>For more information, including a list of types of data that can be audited and masked, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/mask-sensitive-log-data.html\">Protect sensitive log data with masking</a>.</p> <p>To use the <code>PutAccountPolicy</code> operation for a data protection policy, you must be signed on with the <code>logs:PutDataProtectionPolicy</code> and <code>logs:PutAccountPolicy</code> permissions.</p> <p>The <code>PutAccountPolicy</code> operation applies to all log groups in the account. You can use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDataProtectionPolicy.html\">PutDataProtectionPolicy</a> to create a data protection policy that applies to just one log group. If a log group has its own data protection policy and the account also has an account-level data protection policy, then the two policies are cumulative. Any sensitive term specified in either policy is masked.</p> <p> <b>Subscription filter policy</b> </p> <p>A subscription filter policy sets up a real-time feed of log events from CloudWatch Logs to other Amazon Web Services services. Account-level subscription filter policies apply to both existing log groups and log groups that are created later in this account. Supported destinations are Kinesis Data Streams, Firehose, and Lambda. When log events are sent to the receiving service, they are Base64 encoded and compressed with the GZIP format.</p> <p>The following destinations are supported for subscription filters:</p> <ul> <li> <p>An Kinesis Data Streams data stream in the same account as the subscription policy, for same-account delivery.</p> </li> <li> <p>An Firehose data stream in the same account as the subscription policy, for same-account delivery.</p> </li> <li> <p>A Lambda function in the same account as the subscription policy, for same-account delivery.</p> </li> <li> <p>A logical destination in a different account created with <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDestination.html\">PutDestination</a>, for cross-account delivery. Kinesis Data Streams and Firehose are supported as logical destinations.</p> </li> </ul> <p>Each account can have one account-level subscription filter policy per Region. If you are updating an existing filter, you must specify the correct name in <code>PolicyName</code>. To perform a <code>PutAccountPolicy</code> subscription filter operation for any destination except a Lambda function, you must also have the <code>iam:PassRole</code> permission.</p> <p> <b>Transformer policy</b> </p> <p>Creates or updates a <i>log transformer policy</i> for your account. You use log transformers to transform log events into a different format, making them easier for you to process and analyze. You can also transform logs from different sources into standardized formats that contain relevant, source-specific information. After you have created a transformer, CloudWatch Logs performs this transformation at the time of log ingestion. You can then refer to the transformed versions of the logs during operations such as querying with CloudWatch Logs Insights or creating metric filters or subscription filters.</p> <p>You can also use a transformer to copy metadata from metadata keys into the log events themselves. This metadata can include log group name, log stream name, account ID and Region.</p> <p>A transformer for a log group is a series of processors, where each processor applies one type of transformation to the log events ingested into this log group. For more information about the available processors to use in a transformer, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation.html#CloudWatch-Logs-Transformation-Processors\"> Processors that you can use</a>.</p> <p>Having log events in standardized format enables visibility across your applications for your log analysis, reporting, and alarming needs. CloudWatch Logs provides transformation for common log types with out-of-the-box transformation templates for major Amazon Web Services log sources such as VPC flow logs, Lambda, and Amazon RDS. You can use pre-built transformation templates or create custom transformation policies.</p> <p>You can create transformers only for the log groups in the Standard log class.</p> <p>You can have one account-level transformer policy that applies to all log groups in the account. Or you can create as many as 20 account-level transformer policies that are each scoped to a subset of log groups with the <code>selectionCriteria</code> parameter. If you have multiple account-level transformer policies with selection criteria, no two of them can use the same or overlapping log group name prefixes. For example, if you have one policy filtered to log groups that start with <code>my-log</code>, you can't have another field index policy filtered to <code>my-logpprod</code> or <code>my-logging</code>.</p> <p>CloudWatch Logs provides default field indexes for all log groups in the Standard log class. Default field indexes are automatically available for the following fields: </p> <ul> <li> <p> <code>@logStream</code> </p> </li> <li> <p> <code>@aws.region</code> </p> </li> <li> <p> <code>@aws.account</code> </p> </li> <li> <p> <code>@source.log</code> </p> </li> <li> <p> <code>traceId</code> </p> </li> </ul> <p>Default field indexes are in addition to any custom field indexes you define within your policy. Default field indexes are not counted towards your field index quota. </p> <p>You can also set up a transformer at the log-group level. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutTransformer.html\">PutTransformer</a>. If there is both a log-group level transformer created with <code>PutTransformer</code> and an account-level transformer that could apply to the same log group, the log group uses only the log-group level transformer. It ignores the account-level transformer.</p> <p> <b>Field index policy</b> </p> <p>You can use field index policies to create indexes on fields found in log events in the log group. Creating field indexes can help lower the scan volume for CloudWatch Logs Insights queries that reference those fields, because these queries attempt to skip the processing of log events that are known to not match the indexed field. Good fields to index are fields that you often need to query for and fields or values that match only a small fraction of the total log events. Common examples of indexes include request ID, session ID, user IDs, or instance IDs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatchLogs-Field-Indexing.html\">Create field indexes to improve query performance and reduce costs</a> </p> <p>To find the fields that are in your log group events, use the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogGroupFields.html\">GetLogGroupFields</a> operation.</p> <p>For example, suppose you have created a field index for <code>requestId</code>. Then, any CloudWatch Logs Insights query on that log group that includes <code>requestId = <i>value</i> </code> or <code>requestId in [<i>value</i>, <i>value</i>, ...]</code> will attempt to process only the log events where the indexed field matches the specified value.</p> <p>Matches of log events to the names of indexed fields are case-sensitive. For example, an indexed field of <code>RequestId</code> won't match a log event containing <code>requestId</code>.</p> <p>You can have one account-level field index policy that applies to all log groups in the account. Or you can create as many as 20 account-level field index policies that are each scoped to a subset of log groups with the <code>selectionCriteria</code> parameter. If you have multiple account-level index policies with selection criteria, no two of them can use the same or overlapping log group name prefixes. For example, if you have one policy filtered to log groups that start with <code>my-log</code>, you can't have another field index policy filtered to <code>my-logpprod</code> or <code>my-logging</code>.</p> <p>If you create an account-level field index policy in a monitoring account in cross-account observability, the policy is applied only to the monitoring account and not to any source accounts.</p> <p>If you want to create a field index policy for a single log group, you can use <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutIndexPolicy.html\">PutIndexPolicy</a> instead of <code>PutAccountPolicy</code>. If you do so, that log group will use only that log-group level policy, and will ignore the account-level policy that you create with <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutAccountPolicy.html\">PutAccountPolicy</a>.</p> <p> <b>Metric extraction policy</b> </p> <p>A metric extraction policy controls whether CloudWatch Metrics can be created through the Embedded Metrics Format (EMF) for log groups in your account. By default, EMF metric creation is enabled for all log groups. You can use metric extraction policies to disable EMF metric creation for your entire account or specific log groups.</p> <p>When a policy disables EMF metric creation for a log group, log events in the EMF format are still ingested, but no CloudWatch Metrics are created from them.</p> <important> <p>Creating a policy disables metrics for AWS features that use EMF to create metrics, such as CloudWatch Container Insights and CloudWatch Application Signals. To prevent turning off those features by accident, we recommend that you exclude the underlying log-groups through a selection-criteria such as <code>LogGroupNamePrefix NOT IN [\"/aws/containerinsights\", \"/aws/ecs/containerinsights\", \"/aws/application-signals/data\"]</code>.</p> </important> <p>Each account can have either one account-level metric extraction policy that applies to all log groups, or up to 5 policies that are each scoped to a subset of log groups with the <code>selectionCriteria</code> parameter. The selection criteria supports filtering by <code>LogGroupName</code> and <code>LogGroupNamePrefix</code> using the operators <code>IN</code> and <code>NOT IN</code>. You can specify up to 50 values in each <code>IN</code> or <code>NOT IN</code> list.</p> <p>The selection criteria can be specified in these formats:</p> <p> <code>LogGroupName IN [\"log-group-1\", \"log-group-2\"]</code> </p> <p> <code>LogGroupNamePrefix NOT IN [\"/aws/prefix1\", \"/aws/prefix2\"]</code> </p> <p>If you have multiple account-level metric extraction policies with selection criteria, no two of them can have overlapping criteria. For example, if you have one policy with selection criteria <code>LogGroupNamePrefix IN [\"my-log\"]</code>, you can't have another metric extraction policy with selection criteria <code>LogGroupNamePrefix IN [\"/my-log-prod\"]</code> or <code>LogGroupNamePrefix IN [\"/my-logging\"]</code>, as the set of log groups matching these prefixes would be a subset of the log groups matching the first policy's prefix, creating an overlap.</p> <p>When using <code>NOT IN</code>, only one policy with this operator is allowed per account.</p> <p>When combining policies with <code>IN</code> and <code>NOT IN</code> operators, the overlap check ensures that policies don't have conflicting effects. Two policies with <code>IN</code> and <code>NOT IN</code> operators do not overlap if and only if every value in the <code>IN </code>policy is completely contained within some value in the <code>NOT IN</code> policy. For example:</p> <ul> <li> <p>If you have a <code>NOT IN</code> policy for prefix <code>\"/aws/lambda\"</code>, you can create an <code>IN</code> policy for the exact log group name <code>\"/aws/lambda/function1\"</code> because the set of log groups matching <code>\"/aws/lambda/function1\"</code> is a subset of the log groups matching <code>\"/aws/lambda\"</code>.</p> </li> <li> <p>If you have a <code>NOT IN</code> policy for prefix <code>\"/aws/lambda\"</code>, you cannot create an <code>IN</code> policy for prefix <code>\"/aws\"</code> because the set of log groups matching <code>\"/aws\"</code> is not a subset of the log groups matching <code>\"/aws/lambda\"</code>.</p> </li> </ul>"
     },
     "PutDataProtectionPolicy":{
       "name":"PutDataProtectionPolicy",
@@ -1128,7 +1216,7 @@
         {"shape":"OperationAbortedException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Creates or updates a <i>field index policy</i> for the specified log group. Only log groups in the Standard log class support field index policies. For more information about log classes, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch_Logs_Log_Classes.html\">Log classes</a>.</p> <p>You can use field index policies to create <i>field indexes</i> on fields found in log events in the log group. Creating field indexes speeds up and lowers the costs for CloudWatch Logs Insights queries that reference those field indexes, because these queries attempt to skip the processing of log events that are known to not match the indexed field. Good fields to index are fields that you often need to query for and fields or values that match only a small fraction of the total log events. Common examples of indexes include request ID, session ID, userID, and instance IDs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatchLogs-Field-Indexing.html\">Create field indexes to improve query performance and reduce costs</a>.</p> <p>To find the fields that are in your log group events, use the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogGroupFields.html\">GetLogGroupFields</a> operation.</p> <p>For example, suppose you have created a field index for <code>requestId</code>. Then, any CloudWatch Logs Insights query on that log group that includes <code>requestId = <i>value</i> </code> or <code>requestId IN [<i>value</i>, <i>value</i>, ...]</code> will process fewer log events to reduce costs, and have improved performance.</p> <p>CloudWatch Logs provides default field indexes for all log groups in the Standard log class. Default field indexes are automatically available for the following fields: </p> <ul> <li> <p> <code>@aws.region</code> </p> </li> <li> <p> <code>@aws.account</code> </p> </li> <li> <p> <code>@source.log</code> </p> </li> <li> <p> <code>traceId</code> </p> </li> </ul> <p>Default field indexes are in addition to any custom field indexes you define within your policy. Default field indexes are not counted towards your field index quota. </p> <p>Each index policy has the following quotas and restrictions:</p> <ul> <li> <p>As many as 20 fields can be included in the policy.</p> </li> <li> <p>Each field name can include as many as 100 characters.</p> </li> </ul> <p>Matches of log events to the names of indexed fields are case-sensitive. For example, a field index of <code>RequestId</code> won't match a log event containing <code>requestId</code>.</p> <p>Log group-level field index policies created with <code>PutIndexPolicy</code> override account-level field index policies created with <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutAccountPolicy.html\">PutAccountPolicy</a>. If you use <code>PutIndexPolicy</code> to create a field index policy for a log group, that log group uses only that policy. The log group ignores any account-wide field index policy that you might have created.</p>"
+      "documentation":"<p>Creates or updates a <i>field index policy</i> for the specified log group. Only log groups in the Standard log class support field index policies. For more information about log classes, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch_Logs_Log_Classes.html\">Log classes</a>.</p> <p>You can use field index policies to create <i>field indexes</i> on fields found in log events in the log group. Creating field indexes speeds up and lowers the costs for CloudWatch Logs Insights queries that reference those field indexes, because these queries attempt to skip the processing of log events that are known to not match the indexed field. Good fields to index are fields that you often need to query for and fields or values that match only a small fraction of the total log events. Common examples of indexes include request ID, session ID, userID, and instance IDs. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatchLogs-Field-Indexing.html\">Create field indexes to improve query performance and reduce costs</a>.</p> <p>To find the fields that are in your log group events, use the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_GetLogGroupFields.html\">GetLogGroupFields</a> operation.</p> <p>For example, suppose you have created a field index for <code>requestId</code>. Then, any CloudWatch Logs Insights query on that log group that includes <code>requestId = <i>value</i> </code> or <code>requestId IN [<i>value</i>, <i>value</i>, ...]</code> will process fewer log events to reduce costs, and have improved performance.</p> <p>CloudWatch Logs provides default field indexes for all log groups in the Standard log class. Default field indexes are automatically available for the following fields: </p> <ul> <li> <p> <code>@logStream</code> </p> </li> <li> <p> <code>@aws.region</code> </p> </li> <li> <p> <code>@aws.account</code> </p> </li> <li> <p> <code>@source.log</code> </p> </li> <li> <p> <code>traceId</code> </p> </li> </ul> <p>Default field indexes are in addition to any custom field indexes you define within your policy. Default field indexes are not counted towards your field index quota. </p> <p>Each index policy has the following quotas and restrictions:</p> <ul> <li> <p>As many as 20 fields can be included in the policy.</p> </li> <li> <p>Each field name can include as many as 100 characters.</p> </li> </ul> <p>Matches of log events to the names of indexed fields are case-sensitive. For example, a field index of <code>RequestId</code> won't match a log event containing <code>requestId</code>.</p> <p>Log group-level field index policies created with <code>PutIndexPolicy</code> override account-level field index policies created with <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutAccountPolicy.html\">PutAccountPolicy</a>. If you use <code>PutIndexPolicy</code> to create a field index policy for a log group, that log group uses only that policy. The log group ignores any account-wide field index policy that you might have created.</p>"
     },
     "PutIntegration":{
       "name":"PutIntegration",
@@ -1163,6 +1251,23 @@
         {"shape":"UnrecognizedClientException"}
       ],
       "documentation":"<p>Uploads a batch of log events to the specified log stream.</p> <important> <p>The sequence token is now ignored in <code>PutLogEvents</code> actions. <code>PutLogEvents</code> actions are always accepted and never return <code>InvalidSequenceTokenException</code> or <code>DataAlreadyAcceptedException</code> even if the sequence token is not valid. You can use parallel <code>PutLogEvents</code> actions on the same log stream. </p> </important> <p>The batch of events must satisfy the following constraints:</p> <ul> <li> <p>The maximum batch size is 1,048,576 bytes. This size is calculated as the sum of all event messages in UTF-8, plus 26 bytes for each log event.</p> </li> <li> <p>Events more than 2 hours in the future are rejected while processing remaining valid events.</p> </li> <li> <p>Events older than 14 days or preceding the log group's retention period are rejected while processing remaining valid events.</p> </li> <li> <p>The log events in the batch must be in chronological order by their timestamp. The timestamp is the time that the event occurred, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. (In Amazon Web Services Tools for PowerShell and the Amazon Web Services SDK for .NET, the timestamp is specified in .NET format: <code>yyyy-mm-ddThh:mm:ss</code>. For example, <code>2017-09-15T13:45:30</code>.) </p> </li> <li> <p> A batch of log events in a single request must be in a chronological order. Otherwise, the operation fails.</p> </li> <li> <p>Each log event can be no larger than 1 MB.</p> </li> <li> <p>The maximum number of log events in a batch is 10,000.</p> </li> <li> <p>For valid events (within 14 days in the past to 2 hours in future), the time span in a single batch cannot exceed 24 hours. Otherwise, the operation fails.</p> </li> </ul> <important> <p>The quota of five requests per second per log stream has been removed. Instead, <code>PutLogEvents</code> actions are throttled based on a per-second per-account quota. You can request an increase to the per-second throttling quota by using the Service Quotas service.</p> </important> <p>If a call to <code>PutLogEvents</code> returns \"UnrecognizedClientException\" the most likely cause is a non-valid Amazon Web Services access key ID or secret key. </p>"
+    },
+    "PutLogGroupDeletionProtection":{
+      "name":"PutLogGroupDeletionProtection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutLogGroupDeletionProtectionRequest"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"OperationAbortedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidOperationException"}
+      ],
+      "documentation":"<p>Enables or disables deletion protection for the specified log group. When enabled on a log group, deletion protection blocks all deletion operations until it is explicitly disabled.</p> <p>For information about the parameters that are common to all actions, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/CommonParameters.html\">Common Parameters</a>.</p>"
     },
     "PutMetricFilter":{
       "name":"PutMetricFilter",
@@ -1212,7 +1317,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Creates or updates a resource policy allowing other Amazon Web Services services to put log events to this account, such as Amazon Route 53. An account can have up to 10 resource policies per Amazon Web Services Region.</p>"
+      "documentation":"<p>Creates or updates a resource policy allowing other Amazon Web Services services to put log events to this account, such as Amazon Route 53. This API has the following restrictions:</p> <ul> <li> <p> <b>Supported actions</b> - Policy only supports <code>logs:PutLogEvents</code> and <code>logs:CreateLogStream </code> actions</p> </li> <li> <p> <b>Supported principals</b> - Policy only applies when operations are invoked by Amazon Web Services service principals (not IAM users, roles, or cross-account principals</p> </li> <li> <p> <b>Policy limits</b> - An account can have a maximum of 10 policies without resourceARN and one per LogGroup resourceARN</p> </li> </ul> <important> <p>Resource policies with actions invoked by non-Amazon Web Services service principals (such as IAM users, roles, or other Amazon Web Services accounts) will not be enforced. For access control involving these principals, use the IAM policies.</p> </important>"
     },
     "PutRetentionPolicy":{
       "name":"PutRetentionPolicy",
@@ -1447,6 +1552,23 @@
         {"shape":"OperationAbortedException"}
       ],
       "documentation":"<p>Updates an existing log anomaly detector.</p>"
+    },
+    "UpdateScheduledQuery":{
+      "name":"UpdateScheduledQuery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateScheduledQueryRequest"},
+      "output":{"shape":"UpdateScheduledQueryResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the configuration of an existing scheduled query. This operation follows PUT semantics, replacing the existing configuration with the provided values.</p>"
     }
   },
   "shapes":{
@@ -1511,6 +1633,15 @@
       "documentation":"<p>A structure that contains information about one CloudWatch Logs account policy.</p>"
     },
     "AccountPolicyDocument":{"type":"string"},
+    "ActionStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "CLIENT_ERROR",
+        "FAILED",
+        "COMPLETE"
+      ]
+    },
     "AddKeyEntries":{
       "type":"list",
       "member":{"shape":"AddKeyEntry"},
@@ -2085,6 +2216,10 @@
         "logGroupClass":{
           "shape":"LogGroupClass",
           "documentation":"<p>Use this parameter to specify the log group class for this log group. There are three classes:</p> <ul> <li> <p>The <code>Standard</code> log class supports all CloudWatch Logs features.</p> </li> <li> <p>The <code>Infrequent Access</code> log class supports a subset of CloudWatch Logs features and incurs lower costs.</p> </li> <li> <p>Use the <code>Delivery</code> log class only for delivering Lambda logs to store in Amazon S3 or Amazon Data Firehose. Log events in log groups in the Delivery class are kept in CloudWatch Logs for only one day. This log class doesn't offer rich CloudWatch Logs capabilities such as CloudWatch Logs Insights queries.</p> </li> </ul> <p>If you omit this parameter, the default of <code>STANDARD</code> is used.</p> <important> <p>The value of <code>logGroupClass</code> can't be changed after a log group is created.</p> </important> <p>For details about the features supported by each class, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch_Logs_Log_Classes.html\">Log classes</a> </p>"
+        },
+        "deletionProtectionEnabled":{
+          "shape":"DeletionProtectionEnabled",
+          "documentation":"<p>Use this parameter to enable deletion protection for the new log group. When enabled on a log group, deletion protection blocks all deletion operations until it is explicitly disabled. By default log groups are created without deletion protection enabled.</p>"
         }
       }
     },
@@ -2102,6 +2237,87 @@
         "logStreamName":{
           "shape":"LogStreamName",
           "documentation":"<p>The name of the log stream.</p>"
+        }
+      }
+    },
+    "CreateScheduledQueryRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "queryLanguage",
+        "queryString",
+        "scheduleExpression",
+        "executionRoleArn"
+      ],
+      "members":{
+        "name":{
+          "shape":"ScheduledQueryName",
+          "documentation":"<p>A unique name for the scheduled query within the region for an AWS account. The name can contain letters, numbers, underscores, hyphens, forward slashes, periods, and hash symbols.</p>"
+        },
+        "description":{
+          "shape":"ScheduledQueryDescription",
+          "documentation":"<p>An optional description for the scheduled query to help identify its purpose.</p>"
+        },
+        "queryLanguage":{
+          "shape":"QueryLanguage",
+          "documentation":"<p>The query language to use for the scheduled query. Valid values are LogsQL (CloudWatch Logs Insights query language), PPL (OpenSearch Service Piped Processing Language), and SQL (OpenSearch Service Structured Query Language).</p>"
+        },
+        "queryString":{
+          "shape":"QueryString",
+          "documentation":"<p>The CloudWatch Logs Insights query string to execute. This is the actual query that will be run against your log data on the specified schedule.</p>"
+        },
+        "logGroupIdentifiers":{
+          "shape":"ScheduledQueryLogGroupIdentifiers",
+          "documentation":"<p>The log group identifiers to query. You can specify log group names or log group ARNs. If querying log groups in a source account from a monitoring account, you must specify the ARN of the log group.</p>"
+        },
+        "scheduleExpression":{
+          "shape":"ScheduleExpression",
+          "documentation":"<p>A cron expression that defines when the scheduled query runs. The format is cron(fields) where fields consist of six space-separated values: minutes, hours, day_of_month, month, day_of_week, year.</p>"
+        },
+        "timezone":{
+          "shape":"ScheduleTimezone",
+          "documentation":"<p>The timezone in which the schedule expression is evaluated. If not provided, defaults to UTC.</p>"
+        },
+        "startTimeOffset":{
+          "shape":"StartTimeOffset",
+          "documentation":"<p>Time offset in seconds from the execution time for the start of the query time range. This defines the lookback period for the query (for example, 3600 for the last hour).</p>"
+        },
+        "destinationConfiguration":{
+          "shape":"DestinationConfiguration",
+          "documentation":"<p>Configuration for destinations where the query results will be delivered after successful execution. You can configure delivery to S3 buckets or EventBridge event buses.</p>"
+        },
+        "scheduleStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time for the query schedule in Unix epoch time (seconds since January 1, 1970, 00:00:00 UTC). If not specified, the schedule starts immediately.</p>"
+        },
+        "scheduleEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time for the query schedule in Unix epoch time (seconds since January 1, 1970, 00:00:00 UTC). If not specified, the schedule runs indefinitely.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that CloudWatch Logs will assume to execute the scheduled query and deliver results to the specified destinations.</p>"
+        },
+        "state":{
+          "shape":"ScheduledQueryState",
+          "documentation":"<p>The initial state of the scheduled query. Valid values are ENABLED (the query will run according to its schedule) and DISABLED (the query is paused and will not run). If not provided, defaults to ENABLED.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>An optional list of key-value pairs to associate with the resource.</p> <p>For more information about tagging, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\">Tagging Amazon Web Services resources</a> </p>"
+        }
+      }
+    },
+    "CreateScheduledQueryResponse":{
+      "type":"structure",
+      "members":{
+        "scheduledQueryArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created scheduled query.</p>"
+        },
+        "state":{
+          "shape":"ScheduledQueryState",
+          "documentation":"<p>The current state of the scheduled query (ENABLED or DISABLED).</p>"
         }
       }
     },
@@ -2392,6 +2608,20 @@
         }
       }
     },
+    "DeleteScheduledQueryRequest":{
+      "type":"structure",
+      "required":["identifier"],
+      "members":{
+        "identifier":{
+          "shape":"ScheduledQueryIdentifier",
+          "documentation":"<p>The name or ARN of the scheduled query to delete.</p>"
+        }
+      }
+    },
+    "DeleteScheduledQueryResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteSubscriptionFilterRequest":{
       "type":"structure",
       "required":[
@@ -2425,6 +2655,7 @@
       "max":5,
       "min":1
     },
+    "DeletionProtectionEnabled":{"type":"boolean"},
     "Delimiter":{
       "type":"string",
       "max":2,
@@ -3145,6 +3376,17 @@
       "type":"string",
       "min":1
     },
+    "DestinationConfiguration":{
+      "type":"structure",
+      "required":["s3Configuration"],
+      "members":{
+        "s3Configuration":{
+          "shape":"S3Configuration",
+          "documentation":"<p>Configuration for delivering query results to an Amazon S3 bucket.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for destinations where scheduled query results are delivered, such as S3 buckets or EventBridge event buses.</p>"
+    },
     "DestinationField":{
       "type":"string",
       "max":128,
@@ -3312,6 +3554,20 @@
       "type":"integer",
       "max":10000,
       "min":1
+    },
+    "ExecutionStatus":{
+      "type":"string",
+      "enum":[
+        "Running",
+        "InvalidQuery",
+        "Complete",
+        "Failed",
+        "Timeout"
+      ]
+    },
+    "ExecutionStatusList":{
+      "type":"list",
+      "member":{"shape":"ExecutionStatus"}
     },
     "ExpectedRevisionId":{
       "type":"string",
@@ -3975,6 +4231,147 @@
         }
       }
     },
+    "GetScheduledQueryHistoryMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":1
+    },
+    "GetScheduledQueryHistoryRequest":{
+      "type":"structure",
+      "required":[
+        "identifier",
+        "startTime",
+        "endTime"
+      ],
+      "members":{
+        "identifier":{
+          "shape":"ScheduledQueryIdentifier",
+          "documentation":"<p>The name or ARN of the scheduled query to retrieve history for.</p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time for the history retrieval window in Unix epoch time.</p>"
+        },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time for the history retrieval window in Unix epoch time.</p>"
+        },
+        "executionStatuses":{
+          "shape":"ExecutionStatusList",
+          "documentation":"<p>Filter results by execution status (Running, Complete, Failed, Timeout, or InvalidQuery).</p>"
+        },
+        "maxResults":{
+          "shape":"GetScheduledQueryHistoryMaxResults",
+          "documentation":"<p>The maximum number of history records to return in a single call.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
+    },
+    "GetScheduledQueryHistoryResponse":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"ScheduledQueryName",
+          "documentation":"<p>The name of the scheduled query.</p>"
+        },
+        "scheduledQueryArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the scheduled query.</p>"
+        },
+        "triggerHistory":{
+          "shape":"TriggerHistoryRecordList",
+          "documentation":"<p>The list of execution history records for the scheduled query.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
+    },
+    "GetScheduledQueryRequest":{
+      "type":"structure",
+      "required":["identifier"],
+      "members":{
+        "identifier":{
+          "shape":"ScheduledQueryIdentifier",
+          "documentation":"<p>The name or ARN of the scheduled query to retrieve.</p>"
+        }
+      }
+    },
+    "GetScheduledQueryResponse":{
+      "type":"structure",
+      "members":{
+        "scheduledQueryArn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the scheduled query.</p>"
+        },
+        "name":{
+          "shape":"ScheduledQueryName",
+          "documentation":"<p>The name of the scheduled query.</p>"
+        },
+        "description":{
+          "shape":"ScheduledQueryDescription",
+          "documentation":"<p>The description of the scheduled query.</p>"
+        },
+        "queryLanguage":{
+          "shape":"QueryLanguage",
+          "documentation":"<p>The query language used by the scheduled query (LogsQL, PPL, or SQL).</p>"
+        },
+        "queryString":{
+          "shape":"QueryString",
+          "documentation":"<p>The CloudWatch Logs Insights query string being executed.</p>"
+        },
+        "logGroupIdentifiers":{
+          "shape":"ScheduledQueryLogGroupIdentifiers",
+          "documentation":"<p>The log group identifiers being queried by the scheduled query.</p>"
+        },
+        "scheduleExpression":{
+          "shape":"ScheduleExpression",
+          "documentation":"<p>The cron expression that defines when the scheduled query runs.</p>"
+        },
+        "timezone":{
+          "shape":"ScheduleTimezone",
+          "documentation":"<p>The timezone in which the schedule expression is evaluated.</p>"
+        },
+        "startTimeOffset":{
+          "shape":"StartTimeOffset",
+          "documentation":"<p>Time offset in seconds from the execution time for the start of the query time range.</p>"
+        },
+        "destinationConfiguration":{
+          "shape":"DestinationConfiguration",
+          "documentation":"<p>Configuration for destinations where the query results are delivered.</p>"
+        },
+        "state":{
+          "shape":"ScheduledQueryState",
+          "documentation":"<p>The current state of the scheduled query (ENABLED or DISABLED).</p>"
+        },
+        "lastTriggeredTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the scheduled query was last executed, in Unix epoch time.</p>"
+        },
+        "lastExecutionStatus":{
+          "shape":"ExecutionStatus",
+          "documentation":"<p>The status of the last executed query (Running, Complete, Failed, Timeout, or InvalidQuery).</p>"
+        },
+        "scheduleStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time for the query schedule in Unix epoch time.</p>"
+        },
+        "scheduleEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time for the query schedule in Unix epoch time.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role used to execute the scheduled query.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the scheduled query was created, in Unix epoch time.</p>"
+        },
+        "lastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the scheduled query was last updated, in Unix epoch time.</p>"
+        }
+      }
+    },
     "GetTransformerRequest":{
       "type":"structure",
       "required":["logGroupIdentifier"],
@@ -4174,6 +4571,13 @@
       "enum":["OPENSEARCH"]
     },
     "Interleaved":{"type":"boolean"},
+    "InternalServerException":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>An internal server error occurred while processing the request. This is typically a temporary issue and the request can be retried.</p>",
+      "exception":true,
+      "fault":true
+    },
     "InternalStreamingException":{
       "type":"structure",
       "members":{
@@ -4385,6 +4789,35 @@
           "documentation":"<p>An array of structures, where each structure contains the information about one log group.</p>"
         },
         "nextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListScheduledQueriesMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":1
+    },
+    "ListScheduledQueriesRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListScheduledQueriesMaxResults",
+          "documentation":"<p>The maximum number of scheduled queries to return in a single call.</p>"
+        },
+        "nextToken":{"shape":"NextToken"},
+        "state":{
+          "shape":"ScheduledQueryState",
+          "documentation":"<p>Filter results by the state of scheduled queries (ENABLED or DISABLED).</p>"
+        }
+      }
+    },
+    "ListScheduledQueriesResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{"shape":"NextToken"},
+        "scheduledQueries":{
+          "shape":"ScheduledQuerySummaryList",
+          "documentation":"<p>The list of scheduled queries with summary information.</p>"
+        }
       }
     },
     "ListTagsForResourceRequest":{
@@ -4611,6 +5044,10 @@
         "logGroupArn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the log group. This version of the ARN doesn't include a trailing <code>:*</code> after the log group name. </p> <p>Use this version to refer to the ARN in the following situations:</p> <ul> <li> <p>In the <code>logGroupIdentifier</code> input field in many CloudWatch Logs APIs.</p> </li> <li> <p>In the <code>resourceArn</code> field in tagging APIs</p> </li> <li> <p>In IAM policies, when specifying permissions for <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_TagResource.html\">TagResource</a>, <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_UntagResource.html\">UntagResource</a>, and <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_ListTagsForResource.html\">ListTagsForResource</a>.</p> </li> </ul>"
+        },
+        "deletionProtectionEnabled":{
+          "shape":"DeletionProtectionEnabled",
+          "documentation":"<p>Indicates whether deletion protection is enabled for this log group. When enabled, deletion protection blocks all deletion operations until it is explicitly disabled.</p>"
         }
       },
       "documentation":"<p>Represents a log group.</p>"
@@ -4812,6 +5249,12 @@
       "documentation":"<p>The query string is not valid. Details about this error are displayed in a <code>QueryCompileError</code> object. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_QueryCompileError.html\">QueryCompileError</a>.</p> <p>For more information about valid query syntax, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html\">CloudWatch Logs Insights Query Syntax</a>.</p>",
       "exception":true
     },
+    "MappingVersion":{
+      "type":"string",
+      "max":10,
+      "min":1,
+      "pattern":"^\\d+\\.\\d+(\\.\\d+)?$"
+    },
     "MatchPattern":{
       "type":"string",
       "min":1
@@ -4992,7 +5435,10 @@
     },
     "OCSFVersion":{
       "type":"string",
-      "enum":["V1.1"]
+      "enum":[
+        "V1.1",
+        "V1.5"
+      ]
     },
     "OpenSearchApplication":{
       "type":"structure",
@@ -5391,9 +5837,13 @@
         "ocsfVersion":{
           "shape":"OCSFVersion",
           "documentation":"<p>Specify which version of the OCSF schema to use for the transformed log events.</p>"
+        },
+        "mappingVersion":{
+          "shape":"MappingVersion",
+          "documentation":"<p>Identifies the specific release of the Open Cybersecurity Schema Framework (OCSF) transformer being used to parse OCSF data. Defaults to the latest version if not specified. Does not automatically update.</p>"
         }
       },
-      "documentation":"<p>This processor converts logs into <a href=\"https://ocsf.io\">Open Cybersecurity Schema Framework (OCSF)</a> events.</p> <p>For more information about this processor including examples, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation.html#CloudWatch-Logs-Transformation-parseToOCSF\"> parseToOSCF</a> in the <i>CloudWatch Logs User Guide</i>.</p>"
+      "documentation":"<p>This processor converts logs into <a href=\"https://ocsf.io\">Open Cybersecurity Schema Framework (OCSF)</a> events.</p> <p>For more information about this processor including examples, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch-Logs-Transformation.html#CloudWatch-Logs-Transformation-parseToOCSF\">parseToOCSF</a> in the <i>CloudWatch Logs User Guide</i>.</p>"
     },
     "ParseVPC":{
       "type":"structure",
@@ -5761,7 +6211,7 @@
         },
         "logType":{
           "shape":"LogType",
-          "documentation":"<p>Defines the type of log that the source is sending.</p> <ul> <li> <p>For Amazon Bedrock, the valid value is <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For CloudFront, the valid value is <code>ACCESS_LOGS</code>.</p> </li> <li> <p>For Amazon CodeWhisperer, the valid value is <code>EVENT_LOGS</code>.</p> </li> <li> <p>For Elemental MediaPackage, the valid values are <code>EGRESS_ACCESS_LOGS</code> and <code>INGRESS_ACCESS_LOGS</code>.</p> </li> <li> <p>For Elemental MediaTailor, the valid values are <code>AD_DECISION_SERVER_LOGS</code>, <code>MANIFEST_SERVICE_LOGS</code>, and <code>TRANSCODE_LOGS</code>.</p> </li> <li> <p>For Entity Resolution, the valid value is <code>WORKFLOW_LOGS</code>.</p> </li> <li> <p>For IAM Identity Center, the valid value is <code>ERROR_LOGS</code>.</p> </li> <li> <p>For PCS, the valid values are <code>PCS_SCHEDULER_LOGS</code> and <code>PCS_JOBCOMP_LOGS</code>.</p> </li> <li> <p>For Amazon Q, the valid value is <code>EVENT_LOGS</code>.</p> </li> <li> <p>For Amazon SES mail manager, the valid values are <code>APPLICATION_LOG</code> and <code>TRAFFIC_POLICY_DEBUG_LOGS</code>.</p> </li> <li> <p>For Amazon WorkMail, the valid values are <code>ACCESS_CONTROL_LOGS</code>, <code>AUTHENTICATION_LOGS</code>, <code>WORKMAIL_AVAILABILITY_PROVIDER_LOGS</code>, <code>WORKMAIL_MAILBOX_ACCESS_LOGS</code>, and <code>WORKMAIL_PERSONAL_ACCESS_TOKEN_LOGS</code>.</p> </li> <li> <p>For Amazon VPC Route Server, the valid value is <code>EVENT_LOGS</code>.</p> </li> </ul>"
+          "documentation":"<p>Defines the type of log that the source is sending.</p> <ul> <li> <p>For Amazon Bedrock Agents, the valid values are <code>APPLICATION_LOGS</code> and <code>EVENT_LOGS</code>.</p> </li> <li> <p>For Amazon Bedrock Knowledge Bases, the valid value is <code>APPLICATION_LOGS</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Runtime, the valid values are <code>APPLICATION_LOGS</code>, <code>USAGE_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Tools, the valid values are <code>APPLICATION_LOGS</code>, <code>USAGE_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Identity, the valid values are <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For Amazon Bedrock AgentCore Gateway, the valid values are <code>APPLICATION_LOGS</code> and <code>TRACES</code>.</p> </li> <li> <p>For CloudFront, the valid value is <code>ACCESS_LOGS</code>.</p> </li> <li> <p>For Amazon CodeWhisperer, the valid value is <code>EVENT_LOGS</code>.</p> </li> <li> <p>For Elemental MediaPackage, the valid values are <code>EGRESS_ACCESS_LOGS</code> and <code>INGRESS_ACCESS_LOGS</code>.</p> </li> <li> <p>For Elemental MediaTailor, the valid values are <code>AD_DECISION_SERVER_LOGS</code>, <code>MANIFEST_SERVICE_LOGS</code>, and <code>TRANSCODE_LOGS</code>.</p> </li> <li> <p>For Entity Resolution, the valid value is <code>WORKFLOW_LOGS</code>.</p> </li> <li> <p>For IAM Identity Center, the valid value is <code>ERROR_LOGS</code>.</p> </li> <li> <p>For Network Load Balancer, the valid value is <code>NLB_ACCESS_LOGS</code>.</p> </li> <li> <p>For PCS, the valid values are <code>PCS_SCHEDULER_LOGS</code> and <code>PCS_JOBCOMP_LOGS</code>.</p> </li> <li> <p>For Amazon Web Services RTB Fabric, the valid values is <code>APPLICATION_LOGS</code>.</p> </li> <li> <p>For Amazon Q, the valid values are <code>EVENT_LOGS</code> and <code>SYNC_JOB_LOGS</code>.</p> </li> <li> <p>For Amazon SES mail manager, the valid values are <code>APPLICATION_LOGS</code> and <code>TRAFFIC_POLICY_DEBUG_LOGS</code>.</p> </li> <li> <p>For Amazon WorkMail, the valid values are <code>ACCESS_CONTROL_LOGS</code>, <code>AUTHENTICATION_LOGS</code>, <code>WORKMAIL_AVAILABILITY_PROVIDER_LOGS</code>, <code>WORKMAIL_MAILBOX_ACCESS_LOGS</code>, and <code>WORKMAIL_PERSONAL_ACCESS_TOKEN_LOGS</code>.</p> </li> <li> <p>For Amazon VPC Route Server, the valid value is <code>EVENT_LOGS</code>.</p> </li> </ul>"
         },
         "tags":{
           "shape":"Tags",
@@ -5939,6 +6389,23 @@
         "rejectedEntityInfo":{
           "shape":"RejectedEntityInfo",
           "documentation":"<p>Information about why the entity is rejected when calling <code>PutLogEvents</code>. Only returned when the entity is rejected.</p> <note> <p>When the entity is rejected, the events may still be accepted.</p> </note>"
+        }
+      }
+    },
+    "PutLogGroupDeletionProtectionRequest":{
+      "type":"structure",
+      "required":[
+        "logGroupIdentifier",
+        "deletionProtectionEnabled"
+      ],
+      "members":{
+        "logGroupIdentifier":{
+          "shape":"LogGroupIdentifier",
+          "documentation":"<p>The name or ARN of the log group.</p> <p>Type: String</p> <p>Length Constraints: Minimum length of 1. Maximum length of 512.</p> <p>Pattern: <code>[\\.\\-_/#A-Za-z0-9]+</code> </p> <p>Required: Yes</p>"
+        },
+        "deletionProtectionEnabled":{
+          "shape":"DeletionProtectionEnabled",
+          "documentation":"<p>Whether to enable deletion protection.</p> <p>Type: Boolean</p> <p>Required: Yes</p>"
         }
       }
     },
@@ -6516,6 +6983,24 @@
       "type":"string",
       "min":1
     },
+    "S3Configuration":{
+      "type":"structure",
+      "required":[
+        "destinationIdentifier",
+        "roleArn"
+      ],
+      "members":{
+        "destinationIdentifier":{
+          "shape":"S3Uri",
+          "documentation":"<p>The S3 URI where query results will be stored (e.g., s3://bucket-name/prefix/).</p>"
+        },
+        "roleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role that CloudWatch Logs will assume to write results to the S3 bucket.</p>"
+        }
+      },
+      "documentation":"<p>Configuration details for delivering scheduled query results to an Amazon S3 bucket.</p>"
+    },
     "S3DeliveryConfiguration":{
       "type":"structure",
       "members":{
@@ -6530,6 +7015,130 @@
         }
       },
       "documentation":"<p>This structure contains delivery configurations that apply only when the delivery destination resource is an S3 bucket.</p>"
+    },
+    "S3Uri":{
+      "type":"string",
+      "max":1024,
+      "pattern":"s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"
+    },
+    "ScheduleExpression":{
+      "type":"string",
+      "max":256
+    },
+    "ScheduleTimezone":{
+      "type":"string",
+      "min":1
+    },
+    "ScheduledQueryDescription":{
+      "type":"string",
+      "max":1024
+    },
+    "ScheduledQueryDestination":{
+      "type":"structure",
+      "members":{
+        "destinationType":{
+          "shape":"ScheduledQueryDestinationType",
+          "documentation":"<p>The type of destination (S3).</p>"
+        },
+        "destinationIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The destination identifier (S3 URI).</p>"
+        },
+        "status":{
+          "shape":"ActionStatus",
+          "documentation":"<p>The processing status for this destination (IN_PROGRESS, ERROR, FAILED, or COMPLETE).</p>"
+        },
+        "processedIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The processed identifier returned for the destination (S3 key).</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>Error message if the destination processing failed.</p>"
+        }
+      },
+      "documentation":"<p>Information about a destination where scheduled query results are processed and delivered.</p>"
+    },
+    "ScheduledQueryDestinationList":{
+      "type":"list",
+      "member":{"shape":"ScheduledQueryDestination"}
+    },
+    "ScheduledQueryDestinationType":{
+      "type":"string",
+      "enum":["S3"]
+    },
+    "ScheduledQueryIdentifier":{
+      "type":"string",
+      "pattern":"[\\w#+=/:,.@-]*"
+    },
+    "ScheduledQueryLogGroupIdentifiers":{
+      "type":"list",
+      "member":{"shape":"LogGroupIdentifier"},
+      "max":50,
+      "min":1
+    },
+    "ScheduledQueryName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_\\-/.#]+$"
+    },
+    "ScheduledQueryState":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "ScheduledQuerySummary":{
+      "type":"structure",
+      "members":{
+        "scheduledQueryArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the scheduled query.</p>"
+        },
+        "name":{
+          "shape":"ScheduledQueryName",
+          "documentation":"<p>The name of the scheduled query.</p>"
+        },
+        "state":{
+          "shape":"ScheduledQueryState",
+          "documentation":"<p>The current state of the scheduled query (ENABLED or DISABLED).</p>"
+        },
+        "lastTriggeredTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the scheduled query was last executed.</p>"
+        },
+        "lastExecutionStatus":{
+          "shape":"ExecutionStatus",
+          "documentation":"<p>The status of the last execution (Running, Complete, Failed, Timeout, or InvalidQuery).</p>"
+        },
+        "scheduleExpression":{
+          "shape":"ScheduleExpression",
+          "documentation":"<p>The cron expression that defines when the scheduled query runs.</p>"
+        },
+        "timezone":{
+          "shape":"ScheduleTimezone",
+          "documentation":"<p>The timezone in which the schedule expression is evaluated.</p>"
+        },
+        "destinationConfiguration":{
+          "shape":"DestinationConfiguration",
+          "documentation":"<p>Configuration for destinations where the query results are delivered.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the scheduled query was created.</p>"
+        },
+        "lastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the scheduled query was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a scheduled query, used in list operations.</p>"
+    },
+    "ScheduledQuerySummaryList":{
+      "type":"list",
+      "member":{"shape":"ScheduledQuerySummary"}
     },
     "Scope":{
       "type":"string",
@@ -6791,6 +7400,7 @@
         }
       }
     },
+    "StartTimeOffset":{"type":"long"},
     "State":{
       "type":"string",
       "enum":[
@@ -6823,6 +7433,7 @@
       "type":"long",
       "min":0
     },
+    "String":{"type":"string"},
     "SubscriptionFilter":{
       "type":"structure",
       "members":{
@@ -7146,6 +7757,36 @@
       "type":"list",
       "member":{"shape":"TransformedLogRecord"}
     },
+    "TriggerHistoryRecord":{
+      "type":"structure",
+      "members":{
+        "queryId":{
+          "shape":"QueryId",
+          "documentation":"<p>The unique identifier for the query execution.</p>"
+        },
+        "executionStatus":{
+          "shape":"ExecutionStatus",
+          "documentation":"<p>The status of the query execution (Running, Complete, Failed, Timeout, or InvalidQuery).</p>"
+        },
+        "triggeredTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the scheduled query was triggered, in Unix epoch time.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>The error message if the scheduled query execution failed. This field is only populated when the execution status indicates a failure.</p>"
+        },
+        "destinations":{
+          "shape":"ScheduledQueryDestinationList",
+          "documentation":"<p>The list of destinations where the scheduled query results were delivered for this execution. This includes S3 buckets configured for the scheduled query.</p>"
+        }
+      },
+      "documentation":"<p>A record of a scheduled query execution, including its status and destination processing information.</p>"
+    },
+    "TriggerHistoryRecordList":{
+      "type":"list",
+      "member":{"shape":"TriggerHistoryRecord"}
+    },
     "TrimString":{
       "type":"structure",
       "required":["withKeys"],
@@ -7329,6 +7970,147 @@
         "enabled":{
           "shape":"Boolean",
           "documentation":"<p>Use this parameter to pause or restart the anomaly detector. </p>"
+        }
+      }
+    },
+    "UpdateScheduledQueryRequest":{
+      "type":"structure",
+      "required":[
+        "identifier",
+        "queryLanguage",
+        "queryString",
+        "scheduleExpression",
+        "executionRoleArn"
+      ],
+      "members":{
+        "identifier":{
+          "shape":"ScheduledQueryIdentifier",
+          "documentation":"<p>The name or ARN of the scheduled query to update.</p>"
+        },
+        "description":{
+          "shape":"ScheduledQueryDescription",
+          "documentation":"<p>Updated description for the scheduled query.</p>"
+        },
+        "queryLanguage":{
+          "shape":"QueryLanguage",
+          "documentation":"<p>Updated query language to use (LogsQL, PPL, or SQL).</p>"
+        },
+        "queryString":{
+          "shape":"QueryString",
+          "documentation":"<p>Updated CloudWatch Logs Insights query string to execute.</p>"
+        },
+        "logGroupIdentifiers":{
+          "shape":"ScheduledQueryLogGroupIdentifiers",
+          "documentation":"<p>Updated log group identifiers to query.</p>"
+        },
+        "scheduleExpression":{
+          "shape":"ScheduleExpression",
+          "documentation":"<p>Updated cron expression that defines when the scheduled query runs.</p>"
+        },
+        "timezone":{
+          "shape":"ScheduleTimezone",
+          "documentation":"<p>Updated timezone in which the schedule expression is evaluated.</p>"
+        },
+        "startTimeOffset":{
+          "shape":"StartTimeOffset",
+          "documentation":"<p>Updated time offset in seconds from the execution time for the start of the query time range.</p>"
+        },
+        "destinationConfiguration":{
+          "shape":"DestinationConfiguration",
+          "documentation":"<p>Updated configuration for destinations where the query results will be delivered.</p>"
+        },
+        "scheduleStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Updated start time for the query schedule in Unix epoch time.</p>"
+        },
+        "scheduleEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Updated end time for the query schedule in Unix epoch time.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>Updated ARN of the IAM role that CloudWatch Logs will assume to execute the scheduled query.</p>"
+        },
+        "state":{
+          "shape":"ScheduledQueryState",
+          "documentation":"<p>Updated state of the scheduled query (ENABLED or DISABLED).</p>"
+        }
+      }
+    },
+    "UpdateScheduledQueryResponse":{
+      "type":"structure",
+      "members":{
+        "scheduledQueryArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the updated scheduled query.</p>"
+        },
+        "name":{
+          "shape":"ScheduledQueryName",
+          "documentation":"<p>The name of the updated scheduled query.</p>"
+        },
+        "description":{
+          "shape":"ScheduledQueryDescription",
+          "documentation":"<p>The description of the updated scheduled query.</p>"
+        },
+        "queryLanguage":{
+          "shape":"QueryLanguage",
+          "documentation":"<p>The query language used by the updated scheduled query.</p>"
+        },
+        "queryString":{
+          "shape":"QueryString",
+          "documentation":"<p>The query string of the updated scheduled query.</p>"
+        },
+        "logGroupIdentifiers":{
+          "shape":"ScheduledQueryLogGroupIdentifiers",
+          "documentation":"<p>The log group identifiers of the updated scheduled query.</p>"
+        },
+        "scheduleExpression":{
+          "shape":"ScheduleExpression",
+          "documentation":"<p>The schedule expression of the updated scheduled query.</p>"
+        },
+        "timezone":{
+          "shape":"ScheduleTimezone",
+          "documentation":"<p>The timezone of the updated scheduled query.</p>"
+        },
+        "startTimeOffset":{
+          "shape":"StartTimeOffset",
+          "documentation":"<p>The start time offset of the updated scheduled query.</p>"
+        },
+        "destinationConfiguration":{
+          "shape":"DestinationConfiguration",
+          "documentation":"<p>The destination configuration of the updated scheduled query.</p>"
+        },
+        "state":{
+          "shape":"ScheduledQueryState",
+          "documentation":"<p>The state of the updated scheduled query.</p>"
+        },
+        "lastTriggeredTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the updated scheduled query was last executed.</p>"
+        },
+        "lastExecutionStatus":{
+          "shape":"ExecutionStatus",
+          "documentation":"<p>The status of the last execution of the updated scheduled query (Running, Complete, Failed, Timeout, or InvalidQuery).</p>"
+        },
+        "scheduleStartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The schedule start time of the updated scheduled query.</p>"
+        },
+        "scheduleEndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The schedule end time of the updated scheduled query.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The execution role ARN of the updated scheduled query.</p>"
+        },
+        "creationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation time of the updated scheduled query.</p>"
+        },
+        "lastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last updated time of the scheduled query.</p>"
         }
       }
     },

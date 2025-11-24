@@ -268,7 +268,7 @@
         {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Grants permission to complete the authorization based on input parameters. This API is in preview release and subject to change.</p>"
+      "documentation":"<p>Grants permission to complete the authorization based on input parameters. This API is in public preview and subject to change.</p>"
     },
     "CreateActionTarget":{
       "name":"CreateActionTarget",
@@ -373,7 +373,7 @@
         {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Grants permission to create a connectorV2 based on input parameters. This API is in preview release and subject to change.</p>"
+      "documentation":"<p>Grants permission to create a connectorV2 based on input parameters. This API is in public preview and subject to change.</p>"
     },
     "CreateFindingAggregator":{
       "name":"CreateFindingAggregator",
@@ -443,7 +443,7 @@
         {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Grants permission to create a ticket in the chosen ITSM based on finding information for the provided finding metadata UID. This API is in preview release and subject to change.</p>"
+      "documentation":"<p>Grants permission to create a ticket in the chosen ITSM based on finding information for the provided finding metadata UID. This API is in public preview and subject to change.</p>"
     },
     "DeclineInvitations":{
       "name":"DeclineInvitations",
@@ -548,7 +548,7 @@
         {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Grants permission to delete a connectorV2. This API is in preview release and subject to change.</p>"
+      "documentation":"<p>Grants permission to delete a connectorV2. This API is in public preview and subject to change.</p>"
     },
     "DeleteFindingAggregator":{
       "name":"DeleteFindingAggregator",
@@ -1041,7 +1041,7 @@
         {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Grants permission to retrieve details for a connectorV2 based on connector id. This API is in preview release and subject to change.</p>"
+      "documentation":"<p>Grants permission to retrieve details for a connectorV2 based on connector id. This API is in public preview and subject to change.</p>"
     },
     "GetEnabledStandards":{
       "name":"GetEnabledStandards",
@@ -1125,6 +1125,22 @@
         {"shape":"LimitExceededException"}
       ],
       "documentation":"<p>Returns a list of findings that match the specified criteria.</p> <p>If cross-Region aggregation is enabled, then when you call <code>GetFindings</code> from the home Region, the results include all of the matching findings from both the home Region and linked Regions.</p>"
+    },
+    "GetFindingsTrendsV2":{
+      "name":"GetFindingsTrendsV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/findingsTrendsv2"
+      },
+      "input":{"shape":"GetFindingsTrendsV2Request"},
+      "output":{"shape":"GetFindingsTrendsV2Response"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns findings trend data based on the specified criteria. This operation helps you analyze patterns and changes in findings over time. This API is in public preview and subject to change.</p>"
     },
     "GetFindingsV2":{
       "name":"GetFindingsV2",
@@ -1246,6 +1262,22 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves statistical information about Amazon Web Services resources and their associated security findings. This API is in public preview and subject to change.</p>"
+    },
+    "GetResourcesTrendsV2":{
+      "name":"GetResourcesTrendsV2",
+      "http":{
+        "method":"POST",
+        "requestUri":"/resourcesTrendsv2"
+      },
+      "input":{"shape":"GetResourcesTrendsV2Request"},
+      "output":{"shape":"GetResourcesTrendsV2Response"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns resource trend data based on the specified criteria. This operation helps you analyze patterns and changes in resource compliance over time. This API is in public preview and subject to change.</p>"
     },
     "GetResourcesV2":{
       "name":"GetResourcesV2",
@@ -1402,7 +1434,7 @@
         {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Grants permission to retrieve a list of connectorsV2 and their metadata for the calling account. This API is in preview release and subject to change.</p>"
+      "documentation":"<p>Grants permission to retrieve a list of connectorsV2 and their metadata for the calling account. This API is in public preview and subject to change.</p>"
     },
     "ListEnabledProductsForImport":{
       "name":"ListEnabledProductsForImport",
@@ -1685,7 +1717,7 @@
         {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Grants permission to update a connectorV2 based on its id and input parameters. This API is in preview release and subject to change.</p>"
+      "documentation":"<p>Grants permission to update a connectorV2 based on its id and input parameters. This API is in public preview and subject to change.</p>"
     },
     "UpdateFindingAggregator":{
       "name":"UpdateFindingAggregator",
@@ -18424,6 +18456,72 @@
       },
       "documentation":"<p>The severity assigned to a finding by the finding provider. This object may include one or more of the following attributes:</p> <ul> <li> <p> <code>Label</code> </p> </li> <li> <p> <code>Normalized</code> </p> </li> <li> <p> <code>Original</code> </p> </li> <li> <p> <code>Product</code> </p> </li> </ul> <p>If a <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchImportFindings.html\"> <code>BatchImportFindings</code> </a> request for a new finding only provides <code>Label</code> or only provides <code>Normalized</code>, Security Hub automatically populates the value of the other field.</p> <p>The <code>Normalized</code> and <code>Product</code> attributes are included in the <code>FindingProviderSeverity</code> structure to preserve the historical information associated with the finding, even if the top-level <code>Severity</code> object is later modified using the <a href=\"https://docs.aws.amazon.com/securityhub/1.0/APIReference/API_BatchUpdateFindings.html\"> <code>BatchUpdateFindings</code> </a> operation.</p> <p>If the top-level <code>Finding.Severity</code> object is present, but <code>Finding.FindingProviderFields</code> isn't present, Security Hub creates the <code>FindingProviderFields.Severity</code> object and copies the entire <code>Finding.Severity</code> object into it. This ensures that the original, provider-supplied details are retained within the <code>FindingProviderFields.Severity</code> object, even if the top-level <code>Severity</code> object is overwritten. </p>"
     },
+    "FindingsTrendsCompositeFilter":{
+      "type":"structure",
+      "members":{
+        "StringFilters":{
+          "shape":"FindingsTrendsStringFilterList",
+          "documentation":"<p>A list of string filters that apply to findings trend data fields.</p>"
+        },
+        "NestedCompositeFilters":{
+          "shape":"FindingsTrendsCompositeFilterList",
+          "documentation":"<p>A list of nested composite filters that you can use to create complex filter conditions for findings trend data.</p>"
+        },
+        "Operator":{
+          "shape":"AllowedOperators",
+          "documentation":"<p>The logical operator (AND, OR) to apply between the string filters and nested composite filters.</p>"
+        }
+      },
+      "documentation":"<p>A filter structure that contains a logical combination of string filters and nested composite filters for findings trend data.</p>"
+    },
+    "FindingsTrendsCompositeFilterList":{
+      "type":"list",
+      "member":{"shape":"FindingsTrendsCompositeFilter"}
+    },
+    "FindingsTrendsFilters":{
+      "type":"structure",
+      "members":{
+        "CompositeFilters":{
+          "shape":"FindingsTrendsCompositeFilterList",
+          "documentation":"<p>A list of composite filters to apply to the findings trend data.</p>"
+        },
+        "CompositeOperator":{
+          "shape":"AllowedOperators",
+          "documentation":"<p>The logical operator (AND, OR) to apply between multiple composite filters.</p>"
+        }
+      },
+      "documentation":"<p>The structure that defines filters to apply to findings trend data queries.</p>"
+    },
+    "FindingsTrendsStringField":{
+      "type":"string",
+      "enum":[
+        "account_id",
+        "region",
+        "finding_types",
+        "finding_status",
+        "finding_cve_ids",
+        "finding_compliance_status",
+        "finding_control_id",
+        "finding_class_name",
+        "finding_provider",
+        "finding_activity_name"
+      ]
+    },
+    "FindingsTrendsStringFilter":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"FindingsTrendsStringField",
+          "documentation":"<p>The name of the findings field to filter on.</p>"
+        },
+        "Filter":{"shape":"StringFilter"}
+      },
+      "documentation":"<p>A filter for string-based fields in findings trend data.</p>"
+    },
+    "FindingsTrendsStringFilterList":{
+      "type":"list",
+      "member":{"shape":"FindingsTrendsStringFilter"}
+    },
     "FirewallPolicyDetails":{
       "type":"structure",
       "members":{
@@ -18942,6 +19040,56 @@
         }
       }
     },
+    "GetFindingsTrendsV2Request":{
+      "type":"structure",
+      "required":[
+        "StartTime",
+        "EndTime"
+      ],
+      "members":{
+        "Filters":{
+          "shape":"FindingsTrendsFilters",
+          "documentation":"<p>The filters to apply to the findings trend data.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The starting timestamp for the time period to analyze findings trends, in ISO 8601 format.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The ending timestamp for the time period to analyze findings trends, in ISO 8601 format.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use for paginating results. This value is returned in the response if more results are available.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of trend data points to return in a single response.</p>"
+        }
+      }
+    },
+    "GetFindingsTrendsV2Response":{
+      "type":"structure",
+      "required":[
+        "Granularity",
+        "TrendsMetrics"
+      ],
+      "members":{
+        "Granularity":{
+          "shape":"GranularityField",
+          "documentation":"<p>The time interval granularity for the returned trend data.</p>"
+        },
+        "TrendsMetrics":{
+          "shape":"TrendsMetrics",
+          "documentation":"<p>The collection of time-series trend metrics, including counts of findings by severity across the specified time period.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use for retrieving the next page of results, if more trend data is available.</p>"
+        }
+      }
+    },
     "GetFindingsV2Request":{
       "type":"structure",
       "members":{
@@ -19106,6 +19254,56 @@
         }
       }
     },
+    "GetResourcesTrendsV2Request":{
+      "type":"structure",
+      "required":[
+        "StartTime",
+        "EndTime"
+      ],
+      "members":{
+        "Filters":{
+          "shape":"ResourcesTrendsFilters",
+          "documentation":"<p>The filters to apply to the resources trend data.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The starting timestamp for the time period to analyze resources trends, in ISO 8601 format.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The ending timestamp for the time period to analyze resources trends, in ISO 8601 format.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use for paginating results. This value is returned in the response if more results are available.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of trend data points to return in a single response.</p>"
+        }
+      }
+    },
+    "GetResourcesTrendsV2Response":{
+      "type":"structure",
+      "required":[
+        "Granularity",
+        "TrendsMetrics"
+      ],
+      "members":{
+        "Granularity":{
+          "shape":"GranularityField",
+          "documentation":"<p>The time interval granularity for the returned trend data (such as DAILY or WEEKLY).</p>"
+        },
+        "TrendsMetrics":{
+          "shape":"ResourcesTrendsMetrics",
+          "documentation":"<p>The collection of time-series trend metrics, including counts of resources across the specified time period.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to use for retrieving the next page of results, if more trend data is available.</p>"
+        }
+      }
+    },
     "GetResourcesV2Request":{
       "type":"structure",
       "members":{
@@ -19159,6 +19357,14 @@
       "members":{
         "SecurityControlDefinition":{"shape":"SecurityControlDefinition"}
       }
+    },
+    "GranularityField":{
+      "type":"string",
+      "enum":[
+        "Daily",
+        "Weekly",
+        "Monthly"
+      ]
     },
     "GroupByField":{
       "type":"string",
@@ -22213,6 +22419,17 @@
       "type":"list",
       "member":{"shape":"ResourcesCompositeFilter"}
     },
+    "ResourcesCount":{
+      "type":"structure",
+      "required":["AllResources"],
+      "members":{
+        "AllResources":{
+          "shape":"TrendsValueCount",
+          "documentation":"<p>The total count of all resources for the given time interval.</p>"
+        }
+      },
+      "documentation":"<p>Contains counts of resources for trend analysis.</p>"
+    },
     "ResourcesDateField":{
       "type":"string",
       "enum":[
@@ -22325,6 +22542,99 @@
     "ResourcesStringFilterList":{
       "type":"list",
       "member":{"shape":"ResourcesStringFilter"}
+    },
+    "ResourcesTrendsCompositeFilter":{
+      "type":"structure",
+      "members":{
+        "StringFilters":{
+          "shape":"ResourcesTrendsStringFilterList",
+          "documentation":"<p>A list of string filters that apply to resources trend data fields.</p>"
+        },
+        "NestedCompositeFilters":{
+          "shape":"ResourcesTrendsCompositeFilterList",
+          "documentation":"<p>A list of nested composite filters that you can use to create complex filter conditions for resources trend data.</p>"
+        },
+        "Operator":{
+          "shape":"AllowedOperators",
+          "documentation":"<p>The logical operator (AND, OR) to apply between the string filters and nested composite filters.</p>"
+        }
+      },
+      "documentation":"<p>A filter structure that contains a logical combination of string filters and nested composite filters for resources trend data.</p>"
+    },
+    "ResourcesTrendsCompositeFilterList":{
+      "type":"list",
+      "member":{"shape":"ResourcesTrendsCompositeFilter"}
+    },
+    "ResourcesTrendsFilters":{
+      "type":"structure",
+      "members":{
+        "CompositeFilters":{
+          "shape":"ResourcesTrendsCompositeFilterList",
+          "documentation":"<p>A list of composite filters to apply to the resources trend data.</p>"
+        },
+        "CompositeOperator":{
+          "shape":"AllowedOperators",
+          "documentation":"<p>The logical operator (AND, OR) to apply between multiple composite filters.</p>"
+        }
+      },
+      "documentation":"<p>The structure that defines filters to apply to resources trend data queries.</p>"
+    },
+    "ResourcesTrendsMetrics":{
+      "type":"list",
+      "member":{"shape":"ResourcesTrendsMetricsResult"}
+    },
+    "ResourcesTrendsMetricsResult":{
+      "type":"structure",
+      "required":[
+        "Timestamp",
+        "TrendsValues"
+      ],
+      "members":{
+        "Timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for this data point in the resources trend metrics.</p>"
+        },
+        "TrendsValues":{
+          "shape":"ResourcesTrendsValues",
+          "documentation":"<p>The resource trend metric values associated with this timestamp, including resource counts.</p>"
+        }
+      },
+      "documentation":"<p>Contains the resource trend metrics data for a specific time point in the requested time period.</p>"
+    },
+    "ResourcesTrendsStringField":{
+      "type":"string",
+      "enum":[
+        "account_id",
+        "region",
+        "resource_type",
+        "resource_category"
+      ]
+    },
+    "ResourcesTrendsStringFilter":{
+      "type":"structure",
+      "members":{
+        "FieldName":{
+          "shape":"ResourcesTrendsStringField",
+          "documentation":"<p>The name of the resources field to filter on, such as resourceType, accountId, or region.</p>"
+        },
+        "Filter":{"shape":"StringFilter"}
+      },
+      "documentation":"<p>A filter for string-based fields in resources trend data, such as resource type or account ID.</p>"
+    },
+    "ResourcesTrendsStringFilterList":{
+      "type":"list",
+      "member":{"shape":"ResourcesTrendsStringFilter"}
+    },
+    "ResourcesTrendsValues":{
+      "type":"structure",
+      "required":["ResourcesCount"],
+      "members":{
+        "ResourcesCount":{
+          "shape":"ResourcesCount",
+          "documentation":"<p>The resource count statistics for this data point in the trend timeline.</p>"
+        }
+      },
+      "documentation":"<p>Contains the aggregated resource count values for a specific point in the resources trend timeline.</p>"
     },
     "Result":{
       "type":"structure",
@@ -23137,6 +23447,54 @@
         "HIGH",
         "CRITICAL"
       ]
+    },
+    "SeverityTrendsCount":{
+      "type":"structure",
+      "required":[
+        "Unknown",
+        "Informational",
+        "Low",
+        "Medium",
+        "High",
+        "Critical",
+        "Fatal",
+        "Other"
+      ],
+      "members":{
+        "Unknown":{
+          "shape":"TrendsValueCount",
+          "documentation":"<p>The count of findings with Unknown severity level at this point in the trend timeline.</p>"
+        },
+        "Informational":{
+          "shape":"TrendsValueCount",
+          "documentation":"<p>The count of findings with Informational severity level at this point in the trend timeline.</p>"
+        },
+        "Low":{
+          "shape":"TrendsValueCount",
+          "documentation":"<p>The count of findings with Low severity level at this point in the trend timeline.</p>"
+        },
+        "Medium":{
+          "shape":"TrendsValueCount",
+          "documentation":"<p>The count of findings with Medium severity level at this point in the trend timeline.</p>"
+        },
+        "High":{
+          "shape":"TrendsValueCount",
+          "documentation":"<p>The count of findings with High severity level at this point in the trend timeline.</p>"
+        },
+        "Critical":{
+          "shape":"TrendsValueCount",
+          "documentation":"<p>The count of findings with Critical severity level at this point in the trend timeline.</p>"
+        },
+        "Fatal":{
+          "shape":"TrendsValueCount",
+          "documentation":"<p>The count of findings with Fatal severity level at this point in the trend timeline.</p>"
+        },
+        "Other":{
+          "shape":"TrendsValueCount",
+          "documentation":"<p>The count of findings with severity levels not fitting into the standard categories at this point in the trend timeline.</p>"
+        }
+      },
+      "documentation":"<p>Contains counts of findings grouped by severity level for trend analysis.</p>"
     },
     "SeverityUpdate":{
       "type":"structure",
@@ -24043,6 +24401,43 @@
     "Timestamp":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
+    },
+    "TrendsMetrics":{
+      "type":"list",
+      "member":{"shape":"TrendsMetricsResult"}
+    },
+    "TrendsMetricsResult":{
+      "type":"structure",
+      "required":[
+        "Timestamp",
+        "TrendsValues"
+      ],
+      "members":{
+        "Timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp for this data point in the findings trend metrics.</p>"
+        },
+        "TrendsValues":{
+          "shape":"TrendsValues",
+          "documentation":"<p>The finding trend metric values associated with this timestamp, including severity counts.</p>"
+        }
+      },
+      "documentation":"<p>Contains the findings trend metrics data for a specific time point in the requested time period.</p>"
+    },
+    "TrendsValueCount":{
+      "type":"long",
+      "min":0
+    },
+    "TrendsValues":{
+      "type":"structure",
+      "required":["SeverityTrends"],
+      "members":{
+        "SeverityTrends":{
+          "shape":"SeverityTrendsCount",
+          "documentation":"<p>The count of findings organized by severity level for this data point in the trend timeline.</p>"
+        }
+      },
+      "documentation":"<p>Contains the aggregated finding values for a specific point in the findings trend timeline.</p>"
     },
     "TypeList":{
       "type":"list",

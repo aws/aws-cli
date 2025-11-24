@@ -15,6 +15,20 @@
     "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "AcceptDelegationRequest":{
+      "name":"AcceptDelegationRequest",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AcceptDelegationRequestRequest"},
+      "errors":[
+        {"shape":"NoSuchEntityException"},
+        {"shape":"ServiceFailureException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Accepts a delegation request, granting the requested temporary access.</p> <p>Once the delegation request is accepted, it is eligible to send the exchange token to the partner. The <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_SendDelegationToken.html\">SendDelegationToken</a> API has to be explicitly called to send the delegation token. </p> <p>At the time of acceptance, IAM records the details and the state of the identity that called this API. This is the identity that gets mapped to the delegated credential. </p> <p>An accepted request may be rejected before the exchange token is sent to the partner.</p>"
+    },
     "AddClientIDToOpenIDConnectProvider":{
       "name":"AddClientIDToOpenIDConnectProvider",
       "http":{
@@ -60,6 +74,21 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Adds the specified user to the specified group.</p>"
+    },
+    "AssociateDelegationRequest":{
+      "name":"AssociateDelegationRequest",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateDelegationRequestRequest"},
+      "errors":[
+        {"shape":"NoSuchEntityException"},
+        {"shape":"ServiceFailureException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Associates a delegation request with the current identity.</p> <p>If the partner that created the delegation request has specified the owner account during creation, only an identity from that owner account can call the <code>AssociateDelegationRequest</code> API for the specified delegation request. Once the <code>AssociateDelegationRequest</code> API call is successful, the ARN of the current calling identity will be stored as the <code>ownerId</code> of the request. </p> <p>If the partner that created the delegation request has not specified the owner account during creation, any caller from any account can call the <code>AssociateDelegationRequest</code> API for the delegation request. Once this API call is successful, the ARN of the current calling identity will be stored as the <code>ownerId</code> and the Amazon Web Services account ID of the current calling identity will be stored as the <code>ownerAccount</code> of the request. </p> <p> For more details, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies-temporary-delegation.html#temporary-delegation-managing-permissions\"> Managing Permissions for Delegation Requests</a>. </p>"
     },
     "AttachGroupPolicy":{
       "name":"AttachGroupPolicy",
@@ -159,6 +188,26 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Creates an alias for your Amazon Web Services account. For information about using an Amazon Web Services account alias, see <a href=\"https://docs.aws.amazon.com/signin/latest/userguide/CreateAccountAlias.html\">Creating, deleting, and listing an Amazon Web Services account alias</a> in the <i>Amazon Web Services Sign-In User Guide</i>.</p>"
+    },
+    "CreateDelegationRequest":{
+      "name":"CreateDelegationRequest",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateDelegationRequestRequest"},
+      "output":{
+        "shape":"CreateDelegationRequestResponse",
+        "resultWrapper":"CreateDelegationRequestResult"
+      },
+      "errors":[
+        {"shape":"EntityAlreadyExistsException"},
+        {"shape":"ServiceFailureException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Creates an IAM delegation request for temporary access delegation.</p> <p>This API is not available for general use. In order to use this API, a caller first need to go through an onboarding process described in the <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies-temporary-delegation-partner-guide.html\">partner onboarding documentation</a>. </p>"
     },
     "CreateGroup":{
       "name":"CreateGroup",
@@ -839,6 +888,17 @@
       ],
       "documentation":"<p>Disables root user sessions for privileged tasks across member accounts in your organization. When you disable this feature, the management account and the delegated administrator for IAM can no longer perform privileged tasks on member accounts in your organization.</p>"
     },
+    "DisableOutboundWebIdentityFederation":{
+      "name":"DisableOutboundWebIdentityFederation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "errors":[
+        {"shape":"FeatureDisabledException"}
+      ],
+      "documentation":"<p>Disables the outbound identity federation feature for your Amazon Web Services account. When disabled, IAM principals in the account cannot use the <code>GetWebIdentityToken</code> API to obtain JSON Web Tokens (JWTs) for authentication with external services. This operation does not affect tokens that were issued before the feature was disabled.</p>"
+    },
     "EnableMFADevice":{
       "name":"EnableMFADevice",
       "http":{
@@ -897,6 +957,21 @@
       ],
       "documentation":"<p>Allows the management account or delegated administrator to perform privileged tasks on member accounts in your organization. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_root-user.html#id_root-user-access-management\">Centrally manage root access for member accounts</a> in the <i>Identity and Access Management User Guide</i>.</p> <p>Before you enable this feature, you must have an account configured with the following settings:</p> <ul> <li> <p>You must manage your Amazon Web Services accounts in <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_introduction.html\">Organizations</a>.</p> </li> <li> <p>Enable trusted access for Identity and Access Management in Organizations. For details, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/services-that-can-integrate-ra.html\">IAM and Organizations</a> in the <i>Organizations User Guide</i>.</p> </li> </ul>"
     },
+    "EnableOutboundWebIdentityFederation":{
+      "name":"EnableOutboundWebIdentityFederation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "output":{
+        "shape":"EnableOutboundWebIdentityFederationResponse",
+        "resultWrapper":"EnableOutboundWebIdentityFederationResult"
+      },
+      "errors":[
+        {"shape":"FeatureEnabledException"}
+      ],
+      "documentation":"<p>Enables the outbound identity federation feature for your Amazon Web Services account. When enabled, IAM principals in your account can use the <code>GetWebIdentityToken</code> API to obtain JSON Web Tokens (JWTs) for secure authentication with external services. This operation also generates a unique issuer URL for your Amazon Web Services account. </p>"
+    },
     "GenerateCredentialReport":{
       "name":"GenerateCredentialReport",
       "http":{
@@ -927,7 +1002,7 @@
       "errors":[
         {"shape":"ReportGenerationLimitExceededException"}
       ],
-      "documentation":"<p>Generates a report for service last accessed data for Organizations. You can generate a report for any entities (organization root, organizational unit, or account) or policies in your organization.</p> <p>To call this operation, you must be signed in using your Organizations management account credentials. You can use your long-term IAM user or root user credentials, or temporary credentials from assuming an IAM role. SCPs must be enabled for your organization root. You must have the required IAM and Organizations permissions. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html\">Refining permissions using service last accessed data</a> in the <i>IAM User Guide</i>.</p> <p>You can generate a service last accessed data report for entities by specifying only the entity's path. This data includes a list of services that are allowed by any service control policies (SCPs) that apply to the entity.</p> <p>You can generate a service last accessed data report for a policy by specifying an entity's path and an optional Organizations policy ID. This data includes a list of services that are allowed by the specified SCP.</p> <p>For each service in both report types, the data includes the most recent account activity that the policy allows to account principals in the entity or the entity's children. For important information about the data, reporting period, permissions required, troubleshooting, and supported Regions see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html\">Reducing permissions using service last accessed data</a> in the <i>IAM User Guide</i>.</p> <important> <p>The data includes all attempts to access Amazon Web Services, not just the successful ones. This includes all attempts that were made using the Amazon Web Services Management Console, the Amazon Web Services API through any of the SDKs, or any of the command line tools. An unexpected entry in the service last accessed data does not mean that an account has been compromised, because the request might have been denied. Refer to your CloudTrail logs as the authoritative source for information about all API calls and whether they were successful or denied access. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/cloudtrail-integration.html\">Logging IAM events with CloudTrail</a> in the <i>IAM User Guide</i>.</p> </important> <p>This operation returns a <code>JobId</code>. Use this parameter in the <code> <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetOrganizationsAccessReport.html\">GetOrganizationsAccessReport</a> </code> operation to check the status of the report generation. To check the status of this request, use the <code>JobId</code> parameter in the <code> <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetOrganizationsAccessReport.html\">GetOrganizationsAccessReport</a> </code> operation and test the <code>JobStatus</code> response parameter. When the job is complete, you can retrieve the report.</p> <p>To generate a service last accessed data report for entities, specify an entity path without specifying the optional Organizations policy ID. The type of entity that you specify determines the data returned in the report.</p> <ul> <li> <p> <b>Root</b> – When you specify the organizations root as the entity, the resulting report lists all of the services allowed by SCPs that are attached to your root. For each service, the report includes data for all accounts in your organization except the management account, because the management account is not limited by SCPs.</p> </li> <li> <p> <b>OU</b> – When you specify an organizational unit (OU) as the entity, the resulting report lists all of the services allowed by SCPs that are attached to the OU and its parents. For each service, the report includes data for all accounts in the OU or its children. This data excludes the management account, because the management account is not limited by SCPs.</p> </li> <li> <p> <b>management account</b> – When you specify the management account, the resulting report lists all Amazon Web Services services, because the management account is not limited by SCPs. For each service, the report includes data for only the management account.</p> </li> <li> <p> <b>Account</b> – When you specify another account as the entity, the resulting report lists all of the services allowed by SCPs that are attached to the account and its parents. For each service, the report includes data for only the specified account.</p> </li> </ul> <p>To generate a service last accessed data report for policies, specify an entity path and the optional Organizations policy ID. The type of entity that you specify determines the data returned for each service.</p> <ul> <li> <p> <b>Root</b> – When you specify the root entity and a policy ID, the resulting report lists all of the services that are allowed by the specified SCP. For each service, the report includes data for all accounts in your organization to which the SCP applies. This data excludes the management account, because the management account is not limited by SCPs. If the SCP is not attached to any entities in the organization, then the report will return a list of services with no data.</p> </li> <li> <p> <b>OU</b> – When you specify an OU entity and a policy ID, the resulting report lists all of the services that are allowed by the specified SCP. For each service, the report includes data for all accounts in the OU or its children to which the SCP applies. This means that other accounts outside the OU that are affected by the SCP might not be included in the data. This data excludes the management account, because the management account is not limited by SCPs. If the SCP is not attached to the OU or one of its children, the report will return a list of services with no data.</p> </li> <li> <p> <b>management account</b> – When you specify the management account, the resulting report lists all Amazon Web Services services, because the management account is not limited by SCPs. If you specify a policy ID in the CLI or API, the policy is ignored. For each service, the report includes data for only the management account.</p> </li> <li> <p> <b>Account</b> – When you specify another account entity and a policy ID, the resulting report lists all of the services that are allowed by the specified SCP. For each service, the report includes data for only the specified account. This means that other accounts in the organization that are affected by the SCP might not be included in the data. If the SCP is not attached to the account, the report will return a list of services with no data.</p> </li> </ul> <note> <p>Service last accessed data does not use other policy types when determining whether a principal could access a service. These other policy types include identity-based policies, resource-based policies, access control lists, IAM permissions boundaries, and STS assume role policies. It only applies SCP logic. For more about the evaluation of policy types, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html#policy-eval-basics\">Evaluating policies</a> in the <i>IAM User Guide</i>.</p> </note> <p>For more information about service last accessed data, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html\">Reducing policy scope by viewing user activity</a> in the <i>IAM User Guide</i>.</p>"
+      "documentation":"<p>Generates a report for service last accessed data for Organizations. You can generate a report for any entities (organization root, organizational unit, or account) or policies in your organization.</p> <p>To call this operation, you must be signed in using your Organizations management account credentials. You can use your long-term IAM user or root user credentials, or temporary credentials from assuming an IAM role. SCPs must be enabled for your organization root. You must have the required IAM and Organizations permissions. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html\">Refining permissions using service last accessed data</a> in the <i>IAM User Guide</i>.</p> <p>You can generate a service last accessed data report for entities by specifying only the entity's path. This data includes a list of services that are allowed by any service control policies (SCPs) that apply to the entity.</p> <p>You can generate a service last accessed data report for a policy by specifying an entity's path and an optional Organizations policy ID. This data includes a list of services that are allowed by the specified SCP.</p> <p>For each service in both report types, the data includes the most recent account activity that the policy allows to account principals in the entity or the entity's children. For important information about the data, reporting period, permissions required, troubleshooting, and supported Regions see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html\">Reducing permissions using service last accessed data</a> in the <i>IAM User Guide</i>.</p> <important> <p>The data includes all attempts to access Amazon Web Services, not just the successful ones. This includes all attempts that were made using the Amazon Web Services Management Console, the Amazon Web Services API through any of the SDKs, or any of the command line tools. An unexpected entry in the service last accessed data does not mean that an account has been compromised, because the request might have been denied. Refer to your CloudTrail logs as the authoritative source for information about all API calls and whether they were successful or denied access. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/cloudtrail-integration.html\">Logging IAM events with CloudTrail</a> in the <i>IAM User Guide</i>.</p> </important> <p>This operation returns a <code>JobId</code>. Use this parameter in the <code> <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetOrganizationsAccessReport.html\">GetOrganizationsAccessReport</a> </code> operation to check the status of the report generation. To check the status of this request, use the <code>JobId</code> parameter in the <code> <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetOrganizationsAccessReport.html\">GetOrganizationsAccessReport</a> </code> operation and test the <code>JobStatus</code> response parameter. When the job is complete, you can retrieve the report.</p> <p>To generate a service last accessed data report for entities, specify an entity path without specifying the optional Organizations policy ID. The type of entity that you specify determines the data returned in the report.</p> <ul> <li> <p> <b>Root</b> – When you specify the organizations root as the entity, the resulting report lists all of the services allowed by SCPs that are attached to your root. For each service, the report includes data for all accounts in your organization except the management account, because the management account is not limited by SCPs.</p> </li> <li> <p> <b>OU</b> – When you specify an organizational unit (OU) as the entity, the resulting report lists all of the services allowed by SCPs that are attached to the OU and its parents. For each service, the report includes data for all accounts in the OU or its children. This data excludes the management account, because the management account is not limited by SCPs.</p> </li> <li> <p> <b>management account</b> – When you specify the management account, the resulting report lists all Amazon Web Services services, because the management account is not limited by SCPs. For each service, the report includes data for only the management account.</p> </li> <li> <p> <b>Account</b> – When you specify another account as the entity, the resulting report lists all of the services allowed by SCPs that are attached to the account and its parents. For each service, the report includes data for only the specified account.</p> </li> </ul> <p>To generate a service last accessed data report for policies, specify an entity path and the optional Organizations policy ID. The type of entity that you specify determines the data returned for each service.</p> <ul> <li> <p> <b>Root</b> – When you specify the root entity and a policy ID, the resulting report lists all of the services that are allowed by the specified SCP. For each service, the report includes data for all accounts in your organization to which the SCP applies. This data excludes the management account, because the management account is not limited by SCPs. If the SCP is not attached to any entities in the organization, then the report will return a list of services with no data.</p> </li> <li> <p> <b>OU</b> – When you specify an OU entity and a policy ID, the resulting report lists all of the services that are allowed by the specified SCP. For each service, the report includes data for all accounts in the OU or its children to which the SCP applies. This means that other accounts outside the OU that are affected by the SCP might not be included in the data. This data excludes the management account, because the management account is not limited by SCPs. If the SCP is not attached to the OU or one of its children, the report will return a list of services with no data.</p> </li> <li> <p> <b>management account</b> – When you specify the management account, the resulting report lists all Amazon Web Services services, because the management account is not limited by SCPs. If you specify a policy ID in the CLI or API, the policy is ignored. For each service, the report includes data for only the management account.</p> </li> <li> <p> <b>Account</b> – When you specify another account entity and a policy ID, the resulting report lists all of the services that are allowed by the specified SCP. For each service, the report includes data for only the specified account. This means that other accounts in the organization that are affected by the SCP might not be included in the data. If the SCP is not attached to the account, the report will return a list of services with no data.</p> </li> </ul> <note> <p>Service last accessed data does not use other policy types when determining whether a principal could access a service. These other policy types include identity-based policies, resource-based policies, access control lists, IAM permissions boundaries, and STS assume role policies. It only applies SCP logic. For more about the evaluation of policy types, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html#policy-eval-basics\">Evaluating policies</a> in the <i>IAM User Guide</i>.</p> </note> <p>For more information about service last accessed data, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html\">Reducing policy scope by viewing user activity</a> in the <i>IAM User Guide</i>.</p>"
     },
     "GenerateServiceLastAccessedDetails":{
       "name":"GenerateServiceLastAccessedDetails",
@@ -944,7 +1019,7 @@
         {"shape":"NoSuchEntityException"},
         {"shape":"InvalidInputException"}
       ],
-      "documentation":"<p>Generates a report that includes details about when an IAM resource (user, group, role, or policy) was last used in an attempt to access Amazon Web Services services. Recent activity usually appears within four hours. IAM reports activity for at least the last 400 days, or less if your Region began supporting this feature within the last year. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#access-advisor_tracking-period\">Regions where data is tracked</a>. For more information about services and actions for which action last accessed information is displayed, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor-action-last-accessed.html\">IAM action last accessed information services and actions</a>.</p> <important> <p>The service last accessed data includes all attempts to access an Amazon Web Services API, not just the successful ones. This includes all attempts that were made using the Amazon Web Services Management Console, the Amazon Web Services API through any of the SDKs, or any of the command line tools. An unexpected entry in the service last accessed data does not mean that your account has been compromised, because the request might have been denied. Refer to your CloudTrail logs as the authoritative source for information about all API calls and whether they were successful or denied access. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/cloudtrail-integration.html\">Logging IAM events with CloudTrail</a> in the <i>IAM User Guide</i>.</p> </important> <p>The <code>GenerateServiceLastAccessedDetails</code> operation returns a <code>JobId</code>. Use this parameter in the following operations to retrieve the following details from your report: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetServiceLastAccessedDetails.html\">GetServiceLastAccessedDetails</a> – Use this operation for users, groups, roles, or policies to list every Amazon Web Services service that the resource could access using permissions policies. For each service, the response includes information about the most recent access attempt.</p> <p>The <code>JobId</code> returned by <code>GenerateServiceLastAccessedDetail</code> must be used by the same role within a session, or by the same user when used to call <code>GetServiceLastAccessedDetail</code>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetServiceLastAccessedDetailsWithEntities.html\">GetServiceLastAccessedDetailsWithEntities</a> – Use this operation for groups and policies to list information about the associated entities (users or roles) that attempted to access a specific Amazon Web Services service. </p> </li> </ul> <p>To check the status of the <code>GenerateServiceLastAccessedDetails</code> request, use the <code>JobId</code> parameter in the same operations and test the <code>JobStatus</code> response parameter.</p> <p>For additional information about the permissions policies that allow an identity (user, group, or role) to access specific services, use the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_ListPoliciesGrantingServiceAccess.html\">ListPoliciesGrantingServiceAccess</a> operation.</p> <note> <p>Service last accessed data does not use other policy types when determining whether a resource could access a service. These other policy types include resource-based policies, access control lists, Organizations policies, IAM permissions boundaries, and STS assume role policies. It only applies permissions policy logic. For more about the evaluation of policy types, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html#policy-eval-basics\">Evaluating policies</a> in the <i>IAM User Guide</i>.</p> </note> <p>For more information about service and action last accessed data, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html\">Reducing permissions using service last accessed data</a> in the <i>IAM User Guide</i>.</p>"
+      "documentation":"<p>Generates a report that includes details about when an IAM resource (user, group, role, or policy) was last used in an attempt to access Amazon Web Services services. Recent activity usually appears within four hours. IAM reports activity for at least the last 400 days, or less if your Region began supporting this feature within the last year. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html#access-advisor_tracking-period\">Regions where data is tracked</a>. For more information about services and actions for which action last accessed information is displayed, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor-action-last-accessed.html\">IAM action last accessed information services and actions</a>.</p> <important> <p>The service last accessed data includes all attempts to access an Amazon Web Services API, not just the successful ones. This includes all attempts that were made using the Amazon Web Services Management Console, the Amazon Web Services API through any of the SDKs, or any of the command line tools. An unexpected entry in the service last accessed data does not mean that your account has been compromised, because the request might have been denied. Refer to your CloudTrail logs as the authoritative source for information about all API calls and whether they were successful or denied access. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/cloudtrail-integration.html\">Logging IAM events with CloudTrail</a> in the <i>IAM User Guide</i>.</p> </important> <p>The <code>GenerateServiceLastAccessedDetails</code> operation returns a <code>JobId</code>. Use this parameter in the following operations to retrieve the following details from your report: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetServiceLastAccessedDetails.html\">GetServiceLastAccessedDetails</a> – Use this operation for users, groups, roles, or policies to list every Amazon Web Services service that the resource could access using permissions policies. For each service, the response includes information about the most recent access attempt.</p> <p>The <code>JobId</code> returned by <code>GenerateServiceLastAccessedDetail</code> must be used by the same role within a session, or by the same user when used to call <code>GetServiceLastAccessedDetail</code>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetServiceLastAccessedDetailsWithEntities.html\">GetServiceLastAccessedDetailsWithEntities</a> – Use this operation for groups and policies to list information about the associated entities (users or roles) that attempted to access a specific Amazon Web Services service. </p> </li> </ul> <p>To check the status of the <code>GenerateServiceLastAccessedDetails</code> request, use the <code>JobId</code> parameter in the same operations and test the <code>JobStatus</code> response parameter.</p> <p>For additional information about the permissions policies that allow an identity (user, group, or role) to access specific services, use the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_ListPoliciesGrantingServiceAccess.html\">ListPoliciesGrantingServiceAccess</a> operation.</p> <note> <p>Service last accessed data does not use other policy types when determining whether a resource could access a service. These other policy types include resource-based policies, access control lists, Organizations policies, IAM permissions boundaries, and STS assume role policies. It only applies permissions policy logic. For more about the evaluation of policy types, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html#policy-eval-basics\">Evaluating policies</a> in the <i>IAM User Guide</i>.</p> </note> <p>For more information about service and action last accessed data, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html\">Reducing permissions using service last accessed data</a> in the <i>IAM User Guide</i>.</p>"
     },
     "GetAccessKeyLastUsed":{
       "name":"GetAccessKeyLastUsed",
@@ -1057,6 +1132,23 @@
       ],
       "documentation":"<p> Retrieves a credential report for the Amazon Web Services account. For more information about the credential report, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/credential-reports.html\">Getting credential reports</a> in the <i>IAM User Guide</i>.</p>"
     },
+    "GetDelegationRequest":{
+      "name":"GetDelegationRequest",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDelegationRequestRequest"},
+      "output":{
+        "shape":"GetDelegationRequestResponse",
+        "resultWrapper":"GetDelegationRequestResult"
+      },
+      "errors":[
+        {"shape":"NoSuchEntityException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Retrieves information about a specific delegation request.</p> <p> If a delegation request has no owner or owner account, <code>GetDelegationRequest</code> for that delegation request can be called by any account. If the owner account is assigned but there is no owner id, only identities within that owner account can call <code>GetDelegationRequest</code> for the delegation request. Once the delegation request is fully owned, the owner of the request gets a default permission to get that delegation request. For more details, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies-temporary-delegation.html#temporary-delegation-managing-permissions\"> Managing Permissions for Delegation Requests</a>. </p>"
+    },
     "GetGroup":{
       "name":"GetGroup",
       "http":{
@@ -1090,6 +1182,24 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Retrieves the specified inline policy document that is embedded in the specified IAM group.</p> <note> <p>Policies returned by this operation are URL-encoded compliant with <a href=\"https://tools.ietf.org/html/rfc3986\">RFC 3986</a>. You can use a URL decoding method to convert the policy back to plain JSON text. For example, if you use Java, you can use the <code>decode</code> method of the <code>java.net.URLDecoder</code> utility class in the Java SDK. Other languages and SDKs provide similar functionality, and some SDKs do this decoding automatically.</p> </note> <p>An IAM group can also have managed policies attached to it. To retrieve a managed policy document that is attached to a group, use <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetPolicy.html\">GetPolicy</a> to determine the policy's default version, then use <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetPolicyVersion.html\">GetPolicyVersion</a> to retrieve the policy document.</p> <p>For more information about policies, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-vs-inline.html\">Managed policies and inline policies</a> in the <i>IAM User Guide</i>.</p>"
+    },
+    "GetHumanReadableSummary":{
+      "name":"GetHumanReadableSummary",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetHumanReadableSummaryRequest"},
+      "output":{
+        "shape":"GetHumanReadableSummaryResponse",
+        "resultWrapper":"GetHumanReadableSummaryResult"
+      },
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"NoSuchEntityException"},
+        {"shape":"ServiceFailureException"}
+      ],
+      "documentation":"<p>Retrieves a human readable summary for a given entity. At this time, the only supported entity type is <code>delegation-request</code> </p> <p>This method uses a Large Language Model (LLM) to generate the summary.</p> <p> If a delegation request has no owner or owner account, <code>GetHumanReadableSummary</code> for that delegation request can be called by any account. If the owner account is assigned but there is no owner id, only identities within that owner account can call <code>GetHumanReadableSummary</code> for the delegation request to retrieve a summary of that request. Once the delegation request is fully owned, the owner of the request gets a default permission to get that delegation request. For more details, read <a href=\"\">default permissions granted to delegation requests</a>. These rules are identical to <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetDelegationRequest.html\">GetDelegationRequest</a> API behavior, such that a party who has permissions to call <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetDelegationRequest.html\">GetDelegationRequest</a> for a given delegation request will always be able to retrieve the human readable summary for that request. </p>"
     },
     "GetInstanceProfile":{
       "name":"GetInstanceProfile",
@@ -1175,6 +1285,21 @@
         {"shape":"NoSuchEntityException"}
       ],
       "documentation":"<p>Retrieves the service last accessed data report for Organizations that was previously generated using the <code> <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GenerateOrganizationsAccessReport.html\">GenerateOrganizationsAccessReport</a> </code> operation. This operation retrieves the status of your report job and the report contents.</p> <p>Depending on the parameters that you passed when you generated the report, the data returned could include different information. For details, see <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GenerateOrganizationsAccessReport.html\">GenerateOrganizationsAccessReport</a>.</p> <p>To call this operation, you must be signed in to the management account in your organization. SCPs must be enabled for your organization root. You must have permissions to perform this operation. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_access-advisor.html\">Refining permissions using service last accessed data</a> in the <i>IAM User Guide</i>.</p> <p>For each service that principals in an account (root user, IAM users, or IAM roles) could access using SCPs, the operation returns details about the most recent access attempt. If there was no attempt, the service is listed without details about the most recent attempt to access the service. If the operation fails, it returns the reason that it failed.</p> <p>By default, the list is sorted by service namespace.</p>"
+    },
+    "GetOutboundWebIdentityFederationInfo":{
+      "name":"GetOutboundWebIdentityFederationInfo",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "output":{
+        "shape":"GetOutboundWebIdentityFederationInfoResponse",
+        "resultWrapper":"GetOutboundWebIdentityFederationInfoResult"
+      },
+      "errors":[
+        {"shape":"FeatureDisabledException"}
+      ],
+      "documentation":"<p>Retrieves the configuration information for the outbound identity federation feature in your Amazon Web Services account. The response includes the unique issuer URL for your Amazon Web Services account and the current enabled/disabled status of the feature. Use this operation to obtain the issuer URL that you need to configure trust relationships with external services.</p>"
     },
     "GetPolicy":{
       "name":"GetPolicy",
@@ -1470,6 +1595,24 @@
         {"shape":"ServiceFailureException"}
       ],
       "documentation":"<p>Lists all managed policies that are attached to the specified IAM user.</p> <p>An IAM user can also have inline policies embedded with it. To list the inline policies for a user, use <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_ListUserPolicies.html\">ListUserPolicies</a>. For information about policies, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-vs-inline.html\">Managed policies and inline policies</a> in the <i>IAM User Guide</i>.</p> <p>You can paginate the results using the <code>MaxItems</code> and <code>Marker</code> parameters. You can use the <code>PathPrefix</code> parameter to limit the list of policies to only those matching the specified path prefix. If there are no policies attached to the specified group (or none that match the specified path prefix), the operation returns an empty list.</p>"
+    },
+    "ListDelegationRequests":{
+      "name":"ListDelegationRequests",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListDelegationRequestsRequest"},
+      "output":{
+        "shape":"ListDelegationRequestsResponse",
+        "resultWrapper":"ListDelegationRequestsResult"
+      },
+      "errors":[
+        {"shape":"NoSuchEntityException"},
+        {"shape":"ServiceFailureException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Lists delegation requests based on the specified criteria.</p> <p>If a delegation request has no owner, even if it is assigned to a specific account, it will not be part of the <code>ListDelegationRequests</code> output for that account.</p> <p> For more details, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies-temporary-delegation.html#temporary-delegation-managing-permissions\"> Managing Permissions for Delegation Requests</a>. </p>"
     },
     "ListEntitiesForPolicy":{
       "name":"ListEntitiesForPolicy",
@@ -2053,6 +2196,21 @@
       ],
       "documentation":"<p>Adds or updates an inline policy document that is embedded in the specified IAM user.</p> <p>An IAM user can also have a managed policy attached to it. To attach a managed policy to a user, use <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_AttachUserPolicy.html\"> <code>AttachUserPolicy</code> </a>. To create a new managed policy, use <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreatePolicy.html\"> <code>CreatePolicy</code> </a>. For information about policies, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/policies-managed-vs-inline.html\">Managed policies and inline policies</a> in the <i>IAM User Guide</i>.</p> <p>For information about the maximum number of inline policies that you can embed in a user, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html\">IAM and STS quotas</a> in the <i>IAM User Guide</i>.</p> <note> <p>Because policy documents can be large, you should use POST rather than GET when calling <code>PutUserPolicy</code>. For general information about using the Query API with IAM, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/IAM_UsingQueryAPI.html\">Making query requests</a> in the <i>IAM User Guide</i>.</p> </note>"
     },
+    "RejectDelegationRequest":{
+      "name":"RejectDelegationRequest",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RejectDelegationRequestRequest"},
+      "errors":[
+        {"shape":"NoSuchEntityException"},
+        {"shape":"ServiceFailureException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Rejects a delegation request, denying the requested temporary access.</p> <p>Once a request is rejected, it cannot be accepted or updated later. Rejected requests expire after 7 days.</p> <p>When rejecting a request, an optional explanation can be added using the <code>Notes</code> request parameter.</p> <p> For more details, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies-temporary-delegation.html#temporary-delegation-managing-permissions\"> Managing Permissions for Delegation Requests</a>. </p>"
+    },
     "RemoveClientIDFromOpenIDConnectProvider":{
       "name":"RemoveClientIDFromOpenIDConnectProvider",
       "http":{
@@ -2128,6 +2286,21 @@
         {"shape":"ConcurrentModificationException"}
       ],
       "documentation":"<p>Synchronizes the specified MFA device with its IAM resource object on the Amazon Web Services servers.</p> <p>For more information about creating and working with virtual MFA devices, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_VirtualMFA.html\">Using a virtual MFA device</a> in the <i>IAM User Guide</i>.</p>"
+    },
+    "SendDelegationToken":{
+      "name":"SendDelegationToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"SendDelegationTokenRequest"},
+      "errors":[
+        {"shape":"NoSuchEntityException"},
+        {"shape":"ServiceFailureException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Sends the exchange token for an accepted delegation request.</p> <p>The exchange token is sent to the partner via an asynchronous notification channel, established by the partner.</p> <p>The delegation request must be in the <code>ACCEPTED</code> state when calling this API. After the <code>SendDelegationToken</code> API call is successful, the request transitions to a <code>FINALIZED</code> state and cannot be rolled back. However, a user may reject an accepted request before the <code>SendDelegationToken</code> API is called.</p> <p> For more details, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies-temporary-delegation.html#temporary-delegation-managing-permissions\"> Managing Permissions for Delegation Requests</a>. </p>"
     },
     "SetDefaultPolicyVersion":{
       "name":"SetDefaultPolicyVersion",
@@ -2483,6 +2656,21 @@
       ],
       "documentation":"<p>Updates the policy that grants an IAM entity permission to assume a role. This is typically referred to as the \"role trust policy\". For more information about roles, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/roles-toplevel.html\">Using roles to delegate permissions and federate identities</a>.</p>"
     },
+    "UpdateDelegationRequest":{
+      "name":"UpdateDelegationRequest",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateDelegationRequestRequest"},
+      "errors":[
+        {"shape":"NoSuchEntityException"},
+        {"shape":"ServiceFailureException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Updates an existing delegation request with additional information. When the delegation request is updated, it reaches the <code>PENDING_APPROVAL</code> state. </p> <p>Once a delegation request has an owner, that owner gets a default permission to update the delegation request. For more details, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies-temporary-delegation.html#temporary-delegation-managing-permissions\"> Managing Permissions for Delegation Requests</a>. </p>"
+    },
     "UpdateGroup":{
       "name":"UpdateGroup",
       "http":{
@@ -2724,6 +2912,16 @@
     }
   },
   "shapes":{
+    "AcceptDelegationRequestRequest":{
+      "type":"structure",
+      "required":["DelegationRequestId"],
+      "members":{
+        "DelegationRequestId":{
+          "shape":"delegationRequestIdType",
+          "documentation":"<p>The unique identifier of the delegation request to accept.</p>"
+        }
+      }
+    },
     "AccessAdvisorUsageGranularityType":{
       "type":"string",
       "enum":[
@@ -2914,6 +3112,16 @@
     "ArnListType":{
       "type":"list",
       "member":{"shape":"arnType"}
+    },
+    "AssociateDelegationRequestRequest":{
+      "type":"structure",
+      "required":["DelegationRequestId"],
+      "members":{
+        "DelegationRequestId":{
+          "shape":"delegationRequestIdType",
+          "documentation":"<p>The unique identifier of the delegation request to associate.</p>"
+        }
+      }
     },
     "AttachGroupPolicyRequest":{
       "type":"structure",
@@ -3130,6 +3338,67 @@
         "AccountAlias":{
           "shape":"accountAliasType",
           "documentation":"<p>The account alias to create.</p> <p>This parameter allows (through its <a href=\"http://wikipedia.org/wiki/regex\">regex pattern</a>) a string of characters consisting of lowercase letters, digits, and dashes. You cannot start or finish with a dash, nor can you have two dashes in a row.</p>"
+        }
+      }
+    },
+    "CreateDelegationRequestRequest":{
+      "type":"structure",
+      "required":[
+        "Description",
+        "Permissions",
+        "RequestorWorkflowId",
+        "NotificationChannel",
+        "SessionDuration"
+      ],
+      "members":{
+        "OwnerAccountId":{
+          "shape":"accountIdType",
+          "documentation":"<p>The Amazon Web Services account ID this delegation request is targeted to.</p> <p>If the account ID is not known, this parameter can be omitted, resulting in a request that can be associated by any account. If the account ID passed, then the created delegation request can only be associated with an identity of that target account.</p>"
+        },
+        "Description":{
+          "shape":"delegationRequestDescriptionType",
+          "documentation":"<p>A description of the delegation request.</p>"
+        },
+        "Permissions":{
+          "shape":"DelegationPermission",
+          "documentation":"<p>The permissions to be delegated in this delegation request.</p>"
+        },
+        "RequestMessage":{
+          "shape":"requestMessageType",
+          "documentation":"<p>A message explaining the reason for the delegation request.</p> <p>Requesters can utilize this field to add a custom note to the delegation request. This field is different from the description such that this is to be utilized for a custom messaging on a case-by-case basis.</p> <p>For example, if the current delegation request is in response to a previous request being rejected, this explanation can be added to the request via this field.</p>"
+        },
+        "RequestorWorkflowId":{
+          "shape":"requestorWorkflowIdType",
+          "documentation":"<p>The workflow ID associated with the requestor.</p> <p>This is the unique identifier on the partner side that can be used to track the progress of the request.</p> <p>IAM maintains a uniqueness check on this workflow id for each request - if a workflow id for an existing request is passed, this API call will fail.</p>"
+        },
+        "RedirectUrl":{
+          "shape":"redirectUrlType",
+          "documentation":"<p>The URL to redirect to after the delegation request is processed.</p> <p>This URL is used by the IAM console to show a link to the customer to re-load the partner workflow.</p>"
+        },
+        "NotificationChannel":{
+          "shape":"notificationChannelType",
+          "documentation":"<p>The notification channel for updates about the delegation request.</p> <p>At this time,only SNS topic ARNs are accepted for notification. This topic ARN must have a resource policy granting <code>SNS:Publish</code> permission to the IAM service principal (<code>iam.amazonaws.com</code>). See <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies-temporary-delegation-partner-guide.html\">partner onboarding documentation</a> for more details. </p>"
+        },
+        "SessionDuration":{
+          "shape":"sessionDurationType",
+          "documentation":"<p>The duration for which the delegated session should remain active, in seconds.</p> <p>The active time window for the session starts when the customer calls the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_SendDelegationToken.html\">SendDelegationToken</a> API.</p>"
+        },
+        "OnlySendByOwner":{
+          "shape":"booleanType",
+          "documentation":"<p>Specifies whether the delegation token should only be sent by the owner.</p> <p>This flag prevents any party other than the owner from calling <code>SendDelegationToken</code> API for this delegation request. This behavior becomes useful when the delegation request owner needs to be present for subsequent partner interactions, but the delegation request was sent to a more privileged user for approval due to the owner lacking sufficient delegation permissions. </p>"
+        }
+      }
+    },
+    "CreateDelegationRequestResponse":{
+      "type":"structure",
+      "members":{
+        "ConsoleDeepLink":{
+          "shape":"consoleDeepLinkType",
+          "documentation":"<p>A deep link URL to the Amazon Web Services Management Console for managing the delegation request.</p> <p>For a console based workflow, partners should redirect the customer to this URL. If the customer is not logged in to any Amazon Web Services account, the Amazon Web Services workflow will automatically direct the customer to log in and then display the delegation request approval page.</p>"
+        },
+        "DelegationRequestId":{
+          "shape":"delegationRequestIdType",
+          "documentation":"<p>The unique identifier for the created delegation request.</p>"
         }
       }
     },
@@ -3582,6 +3851,96 @@
           "documentation":"<p>The serial number that uniquely identifies the MFA device. For virtual MFA devices, the serial number is the device ARN.</p> <p>This parameter allows (through its <a href=\"http://wikipedia.org/wiki/regex\">regex pattern</a>) a string of characters consisting of upper and lowercase alphanumeric characters with no spaces. You can also include any of the following characters: =,.@:/-</p>"
         }
       }
+    },
+    "DelegationPermission":{
+      "type":"structure",
+      "members":{
+        "PolicyTemplateArn":{
+          "shape":"arnType",
+          "documentation":"<p>This ARN maps to a pre-registered policy content for this partner. See the <a href=\"\">partner onboarding documentation</a> to understand how to create a delegation template.</p>"
+        },
+        "Parameters":{
+          "shape":"policyParameterListType",
+          "documentation":"<p>A list of policy parameters that define the scope and constraints of the delegated permissions.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the permissions being delegated in a delegation request.</p>"
+    },
+    "DelegationRequest":{
+      "type":"structure",
+      "members":{
+        "DelegationRequestId":{
+          "shape":"delegationRequestIdType",
+          "documentation":"<p>The unique identifier for the delegation request.</p>"
+        },
+        "OwnerAccountId":{
+          "shape":"accountIdType",
+          "documentation":"<p>Amazon Web Services account ID of the owner of the delegation request.</p>"
+        },
+        "Description":{
+          "shape":"delegationRequestDescriptionType",
+          "documentation":"<p>Description of the delegation request. This is a message that is provided by the Amazon Web Services partner that filed the delegation request.</p>"
+        },
+        "RequestMessage":{
+          "shape":"requestMessageType",
+          "documentation":"<p>A custom message that is added to the delegation request by the partner.</p> <p>This element is different from the <code>Description</code> element such that this is a request specific message injected by the partner. The <code>Description</code> is typically a generic explanation of what the delegation request is targeted to do.</p>"
+        },
+        "Permissions":{"shape":"DelegationPermission"},
+        "PermissionPolicy":{
+          "shape":"permissionType",
+          "documentation":"<p>JSON content of the associated permission policy of this delegation request.</p>"
+        },
+        "RolePermissionRestrictionArns":{
+          "shape":"rolePermissionRestrictionArnListType",
+          "documentation":"<p>If the <code>PermissionPolicy</code> includes role creation permissions, this element will include the list of permissions boundary policies associated with the role creation. See <a href=\"IAM/latest/UserGuide/access_policies_boundaries.html\">Permissions boundaries for IAM entities</a> for more details about IAM permission boundaries. </p>"
+        },
+        "OwnerId":{
+          "shape":"ownerIdType",
+          "documentation":"<p>ARN of the owner of this delegation request.</p>"
+        },
+        "ApproverId":{"shape":"arnType"},
+        "State":{
+          "shape":"stateType",
+          "documentation":"<p>The state of this delegation request.</p> <p>See the <a href=\"IAM/latest/UserGuide/temporary-delegation-building-integration.html\">Understanding the Request Lifecycle</a> for an explanation of how these states are transitioned.</p>"
+        },
+        "RequestorId":{
+          "shape":"accountIdType",
+          "documentation":"<p>Identity of the requestor of this delegation request. This will be an Amazon Web Services account ID.</p>"
+        },
+        "RequestorName":{
+          "shape":"requestorNameType",
+          "documentation":"<p>A friendly name of the requestor.</p>"
+        },
+        "CreateDate":{
+          "shape":"dateType",
+          "documentation":"<p>Creation date (timestamp) of this delegation request.</p>"
+        },
+        "SessionDuration":{
+          "shape":"sessionDurationType",
+          "documentation":"<p>The life-time of the requested session credential.</p>"
+        },
+        "RedirectUrl":{
+          "shape":"redirectUrlType",
+          "documentation":"<p>A URL to be redirected to once the delegation request is approved. Partners provide this URL when creating the delegation request.</p>"
+        },
+        "Notes":{
+          "shape":"notesType",
+          "documentation":"<p>Notes added to this delegation request, if this request was updated via the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_UpdateDelegationRequest.html\">UpdateDelegationRequest</a> API.</p>"
+        },
+        "RejectionReason":{
+          "shape":"notesType",
+          "documentation":"<p>Reasons for rejecting this delegation request, if this request was rejected. See also <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_RejectDelegationRequest.html\">RejectDelegationRequest</a> API documentation. </p>"
+        },
+        "OnlySendByOwner":{
+          "shape":"booleanType",
+          "documentation":"<p>A flag indicating whether the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_SendDelegationToken.html\">SendDelegationToken</a> must be called by the owner of this delegation request. This is set by the requesting partner.</p>"
+        },
+        "UpdatedTime":{
+          "shape":"dateType",
+          "documentation":"<p>Last updated timestamp of the request.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a delegation request, including its status, permissions, and associated metadata.</p>"
     },
     "DeleteAccessKeyRequest":{
       "type":"structure",
@@ -4072,6 +4431,15 @@
         }
       }
     },
+    "EnableOutboundWebIdentityFederationResponse":{
+      "type":"structure",
+      "members":{
+        "IssuerIdentifier":{
+          "shape":"stringType",
+          "documentation":"<p>A unique issuer URL for your Amazon Web Services account that hosts the OpenID Connect (OIDC) discovery endpoints at <code>/.well-known/openid-configuration and /.well-known/jwks.json</code>. The OpenID Connect (OIDC) discovery endpoints contain verification keys and metadata necessary for token verification.</p>"
+        }
+      }
+    },
     "EntityAlreadyExistsException":{
       "type":"structure",
       "members":{
@@ -4230,6 +4598,34 @@
       "type":"list",
       "member":{"shape":"EvaluationResult"}
     },
+    "FeatureDisabledException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"FeatureDisabledMessage"}
+      },
+      "documentation":"<p>The request failed because outbound identity federation is already disabled for your Amazon Web Services account. You cannot disable the feature multiple times</p>",
+      "error":{
+        "code":"FeatureDisabled",
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "FeatureDisabledMessage":{"type":"string"},
+    "FeatureEnabledException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"FeatureEnabledMessage"}
+      },
+      "documentation":"<p>The request failed because outbound identity federation is already enabled for your Amazon Web Services account. You cannot enable the feature multiple times. To fetch the current configuration (including the unique issuer URL), use the <code>GetOutboundWebIdentityFederationInfo</code> operation.</p>",
+      "error":{
+        "code":"FeatureEnabled",
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "FeatureEnabledMessage":{"type":"string"},
     "FeatureType":{
       "type":"string",
       "enum":[
@@ -4445,6 +4841,37 @@
       },
       "documentation":"<p>Contains the response to a successful <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetCredentialReport.html\">GetCredentialReport</a> request. </p>"
     },
+    "GetDelegationRequestRequest":{
+      "type":"structure",
+      "required":["DelegationRequestId"],
+      "members":{
+        "DelegationRequestId":{
+          "shape":"delegationRequestIdType",
+          "documentation":"<p>The unique identifier of the delegation request to retrieve.</p>"
+        },
+        "DelegationPermissionCheck":{
+          "shape":"booleanType",
+          "documentation":"<p>Specifies whether to perform a permission check for the delegation request.</p> <p>If set to true, the <code>GetDelegationRequest</code> API call will start a permission check process. This process calculates whether the caller has sufficient permissions to cover the asks from this delegation request.</p> <p>Setting this parameter to true does not guarantee an answer in the response. See the <code>PermissionCheckStatus</code> and the <code>PermissionCheckResult</code> response attributes for further details.</p>"
+        }
+      }
+    },
+    "GetDelegationRequestResponse":{
+      "type":"structure",
+      "members":{
+        "DelegationRequest":{
+          "shape":"DelegationRequest",
+          "documentation":"<p>The delegation request object containing all details about the request.</p>"
+        },
+        "PermissionCheckStatus":{
+          "shape":"permissionCheckStatusType",
+          "documentation":"<p>The status of the permission check for the delegation request.</p> <p>This value indicates the status of the process to check whether the caller has sufficient permissions to cover the requested actions in the delegation request. Since this is an asynchronous process, there are three potential values:</p> <ul> <li> <p> <code>IN_PROGRESS</code> : The permission check process has started.</p> </li> <li> <p> <code>COMPLETED</code> : The permission check process has completed. The <code>PermissionCheckResult</code> will include the result.</p> </li> <li> <p> <code>FAILED</code> : The permission check process has failed.</p> </li> </ul>"
+        },
+        "PermissionCheckResult":{
+          "shape":"permissionCheckResultType",
+          "documentation":"<p>The result of the permission check, indicating whether the caller has sufficient permissions to cover the requested permissions. This is an approximate result.</p> <ul> <li> <p> <code>ALLOWED</code> : The caller has sufficient permissions cover all the requested permissions.</p> </li> <li> <p> <code>DENIED</code> : The caller does not have sufficient permissions to cover all the requested permissions.</p> </li> <li> <p> <code>UNSURE</code> : It is not possible to determine whether the caller has all the permissions needed. This output is most likely for cases when the caller has permissions with conditions.</p> </li> </ul>"
+        }
+      }
+    },
     "GetGroupPolicyRequest":{
       "type":"structure",
       "required":[
@@ -4528,6 +4955,37 @@
         }
       },
       "documentation":"<p>Contains the response to a successful <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetGroup.html\">GetGroup</a> request. </p>"
+    },
+    "GetHumanReadableSummaryRequest":{
+      "type":"structure",
+      "required":["EntityArn"],
+      "members":{
+        "EntityArn":{
+          "shape":"arnType",
+          "documentation":"<p>Arn of the entity to be summarized. At this time, the only supported entity type is <code>delegation-request</code> </p>"
+        },
+        "Locale":{
+          "shape":"localeType",
+          "documentation":"<p>A string representing the locale to use for the summary generation. The supported locale strings are based on the <a href=\"/awsconsolehelpdocs/latest/gsg/change-language.html#supported-languages\"> Supported languages of the Amazon Web Services Management Console </a>.</p>"
+        }
+      }
+    },
+    "GetHumanReadableSummaryResponse":{
+      "type":"structure",
+      "members":{
+        "SummaryContent":{
+          "shape":"summaryContentType",
+          "documentation":"<p>Summary content in the specified locale. Summary content is non-empty only if the <code>SummaryState</code> is <code>AVAILABLE</code>.</p>"
+        },
+        "Locale":{
+          "shape":"localeType",
+          "documentation":"<p>The locale that this response was generated for. This maps to the input locale.</p>"
+        },
+        "SummaryState":{
+          "shape":"summaryStateType",
+          "documentation":"<p>State of summary generation. This generation process is asynchronous and this attribute indicates the state of the generation process.</p>"
+        }
+      }
     },
     "GetInstanceProfileRequest":{
       "type":"structure",
@@ -4677,11 +5135,11 @@
         },
         "JobCreationDate":{
           "shape":"dateType",
-          "documentation":"<p>The date and time, in <a href=\"http://www.iso.org/iso/iso8601\">ISO 8601 date-time format</a>, when the report job was created.</p>"
+          "documentation":"<p>The date and time, in <a href=\"http://www.iso.org/iso/iso8601\">ISO 8601 date-time format</a>, when the report job was created.</p>"
         },
         "JobCompletionDate":{
           "shape":"dateType",
-          "documentation":"<p>The date and time, in <a href=\"http://www.iso.org/iso/iso8601\">ISO 8601 date-time format</a>, when the generated report job was completed or failed.</p> <p>This field is null if the job is still in progress, as indicated by a job status value of <code>IN_PROGRESS</code>.</p>"
+          "documentation":"<p>The date and time, in <a href=\"http://www.iso.org/iso/iso8601\">ISO 8601 date-time format</a>, when the generated report job was completed or failed.</p> <p>This field is null if the job is still in progress, as indicated by a job status value of <code>IN_PROGRESS</code>.</p>"
         },
         "NumberOfServicesAccessible":{
           "shape":"integerType",
@@ -4693,7 +5151,7 @@
         },
         "AccessDetails":{
           "shape":"AccessDetails",
-          "documentation":"<p>An object that contains details about the most recent attempt to access the service.</p>"
+          "documentation":"<p>An object that contains details about the most recent attempt to access the service.</p>"
         },
         "IsTruncated":{
           "shape":"booleanType",
@@ -4704,6 +5162,19 @@
           "documentation":"<p>When <code>IsTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.</p>"
         },
         "ErrorDetails":{"shape":"ErrorDetails"}
+      }
+    },
+    "GetOutboundWebIdentityFederationInfoResponse":{
+      "type":"structure",
+      "members":{
+        "IssuerIdentifier":{
+          "shape":"stringType",
+          "documentation":"<p>A unique issuer URL for your Amazon Web Services account that hosts the OpenID Connect (OIDC) discovery endpoints at <code>/.well-known/openid-configuration and /.well-known/jwks.json</code>. The OpenID Connect (OIDC) discovery endpoints contain verification keys and metadata necessary for token verification.</p>"
+        },
+        "JwtVendingEnabled":{
+          "shape":"booleanType",
+          "documentation":"<p>Indicates whether outbound identity federation is currently enabled for your Amazon Web Services account. When true, IAM principals in the account can call the <code>GetWebIdentityToken</code> API to obtain JSON Web Tokens (JWTs) for authentication with external services. </p>"
+        }
       }
     },
     "GetPolicyRequest":{
@@ -4948,15 +5419,15 @@
         },
         "JobCreationDate":{
           "shape":"dateType",
-          "documentation":"<p>The date and time, in <a href=\"http://www.iso.org/iso/iso8601\">ISO 8601 date-time format</a>, when the report job was created.</p>"
+          "documentation":"<p>The date and time, in <a href=\"http://www.iso.org/iso/iso8601\">ISO 8601 date-time format</a>, when the report job was created.</p>"
         },
         "ServicesLastAccessed":{
           "shape":"ServicesLastAccessed",
-          "documentation":"<p> A <code>ServiceLastAccessed</code> object that contains details about the most recent attempt to access the service.</p>"
+          "documentation":"<p> A <code>ServiceLastAccessed</code> object that contains details about the most recent attempt to access the service.</p>"
         },
         "JobCompletionDate":{
           "shape":"dateType",
-          "documentation":"<p>The date and time, in <a href=\"http://www.iso.org/iso/iso8601\">ISO 8601 date-time format</a>, when the generated report job was completed or failed.</p> <p>This field is null if the job is still in progress, as indicated by a job status value of <code>IN_PROGRESS</code>.</p>"
+          "documentation":"<p>The date and time, in <a href=\"http://www.iso.org/iso/iso8601\">ISO 8601 date-time format</a>, when the generated report job was completed or failed.</p> <p>This field is null if the job is still in progress, as indicated by a job status value of <code>IN_PROGRESS</code>.</p>"
         },
         "IsTruncated":{
           "shape":"booleanType",
@@ -4985,7 +5456,7 @@
         },
         "ServiceNamespace":{
           "shape":"serviceNamespaceType",
-          "documentation":"<p>The service namespace for an Amazon Web Services service. Provide the service namespace to learn when the IAM entity last attempted to access the specified service.</p> <p>To learn the service namespace for a service, see <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/reference_policies_actions-resources-contextkeys.html\">Actions, resources, and condition keys for Amazon Web Services services</a> in the <i>IAM User Guide</i>. Choose the name of the service to view details for that service. In the first paragraph, find the service prefix. For example, <code>(service prefix: a4b)</code>. For more information about service namespaces, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces\">Amazon Web Services service namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+          "documentation":"<p>The service namespace for an Amazon Web Services service. Provide the service namespace to learn when the IAM entity last attempted to access the specified service.</p> <p>To learn the service namespace for a service, see <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/reference_policies_actions-resources-contextkeys.html\">Actions, resources, and condition keys for Amazon Web Services services</a> in the <i>IAM User Guide</i>. Choose the name of the service to view details for that service. In the first paragraph, find the service prefix. For example, <code>(service prefix: a4b)</code>. For more information about service namespaces, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces\">Amazon Web Services service namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         },
         "MaxItems":{
           "shape":"maxItemsType",
@@ -5012,15 +5483,15 @@
         },
         "JobCreationDate":{
           "shape":"dateType",
-          "documentation":"<p>The date and time, in <a href=\"http://www.iso.org/iso/iso8601\">ISO 8601 date-time format</a>, when the report job was created.</p>"
+          "documentation":"<p>The date and time, in <a href=\"http://www.iso.org/iso/iso8601\">ISO 8601 date-time format</a>, when the report job was created.</p>"
         },
         "JobCompletionDate":{
           "shape":"dateType",
-          "documentation":"<p>The date and time, in <a href=\"http://www.iso.org/iso/iso8601\">ISO 8601 date-time format</a>, when the generated report job was completed or failed.</p> <p>This field is null if the job is still in progress, as indicated by a job status value of <code>IN_PROGRESS</code>.</p>"
+          "documentation":"<p>The date and time, in <a href=\"http://www.iso.org/iso/iso8601\">ISO 8601 date-time format</a>, when the generated report job was completed or failed.</p> <p>This field is null if the job is still in progress, as indicated by a job status value of <code>IN_PROGRESS</code>.</p>"
         },
         "EntityDetailsList":{
           "shape":"entityDetailsListType",
-          "documentation":"<p>An <code>EntityDetailsList</code> object that contains details about when an IAM entity (user or role) used group or policy permissions in an attempt to access the specified Amazon Web Services service.</p>"
+          "documentation":"<p>An <code>EntityDetailsList</code> object that contains details about when an IAM entity (user or role) used group or policy permissions in an attempt to access the specified Amazon Web Services service.</p>"
         },
         "IsTruncated":{
           "shape":"booleanType",
@@ -5506,6 +5977,40 @@
       },
       "documentation":"<p>Contains the response to a successful <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_ListAttachedUserPolicies.html\">ListAttachedUserPolicies</a> request. </p>"
     },
+    "ListDelegationRequestsRequest":{
+      "type":"structure",
+      "members":{
+        "OwnerId":{
+          "shape":"ownerIdType",
+          "documentation":"<p>The owner ID to filter delegation requests by.</p>"
+        },
+        "Marker":{
+          "shape":"markerType",
+          "documentation":"<p>Use this parameter only when paginating results and only after you receive a response indicating that the results are truncated. Set it to the value of the <code>Marker</code> element in the response that you received to indicate where the next call should start. </p>"
+        },
+        "MaxItems":{
+          "shape":"maxItemsType",
+          "documentation":"<p>Use this only when paginating results to indicate the maximum number of items you want in the response. If additional items exist beyond the maximum you specify, the <code>IsTruncated</code> response element is <code>true</code>. </p> <p>If you do not include this parameter, the number of items defaults to 100. Note that IAM may return fewer results, even when there are more results available. In that case, the <code>IsTruncated</code> response element returns <code>true</code>, and <code>Marker</code> contains a value to include in the subsequent call that tells the service where to continue from. </p>"
+        }
+      }
+    },
+    "ListDelegationRequestsResponse":{
+      "type":"structure",
+      "members":{
+        "DelegationRequests":{
+          "shape":"delegationRequestsListType",
+          "documentation":"<p>A list of delegation requests that match the specified criteria.</p>"
+        },
+        "Marker":{
+          "shape":"markerType",
+          "documentation":"<p>When <code>isTruncated</code> is <code>true</code>, this element is present and contains the value to use for the <code>Marker</code> parameter in a subsequent pagination request.</p>"
+        },
+        "isTruncated":{
+          "shape":"booleanType",
+          "documentation":"<p>A flag that indicates whether there are more items to return. If your results were truncated, you can make a subsequent pagination request using the <code>Marker</code> request parameter to retrieve more items.</p>"
+        }
+      }
+    },
     "ListEntitiesForPolicyRequest":{
       "type":"structure",
       "required":["PolicyArn"],
@@ -5524,7 +6029,7 @@
         },
         "PolicyUsageFilter":{
           "shape":"PolicyUsageType",
-          "documentation":"<p>The policy usage method to use for filtering the results.</p> <p>To list only permissions policies, set <code>PolicyUsageFilter</code> to <code>PermissionsPolicy</code>. To list only the policies used to set permissions boundaries, set the value to <code>PermissionsBoundary</code>.</p> <p>This parameter is optional. If it is not included, all policies are returned. </p>"
+          "documentation":"<p>The policy usage method to use for filtering the results.</p> <p>To list only permissions policies, set <code>PolicyUsageFilter</code> to <code>PermissionsPolicy</code>. To list only the policies used to set permissions boundaries, set the value to <code>PermissionsBoundary</code>.</p> <p>This parameter is optional. If it is not included, all policies are returned. </p>"
         },
         "Marker":{
           "shape":"markerType",
@@ -5951,7 +6456,7 @@
         },
         "ServiceNamespaces":{
           "shape":"serviceNamespaceListType",
-          "documentation":"<p>The service namespace for the Amazon Web Services services whose policies you want to list.</p> <p>To learn the service namespace for a service, see <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/reference_policies_actions-resources-contextkeys.html\">Actions, resources, and condition keys for Amazon Web Services services</a> in the <i>IAM User Guide</i>. Choose the name of the service to view details for that service. In the first paragraph, find the service prefix. For example, <code>(service prefix: a4b)</code>. For more information about service namespaces, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces\">Amazon Web Services service namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+          "documentation":"<p>The service namespace for the Amazon Web Services services whose policies you want to list.</p> <p>To learn the service namespace for a service, see <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/reference_policies_actions-resources-contextkeys.html\">Actions, resources, and condition keys for Amazon Web Services services</a> in the <i>IAM User Guide</i>. Choose the name of the service to view details for that service. In the first paragraph, find the service prefix. For example, <code>(service prefix: a4b)</code>. For more information about service namespaces, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces\">Amazon Web Services service namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         }
       }
     },
@@ -5961,7 +6466,7 @@
       "members":{
         "PoliciesGrantingServiceAccess":{
           "shape":"listPolicyGrantingServiceAccessResponseListType",
-          "documentation":"<p>A <code>ListPoliciesGrantingServiceAccess</code> object that contains details about the permissions policies attached to the specified identity (user, group, or role).</p>"
+          "documentation":"<p>A <code>ListPoliciesGrantingServiceAccess</code> object that contains details about the permissions policies attached to the specified identity (user, group, or role).</p>"
         },
         "IsTruncated":{
           "shape":"booleanType",
@@ -5990,7 +6495,7 @@
         },
         "PolicyUsageFilter":{
           "shape":"PolicyUsageType",
-          "documentation":"<p>The policy usage method to use for filtering the results.</p> <p>To list only permissions policies, set <code>PolicyUsageFilter</code> to <code>PermissionsPolicy</code>. To list only the policies used to set permissions boundaries, set the value to <code>PermissionsBoundary</code>.</p> <p>This parameter is optional. If it is not included, all policies are returned. </p>"
+          "documentation":"<p>The policy usage method to use for filtering the results.</p> <p>To list only permissions policies, set <code>PolicyUsageFilter</code> to <code>PermissionsPolicy</code>. To list only the policies used to set permissions boundaries, set the value to <code>PermissionsBoundary</code>.</p> <p>This parameter is optional. If it is not included, all policies are returned. </p>"
         },
         "Marker":{
           "shape":"markerType",
@@ -6995,6 +7500,31 @@
       },
       "exception":true
     },
+    "PolicyParameter":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"policyParameterNameType",
+          "documentation":"<p>The name of the policy parameter.</p>"
+        },
+        "Values":{
+          "shape":"policyParameterValuesListType",
+          "documentation":"<p>The allowed values for the policy parameter.</p>"
+        },
+        "Type":{
+          "shape":"PolicyParameterTypeEnum",
+          "documentation":"<p>The data type of the policy parameter value.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a policy parameter used to customize delegated permissions.</p>"
+    },
+    "PolicyParameterTypeEnum":{
+      "type":"string",
+      "enum":[
+        "string",
+        "stringList"
+      ]
+    },
     "PolicyRole":{
       "type":"structure",
       "members":{
@@ -7195,6 +7725,20 @@
       "type":"string",
       "max":100,
       "min":1
+    },
+    "RejectDelegationRequestRequest":{
+      "type":"structure",
+      "required":["DelegationRequestId"],
+      "members":{
+        "DelegationRequestId":{
+          "shape":"delegationRequestIdType",
+          "documentation":"<p>The unique identifier of the delegation request to reject.</p>"
+        },
+        "Notes":{
+          "shape":"notesType",
+          "documentation":"<p>Optional notes explaining the reason for rejecting the delegation request.</p>"
+        }
+      }
     },
     "RemoveClientIDFromOpenIDConnectProviderRequest":{
       "type":"structure",
@@ -7631,6 +8175,16 @@
         }
       },
       "documentation":"<p>Contains information about an SSH public key, without the key's body or fingerprint.</p> <p>This data type is used as a response element in the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_ListSSHPublicKeys.html\">ListSSHPublicKeys</a> operation.</p>"
+    },
+    "SendDelegationTokenRequest":{
+      "type":"structure",
+      "required":["DelegationRequestId"],
+      "members":{
+        "DelegationRequestId":{
+          "shape":"delegationRequestIdType",
+          "documentation":"<p>The unique identifier of the delegation request for which to send the token.</p>"
+        }
+      }
     },
     "ServerCertificate":{
       "type":"structure",
@@ -8504,6 +9058,20 @@
         }
       }
     },
+    "UpdateDelegationRequestRequest":{
+      "type":"structure",
+      "required":["DelegationRequestId"],
+      "members":{
+        "DelegationRequestId":{
+          "shape":"delegationRequestIdType",
+          "documentation":"<p>The unique identifier of the delegation request to update.</p>"
+        },
+        "Notes":{
+          "shape":"notesType",
+          "documentation":"<p>Additional notes or comments to add to the delegation request.</p>"
+        }
+      }
+    },
     "UpdateGroupRequest":{
       "type":"structure",
       "required":["GroupName"],
@@ -8985,6 +9553,10 @@
       "min":3,
       "pattern":"^[a-z0-9]([a-z0-9]|-(?!-)){1,61}[a-z0-9]$"
     },
+    "accountIdType":{
+      "type":"string",
+      "pattern":"\\d{12}"
+    },
     "allUsers":{
       "type":"boolean",
       "box":true
@@ -9058,6 +9630,11 @@
       "max":255,
       "min":1
     },
+    "consoleDeepLinkType":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
     "credentialAgeDays":{
       "type":"integer",
       "max":36600,
@@ -9073,6 +9650,21 @@
       "pattern":"[\\w+=,.@-]+"
     },
     "dateType":{"type":"timestamp"},
+    "delegationRequestDescriptionType":{
+      "type":"string",
+      "max":1000,
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]*"
+    },
+    "delegationRequestIdType":{
+      "type":"string",
+      "max":128,
+      "min":16,
+      "pattern":"[\\w-]+"
+    },
+    "delegationRequestsListType":{
+      "type":"list",
+      "member":{"shape":"DelegationRequest"}
+    },
     "deleteConflictMessage":{"type":"string"},
     "duplicateCertificateMessage":{"type":"string"},
     "duplicateSSHPublicKeyMessage":{"type":"string"},
@@ -9173,6 +9765,11 @@
       "type":"list",
       "member":{"shape":"ListPoliciesGrantingServiceAccessEntry"}
     },
+    "localeType":{
+      "type":"string",
+      "max":12,
+      "min":2
+    },
     "malformedCertificateMessage":{"type":"string"},
     "malformedPolicyDocumentMessage":{"type":"string"},
     "markerType":{
@@ -9203,6 +9800,17 @@
       "min":6
     },
     "noSuchEntityMessage":{"type":"string"},
+    "notesType":{
+      "type":"string",
+      "max":500,
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]*"
+    },
+    "notificationChannelType":{
+      "type":"string",
+      "max":400,
+      "min":2,
+      "pattern":"^[a-zA-Z0-9:_.-]+$"
+    },
     "openIdIdpCommunicationErrorExceptionMessage":{"type":"string"},
     "organizationsEntityPathType":{
       "type":"string",
@@ -9213,6 +9821,12 @@
     "organizationsPolicyIdType":{
       "type":"string",
       "pattern":"^p-[0-9a-zA-Z_]{8,128}$"
+    },
+    "ownerIdType":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^[a-zA-Z0-9:/+=,.@_-]+$"
     },
     "passwordPolicyViolationMessage":{"type":"string"},
     "passwordReusePreventionType":{
@@ -9240,6 +9854,23 @@
       "min":1,
       "pattern":"(\\u002F)|(\\u002F[\\u0021-\\u007E]+\\u002F)"
     },
+    "permissionCheckResultType":{
+      "type":"string",
+      "enum":[
+        "ALLOWED",
+        "DENIED",
+        "UNSURE"
+      ]
+    },
+    "permissionCheckStatusType":{
+      "type":"string",
+      "enum":[
+        "COMPLETE",
+        "IN_PROGRESS",
+        "FAILED"
+      ]
+    },
+    "permissionType":{"type":"string"},
     "policyDescriptionType":{
       "type":"string",
       "max":1000
@@ -9286,6 +9917,25 @@
         "ROLE",
         "GROUP"
       ]
+    },
+    "policyParameterListType":{
+      "type":"list",
+      "member":{"shape":"PolicyParameter"},
+      "max":50
+    },
+    "policyParameterNameType":{
+      "type":"string",
+      "max":256,
+      "min":5,
+      "pattern":"[ -~]+"
+    },
+    "policyParameterValueType":{
+      "type":"string",
+      "pattern":"[ -~]+"
+    },
+    "policyParameterValuesListType":{
+      "type":"list",
+      "member":{"shape":"policyParameterValueType"}
     },
     "policyPathType":{
       "type":"string",
@@ -9348,7 +9998,29 @@
       "min":1,
       "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+"
     },
+    "redirectUrlType":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^http(s?)://[a-zA-Z0-9._/-]*(\\?[a-zA-Z0-9._=&-]*)?(#[a-zA-Z0-9._/-]*)?$"
+    },
     "reportGenerationLimitExceededMessage":{"type":"string"},
+    "requestMessageType":{
+      "type":"string",
+      "max":200,
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]*"
+    },
+    "requestorNameType":{
+      "type":"string",
+      "max":30,
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]*"
+    },
+    "requestorWorkflowIdType":{
+      "type":"string",
+      "max":400,
+      "min":5,
+      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u007E\\u00A1-\\u00FF]+"
+    },
     "responseMarkerType":{"type":"string"},
     "roleDescriptionType":{
       "type":"string",
@@ -9374,6 +10046,10 @@
       "max":64,
       "min":1,
       "pattern":"[\\w+=,.@-]+"
+    },
+    "rolePermissionRestrictionArnListType":{
+      "type":"list",
+      "member":{"shape":"arnType"}
     },
     "serialNumberType":{
       "type":"string",
@@ -9433,6 +10109,11 @@
       "min":0,
       "pattern":"[\\w+=,.@-]*"
     },
+    "sessionDurationType":{
+      "type":"integer",
+      "max":43200,
+      "min":300
+    },
     "sortKeyType":{
       "type":"string",
       "enum":[
@@ -9440,6 +10121,18 @@
         "SERVICE_NAMESPACE_DESCENDING",
         "LAST_AUTHENTICATED_TIME_ASCENDING",
         "LAST_AUTHENTICATED_TIME_DESCENDING"
+      ]
+    },
+    "stateType":{
+      "type":"string",
+      "enum":[
+        "UNASSIGNED",
+        "ASSIGNED",
+        "PENDING_APPROVAL",
+        "FINALIZED",
+        "ACCEPTED",
+        "REJECTED",
+        "EXPIRED"
       ]
     },
     "statusType":{
@@ -9451,6 +10144,11 @@
       ]
     },
     "stringType":{"type":"string"},
+    "summaryContentType":{
+      "type":"string",
+      "max":10000,
+      "min":0
+    },
     "summaryKeyType":{
       "type":"string",
       "enum":[
@@ -9494,6 +10192,15 @@
       "type":"map",
       "key":{"shape":"summaryKeyType"},
       "value":{"shape":"summaryValueType"}
+    },
+    "summaryStateType":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "NOT_AVAILABLE",
+        "NOT_SUPPORTED",
+        "FAILED"
+      ]
     },
     "summaryValueType":{"type":"integer"},
     "tagKeyListType":{

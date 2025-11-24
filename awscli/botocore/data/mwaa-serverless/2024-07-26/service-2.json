@@ -1,0 +1,1696 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2024-07-26",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"airflow-serverless",
+    "jsonVersion":"1.0",
+    "protocol":"json",
+    "protocols":["json"],
+    "serviceFullName":"AmazonMWAAServerless",
+    "serviceId":"MWAA Serverless",
+    "signatureVersion":"v4",
+    "signingName":"airflow-serverless",
+    "targetPrefix":"AmazonMWAAServerless",
+    "uid":"mwaa-serverless-2024-07-26"
+  },
+  "operations":{
+    "CreateWorkflow":{
+      "name":"CreateWorkflow",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateWorkflowRequest"},
+      "output":{"shape":"CreateWorkflowResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a new workflow in Amazon Managed Workflows for Apache Airflow Serverless. This operation initializes a workflow with the specified configuration including the workflow definition, execution role, and optional settings for encryption, logging, and networking. You must provide the workflow definition as a YAML file stored in Amazon S3 that defines the DAG structure using supported Amazon Web Services operators. Amazon Managed Workflows for Apache Airflow Serverless automatically creates the first version of the workflow and sets up the necessary execution environment with multi-tenant isolation and security controls.</p>",
+      "idempotent":true
+    },
+    "DeleteWorkflow":{
+      "name":"DeleteWorkflow",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteWorkflowRequest"},
+      "output":{"shape":"DeleteWorkflowResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Deletes a workflow and all its versions. This operation permanently removes the workflow and cannot be undone. Amazon Managed Workflows for Apache Airflow Serverless ensures that all associated resources are properly cleaned up, including stopping any running executions, removing scheduled triggers, and cleaning up execution history. The deletion process respects the multi-tenant isolation boundaries and ensures that no residual data or configurations remain that could affect other customers or workflows.</p>",
+      "idempotent":true
+    },
+    "GetTaskInstance":{
+      "name":"GetTaskInstance",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetTaskInstanceRequest"},
+      "output":{"shape":"GetTaskInstanceResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a specific task instance within a workflow run. Task instances represent individual tasks that are executed as part of a workflow in the Amazon Managed Workflows for Apache Airflow Serverless environment. Each task instance runs in an isolated ECS container with dedicated resources and security boundaries. The service tracks task execution state, retry attempts, and provides detailed timing and error information for troubleshooting and monitoring purposes.</p>",
+      "readonly":true
+    },
+    "GetWorkflow":{
+      "name":"GetWorkflow",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetWorkflowRequest"},
+      "output":{"shape":"GetWorkflowResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a workflow, including its configuration, status, and metadata.</p>",
+      "readonly":true
+    },
+    "GetWorkflowRun":{
+      "name":"GetWorkflowRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetWorkflowRunRequest"},
+      "output":{"shape":"GetWorkflowRunResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a specific workflow run, including its status, execution details, and task instances.</p>",
+      "readonly":true
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Lists all tags that are associated with a specified Amazon Managed Workflows for Apache Airflow Serverless resource.</p>",
+      "readonly":true
+    },
+    "ListTaskInstances":{
+      "name":"ListTaskInstances",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTaskInstancesRequest"},
+      "output":{"shape":"ListTaskInstancesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Lists all task instances for a specific workflow run, with optional pagination support.</p>",
+      "readonly":true
+    },
+    "ListWorkflowRuns":{
+      "name":"ListWorkflowRuns",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListWorkflowRunsRequest"},
+      "output":{"shape":"ListWorkflowRunsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Lists all runs for a specified workflow, with optional pagination and filtering support.</p>",
+      "readonly":true
+    },
+    "ListWorkflowVersions":{
+      "name":"ListWorkflowVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListWorkflowVersionsRequest"},
+      "output":{"shape":"ListWorkflowVersionsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Lists all versions of a specified workflow, with optional pagination support.</p>",
+      "readonly":true
+    },
+    "ListWorkflows":{
+      "name":"ListWorkflows",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListWorkflowsRequest"},
+      "output":{"shape":"ListWorkflowsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Lists all workflows in your account, with optional pagination support. This operation returns summary information for workflows, showing only the most recently created version of each workflow. Amazon Managed Workflows for Apache Airflow Serverless maintains workflow metadata in a highly available, distributed storage system that enables efficient querying and filtering. The service implements proper access controls to ensure you can only view workflows that you have permissions to access, supporting both individual and team-based workflow management scenarios.</p>",
+      "readonly":true
+    },
+    "StartWorkflowRun":{
+      "name":"StartWorkflowRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartWorkflowRunRequest"},
+      "output":{"shape":"StartWorkflowRunResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Starts a new execution of a workflow. This operation creates a workflow run that executes the tasks that are defined in the workflow. Amazon Managed Workflows for Apache Airflow Serverless schedules the workflow execution across its managed Airflow environment, automatically scaling ECS worker tasks based on the workload. The service handles task isolation, dependency resolution, and provides comprehensive monitoring and logging throughout the execution lifecycle.</p>",
+      "idempotent":true
+    },
+    "StopWorkflowRun":{
+      "name":"StopWorkflowRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopWorkflowRunRequest"},
+      "output":{"shape":"StopWorkflowRunResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Stops a running workflow execution. This operation terminates all running tasks and prevents new tasks from starting. Amazon Managed Workflows for Apache Airflow Serverless gracefully shuts down the workflow execution by stopping task scheduling and terminating active ECS worker containers. The operation transitions the workflow run to a <code>STOPPING</code> state and then to <code>STOPPED</code> once all cleanup is complete. In-flight tasks may complete or be terminated depending on their current execution state.</p>",
+      "idempotent":true
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Adds tags to an Amazon Managed Workflows for Apache Airflow Serverless resource. Tags are key-value pairs that help you organize and categorize your resources.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Removes tags from an Amazon Managed Workflows for Apache Airflow Serverless resource. This operation removes the specified tags from the resource.</p>",
+      "idempotent":true
+    },
+    "UpdateWorkflow":{
+      "name":"UpdateWorkflow",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateWorkflowRequest"},
+      "output":{"shape":"UpdateWorkflowResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Updates an existing workflow with new configuration settings. This operation allows you to modify the workflow definition, role, and other settings. When you update a workflow, Amazon Managed Workflows for Apache Airflow Serverless automatically creates a new version with the updated configuration and disables scheduling on all previous versions to ensure only one version is actively scheduled at a time. The update operation maintains workflow history while providing a clean transition to the new configuration.</p>"
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>You do not have sufficient permission to perform this action.</p>",
+      "exception":true
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":[
+        "Message",
+        "ResourceId",
+        "ResourceType"
+      ],
+      "members":{
+        "Message":{"shape":"ErrorMessage"},
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the resource.</p>"
+        },
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource.</p>"
+        }
+      },
+      "documentation":"<p>You cannot create a resource that already exists, or the resource is in a state that prevents the requested operation.</p>",
+      "exception":true
+    },
+    "CreateWorkflowRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "DefinitionS3Location",
+        "RoleArn"
+      ],
+      "members":{
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the workflow. You must use unique workflow names within your Amazon Web Services account. The service generates a unique identifier that is appended to ensure temporal uniqueness across the account lifecycle.</p>"
+        },
+        "ClientToken":{
+          "shape":"IdempotencyTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This token prevents duplicate workflow creation requests.</p>",
+          "idempotencyToken":true
+        },
+        "DefinitionS3Location":{
+          "shape":"DefinitionS3Location",
+          "documentation":"<p>The Amazon S3 location where the workflow definition file is stored. This must point to a valid YAML file that defines the workflow structure using supported Amazon Web Services operators and tasks. Amazon Managed Workflows for Apache Airflow Serverless takes a snapshot of the definition at creation time, so subsequent changes to the Amazon S3 object will not affect the workflow unless you create a new version. In your YAML definition, include task dependencies, scheduling information, and operator configurations that are compatible with the Amazon Managed Workflows for Apache Airflow Serverless execution environment.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that Amazon Managed Workflows for Apache Airflow Serverless assumes when executing the workflow. This role must have the necessary permissions to access the required Amazon Web Services services and resources that your workflow tasks will interact with. The role is used for task execution in the isolated, multi-tenant environment and should follow the principle of least privilege. Amazon Managed Workflows for Apache Airflow Serverless validates role access during workflow creation but runtime permission checks are performed by the target services.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>An optional description of the workflow that you can use to provide additional context about the workflow's purpose and functionality.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The configuration for encrypting workflow data at rest and in transit. Specifies the encryption type and optional KMS key for customer-managed encryption.</p>"
+        },
+        "LoggingConfiguration":{
+          "shape":"LoggingConfiguration",
+          "documentation":"<p>The configuration for workflow logging. Specifies the CloudWatch log group where workflow execution logs are stored. Amazon Managed Workflows for Apache Airflow Serverless automatically exports worker logs and task-level information to the specified log group in your account using remote logging functionality. This provides comprehensive observability for debugging and monitoring workflow execution across the distributed, serverless environment.</p>"
+        },
+        "EngineVersion":{
+          "shape":"EngineVersion",
+          "documentation":"<p>The version of the Amazon Managed Workflows for Apache Airflow Serverless engine that you want to use for this workflow. This determines the feature set, supported operators, and execution environment capabilities available to your workflow. Amazon Managed Workflows for Apache Airflow Serverless maintains backward compatibility across versions while introducing new features and improvements. Currently supports version 1 with plans for additional versions as the service evolves.</p>"
+        },
+        "NetworkConfiguration":{
+          "shape":"NetworkConfiguration",
+          "documentation":"<p>Network configuration for the workflow execution environment, including VPC security groups and subnets for secure network access. When specified, Amazon Managed Workflows for Apache Airflow Serverless deploys ECS worker tasks in your customer VPC to provide secure connectivity to your resources. If not specified, tasks run in the service's default worker VPC with network isolation from other customers. This configuration enables secure access to VPC-only resources like RDS databases or private endpoints.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>A map of tags to assign to the workflow resource. Tags are key-value pairs that are used for resource organization and cost allocation.</p>"
+        },
+        "TriggerMode":{
+          "shape":"GenericString",
+          "documentation":"<p>The trigger mode for the workflow execution.</p>"
+        }
+      }
+    },
+    "CreateWorkflowResponse":{
+      "type":"structure",
+      "required":["WorkflowArn"],
+      "members":{
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the newly created workflow. This ARN uniquely identifies the workflow resource.</p>"
+        },
+        "CreatedAt":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The timestamp when the workflow was created, in ISO 8601 date-time format.</p>"
+        },
+        "RevisionId":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier for this revision of the workflow configuration. This ID changes when the workflow is updated and you can use it for optimistic concurrency control in update operations. The revision ID helps prevent conflicting updates and ensures that updates are applied to the expected version of the workflow configuration.</p>"
+        },
+        "WorkflowStatus":{
+          "shape":"WorkflowStatus",
+          "documentation":"<p>The current status of the workflow. Possible values are <code>READY</code> (workflow is ready to run) and <code>DELETING</code> (workflow is being deleted).</p>"
+        },
+        "WorkflowVersion":{
+          "shape":"WorkflowVersion",
+          "documentation":"<p>The version identifier of the workflow. This is a service-generated alphanumeric string that uniquely identifies this version of the workflow. Amazon Managed Workflows for Apache Airflow Serverless uses a version-first approach where each workflow can have multiple immutable versions, which allows you to maintain different configurations and roll back to previous versions as needed. The version identifier is used in ARNs and API operations to reference specific workflow versions.</p>"
+        },
+        "IsLatestVersion":{
+          "shape":"IsLatestVersion",
+          "documentation":"<p>A Boolean flag that indicates whether this workflow version is the latest version of the workflow.</p>"
+        },
+        "Warnings":{
+          "shape":"WarningMessages",
+          "documentation":"<p>Warning messages generated during workflow creation.</p>"
+        }
+      }
+    },
+    "DefinitionS3Location":{
+      "type":"structure",
+      "required":[
+        "Bucket",
+        "ObjectKey"
+      ],
+      "members":{
+        "Bucket":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon S3 bucket that contains the workflow definition file.</p>"
+        },
+        "ObjectKey":{
+          "shape":"String",
+          "documentation":"<p>The key (name) of the workflow definition file within the S3 bucket.</p>"
+        },
+        "VersionId":{
+          "shape":"String",
+          "documentation":"<p>Optional. The version ID of the workflow definition file in Amazon S3. If not specified, the latest version is used.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the Amazon S3 location of a workflow definition file. This structure contains the bucket name, object key, and optional version ID for the workflow definition. Amazon Managed Workflows for Apache Airflow Serverless takes a snapshot of the definition file at the time of workflow creation or update, ensuring that the workflow behavior remains consistent even if the source file is modified. The definition must be a valid YAML file that uses supported Amazon Web Services operators and Amazon Managed Workflows for Apache Airflow Serverless syntax.</p>"
+    },
+    "DeleteWorkflowRequest":{
+      "type":"structure",
+      "required":["WorkflowArn"],
+      "members":{
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow you want to delete.</p>"
+        },
+        "WorkflowVersion":{
+          "shape":"WorkflowVersion",
+          "documentation":"<p>Optional. The specific version of the workflow to delete. If not specified, all versions of the workflow are deleted.</p>"
+        }
+      }
+    },
+    "DeleteWorkflowResponse":{
+      "type":"structure",
+      "required":["WorkflowArn"],
+      "members":{
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted workflow.</p>"
+        },
+        "WorkflowVersion":{
+          "shape":"WorkflowVersion",
+          "documentation":"<p>The version of the workflow that was deleted.</p>"
+        }
+      }
+    },
+    "DescriptionString":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":".+"
+    },
+    "Document":{
+      "type":"structure",
+      "members":{},
+      "document":true
+    },
+    "EncryptionConfiguration":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"EncryptionType",
+          "documentation":"<p>The type of encryption to use. Values are <code>AWS_MANAGED_KEY</code> (Amazon Web Services manages the encryption key) or <code>CUSTOMER_MANAGED_KEY</code> (you provide a KMS key).</p>"
+        },
+        "KmsKeyId":{
+          "shape":"String",
+          "documentation":"<p>The ID or ARN of the Amazon Web Services KMS key to use for encryption. Required when <code>Type</code> is <code>CUSTOMER_MANAGED_KEY</code>.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for encrypting workflow data at rest and in transit. Amazon Managed Workflows for Apache Airflow Serverless provides comprehensive encryption capabilities to protect sensitive workflow data, parameters, and execution logs. When using customer-managed keys, the service integrates with Amazon Web Services KMS to provide fine-grained access control and audit capabilities. Encryption is applied consistently across the distributed execution environment including task containers, metadata storage, and log streams.</p>"
+    },
+    "EncryptionType":{
+      "type":"string",
+      "enum":[
+        "AWS_MANAGED_KEY",
+        "CUSTOMER_MANAGED_KEY"
+      ]
+    },
+    "EngineVersion":{
+      "type":"integer",
+      "box":true
+    },
+    "ErrorMessage":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":".*"
+    },
+    "GenericMap":{
+      "type":"map",
+      "key":{"shape":"GenericString"},
+      "value":{"shape":"GenericString"}
+    },
+    "GenericString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":".*"
+    },
+    "GetTaskInstanceRequest":{
+      "type":"structure",
+      "required":[
+        "WorkflowArn",
+        "TaskInstanceId",
+        "RunId"
+      ],
+      "members":{
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow that contains the task instance.</p>"
+        },
+        "TaskInstanceId":{
+          "shape":"IdString",
+          "documentation":"<p>The unique identifier of the task instance to retrieve.</p>"
+        },
+        "RunId":{
+          "shape":"IdString",
+          "documentation":"<p>The unique identifier of the workflow run that contains the task instance.</p>"
+        }
+      }
+    },
+    "GetTaskInstanceResponse":{
+      "type":"structure",
+      "required":[
+        "WorkflowArn",
+        "RunId",
+        "TaskInstanceId"
+      ],
+      "members":{
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow that contains this task instance.</p>"
+        },
+        "RunId":{
+          "shape":"IdString",
+          "documentation":"<p>The unique identifier of the workflow run that contains this task instance.</p>"
+        },
+        "TaskInstanceId":{
+          "shape":"IdString",
+          "documentation":"<p>The unique identifier of this task instance.</p>"
+        },
+        "WorkflowVersion":{
+          "shape":"VersionId",
+          "documentation":"<p>The version of the workflow that contains this task instance.</p>"
+        },
+        "Status":{
+          "shape":"TaskInstanceStatus",
+          "documentation":"<p>The current status of the task instance.</p>"
+        },
+        "DurationInSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The duration of the task instance execution in seconds. This value is null if the task is not complete.</p>"
+        },
+        "OperatorName":{
+          "shape":"GenericString",
+          "documentation":"<p>The name of the Apache Airflow operator used for this task instance.</p>"
+        },
+        "ModifiedAt":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The timestamp when the task instance was last modified, in ISO 8601 date-time format.</p>"
+        },
+        "EndedAt":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The timestamp when the task instance completed execution, in ISO 8601 date-time format. This value is null if the task is not complete.</p>"
+        },
+        "StartedAt":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The timestamp when the task instance started execution, in ISO 8601 date-time format. This value is null if the task has not started.</p>"
+        },
+        "AttemptNumber":{
+          "shape":"Integer",
+          "documentation":"<p>The attempt number for this task instance.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"GenericString",
+          "documentation":"<p>The error message if the task instance failed. This value is null if the task completed successfully.</p>"
+        },
+        "TaskId":{
+          "shape":"IdString",
+          "documentation":"<p>The unique identifier of the task definition within the workflow.</p>"
+        },
+        "LogStream":{
+          "shape":"IdString",
+          "documentation":"<p>The CloudWatch log stream name for this task instance execution.</p>"
+        },
+        "Xcom":{
+          "shape":"GenericMap",
+          "documentation":"<p>Cross-communication data exchanged between tasks in the workflow execution.</p>"
+        }
+      }
+    },
+    "GetWorkflowRequest":{
+      "type":"structure",
+      "required":["WorkflowArn"],
+      "members":{
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow you want to retrieve.</p>"
+        },
+        "WorkflowVersion":{
+          "shape":"WorkflowVersion",
+          "documentation":"<p>Optional. The specific version of the workflow to retrieve. If not specified, the latest version is returned.</p>"
+        }
+      }
+    },
+    "GetWorkflowResponse":{
+      "type":"structure",
+      "required":["WorkflowArn"],
+      "members":{
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow.</p>"
+        },
+        "WorkflowVersion":{
+          "shape":"WorkflowVersion",
+          "documentation":"<p>The version identifier of the workflow.</p>"
+        },
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the workflow.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The description of the workflow.</p>"
+        },
+        "CreatedAt":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The timestamp when the workflow was created, in ISO 8601 date-time format.</p>"
+        },
+        "ModifiedAt":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The timestamp when the workflow was last modified, in ISO 8601 date-time format.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The encryption configuration for the workflow.</p>"
+        },
+        "LoggingConfiguration":{
+          "shape":"LoggingConfiguration",
+          "documentation":"<p>The logging configuration for the workflow.</p>"
+        },
+        "EngineVersion":{
+          "shape":"EngineVersion",
+          "documentation":"<p>The version of the Amazon Managed Workflows for Apache Airflow Serverless engine that this workflow uses.</p>"
+        },
+        "WorkflowStatus":{
+          "shape":"WorkflowStatus",
+          "documentation":"<p>The current status of the workflow.</p>"
+        },
+        "DefinitionS3Location":{
+          "shape":"DefinitionS3Location",
+          "documentation":"<p>The Amazon S3 location of the workflow definition file.</p>"
+        },
+        "ScheduleConfiguration":{
+          "shape":"ScheduleConfiguration",
+          "documentation":"<p>The schedule configuration for the workflow, including cron expressions for automated execution. Amazon Managed Workflows for Apache Airflow Serverless uses EventBridge Scheduler for cost-effective, timezone-aware scheduling. When a workflow includes schedule information in its YAML definition, the service automatically configures the appropriate triggers for automated execution. Only one version of a workflow can have an active schedule at any given time.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role used for workflow execution.</p>"
+        },
+        "NetworkConfiguration":{
+          "shape":"NetworkConfiguration",
+          "documentation":"<p>The network configuration for the workflow execution environment.</p>"
+        },
+        "TriggerMode":{
+          "shape":"GenericString",
+          "documentation":"<p>The trigger mode for the workflow execution.</p>"
+        },
+        "WorkflowDefinition":{
+          "shape":"GenericString",
+          "documentation":"<p>The workflow definition content.</p>"
+        }
+      }
+    },
+    "GetWorkflowRunRequest":{
+      "type":"structure",
+      "required":[
+        "WorkflowArn",
+        "RunId"
+      ],
+      "members":{
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow that contains the run.</p>"
+        },
+        "RunId":{
+          "shape":"IdString",
+          "documentation":"<p>The unique identifier of the workflow run to retrieve.</p>"
+        }
+      }
+    },
+    "GetWorkflowRunResponse":{
+      "type":"structure",
+      "members":{
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow that contains this run.</p>"
+        },
+        "WorkflowVersion":{
+          "shape":"VersionId",
+          "documentation":"<p>The version of the workflow that is used for this run.</p>"
+        },
+        "RunId":{
+          "shape":"IdString",
+          "documentation":"<p>The unique identifier of this workflow run.</p>"
+        },
+        "RunType":{
+          "shape":"RunType",
+          "documentation":"<p>The type of workflow run. Values are <code>ON_DEMAND</code> (manually triggered) or <code>SCHEDULED</code> (automatically triggered by schedule).</p>"
+        },
+        "OverrideParameters":{
+          "shape":"ObjectMap",
+          "documentation":"<p>Parameters that were overridden for this specific workflow run.</p>"
+        },
+        "RunDetail":{
+          "shape":"WorkflowRunDetail",
+          "documentation":"<p>Detailed information about the workflow run execution, including timing, status, and task instances.</p>"
+        }
+      }
+    },
+    "IdString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]+[a-zA-Z0-9\\.\\-_]*"
+    },
+    "IdempotencyTokenString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\x21-\\x7E]+"
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{"shape":"ErrorMessage"},
+        "RetryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The number of seconds to wait before retrying the operation.</p>"
+        }
+      },
+      "documentation":"<p>An unexpected server-side error occurred during request processing.</p>",
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
+    },
+    "IsLatestVersion":{
+      "type":"boolean",
+      "box":true
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"TaggableResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource for which to list tags.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>A map of tags that are associated with the resource, where each tag consists of a key-value pair.</p>"
+        }
+      }
+    },
+    "ListTaskInstancesRequest":{
+      "type":"structure",
+      "required":[
+        "WorkflowArn",
+        "RunId"
+      ],
+      "members":{
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow that contains the run.</p>"
+        },
+        "RunId":{
+          "shape":"IdString",
+          "documentation":"<p>The unique identifier of the workflow run for which you want a list of task instances.</p>"
+        },
+        "MaxResults":{
+          "shape":"ListTaskInstancesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of task instances to return in a single response.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token you need to use to retrieve the next set of results. This value is returned from a previous call to <code>ListTaskInstances</code>.</p>"
+        }
+      }
+    },
+    "ListTaskInstancesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListTaskInstancesResponse":{
+      "type":"structure",
+      "members":{
+        "TaskInstances":{
+          "shape":"TaskInstanceSummaries",
+          "documentation":"<p>A list of task instance summaries for the specified workflow run.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token you need to use to retrieve the next set of results. This value is null if there are no more results.</p>"
+        }
+      }
+    },
+    "ListWorkflowRunsRequest":{
+      "type":"structure",
+      "required":["WorkflowArn"],
+      "members":{
+        "MaxResults":{
+          "shape":"ListWorkflowRunsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of workflow runs to return in a single response.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token you need to use to retrieve the next set of results. This value is returned from a previous call to <code>ListWorkflowRuns</code>.</p>"
+        },
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow for which you want a list of runs.</p>"
+        },
+        "WorkflowVersion":{
+          "shape":"VersionId",
+          "documentation":"<p>Optional. The specific version of the workflow for which you want a list of runs. If not specified, runs for all versions are returned.</p>"
+        }
+      }
+    },
+    "ListWorkflowRunsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListWorkflowRunsResponse":{
+      "type":"structure",
+      "members":{
+        "WorkflowRuns":{
+          "shape":"WorkflowRunSummaries",
+          "documentation":"<p>A list of workflow run summaries for the specified workflow.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token you need to use to retrieve the next set of results. This value is null if there are no more results.</p>"
+        }
+      }
+    },
+    "ListWorkflowVersionsRequest":{
+      "type":"structure",
+      "required":["WorkflowArn"],
+      "members":{
+        "MaxResults":{
+          "shape":"ListWorkflowVersionsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of workflow versions to return in a single response.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token you need to use to retrieve the next set of results. This value is returned from a previous call to <code>ListWorkflowVersions</code>.</p>"
+        },
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow for which you want to list versions.</p>"
+        }
+      }
+    },
+    "ListWorkflowVersionsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListWorkflowVersionsResponse":{
+      "type":"structure",
+      "members":{
+        "WorkflowVersions":{
+          "shape":"WorkflowVersionSummaries",
+          "documentation":"<p>A list of workflow version summaries for the specified workflow.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token you need to use to retrieve the next set of results. This value is null if there are no more results.</p>"
+        }
+      }
+    },
+    "ListWorkflowsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"ListWorkflowsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of workflows you want to return in a single response.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token you need to use to retrieve the next set of results. This value is returned from a previous call to <code>ListWorkflows</code>.</p>"
+        }
+      }
+    },
+    "ListWorkflowsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListWorkflowsResponse":{
+      "type":"structure",
+      "required":["Workflows"],
+      "members":{
+        "Workflows":{
+          "shape":"WorkflowSummaries",
+          "documentation":"<p>A list of workflow summaries for all workflows in your account.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token you need to use to retrieve the next set of results. This value is null if there are no more results.</p>"
+        }
+      }
+    },
+    "LoggingConfiguration":{
+      "type":"structure",
+      "required":["LogGroupName"],
+      "members":{
+        "LogGroupName":{
+          "shape":"String",
+          "documentation":"<p>The name of the CloudWatch log group where workflow execution logs are stored.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for workflow logging that specifies where you should store your workflow execution logs. Amazon Managed Workflows for Apache Airflow Serverless provides comprehensive logging capabilities that capture workflow execution details, task-level information, and system events. Logs are automatically exported to your specified CloudWatch log group using remote logging functionality, providing centralized observability across the distributed, multi-tenant execution environment. This enables effective debugging, monitoring, and compliance auditing of workflow executions.</p>"
+    },
+    "NameString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]+[a-zA-Z0-9\\.\\-_]*"
+    },
+    "NetworkConfiguration":{
+      "type":"structure",
+      "members":{
+        "SecurityGroupIds":{
+          "shape":"SecurityGroupIds",
+          "documentation":"<p>A list of VPC security group IDs to associate with the workflow execution environment.</p>"
+        },
+        "SubnetIds":{
+          "shape":"SubnetIds",
+          "documentation":"<p>A list of VPC subnet IDs where the workflow execution environment is deployed.</p>"
+        }
+      },
+      "documentation":"<p>Network configuration for workflow execution. Specifies VPC security groups and subnets for secure network access. When provided, Amazon Managed Workflows for Apache Airflow Serverless deploys ECS worker tasks in your specified VPC configuration, enabling secure access to VPC-only resources. The service uses a proxy API container architecture where one container handles external communication while the worker container connects to your VPC for task execution. This design provides both security isolation and connectivity flexibility.</p>"
+    },
+    "ObjectMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"Document"},
+      "sensitive":true
+    },
+    "OperationTimeoutException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The operation timed out.</p>",
+      "exception":true,
+      "fault":true
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":[
+        "Message",
+        "ResourceId",
+        "ResourceType"
+      ],
+      "members":{
+        "Message":{"shape":"ErrorMessage"},
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the resource.</p>"
+        },
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the resource.</p>"
+        }
+      },
+      "documentation":"<p>The specified resource was not found. You can only access or modify a resource that already exists.</p>",
+      "exception":true
+    },
+    "RoleARN":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(?:-(?:cn|us-gov|iso|iso-b|iso-e|iso-f))?:iam::[0-9]{12}:role(/[a-zA-Z0-9+=,.@_\\-]{1,512})*?/[a-zA-Z0-9+=,.@_\\-]{1,64}"
+    },
+    "RunDetailSummary":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"WorkflowRunStatus",
+          "documentation":"<p>The current status of the workflow run.</p>"
+        },
+        "CreatedOn":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The timestamp when the workflow run was created, in ISO 8601 date-time format.</p>"
+        },
+        "StartedAt":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The timestamp when the workflow run started execution, in ISO 8601 date-time format.</p>"
+        },
+        "EndedAt":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The timestamp when the workflow run completed execution, in ISO 8601 date-time format. This value is null if the run is not complete.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a workflow run's execution details, including status and timing information.</p>"
+    },
+    "RunType":{
+      "type":"string",
+      "enum":[
+        "ON_DEMAND",
+        "SCHEDULED"
+      ]
+    },
+    "ScheduleConfiguration":{
+      "type":"structure",
+      "members":{
+        "CronExpression":{
+          "shape":"String",
+          "documentation":"<p>A cron expression that defines when the workflow is automatically executed. Uses standard cron syntax.</p>"
+        }
+      },
+      "documentation":"<p>The configuration to use to schedule automated workflow execution using cron expressions. Amazon Managed Workflows for Apache Airflow Serverless integrates with EventBridge Scheduler to provide cost-effective, timezone-aware scheduling capabilities. The service supports both time-based and event-based scheduling (event-based scheduling available post-GA). When a workflow definition includes scheduling information, Amazon Managed Workflows for Apache Airflow Serverless automatically configures the appropriate triggers and ensures only one version of a workflow has an active schedule at any time.</p>"
+    },
+    "SecurityGroupIds":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupString"}
+    },
+    "SecurityGroupString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"sg-[a-z0-9]*"
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":[
+        "Message",
+        "ResourceId",
+        "ResourceType",
+        "ServiceCode",
+        "QuotaCode"
+      ],
+      "members":{
+        "Message":{"shape":"ErrorMessage"},
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the resource.</p>"
+        },
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of resource affected.</p>"
+        },
+        "ServiceCode":{
+          "shape":"String",
+          "documentation":"<p>The code for the service.</p>"
+        },
+        "QuotaCode":{
+          "shape":"String",
+          "documentation":"<p>The code of the quota.</p>"
+        }
+      },
+      "documentation":"<p>The request exceeds the service quota for Amazon Managed Workflows for Apache Airflow Serverless resources. This can occur when you attempt to create more workflows than allowed, exceed concurrent workflow run limits, or surpass task execution limits. Amazon Managed Workflows for Apache Airflow Serverless implements admission control using DynamoDB-based counters to manage resource utilization across the multi-tenant environment. Contact Amazon Web Services Support to request quota increases if you need higher limits for your use case.</p>",
+      "exception":true
+    },
+    "StartWorkflowRunRequest":{
+      "type":"structure",
+      "required":["WorkflowArn"],
+      "members":{
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow you want to run.</p>"
+        },
+        "ClientToken":{
+          "shape":"IdempotencyTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This token prevents duplicate workflow run requests.</p>",
+          "idempotencyToken":true
+        },
+        "OverrideParameters":{
+          "shape":"ObjectMap",
+          "documentation":"<p>Optional parameters to override default workflow parameters for this specific run. These parameters are passed to the workflow during execution and can be used to customize behavior without modifying the workflow definition. Parameters are made available as environment variables to tasks and you can reference them within the YAML workflow definition using standard parameter substitution syntax.</p>"
+        },
+        "WorkflowVersion":{
+          "shape":"VersionId",
+          "documentation":"<p>Optional. The specific version of the workflow to execute. If not specified, the latest version is used.</p>"
+        }
+      }
+    },
+    "StartWorkflowRunResponse":{
+      "type":"structure",
+      "members":{
+        "RunId":{
+          "shape":"IdString",
+          "documentation":"<p>The unique identifier of the newly started workflow run.</p>"
+        },
+        "Status":{
+          "shape":"WorkflowRunStatus",
+          "documentation":"<p>The initial status of the workflow run. This is typically <code>STARTING</code> when you first create the run.</p>"
+        },
+        "StartedAt":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The timestamp when the workflow run was started, in ISO 8601 date-time format.</p>"
+        }
+      }
+    },
+    "StopWorkflowRunRequest":{
+      "type":"structure",
+      "required":[
+        "WorkflowArn",
+        "RunId"
+      ],
+      "members":{
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow that contains the run you want to stop.</p>"
+        },
+        "RunId":{
+          "shape":"IdString",
+          "documentation":"<p>The unique identifier of the workflow run to stop.</p>"
+        }
+      }
+    },
+    "StopWorkflowRunResponse":{
+      "type":"structure",
+      "members":{
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow that contains the stopped run.</p>"
+        },
+        "WorkflowVersion":{
+          "shape":"VersionId",
+          "documentation":"<p>The version of the workflow that was stopped.</p>"
+        },
+        "RunId":{
+          "shape":"IdString",
+          "documentation":"<p>The unique identifier of the stopped workflow run.</p>"
+        },
+        "Status":{
+          "shape":"WorkflowRunStatus",
+          "documentation":"<p>The status of the workflow run after the stop operation. This is typically <code>STOPPING</code> or <code>STOPPED</code>.</p>"
+        }
+      }
+    },
+    "String":{"type":"string"},
+    "SubnetIds":{
+      "type":"list",
+      "member":{"shape":"SubnetString"}
+    },
+    "SubnetString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"subnet-[a-z0-9]*"
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":".*"
+    },
+    "TagKeys":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":50,
+      "min":1
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "Tags"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"TaggableResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to which to add tags.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>A map of tags to add to the resource. Each tag consists of a key-value pair.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":".*"
+    },
+    "TaggableResourceArn":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"arn:aws(?:-(?:cn|us-gov|iso|iso-b|iso-e|iso-f))?:airflow-serverless:([a-z]{2}-[a-z]+-[0-9]{1}):([0-9]{12}):workflow/([a-zA-Z0-9][a-zA-Z0-9\\.\\-_]{0,254}-[a-zA-Z0-9]{10})"
+    },
+    "Tags":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":50,
+      "min":0
+    },
+    "TaskInstanceIds":{
+      "type":"list",
+      "member":{"shape":"IdString"}
+    },
+    "TaskInstanceStatus":{
+      "type":"string",
+      "enum":[
+        "QUEUED",
+        "FAILED",
+        "SCHEDULED",
+        "RUNNING",
+        "SUCCESS",
+        "UP_FOR_RESCHEDULE",
+        "UP_FOR_RETRY",
+        "UPSTREAM_FAILED",
+        "REMOVED",
+        "RESTARTING",
+        "DEFERRED",
+        "NONE",
+        "CANCELLED",
+        "TIMEOUT"
+      ]
+    },
+    "TaskInstanceSummaries":{
+      "type":"list",
+      "member":{"shape":"TaskInstanceSummary"}
+    },
+    "TaskInstanceSummary":{
+      "type":"structure",
+      "members":{
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow that contains this task instance.</p>"
+        },
+        "WorkflowVersion":{
+          "shape":"VersionId",
+          "documentation":"<p>The version of the workflow that contains this task instance.</p>"
+        },
+        "RunId":{
+          "shape":"IdString",
+          "documentation":"<p>The unique identifier of the workflow run that contains this task instance.</p>"
+        },
+        "TaskInstanceId":{
+          "shape":"IdString",
+          "documentation":"<p>The unique identifier of this task instance.</p>"
+        },
+        "Status":{
+          "shape":"TaskInstanceStatus",
+          "documentation":"<p>The current status of the task instance.</p>"
+        },
+        "DurationInSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The duration of the task instance execution in seconds. This value is null if the task is not complete.</p>"
+        },
+        "OperatorName":{
+          "shape":"GenericString",
+          "documentation":"<p>The name of the Apache Airflow operator used for this task instance.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a task instance within a workflow run, including its status and execution details.</p>"
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":[
+        "Message",
+        "ServiceCode",
+        "QuotaCode"
+      ],
+      "members":{
+        "Message":{"shape":"ErrorMessage"},
+        "ServiceCode":{
+          "shape":"String",
+          "documentation":"<p>The code for the service.</p>"
+        },
+        "QuotaCode":{
+          "shape":"String",
+          "documentation":"<p>The code of the quota.</p>"
+        },
+        "RetryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>The number of seconds to wait before retrying the operation.</p>"
+        }
+      },
+      "documentation":"<p>The request was denied because too many requests were made in a short period, exceeding the service rate limits. Amazon Managed Workflows for Apache Airflow Serverless implements throttling controls to ensure fair resource allocation across all customers in the multi-tenant environment. This helps maintain service stability and performance. If you encounter throttling, implement exponential backoff and retry logic in your applications, or consider distributing your API calls over a longer time period.</p>",
+      "exception":true,
+      "retryable":{"throttling":true}
+    },
+    "TimestampValue":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "TagKeys"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"TaggableResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource from which to remove tags.</p>"
+        },
+        "TagKeys":{
+          "shape":"TagKeys",
+          "documentation":"<p>A list of tag keys to remove from the resource. Only the keys are required; the values are ignored.</p>"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateWorkflowRequest":{
+      "type":"structure",
+      "required":[
+        "WorkflowArn",
+        "DefinitionS3Location",
+        "RoleArn"
+      ],
+      "members":{
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow you want to update.</p>"
+        },
+        "DefinitionS3Location":{
+          "shape":"DefinitionS3Location",
+          "documentation":"<p>The Amazon S3 location where the updated workflow definition file is stored.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that Amazon Managed Workflows for Apache Airflow Serverless assumes when it executes the updated workflow.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>An updated description for the workflow.</p>"
+        },
+        "LoggingConfiguration":{
+          "shape":"LoggingConfiguration",
+          "documentation":"<p>Updated logging configuration for the workflow.</p>"
+        },
+        "EngineVersion":{
+          "shape":"EngineVersion",
+          "documentation":"<p>The version of the Amazon Managed Workflows for Apache Airflow Serverless engine that you want to use for the updated workflow.</p>"
+        },
+        "NetworkConfiguration":{
+          "shape":"NetworkConfiguration",
+          "documentation":"<p>Updated network configuration for the workflow execution environment.</p>"
+        },
+        "TriggerMode":{
+          "shape":"GenericString",
+          "documentation":"<p>The trigger mode for the workflow execution.</p>"
+        }
+      }
+    },
+    "UpdateWorkflowResponse":{
+      "type":"structure",
+      "required":["WorkflowArn"],
+      "members":{
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated workflow.</p>"
+        },
+        "ModifiedAt":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The timestamp when the workflow was last modified, in ISO 8601 date-time format.</p>"
+        },
+        "WorkflowVersion":{
+          "shape":"WorkflowVersion",
+          "documentation":"<p>The version identifier of the updated workflow.</p>"
+        },
+        "Warnings":{
+          "shape":"WarningMessages",
+          "documentation":"<p>Warning messages generated during workflow update.</p>"
+        }
+      }
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":[
+        "Message",
+        "Reason"
+      ],
+      "members":{
+        "Message":{"shape":"ErrorMessage"},
+        "Reason":{
+          "shape":"ValidationExceptionReason",
+          "documentation":"<p>The reason the request failed validation.</p>"
+        },
+        "FieldList":{
+          "shape":"ValidationExceptionFields",
+          "documentation":"<p>The fields that failed validation.</p>"
+        }
+      },
+      "documentation":"<p>The specified request parameters are invalid, missing, or inconsistent with Amazon Managed Workflows for Apache Airflow Serverless service requirements. This can occur when workflow definitions contain unsupported operators, when required IAM permissions are missing, when S3 locations are inaccessible, or when network configurations are invalid. The service validates workflow definitions, execution roles, and resource configurations to ensure compatibility with the managed Airflow environment and security requirements.</p>",
+      "exception":true
+    },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Message"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the field that failed validation.</p>"
+        },
+        "Message":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>A message that describes why the field failed validation.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a field that failed validation, including the field name and a descriptive error message.</p>"
+    },
+    "ValidationExceptionFields":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"}
+    },
+    "ValidationExceptionReason":{
+      "type":"string",
+      "enum":[
+        "unknownOperation",
+        "cannotParse",
+        "fieldValidationFailed",
+        "other"
+      ]
+    },
+    "VersionId":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":".+"
+    },
+    "WarningMessages":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "WorkflowArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(?:-(?:cn|us-gov|iso|iso-b|iso-e|iso-f))?:airflow-serverless:([a-z]{2}-[a-z]+-[0-9]{1}):([0-9]{12}):workflow/([a-zA-Z0-9][a-zA-Z0-9\\.\\-_]{0,254}-[a-zA-Z0-9]{10})"
+    },
+    "WorkflowRunDetail":{
+      "type":"structure",
+      "members":{
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow that contains this run.</p>"
+        },
+        "WorkflowVersion":{
+          "shape":"VersionId",
+          "documentation":"<p>The version of the workflow used for this run.</p>"
+        },
+        "RunId":{
+          "shape":"IdString",
+          "documentation":"<p>The unique identifier of this workflow run.</p>"
+        },
+        "RunType":{
+          "shape":"RunType",
+          "documentation":"<p>The type of workflow run.</p>"
+        },
+        "StartedOn":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The timestamp when the workflow run started execution, in ISO 8601 date-time format.</p>"
+        },
+        "CreatedAt":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The timestamp when the workflow run was created, in ISO 8601 date-time format.</p>"
+        },
+        "CompletedOn":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The timestamp when the workflow run completed execution, in ISO 8601 date-time format. This value is null if the run is not complete.</p>"
+        },
+        "ModifiedAt":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The timestamp when the workflow run was last modified, in ISO 8601 date-time format.</p>"
+        },
+        "Duration":{
+          "shape":"Integer",
+          "documentation":"<p>The total duration of the workflow run execution in seconds. This value is null if the run is not complete.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"GenericString",
+          "documentation":"<p>The error message if the workflow run failed. This value is null if the run completed successfully.</p>"
+        },
+        "TaskInstances":{
+          "shape":"TaskInstanceIds",
+          "documentation":"<p>A list of task instance IDs that are part of this workflow run.</p>"
+        },
+        "RunState":{
+          "shape":"WorkflowRunStatus",
+          "documentation":"<p>The current execution state of the workflow run.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about a workflow run execution, including timing, status, error information, and associated task instances. This structure provides comprehensive visibility into the workflow execution lifecycle within the Amazon Managed Workflows for Apache Airflow Serverless serverless environment. The service tracks execution across distributed ECS worker tasks and provides detailed timing information, error diagnostics, and task instance relationships to support effective monitoring and troubleshooting of complex workflow executions.</p>"
+    },
+    "WorkflowRunStatus":{
+      "type":"string",
+      "enum":[
+        "STARTING",
+        "QUEUED",
+        "RUNNING",
+        "SUCCESS",
+        "FAILED",
+        "TIMEOUT",
+        "STOPPING",
+        "STOPPED"
+      ]
+    },
+    "WorkflowRunSummaries":{
+      "type":"list",
+      "member":{"shape":"WorkflowRunSummary"}
+    },
+    "WorkflowRunSummary":{
+      "type":"structure",
+      "members":{
+        "RunId":{
+          "shape":"IdString",
+          "documentation":"<p>The unique identifier of the workflow run.</p>"
+        },
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow that contains this run.</p>"
+        },
+        "WorkflowVersion":{
+          "shape":"VersionId",
+          "documentation":"<p>The version of the workflow used for this run.</p>"
+        },
+        "RunType":{
+          "shape":"RunType",
+          "documentation":"<p>The type of workflow run.</p>"
+        },
+        "RunDetailSummary":{
+          "shape":"RunDetailSummary",
+          "documentation":"<p>Summary details about the workflow run execution.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a workflow run, including basic identification and status information.</p>"
+    },
+    "WorkflowStatus":{
+      "type":"string",
+      "enum":[
+        "READY",
+        "DELETING"
+      ]
+    },
+    "WorkflowSummaries":{
+      "type":"list",
+      "member":{"shape":"WorkflowSummary"}
+    },
+    "WorkflowSummary":{
+      "type":"structure",
+      "required":["WorkflowArn"],
+      "members":{
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow.</p>"
+        },
+        "WorkflowVersion":{
+          "shape":"WorkflowVersion",
+          "documentation":"<p>The version identifier of the workflow.</p>"
+        },
+        "Name":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the workflow.</p>"
+        },
+        "Description":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The description of the workflow.</p>"
+        },
+        "CreatedAt":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The timestamp when the workflow was created, in ISO 8601 date-time format.</p>"
+        },
+        "ModifiedAt":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The timestamp when the workflow was last modified, in ISO 8601 date-time format.</p>"
+        },
+        "WorkflowStatus":{
+          "shape":"WorkflowStatus",
+          "documentation":"<p>The current status of the workflow.</p>"
+        },
+        "TriggerMode":{
+          "shape":"GenericString",
+          "documentation":"<p>The trigger mode for the workflow execution.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a workflow, including basic identification and metadata.</p>"
+    },
+    "WorkflowVersion":{
+      "type":"string",
+      "max":32,
+      "min":32,
+      "pattern":"[a-z0-9]{32}"
+    },
+    "WorkflowVersionSummaries":{
+      "type":"list",
+      "member":{"shape":"WorkflowVersionSummary"}
+    },
+    "WorkflowVersionSummary":{
+      "type":"structure",
+      "required":[
+        "WorkflowVersion",
+        "WorkflowArn"
+      ],
+      "members":{
+        "WorkflowVersion":{
+          "shape":"WorkflowVersion",
+          "documentation":"<p>The version identifier of the workflow version.</p>"
+        },
+        "WorkflowArn":{
+          "shape":"WorkflowArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the workflow that contains this version.</p>"
+        },
+        "IsLatestVersion":{
+          "shape":"IsLatestVersion",
+          "documentation":"<p>Boolean flag that indicates whether this is the latest version of the workflow.</p>"
+        },
+        "CreatedAt":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The timestamp when the workflow version was created, in ISO 8601 date-time format.</p>"
+        },
+        "ModifiedAt":{
+          "shape":"TimestampValue",
+          "documentation":"<p>The timestamp when the workflow version was last modified, in ISO 8601 date-time format.</p>"
+        },
+        "DefinitionS3Location":{
+          "shape":"DefinitionS3Location",
+          "documentation":"<p>The Amazon S3 location of the workflow definition file for this version.</p>"
+        },
+        "ScheduleConfiguration":{
+          "shape":"ScheduleConfiguration",
+          "documentation":"<p>The schedule configuration for this workflow version.</p>"
+        },
+        "TriggerMode":{
+          "shape":"GenericString",
+          "documentation":"<p>The trigger mode for the workflow execution.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a workflow version, including identification and configuration details.</p>"
+    }
+  },
+  "documentation":"<p>Amazon Managed Workflows for Apache Airflow Serverless provides a managed workflow orchestration platform for running Apache Airflow workflows in a serverless environment. You can use Amazon Managed Workflows for Apache Airflow Serverless to create, manage, and run data processing workflows without managing the underlying infrastructure, Airflow clusters, metadata databases, or scheduling overhead. The service provides secure multi-tenant run environments with automatic scaling, comprehensive logging, and integration with multiple Amazon Web Services services for orchestrating complex analytics workloads.</p>"
+}

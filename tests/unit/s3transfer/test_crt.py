@@ -16,6 +16,7 @@ import pytest
 from botocore.credentials import Credentials, ReadOnlyCredentials
 from botocore.exceptions import ClientError, NoCredentialsError
 from botocore.session import Session
+from s3transfer.constants import GB
 from s3transfer.exceptions import TransferNotDoneError
 from s3transfer.utils import CallArgs
 
@@ -365,3 +366,55 @@ class TestCreateS3CRTClient:
     def test_always_enables_s3express(self, mock_s3_crt_client):
         s3transfer.crt.create_s3_crt_client('us-west-2')
         assert mock_s3_crt_client.call_args[1]['enable_s3express'] is True
+
+    @pytest.mark.parametrize(
+        'fio_options,should_stream,disk_throughput,direct_io',
+        [
+            ({'should_stream': True}, True, 0.0, False),
+            ({'disk_throughput_gbps': 8}, False, 8, False),
+            ({'direct_io': True}, False, 0.0, True),
+            (
+                {'should_stream': True, 'disk_throughput_gbps': 8},
+                True,
+                8,
+                False,
+            ),
+            ({'should_stream': True, 'direct_io': True}, True, 0.0, True),
+            ({'disk_throughput_gbps': 8, 'direct_io': True}, False, 8, True),
+            (
+                {
+                    'should_stream': True,
+                    'disk_throughput_gbps': 8,
+                    'direct_io': True,
+                },
+                True,
+                8,
+                True,
+            ),
+        ],
+    )
+    def test_fio_options(
+        self,
+        fio_options,
+        should_stream,
+        disk_throughput,
+        direct_io,
+        mock_s3_crt_client,
+    ):
+        params = {'fio_options': fio_options}
+        s3transfer.crt.create_s3_crt_client(
+            'us-west-2',
+            **params,
+        )
+        assert (
+            mock_s3_crt_client.call_args[1]['fio_options'].should_stream
+            is should_stream
+        )
+        assert (
+            mock_s3_crt_client.call_args[1]['fio_options'].disk_throughput_gbps
+            == disk_throughput
+        )
+        assert (
+            mock_s3_crt_client.call_args[1]['fio_options'].direct_io
+            is direct_io
+        )

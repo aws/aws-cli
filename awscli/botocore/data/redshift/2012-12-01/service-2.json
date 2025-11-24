@@ -276,7 +276,9 @@
         {"shape":"InvalidRetentionPeriodFault"},
         {"shape":"Ipv6CidrBlockNotFoundFault"},
         {"shape":"UnsupportedOperationFault"},
-        {"shape":"RedshiftIdcApplicationNotExistsFault"}
+        {"shape":"RedshiftIdcApplicationNotExistsFault"},
+        {"shape":"DependentServiceUnavailableFault"},
+        {"shape":"DependentServiceAccessDeniedFault"}
       ],
       "documentation":"<p>Creates a new cluster with the specified parameters.</p> <p>To create a cluster in Virtual Private Cloud (VPC), you must provide a cluster subnet group name. The cluster subnet group identifies the subnets of your VPC that Amazon Redshift uses when creating the cluster. For more information about managing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html\">Amazon Redshift Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p> <p>VPC Block Public Access (BPA) enables you to block resources in VPCs and subnets that you own in a Region from reaching or being reached from the internet through internet gateways and egress-only internet gateways. If a subnet group for a provisioned cluster is in an account with VPC BPA turned on, the following capabilities are blocked:</p> <ul> <li> <p>Creating a public cluster</p> </li> <li> <p>Restoring a public cluster</p> </li> <li> <p>Modifying a private cluster to be public</p> </li> <li> <p>Adding a subnet with VPC BPA turned on to the subnet group when there's at least one public cluster within the group</p> </li> </ul> <p>For more information about VPC BPA, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html\">Block public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
@@ -1780,6 +1782,25 @@
       ],
       "documentation":"<p>Returns a database user name and temporary password with temporary authorization to log in to an Amazon Redshift database. The database user is mapped 1:1 to the source Identity and Access Management (IAM) identity. For more information about IAM identities, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id.html\">IAM Identities (users, user groups, and roles)</a> in the Amazon Web Services Identity and Access Management User Guide.</p> <p>The Identity and Access Management (IAM) identity that runs this operation must have an IAM policy attached that allows access to all necessary actions and resources. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-identity-based.html\">Using identity-based policies (IAM policies)</a> in the Amazon Redshift Cluster Management Guide. </p>"
     },
+    "GetIdentityCenterAuthToken":{
+      "name":"GetIdentityCenterAuthToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIdentityCenterAuthTokenRequest"},
+      "output":{
+        "shape":"GetIdentityCenterAuthTokenResponse",
+        "resultWrapper":"GetIdentityCenterAuthTokenResult"
+      },
+      "errors":[
+        {"shape":"ClusterNotFoundFault"},
+        {"shape":"InvalidClusterStateFault"},
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"RedshiftInvalidParameterFault"}
+      ],
+      "documentation":"<p>Generates an encrypted authentication token that propagates the caller's Amazon Web Services IAM Identity Center identity to Amazon Redshift clusters. This API extracts the Amazon Web Services IAM Identity Center identity from enhanced credentials and creates a secure token that Amazon Redshift drivers can use for authentication.</p> <p>The token is encrypted using Key Management Service (KMS) and can only be decrypted by the specified Amazon Redshift clusters. The token contains the caller's Amazon Web Services IAM Identity Center identity information and is valid for a limited time period.</p> <p>This API is exclusively for use with Amazon Web Services IAM Identity Center enhanced credentials. If the caller is not using enhanced credentials with embedded Amazon Web Services IAM Identity Center identity, the API will return an error.</p>"
+    },
     "GetReservedNodeExchangeConfigurationOptions":{
       "name":"GetReservedNodeExchangeConfigurationOptions",
       "http":{
@@ -2139,6 +2160,28 @@
       ],
       "documentation":"<p>Modifies a zero-ETL integration or S3 event integration with Amazon Redshift.</p>"
     },
+    "ModifyLakehouseConfiguration":{
+      "name":"ModifyLakehouseConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyLakehouseConfigurationMessage"},
+      "output":{
+        "shape":"LakehouseConfiguration",
+        "resultWrapper":"ModifyLakehouseConfigurationResult"
+      },
+      "errors":[
+        {"shape":"ClusterNotFoundFault"},
+        {"shape":"InvalidClusterStateFault"},
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"UnauthorizedOperation"},
+        {"shape":"RedshiftIdcApplicationNotExistsFault"},
+        {"shape":"DependentServiceUnavailableFault"},
+        {"shape":"DependentServiceAccessDeniedFault"}
+      ],
+      "documentation":"<p>Modifies the lakehouse configuration for a cluster. This operation allows you to manage Amazon Redshift federated permissions and Amazon Web Services IAM Identity Center trusted identity propagation.</p>"
+    },
     "ModifyRedshiftIdcApplication":{
       "name":"ModifyRedshiftIdcApplication",
       "http":{
@@ -2434,6 +2477,8 @@
         {"shape":"DependentServiceUnavailableFault"},
         {"shape":"ReservedNodeAlreadyExistsFault"},
         {"shape":"UnsupportedOperationFault"},
+        {"shape":"RedshiftIdcApplicationNotExistsFault"},
+        {"shape":"DependentServiceAccessDeniedFault"},
         {"shape":"Ipv6CidrBlockNotFoundFault"}
       ],
       "documentation":"<p>Creates a new cluster from a snapshot. By default, Amazon Redshift creates the resulting cluster with the same configuration as the original cluster from which the snapshot was created, except that the new cluster is created with the default cluster security and parameter groups. After Amazon Redshift creates the cluster, you can use the <a>ModifyCluster</a> API to associate a different security group and different parameter group with the restored cluster. If you are using a DS node type, you can also choose to change to another DS node type of the same size during restore.</p> <p>If you restore a cluster into a VPC, you must provide a cluster subnet group where you want the cluster restored.</p> <p>VPC Block Public Access (BPA) enables you to block resources in VPCs and subnets that you own in a Region from reaching or being reached from the internet through internet gateways and egress-only internet gateways. If a subnet group for a provisioned cluster is in an account with VPC BPA turned on, the following capabilities are blocked:</p> <ul> <li> <p>Creating a public cluster</p> </li> <li> <p>Restoring a public cluster</p> </li> <li> <p>Modifying a private cluster to be public</p> </li> <li> <p>Adding a subnet with VPC BPA turned on to the subnet group when there's at least one public cluster within the group</p> </li> </ul> <p>For more information about VPC BPA, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html\">Block public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p> <p> For more information about working with snapshots, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-snapshots.html\">Amazon Redshift Snapshots</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>"
@@ -2676,6 +2721,13 @@
         "restore-cluster",
         "recommend-node-config",
         "resize-cluster"
+      ]
+    },
+    "ApplicationType":{
+      "type":"string",
+      "enum":[
+        "None",
+        "Lakehouse"
       ]
     },
     "AquaConfiguration":{
@@ -3148,6 +3200,12 @@
         }
       }
     },
+    "CatalogNameString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-z0-9_-]*[a-z]+[a-z0-9_-]*$"
+    },
     "CertificateAssociation":{
       "type":"structure",
       "members":{
@@ -3411,6 +3469,14 @@
         "MultiAZSecondary":{
           "shape":"SecondaryClusterInfo",
           "documentation":"<p>The secondary compute unit of a cluster, if Multi-AZ deployment is turned on.</p>"
+        },
+        "LakehouseRegistrationStatus":{
+          "shape":"String",
+          "documentation":"<p>The status of the lakehouse registration for the cluster. Indicates whether the cluster is successfully registered with Amazon Redshift federated permissions.</p>"
+        },
+        "CatalogArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Glue data catalog associated with the cluster enabled with Amazon Redshift federated permissions.</p>"
         }
       },
       "documentation":"<p>Describes a cluster.</p>",
@@ -3541,6 +3607,13 @@
       "member":{
         "shape":"ClusterIamRole",
         "locationName":"ClusterIamRole"
+      }
+    },
+    "ClusterIdentifierList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"ClusterIdentifier"
       }
     },
     "ClusterList":{
@@ -4078,6 +4151,17 @@
       },
       "exception":true
     },
+    "Connect":{
+      "type":"structure",
+      "required":["Authorization"],
+      "members":{
+        "Authorization":{
+          "shape":"ServiceAuthorization",
+          "documentation":"<p>Determines whether the Amazon Redshift connect integration is enabled or disabled for the application.</p>"
+        }
+      },
+      "documentation":"<p>A structure that defines the Amazon Redshift connect service integration scope.</p>"
+    },
     "ConsumerIdentifierList":{
       "type":"list",
       "member":{"shape":"String"},
@@ -4320,6 +4404,10 @@
         "RedshiftIdcApplicationArn":{
           "shape":"String",
           "documentation":"<p>The Amazon resource name (ARN) of the Amazon Redshift IAM Identity Center application.</p>"
+        },
+        "CatalogName":{
+          "shape":"CatalogNameString",
+          "documentation":"<p>The name of the Glue data catalog that will be associated with the cluster enabled with Amazon Redshift federated permissions.</p> <p>Constraints:</p> <ul> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Can only contain lowercase letters (a-z), numbers (0-9), underscores (_), and hyphens (-).</p> </li> </ul> <p>Pattern: <code>^[a-z0-9_-]*[a-z]+[a-z0-9_-]*$</code> </p> <p>Example: <code>my-catalog_01</code> </p>"
         }
       },
       "documentation":"<p/>"
@@ -4719,6 +4807,10 @@
         "ServiceIntegrations":{
           "shape":"ServiceIntegrationList",
           "documentation":"<p>A collection of service integrations for the Redshift IAM Identity Center application.</p>"
+        },
+        "ApplicationType":{
+          "shape":"ApplicationType",
+          "documentation":"<p>The type of application being created. Valid values are <code>None</code> or <code>Lakehouse</code>. Use <code>Lakehouse</code> to enable Amazon Redshift federated permissions on cluster.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -7215,6 +7307,31 @@
         }
       }
     },
+    "GetIdentityCenterAuthTokenRequest":{
+      "type":"structure",
+      "required":["ClusterIds"],
+      "members":{
+        "ClusterIds":{
+          "shape":"ClusterIdentifierList",
+          "documentation":"<p>A list of cluster identifiers that the generated token can be used with. The token will be scoped to only allow authentication to the specified clusters.</p> <p>Constraints:</p> <ul> <li> <p> <code>ClusterIds</code> must contain at least 1 cluster identifier.</p> </li> <li> <p> <code>ClusterIds</code> can hold a maximum of 20 cluster identifiers.</p> </li> <li> <p>Cluster identifiers must be 1 to 63 characters in length.</p> </li> <li> <p>The characters accepted for cluster identifiers are the following:</p> <ul> <li> <p>Alphanumeric characters</p> </li> <li> <p>Hyphens</p> </li> </ul> </li> <li> <p>Cluster identifiers must start with a letter.</p> </li> <li> <p>Cluster identifiers can't end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The request parameters for <code>GetIdentityCenterAuthToken</code>.</p>"
+    },
+    "GetIdentityCenterAuthTokenResponse":{
+      "type":"structure",
+      "members":{
+        "Token":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The encrypted authentication token containing the caller's Amazon Web Services IAM Identity Center identity information. This token is encrypted using Key Management Service and can only be decrypted by the specified Amazon Redshift clusters. Use this token with Amazon Redshift drivers to authenticate using your Amazon Web Services IAM Identity Center identity.</p>"
+        },
+        "ExpirationTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The time (UTC) when the token expires. After this timestamp, the token will no longer be valid for authentication.</p>"
+        }
+      },
+      "documentation":"<p>The response from GetIdentityCenterAuthToken containing the encrypted authentication token and expiration time.</p>"
+    },
     "GetReservedNodeExchangeConfigurationOptionsInputMessage":{
       "type":"structure",
       "required":["ActionType"],
@@ -8207,6 +8324,42 @@
       "type":"list",
       "member":{"shape":"LakeFormationScopeUnion"}
     },
+    "LakehouseConfiguration":{
+      "type":"structure",
+      "members":{
+        "ClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the cluster associated with this lakehouse configuration.</p>"
+        },
+        "LakehouseIdcApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Identity Center application used for enabling Amazon Web Services IAM Identity Center trusted identity propagation on a cluster enabled with Amazon Redshift federated permissions.</p>"
+        },
+        "LakehouseRegistrationStatus":{
+          "shape":"String",
+          "documentation":"<p>The current status of the lakehouse registration. Indicates whether the cluster is successfully registered with the lakehouse.</p>"
+        },
+        "CatalogArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Glue data catalog associated with the lakehouse configuration.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration information for lakehouse integration, including the cluster identifier, catalog ARN, and registration status.</p>"
+    },
+    "LakehouseIdcRegistration":{
+      "type":"string",
+      "enum":[
+        "Associate",
+        "Disassociate"
+      ]
+    },
+    "LakehouseRegistration":{
+      "type":"string",
+      "enum":[
+        "Register",
+        "Deregister"
+      ]
+    },
     "LimitExceededFault":{
       "type":"structure",
       "members":{},
@@ -8799,6 +8952,36 @@
         "IntegrationName":{
           "shape":"IntegrationName",
           "documentation":"<p>A new name for the integration.</p>"
+        }
+      }
+    },
+    "ModifyLakehouseConfigurationMessage":{
+      "type":"structure",
+      "required":["ClusterIdentifier"],
+      "members":{
+        "ClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the cluster whose lakehouse configuration you want to modify.</p>"
+        },
+        "LakehouseRegistration":{
+          "shape":"LakehouseRegistration",
+          "documentation":"<p>Specifies whether to register or deregister the cluster with Amazon Redshift federated permissions. Valid values are <code>Register</code> or <code>Deregister</code>.</p>"
+        },
+        "CatalogName":{
+          "shape":"CatalogNameString",
+          "documentation":"<p>The name of the Glue data catalog that will be associated with the cluster enabled with Amazon Redshift federated permissions.</p> <p>Constraints:</p> <ul> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Can only contain lowercase letters (a-z), numbers (0-9), underscores (_), and hyphens (-).</p> </li> </ul> <p>Pattern: <code>^[a-z0-9_-]*[a-z]+[a-z0-9_-]*$</code> </p> <p>Example: <code>my-catalog_01</code> </p>"
+        },
+        "LakehouseIdcRegistration":{
+          "shape":"LakehouseIdcRegistration",
+          "documentation":"<p>Modifies the Amazon Web Services IAM Identity Center trusted identity propagation on a cluster enabled with Amazon Redshift federated permissions. Valid values are <code>Associate</code> or <code>Disassociate</code>.</p>"
+        },
+        "LakehouseIdcApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Identity Center application used for enabling Amazon Web Services IAM Identity Center trusted identity propagation on a cluster enabled with Amazon Redshift federated permissions.</p>"
+        },
+        "DryRun":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>A boolean value that, if <code>true</code>, validates the request without actually modifying the lakehouse configuration. Use this to check for errors before making changes.</p>"
         }
       }
     },
@@ -9654,6 +9837,10 @@
           "shape":"ServiceIntegrationList",
           "documentation":"<p>A list of service integrations for the Redshift IAM Identity Center application.</p>"
         },
+        "ApplicationType":{
+          "shape":"ApplicationType",
+          "documentation":"<p>The type of application being created. Valid values are <code>None</code> or <code>Lakehouse</code>. Use <code>Lakehouse</code> to enable Amazon Redshift federated permissions on cluster.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of tags.</p>"
@@ -9708,6 +9895,32 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "RedshiftInvalidParameterFault":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The request contains one or more invalid parameters. This error occurs when required parameters are missing, parameter values are outside acceptable ranges, or parameter formats are incorrect.</p>",
+      "error":{
+        "code":"RedshiftInvalidParameter",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "RedshiftScopeUnion":{
+      "type":"structure",
+      "members":{
+        "Connect":{
+          "shape":"Connect",
+          "documentation":"<p>The Amazon Redshift connect integration scope configuration. Defines authorization settings for Amazon Redshift connect service integration.</p>"
+        }
+      },
+      "documentation":"<p>A union structure that defines the scope of Amazon Redshift service integrations. Contains configuration for different integration types such as Amazon Redshift.</p>",
+      "union":true
+    },
+    "RedshiftServiceIntegrations":{
+      "type":"list",
+      "member":{"shape":"RedshiftScopeUnion"}
     },
     "ReferenceLink":{
       "type":"structure",
@@ -10409,6 +10622,14 @@
         "MultiAZ":{
           "shape":"BooleanOptional",
           "documentation":"<p>If true, the snapshot will be restored to a cluster deployed in two Availability Zones.</p>"
+        },
+        "CatalogName":{
+          "shape":"CatalogNameString",
+          "documentation":"<p>The name of the Glue Data Catalog that will be associated with the cluster enabled with Amazon Redshift federated permissions.</p> <p>Constraints:</p> <ul> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Can only contain lowercase letters (a-z), numbers (0-9), underscores (_), and hyphens (-).</p> </li> </ul> <p>Pattern: <code>^[a-z0-9_-]*[a-z]+[a-z0-9_-]*$</code> </p> <p>Example: <code>my-catalog_01</code> </p>"
+        },
+        "RedshiftIdcApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Identity Center application used for enabling Amazon Web Services IAM Identity Center trusted identity propagation on a cluster enabled with Amazon Redshift federated permissions.</p>"
         }
       },
       "documentation":"<p/>"
@@ -10963,6 +11184,10 @@
         "S3AccessGrants":{
           "shape":"S3AccessGrantsServiceIntegrations",
           "documentation":"<p>A list of scopes set up for S3 Access Grants integration.</p>"
+        },
+        "Redshift":{
+          "shape":"RedshiftServiceIntegrations",
+          "documentation":"<p>A list of scopes set up for Amazon Redshift integration.</p>"
         }
       },
       "documentation":"<p>A list of service integrations.</p>",

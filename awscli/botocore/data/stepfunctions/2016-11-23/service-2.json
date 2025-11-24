@@ -557,7 +557,7 @@
         {"shape":"InvalidExecutionInput"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Accepts the definition of a single state and executes it. You can test a state without creating a state machine or updating an existing state machine. Using this API, you can test the following:</p> <ul> <li> <p>A state's <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/test-state-isolation.html#test-state-input-output-dataflow\">input and output processing</a> data flow</p> </li> <li> <p>An <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/connect-to-services.html\">Amazon Web Services service integration</a> request and response</p> </li> <li> <p>An <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/call-https-apis.html\">HTTP Task</a> request and response</p> </li> </ul> <p>You can call this API on only one state at a time. The states that you can test include the following:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-task-state.html#task-types\">All Task types</a> except <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-activities.html\">Activity</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-pass-state.html\">Pass</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-wait-state.html\">Wait</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-choice-state.html\">Choice</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-succeed-state.html\">Succeed</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-fail-state.html\">Fail</a> </p> </li> </ul> <p>The <code>TestState</code> API assumes an IAM role which must contain the required IAM permissions for the resources your state is accessing. For information about the permissions a state might need, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/test-state-isolation.html#test-state-permissions\">IAM permissions to test a state</a>.</p> <p>The <code>TestState</code> API can run for up to five minutes. If the execution of a state exceeds this duration, it fails with the <code>States.Timeout</code> error.</p> <p> <code>TestState</code> doesn't support <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-activities.html\">Activity tasks</a>, <code>.sync</code> or <code>.waitForTaskToken</code> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/connect-to-resource.html\">service integration patterns</a>, <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-parallel-state.html\">Parallel</a>, or <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-map-state.html\">Map</a> states.</p>",
+      "documentation":"<p>Accepts the definition of a single state and executes it. You can test a state without creating a state machine or updating an existing state machine. Using this API, you can test the following:</p> <ul> <li> <p>A state's <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/test-state-isolation.html#test-state-input-output-dataflow\">input and output processing</a> data flow</p> </li> <li> <p>An <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/connect-to-services.html\">Amazon Web Services service integration</a> request and response</p> </li> <li> <p>An <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/call-https-apis.html\">HTTP Task</a> request and response</p> </li> </ul> <p>You can call this API on only one state at a time. The states that you can test include the following:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-task-state.html#task-types\">All Task types</a> except <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-activities.html\">Activity</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-pass-state.html\">Pass</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-wait-state.html\">Wait</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-choice-state.html\">Choice</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-succeed-state.html\">Succeed</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-fail-state.html\">Fail</a> </p> </li> </ul> <p>The <code>TestState</code> API assumes an IAM role which must contain the required IAM permissions for the resources your state is accessing. For information about the permissions a state might need, see <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/test-state-isolation.html#test-state-permissions\">IAM permissions to test a state</a>.</p> <p>The <code>TestState</code> API can run for up to five minutes. If the execution of a state exceeds this duration, it fails with the <code>States.Timeout</code> error.</p> <p> <code>TestState</code> only supports the following when a mock is specified: <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-activities.html\">Activity tasks</a>, <code>.sync</code> or <code>.waitForTaskToken</code> <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/connect-to-resource.html\">service integration patterns</a>, <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-parallel-state.html\">Parallel</a>, or <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/amazon-states-language-map-state.html\">Map</a> states.</p>",
       "endpoint":{"hostPrefix":"sync-"}
     },
     "UntagResource":{
@@ -1558,6 +1558,12 @@
       "sensitive":true
     },
     "EventId":{"type":"long"},
+    "ExceptionHandlerIndex":{
+      "type":"integer",
+      "box":true,
+      "min":0,
+      "sensitive":true
+    },
     "ExecutionAbortedEventDetails":{
       "type":"structure",
       "members":{
@@ -1858,7 +1864,7 @@
       "members":{
         "timestamp":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time the event occurred.</p>"
+          "documentation":"<p>The date and time the event occurred, expressed in seconds and fractional milliseconds since the Unix epoch, which is defined as January 1, 1970, at 00:00:00 Coordinated Universal Time (UTC).</p>"
         },
         "type":{
           "shape":"HistoryEventType",
@@ -2115,6 +2121,41 @@
         "variables":{
           "shape":"SensitiveData",
           "documentation":"<p>JSON string that contains the set of workflow variables after execution of the state. The set will include variables assigned in the state and variables set up as test state input.</p>"
+        },
+        "errorDetails":{
+          "shape":"InspectionErrorDetails",
+          "documentation":"<p>An object containing data about a handled exception in the tested state.</p>"
+        },
+        "afterItemsPath":{
+          "shape":"SensitiveData",
+          "documentation":"<p>The effective input after the ItemsPath filter is applied. Not populated when the QueryLanguage is JSONata.</p>"
+        },
+        "afterItemSelector":{
+          "shape":"SensitiveData",
+          "documentation":"<p>An array containing the inputs for each Map iteration, transformed by the ItemSelector specified in a Map state.</p>"
+        },
+        "afterItemBatcher":{
+          "shape":"SensitiveData",
+          "documentation":"<p>The effective input after the ItemBatcher filter is applied in a Map state.</p>"
+        },
+        "afterItemsPointer":{
+          "shape":"SensitiveData",
+          "documentation":"<p>The effective input after the ItemsPointer filter is applied in a Map state.</p>"
+        },
+        "toleratedFailureCount":{
+          "shape":"InspectionToleratedFailureCount",
+          "documentation":"<p>The tolerated failure threshold for a Map state as defined in number of Map state iterations.</p>",
+          "box":true
+        },
+        "toleratedFailurePercentage":{
+          "shape":"InspectionToleratedFailurePercentage",
+          "documentation":"<p>The tolerated failure threshold for a Map state as defined in percentage of Map state iterations.</p>",
+          "box":true
+        },
+        "maxConcurrency":{
+          "shape":"InspectionMaxConcurrency",
+          "documentation":"<p>The max concurrency of the Map state.</p>",
+          "box":true
         }
       },
       "documentation":"<p>Contains additional details about the state's execution, including its input and output data processing flow, and HTTP request and response information.</p>",
@@ -2172,6 +2213,27 @@
       },
       "documentation":"<p>Contains additional details about the state's execution, including its input and output data processing flow, and HTTP response information. The <code>inspectionLevel</code> request parameter specifies which details are returned.</p>"
     },
+    "InspectionErrorDetails":{
+      "type":"structure",
+      "members":{
+        "catchIndex":{
+          "shape":"ExceptionHandlerIndex",
+          "documentation":"<p>The array index of the Catch which handled the exception.</p>",
+          "box":true
+        },
+        "retryIndex":{
+          "shape":"ExceptionHandlerIndex",
+          "documentation":"<p>The array index of the Retry which handled the exception.</p>",
+          "box":true
+        },
+        "retryBackoffIntervalSeconds":{
+          "shape":"RetryBackoffIntervalSeconds",
+          "documentation":"<p>The duration in seconds of the backoff for a retry on a failed state invocation.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>An object containing data about a handled exception in the tested state.</p>"
+    },
     "InspectionLevel":{
       "type":"string",
       "enum":[
@@ -2179,6 +2241,25 @@
         "DEBUG",
         "TRACE"
       ]
+    },
+    "InspectionMaxConcurrency":{
+      "type":"integer",
+      "box":true,
+      "min":0,
+      "sensitive":true
+    },
+    "InspectionToleratedFailureCount":{
+      "type":"integer",
+      "box":true,
+      "min":0,
+      "sensitive":true
+    },
+    "InspectionToleratedFailurePercentage":{
+      "type":"float",
+      "box":true,
+      "max":100,
+      "min":0,
+      "sensitive":true
     },
     "InvalidArn":{
       "type":"structure",
@@ -2674,6 +2755,11 @@
       },
       "documentation":"<p>Contains details about an iteration of a Map state.</p>"
     },
+    "MapIterationFailureCount":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
     "MapRunExecutionCounts":{
       "type":"structure",
       "required":[
@@ -2892,6 +2978,46 @@
       "documentation":"<p>Request is missing a required parameter. This error occurs if both <code>definition</code> and <code>roleArn</code> are not specified.</p>",
       "exception":true
     },
+    "MockErrorOutput":{
+      "type":"structure",
+      "members":{
+        "error":{
+          "shape":"SensitiveError",
+          "documentation":"<p>A string denoting the error code of the exception thrown when invoking the tested state. This field is required if <code>mock.errorOutput</code> is specified.</p>"
+        },
+        "cause":{
+          "shape":"SensitiveCause",
+          "documentation":"<p>A string containing the cause of the exception thrown when executing the state's logic.</p>"
+        }
+      },
+      "documentation":"<p>A JSON object that contains a mocked error.</p>"
+    },
+    "MockInput":{
+      "type":"structure",
+      "members":{
+        "result":{
+          "shape":"SensitiveData",
+          "documentation":"<p>A JSON string containing the mocked result of the state invocation.</p>"
+        },
+        "errorOutput":{
+          "shape":"MockErrorOutput",
+          "documentation":"<p>The mocked error output when calling TestState. When specified, the mocked response is returned as a JSON object that contains an <code>error</code> and <code>cause</code> field.</p>"
+        },
+        "fieldValidationMode":{
+          "shape":"MockResponseValidationMode",
+          "documentation":"<p>Determines the level of strictness when validating mocked results against their respective API models. Values include:</p> <ul> <li> <p> <code>STRICT</code>: All required fields must be present, and all present fields must conform to the API's schema.</p> </li> <li> <p> <code>PRESENT</code>: All present fields must conform to the API's schema.</p> </li> <li> <p> <code>NONE</code>: No validation is performed.</p> </li> </ul> <p>If no value is specified, the default value is <code>STRICT</code>.</p>"
+        }
+      },
+      "documentation":"<p>A JSON object that contains a mocked <code>result</code> or <code>errorOutput</code>.</p>"
+    },
+    "MockResponseValidationMode":{
+      "type":"string",
+      "enum":[
+        "STRICT",
+        "PRESENT",
+        "NONE"
+      ]
+    },
     "Name":{
       "type":"string",
       "max":80,
@@ -2980,6 +3106,17 @@
       },
       "documentation":"<p>Could not find the referenced resource.</p>",
       "exception":true
+    },
+    "RetrierRetryCount":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "RetryBackoffIntervalSeconds":{
+      "type":"integer",
+      "box":true,
+      "min":0,
+      "sensitive":true
     },
     "RevealSecrets":{"type":"boolean"},
     "ReverseOrder":{"type":"boolean"},
@@ -3078,7 +3215,7 @@
     },
     "SensitiveDataJobInput":{
       "type":"string",
-      "max":262144,
+      "max":1048576,
       "sensitive":true
     },
     "SensitiveError":{
@@ -3747,13 +3884,37 @@
         "CAUGHT_ERROR"
       ]
     },
+    "TestStateConfiguration":{
+      "type":"structure",
+      "members":{
+        "retrierRetryCount":{
+          "shape":"RetrierRetryCount",
+          "documentation":"<p>The number of retry attempts that have occurred for the state's Retry that applies to the mocked error.</p>",
+          "box":true
+        },
+        "errorCausedByState":{
+          "shape":"TestStateStateName",
+          "documentation":"<p>The name of the state from which an error originates when an error is mocked for a Map or Parallel state.</p>"
+        },
+        "mapIterationFailureCount":{
+          "shape":"MapIterationFailureCount",
+          "documentation":"<p>The number of Map state iterations that failed during the Map state invocation.</p>",
+          "box":true
+        },
+        "mapItemReaderData":{
+          "shape":"SensitiveData",
+          "documentation":"<p>The data read by ItemReader in Distributed Map states as found in its original source.</p>"
+        }
+      },
+      "documentation":"<p>Contains configurations for the tested state.</p>"
+    },
     "TestStateInput":{
       "type":"structure",
       "required":["definition"],
       "members":{
         "definition":{
           "shape":"Definition",
-          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html\">Amazon States Language</a> (ASL) definition of the state.</p>"
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html\">Amazon States Language</a> (ASL) definition of the state or state machine.</p>"
         },
         "roleArn":{
           "shape":"Arn",
@@ -3774,6 +3935,22 @@
         "variables":{
           "shape":"SensitiveData",
           "documentation":"<p>JSON object literal that sets variables used in the state under test. Object keys are the variable names and values are the variable values.</p>"
+        },
+        "stateName":{
+          "shape":"TestStateStateName",
+          "documentation":"<p>Denotes the particular state within a state machine definition to be tested. If this field is specified, the <code>definition</code> must contain a fully-formed state machine definition.</p>"
+        },
+        "mock":{
+          "shape":"MockInput",
+          "documentation":"<p>Defines a mocked result or error for the state under test.</p> <p>A mock can only be specified for Task, Map, or Parallel states. If it is specified for another state type, an exception will be thrown.</p>"
+        },
+        "context":{
+          "shape":"SensitiveData",
+          "documentation":"<p>A JSON string representing a valid Context object for the state under test. This field may only be specified if a mock is specified in the same request.</p>"
+        },
+        "stateConfiguration":{
+          "shape":"TestStateConfiguration",
+          "documentation":"<p>Contains configurations for the state under test.</p>"
         }
       }
     },
@@ -3805,6 +3982,12 @@
           "documentation":"<p>The execution status of the state.</p>"
         }
       }
+    },
+    "TestStateStateName":{
+      "type":"string",
+      "max":80,
+      "min":1,
+      "sensitive":true
     },
     "TimeoutInSeconds":{"type":"long"},
     "Timestamp":{"type":"timestamp"},

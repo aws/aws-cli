@@ -204,6 +204,26 @@
       ],
       "documentation":"<p>Creates an Amazon OpenSearch Service domain. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/createupdatedomains.html\">Creating and managing Amazon OpenSearch Service domains</a>.</p>"
     },
+    "CreateIndex":{
+      "name":"CreateIndex",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/index"
+      },
+      "input":{"shape":"CreateIndexRequest"},
+      "output":{"shape":"CreateIndexResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"InternalException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"DependencyFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an OpenSearch index with optional automatic semantic enrichment for specified text fields. Automatic semantic enrichment enables semantic search capabilities without requiring machine learning expertise, improving search relevance by up to 20% by understanding search intent and contextual meaning beyond keyword matching. The semantic enrichment process has zero impact on search latency as sparse encodings are stored directly within the index during indexing. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/opensearch-semantic-enrichment.html\">Automatic semantic enrichment</a>.</p>"
+    },
     "CreateOutboundConnection":{
       "name":"CreateOutboundConnection",
       "http":{
@@ -340,6 +360,25 @@
         {"shape":"DisabledOperationException"}
       ],
       "documentation":"<p>Allows the destination Amazon OpenSearch Service domain owner to delete an existing inbound cross-cluster search connection. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/cross-cluster-search.html\">Cross-cluster search for Amazon OpenSearch Service</a>.</p>"
+    },
+    "DeleteIndex":{
+      "name":"DeleteIndex",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/index/{IndexName}"
+      },
+      "input":{"shape":"DeleteIndexRequest"},
+      "output":{"shape":"DeleteIndexResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"DependencyFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes an OpenSearch index. This operation permanently removes the index and cannot be undone.</p>"
     },
     "DeleteOutboundConnection":{
       "name":"DeleteOutboundConnection",
@@ -665,7 +704,7 @@
         {"shape":"ConflictException"},
         {"shape":"DisabledOperationException"}
       ],
-      "documentation":"<p>Dissociates multiple packages from a domain simulatneously.</p>"
+      "documentation":"<p>Dissociates multiple packages from a domain simultaneously.</p>"
     },
     "GetApplication":{
       "name":"GetApplication",
@@ -721,6 +760,23 @@
       ],
       "documentation":"<p>Retrieves information about a direct query data source.</p>"
     },
+    "GetDefaultApplicationSetting":{
+      "name":"GetDefaultApplicationSetting",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-01-01/opensearch/defaultApplicationSetting",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDefaultApplicationSettingRequest"},
+      "output":{"shape":"GetDefaultApplicationSettingResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets the ARN of the current default application.</p> <p> If the default application isn't set, the operation returns a resource not found error.</p>"
+    },
     "GetDirectQueryDataSource":{
       "name":"GetDirectQueryDataSource",
       "http":{
@@ -754,6 +810,25 @@
         {"shape":"DisabledOperationException"}
       ],
       "documentation":"<p>The status of the maintenance action.</p>"
+    },
+    "GetIndex":{
+      "name":"GetIndex",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/index/{IndexName}"
+      },
+      "input":{"shape":"GetIndexRequest"},
+      "output":{"shape":"GetIndexResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"DependencyFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves information about an OpenSearch index including its schema and semantic enrichment configuration. Use this operation to view the current index structure and semantic search settings.</p>"
     },
     "GetPackageVersionHistory":{
       "name":"GetPackageVersionHistory",
@@ -1055,6 +1130,23 @@
       ],
       "documentation":"<p>Allows you to purchase Amazon OpenSearch Service Reserved Instances.</p>"
     },
+    "PutDefaultApplicationSetting":{
+      "name":"PutDefaultApplicationSetting",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2021-01-01/opensearch/defaultApplicationSetting",
+        "responseCode":200
+      },
+      "input":{"shape":"PutDefaultApplicationSettingRequest"},
+      "output":{"shape":"PutDefaultApplicationSettingResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Sets the default application to the application with the specified ARN.</p> <p> To remove the default application, use the <code>GetDefaultApplicationSetting</code> operation to get the current default and then call the <code>PutDefaultApplicationSetting</code> with the current applications ARN and the <code>setAsDefault</code> parameter set to <code>false</code>.</p>"
+    },
     "RejectInboundConnection":{
       "name":"RejectInboundConnection",
       "http":{
@@ -1205,6 +1297,25 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Modifies the cluster configuration of the specified Amazon OpenSearch Service domain.</p>"
+    },
+    "UpdateIndex":{
+      "name":"UpdateIndex",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/index/{IndexName}"
+      },
+      "input":{"shape":"UpdateIndexRequest"},
+      "output":{"shape":"UpdateIndexResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"DependencyFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates an existing OpenSearch index schema and semantic enrichment configuration. This operation allows modification of field mappings and semantic search settings for text fields. Changes to semantic enrichment configuration will apply to newly ingested documents.</p>"
     },
     "UpdatePackage":{
       "name":"UpdatePackage",
@@ -1602,7 +1713,7 @@
         },
         "IAMFederationOptions":{
           "shape":"IAMFederationOptionsOutput",
-          "documentation":"<p>Container for information about the IAM federation configuration for an OpenSearch UI application.</p>"
+          "documentation":"<p>Configuration options for IAM identity federation in advanced security settings.</p>"
         },
         "AnonymousAuthDisableDate":{
           "shape":"DisableTimestamp",
@@ -1640,7 +1751,7 @@
         },
         "IAMFederationOptions":{
           "shape":"IAMFederationOptionsInput",
-          "documentation":"<p>Container for information about the IAM federation configuration for an OpenSearch UI application.</p>"
+          "documentation":"<p>Input configuration for IAM identity federation within advanced security options.</p>"
         },
         "AnonymousAuthEnabled":{
           "shape":"Boolean",
@@ -1679,7 +1790,7 @@
           "documentation":"<p>The value assigned to the configuration key, such as an IAM user ARN.</p>"
         }
       },
-      "documentation":"<p>Configuration settings for an OpenSearch application. For more information, see see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/application.html\">Using the OpenSearch user interface in Amazon OpenSearch Service</a>.</p>"
+      "documentation":"<p>Configuration settings for an OpenSearch application. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/application.html\">Using the OpenSearch user interface in Amazon OpenSearch Service</a>.</p>"
     },
     "AppConfigType":{
       "type":"string",
@@ -2688,6 +2799,39 @@
       },
       "documentation":"<p>The result of a <code>CreateDomain</code> operation. Contains the status of the newly created domain.</p>"
     },
+    "CreateIndexRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "IndexName",
+        "IndexSchema"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "IndexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the index to create. Must be between 1 and 255 characters and follow OpenSearch naming conventions.</p>"
+        },
+        "IndexSchema":{
+          "shape":"IndexSchema",
+          "documentation":"<p>The JSON schema defining index mappings, settings, and semantic enrichment configuration. The schema specifies which text fields should be automatically enriched for semantic search capabilities and includes OpenSearch index configuration parameters.</p>"
+        }
+      }
+    },
+    "CreateIndexResponse":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"IndexStatus",
+          "documentation":"<p>The status of the index creation operation.</p>"
+        }
+      }
+    },
     "CreateOutboundConnectionRequest":{
       "type":"structure",
       "required":[
@@ -3023,6 +3167,36 @@
         }
       },
       "documentation":"<p>The results of a <code>DeleteInboundConnection</code> operation. Contains details about the deleted inbound connection.</p>"
+    },
+    "DeleteIndexRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "IndexName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "IndexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the index to delete.</p>",
+          "location":"uri",
+          "locationName":"IndexName"
+        }
+      }
+    },
+    "DeleteIndexResponse":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"IndexStatus",
+          "documentation":"<p>The status of the index deletion operation.</p>"
+        }
+      }
     },
     "DeleteOutboundConnectionRequest":{
       "type":"structure",
@@ -4184,7 +4358,7 @@
         },
         "ARN":{
           "shape":"ARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the domain. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html\">IAM identifiers </a> in the <i>AWS Identity and Access Management User Guide</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the domain. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html\">IAM identifiers </a> in the <i>Amazon Web Services Identity and Access Management User Guide</i>.</p>"
         },
         "Created":{
           "shape":"Boolean",
@@ -4667,6 +4841,16 @@
       },
       "documentation":"<p>The result of a <code>GetDataSource</code> operation.</p>"
     },
+    "GetDefaultApplicationSettingRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetDefaultApplicationSettingResponse":{
+      "type":"structure",
+      "members":{
+        "applicationArn":{"shape":"ARN"}
+      }
+    },
     "GetDirectQueryDataSourceRequest":{
       "type":"structure",
       "required":["DataSourceName"],
@@ -4755,6 +4939,36 @@
         }
       },
       "documentation":"<p>The result of a <code>GetDomainMaintenanceStatus</code> request that information about the requested action.</p>"
+    },
+    "GetIndexRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "IndexName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "IndexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the index to retrieve information about.</p>",
+          "location":"uri",
+          "locationName":"IndexName"
+        }
+      }
+    },
+    "GetIndexResponse":{
+      "type":"structure",
+      "required":["IndexSchema"],
+      "members":{
+        "IndexSchema":{
+          "shape":"IndexSchema",
+          "documentation":"<p>The JSON schema of the index including mappings, settings, and semantic enrichment configuration.</p>"
+        }
+      }
     },
     "GetPackageVersionHistoryRequest":{
       "type":"structure",
@@ -4875,36 +5089,36 @@
       "members":{
         "Enabled":{
           "shape":"Boolean",
-          "documentation":"<p>True to enable IAM federation authentication for a domain.</p>"
+          "documentation":"<p>Specifies whether IAM identity federation is enabled for the OpenSearch domain.</p>"
         },
         "SubjectKey":{
           "shape":"IAMFederationSubjectKey",
-          "documentation":"<p>Element of the IAM federation assertion to use for the user name. Default is <code>sub</code>.</p>"
+          "documentation":"<p>The key in the SAML assertion that contains the user's subject identifier.</p>"
         },
         "RolesKey":{
           "shape":"IAMFederationRolesKey",
-          "documentation":"<p>Element of the IAM federation assertion to use for backend roles. Default is <code>roles</code>.</p>"
+          "documentation":"<p>The key in the SAML assertion that contains the user's role information.</p>"
         }
       },
-      "documentation":"<p>The IAM federation authentication configuration for an Amazon OpenSearch Service domain.</p>"
+      "documentation":"<p>Input parameters for configuring IAM identity federation settings.</p>"
     },
     "IAMFederationOptionsOutput":{
       "type":"structure",
       "members":{
         "Enabled":{
           "shape":"Boolean",
-          "documentation":"<p>True if IAM federation is enabled.</p>"
+          "documentation":"<p>Indicates whether IAM identity federation is currently enabled for the domain.</p>"
         },
         "SubjectKey":{
           "shape":"IAMFederationSubjectKey",
-          "documentation":"<p>The key used for matching the IAM federation subject attribute.</p>"
+          "documentation":"<p>The configured key in the SAML assertion for the user's subject identifier.</p>"
         },
         "RolesKey":{
           "shape":"IAMFederationRolesKey",
-          "documentation":"<p>The key used for matching the IAM federation roles attribute.</p>"
+          "documentation":"<p>The configured key in the SAML assertion for the user's role information.</p>"
         }
       },
-      "documentation":"<p>Describes the IAM federation options configured for the domain.</p>"
+      "documentation":"<p>Output parameters showing the current IAM identity federation configuration.</p>"
     },
     "IAMFederationRolesKey":{
       "type":"string",
@@ -5125,6 +5339,26 @@
     "InboundConnections":{
       "type":"list",
       "member":{"shape":"InboundConnection"}
+    },
+    "IndexName":{
+      "type":"string",
+      "documentation":"Name of OpenSearch index to be created/updated/retrieved/deleted for customer's domain",
+      "max":255,
+      "min":1,
+      "pattern":"^(?!\\.\\.?$)[^_ ,:\"+/*\\\\|?#><A-Z-][^ ,:\"+/*\\\\|?#><A-Z]*$"
+    },
+    "IndexSchema":{
+      "type":"structure",
+      "members":{},
+      "document":true
+    },
+    "IndexStatus":{
+      "type":"string",
+      "enum":[
+        "CREATED",
+        "UPDATED",
+        "DELETED"
+      ]
     },
     "InitiatedBy":{
       "type":"string",
@@ -6761,6 +6995,26 @@
       },
       "documentation":"<p>Represents the output of a <code>PurchaseReservedInstanceOffering</code> operation.</p>"
     },
+    "PutDefaultApplicationSettingRequest":{
+      "type":"structure",
+      "required":[
+        "applicationArn",
+        "setAsDefault"
+      ],
+      "members":{
+        "applicationArn":{"shape":"ARN"},
+        "setAsDefault":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true to set the specified ARN as the default application. Set to false to clear the default application.</p>"
+        }
+      }
+    },
+    "PutDefaultApplicationSettingResponse":{
+      "type":"structure",
+      "members":{
+        "applicationArn":{"shape":"ARN"}
+      }
+    },
     "RecurringCharge":{
       "type":"structure",
       "members":{
@@ -7570,6 +7824,13 @@
       "min":0,
       "pattern":".*"
     },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The request was denied due to request throttling. Reduce the frequency of your requests and try again.</p>",
+      "error":{"httpStatusCode":429},
+      "exception":true
+    },
     "TimeUnit":{
       "type":"string",
       "documentation":"<p>The unit of a maintenance schedule duration. Valid value is <code>HOUR</code>.</p>",
@@ -7826,6 +8087,41 @@
         }
       },
       "documentation":"<p>The results of an <code>UpdateDomain</code> request. Contains the status of the domain being updated.</p>"
+    },
+    "UpdateIndexRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "IndexName",
+        "IndexSchema"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "IndexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the index to update.</p>",
+          "location":"uri",
+          "locationName":"IndexName"
+        },
+        "IndexSchema":{
+          "shape":"IndexSchema",
+          "documentation":"<p>The updated JSON schema for the index including any changes to mappings, settings, and semantic enrichment configuration.</p>"
+        }
+      }
+    },
+    "UpdateIndexResponse":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"IndexStatus",
+          "documentation":"<p>The status of the index update operation.</p>"
+        }
+      }
     },
     "UpdatePackageRequest":{
       "type":"structure",

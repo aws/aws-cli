@@ -255,6 +255,38 @@
       ],
       "documentation":"<p>Deletes the repository policy associated with the specified repository.</p>"
     },
+    "DeleteSigningConfiguration":{
+      "name":"DeleteSigningConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteSigningConfigurationRequest"},
+      "output":{"shape":"DeleteSigningConfigurationResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"SigningConfigurationNotFoundException"}
+      ],
+      "documentation":"<p>Deletes the registry's signing configuration. Images pushed after deletion of the signing configuration will no longer be automatically signed.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECR/latest/userguide/managed-signing.html\">Managed signing</a> in the <i>Amazon Elastic Container Registry User Guide</i>.</p> <note> <p>Deleting the signing configuration does not affect existing image signatures.</p> </note>"
+    },
+    "DeregisterPullTimeUpdateExclusion":{
+      "name":"DeregisterPullTimeUpdateExclusion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeregisterPullTimeUpdateExclusionRequest"},
+      "output":{"shape":"DeregisterPullTimeUpdateExclusionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ExclusionNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Removes a principal from the pull time update exclusion list for a registry. Once removed, Amazon ECR will resume updating the pull time if the specified principal pulls an image.</p>"
+    },
     "DescribeImageReplicationStatus":{
       "name":"DescribeImageReplicationStatus",
       "http":{
@@ -289,6 +321,23 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Returns the scan findings for the specified image.</p>"
+    },
+    "DescribeImageSigningStatus":{
+      "name":"DescribeImageSigningStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeImageSigningStatusRequest"},
+      "output":{"shape":"DescribeImageSigningStatusResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"ImageNotFoundException"},
+        {"shape":"RepositoryNotFoundException"}
+      ],
+      "documentation":"<p>Returns the signing status for a specified image. If the image matched signing rules that reference different signing profiles, a status is returned for each profile.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECR/latest/userguide/managed-signing.html\">Managed signing</a> in the <i>Amazon Elastic Container Registry User Guide</i>.</p>"
     },
     "DescribeImages":{
       "name":"DescribeImages",
@@ -495,6 +544,22 @@
       ],
       "documentation":"<p>Retrieves the repository policy for the specified repository.</p>"
     },
+    "GetSigningConfiguration":{
+      "name":"GetSigningConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetSigningConfigurationRequest"},
+      "output":{"shape":"GetSigningConfigurationResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"SigningConfigurationNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the registry's signing configuration, which defines rules for automatically signing images using Amazon Web Services Signer.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECR/latest/userguide/managed-signing.html\">Managed signing</a> in the <i>Amazon Elastic Container Registry User Guide</i>.</p>"
+    },
     "InitiateLayerUpload":{
       "name":"InitiateLayerUpload",
       "http":{
@@ -511,6 +576,22 @@
       ],
       "documentation":"<p>Notifies Amazon ECR that you intend to upload an image layer.</p> <p>When an image is pushed, the InitiateLayerUpload API is called once per image layer that has not already been uploaded. Whether or not an image layer has been uploaded is determined by the BatchCheckLayerAvailability API action.</p> <note> <p>This operation is used by the Amazon ECR proxy and is not generally used by customers for pulling and pushing images. In most cases, you should use the <code>docker</code> CLI to pull, tag, and push images.</p> </note>"
     },
+    "ListImageReferrers":{
+      "name":"ListImageReferrers",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListImageReferrersRequest"},
+      "output":{"shape":"ListImageReferrersResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"RepositoryNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the artifacts associated with a specified subject image.</p>"
+    },
     "ListImages":{
       "name":"ListImages",
       "http":{
@@ -525,6 +606,22 @@
         {"shape":"RepositoryNotFoundException"}
       ],
       "documentation":"<p>Lists all the image IDs for the specified repository.</p> <p>You can filter images based on whether or not they are tagged by using the <code>tagStatus</code> filter and specifying either <code>TAGGED</code>, <code>UNTAGGED</code> or <code>ANY</code>. For example, you can filter your results to return only <code>UNTAGGED</code> images and then pipe that result to a <a>BatchDeleteImage</a> operation to delete them. Or, you can filter your results to return only <code>TAGGED</code> images to list all of the tags in your repository.</p>"
+    },
+    "ListPullTimeUpdateExclusions":{
+      "name":"ListPullTimeUpdateExclusions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListPullTimeUpdateExclusionsRequest"},
+      "output":{"shape":"ListPullTimeUpdateExclusionsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Lists the IAM principals that are excluded from having their image pull times recorded.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -652,7 +749,8 @@
       "errors":[
         {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"BlockedByOrganizationPolicyException"}
       ],
       "documentation":"<p>Creates or updates the scanning configuration for your private registry.</p>"
     },
@@ -670,6 +768,38 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Creates or updates the replication configuration for a registry. The existing replication configuration for a repository can be retrieved with the <a>DescribeRegistry</a> API action. The first time the PutReplicationConfiguration API is called, a service-linked IAM role is created in your account for the replication process. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECR/latest/userguide/using-service-linked-roles.html\">Using service-linked roles for Amazon ECR</a> in the <i>Amazon Elastic Container Registry User Guide</i>. For more information on the custom role for replication, see <a href=\"https://docs.aws.amazon.com/AmazonECR/latest/userguide/replication-creation-templates.html#roles-creatingrole-user-console\">Creating an IAM role for replication</a>.</p> <note> <p>When configuring cross-account replication, the destination account must grant the source account permission to replicate. This permission is controlled using a registry permissions policy. For more information, see <a>PutRegistryPolicy</a>.</p> </note>"
+    },
+    "PutSigningConfiguration":{
+      "name":"PutSigningConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutSigningConfigurationRequest"},
+      "output":{"shape":"PutSigningConfigurationResponse"},
+      "errors":[
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Creates or updates the registry's signing configuration, which defines rules for automatically signing images with Amazon Web Services Signer.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECR/latest/userguide/managed-signing.html\">Managed signing</a> in the <i>Amazon Elastic Container Registry User Guide</i>.</p> <note> <p>To successfully generate a signature, the IAM principal pushing images must have permission to sign payloads with the Amazon Web Services Signer signing profile referenced in the signing configuration.</p> </note>"
+    },
+    "RegisterPullTimeUpdateExclusion":{
+      "name":"RegisterPullTimeUpdateExclusion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RegisterPullTimeUpdateExclusionRequest"},
+      "output":{"shape":"RegisterPullTimeUpdateExclusionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ExclusionAlreadyExistsException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Adds an IAM principal to the pull time update exclusion list for a registry. Amazon ECR will not record the pull time if an excluded principal pulls an image.</p>"
     },
     "SetRepositoryPolicy":{
       "name":"SetRepositoryPolicy",
@@ -701,7 +831,8 @@
         {"shape":"LimitExceededException"},
         {"shape":"RepositoryNotFoundException"},
         {"shape":"ImageNotFoundException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"ImageArchivedException"}
       ],
       "documentation":"<p>Starts a basic image vulnerability scan.</p> <p> A basic image scan can only be started once per 24 hours on an individual image. This limit includes if an image was scanned on initial push. You can start up to 100,000 basic scans per 24 hours. This limit includes both scans on initial push and scans initiated by the StartImageScan API. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECR/latest/userguide/image-scanning-basic.html\">Basic scanning</a> in the <i>Amazon Elastic Container Registry User Guide</i>.</p>"
     },
@@ -756,6 +887,24 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Deletes specified tags from a resource.</p>"
+    },
+    "UpdateImageStorageClass":{
+      "name":"UpdateImageStorageClass",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateImageStorageClassRequest"},
+      "output":{"shape":"UpdateImageStorageClassResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ImageNotFoundException"},
+        {"shape":"ImageStorageClassUpdateNotSupportedException"},
+        {"shape":"RepositoryNotFoundException"},
+        {"shape":"ServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Transitions an image between storage classes. You can transition images from Amazon ECR standard storage class to Amazon ECR archival storage class for long-term storage, or restore archived images back to Amazon ECR standard.</p>"
     },
     "UpdatePullThroughCacheRule":{
       "name":"UpdatePullThroughCacheRule",
@@ -835,8 +984,41 @@
       "min":1
     },
     "AccountSettingValue":{"type":"string"},
+    "Annotations":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
     "Arch":{"type":"string"},
     "Arn":{"type":"string"},
+    "ArtifactStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "ARCHIVED",
+        "ACTIVATING"
+      ]
+    },
+    "ArtifactStatusFilter":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "ARCHIVED",
+        "ACTIVATING",
+        "ANY"
+      ]
+    },
+    "ArtifactType":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "ArtifactTypeList":{
+      "type":"list",
+      "member":{"shape":"ArtifactType"},
+      "max":1,
+      "min":0
+    },
     "Attribute":{
       "type":"structure",
       "required":["key"],
@@ -1083,6 +1265,14 @@
       "max":100,
       "min":1
     },
+    "BlockedByOrganizationPolicyException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ExceptionMessage"}
+      },
+      "documentation":"<p>The operation did not succeed because the account is managed by a organization policy.</p>",
+      "exception":true
+    },
     "CompleteLayerUploadRequest":{
       "type":"structure",
       "required":[
@@ -1233,7 +1423,7 @@
         },
         "imageTagMutabilityExclusionFilters":{
           "shape":"ImageTagMutabilityExclusionFilters",
-          "documentation":"<p>Creates a repository creation template with a list of filters that define which image tags can override the default image tag mutability setting.</p>"
+          "documentation":"<p>A list of filters that specify which image tags should be excluded from the repository creation template's image tag mutability setting.</p>"
         },
         "repositoryPolicy":{
           "shape":"RepositoryPolicyText",
@@ -1288,11 +1478,11 @@
         },
         "imageTagMutabilityExclusionFilters":{
           "shape":"ImageTagMutabilityExclusionFilters",
-          "documentation":"<p>Creates a repository with a list of filters that define which image tags can override the default image tag mutability setting.</p>"
+          "documentation":"<p>A list of filters that specify which image tags should be excluded from the repository's image tag mutability setting.</p>"
         },
         "imageScanningConfiguration":{
           "shape":"ImageScanningConfiguration",
-          "documentation":"<p>The image scanning configuration for the repository. This determines whether images are scanned for known vulnerabilities after being pushed to the repository.</p>"
+          "documentation":"<important> <p>The <code>imageScanningConfiguration</code> parameter is being deprecated, in favor of specifying the image scanning configuration at the registry level. For more information, see <code>PutRegistryScanningConfiguration</code>.</p> </important> <p>The image scanning configuration for the repository. This determines whether images are scanned for known vulnerabilities after being pushed to the repository.</p>"
         },
         "encryptionConfiguration":{
           "shape":"EncryptionConfiguration",
@@ -1314,7 +1504,7 @@
       "type":"string",
       "max":612,
       "min":50,
-      "pattern":"^arn:aws:secretsmanager:[a-zA-Z0-9-:]+:secret:ecr\\-pullthroughcache\\/[a-zA-Z0-9\\/_+=.@-]+$"
+      "pattern":"^arn:aws(-\\w+)*:secretsmanager:[a-zA-Z0-9-:]+:secret:ecr\\-pullthroughcache\\/[a-zA-Z0-9\\/_+=.@-]+$"
     },
     "CustomRoleArn":{
       "type":"string",
@@ -1571,6 +1761,42 @@
         }
       }
     },
+    "DeleteSigningConfigurationRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteSigningConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the registry.</p>"
+        },
+        "signingConfiguration":{
+          "shape":"SigningConfiguration",
+          "documentation":"<p>The registry's deleted signing configuration.</p>"
+        }
+      }
+    },
+    "DeregisterPullTimeUpdateExclusionRequest":{
+      "type":"structure",
+      "required":["principalArn"],
+      "members":{
+        "principalArn":{
+          "shape":"PrincipalArn",
+          "documentation":"<p>The ARN of the IAM principal to remove from the pull time update exclusion list.</p>"
+        }
+      }
+    },
+    "DeregisterPullTimeUpdateExclusionResponse":{
+      "type":"structure",
+      "members":{
+        "principalArn":{
+          "shape":"PrincipalArn",
+          "documentation":"<p>The ARN of the IAM principal that was removed from the pull time update exclusion list.</p>"
+        }
+      }
+    },
     "DescribeImageReplicationStatusRequest":{
       "type":"structure",
       "required":[
@@ -1655,12 +1881,58 @@
         }
       }
     },
+    "DescribeImageSigningStatusRequest":{
+      "type":"structure",
+      "required":[
+        "repositoryName",
+        "imageId"
+      ],
+      "members":{
+        "repositoryName":{
+          "shape":"RepositoryName",
+          "documentation":"<p>The name of the repository that contains the image.</p>"
+        },
+        "imageId":{
+          "shape":"ImageIdentifier",
+          "documentation":"<p>An object containing identifying information for an image.</p>"
+        },
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the registry that contains the repository. If you do not specify a registry, the default registry is assumed.</p>"
+        }
+      }
+    },
+    "DescribeImageSigningStatusResponse":{
+      "type":"structure",
+      "members":{
+        "repositoryName":{
+          "shape":"RepositoryName",
+          "documentation":"<p>The name of the repository.</p>"
+        },
+        "imageId":{
+          "shape":"ImageIdentifier",
+          "documentation":"<p>An object with identifying information for the image.</p>"
+        },
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the registry.</p>"
+        },
+        "signingStatuses":{
+          "shape":"ImageSigningStatusList",
+          "documentation":"<p>A list of signing statuses for the specified image. Each status corresponds to a signing profile.</p>"
+        }
+      }
+    },
     "DescribeImagesFilter":{
       "type":"structure",
       "members":{
         "tagStatus":{
           "shape":"TagStatus",
           "documentation":"<p>The tag status with which to filter your <a>DescribeImages</a> results. You can filter results based on whether they are <code>TAGGED</code> or <code>UNTAGGED</code>.</p>"
+        },
+        "imageStatus":{
+          "shape":"ImageStatusFilter",
+          "documentation":"<p>The image status with which to filter your <a>DescribeImages</a> results. Valid values are <code>ACTIVE</code>, <code>ARCHIVED</code>, and <code>ACTIVATING</code>.</p>"
         }
       },
       "documentation":"<p>An object representing a filter on a <a>DescribeImages</a> operation.</p>"
@@ -1957,8 +2229,29 @@
     "Epoch":{"type":"integer"},
     "EvaluationTimestamp":{"type":"timestamp"},
     "ExceptionMessage":{"type":"string"},
+    "ExclusionAlreadyExistsException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ExceptionMessage"}
+      },
+      "documentation":"<p>The specified pull time update exclusion already exists for the registry.</p>",
+      "exception":true
+    },
+    "ExclusionNotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ExceptionMessage"}
+      },
+      "documentation":"<p>The specified pull time update exclusion was not found.</p>",
+      "exception":true
+    },
     "ExpirationTimestamp":{"type":"timestamp"},
     "ExploitAvailable":{"type":"string"},
+    "FiftyMaxResults":{
+      "type":"integer",
+      "max":50,
+      "min":1
+    },
     "FilePath":{"type":"string"},
     "FindingArn":{"type":"string"},
     "FindingDescription":{"type":"string"},
@@ -2228,6 +2521,23 @@
         }
       }
     },
+    "GetSigningConfigurationRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetSigningConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the registry.</p>"
+        },
+        "signingConfiguration":{
+          "shape":"SigningConfiguration",
+          "documentation":"<p>The registry's signing configuration.</p>"
+        }
+      }
+    },
     "Image":{
       "type":"structure",
       "members":{
@@ -2256,7 +2566,10 @@
     },
     "ImageActionType":{
       "type":"string",
-      "enum":["EXPIRE"]
+      "enum":[
+        "EXPIRE",
+        "TRANSITION"
+      ]
     },
     "ImageAlreadyExistsException":{
       "type":"structure",
@@ -2267,6 +2580,14 @@
         }
       },
       "documentation":"<p>The specified image has already been pushed, and there were no changes to the manifest or image tag after the last push.</p>",
+      "exception":true
+    },
+    "ImageArchivedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ExceptionMessage"}
+      },
+      "documentation":"<p>The specified image is archived and cannot be scanned.</p>",
       "exception":true
     },
     "ImageCount":{
@@ -2319,6 +2640,22 @@
         "lastRecordedPullTime":{
           "shape":"RecordedPullTimestamp",
           "documentation":"<p>The date and time, expressed in standard JavaScript date format, when Amazon ECR recorded the last image pull.</p> <note> <p>Amazon ECR refreshes the last image pull timestamp at least once every 24 hours. For example, if you pull an image once a day then the <code>lastRecordedPullTime</code> timestamp will indicate the exact time that the image was last pulled. However, if you pull an image once an hour, because Amazon ECR refreshes the <code>lastRecordedPullTime</code> timestamp at least once every 24 hours, the result may not be the exact time that the image was last pulled.</p> </note>"
+        },
+        "subjectManifestDigest":{
+          "shape":"ImageDigest",
+          "documentation":"<p>The digest of the subject manifest for images that are referrers.</p>"
+        },
+        "imageStatus":{
+          "shape":"ImageStatus",
+          "documentation":"<p>The current status of the image.</p>"
+        },
+        "lastArchivedAt":{
+          "shape":"LastArchivedAtTimestamp",
+          "documentation":"<p>The date and time, expressed in standard JavaScript date format, when the image was last transitioned to Amazon ECR archive.</p>"
+        },
+        "lastActivatedAt":{
+          "shape":"LastActivatedAtTimestamp",
+          "documentation":"<p>The date and time, expressed in standard JavaScript date format, when the image was last restored from Amazon ECR archive to Amazon ECR standard.</p>"
         }
       },
       "documentation":"<p>An object that describes an image returned by a <a>DescribeImages</a> operation.</p>"
@@ -2366,7 +2703,8 @@
         "KmsError",
         "UpstreamAccessDenied",
         "UpstreamTooManyRequests",
-        "UpstreamUnavailable"
+        "UpstreamUnavailable",
+        "ImageInaccessible"
       ]
     },
     "ImageFailureList":{
@@ -2410,6 +2748,45 @@
       },
       "documentation":"<p>The image requested does not exist in the specified repository.</p>",
       "exception":true
+    },
+    "ImageReferrer":{
+      "type":"structure",
+      "required":[
+        "digest",
+        "mediaType",
+        "size"
+      ],
+      "members":{
+        "digest":{
+          "shape":"ImageDigest",
+          "documentation":"<p>The digest of the artifact manifest.</p>"
+        },
+        "mediaType":{
+          "shape":"MediaType",
+          "documentation":"<p>The media type of the artifact manifest.</p>"
+        },
+        "artifactType":{
+          "shape":"ArtifactType",
+          "documentation":"<p>A string identifying the type of artifact.</p>"
+        },
+        "size":{
+          "shape":"ImageSizeInBytes",
+          "documentation":"<p>The size, in bytes, of the artifact.</p>"
+        },
+        "annotations":{
+          "shape":"Annotations",
+          "documentation":"<p>A map of annotations associated with the artifact.</p>"
+        },
+        "artifactStatus":{
+          "shape":"ArtifactStatus",
+          "documentation":"<p>The status of the artifact. Valid values are <code>ACTIVE</code>, <code>ARCHIVED</code>, or <code>ACTIVATING</code>.</p>"
+        }
+      },
+      "documentation":"<p>An object representing an artifact associated with a subject image.</p>"
+    },
+    "ImageReferrerList":{
+      "type":"list",
+      "member":{"shape":"ImageReferrer"}
     },
     "ImageReplicationStatus":{
       "type":"structure",
@@ -2535,7 +2912,58 @@
       },
       "documentation":"<p>The image scanning configuration for a repository.</p>"
     },
+    "ImageSigningStatus":{
+      "type":"structure",
+      "members":{
+        "signingProfileArn":{
+          "shape":"SigningProfileArn",
+          "documentation":"<p>The ARN of the Amazon Web Services Signer signing profile used to sign the image.</p>"
+        },
+        "failureCode":{
+          "shape":"SigningStatusFailureCode",
+          "documentation":"<p>The failure code, which is only present if <code>status</code> is <code>FAILED</code>.</p>"
+        },
+        "failureReason":{
+          "shape":"SigningStatusFailureReason",
+          "documentation":"<p>A description of why signing the image failed. This field is only present if <code>status</code> is <code>FAILED</code>.</p>"
+        },
+        "status":{
+          "shape":"SigningStatus",
+          "documentation":"<p>The image's signing status. Possible values are:</p> <ul> <li> <p> <code>IN_PROGRESS</code> - Signing is currently in progress.</p> </li> <li> <p> <code>COMPLETE</code> - The signature was successfully generated.</p> </li> <li> <p> <code>FAILED</code> - Signing failed. See <code>failureCode</code> and <code>failureReason</code> for details.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The signing status for an image. Each status corresponds to a signing profile.</p>"
+    },
+    "ImageSigningStatusList":{
+      "type":"list",
+      "member":{"shape":"ImageSigningStatus"}
+    },
     "ImageSizeInBytes":{"type":"long"},
+    "ImageStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "ARCHIVED",
+        "ACTIVATING"
+      ]
+    },
+    "ImageStatusFilter":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "ARCHIVED",
+        "ACTIVATING",
+        "ANY"
+      ]
+    },
+    "ImageStorageClassUpdateNotSupportedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ExceptionMessage"}
+      },
+      "documentation":"<p>The requested image storage class update is not supported.</p>",
+      "exception":true
+    },
     "ImageTag":{
       "type":"string",
       "max":300,
@@ -2571,14 +2999,14 @@
       "members":{
         "filterType":{
           "shape":"ImageTagMutabilityExclusionFilterType",
-          "documentation":"<p>Specifies the type of filter to use for excluding image tags from the repository's mutability setting.</p>"
+          "documentation":"<p>The type of filter to apply for excluding image tags from mutability settings.</p>"
         },
         "filter":{
           "shape":"ImageTagMutabilityExclusionFilterValue",
-          "documentation":"<p>The value to use when filtering image tags. Must be either a regular expression pattern or a tag prefix value based on the specified filter type.</p>"
+          "documentation":"<p>The filter value used to match image tags for exclusion from mutability settings.</p>"
         }
       },
-      "documentation":"<p>Overrides the default image tag mutability setting of the repository for image tags that match the specified filters.</p>"
+      "documentation":"<p>A filter that specifies which image tags should be excluded from the repository's image tag mutability setting.</p>"
     },
     "ImageTagMutabilityExclusionFilterType":{
       "type":"string",
@@ -2713,6 +3141,8 @@
       "min":0,
       "pattern":"^$|arn:aws:kms:[a-z0-9-]+:[0-9]{12}:key\\/[a-z0-9-]+"
     },
+    "LastActivatedAtTimestamp":{"type":"timestamp"},
+    "LastArchivedAtTimestamp":{"type":"timestamp"},
     "Layer":{
       "type":"structure",
       "members":{
@@ -2750,7 +3180,8 @@
       "type":"string",
       "enum":[
         "AVAILABLE",
-        "UNAVAILABLE"
+        "UNAVAILABLE",
+        "ARCHIVED"
       ]
     },
     "LayerDigest":{
@@ -2892,6 +3323,10 @@
         "appliedRulePriority":{
           "shape":"LifecyclePolicyRulePriority",
           "documentation":"<p>The priority of the applied rule.</p>"
+        },
+        "storageClass":{
+          "shape":"LifecyclePolicyStorageClass",
+          "documentation":"<p>The storage class of the image.</p>"
         }
       },
       "documentation":"<p>The result of the lifecycle policy preview.</p>"
@@ -2915,6 +3350,10 @@
         "expiringImageTotalCount":{
           "shape":"ImageCount",
           "documentation":"<p>The number of expiring images.</p>"
+        },
+        "transitioningImageTotalCounts":{
+          "shape":"TransitioningImageTotalCounts",
+          "documentation":"<p>The total count of images that will be transitioned to each storage class. This field is only present if at least one image will be transitoned in the summary.</p>"
         }
       },
       "documentation":"<p>The summary of the lifecycle policy preview request.</p>"
@@ -2925,6 +3364,10 @@
         "type":{
           "shape":"ImageActionType",
           "documentation":"<p>The type of action to be taken.</p>"
+        },
+        "targetStorageClass":{
+          "shape":"LifecyclePolicyTargetStorageClass",
+          "documentation":"<p>The target storage class for the action. This is only present when the <code>type</code> is <code>TRANSITION.</code> </p>"
         }
       },
       "documentation":"<p>The type of action to be taken.</p>"
@@ -2932,6 +3375,17 @@
     "LifecyclePolicyRulePriority":{
       "type":"integer",
       "min":1
+    },
+    "LifecyclePolicyStorageClass":{
+      "type":"string",
+      "enum":[
+        "ARCHIVE",
+        "STANDARD"
+      ]
+    },
+    "LifecyclePolicyTargetStorageClass":{
+      "type":"string",
+      "enum":["ARCHIVE"]
     },
     "LifecyclePolicyText":{
       "type":"string",
@@ -2959,12 +3413,76 @@
       "documentation":"<p>The operation did not succeed because it would have exceeded a service limit for your account. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECR/latest/userguide/service-quotas.html\">Amazon ECR service quotas</a> in the Amazon Elastic Container Registry User Guide.</p>",
       "exception":true
     },
+    "ListImageReferrersFilter":{
+      "type":"structure",
+      "members":{
+        "artifactTypes":{
+          "shape":"ArtifactTypeList",
+          "documentation":"<p>The artifact types with which to filter your <a>ListImageReferrers</a> results.</p>"
+        },
+        "artifactStatus":{
+          "shape":"ArtifactStatusFilter",
+          "documentation":"<p>The artifact status with which to filter your <a>ListImageReferrers</a> results. Valid values are <code>ACTIVE</code>, <code>ARCHIVED</code>, <code>ACTIVATING</code>, or <code>ANY</code>. If not specified, only artifacts with <code>ACTIVE</code> status are returned.</p>"
+        }
+      },
+      "documentation":"<p>An object representing a filter on a <a>ListImageReferrers</a> operation.</p>"
+    },
+    "ListImageReferrersRequest":{
+      "type":"structure",
+      "required":[
+        "repositoryName",
+        "subjectId"
+      ],
+      "members":{
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the registry that contains the repository in which to list image referrers. If you do not specify a registry, the default registry is assumed.</p>"
+        },
+        "repositoryName":{
+          "shape":"RepositoryName",
+          "documentation":"<p>The name of the repository that contains the subject image.</p>"
+        },
+        "subjectId":{
+          "shape":"SubjectIdentifier",
+          "documentation":"<p>An object containing the image digest of the subject image for which to retrieve associated artifacts.</p>"
+        },
+        "filter":{
+          "shape":"ListImageReferrersFilter",
+          "documentation":"<p>The filter key and value with which to filter your <code>ListImageReferrers</code> results. If no filter is specified, only artifacts with <code>ACTIVE</code> status are returned.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated <code>ListImageReferrers</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is <code>null</code> when there are no more results to return.</p> <note> <p>This token should be treated as an opaque identifier that is only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>"
+        },
+        "maxResults":{
+          "shape":"FiftyMaxResults",
+          "documentation":"<p>The maximum number of image referrer results returned by <code>ListImageReferrers</code> in paginated output. When this parameter is used, <code>ListImageReferrers</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListImageReferrers</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 50. If this parameter is not used, then <code>ListImageReferrers</code> returns up to 50 results and a <code>nextToken</code> value, if applicable.</p>"
+        }
+      }
+    },
+    "ListImageReferrersResponse":{
+      "type":"structure",
+      "members":{
+        "referrers":{
+          "shape":"ImageReferrerList",
+          "documentation":"<p>The list of artifacts associated with the subject image.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListImageReferrers</code> request. When the results of a <code>ListImageReferrers</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
     "ListImagesFilter":{
       "type":"structure",
       "members":{
         "tagStatus":{
           "shape":"TagStatus",
-          "documentation":"<p>The tag status with which to filter your <a>ListImages</a> results. You can filter results based on whether they are <code>TAGGED</code> or <code>UNTAGGED</code>.</p>"
+          "documentation":"<p>The tag status with which to filter your <a>ListImages</a> results.</p>"
+        },
+        "imageStatus":{
+          "shape":"ImageStatusFilter",
+          "documentation":"<p>The image status with which to filter your <a>ListImages</a> results. Valid values are <code>ACTIVE</code>, <code>ARCHIVED</code>, and <code>ACTIVATING</code>.</p>"
         }
       },
       "documentation":"<p>An object representing a filter on a <a>ListImages</a> operation.</p>"
@@ -3005,6 +3523,32 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListImages</code> request. When the results of a <code>ListImages</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListPullTimeUpdateExclusionsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of pull time update exclusion results returned by <code>ListPullTimeUpdateExclusions</code> in paginated output. When this parameter is used, <code>ListPullTimeUpdateExclusions</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListPullTimeUpdateExclusions</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 1000. If this parameter is not used, then <code>ListPullTimeUpdateExclusions</code> returns up to 100 results and a <code>nextToken</code> value, if applicable.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated <code>ListPullTimeUpdateExclusions</code> request where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is <code>null</code> when there are no more results to return.</p> <note> <p>This token should be treated as an opaque identifier that is only used to retrieve the next items in a list and not for other programmatic purposes.</p> </note>"
+        }
+      }
+    },
+    "ListPullTimeUpdateExclusionsResponse":{
+      "type":"structure",
+      "members":{
+        "pullTimeUpdateExclusions":{
+          "shape":"PullTimeUpdateExclusionList",
+          "documentation":"<p>The list of IAM principal ARNs that are excluded from having their image pull times recorded.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListPullTimeUpdateExclusions</code> request. When the results of a <code>ListPullTimeUpdateExclusions</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
       }
     },
@@ -3104,6 +3648,11 @@
       "type":"list",
       "member":{"shape":"Prefix"}
     },
+    "PrincipalArn":{
+      "type":"string",
+      "max":200,
+      "pattern":"^arn:aws(-[a-z]+)*:iam::[0-9]{12}:(role|user)/[\\w+=,.@-]+(/[\\w+=,.@-]+)*$"
+    },
     "ProxyEndpoint":{"type":"string"},
     "PullThroughCacheRule":{
       "type":"structure",
@@ -3179,6 +3728,12 @@
       "max":100,
       "min":1
     },
+    "PullTimeUpdateExclusionList":{
+      "type":"list",
+      "member":{"shape":"PrincipalArn"},
+      "max":100,
+      "min":0
+    },
     "PushTimestamp":{"type":"timestamp"},
     "PutAccountSettingRequest":{
       "type":"structure",
@@ -3235,7 +3790,7 @@
         },
         "imageTag":{
           "shape":"ImageTag",
-          "documentation":"<p>The tag to associate with the image. This parameter is required for images that use the Docker Image Manifest V2 Schema 2 or Open Container Initiative (OCI) formats.</p>"
+          "documentation":"<p>The tag to associate with the image. This parameter is optional.</p>"
         },
         "imageDigest":{
           "shape":"ImageDigest",
@@ -3311,7 +3866,7 @@
         },
         "imageTagMutabilityExclusionFilters":{
           "shape":"ImageTagMutabilityExclusionFilters",
-          "documentation":"<p>Creates or updates a repository with filters that define which image tags can override the default image tag mutability setting.</p>"
+          "documentation":"<p>A list of filters that specify which image tags should be excluded from the image tag mutability setting being applied.</p>"
         }
       }
     },
@@ -3332,7 +3887,7 @@
         },
         "imageTagMutabilityExclusionFilters":{
           "shape":"ImageTagMutabilityExclusionFilters",
-          "documentation":"<p>Returns a list of filters that were defined for a repository. These filters determine which image tags can override the default image tag mutability setting of the repository.</p>"
+          "documentation":"<p>The list of filters that specify which image tags are excluded from the repository's image tag mutability setting.</p>"
         }
       }
     },
@@ -3438,6 +3993,25 @@
         }
       }
     },
+    "PutSigningConfigurationRequest":{
+      "type":"structure",
+      "required":["signingConfiguration"],
+      "members":{
+        "signingConfiguration":{
+          "shape":"SigningConfiguration",
+          "documentation":"<p>The signing configuration to assign to the registry.</p>"
+        }
+      }
+    },
+    "PutSigningConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "signingConfiguration":{
+          "shape":"SigningConfiguration",
+          "documentation":"<p>The registry's updated signing configuration.</p>"
+        }
+      }
+    },
     "RCTAppliedFor":{
       "type":"string",
       "enum":[
@@ -3483,6 +4057,29 @@
       "max":25,
       "min":2,
       "pattern":"[0-9a-z-]{2,25}"
+    },
+    "RegisterPullTimeUpdateExclusionRequest":{
+      "type":"structure",
+      "required":["principalArn"],
+      "members":{
+        "principalArn":{
+          "shape":"PrincipalArn",
+          "documentation":"<p>The ARN of the IAM principal to exclude from having image pull times recorded.</p>"
+        }
+      }
+    },
+    "RegisterPullTimeUpdateExclusionResponse":{
+      "type":"structure",
+      "members":{
+        "principalArn":{
+          "shape":"PrincipalArn",
+          "documentation":"<p>The ARN of the IAM principal that was added to the pull time update exclusion list.</p>"
+        },
+        "createdAt":{
+          "shape":"CreationTimestamp",
+          "documentation":"<p>The date and time, expressed in standard JavaScript date format, when the exclusion was created.</p>"
+        }
+      }
     },
     "RegistryId":{
       "type":"string",
@@ -3649,7 +4246,7 @@
         },
         "imageTagMutabilityExclusionFilters":{
           "shape":"ImageTagMutabilityExclusionFilters",
-          "documentation":"<p>The image tag mutability exclusion filters associated with the repository. These filters specify which image tags can override the repository's default image tag mutability setting.</p>"
+          "documentation":"<p>A list of filters that specify which image tags are excluded from the repository's image tag mutability setting.</p>"
         },
         "imageScanningConfiguration":{"shape":"ImageScanningConfiguration"},
         "encryptionConfiguration":{
@@ -3695,7 +4292,7 @@
         },
         "imageTagMutabilityExclusionFilters":{
           "shape":"ImageTagMutabilityExclusionFilters",
-          "documentation":"<p>Defines the image tag mutability exclusion filters to apply when creating repositories from this template. These filters specify which image tags can override the repository's default image tag mutability setting.</p>"
+          "documentation":"<p>A list of filters that specify which image tags are excluded from the repository creation template's image tag mutability setting.</p>"
         },
         "repositoryPolicy":{
           "shape":"RepositoryPolicyText",
@@ -3937,7 +4534,8 @@
         "PENDING",
         "SCAN_ELIGIBILITY_EXPIRED",
         "FINDINGS_UNAVAILABLE",
-        "LIMIT_EXCEEDED"
+        "LIMIT_EXCEEDED",
+        "IMAGE_ARCHIVED"
       ]
     },
     "ScanStatusDescription":{"type":"string"},
@@ -4073,6 +4671,101 @@
       "type":"integer",
       "min":0
     },
+    "SigningConfiguration":{
+      "type":"structure",
+      "required":["rules"],
+      "members":{
+        "rules":{
+          "shape":"SigningRuleList",
+          "documentation":"<p>A list of signing rules. Each rule defines a signing profile and optional repository filters that determine which images are automatically signed. Maximum of 10 rules.</p>"
+        }
+      },
+      "documentation":"<p>The signing configuration for a registry, which specifies rules for automatically signing images when pushed.</p>"
+    },
+    "SigningConfigurationNotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"ExceptionMessage",
+          "documentation":"<p>The error message associated with the exception.</p>"
+        }
+      },
+      "documentation":"<p>The specified signing configuration was not found. This occurs when attempting to retrieve or delete a signing configuration that does not exist.</p>",
+      "exception":true
+    },
+    "SigningProfileArn":{
+      "type":"string",
+      "documentation":"<p>The Amazon Resource Name (ARN) of an Amazon Web Services Signer signing profile. The ARN contains the <code>arn:aws:signer</code> namespace, followed by the region, Amazon Web Services account ID, and signing profile resource path. For example, <code>arn:aws:signer:region:012345678910:/signing-profiles/profile-name</code>.</p>",
+      "max":200,
+      "pattern":"^arn:aws(-[a-z]+)*:signer:[a-z0-9-]+:[0-9]{12}:\\/signing-profiles\\/[a-zA-Z0-9_]{2,}$"
+    },
+    "SigningRepositoryFilter":{
+      "type":"structure",
+      "required":[
+        "filter",
+        "filterType"
+      ],
+      "members":{
+        "filter":{
+          "shape":"SigningRepositoryFilterValue",
+          "documentation":"<p>The filter value used to match repository names. When using <code>WILDCARD_MATCH</code>, the <code>*</code> character matches any sequence of characters.</p> <p>Examples:</p> <ul> <li> <p> <code>myapp/*</code> - Matches all repositories starting with <code>myapp/</code> </p> </li> <li> <p> <code>*/production</code> - Matches all repositories ending with <code>/production</code> </p> </li> <li> <p> <code>*prod*</code> - Matches all repositories containing <code>prod</code> </p> </li> </ul>"
+        },
+        "filterType":{
+          "shape":"SigningRepositoryFilterType",
+          "documentation":"<p>The type of filter to apply. Currently, only <code>WILDCARD_MATCH</code> is supported, which uses wildcard patterns to match repository names.</p>"
+        }
+      },
+      "documentation":"<p>A repository filter used to determine which repositories have their images automatically signed on push. Each filter consists of a filter type and filter value.</p>"
+    },
+    "SigningRepositoryFilterList":{
+      "type":"list",
+      "member":{"shape":"SigningRepositoryFilter"},
+      "max":100,
+      "min":1
+    },
+    "SigningRepositoryFilterType":{
+      "type":"string",
+      "documentation":"<p>The type of filter to use when determining which repositories should have their images automatically signed.</p>",
+      "enum":["WILDCARD_MATCH"]
+    },
+    "SigningRepositoryFilterValue":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^(?:[a-z0-9*]+(?:[._-][a-z0-9*]+)*/)*[a-z0-9*]+(?:[._-][a-z0-9*]+)*$"
+    },
+    "SigningRule":{
+      "type":"structure",
+      "required":["signingProfileArn"],
+      "members":{
+        "signingProfileArn":{
+          "shape":"SigningProfileArn",
+          "documentation":"<p>The ARN of the Amazon Web Services Signer signing profile to use for signing images that match this rule. For more information about signing profiles, see <a href=\"https://docs.aws.amazon.com/signer/latest/developerguide/signing-profiles.html\">Signing profiles</a> in the <i>Amazon Web Services Signer Developer Guide</i>.</p>"
+        },
+        "repositoryFilters":{
+          "shape":"SigningRepositoryFilterList",
+          "documentation":"<p>A list of repository filters that determine which repositories have their images signed on push. If no filters are specified, all images pushed to the registry are signed using the rule's signing profile. Maximum of 100 filters per rule.</p>"
+        }
+      },
+      "documentation":"<p>A signing rule that specifies a signing profile and optional repository filters. When an image is pushed to a matching repository, a signing job is created using the specified profile.</p>"
+    },
+    "SigningRuleList":{
+      "type":"list",
+      "member":{"shape":"SigningRule"},
+      "max":10,
+      "min":0
+    },
+    "SigningStatus":{
+      "type":"string",
+      "documentation":"<p>The image signing status. Possible values include <code>IN_PROGRESS</code>, <code>COMPLETE</code>, and <code>FAILED</code>.</p>",
+      "enum":[
+        "IN_PROGRESS",
+        "COMPLETE",
+        "FAILED"
+      ]
+    },
+    "SigningStatusFailureCode":{"type":"string"},
+    "SigningStatusFailureReason":{"type":"string"},
     "Source":{"type":"string"},
     "SourceLayerHash":{"type":"string"},
     "StartImageScanRequest":{
@@ -4151,6 +4844,18 @@
       }
     },
     "Status":{"type":"string"},
+    "String":{"type":"string"},
+    "SubjectIdentifier":{
+      "type":"structure",
+      "required":["imageDigest"],
+      "members":{
+        "imageDigest":{
+          "shape":"ImageDigest",
+          "documentation":"<p>The digest of the image.</p>"
+        }
+      },
+      "documentation":"<p>An object that identifies an image subject.</p>"
+    },
     "Tag":{
       "type":"structure",
       "required":[
@@ -4213,6 +4918,13 @@
       "key":{"shape":"TagKey"},
       "value":{"shape":"TagValue"}
     },
+    "TargetStorageClass":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "ARCHIVE"
+      ]
+    },
     "TemplateAlreadyExistsException":{
       "type":"structure",
       "members":{
@@ -4237,6 +4949,24 @@
       },
       "documentation":"<p>The list of tags on the repository is over the limit. The maximum number of tags that can be applied to a repository is 50.</p>",
       "exception":true
+    },
+    "TransitioningImageTotalCount":{
+      "type":"structure",
+      "members":{
+        "targetStorageClass":{
+          "shape":"LifecyclePolicyTargetStorageClass",
+          "documentation":"<p>The target storage class.</p>"
+        },
+        "imageTotalCount":{
+          "shape":"ImageCount",
+          "documentation":"<p>The total number of images transitioning to the storage class.</p>"
+        }
+      },
+      "documentation":"<p>The total count of images transitioning to a storage class.</p>"
+    },
+    "TransitioningImageTotalCounts":{
+      "type":"list",
+      "member":{"shape":"TransitioningImageTotalCount"}
     },
     "Type":{"type":"string"},
     "UnableToAccessSecretException":{
@@ -4307,6 +5037,47 @@
     "UntagResourceResponse":{
       "type":"structure",
       "members":{}
+    },
+    "UpdateImageStorageClassRequest":{
+      "type":"structure",
+      "required":[
+        "repositoryName",
+        "imageId",
+        "targetStorageClass"
+      ],
+      "members":{
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the registry that contains the image to transition. If you do not specify a registry, the default registry is assumed.</p>"
+        },
+        "repositoryName":{
+          "shape":"RepositoryName",
+          "documentation":"<p>The name of the repository that contains the image to transition.</p>"
+        },
+        "imageId":{"shape":"ImageIdentifier"},
+        "targetStorageClass":{
+          "shape":"TargetStorageClass",
+          "documentation":"<p>The target storage class for the image.</p>"
+        }
+      }
+    },
+    "UpdateImageStorageClassResponse":{
+      "type":"structure",
+      "members":{
+        "registryId":{
+          "shape":"RegistryId",
+          "documentation":"<p>The registry ID associated with the request.</p>"
+        },
+        "repositoryName":{
+          "shape":"RepositoryName",
+          "documentation":"<p>The repository name associated with the request.</p>"
+        },
+        "imageId":{"shape":"ImageIdentifier"},
+        "imageStatus":{
+          "shape":"ImageStatus",
+          "documentation":"<p>The current status of the image after the call to UpdateImageStorageClass is complete. Valid values are <code>ACTIVE</code>, <code>ARCHIVED</code>, and <code>ACTIVATING</code>.</p>"
+        }
+      }
     },
     "UpdatePullThroughCacheRuleRequest":{
       "type":"structure",
@@ -4382,7 +5153,7 @@
         },
         "imageTagMutabilityExclusionFilters":{
           "shape":"ImageTagMutabilityExclusionFilters",
-          "documentation":"<p>Updates a repository with filters that define which image tags can override the default image tag mutability setting.</p>"
+          "documentation":"<p>A list of filters that specify which image tags should be excluded from the repository creation template's image tag mutability setting.</p>"
         },
         "repositoryPolicy":{
           "shape":"RepositoryPolicyText",

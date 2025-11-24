@@ -1135,6 +1135,15 @@
       "max":256,
       "min":1
     },
+    "AgentManagedRuntimeType":{
+      "type":"string",
+      "enum":[
+        "PYTHON_3_10",
+        "PYTHON_3_11",
+        "PYTHON_3_12",
+        "PYTHON_3_13"
+      ]
+    },
     "AgentRuntime":{
       "type":"structure",
       "required":[
@@ -1188,6 +1197,10 @@
         "containerConfiguration":{
           "shape":"ContainerConfiguration",
           "documentation":"<p>The container configuration for the agent artifact.</p>"
+        },
+        "codeConfiguration":{
+          "shape":"CodeConfiguration",
+          "documentation":"<p>The code configuration for the agent runtime artifact, including the source code location and execution settings.</p>"
         }
       },
       "documentation":"<p>The artifact of the agent.</p>",
@@ -1460,7 +1473,8 @@
       "type":"string",
       "enum":[
         "CUSTOM_JWT",
-        "AWS_IAM"
+        "AWS_IAM",
+        "NONE"
       ]
     },
     "AwsAccountId":{
@@ -1497,6 +1511,28 @@
         "PUBLIC",
         "VPC"
       ]
+    },
+    "BrowserSigningConfigInput":{
+      "type":"structure",
+      "required":["enabled"],
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether browser signing is enabled. When enabled, the browser will cryptographically sign HTTP requests to identify itself as an AI agent to bot control vendors.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for enabling browser signing capabilities that allow agents to cryptographically identify themselves to websites using HTTP message signatures.</p>"
+    },
+    "BrowserSigningConfigOutput":{
+      "type":"structure",
+      "required":["enabled"],
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether browser signing is currently enabled for cryptographic agent identification using HTTP message signatures.</p>"
+        }
+      },
+      "documentation":"<p>The current browser signing configuration that shows whether cryptographic agent identification is enabled for web bot authentication.</p>"
     },
     "BrowserStatus":{
       "type":"string",
@@ -1569,6 +1605,46 @@
       "max":256,
       "min":33,
       "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){0,256}"
+    },
+    "Code":{
+      "type":"structure",
+      "members":{
+        "s3":{
+          "shape":"S3Location",
+          "documentation":"<p>The Amazon Amazon S3 object that contains the source code for the agent runtime.</p>"
+        }
+      },
+      "documentation":"<p>The source code configuration that specifies the location and details of the code to be executed.</p>",
+      "union":true
+    },
+    "CodeConfiguration":{
+      "type":"structure",
+      "required":[
+        "code",
+        "runtime",
+        "entryPoint"
+      ],
+      "members":{
+        "code":{
+          "shape":"Code",
+          "documentation":"<p>The source code location and configuration details.</p>"
+        },
+        "runtime":{
+          "shape":"AgentManagedRuntimeType",
+          "documentation":"<p>The runtime environment for executing the code (for example, Python 3.9 or Node.js 18).</p>"
+        },
+        "entryPoint":{
+          "shape":"CodeConfigurationEntryPointList",
+          "documentation":"<p>The entry point for the code execution, specifying the function or method that should be invoked when the code runs.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the source code that defines how the agent runtime code should be executed, including the code location, runtime environment, and entry point.</p>"
+    },
+    "CodeConfigurationEntryPointList":{
+      "type":"list",
+      "member":{"shape":"entryPoint"},
+      "max":2,
+      "min":1
     },
     "CodeInterpreterArn":{
       "type":"string",
@@ -1939,6 +2015,10 @@
           "shape":"RecordingConfig",
           "documentation":"<p>The recording configuration for the browser. When enabled, browser sessions are recorded and stored in the specified Amazon S3 location.</p>"
         },
+        "browserSigning":{
+          "shape":"BrowserSigningConfigInput",
+          "documentation":"<p>The browser signing configuration that enables cryptographic agent identification using HTTP message signatures for web bot authentication.</p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request but does not return an error.</p>",
@@ -2074,7 +2154,7 @@
         },
         "authorizerType":{
           "shape":"AuthorizerType",
-          "documentation":"<p>The type of authorizer to use for the gateway.</p> <ul> <li> <p> <code>CUSTOM_JWT</code> - Authorize with a bearer token.</p> </li> <li> <p> <code>AWS_IAM</code> - Authorize with your Amazon Web Services IAM credentials.</p> </li> </ul>"
+          "documentation":"<p>The type of authorizer to use for the gateway.</p> <ul> <li> <p> <code>CUSTOM_JWT</code> - Authorize with a bearer token.</p> </li> <li> <p> <code>AWS_IAM</code> - Authorize with your Amazon Web Services IAM credentials.</p> </li> <li> <p> <code>NONE</code> - No authorization</p> </li> </ul>"
         },
         "authorizerConfiguration":{
           "shape":"AuthorizerConfiguration",
@@ -2083,6 +2163,10 @@
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt data associated with the gateway.</p>"
+        },
+        "interceptorConfigurations":{
+          "shape":"GatewayInterceptorConfigurations",
+          "documentation":"<p>A list of configuration settings for a gateway interceptor. Gateway interceptors allow custom code to be invoked during gateway invocations.</p>"
         },
         "exceptionLevel":{
           "shape":"ExceptionLevel",
@@ -2166,6 +2250,10 @@
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt data associated with the gateway.</p>"
+        },
+        "interceptorConfigurations":{
+          "shape":"GatewayInterceptorConfigurations",
+          "documentation":"<p>The list of interceptor configurations for the created gateway.</p>"
         },
         "workloadIdentityDetails":{
           "shape":"WorkloadIdentityDetails",
@@ -2754,6 +2842,13 @@
           "documentation":"<p>The unique identifier of the AgentCore Runtime to delete.</p>",
           "location":"uri",
           "locationName":"agentRuntimeId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, the service ignores the request but does not return an error.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
         }
       }
     },
@@ -3110,6 +3205,47 @@
     "GatewayIdentifier":{
       "type":"string",
       "pattern":"([0-9a-z][-]?){1,100}-[0-9a-z]{10}"
+    },
+    "GatewayInterceptionPoint":{
+      "type":"string",
+      "enum":[
+        "REQUEST",
+        "RESPONSE"
+      ]
+    },
+    "GatewayInterceptionPoints":{
+      "type":"list",
+      "member":{"shape":"GatewayInterceptionPoint"},
+      "max":2,
+      "min":1
+    },
+    "GatewayInterceptorConfiguration":{
+      "type":"structure",
+      "required":[
+        "interceptor",
+        "interceptionPoints"
+      ],
+      "members":{
+        "interceptor":{
+          "shape":"InterceptorConfiguration",
+          "documentation":"<p>The infrastructure settings of an interceptor configuration. This structure defines how the interceptor can be invoked.</p>"
+        },
+        "interceptionPoints":{
+          "shape":"GatewayInterceptionPoints",
+          "documentation":"<p>The supported points of interception. This field specifies which points during the gateway invocation to invoke the interceptor</p>"
+        },
+        "inputConfiguration":{
+          "shape":"InterceptorInputConfiguration",
+          "documentation":"<p>The configuration for the input of the interceptor. This field specifies how the input to the interceptor is constructed</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an interceptor on a gateway. This structure defines settings for an interceptor that will be invoked during the invocation of the gateway.</p>"
+    },
+    "GatewayInterceptorConfigurations":{
+      "type":"list",
+      "member":{"shape":"GatewayInterceptorConfiguration"},
+      "max":2,
+      "min":1
     },
     "GatewayMaxResults":{
       "type":"integer",
@@ -3538,6 +3674,10 @@
         },
         "networkConfiguration":{"shape":"BrowserNetworkConfiguration"},
         "recording":{"shape":"RecordingConfig"},
+        "browserSigning":{
+          "shape":"BrowserSigningConfigOutput",
+          "documentation":"<p>The browser signing configuration that shows whether cryptographic agent identification is enabled for web bot authentication.</p>"
+        },
         "status":{
           "shape":"BrowserStatus",
           "documentation":"<p>The current status of the browser.</p>"
@@ -3700,6 +3840,10 @@
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the gateway.</p>"
+        },
+        "interceptorConfigurations":{
+          "shape":"GatewayInterceptorConfigurations",
+          "documentation":"<p>The interceptors configured on the gateway.</p>"
         },
         "workloadIdentityDetails":{
           "shape":"WorkloadIdentityDetails",
@@ -4008,7 +4152,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"(Authorization|X-Amzn-Bedrock-AgentCore-Runtime-Custom-[a-zA-Z0-9_-]+)"
+      "pattern":"(Authorization|X-Amzn-Bedrock-AgentCore-Runtime-Custom-[a-zA-Z0-9-]+)"
     },
     "IncludedOauth2ProviderConfigInput":{
       "type":"structure",
@@ -4059,6 +4203,28 @@
     "Integer":{
       "type":"integer",
       "box":true
+    },
+    "InterceptorConfiguration":{
+      "type":"structure",
+      "members":{
+        "lambda":{
+          "shape":"LambdaInterceptorConfiguration",
+          "documentation":"<p>The details of the lambda function used for the interceptor.</p>"
+        }
+      },
+      "documentation":"<p>The interceptor configuration.</p>",
+      "union":true
+    },
+    "InterceptorInputConfiguration":{
+      "type":"structure",
+      "required":["passRequestHeaders"],
+      "members":{
+        "passRequestHeaders":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to pass request headers as input into the interceptor. When set to true, request headers will be passed.</p>"
+        }
+      },
+      "documentation":"<p>The input configuration of the interceptor.</p>"
     },
     "InternalServerException":{
       "type":"structure",
@@ -4144,6 +4310,17 @@
       "max":170,
       "min":1,
       "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:([a-z]{2}(-gov)?-[a-z]+-\\d{1}):(\\d{12}):function:([a-zA-Z0-9-_.]+)(:(\\$LATEST|[a-zA-Z0-9-]+))?"
+    },
+    "LambdaInterceptorConfiguration":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"LambdaFunctionArn",
+          "documentation":"<p>The arn of the lambda function to be invoked for the interceptor.</p>"
+        }
+      },
+      "documentation":"<p>The lambda configuration for the interceptor</p>"
     },
     "LifecycleConfiguration":{
       "type":"structure",
@@ -5523,6 +5700,10 @@
         "prefix":{
           "shape":"S3LocationPrefixString",
           "documentation":"<p>The prefix for objects in the Amazon S3 bucket. This prefix is added to the object keys to organize the data.</p>"
+        },
+        "versionId":{
+          "shape":"S3LocationVersionIdString",
+          "documentation":"<p>The version ID of the Amazon Amazon S3 object. If not specified, the latest version of the object is used.</p>"
         }
       },
       "documentation":"<p>The Amazon S3 location for storing data. This structure defines where in Amazon S3 data is stored.</p>"
@@ -5533,7 +5714,13 @@
     },
     "S3LocationPrefixString":{
       "type":"string",
+      "max":1024,
       "min":1
+    },
+    "S3LocationVersionIdString":{
+      "type":"string",
+      "max":1024,
+      "min":3
     },
     "SalesforceOauth2ProviderConfigInput":{
       "type":"structure",
@@ -6681,6 +6868,10 @@
           "shape":"KmsKeyArn",
           "documentation":"<p>The updated ARN of the KMS key used to encrypt the gateway.</p>"
         },
+        "interceptorConfigurations":{
+          "shape":"GatewayInterceptorConfigurations",
+          "documentation":"<p>The updated interceptor configurations for the gateway.</p>"
+        },
         "exceptionLevel":{
           "shape":"ExceptionLevel",
           "documentation":"<p>The level of detail in error messages returned when invoking the gateway.</p> <ul> <li> <p>If the value is <code>DEBUG</code>, granular exception messages are returned to help a user debug the gateway.</p> </li> <li> <p>If the value is omitted, a generic error message is returned to the end user.</p> </li> </ul>"
@@ -6756,6 +6947,10 @@
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The updated ARN of the KMS key used to encrypt the gateway.</p>"
+        },
+        "interceptorConfigurations":{
+          "shape":"GatewayInterceptorConfigurations",
+          "documentation":"<p>The updated interceptor configurations for the gateway.</p>"
         },
         "workloadIdentityDetails":{
           "shape":"WorkloadIdentityDetails",
@@ -7246,7 +7441,12 @@
         }
       },
       "documentation":"<p>Contains information about a workload identity.</p>"
+    },
+    "entryPoint":{
+      "type":"string",
+      "max":128,
+      "min":1
     }
   },
-  "documentation":"<p><note> <p> is in preview release and is subject to change.</p> </note> <p>Welcome to the Amazon Bedrock AgentCore Control plane API reference. Control plane actions configure, create, modify, and monitor Amazon Web Services resources.</p></p>"
+  "documentation":"<p>Welcome to the Amazon Bedrock AgentCore Control plane API reference. Control plane actions configure, create, modify, and monitor Amazon Web Services resources.</p>"
 }

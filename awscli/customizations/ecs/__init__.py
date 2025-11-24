@@ -16,6 +16,9 @@ from awscli.customizations.ecs.executecommand import (
     ECSExecuteCommand,
     ExecuteCommandCaller,
 )
+from awscli.customizations.ecs.monitorexpressgatewayservice import (
+    ECSMonitorExpressGatewayService,
+)
 
 
 def initialize(cli):
@@ -39,4 +42,7 @@ def inject_commands(command_table, session, **kwargs):
             'ExecuteCommand'
         ),
         operation_caller=ExecuteCommandCaller(session),
+    )
+    command_table['monitor-express-gateway-service'] = (
+        ECSMonitorExpressGatewayService(session)
     )

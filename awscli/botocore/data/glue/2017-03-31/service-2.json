@@ -1169,6 +1169,25 @@
       ],
       "documentation":"<p>Deletes the specified Zero-ETL integration.</p>"
     },
+    "DeleteIntegrationResourceProperty":{
+      "name":"DeleteIntegrationResourceProperty",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteIntegrationResourcePropertyRequest"},
+      "output":{"shape":"DeleteIntegrationResourcePropertyResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>This API is used for deleting the <code>ResourceProperty</code> of the Glue connection (for the source) or Glue database ARN (for the target).</p>"
+    },
     "DeleteIntegrationTableProperties":{
       "name":"DeleteIntegrationTableProperties",
       "http":{
@@ -3058,6 +3077,25 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Returns the available entities supported by the connection type. </p>"
+    },
+    "ListIntegrationResourceProperties":{
+      "name":"ListIntegrationResourceProperties",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListIntegrationResourcePropertiesRequest"},
+      "output":{"shape":"ListIntegrationResourcePropertiesResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>List integration resource properties for a single customer. It supports the filters, maxRecords and markers.</p>"
     },
     "ListJobs":{
       "name":"ListJobs",
@@ -9235,6 +9273,10 @@
         "Scopes":{
           "shape":"IdentityCenterScopesList",
           "documentation":"<p>A list of Identity Center scopes that define the permissions and access levels for the Glue configuration.</p>"
+        },
+        "UserBackgroundSessionsEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether users can run background sessions when using Identity Center authentication with Glue services.</p>"
         }
       },
       "documentation":"<p>Request to create a new Glue Identity Center configuration.</p>"
@@ -9319,11 +9361,11 @@
           "documentation":"<p>A unique name for an integration in Glue.</p>"
         },
         "SourceArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The ARN of the source resource for the integration.</p>"
         },
         "TargetArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The ARN of the target resource for the integration.</p>"
         },
         "Description":{
@@ -9357,7 +9399,7 @@
       "required":["ResourceArn"],
       "members":{
         "ResourceArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The connection ARN of the source, or the database ARN of the target.</p>"
         },
         "SourceProcessingProperties":{
@@ -9367,6 +9409,10 @@
         "TargetProcessingProperties":{
           "shape":"TargetProcessingProperties",
           "documentation":"<p>The resource properties associated with the integration target.</p>"
+        },
+        "Tags":{
+          "shape":"IntegrationTagsList",
+          "documentation":"<p>Metadata assigned to the resource consisting of a list of key-value pairs.</p>"
         }
       }
     },
@@ -9375,8 +9421,12 @@
       "required":["ResourceArn"],
       "members":{
         "ResourceArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The connection ARN of the source, or the database ARN of the target.</p>"
+        },
+        "ResourcePropertyArn":{
+          "shape":"String512",
+          "documentation":"<p>The resource ARN created through this create API. The format is something like arn:aws:glue:&lt;region&gt;:&lt;account_id&gt;:integrationresourceproperty/*</p>"
         },
         "SourceProcessingProperties":{
           "shape":"SourceProcessingProperties",
@@ -9400,11 +9450,11 @@
       ],
       "members":{
         "SourceArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The ARN of the source resource for the integration.</p>"
         },
         "TargetArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The ARN of the target resource for the integration.</p>"
         },
         "IntegrationName":{
@@ -9461,7 +9511,7 @@
       ],
       "members":{
         "ResourceArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The Amazon Resource Name (ARN) of the target table for which to create integration table properties. Currently, this API only supports creating integration table properties for target tables, and the provided ARN should be the ARN of the target table in the Glue Data Catalog. Support for creating integration table properties for source connections (using the connection ARN) is not yet implemented and will be added in a future release. </p>"
         },
         "TableName":{
@@ -11793,6 +11843,20 @@
         }
       }
     },
+    "DeleteIntegrationResourcePropertyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"String512",
+          "documentation":"<p>The connection ARN of the source, or the database ARN of the target.</p>"
+        }
+      }
+    },
+    "DeleteIntegrationResourcePropertyResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteIntegrationResponse":{
       "type":"structure",
       "required":[
@@ -11805,11 +11869,11 @@
       ],
       "members":{
         "SourceArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The ARN of the source for the integration.</p>"
         },
         "TargetArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The ARN of the target for the integration.</p>"
         },
         "IntegrationName":{
@@ -11862,7 +11926,7 @@
       ],
       "members":{
         "ResourceArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The connection ARN of the source, or the database ARN of the target.</p>"
         },
         "TableName":{
@@ -12424,7 +12488,7 @@
           "documentation":"<p>The total number of items to return in the output.</p>"
         },
         "TargetArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The Amazon Resource Name (ARN) of the target resource in the integration.</p>"
         }
       }
@@ -13805,6 +13869,14 @@
       "max":128,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\t]*"
     },
+    "FunctionType":{
+      "type":"string",
+      "enum":[
+        "REGULAR_FUNCTION",
+        "AGGREGATE_FUNCTION",
+        "STORED_PROCEDURE"
+      ]
+    },
     "Generic512CharString":{
       "type":"string",
       "max":512,
@@ -14956,6 +15028,10 @@
         "Scopes":{
           "shape":"OrchestrationStringList",
           "documentation":"<p>A list of Identity Center scopes that define the permissions and access levels for the Glue configuration.</p>"
+        },
+        "UserBackgroundSessionsEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Indicates whether users can run background sessions when using Identity Center authentication with Glue services.</p>"
         }
       },
       "documentation":"<p>Response containing the Glue Identity Center configuration details.</p>"
@@ -14965,7 +15041,7 @@
       "required":["ResourceArn"],
       "members":{
         "ResourceArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The connection ARN of the source, or the database ARN of the target.</p>"
         }
       }
@@ -14974,8 +15050,12 @@
       "type":"structure",
       "members":{
         "ResourceArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The connection ARN of the source, or the database ARN of the target.</p>"
+        },
+        "ResourcePropertyArn":{
+          "shape":"String512",
+          "documentation":"<p>The resource ARN created through this create API. The format is something like arn:aws:glue:&lt;region&gt;:&lt;account_id&gt;:integrationresourceproperty/*</p>"
         },
         "SourceProcessingProperties":{
           "shape":"SourceProcessingProperties",
@@ -14995,7 +15075,7 @@
       ],
       "members":{
         "ResourceArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The Amazon Resource Name (ARN) of the target table for which to retrieve integration table properties. Currently, this API only supports retrieving properties for target tables, and the provided ARN should be the ARN of the target table in the Glue Data Catalog. Support for retrieving integration table properties for source connections (using the connection ARN) is not yet implemented and will be added in a future release. </p>"
         },
         "TableName":{
@@ -15008,7 +15088,7 @@
       "type":"structure",
       "members":{
         "ResourceArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The Amazon Resource Name (ARN) of the target table for which to retrieve integration table properties. Currently, this API only supports retrieving properties for target tables, and the provided ARN should be the ARN of the target table in the Glue Data Catalog. Support for retrieving integration table properties for source connections (using the connection ARN) is not yet implemented and will be added in a future release. </p>"
         },
         "TableName":{
@@ -16593,6 +16673,10 @@
           "shape":"NameString",
           "documentation":"<p>An optional function-name pattern string that filters the function definitions returned.</p>"
         },
+        "FunctionType":{
+          "shape":"FunctionType",
+          "documentation":"<p>An optional function-type pattern string that filters the function definitions returned from Amazon Redshift Federated Permissions Catalog.</p> <p>Specify a value of <code>REGULAR_FUNCTION</code> or <code>STORED_PROCEDURE</code>. The <code>STORED_PROCEDURE</code> function type is only compatible with Amazon Redshift Federated Permissions Catalog. </p>"
+        },
         "NextToken":{
           "shape":"Token",
           "documentation":"<p>A continuation token, if this is a continuation call.</p>"
@@ -17626,11 +17710,11 @@
       ],
       "members":{
         "SourceArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The ARN of the source resource for the integration.</p>"
         },
         "TargetArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The ARN of the target resource for the integration.</p>"
         },
         "IntegrationArn":{
@@ -17694,11 +17778,11 @@
       ],
       "members":{
         "SourceArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The ARN for the source of the integration.</p>"
         },
         "TargetArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The ARN for the target of the integration.</p>"
         },
         "Description":{
@@ -17758,7 +17842,7 @@
       "members":{
         "RefreshInterval":{
           "shape":"String128",
-          "documentation":"<p>Specifies the frequency at which CDC (Change Data Capture) pulls or incremental loads should occur. This parameter provides flexibility to align the refresh rate with your specific data update patterns, system load considerations, and performance optimization goals. Time increment can be set from 15 minutes to 8640 minutes (six days). Currently supports creation of <code>RefreshInterval</code> only.</p>"
+          "documentation":"<p>Specifies the frequency at which CDC (Change Data Capture) pulls or incremental loads should occur. This parameter provides flexibility to align the refresh rate with your specific data update patterns, system load considerations, and performance optimization goals. Time increment can be set from 15 minutes to 8640 minutes (six days).</p>"
         },
         "SourceProperties":{
           "shape":"IntegrationSourcePropertiesMap",
@@ -17872,6 +17956,55 @@
       },
       "documentation":"<p>The data processed through your integration exceeded your quota.</p>",
       "exception":true
+    },
+    "IntegrationResourceProperty":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"String512",
+          "documentation":"<p>The connection ARN of the source, or the database ARN of the target.</p>"
+        },
+        "ResourcePropertyArn":{
+          "shape":"String512",
+          "documentation":"<p>The resource ARN created through this create API. The format is something like arn:aws:glue:&lt;region&gt;:&lt;account_id&gt;:integrationresourceproperty/*</p>"
+        },
+        "SourceProcessingProperties":{
+          "shape":"SourceProcessingProperties",
+          "documentation":"<p>The resource properties associated with the integration source.</p>"
+        },
+        "TargetProcessingProperties":{
+          "shape":"TargetProcessingProperties",
+          "documentation":"<p>The resource properties associated with the integration target.</p>"
+        }
+      },
+      "documentation":"<p>A structure representing an integration resource property.</p>"
+    },
+    "IntegrationResourcePropertyFilter":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"String128",
+          "documentation":"<p>The name of the filter. Supported filter keys are <code>SourceArn</code> and <code>TargetArn</code>.</p>"
+        },
+        "Values":{
+          "shape":"IntegrationResourcePropertyFilterValues",
+          "documentation":"<p>A list of filter values.</p>"
+        }
+      },
+      "documentation":"<p>A filter for integration resource properties.</p>"
+    },
+    "IntegrationResourcePropertyFilterList":{
+      "type":"list",
+      "member":{"shape":"IntegrationResourcePropertyFilter"}
+    },
+    "IntegrationResourcePropertyFilterValues":{
+      "type":"list",
+      "member":{"shape":"String128"}
+    },
+    "IntegrationResourcePropertyList":{
+      "type":"list",
+      "member":{"shape":"IntegrationResourceProperty"}
     },
     "IntegrationSourcePropertiesMap":{
       "type":"map",
@@ -19554,6 +19687,36 @@
         }
       }
     },
+    "ListIntegrationResourcePropertiesRequest":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"String1024",
+          "documentation":"<p>This is the pagination token for next page, initial value is <code>null</code>.</p>"
+        },
+        "Filters":{
+          "shape":"IntegrationResourcePropertyFilterList",
+          "documentation":"<p>A list of filters, supported filter Key is <code>SourceArn</code> and <code>TargetArn</code>.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegrationInteger",
+          "documentation":"<p>This is total number of items to be evaluated.</p>"
+        }
+      }
+    },
+    "ListIntegrationResourcePropertiesResponse":{
+      "type":"structure",
+      "members":{
+        "IntegrationResourcePropertyList":{
+          "shape":"IntegrationResourcePropertyList",
+          "documentation":"<p>A list of integration resource property meeting the filter criteria.</p>"
+        },
+        "Marker":{
+          "shape":"String1024",
+          "documentation":"<p>This is the pagination token for the next page.</p>"
+        }
+      }
+    },
     "ListJobsRequest":{
       "type":"structure",
       "members":{
@@ -20426,7 +20589,10 @@
           "shape":"String2048",
           "documentation":"<p>Selects source tables for the integration using Maxwell filter syntax.</p>"
         },
-        "IntegrationConfig":{"shape":"IntegrationConfig"},
+        "IntegrationConfig":{
+          "shape":"IntegrationConfig",
+          "documentation":"<p>The configuration settings for the integration. Currently, only the RefreshInterval can be modified. </p>"
+        },
         "IntegrationName":{
           "shape":"String128",
           "documentation":"<p>A unique name for an integration in Glue.</p>"
@@ -20445,11 +20611,11 @@
       ],
       "members":{
         "SourceArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The ARN of the source for the integration.</p>"
         },
         "TargetArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The ARN of the target for the integration.</p>"
         },
         "IntegrationName":{
@@ -20492,7 +20658,10 @@
           "shape":"String2048",
           "documentation":"<p>Selects source tables for the integration using Maxwell filter syntax.</p>"
         },
-        "IntegrationConfig":{"shape":"IntegrationConfig"}
+        "IntegrationConfig":{
+          "shape":"IntegrationConfig",
+          "documentation":"<p>The updated configuration settings for the integration.</p>"
+        }
       }
     },
     "MongoDBTarget":{
@@ -25691,6 +25860,11 @@
       "documentation":"<p>Specifies options related to data preview for viewing a sample of your data.</p>"
     },
     "String":{"type":"string"},
+    "String1024":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
     "String128":{
       "type":"string",
       "max":128,
@@ -25699,6 +25873,11 @@
     "String2048":{
       "type":"string",
       "max":2048,
+      "min":1
+    },
+    "String512":{
+      "type":"string",
+      "max":512,
       "min":1
     },
     "StringColumnStatisticsData":{
@@ -27457,6 +27636,10 @@
         "Scopes":{
           "shape":"IdentityCenterScopesList",
           "documentation":"<p>A list of Identity Center scopes that define the updated permissions and access levels for the Glue configuration.</p>"
+        },
+        "UserBackgroundSessionsEnabled":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether users can run background sessions when using Identity Center authentication with Glue services.</p>"
         }
       },
       "documentation":"<p>Request to update an existing Glue Identity Center configuration.</p>"
@@ -27516,7 +27699,7 @@
       "required":["ResourceArn"],
       "members":{
         "ResourceArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The connection ARN of the source, or the database ARN of the target.</p>"
         },
         "SourceProcessingProperties":{
@@ -27533,8 +27716,12 @@
       "type":"structure",
       "members":{
         "ResourceArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The connection ARN of the source, or the database ARN of the target.</p>"
+        },
+        "ResourcePropertyArn":{
+          "shape":"String512",
+          "documentation":"<p>The resource ARN created through this create API. The format is something like arn:aws:glue:&lt;region&gt;:&lt;account_id&gt;:integrationresourceproperty/*</p>"
         },
         "SourceProcessingProperties":{
           "shape":"SourceProcessingProperties",
@@ -27554,7 +27741,7 @@
       ],
       "members":{
         "ResourceArn":{
-          "shape":"String128",
+          "shape":"String512",
           "documentation":"<p>The connection ARN of the source, or the database ARN of the target.</p>"
         },
         "TableName":{
@@ -28177,6 +28364,10 @@
           "shape":"NameString",
           "documentation":"<p>The owner of the function.</p>"
         },
+        "FunctionType":{
+          "shape":"FunctionType",
+          "documentation":"<p>The type of the function.</p>"
+        },
         "OwnerType":{
           "shape":"PrincipalType",
           "documentation":"<p>The owner type.</p>"
@@ -28210,6 +28401,10 @@
         "OwnerName":{
           "shape":"NameString",
           "documentation":"<p>The owner of the function.</p>"
+        },
+        "FunctionType":{
+          "shape":"FunctionType",
+          "documentation":"<p>The type of the function.</p>"
         },
         "OwnerType":{
           "shape":"PrincipalType",

@@ -251,7 +251,33 @@
     "AnyToolChoice":{
       "type":"structure",
       "members":{},
-      "documentation":"<p>The model must request at least one tool (no text is generated). For example, <code>{\"any\" : {}}</code>.</p>"
+      "documentation":"<p>The model must request at least one tool (no text is generated). For example, <code>{\"any\" : {}}</code>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>"
+    },
+    "AppliedGuardrailDetails":{
+      "type":"structure",
+      "members":{
+        "guardrailId":{
+          "shape":"GuardrailId",
+          "documentation":"<p>The unique ID of the guardrail that was applied.</p>"
+        },
+        "guardrailVersion":{
+          "shape":"GuardrailVersion",
+          "documentation":"<p>The version of the guardrail that was applied.</p>"
+        },
+        "guardrailArn":{
+          "shape":"GuardrailArn",
+          "documentation":"<p>The ARN of the guardrail that was applied.</p>"
+        },
+        "guardrailOrigin":{
+          "shape":"GuardrailOriginList",
+          "documentation":"<p>The origin of how the guardrail was applied. This can be either requested at the API level or enforced at the account or organization level as a default guardrail.</p>"
+        },
+        "guardrailOwnership":{
+          "shape":"GuardrailOwnership",
+          "documentation":"<p>The ownership type of the guardrail, indicating whether it is owned by the requesting account or is a cross-account guardrail shared from another AWS account.</p>"
+        }
+      },
+      "documentation":"<p>Details about the specific guardrail that was applied during this assessment, including its identifier, version, ARN, origin, and ownership information.</p>"
     },
     "ApplyGuardrailRequest":{
       "type":"structure",
@@ -440,7 +466,7 @@
     "AutoToolChoice":{
       "type":"structure",
       "members":{},
-      "documentation":"<p>The Model automatically decides if a tool should be called or whether to generate text instead. For example, <code>{\"auto\" : {}}</code>.</p>"
+      "documentation":"<p>The Model automatically decides if a tool should be called or whether to generate text instead. For example, <code>{\"auto\" : {}}</code>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide</p>"
     },
     "AutomatedReasoningRuleIdentifier":{
       "type":"string",
@@ -505,6 +531,10 @@
           "shape":"String",
           "documentation":"<p>The title or identifier of the source document being cited.</p>"
         },
+        "source":{
+          "shape":"String",
+          "documentation":"<p>The source from the original search result that provided the cited content.</p>"
+        },
         "sourceContent":{
           "shape":"CitationSourceContentList",
           "documentation":"<p>The specific content from the source document that was referenced or cited in the generated response.</p>"
@@ -534,6 +564,10 @@
     "CitationLocation":{
       "type":"structure",
       "members":{
+        "web":{
+          "shape":"WebLocation",
+          "documentation":"<p>The web URL that was cited for this reference.</p>"
+        },
         "documentChar":{
           "shape":"DocumentCharLocation",
           "documentation":"<p>The character-level location within the document where the cited content is found.</p>"
@@ -545,6 +579,10 @@
         "documentChunk":{
           "shape":"DocumentChunkLocation",
           "documentation":"<p>The chunk-level location within the document where the cited content is found, typically used for documents that have been segmented into logical chunks.</p>"
+        },
+        "searchResultLocation":{
+          "shape":"SearchResultLocation",
+          "documentation":"<p>The search result location where the cited content is found, including the search result index and block positions within the content array.</p>"
         }
       },
       "documentation":"<p>Specifies the precise location within a source document where cited content can be found. This can include character-level positions, page numbers, or document chunks depending on the document type and indexing method.</p>",
@@ -589,7 +627,7 @@
       "members":{
         "enabled":{
           "shape":"Boolean",
-          "documentation":"<p>Specifies whether document citations should be included in the model's response. When set to true, the model can generate citations that reference the source documents used to inform the response.</p>"
+          "documentation":"<p>Specifies whether citations from the selected document should be used in the model's response. When set to true, the model can generate citations that reference the source documents used to inform the response.</p>"
         }
       },
       "documentation":"<p>Configuration settings for enabling and controlling document citations in Converse API responses. When enabled, the model can include citation information that links generated content back to specific source documents.</p>"
@@ -614,6 +652,10 @@
         "title":{
           "shape":"String",
           "documentation":"<p>The title or identifier of the source document being cited.</p>"
+        },
+        "source":{
+          "shape":"String",
+          "documentation":"<p>The source from the original search result that provided the cited content.</p>"
         },
         "sourceContent":{
           "shape":"CitationSourceContentListDelta",
@@ -667,7 +709,7 @@
         },
         "guardContent":{
           "shape":"GuardrailConverseContentBlock",
-          "documentation":"<p>Contains the content to assess with the guardrail. If you don't specify <code>guardContent</code> in a call to the Converse API, the guardrail (if passed in the Converse API) assesses the entire message.</p> <p>For more information, see <i>Use a guardrail with the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. </p>"
+          "documentation":"<p>Contains the content to assess with the guardrail. If you don't specify <code>guardContent</code> in a call to the Converse API, the guardrail (if passed in the Converse API) assesses the entire message.</p> <p>For more information, see <i>Use a guardrail with the Converse API</i> in the <i>Amazon Bedrock User Guide</i>.</p>"
         },
         "cachePoint":{
           "shape":"CachePointBlock",
@@ -680,6 +722,10 @@
         "citationsContent":{
           "shape":"CitationsContentBlock",
           "documentation":"<p>A content block that contains both generated text and associated citation information, providing traceability between the response and source documents.</p>"
+        },
+        "searchResult":{
+          "shape":"SearchResultBlock",
+          "documentation":"<p>Search result to include in the message.</p>"
         }
       },
       "documentation":"<p>A block of content for a message that you pass to, or receive from, a model with the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> or <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a> API operations.</p>",
@@ -695,6 +741,10 @@
         "toolUse":{
           "shape":"ToolUseBlockDelta",
           "documentation":"<p>Information about a tool that the model is requesting to use.</p>"
+        },
+        "toolResult":{
+          "shape":"ToolResultBlocksDelta",
+          "documentation":"<p>An incremental update that contains the results from a tool call.</p>"
         },
         "reasoningContent":{
           "shape":"ReasoningContentBlockDelta",
@@ -733,6 +783,10 @@
         "toolUse":{
           "shape":"ToolUseBlockStart",
           "documentation":"<p>Information about a tool that the model is requesting to use.</p>"
+        },
+        "toolResult":{
+          "shape":"ToolResultBlockStart",
+          "documentation":"<p>The </p>"
         }
       },
       "documentation":"<p>Content block start information.</p>",
@@ -857,6 +911,10 @@
         "performanceConfig":{
           "shape":"PerformanceConfiguration",
           "documentation":"<p>Model performance settings for the request.</p>"
+        },
+        "serviceTier":{
+          "shape":"ServiceTier",
+          "documentation":"<p>Specifies the processing tier configuration used for serving the request.</p>"
         }
       }
     },
@@ -907,6 +965,10 @@
         "performanceConfig":{
           "shape":"PerformanceConfiguration",
           "documentation":"<p>Model performance settings for the request.</p>"
+        },
+        "serviceTier":{
+          "shape":"ServiceTier",
+          "documentation":"<p>Specifies the processing tier configuration used for serving the request.</p>"
         }
       }
     },
@@ -932,6 +994,10 @@
         "performanceConfig":{
           "shape":"PerformanceConfiguration",
           "documentation":"<p>Model performance configuration metadata for the conversation stream event.</p>"
+        },
+        "serviceTier":{
+          "shape":"ServiceTier",
+          "documentation":"<p>Specifies the processing tier configuration used for serving the request.</p>"
         }
       },
       "documentation":"<p>A conversation stream metadata event.</p>",
@@ -985,11 +1051,11 @@
         },
         "validationException":{
           "shape":"ValidationException",
-          "documentation":"<p>The input fails to satisfy the constraints specified by <i>Amazon Bedrock</i>. For troubleshooting this error, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/troubleshooting-api-error-codes.html#ts-validation-error\">ValidationError</a> in the Amazon Bedrock User Guide</p>"
+          "documentation":"<p>The input fails to satisfy the constraints specified by <i>Amazon Bedrock</i>. For troubleshooting this error, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/troubleshooting-api-error-codes.html#ts-validation-error\">ValidationError</a> in the Amazon Bedrock User Guide.</p>"
         },
         "throttlingException":{
           "shape":"ThrottlingException",
-          "documentation":"<p>Your request was denied due to exceeding the account quotas for <i>Amazon Bedrock</i>. For troubleshooting this error, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/troubleshooting-api-error-codes.html#ts-throttling-exception\">ThrottlingException</a> in the Amazon Bedrock User Guide</p>"
+          "documentation":"<p>Your request was denied due to exceeding the account quotas for <i>Amazon Bedrock</i>. For troubleshooting this error, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/troubleshooting-api-error-codes.html#ts-throttling-exception\">ThrottlingException</a> in the Amazon Bedrock User Guide.</p>"
         },
         "serviceUnavailableException":{
           "shape":"ServiceUnavailableException",
@@ -1048,6 +1114,10 @@
         "performanceConfig":{
           "shape":"PerformanceConfiguration",
           "documentation":"<p>Model performance settings for the request.</p>"
+        },
+        "serviceTier":{
+          "shape":"ServiceTier",
+          "documentation":"<p>Specifies the processing tier configuration used for serving the request.</p>"
         }
       }
     },
@@ -1084,7 +1154,7 @@
           "documentation":"<p>The request's prompt router.</p>"
         }
       },
-      "documentation":"<p>The trace object in a response from <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a>. Currently, you can only trace guardrails.</p>"
+      "documentation":"<p>The trace object in a response from <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a>.</p>"
     },
     "ConverseTokensRequest":{
       "type":"structure",
@@ -1096,6 +1166,14 @@
         "system":{
           "shape":"SystemContentBlocks",
           "documentation":"<p>The system content blocks to count tokens for. System content provides instructions or context to the model about how it should behave or respond. The token count will include any system content provided.</p>"
+        },
+        "toolConfig":{
+          "shape":"ToolConfiguration",
+          "documentation":"<p>The toolConfig of Converse input request to count tokens for. Configuration information for the tools that the model can use when generating a response.</p>"
+        },
+        "additionalModelRequestFields":{
+          "shape":"Document",
+          "documentation":"<p>The additionalModelRequestFields of Converse input request to count tokens for. Use this field when you want to pass additional parameters that the model supports.</p>"
         }
       },
       "documentation":"<p>The inputs from a <code>Converse</code> API request for token counting.</p> <p>This structure mirrors the input format for the <code>Converse</code> operation, allowing you to count tokens for conversation-based inference requests.</p>"
@@ -1112,7 +1190,7 @@
           "documentation":"<p>The request's prompt router.</p>"
         }
       },
-      "documentation":"<p>The trace object in a response from <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a>. Currently, you can only trace guardrails.</p>"
+      "documentation":"<p>The trace object in a response from <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a>.</p>"
     },
     "CountTokensInput":{
       "type":"structure",
@@ -1427,6 +1505,12 @@
         "GUARDRAIL_INTERVENED"
       ]
     },
+    "GuardrailArn":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+)"
+    },
     "GuardrailAssessment":{
       "type":"structure",
       "members":{
@@ -1457,7 +1541,8 @@
         "invocationMetrics":{
           "shape":"GuardrailInvocationMetrics",
           "documentation":"<p>The invocation metrics for the guardrail assessment.</p>"
-        }
+        },
+        "appliedGuardrailDetails":{"shape":"AppliedGuardrailDetails"}
       },
       "documentation":"<p>A behavior assessment of the guardrail policies used in a call to the Converse API. </p>"
     },
@@ -1799,10 +1884,6 @@
     },
     "GuardrailConfiguration":{
       "type":"structure",
-      "required":[
-        "guardrailIdentifier",
-        "guardrailVersion"
-      ],
       "members":{
         "guardrailIdentifier":{
           "shape":"GuardrailIdentifier",
@@ -2105,7 +2186,7 @@
           "documentation":"<p>The qualifier details for the guardrails contextual grounding filter.</p>"
         }
       },
-      "documentation":"<p>A text block that contains text that you want to assess with a guardrail. For more information, see <a>GuardrailConverseContentBlock</a>.</p>"
+      "documentation":"<p>A text block that contains text that you want to assess with a guardrail. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_GuardrailConverseContentBlock.html\">GuardrailConverseContentBlock</a>.</p>"
     },
     "GuardrailCoverage":{
       "type":"structure",
@@ -2147,11 +2228,17 @@
       "type":"list",
       "member":{"shape":"GuardrailCustomWord"}
     },
+    "GuardrailId":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"([a-z0-9]+)"
+    },
     "GuardrailIdentifier":{
       "type":"string",
       "max":2048,
       "min":0,
-      "pattern":"(([a-z0-9]+)|(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+))"
+      "pattern":"(|([a-z0-9]+)|(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+))"
     },
     "GuardrailImageBlock":{
       "type":"structure",
@@ -2262,6 +2349,18 @@
       "type":"string",
       "enum":["PROFANITY"]
     },
+    "GuardrailOrigin":{
+      "type":"string",
+      "enum":[
+        "REQUEST",
+        "ACCOUNT_ENFORCED",
+        "ORGANIZATION_ENFORCED"
+      ]
+    },
+    "GuardrailOriginList":{
+      "type":"list",
+      "member":{"shape":"GuardrailOrigin"}
+    },
     "GuardrailOutputContent":{
       "type":"structure",
       "members":{
@@ -2284,6 +2383,13 @@
       ]
     },
     "GuardrailOutputText":{"type":"string"},
+    "GuardrailOwnership":{
+      "type":"string",
+      "enum":[
+        "SELF",
+        "CROSS_ACCOUNT"
+      ]
+    },
     "GuardrailPiiEntityFilter":{
       "type":"structure",
       "required":[
@@ -2410,7 +2516,7 @@
           "documentation":"<p>The regex queries in the assessment.</p>"
         }
       },
-      "documentation":"<p>The assessment for aPersonally Identifiable Information (PII) policy. </p>"
+      "documentation":"<p>The assessment for a Personally Identifiable Information (PII) policy. </p>"
     },
     "GuardrailSensitiveInformationPolicyFreeUnitsProcessed":{
       "type":"integer",
@@ -2422,10 +2528,6 @@
     },
     "GuardrailStreamConfiguration":{
       "type":"structure",
-      "required":[
-        "guardrailIdentifier",
-        "guardrailVersion"
-      ],
       "members":{
         "guardrailIdentifier":{
           "shape":"GuardrailIdentifier",
@@ -2444,7 +2546,7 @@
           "documentation":"<p>The processing mode. </p> <p>The processing mode. For more information, see <i>Configure streaming response behavior</i> in the <i>Amazon Bedrock User Guide</i>. </p>"
         }
       },
-      "documentation":"<p>Configuration information for a guardrail that you use with the <a>ConverseStream</a> action. </p>"
+      "documentation":"<p>Configuration information for a guardrail that you use with the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a> action. </p>"
     },
     "GuardrailStreamProcessingMode":{
       "type":"string",
@@ -2567,7 +2669,7 @@
           "documentation":"<p>Provides the reason for the action taken when harmful content is detected.</p>"
         }
       },
-      "documentation":"<p>A Top level guardrail trace object. For more information, see <a>ConverseTrace</a>.</p>"
+      "documentation":"<p>A Top level guardrail trace object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseTrace.html\">ConverseTrace</a>.</p>"
     },
     "GuardrailUsage":{
       "type":"structure",
@@ -2621,7 +2723,7 @@
     },
     "GuardrailVersion":{
       "type":"string",
-      "pattern":"(([1-9][0-9]{0,7})|(DRAFT))"
+      "pattern":"(|([1-9][0-9]{0,7})|(DRAFT))"
     },
     "GuardrailWordPolicyAction":{
       "type":"string",
@@ -2826,6 +2928,12 @@
           "documentation":"<p>Model performance settings for the request.</p>",
           "location":"header",
           "locationName":"X-Amzn-Bedrock-PerformanceConfig-Latency"
+        },
+        "serviceTier":{
+          "shape":"ServiceTierType",
+          "documentation":"<p>Specifies the processing tier type used for serving the request.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-Service-Tier"
         }
       },
       "payload":"body"
@@ -2852,6 +2960,12 @@
           "documentation":"<p>Model performance settings for the request.</p>",
           "location":"header",
           "locationName":"X-Amzn-Bedrock-PerformanceConfig-Latency"
+        },
+        "serviceTier":{
+          "shape":"ServiceTierType",
+          "documentation":"<p>Specifies the processing tier type used for serving the request.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-Service-Tier"
         }
       },
       "payload":"body"
@@ -2993,6 +3107,12 @@
           "documentation":"<p>Model performance settings for the request.</p>",
           "location":"header",
           "locationName":"X-Amzn-Bedrock-PerformanceConfig-Latency"
+        },
+        "serviceTier":{
+          "shape":"ServiceTierType",
+          "documentation":"<p>Specifies the processing tier type used for serving the request.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-Service-Tier"
         }
       },
       "payload":"body"
@@ -3019,6 +3139,12 @@
           "documentation":"<p>Model performance settings for the request.</p>",
           "location":"header",
           "locationName":"X-Amzn-Bedrock-PerformanceConfig-Latency"
+        },
+        "serviceTier":{
+          "shape":"ServiceTierType",
+          "documentation":"<p>Specifies the processing tier type used for serving the request.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-Service-Tier"
         }
       },
       "payload":"body"
@@ -3450,6 +3576,81 @@
       "min":1,
       "pattern":"s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"
     },
+    "SearchResultBlock":{
+      "type":"structure",
+      "required":[
+        "source",
+        "title",
+        "content"
+      ],
+      "members":{
+        "source":{
+          "shape":"String",
+          "documentation":"<p>The source URL or identifier for the content.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>A descriptive title for the search result.</p>"
+        },
+        "content":{
+          "shape":"SearchResultContentBlocks",
+          "documentation":"<p>An array of search result content block.</p>"
+        },
+        "citations":{
+          "shape":"CitationsConfig",
+          "documentation":"<p>Configuration setting for citations</p>"
+        }
+      },
+      "documentation":"<p>A search result block that enables natural citations with proper source attribution for retrieved content.</p> <note> <p>This field is only supported by Anthropic Claude Opus 4.1, Opus 4, Sonnet 4.5, Sonnet 4, Sonnet 3.7, and 3.5 Haiku models.</p> </note>"
+    },
+    "SearchResultContentBlock":{
+      "type":"structure",
+      "required":["text"],
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p>The actual text content</p>"
+        }
+      },
+      "documentation":"<p>A block within a search result that contains the content.</p>"
+    },
+    "SearchResultContentBlocks":{
+      "type":"list",
+      "member":{"shape":"SearchResultContentBlock"}
+    },
+    "SearchResultLocation":{
+      "type":"structure",
+      "members":{
+        "searchResultIndex":{
+          "shape":"SearchResultLocationSearchResultIndexInteger",
+          "documentation":"<p>The index of the search result content block where the cited content is found.</p>"
+        },
+        "start":{
+          "shape":"SearchResultLocationStartInteger",
+          "documentation":"<p>The starting position in the content array where the cited content begins.</p>"
+        },
+        "end":{
+          "shape":"SearchResultLocationEndInteger",
+          "documentation":"<p>The ending position in the content array where the cited content ends.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a search result location within the content array, providing positioning information for cited content using search result index and block positions.</p>"
+    },
+    "SearchResultLocationEndInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "SearchResultLocationSearchResultIndexInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "SearchResultLocationStartInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -3461,6 +3662,25 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ServiceTier":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"ServiceTierType",
+          "documentation":"<p>Specifies the processing tier type used for serving the request.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the processing tier configuration used for serving the request.</p>"
+    },
+    "ServiceTierType":{
+      "type":"string",
+      "enum":[
+        "priority",
+        "default",
+        "flex"
+      ]
     },
     "ServiceUnavailableException":{
       "type":"structure",
@@ -3492,7 +3712,7 @@
           "documentation":"<p>The name of the tool that the model must request. </p>"
         }
       },
-      "documentation":"<p>The model must request a specific tool. For example, <code>{\"tool\" : {\"name\" : \"Your tool name\"}}</code>.</p> <note> <p>This field is only supported by Anthropic Claude 3 models.</p> </note>"
+      "documentation":"<p>The model must request a specific tool. For example, <code>{\"tool\" : {\"name\" : \"Your tool name\"}}</code>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide</p> <note> <p>This field is only supported by Anthropic Claude 3 models.</p> </note>"
     },
     "StartAsyncInvokeRequest":{
       "type":"structure",
@@ -3570,12 +3790,23 @@
           "documentation":"<p>CachePoint to include in the system prompt.</p>"
         }
       },
-      "documentation":"<p>A system content block.</p>",
+      "documentation":"<p>Contains configurations for instructions to provide the model for how to handle input. To learn more, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference-call.html\">Using the Converse API</a>.</p>",
       "union":true
     },
     "SystemContentBlocks":{
       "type":"list",
       "member":{"shape":"SystemContentBlock"}
+    },
+    "SystemTool":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ToolName",
+          "documentation":"<p>The name of the system-defined tool that you want to call. </p>"
+        }
+      },
+      "documentation":"<p>Specifies a system-defined tool for the model to use. <i>System-defined tools</i> are tools that are created and provided by the model provider.</p>"
     },
     "Tag":{
       "type":"structure",
@@ -3698,14 +3929,18 @@
       "members":{
         "toolSpec":{
           "shape":"ToolSpecification",
-          "documentation":"<p>The specfication for the tool.</p>"
+          "documentation":"<p>The specfication for the tool. </p>"
+        },
+        "systemTool":{
+          "shape":"SystemTool",
+          "documentation":"<p>Specifies the system-defined tool that you want use.</p>"
         },
         "cachePoint":{
           "shape":"CachePointBlock",
           "documentation":"<p>CachePoint to include in the tool configuration.</p>"
         }
       },
-      "documentation":"<p>Information about a tool that you can use with the Converse API. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Tool use (function calling)</a> in the Amazon Bedrock User Guide.</p>",
+      "documentation":"<p>Information about a tool that you can use with the Converse API. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>",
       "union":true
     },
     "ToolChoice":{
@@ -3721,10 +3956,10 @@
         },
         "tool":{
           "shape":"SpecificToolChoice",
-          "documentation":"<p>The Model must request the specified tool. Only supported by Anthropic Claude 3 models. </p>"
+          "documentation":"<p>The Model must request the specified tool. Only supported by Anthropic Claude 3 and Amazon Nova models. </p>"
         }
       },
-      "documentation":"<p>Determines which tools the model should request in a call to <code>Converse</code> or <code>ConverseStream</code>. <code>ToolChoice</code> is only supported by Anthropic Claude 3 models and by Mistral AI Mistral Large.</p>",
+      "documentation":"<p>Determines which tools the model should request in a call to <code>Converse</code> or <code>ConverseStream</code>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>",
       "union":true
     },
     "ToolConfiguration":{
@@ -3733,11 +3968,11 @@
       "members":{
         "tools":{
           "shape":"ToolConfigurationToolsList",
-          "documentation":"<p>An array of tools that you want to pass to a model.</p>"
+          "documentation":"<p>An array of tools that you want to pass to a model. </p>"
         },
         "toolChoice":{
           "shape":"ToolChoice",
-          "documentation":"<p>If supported by model, forces the model to request a tool.</p>"
+          "documentation":"<p>If supported by model, forces the model to request a tool. </p>"
         }
       },
       "documentation":"<p>Configuration information for the tools that you pass to a model. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Tool use (function calling)</a> in the Amazon Bedrock User Guide.</p>"
@@ -3755,7 +3990,7 @@
           "documentation":"<p>The JSON schema for the tool. For more information, see <a href=\"https://json-schema.org/understanding-json-schema/reference\">JSON Schema Reference</a>.</p>"
         }
       },
-      "documentation":"<p>The schema for the tool. The top level schema type must be <code>object</code>. </p>",
+      "documentation":"<p>The schema for the tool. The top level schema type must be <code>object</code>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>",
       "union":true
     },
     "ToolName":{
@@ -3773,7 +4008,7 @@
       "members":{
         "toolUseId":{
           "shape":"ToolUseId",
-          "documentation":"<p>The ID of the tool request that this is the result for.</p>"
+          "documentation":"<p>The ID of the tool request that this is the result for. </p>"
         },
         "content":{
           "shape":"ToolResultContentBlocks",
@@ -3781,25 +4016,63 @@
         },
         "status":{
           "shape":"ToolResultStatus",
-          "documentation":"<p>The status for the tool result content block.</p> <note> <p>This field is only supported Anthropic Claude 3 models.</p> </note>"
+          "documentation":"<p>The status for the tool result content block.</p> <note> <p>This field is only supported by Amazon Nova and Anthropic Claude 3 and 4 models.</p> </note>"
+        },
+        "type":{
+          "shape":"String",
+          "documentation":"<p>The type for the tool result content block.</p>"
         }
       },
-      "documentation":"<p>A tool result block that contains the results for a tool request that the model previously made.</p>"
+      "documentation":"<p>A tool result block that contains the results for a tool request that the model previously made. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>"
+    },
+    "ToolResultBlockDelta":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p>The reasoning the model used to return the output.</p>"
+        }
+      },
+      "documentation":"<p>Contains incremental updates to tool results information during streaming responses. This allows clients to build up tool results data progressively as the response is generated.</p>",
+      "union":true
+    },
+    "ToolResultBlockStart":{
+      "type":"structure",
+      "required":["toolUseId"],
+      "members":{
+        "toolUseId":{
+          "shape":"ToolUseId",
+          "documentation":"<p>The ID of the tool that was used to generate this tool result block.</p>"
+        },
+        "type":{
+          "shape":"String",
+          "documentation":"<p>The type for the tool that was used to generate this tool result block.</p>"
+        },
+        "status":{
+          "shape":"ToolResultStatus",
+          "documentation":"<p>The status of the tool result block.</p>"
+        }
+      },
+      "documentation":"<p>The start of a tool result block. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>"
+    },
+    "ToolResultBlocksDelta":{
+      "type":"list",
+      "member":{"shape":"ToolResultBlockDelta"}
     },
     "ToolResultContentBlock":{
       "type":"structure",
       "members":{
         "json":{
           "shape":"Document",
-          "documentation":"<p>A tool result that is JSON format data.</p>"
+          "documentation":"<p>A tool result that is JSON format data. </p>"
         },
         "text":{
           "shape":"String",
-          "documentation":"<p>A tool result that is text.</p>"
+          "documentation":"<p>A tool result that is text. </p>"
         },
         "image":{
           "shape":"ImageBlock",
-          "documentation":"<p>A tool result that is an image.</p> <note> <p>This field is only supported by Anthropic Claude 3 models.</p> </note>"
+          "documentation":"<p>A tool result that is an image. </p> <note> <p>This field is only supported by Amazon Nova and Anthropic Claude 3 and 4 models.</p> </note>"
         },
         "document":{
           "shape":"DocumentBlock",
@@ -3808,9 +4081,13 @@
         "video":{
           "shape":"VideoBlock",
           "documentation":"<p>A tool result that is video.</p>"
+        },
+        "searchResult":{
+          "shape":"SearchResultBlock",
+          "documentation":"<p>A tool result that is a search result.</p>"
         }
       },
-      "documentation":"<p>The tool result content block.</p>",
+      "documentation":"<p>The tool result content block. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>",
       "union":true
     },
     "ToolResultContentBlocks":{
@@ -3844,7 +4121,7 @@
           "documentation":"<p>The input schema for the tool in JSON format.</p>"
         }
       },
-      "documentation":"<p>The specification for the tool.</p>"
+      "documentation":"<p>The specification for the tool. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>"
     },
     "ToolUseBlock":{
       "type":"structure",
@@ -3865,9 +4142,13 @@
         "input":{
           "shape":"Document",
           "documentation":"<p>The input to pass to the tool. </p>"
+        },
+        "type":{
+          "shape":"ToolUseType",
+          "documentation":"<p>The type for the tool request.</p>"
         }
       },
-      "documentation":"<p>A tool use content block. Contains information about a tool that the model is requesting be run., The model uses the result from the tool to generate a response. </p>"
+      "documentation":"<p>A tool use content block. Contains information about a tool that the model is requesting be run., The model uses the result from the tool to generate a response. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>"
     },
     "ToolUseBlockDelta":{
       "type":"structure",
@@ -3894,15 +4175,23 @@
         "name":{
           "shape":"ToolName",
           "documentation":"<p>The name of the tool that the model is requesting to use.</p>"
+        },
+        "type":{
+          "shape":"ToolUseType",
+          "documentation":"<p>The type for the tool request.</p>"
         }
       },
-      "documentation":"<p>The start of a tool use block.</p>"
+      "documentation":"<p>The start of a tool use block. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>"
     },
     "ToolUseId":{
       "type":"string",
       "max":64,
       "min":1,
       "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "ToolUseType":{
+      "type":"string",
+      "enum":["server_tool_use"]
     },
     "Trace":{
       "type":"string",
@@ -3974,6 +4263,20 @@
     "VideoSourceBytesBlob":{
       "type":"blob",
       "min":1
+    },
+    "WebLocation":{
+      "type":"structure",
+      "members":{
+        "url":{
+          "shape":"String",
+          "documentation":"<p>The URL that was cited when performing a web search.</p>"
+        },
+        "domain":{
+          "shape":"String",
+          "documentation":"<p>The domain that was cited when performing a web search.</p>"
+        }
+      },
+      "documentation":"<p>Provides the URL and domain information for the website that was cited when performing a web search.</p>"
     }
   },
   "documentation":"<p>Describes the API operations for running inference using Amazon Bedrock models.</p>"

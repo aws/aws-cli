@@ -103,6 +103,12 @@ class TestTransferConfig:
             ('target_bandwidth', '1000', 1000),
             ('target_bandwidth', '1000B/s', 1000),
             ('target_bandwidth', '8000b/s', 1000),
+            # disk_throughput cases
+            ('disk_throughput', '1MB/s', 1024 * 1024),
+            ('disk_throughput', '10Mb/s', 10 * 1024 * 1024 / 8),
+            ('disk_throughput', '1000', 1000),
+            ('disk_throughput', '1000B/s', 1000),
+            ('disk_throughput', '8000b/s', 1000),
         ],
     )
     def test_rate_conversions(self, config_name, provided, expected):
@@ -127,6 +133,13 @@ class TestTransferConfig:
             ('target_bandwidth', '100/s'),
             ('target_bandwidth', ''),
             ('target_bandwidth', 'value-with-no-digits'),
+            # disk_throughput cases
+            ('disk_throughput', '1MB'),
+            ('disk_throughput', '1B'),
+            ('disk_throughput', '1b'),
+            ('disk_throughput', '100/s'),
+            ('disk_throughput', ''),
+            ('disk_throughput', 'value-with-no-digits'),
         ],
     )
     def test_invalid_rate_values(self, config_name, provided):
@@ -137,6 +150,22 @@ class TestTransferConfig:
     def test_validates_preferred_transfer_client_choices(self):
         with pytest.raises(transferconfig.InvalidConfigError):
             self.build_config_with(preferred_transfer_client='not-supported')
+
+    @pytest.mark.parametrize(
+        'attr,val,expected',
+        [
+            ('should_stream', 'true', True),
+            ('should_stream', 'false', False),
+            ('should_stream', None, None),
+            ('direct_io', 'true', True),
+            ('direct_io', 'false', False),
+            ('direct_io', None, None),
+        ],
+    )
+    def test_convert_booleans(self, attr, val, expected):
+        params = {attr: val}
+        runtime_config = self.build_config_with(**params)
+        assert runtime_config[attr] == expected
 
 
 class TestConvertToS3TransferConfig:

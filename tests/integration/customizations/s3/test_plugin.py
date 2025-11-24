@@ -1554,7 +1554,7 @@ class TestMemoryUtilization(BaseS3IntegrationTest):
                     peak_memory / 1024.0 / 1024.0,
                 )
             )
-            self.fail(failure_message)
+            raise AssertionError(failure_message)
 
     def test_transfer_single_large_file(self, files, shared_bucket):
         # 40MB will force a multipart upload.

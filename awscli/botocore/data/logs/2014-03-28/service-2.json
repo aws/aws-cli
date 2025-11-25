@@ -318,7 +318,8 @@
         {"shape":"InvalidParameterException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"OperationAbortedException"},
-        {"shape":"ServiceUnavailableException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Deletes the specified log group and permanently deletes all the archived log events associated with the log group.</p>"
     },
@@ -333,7 +334,8 @@
         {"shape":"InvalidParameterException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"OperationAbortedException"},
-        {"shape":"ServiceUnavailableException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Deletes the specified log stream and permanently deletes all the archived log events associated with the log stream.</p>"
     },
@@ -1249,6 +1251,23 @@
         {"shape":"UnrecognizedClientException"}
       ],
       "documentation":"<p>Uploads a batch of log events to the specified log stream.</p> <important> <p>The sequence token is now ignored in <code>PutLogEvents</code> actions. <code>PutLogEvents</code> actions are always accepted and never return <code>InvalidSequenceTokenException</code> or <code>DataAlreadyAcceptedException</code> even if the sequence token is not valid. You can use parallel <code>PutLogEvents</code> actions on the same log stream. </p> </important> <p>The batch of events must satisfy the following constraints:</p> <ul> <li> <p>The maximum batch size is 1,048,576 bytes. This size is calculated as the sum of all event messages in UTF-8, plus 26 bytes for each log event.</p> </li> <li> <p>Events more than 2 hours in the future are rejected while processing remaining valid events.</p> </li> <li> <p>Events older than 14 days or preceding the log group's retention period are rejected while processing remaining valid events.</p> </li> <li> <p>The log events in the batch must be in chronological order by their timestamp. The timestamp is the time that the event occurred, expressed as the number of milliseconds after <code>Jan 1, 1970 00:00:00 UTC</code>. (In Amazon Web Services Tools for PowerShell and the Amazon Web Services SDK for .NET, the timestamp is specified in .NET format: <code>yyyy-mm-ddThh:mm:ss</code>. For example, <code>2017-09-15T13:45:30</code>.) </p> </li> <li> <p> A batch of log events in a single request must be in a chronological order. Otherwise, the operation fails.</p> </li> <li> <p>Each log event can be no larger than 1 MB.</p> </li> <li> <p>The maximum number of log events in a batch is 10,000.</p> </li> <li> <p>For valid events (within 14 days in the past to 2 hours in future), the time span in a single batch cannot exceed 24 hours. Otherwise, the operation fails.</p> </li> </ul> <important> <p>The quota of five requests per second per log stream has been removed. Instead, <code>PutLogEvents</code> actions are throttled based on a per-second per-account quota. You can request an increase to the per-second throttling quota by using the Service Quotas service.</p> </important> <p>If a call to <code>PutLogEvents</code> returns \"UnrecognizedClientException\" the most likely cause is a non-valid Amazon Web Services access key ID or secret key. </p>"
+    },
+    "PutLogGroupDeletionProtection":{
+      "name":"PutLogGroupDeletionProtection",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutLogGroupDeletionProtectionRequest"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"OperationAbortedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InvalidOperationException"}
+      ],
+      "documentation":"<p>Enables or disables deletion protection for the specified log group. When enabled on a log group, deletion protection blocks all deletion operations until it is explicitly disabled.</p> <p>For information about the parameters that are common to all actions, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/CommonParameters.html\">Common Parameters</a>.</p>"
     },
     "PutMetricFilter":{
       "name":"PutMetricFilter",
@@ -2197,6 +2216,10 @@
         "logGroupClass":{
           "shape":"LogGroupClass",
           "documentation":"<p>Use this parameter to specify the log group class for this log group. There are three classes:</p> <ul> <li> <p>The <code>Standard</code> log class supports all CloudWatch Logs features.</p> </li> <li> <p>The <code>Infrequent Access</code> log class supports a subset of CloudWatch Logs features and incurs lower costs.</p> </li> <li> <p>Use the <code>Delivery</code> log class only for delivering Lambda logs to store in Amazon S3 or Amazon Data Firehose. Log events in log groups in the Delivery class are kept in CloudWatch Logs for only one day. This log class doesn't offer rich CloudWatch Logs capabilities such as CloudWatch Logs Insights queries.</p> </li> </ul> <p>If you omit this parameter, the default of <code>STANDARD</code> is used.</p> <important> <p>The value of <code>logGroupClass</code> can't be changed after a log group is created.</p> </important> <p>For details about the features supported by each class, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch_Logs_Log_Classes.html\">Log classes</a> </p>"
+        },
+        "deletionProtectionEnabled":{
+          "shape":"DeletionProtectionEnabled",
+          "documentation":"<p>Use this parameter to enable deletion protection for the new log group. When enabled on a log group, deletion protection blocks all deletion operations until it is explicitly disabled. By default log groups are created without deletion protection enabled.</p>"
         }
       }
     },
@@ -2632,6 +2655,7 @@
       "max":5,
       "min":1
     },
+    "DeletionProtectionEnabled":{"type":"boolean"},
     "Delimiter":{
       "type":"string",
       "max":2,
@@ -5020,6 +5044,10 @@
         "logGroupArn":{
           "shape":"Arn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the log group. This version of the ARN doesn't include a trailing <code>:*</code> after the log group name. </p> <p>Use this version to refer to the ARN in the following situations:</p> <ul> <li> <p>In the <code>logGroupIdentifier</code> input field in many CloudWatch Logs APIs.</p> </li> <li> <p>In the <code>resourceArn</code> field in tagging APIs</p> </li> <li> <p>In IAM policies, when specifying permissions for <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_TagResource.html\">TagResource</a>, <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_UntagResource.html\">UntagResource</a>, and <a href=\"https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_ListTagsForResource.html\">ListTagsForResource</a>.</p> </li> </ul>"
+        },
+        "deletionProtectionEnabled":{
+          "shape":"DeletionProtectionEnabled",
+          "documentation":"<p>Indicates whether deletion protection is enabled for this log group. When enabled, deletion protection blocks all deletion operations until it is explicitly disabled.</p>"
         }
       },
       "documentation":"<p>Represents a log group.</p>"
@@ -6361,6 +6389,23 @@
         "rejectedEntityInfo":{
           "shape":"RejectedEntityInfo",
           "documentation":"<p>Information about why the entity is rejected when calling <code>PutLogEvents</code>. Only returned when the entity is rejected.</p> <note> <p>When the entity is rejected, the events may still be accepted.</p> </note>"
+        }
+      }
+    },
+    "PutLogGroupDeletionProtectionRequest":{
+      "type":"structure",
+      "required":[
+        "logGroupIdentifier",
+        "deletionProtectionEnabled"
+      ],
+      "members":{
+        "logGroupIdentifier":{
+          "shape":"LogGroupIdentifier",
+          "documentation":"<p>The name or ARN of the log group.</p> <p>Type: String</p> <p>Length Constraints: Minimum length of 1. Maximum length of 512.</p> <p>Pattern: <code>[\\.\\-_/#A-Za-z0-9]+</code> </p> <p>Required: Yes</p>"
+        },
+        "deletionProtectionEnabled":{
+          "shape":"DeletionProtectionEnabled",
+          "documentation":"<p>Whether to enable deletion protection.</p> <p>Type: Boolean</p> <p>Required: Yes</p>"
         }
       }
     },

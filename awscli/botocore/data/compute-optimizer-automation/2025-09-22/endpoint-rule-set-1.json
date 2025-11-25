@@ -1,6 +1,12 @@
 {
     "version": "1.0",
     "parameters": {
+        "Region": {
+            "builtIn": "AWS::Region",
+            "required": false,
+            "documentation": "The AWS region used to dispatch the request.",
+            "type": "string"
+        },
         "UseDualStack": {
             "builtIn": "AWS::UseDualStack",
             "required": true,
@@ -19,12 +25,6 @@
             "builtIn": "SDK::Endpoint",
             "required": false,
             "documentation": "Override the endpoint used to send this request",
-            "type": "string"
-        },
-        "Region": {
-            "builtIn": "AWS::Region",
-            "required": false,
-            "documentation": "The AWS region used to dispatch the request.",
             "type": "string"
         }
     },
@@ -122,178 +122,6 @@
                                 {
                                     "conditions": [
                                         {
-                                            "fn": "stringEquals",
-                                            "argv": [
-                                                {
-                                                    "fn": "getAttr",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "PartitionResult"
-                                                        },
-                                                        "name"
-                                                    ]
-                                                },
-                                                "aws"
-                                            ]
-                                        },
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                {
-                                                    "ref": "UseFIPS"
-                                                },
-                                                false
-                                            ]
-                                        },
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                {
-                                                    "ref": "UseDualStack"
-                                                },
-                                                true
-                                            ]
-                                        }
-                                    ],
-                                    "endpoint": {
-                                        "url": "https://metering-marketplace.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
-                                },
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "stringEquals",
-                                            "argv": [
-                                                {
-                                                    "fn": "getAttr",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "PartitionResult"
-                                                        },
-                                                        "name"
-                                                    ]
-                                                },
-                                                "aws-cn"
-                                            ]
-                                        },
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                {
-                                                    "ref": "UseFIPS"
-                                                },
-                                                false
-                                            ]
-                                        },
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                {
-                                                    "ref": "UseDualStack"
-                                                },
-                                                true
-                                            ]
-                                        }
-                                    ],
-                                    "endpoint": {
-                                        "url": "https://metering-marketplace.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
-                                },
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "stringEquals",
-                                            "argv": [
-                                                {
-                                                    "fn": "getAttr",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "PartitionResult"
-                                                        },
-                                                        "name"
-                                                    ]
-                                                },
-                                                "aws-us-gov"
-                                            ]
-                                        },
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                {
-                                                    "ref": "UseFIPS"
-                                                },
-                                                false
-                                            ]
-                                        },
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                {
-                                                    "ref": "UseDualStack"
-                                                },
-                                                true
-                                            ]
-                                        }
-                                    ],
-                                    "endpoint": {
-                                        "url": "https://metering-marketplace.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
-                                },
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "stringEquals",
-                                            "argv": [
-                                                {
-                                                    "fn": "getAttr",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "PartitionResult"
-                                                        },
-                                                        "name"
-                                                    ]
-                                                },
-                                                "aws-eusc"
-                                            ]
-                                        },
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                {
-                                                    "ref": "UseFIPS"
-                                                },
-                                                false
-                                            ]
-                                        },
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                {
-                                                    "ref": "UseDualStack"
-                                                },
-                                                false
-                                            ]
-                                        }
-                                    ],
-                                    "endpoint": {
-                                        "url": "https://metering-marketplace.{Region}.amazonaws.eu",
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
-                                },
-                                {
-                                    "conditions": [
-                                        {
                                             "fn": "booleanEquals",
                                             "argv": [
                                                 {
@@ -349,12 +177,18 @@
                                             "rules": [
                                                 {
                                                     "conditions": [],
-                                                    "endpoint": {
-                                                        "url": "https://metering.marketplace-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                        "properties": {},
-                                                        "headers": {}
-                                                    },
-                                                    "type": "endpoint"
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://aco-automation-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
                                                 }
                                             ],
                                             "type": "tree"
@@ -376,15 +210,6 @@
                                                     "ref": "UseFIPS"
                                                 },
                                                 true
-                                            ]
-                                        },
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                {
-                                                    "ref": "UseDualStack"
-                                                },
-                                                false
                                             ]
                                         }
                                     ],
@@ -410,12 +235,18 @@
                                             "rules": [
                                                 {
                                                     "conditions": [],
-                                                    "endpoint": {
-                                                        "url": "https://metering.marketplace-fips.{Region}.{PartitionResult#dnsSuffix}",
-                                                        "properties": {},
-                                                        "headers": {}
-                                                    },
-                                                    "type": "endpoint"
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://aco-automation-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
                                                 }
                                             ],
                                             "type": "tree"
@@ -430,15 +261,6 @@
                                 },
                                 {
                                     "conditions": [
-                                        {
-                                            "fn": "booleanEquals",
-                                            "argv": [
-                                                {
-                                                    "ref": "UseFIPS"
-                                                },
-                                                false
-                                            ]
-                                        },
                                         {
                                             "fn": "booleanEquals",
                                             "argv": [
@@ -471,12 +293,18 @@
                                             "rules": [
                                                 {
                                                     "conditions": [],
-                                                    "endpoint": {
-                                                        "url": "https://metering.marketplace.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                        "properties": {},
-                                                        "headers": {}
-                                                    },
-                                                    "type": "endpoint"
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://aco-automation.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
                                                 }
                                             ],
                                             "type": "tree"
@@ -491,12 +319,18 @@
                                 },
                                 {
                                     "conditions": [],
-                                    "endpoint": {
-                                        "url": "https://metering.marketplace.{Region}.{PartitionResult#dnsSuffix}",
-                                        "properties": {},
-                                        "headers": {}
-                                    },
-                                    "type": "endpoint"
+                                    "rules": [
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "https://aco-automation.{Region}.{PartitionResult#dnsSuffix}",
+                                                "properties": {},
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
+                                        }
+                                    ],
+                                    "type": "tree"
                                 }
                             ],
                             "type": "tree"

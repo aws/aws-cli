@@ -2,6 +2,53 @@
 CHANGELOG
 =========
 
+2.32.4
+======
+
+* api-change:``logs``: New CloudWatch Logs feature - LogGroup Deletion Protection, a capability that allows customers to safeguard their critical CloudWatch log groups from accidental or unintended deletion.
+* api-change:``cloudfront``: Add TrustStore, ConnectionFunction APIs to CloudFront SDK
+
+
+2.32.3
+======
+
+* api-change:``bedrock-runtime``: Add support to automatically enforce safeguards across accounts within an AWS Organization.
+* api-change:``ec2``: This release adds a new capability to create and manage interruptible EC2 Capacity Reservations.
+* api-change:``athena``: Introduces Spark workgroup features including log persistence, S3/CloudWatch delivery, UI and History Server APIs, and SparkConnect 3.5.6 support. Adds DPU usage limits at workgroup and query levels as well as DPU usage tracking for Capacity Reservation queries to optimize performance and costs.
+* api-change:``apigateway``: API Gateway supports VPC link V2 for REST APIs.
+* api-change:``bedrock``: Add support to automatically enforce safeguards across accounts within an AWS Organization.
+* api-change:``redshift``: Added support for Amazon Redshift Federated Permissions and AWS IAM Identity Center trusted identity propagation.
+* api-change:``marketplace-entitlement``: Endpoint update for new region
+* enhancement:``ecs``: Update ``ecs create-express-gateway-service``, ``ecs update-express-gateway-service``, and ``ecs delete-express-gateway-service`` commands to not output API response when run with the ``--monitor-resources`` flag. Also fixes scrolling bounds calculations when line wrapping is present.
+* api-change:``ecr``: Add support for ECR managed signing
+* api-change:``invoicing``: Added the CreateProcurementPortalPreference, GetProcurementPortalPreference, PutProcurementPortalPreference, UpdateProcurementPortalPreferenceStatus, ListProcurementPortalPreferences and DeleteProcurementPortalPreference APIs for procurement portal preference management.
+* api-change:``lambda``: Launching Enhanced Error Handling and ESM Grouping capabilities for Kafka ESMs
+* api-change:``mediapackagev2``: Adds support for excluding session key tags from HLS multivariant playlists
+* api-change:``mailmanager``: Add support for resources in the aws-eusc partition.
+* api-change:``transfer``: Adds support for creating Webapps accessible from a VPC.
+* api-change:``quicksight``: Amazon Quick Suite now supports QuickChat as an embedding type when calling the GenerateEmbedUrlForRegisteredUser API, enabling developers to embed conversational AI agents directly into their applications.
+* api-change:``eks``: Adds support for controlPlaneScalingConfig on EKS Clusters.
+* api-change:``compute-optimizer-automation``: Initial release of AWS Compute Optimizer Automation. Create automation rules to implement recommended actions on a recurring schedule based on your specified criteria. Supported actions include: snapshot and delete unattached EBS volumes and upgrade volume types to the latest generation.
+* api-change:``sesv2``: Added support for new SES regions - Asia Pacific (Malaysia) and Canada (Calgary)
+* api-change:``bedrock-agentcore-control``: Support for agentcore gateway interceptor configurations and NONE authorizer type
+* api-change:``rds``: Add support for Upgrade Rollout Order
+* api-change:``security-ir``: Add ListInvestigations and SendFeedback APIs to support SecurityIR AI agents
+* api-change:``qconnect``: This release introduces two new messaging channel subtypes: Push, WhatsApp, under MessageTemplate which is a resource in Amazon Q in Connect.
+* api-change:``kms``: Support for on-demand rotation of AWS KMS Multi-Region keys with imported key material
+* api-change:``sagemaker``: Enhanced SageMaker HyperPod instance groups with support for MinInstanceCount, CapacityRequirements (Spot/On-Demand), and KubernetesConfig (labels and taints). Also Added speculative decoding and MaxInstanceCount for model optimization jobs.
+* api-change:``elbv2``: This release adds the health check log feature in ALB, allowing customers to send detailed target health check log data directly to their designated Amazon S3 bucket.
+* api-change:``kinesisvideo``: This release adds support for Tiered Storage
+* api-change:``odb``: Adds AssociateIamRoleToResource and DisassociateIamRoleFromResource APIs for managing IAM roles. Enhances CreateOdbNetwork and UpdateOdbNetwork APIs with KMS, STS, and cross-region S3 parameters. Adds OCI identity domain support to InitializeService API.
+* api-change:``cloudformation``: Adds the DependsOn field to the AutoDeployment configuration parameter for CreateStackSet, UpdateStackSet, and DescribeStackSet APIs, allowing users to set and read auto-deployment dependencies between StackSets
+* api-change:``connect``: New APIs to support aliases and versions for ContactFlowModule. Updated ContactFlowModule APIs to support custom blocks.
+* api-change:``controltower``: The manifest field is now optional for the AWS Control Tower CreateLandingZone and UpdateLandingZone APIs for Landing Zone version 4.0
+* api-change:``lexv2-models``: Adds support for Intent Disambiguation, allowing resolution of ambiguous user inputs when multiple intents match by presenting clarifying questions to users. Also adds Speech Detection Sensitivity configuration for optimizing voice activity detection sensitivity levels in various noise environments.
+* api-change:``meteringmarketplace``: Endpoint update for new region
+* api-change:``organizations``: Add support for policy operations on the UPGRADE_ROLLOUT_POLICY policy type.
+* api-change:``bedrock-data-automation-runtime``: Adding new fields to GetDataAutomationStatus: jobSubmissionTime, jobCompletionTime, and jobDurationInSeconds
+* api-change:``redshift-serverless``: Added UpdateLakehouseConfiguration API to manage Amazon Redshift Federated Permissions and AWS IAM Identity Center trusted identity propagation for namespaces.
+
+
 2.32.2
 ======
 

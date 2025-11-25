@@ -31,7 +31,7 @@ class TestOutput(BaseAWSCommandParamsTest):
         self.patch_colorama_init = mock.patch('colorama.init')
         self.mock_colorama_init = self.patch_colorama_init.start()
 
-        super(__class__, self).setUp()
+        super().setUp()
         self.files = FileCreator()
 
         self.patch_popen = mock.patch('awscli.utils.Popen')
@@ -53,7 +53,7 @@ class TestOutput(BaseAWSCommandParamsTest):
         self.expected_content = self.get_expected_content(self.parsed_response)
 
     def tearDown(self):
-        super(__class__, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
         self.patch_popen.stop()
         self.patch_tty.stop()

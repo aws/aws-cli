@@ -27,7 +27,11 @@ from awscli.testutils import (
 
 class TestOutput(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestOutput, self).setUp()
+        # Patch this before super, in case called on import
+        self.patch_colorama_init = mock.patch('colorama.init')
+        self.mock_colorama_init = self.patch_colorama_init.start()
+
+        super(__class__, self).setUp()
         self.files = FileCreator()
 
         self.patch_popen = mock.patch('awscli.utils.Popen')
@@ -49,7 +53,7 @@ class TestOutput(BaseAWSCommandParamsTest):
         self.expected_content = self.get_expected_content(self.parsed_response)
 
     def tearDown(self):
-        super(TestOutput, self).tearDown()
+        super(__class__, self).tearDown()
         self.files.remove_all()
         self.patch_popen.stop()
         self.patch_tty.stop()
@@ -61,7 +65,7 @@ class TestOutput(BaseAWSCommandParamsTest):
 
     def write_cli_pager_config(self, pager):
         config_file = self.files.create_file(
-            'config', '[default]\n' 'cli_pager = %s\n' % pager
+            'config', '[default]\n' f'cli_pager = {pager}\n'
         )
         self.environ['AWS_CONFIG_FILE'] = config_file
         self.driver = create_clidriver()
@@ -193,6 +197,15 @@ class TestOutput(BaseAWSCommandParamsTest):
         _, stderr, _ = self.run_cmd(self.cmdline, expected_rc=253)
         self.assertIn('Unable to redirect output to pager', stderr)
         self.assertIn(pager_error_message, stderr)
+
+    def test_colorama_init_not_called(self):
+        """
+        For https://github.com/aws/aws-cli/issues/9864,
+        we had an issue where colorama was always being initialized, instead of
+        just during the custom commands or modes that use it
+        """
+        self.run_cmd(self.cmdline)
+        self.mock_colorama_init.assert_not_called()
 
 
 class TestYAMLStream(BaseAWSCommandParamsTest):

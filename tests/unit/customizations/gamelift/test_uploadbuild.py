@@ -22,6 +22,7 @@ from awscli.testutils import unittest, mock, FileCreator
 from awscli.customizations.gamelift.uploadbuild import UploadBuildCommand
 from awscli.customizations.gamelift.uploadbuild import zip_directory
 from awscli.customizations.gamelift.uploadbuild import validate_directory
+from awscli.customizations.gamelift.uploadbuild import parse_tags
 from awscli.compat import StringIO
 
 
@@ -208,6 +209,51 @@ class TestGetGameSessionLogCommand(unittest.TestCase):
         self.gamelift_client.create_build.assert_called_once_with(
             Name=self.build_name, Version=self.build_version,
             ServerSdkVersion=server_sdk_version)
+
+    def test_upload_build_when_tags_are_provided(self):
+        self.file_creator.create_file('tmpfile', 'Some contents')
+        self.args = [
+            '--name', self.build_name, '--build-version', self.build_version,
+            '--build-root', self.build_root,
+            '--tags', 'Environment=Production', 'Team=GameDev'
+        ]
+        self.cmd(self.args, self.global_args)
+
+        self.gamelift_client.create_build.assert_called_once_with(
+            Name=self.build_name, Version=self.build_version,
+            Tags=[
+                {'Key': 'Environment', 'Value': 'Production'},
+                {'Key': 'Team', 'Value': 'GameDev'}
+            ])
+
+
+class TestParseTags(unittest.TestCase):
+    def test_parse_tags_with_key_value_pairs(self):
+        result = parse_tags(['Key1=Value1', 'Key2=Value2'])
+        self.assertEqual(result, [
+            {'Key': 'Key1', 'Value': 'Value1'},
+            {'Key': 'Key2', 'Value': 'Value2'}
+        ])
+
+    def test_parse_tags_with_empty_value(self):
+        result = parse_tags(['Key1='])
+        self.assertEqual(result, [{'Key': 'Key1', 'Value': ''}])
+
+    def test_parse_tags_without_equals(self):
+        result = parse_tags(['Key1'])
+        self.assertEqual(result, [{'Key': 'Key1', 'Value': ''}])
+
+    def test_parse_tags_with_equals_in_value(self):
+        result = parse_tags(['Key1=Value=WithEquals'])
+        self.assertEqual(result, [{'Key': 'Key1', 'Value': 'Value=WithEquals'}])
+
+    def test_parse_tags_with_none(self):
+        result = parse_tags(None)
+        self.assertEqual(result, [])
+
+    def test_parse_tags_with_empty_list(self):
+        result = parse_tags([])
+        self.assertEqual(result, [])
 
 
 class TestZipDirectory(unittest.TestCase):

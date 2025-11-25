@@ -24,6 +24,19 @@ from awscli.customizations.s3.utils import human_readable_size
 from awscli.utils import create_nested_client
 
 
+def parse_tags(raw_tags_list):
+    """Parse tags from Key=Value format to GameLift API format."""
+    tags_list = []
+    if raw_tags_list:
+        for tag in raw_tags_list:
+            if '=' in tag:
+                key, value = tag.split('=', 1)
+            else:
+                key, value = tag, ''
+            tags_list.append({'Key': key, 'Value': value})
+    return tags_list
+
+
 class UploadBuildCommand(BasicCommand):
     NAME = 'upload-build'
     DESCRIPTION = 'Upload a new build to AWS GameLift.'
@@ -40,7 +53,9 @@ class UploadBuildCommand(BasicCommand):
              'The version of the GameLift server SDK used to '
              'create the game server'},
         {'name': 'operating-system', 'required': False,
-         'help_text': 'The operating system the build runs on'}
+         'help_text': 'The operating system the build runs on'},
+         {'name': 'tags', 'required': False, 'nargs': '+',
+         'help_text': 'Tags to assign to the build. Format: Key=Value'}
     ]
 
     def _run_main(self, args, parsed_globals):
@@ -67,6 +82,8 @@ class UploadBuildCommand(BasicCommand):
             create_build_kwargs['OperatingSystem'] = args.operating_system
         if args.server_sdk_version:
             create_build_kwargs['ServerSdkVersion'] = args.server_sdk_version
+        if args.tags:
+            create_build_kwargs['Tags'] = parse_tags(args.tags)
         response = gamelift_client.create_build(**create_build_kwargs)
         build_id = response['Build']['BuildId']
 

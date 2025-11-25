@@ -115,7 +115,7 @@ class TestManagedResourceGroup(unittest.TestCase):
             resources=[self.resource2]
         )  # Certificate
 
-        diff1, diff2 = group1.diff(group2)
+        diff1, diff2 = group1.compare_resource_sets(group2)
 
         # Each group should contain its unique resource
         self.assertEqual(len(diff1.resource_mapping), 1)
@@ -135,7 +135,7 @@ class TestManagedResourceGroup(unittest.TestCase):
             resources=[self.resource2, resource3]
         )  # cert-456, lb-456
 
-        diff1, diff2 = group1.diff(group2)
+        diff1, diff2 = group1.compare_resource_sets(group2)
 
         # group1 unique: lb-123, group2 unique: lb-456, common: cert-456 (should not appear in diff)
         self.assertEqual(len(diff1.resource_mapping), 1)
@@ -155,7 +155,7 @@ class TestManagedResourceGroup(unittest.TestCase):
             resources=[self.resource1, self.resource2]
         )
 
-        diff1, diff2 = group1.diff(group2)
+        diff1, diff2 = group1.compare_resource_sets(group2)
 
         # No differences should be found
         self.assertEqual(len(diff1.resource_mapping), 0)
@@ -166,7 +166,7 @@ class TestManagedResourceGroup(unittest.TestCase):
         group1 = ManagedResourceGroup(resources=[self.resource1])
         group2 = ManagedResourceGroup(resources=[])
 
-        diff1, diff2 = group1.diff(group2)
+        diff1, diff2 = group1.compare_resource_sets(group2)
 
         # group1 should contain its resource, group2 should be empty
         self.assertEqual(len(diff1.resource_mapping), 1)
@@ -185,7 +185,7 @@ class TestManagedResourceGroup(unittest.TestCase):
             resources=[resource_with_id]
         )  # LoadBalancer/lb-456
 
-        diff1, diff2 = group1.diff(group2)
+        diff1, diff2 = group1.compare_resource_sets(group2)
 
         # group1 should contain its resource without identifier
         self.assertEqual(len(diff1.resource_mapping), 1)
@@ -254,10 +254,6 @@ class TestManagedResourceGroup(unittest.TestCase):
         self.assertIn("\x1b[", result)
 
     def test_combine_prioritizes_resources_with_identifier(self):
-        from awscli.customizations.ecs.expressgateway.managedresource import (
-            ManagedResource,
-        )
-
         resource_with_id = ManagedResource(
             "LoadBalancer", "lb-123", "ACTIVE", 1761230543.151
         )

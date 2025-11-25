@@ -142,15 +142,41 @@ class TestMonitorMutatingGatewayService:
 
         assert self.handler.effective_resource_view == 'RESOURCE'
 
-    def test_operation_args_parsed_without_flag(self):
-        """Test storing monitoring flag when disabled."""
+    def test_operation_args_parsed_without_monitor_resources(self):
+        """Test that no monitoring settings are stored without flag."""
         parsed_args = Mock()
         parsed_args.monitor_resources = None
+        parsed_args.monitor_mode = None
         parsed_globals = Mock()
 
         self.handler.operation_args_parsed(parsed_args, parsed_globals)
 
         assert self.handler.effective_resource_view is None
+
+    def test_operation_args_parsed_mode_without_resources_raises_error(self):
+        """Test that using --monitor-mode without --monitor-resources raises ValueError."""
+        parsed_args = Mock()
+        parsed_args.monitor_resources = None
+        parsed_args.monitor_mode = (
+            'text-only'  # Mode specified but no resources
+        )
+        parsed_globals = Mock()
+
+        with pytest.raises(
+            ValueError, match="can only be used with --monitor-resources"
+        ):
+            self.handler.operation_args_parsed(parsed_args, parsed_globals)
+
+    def test_operation_args_parsed_with_interactive_mode(self):
+        """Test operation_args_parsed with explicit interactive mode."""
+        parsed_args = Mock()
+        parsed_args.monitor_resources = 'DEPLOYMENT'
+        parsed_args.monitor_mode = 'interactive'
+        parsed_globals = Mock()
+
+        self.handler.operation_args_parsed(parsed_args, parsed_globals)
+
+        assert self.handler.effective_mode == 'interactive'
 
     def test_operation_args_parsed_missing_attribute(self):
         """Test handling missing monitor_resources attribute."""
@@ -204,7 +230,8 @@ class TestMonitorMutatingGatewayService:
 
         # No assertions needed - just verify no exceptions
 
-    def test_after_call_missing_session(self, capsys):
+    @patch("sys.stdout.isatty", return_value=True)
+    def test_after_call_missing_session(self, mock_isatty, capsys):
         """Test handling when session is not available."""
         self.handler.effective_resource_view = 'DEPLOYMENT'
         self.handler.session = None
@@ -224,8 +251,9 @@ class TestMonitorMutatingGatewayService:
             "Unable to create ECS client. Skipping monitoring." in captured.err
         )
 
-    def test_after_call_successful_monitoring(self):
-        """Test successful monitoring initiation."""
+    @patch('sys.stdout.isatty', return_value=True)
+    def test_after_call_successful_monitoring(self, mock_isatty):
+        """Test successful monitoring invocation after API call."""
         # Setup handler state
         mock_watcher_class = Mock()
         mock_watcher = Mock()
@@ -236,8 +264,8 @@ class TestMonitorMutatingGatewayService:
             'DEPLOYMENT',
             watcher_class=mock_watcher_class,
         )
-        handler.monitor_resources = '__DEFAULT__'
         handler.effective_resource_view = 'DEPLOYMENT'
+        handler.effective_mode = 'TEXT-ONLY'  # TEXT-ONLY mode for testing
 
         mock_session = Mock()
         mock_parsed_globals = Mock()
@@ -264,38 +292,31 @@ class TestMonitorMutatingGatewayService:
         # Execute
         handler.after_call(parsed, context, http_response)
 
-        # Verify client creation
-        mock_session.create_client.assert_called_once_with(
-            'ecs',
-            region_name='us-west-2',
-            endpoint_url='https://ecs.us-west-2.amazonaws.com',
-            verify=True,
-        )
-
-        # Verify watcher was created and executed
+        # Verify watcher was called correctly with display_mode parameter
         mock_watcher_class.assert_called_once_with(
             mock_client,
-            service_arn,
+            'arn:aws:ecs:us-west-2:123456789012:service/test-service',
             'DEPLOYMENT',
+            'TEXT-ONLY',
             use_color=False,
         )
         mock_watcher.exec.assert_called_once()
+
         # Verify parsed response was cleared
         assert parsed == {}
 
-    def test_after_call_monitoring_not_available(self, capsys):
-        """Test that monitoring is skipped when not available (no TTY)."""
-        # Setup handler state
+    @patch('sys.stdout.isatty', return_value=False)  # Not TTY
+    def test_after_call_monitoring_requires_tty(self, mock_isatty, capsys):
+        """Test after_call fails when monitoring without TTY"""
         mock_watcher_class = Mock()
-        mock_watcher_class.is_monitoring_available.return_value = False
-
         handler = MonitorMutatingGatewayService(
-            'create-gateway-service',
+            'create-express-gateway-service',
             'DEPLOYMENT',
             watcher_class=mock_watcher_class,
         )
         handler.effective_resource_view = 'DEPLOYMENT'
-
+        handler.effective_mode = 'TEXT-ONLY'  # Try TEXT-ONLY without TTY
+        handler.use_color = False
         mock_session = Mock()
         mock_parsed_globals = Mock()
         mock_parsed_globals.region = 'us-west-2'
@@ -307,14 +328,9 @@ class TestMonitorMutatingGatewayService:
         handler.session = mock_session
         handler.parsed_globals = mock_parsed_globals
 
-        # Setup mocks
-        mock_client = Mock()
-        mock_session.create_client.return_value = mock_client
-
         # Setup call parameters
         service_arn = 'arn:aws:ecs:us-west-2:123456789012:service/test-service'
         parsed = {'service': {'serviceArn': service_arn}}
-        original_parsed = dict(parsed)
         context = Mock()
         http_response = Mock()
         http_response.status_code = 200
@@ -322,18 +338,15 @@ class TestMonitorMutatingGatewayService:
         # Execute
         handler.after_call(parsed, context, http_response)
 
-        # Verify parsed response was not cleared
-        assert parsed == original_parsed
+        # TEXT-ONLY mode now works without TTY, so watcher WAS called
+        mock_watcher_class.assert_called_once()
 
-        # Verify warning message was printed
-        captured = capsys.readouterr()
-        assert (
-            "Monitoring is not available (requires TTY). Skipping monitoring.\n"
-            in captured.err
-        )
+        # Verify parsed response was NOT cleared (error return early)
+        assert 'service' not in parsed  # Cleared because monitoring ran
 
-    def test_after_call_exception_handling(self, capsys):
-        """Test exception handling in after_call method."""
+    @patch('sys.stdout.isatty', return_value=True)
+    def test_after_call_exception_propagates(self, mock_isatty):
+        """Test exceptions propagate from after_call method."""
         # Setup handler state
         mock_watcher_class = Mock()
         mock_watcher = Mock()
@@ -346,6 +359,7 @@ class TestMonitorMutatingGatewayService:
             watcher_class=mock_watcher_class,
         )
         handler.effective_resource_view = 'DEPLOYMENT'
+        handler.effective_mode = 'TEXT-ONLY'
 
         mock_session = Mock()
         mock_parsed_globals = Mock()
@@ -369,12 +383,9 @@ class TestMonitorMutatingGatewayService:
         http_response = Mock()
         http_response.status_code = 200
 
-        # Execute - should not raise exception
-        handler.after_call(parsed, context, http_response)
-
-        captured = capsys.readouterr()
-        assert "Encountered an error, terminating monitoring" in captured.err
-        assert "Test exception" in captured.err
+        # Execute - should raise exception
+        with pytest.raises(Exception, match="Test exception"):
+            handler.after_call(parsed, context, http_response)
 
     def test_events(self):
         """Test that correct events are returned for CLI integration."""

@@ -11,7 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from awscli.customizations.ecs.monitormutatinggatewayservice import (
     MUTATION_HANDLERS,
@@ -96,8 +96,9 @@ class TestMonitorMutatingGatewayService:
 
     def test_operation_args_parsed_no_monitor_resources_attr(self):
         parsed_args = Mock()
-        # Remove the attribute
+        # Remove both attributes
         del parsed_args.monitor_resources
+        del parsed_args.monitor_mode
         parsed_globals = Mock()
 
         self.handler.operation_args_parsed(parsed_args, parsed_globals)
@@ -105,48 +106,49 @@ class TestMonitorMutatingGatewayService:
         assert not self.handler.effective_resource_view
 
     def test_after_call_with_monitoring_enabled(self):
-        # Setup
-        mock_watcher_class = Mock()
-        mock_watcher = Mock()
-        mock_watcher_class.return_value = mock_watcher
+        with patch('sys.stdout.isatty', return_value=True):
+            # Setup
+            mock_watcher_class = Mock()
+            mock_watcher = Mock()
+            mock_watcher_class.return_value = mock_watcher
 
-        handler = MonitorMutatingGatewayService(
-            'create-express-gateway-service',
-            'DEPLOYMENT',
-            watcher_class=mock_watcher_class,
-        )
+            handler = MonitorMutatingGatewayService(
+                'create-express-gateway-service',
+                'DEPLOYMENT',
+                watcher_class=mock_watcher_class,
+            )
 
-        mock_session = Mock()
-        mock_parsed_globals = Mock()
-        mock_parsed_globals.region = 'us-west-2'
-        mock_parsed_globals.endpoint_url = (
-            'https://ecs.us-west-2.amazonaws.com'
-        )
-        mock_parsed_globals.verify_ssl = True
+            mock_session = Mock()
+            mock_parsed_globals = Mock()
+            mock_parsed_globals.region = 'us-west-2'
+            mock_parsed_globals.endpoint_url = (
+                'https://ecs.us-west-2.amazonaws.com'
+            )
+            mock_parsed_globals.verify_ssl = True
 
-        mock_ecs_client = Mock()
-        mock_session.create_client.return_value = mock_ecs_client
+            mock_ecs_client = Mock()
+            mock_session.create_client.return_value = mock_ecs_client
 
-        handler.session = mock_session
-        handler.parsed_globals = mock_parsed_globals
-        handler.effective_resource_view = 'DEPLOYMENT'
-        handler.effective_resource_view = 'DEPLOYMENT'
+            handler.session = mock_session
+            handler.parsed_globals = mock_parsed_globals
+            handler.effective_resource_view = 'DEPLOYMENT'
+            handler.effective_resource_view = 'DEPLOYMENT'
 
-        parsed = {
-            'service': {
-                'serviceArn': 'arn:aws:ecs:us-west-2:123456789:service/test-service'
+            parsed = {
+                'service': {
+                    'serviceArn': 'arn:aws:ecs:us-west-2:123456789:service/test-service'
+                }
             }
-        }
-        context = {}
-        http_response = Mock()
-        http_response.status_code = 200
+            context = {}
+            http_response = Mock()
+            http_response.status_code = 200
 
-        # Execute
-        handler.after_call(parsed, context, http_response)
+            # Execute
+            handler.after_call(parsed, context, http_response)
 
-        # Verify monitoring was initiated
-        mock_watcher_class.assert_called_once()
-        mock_watcher.exec.assert_called_once()
+            # Verify monitoring was initiated
+            mock_watcher_class.assert_called_once()
+            mock_watcher.exec.assert_called_once()
 
     def test_after_call_with_monitoring_disabled(self):
         # Setup

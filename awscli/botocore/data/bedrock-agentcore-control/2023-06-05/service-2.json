@@ -1473,7 +1473,8 @@
       "type":"string",
       "enum":[
         "CUSTOM_JWT",
-        "AWS_IAM"
+        "AWS_IAM",
+        "NONE"
       ]
     },
     "AwsAccountId":{
@@ -2153,7 +2154,7 @@
         },
         "authorizerType":{
           "shape":"AuthorizerType",
-          "documentation":"<p>The type of authorizer to use for the gateway.</p> <ul> <li> <p> <code>CUSTOM_JWT</code> - Authorize with a bearer token.</p> </li> <li> <p> <code>AWS_IAM</code> - Authorize with your Amazon Web Services IAM credentials.</p> </li> </ul>"
+          "documentation":"<p>The type of authorizer to use for the gateway.</p> <ul> <li> <p> <code>CUSTOM_JWT</code> - Authorize with a bearer token.</p> </li> <li> <p> <code>AWS_IAM</code> - Authorize with your Amazon Web Services IAM credentials.</p> </li> <li> <p> <code>NONE</code> - No authorization</p> </li> </ul>"
         },
         "authorizerConfiguration":{
           "shape":"AuthorizerConfiguration",
@@ -2162,6 +2163,10 @@
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt data associated with the gateway.</p>"
+        },
+        "interceptorConfigurations":{
+          "shape":"GatewayInterceptorConfigurations",
+          "documentation":"<p>A list of configuration settings for a gateway interceptor. Gateway interceptors allow custom code to be invoked during gateway invocations.</p>"
         },
         "exceptionLevel":{
           "shape":"ExceptionLevel",
@@ -2245,6 +2250,10 @@
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt data associated with the gateway.</p>"
+        },
+        "interceptorConfigurations":{
+          "shape":"GatewayInterceptorConfigurations",
+          "documentation":"<p>The list of interceptor configurations for the created gateway.</p>"
         },
         "workloadIdentityDetails":{
           "shape":"WorkloadIdentityDetails",
@@ -3197,6 +3206,47 @@
       "type":"string",
       "pattern":"([0-9a-z][-]?){1,100}-[0-9a-z]{10}"
     },
+    "GatewayInterceptionPoint":{
+      "type":"string",
+      "enum":[
+        "REQUEST",
+        "RESPONSE"
+      ]
+    },
+    "GatewayInterceptionPoints":{
+      "type":"list",
+      "member":{"shape":"GatewayInterceptionPoint"},
+      "max":2,
+      "min":1
+    },
+    "GatewayInterceptorConfiguration":{
+      "type":"structure",
+      "required":[
+        "interceptor",
+        "interceptionPoints"
+      ],
+      "members":{
+        "interceptor":{
+          "shape":"InterceptorConfiguration",
+          "documentation":"<p>The infrastructure settings of an interceptor configuration. This structure defines how the interceptor can be invoked.</p>"
+        },
+        "interceptionPoints":{
+          "shape":"GatewayInterceptionPoints",
+          "documentation":"<p>The supported points of interception. This field specifies which points during the gateway invocation to invoke the interceptor</p>"
+        },
+        "inputConfiguration":{
+          "shape":"InterceptorInputConfiguration",
+          "documentation":"<p>The configuration for the input of the interceptor. This field specifies how the input to the interceptor is constructed</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an interceptor on a gateway. This structure defines settings for an interceptor that will be invoked during the invocation of the gateway.</p>"
+    },
+    "GatewayInterceptorConfigurations":{
+      "type":"list",
+      "member":{"shape":"GatewayInterceptorConfiguration"},
+      "max":2,
+      "min":1
+    },
     "GatewayMaxResults":{
       "type":"integer",
       "box":true,
@@ -3791,6 +3841,10 @@
           "shape":"KmsKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the gateway.</p>"
         },
+        "interceptorConfigurations":{
+          "shape":"GatewayInterceptorConfigurations",
+          "documentation":"<p>The interceptors configured on the gateway.</p>"
+        },
         "workloadIdentityDetails":{
           "shape":"WorkloadIdentityDetails",
           "documentation":"<p>The workload identity details for the gateway.</p>"
@@ -4150,6 +4204,28 @@
       "type":"integer",
       "box":true
     },
+    "InterceptorConfiguration":{
+      "type":"structure",
+      "members":{
+        "lambda":{
+          "shape":"LambdaInterceptorConfiguration",
+          "documentation":"<p>The details of the lambda function used for the interceptor.</p>"
+        }
+      },
+      "documentation":"<p>The interceptor configuration.</p>",
+      "union":true
+    },
+    "InterceptorInputConfiguration":{
+      "type":"structure",
+      "required":["passRequestHeaders"],
+      "members":{
+        "passRequestHeaders":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether to pass request headers as input into the interceptor. When set to true, request headers will be passed.</p>"
+        }
+      },
+      "documentation":"<p>The input configuration of the interceptor.</p>"
+    },
     "InternalServerException":{
       "type":"structure",
       "members":{
@@ -4234,6 +4310,17 @@
       "max":170,
       "min":1,
       "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:([a-z]{2}(-gov)?-[a-z]+-\\d{1}):(\\d{12}):function:([a-zA-Z0-9-_.]+)(:(\\$LATEST|[a-zA-Z0-9-]+))?"
+    },
+    "LambdaInterceptorConfiguration":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"LambdaFunctionArn",
+          "documentation":"<p>The arn of the lambda function to be invoked for the interceptor.</p>"
+        }
+      },
+      "documentation":"<p>The lambda configuration for the interceptor</p>"
     },
     "LifecycleConfiguration":{
       "type":"structure",
@@ -6781,6 +6868,10 @@
           "shape":"KmsKeyArn",
           "documentation":"<p>The updated ARN of the KMS key used to encrypt the gateway.</p>"
         },
+        "interceptorConfigurations":{
+          "shape":"GatewayInterceptorConfigurations",
+          "documentation":"<p>The updated interceptor configurations for the gateway.</p>"
+        },
         "exceptionLevel":{
           "shape":"ExceptionLevel",
           "documentation":"<p>The level of detail in error messages returned when invoking the gateway.</p> <ul> <li> <p>If the value is <code>DEBUG</code>, granular exception messages are returned to help a user debug the gateway.</p> </li> <li> <p>If the value is omitted, a generic error message is returned to the end user.</p> </li> </ul>"
@@ -6856,6 +6947,10 @@
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The updated ARN of the KMS key used to encrypt the gateway.</p>"
+        },
+        "interceptorConfigurations":{
+          "shape":"GatewayInterceptorConfigurations",
+          "documentation":"<p>The updated interceptor configurations for the gateway.</p>"
         },
         "workloadIdentityDetails":{
           "shape":"WorkloadIdentityDetails",

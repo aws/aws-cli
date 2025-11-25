@@ -4737,6 +4737,20 @@
         "Disabled"
       ]
     },
+    "ActiveClusterOperationCount":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "ActiveClusterOperationName":{
+      "type":"string",
+      "enum":["Scaling"]
+    },
+    "ActiveOperations":{
+      "type":"map",
+      "key":{"shape":"ActiveClusterOperationName"},
+      "value":{"shape":"ActiveClusterOperationCount"}
+    },
     "AddAssociationRequest":{
       "type":"structure",
       "required":[
@@ -8715,6 +8729,27 @@
       "type":"string",
       "pattern":"[a-z]{3}\\d-az\\d"
     },
+    "ClusterCapacityRequirements":{
+      "type":"structure",
+      "members":{
+        "Spot":{
+          "shape":"ClusterSpotOptions",
+          "documentation":"<p>Configuration options specific to Spot instances.</p>"
+        },
+        "OnDemand":{
+          "shape":"ClusterOnDemandOptions",
+          "documentation":"<p>Configuration options specific to On-Demand instances.</p>"
+        }
+      },
+      "documentation":"<p>Defines the instance capacity requirements for an instance group, including configurations for both Spot and On-Demand capacity types. </p>"
+    },
+    "ClusterCapacityType":{
+      "type":"string",
+      "enum":[
+        "Spot",
+        "OnDemand"
+      ]
+    },
     "ClusterConfigMode":{
       "type":"string",
       "enum":[
@@ -8878,6 +8913,10 @@
           "shape":"ClusterInstanceCount",
           "documentation":"<p>The number of instances you specified to add to the instance group of a SageMaker HyperPod cluster.</p>"
         },
+        "MinCount":{
+          "shape":"ClusterInstanceCount",
+          "documentation":"<p>The minimum number of instances that must be available in the instance group of a SageMaker HyperPod cluster before it transitions to <code>InService</code> status. </p>"
+        },
         "InstanceGroupName":{
           "shape":"ClusterInstanceGroupName",
           "documentation":"<p>The name of the instance group of a SageMaker HyperPod cluster.</p>"
@@ -8934,6 +8973,18 @@
           "shape":"ImageId",
           "documentation":"<p>The ID of the Amazon Machine Image (AMI) desired for the instance group.</p>"
         },
+        "ActiveOperations":{
+          "shape":"ActiveOperations",
+          "documentation":"<p>A map indicating active operations currently in progress for the instance group of a SageMaker HyperPod cluster. When there is a scaling operation in progress, this map contains a key <code>Scaling</code> with value 1. </p>"
+        },
+        "KubernetesConfig":{
+          "shape":"ClusterKubernetesConfigDetails",
+          "documentation":"<p>The Kubernetes configuration for the instance group that contains labels and taints to be applied for the nodes in this instance group. </p>"
+        },
+        "CapacityRequirements":{
+          "shape":"ClusterCapacityRequirements",
+          "documentation":"<p>The instance capacity requirements for the instance group.</p>"
+        },
         "TargetStateCount":{
           "shape":"ClusterInstanceCount",
           "documentation":"<p>The number of nodes running a specific image ID since the last software update request.</p>"
@@ -8969,6 +9020,10 @@
         "InstanceCount":{
           "shape":"ClusterInstanceCount",
           "documentation":"<p>Specifies the number of instances to add to the instance group of a SageMaker HyperPod cluster.</p>"
+        },
+        "MinInstanceCount":{
+          "shape":"ClusterInstanceCount",
+          "documentation":"<p>Defines the minimum number of instances required for an instance group to become <code>InService</code>. If this threshold isn't met within 3 hours, the instance group rolls back to its previous state - zero instances for new instance groups, or previous settings for existing instance groups. <code>MinInstanceCount</code> only affects the initial transition to <code>InService</code> and does not guarantee maintaining this minimum afterward. </p>"
         },
         "InstanceGroupName":{
           "shape":"ClusterInstanceGroupName",
@@ -9013,6 +9068,14 @@
         "ImageId":{
           "shape":"ImageId",
           "documentation":"<p>When configuring your HyperPod cluster, you can specify an image ID using one of the following options:</p> <ul> <li> <p> <code>HyperPodPublicAmiId</code>: Use a HyperPod public AMI</p> </li> <li> <p> <code>CustomAmiId</code>: Use your custom AMI</p> </li> <li> <p> <code>default</code>: Use the default latest system image</p> </li> </ul> <p>If you choose to use a custom AMI (<code>CustomAmiId</code>), ensure it meets the following requirements:</p> <ul> <li> <p>Encryption: The custom AMI must be unencrypted.</p> </li> <li> <p>Ownership: The custom AMI must be owned by the same Amazon Web Services account that is creating the HyperPod cluster.</p> </li> <li> <p>Volume support: Only the primary AMI snapshot volume is supported; additional AMI volumes are not supported.</p> </li> </ul> <p>When updating the instance group's AMI through the <code>UpdateClusterSoftware</code> operation, if an instance group uses a custom AMI, you must provide an <code>ImageId</code> or use the default as input. Note that if you don't specify an instance group in your <code>UpdateClusterSoftware</code> request, then all of the instance groups are patched with the specified image.</p>"
+        },
+        "KubernetesConfig":{
+          "shape":"ClusterKubernetesConfig",
+          "documentation":"<p>Specifies the Kubernetes configuration for the instance group. You describe what you want the labels and taints to look like, and the cluster works to reconcile the actual state with the declared state for nodes in this instance group. </p>"
+        },
+        "CapacityRequirements":{
+          "shape":"ClusterCapacityRequirements",
+          "documentation":"<p>Specifies the capacity requirements for the instance group.</p>"
         }
       },
       "documentation":"<p>The specifications of an instance group that you need to define.</p>"
@@ -9212,6 +9275,131 @@
         "ml.r7i.48xlarge"
       ]
     },
+    "ClusterKubernetesConfig":{
+      "type":"structure",
+      "members":{
+        "Labels":{
+          "shape":"ClusterKubernetesLabels",
+          "documentation":"<p>Key-value pairs of labels to be applied to cluster nodes.</p>"
+        },
+        "Taints":{
+          "shape":"ClusterKubernetesTaints",
+          "documentation":"<p>List of taints to be applied to cluster nodes.</p>"
+        }
+      },
+      "documentation":"<p>Kubernetes configuration that specifies labels and taints to be applied to cluster nodes in an instance group. </p>"
+    },
+    "ClusterKubernetesConfigDetails":{
+      "type":"structure",
+      "members":{
+        "CurrentLabels":{
+          "shape":"ClusterKubernetesLabels",
+          "documentation":"<p>The current labels applied to cluster nodes of an instance group.</p>"
+        },
+        "DesiredLabels":{
+          "shape":"ClusterKubernetesLabels",
+          "documentation":"<p>The desired labels to be applied to cluster nodes of an instance group.</p>"
+        },
+        "CurrentTaints":{
+          "shape":"ClusterKubernetesTaints",
+          "documentation":"<p>The current taints applied to cluster nodes of an instance group.</p>"
+        },
+        "DesiredTaints":{
+          "shape":"ClusterKubernetesTaints",
+          "documentation":"<p>The desired taints to be applied to cluster nodes of an instance group.</p>"
+        }
+      },
+      "documentation":"<p>Detailed Kubernetes configuration showing both the current and desired state of labels and taints for cluster nodes. </p>"
+    },
+    "ClusterKubernetesConfigNodeDetails":{
+      "type":"structure",
+      "members":{
+        "CurrentLabels":{
+          "shape":"ClusterKubernetesLabels",
+          "documentation":"<p>The current labels applied to the cluster node.</p>"
+        },
+        "DesiredLabels":{
+          "shape":"ClusterKubernetesLabels",
+          "documentation":"<p>The desired labels to be applied to the cluster node.</p>"
+        },
+        "CurrentTaints":{
+          "shape":"ClusterKubernetesTaints",
+          "documentation":"<p>The current taints applied to the cluster node.</p>"
+        },
+        "DesiredTaints":{
+          "shape":"ClusterKubernetesTaints",
+          "documentation":"<p>The desired taints to be applied to the cluster node.</p>"
+        }
+      },
+      "documentation":"<p>Node-specific Kubernetes configuration showing both current and desired state of labels and taints for an individual cluster node. </p>"
+    },
+    "ClusterKubernetesLabelKey":{
+      "type":"string",
+      "max":317,
+      "min":1,
+      "pattern":"([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?[A-Za-z0-9]([-A-Za-z0-9_.]*[A-Za-z0-9])?"
+    },
+    "ClusterKubernetesLabelValue":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?"
+    },
+    "ClusterKubernetesLabels":{
+      "type":"map",
+      "key":{"shape":"ClusterKubernetesLabelKey"},
+      "value":{"shape":"ClusterKubernetesLabelValue"},
+      "max":50,
+      "min":0
+    },
+    "ClusterKubernetesTaint":{
+      "type":"structure",
+      "required":[
+        "Key",
+        "Effect"
+      ],
+      "members":{
+        "Key":{
+          "shape":"ClusterKubernetesTaintKey",
+          "documentation":"<p>The key of the taint.</p>"
+        },
+        "Value":{
+          "shape":"ClusterKubernetesTaintValue",
+          "documentation":"<p>The value of the taint.</p>"
+        },
+        "Effect":{
+          "shape":"ClusterKubernetesTaintEffect",
+          "documentation":"<p>The effect of the taint. Valid values are <code>NoSchedule</code>, <code>PreferNoSchedule</code>, and <code>NoExecute</code>. </p>"
+        }
+      },
+      "documentation":"<p>A Kubernetes taint that can be applied to cluster nodes.</p>"
+    },
+    "ClusterKubernetesTaintEffect":{
+      "type":"string",
+      "enum":[
+        "NoSchedule",
+        "PreferNoSchedule",
+        "NoExecute"
+      ]
+    },
+    "ClusterKubernetesTaintKey":{
+      "type":"string",
+      "max":317,
+      "min":1,
+      "pattern":"([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?[A-Za-z0-9]([-A-Za-z0-9_.]*[A-Za-z0-9])?"
+    },
+    "ClusterKubernetesTaintValue":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?"
+    },
+    "ClusterKubernetesTaints":{
+      "type":"list",
+      "member":{"shape":"ClusterKubernetesTaint"},
+      "max":50,
+      "min":0
+    },
     "ClusterLifeCycleConfig":{
       "type":"structure",
       "required":[
@@ -9340,6 +9528,14 @@
         "UltraServerInfo":{
           "shape":"UltraServerInfo",
           "documentation":"<p>Contains information about the UltraServer.</p>"
+        },
+        "KubernetesConfig":{
+          "shape":"ClusterKubernetesConfigNodeDetails",
+          "documentation":"<p>The Kubernetes configuration applied to this node, showing both the current and desired state of labels and taints. The cluster works to reconcile the actual state with the declared state. </p>"
+        },
+        "CapacityType":{
+          "shape":"ClusterCapacityType",
+          "documentation":"<p>The capacity type of the node. Valid values are <code>OnDemand</code> and <code>Spot</code>. When set to <code>OnDemand</code>, the node is launched as an On-Demand instance. When set to <code>Spot</code>, the node is launched as a Spot instance. </p>"
         }
       },
       "documentation":"<p>Details of an instance (also called a <i>node</i> interchangeably) in a SageMaker HyperPod cluster.</p>"
@@ -9436,6 +9632,11 @@
       "type":"integer",
       "box":true,
       "min":0
+    },
+    "ClusterOnDemandOptions":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Configuration options specific to On-Demand instances.</p>"
     },
     "ClusterOrchestrator":{
       "type":"structure",
@@ -9659,6 +9860,11 @@
         "CREATION_TIME",
         "NAME"
       ]
+    },
+    "ClusterSpotOptions":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Configuration options specific to Spot instances.</p>"
     },
     "ClusterStatus":{
       "type":"string",
@@ -12875,6 +13081,10 @@
         "DeploymentInstanceType":{
           "shape":"OptimizationJobDeploymentInstanceType",
           "documentation":"<p>The type of instance that hosts the optimized model that you create with the optimization job.</p>"
+        },
+        "MaxInstanceCount":{
+          "shape":"OptimizationJobMaxInstanceCount",
+          "documentation":"<p>The maximum number of instances to use for the optimization job.</p>"
         },
         "OptimizationEnvironment":{
           "shape":"OptimizationJobEnvironmentVariables",
@@ -19017,6 +19227,10 @@
         "DeploymentInstanceType":{
           "shape":"OptimizationJobDeploymentInstanceType",
           "documentation":"<p>The type of instance that hosts the optimized model that you create with the optimization job.</p>"
+        },
+        "MaxInstanceCount":{
+          "shape":"OptimizationJobMaxInstanceCount",
+          "documentation":"<p>The maximum number of instances to use for the optimization job.</p>"
         },
         "OptimizationConfigs":{
           "shape":"OptimizationConfigs",
@@ -25881,6 +26095,10 @@
         "TargetCount":{
           "shape":"TargetCount",
           "documentation":"<p>The desired number of instances for the group after scaling.</p>"
+        },
+        "MinCount":{
+          "shape":"InstanceCount",
+          "documentation":"<p>Minimum instance count of the instance group.</p>"
         },
         "FailureMessage":{
           "shape":"String",
@@ -33238,6 +33456,50 @@
         "CreationTime"
       ]
     },
+    "ModelSpeculativeDecodingConfig":{
+      "type":"structure",
+      "required":["Technique"],
+      "members":{
+        "Technique":{
+          "shape":"ModelSpeculativeDecodingTechnique",
+          "documentation":"<p>The speculative decoding technique to apply during model optimization.</p>"
+        },
+        "TrainingDataSource":{
+          "shape":"ModelSpeculativeDecodingTrainingDataSource",
+          "documentation":"<p>The location of the training data to use for speculative decoding. The data must be formatted as ShareGPT, OpenAI Completions or OpenAI Chat Completions. The input can also be unencrypted captured data from a SageMaker endpoint as long as the endpoint uses one of the above formats.</p>"
+        }
+      },
+      "documentation":"<p>Settings for the model speculative decoding technique that's applied by a model optimization job.</p>"
+    },
+    "ModelSpeculativeDecodingS3DataType":{
+      "type":"string",
+      "enum":[
+        "S3Prefix",
+        "ManifestFile"
+      ]
+    },
+    "ModelSpeculativeDecodingTechnique":{
+      "type":"string",
+      "enum":["EAGLE"]
+    },
+    "ModelSpeculativeDecodingTrainingDataSource":{
+      "type":"structure",
+      "required":[
+        "S3Uri",
+        "S3DataType"
+      ],
+      "members":{
+        "S3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI that points to the training data for speculative decoding.</p>"
+        },
+        "S3DataType":{
+          "shape":"ModelSpeculativeDecodingS3DataType",
+          "documentation":"<p>The type of data stored in the Amazon S3 location. Valid values are <code>S3Prefix</code> or <code>ManifestFile</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the training data source for speculative decoding.</p>"
+    },
     "ModelStepMetadata":{
       "type":"structure",
       "members":{
@@ -34787,6 +35049,10 @@
         "ModelShardingConfig":{
           "shape":"ModelShardingConfig",
           "documentation":"<p>Settings for the model sharding technique that's applied by a model optimization job.</p>"
+        },
+        "ModelSpeculativeDecodingConfig":{
+          "shape":"ModelSpeculativeDecodingConfig",
+          "documentation":"<p>Settings for the model speculative decoding technique that's applied by a model optimization job.</p>"
         }
       },
       "documentation":"<p>Settings for an optimization technique that you apply with a model optimization job.</p>",
@@ -34816,6 +35082,8 @@
         "ml.p4d.24xlarge",
         "ml.p4de.24xlarge",
         "ml.p5.48xlarge",
+        "ml.p5e.48xlarge",
+        "ml.p5en.48xlarge",
         "ml.g5.xlarge",
         "ml.g5.2xlarge",
         "ml.g5.4xlarge",
@@ -34856,12 +35124,21 @@
       "max":25,
       "min":0
     },
+    "OptimizationJobMaxInstanceCount":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
     "OptimizationJobModelSource":{
       "type":"structure",
       "members":{
         "S3":{
           "shape":"OptimizationJobModelSourceS3",
           "documentation":"<p>The Amazon S3 location of a source model to optimize with an optimization job.</p>"
+        },
+        "SageMakerModel":{
+          "shape":"OptimizationSageMakerModel",
+          "documentation":"<p>The name of an existing SageMaker model to optimize with an optimization job.</p>"
         }
       },
       "documentation":"<p>The location of the source model to optimize with an optimization job.</p>"
@@ -34891,6 +35168,10 @@
         "S3OutputLocation":{
           "shape":"S3Uri",
           "documentation":"<p>The Amazon S3 URI for where to store the optimized model that you create with an optimization job.</p>"
+        },
+        "SageMakerModel":{
+          "shape":"OptimizationSageMakerModel",
+          "documentation":"<p>The name of a SageMaker model to use as the output destination for an optimization job.</p>"
         }
       },
       "documentation":"<p>Details for where to store the optimized model that you create with the optimization job.</p>"
@@ -34953,6 +35234,10 @@
           "shape":"OptimizationJobDeploymentInstanceType",
           "documentation":"<p>The type of instance that hosts the optimized model that you create with the optimization job.</p>"
         },
+        "MaxInstanceCount":{
+          "shape":"OptimizationJobMaxInstanceCount",
+          "documentation":"<p>The maximum number of instances to use for the optimization job.</p>"
+        },
         "OptimizationTypes":{
           "shape":"OptimizationTypes",
           "documentation":"<p>The optimization techniques that are applied by the optimization job.</p>"
@@ -34982,6 +35267,16 @@
         }
       },
       "documentation":"<p>Output values produced by an optimization job.</p>"
+    },
+    "OptimizationSageMakerModel":{
+      "type":"structure",
+      "members":{
+        "ModelName":{
+          "shape":"ModelName",
+          "documentation":"<p>The name of a SageMaker model.</p>"
+        }
+      },
+      "documentation":"<p>A SageMaker model to use as the source or destination for an optimization job.</p>"
     },
     "OptimizationType":{"type":"string"},
     "OptimizationTypes":{

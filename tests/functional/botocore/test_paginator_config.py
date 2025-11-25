@@ -47,6 +47,8 @@ KNOWN_EXTRA_OUTPUT_KEYS = [
     'cloudfront.ListPublicKeys.PublicKeyList',
     'cloudfront.ListStreamingDistributions.StreamingDistributionList',
     'cloudfront.ListKeyValueStores.KeyValueStoreList',
+    'cloudfront.ListDistributionsByConnectionFunction.DistributionList',
+    'cloudfront.ListDistributionsByTrustStore.DistributionList',
     'codedeploy.ListDeploymentGroups.applicationName',
     'dms.DescribeTableStatistics.ReplicationTaskArn',
     'dms.DescribeReplicationTaskAssessmentResults.BucketName',

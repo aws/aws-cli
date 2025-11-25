@@ -253,6 +253,32 @@
       "members":{},
       "documentation":"<p>The model must request at least one tool (no text is generated). For example, <code>{\"any\" : {}}</code>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>"
     },
+    "AppliedGuardrailDetails":{
+      "type":"structure",
+      "members":{
+        "guardrailId":{
+          "shape":"GuardrailId",
+          "documentation":"<p>The unique ID of the guardrail that was applied.</p>"
+        },
+        "guardrailVersion":{
+          "shape":"GuardrailVersion",
+          "documentation":"<p>The version of the guardrail that was applied.</p>"
+        },
+        "guardrailArn":{
+          "shape":"GuardrailArn",
+          "documentation":"<p>The ARN of the guardrail that was applied.</p>"
+        },
+        "guardrailOrigin":{
+          "shape":"GuardrailOriginList",
+          "documentation":"<p>The origin of how the guardrail was applied. This can be either requested at the API level or enforced at the account or organization level as a default guardrail.</p>"
+        },
+        "guardrailOwnership":{
+          "shape":"GuardrailOwnership",
+          "documentation":"<p>The ownership type of the guardrail, indicating whether it is owned by the requesting account or is a cross-account guardrail shared from another AWS account.</p>"
+        }
+      },
+      "documentation":"<p>Details about the specific guardrail that was applied during this assessment, including its identifier, version, ARN, origin, and ownership information.</p>"
+    },
     "ApplyGuardrailRequest":{
       "type":"structure",
       "required":[
@@ -1479,6 +1505,12 @@
         "GUARDRAIL_INTERVENED"
       ]
     },
+    "GuardrailArn":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+)"
+    },
     "GuardrailAssessment":{
       "type":"structure",
       "members":{
@@ -1509,7 +1541,8 @@
         "invocationMetrics":{
           "shape":"GuardrailInvocationMetrics",
           "documentation":"<p>The invocation metrics for the guardrail assessment.</p>"
-        }
+        },
+        "appliedGuardrailDetails":{"shape":"AppliedGuardrailDetails"}
       },
       "documentation":"<p>A behavior assessment of the guardrail policies used in a call to the Converse API. </p>"
     },
@@ -1851,10 +1884,6 @@
     },
     "GuardrailConfiguration":{
       "type":"structure",
-      "required":[
-        "guardrailIdentifier",
-        "guardrailVersion"
-      ],
       "members":{
         "guardrailIdentifier":{
           "shape":"GuardrailIdentifier",
@@ -2199,11 +2228,17 @@
       "type":"list",
       "member":{"shape":"GuardrailCustomWord"}
     },
+    "GuardrailId":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"([a-z0-9]+)"
+    },
     "GuardrailIdentifier":{
       "type":"string",
       "max":2048,
       "min":0,
-      "pattern":"(([a-z0-9]+)|(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+))"
+      "pattern":"(|([a-z0-9]+)|(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+))"
     },
     "GuardrailImageBlock":{
       "type":"structure",
@@ -2314,6 +2349,18 @@
       "type":"string",
       "enum":["PROFANITY"]
     },
+    "GuardrailOrigin":{
+      "type":"string",
+      "enum":[
+        "REQUEST",
+        "ACCOUNT_ENFORCED",
+        "ORGANIZATION_ENFORCED"
+      ]
+    },
+    "GuardrailOriginList":{
+      "type":"list",
+      "member":{"shape":"GuardrailOrigin"}
+    },
     "GuardrailOutputContent":{
       "type":"structure",
       "members":{
@@ -2336,6 +2383,13 @@
       ]
     },
     "GuardrailOutputText":{"type":"string"},
+    "GuardrailOwnership":{
+      "type":"string",
+      "enum":[
+        "SELF",
+        "CROSS_ACCOUNT"
+      ]
+    },
     "GuardrailPiiEntityFilter":{
       "type":"structure",
       "required":[
@@ -2474,10 +2528,6 @@
     },
     "GuardrailStreamConfiguration":{
       "type":"structure",
-      "required":[
-        "guardrailIdentifier",
-        "guardrailVersion"
-      ],
       "members":{
         "guardrailIdentifier":{
           "shape":"GuardrailIdentifier",
@@ -2673,7 +2723,7 @@
     },
     "GuardrailVersion":{
       "type":"string",
-      "pattern":"(([1-9][0-9]{0,7})|(DRAFT))"
+      "pattern":"(|([1-9][0-9]{0,7})|(DRAFT))"
     },
     "GuardrailWordPolicyAction":{
       "type":"string",

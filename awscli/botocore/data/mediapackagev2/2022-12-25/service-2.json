@@ -228,7 +228,8 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves the specified channel that's configured in AWS Elemental MediaPackage.</p>"
+      "documentation":"<p>Retrieves the specified channel that's configured in AWS Elemental MediaPackage.</p>",
+      "readonly":true
     },
     "GetChannelGroup":{
       "name":"GetChannelGroup",
@@ -246,7 +247,8 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves the specified channel group that's configured in AWS Elemental MediaPackage.</p>"
+      "documentation":"<p>Retrieves the specified channel group that's configured in AWS Elemental MediaPackage.</p>",
+      "readonly":true
     },
     "GetChannelPolicy":{
       "name":"GetChannelPolicy",
@@ -264,7 +266,8 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves the specified channel policy that's configured in AWS Elemental MediaPackage. With policies, you can specify who has access to AWS resources and what actions they can perform on those resources.</p>"
+      "documentation":"<p>Retrieves the specified channel policy that's configured in AWS Elemental MediaPackage. With policies, you can specify who has access to AWS resources and what actions they can perform on those resources.</p>",
+      "readonly":true
     },
     "GetHarvestJob":{
       "name":"GetHarvestJob",
@@ -282,7 +285,8 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves the details of a specific harvest job.</p>"
+      "documentation":"<p>Retrieves the details of a specific harvest job.</p>",
+      "readonly":true
     },
     "GetOriginEndpoint":{
       "name":"GetOriginEndpoint",
@@ -300,7 +304,8 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves the specified origin endpoint that's configured in AWS Elemental MediaPackage to obtain its playback URL and to view the packaging settings that it's currently using.</p>"
+      "documentation":"<p>Retrieves the specified origin endpoint that's configured in AWS Elemental MediaPackage to obtain its playback URL and to view the packaging settings that it's currently using.</p>",
+      "readonly":true
     },
     "GetOriginEndpointPolicy":{
       "name":"GetOriginEndpointPolicy",
@@ -318,7 +323,8 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves the specified origin endpoint policy that's configured in AWS Elemental MediaPackage.</p>"
+      "documentation":"<p>Retrieves the specified origin endpoint policy that's configured in AWS Elemental MediaPackage.</p>",
+      "readonly":true
     },
     "ListChannelGroups":{
       "name":"ListChannelGroups",
@@ -335,7 +341,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves all channel groups that are configured in Elemental MediaPackage.</p>"
+      "documentation":"<p>Retrieves all channel groups that are configured in Elemental MediaPackage.</p>",
+      "readonly":true
     },
     "ListChannels":{
       "name":"ListChannels",
@@ -353,7 +360,8 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves all channels in a specific channel group that are configured in AWS Elemental MediaPackage.</p>"
+      "documentation":"<p>Retrieves all channels in a specific channel group that are configured in AWS Elemental MediaPackage.</p>",
+      "readonly":true
     },
     "ListHarvestJobs":{
       "name":"ListHarvestJobs",
@@ -371,7 +379,8 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves a list of harvest jobs that match the specified criteria.</p>"
+      "documentation":"<p>Retrieves a list of harvest jobs that match the specified criteria.</p>",
+      "readonly":true
     },
     "ListOriginEndpoints":{
       "name":"ListOriginEndpoints",
@@ -389,7 +398,8 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves all origin endpoints in a specific channel that are configured in AWS Elemental MediaPackage.</p>"
+      "documentation":"<p>Retrieves all origin endpoints in a specific channel that are configured in AWS Elemental MediaPackage.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -403,7 +413,8 @@
       "errors":[
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Lists the tags assigned to a resource.</p>"
+      "documentation":"<p>Lists the tags assigned to a resource.</p>",
+      "readonly":true
     },
     "PutChannelPolicy":{
       "name":"PutChannelPolicy",
@@ -2039,6 +2050,10 @@
           "shape":"FilterConfigurationManifestFilterString",
           "documentation":"<p>Optionally specify one or more manifest filters for all of your manifest egress requests. When you include a manifest filter, note that you cannot use an identical manifest filter query parameter for this manifest's endpoint URL.</p>"
         },
+        "DrmSettings":{
+          "shape":"FilterConfigurationDrmSettingsString",
+          "documentation":"<p>Optionally specify one or more DRM settings for all of your manifest egress requests. When you include a DRM setting, note that you cannot use an identical DRM setting query parameter for this manifest's endpoint URL.</p>"
+        },
         "Start":{
           "shape":"Timestamp",
           "documentation":"<p>Optionally specify the start time for all of your manifest egress requests. When you include start time, note that you cannot use start time query parameters for this manifest's endpoint URL.</p>"
@@ -2057,6 +2072,11 @@
         }
       },
       "documentation":"<p>Filter configuration includes settings for manifest filtering, start and end times, and time delay that apply to all of your egress requests for this manifest. </p>"
+    },
+    "FilterConfigurationDrmSettingsString":{
+      "type":"string",
+      "max":1024,
+      "min":1
     },
     "FilterConfigurationManifestFilterString":{
       "type":"string",
@@ -4290,6 +4310,7 @@
         "MEMBER_INVALID_ENUM_VALUE",
         "MEMBER_DOES_NOT_MATCH_PATTERN",
         "INVALID_MANIFEST_FILTER",
+        "INVALID_DRM_SETTINGS",
         "INVALID_TIME_DELAY_SECONDS",
         "END_TIME_EARLIER_THAN_START_TIME",
         "TS_CONTAINER_TYPE_WITH_DASH_MANIFEST",

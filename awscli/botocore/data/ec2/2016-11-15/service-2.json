@@ -860,6 +860,16 @@
       "output":{"shape":"CreateInternetGatewayResult"},
       "documentation":"<p>Creates an internet gateway for use with a VPC. After creating the internet gateway, you attach it to a VPC using <a>AttachInternetGateway</a>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html\">Internet gateways</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
+    "CreateInterruptibleCapacityReservationAllocation":{
+      "name":"CreateInterruptibleCapacityReservationAllocation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateInterruptibleCapacityReservationAllocationRequest"},
+      "output":{"shape":"CreateInterruptibleCapacityReservationAllocationResult"},
+      "documentation":"<p> Creates an interruptible Capacity Reservation by specifying the number of unused instances you want to allocate from your source reservation. This helps you make unused capacity available for other workloads within your account while maintaining control to reclaim it. </p>"
+    },
     "CreateIpam":{
       "name":"CreateIpam",
       "http":{
@@ -3157,7 +3167,7 @@
       },
       "input":{"shape":"DescribeInstanceAttributeRequest"},
       "output":{"shape":"InstanceAttribute"},
-      "documentation":"<p>Describes the specified attribute of the specified instance. You can specify only one attribute at a time. </p>"
+      "documentation":"<p>Describes the specified attribute of the specified instance. You can specify only one attribute at a time. Available attributes include SQL license exemption configuration for instances registered with the SQL LE service. </p>"
     },
     "DescribeInstanceConnectEndpoints":{
       "name":"DescribeInstanceConnectEndpoints",
@@ -3237,7 +3247,7 @@
       },
       "input":{"shape":"DescribeInstanceStatusRequest"},
       "output":{"shape":"DescribeInstanceStatusResult"},
-      "documentation":"<p>Describes the status of the specified instances or all of your instances. By default, only running instances are described, unless you specifically indicate to return the status of all instances.</p> <p>Instance status includes the following components:</p> <ul> <li> <p> <b>Status checks</b> - Amazon EC2 performs status checks on running EC2 instances to identify hardware and software issues. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-system-instance-status-check.html\">Status checks for your instances</a> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstances.html\">Troubleshoot instances with failed status checks</a> in the <i>Amazon EC2 User Guide</i>.</p> </li> <li> <p> <b>Scheduled events</b> - Amazon EC2 can schedule events (such as reboot, stop, or terminate) for your instances related to hardware issues, software updates, or system maintenance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-instances-status-check_sched.html\">Scheduled events for your instances</a> in the <i>Amazon EC2 User Guide</i>.</p> </li> <li> <p> <b>Instance state</b> - You can manage your instances from the moment you launch them through their termination. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Instance lifecycle</a> in the <i>Amazon EC2 User Guide</i>.</p> </li> </ul> <p>The Amazon EC2 API follows an eventual consistency model. This means that the result of an API command you run that creates or modifies resources might not be immediately available to all subsequent commands you run. For guidance on how to manage eventual consistency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/eventual-consistency.html\">Eventual consistency in the Amazon EC2 API</a> in the <i>Amazon EC2 Developer Guide</i>.</p> <note> <p>The order of the elements in the response, including those within nested structures, might vary. Applications should not assume the elements appear in a particular order.</p> </note>"
+      "documentation":"<p>Describes the status of the specified instances or all of your instances. By default, only running instances are described, unless you specifically indicate to return the status of all instances.</p> <p>Instance status includes the following components:</p> <ul> <li> <p> <b>Status checks</b> - Amazon EC2 performs status checks on running EC2 instances to identify hardware and software issues. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-system-instance-status-check.html\">Status checks for your instances</a> and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/TroubleshootingInstances.html\">Troubleshoot instances with failed status checks</a> in the <i>Amazon EC2 User Guide</i>.</p> </li> <li> <p> <b>Scheduled events</b> - Amazon EC2 can schedule events (such as reboot, stop, or terminate) for your instances related to hardware issues, software updates, or system maintenance. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/monitoring-instances-status-check_sched.html\">Scheduled events for your instances</a> in the <i>Amazon EC2 User Guide</i>.</p> </li> <li> <p> <b>Instance state</b> - You can manage your instances from the moment you launch them through their termination. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html\">Instance lifecycle</a> in the <i>Amazon EC2 User Guide</i>.</p> </li> <li> <p> <b>SQL license exemption monitoring</b> - For instances registered with the SQL LE service, status includes SQL license exemption monitoring health and processing status to provide operational visibility into license exemption functionality.</p> </li> </ul> <p>The Amazon EC2 API follows an eventual consistency model. This means that the result of an API command you run that creates or modifies resources might not be immediately available to all subsequent commands you run. For guidance on how to manage eventual consistency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/eventual-consistency.html\">Eventual consistency in the Amazon EC2 API</a> in the <i>Amazon EC2 Developer Guide</i>.</p> <note> <p>The order of the elements in the response, including those within nested structures, might vary. Applications should not assume the elements appear in a particular order.</p> </note>"
     },
     "DescribeInstanceTopology":{
       "name":"DescribeInstanceTopology",
@@ -3277,7 +3287,7 @@
       },
       "input":{"shape":"DescribeInstancesRequest"},
       "output":{"shape":"DescribeInstancesResult"},
-      "documentation":"<p>Describes the specified instances or all instances.</p> <p>If you specify instance IDs, the output includes information for only the specified instances. If you specify filters, the output includes information for only those instances that meet the filter criteria. If you do not specify instance IDs or filters, the output includes information for all instances, which can affect performance. We recommend that you use pagination to ensure that the operation returns quickly and successfully.</p> <p>If you specify an instance ID that is not valid, an error is returned. If you specify an instance that you do not own, it is not included in the output.</p> <p>Recently terminated instances might appear in the returned results. This interval is usually less than one hour.</p> <p>If you describe instances in the rare case where an Availability Zone is experiencing a service disruption and you specify instance IDs that are in the affected zone, or do not specify any instance IDs at all, the call fails. If you describe instances and specify only instance IDs that are in an unaffected zone, the call works normally.</p> <p>The Amazon EC2 API follows an eventual consistency model. This means that the result of an API command you run that creates or modifies resources might not be immediately available to all subsequent commands you run. For guidance on how to manage eventual consistency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/eventual-consistency.html\">Eventual consistency in the Amazon EC2 API</a> in the <i>Amazon EC2 Developer Guide</i>.</p> <important> <p>We strongly recommend using only paginated requests. Unpaginated requests are susceptible to throttling and timeouts.</p> </important> <note> <p>The order of the elements in the response, including those within nested structures, might vary. Applications should not assume the elements appear in a particular order.</p> </note>"
+      "documentation":"<p>Describes the specified instances or all instances.</p> <p>If you specify instance IDs, the output includes information for only the specified instances. If you specify filters, the output includes information for only those instances that meet the filter criteria. If you do not specify instance IDs or filters, the output includes information for all instances, which can affect performance. We recommend that you use pagination to ensure that the operation returns quickly and successfully.</p> <p>The response includes SQL license exemption status information for instances registered with the SQL LE service, providing visibility into license exemption configuration and status.</p> <p>If you specify an instance ID that is not valid, an error is returned. If you specify an instance that you do not own, it is not included in the output.</p> <p>Recently terminated instances might appear in the returned results. This interval is usually less than one hour.</p> <p>If you describe instances in the rare case where an Availability Zone is experiencing a service disruption and you specify instance IDs that are in the affected zone, or do not specify any instance IDs at all, the call fails. If you describe instances and specify only instance IDs that are in an unaffected zone, the call works normally.</p> <p>The Amazon EC2 API follows an eventual consistency model. This means that the result of an API command you run that creates or modifies resources might not be immediately available to all subsequent commands you run. For guidance on how to manage eventual consistency, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/eventual-consistency.html\">Eventual consistency in the Amazon EC2 API</a> in the <i>Amazon EC2 Developer Guide</i>.</p> <important> <p>We strongly recommend using only paginated requests. Unpaginated requests are susceptible to throttling and timeouts.</p> </important> <note> <p>The order of the elements in the response, including those within nested structures, might vary. Applications should not assume the elements appear in a particular order.</p> </note>"
     },
     "DescribeInternetGateways":{
       "name":"DescribeInternetGateways",
@@ -7400,6 +7410,16 @@
       "input":{"shape":"UpdateCapacityManagerOrganizationsAccessRequest"},
       "output":{"shape":"UpdateCapacityManagerOrganizationsAccessResult"},
       "documentation":"<p> Updates the Organizations access setting for EC2 Capacity Manager. This controls whether Capacity Manager can aggregate data from all accounts in your Amazon Web Services Organization or only from the current account. </p>"
+    },
+    "UpdateInterruptibleCapacityReservationAllocation":{
+      "name":"UpdateInterruptibleCapacityReservationAllocation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateInterruptibleCapacityReservationAllocationRequest"},
+      "output":{"shape":"UpdateInterruptibleCapacityReservationAllocationResult"},
+      "documentation":"<p> Modifies the number of instances allocated to an interruptible reservation, allowing you to add more capacity or reclaim capacity to your source Capacity Reservation. </p>"
     },
     "UpdateSecurityGroupRuleDescriptionsEgress":{
       "name":"UpdateSecurityGroupRuleDescriptionsEgress",
@@ -12596,6 +12616,21 @@
           "shape":"CapacityBlockId",
           "documentation":"<p>The ID of the Capacity Block.</p>",
           "locationName":"capacityBlockId"
+        },
+        "Interruptible":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p> Indicates whether this Capacity Reservation is interruptible, meaning instances may be terminated when the owner reclaims capacity. </p>",
+          "locationName":"interruptible"
+        },
+        "InterruptibleCapacityAllocation":{
+          "shape":"InterruptibleCapacityAllocation",
+          "documentation":"<p> Contains allocation details for interruptible reservations, including current allocated instances and target instance counts within the interruptibleCapacityAllocation object. </p>",
+          "locationName":"interruptibleCapacityAllocation"
+        },
+        "InterruptionInfo":{
+          "shape":"InterruptionInfo",
+          "documentation":"<p> Information about the interruption configuration and association with the source reservation for interruptible Capacity Reservations. </p>",
+          "locationName":"interruptionInfo"
         }
       },
       "documentation":"<p>Describes a Capacity Reservation.</p>"
@@ -15025,7 +15060,7 @@
         },
         "InstanceCount":{
           "shape":"Integer",
-          "documentation":"<p>The number of instances for which to reserve capacity.</p> <note> <p>You can request future-dated Capacity Reservations for an instance count with a minimum of 64 vCPUs. For example, if you request a future-dated Capacity Reservation for <code>m5.xlarge</code> instances, you must request at least 25 instances (<i>16 * m5.xlarge = 64 vCPUs</i>).</p> </note> <p>Valid range: 1 - 1000</p>"
+          "documentation":"<p>The number of instances for which to reserve capacity.</p> <note> <p>You can request future-dated Capacity Reservations for an instance count with a minimum of 32 vCPUs. For example, if you request a future-dated Capacity Reservation for <code>m5.xlarge</code> instances, you must request at least 8 instances (<i>8 * m5.xlarge = 32 vCPUs</i>).</p> </note> <p>Valid range: 1 - 1000</p>"
         },
         "EbsOptimized":{
           "shape":"Boolean",
@@ -16120,6 +16155,62 @@
           "shape":"InternetGateway",
           "documentation":"<p>Information about the internet gateway.</p>",
           "locationName":"internetGateway"
+        }
+      }
+    },
+    "CreateInterruptibleCapacityReservationAllocationRequest":{
+      "type":"structure",
+      "required":[
+        "CapacityReservationId",
+        "InstanceCount"
+      ],
+      "members":{
+        "CapacityReservationId":{
+          "shape":"CapacityReservationId",
+          "documentation":"<p> The ID of the source Capacity Reservation from which to create the interruptible Capacity Reservation. Your Capacity Reservation must be in active state with no end date set and have available capacity for allocation. </p>"
+        },
+        "InstanceCount":{
+          "shape":"Integer",
+          "documentation":"<p> The number of instances to allocate from your source reservation. You can only allocate available instances (also called unused capacity). </p>"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p> Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. </p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p> Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. </p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p> The tags to apply to the interruptible Capacity Reservation during creation. </p>",
+          "locationName":"TagSpecification"
+        }
+      }
+    },
+    "CreateInterruptibleCapacityReservationAllocationResult":{
+      "type":"structure",
+      "members":{
+        "SourceCapacityReservationId":{
+          "shape":"CapacityReservationId",
+          "documentation":"<p> The ID of the source Capacity Reservation from which the interruptible Capacity Reservation was created. </p>",
+          "locationName":"sourceCapacityReservationId"
+        },
+        "TargetInstanceCount":{
+          "shape":"Integer",
+          "documentation":"<p> The number of instances allocated to the interruptible reservation. </p>",
+          "locationName":"targetInstanceCount"
+        },
+        "Status":{
+          "shape":"InterruptibleCapacityReservationAllocationStatus",
+          "documentation":"<p> The current status of the allocation request (creating, active, updating). </p>",
+          "locationName":"status"
+        },
+        "InterruptionType":{
+          "shape":"InterruptionType",
+          "documentation":"<p> The type of interruption applied to the interruptible reservation. </p>",
+          "locationName":"interruptionType"
         }
       }
     },
@@ -37376,6 +37467,21 @@
           "shape":"InstanceUsageSet",
           "documentation":"<p>Information about the Capacity Reservation usage.</p>",
           "locationName":"instanceUsageSet"
+        },
+        "Interruptible":{
+          "shape":"BoxedBoolean",
+          "documentation":"<p> Indicates whether the Capacity Reservation is interruptible, meaning instances may be terminated when the owner reclaims capacity. </p>",
+          "locationName":"interruptible"
+        },
+        "InterruptibleCapacityAllocation":{
+          "shape":"InterruptibleCapacityAllocation",
+          "documentation":"<p> Information about the capacity allocated to the interruptible Capacity Reservation, including instance counts and allocation status. </p>",
+          "locationName":"interruptibleCapacityAllocation"
+        },
+        "InterruptionInfo":{
+          "shape":"InterruptionInfo",
+          "documentation":"<p> Details about the interruption configuration and source reservation for interruptible Capacity Reservations. </p>",
+          "locationName":"interruptionInfo"
         }
       }
     },
@@ -43374,7 +43480,8 @@
       "enum":[
         "spot",
         "scheduled",
-        "capacity-block"
+        "capacity-block",
+        "interruptible-capacity-reservation"
       ]
     },
     "InstanceList":{
@@ -46019,6 +46126,68 @@
         "shape":"InternetGateway",
         "locationName":"item"
       }
+    },
+    "InterruptibleCapacityAllocation":{
+      "type":"structure",
+      "members":{
+        "InstanceCount":{
+          "shape":"Integer",
+          "documentation":"<p> The current number of instances allocated to the interruptible reservation. </p>",
+          "locationName":"instanceCount"
+        },
+        "TargetInstanceCount":{
+          "shape":"Integer",
+          "documentation":"<p> After your modify request, the requested number of instances allocated to interruptible reservation. </p>",
+          "locationName":"targetInstanceCount"
+        },
+        "Status":{
+          "shape":"InterruptibleCapacityReservationAllocationStatus",
+          "documentation":"<p> The current status of the allocation (updating during reclamation, active when complete). </p>",
+          "locationName":"status"
+        },
+        "InterruptibleCapacityReservationId":{
+          "shape":"String",
+          "documentation":"<p> The ID of the interruptible Capacity Reservation created from the allocation. </p>",
+          "locationName":"interruptibleCapacityReservationId"
+        },
+        "InterruptionType":{
+          "shape":"InterruptionType",
+          "documentation":"<p> The type of interruption policy applied to the interruptible reservation. </p>",
+          "locationName":"interruptionType"
+        }
+      },
+      "documentation":"<p> Represents the allocation of capacity from a source reservation to an interruptible reservation, tracking current and target instance counts for allocation management. </p>"
+    },
+    "InterruptibleCapacityReservationAllocationStatus":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "active",
+        "updating",
+        "canceling",
+        "canceled",
+        "failed"
+      ]
+    },
+    "InterruptionInfo":{
+      "type":"structure",
+      "members":{
+        "SourceCapacityReservationId":{
+          "shape":"String",
+          "documentation":"<p> The ID of the source Capacity Reservation from which the interruptible reservation was created. </p>",
+          "locationName":"sourceCapacityReservationId"
+        },
+        "InterruptionType":{
+          "shape":"InterruptionType",
+          "documentation":"<p> The interruption type that determines how instances are terminated when capacity is reclaimed. </p>",
+          "locationName":"interruptionType"
+        }
+      },
+      "documentation":"<p> Contains information about how and when instances in an interruptible reservation can be terminated when capacity is reclaimed. </p>"
+    },
+    "InterruptionType":{
+      "type":"string",
+      "enum":["adhoc"]
     },
     "IpAddress":{
       "type":"string",
@@ -51333,7 +51502,8 @@
       "type":"string",
       "enum":[
         "spot",
-        "capacity-block"
+        "capacity-block",
+        "interruptible-capacity-reservation"
       ]
     },
     "MarketplaceProductCode":{"type":"string"},
@@ -70895,6 +71065,62 @@
           "shape":"Boolean",
           "documentation":"<p> The updated Organizations access setting indicating whether cross-account data aggregation is enabled. </p>",
           "locationName":"organizationsAccess"
+        }
+      }
+    },
+    "UpdateInterruptibleCapacityReservationAllocationRequest":{
+      "type":"structure",
+      "required":[
+        "CapacityReservationId",
+        "TargetInstanceCount"
+      ],
+      "members":{
+        "CapacityReservationId":{
+          "shape":"CapacityReservationId",
+          "documentation":"<p> The ID of the source Capacity Reservation containing the interruptible allocation to modify. </p>"
+        },
+        "TargetInstanceCount":{
+          "shape":"Integer",
+          "documentation":"<p> The new number of instances to allocate. Enter a higher number to add more capacity to share, or a lower number to reclaim capacity to your source Capacity Reservation. </p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p> Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. </p>"
+        }
+      }
+    },
+    "UpdateInterruptibleCapacityReservationAllocationResult":{
+      "type":"structure",
+      "members":{
+        "InterruptibleCapacityReservationId":{
+          "shape":"CapacityReservationId",
+          "documentation":"<p> The ID of the interruptible Capacity Reservation that was modified. </p>",
+          "locationName":"interruptibleCapacityReservationId"
+        },
+        "SourceCapacityReservationId":{
+          "shape":"CapacityReservationId",
+          "documentation":"<p> The ID of the source Capacity Reservation to which capacity was reclaimed or from which capacity was allocated. </p>",
+          "locationName":"sourceCapacityReservationId"
+        },
+        "InstanceCount":{
+          "shape":"Integer",
+          "documentation":"<p> The current number of instances allocated to the interruptible reservation. </p>",
+          "locationName":"instanceCount"
+        },
+        "TargetInstanceCount":{
+          "shape":"Integer",
+          "documentation":"<p> The requested number of instances for the interruptible Capacity Reservation. </p>",
+          "locationName":"targetInstanceCount"
+        },
+        "Status":{
+          "shape":"InterruptibleCapacityReservationAllocationStatus",
+          "documentation":"<p> The current status of the allocation (updating during reclamation, active when complete). </p>",
+          "locationName":"status"
+        },
+        "InterruptionType":{
+          "shape":"InterruptionType",
+          "documentation":"<p> The interruption type for the interruptible reservation. </p>",
+          "locationName":"interruptionType"
         }
       }
     },

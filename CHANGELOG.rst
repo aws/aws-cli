@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.32.6
+======
+
+* api-change:``cost-optimization-hub``: This release enables AWS Cost Optimization Hub to show cost optimization recommendations for NAT Gateway.
+* api-change:``bedrock-runtime``: Bedrock Runtime Reserved Service Support
+* api-change:``compute-optimizer``: Compute Optimizer now identifies idle NAT Gateway resources for cost optimization based on traffic patterns and backup configuration analysis. Access recommendations via the GetIdleRecommendations API.
+
+
 2.32.5
 ======
 

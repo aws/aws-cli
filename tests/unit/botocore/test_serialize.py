@@ -23,6 +23,10 @@ from botocore import serialize
 from botocore.exceptions import ParamValidationError
 from botocore.model import ServiceModel
 from botocore.serialize import SERIALIZERS
+from botocore.serialize import (
+    TIMESTAMP_PRECISION_DEFAULT,
+    TIMESTAMP_PRECISION_MILLISECOND,
+)
 
 from tests import unittest
 
@@ -614,3 +618,120 @@ class TestRestXMLUnicodeSerialization(unittest.TestCase):
             self.serialize_to_request(params)
         except UnicodeEncodeError:
             self.fail("RestXML serializer failed to serialize unicode text.")
+
+
+class TestTimestampPrecisionParameter(unittest.TestCase):
+    def setUp(self):
+        self.model = {
+            'metadata': {'protocol': 'query', 'apiVersion': '2014-01-01'},
+            'documentation': '',
+            'operations': {
+                'TestOperation': {
+                    'name': 'TestOperation',
+                    'http': {
+                        'method': 'POST',
+                        'requestUri': '/',
+                    },
+                    'input': {'shape': 'InputShape'},
+                }
+            },
+            'shapes': {
+                'InputShape': {
+                    'type': 'structure',
+                    'members': {
+                        'UnixTimestamp': {'shape': 'UnixTimestampType'},
+                        'IsoTimestamp': {'shape': 'IsoTimestampType'},
+                        'Rfc822Timestamp': {'shape': 'Rfc822TimestampType'},
+                    },
+                },
+                'IsoTimestampType': {
+                    'type': 'timestamp',
+                    "timestampFormat": "iso8601",
+                },
+                'UnixTimestampType': {
+                    'type': 'timestamp',
+                    "timestampFormat": "unixTimestamp",
+                },
+                'Rfc822TimestampType': {
+                    'type': 'timestamp',
+                    "timestampFormat": "rfc822",
+                },
+            },
+        }
+        self.service_model = ServiceModel(self.model)
+
+    def serialize_to_request(
+        self, input_params, timestamp_precision=TIMESTAMP_PRECISION_DEFAULT
+    ):
+        request_serializer = serialize.create_serializer(
+            self.service_model.metadata['protocol'],
+            timestamp_precision=timestamp_precision,
+        )
+        return request_serializer.serialize_to_request(
+            input_params, self.service_model.operation_model('TestOperation')
+        )
+
+    def test_second_precision_maintains_existing_behavior(self):
+        test_datetime = datetime.datetime(2024, 1, 1, 12, 0, 0, 123456)
+        request = self.serialize_to_request(
+            {'UnixTimestamp': test_datetime, 'IsoTimestamp': test_datetime}
+        )
+        # To maintain backwards compatibility, unix should not include milliseconds by default
+        self.assertEqual(1704110400, request['body']['UnixTimestamp'])
+
+        # ISO always supported microseconds, so we need to continue supporting this
+        self.assertEqual(
+            '2024-01-01T12:00:00.123456Z',
+            request['body']['IsoTimestamp'],
+        )
+
+    def test_millisecond_precision_serialization(self):
+        test_datetime = datetime.datetime(2024, 1, 1, 12, 0, 0, 123456)
+
+        # Check that millisecond precision is used when it is opted in to via the input param
+        request = self.serialize_to_request(
+            {'UnixTimestamp': test_datetime, 'IsoTimestamp': test_datetime},
+            TIMESTAMP_PRECISION_MILLISECOND,
+        )
+        self.assertEqual(1704110400.123, request['body']['UnixTimestamp'])
+        self.assertEqual(
+            '2024-01-01T12:00:00.123Z',
+            request['body']['IsoTimestamp'],
+        )
+
+    def test_millisecond_precision_with_zero_microseconds(self):
+        test_datetime = datetime.datetime(2024, 1, 1, 12, 0, 0, 0)
+
+        request = self.serialize_to_request(
+            {'UnixTimestamp': test_datetime, 'IsoTimestamp': test_datetime},
+            TIMESTAMP_PRECISION_MILLISECOND,
+        )
+        self.assertEqual(1704110400.0, request['body']['UnixTimestamp'])
+        self.assertEqual(
+            '2024-01-01T12:00:00.000Z',
+            request['body']['IsoTimestamp'],
+        )
+
+    def test_rfc822_timestamp_always_uses_second_precision(self):
+        # RFC822 format doesn't support sub-second precision.
+        test_datetime = datetime.datetime(2024, 1, 1, 12, 0, 0, 123456)
+        request_second = self.serialize_to_request(
+            {'Rfc822Timestamp': test_datetime},
+        )
+        request_milli = self.serialize_to_request(
+            {'Rfc822Timestamp': test_datetime}, TIMESTAMP_PRECISION_MILLISECOND
+        )
+        self.assertEqual(
+            request_second['body']['Rfc822Timestamp'],
+            request_milli['body']['Rfc822Timestamp'],
+        )
+        self.assertIn('2024', request_second['body']['Rfc822Timestamp'])
+        self.assertIn('GMT', request_second['body']['Rfc822Timestamp'])
+
+    def test_invalid_timestamp_precision_raises_error(self):
+        with self.assertRaises(ValueError) as context:
+            serialize.create_serializer(
+                self.service_model.metadata['protocol'],
+                timestamp_precision='invalid',
+            )
+        self.assertIn("Invalid timestamp precision", str(context.exception))

@@ -1090,5 +1090,9 @@ class CLIOperationCaller:
             output = self._session.get_config_variable('output')
 
         formatter = get_formatter(output, parsed_globals)
-        with self._output_stream_factory.get_output_stream() as stream:
-            formatter(command_name, response, stream)
+        try:
+            with self._output_stream_factory.get_output_stream() as stream:
+                formatter(command_name, response, stream)
+        except ClientError as e:
+            self._display_structured_error_for_exception(e, parsed_globals)
+            raise

@@ -17,12 +17,13 @@ from botocore.exceptions import ClientError
 
 from awscli.structured_error import StructuredErrorHandler
 from tests.unit.test_clidriver import FakeSession
+from awscli.utils import OutputStreamFactory
+from awscli.clidriver import CLIOperationCaller
 
 
 class TestStructuredErrorHandler:
     def setup_method(self):
         self.session = FakeSession()
-        from awscli.utils import OutputStreamFactory
 
         self.output_stream_factory = OutputStreamFactory(self.session)
         self.handler = StructuredErrorHandler(
@@ -181,3 +182,53 @@ class TestStructuredErrorHandler:
             self.session, 'get_config_variable', return_value='json'
         ):
             assert self.handler.should_display(error_response, parsed_globals)
+
+
+class TestStructuredErrorWithPagination:
+    def setup_method(self):
+        self.session = FakeSession()
+        self.caller = CLIOperationCaller(self.session)
+
+    def test_formatter_error_displays_structured_error(self):
+        error_response = {
+            'Error': {
+                'Code': 'AccessDenied',
+                'Message': 'Access Denied',
+                'BucketName': 'my-bucket',
+            },
+            'ResponseMetadata': {'RequestId': '123'},
+        }
+
+        client_error = ClientError(error_response, 'ListObjects')
+
+        parsed_globals = mock.Mock()
+        parsed_globals.output = 'json'
+        parsed_globals.query = None
+
+        mock_formatter = mock.Mock()
+        mock_formatter.side_effect = client_error
+
+        mock_stream = io.StringIO()
+        mock_context_manager = mock.MagicMock()
+        mock_context_manager.__enter__.return_value = mock_stream
+        mock_context_manager.__exit__.return_value = False
+
+        with mock.patch(
+            'awscli.clidriver.get_formatter', return_value=mock_formatter
+        ):
+            with mock.patch.object(
+                self.caller._output_stream_factory,
+                'get_output_stream',
+                return_value=mock_context_manager,
+            ):
+                try:
+                    self.caller._display_response(
+                        'list-objects', {}, parsed_globals
+                    )
+                    assert False, "Expected ClientError to be raised"
+                except ClientError:
+                    pass 
+
+        output = mock_stream.getvalue()
+        assert 'AccessDenied' in output
+        assert 'my-bucket' in output

@@ -105,6 +105,25 @@
       ],
       "documentation":"<p>Creates an Amazon EKS add-on.</p> <p>Amazon EKS add-ons help to automate the provisioning and lifecycle management of common operational software for Amazon EKS clusters. For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/eks-add-ons.html\">Amazon EKS add-ons</a> in the <i>Amazon EKS User Guide</i>.</p>"
     },
+    "CreateCapability":{
+      "name":"CreateCapability",
+      "http":{
+        "method":"POST",
+        "requestUri":"/clusters/{name}/capabilities"
+      },
+      "input":{"shape":"CreateCapabilityRequest"},
+      "output":{"shape":"CreateCapabilityResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceLimitExceededException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Creates a managed capability resource for an Amazon EKS cluster.</p> <p>Capabilities provide fully managed capabilities to build and scale with Kubernetes. When you create a capability, Amazon EKSprovisions and manages the infrastructure required to run the capability outside of your cluster. This approach reduces operational overhead and preserves cluster resources.</p> <p>You can only create one Capability of each type on a given Amazon EKS cluster. Valid types are Argo CD for declarative GitOps deployment, Amazon Web Services Controllers for Kubernetes (ACK) for resource management, and Kube Resource Orchestrator (KRO) for Kubernetes custom resource orchestration.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eks/latest/userguide/capabilities.html\">EKS Capabilities</a> in the <i>Amazon EKS User Guide</i>.</p>"
+    },
     "CreateCluster":{
       "name":"CreateCluster",
       "http":{
@@ -227,6 +246,23 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Deletes an Amazon EKS add-on.</p> <p>When you remove an add-on, it's deleted from the cluster. You can always manually start an add-on on the cluster using the Kubernetes API.</p>"
+    },
+    "DeleteCapability":{
+      "name":"DeleteCapability",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/clusters/{name}/capabilities/{capabilityName}"
+      },
+      "input":{"shape":"DeleteCapabilityRequest"},
+      "output":{"shape":"DeleteCapabilityResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Deletes a managed capability from your Amazon EKS cluster. When you delete a capability, Amazon EKS removes the capability infrastructure but retains all resources that were managed by the capability.</p> <p>Before deleting a capability, you should delete all Kubernetes resources that were created by the capability. After the capability is deleted, these resources become difficult to manage because the controller that managed them is no longer available. To delete resources before removing the capability, use <code>kubectl delete</code> or remove them through your GitOps workflow.</p>"
     },
     "DeleteCluster":{
       "name":"DeleteCluster",
@@ -391,6 +427,22 @@
         {"shape":"InvalidParameterException"}
       ],
       "documentation":"<p>Describes the versions for an add-on.</p> <p>Information such as the Kubernetes versions that you can use the add-on with, the <code>owner</code>, <code>publisher</code>, and the <code>type</code> of the add-on are returned.</p>"
+    },
+    "DescribeCapability":{
+      "name":"DescribeCapability",
+      "http":{
+        "method":"GET",
+        "requestUri":"/clusters/{name}/capabilities/{capabilityName}"
+      },
+      "input":{"shape":"DescribeCapabilityRequest"},
+      "output":{"shape":"DescribeCapabilityResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Returns detailed information about a specific managed capability in your Amazon EKS cluster, including its current status, configuration, health information, and any issues that may be affecting its operation.</p>"
     },
     "DescribeCluster":{
       "name":"DescribeCluster",
@@ -648,6 +700,20 @@
       ],
       "documentation":"<p>Lists the access policies associated with an access entry.</p>"
     },
+    "ListCapabilities":{
+      "name":"ListCapabilities",
+      "http":{
+        "method":"GET",
+        "requestUri":"/clusters/{name}/capabilities"
+      },
+      "input":{"shape":"ListCapabilitiesRequest"},
+      "output":{"shape":"ListCapabilitiesResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Lists all managed capabilities in your Amazon EKS cluster. You can use this operation to get an overview of all capabilities and their current status.</p>"
+    },
     "ListClusters":{
       "name":"ListClusters",
       "http":{
@@ -889,6 +955,23 @@
         {"shape":"ServerException"}
       ],
       "documentation":"<p>Updates an Amazon EKS add-on.</p>"
+    },
+    "UpdateCapability":{
+      "name":"UpdateCapability",
+      "http":{
+        "method":"POST",
+        "requestUri":"/clusters/{name}/capabilities/{capabilityName}"
+      },
+      "input":{"shape":"UpdateCapabilityRequest"},
+      "output":{"shape":"UpdateCapabilityResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ServerException"}
+      ],
+      "documentation":"<p>Updates the configuration of a managed capability in your Amazon EKS cluster. You can update the IAM role, configuration settings, and delete propagation policy for a capability.</p> <p>When you update a capability, Amazon EKS applies the changes and may restart capability components as needed. The capability remains available during the update process, but some operations may be temporarily unavailable.</p>"
     },
     "UpdateClusterConfig":{
       "name":"UpdateClusterConfig",
@@ -1416,6 +1499,138 @@
       "type":"list",
       "member":{"shape":"AddonInfo"}
     },
+    "ArgoCdAwsIdcConfigRequest":{
+      "type":"structure",
+      "required":["idcInstanceArn"],
+      "members":{
+        "idcInstanceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Identity CenterIAM; Identity Center instance to use for authentication.</p>"
+        },
+        "idcRegion":{
+          "shape":"String",
+          "documentation":"<p>The Region where your IAM Identity CenterIAM; Identity Center instance is located.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for integrating Argo CD with IAM Identity CenterIAM; Identity Center. This allows you to use your organization's identity provider for authentication to Argo CD.</p>"
+    },
+    "ArgoCdAwsIdcConfigResponse":{
+      "type":"structure",
+      "members":{
+        "idcInstanceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Identity CenterIAM; Identity Center instance used for authentication.</p>"
+        },
+        "idcRegion":{
+          "shape":"String",
+          "documentation":"<p>The Region where the IAM Identity CenterIAM; Identity Center instance is located.</p>"
+        },
+        "idcManagedApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the managed application created in IAM Identity CenterIAM; Identity Center for this Argo CD capability. This application is automatically created and managed by Amazon EKS.</p>"
+        }
+      },
+      "documentation":"<p>The response object containing IAM Identity CenterIAM; Identity Center configuration details for an Argo CD capability.</p>"
+    },
+    "ArgoCdConfigRequest":{
+      "type":"structure",
+      "required":["awsIdc"],
+      "members":{
+        "namespace":{
+          "shape":"String",
+          "documentation":"<p>The Kubernetes namespace where Argo CD resources will be created. If not specified, the default namespace is used.</p>"
+        },
+        "awsIdc":{
+          "shape":"ArgoCdAwsIdcConfigRequest",
+          "documentation":"<p>Configuration for IAM Identity CenterIAM; Identity Center integration. When configured, users can authenticate to Argo CD using their IAM Identity CenterIAM; Identity Center credentials.</p>"
+        },
+        "rbacRoleMappings":{
+          "shape":"ArgoCdRoleMappingList",
+          "documentation":"<p>A list of role mappings that define which IAM Identity CenterIAM; Identity Center users or groups have which Argo CD roles. Each mapping associates an Argo CD role (<code>ADMIN</code>, <code>EDITOR</code>, or <code>VIEWER</code>) with one or more IAM Identity CenterIAM; Identity Center identities.</p>"
+        },
+        "networkAccess":{
+          "shape":"ArgoCdNetworkAccessConfigRequest",
+          "documentation":"<p>Configuration for network access to the Argo CD capability's managed API server endpoint. By default, the Argo CD server is accessible via a public endpoint. You can optionally specify one or more VPC endpoint IDs to enable private connectivity from your VPCs. When VPC endpoints are configured, public access is blocked and the Argo CD server is only accessible through the specified VPC endpoints.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for an Argo CD capability. This includes the Kubernetes namespace, IAM Identity CenterIAM; Identity Center integration, RBAC role mappings, and network access configuration.</p>"
+    },
+    "ArgoCdConfigResponse":{
+      "type":"structure",
+      "members":{
+        "namespace":{
+          "shape":"String",
+          "documentation":"<p>The Kubernetes namespace where Argo CD resources are monitored by your Argo CD Capability.</p>"
+        },
+        "awsIdc":{
+          "shape":"ArgoCdAwsIdcConfigResponse",
+          "documentation":"<p>The IAM Identity CenterIAM; Identity Center integration configuration.</p>"
+        },
+        "rbacRoleMappings":{
+          "shape":"ArgoCdRoleMappingList",
+          "documentation":"<p>The list of role mappings that define which IAM Identity CenterIAM; Identity Center users or groups have which Argo CD roles.</p>"
+        },
+        "networkAccess":{
+          "shape":"ArgoCdNetworkAccessConfigResponse",
+          "documentation":"<p>The network access configuration for the Argo CD capability's managed API server endpoint. If VPC endpoint IDs are specified, public access is blocked and the Argo CD server is only accessible through the specified VPC endpoints.</p>"
+        },
+        "serverUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL of the Argo CD server. Use this URL to access the Argo CD web interface and API.</p>"
+        }
+      },
+      "documentation":"<p>The response object containing Argo CD configuration details, including the server URL that you use to access the Argo CD web interface and API.</p>"
+    },
+    "ArgoCdNetworkAccessConfigRequest":{
+      "type":"structure",
+      "members":{
+        "vpceIds":{
+          "shape":"StringList",
+          "documentation":"<p>A list of VPC endpoint IDs to associate with the managed Argo CD API server endpoint. Each VPC endpoint provides private connectivity from a specific VPC to the Argo CD server. You can specify multiple VPC endpoint IDs to enable access from multiple VPCs.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for network access to the Argo CD capability's managed API server endpoint. When VPC endpoint IDs are specified, public access is blocked and the Argo CD server is only accessible through the specified VPC endpoints.</p>"
+    },
+    "ArgoCdNetworkAccessConfigResponse":{
+      "type":"structure",
+      "members":{
+        "vpceIds":{
+          "shape":"StringList",
+          "documentation":"<p>The list of VPC endpoint IDs associated with the managed Argo CD API server endpoint. Each VPC endpoint provides private connectivity from a specific VPC to the Argo CD server.</p>"
+        }
+      },
+      "documentation":"<p>The response object containing network access configuration for the Argo CD capability's managed API server endpoint. If VPC endpoint IDs are present, public access is blocked and the Argo CD server is only accessible through the specified VPC endpoints.</p>"
+    },
+    "ArgoCdRole":{
+      "type":"string",
+      "enum":[
+        "ADMIN",
+        "EDITOR",
+        "VIEWER"
+      ]
+    },
+    "ArgoCdRoleMapping":{
+      "type":"structure",
+      "required":[
+        "role",
+        "identities"
+      ],
+      "members":{
+        "role":{
+          "shape":"ArgoCdRole",
+          "documentation":"<p>The Argo CD role to assign. Valid values are:</p> <ul> <li> <p> <code>ADMIN</code> – Full administrative access to Argo CD.</p> </li> <li> <p> <code>EDITOR</code> – Edit access to Argo CD resources.</p> </li> <li> <p> <code>VIEWER</code> – Read-only access to Argo CD resources.</p> </li> </ul>"
+        },
+        "identities":{
+          "shape":"SsoIdentityList",
+          "documentation":"<p>A list of IAM Identity CenterIAM; Identity Center identities (users or groups) that should be assigned this Argo CD role.</p>"
+        }
+      },
+      "documentation":"<p>A mapping between an Argo CD role and IAM Identity CenterIAM; Identity Center identities. This defines which users or groups have specific permissions in Argo CD.</p>"
+    },
+    "ArgoCdRoleMappingList":{
+      "type":"list",
+      "member":{"shape":"ArgoCdRoleMapping"}
+    },
     "AssociateAccessPolicyRequest":{
       "type":"structure",
       "required":[
@@ -1610,6 +1825,178 @@
     "BoxedInteger":{
       "type":"integer",
       "box":true
+    },
+    "Capability":{
+      "type":"structure",
+      "members":{
+        "capabilityName":{
+          "shape":"String",
+          "documentation":"<p>The unique name of the capability within the cluster.</p>"
+        },
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the capability.</p>"
+        },
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon EKS cluster that contains this capability.</p>"
+        },
+        "type":{
+          "shape":"CapabilityType",
+          "documentation":"<p>The type of capability. Valid values are <code>ACK</code>, <code>ARGOCD</code>, or <code>KRO</code>.</p>"
+        },
+        "roleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the capability uses to interact with Amazon Web Services services.</p>"
+        },
+        "status":{
+          "shape":"CapabilityStatus",
+          "documentation":"<p>The current status of the capability. Valid values include:</p> <ul> <li> <p> <code>CREATING</code> – The capability is being created.</p> </li> <li> <p> <code>ACTIVE</code> – The capability is running and available.</p> </li> <li> <p> <code>UPDATING</code> – The capability is being updated.</p> </li> <li> <p> <code>DELETING</code> – The capability is being deleted.</p> </li> <li> <p> <code>CREATE_FAILED</code> – The capability creation failed.</p> </li> <li> <p> <code>UPDATE_FAILED</code> – The capability update failed.</p> </li> <li> <p> <code>DELETE_FAILED</code> – The capability deletion failed.</p> </li> </ul>"
+        },
+        "version":{
+          "shape":"String",
+          "documentation":"<p>The version of the capability software that is currently running.</p>"
+        },
+        "configuration":{
+          "shape":"CapabilityConfigurationResponse",
+          "documentation":"<p>The configuration settings for the capability. The structure varies depending on the capability type.</p>"
+        },
+        "tags":{"shape":"TagMap"},
+        "health":{
+          "shape":"CapabilityHealth",
+          "documentation":"<p>Health information for the capability, including any issues that may be affecting its operation.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix epoch timestamp in seconds for when the capability was created.</p>"
+        },
+        "modifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix epoch timestamp in seconds for when the capability was last modified.</p>"
+        },
+        "deletePropagationPolicy":{
+          "shape":"CapabilityDeletePropagationPolicy",
+          "documentation":"<p>The delete propagation policy for the capability. Currently, the only supported value is <code>RETAIN</code>, which keeps all resources managed by the capability when the capability is deleted.</p>"
+        }
+      },
+      "documentation":"<p>An object representing a managed capability in an Amazon EKS cluster. This includes all configuration, status, and health information for the capability.</p>"
+    },
+    "CapabilityConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "argoCd":{
+          "shape":"ArgoCdConfigRequest",
+          "documentation":"<p>Configuration settings specific to Argo CD capabilities. This field is only used when creating or updating an Argo CD capability.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for a capability. The structure of this object varies depending on the capability type.</p>"
+    },
+    "CapabilityConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "argoCd":{
+          "shape":"ArgoCdConfigResponse",
+          "documentation":"<p>Configuration settings for an Argo CD capability, including the server URL and other Argo CD-specific settings.</p>"
+        }
+      },
+      "documentation":"<p>The response object containing capability configuration details.</p>"
+    },
+    "CapabilityDeletePropagationPolicy":{
+      "type":"string",
+      "enum":["RETAIN"]
+    },
+    "CapabilityHealth":{
+      "type":"structure",
+      "members":{
+        "issues":{
+          "shape":"CapabilityIssueList",
+          "documentation":"<p>A list of issues affecting the capability. If this list is empty, the capability is healthy.</p>"
+        }
+      },
+      "documentation":"<p>Health information for a capability, including any issues that may be affecting its operation.</p>"
+    },
+    "CapabilityIssue":{
+      "type":"structure",
+      "members":{
+        "code":{
+          "shape":"CapabilityIssueCode",
+          "documentation":"<p>A code identifying the type of issue. This can be used to programmatically handle specific issue types.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable message describing the issue and potential remediation steps.</p>"
+        }
+      },
+      "documentation":"<p>An issue affecting a capability's health or operation.</p>"
+    },
+    "CapabilityIssueCode":{
+      "type":"string",
+      "enum":[
+        "AccessDenied",
+        "ClusterUnreachable"
+      ]
+    },
+    "CapabilityIssueList":{
+      "type":"list",
+      "member":{"shape":"CapabilityIssue"}
+    },
+    "CapabilityStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "CREATE_FAILED",
+        "UPDATING",
+        "DELETING",
+        "DELETE_FAILED",
+        "ACTIVE",
+        "DEGRADED"
+      ]
+    },
+    "CapabilitySummary":{
+      "type":"structure",
+      "members":{
+        "capabilityName":{
+          "shape":"String",
+          "documentation":"<p>The unique name of the capability within the cluster.</p>"
+        },
+        "arn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the capability.</p>"
+        },
+        "type":{
+          "shape":"CapabilityType",
+          "documentation":"<p>The type of capability. Valid values are <code>ACK</code>, <code>ARGOCD</code>, or <code>KRO</code>.</p>"
+        },
+        "status":{
+          "shape":"CapabilityStatus",
+          "documentation":"<p>The current status of the capability.</p>"
+        },
+        "version":{
+          "shape":"String",
+          "documentation":"<p>The version of the capability software that is currently running.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix epoch timestamp in seconds for when the capability was created.</p>"
+        },
+        "modifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The Unix epoch timestamp in seconds for when the capability was last modified.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a capability, containing basic information without the full configuration details. This is returned by the <code>ListCapabilities</code> operation.</p>"
+    },
+    "CapabilitySummaryList":{
+      "type":"list",
+      "member":{"shape":"CapabilitySummary"}
+    },
+    "CapabilityType":{
+      "type":"string",
+      "enum":[
+        "ACK",
+        "KRO",
+        "ARGOCD"
+      ]
     },
     "Capacity":{
       "type":"integer",
@@ -2208,6 +2595,59 @@
         "addon":{"shape":"Addon"}
       }
     },
+    "CreateCapabilityRequest":{
+      "type":"structure",
+      "required":[
+        "capabilityName",
+        "clusterName",
+        "type",
+        "roleArn",
+        "deletePropagationPolicy"
+      ],
+      "members":{
+        "capabilityName":{
+          "shape":"String",
+          "documentation":"<p>A unique name for the capability. The name must be unique within your cluster and can contain alphanumeric characters, hyphens, and underscores.</p>"
+        },
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon EKS cluster where you want to create the capability.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "clientRequestToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This token is valid for 24 hours after creation. If you retry a request with the same client request token and the same parameters after the original request has completed successfully, the result of the original request is returned.</p>",
+          "idempotencyToken":true
+        },
+        "type":{
+          "shape":"CapabilityType",
+          "documentation":"<p>The type of capability to create. Valid values are:</p> <ul> <li> <p> <code>ACK</code> – Amazon Web Services Controllers for Kubernetes (ACK), which lets you manage resources directly from Kubernetes.</p> </li> <li> <p> <code>ARGOCD</code> – Argo CD for GitOps-based continuous delivery.</p> </li> <li> <p> <code>KRO</code> – Kube Resource Orchestrator (KRO) for composing and managing custom Kubernetes resources.</p> </li> </ul>"
+        },
+        "roleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the capability uses to interact with Amazon Web Services services. This role must have a trust policy that allows the EKS service principal to assume it, and it must have the necessary permissions for the capability type you're creating.</p> <p>For ACK capabilities, the role needs permissions to manage the resources you want to control through Kubernetes. For Argo CD capabilities, the role needs permissions to access Git repositories and Secrets Manager. For KRO capabilities, the role needs permissions based on the resources you'll be orchestrating.</p>"
+        },
+        "configuration":{
+          "shape":"CapabilityConfigurationRequest",
+          "documentation":"<p>The configuration settings for the capability. The structure of this object varies depending on the capability type. For Argo CD capabilities, you can configure IAM Identity CenterIAM; Identity Center integration, RBAC role mappings, and network access settings.</p>"
+        },
+        "tags":{"shape":"TagMap"},
+        "deletePropagationPolicy":{
+          "shape":"CapabilityDeletePropagationPolicy",
+          "documentation":"<p>Specifies how Kubernetes resources managed by the capability should be handled when the capability is deleted. Currently, the only supported value is <code>RETAIN</code> which retains all Kubernetes resources managed by the capability when the capability is deleted.</p> <p>Because resources are retained, all Kubernetes resources created by the capability should be deleted from the cluster before deleting the capability itself. After the capability is deleted, these resources become difficult to manage because the controller is no longer available.</p>"
+        }
+      }
+    },
+    "CreateCapabilityResponse":{
+      "type":"structure",
+      "members":{
+        "capability":{
+          "shape":"Capability",
+          "documentation":"<p>An object containing information about the newly created capability, including its name, ARN, status, and configuration.</p>"
+        }
+      }
+    },
     "CreateClusterRequest":{
       "type":"structure",
       "required":[
@@ -2613,6 +3053,36 @@
         "addon":{"shape":"Addon"}
       }
     },
+    "DeleteCapabilityRequest":{
+      "type":"structure",
+      "required":[
+        "clusterName",
+        "capabilityName"
+      ],
+      "members":{
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon EKS cluster that contains the capability you want to delete.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "capabilityName":{
+          "shape":"String",
+          "documentation":"<p>The name of the capability to delete.</p>",
+          "location":"uri",
+          "locationName":"capabilityName"
+        }
+      }
+    },
+    "DeleteCapabilityResponse":{
+      "type":"structure",
+      "members":{
+        "capability":{
+          "shape":"Capability",
+          "documentation":"<p>An object containing information about the deleted capability, including its final status and configuration.</p>"
+        }
+      }
+    },
     "DeleteClusterRequest":{
       "type":"structure",
       "required":["name"],
@@ -2958,6 +3428,36 @@
         }
       }
     },
+    "DescribeCapabilityRequest":{
+      "type":"structure",
+      "required":[
+        "clusterName",
+        "capabilityName"
+      ],
+      "members":{
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon EKS cluster that contains the capability you want to describe.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "capabilityName":{
+          "shape":"String",
+          "documentation":"<p>The name of the capability to describe.</p>",
+          "location":"uri",
+          "locationName":"capabilityName"
+        }
+      }
+    },
+    "DescribeCapabilityResponse":{
+      "type":"structure",
+      "members":{
+        "capability":{
+          "shape":"Capability",
+          "documentation":"<p>An object containing detailed information about the capability, including its name, ARN, type, status, version, configuration, health status, and timestamps for when it was created and last modified.</p>"
+        }
+      }
+    },
     "DescribeClusterRequest":{
       "type":"structure",
       "required":["name"],
@@ -3286,6 +3786,12 @@
           "documentation":"<p>The name of the add-on. The name must match one of the names returned by <a href=\"https://docs.aws.amazon.com/eks/latest/APIReference/API_ListAddons.html\"> <code>ListAddons</code> </a>. This parameter is required if the update is an add-on update.</p>",
           "location":"querystring",
           "locationName":"addonName"
+        },
+        "capabilityName":{
+          "shape":"String",
+          "documentation":"<p>The name of the capability for which you want to describe updates.</p>",
+          "location":"querystring",
+          "locationName":"capabilityName"
         }
       },
       "documentation":"<p>Describes an update request.</p>"
@@ -4263,6 +4769,49 @@
         }
       }
     },
+    "ListCapabilitiesRequest":{
+      "type":"structure",
+      "required":["clusterName"],
+      "members":{
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon EKS cluster for which you want to list capabilities.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value returned from a previous paginated request, where <code>maxResults</code> was used and the results exceeded the value of that parameter. Pagination continues from the end of the previous results that returned the <code>nextToken</code> value. This value is null when there are no more results to return.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListCapabilitiesRequestMaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value. If you don't specify a value, the default is 100 results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListCapabilitiesRequestMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListCapabilitiesResponse":{
+      "type":"structure",
+      "members":{
+        "capabilities":{
+          "shape":"CapabilitySummaryList",
+          "documentation":"<p>A list of capability summary objects, each containing basic information about a capability including its name, ARN, type, status, version, and timestamps.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListCapabilities</code> request. When the results of a <code>ListCapabilities</code> request exceed <code>maxResults</code>, you can use this value to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
     "ListClustersRequest":{
       "type":"structure",
       "members":{
@@ -4610,6 +5159,12 @@
           "documentation":"<p>The names of the installed add-ons that have available updates.</p>",
           "location":"querystring",
           "locationName":"addonName"
+        },
+        "capabilityName":{
+          "shape":"String",
+          "documentation":"<p>The name of the capability for which you want to list updates.</p>",
+          "location":"querystring",
+          "locationName":"capabilityName"
         },
         "nextToken":{
           "shape":"String",
@@ -5522,6 +6077,35 @@
       "exception":true,
       "fault":true
     },
+    "SsoIdentity":{
+      "type":"structure",
+      "required":[
+        "id",
+        "type"
+      ],
+      "members":{
+        "id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the IAM Identity CenterIAM; Identity Center user or group.</p>"
+        },
+        "type":{
+          "shape":"SsoIdentityType",
+          "documentation":"<p>The type of identity. Valid values are <code>SSO_USER</code> or <code>SSO_GROUP</code>.</p>"
+        }
+      },
+      "documentation":"<p>An IAM Identity CenterIAM; Identity Center identity (user or group) that can be assigned permissions in a capability.</p>"
+    },
+    "SsoIdentityList":{
+      "type":"list",
+      "member":{"shape":"SsoIdentity"}
+    },
+    "SsoIdentityType":{
+      "type":"string",
+      "enum":[
+        "SSO_USER",
+        "SSO_GROUP"
+      ]
+    },
     "StartInsightsRefreshRequest":{
       "type":"structure",
       "required":["clusterName"],
@@ -5846,6 +6430,74 @@
       }
     },
     "UpdateAddonResponse":{
+      "type":"structure",
+      "members":{
+        "update":{"shape":"Update"}
+      }
+    },
+    "UpdateArgoCdConfig":{
+      "type":"structure",
+      "members":{
+        "rbacRoleMappings":{
+          "shape":"UpdateRoleMappings",
+          "documentation":"<p>Updated RBAC role mappings for the Argo CD capability. You can add, update, or remove role mappings.</p>"
+        },
+        "networkAccess":{
+          "shape":"ArgoCdNetworkAccessConfigRequest",
+          "documentation":"<p>Updated network access configuration for the Argo CD capability's managed API server endpoint. You can add or remove VPC endpoint associations to control which VPCs have private access to the Argo CD server.</p>"
+        }
+      },
+      "documentation":"<p>Configuration updates for an Argo CD capability. You only need to specify the fields you want to update.</p>"
+    },
+    "UpdateCapabilityConfiguration":{
+      "type":"structure",
+      "members":{
+        "argoCd":{
+          "shape":"UpdateArgoCdConfig",
+          "documentation":"<p>Configuration updates specific to Argo CD capabilities.</p>"
+        }
+      },
+      "documentation":"<p>Configuration updates for a capability. The structure varies depending on the capability type.</p>"
+    },
+    "UpdateCapabilityRequest":{
+      "type":"structure",
+      "required":[
+        "clusterName",
+        "capabilityName"
+      ],
+      "members":{
+        "clusterName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon EKS cluster that contains the capability you want to update configuration for.</p>",
+          "location":"uri",
+          "locationName":"name"
+        },
+        "capabilityName":{
+          "shape":"String",
+          "documentation":"<p>The name of the capability to update configuration for.</p>",
+          "location":"uri",
+          "locationName":"capabilityName"
+        },
+        "roleArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the capability uses to interact with Amazon Web Services services. If you specify a new role ARN, the capability will start using the new role for all subsequent operations.</p>"
+        },
+        "configuration":{
+          "shape":"UpdateCapabilityConfiguration",
+          "documentation":"<p>The updated configuration settings for the capability. You only need to specify the configuration parameters you want to change. For Argo CD capabilities, you can update RBAC role mappings and network access settings.</p>"
+        },
+        "clientRequestToken":{
+          "shape":"String",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This token is valid for 24 hours after creation.</p>",
+          "idempotencyToken":true
+        },
+        "deletePropagationPolicy":{
+          "shape":"CapabilityDeletePropagationPolicy",
+          "documentation":"<p>The updated delete propagation policy for the capability. Currently, the only supported value is <code>RETAIN</code>.</p>"
+        }
+      }
+    },
+    "UpdateCapabilityResponse":{
       "type":"structure",
       "members":{
         "update":{"shape":"Update"}
@@ -6202,6 +6854,20 @@
           "documentation":"<p>The full description of the association that was updated.</p>"
         }
       }
+    },
+    "UpdateRoleMappings":{
+      "type":"structure",
+      "members":{
+        "addOrUpdateRoleMappings":{
+          "shape":"ArgoCdRoleMappingList",
+          "documentation":"<p>A list of role mappings to add or update. If a mapping for the specified role already exists, it will be updated with the new identities. If it doesn't exist, a new mapping will be created.</p>"
+        },
+        "removeRoleMappings":{
+          "shape":"ArgoCdRoleMappingList",
+          "documentation":"<p>A list of role mappings to remove from the RBAC configuration. Each mapping specifies an Argo CD role (<code>ADMIN</code>, <code>EDITOR</code>, or <code>VIEWER</code>) and the identities to remove from that role.</p>"
+        }
+      },
+      "documentation":"<p>Updates to RBAC role mappings for an Argo CD capability. You can add, update, or remove role mappings in a single operation.</p>"
     },
     "UpdateStatus":{
       "type":"string",

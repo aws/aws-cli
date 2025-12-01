@@ -2,6 +2,40 @@
 CHANGELOG
 =========
 
+2.32.7
+======
+
+* enhancement:``awscrt``: Update awscrt to version 0.29.0
+* api-change:``cleanrooms``: AWS Clean Rooms now supports privacy-enhancing synthetic dataset generation for custom ML training.
+* api-change:``qconnect``: New AIAgent types: Orchestration for ModelContextProtocol tool integration, CaseSummary for Amazon Connect Case summaries, NoteTaker for Agent Assistance notes. Added ListSpans and Retrieve APIs. Enhanced Q in Connect AssistantAssociationType to support Bring Your Own Bedrock Knowledge Bases.
+* enhancement:awscrt: Update awscrt to version 0.29.1
+* api-change:``connectcampaignsv2``: This release added support for new WhatsApp channel and Journey type outbound campaign
+* api-change:``connectparticipant``: Amazon Connect now supports message processing that intercepts and processes chat messages before they reach any participant.
+* api-change:``lambda``: Launching Lambda Managed Instances - a new feature to run Lambda on EC2.
+* api-change:``route53globalresolver``: Add SDK for Amazon Route 53 Global Resolver, a fully managed DNS resolver service that offers broad DNS-filtering security controls.
+* api-change:``appintegrations``: This release adds support for MCP servers via the ApplicationType field, allowing customers to register their Bedrock AgentCore gateways as third party applications.
+* api-change:``bedrock-agent-runtime``: Support audio and video content retrieval on Bedrock Knowledge Bases.
+* api-change:``connect``: This is a combined re:Invent release for Amazon Connect.
+* api-change:``marketplace-agreement``: This release supports 1/multi-product transactions via offer sets. DescribeAgreement and SearchAgreements APIs now return offer set IDs. SearchAgreements also supports filtering by offer set ID and 2/variable payment pricing terms will be returned through GetAgreementTerms.
+* api-change:``customer-profiles``: This release introduces, CRUD APIs for the DomainObjectType and Recommender resources, APIs to offer statistical insights on Object Type Attributes, Changes to SegmentDefinition APIs to support SQL queries to create Segments, and Changes to Domain APIs to support Data Store.
+* api-change:``partnercentral-selling``: New Features:
+Lead Management APIs for capturing and nurturing leads
+Lead invitation support for partner collaboration
+Lead-to-opportunity conversion operations
+AWS Marketplace OfferSets support for opportunities
+* api-change:``partnercentral-benefits``: Initial GA launch of Partner Central Benefits
+* api-change:``glue``: feature: Glue: Add support for Iceberg materialized view in Glue Data Catalog, including updated CreateTable API to support materialized views and new APIs for managing data refresh for materialized views.
+feature: Glue: Add support for Iceberg table encryption keys and struct field defaults.
+* api-change:``personalize``: This release adds support for includedDatasetColumns and performIncrementalUpdate in solution APIs, and rankingInfluence in campaign and batch inference APIs.
+* enhancement:crt: Dynamically determine part size if resolved transfer client is CRT and ``multipart_chunksize`` isn't explicitly configured
+* api-change:``partnercentral-account``: Initial GA launch of Partner Central Account
+* api-change:``eks``: This release adds support for EKS Capabilities
+* api-change:``lexv2-models``: Adds support for speech-to-speech models for human-like, adaptive, and expressive voice interactions. Also adds support for speech model preference, allowing customers to select which speech model they want to use for speech-to-text requests.
+* api-change:``bedrock-agent``: Support audio and video ingestion on Bedrock Knowledge Bases.
+* api-change:``cleanroomsml``: AWS Clean Rooms ML now supports privacy-enhancing synthetic dataset generation for custom ML training.
+* api-change:``marketplace-catalog``: This release introduces offer set entity in AWS Marketplace Catalog API to enable multi-product transaction. Offer set enables sellers to group multiple private offers into a single-click purchase experience, simplifying procurement for customers purchasing multi-product solutions.
+
+
 2.32.6
 ======
 

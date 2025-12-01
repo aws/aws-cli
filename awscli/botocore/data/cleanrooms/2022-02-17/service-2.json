@@ -2328,6 +2328,10 @@
         "errorMessageConfiguration":{
           "shape":"ErrorMessageConfiguration",
           "documentation":"<p>The configuration that specifies the level of detail in error messages returned by analyses using this template. When set to <code>DETAILED</code>, error messages include more information to help troubleshoot issues with PySpark jobs. Detailed error messages may expose underlying data, including sensitive information. Recommended for faster troubleshooting in development and testing environments.</p>"
+        },
+        "syntheticDataParameters":{
+          "shape":"SyntheticDataParameters",
+          "documentation":"<p>The parameters used to generate synthetic data for this analysis template.</p>"
         }
       },
       "documentation":"<p>The analysis template.</p>"
@@ -2463,6 +2467,10 @@
         "description":{
           "shape":"ResourceDescription",
           "documentation":"<p>The description of the analysis template.</p>"
+        },
+        "isSyntheticData":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates if this analysis template summary generated synthetic data.</p>"
         }
       },
       "documentation":"<p>The metadata of the analysis template.</p>"
@@ -2473,7 +2481,7 @@
     },
     "AnalysisTemplateText":{
       "type":"string",
-      "max":90000,
+      "max":500000,
       "min":0,
       "sensitive":true
     },
@@ -3136,6 +3144,10 @@
         "errorMessageConfiguration":{
           "shape":"ErrorMessageConfiguration",
           "documentation":"<p>The configuration that specifies the level of detail in error messages returned by analyses using this template. When set to <code>DETAILED</code>, error messages include more information to help troubleshoot issues with PySpark jobs. Detailed error messages may expose underlying data, including sensitive information. Recommended for faster troubleshooting in development and testing environments.</p>"
+        },
+        "syntheticDataParameters":{
+          "shape":"SyntheticDataParameters",
+          "documentation":"<p>The synthetic data generation parameters configured for this collaboration analysis template.</p>"
         }
       },
       "documentation":"<p>The analysis template within a collaboration.</p>"
@@ -3194,6 +3206,10 @@
         "description":{
           "shape":"ResourceDescription",
           "documentation":"<p>The description of the analysis template.</p>"
+        },
+        "isSyntheticData":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates if this collaboration analysis template uses synthetic data generation.</p>"
         }
       },
       "documentation":"<p>The metadata of the analysis template within a collaboration.</p>"
@@ -3832,9 +3848,26 @@
       },
       "documentation":"<p>A column within a schema relation, derived from the underlying table.</p>"
     },
+    "ColumnClassificationDetails":{
+      "type":"structure",
+      "required":["columnMapping"],
+      "members":{
+        "columnMapping":{
+          "shape":"ColumnMappingList",
+          "documentation":"<p>A mapping that defines the classification of data columns for synthetic data generation and specifies how each column should be handled during the privacy-preserving data synthesis process.</p>"
+        }
+      },
+      "documentation":"<p>Contains classification information for data columns, including mappings that specify how columns should be handled during synthetic data generation and privacy analysis.</p>"
+    },
     "ColumnList":{
       "type":"list",
       "member":{"shape":"Column"}
+    },
+    "ColumnMappingList":{
+      "type":"list",
+      "member":{"shape":"SyntheticDataColumnProperties"},
+      "max":1000,
+      "min":5
     },
     "ColumnName":{
       "type":"string",
@@ -4774,6 +4807,10 @@
         "errorMessageConfiguration":{
           "shape":"ErrorMessageConfiguration",
           "documentation":"<p>The configuration that specifies the level of detail in error messages returned by analyses using this template. When set to <code>DETAILED</code>, error messages include more information to help troubleshoot issues with PySpark jobs. Detailed error messages may expose underlying data, including sensitive information. Recommended for faster troubleshooting in development and testing environments.</p>"
+        },
+        "syntheticDataParameters":{
+          "shape":"SyntheticDataParameters",
+          "documentation":"<p>The parameters for generating synthetic data when running the analysis template.</p>"
         }
       }
     },
@@ -7937,9 +7974,48 @@
         "modelInference":{
           "shape":"ModelInferencePaymentConfig",
           "documentation":"<p>The payment responsibilities accepted by the member for model inference.</p>"
+        },
+        "syntheticDataGeneration":{
+          "shape":"SyntheticDataGenerationPaymentConfig",
+          "documentation":"<p>The payment configuration for machine learning synthetic data generation.</p>"
         }
       },
       "documentation":"<p>An object representing the collaboration member's machine learning payment responsibilities set by the collaboration creator.</p>"
+    },
+    "MLSyntheticDataParameters":{
+      "type":"structure",
+      "required":[
+        "epsilon",
+        "maxMembershipInferenceAttackScore",
+        "columnClassification"
+      ],
+      "members":{
+        "epsilon":{
+          "shape":"MLSyntheticDataParametersEpsilonDouble",
+          "documentation":"<p>The epsilon value for differential privacy when generating synthetic data. Lower values provide stronger privacy guarantees but may reduce data utility.</p>"
+        },
+        "maxMembershipInferenceAttackScore":{
+          "shape":"MaxMembershipInferenceAttackScore",
+          "documentation":"<p>The maximum acceptable score for membership inference attack vulnerability. Synthetic data generation fails if the score for the resulting data exceeds this threshold.</p>"
+        },
+        "columnClassification":{
+          "shape":"ColumnClassificationDetails",
+          "documentation":"<p>Classification details for data columns that specify how each column should be treated during synthetic data generation.</p>"
+        }
+      },
+      "documentation":"<p>Parameters that control the generation of synthetic data for machine learning, including privacy settings and column classification details.</p>"
+    },
+    "MLSyntheticDataParametersEpsilonDouble":{
+      "type":"double",
+      "box":true,
+      "max":10,
+      "min":0.0001
+    },
+    "MaxMembershipInferenceAttackScore":{
+      "type":"double",
+      "box":true,
+      "max":1,
+      "min":0.5
     },
     "MaxResults":{
       "type":"integer",
@@ -7984,7 +8060,6 @@
     "MemberList":{
       "type":"list",
       "member":{"shape":"MemberSpecification"},
-      "max":9,
       "min":0
     },
     "MemberSpecification":{
@@ -8215,6 +8290,10 @@
         "modelInference":{
           "shape":"MembershipModelInferencePaymentConfig",
           "documentation":"<p>The payment responsibilities accepted by the member for model inference.</p>"
+        },
+        "syntheticDataGeneration":{
+          "shape":"MembershipSyntheticDataGenerationPaymentConfig",
+          "documentation":"<p>The payment configuration for synthetic data generation for this machine learning membership.</p>"
         }
       },
       "documentation":"<p>An object representing the collaboration member's machine learning payment responsibilities set by the collaboration creator.</p>"
@@ -8413,6 +8492,17 @@
     "MembershipSummaryList":{
       "type":"list",
       "member":{"shape":"MembershipSummary"}
+    },
+    "MembershipSyntheticDataGenerationPaymentConfig":{
+      "type":"structure",
+      "required":["isResponsible"],
+      "members":{
+        "isResponsible":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates if this membership is responsible for paying for synthetic data generation.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for payment for synthetic data generation in a membership.</p>"
     },
     "ModelInferencePaymentConfig":{
       "type":"structure",
@@ -9054,6 +9144,7 @@
     },
     "ProtectedJobParameters":{
       "type":"structure",
+      "required":["analysisTemplateArn"],
       "members":{
         "analysisTemplateArn":{
           "shape":"AnalysisTemplateArn",
@@ -10395,6 +10486,64 @@
         "sa-east-1",
         "mx-central-1"
       ]
+    },
+    "SyntheticDataColumnName":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"[a-z0-9_](([a-z0-9_]+-)*([a-z0-9_]+))?"
+    },
+    "SyntheticDataColumnProperties":{
+      "type":"structure",
+      "required":[
+        "columnName",
+        "columnType",
+        "isPredictiveValue"
+      ],
+      "members":{
+        "columnName":{
+          "shape":"SyntheticDataColumnName",
+          "documentation":"<p>The name of the data column as it appears in the dataset.</p>"
+        },
+        "columnType":{
+          "shape":"SyntheticDataColumnType",
+          "documentation":"<p>The data type of the column, which determines how the synthetic data generation algorithm processes and synthesizes values for this column.</p>"
+        },
+        "isPredictiveValue":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates if this column contains predictive values that should be treated as target variables in machine learning models. This affects how the synthetic data generation preserves statistical relationships.</p>"
+        }
+      },
+      "documentation":"<p>Properties that define how a specific data column should be handled during synthetic data generation, including its name, type, and role in predictive modeling.</p>"
+    },
+    "SyntheticDataColumnType":{
+      "type":"string",
+      "enum":[
+        "CATEGORICAL",
+        "NUMERICAL"
+      ]
+    },
+    "SyntheticDataGenerationPaymentConfig":{
+      "type":"structure",
+      "required":["isResponsible"],
+      "members":{
+        "isResponsible":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates who is responsible for paying for synthetic data generation.</p>"
+        }
+      },
+      "documentation":"<p>Payment configuration for synthetic data generation.</p>"
+    },
+    "SyntheticDataParameters":{
+      "type":"structure",
+      "members":{
+        "mlSyntheticDataParameters":{
+          "shape":"MLSyntheticDataParameters",
+          "documentation":"<p>The machine learning-specific parameters for synthetic data generation.</p>"
+        }
+      },
+      "documentation":"<p>The parameters that control how synthetic data is generated, including privacy settings, column classifications, and other configuration options that affect the data synthesis process.</p>",
+      "union":true
     },
     "TableAlias":{
       "type":"string",

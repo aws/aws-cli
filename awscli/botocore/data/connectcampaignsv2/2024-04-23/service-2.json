@@ -760,8 +760,7 @@
         "id",
         "arn",
         "name",
-        "connectInstanceId",
-        "channelSubtypeConfig"
+        "connectInstanceId"
       ],
       "members":{
         "id":{"shape":"CampaignId"},
@@ -769,6 +768,7 @@
         "name":{"shape":"CampaignName"},
         "connectInstanceId":{"shape":"InstanceId"},
         "channelSubtypeConfig":{"shape":"ChannelSubtypeConfig"},
+        "type":{"shape":"ExternalCampaignType"},
         "source":{"shape":"Source"},
         "connectCampaignFlowArn":{"shape":"Arn"},
         "schedule":{"shape":"Schedule"},
@@ -839,6 +839,7 @@
         "name":{"shape":"CampaignName"},
         "connectInstanceId":{"shape":"InstanceId"},
         "channelSubtypes":{"shape":"ChannelSubtypeList"},
+        "type":{"shape":"ExternalCampaignType"},
         "schedule":{"shape":"Schedule"},
         "connectCampaignFlowArn":{"shape":"Arn"}
       },
@@ -862,7 +863,8 @@
       "enum":[
         "TELEPHONY",
         "SMS",
-        "EMAIL"
+        "EMAIL",
+        "WHATSAPP"
       ]
     },
     "ChannelSubtypeConfig":{
@@ -870,7 +872,8 @@
       "members":{
         "telephony":{"shape":"TelephonyChannelSubtypeConfig"},
         "sms":{"shape":"SmsChannelSubtypeConfig"},
-        "email":{"shape":"EmailChannelSubtypeConfig"}
+        "email":{"shape":"EmailChannelSubtypeConfig"},
+        "whatsApp":{"shape":"WhatsAppChannelSubtypeConfig"}
       },
       "documentation":"<p>Campaign Channel Subtype config</p>"
     },
@@ -884,7 +887,8 @@
       "members":{
         "telephony":{"shape":"TelephonyChannelSubtypeParameters"},
         "sms":{"shape":"SmsChannelSubtypeParameters"},
-        "email":{"shape":"EmailChannelSubtypeParameters"}
+        "email":{"shape":"EmailChannelSubtypeParameters"},
+        "whatsApp":{"shape":"WhatsAppChannelSubtypeParameters"}
       },
       "documentation":"<p>ChannelSubtypeParameters for an outbound request</p>",
       "union":true
@@ -967,7 +971,8 @@
         "localTimeZoneConfig":{"shape":"LocalTimeZoneConfig"},
         "telephony":{"shape":"TimeWindow"},
         "sms":{"shape":"TimeWindow"},
-        "email":{"shape":"TimeWindow"}
+        "email":{"shape":"TimeWindow"},
+        "whatsApp":{"shape":"TimeWindow"}
       },
       "documentation":"<p>Campaign communication time config</p>"
     },
@@ -977,7 +982,8 @@
       "enum":[
         "TELEPHONY",
         "SMS",
-        "EMAIL"
+        "EMAIL",
+        "WHATSAPP"
       ]
     },
     "ConflictException":{
@@ -1008,13 +1014,13 @@
       "type":"structure",
       "required":[
         "name",
-        "connectInstanceId",
-        "channelSubtypeConfig"
+        "connectInstanceId"
       ],
       "members":{
         "name":{"shape":"CampaignName"},
         "connectInstanceId":{"shape":"InstanceId"},
         "channelSubtypeConfig":{"shape":"ChannelSubtypeConfig"},
+        "type":{"shape":"ExternalCampaignType"},
         "source":{"shape":"Source"},
         "connectCampaignFlowArn":{"shape":"Arn"},
         "schedule":{"shape":"Schedule"},
@@ -1340,6 +1346,14 @@
         "Campaign-Orchestration"
       ]
     },
+    "ExternalCampaignType":{
+      "type":"string",
+      "documentation":"<p>The type of campaign externally exposed in APIs.</p>",
+      "enum":[
+        "MANAGED",
+        "JOURNEY"
+      ]
+    },
     "FailedCampaignStateResponse":{
       "type":"structure",
       "members":{
@@ -1595,7 +1609,8 @@
       "type":"structure",
       "members":{
         "customerProfiles":{"shape":"CustomerProfilesIntegrationConfig"},
-        "qConnect":{"shape":"QConnectIntegrationConfig"}
+        "qConnect":{"shape":"QConnectIntegrationConfig"},
+        "lambda":{"shape":"LambdaIntegrationConfig"}
       },
       "documentation":"<p>Integration config for Connect Instance</p>",
       "union":true
@@ -1604,7 +1619,8 @@
       "type":"structure",
       "members":{
         "customerProfiles":{"shape":"CustomerProfilesIntegrationIdentifier"},
-        "qConnect":{"shape":"QConnectIntegrationIdentifier"}
+        "qConnect":{"shape":"QConnectIntegrationIdentifier"},
+        "lambda":{"shape":"LambdaIntegrationIdentifier"}
       },
       "documentation":"<p>Integration identifier for Connect instance</p>",
       "union":true
@@ -1613,7 +1629,8 @@
       "type":"structure",
       "members":{
         "customerProfiles":{"shape":"CustomerProfilesIntegrationSummary"},
-        "qConnect":{"shape":"QConnectIntegrationSummary"}
+        "qConnect":{"shape":"QConnectIntegrationSummary"},
+        "lambda":{"shape":"LambdaIntegrationSummary"}
       },
       "documentation":"<p>Integration summary for Connect instance.</p>",
       "union":true
@@ -1696,6 +1713,37 @@
       "type":"string",
       "documentation":"<p>Time in ISO 8601 format, e.g. T23:11</p>",
       "pattern":"T\\d{2}:\\d{2}"
+    },
+    "LambdaArn":{
+      "type":"string",
+      "documentation":"<p>Lambda ARN for integration with Connect instances</p>",
+      "max":140,
+      "min":1,
+      "pattern":"arn:aws[a-zA-Z-]*:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d:\\d{12}:function:([a-zA-Z0-9-_]+)(:([a-zA-Z0-9-_]+))?"
+    },
+    "LambdaIntegrationConfig":{
+      "type":"structure",
+      "required":["functionArn"],
+      "members":{
+        "functionArn":{"shape":"LambdaArn"}
+      },
+      "documentation":"<p>Lambda integration config</p>"
+    },
+    "LambdaIntegrationIdentifier":{
+      "type":"structure",
+      "required":["functionArn"],
+      "members":{
+        "functionArn":{"shape":"LambdaArn"}
+      },
+      "documentation":"<p>Lambda integration identifier</p>"
+    },
+    "LambdaIntegrationSummary":{
+      "type":"structure",
+      "required":["functionArn"],
+      "members":{
+        "functionArn":{"shape":"LambdaArn"}
+      },
+      "documentation":"<p>Lambda integration summary</p>"
     },
     "ListCampaignsRequest":{
       "type":"structure",
@@ -2607,6 +2655,53 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "WhatsAppChannelSubtypeConfig":{
+      "type":"structure",
+      "required":[
+        "outboundMode",
+        "defaultOutboundConfig"
+      ],
+      "members":{
+        "capacity":{"shape":"Capacity"},
+        "outboundMode":{"shape":"WhatsAppOutboundMode"},
+        "defaultOutboundConfig":{"shape":"WhatsAppOutboundConfig"}
+      },
+      "documentation":"<p>WhatsApp Channel Subtype config</p>"
+    },
+    "WhatsAppChannelSubtypeParameters":{
+      "type":"structure",
+      "required":[
+        "destinationPhoneNumber",
+        "templateParameters"
+      ],
+      "members":{
+        "destinationPhoneNumber":{"shape":"DestinationPhoneNumber"},
+        "connectSourcePhoneNumberArn":{"shape":"Arn"},
+        "templateArn":{"shape":"Arn"},
+        "templateParameters":{"shape":"Attributes"}
+      },
+      "documentation":"<p>Parameters for the WhatsApp Channel Subtype</p>"
+    },
+    "WhatsAppOutboundConfig":{
+      "type":"structure",
+      "required":[
+        "connectSourcePhoneNumberArn",
+        "wisdomTemplateArn"
+      ],
+      "members":{
+        "connectSourcePhoneNumberArn":{"shape":"Arn"},
+        "wisdomTemplateArn":{"shape":"Arn"}
+      },
+      "documentation":"<p>Default WhatsApp Outbound config</p>"
+    },
+    "WhatsAppOutboundMode":{
+      "type":"structure",
+      "members":{
+        "agentless":{"shape":"AgentlessConfig"}
+      },
+      "documentation":"<p>WhatsApp Outbound Mode</p>",
+      "union":true
     },
     "XAmazonErrorType":{
       "type":"string",

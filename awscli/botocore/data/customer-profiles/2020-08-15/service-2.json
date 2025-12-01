@@ -185,6 +185,24 @@
       ],
       "documentation":"<p>Creates a standard profile.</p> <p>A standard profile represents the following attributes for a customer profile in a domain.</p>"
     },
+    "CreateRecommender":{
+      "name":"CreateRecommender",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/recommenders/{RecommenderName}",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateRecommenderRequest"},
+      "output":{"shape":"CreateRecommenderResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a recommender</p>"
+    },
     "CreateSegmentDefinition":{
       "name":"CreateSegmentDefinition",
       "http":{
@@ -307,6 +325,23 @@
       ],
       "documentation":"<p>Deletes the layout used to view data for a specific domain. This API can only be invoked from the Amazon Connect admin website.</p>"
     },
+    "DeleteDomainObjectType":{
+      "name":"DeleteDomainObjectType",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{DomainName}/domain-object-types/{ObjectTypeName}"
+      },
+      "input":{"shape":"DeleteDomainObjectTypeRequest"},
+      "output":{"shape":"DeleteDomainObjectTypeResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Delete a DomainObjectType for the given Domain and ObjectType name.</p>"
+    },
     "DeleteEventStream":{
       "name":"DeleteEventStream",
       "http":{
@@ -426,6 +461,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Removes a ProfileObjectType from a specific domain as well as removes all the ProfileObjects of that type. It also disables integrations from this specific ProfileObjectType. In addition, it scrubs all of the fields of the standard profile that were populated from this ProfileObjectType.</p>"
+    },
+    "DeleteRecommender":{
+      "name":"DeleteRecommender",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{DomainName}/recommenders/{RecommenderName}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteRecommenderRequest"},
+      "output":{"shape":"DeleteRecommenderResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a recommender.</p>"
     },
     "DeleteSegmentDefinition":{
       "name":"DeleteSegmentDefinition",
@@ -565,6 +618,23 @@
       ],
       "documentation":"<p>Gets the layout to view data for a specific domain. This API can only be invoked from the Amazon Connect admin website.</p>"
     },
+    "GetDomainObjectType":{
+      "name":"GetDomainObjectType",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/domain-object-types/{ObjectTypeName}"
+      },
+      "input":{"shape":"GetDomainObjectTypeRequest"},
+      "output":{"shape":"GetDomainObjectTypeResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Return a DomainObjectType for the input Domain and ObjectType names. </p>"
+    },
     "GetEventStream":{
       "name":"GetEventStream",
       "http":{
@@ -650,6 +720,23 @@
       ],
       "documentation":"<p>Before calling this API, use <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_CreateDomain.html\">CreateDomain</a> or <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_UpdateDomain.html\">UpdateDomain</a> to enable identity resolution: set <code>Matching</code> to true.</p> <p>GetMatches returns potentially matching profiles, based on the results of the latest run of a machine learning process. </p> <important> <p>The process of matching duplicate profiles. If <code>Matching</code> = <code>true</code>, Amazon Connect Customer Profiles starts a weekly batch process called Identity Resolution Job. If you do not specify a date and time for Identity Resolution Job to run, by default it runs every Saturday at 12AM UTC to detect duplicate profiles in your domains. </p> <p>After the Identity Resolution Job completes, use the <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">GetMatches</a> API to return and review the results. Or, if you have configured <code>ExportingConfig</code> in the <code>MatchingRequest</code>, you can download the results from S3.</p> </important> <p>Amazon Connect uses the following profile attributes to identify matches:</p> <ul> <li> <p>PhoneNumber</p> </li> <li> <p>HomePhoneNumber</p> </li> <li> <p>BusinessPhoneNumber</p> </li> <li> <p>MobilePhoneNumber</p> </li> <li> <p>EmailAddress</p> </li> <li> <p>PersonalEmailAddress</p> </li> <li> <p>BusinessEmailAddress</p> </li> <li> <p>FullName</p> </li> </ul> <p>For example, two or more profiles—with spelling mistakes such as <b>John Doe</b> and <b>Jhn Doe</b>, or different casing email addresses such as <b>JOHN_DOE@ANYCOMPANY.COM</b> and <b>johndoe@anycompany.com</b>, or different phone number formats such as <b>555-010-0000</b> and <b>+1-555-010-0000</b>—can be detected as belonging to the same customer <b>John Doe</b> and merged into a unified profile.</p>"
     },
+    "GetObjectTypeAttributeStatistics":{
+      "name":"GetObjectTypeAttributeStatistics",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/object-types/{ObjectTypeName}/attributes/{AttributeName}/statistics"
+      },
+      "input":{"shape":"GetObjectTypeAttributeStatisticsRequest"},
+      "output":{"shape":"GetObjectTypeAttributeStatisticsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>The GetObjectTypeAttributeValues API delivers statistical insights about attributes within a specific object type, but is exclusively available for domains with data store enabled. This API performs daily calculations to provide statistical information about your attribute values, helping you understand patterns and trends in your data. The statistical calculations are performed once per day, providing a consistent snapshot of your attribute data characteristics.</p> <note> <p>You'll receive null values in two scenarios: </p> <p>During the first period after enabling data vault (unless a calculation cycle occurs, which happens once daily).</p> <p>For attributes that don't contain numeric values. </p> </note>"
+    },
     "GetProfileHistoryRecord":{
       "name":"GetProfileHistoryRecord",
       "http":{
@@ -700,6 +787,42 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Returns the template information for a specific object type.</p> <p>A template is a predefined ProfileObjectType, such as “Salesforce-Account” or “Salesforce-Contact.” When a user sends a ProfileObject, using the PutProfileObject API, with an ObjectTypeName that matches one of the TemplateIds, it uses the mappings from the template.</p>"
+    },
+    "GetProfileRecommendations":{
+      "name":"GetProfileRecommendations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{DomainName}/profiles/{ProfileId}/recommendations"
+      },
+      "input":{"shape":"GetProfileRecommendationsRequest"},
+      "output":{"shape":"GetProfileRecommendationsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Fetches the recommendations for a profile in the input Customer Profiles domain. Fetches all the profile recommendations </p>"
+    },
+    "GetRecommender":{
+      "name":"GetRecommender",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/recommenders/{RecommenderName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRecommenderRequest"},
+      "output":{"shape":"GetRecommenderResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves a recommender.</p>",
+      "readonly":true
     },
     "GetSegmentDefinition":{
       "name":"GetSegmentDefinition",
@@ -930,6 +1053,23 @@
       ],
       "documentation":"<p>Lists the existing layouts that can be used to view data for a specific domain. This API can only be invoked from the Amazon Connect admin website.</p>"
     },
+    "ListDomainObjectTypes":{
+      "name":"ListDomainObjectTypes",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/domain-object-types"
+      },
+      "input":{"shape":"ListDomainObjectTypesRequest"},
+      "output":{"shape":"ListDomainObjectTypesResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List all DomainObjectType(s) in a Customer Profiles domain. </p>"
+    },
     "ListDomains":{
       "name":"ListDomains",
       "http":{
@@ -1014,6 +1154,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists all of the integrations in your domain.</p>"
+    },
+    "ListObjectTypeAttributeValues":{
+      "name":"ListObjectTypeAttributeValues",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/object-types/{ObjectTypeName}/attributes/{AttributeName}/values"
+      },
+      "input":{"shape":"ListObjectTypeAttributeValuesRequest"},
+      "output":{"shape":"ListObjectTypeAttributeValuesResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>The ListObjectTypeAttributeValues API provides access to the most recent distinct values for any specified attribute, making it valuable for real-time data validation and consistency checks within your object types. This API works across domain, supporting both custom and standard object types. The API accepts the object type name, attribute name, and domain name as input parameters and returns values up to the storage limit of approximately 350KB.</p>"
     },
     "ListObjectTypeAttributes":{
       "name":"ListObjectTypeAttributes",
@@ -1116,6 +1273,43 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Returns a list of objects associated with a profile of a given ProfileObjectType.</p>"
+    },
+    "ListRecommenderRecipes":{
+      "name":"ListRecommenderRecipes",
+      "http":{
+        "method":"GET",
+        "requestUri":"/recommender-recipes",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRecommenderRecipesRequest"},
+      "output":{"shape":"ListRecommenderRecipesResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of available recommender recipes that can be used to create recommenders.</p>",
+      "readonly":true
+    },
+    "ListRecommenders":{
+      "name":"ListRecommenders",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domains/{DomainName}/recommenders",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRecommendersRequest"},
+      "output":{"shape":"ListRecommendersResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a list of recommenders in the specified domain.</p>",
+      "readonly":true
     },
     "ListRuleBasedMatches":{
       "name":"ListRuleBasedMatches",
@@ -1220,6 +1414,23 @@
       ],
       "documentation":"<p>Runs an AWS Lambda job that does the following:</p> <ol> <li> <p>All the profileKeys in the <code>ProfileToBeMerged</code> will be moved to the main profile.</p> </li> <li> <p>All the objects in the <code>ProfileToBeMerged</code> will be moved to the main profile.</p> </li> <li> <p>All the <code>ProfileToBeMerged</code> will be deleted at the end.</p> </li> <li> <p>All the profileKeys in the <code>ProfileIdsToBeMerged</code> will be moved to the main profile.</p> </li> <li> <p>Standard fields are merged as follows:</p> <ol> <li> <p>Fields are always \"union\"-ed if there are no conflicts in standard fields or attributeKeys.</p> </li> <li> <p>When there are conflicting fields:</p> <ol> <li> <p>If no <code>SourceProfileIds</code> entry is specified, the main Profile value is always taken. </p> </li> <li> <p>If a <code>SourceProfileIds</code> entry is specified, the specified profileId is always taken, even if it is a NULL value.</p> </li> </ol> </li> </ol> </li> </ol> <p>You can use MergeProfiles together with <a href=\"https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_GetMatches.html\">GetMatches</a>, which returns potentially matching profiles, or use it with the results of another matching system. After profiles have been merged, they cannot be separated (unmerged).</p>"
     },
+    "PutDomainObjectType":{
+      "name":"PutDomainObjectType",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/domains/{DomainName}/domain-object-types/{ObjectTypeName}"
+      },
+      "input":{"shape":"PutDomainObjectTypeRequest"},
+      "output":{"shape":"PutDomainObjectTypeResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Create/Update a DomainObjectType in a Customer Profiles domain. To create a new DomainObjectType, Data Store needs to be enabled on the Domain.</p>"
+    },
     "PutIntegration":{
       "name":"PutIntegration",
       "http":{
@@ -1288,6 +1499,24 @@
       ],
       "documentation":"<p>Searches for profiles within a specific domain using one or more predefined search keys (e.g., _fullName, _phone, _email, _account, etc.) and/or custom-defined search keys. A search key is a data type pair that consists of a <code>KeyName</code> and <code>Values</code> list.</p> <p>This operation supports searching for profiles with a minimum of 1 key-value(s) pair and up to 5 key-value(s) pairs using either <code>AND</code> or <code>OR</code> logic.</p>"
     },
+    "StartRecommender":{
+      "name":"StartRecommender",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/domains/{DomainName}/recommenders/{RecommenderName}/start",
+        "responseCode":200
+      },
+      "input":{"shape":"StartRecommenderRequest"},
+      "output":{"shape":"StartRecommenderResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Starts a recommender that was previously stopped. Starting a recommender resumes its ability to generate recommendations.</p>"
+    },
     "StartUploadJob":{
       "name":"StartUploadJob",
       "http":{
@@ -1305,6 +1534,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>This API starts the processing of an upload job to ingest profile data. </p>"
+    },
+    "StopRecommender":{
+      "name":"StopRecommender",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/domains/{DomainName}/recommenders/{RecommenderName}/stop",
+        "responseCode":200
+      },
+      "input":{"shape":"StopRecommenderRequest"},
+      "output":{"shape":"StopRecommenderResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Stops a recommender, suspending its ability to generate recommendations. The recommender can be restarted later using StartRecommender.</p>"
     },
     "StopUploadJob":{
       "name":"StopUploadJob",
@@ -1438,6 +1685,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates the properties of a profile. The ProfileId is required for updating a customer profile.</p> <p>When calling the UpdateProfile API, specifying an empty string value means that any existing value will be removed. Not specifying a string value means that any value already there will be kept.</p>"
+    },
+    "UpdateRecommender":{
+      "name":"UpdateRecommender",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/domains/{DomainName}/recommenders/{RecommenderName}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateRecommenderRequest"},
+      "output":{"shape":"UpdateRecommenderResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"BadRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates the properties of an existing recommender, allowing you to modify its configuration and description.</p>"
     }
   },
   "shapes":{
@@ -1723,6 +1988,10 @@
         }
       },
       "documentation":"<p>Workflow step details for <code>APPFLOW_INTEGRATION</code> workflow.</p>"
+    },
+    "Arn":{
+      "type":"string",
+      "pattern":"arn:([a-z\\d-]+):profile:.*:.*:.+"
     },
     "AttributeDetails":{
       "type":"structure",
@@ -2143,6 +2412,64 @@
       "key":{"shape":"typeName"},
       "value":{"shape":"CalculatedAttributeDimension"}
     },
+    "CatalogItem":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"sensitiveString1To255",
+          "documentation":"<p>The unique identifier for the catalog item.</p>"
+        },
+        "Name":{
+          "shape":"sensitiveString1To255",
+          "documentation":"<p>The display name of the catalog item.</p>"
+        },
+        "Code":{
+          "shape":"sensitiveString1To255",
+          "documentation":"<p>The product code or SKU of the catalog item.</p>"
+        },
+        "Type":{
+          "shape":"sensitiveString1To255",
+          "documentation":"<p>The type classification of the catalog item.</p>"
+        },
+        "Category":{
+          "shape":"sensitiveString1To255",
+          "documentation":"<p>The category to which the catalog item belongs.</p>"
+        },
+        "Description":{
+          "shape":"sensitiveString1To255",
+          "documentation":"<p>A detailed description of the catalog item.</p>"
+        },
+        "AdditionalInformation":{
+          "shape":"sensitiveString1To1000",
+          "documentation":"<p>Supplementary information about the catalog item beyond the basic description.</p>"
+        },
+        "ImageLink":{
+          "shape":"sensitiveString1To1000",
+          "documentation":"<p>The URL link to the item's image.</p>"
+        },
+        "Link":{
+          "shape":"sensitiveString1To1000",
+          "documentation":"<p>The URL link to the item's detailed page or external resource.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the catalog item was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the catalog item was last updated.</p>"
+        },
+        "Price":{
+          "shape":"sensitiveString1To255",
+          "documentation":"<p>The price of the catalog item.</p>"
+        },
+        "Attributes":{
+          "shape":"Attributes",
+          "documentation":"<p>Additional attributes or properties associated with the catalog item stored as key-value pairs.</p>"
+        }
+      },
+      "documentation":"<p>Represents an item in the catalog with its complete set of attributes and metadata.</p>"
+    },
     "ComparisonOperator":{
       "type":"string",
       "enum":[
@@ -2290,6 +2617,19 @@
         "PersonalEmailAddress",
         "BusinessEmailAddress"
       ]
+    },
+    "ContentType":{
+      "type":"string",
+      "enum":[
+        "STRING",
+        "NUMBER"
+      ]
+    },
+    "ContextKey":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_.-]+$"
     },
     "CreateCalculatedAttributeDefinitionRequest":{
       "type":"structure",
@@ -2539,6 +2879,10 @@
           "shape":"RuleBasedMatchingRequest",
           "documentation":"<p>The process of matching duplicate profiles using the Rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
         },
+        "DataStore":{
+          "shape":"DataStoreRequest",
+          "documentation":"<p>Set to true to enabled data store for this domain.</p>"
+        },
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
@@ -2577,6 +2921,10 @@
         "RuleBasedMatching":{
           "shape":"RuleBasedMatchingResponse",
           "documentation":"<p>The process of matching duplicate profiles using the Rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
+        },
+        "DataStore":{
+          "shape":"DataStoreResponse",
+          "documentation":"<p>The data store.</p>"
         },
         "CreatedAt":{
           "shape":"timestamp",
@@ -2901,13 +3249,64 @@
         }
       }
     },
+    "CreateRecommenderRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "RecommenderName",
+        "RecommenderRecipeName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "RecommenderName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender.</p>",
+          "location":"uri",
+          "locationName":"RecommenderName"
+        },
+        "RecommenderRecipeName":{
+          "shape":"RecommenderRecipeName",
+          "documentation":"<p>The name of the recommeder recipe.</p>"
+        },
+        "RecommenderConfig":{
+          "shape":"RecommenderConfig",
+          "documentation":"<p>The recommender configuration.</p>"
+        },
+        "Description":{
+          "shape":"sensitiveText",
+          "documentation":"<p>The description of the domain object type.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "CreateRecommenderResponse":{
+      "type":"structure",
+      "required":["RecommenderArn"],
+      "members":{
+        "RecommenderArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the recommender</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
     "CreateSegmentDefinitionRequest":{
       "type":"structure",
       "required":[
         "DomainName",
         "SegmentDefinitionName",
-        "DisplayName",
-        "SegmentGroups"
+        "DisplayName"
       ],
       "members":{
         "DomainName":{
@@ -2927,12 +3326,16 @@
           "documentation":"<p>The display name of the segment definition.</p>"
         },
         "Description":{
-          "shape":"sensitiveText",
+          "shape":"sensitiveString1To4000",
           "documentation":"<p>The description of the segment definition.</p>"
         },
         "SegmentGroups":{
           "shape":"SegmentGroup",
           "documentation":"<p>Specifies the base segments and dimensions for a segment definition along with their respective relationship.</p>"
+        },
+        "SegmentSqlQuery":{
+          "shape":"sensitiveString1To50000",
+          "documentation":"<p>The segment SQL query.</p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -2955,7 +3358,7 @@
           "locationName":"DisplayName"
         },
         "Description":{
-          "shape":"sensitiveText",
+          "shape":"sensitiveString1To4000",
           "documentation":"<p>The description of the segment definition.</p>",
           "locationName":"Description"
         },
@@ -2978,10 +3381,7 @@
     },
     "CreateSegmentEstimateRequest":{
       "type":"structure",
-      "required":[
-        "DomainName",
-        "SegmentQuery"
-      ],
+      "required":["DomainName"],
       "members":{
         "DomainName":{
           "shape":"name",
@@ -2992,6 +3392,10 @@
         "SegmentQuery":{
           "shape":"SegmentGroupStructure",
           "documentation":"<p>The segment query for calculating a segment estimate.</p>"
+        },
+        "SegmentSqlQuery":{
+          "shape":"sensitiveString1To50000",
+          "documentation":"<p>The segment SQL query.</p>"
         }
       }
     },
@@ -3125,6 +3529,27 @@
         "Complete"
       ]
     },
+    "DataStoreRequest":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"optionalBoolean",
+          "documentation":"<p>Enabled: Set to true to enabled data store for this domain.</p>"
+        }
+      },
+      "documentation":"<p>The data store request.</p>"
+    },
+    "DataStoreResponse":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"optionalBoolean",
+          "documentation":"<p>True if data store is enabled for this domain</p>"
+        },
+        "Readiness":{"shape":"Readiness"}
+      },
+      "documentation":"<p>The data store response.</p>"
+    },
     "Date":{"type":"timestamp"},
     "DateDimension":{
       "type":"structure",
@@ -3222,6 +3647,31 @@
           "documentation":"<p>A message that indicates the delete request is done.</p>"
         }
       }
+    },
+    "DeleteDomainObjectTypeRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "ObjectTypeName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the domain object type.</p>",
+          "location":"uri",
+          "locationName":"ObjectTypeName"
+        }
+      }
+    },
+    "DeleteDomainObjectTypeResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DeleteDomainRequest":{
       "type":"structure",
@@ -3465,6 +3915,31 @@
         }
       }
     },
+    "DeleteRecommenderRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "RecommenderName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "RecommenderName":{
+          "shape":"name",
+          "documentation":"<p>The recommender name.</p>",
+          "location":"uri",
+          "locationName":"RecommenderName"
+        }
+      }
+    },
+    "DeleteRecommenderResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteSegmentDefinitionRequest":{
       "type":"structure",
       "required":[
@@ -3623,6 +4098,75 @@
       "type":"list",
       "member":{"shape":"ListDomainItem"}
     },
+    "DomainObjectTypeField":{
+      "type":"structure",
+      "required":[
+        "Source",
+        "Target"
+      ],
+      "members":{
+        "Source":{
+          "shape":"text",
+          "documentation":"<p>The expression that defines how to extract the field value from the source object.&gt;</p>"
+        },
+        "Target":{
+          "shape":"text",
+          "documentation":"<p>The expression that defines where the field value should be placed in the standard domain object.</p>"
+        },
+        "ContentType":{
+          "shape":"ContentType",
+          "documentation":"<p>The content type of the field.</p>"
+        },
+        "FeatureType":{
+          "shape":"FeatureType",
+          "documentation":"<p>The semantic meaning of the field.</p>"
+        }
+      },
+      "documentation":"<p>The standard domain object type.</p>"
+    },
+    "DomainObjectTypeFieldName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_.-]+$"
+    },
+    "DomainObjectTypeFields":{
+      "type":"map",
+      "key":{"shape":"DomainObjectTypeFieldName"},
+      "value":{"shape":"DomainObjectTypeField"}
+    },
+    "DomainObjectTypesList":{
+      "type":"list",
+      "member":{"shape":"DomainObjectTypesListItem"},
+      "sensitive":true
+    },
+    "DomainObjectTypesListItem":{
+      "type":"structure",
+      "required":["ObjectTypeName"],
+      "members":{
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The name that identifies the object type within the domain.</p>"
+        },
+        "Description":{
+          "shape":"sensitiveString1To10000",
+          "documentation":"<p>A description explaining the purpose and characteristics of this object type.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the domain object type was created.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the domain object type was most recently edited.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      },
+      "documentation":"<p>Represents an item in the list of domain object types, containing basic information about a specific object type within a domain.</p>"
+    },
     "DomainStats":{
       "type":"structure",
       "members":{
@@ -3684,6 +4228,32 @@
         "SUCCEEDED",
         "FAILED"
       ]
+    },
+    "EventParameters":{
+      "type":"structure",
+      "required":["EventType"],
+      "members":{
+        "EventType":{
+          "shape":"EventParametersEventTypeString",
+          "documentation":"<p>The type of event being tracked (e.g., 'click', 'purchase', 'view').</p>"
+        },
+        "EventValueThreshold":{
+          "shape":"Double",
+          "documentation":"<p>The minimum value threshold that an event must meet to be considered valid.</p>"
+        }
+      },
+      "documentation":"<p>Configuration parameters for events in the personalization system.</p>"
+    },
+    "EventParametersEventTypeString":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
+    "EventParametersList":{
+      "type":"list",
+      "member":{"shape":"EventParameters"},
+      "max":5,
+      "min":1
     },
     "EventStreamDestinationDetails":{
       "type":"structure",
@@ -3880,6 +4450,17 @@
       "max":10,
       "min":1
     },
+    "EventsConfig":{
+      "type":"structure",
+      "required":["EventParametersList"],
+      "members":{
+        "EventParametersList":{
+          "shape":"EventParametersList",
+          "documentation":"<p>A list of event parameters configurations that specify how different event types should be handled.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings that define how events are processed and tracked.</p>"
+    },
     "ExportingConfig":{
       "type":"structure",
       "members":{
@@ -3929,6 +4510,13 @@
     "Failures":{
       "type":"list",
       "member":{"shape":"ProfileQueryFailures"}
+    },
+    "FeatureType":{
+      "type":"string",
+      "enum":[
+        "TEXTUAL",
+        "CATEGORICAL"
+      ]
     },
     "FieldContentType":{
       "type":"string",
@@ -4468,6 +5056,61 @@
         }
       }
     },
+    "GetDomainObjectTypeRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "ObjectTypeName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the domain object type.</p>",
+          "location":"uri",
+          "locationName":"ObjectTypeName"
+        }
+      }
+    },
+    "GetDomainObjectTypeResponse":{
+      "type":"structure",
+      "required":["ObjectTypeName"],
+      "members":{
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the domain object type.</p>"
+        },
+        "Description":{
+          "shape":"sensitiveString1To10000",
+          "documentation":"<p>The description of the domain object type.</p>"
+        },
+        "EncryptionKey":{
+          "shape":"encryptionKey",
+          "documentation":"<p>The customer provided KMS key used to encrypt this type of domain object.</p>"
+        },
+        "Fields":{
+          "shape":"DomainObjectTypeFields",
+          "documentation":"<p>A map of field names to their corresponding domain object type field definitions.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the domain object type was created.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the domain object type was most recently edited.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
     "GetDomainRequest":{
       "type":"structure",
       "required":["DomainName"],
@@ -4515,6 +5158,10 @@
         "RuleBasedMatching":{
           "shape":"RuleBasedMatchingResponse",
           "documentation":"<p>The process of matching duplicate profiles using the Rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
+        },
+        "DataStore":{
+          "shape":"DataStoreResponse",
+          "documentation":"<p> True if data store is enabled for this domain.</p>"
         },
         "CreatedAt":{
           "shape":"timestamp",
@@ -4794,6 +5441,10 @@
         "EventTriggerNames":{
           "shape":"EventTriggerNames",
           "documentation":"<p>A list of unique names for active event triggers associated with the integration. This list would be empty if no Event Trigger is associated with the integration.</p>"
+        },
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether the integration applies to profile level data (associated with profiles) or domain level data (not associated with any specific profile). The default value is PROFILE.</p>"
         }
       }
     },
@@ -4841,6 +5492,117 @@
           "documentation":"<p>The list of matched profiles for this instance.</p>"
         }
       }
+    },
+    "GetObjectTypeAttributeStatisticsPercentiles":{
+      "type":"structure",
+      "required":[
+        "P5",
+        "P25",
+        "P50",
+        "P75",
+        "P95"
+      ],
+      "members":{
+        "P5":{
+          "shape":"Double",
+          "documentation":"<p>The 5th percentile value of the attribute.</p>"
+        },
+        "P25":{
+          "shape":"Double",
+          "documentation":"<p>The 25th percentile value of the attribute.</p>"
+        },
+        "P50":{
+          "shape":"Double",
+          "documentation":"<p>The 50th percentile (median) value of the attribute.</p>"
+        },
+        "P75":{
+          "shape":"Double",
+          "documentation":"<p>The 75th percentile value of the attribute.</p>"
+        },
+        "P95":{
+          "shape":"Double",
+          "documentation":"<p>The 95th percentile value of the attribute.</p>"
+        }
+      },
+      "documentation":"<p>Contains percentile statistics for object type attributes.</p>"
+    },
+    "GetObjectTypeAttributeStatisticsRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "ObjectTypeName",
+        "AttributeName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the domain object type.</p>",
+          "location":"uri",
+          "locationName":"ObjectTypeName"
+        },
+        "AttributeName":{
+          "shape":"string1To1000",
+          "documentation":"<p>The attribute name.</p>",
+          "location":"uri",
+          "locationName":"AttributeName"
+        }
+      }
+    },
+    "GetObjectTypeAttributeStatisticsResponse":{
+      "type":"structure",
+      "required":[
+        "Statistics",
+        "CalculatedAt"
+      ],
+      "members":{
+        "Statistics":{
+          "shape":"GetObjectTypeAttributeStatisticsStats",
+          "documentation":"<p>The statistics.</p>"
+        },
+        "CalculatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>Time when this statistics was calculated.</p>"
+        }
+      }
+    },
+    "GetObjectTypeAttributeStatisticsStats":{
+      "type":"structure",
+      "required":[
+        "Maximum",
+        "Minimum",
+        "Average",
+        "StandardDeviation",
+        "Percentiles"
+      ],
+      "members":{
+        "Maximum":{
+          "shape":"Double",
+          "documentation":"<p>The maximum value found in the attribute dataset.</p>"
+        },
+        "Minimum":{
+          "shape":"Double",
+          "documentation":"<p>The minimum value found in the attribute dataset.</p>"
+        },
+        "Average":{
+          "shape":"Double",
+          "documentation":"<p>The arithmetic mean of the attribute values.</p>"
+        },
+        "StandardDeviation":{
+          "shape":"Double",
+          "documentation":"<p>The standard deviation of the attribute values, measuring their spread around the mean.</p>"
+        },
+        "Percentiles":{
+          "shape":"GetObjectTypeAttributeStatisticsPercentiles",
+          "documentation":"<p>Percentile distribution statistics for the attribute values.</p>"
+        }
+      },
+      "documentation":"<p>Statistical measurements for object type attributes including basic statistics and percentiles.</p>"
     },
     "GetProfileHistoryRecordRequest":{
       "type":"structure",
@@ -5044,6 +5806,135 @@
         }
       }
     },
+    "GetProfileRecommendationsRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "ProfileId",
+        "RecommenderName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "ProfileId":{
+          "shape":"uuid",
+          "documentation":"<p>The unique identifier of the profile for which to retrieve recommendations.</p>",
+          "location":"uri",
+          "locationName":"ProfileId"
+        },
+        "RecommenderName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the recommender.</p>"
+        },
+        "Context":{
+          "shape":"RecommenderContext",
+          "documentation":"<p>The contextual metadata used to provide dynamic runtime information to tailor recommendations.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxSize10",
+          "documentation":"<p>The maximum number of recommendations to return. The default value is 10.</p>"
+        }
+      }
+    },
+    "GetProfileRecommendationsResponse":{
+      "type":"structure",
+      "members":{
+        "Recommendations":{
+          "shape":"Recommendations",
+          "documentation":"<p>List of recommendations generated by the recommender.</p>"
+        }
+      }
+    },
+    "GetRecommenderRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "RecommenderName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "RecommenderName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender.</p>",
+          "location":"uri",
+          "locationName":"RecommenderName"
+        },
+        "TrainingMetricsCount":{
+          "shape":"GetRecommenderRequestTrainingMetricsCountInteger",
+          "documentation":"<p>The number of training metrics to retrieve for the recommender.</p>",
+          "location":"querystring",
+          "locationName":"training-metrics-count"
+        }
+      }
+    },
+    "GetRecommenderRequestTrainingMetricsCountInteger":{
+      "type":"integer",
+      "box":true,
+      "max":5,
+      "min":0
+    },
+    "GetRecommenderResponse":{
+      "type":"structure",
+      "required":[
+        "RecommenderName",
+        "RecommenderRecipeName"
+      ],
+      "members":{
+        "RecommenderName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender.</p>"
+        },
+        "RecommenderRecipeName":{
+          "shape":"RecommenderRecipeName",
+          "documentation":"<p>The name of the recipe used by the recommender to generate recommendations.</p>"
+        },
+        "RecommenderConfig":{
+          "shape":"RecommenderConfig",
+          "documentation":"<p>The configuration settings for the recommender, including parameters and settings that define its behavior.</p>"
+        },
+        "Description":{
+          "shape":"sensitiveText",
+          "documentation":"<p>A detailed description of the recommender providing information about its purpose and functionality.</p>"
+        },
+        "Status":{
+          "shape":"RecommenderStatus",
+          "documentation":"<p>The current status of the recommender, indicating whether it is active, creating, updating, or in another state.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the recommender was edited.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the recommender was created.</p>"
+        },
+        "FailureReason":{
+          "shape":"String",
+          "documentation":"<p>If the recommender fails, provides the reason for the failure.</p>"
+        },
+        "LatestRecommenderUpdate":{
+          "shape":"RecommenderUpdate",
+          "documentation":"<p>Information about the most recent update performed on the recommender, including status and timestamp.</p>"
+        },
+        "TrainingMetrics":{
+          "shape":"TrainingMetricsList",
+          "documentation":"<p>A set of metrics that provide information about the recommender's training performance and accuracy.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
     "GetSegmentDefinitionRequest":{
       "type":"structure",
       "required":[
@@ -5080,7 +5971,7 @@
           "locationName":"DisplayName"
         },
         "Description":{
-          "shape":"sensitiveText",
+          "shape":"sensitiveString1To4000",
           "documentation":"<p>The description of the segment definition.</p>",
           "locationName":"Description"
         },
@@ -5103,6 +5994,16 @@
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>",
           "locationName":"Tags"
+        },
+        "SegmentSqlQuery":{
+          "shape":"sensitiveString1To50000",
+          "documentation":"<p>The segment SQL query.</p>",
+          "locationName":"SegmentSqlQuery"
+        },
+        "SegmentType":{
+          "shape":"SegmentType",
+          "documentation":"<p>The segment type.</p> <p> Classic : Segments created using traditional SegmentGroup structure</p> <p> Enhanced : Segments created using SQL queries </p>",
+          "locationName":"SegmentType"
         }
       }
     },
@@ -5202,6 +6103,11 @@
           "shape":"Failures",
           "documentation":"<p>An array of maps where each contains a response per profile failed for the request.</p>",
           "locationName":"Failures"
+        },
+        "LastComputedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp indicating when the segment membership was last computed or updated.</p>",
+          "locationName":"LastComputedAt"
         }
       }
     },
@@ -6083,6 +6989,43 @@
         }
       }
     },
+    "ListDomainObjectTypesRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "MaxResults":{
+          "shape":"maxSize100",
+          "documentation":"<p>The maximum number of domain object types returned per page.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous call to ListDomainObjectTypes.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListDomainObjectTypesResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"DomainObjectTypesList",
+          "documentation":"<p>The list of domain object types.</p>"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous call to ListDomainObjectTypes.</p>"
+        }
+      }
+    },
     "ListDomainsRequest":{
       "type":"structure",
       "members":{
@@ -6251,7 +7194,7 @@
         },
         "LastUpdatedAt":{
           "shape":"timestamp",
-          "documentation":"<p>The timestamp of when the domain was most recently edited.</p>"
+          "documentation":"<p>The timestamp of when the integration was most recently edited.</p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -6276,6 +7219,10 @@
         "EventTriggerNames":{
           "shape":"EventTriggerNames",
           "documentation":"<p>A list of unique names for active event triggers associated with the integration.</p>"
+        },
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>The scope or boundary of the integration item's applicability.</p>"
         }
       },
       "documentation":"<p>An integration in list of integrations.</p>"
@@ -6340,6 +7287,81 @@
         }
       },
       "documentation":"<p>Item that contains the attribute and when it was last updated.</p>"
+    },
+    "ListObjectTypeAttributeValuesItem":{
+      "type":"structure",
+      "required":[
+        "Value",
+        "LastUpdatedAt"
+      ],
+      "members":{
+        "Value":{
+          "shape":"sensitiveString1To1000",
+          "documentation":"<p>The actual value of the object type attribute.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the object type attribute value was most recently updated.</p>"
+        }
+      },
+      "documentation":"<p>Represents an item in the list of object type attribute values with its associated metadata.</p>"
+    },
+    "ListObjectTypeAttributeValuesList":{
+      "type":"list",
+      "member":{"shape":"ListObjectTypeAttributeValuesItem"}
+    },
+    "ListObjectTypeAttributeValuesRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "ObjectTypeName",
+        "AttributeName"
+      ],
+      "members":{
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous call.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"maxSize100",
+          "documentation":"<p>The maximum number of objects returned per page. Valid Range: Minimum value of 1. Maximum value of 100. If not provided default as 100.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the domain object type.</p>",
+          "location":"uri",
+          "locationName":"ObjectTypeName"
+        },
+        "AttributeName":{
+          "shape":"string1To1000",
+          "documentation":"<p>The attribute name.</p>",
+          "location":"uri",
+          "locationName":"AttributeName"
+        }
+      }
+    },
+    "ListObjectTypeAttributeValuesResponse":{
+      "type":"structure",
+      "members":{
+        "Items":{
+          "shape":"ListObjectTypeAttributeValuesList",
+          "documentation":"<p>A list of unique attribute values sorted on the basis of LastUpdatedAt. </p>"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>The pagination token from the previous call to call ListObjectTypeAttributeValues. </p>"
+        }
+      }
     },
     "ListObjectTypeAttributesList":{
       "type":"list",
@@ -6468,7 +7490,7 @@
         },
         "LastUpdatedAt":{
           "shape":"timestamp",
-          "documentation":"<p>The timestamp of when the domain was most recently edited.</p>"
+          "documentation":"<p>The timestamp of when the profile object type was most recently edited.</p>"
         },
         "MaxProfileObjectCount":{
           "shape":"minSize1",
@@ -6638,6 +7660,85 @@
         "NextToken":{
           "shape":"token",
           "documentation":"<p>The pagination token from the previous call to ListProfileObjects.</p>"
+        }
+      }
+    },
+    "ListRecommenderRecipesRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"ListRecommenderRecipesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of recommender recipes to return in the response. The default value is 100.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>A token received from a previous ListRecommenderRecipes call to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListRecommenderRecipesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":10
+    },
+    "ListRecommenderRecipesResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>A token to retrieve the next page of results. Null if there are no more results to retrieve.</p>"
+        },
+        "RecommenderRecipes":{
+          "shape":"RecommenderRecipesList",
+          "documentation":"<p>A list of available recommender recipes and their properties.</p>"
+        }
+      }
+    },
+    "ListRecommendersRequest":{
+      "type":"structure",
+      "required":["DomainName"],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "MaxResults":{
+          "shape":"ListRecommendersRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of recommenders to return in the response. The default value is 100.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>A token received from a previous ListRecommenders call to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListRecommendersRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListRecommendersResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"token",
+          "documentation":"<p>A token to retrieve the next page of results. Null if there are no more results to retrieve.</p>"
+        },
+        "Recommenders":{
+          "shape":"RecommenderSummaryList",
+          "documentation":"<p>A list of recommenders and their properties in the specified domain.</p>"
         }
       }
     },
@@ -7023,6 +8124,11 @@
       "max":15,
       "min":1
     },
+    "MaxSize10":{
+      "type":"integer",
+      "max":10,
+      "min":1
+    },
     "MaxSize500":{
       "type":"integer",
       "box":true,
@@ -7065,6 +8171,11 @@
           "documentation":"<p>A message that indicates the merge request is complete.</p>"
         }
       }
+    },
+    "Metrics":{
+      "type":"map",
+      "key":{"shape":"TrainingMetricName"},
+      "value":{"shape":"Double"}
     },
     "Object":{
       "type":"string",
@@ -7733,6 +8844,77 @@
       "max":2048,
       "pattern":".+"
     },
+    "PutDomainObjectTypeRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "ObjectTypeName",
+        "Fields"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the domain object type.</p>",
+          "location":"uri",
+          "locationName":"ObjectTypeName"
+        },
+        "Description":{
+          "shape":"sensitiveString1To10000",
+          "documentation":"<p>The description of the domain object type.</p>"
+        },
+        "EncryptionKey":{
+          "shape":"encryptionKey",
+          "documentation":"<p>The customer provided KMS key used to encrypt this type of domain object.</p>"
+        },
+        "Fields":{
+          "shape":"DomainObjectTypeFields",
+          "documentation":"<p>A map of field names to their corresponding domain object type field definitions.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
+    "PutDomainObjectTypeResponse":{
+      "type":"structure",
+      "members":{
+        "ObjectTypeName":{
+          "shape":"typeName",
+          "documentation":"<p>The unique name of the domain object type.</p>"
+        },
+        "Description":{
+          "shape":"sensitiveString1To10000",
+          "documentation":"<p>The description of the domain object type.</p>"
+        },
+        "EncryptionKey":{
+          "shape":"encryptionKey",
+          "documentation":"<p>The customer provided KMS key used to encrypt this type of domain object.</p>"
+        },
+        "Fields":{
+          "shape":"DomainObjectTypeFields",
+          "documentation":"<p>A map of field names to their corresponding domain object type field definitions.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the domain object type was created.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the domain object type was most recently edited.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      }
+    },
     "PutIntegrationRequest":{
       "type":"structure",
       "required":["DomainName"],
@@ -7751,6 +8933,10 @@
           "shape":"typeName",
           "documentation":"<p>The name of the profile object type.</p>"
         },
+        "ObjectTypeNames":{
+          "shape":"ObjectTypeNames",
+          "documentation":"<p>A map in which each key is an event type from an external application such as Segment or Shopify, and each value is an <code>ObjectTypeName</code> (template) used to ingest the event. It supports the following event types: <code>SegmentIdentify</code>, <code>ShopifyCreateCustomers</code>, <code>ShopifyUpdateCustomers</code>, <code>ShopifyCreateDraftOrders</code>, <code>ShopifyUpdateDraftOrders</code>, <code>ShopifyCreateOrders</code>, and <code>ShopifyUpdatedOrders</code>.</p>"
+        },
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
@@ -7759,10 +8945,6 @@
           "shape":"FlowDefinition",
           "documentation":"<p>The configuration that controls how Customer Profiles retrieves data from the source.</p>"
         },
-        "ObjectTypeNames":{
-          "shape":"ObjectTypeNames",
-          "documentation":"<p>A map in which each key is an event type from an external application such as Segment or Shopify, and each value is an <code>ObjectTypeName</code> (template) used to ingest the event. It supports the following event types: <code>SegmentIdentify</code>, <code>ShopifyCreateCustomers</code>, <code>ShopifyUpdateCustomers</code>, <code>ShopifyCreateDraftOrders</code>, <code>ShopifyUpdateDraftOrders</code>, <code>ShopifyCreateOrders</code>, and <code>ShopifyUpdatedOrders</code>.</p>"
-        },
         "RoleArn":{
           "shape":"RoleArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role. The Integration uses this role to make Customer Profiles requests on your behalf.</p>"
@@ -7770,6 +8952,10 @@
         "EventTriggerNames":{
           "shape":"EventTriggerNames",
           "documentation":"<p>A list of unique names for active event triggers associated with the integration.</p>"
+        },
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether the integration applies to profile level data (associated with profiles) or domain level data (not associated with any specific profile). The default value is PROFILE.</p>"
         }
       }
     },
@@ -7825,6 +9011,10 @@
         "EventTriggerNames":{
           "shape":"EventTriggerNames",
           "documentation":"<p>A list of unique names for active event triggers associated with the integration. This list would be empty if no Event Trigger is associated with the integration.</p>"
+        },
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether the integration applies to profile level data (associated with profiles) or domain level data (not associated with any specific profile). The default value is PROFILE.</p>"
         }
       }
     },
@@ -8069,6 +9259,169 @@
         "COMPLETED",
         "FAILED"
       ]
+    },
+    "Recommendation":{
+      "type":"structure",
+      "members":{
+        "CatalogItem":{
+          "shape":"CatalogItem",
+          "documentation":"<p>The catalog item being recommended, including its complete details and attributes.</p>"
+        },
+        "Score":{
+          "shape":"Double0To1",
+          "documentation":"<p>Recommendation Score between 0 and 1.</p>"
+        }
+      },
+      "documentation":"<p>Represents a single recommendation generated by the recommender system.</p>"
+    },
+    "Recommendations":{
+      "type":"list",
+      "member":{"shape":"Recommendation"},
+      "sensitive":true
+    },
+    "RecommenderConfig":{
+      "type":"structure",
+      "required":["EventsConfig"],
+      "members":{
+        "EventsConfig":{
+          "shape":"EventsConfig",
+          "documentation":"<p>Configuration settings for how the recommender processes and uses events.</p>"
+        },
+        "TrainingFrequency":{
+          "shape":"RecommenderConfigTrainingFrequencyInteger",
+          "documentation":"<p>How often the recommender should retrain its model with new data.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings that define the behavior and parameters of a recommender.</p>"
+    },
+    "RecommenderConfigTrainingFrequencyInteger":{
+      "type":"integer",
+      "box":true,
+      "max":7,
+      "min":7
+    },
+    "RecommenderContext":{
+      "type":"map",
+      "key":{"shape":"ContextKey"},
+      "value":{"shape":"string1To255"},
+      "sensitive":true
+    },
+    "RecommenderRecipe":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"RecommenderRecipeName",
+          "documentation":"<p>The name of the recommender recipe.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the recommender recipe's purpose and functionality.</p>"
+        }
+      },
+      "documentation":"<p>Defines the algorithm and approach used to generate recommendations.</p>"
+    },
+    "RecommenderRecipeName":{
+      "type":"string",
+      "enum":[
+        "recommended-for-you",
+        "similar-items",
+        "frequently-paired-items",
+        "popular-items",
+        "trending-now"
+      ]
+    },
+    "RecommenderRecipesList":{
+      "type":"list",
+      "member":{"shape":"RecommenderRecipe"}
+    },
+    "RecommenderStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "IN_PROGRESS",
+        "ACTIVE",
+        "FAILED",
+        "STOPPING",
+        "INACTIVE",
+        "STARTING",
+        "DELETING"
+      ]
+    },
+    "RecommenderSummary":{
+      "type":"structure",
+      "members":{
+        "RecommenderName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender.</p>"
+        },
+        "RecipeName":{
+          "shape":"RecommenderRecipeName",
+          "documentation":"<p>The name of the recipe used by this recommender.</p>"
+        },
+        "RecommenderConfig":{
+          "shape":"RecommenderConfig",
+          "documentation":"<p>The configuration settings applied to this recommender.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the recommender was created.</p>"
+        },
+        "Description":{
+          "shape":"sensitiveText",
+          "documentation":"<p>A description of the recommender's purpose and characteristics.</p>"
+        },
+        "Status":{
+          "shape":"RecommenderStatus",
+          "documentation":"<p>The current operational status of the recommender.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the recommender was edited.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "FailureReason":{
+          "shape":"String",
+          "documentation":"<p>If the recommender is in a failed state, provides the reason for the failure.</p>"
+        },
+        "LatestRecommenderUpdate":{
+          "shape":"RecommenderUpdate",
+          "documentation":"<p>Information about the most recent update performed on the recommender, including its status and timing.</p>"
+        }
+      },
+      "documentation":"<p>Provides a summary of a recommender's configuration and current state.</p>"
+    },
+    "RecommenderSummaryList":{
+      "type":"list",
+      "member":{"shape":"RecommenderSummary"}
+    },
+    "RecommenderUpdate":{
+      "type":"structure",
+      "members":{
+        "RecommenderConfig":{
+          "shape":"RecommenderConfig",
+          "documentation":"<p>The updated configuration settings applied to the recommender during this update.</p>"
+        },
+        "Status":{
+          "shape":"RecommenderStatus",
+          "documentation":"<p>The current status of the recommender update operation.</p>"
+        },
+        "CreatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when this recommender update was initiated.</p>"
+        },
+        "LastUpdatedAt":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the recommender was edited.</p>"
+        },
+        "FailureReason":{
+          "shape":"String",
+          "documentation":"<p>If the update operation failed, provides the reason for the failure.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an update operation performed on a recommender.</p>"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -8339,6 +9692,13 @@
       },
       "documentation":"<p>Specifies the configuration details of a scheduled-trigger flow that you define. Currently, these settings only apply to the scheduled-trigger type.</p>"
     },
+    "Scope":{
+      "type":"string",
+      "enum":[
+        "PROFILE",
+        "DOMAIN"
+      ]
+    },
     "SearchProfilesRequest":{
       "type":"structure",
       "required":[
@@ -8415,7 +9775,7 @@
           "locationName":"DisplayName"
         },
         "Description":{
-          "shape":"sensitiveText",
+          "shape":"sensitiveString1To4000",
           "documentation":"<p>The description of the segment definition.</p>",
           "locationName":"Description"
         },
@@ -8433,6 +9793,11 @@
           "shape":"TagMap",
           "documentation":"<p>The tags belonging to the segment definition.</p>",
           "locationName":"Tags"
+        },
+        "SegmentType":{
+          "shape":"SegmentType",
+          "documentation":"<p>The segment type.</p> <p> Classic : Segments created using traditional SegmentGroup structure</p> <p> Enhanced : Segments created using SQL queries </p>",
+          "locationName":"SegmentType"
         }
       },
       "documentation":"<p>Object holding the segment definition fields.</p>"
@@ -8482,6 +9847,13 @@
         "COMPLETED",
         "IN_PROGRESS",
         "FAILED"
+      ]
+    },
+    "SegmentType":{
+      "type":"string",
+      "enum":[
+        "CLASSIC",
+        "ENHANCED"
       ]
     },
     "ServiceNowConnectorOperator":{
@@ -8630,6 +10002,31 @@
       "member":{"shape":"StandardIdentifier"}
     },
     "Start":{"type":"integer"},
+    "StartRecommenderRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "RecommenderName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "RecommenderName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender to start.</p>",
+          "location":"uri",
+          "locationName":"RecommenderName"
+        }
+      }
+    },
+    "StartRecommenderResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "StartUploadJobRequest":{
       "type":"structure",
       "required":[
@@ -8688,6 +10085,31 @@
         "VALIDATION_FAILURE",
         "INTERNAL_FAILURE"
       ]
+    },
+    "StopRecommenderRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "RecommenderName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "RecommenderName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender to stop.</p>",
+          "location":"uri",
+          "locationName":"RecommenderName"
+        }
+      }
+    },
+    "StopRecommenderResponse":{
+      "type":"structure",
+      "members":{}
     },
     "StopUploadJobRequest":{
       "type":"structure",
@@ -8858,6 +10280,35 @@
       "type":"string",
       "max":256,
       "pattern":".*"
+    },
+    "TrainingMetricName":{
+      "type":"string",
+      "enum":[
+        "hit",
+        "coverage",
+        "recall",
+        "popularity",
+        "freshness",
+        "similarity"
+      ]
+    },
+    "TrainingMetrics":{
+      "type":"structure",
+      "members":{
+        "Time":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when these training metrics were recorded.</p>"
+        },
+        "Metrics":{
+          "shape":"Metrics",
+          "documentation":"<p>A collection of performance metrics and statistics from the training process.</p>"
+        }
+      },
+      "documentation":"<p>Contains metrics and performance indicators from the training of a recommender model.</p>"
+    },
+    "TrainingMetricsList":{
+      "type":"list",
+      "member":{"shape":"TrainingMetrics"}
     },
     "TriggerConfig":{
       "type":"structure",
@@ -9184,6 +10635,10 @@
           "shape":"RuleBasedMatchingRequest",
           "documentation":"<p>The process of matching duplicate profiles using the rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
         },
+        "DataStore":{
+          "shape":"DataStoreRequest",
+          "documentation":"<p>Set to true to enabled data store for this domain.</p>"
+        },
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
@@ -9221,6 +10676,10 @@
         "RuleBasedMatching":{
           "shape":"RuleBasedMatchingResponse",
           "documentation":"<p>The process of matching duplicate profiles using the rule-Based matching. If <code>RuleBasedMatching</code> = true, Amazon Connect Customer Profiles will start to match and merge your profiles according to your configuration in the <code>RuleBasedMatchingRequest</code>. You can use the <code>ListRuleBasedMatches</code> and <code>GetSimilarProfiles</code> API to return and review the results. Also, if you have configured <code>ExportingConfig</code> in the <code>RuleBasedMatchingRequest</code>, you can download the results from S3.</p>"
+        },
+        "DataStore":{
+          "shape":"DataStoreResponse",
+          "documentation":"<p>The data store.</p>"
         },
         "CreatedAt":{
           "shape":"timestamp",
@@ -9444,6 +10903,45 @@
         "ProfileId":{
           "shape":"uuid",
           "documentation":"<p>The unique identifier of a customer profile.</p>"
+        }
+      }
+    },
+    "UpdateRecommenderRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "RecommenderName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"name",
+          "documentation":"<p>The unique name of the domain.</p>",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "RecommenderName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender to update.</p>",
+          "location":"uri",
+          "locationName":"RecommenderName"
+        },
+        "Description":{
+          "shape":"sensitiveText",
+          "documentation":"<p>The new description to assign to the recommender.</p>"
+        },
+        "RecommenderConfig":{
+          "shape":"RecommenderConfig",
+          "documentation":"<p>The new configuration settings to apply to the recommender, including updated parameters and settings that define its behavior.</p>"
+        }
+      }
+    },
+    "UpdateRecommenderResponse":{
+      "type":"structure",
+      "required":["RecommenderName"],
+      "members":{
+        "RecommenderName":{
+          "shape":"name",
+          "documentation":"<p>The name of the recommender that was updated.</p>"
         }
       }
     },
@@ -9736,6 +11234,12 @@
       "min":1,
       "sensitive":true
     },
+    "sensitiveString1To10000":{
+      "type":"string",
+      "max":10000,
+      "min":1,
+      "sensitive":true
+    },
     "sensitiveString1To2000000":{
       "type":"string",
       "max":2000000,
@@ -9745,6 +11249,18 @@
     "sensitiveString1To255":{
       "type":"string",
       "max":255,
+      "min":1,
+      "sensitive":true
+    },
+    "sensitiveString1To4000":{
+      "type":"string",
+      "max":4000,
+      "min":1,
+      "sensitive":true
+    },
+    "sensitiveString1To50000":{
+      "type":"string",
+      "max":50000,
       "min":1,
       "sensitive":true
     },

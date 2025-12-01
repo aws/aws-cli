@@ -76,11 +76,32 @@
         {"shape":"ConflictException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>The <code>CreateEngagement</code> action allows you to create an <code>Engagement</code>, which serves as a collaborative space between different parties such as AWS Partners and AWS Sellers. This action automatically adds the caller's AWS account as an active member of the newly created <code>Engagement</code>.</p>",
+      "idempotent":true
+    },
+    "CreateEngagementContext":{
+      "name":"CreateEngagementContext",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateEngagementContextRequest"},
+      "output":{"shape":"CreateEngagementContextResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates a new context within an existing engagement. This action allows you to add contextual information such as customer projects or documents to an engagement, providing additional details that help facilitate collaboration between engagement members.</p>",
       "idempotent":true
     },
     "CreateEngagementInvitation":{
@@ -95,6 +116,7 @@
         {"shape":"ConflictException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceNotFoundException"}
@@ -133,6 +155,7 @@
         {"shape":"ConflictException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceNotFoundException"}
@@ -152,6 +175,7 @@
         {"shape":"ConflictException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ResourceNotFoundException"}
@@ -170,6 +194,7 @@
         {"shape":"ConflictException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
@@ -207,7 +232,8 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves a summary of an AWS Opportunity. This summary includes high-level details about the opportunity sourced from AWS, such as lifecycle information, customer details, and involvement type. It is useful for tracking updates on the AWS opportunity corresponding to an opportunity in the partner's account.</p>"
+      "documentation":"<p>Retrieves a summary of an AWS Opportunity. This summary includes high-level details about the opportunity sourced from AWS, such as lifecycle information, customer details, and involvement type. It is useful for tracking updates on the AWS opportunity corresponding to an opportunity in the partner's account.</p>",
+      "readonly":true
     },
     "GetEngagement":{
       "name":"GetEngagement",
@@ -220,10 +246,12 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Use this action to retrieve the engagement record for a given <code>EngagementIdentifier</code>.</p>"
+      "documentation":"<p>Use this action to retrieve the engagement record for a given <code>EngagementIdentifier</code>.</p>",
+      "readonly":true
     },
     "GetEngagementInvitation":{
       "name":"GetEngagementInvitation",
@@ -240,7 +268,8 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves the details of an engagement invitation shared by AWS with a partner. The information includes aspects such as customer, project details, and lifecycle information. To connect an engagement invitation with an opportunity, match the invitation’s <code>Payload.Project.Title</code> with opportunity <code>Project.Title</code>.</p>"
+      "documentation":"<p>Retrieves the details of an engagement invitation shared by AWS with a partner. The information includes aspects such as customer, project details, and lifecycle information. To connect an engagement invitation with an opportunity, match the invitation’s <code>Payload.Project.Title</code> with opportunity <code>Project.Title</code>.</p>",
+      "readonly":true
     },
     "GetOpportunity":{
       "name":"GetOpportunity",
@@ -257,7 +286,8 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Fetches the <code>Opportunity</code> record from Partner Central by a given <code>Identifier</code>.</p> <p>Use the <code>ListOpportunities</code> action or the event notification (from Amazon EventBridge) to obtain this identifier.</p>"
+      "documentation":"<p>Fetches the <code>Opportunity</code> record from Partner Central by a given <code>Identifier</code>.</p> <p>Use the <code>ListOpportunities</code> action or the event notification (from Amazon EventBridge) to obtain this identifier.</p>",
+      "readonly":true
     },
     "GetResourceSnapshot":{
       "name":"GetResourceSnapshot",
@@ -270,10 +300,12 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Use this action to retrieve a specific snapshot record.</p>"
+      "documentation":"<p>Use this action to retrieve a specific snapshot record.</p>",
+      "readonly":true
     },
     "GetResourceSnapshotJob":{
       "name":"GetResourceSnapshotJob",
@@ -286,10 +318,12 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Use this action to retrieves information about a specific resource snapshot job.</p>"
+      "documentation":"<p>Use this action to retrieves information about a specific resource snapshot job.</p>",
+      "readonly":true
     },
     "GetSellingSystemSettings":{
       "name":"GetSellingSystemSettings",
@@ -302,10 +336,12 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves the currently set system settings, which include the IAM Role used for resource snapshot jobs.</p>"
+      "documentation":"<p>Retrieves the currently set system settings, which include the IAM Role used for resource snapshot jobs.</p>",
+      "readonly":true
     },
     "ListEngagementByAcceptingInvitationTasks":{
       "name":"ListEngagementByAcceptingInvitationTasks",
@@ -318,10 +354,12 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Lists all in-progress, completed, or failed StartEngagementByAcceptingInvitationTask tasks that were initiated by the caller's account. </p>"
+      "documentation":"<p> Lists all in-progress, completed, or failed StartEngagementByAcceptingInvitationTask tasks that were initiated by the caller's account. </p>",
+      "readonly":true
     },
     "ListEngagementFromOpportunityTasks":{
       "name":"ListEngagementFromOpportunityTasks",
@@ -334,10 +372,12 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Lists all in-progress, completed, or failed <code>EngagementFromOpportunity</code> tasks that were initiated by the caller's account. </p>"
+      "documentation":"<p> Lists all in-progress, completed, or failed <code>EngagementFromOpportunity</code> tasks that were initiated by the caller's account. </p>",
+      "readonly":true
     },
     "ListEngagementInvitations":{
       "name":"ListEngagementInvitations",
@@ -354,7 +394,8 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves a list of engagement invitations sent to the partner. This allows partners to view all pending or past engagement invitations, helping them track opportunities shared by AWS.</p>"
+      "documentation":"<p>Retrieves a list of engagement invitations sent to the partner. This allows partners to view all pending or past engagement invitations, helping them track opportunities shared by AWS.</p>",
+      "readonly":true
     },
     "ListEngagementMembers":{
       "name":"ListEngagementMembers",
@@ -367,10 +408,12 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves the details of member partners in an Engagement. This operation can only be invoked by members of the Engagement. The <code>ListEngagementMembers</code> operation allows you to fetch information about the members of a specific Engagement. This action is restricted to members of the Engagement being queried. </p>"
+      "documentation":"<p>Retrieves the details of member partners in an Engagement. This operation can only be invoked by members of the Engagement. The <code>ListEngagementMembers</code> operation allows you to fetch information about the members of a specific Engagement. This action is restricted to members of the Engagement being queried. </p>",
+      "readonly":true
     },
     "ListEngagementResourceAssociations":{
       "name":"ListEngagementResourceAssociations",
@@ -383,10 +426,12 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists the associations between resources and engagements where the caller is a member and has at least one snapshot in the engagement.</p>"
+      "documentation":"<p>Lists the associations between resources and engagements where the caller is a member and has at least one snapshot in the engagement.</p>",
+      "readonly":true
     },
     "ListEngagements":{
       "name":"ListEngagements",
@@ -399,10 +444,12 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>This action allows users to retrieve a list of Engagement records from Partner Central. This action can be used to manage and track various engagements across different stages of the partner selling process. </p>"
+      "documentation":"<p>This action allows users to retrieve a list of Engagement records from Partner Central. This action can be used to manage and track various engagements across different stages of the partner selling process. </p>",
+      "readonly":true
     },
     "ListOpportunities":{
       "name":"ListOpportunities",
@@ -419,7 +466,26 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>This request accepts a list of filters that retrieve opportunity subsets as well as sort options. This feature is available to partners from <a href=\"https://partnercentral.awspartner.com/\">Partner Central</a> using the <code>ListOpportunities</code> API action.</p> <p>To synchronize your system with Amazon Web Services, list only the opportunities that were newly created or updated. We recommend you rely on events emitted by the service into your Amazon Web Services account’s Amazon EventBridge default event bus. You can also use the <code>ListOpportunities</code> action.</p> <p>We recommend the following approach:</p> <ol> <li> <p>Find the latest <code>LastModifiedDate</code> that you stored, and only use the values that came from Amazon Web Services. Don’t use values generated by your system.</p> </li> <li> <p>When you send a <code>ListOpportunities</code> request, submit the date in ISO 8601 format in the <code>AfterLastModifiedDate</code> filter.</p> </li> <li> <p>Amazon Web Services only returns opportunities created or updated on or after that date and time. Use <code>NextToken</code> to iterate over all pages.</p> </li> </ol>"
+      "documentation":"<p>This request accepts a list of filters that retrieve opportunity subsets as well as sort options. This feature is available to partners from <a href=\"https://partnercentral.awspartner.com/\">Partner Central</a> using the <code>ListOpportunities</code> API action.</p> <p>To synchronize your system with Amazon Web Services, list only the opportunities that were newly created or updated. We recommend you rely on events emitted by the service into your Amazon Web Services account’s Amazon EventBridge default event bus. You can also use the <code>ListOpportunities</code> action.</p> <p>We recommend the following approach:</p> <ol> <li> <p>Find the latest <code>LastModifiedDate</code> that you stored, and only use the values that came from Amazon Web Services. Don’t use values generated by your system.</p> </li> <li> <p>When you send a <code>ListOpportunities</code> request, submit the date in ISO 8601 format in the <code>AfterLastModifiedDate</code> filter.</p> </li> <li> <p>Amazon Web Services only returns opportunities created or updated on or after that date and time. Use <code>NextToken</code> to iterate over all pages.</p> </li> </ol>",
+      "readonly":true
+    },
+    "ListOpportunityFromEngagementTasks":{
+      "name":"ListOpportunityFromEngagementTasks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListOpportunityFromEngagementTasksRequest"},
+      "output":{"shape":"ListOpportunityFromEngagementTasksResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists all in-progress, completed, or failed opportunity creation tasks from engagements that were initiated by the caller's account.</p>",
+      "readonly":true
     },
     "ListResourceSnapshotJobs":{
       "name":"ListResourceSnapshotJobs",
@@ -432,10 +498,12 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p> Lists resource snapshot jobs owned by the customer. This operation supports various filtering scenarios, including listing all jobs owned by the caller, jobs for a specific engagement, jobs with a specific status, or any combination of these filters. </p>"
+      "documentation":"<p> Lists resource snapshot jobs owned by the customer. This operation supports various filtering scenarios, including listing all jobs owned by the caller, jobs for a specific engagement, jobs with a specific status, or any combination of these filters. </p>",
+      "readonly":true
     },
     "ListResourceSnapshots":{
       "name":"ListResourceSnapshots",
@@ -448,10 +516,12 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves a list of resource view snapshots based on specified criteria. This operation supports various use cases, including: </p> <ul> <li> <p>Fetching all snapshots associated with an engagement.</p> </li> <li> <p>Retrieving snapshots of a specific resource type within an engagement.</p> </li> <li> <p>Obtaining snapshots for a particular resource using a specified template.</p> </li> <li> <p>Accessing the latest snapshot of a resource within an engagement.</p> </li> <li> <p>Filtering snapshots by resource owner.</p> </li> </ul>"
+      "documentation":"<p>Retrieves a list of resource view snapshots based on specified criteria. This operation supports various use cases, including: </p> <ul> <li> <p>Fetching all snapshots associated with an engagement.</p> </li> <li> <p>Retrieving snapshots of a specific resource type within an engagement.</p> </li> <li> <p>Obtaining snapshots for a particular resource using a specified template.</p> </li> <li> <p>Accessing the latest snapshot of a resource within an engagement.</p> </li> <li> <p>Filtering snapshots by resource owner.</p> </li> </ul>",
+      "readonly":true
     },
     "ListSolutions":{
       "name":"ListSolutions",
@@ -462,12 +532,14 @@
       "input":{"shape":"ListSolutionsRequest"},
       "output":{"shape":"ListSolutionsResponse"},
       "errors":[
+        {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves a list of Partner Solutions that the partner registered on Partner Central. This API is used to generate a list of solutions that an end user selects from for association with an opportunity.</p>"
+      "documentation":"<p>Retrieves a list of Partner Solutions that the partner registered on Partner Central. This API is used to generate a list of solutions that an end user selects from for association with an opportunity.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -484,7 +556,8 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns a list of tags for a resource.</p>"
+      "documentation":"<p>Returns a list of tags for a resource.</p>",
+      "readonly":true
     },
     "PutSellingSystemSettings":{
       "name":"PutSellingSystemSettings",
@@ -497,6 +570,7 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
@@ -558,6 +632,25 @@
       ],
       "documentation":"<p>Similar to <code>StartEngagementByAcceptingInvitationTask</code>, this action is asynchronous and performs multiple steps before completion. This action orchestrates a comprehensive workflow that combines multiple API operations into a single task to create and initiate an engagement from an existing opportunity. It automatically executes a sequence of operations including <code>GetOpportunity</code>, <code>CreateEngagement</code> (if it doesn't exist), <code>CreateResourceSnapshot</code>, <code>CreateResourceSnapshotJob</code>, <code>CreateEngagementInvitation</code> (if not already invited/accepted), and <code>SubmitOpportunity</code>. </p>"
     },
+    "StartOpportunityFromEngagementTask":{
+      "name":"StartOpportunityFromEngagementTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartOpportunityFromEngagementTaskRequest"},
+      "output":{"shape":"StartOpportunityFromEngagementTaskResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>This action creates an opportunity from an existing engagement context. The task is asynchronous and orchestrates the process of converting engagement contextual information into a structured opportunity record within the partner's account.</p>"
+    },
     "StartResourceSnapshotJob":{
       "name":"StartResourceSnapshotJob",
       "http":{
@@ -568,6 +661,7 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
@@ -584,6 +678,7 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
@@ -644,6 +739,25 @@
       "documentation":"<p>Removes a tag or tags from a resource.</p>",
       "idempotent":true
     },
+    "UpdateEngagementContext":{
+      "name":"UpdateEngagementContext",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateEngagementContextRequest"},
+      "output":{"shape":"UpdateEngagementContextResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the context information for an existing engagement with new or modified data.</p>"
+    },
     "UpdateOpportunity":{
       "name":"UpdateOpportunity",
       "http":{
@@ -684,10 +798,18 @@
     "AccessDeniedException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"String"}
+        "Message":{"shape":"String"},
+        "Reason":{
+          "shape":"AccessDeniedExceptionErrorCode",
+          "documentation":"<p>The reason why access was denied for the requested operation.</p>"
+        }
       },
       "documentation":"<p>This error occurs when you don't have permission to perform the requested action.</p> <p>You don’t have access to this action or resource. Review IAM policies or contact your AWS administrator for assistance.</p>",
       "exception":true
+    },
+    "AccessDeniedExceptionErrorCode":{
+      "type":"string",
+      "enum":["INCOMPATIBLE_BENEFIT_AWS_PARTNER_STATE"]
     },
     "Account":{
       "type":"structure",
@@ -726,14 +848,12 @@
     },
     "AccountCompanyNameString":{
       "type":"string",
-      "max":120,
-      "min":0,
+      "pattern":"(?s).{0,120}",
       "sensitive":true
     },
     "AccountOtherIndustryString":{
       "type":"string",
-      "max":255,
-      "min":0
+      "pattern":"(?s).{0,255}"
     },
     "AccountReceiver":{
       "type":"structure",
@@ -779,14 +899,12 @@
     },
     "AccountSummaryCompanyNameString":{
       "type":"string",
-      "max":120,
-      "min":0,
+      "pattern":"(?s).{0,120}",
       "sensitive":true
     },
     "AccountSummaryOtherIndustryString":{
       "type":"string",
-      "max":255,
-      "min":0
+      "pattern":"(?s).{0,255}"
     },
     "Address":{
       "type":"structure",
@@ -816,8 +934,7 @@
     },
     "AddressCityString":{
       "type":"string",
-      "max":255,
-      "min":0,
+      "pattern":"(?s).{0,255}",
       "sensitive":true
     },
     "AddressPart":{
@@ -826,14 +943,12 @@
     },
     "AddressPostalCodeString":{
       "type":"string",
-      "max":20,
-      "min":0,
+      "pattern":"(?s).{0,20}",
       "sensitive":true
     },
     "AddressStreetAddressString":{
       "type":"string",
-      "max":255,
-      "min":0,
+      "pattern":"(?s).{0,255}",
       "sensitive":true
     },
     "AddressSummary":{
@@ -860,20 +975,17 @@
     },
     "AddressSummaryCityString":{
       "type":"string",
-      "max":255,
-      "min":0,
+      "pattern":"(?s).{0,255}",
       "sensitive":true
     },
     "AddressSummaryPostalCodeString":{
       "type":"string",
-      "max":20,
-      "min":0,
+      "pattern":"(?s).{0,20}",
       "sensitive":true
     },
     "Alias":{
       "type":"string",
-      "max":80,
-      "min":0,
+      "pattern":"(?s).{0,80}",
       "sensitive":true
     },
     "Amount":{
@@ -928,6 +1040,10 @@
           "shape":"AssigneeContactLastNameString",
           "documentation":"<p>Specifies the last name of the assignee managing the opportunity. The system automatically retrieves this value from the user profile by referencing the associated email address.</p>"
         },
+        "Phone":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>Specifies the contact phone number of the assignee responsible for the opportunity or engagement. This field enables direct communication for time-sensitive matters and facilitates coordination between AWS and partner teams.</p>"
+        },
         "BusinessTitle":{
           "shape":"JobTitle",
           "documentation":"<p>Specifies the business title of the assignee managing the opportunity. This helps clarify the individual's role and responsibilities within the organization. Use the value <code>PartnerAccountManager</code> to update details of the opportunity owner.</p>"
@@ -937,14 +1053,12 @@
     },
     "AssigneeContactFirstNameString":{
       "type":"string",
-      "max":80,
-      "min":0,
+      "pattern":"(?s).{0,80}",
       "sensitive":true
     },
     "AssigneeContactLastNameString":{
       "type":"string",
-      "max":80,
-      "min":0,
+      "pattern":"(?s).{0,80}",
       "sensitive":true
     },
     "AssociateOpportunityRequest":{
@@ -976,8 +1090,7 @@
     },
     "AssociateOpportunityRequestRelatedEntityIdentifierString":{
       "type":"string",
-      "max":255,
-      "min":1
+      "pattern":"(?s).{1,255}"
     },
     "AwsAccount":{
       "type":"string",
@@ -1064,6 +1177,18 @@
       "type":"list",
       "member":{"shape":"AwsMarketplaceOfferIdentifier"}
     },
+    "AwsMarketplaceOfferSetIdentifier":{
+      "type":"string",
+      "pattern":"arn:aws:aws-marketplace:[a-z]{1,2}-[a-z]*-\\d+:\\d{12}:AWSMarketplace/OfferSet/offerset-.*"
+    },
+    "AwsMarketplaceOfferSetIdentifiers":{
+      "type":"list",
+      "member":{"shape":"AwsMarketplaceOfferSetIdentifier"}
+    },
+    "AwsMaturity":{
+      "type":"string",
+      "pattern":"(?s).{1,20}"
+    },
     "AwsMemberBusinessTitle":{
       "type":"string",
       "enum":[
@@ -1133,8 +1258,7 @@
     },
     "AwsOpportunityLifeCycleNextStepsString":{
       "type":"string",
-      "max":255,
-      "min":0,
+      "pattern":"(?s).{0,255}",
       "sensitive":true
     },
     "AwsOpportunityProject":{
@@ -1238,14 +1362,12 @@
     },
     "AwsTeamMemberFirstNameString":{
       "type":"string",
-      "max":80,
-      "min":0,
+      "pattern":"(?s).{0,80}",
       "sensitive":true
     },
     "AwsTeamMemberLastNameString":{
       "type":"string",
-      "max":80,
-      "min":0,
+      "pattern":"(?s).{0,80}",
       "sensitive":true
     },
     "CatalogIdentifier":{
@@ -1276,7 +1398,7 @@
     },
     "ClientToken":{
       "type":"string",
-      "pattern":"[!-~]{1,64}"
+      "pattern":".{1,255}"
     },
     "ClosedLostReason":{
       "type":"string",
@@ -1304,15 +1426,12 @@
     },
     "CompanyName":{
       "type":"string",
-      "max":120,
-      "min":1,
+      "pattern":"(?s).{1,120}",
       "sensitive":true
     },
     "CompanyWebsiteUrl":{
       "type":"string",
-      "max":255,
-      "min":4,
-      "pattern":"((http|https)://)??(www[.])??([a-zA-Z0-9]|-)+?([.][a-zA-Z0-9(-|/|=|?)??]+?)+?",
+      "pattern":"(?=.{4,255}$)((http|https)://)??(www[.])??([a-zA-Z0-9]|-)+?([.][a-zA-Z0-9(-|/|=|?)??]+?)+?",
       "sensitive":true
     },
     "CompetitorName":{
@@ -1367,15 +1486,23 @@
     },
     "ContactFirstNameString":{
       "type":"string",
-      "max":80,
-      "min":0,
+      "pattern":"(?s).{0,80}",
       "sensitive":true
     },
     "ContactLastNameString":{
       "type":"string",
-      "max":80,
-      "min":0,
+      "pattern":"(?s).{0,80}",
       "sensitive":true
+    },
+    "ContextIdentifier":{
+      "type":"string",
+      "pattern":"[1-9][0-9]*"
+    },
+    "ContextIdentifiers":{
+      "type":"list",
+      "member":{"shape":"ContextIdentifier"},
+      "max":10,
+      "min":1
     },
     "CountryCode":{
       "type":"string",
@@ -1632,6 +1759,57 @@
       ],
       "sensitive":true
     },
+    "CreateEngagementContextRequest":{
+      "type":"structure",
+      "required":[
+        "Catalog",
+        "EngagementIdentifier",
+        "ClientToken",
+        "Type",
+        "Payload"
+      ],
+      "members":{
+        "Catalog":{
+          "shape":"CatalogIdentifier",
+          "documentation":"<p>Specifies the catalog associated with the engagement context request. This field takes a string value from a predefined list: <code>AWS</code> or <code>Sandbox</code>. The catalog determines which environment the engagement context is created in. Use <code>AWS</code> to create contexts in the production environment, and <code>Sandbox</code> for testing in secure, isolated environments.</p>"
+        },
+        "EngagementIdentifier":{
+          "shape":"EngagementArnOrIdentifier",
+          "documentation":"<p>The unique identifier of the <code>Engagement</code> for which the context is being created. This parameter ensures the context is associated with the correct engagement and provides the necessary linkage between the engagement and its contextual information.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier provided by the client to ensure that the request is handled exactly once. This token helps prevent duplicate context creations and must not exceed sixty-four alphanumeric characters. Use a UUID or other unique string to ensure idempotency.</p>",
+          "idempotencyToken":true
+        },
+        "Type":{
+          "shape":"EngagementContextType",
+          "documentation":"<p>Specifies the type of context being created for the engagement. This field determines the structure and content of the context payload. Valid values include <code>CustomerProject</code> for customer project-related contexts. The type field ensures that the context is properly categorized and processed according to its intended purpose.</p>"
+        },
+        "Payload":{"shape":"EngagementContextPayload"}
+      }
+    },
+    "CreateEngagementContextResponse":{
+      "type":"structure",
+      "members":{
+        "EngagementId":{
+          "shape":"EngagementIdentifier",
+          "documentation":"<p>The unique identifier of the engagement to which the context was added. This ID confirms the successful association of the context with the specified engagement.</p>"
+        },
+        "EngagementArn":{
+          "shape":"EngagementArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the engagement to which the context was added. This globally unique identifier can be used for cross-service references and IAM policies.</p>"
+        },
+        "EngagementLastModifiedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp indicating when the engagement was last modified as a result of adding the context, in ISO 8601 format (UTC). Example: \"2023-05-01T20:37:46Z\".</p>"
+        },
+        "ContextId":{
+          "shape":"EngagementContextIdentifier",
+          "documentation":"<p>The unique identifier assigned to the newly created engagement context. This ID can be used to reference the specific context within the engagement for future operations.</p>"
+        }
+      }
+    },
     "CreateEngagementInvitationRequest":{
       "type":"structure",
       "required":[
@@ -1691,7 +1869,7 @@
           "documentation":"<p>The <code>CreateEngagementRequest$Catalog</code> parameter specifies the catalog related to the engagement. Accepted values are <code>AWS</code> and <code>Sandbox</code>, which determine the environment in which the engagement is managed.</p>"
         },
         "ClientToken":{
-          "shape":"CreateEngagementRequestClientTokenString",
+          "shape":"ClientToken",
           "documentation":"<p>The <code>CreateEngagementRequest$ClientToken</code> parameter specifies a unique, case-sensitive identifier to ensure that the request is handled exactly once. The value must not exceed sixty-four alphanumeric characters.</p>",
           "idempotencyToken":true
         },
@@ -1709,10 +1887,6 @@
         }
       }
     },
-    "CreateEngagementRequestClientTokenString":{
-      "type":"string",
-      "pattern":"[!-~]{1,64}"
-    },
     "CreateEngagementResponse":{
       "type":"structure",
       "members":{
@@ -1723,6 +1897,10 @@
         "Arn":{
           "shape":"EngagementArn",
           "documentation":"<p>The Amazon Resource Name (ARN) that identifies the engagement.</p>"
+        },
+        "ModifiedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp indicating when the engagement was last modified, in ISO 8601 format (UTC). For newly created engagements, this value matches the creation timestamp. Example: \"2023-05-01T20:37:46Z\".</p>"
         }
       }
     },
@@ -1770,7 +1948,7 @@
           "documentation":"<p>Specifies details of a customer's procurement terms. This is required only for partners in eligible programs.</p>"
         },
         "ClientToken":{
-          "shape":"CreateOpportunityRequestClientTokenString",
+          "shape":"ClientToken",
           "documentation":"<p>Required to be unique, and should be unchanging, it can be randomly generated or a meaningful string.</p> <p>Default: None</p> <p>Best practice: To help ensure uniqueness and avoid conflicts, use a Universally Unique Identifier (UUID) as the <code>ClientToken</code>. You can use standard libraries from most programming languages to generate this. If you use the same client token, the API returns the following error: \"Conflicting client token submitted for a new request body.\"</p>",
           "idempotencyToken":true
         },
@@ -1792,14 +1970,9 @@
         }
       }
     },
-    "CreateOpportunityRequestClientTokenString":{
-      "type":"string",
-      "min":1
-    },
     "CreateOpportunityRequestPartnerOpportunityIdentifierString":{
       "type":"string",
-      "max":64,
-      "min":0
+      "pattern":"(?s).{0,64}"
     },
     "CreateOpportunityResponse":{
       "type":"structure",
@@ -1835,7 +2008,7 @@
           "documentation":"<p>Specifies the catalog in which to create the snapshot job. Valid values are <code>AWS</code> and <code> Sandbox</code>.</p>"
         },
         "ClientToken":{
-          "shape":"CreateResourceSnapshotJobRequestClientTokenString",
+          "shape":"ClientToken",
           "documentation":"<p>A client-generated UUID used for idempotency check. The token helps prevent duplicate job creations.</p>",
           "idempotencyToken":true
         },
@@ -1860,10 +2033,6 @@
           "documentation":"<p>A map of the key-value pairs of the tag or tags to assign.</p>"
         }
       }
-    },
-    "CreateResourceSnapshotJobRequestClientTokenString":{
-      "type":"string",
-      "pattern":"[!-~]{1,64}"
     },
     "CreateResourceSnapshotJobResponse":{
       "type":"structure",
@@ -1910,15 +2079,11 @@
           "documentation":"<p> The name of the template that defines the schema for the snapshot. This template determines which subset of the resource data will be included in the snapshot. Must correspond to an existing and valid template for the specified <code>ResourceType</code>. </p>"
         },
         "ClientToken":{
-          "shape":"CreateResourceSnapshotRequestClientTokenString",
+          "shape":"ClientToken",
           "documentation":"<p> Specifies a unique, client-generated UUID to ensure that the request is handled exactly once. This token helps prevent duplicate snapshot creations. </p>",
           "idempotencyToken":true
         }
       }
-    },
-    "CreateResourceSnapshotRequestClientTokenString":{
-      "type":"string",
-      "pattern":"[!-~]{1,64}"
     },
     "CreateResourceSnapshotResponse":{
       "type":"structure",
@@ -2121,6 +2286,10 @@
       },
       "documentation":"<p>An object that contains the customer's <code>Account</code> and <code>Contact</code>.</p>"
     },
+    "CustomerAction":{
+      "type":"string",
+      "pattern":"(?s).{1,255}"
+    },
     "CustomerContactsList":{
       "type":"list",
       "member":{"shape":"Contact"}
@@ -2215,8 +2384,7 @@
     },
     "DisassociateOpportunityRequestRelatedEntityIdentifierString":{
       "type":"string",
-      "max":255,
-      "min":1
+      "pattern":"(?s).{1,255}"
     },
     "DunsNumber":{
       "type":"string",
@@ -2225,9 +2393,7 @@
     },
     "Email":{
       "type":"string",
-      "max":80,
-      "min":0,
-      "pattern":"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
+      "pattern":"(?=.{0,80}$)[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?",
       "sensitive":true
     },
     "EngagementArn":{
@@ -2242,6 +2408,10 @@
       "type":"structure",
       "required":["Type"],
       "members":{
+        "Id":{
+          "shape":"EngagementContextIdentifier",
+          "documentation":"<p>The unique identifier of the engagement context. This ID is used to reference and manage the specific context within the engagement.</p>"
+        },
         "Type":{
           "shape":"EngagementContextType",
           "documentation":"<p>Specifies the type of Engagement context. Valid values are \"CustomerProject\" or \"Document\", indicating whether the context relates to a customer project or a document respectively. </p>"
@@ -2253,12 +2423,20 @@
       },
       "documentation":"<p>Provides detailed context information for an Engagement. This structure allows for specifying the type of context and its associated payload. </p>"
     },
+    "EngagementContextIdentifier":{
+      "type":"string",
+      "pattern":"(?s).{1,3}"
+    },
     "EngagementContextPayload":{
       "type":"structure",
       "members":{
         "CustomerProject":{
           "shape":"CustomerProjectsContext",
           "documentation":"<p>Contains detailed information about a customer project when the context type is \"CustomerProject\". This field is present only when the Type in EngagementContextDetails is set to \"CustomerProject\". </p>"
+        },
+        "Lead":{
+          "shape":"LeadContext",
+          "documentation":"<p>Contains detailed information about a lead when the context type is \"Lead\". This field is present only when the Type in EngagementContextDetails is set to \"Lead\".</p>"
         }
       },
       "documentation":"<p>Represents the payload of an Engagement context. The structure of this payload varies based on the context type specified in the EngagementContextDetails. </p>",
@@ -2266,7 +2444,16 @@
     },
     "EngagementContextType":{
       "type":"string",
-      "enum":["CustomerProject"]
+      "enum":[
+        "CustomerProject",
+        "Lead"
+      ]
+    },
+    "EngagementContextTypeList":{
+      "type":"list",
+      "member":{"shape":"EngagementContextType"},
+      "max":5,
+      "min":0
     },
     "EngagementContexts":{
       "type":"list",
@@ -2304,8 +2491,7 @@
     },
     "EngagementCustomerBusinessProblem":{
       "type":"string",
-      "max":255,
-      "min":20,
+      "pattern":"(?s).{20,2000}",
       "sensitive":true
     },
     "EngagementCustomerProjectDetails":{
@@ -2337,13 +2523,11 @@
     },
     "EngagementCustomerProjectTitle":{
       "type":"string",
-      "max":255,
-      "min":1
+      "pattern":"(?s).{1,255}"
     },
     "EngagementDescription":{
       "type":"string",
-      "max":255,
-      "min":0
+      "pattern":"(?s).{0,255}"
     },
     "EngagementIdentifier":{
       "type":"string",
@@ -2361,9 +2545,7 @@
     },
     "EngagementInvitationArnOrIdentifier":{
       "type":"string",
-      "max":255,
-      "min":1,
-      "pattern":"(arn:.*|engi-[0-9a-z]{13})"
+      "pattern":"(?=.{1,255}$)(arn:.*|engi-[0-9a-z]{13})"
     },
     "EngagementInvitationIdentifier":{
       "type":"string",
@@ -2377,7 +2559,10 @@
     },
     "EngagementInvitationPayloadType":{
       "type":"string",
-      "enum":["OpportunityInvitation"]
+      "enum":[
+        "OpportunityInvitation",
+        "LeadInvitation"
+      ]
     },
     "EngagementInvitationSummaries":{
       "type":"list",
@@ -2447,8 +2632,7 @@
     },
     "EngagementInvitationSummarySenderCompanyNameString":{
       "type":"string",
-      "max":120,
-      "min":0
+      "pattern":"(?s).{0,120}"
     },
     "EngagementInvitationsPayloadType":{
       "type":"list",
@@ -2589,6 +2773,18 @@
         "MemberCount":{
           "shape":"Integer",
           "documentation":"<p>The number of members in the Engagement.</p>"
+        },
+        "ModifiedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp indicating when the engagement was last modified, in ISO 8601 format (UTC). Example: \"2023-05-01T20:37:46Z\".</p>"
+        },
+        "ModifiedBy":{
+          "shape":"AwsAccount",
+          "documentation":"<p>The AWS account ID of the user who last modified the engagement. This field helps track who made the most recent changes to the engagement.</p>"
+        },
+        "ContextTypes":{
+          "shape":"EngagementContextTypeList",
+          "documentation":"<p>An array of context types associated with the engagement, such as \"CustomerProject\" or \"Lead\". This provides a quick overview of the types of contexts included in the engagement.</p>"
         }
       },
       "documentation":"<p>An object that contains an <code>Engagement</code>'s subset of fields. </p>"
@@ -2599,8 +2795,11 @@
     },
     "EngagementTitle":{
       "type":"string",
-      "max":40,
-      "min":1
+      "pattern":"(?s).{1,40}"
+    },
+    "EngagementUseCase":{
+      "type":"string",
+      "pattern":"(?s).{1,255}"
     },
     "ExpectedCustomerSpend":{
       "type":"structure",
@@ -2817,8 +3016,7 @@
     },
     "ExpectedCustomerSpendTargetCompanyString":{
       "type":"string",
-      "max":80,
-      "min":1
+      "pattern":"(?s).{1,80}"
     },
     "GetAwsOpportunitySummaryRequest":{
       "type":"structure",
@@ -2841,10 +3039,6 @@
       "type":"structure",
       "required":["Catalog"],
       "members":{
-        "Catalog":{
-          "shape":"CatalogIdentifier",
-          "documentation":"<p>Specifies the catalog in which the AWS Opportunity exists. This is the environment (e.g., <code>AWS</code> or <code>Sandbox</code>) where the opportunity is being managed.</p>"
-        },
         "RelatedOpportunityId":{
           "shape":"OpportunityIdentifier",
           "documentation":"<p>Provides the unique identifier of the related partner opportunity, allowing partners to link the AWS Opportunity to their corresponding opportunity in their CRM system.</p>"
@@ -2888,6 +3082,10 @@
         "Project":{
           "shape":"AwsOpportunityProject",
           "documentation":"<p>Provides details about the project associated with the AWS Opportunity, including the customer’s business problem, expected outcomes, and project scope. This information is crucial for understanding the broader context of the opportunity.</p>"
+        },
+        "Catalog":{
+          "shape":"CatalogIdentifier",
+          "documentation":"<p>Specifies the catalog in which the AWS Opportunity exists. This is the environment (e.g., <code>AWS</code> or <code>Sandbox</code>) where the opportunity is being managed.</p>"
         }
       }
     },
@@ -2987,8 +3185,7 @@
     },
     "GetEngagementInvitationResponseSenderCompanyNameString":{
       "type":"string",
-      "max":120,
-      "min":0
+      "pattern":"(?s).{0,120}"
     },
     "GetEngagementRequest":{
       "type":"structure",
@@ -3037,6 +3234,14 @@
         "MemberCount":{
           "shape":"Integer",
           "documentation":"<p>Specifies the current count of members participating in the Engagement. This count includes all active members regardless of their roles or permissions within the Engagement.</p>"
+        },
+        "ModifiedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp indicating when the engagement was last modified, in ISO 8601 format (UTC). Example: \"2023-05-01T20:37:46Z\". This helps track the most recent changes to the engagement.</p>"
+        },
+        "ModifiedBy":{
+          "shape":"AwsAccount",
+          "documentation":"<p>The AWS account ID of the user who last modified the engagement. This field helps track who made the most recent changes to the engagement.</p>"
         },
         "Contexts":{
           "shape":"EngagementContexts",
@@ -3139,8 +3344,7 @@
     },
     "GetOpportunityResponsePartnerOpportunityIdentifierString":{
       "type":"string",
-      "max":64,
-      "min":0
+      "pattern":"(?s).{0,64}"
     },
     "GetResourceSnapshotJobRequest":{
       "type":"structure",
@@ -3381,8 +3585,7 @@
     },
     "InvitationMessage":{
       "type":"string",
-      "max":255,
-      "min":1,
+      "pattern":"(?s).{1,255}",
       "sensitive":true
     },
     "InvitationStatus":{
@@ -3412,8 +3615,7 @@
     },
     "JobTitle":{
       "type":"string",
-      "max":80,
-      "min":0,
+      "pattern":"(?s).{0,80}",
       "sensitive":true
     },
     "LastModifiedDate":{
@@ -3429,6 +3631,242 @@
         }
       },
       "documentation":"<p>Defines a filter to retrieve opportunities based on the last modified date. This filter is useful for tracking changes or updates to opportunities over time.</p>"
+    },
+    "LeadContact":{
+      "type":"structure",
+      "required":[
+        "BusinessTitle",
+        "Email",
+        "FirstName",
+        "LastName"
+      ],
+      "members":{
+        "BusinessTitle":{
+          "shape":"JobTitle",
+          "documentation":"<p>The lead contact's business title or job role associated with the engagement.</p>"
+        },
+        "Email":{
+          "shape":"Email",
+          "documentation":"<p>The lead contact's email address associated with the engagement.</p>"
+        },
+        "FirstName":{
+          "shape":"Name",
+          "documentation":"<p>The lead contact's first name associated with the engagement.</p>"
+        },
+        "LastName":{
+          "shape":"Name",
+          "documentation":"<p>The lead contact's last name associated with the engagement.</p>"
+        },
+        "Phone":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The lead contact's phone number associated with the engagement.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains a lead contact's details associated with the engagement. This provides contact information for individuals involved in lead-related activities.</p>"
+    },
+    "LeadContext":{
+      "type":"structure",
+      "required":[
+        "Customer",
+        "Interactions"
+      ],
+      "members":{
+        "QualificationStatus":{
+          "shape":"LeadQualificationStatus",
+          "documentation":"<p>Indicates the current qualification status of the lead, such as whether it has been qualified, disqualified, or is still under evaluation. This helps track the lead's progression through the qualification process.</p>"
+        },
+        "Customer":{
+          "shape":"LeadCustomer",
+          "documentation":"<p>Contains detailed information about the customer associated with the lead, including company information, contact details, and other relevant customer data.</p>"
+        },
+        "Interactions":{
+          "shape":"LeadInteractionList",
+          "documentation":"<p>An array of interactions that have occurred with the lead, providing a history of communications, meetings, and other engagement activities related to the lead.</p>"
+        }
+      },
+      "documentation":"<p>Provides comprehensive details about a lead associated with an engagement. This structure contains information about lead qualification status, customer details, and interaction history to facilitate lead management and tracking within the engagement.</p>"
+    },
+    "LeadCustomer":{
+      "type":"structure",
+      "required":[
+        "CompanyName",
+        "Address"
+      ],
+      "members":{
+        "Industry":{
+          "shape":"Industry",
+          "documentation":"<p>Specifies the industry sector to which the lead customer's company belongs. This categorization helps in understanding the customer's business context and tailoring appropriate solutions.</p>"
+        },
+        "CompanyName":{
+          "shape":"CompanyName",
+          "documentation":"<p>The name of the lead customer's company. This field is essential for identifying and tracking the customer organization associated with the lead.</p>"
+        },
+        "WebsiteUrl":{
+          "shape":"CompanyWebsiteUrl",
+          "documentation":"<p>The website URL of the lead customer's company. This provides additional context about the customer organization and helps verify company legitimacy and size.</p>"
+        },
+        "Address":{"shape":"AddressSummary"},
+        "AwsMaturity":{
+          "shape":"AwsMaturity",
+          "documentation":"<p>Indicates the customer's level of experience and adoption with AWS services. This assessment helps determine the appropriate engagement approach and solution complexity.</p>"
+        },
+        "MarketSegment":{
+          "shape":"MarketSegment",
+          "documentation":"<p>Specifies the market segment classification of the lead customer, such as enterprise, mid-market, or small business. This segmentation helps in targeting appropriate solutions and engagement strategies.</p>"
+        }
+      },
+      "documentation":"<p>Contains detailed information about the customer associated with the lead, including company details, industry classification, and AWS maturity level. This information helps qualify and categorize the lead for appropriate engagement strategies.</p>"
+    },
+    "LeadInteraction":{
+      "type":"structure",
+      "required":[
+        "SourceType",
+        "SourceId",
+        "SourceName",
+        "CustomerAction",
+        "Contact"
+      ],
+      "members":{
+        "SourceType":{
+          "shape":"LeadSourceType",
+          "documentation":"<p>Specifies the type of source that generated the lead interaction, such as \"Event\", \"Website\", \"Referral\", or \"Campaign\". This categorization helps track lead generation effectiveness across different channels.</p>"
+        },
+        "SourceId":{
+          "shape":"LeadSourceId",
+          "documentation":"<p>The unique identifier of the specific source that generated the lead interaction. This ID provides traceability back to the original lead generation activity.</p>"
+        },
+        "SourceName":{
+          "shape":"LeadSourceName",
+          "documentation":"<p>The descriptive name of the source that generated the lead interaction, providing a human-readable identifier for the lead generation channel or activity.</p>"
+        },
+        "Usecase":{
+          "shape":"EngagementUseCase",
+          "documentation":"<p>Describes the specific use case or business scenario discussed during the lead interaction. This helps categorize the customer's interests and potential solutions.</p>"
+        },
+        "InteractionDate":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when the lead interaction occurred, in ISO 8601 format (UTC). This timestamp helps track the chronology of lead engagement activities.</p>"
+        },
+        "CustomerAction":{
+          "shape":"CustomerAction",
+          "documentation":"<p>Describes the action taken by the customer during or as a result of the interaction, such as requesting information, scheduling a meeting, or expressing interest in a solution.</p>"
+        },
+        "BusinessProblem":{
+          "shape":"EngagementCustomerBusinessProblem",
+          "documentation":"<p>Describes the business problem or challenge that the customer discussed during the interaction. This information helps qualify the lead and identify appropriate solutions.</p>"
+        },
+        "Contact":{
+          "shape":"LeadContact",
+          "documentation":"<p>Contains contact information for the customer representative involved in the lead interaction, including their name, title, and contact details.</p>"
+        }
+      },
+      "documentation":"<p>Represents a specific interaction or touchpoint with a lead customer. This structure captures details about communications, meetings, or other engagement activities that help track the lead's progression and engagement history.</p>"
+    },
+    "LeadInteractionList":{
+      "type":"list",
+      "member":{"shape":"LeadInteraction"},
+      "max":10,
+      "min":1
+    },
+    "LeadInvitationCustomer":{
+      "type":"structure",
+      "required":[
+        "CompanyName",
+        "CountryCode"
+      ],
+      "members":{
+        "Industry":{
+          "shape":"Industry",
+          "documentation":"<p>Specifies the industry sector of the customer company associated with the lead invitation. This categorization helps partners understand the customer's business context and assess solution fit.</p>"
+        },
+        "CompanyName":{
+          "shape":"CompanyName",
+          "documentation":"<p>The name of the customer company associated with the lead invitation. This field identifies the target organization for the lead engagement opportunity.</p>"
+        },
+        "WebsiteUrl":{
+          "shape":"CompanyWebsiteUrl",
+          "documentation":"<p>The website URL of the customer company. This provides additional context about the customer organization and helps partners verify company details and assess business size and legitimacy.</p>"
+        },
+        "CountryCode":{
+          "shape":"CountryCode",
+          "documentation":"<p>The country code indicating the geographic location of the customer company. This information helps partners understand regional requirements and assess their ability to serve the customer effectively.</p>"
+        },
+        "AwsMaturity":{
+          "shape":"AwsMaturity",
+          "documentation":"<p>Indicates the customer's level of experience and adoption with AWS services. This assessment helps partners understand the customer's cloud maturity and tailor their engagement approach accordingly.</p>"
+        },
+        "MarketSegment":{
+          "shape":"MarketSegment",
+          "documentation":"<p>Specifies the market segment classification of the customer, such as enterprise, mid-market, or small business. This segmentation helps partners determine the appropriate solution complexity and engagement strategy.</p>"
+        }
+      },
+      "documentation":"<p>Contains customer information included in a lead invitation payload. This structure provides essential details about the customer to help partners evaluate the lead opportunity and determine their interest in engagement.</p>"
+    },
+    "LeadInvitationInteraction":{
+      "type":"structure",
+      "required":[
+        "SourceType",
+        "SourceId",
+        "SourceName",
+        "ContactBusinessTitle"
+      ],
+      "members":{
+        "SourceType":{
+          "shape":"LeadSourceType",
+          "documentation":"<p>Specifies the type of source that generated the lead interaction, such as \"Event\", \"Website\", or \"Campaign\". This helps partners understand the lead generation channel and assess lead quality based on the source type.</p>"
+        },
+        "SourceId":{
+          "shape":"LeadSourceId",
+          "documentation":"<p>The unique identifier of the specific source that generated the lead interaction. This provides traceability to the original lead generation activity for reference and follow-up purposes.</p>"
+        },
+        "SourceName":{
+          "shape":"LeadSourceName",
+          "documentation":"<p>The descriptive name of the source that generated the lead interaction. This human-readable identifier helps partners understand the specific lead generation channel or campaign that created the opportunity.</p>"
+        },
+        "Usecase":{
+          "shape":"EngagementUseCase",
+          "documentation":"<p>Describes the specific use case or business scenario associated with the lead interaction. This information helps partners understand the customer's interests and potential solution requirements.</p>"
+        },
+        "ContactBusinessTitle":{
+          "shape":"JobTitle",
+          "documentation":"<p>The business title or job role of the customer contact involved in the lead interaction. This helps partners identify the decision-making level and engagement approach for the lead.</p>"
+        }
+      },
+      "documentation":"<p>Represents interaction details included in a lead invitation payload. This structure provides context about how the lead was generated and the customer's engagement history to help partners assess the opportunity quality.</p>"
+    },
+    "LeadInvitationPayload":{
+      "type":"structure",
+      "required":[
+        "Customer",
+        "Interaction"
+      ],
+      "members":{
+        "Customer":{
+          "shape":"LeadInvitationCustomer",
+          "documentation":"<p>Contains information about the customer associated with the lead invitation. This data helps partners understand the customer's profile, industry, and business context to assess the lead opportunity.</p>"
+        },
+        "Interaction":{
+          "shape":"LeadInvitationInteraction",
+          "documentation":"<p>Describes the interaction details associated with the lead, including the source of the lead generation and customer engagement information. This context helps partners evaluate the lead quality and engagement approach.</p>"
+        }
+      },
+      "documentation":"<p>Represents the data payload of an engagement invitation for a lead opportunity. This contains detailed information about the customer and interaction history that partners use to evaluate whether to accept the lead engagement invitation.</p>"
+    },
+    "LeadQualificationStatus":{
+      "type":"string",
+      "pattern":"(?s).{1,255}"
+    },
+    "LeadSourceId":{
+      "type":"string",
+      "pattern":"(?s).{1,255}"
+    },
+    "LeadSourceName":{
+      "type":"string",
+      "pattern":"(?s).{1,255}"
+    },
+    "LeadSourceType":{
+      "type":"string",
+      "pattern":"(?s).{1,255}"
     },
     "LifeCycle":{
       "type":"structure",
@@ -3492,8 +3930,7 @@
     },
     "LifeCycleForViewNextStepsString":{
       "type":"string",
-      "max":255,
-      "min":0,
+      "pattern":"(?s).{0,255}",
       "sensitive":true
     },
     "LifeCycleNextStepsHistoryList":{
@@ -3504,8 +3941,7 @@
     },
     "LifeCycleNextStepsString":{
       "type":"string",
-      "max":255,
-      "min":0,
+      "pattern":"(?s).{0,255}",
       "sensitive":true
     },
     "LifeCycleSummary":{
@@ -3544,8 +3980,7 @@
     },
     "LifeCycleSummaryNextStepsString":{
       "type":"string",
-      "max":255,
-      "min":0,
+      "pattern":"(?s).{0,255}",
       "sensitive":true
     },
     "ListEngagementByAcceptingInvitationTaskSummaries":{
@@ -3640,8 +4075,7 @@
     },
     "ListEngagementByAcceptingInvitationTasksRequestNextTokenString":{
       "type":"string",
-      "max":2048,
-      "min":1
+      "pattern":"(?s).{1,2048}"
     },
     "ListEngagementByAcceptingInvitationTasksResponse":{
       "type":"structure",
@@ -3752,8 +4186,7 @@
     },
     "ListEngagementFromOpportunityTasksRequestNextTokenString":{
       "type":"string",
-      "max":2048,
-      "min":1
+      "pattern":"(?s).{1,2048}"
     },
     "ListEngagementFromOpportunityTasksResponse":{
       "type":"structure",
@@ -3935,6 +4368,14 @@
           "shape":"AwsAccountList",
           "documentation":"<p>An array of strings representing AWS Account IDs. Use this to exclude engagements created by specific users. </p>"
         },
+        "ContextTypes":{
+          "shape":"EngagementContextTypeList",
+          "documentation":"<p>Filters engagements to include only those containing the specified context types, such as \"CustomerProject\" or \"Lead\". Use this to find engagements that have specific types of contextual information associated with them.</p>"
+        },
+        "ExcludeContextTypes":{
+          "shape":"EngagementContextTypeList",
+          "documentation":"<p>Filters engagements to exclude those containing the specified context types. Use this to find engagements that do not have certain types of contextual information, helping to narrow results based on context exclusion criteria.</p>"
+        },
         "Sort":{"shape":"EngagementSort"},
         "MaxResults":{
           "shape":"EngagementPageSize",
@@ -4041,6 +4482,118 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p>A pagination token used to retrieve the next set of results in subsequent calls. This token is included in the response only if there are additional result pages available.</p>"
+        }
+      }
+    },
+    "ListOpportunityFromEngagementTaskSummaries":{
+      "type":"list",
+      "member":{"shape":"ListOpportunityFromEngagementTaskSummary"}
+    },
+    "ListOpportunityFromEngagementTaskSummary":{
+      "type":"structure",
+      "members":{
+        "TaskId":{
+          "shape":"TaskIdentifier",
+          "documentation":"<p>The unique identifier of the task for creating an opportunity from an engagement.</p>"
+        },
+        "TaskArn":{
+          "shape":"TaskArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies the task within AWS. This ARN can be used for referencing the task in other AWS services or APIs.</p>"
+        },
+        "StartTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp indicating when the task was initiated, in RFC 3339 format.</p>"
+        },
+        "TaskStatus":{
+          "shape":"TaskStatus",
+          "documentation":"<p>The current status of the task. Valid values are COMPLETE, INPROGRESS, or FAILED.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A detailed message providing additional information about the task, especially useful in case of failures. This field may contain error details or other relevant information about the task's execution.</p>"
+        },
+        "ReasonCode":{
+          "shape":"ReasonCode",
+          "documentation":"<p>A code indicating the specific reason for a task failure. This field is populated when the task status is FAILED and provides a categorized reason for the failure.</p>"
+        },
+        "OpportunityId":{
+          "shape":"OpportunityIdentifier",
+          "documentation":"<p>The unique identifier of the opportunity created as a result of the task. This field is populated when the task is completed successfully.</p>"
+        },
+        "ResourceSnapshotJobId":{
+          "shape":"ResourceSnapshotJobIdentifier",
+          "documentation":"<p>The identifier of the resource snapshot job associated with this task, if a snapshot was created as part of the opportunity creation process.</p>"
+        },
+        "EngagementId":{
+          "shape":"EngagementIdentifier",
+          "documentation":"<p>The unique identifier of the engagement from which the opportunity is being created. This field helps track the source of the opportunity creation task.</p>"
+        },
+        "ContextId":{
+          "shape":"ContextIdentifier",
+          "documentation":"<p>The unique identifier of the engagement context associated with the opportunity creation task. This links the task to specific contextual information within the engagement.</p>"
+        }
+      },
+      "documentation":"<p>Provides a summary of a task related to creating an opportunity from an engagement. This structure contains key information about the task's status, associated identifiers, and any failure details for opportunity creation processes.</p>"
+    },
+    "ListOpportunityFromEngagementTasksRequest":{
+      "type":"structure",
+      "required":["Catalog"],
+      "members":{
+        "MaxResults":{
+          "shape":"ListOpportunityFromEngagementTasksRequestMaxResultsInteger",
+          "documentation":"<p>Specifies the maximum number of results to return in a single page of the response. Use this parameter to control the number of items returned in each request, which can be useful for performance tuning and managing large result sets.</p>"
+        },
+        "NextToken":{
+          "shape":"ListOpportunityFromEngagementTasksRequestNextTokenString",
+          "documentation":"<p>The token for requesting the next page of results. This value is obtained from the NextToken field in the response of a previous call to this API. Use this parameter for pagination when the result set spans multiple pages.</p>"
+        },
+        "Sort":{"shape":"ListTasksSortBase"},
+        "Catalog":{
+          "shape":"CatalogIdentifier",
+          "documentation":"<p>Specifies the catalog related to the request. Valid values are <code>AWS</code> for production environments and <code>Sandbox</code> for testing or development purposes. The catalog determines which environment the task data is retrieved from.</p>"
+        },
+        "TaskStatus":{
+          "shape":"TaskStatuses",
+          "documentation":"<p>Filters the tasks based on their current status. This allows you to focus on tasks in specific states. Valid values are <code>COMPLETE</code> for tasks that have finished successfully, <code>INPROGRESS</code> for tasks that are currently running, and <code>FAILED</code> for tasks that have encountered an error and failed to complete.</p>"
+        },
+        "TaskIdentifier":{
+          "shape":"TaskIdentifiers",
+          "documentation":"<p>Filters tasks by their unique identifiers. Use this when you want to retrieve information about specific tasks. Provide the task ID to get details about a particular opportunity creation task.</p>"
+        },
+        "OpportunityIdentifier":{
+          "shape":"OpportunityIdentifiers",
+          "documentation":"<p>Filters tasks by the identifiers of the opportunities they created or are associated with. Use this to find tasks related to specific opportunity creation processes.</p>"
+        },
+        "EngagementIdentifier":{
+          "shape":"EngagementIdentifiers",
+          "documentation":"<p>Filters tasks by the identifiers of the engagements from which opportunities are being created. Use this to find all opportunity creation tasks associated with a specific engagement.</p>"
+        },
+        "ContextIdentifier":{
+          "shape":"ContextIdentifiers",
+          "documentation":"<p>Filters tasks by the identifiers of the engagement contexts associated with the opportunity creation. Use this to find tasks related to specific contextual information within engagements that are being converted to opportunities.</p>"
+        }
+      }
+    },
+    "ListOpportunityFromEngagementTasksRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListOpportunityFromEngagementTasksRequestNextTokenString":{
+      "type":"string",
+      "pattern":"(?s).{1,2048}"
+    },
+    "ListOpportunityFromEngagementTasksResponse":{
+      "type":"structure",
+      "members":{
+        "TaskSummaries":{
+          "shape":"ListOpportunityFromEngagementTaskSummaries",
+          "documentation":"<p>An array of <code>ListOpportunityFromEngagementTaskSummary</code> objects, each representing a task that matches the specified filters. The array may be empty if no tasks match the criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A token used for pagination to retrieve the next page of results. If there are more results available, this field will contain a token that can be used in a subsequent API call to retrieve the next page. If there are no more results, this field will be null or an empty string.</p>"
         }
       }
     },
@@ -4263,6 +4816,16 @@
       "type":"string",
       "enum":["StartTime"]
     },
+    "MarketSegment":{
+      "type":"string",
+      "enum":[
+        "Enterprise",
+        "Large",
+        "Medium",
+        "Small",
+        "Micro"
+      ]
+    },
     "Marketing":{
       "type":"structure",
       "members":{
@@ -4298,8 +4861,7 @@
     },
     "MemberCompanyName":{
       "type":"string",
-      "max":120,
-      "min":1,
+      "pattern":"(?s).{1,120}",
       "sensitive":true
     },
     "MemberPageSize":{
@@ -4332,8 +4894,7 @@
     },
     "Name":{
       "type":"string",
-      "max":80,
-      "min":0,
+      "pattern":"(?s).{0,80}",
       "sensitive":true
     },
     "NationalSecurity":{
@@ -4560,7 +5121,7 @@
     "PartnerOpportunityTeamMembersList":{
       "type":"list",
       "member":{"shape":"Contact"},
-      "max":2,
+      "max":10,
       "min":0
     },
     "Payload":{
@@ -4569,6 +5130,10 @@
         "OpportunityInvitation":{
           "shape":"OpportunityInvitationPayload",
           "documentation":"<p>Specifies the details of the opportunity invitation within the Engagement Invitation payload. This data helps partners understand the context, scope, and expected involvement for the opportunity from AWS.</p>"
+        },
+        "LeadInvitation":{
+          "shape":"LeadInvitationPayload",
+          "documentation":"<p>Specifies the details of the lead invitation within the Engagement Invitation payload. This data helps partners understand the lead context, customer information, and interaction history for the lead opportunity from AWS.</p>"
         }
       },
       "documentation":"<p>Contains the data payload associated with the Engagement Invitation. This payload includes essential details related to the AWS opportunity and is used by partners to evaluate whether to accept or reject the engagement.</p>",
@@ -4580,8 +5145,6 @@
     },
     "PhoneNumber":{
       "type":"string",
-      "max":40,
-      "min":0,
       "pattern":"\\+[1-9]\\d{1,14}",
       "sensitive":true
     },
@@ -4676,13 +5239,11 @@
     },
     "ProjectAdditionalCommentsString":{
       "type":"string",
-      "max":255,
-      "min":1
+      "pattern":"(?s).{1,255}"
     },
     "ProjectCustomerBusinessProblemString":{
       "type":"string",
-      "max":2000,
-      "min":20,
+      "pattern":"(?s).{20,2000}",
       "sensitive":true
     },
     "ProjectDetails":{
@@ -4715,18 +5276,15 @@
     },
     "ProjectDetailsTitleString":{
       "type":"string",
-      "max":255,
-      "min":1
+      "pattern":"(?s).{1,255}"
     },
     "ProjectOtherCompetitorNamesString":{
       "type":"string",
-      "max":255,
-      "min":0
+      "pattern":"(?s).{0,255}"
     },
     "ProjectOtherSolutionDescriptionString":{
       "type":"string",
-      "max":255,
-      "min":0,
+      "pattern":"(?s).{0,255}",
       "sensitive":true
     },
     "ProjectSummary":{
@@ -4745,8 +5303,7 @@
     },
     "ProjectTitleString":{
       "type":"string",
-      "max":255,
-      "min":0,
+      "pattern":"(?s).{0,255}",
       "sensitive":true
     },
     "ProjectView":{
@@ -4777,8 +5334,7 @@
     },
     "ProjectViewOtherSolutionDescriptionString":{
       "type":"string",
-      "max":255,
-      "min":0,
+      "pattern":"(?s).{0,255}",
       "sensitive":true
     },
     "PutSellingSystemSettingsRequest":{
@@ -4830,7 +5386,10 @@
         "ResourceSnapshotValidationFailed",
         "ResourceSnapshotConflict",
         "ServiceQuotaExceeded",
-        "RequestThrottled"
+        "RequestThrottled",
+        "ContextNotFound",
+        "CustomerProjectContextNotPermitted",
+        "DisqualifiedLeadNotPermitted"
       ]
     },
     "Receiver":{
@@ -4894,6 +5453,10 @@
           "shape":"AwsMarketplaceOfferIdentifiers",
           "documentation":"<p>Takes one value per opportunity. Each value is an Amazon Resource Name (ARN), in this format: <code>\"offers\": [\"arn:aws:aws-marketplace:us-east-1:999999999999:AWSMarketplace/Offer/offer-sampleOffer32\"]</code>.</p> <p>Use the <a href=\"https://docs.aws.amazon.com/marketplace-catalog/latest/api-reference/API_ListEntities.html\">ListEntities</a> action in the Marketplace Catalog APIs for a list of offers in the associated Marketplace seller account.</p>"
         },
+        "AwsMarketplaceOfferSets":{
+          "shape":"AwsMarketplaceOfferSetIdentifiers",
+          "documentation":"<p>Enables the association of AWS Marketplace offer sets with the <code>Opportunity</code>. Offer sets allow grouping multiple related marketplace offers together for comprehensive solution packaging. Each value is an Amazon Resource Name (ARN) in this format: <code>arn:aws:aws-marketplace:us-east-1:999999999999:AWSMarketplace/OfferSet/offerset-sampleOfferSet32</code>.</p>"
+        },
         "Solutions":{
           "shape":"SolutionIdentifiers",
           "documentation":"<p>Enables partner solutions or offerings' association with an opportunity. To associate a solution, provide the solution's unique identifier, which you can obtain with the <code>ListSolutions</code> operation.</p> <p>If the specific solution identifier is not available, you can use the value <code>Other</code> and provide details about the solution in the <code>otherSolutionOffered</code> field. But when the opportunity reaches the <code>Committed</code> stage or beyond, the <code>Other</code> value cannot be used, and a valid solution identifier must be provided.</p> <p>By associating the relevant solutions with the opportunity, you can communicate the offerings that are being considered or implemented to address the customer's business problem.</p>"
@@ -4910,7 +5473,8 @@
       "enum":[
         "Solutions",
         "AwsProducts",
-        "AwsMarketplaceOffers"
+        "AwsMarketplaceOffers",
+        "AwsMarketplaceOfferSets"
       ]
     },
     "ResourceArn":{
@@ -4943,15 +5507,11 @@
     },
     "ResourceSnapshotJobRoleArn":{
       "type":"string",
-      "max":2048,
-      "min":0,
-      "pattern":"arn:aws:iam::\\d{12}:role/([-+=,.@_a-zA-Z0-9]+/)*[-+=,.@_a-zA-Z0-9]{1,64}"
+      "pattern":"(?=.{0,2048}$)arn:aws:iam::\\d{12}:role/([-+=,.@_a-zA-Z0-9]+/)*[-+=,.@_a-zA-Z0-9]{1,64}"
     },
     "ResourceSnapshotJobRoleIdentifier":{
       "type":"string",
-      "max":2048,
-      "min":0,
-      "pattern":"(arn:aws:iam::\\d{12}:role/([-+=,.@_a-zA-Z0-9]+/)*)?[-+=,.@_a-zA-Z0-9]{1,64}"
+      "pattern":"(?=.{0,2048}$)(arn:aws:iam::\\d{12}:role/([-+=,.@_a-zA-Z0-9]+/)*)?[-+=,.@_a-zA-Z0-9]{1,64}"
     },
     "ResourceSnapshotJobStatus":{
       "type":"string",
@@ -5116,9 +5676,7 @@
     },
     "SenderContactEmail":{
       "type":"string",
-      "max":80,
-      "min":0,
-      "pattern":"[a-zA-Z0-9.!#$%&'*+/=?^_{|}~-]+@[a-zA-Z0-9-]+(?:.[a-zA-Z0-9-]+)*",
+      "pattern":"(?=.{1,80}$)[a-zA-Z0-9.!#$%&'*+/=?^_{|}~-]+@[a-zA-Z0-9-]+(?:.[a-zA-Z0-9-]+)*",
       "sensitive":true
     },
     "SenderContactList":{
@@ -5301,7 +5859,7 @@
           "documentation":"<p>Specifies the catalog related to the task. Use <code>AWS</code> for production engagements and <code>Sandbox</code> for testing scenarios.</p>"
         },
         "ClientToken":{
-          "shape":"StartEngagementByAcceptingInvitationTaskRequestClientTokenString",
+          "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier provided by the client that helps to ensure the idempotency of the request. This can be a random or meaningful string but must be unique for each request.</p>",
           "idempotencyToken":true
         },
@@ -5314,11 +5872,6 @@
           "documentation":"<p>A map of the key-value pairs of the tag or tags to assign.</p>"
         }
       }
-    },
-    "StartEngagementByAcceptingInvitationTaskRequestClientTokenString":{
-      "type":"string",
-      "min":1,
-      "pattern":"[!-~]{1,64}"
     },
     "StartEngagementByAcceptingInvitationTaskResponse":{
       "type":"structure",
@@ -5375,7 +5928,7 @@
           "documentation":"<p>Specifies the catalog in which the engagement is tracked. Acceptable values include <code>AWS</code> for production and <code>Sandbox</code> for testing environments.</p>"
         },
         "ClientToken":{
-          "shape":"StartEngagementFromOpportunityTaskRequestClientTokenString",
+          "shape":"ClientToken",
           "documentation":"<p>A unique token provided by the client to help ensure the idempotency of the request. It helps prevent the same task from being performed multiple times.</p>",
           "idempotencyToken":true
         },
@@ -5389,11 +5942,6 @@
           "documentation":"<p>A map of the key-value pairs of the tag or tags to assign.</p>"
         }
       }
-    },
-    "StartEngagementFromOpportunityTaskRequestClientTokenString":{
-      "type":"string",
-      "min":1,
-      "pattern":"[!-~]{1,64}"
     },
     "StartEngagementFromOpportunityTaskResponse":{
       "type":"structure",
@@ -5437,6 +5985,83 @@
         "EngagementInvitationId":{
           "shape":"EngagementInvitationIdentifier",
           "documentation":"<p>The identifier of the new Engagement invitation. Only populated if TaskStatus is COMPLETE.</p>"
+        }
+      }
+    },
+    "StartOpportunityFromEngagementTaskRequest":{
+      "type":"structure",
+      "required":[
+        "Catalog",
+        "ClientToken",
+        "Identifier",
+        "ContextIdentifier"
+      ],
+      "members":{
+        "Catalog":{
+          "shape":"CatalogIdentifier",
+          "documentation":"<p>Specifies the catalog in which the opportunity creation task is executed. Acceptable values include <code>AWS</code> for production and <code>Sandbox</code> for testing environments.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique token provided by the client to help ensure the idempotency of the request. It helps prevent the same task from being performed multiple times.</p>",
+          "idempotencyToken":true
+        },
+        "Identifier":{
+          "shape":"EngagementArnOrIdentifier",
+          "documentation":"<p>The unique identifier of the engagement from which the opportunity creation task is to be initiated. This helps ensure that the task is applied to the correct engagement.</p>"
+        },
+        "ContextIdentifier":{
+          "shape":"ContextIdentifier",
+          "documentation":"<p>The unique identifier of the engagement context from which to create the opportunity. This specifies the specific contextual information within the engagement that will be used for opportunity creation.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A map of the key-value pairs of the tag or tags to assign.</p>"
+        }
+      }
+    },
+    "StartOpportunityFromEngagementTaskResponse":{
+      "type":"structure",
+      "members":{
+        "TaskId":{
+          "shape":"TaskIdentifier",
+          "documentation":"<p>The unique identifier of the task, used to track the task's progress.</p>"
+        },
+        "TaskArn":{
+          "shape":"TaskArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the task, used for tracking and managing the task within AWS.</p>"
+        },
+        "StartTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp indicating when the task was initiated. The format follows RFC 3339 section 5.6.</p>"
+        },
+        "TaskStatus":{
+          "shape":"TaskStatus",
+          "documentation":"<p>Indicates the current status of the task.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>If the task fails, this field contains a detailed message describing the failure and possible recovery steps.</p>"
+        },
+        "ReasonCode":{
+          "shape":"ReasonCode",
+          "documentation":"<p>Indicates the reason for task failure using an enumerated code.</p>"
+        },
+        "OpportunityId":{
+          "shape":"OpportunityIdentifier",
+          "documentation":"<p>The unique identifier of the opportunity created as a result of the task. This field is populated when the task is completed successfully.</p>"
+        },
+        "ResourceSnapshotJobId":{
+          "shape":"ResourceSnapshotJobIdentifier",
+          "documentation":"<p>The identifier of the resource snapshot job created as part of the opportunity creation process.</p>"
+        },
+        "EngagementId":{
+          "shape":"EngagementIdentifier",
+          "documentation":"<p>The unique identifier of the engagement from which the opportunity was created.</p>"
+        },
+        "ContextId":{
+          "shape":"ContextIdentifier",
+          "documentation":"<p>The unique identifier of the engagement context used to create the opportunity.</p>"
         }
       }
     },
@@ -5521,9 +6146,7 @@
     },
     "TagKey":{
       "type":"string",
-      "max":128,
-      "min":1,
-      "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
+      "pattern":"(?=.{1,128}$)([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
     },
     "TagKeyList":{
       "type":"list",
@@ -5560,15 +6183,11 @@
     },
     "TagValue":{
       "type":"string",
-      "max":256,
-      "min":0,
-      "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
+      "pattern":"(?=.{0,256}$)([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
     },
     "TaggableResourceArn":{
       "type":"string",
-      "max":1000,
-      "min":1,
-      "pattern":"arn:[\\w+=/,.@-]+:partnercentral:[\\w+=/,.@-]*:[0-9]{12}:catalog/([a-zA-Z]+)/[\\w+=,.@-]+(/[\\w+=,.@-]+)*"
+      "pattern":"(?=.{1,1000}$)arn:[\\w+=/,.@-]+:partnercentral:[\\w+=/,.@-]*:[0-9]{12}:catalog/([a-zA-Z]+)/[\\w+=,.@-]+(/[\\w+=,.@-]+)*"
     },
     "TaskArn":{
       "type":"string",
@@ -5631,6 +6250,101 @@
       "type":"structure",
       "members":{}
     },
+    "UpdateEngagementContextPayload":{
+      "type":"structure",
+      "members":{
+        "Lead":{
+          "shape":"UpdateLeadContext",
+          "documentation":"<p>Contains updated information about a lead when the context type is \"Lead\". This field is present only when updating a lead context within the engagement.</p>"
+        },
+        "CustomerProject":{"shape":"CustomerProjectsContext"}
+      },
+      "documentation":"<p>Represents the updated payload of an engagement context. The structure of this payload varies based on the context type being updated.</p>",
+      "union":true
+    },
+    "UpdateEngagementContextRequest":{
+      "type":"structure",
+      "required":[
+        "Catalog",
+        "EngagementIdentifier",
+        "ContextIdentifier",
+        "EngagementLastModifiedAt",
+        "Type",
+        "Payload"
+      ],
+      "members":{
+        "Catalog":{
+          "shape":"CatalogIdentifier",
+          "documentation":"<p>Specifies the catalog associated with the engagement context update request. This field takes a string value from a predefined list: <code>AWS</code> or <code>Sandbox</code>. The catalog determines which environment the engagement context is updated in.</p>"
+        },
+        "EngagementIdentifier":{
+          "shape":"EngagementArnOrIdentifier",
+          "documentation":"<p>The unique identifier of the <code>Engagement</code> containing the context to be updated. This parameter ensures the context update is applied to the correct engagement.</p>"
+        },
+        "ContextIdentifier":{
+          "shape":"EngagementContextIdentifier",
+          "documentation":"<p>The unique identifier of the specific engagement context to be updated. This ensures that the correct context within the engagement is modified.</p>"
+        },
+        "EngagementLastModifiedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the engagement was last modified, used for optimistic concurrency control. This helps prevent conflicts when multiple users attempt to update the same engagement simultaneously.</p>"
+        },
+        "Type":{
+          "shape":"EngagementContextType",
+          "documentation":"<p>Specifies the type of context being updated within the engagement. This field determines the structure and content of the context payload being modified.</p>"
+        },
+        "Payload":{
+          "shape":"UpdateEngagementContextPayload",
+          "documentation":"<p>Contains the updated contextual information for the engagement. The structure of this payload varies based on the context type specified in the Type field.</p>"
+        }
+      }
+    },
+    "UpdateEngagementContextResponse":{
+      "type":"structure",
+      "required":[
+        "EngagementId",
+        "EngagementArn",
+        "EngagementLastModifiedAt",
+        "ContextId"
+      ],
+      "members":{
+        "EngagementId":{
+          "shape":"EngagementIdentifier",
+          "documentation":"<p>The unique identifier of the engagement that was updated.</p>"
+        },
+        "EngagementArn":{
+          "shape":"EngagementArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated engagement.</p>"
+        },
+        "EngagementLastModifiedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the engagement context was last modified.</p>"
+        },
+        "ContextId":{
+          "shape":"EngagementContextIdentifier",
+          "documentation":"<p>The unique identifier of the engagement context that was updated.</p>"
+        }
+      }
+    },
+    "UpdateLeadContext":{
+      "type":"structure",
+      "required":["Customer"],
+      "members":{
+        "QualificationStatus":{
+          "shape":"LeadQualificationStatus",
+          "documentation":"<p>The updated qualification status of the lead.</p>"
+        },
+        "Customer":{
+          "shape":"LeadCustomer",
+          "documentation":"<p>Updated customer information associated with the lead.</p>"
+        },
+        "Interaction":{
+          "shape":"LeadInteraction",
+          "documentation":"<p>Updated interaction details for the lead context.</p>"
+        }
+      },
+      "documentation":"<p>Updates the context information for a lead with qualification status, customer details, and interaction data.</p>"
+    },
     "UpdateOpportunityRequest":{
       "type":"structure",
       "required":[
@@ -5691,8 +6405,7 @@
     },
     "UpdateOpportunityRequestPartnerOpportunityIdentifierString":{
       "type":"string",
-      "max":64,
-      "min":0
+      "pattern":"(?s).{0,64}"
     },
     "UpdateOpportunityResponse":{
       "type":"structure",
@@ -5755,7 +6468,7 @@
           "documentation":"<p>Specifies the error code for the invalid field value.</p>"
         }
       },
-      "documentation":"<p>Indicates an invalid value for a field.</p> <ul> <li> <p> <i>REQUIRED_FIELD_MISSING:</i> The request is missing a required field.</p> <p>Fix: Verify your request payload includes all required fields.</p> </li> <li> <p> <i>INVALID_ENUM_VALUE:</i> The enum field value isn't an accepted values.</p> <p>Fix: Check the documentation for the list of valid enum values, and update your request with a valid value.</p> </li> <li> <p> <i>INVALID_STRING_FORMAT:</i> The string format is invalid.</p> <p>Fix: Confirm that the string is in the expected format (For example: email address, date).</p> </li> <li> <p> <i>INVALID_VALUE:</i> The value isn't valid.</p> <p>Fix: Confirm that the value meets the expected criteria and is within the allowable range or set.</p> </li> <li> <p> <i>TOO_MANY_VALUES:</i> There are too many values in a field that expects fewer entries.</p> <p>Fix: Reduce the number of values to match the expected limit.</p> </li> <li> <p> <i>ACTION_NOT_PERMITTED:</i> The action isn't permitted due to current state or permissions.</p> <p>Fix: Verify that the action is appropriate for the current state, and that you have the necessary permissions to perform it.</p> </li> <li> <p> <i>DUPLICATE_KEY_VALUE:</i> The value in a field duplicates a value that must be unique.</p> <p>Fix: Verify that the value is unique and doesn't duplicate an existing value in the system.</p> </li> </ul>"
+      "documentation":"<p>Indicates an invalid value for a field.</p> <ul> <li> <p> <i>REQUIRED_FIELD_MISSING:</i> The request is missing a required field.</p> <p>Fix: Verify your request payload includes all required fields.</p> </li> <li> <p> <i>INVALID_ENUM_VALUE:</i> The enum field value isn't an accepted values.</p> <p>Fix: Check the documentation for the list of valid enum values, and update your request with a valid value.</p> </li> <li> <p> <i>INVALID_STRING_FORMAT:</i> The string format is invalid.</p> <p>Fix: Confirm that the string is in the expected format (For example: email address, date).</p> </li> <li> <p> <i>INVALID_VALUE:</i> The value isn't valid.</p> <p>Fix: Confirm that the value meets the expected criteria and is within the allowable range or set.</p> </li> <li> <p> <i>TOO_MANY_VALUES:</i> There are too many values in a field that expects fewer entries.</p> <p>Fix: Reduce the number of values to match the expected limit.</p> </li> <li> <p> <i>NOT_ENOUGH_VALUES:</i> There are not enough values in a field that expects more entries.</p> <p>Fix: Increase the number of values to match the expected threshold.</p> </li> <li> <p> <i>ACTION_NOT_PERMITTED:</i> The action isn't permitted due to current state or permissions.</p> <p>Fix: Verify that the action is appropriate for the current state, and that you have the necessary permissions to perform it.</p> </li> <li> <p> <i>DUPLICATE_KEY_VALUE:</i> The value in a field duplicates a value that must be unique.</p> <p>Fix: Verify that the value is unique and doesn't duplicate an existing value in the system.</p> </li> </ul>"
     },
     "ValidationExceptionErrorCode":{
       "type":"string",
@@ -5764,6 +6477,7 @@
         "INVALID_ENUM_VALUE",
         "INVALID_STRING_FORMAT",
         "INVALID_VALUE",
+        "NOT_ENOUGH_VALUES",
         "TOO_MANY_VALUES",
         "INVALID_RESOURCE_STATE",
         "DUPLICATE_KEY_VALUE",
@@ -5791,8 +6505,7 @@
     },
     "WebsiteUrl":{
       "type":"string",
-      "max":255,
-      "min":4,
+      "pattern":"(?s).{4,255}",
       "sensitive":true
     }
   },

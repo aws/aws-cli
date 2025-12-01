@@ -3787,9 +3787,17 @@
           "documentation":"<p>Determines the threshold where Amazon Lex will insert the <code>AMAZON.FallbackIntent</code>, <code>AMAZON.KendraSearchIntent</code>, or both when returning alternative intents. <code>AMAZON.FallbackIntent</code> and <code>AMAZON.KendraSearchIntent</code> are only inserted if they are configured for the bot. </p> <p>For example, suppose a bot is configured with the confidence threshold of 0.80 and the <code>AMAZON.FallbackIntent</code>. Amazon Lex returns three alternative intents with the following confidence scores: IntentA (0.70), IntentB (0.60), IntentC (0.50). The response from the <code>PostText</code> operation would be:</p> <ul> <li> <p> <code>AMAZON.FallbackIntent</code> </p> </li> <li> <p> <code>IntentA</code> </p> </li> <li> <p> <code>IntentB</code> </p> </li> <li> <p> <code>IntentC</code> </p> </li> </ul>"
         },
         "voiceSettings":{"shape":"VoiceSettings"},
+        "speechRecognitionSettings":{
+          "shape":"SpeechRecognitionSettings",
+          "documentation":"<p>Speech-to-text settings to apply when importing the bot locale configuration.</p>"
+        },
         "speechDetectionSensitivity":{
           "shape":"SpeechDetectionSensitivity",
           "documentation":"<p>The sensitivity level for voice activity detection (VAD) in the bot locale. This setting helps optimize speech recognition accuracy by adjusting how the system responds to background noise during voice interactions.</p>"
+        },
+        "unifiedSpeechSettings":{
+          "shape":"UnifiedSpeechSettings",
+          "documentation":"<p>Unified speech settings to apply when importing the bot locale configuration.</p>"
         }
       },
       "documentation":"<p>Provides the bot locale parameters required for importing a bot locale.</p>"
@@ -4919,6 +4927,14 @@
           "shape":"VoiceSettings",
           "documentation":"<p>The Amazon Polly voice ID that Amazon Lex uses for voice interaction with the user.</p>"
         },
+        "unifiedSpeechSettings":{
+          "shape":"UnifiedSpeechSettings",
+          "documentation":"<p>Unified speech settings to configure for the new bot locale.</p>"
+        },
+        "speechRecognitionSettings":{
+          "shape":"SpeechRecognitionSettings",
+          "documentation":"<p>Speech-to-text settings to configure for the new bot locale.</p>"
+        },
         "generativeAISettings":{"shape":"GenerativeAISettings"},
         "speechDetectionSensitivity":{
           "shape":"SpeechDetectionSensitivity",
@@ -4956,6 +4972,14 @@
         "voiceSettings":{
           "shape":"VoiceSettings",
           "documentation":"<p>The Amazon Polly voice ID that Amazon Lex uses for voice interaction with the user.</p>"
+        },
+        "unifiedSpeechSettings":{
+          "shape":"UnifiedSpeechSettings",
+          "documentation":"<p>The unified speech settings configured for the created bot locale.</p>"
+        },
+        "speechRecognitionSettings":{
+          "shape":"SpeechRecognitionSettings",
+          "documentation":"<p>The speech-to-text settings configured for the created bot locale.</p>"
         },
         "botLocaleStatus":{
           "shape":"BotLocaleStatus",
@@ -5977,6 +6001,27 @@
       },
       "documentation":"<p>The object used for specifying the data range that the customer wants Amazon Lex to read through in the input transcripts.</p>"
     },
+    "DeepgramModelId":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"[A-Za-z0-9-_]+"
+    },
+    "DeepgramSpeechModelConfig":{
+      "type":"structure",
+      "required":["apiTokenSecretArn"],
+      "members":{
+        "apiTokenSecretArn":{
+          "shape":"SecretsManagerSecretArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Secrets Manager secret that contains the Deepgram API token.</p>"
+        },
+        "modelId":{
+          "shape":"DeepgramModelId",
+          "documentation":"<p>The identifier of the Deepgram speech-to-text model to use for processing speech input.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for integrating Deepgram speech-to-text models with Amazon Lex.</p>"
+    },
     "DefaultConditionalBranch":{
       "type":"structure",
       "members":{
@@ -6661,6 +6706,14 @@
         "voiceSettings":{
           "shape":"VoiceSettings",
           "documentation":"<p>The Amazon Polly voice Amazon Lex uses for voice interaction with the user.</p>"
+        },
+        "unifiedSpeechSettings":{
+          "shape":"UnifiedSpeechSettings",
+          "documentation":"<p>The unified speech settings configured for the bot locale.</p>"
+        },
+        "speechRecognitionSettings":{
+          "shape":"SpeechRecognitionSettings",
+          "documentation":"<p>The speech-to-text settings configured for the bot locale.</p>"
         },
         "intentsCount":{
           "shape":"ResourceCount",
@@ -11818,6 +11871,12 @@
         "Descending"
       ]
     },
+    "SecretsManagerSecretArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws[A-Za-z-]*:secretsmanager:[a-z0-9-]{1,20}:[0-9]{12}:secret:[A-Za-z0-9/_+=.@-]{1,512}-[A-Za-z0-9]{6}$"
+    },
     "SentimentAnalysisSettings":{
       "type":"structure",
       "required":["detectSentiment"],
@@ -12509,6 +12568,53 @@
         "HighNoiseTolerance",
         "MaximumNoiseTolerance"
       ]
+    },
+    "SpeechFoundationModel":{
+      "type":"structure",
+      "required":["modelArn"],
+      "members":{
+        "modelArn":{
+          "shape":"BedrockModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the foundation model used for speech processing.</p>"
+        },
+        "voiceId":{
+          "shape":"VoiceId",
+          "documentation":"<p>The identifier of the voice to use for speech synthesis with the foundation model.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a foundation model used for speech synthesis and recognition capabilities.</p>"
+    },
+    "SpeechModelConfig":{
+      "type":"structure",
+      "members":{
+        "deepgramConfig":{
+          "shape":"DeepgramSpeechModelConfig",
+          "documentation":"<p>Configuration settings for using Deepgram as the speech-to-text provider.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings that define which speech-to-text model to use for processing speech input.</p>"
+    },
+    "SpeechModelPreference":{
+      "type":"string",
+      "enum":[
+        "Standard",
+        "Neural",
+        "Deepgram"
+      ]
+    },
+    "SpeechRecognitionSettings":{
+      "type":"structure",
+      "members":{
+        "speechModelPreference":{
+          "shape":"SpeechModelPreference",
+          "documentation":"<p>The speech-to-text model to use.</p>"
+        },
+        "speechModelConfig":{
+          "shape":"SpeechModelConfig",
+          "documentation":"<p>Configuration settings for the selected speech-to-text model.</p>"
+        }
+      },
+      "documentation":"<p>Settings that control how Amazon Lex processes and recognizes speech input from users.</p>"
     },
     "StartBotRecommendationRequest":{
       "type":"structure",
@@ -13731,6 +13837,17 @@
       },
       "documentation":"<p>Contains information about the messages in the turn.</p>"
     },
+    "UnifiedSpeechSettings":{
+      "type":"structure",
+      "required":["speechFoundationModel"],
+      "members":{
+        "speechFoundationModel":{
+          "shape":"SpeechFoundationModel",
+          "documentation":"<p>The foundation model configuration to use for unified speech processing capabilities.</p>"
+        }
+      },
+      "documentation":"<p>Unified configuration settings that combine speech recognition and synthesis capabilities.</p>"
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -13884,6 +14001,14 @@
           "shape":"VoiceSettings",
           "documentation":"<p>The new Amazon Polly voice Amazon Lex should use for voice interaction with the user.</p>"
         },
+        "unifiedSpeechSettings":{
+          "shape":"UnifiedSpeechSettings",
+          "documentation":"<p>Updated unified speech settings to apply to the bot locale.</p>"
+        },
+        "speechRecognitionSettings":{
+          "shape":"SpeechRecognitionSettings",
+          "documentation":"<p>Updated speech-to-text settings to apply to the bot locale.</p>"
+        },
         "generativeAISettings":{
           "shape":"GenerativeAISettings",
           "documentation":"<p>Contains settings for generative AI features powered by Amazon Bedrock for your bot locale. Use this object to turn generative AI features on and off. Pricing may differ if you turn a feature on. For more information, see LINK.</p>"
@@ -13924,6 +14049,14 @@
         "voiceSettings":{
           "shape":"VoiceSettings",
           "documentation":"<p>The updated Amazon Polly voice to use for voice interaction with the user.</p>"
+        },
+        "unifiedSpeechSettings":{
+          "shape":"UnifiedSpeechSettings",
+          "documentation":"<p>The updated unified speech settings for the bot locale.</p>"
+        },
+        "speechRecognitionSettings":{
+          "shape":"SpeechRecognitionSettings",
+          "documentation":"<p>The updated speech-to-text settings for the bot locale.</p>"
         },
         "botLocaleStatus":{
           "shape":"BotLocaleStatus",
@@ -15125,13 +15258,13 @@
       "type":"structure",
       "required":["voiceId"],
       "members":{
-        "voiceId":{
-          "shape":"VoiceId",
-          "documentation":"<p>The identifier of the Amazon Polly voice to use.</p>"
-        },
         "engine":{
           "shape":"VoiceEngine",
           "documentation":"<p>Indicates the type of Amazon Polly voice that Amazon Lex should use for voice interaction with the user. For more information, see the <a href=\"https://docs.aws.amazon.com/polly/latest/dg/API_SynthesizeSpeech.html#polly-SynthesizeSpeech-request-Engine\"> <code>engine</code> parameter of the <code>SynthesizeSpeech</code> operation</a> in the <i>Amazon Polly developer guide</i>.</p> <p>If you do not specify a value, the default is <code>standard</code>.</p>"
+        },
+        "voiceId":{
+          "shape":"VoiceId",
+          "documentation":"<p>The identifier of the Amazon Polly voice to use.</p>"
         }
       },
       "documentation":"<p>Defines settings for using an Amazon Polly voice to communicate with a user.</p> <p>Valid values include:</p> <ul> <li> <p> <code>standard</code> </p> </li> <li> <p> <code>neural</code> </p> </li> <li> <p> <code>long-form</code> </p> </li> <li> <p> <code>generative</code> </p> </li> </ul>"
@@ -15169,5 +15302,5 @@
       "min":0
     }
   },
-  "documentation":"<p/>"
+  "documentation":"<p>Amazon Lex Model Building Service provides APIs for creating, managing, and deploying conversational bots and their components.</p>"
 }

@@ -763,9 +763,31 @@
         "Receipts":{
           "shape":"Receipts",
           "documentation":"<p>The list of receipt information for a message for different recipients.</p>"
+        },
+        "MessageProcessingStatus":{
+          "shape":"MessageProcessingStatus",
+          "documentation":"<p>The status of Message Processing for the message.</p>"
         }
       },
       "documentation":"<p>Contains metadata related to a message.</p>"
+    },
+    "MessageProcessingMetadata":{
+      "type":"structure",
+      "members":{
+        "MessageProcessingStatus":{
+          "shape":"MessageProcessingStatus",
+          "documentation":"<p>The status of Message Processing for the message.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata for chat messages.</p>"
+    },
+    "MessageProcessingStatus":{
+      "type":"string",
+      "enum":[
+        "PROCESSING",
+        "FAILED",
+        "REJECTED"
+      ]
     },
     "MostRecent":{
       "type":"integer",
@@ -962,6 +984,10 @@
         "AbsoluteTime":{
           "shape":"Instant",
           "documentation":"<p>The time when the message was sent.</p> <p>It's specified in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.</p>"
+        },
+        "MessageMetadata":{
+          "shape":"MessageProcessingMetadata",
+          "documentation":"<p>Contains metadata for the message.</p>"
         }
       }
     },

@@ -72,6 +72,25 @@
       "documentation":"<p>Creates an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">alias</a> for a Lambda function version. Use aliases to provide clients with a function identifier that you can update to invoke a different version.</p> <p>You can also map an alias to split invocation requests between two versions. Use the <code>RoutingConfig</code> parameter to specify a second version and the percentage of invocation requests that it receives.</p>",
       "idempotent":true
     },
+    "CreateCapacityProvider":{
+      "name":"CreateCapacityProvider",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2025-11-30/capacity-providers",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateCapacityProviderRequest"},
+      "output":{"shape":"CreateCapacityProviderResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"CapacityProviderLimitExceededException"}
+      ],
+      "documentation":"<p>Creates a capacity provider that manages compute resources for Lambda functions</p>",
+      "idempotent":true
+    },
     "CreateCodeSigningConfig":{
       "name":"CreateCodeSigningConfig",
       "http":{
@@ -123,7 +142,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"CodeVerificationFailedException"},
         {"shape":"CodeSigningConfigNotFoundException"},
-        {"shape":"CodeStorageExceededException"}
+        {"shape":"CodeStorageExceededException"},
+        {"shape":"FunctionVersionsPerCapacityProviderLimitExceededException"}
       ],
       "documentation":"<p>Creates a Lambda function. To create a function, you need a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html\">deployment package</a> and an <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/intro-permission-model.html#lambda-intro-execution-role\">execution role</a>. The deployment package is a .zip file archive or container image that contains your function code. The execution role grants the function permission to use Amazon Web Services services, such as Amazon CloudWatch Logs for log streaming and X-Ray for request tracing.</p> <p>If the deployment package is a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-images.html\">container image</a>, then you set the package type to <code>Image</code>. For a container image, the code property must include the URI of a container image in the Amazon ECR registry. You do not need to specify the handler and runtime properties.</p> <p>If the deployment package is a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-package.html#gettingstarted-package-zip\">.zip file archive</a>, then you set the package type to <code>Zip</code>. For a .zip file archive, the code property specifies the location of the .zip file. You must also specify the handler and runtime properties. The code in the deployment package must be compatible with the target instruction set architecture of the function (<code>x86-64</code> or <code>arm64</code>). If you do not specify the architecture, then the default value is <code>x86-64</code>.</p> <p>When you create a function, Lambda provisions an instance of the function and its supporting resources. If your function connects to a VPC, this process can take a minute or so. During this time, you can't invoke or modify the function. The <code>State</code>, <code>StateReason</code>, and <code>StateReasonCode</code> fields in the response from <a>GetFunctionConfiguration</a> indicate when the function is ready to invoke. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/functions-states.html\">Lambda function states</a>.</p> <p>A function has an unpublished version, and can have published versions and aliases. The unpublished version changes when you update your function's code and configuration. A published version is a snapshot of your function code and configuration that can't be changed. An alias is a named resource that maps to a version, and can be changed to map to a different version. Use the <code>Publish</code> parameter to create version <code>1</code> of your function from its initial configuration.</p> <p>The other parameters let you configure version-specific and function-level settings. You can modify version-specific settings later with <a>UpdateFunctionConfiguration</a>. Function-level settings apply to both the unpublished and published versions of the function, and include tags (<a>TagResource</a>) and per-function concurrency limits (<a>PutFunctionConcurrency</a>).</p> <p>You can use code signing if your deployment package is a .zip file archive. To enable code signing for this function, specify the ARN of a code-signing configuration. When a user attempts to deploy a code package with <a>UpdateFunctionCode</a>, Lambda checks that the code package has a valid signature from a trusted publisher. The code-signing configuration includes set of signing profiles, which define the trusted publishers for this function.</p> <p>If another Amazon Web Services account or an Amazon Web Services service invokes your function, use <a>AddPermission</a> to grant permission by creating a resource-based Identity and Access Management (IAM) policy. You can grant permissions at the function level, on a version, or on an alias.</p> <p>To invoke your function directly, use <a>Invoke</a>. To invoke your function in response to events in other Amazon Web Services services, create an event source mapping (<a>CreateEventSourceMapping</a>), or configure a function trigger in the other service. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/lambda-invocation.html\">Invoking Lambda functions</a>.</p>",
       "idempotent":true
@@ -161,6 +181,25 @@
         {"shape":"TooManyRequestsException"}
       ],
       "documentation":"<p>Deletes a Lambda function <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">alias</a>.</p>",
+      "idempotent":true
+    },
+    "DeleteCapacityProvider":{
+      "name":"DeleteCapacityProvider",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2025-11-30/capacity-providers/{CapacityProviderName}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteCapacityProviderRequest"},
+      "output":{"shape":"DeleteCapacityProviderResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a capacity provider. You cannot delete a capacity provider that is currently being used by Lambda functions.</p>",
       "idempotent":true
     },
     "DeleteCodeSigningConfig":{
@@ -206,9 +245,10 @@
       "http":{
         "method":"DELETE",
         "requestUri":"/2015-03-31/functions/{FunctionName}",
-        "responseCode":204
+        "responseCode":200
       },
       "input":{"shape":"DeleteFunctionRequest"},
+      "output":{"shape":"DeleteFunctionResponse"},
       "errors":[
         {"shape":"InvalidParameterValueException"},
         {"shape":"ResourceConflictException"},
@@ -354,6 +394,24 @@
       "documentation":"<p>Returns details about a Lambda function <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">alias</a>.</p>",
       "readonly":true
     },
+    "GetCapacityProvider":{
+      "name":"GetCapacityProvider",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2025-11-30/capacity-providers/{CapacityProviderName}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCapacityProviderRequest"},
+      "output":{"shape":"GetCapacityProviderResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves information about a specific capacity provider, including its configuration, state, and associated resources.</p>",
+      "readonly":true
+    },
     "GetCodeSigningConfig":{
       "name":"GetCodeSigningConfig",
       "http":{
@@ -495,6 +553,24 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Returns your function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-recursion.html\">recursive loop detection</a> configuration. </p>",
+      "readonly":true
+    },
+    "GetFunctionScalingConfig":{
+      "name":"GetFunctionScalingConfig",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2025-11-30/functions/{FunctionName}/function-scaling-config",
+        "responseCode":200
+      },
+      "input":{"shape":"GetFunctionScalingConfigRequest"},
+      "output":{"shape":"GetFunctionScalingConfigResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the scaling configuration for a Lambda Managed Instances function.</p>",
       "readonly":true
     },
     "GetFunctionUrlConfig":{
@@ -647,6 +723,7 @@
         {"shape":"UnsupportedMediaTypeException"},
         {"shape":"SerializedRequestEntityTooLargeException"},
         {"shape":"InvalidRuntimeException"},
+        {"shape":"NoPublishedVersionException"},
         {"shape":"EC2UnexpectedException"},
         {"shape":"InvalidSubnetIDException"},
         {"shape":"KMSNotFoundException"},
@@ -710,6 +787,7 @@
         {"shape":"UnsupportedMediaTypeException"},
         {"shape":"SerializedRequestEntityTooLargeException"},
         {"shape":"InvalidRuntimeException"},
+        {"shape":"NoPublishedVersionException"},
         {"shape":"EC2UnexpectedException"},
         {"shape":"InvalidSubnetIDException"},
         {"shape":"KMSNotFoundException"},
@@ -747,6 +825,23 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Returns a list of <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">aliases</a> for a Lambda function.</p>",
+      "readonly":true
+    },
+    "ListCapacityProviders":{
+      "name":"ListCapacityProviders",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2025-11-30/capacity-providers",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCapacityProvidersRequest"},
+      "output":{"shape":"ListCapacityProvidersResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Returns a list of capacity providers in your account.</p>",
       "readonly":true
     },
     "ListCodeSigningConfigs":{
@@ -817,6 +912,24 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Returns a list of Lambda function URLs for the specified function.</p>",
+      "readonly":true
+    },
+    "ListFunctionVersionsByCapacityProvider":{
+      "name":"ListFunctionVersionsByCapacityProvider",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2025-11-30/capacity-providers/{CapacityProviderName}/function-versions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListFunctionVersionsByCapacityProviderRequest"},
+      "output":{"shape":"ListFunctionVersionsByCapacityProviderResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of function versions that are configured to use a specific capacity provider.</p>",
       "readonly":true
     },
     "ListFunctions":{
@@ -976,7 +1089,8 @@
         {"shape":"TooManyRequestsException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"CodeStorageExceededException"},
-        {"shape":"PreconditionFailedException"}
+        {"shape":"PreconditionFailedException"},
+        {"shape":"FunctionVersionsPerCapacityProviderLimitExceededException"}
       ],
       "documentation":"<p>Creates a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/versioning-aliases.html\">version</a> from the current code and configuration of a function. Use versions to create a snapshot of your function code and configuration that doesn't change.</p> <p>Lambda doesn't publish a version if the function's configuration and code haven't changed since the last version. Use <a>UpdateFunctionCode</a> or <a>UpdateFunctionConfiguration</a> to update the function before publishing a version.</p> <p>Clients can invoke versions directly or with an alias. To create an alias, use <a>CreateAlias</a>.</p>"
     },
@@ -1052,6 +1166,24 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Sets your function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-recursion.html\">recursive loop detection</a> configuration.</p> <p>When you configure a Lambda function to output to the same service or resource that invokes the function, it's possible to create an infinite recursive loop. For example, a Lambda function might write a message to an Amazon Simple Queue Service (Amazon SQS) queue, which then invokes the same function. This invocation causes the function to write another message to the queue, which in turn invokes the function again.</p> <p>Lambda can detect certain types of recursive loops shortly after they occur. When Lambda detects a recursive loop and your function's recursive loop detection configuration is set to <code>Terminate</code>, it stops your function being invoked and notifies you.</p>"
+    },
+    "PutFunctionScalingConfig":{
+      "name":"PutFunctionScalingConfig",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2025-11-30/functions/{FunctionName}/function-scaling-config",
+        "responseCode":202
+      },
+      "input":{"shape":"PutFunctionScalingConfigRequest"},
+      "output":{"shape":"PutFunctionScalingConfigResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Sets the scaling configuration for a Lambda Managed Instances function. The scaling configuration defines the minimum and maximum number of execution environments that can be provisioned for the function, allowing you to control scaling behavior and resource allocation.</p>"
     },
     "PutProvisionedConcurrencyConfig":{
       "name":"PutProvisionedConcurrencyConfig",
@@ -1176,6 +1308,24 @@
         {"shape":"PreconditionFailedException"}
       ],
       "documentation":"<p>Updates the configuration of a Lambda function <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html\">alias</a>.</p>"
+    },
+    "UpdateCapacityProvider":{
+      "name":"UpdateCapacityProvider",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2025-11-30/capacity-providers/{CapacityProviderName}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateCapacityProviderRequest"},
+      "output":{"shape":"UpdateCapacityProviderResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the configuration of an existing capacity provider.</p>"
     },
     "UpdateCodeSigningConfig":{
       "name":"UpdateCodeSigningConfig",
@@ -1408,7 +1558,7 @@
       ],
       "members":{
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"NamespacedFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function, version, or alias.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>my-function</code> (name-only), <code>my-function:v1</code> (with alias).</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>You can append a version number or alias to any of the formats. The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
           "location":"uri",
           "locationName":"FunctionName"
@@ -1438,7 +1588,7 @@
           "documentation":"<p>For Alexa Smart Home functions, a token that the invoker must supply.</p>"
         },
         "Qualifier":{
-          "shape":"Qualifier",
+          "shape":"NumericLatestPublishedOrAliasQualifier",
           "documentation":"<p>Specify a version or alias to add permissions to a published version of the function.</p>",
           "location":"querystring",
           "locationName":"Qualifier"
@@ -1457,7 +1607,7 @@
         },
         "InvokedViaFunctionUrl":{
           "shape":"InvokedViaFunctionUrl",
-          "documentation":"<p>Restricts the <code>lambda:InvokeFunction</code> action to function URL calls. When specified, this option prevents the principal from invoking the function by any means other than the function URL. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html\">Control access to Lambda function URLs</a>.</p>"
+          "documentation":"<p>Indicates whether the permission applies when the function is invoked through a function URL. </p>"
         }
       }
     },
@@ -1619,6 +1769,186 @@
       "streaming":true
     },
     "Boolean":{"type":"boolean"},
+    "CapacityProvider":{
+      "type":"structure",
+      "required":[
+        "CapacityProviderArn",
+        "State",
+        "VpcConfig",
+        "PermissionsConfig"
+      ],
+      "members":{
+        "CapacityProviderArn":{
+          "shape":"CapacityProviderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the capacity provider.</p>"
+        },
+        "State":{
+          "shape":"CapacityProviderState",
+          "documentation":"<p>The current state of the capacity provider.</p>"
+        },
+        "VpcConfig":{
+          "shape":"CapacityProviderVpcConfig",
+          "documentation":"<p>The VPC configuration for the capacity provider.</p>"
+        },
+        "PermissionsConfig":{
+          "shape":"CapacityProviderPermissionsConfig",
+          "documentation":"<p>The permissions configuration for the capacity provider.</p>"
+        },
+        "InstanceRequirements":{
+          "shape":"InstanceRequirements",
+          "documentation":"<p>The instance requirements for compute resources managed by the capacity provider.</p>"
+        },
+        "CapacityProviderScalingConfig":{
+          "shape":"CapacityProviderScalingConfig",
+          "documentation":"<p>The scaling configuration for the capacity provider.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KMSKeyArn",
+          "documentation":"<p>The ARN of the KMS key used to encrypt the capacity provider's resources.</p>"
+        },
+        "LastModified":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the capacity provider was last modified.</p>"
+        }
+      },
+      "documentation":"<p>A capacity provider manages compute resources for Lambda functions.</p>"
+    },
+    "CapacityProviderArn":{
+      "type":"string",
+      "max":140,
+      "min":1,
+      "pattern":"arn:aws[a-zA-Z-]*:lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:capacity-provider:[a-zA-Z0-9-_]+"
+    },
+    "CapacityProviderConfig":{
+      "type":"structure",
+      "required":["LambdaManagedInstancesCapacityProviderConfig"],
+      "members":{
+        "LambdaManagedInstancesCapacityProviderConfig":{
+          "shape":"LambdaManagedInstancesCapacityProviderConfig",
+          "documentation":"<p>Configuration for Lambda-managed instances used by the capacity provider.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for the capacity provider that manages compute resources for Lambda functions.</p>"
+    },
+    "CapacityProviderLimitExceededException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The maximum number of capacity providers for your account has been exceeded. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html\">Lambda quotas</a> </p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CapacityProviderMaxVCpuCount":{
+      "type":"integer",
+      "box":true,
+      "max":15000,
+      "min":2
+    },
+    "CapacityProviderName":{
+      "type":"string",
+      "max":140,
+      "min":1,
+      "pattern":"(arn:aws[a-zA-Z-]*:lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:capacity-provider:[a-zA-Z0-9-_]+)|[a-zA-Z0-9-_]+"
+    },
+    "CapacityProviderPermissionsConfig":{
+      "type":"structure",
+      "required":["CapacityProviderOperatorRoleArn"],
+      "members":{
+        "CapacityProviderOperatorRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role that the capacity provider uses to manage compute instances and other Amazon Web Services resources.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that specifies the permissions required for the capacity provider to manage compute resources.</p>"
+    },
+    "CapacityProviderPredefinedMetricType":{
+      "type":"string",
+      "enum":["LambdaCapacityProviderAverageCPUUtilization"]
+    },
+    "CapacityProviderScalingConfig":{
+      "type":"structure",
+      "members":{
+        "MaxVCpuCount":{
+          "shape":"CapacityProviderMaxVCpuCount",
+          "documentation":"<p>The maximum number of vCPUs that the capacity provider can provision across all compute instances.</p>"
+        },
+        "ScalingMode":{
+          "shape":"CapacityProviderScalingMode",
+          "documentation":"<p>The scaling mode that determines how the capacity provider responds to changes in demand.</p>"
+        },
+        "ScalingPolicies":{
+          "shape":"CapacityProviderScalingPoliciesList",
+          "documentation":"<p>A list of scaling policies that define how the capacity provider scales compute instances based on metrics and thresholds.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that defines how the capacity provider scales compute instances based on demand and policies.</p>"
+    },
+    "CapacityProviderScalingMode":{
+      "type":"string",
+      "enum":[
+        "Auto",
+        "Manual"
+      ]
+    },
+    "CapacityProviderScalingPoliciesList":{
+      "type":"list",
+      "member":{"shape":"TargetTrackingScalingPolicy"},
+      "max":10,
+      "min":1
+    },
+    "CapacityProviderSecurityGroupIds":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupId"},
+      "max":5,
+      "min":0
+    },
+    "CapacityProviderState":{
+      "type":"string",
+      "enum":[
+        "Pending",
+        "Active",
+        "Failed",
+        "Deleting"
+      ]
+    },
+    "CapacityProviderSubnetIds":{
+      "type":"list",
+      "member":{"shape":"SubnetId"},
+      "max":16,
+      "min":1
+    },
+    "CapacityProviderVpcConfig":{
+      "type":"structure",
+      "required":[
+        "SubnetIds",
+        "SecurityGroupIds"
+      ],
+      "members":{
+        "SubnetIds":{
+          "shape":"CapacityProviderSubnetIds",
+          "documentation":"<p>A list of subnet IDs where the capacity provider launches compute instances.</p>"
+        },
+        "SecurityGroupIds":{
+          "shape":"CapacityProviderSecurityGroupIds",
+          "documentation":"<p>A list of security group IDs that control network access for compute instances managed by the capacity provider.</p>"
+        }
+      },
+      "documentation":"<p>VPC configuration that specifies the network settings for compute instances managed by the capacity provider.</p>"
+    },
+    "CapacityProvidersList":{
+      "type":"list",
+      "member":{"shape":"CapacityProvider"},
+      "max":50,
+      "min":0
+    },
     "CodeSigningConfig":{
       "type":"structure",
       "required":[
@@ -1805,7 +2135,7 @@
           "documentation":"<p>The name of the alias.</p>"
         },
         "FunctionVersion":{
-          "shape":"Version",
+          "shape":"VersionWithLatestPublished",
           "documentation":"<p>The function version that the alias invokes.</p>"
         },
         "Description":{
@@ -1815,6 +2145,54 @@
         "RoutingConfig":{
           "shape":"AliasRoutingConfiguration",
           "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html#configuring-alias-routing\">routing configuration</a> of the alias.</p>"
+        }
+      }
+    },
+    "CreateCapacityProviderRequest":{
+      "type":"structure",
+      "required":[
+        "CapacityProviderName",
+        "VpcConfig",
+        "PermissionsConfig"
+      ],
+      "members":{
+        "CapacityProviderName":{
+          "shape":"CapacityProviderName",
+          "documentation":"<p>The name of the capacity provider. </p>"
+        },
+        "VpcConfig":{
+          "shape":"CapacityProviderVpcConfig",
+          "documentation":"<p>The VPC configuration for the capacity provider, including subnet IDs and security group IDs where compute instances will be launched.</p>"
+        },
+        "PermissionsConfig":{
+          "shape":"CapacityProviderPermissionsConfig",
+          "documentation":"<p>The permissions configuration that specifies the IAM role ARN used by the capacity provider to manage compute resources.</p>"
+        },
+        "InstanceRequirements":{
+          "shape":"InstanceRequirements",
+          "documentation":"<p>The instance requirements that specify the compute instance characteristics, including architectures and allowed or excluded instance types.</p>"
+        },
+        "CapacityProviderScalingConfig":{
+          "shape":"CapacityProviderScalingConfig",
+          "documentation":"<p>The scaling configuration that defines how the capacity provider scales compute instances, including maximum vCPU count and scaling policies.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KMSKeyArnNonEmpty",
+          "documentation":"<p>The ARN of the KMS key used to encrypt data associated with the capacity provider.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>A list of tags to associate with the capacity provider.</p>"
+        }
+      }
+    },
+    "CreateCapacityProviderResponse":{
+      "type":"structure",
+      "required":["CapacityProvider"],
+      "members":{
+        "CapacityProvider":{
+          "shape":"CapacityProvider",
+          "documentation":"<p>Information about the capacity provider that was created.</p>"
         }
       }
     },
@@ -1859,7 +2237,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the event source.</p> <ul> <li> <p> <b>Amazon Kinesis</b> – The ARN of the data stream or a stream consumer.</p> </li> <li> <p> <b>Amazon DynamoDB Streams</b> – The ARN of the stream.</p> </li> <li> <p> <b>Amazon Simple Queue Service</b> – The ARN of the queue.</p> </li> <li> <p> <b>Amazon Managed Streaming for Apache Kafka</b> – The ARN of the cluster or the ARN of the VPC connection (for <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html#msk-multi-vpc\">cross-account event source mappings</a>).</p> </li> <li> <p> <b>Amazon MQ</b> – The ARN of the broker.</p> </li> <li> <p> <b>Amazon DocumentDB</b> – The ARN of the DocumentDB change stream.</p> </li> </ul>"
         },
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"NamespacedFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>MyFunction</code>.</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction</code>.</p> </li> <li> <p> <b>Version or Alias ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction:PROD</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:MyFunction</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it's limited to 64 characters in length.</p>"
         },
         "Enabled":{
@@ -2068,6 +2446,14 @@
           "shape":"LoggingConfig",
           "documentation":"<p>The function's Amazon CloudWatch Logs configuration settings.</p>"
         },
+        "CapacityProviderConfig":{
+          "shape":"CapacityProviderConfig",
+          "documentation":"<p>Configuration for the capacity provider that manages compute resources for Lambda functions.</p>"
+        },
+        "PublishTo":{
+          "shape":"FunctionVersionLatestPublished",
+          "documentation":"<p>Specifies where to publish the function version or configuration.</p>"
+        },
         "TenancyConfig":{
           "shape":"TenancyConfig",
           "documentation":"<p>Configuration for multi-tenant applications that use Lambda functions. Defines tenant isolation settings and resource allocations. Required for functions supporting multiple tenants.</p>"
@@ -2180,6 +2566,28 @@
         }
       }
     },
+    "DeleteCapacityProviderRequest":{
+      "type":"structure",
+      "required":["CapacityProviderName"],
+      "members":{
+        "CapacityProviderName":{
+          "shape":"CapacityProviderName",
+          "documentation":"<p>The name of the capacity provider to delete.</p>",
+          "location":"uri",
+          "locationName":"CapacityProviderName"
+        }
+      }
+    },
+    "DeleteCapacityProviderResponse":{
+      "type":"structure",
+      "required":["CapacityProvider"],
+      "members":{
+        "CapacityProvider":{
+          "shape":"CapacityProvider",
+          "documentation":"<p>Information about the deleted capacity provider.</p>"
+        }
+      }
+    },
     "DeleteCodeSigningConfigRequest":{
       "type":"structure",
       "required":["CodeSigningConfigArn"],
@@ -2213,7 +2621,7 @@
       "required":["FunctionName"],
       "members":{
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"NamespacedFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> - <code>MyFunction</code>.</p> </li> <li> <p> <b>Function ARN</b> - <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction</code>.</p> </li> <li> <p> <b>Partial ARN</b> - <code>123456789012:function:MyFunction</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
           "location":"uri",
           "locationName":"FunctionName"
@@ -2237,13 +2645,13 @@
       "required":["FunctionName"],
       "members":{
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"NamespacedFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function, version, or alias.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> - <code>my-function</code> (name-only), <code>my-function:v1</code> (with alias).</p> </li> <li> <p> <b>Function ARN</b> - <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> - <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>You can append a version number or alias to any of the formats. The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
           "location":"uri",
           "locationName":"FunctionName"
         },
         "Qualifier":{
-          "shape":"Qualifier",
+          "shape":"NumericLatestPublishedOrAliasQualifier",
           "documentation":"<p>A version number or alias name.</p>",
           "location":"querystring",
           "locationName":"Qualifier"
@@ -2255,16 +2663,26 @@
       "required":["FunctionName"],
       "members":{
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"NamespacedFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function or version.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>my-function</code> (name-only), <code>my-function:1</code> (with version).</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>You can append a version number or alias to any of the formats. The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
           "location":"uri",
           "locationName":"FunctionName"
         },
         "Qualifier":{
-          "shape":"Qualifier",
+          "shape":"NumericLatestPublishedOrAliasQualifier",
           "documentation":"<p>Specify a version to delete. You can't delete a version that an alias references.</p>",
           "location":"querystring",
           "locationName":"Qualifier"
+        }
+      }
+    },
+    "DeleteFunctionResponse":{
+      "type":"structure",
+      "members":{
+        "StatusCode":{
+          "shape":"Integer",
+          "documentation":"<p>The HTTP status code returned by the operation.</p>",
+          "location":"statusCode"
         }
       }
     },
@@ -2337,7 +2755,7 @@
       "type":"string",
       "max":350,
       "min":0,
-      "pattern":"$|kafka://([^.]([a-zA-Z0-9\\-_.]{0,248}))|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:((eusc-)?[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)"
+      "pattern":"$|kafka://([^.]([a-zA-Z0-9\\-_.]{0,248}))|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)"
     },
     "DestinationConfig":{
       "type":"structure",
@@ -2743,6 +3161,12 @@
       "min":0,
       "pattern":"[a-zA-Z0-9._\\-]+"
     },
+    "ExecutionEnvironmentMemoryGiBPerVCpu":{
+      "type":"double",
+      "box":true,
+      "max":8.0,
+      "min":2.0
+    },
     "FileSystemArn":{
       "type":"string",
       "max":200,
@@ -2832,7 +3256,9 @@
     },
     "FunctionArn":{
       "type":"string",
-      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
+      "max":10000,
+      "min":0,
+      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
     },
     "FunctionArnList":{
       "type":"list",
@@ -3041,6 +3467,14 @@
           "shape":"LoggingConfig",
           "documentation":"<p>The function's Amazon CloudWatch Logs configuration settings.</p>"
         },
+        "CapacityProviderConfig":{
+          "shape":"CapacityProviderConfig",
+          "documentation":"<p>Configuration for the capacity provider that manages compute resources for Lambda functions.</p>"
+        },
+        "ConfigSha256":{
+          "shape":"String",
+          "documentation":"<p>The SHA256 hash of the function configuration.</p>"
+        },
         "TenancyConfig":{
           "shape":"TenancyConfig",
           "documentation":"<p>The function's tenant isolation configuration settings. Determines whether the Lambda function runs on a shared or dedicated infrastructure per unique tenant.</p>"
@@ -3085,7 +3519,7 @@
       "type":"string",
       "max":140,
       "min":1,
-      "pattern":"(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}(-gov)?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
+      "pattern":"(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
     },
     "FunctionResponseType":{
       "type":"string",
@@ -3095,6 +3529,26 @@
       "type":"list",
       "member":{"shape":"FunctionResponseType"},
       "max":1,
+      "min":0
+    },
+    "FunctionScalingConfig":{
+      "type":"structure",
+      "members":{
+        "MinExecutionEnvironments":{
+          "shape":"FunctionScalingConfigExecutionEnvironments",
+          "documentation":"<p>The minimum number of execution environments to maintain for the function.</p>"
+        },
+        "MaxExecutionEnvironments":{
+          "shape":"FunctionScalingConfigExecutionEnvironments",
+          "documentation":"<p>The maximum number of execution environments that can be provisioned for the function.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that defines the scaling behavior for a Lambda Managed Instances function, including the minimum and maximum number of execution environments that can be provisioned.</p>"
+    },
+    "FunctionScalingConfigExecutionEnvironments":{
+      "type":"integer",
+      "box":true,
+      "max":15000,
       "min":0
     },
     "FunctionUrl":{
@@ -3158,11 +3612,55 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"(^\\$LATEST$)|((?!^[0-9]+$)([a-zA-Z0-9-_]+))"
+      "pattern":"((?!^\\d+$)^[0-9a-zA-Z-_]+$)"
     },
     "FunctionVersion":{
       "type":"string",
       "enum":["ALL"]
+    },
+    "FunctionVersionLatestPublished":{
+      "type":"string",
+      "enum":["LATEST_PUBLISHED"]
+    },
+    "FunctionVersionsByCapacityProviderList":{
+      "type":"list",
+      "member":{"shape":"FunctionVersionsByCapacityProviderListItem"},
+      "max":50,
+      "min":0
+    },
+    "FunctionVersionsByCapacityProviderListItem":{
+      "type":"structure",
+      "required":[
+        "FunctionArn",
+        "State"
+      ],
+      "members":{
+        "FunctionArn":{
+          "shape":"NameSpacedFunctionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the function version.</p>"
+        },
+        "State":{
+          "shape":"State",
+          "documentation":"<p>The current state of the function version.</p>"
+        }
+      },
+      "documentation":"<p>Information about a function version that uses a specific capacity provider, including its ARN and current state.</p>"
+    },
+    "FunctionVersionsPerCapacityProviderLimitExceededException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The maximum number of function versions that can be associated with a single capacity provider has been exceeded. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html\">Lambda quotas</a>.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
     },
     "GetAccountSettingsRequest":{
       "type":"structure",
@@ -3199,6 +3697,28 @@
           "documentation":"<p>The name of the alias.</p>",
           "location":"uri",
           "locationName":"Name"
+        }
+      }
+    },
+    "GetCapacityProviderRequest":{
+      "type":"structure",
+      "required":["CapacityProviderName"],
+      "members":{
+        "CapacityProviderName":{
+          "shape":"CapacityProviderName",
+          "documentation":"<p>The name of the capacity provider to retrieve.</p>",
+          "location":"uri",
+          "locationName":"CapacityProviderName"
+        }
+      }
+    },
+    "GetCapacityProviderResponse":{
+      "type":"structure",
+      "required":["CapacityProvider"],
+      "members":{
+        "CapacityProvider":{
+          "shape":"CapacityProvider",
+          "documentation":"<p>Information about the capacity provider, including its configuration and current state.</p>"
         }
       }
     },
@@ -3241,7 +3761,7 @@
       "required":["FunctionName"],
       "members":{
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"NamespacedFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> - <code>MyFunction</code>.</p> </li> <li> <p> <b>Function ARN</b> - <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction</code>.</p> </li> <li> <p> <b>Partial ARN</b> - <code>123456789012:function:MyFunction</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
           "location":"uri",
           "locationName":"FunctionName"
@@ -3297,7 +3817,7 @@
           "locationName":"FunctionName"
         },
         "Qualifier":{
-          "shape":"Qualifier",
+          "shape":"NumericLatestPublishedOrAliasQualifier",
           "documentation":"<p>Specify a version or alias to get details about a published version of the function.</p>",
           "location":"querystring",
           "locationName":"Qualifier"
@@ -3309,13 +3829,13 @@
       "required":["FunctionName"],
       "members":{
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"NamespacedFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function, version, or alias.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> - <code>my-function</code> (name-only), <code>my-function:v1</code> (with alias).</p> </li> <li> <p> <b>Function ARN</b> - <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> - <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>You can append a version number or alias to any of the formats. The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
           "location":"uri",
           "locationName":"FunctionName"
         },
         "Qualifier":{
-          "shape":"Qualifier",
+          "shape":"NumericLatestPublishedOrAliasQualifier",
           "documentation":"<p>A version number or alias name.</p>",
           "location":"querystring",
           "locationName":"Qualifier"
@@ -3328,7 +3848,7 @@
       "members":{
         "FunctionName":{
           "shape":"UnqualifiedFunctionName",
-          "documentation":"<p/>",
+          "documentation":"<p>The name of the function.</p>",
           "location":"uri",
           "locationName":"FunctionName"
         }
@@ -3354,7 +3874,7 @@
           "locationName":"FunctionName"
         },
         "Qualifier":{
-          "shape":"Qualifier",
+          "shape":"NumericLatestPublishedOrAliasQualifier",
           "documentation":"<p>Specify a version or alias to get details about a published version of the function.</p>",
           "location":"querystring",
           "locationName":"Qualifier"
@@ -3383,6 +3903,44 @@
         "Concurrency":{
           "shape":"Concurrency",
           "documentation":"<p>The function's <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/concurrent-executions.html\">reserved concurrency</a>.</p>"
+        }
+      }
+    },
+    "GetFunctionScalingConfigRequest":{
+      "type":"structure",
+      "required":[
+        "FunctionName",
+        "Qualifier"
+      ],
+      "members":{
+        "FunctionName":{
+          "shape":"UnqualifiedFunctionName",
+          "documentation":"<p>The name or ARN of the Lambda function.</p>",
+          "location":"uri",
+          "locationName":"FunctionName"
+        },
+        "Qualifier":{
+          "shape":"PublishedFunctionQualifier",
+          "documentation":"<p>Specify a version or alias to get the scaling configuration for a published version of the function.</p>",
+          "location":"querystring",
+          "locationName":"Qualifier"
+        }
+      }
+    },
+    "GetFunctionScalingConfigResponse":{
+      "type":"structure",
+      "members":{
+        "FunctionArn":{
+          "shape":"FunctionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the function.</p>"
+        },
+        "AppliedFunctionScalingConfig":{
+          "shape":"FunctionScalingConfig",
+          "documentation":"<p>The scaling configuration that is currently applied to the function. This represents the actual scaling settings in effect.</p>"
+        },
+        "RequestedFunctionScalingConfig":{
+          "shape":"FunctionScalingConfig",
+          "documentation":"<p>The scaling configuration that was requested for the function.</p>"
         }
       }
     },
@@ -3563,7 +4121,7 @@
           "locationName":"FunctionName"
         },
         "Qualifier":{
-          "shape":"Qualifier",
+          "shape":"NumericLatestPublishedOrAliasQualifier",
           "documentation":"<p>Specify a version or alias to get the policy for that resource.</p>",
           "location":"querystring",
           "locationName":"Qualifier"
@@ -3644,7 +4202,7 @@
           "locationName":"FunctionName"
         },
         "Qualifier":{
-          "shape":"Qualifier",
+          "shape":"NumericLatestPublishedOrAliasQualifier",
           "documentation":"<p>Specify a version of the function. This can be <code>$LATEST</code> or a published version number. If no value is specified, the configuration for the <code>$LATEST</code> version is returned.</p>",
           "location":"querystring",
           "locationName":"Qualifier"
@@ -3732,6 +4290,36 @@
         }
       },
       "documentation":"<p>Response to a <code>GetFunctionConfiguration</code> request.</p>"
+    },
+    "InstanceRequirements":{
+      "type":"structure",
+      "members":{
+        "Architectures":{
+          "shape":"ArchitecturesList",
+          "documentation":"<p>A list of supported CPU architectures for compute instances. Valid values include <code>x86_64</code> and <code>arm64</code>.</p>"
+        },
+        "AllowedInstanceTypes":{
+          "shape":"InstanceTypeSet",
+          "documentation":"<p>A list of EC2 instance types that the capacity provider is allowed to use. If not specified, all compatible instance types are allowed.</p>"
+        },
+        "ExcludedInstanceTypes":{
+          "shape":"InstanceTypeSet",
+          "documentation":"<p>A list of EC2 instance types that the capacity provider should not use, even if they meet other requirements.</p>"
+        }
+      },
+      "documentation":"<p>Specifications that define the characteristics and constraints for compute instances used by the capacity provider.</p>"
+    },
+    "InstanceType":{
+      "type":"string",
+      "max":30,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\.\\-]+"
+    },
+    "InstanceTypeSet":{
+      "type":"list",
+      "member":{"shape":"InstanceType"},
+      "max":400,
+      "min":0
     },
     "Integer":{"type":"integer"},
     "InvalidCodeSignatureException":{
@@ -3862,7 +4450,7 @@
           "documentation":"<p>The JSON that you want to provide to your Lambda function as input. The maximum payload size is 6 MB for synchronous invocations and 1 MB for asynchronous invocations.</p> <p>You can enter the JSON directly. For example, <code>--payload '{ \"key\": \"value\" }'</code>. You can also specify a file path. For example, <code>--payload file://payload.json</code>.</p>"
         },
         "Qualifier":{
-          "shape":"Qualifier",
+          "shape":"NumericLatestPublishedOrAliasQualifier",
           "documentation":"<p>Specify a version or alias to invoke a published version of the function.</p>",
           "location":"querystring",
           "locationName":"Qualifier"
@@ -4017,7 +4605,7 @@
           "locationName":"X-Amz-Client-Context"
         },
         "Qualifier":{
-          "shape":"Qualifier",
+          "shape":"NumericLatestPublishedOrAliasQualifier",
           "documentation":"<p>The alias name.</p>",
           "location":"querystring",
           "locationName":"Qualifier"
@@ -4118,6 +4706,12 @@
       "type":"string",
       "pattern":"(arn:(aws[a-zA-Z-]*)?:[a-z0-9-.]+:.*)|()"
     },
+    "KMSKeyArnNonEmpty":{
+      "type":"string",
+      "max":10000,
+      "min":0,
+      "pattern":"arn:(aws[a-zA-Z-]*)?:[a-z0-9-.]+:.*"
+    },
     "KMSNotFoundException":{
       "type":"structure",
       "members":{
@@ -4198,6 +4792,25 @@
       "type":"list",
       "member":{"shape":"KafkaSchemaValidationConfig"}
     },
+    "LambdaManagedInstancesCapacityProviderConfig":{
+      "type":"structure",
+      "required":["CapacityProviderArn"],
+      "members":{
+        "CapacityProviderArn":{
+          "shape":"CapacityProviderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the capacity provider.</p>"
+        },
+        "PerExecutionEnvironmentMaxConcurrency":{
+          "shape":"PerExecutionEnvironmentMaxConcurrency",
+          "documentation":"<p>The maximum number of concurrent execution environments that can run on each compute instance.</p>"
+        },
+        "ExecutionEnvironmentMemoryGiBPerVCpu":{
+          "shape":"ExecutionEnvironmentMemoryGiBPerVCpu",
+          "documentation":"<p>The amount of memory in GiB allocated per vCPU for execution environments.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for Lambda-managed instances used by the capacity provider.</p>"
+    },
     "LastUpdateStatus":{
       "type":"string",
       "enum":[
@@ -4230,7 +4843,19 @@
         "EFSMountTimeout",
         "InvalidRuntime",
         "InvalidZipFileException",
-        "FunctionError"
+        "FunctionError",
+        "VcpuLimitExceeded",
+        "CapacityProviderScalingLimitExceeded",
+        "InsufficientCapacity",
+        "EC2RequestLimitExceeded",
+        "FunctionError.InitTimeout",
+        "FunctionError.RuntimeInitError",
+        "FunctionError.ExtensionInitError",
+        "FunctionError.InvalidEntryPoint",
+        "FunctionError.InvalidWorkingDirectory",
+        "FunctionError.PermissionDenied",
+        "FunctionError.TooManyExtensions",
+        "FunctionError.InitResourceExhausted"
       ]
     },
     "Layer":{
@@ -4416,7 +5041,7 @@
           "locationName":"FunctionName"
         },
         "FunctionVersion":{
-          "shape":"Version",
+          "shape":"VersionWithLatestPublished",
           "documentation":"<p>Specify a function version to only list aliases that invoke that version.</p>",
           "location":"querystring",
           "locationName":"FunctionVersion"
@@ -4445,6 +5070,43 @@
         "Aliases":{
           "shape":"AliasList",
           "documentation":"<p>A list of aliases.</p>"
+        }
+      }
+    },
+    "ListCapacityProvidersRequest":{
+      "type":"structure",
+      "members":{
+        "State":{
+          "shape":"CapacityProviderState",
+          "documentation":"<p>Filter capacity providers by their current state.</p>",
+          "location":"querystring",
+          "locationName":"State"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>Specify the pagination token that's returned by a previous request to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"Marker"
+        },
+        "MaxItems":{
+          "shape":"MaxFiftyListItems",
+          "documentation":"<p>The maximum number of capacity providers to return.</p>",
+          "location":"querystring",
+          "locationName":"MaxItems"
+        }
+      }
+    },
+    "ListCapacityProvidersResponse":{
+      "type":"structure",
+      "required":["CapacityProviders"],
+      "members":{
+        "CapacityProviders":{
+          "shape":"CapacityProvidersList",
+          "documentation":"<p>A list of capacity providers in your account.</p>"
+        },
+        "NextMarker":{
+          "shape":"String",
+          "documentation":"<p>The pagination token that's included if more results are available.</p>"
         }
       }
     },
@@ -4488,7 +5150,7 @@
           "locationName":"EventSourceArn"
         },
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"NamespacedFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>MyFunction</code>.</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction</code>.</p> </li> <li> <p> <b>Version or Alias ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction:PROD</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:MyFunction</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it's limited to 64 characters in length.</p>",
           "location":"querystring",
           "locationName":"FunctionName"
@@ -4525,7 +5187,7 @@
       "required":["FunctionName"],
       "members":{
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"NamespacedFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> - <code>my-function</code>.</p> </li> <li> <p> <b>Function ARN</b> - <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> - <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
           "location":"uri",
           "locationName":"FunctionName"
@@ -4588,6 +5250,51 @@
         "FunctionUrlConfigs":{
           "shape":"FunctionUrlConfigList",
           "documentation":"<p>A list of function URL configurations.</p>"
+        },
+        "NextMarker":{
+          "shape":"String",
+          "documentation":"<p>The pagination token that's included if more results are available.</p>"
+        }
+      }
+    },
+    "ListFunctionVersionsByCapacityProviderRequest":{
+      "type":"structure",
+      "required":["CapacityProviderName"],
+      "members":{
+        "CapacityProviderName":{
+          "shape":"CapacityProviderName",
+          "documentation":"<p>The name of the capacity provider to list function versions for.</p>",
+          "location":"uri",
+          "locationName":"CapacityProviderName"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>Specify the pagination token that's returned by a previous request to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"Marker"
+        },
+        "MaxItems":{
+          "shape":"MaxFiftyListItems",
+          "documentation":"<p>The maximum number of function versions to return in the response.</p>",
+          "location":"querystring",
+          "locationName":"MaxItems"
+        }
+      }
+    },
+    "ListFunctionVersionsByCapacityProviderResponse":{
+      "type":"structure",
+      "required":[
+        "CapacityProviderArn",
+        "FunctionVersions"
+      ],
+      "members":{
+        "CapacityProviderArn":{
+          "shape":"CapacityProviderArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the capacity provider.</p>"
+        },
+        "FunctionVersions":{
+          "shape":"FunctionVersionsByCapacityProviderList",
+          "documentation":"<p>A list of function versions that use the specified capacity provider.</p>"
         },
         "NextMarker":{
           "shape":"String",
@@ -4920,6 +5627,12 @@
       "max":86400,
       "min":0
     },
+    "MaxFiftyListItems":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
+    },
     "MaxFunctionEventInvokeConfigListItems":{
       "type":"integer",
       "box":true,
@@ -4995,7 +5708,7 @@
     "MemorySize":{
       "type":"integer",
       "box":true,
-      "max":10240,
+      "max":32768,
       "min":128
     },
     "Method":{
@@ -5003,6 +5716,12 @@
       "max":6,
       "min":0,
       "pattern":".*"
+    },
+    "MetricTargetValue":{
+      "type":"double",
+      "box":true,
+      "max":100.0,
+      "min":0.0
     },
     "MinimumNumberOfPollers":{
       "type":"integer",
@@ -5012,19 +5731,37 @@
     },
     "NameSpacedFunctionArn":{
       "type":"string",
-      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
+      "max":10000,
+      "min":0,
+      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST(\\.PUBLISHED)?|[a-zA-Z0-9-_]+))?"
     },
     "NamespacedFunctionName":{
       "type":"string",
-      "max":170,
+      "max":256,
       "min":1,
-      "pattern":"(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}(-gov)?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_\\.]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
+      "pattern":"(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_\\.]+)(:(\\$LATEST(\\.PUBLISHED)?|[a-zA-Z0-9-_]+))?"
     },
     "NamespacedStatementId":{
       "type":"string",
       "max":100,
       "min":1,
       "pattern":"([a-zA-Z0-9-_.]+)"
+    },
+    "NoPublishedVersionException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The function has no published versions available.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
     },
     "NonNegativeInteger":{
       "type":"integer",
@@ -5034,6 +5771,12 @@
     "NullableBoolean":{
       "type":"boolean",
       "box":true
+    },
+    "NumericLatestPublishedOrAliasQualifier":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"\\$(LATEST(\\.PUBLISHED)?)|[a-zA-Z0-9-_$]+"
     },
     "OnFailure":{
       "type":"structure",
@@ -5085,6 +5828,12 @@
       "max":4096,
       "min":0,
       "pattern":".*"
+    },
+    "PerExecutionEnvironmentMaxConcurrency":{
+      "type":"integer",
+      "box":true,
+      "max":1600,
+      "min":1
     },
     "PolicyLengthExceededException":{
       "type":"structure",
@@ -5205,7 +5954,7 @@
         },
         "PollerGroupName":{
           "shape":"ProvisionedPollerGroupName",
-          "documentation":"<p>(Amazon MSK and self-managed Apache Kafka) The name of the provisioned poller group. Use this option to group multiple ESMs within the VPC to share Event Poller Unit (EPU) capacity. This option is used to optimize Provisioned mode costs for your ESMs. You can group up to 100 ESMs per poller group and aggregate maximum pollers across all ESMs in a group cannot exceed 2000.</p>"
+          "documentation":"<p>(Amazon MSK and self-managed Apache Kafka) The name of the provisioned poller group. Use this option to group multiple ESMs within the event source's VPC to share Event Poller Unit (EPU) capacity. You can use this option to optimize Provisioned mode costs for your ESMs. You can group up to 100 ESMs per poller group and aggregate maximum pollers across all ESMs in a group cannot exceed 2000.</p>"
         }
       },
       "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html#invocation-eventsourcemapping-provisioned-mode\"> provisioned mode</a> configuration for the event source. Use Provisioned Mode to customize the minimum and maximum number of event pollers for your event source.</p>"
@@ -5313,8 +6062,18 @@
         "RevisionId":{
           "shape":"String",
           "documentation":"<p>Only update the function if the revision ID matches the ID that's specified. Use this option to avoid publishing a version if the function configuration has changed since you last updated it.</p>"
+        },
+        "PublishTo":{
+          "shape":"FunctionVersionLatestPublished",
+          "documentation":"<p>Specifies where to publish the function version or configuration.</p>"
         }
       }
+    },
+    "PublishedFunctionQualifier":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"(\\$LATEST\\.PUBLISHED|[0-9]+)"
     },
     "PutFunctionCodeSigningConfigRequest":{
       "type":"structure",
@@ -5328,7 +6087,7 @@
           "documentation":"<p>The The Amazon Resource Name (ARN) of the code signing configuration.</p>"
         },
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"NamespacedFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> - <code>MyFunction</code>.</p> </li> <li> <p> <b>Function ARN</b> - <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction</code>.</p> </li> <li> <p> <b>Partial ARN</b> - <code>123456789012:function:MyFunction</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
           "location":"uri",
           "locationName":"FunctionName"
@@ -5376,13 +6135,13 @@
       "required":["FunctionName"],
       "members":{
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"NamespacedFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function, version, or alias.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> - <code>my-function</code> (name-only), <code>my-function:v1</code> (with alias).</p> </li> <li> <p> <b>Function ARN</b> - <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> - <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>You can append a version number or alias to any of the formats. The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
           "location":"uri",
           "locationName":"FunctionName"
         },
         "Qualifier":{
-          "shape":"Qualifier",
+          "shape":"NumericLatestPublishedOrAliasQualifier",
           "documentation":"<p>A version number or alias name.</p>",
           "location":"querystring",
           "locationName":"Qualifier"
@@ -5426,6 +6185,40 @@
         "RecursiveLoop":{
           "shape":"RecursiveLoop",
           "documentation":"<p>The status of your function's recursive loop detection configuration.</p> <p>When this value is set to <code>Allow</code>and Lambda detects your function being invoked as part of a recursive loop, it doesn't take any action.</p> <p>When this value is set to <code>Terminate</code> and Lambda detects your function being invoked as part of a recursive loop, it stops your function being invoked and notifies you. </p>"
+        }
+      }
+    },
+    "PutFunctionScalingConfigRequest":{
+      "type":"structure",
+      "required":[
+        "FunctionName",
+        "Qualifier"
+      ],
+      "members":{
+        "FunctionName":{
+          "shape":"UnqualifiedFunctionName",
+          "documentation":"<p>The name or ARN of the Lambda function.</p>",
+          "location":"uri",
+          "locationName":"FunctionName"
+        },
+        "Qualifier":{
+          "shape":"PublishedFunctionQualifier",
+          "documentation":"<p>Specify a version or alias to set the scaling configuration for a published version of the function.</p>",
+          "location":"querystring",
+          "locationName":"Qualifier"
+        },
+        "FunctionScalingConfig":{
+          "shape":"FunctionScalingConfig",
+          "documentation":"<p>The scaling configuration to apply to the function, including minimum and maximum execution environment limits.</p>"
+        }
+      }
+    },
+    "PutFunctionScalingConfigResponse":{
+      "type":"structure",
+      "members":{
+        "FunctionState":{
+          "shape":"State",
+          "documentation":"<p>The current state of the function after applying the scaling configuration.</p>"
         }
       }
     },
@@ -5492,13 +6285,13 @@
       ],
       "members":{
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"NamespacedFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>my-function</code>.</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
           "location":"uri",
           "locationName":"FunctionName"
         },
         "Qualifier":{
-          "shape":"Qualifier",
+          "shape":"NumericLatestPublishedOrAliasQualifier",
           "documentation":"<p>Specify a version of the function. This can be <code>$LATEST</code> or a published version number. If no value is specified, the configuration for the <code>$LATEST</code> version is returned.</p>",
           "location":"querystring",
           "locationName":"Qualifier"
@@ -5620,7 +6413,7 @@
       ],
       "members":{
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"NamespacedFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function, version, or alias.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>my-function</code> (name-only), <code>my-function:v1</code> (with alias).</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>You can append a version number or alias to any of the formats. The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
           "location":"uri",
           "locationName":"FunctionName"
@@ -5632,7 +6425,7 @@
           "locationName":"StatementId"
         },
         "Qualifier":{
-          "shape":"Qualifier",
+          "shape":"NumericLatestPublishedOrAliasQualifier",
           "documentation":"<p>Specify a version or alias to remove permissions from a published version of the function.</p>",
           "location":"querystring",
           "locationName":"Qualifier"
@@ -5906,7 +6699,7 @@
         },
         "message":{"shape":"String"}
       },
-      "documentation":"<p>The processed request payload exceeded the <code>Invoke</code> request body size limit for asynchronous invocations. While the event payload may be under 1 MB, the size after internal serialization exceeds the maximum allowed size for asynchronous invocations.</p>",
+      "documentation":"<p>The request payload exceeded the maximum allowed size for serialized request entities.</p>",
       "error":{
         "httpStatusCode":413,
         "senderFault":true
@@ -6052,7 +6845,11 @@
         "Pending",
         "Active",
         "Inactive",
-        "Failed"
+        "Failed",
+        "Deactivating",
+        "Deactivated",
+        "ActiveNonInvocable",
+        "Deleting"
       ]
     },
     "StateReason":{"type":"string"},
@@ -6082,7 +6879,19 @@
         "EFSMountTimeout",
         "InvalidRuntime",
         "InvalidZipFileException",
-        "FunctionError"
+        "FunctionError",
+        "VcpuLimitExceeded",
+        "CapacityProviderScalingLimitExceeded",
+        "InsufficientCapacity",
+        "EC2RequestLimitExceeded",
+        "FunctionError.InitTimeout",
+        "FunctionError.RuntimeInitError",
+        "FunctionError.ExtensionInitError",
+        "FunctionError.InvalidEntryPoint",
+        "FunctionError.InvalidWorkingDirectory",
+        "FunctionError.PermissionDenied",
+        "FunctionError.TooManyExtensions",
+        "FunctionError.InitResourceExhausted"
       ]
     },
     "StatementId":{
@@ -6153,7 +6962,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"arn:(aws[a-zA-Z-]*):lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:(function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?|code-signing-config:csc-[a-z0-9]{17}|event-source-mapping:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})"
+      "pattern":"arn:(aws[a-zA-Z-]*):lambda:[a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1}:\\d{12}:(function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?|code-signing-config:csc-[a-z0-9]{17}|event-source-mapping:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}|capacity-provider:[a-zA-Z0-9-_]+)"
     },
     "Tags":{
       "type":"map",
@@ -6189,6 +6998,24 @@
       "max":1000,
       "min":84,
       "pattern":".*"
+    },
+    "TargetTrackingScalingPolicy":{
+      "type":"structure",
+      "required":[
+        "PredefinedMetricType",
+        "TargetValue"
+      ],
+      "members":{
+        "PredefinedMetricType":{
+          "shape":"CapacityProviderPredefinedMetricType",
+          "documentation":"<p>The predefined metric type to track for scaling decisions.</p>"
+        },
+        "TargetValue":{
+          "shape":"MetricTargetValue",
+          "documentation":"<p>The target value for the metric that the scaling policy attempts to maintain through scaling actions.</p>"
+        }
+      },
+      "documentation":"<p>A scaling policy for the capacity provider that automatically adjusts capacity to maintain a target value for a specific metric.</p>"
     },
     "TenancyConfig":{
       "type":"structure",
@@ -6364,7 +7191,7 @@
           "locationName":"Name"
         },
         "FunctionVersion":{
-          "shape":"Version",
+          "shape":"VersionWithLatestPublished",
           "documentation":"<p>The function version that the alias invokes.</p>"
         },
         "Description":{
@@ -6378,6 +7205,32 @@
         "RevisionId":{
           "shape":"String",
           "documentation":"<p>Only update the alias if the revision ID matches the ID that's specified. Use this option to avoid modifying an alias that has changed since you last read it.</p>"
+        }
+      }
+    },
+    "UpdateCapacityProviderRequest":{
+      "type":"structure",
+      "required":["CapacityProviderName"],
+      "members":{
+        "CapacityProviderName":{
+          "shape":"CapacityProviderName",
+          "documentation":"<p>The name of the capacity provider to update.</p>",
+          "location":"uri",
+          "locationName":"CapacityProviderName"
+        },
+        "CapacityProviderScalingConfig":{
+          "shape":"CapacityProviderScalingConfig",
+          "documentation":"<p>The updated scaling configuration for the capacity provider.</p>"
+        }
+      }
+    },
+    "UpdateCapacityProviderResponse":{
+      "type":"structure",
+      "required":["CapacityProvider"],
+      "members":{
+        "CapacityProvider":{
+          "shape":"CapacityProvider",
+          "documentation":"<p>Information about the updated capacity provider.</p>"
         }
       }
     },
@@ -6426,7 +7279,7 @@
           "locationName":"UUID"
         },
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"NamespacedFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> – <code>MyFunction</code>.</p> </li> <li> <p> <b>Function ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction</code>.</p> </li> <li> <p> <b>Version or Alias ARN</b> – <code>arn:aws:lambda:us-west-2:123456789012:function:MyFunction:PROD</code>.</p> </li> <li> <p> <b>Partial ARN</b> – <code>123456789012:function:MyFunction</code>.</p> </li> </ul> <p>The length constraint applies only to the full ARN. If you specify only the function name, it's limited to 64 characters in length.</p>"
         },
         "Enabled":{
@@ -6550,6 +7403,10 @@
         "SourceKMSKeyArn":{
           "shape":"KMSKeyArn",
           "documentation":"<p>The ARN of the Key Management Service (KMS) customer managed key that's used to encrypt your function's .zip deployment package. If you don't provide a customer managed key, Lambda uses an Amazon Web Services managed key.</p>"
+        },
+        "PublishTo":{
+          "shape":"FunctionVersionLatestPublished",
+          "documentation":"<p>Specifies where to publish the function version or configuration.</p>"
         }
       }
     },
@@ -6634,6 +7491,10 @@
         "LoggingConfig":{
           "shape":"LoggingConfig",
           "documentation":"<p>The function's Amazon CloudWatch Logs configuration settings.</p>"
+        },
+        "CapacityProviderConfig":{
+          "shape":"CapacityProviderConfig",
+          "documentation":"<p>Configuration for the capacity provider that manages compute resources for Lambda functions.</p>"
         }
       }
     },
@@ -6642,13 +7503,13 @@
       "required":["FunctionName"],
       "members":{
         "FunctionName":{
-          "shape":"FunctionName",
+          "shape":"NamespacedFunctionName",
           "documentation":"<p>The name or ARN of the Lambda function, version, or alias.</p> <p class=\"title\"> <b>Name formats</b> </p> <ul> <li> <p> <b>Function name</b> - <code>my-function</code> (name-only), <code>my-function:v1</code> (with alias).</p> </li> <li> <p> <b>Function ARN</b> - <code>arn:aws:lambda:us-west-2:123456789012:function:my-function</code>.</p> </li> <li> <p> <b>Partial ARN</b> - <code>123456789012:function:my-function</code>.</p> </li> </ul> <p>You can append a version number or alias to any of the formats. The length constraint applies only to the full ARN. If you specify only the function name, it is limited to 64 characters in length.</p>",
           "location":"uri",
           "locationName":"FunctionName"
         },
         "Qualifier":{
-          "shape":"Qualifier",
+          "shape":"NumericLatestPublishedOrAliasQualifier",
           "documentation":"<p>A version number or alias name.</p>",
           "location":"querystring",
           "locationName":"Qualifier"
@@ -6750,6 +7611,12 @@
       "max":1024,
       "min":1,
       "pattern":"(\\$LATEST|[0-9]+)"
+    },
+    "VersionWithLatestPublished":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"(\\$LATEST(\\.PUBLISHED)?|[0-9]+)"
     },
     "VpcConfig":{
       "type":"structure",

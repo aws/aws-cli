@@ -51,6 +51,7 @@ class ManagedResource:
             self.updated_at = updated_at
         self.reason = reason
         self.additional_info = additional_info
+        self.color_utils = ColorUtils()
 
     def is_terminal(self):
         return self.status in TERMINAL_RESOURCE_STATUSES
@@ -67,23 +68,23 @@ class ManagedResource:
             str: Formatted status string with resource information
         """
         lines = []
-        resource_header = " " * depth + ColorUtils.make_cyan(
+        resource_header = " " * depth + self.color_utils.make_cyan(
             self.resource_type, use_color
         )
 
         resource_header += ": " if self.identifier else " "
-        resource_header += ColorUtils.make_status_symbol(
+        resource_header += self.color_utils.make_status_symbol(
             self.status, spinner_char, use_color
         )
         if self.identifier:
             resource_header += (
-                ColorUtils.color_by_status(
+                self.color_utils.color_by_status(
                     self.identifier, self.status, use_color
                 )
                 + " "
             )
         if self.status:
-            resource_header += "- " + ColorUtils.color_by_status(
+            resource_header += "- " + self.color_utils.color_by_status(
                 self.status, self.status, use_color
             )
         lines.append(resource_header)

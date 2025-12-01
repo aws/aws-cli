@@ -48,6 +48,7 @@ class ManagedResourceGroup:
         }
         self.status = status
         self.reason = reason
+        self.color_utils = ColorUtils()
 
     def _create_key(self, resource):
         resource_type = (
@@ -78,29 +79,29 @@ class ManagedResourceGroup:
         lines = []
 
         if self.resource_type:
-            header = " " * depth + ColorUtils.make_cyan(
+            header = " " * depth + self.color_utils.make_cyan(
                 str(self.resource_type), use_color
             )
 
             if self.identifier:
                 header += ": "
                 if self.status:
-                    header += ColorUtils.make_status_symbol(
+                    header += self.color_utils.make_status_symbol(
                         self.status, spinner_char, use_color
                     )
-                    header += ColorUtils.color_by_status(
+                    header += self.color_utils.color_by_status(
                         self.identifier, self.status, use_color
                     )
-                    header += " - " + ColorUtils.color_by_status(
+                    header += " - " + self.color_utils.color_by_status(
                         self.status, self.status, use_color
                     )
                 else:
                     header += self.identifier
             elif self.status:
-                header += " " + ColorUtils.make_status_symbol(
+                header += " " + self.color_utils.make_status_symbol(
                     self.status, spinner_char, use_color
                 )
-                header += "- " + ColorUtils.color_by_status(
+                header += "- " + self.color_utils.color_by_status(
                     self.status, self.status, use_color
                 )
 

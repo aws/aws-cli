@@ -1204,6 +1204,10 @@
         }
       }
     },
+    "Long":{
+      "type":"long",
+      "box":true
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
@@ -1329,6 +1333,35 @@
     "MixedInstanceConfigurationList":{
       "type":"list",
       "member":{"shape":"MixedInstanceConfiguration"}
+    },
+    "NatGateway":{
+      "type":"structure",
+      "members":{
+        "configuration":{
+          "shape":"NatGatewayConfiguration",
+          "documentation":"<p>The NAT Gateway configuration used for recommendations.</p>"
+        },
+        "costCalculation":{"shape":"ResourceCostCalculation"}
+      },
+      "documentation":"<p>The NAT Gateway recommendation details.</p>"
+    },
+    "NatGatewayConfiguration":{
+      "type":"structure",
+      "members":{
+        "activeConnectionCount":{
+          "shape":"Long",
+          "documentation":"<p>The number of active connections through the NAT Gateway.</p>"
+        },
+        "packetsInFromSource":{
+          "shape":"Long",
+          "documentation":"<p>The number of packets received from the source through the NAT Gateway.</p>"
+        },
+        "packetsInFromDestination":{
+          "shape":"Long",
+          "documentation":"<p>The number of packets received from the destination through the NAT Gateway.</p>"
+        }
+      },
+      "documentation":"<p>The NAT Gateway configuration used for recommendations.</p>"
     },
     "OpenSearchReservedInstances":{
       "type":"structure",
@@ -1910,6 +1943,10 @@
         "memoryDbReservedInstances":{
           "shape":"MemoryDbReservedInstances",
           "documentation":"<p>The MemoryDB reserved instances recommendation details.</p>"
+        },
+        "natGateway":{
+          "shape":"NatGateway",
+          "documentation":"<p>The NAT Gateway recommendation details.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about the specified resource.</p>",
@@ -1979,7 +2016,8 @@
         "RdsDbInstance",
         "AuroraDbClusterStorage",
         "DynamoDbReservedCapacity",
-        "MemoryDbReservedInstances"
+        "MemoryDbReservedInstances",
+        "NatGateway"
       ]
     },
     "ResourceTypeList":{

@@ -10,8 +10,10 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import base64
 import copy
 import datetime
+import hashlib
 import io
 import operator
 from contextlib import contextmanager
@@ -19,6 +21,7 @@ from sys import getrefcount
 
 import botocore
 import pytest
+from awscrt.crypto import EC, ECRawSignature, ECType
 from botocore import xform_name
 from botocore.awsrequest import AWSRequest, AWSResponse, HeadersDict
 from botocore.compat import OrderedDict, json
@@ -65,6 +68,8 @@ from botocore.utils import (
     SSOTokenFetcher,
     SSOTokenLoader,
     _get_bearer_env_var_name,
+    base64_url_encode_no_padding,
+    build_dpop_header,
     calculate_sha256,
     calculate_tree_hash,
     datetime2timestamp,
@@ -3885,3 +3890,42 @@ def test_get_token_from_environment_returns_none(
 ):
     monkeypatch.delenv(env_var, raising=False)
     assert get_token_from_environment(signing_name) is None
+
+
+def test_dpop_jwt_signature_validation():
+    private_key = EC.new_generate(ECType.P_256)
+
+    result = build_dpop_header(private_key, 'https://example.com/token')
+    parts = result.split('.')
+
+    original_signing_input = f"{parts[0]}.{parts[1]}"
+    message_hash = hashlib.sha256(original_signing_input.encode()).digest()
+
+    signature_bytes = base64.urlsafe_b64decode(parts[2] + '==')
+    r_bytes = signature_bytes[:32]
+    s_bytes = signature_bytes[32:]
+    der_signature = EC.encode_raw_signature(ECRawSignature(r_bytes, s_bytes))
+
+    assert private_key.verify(message_hash, der_signature)
+
+
+def test_build_dpop_header_structure():
+    private_key = EC.new_generate(ECType.P_256)
+    uri = 'https://example.com/token'
+    test_timestamp = 1234567890
+    test_uid = 'test-uid-123'
+
+    result = build_dpop_header(
+        private_key, uri, ts=test_timestamp, uid=test_uid
+    )
+    parts = result.split('.')
+
+    assert len(parts) == 3
+
+    payload_json = base64.urlsafe_b64decode(parts[1] + '==').decode()
+    payload = json.loads(payload_json)
+
+    assert payload['htm'] == 'POST'
+    assert payload['htu'] == uri
+    assert payload['iat'] == test_timestamp
+    assert payload['jti'] == test_uid

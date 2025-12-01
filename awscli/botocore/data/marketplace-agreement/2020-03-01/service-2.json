@@ -2,9 +2,11 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2020-03-01",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"agreement-marketplace",
     "jsonVersion":"1.0",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"Agreement Service",
     "serviceFullName":"AWS Marketplace Agreement Service",
     "serviceId":"Marketplace Agreement",
@@ -25,8 +27,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Provides details about an agreement, such as the proposer, acceptor, start date, and end date.</p>"
@@ -42,8 +44,8 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Obtains details about the terms in an agreement that you participated in as proposer or acceptor.</p> <p>The details include:</p> <ul> <li> <p> <code>TermType</code> – The type of term, such as <code>LegalTerm</code>, <code>RenewalTerm</code>, or <code>ConfigurableUpfrontPricingTerm</code>.</p> </li> <li> <p> <code>TermID</code> – The ID of the particular term, which is common between offer and agreement.</p> </li> <li> <p> <code>TermPayload</code> – The key information contained in the term, such as the EULA for <code>LegalTerm</code> or pricing and dimensions for various pricing terms, such as <code>ConfigurableUpfrontPricingTerm</code> or <code>UsageBasedPricingTerm</code>.</p> </li> </ul> <ul> <li> <p> <code>Configuration</code> – The buyer/acceptor's selection at the time of agreement creation, such as the number of units purchased for a dimension or setting the <code>EnableAutoRenew</code> flag.</p> </li> </ul>"
@@ -62,7 +64,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Searches across all agreements that a proposer or an acceptor has in AWS Marketplace. The search returns a list of agreements with basic agreement information.</p> <p>The following filter combinations are supported:</p> <ul> <li> <p> <code>PartyType</code> as <code>Proposer</code> + <code>AgreementType</code> + <code>ResourceIdentifier</code> </p> </li> <li> <p> <code>PartyType</code> as <code>Proposer</code> + <code>AgreementType</code> + <code>OfferId</code> </p> </li> <li> <p> <code>PartyType</code> as <code>Proposer</code> + <code>AgreementType</code> + <code>AcceptorAccountId</code> </p> </li> <li> <p> <code>PartyType</code> as <code>Proposer</code> + <code>AgreementType</code> + <code>Status</code> </p> </li> <li> <p> <code>PartyType</code> as <code>Proposer</code> + <code>AgreementType</code> + <code>ResourceIdentifier</code> + <code>Status</code> </p> </li> <li> <p> <code>PartyType</code> as <code>Proposer</code> + <code>AgreementType</code> + <code>OfferId</code> + <code>Status</code> </p> </li> <li> <p> <code>PartyType</code> as <code>Proposer</code> + <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>Status</code> </p> </li> <li> <p> <code>PartyType</code> as <code>Proposer</code> + <code>AgreementType</code> + <code>ResourceType</code> + <code>Status</code> </p> </li> <li> <p> <code>PartyType</code> as <code>Proposer</code> + <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>ResourceType</code> + <code>Status</code> </p> </li> <li> <p> <code>PartyType</code> as <code>Proposer</code> + <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>OfferId</code> </p> </li> <li> <p> <code>PartyType</code> as <code>Proposer</code> + <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>OfferId</code> + <code>Status</code> </p> </li> <li> <p> <code>PartyType</code> as <code>Proposer</code> + <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>ResourceIdentifier</code> </p> </li> <li> <p> <code>PartyType</code> as <code>Proposer</code> + <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>ResourceIdentifier</code> + <code>Status</code> </p> </li> <li> <p> <code>PartyType</code> as <code>Proposer</code> + <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>ResourceType</code> </p> </li> </ul>"
+      "documentation":"<p>Searches across all agreements that a proposer has in AWS Marketplace. The search returns a list of agreements with basic agreement information.</p> <p>The following filter combinations are supported when the <code>PartyType</code> is <code>Proposer</code>:</p> <ul> <li> <p> <code>AgreementType</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceType</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceType</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceType</code> + <code>Status</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceType</code> + <code>Status</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceId</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceId</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceId</code> + <code>Status</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceId</code> + <code>Status</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>AcceptorAccountId</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>Status</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>Status</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>OfferId</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>OfferId</code> + <code>Status</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>OfferId</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>OfferId</code> + <code>Status</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>ResourceId</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>ResourceId</code> + <code>Status</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>ResourceId</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>ResourceId</code> + <code>Status</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>ResourceType</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>ResourceType</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>ResourceType</code> + <code>Status</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>AcceptorAccountId</code> + <code>ResourceType</code> + <code>Status</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>Status</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>Status</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferId</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferId</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferId</code> + <code>Status</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferId</code> + <code>Status</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferSetId</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferSetId</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferSetId</code> + <code>Status</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferSetId</code> + <code>Status</code> + <code>EndTime</code> </p> </li> </ul> <note> <p> To filter by <code>EndTime</code>, you can use either <code>BeforeEndTime</code> or <code>AfterEndTime</code>. Only <code>EndTime</code> is supported for sorting.</p> </note>"
     }
   },
   "shapes":{
@@ -70,54 +72,58 @@
       "type":"string",
       "max":32,
       "min":1,
-      "pattern":"^[0-9]+$"
+      "pattern":"[0-9]+"
     },
     "AcceptedTerm":{
       "type":"structure",
       "members":{
-        "byolPricingTerm":{
-          "shape":"ByolPricingTerm",
-          "documentation":"<p>Enables you and your customers to move your existing agreements to AWS Marketplace. The customer won't be charged for product usage in AWS Marketplace because they already paid for the product outside of AWS Marketplace.</p>"
-        },
-        "configurableUpfrontPricingTerm":{
-          "shape":"ConfigurableUpfrontPricingTerm",
-          "documentation":"<p>Defines a prepaid payment model that allows buyers to configure the entitlements they want to purchase and the duration.</p>"
-        },
-        "fixedUpfrontPricingTerm":{
-          "shape":"FixedUpfrontPricingTerm",
-          "documentation":"<p>Defines a pre-paid pricing model where the customers are charged a fixed upfront amount.</p>"
-        },
-        "freeTrialPricingTerm":{
-          "shape":"FreeTrialPricingTerm",
-          "documentation":"<p>Defines a short-term free pricing model where the buyers aren’t charged anything within a specified limit.</p>"
-        },
         "legalTerm":{
           "shape":"LegalTerm",
           "documentation":"<p>Defines the list of text agreements proposed to the acceptors. An example is the end user license agreement (EULA).</p>"
-        },
-        "paymentScheduleTerm":{
-          "shape":"PaymentScheduleTerm",
-          "documentation":"<p>Defines an installment-based pricing model where customers are charged a fixed price on different dates during the agreement validity period. This is used most commonly for flexible payment schedule pricing.</p>"
-        },
-        "recurringPaymentTerm":{
-          "shape":"RecurringPaymentTerm",
-          "documentation":"<p>Defines a pricing model where customers are charged a fixed recurring price at the end of each billing period.</p>"
-        },
-        "renewalTerm":{
-          "shape":"RenewalTerm",
-          "documentation":"<p>Defines that on graceful expiration of the agreement (when the agreement ends on its pre-defined end date), a new agreement will be created using the accepted terms on the existing agreement. In other words, the agreement will be renewed. Presence of <code>RenewalTerm</code> in the offer document means that auto-renewal is allowed. Buyers will have the option to accept or decline auto-renewal at the offer acceptance/agreement creation. Buyers can also change this flag from <code>True</code> to <code>False</code> or <code>False</code> to <code>True</code> at anytime during the agreement's lifecycle.</p>"
         },
         "supportTerm":{
           "shape":"SupportTerm",
           "documentation":"<p>Defines the customer support available for the acceptors when they purchase the software.</p>"
         },
+        "renewalTerm":{
+          "shape":"RenewalTerm",
+          "documentation":"<p>Defines that on graceful expiration of the agreement (when the agreement ends on its pre-defined end date), a new agreement will be created using the accepted terms on the existing agreement. In other words, the agreement will be renewed. Presence of <code>RenewalTerm</code> in the offer document means that auto-renewal is allowed. Buyers will have the option to accept or decline auto-renewal at the offer acceptance/agreement creation. Buyers can also change this flag from <code>True</code> to <code>False</code> or <code>False</code> to <code>True</code> at anytime during the agreement's lifecycle.</p>"
+        },
         "usageBasedPricingTerm":{
           "shape":"UsageBasedPricingTerm",
           "documentation":"<p>Defines a usage-based pricing model (typically, pay-as-you-go pricing), where the customers are charged based on product usage.</p>"
         },
+        "configurableUpfrontPricingTerm":{
+          "shape":"ConfigurableUpfrontPricingTerm",
+          "documentation":"<p>Defines a prepaid payment model that allows buyers to configure the entitlements they want to purchase and the duration.</p>"
+        },
+        "byolPricingTerm":{
+          "shape":"ByolPricingTerm",
+          "documentation":"<p>Enables you and your customers to move your existing agreements to AWS Marketplace. The customer won't be charged for product usage in AWS Marketplace because they already paid for the product outside of AWS Marketplace.</p>"
+        },
+        "recurringPaymentTerm":{
+          "shape":"RecurringPaymentTerm",
+          "documentation":"<p>Defines a pricing model where customers are charged a fixed recurring price at the end of each billing period.</p>"
+        },
         "validityTerm":{
           "shape":"ValidityTerm",
           "documentation":"<p>Defines the conditions that will keep an agreement created from this offer valid.</p>"
+        },
+        "paymentScheduleTerm":{
+          "shape":"PaymentScheduleTerm",
+          "documentation":"<p>Defines an installment-based pricing model where customers are charged a fixed price on different dates during the agreement validity period. This is used most commonly for flexible payment schedule pricing.</p>"
+        },
+        "freeTrialPricingTerm":{
+          "shape":"FreeTrialPricingTerm",
+          "documentation":"<p>Defines a short-term free pricing model where the buyers aren’t charged anything within a specified limit.</p>"
+        },
+        "fixedUpfrontPricingTerm":{
+          "shape":"FixedUpfrontPricingTerm",
+          "documentation":"<p>Defines a pre-paid pricing model where the customers are charged a fixed upfront amount.</p>"
+        },
+        "variablePaymentTerm":{
+          "shape":"VariablePaymentTerm",
+          "documentation":"<p>Defines a payment model where sellers can submit variable payment requests up to a maximum charge amount, with configurable approval strategies and expiration timelines.</p>"
         }
       },
       "documentation":"<p>A subset of terms proposed by the proposer, which have been accepted by the acceptor as part of agreement creation.</p>",
@@ -140,11 +146,11 @@
     "AccessDeniedException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"ExceptionMessage"},
         "requestId":{
           "shape":"RequestId",
           "documentation":"<p>The unique identifier for the error.</p>"
-        }
+        },
+        "message":{"shape":"ExceptionMessage"}
       },
       "documentation":"<p>User does not have sufficient access to perform this action.</p>",
       "exception":true
@@ -153,7 +159,7 @@
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^[a-zA-Z]+$"
+      "pattern":"[a-zA-Z]+"
     },
     "AgreementStatus":{
       "type":"string",
@@ -173,49 +179,49 @@
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^[A-Za-z]+$"
+      "pattern":"[A-Za-z]+"
     },
     "AgreementViewSummary":{
       "type":"structure",
       "members":{
-        "acceptanceTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The date and time that the agreement was accepted.</p>"
-        },
-        "acceptor":{
-          "shape":"Acceptor",
-          "documentation":"<p>Details of the party accepting the agreement terms. This is commonly the buyer for <code>PurchaseAgreement.</code> </p>"
-        },
         "agreementId":{
           "shape":"ResourceId",
           "documentation":"<p>The unique identifier of the agreement.</p>"
         },
-        "agreementType":{
-          "shape":"AgreementType",
-          "documentation":"<p>The type of agreement. Values are <code>PurchaseAgreement</code> or <code>VendorInsightsAgreement</code>.</p>"
+        "acceptanceTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the agreement was accepted.</p>"
+        },
+        "startTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the agreement starts.</p>"
         },
         "endTime":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time when the agreement ends. The field is <code>null</code> for pay-as-you-go agreements, which don’t have end dates.</p>"
         },
-        "proposalSummary":{
-          "shape":"ProposalSummary",
-          "documentation":"<p>A summary of the proposal</p>"
+        "agreementType":{
+          "shape":"AgreementType",
+          "documentation":"<p>The type of agreement. Value is <code>PurchaseAgreement</code>.</p>"
+        },
+        "acceptor":{
+          "shape":"Acceptor",
+          "documentation":"<p>Details of the party accepting the agreement terms. This is commonly the buyer for <code>PurchaseAgreement.</code> </p>"
         },
         "proposer":{
           "shape":"Proposer",
           "documentation":"<p>Details of the party proposing the agreement terms, most commonly the seller for <code>PurchaseAgreement</code>.</p>"
         },
-        "startTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The date and time when the agreement starts.</p>"
+        "proposalSummary":{
+          "shape":"ProposalSummary",
+          "documentation":"<p>A summary of the proposal</p>"
         },
         "status":{
           "shape":"AgreementStatus",
           "documentation":"<p>The current status of the agreement. </p>"
         }
       },
-      "documentation":"<p>A summary of the agreement, including top-level attributes (for example, the agreement ID, version, proposer, and acceptor).</p>"
+      "documentation":"<p>A summary of the agreement, including top-level attributes (for example, the agreement ID, proposer, and acceptor).</p>"
     },
     "AgreementViewSummaryList":{
       "type":"list",
@@ -229,7 +235,7 @@
       "type":"string",
       "max":4096,
       "min":1,
-      "pattern":"^(.)+$"
+      "pattern":"(.)+"
     },
     "ByolPricingTerm":{
       "type":"structure",
@@ -245,14 +251,14 @@
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^[a-zA-Z]+$"
+      "pattern":"[a-zA-Z]+"
     },
     "ConfigurableUpfrontPricingTerm":{
       "type":"structure",
       "members":{
-        "configuration":{
-          "shape":"ConfigurableUpfrontPricingTermConfiguration",
-          "documentation":"<p>Additional parameters specified by the acceptor while accepting the term.</p>"
+        "type":{
+          "shape":"UnversionedTermType",
+          "documentation":"<p>Category of selector.</p>"
         },
         "currencyCode":{
           "shape":"CurrencyCode",
@@ -262,9 +268,9 @@
           "shape":"ConfigurableUpfrontRateCardList",
           "documentation":"<p>A rate card defines the per unit rates for product dimensions.</p>"
         },
-        "type":{
-          "shape":"UnversionedTermType",
-          "documentation":"<p>Category of selector.</p>"
+        "configuration":{
+          "shape":"ConfigurableUpfrontPricingTermConfiguration",
+          "documentation":"<p>Additional parameters specified by the acceptor while accepting the term.</p>"
         }
       },
       "documentation":"<p>Defines a prepaid payment model that allows buyers to configure the entitlements they want to purchase and the duration.</p>"
@@ -272,17 +278,17 @@
     "ConfigurableUpfrontPricingTermConfiguration":{
       "type":"structure",
       "required":[
-        "dimensions",
-        "selectorValue"
+        "selectorValue",
+        "dimensions"
       ],
       "members":{
-        "dimensions":{
-          "shape":"DimensionList",
-          "documentation":"<p>Defines the dimensions that the acceptor has purchased from the overall set of dimensions presented in the rate card.</p>"
-        },
         "selectorValue":{
           "shape":"BoundedString",
           "documentation":"<p>Defines the length of time for which the particular pricing/dimension is being purchased by the acceptor.</p>"
+        },
+        "dimensions":{
+          "shape":"DimensionList",
+          "documentation":"<p>Defines the dimensions that the acceptor has purchased from the overall set of dimensions presented in the rate card.</p>"
         }
       },
       "documentation":"<p>Defines a prepaid payment model that allows buyers to configure the entitlements they want to purchase and the duration.</p>"
@@ -290,6 +296,10 @@
     "ConfigurableUpfrontRateCardItem":{
       "type":"structure",
       "members":{
+        "selector":{
+          "shape":"Selector",
+          "documentation":"<p>Differentiates between the mutually exclusive rate cards in the same pricing term to be selected by the buyer.</p>"
+        },
         "constraints":{
           "shape":"Constraints",
           "documentation":"<p>Defines limits on how the term can be configured by acceptors.</p>"
@@ -297,10 +307,6 @@
         "rateCard":{
           "shape":"RateCardList",
           "documentation":"<p>Defines the per unit rates for product dimensions.</p>"
-        },
-        "selector":{
-          "shape":"Selector",
-          "documentation":"<p>Differentiates between the mutually exclusive rate cards in the same pricing term to be selected by the buyer.</p>"
         }
       },
       "documentation":"<p>Within the prepaid payment model defined under <code>ConfigurableUpfrontPricingTerm</code>, the <code>RateCardItem</code> defines all the various rate cards (including pricing and dimensions) that have been proposed.</p>"
@@ -327,7 +333,7 @@
       "type":"string",
       "max":3,
       "min":3,
-      "pattern":"^[A-Z]+$"
+      "pattern":"[A-Z]+"
     },
     "DescribeAgreementInput":{
       "type":"structure",
@@ -342,33 +348,13 @@
     "DescribeAgreementOutput":{
       "type":"structure",
       "members":{
-        "acceptanceTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The date and time the offer was accepted or the agreement was created.</p> <note> <p> <code>AcceptanceTime</code> and <code>StartTime</code> can differ for future dated agreements (FDAs).</p> </note>"
-        },
-        "acceptor":{
-          "shape":"Acceptor",
-          "documentation":"<p>The details of the party accepting the agreement terms. This is commonly the buyer for <code>PurchaseAgreement</code>.</p>"
-        },
         "agreementId":{
           "shape":"ResourceId",
           "documentation":"<p>The unique identifier of the agreement.</p>"
         },
-        "agreementType":{
-          "shape":"AgreementType",
-          "documentation":"<p>The type of agreement. Values are <code>PurchaseAgreement</code> or <code>VendorInsightsAgreement</code>.</p>"
-        },
-        "endTime":{
-          "shape":"Timestamp",
-          "documentation":"<p>The date and time when the agreement ends. The field is <code>null</code> for pay-as-you-go agreements, which don’t have end dates.</p>"
-        },
-        "estimatedCharges":{
-          "shape":"EstimatedCharges",
-          "documentation":"<p>The estimated cost of the agreement.</p>"
-        },
-        "proposalSummary":{
-          "shape":"ProposalSummary",
-          "documentation":"<p>A summary of the proposal received from the proposer.</p>"
+        "acceptor":{
+          "shape":"Acceptor",
+          "documentation":"<p>The details of the party accepting the agreement terms. This is commonly the buyer for <code>PurchaseAgreement</code>.</p>"
         },
         "proposer":{
           "shape":"Proposer",
@@ -378,9 +364,29 @@
           "shape":"Timestamp",
           "documentation":"<p>The date and time when the agreement starts.</p>"
         },
+        "endTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the agreement ends. The field is <code>null</code> for pay-as-you-go agreements, which don’t have end dates.</p>"
+        },
+        "acceptanceTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time the offer was accepted or the agreement was created.</p> <note> <p> <code>AcceptanceTime</code> and <code>StartTime</code> can differ for future dated agreements (FDAs).</p> </note>"
+        },
+        "agreementType":{
+          "shape":"AgreementType",
+          "documentation":"<p>The type of agreement. Values are <code>PurchaseAgreement</code> or <code>VendorInsightsAgreement</code>.</p>"
+        },
+        "estimatedCharges":{
+          "shape":"EstimatedCharges",
+          "documentation":"<p>The estimated cost of the agreement.</p>"
+        },
+        "proposalSummary":{
+          "shape":"ProposalSummary",
+          "documentation":"<p>A summary of the proposal received from the proposer.</p>"
+        },
         "status":{
           "shape":"AgreementStatus",
-          "documentation":"<p>The current status of the agreement.</p> <p>Statuses include:</p> <ul> <li> <p> <code>ACTIVE</code> – The terms of the agreement are active.</p> </li> <li> <p> <code>ARCHIVED</code> – The agreement ended without a specified reason.</p> </li> <li> <p> <code>CANCELLED</code> – The acceptor ended the agreement before the defined end date.</p> </li> <li> <p> <code>EXPIRED</code> – The agreement ended on the defined end date.</p> </li> <li> <p> <code>RENEWED</code> – The agreement was renewed into a new agreement (for example, an auto-renewal).</p> </li> <li> <p> <code>REPLACED</code> – The agreement was replaced using an agreement replacement offer.</p> </li> <li> <p> <code>ROLLED_BACK</code> (Only applicable to inactive agreement revisions) – The agreement revision has been rolled back because of an error. An earlier revision is now active.</p> </li> <li> <p> <code>SUPERCEDED</code> (Only applicable to inactive agreement revisions) – The agreement revision is no longer active and another agreement revision is now active.</p> </li> <li> <p> <code>TERMINATED</code> – The agreement ended before the defined end date because of an AWS termination (for example, a payment failure).</p> </li> </ul>"
+          "documentation":"<p>The current status of the agreement.</p> <p>Statuses include:</p> <ul> <li> <p> <code>ACTIVE</code> – The terms of the agreement are active.</p> </li> <li> <p> <code>ARCHIVED</code> – The agreement ended without a specified reason.</p> </li> <li> <p> <code>CANCELLED</code> – The acceptor ended the agreement before the defined end date.</p> </li> <li> <p> <code>EXPIRED</code> – The agreement ended on the defined end date.</p> </li> <li> <p> <code>RENEWED</code> – The agreement was renewed into a new agreement (for example, an auto-renewal).</p> </li> <li> <p> <code>REPLACED</code> – The agreement was replaced using an agreement replacement offer.</p> </li> <li> <p> <code>TERMINATED</code> – The agreement ended before the defined end date because of an AWS termination (for example, a payment failure).</p> </li> </ul>"
         }
       }
     },
@@ -432,13 +438,13 @@
     "EstimatedCharges":{
       "type":"structure",
       "members":{
-        "agreementValue":{
-          "shape":"BoundedString",
-          "documentation":"<p>The total known amount customer has to pay across the lifecycle of the agreement.</p> <note> <p>This is the total contract value if accepted terms contain <code>ConfigurableUpfrontPricingTerm</code> or <code>FixedUpfrontPricingTerm</code>. In the case of pure contract pricing, this will be the total value of the contract. In the case of contracts with consumption pricing, this will only include the committed value and not include any overages that occur.</p> <p>If the accepted terms contain <code>PaymentScheduleTerm</code>, it will be the total payment schedule amount. This occurs when flexible payment schedule is used, and is the sum of all invoice charges in the payment schedule.</p> <p>In case a customer has amended an agreement, by purchasing more units of any dimension, this will include both the original cost as well as the added cost incurred due to addition of new units. </p> <p>This is <code>0</code> if the accepted terms contain <code>UsageBasedPricingTerm</code> without <code>ConfigurableUpfrontPricingTerm</code> or <code>RecurringPaymentTerm</code>. This occurs for usage-based pricing (such as SaaS metered or AMI/container hourly or monthly), because the exact usage is not known upfront.</p> </note>"
-        },
         "currencyCode":{
           "shape":"CurrencyCode",
           "documentation":"<p>Defines the currency code for the charge.</p>"
+        },
+        "agreementValue":{
+          "shape":"BoundedString",
+          "documentation":"<p>The total known amount customer has to pay across the lifecycle of the agreement.</p> <note> <p>This is the total contract value if accepted terms contain <code>ConfigurableUpfrontPricingTerm</code> or <code>FixedUpfrontPricingTerm</code>. In the case of pure contract pricing, this will be the total value of the contract. In the case of contracts with consumption pricing, this will only include the committed value and not include any overages that occur.</p> <p>If the accepted terms contain <code>PaymentScheduleTerm</code>, it will be the total payment schedule amount. This occurs when flexible payment schedule is used, and is the sum of all invoice charges in the payment schedule.</p> <p>In case a customer has amended an agreement, by purchasing more units of any dimension, this will include both the original cost as well as the added cost incurred due to addition of new units. </p> <p>This is <code>0</code> if the accepted terms contain <code>UsageBasedPricingTerm</code> without <code>ConfigurableUpfrontPricingTerm</code> or <code>RecurringPaymentTerm</code>. This occurs for usage-based pricing (such as SaaS metered or AMI/container hourly or monthly), because the exact usage is not known upfront.</p> </note>"
         }
       },
       "documentation":"<p>Estimated cost of the agreement.</p>"
@@ -472,13 +478,13 @@
       "type":"string",
       "max":32,
       "min":1,
-      "pattern":"^[A-Za-z_]+$"
+      "pattern":"[A-Za-z_]+"
     },
     "FilterValue":{
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^[A-Za-z0-9+:_-]+$"
+      "pattern":"[A-Za-z0-9+:_-]+"
     },
     "FilterValueList":{
       "type":"list",
@@ -489,6 +495,10 @@
     "FixedUpfrontPricingTerm":{
       "type":"structure",
       "members":{
+        "type":{
+          "shape":"UnversionedTermType",
+          "documentation":"<p>Category of the term being updated.</p>"
+        },
         "currencyCode":{
           "shape":"CurrencyCode",
           "documentation":"<p>Defines the currency for the prices mentioned in this term. </p>"
@@ -497,17 +507,13 @@
           "shape":"BoundedString",
           "documentation":"<p>Contract duration for the terms.</p>"
         },
-        "grants":{
-          "shape":"GrantList",
-          "documentation":"<p>Entitlements granted to the acceptor of fixed upfront as part of agreement execution.</p>"
-        },
         "price":{
           "shape":"BoundedString",
           "documentation":"<p>Fixed amount to be charged to the customer when this term is accepted.</p>"
         },
-        "type":{
-          "shape":"UnversionedTermType",
-          "documentation":"<p>Category of the term being updated.</p>"
+        "grants":{
+          "shape":"GrantList",
+          "documentation":"<p>Entitlements granted to the acceptor of fixed upfront as part of agreement execution.</p>"
         }
       },
       "documentation":"<p>Defines a prepaid pricing model where the customers are charged a fixed upfront amount.</p>"
@@ -515,6 +521,10 @@
     "FreeTrialPricingTerm":{
       "type":"structure",
       "members":{
+        "type":{
+          "shape":"UnversionedTermType",
+          "documentation":"<p>Category of the term.</p>"
+        },
         "duration":{
           "shape":"BoundedString",
           "documentation":"<p>Duration of the free trial period (5–31 days). </p>"
@@ -522,10 +532,6 @@
         "grants":{
           "shape":"GrantList",
           "documentation":"<p>Entitlements granted to the acceptor of a free trial as part of an agreement execution.</p>"
-        },
-        "type":{
-          "shape":"UnversionedTermType",
-          "documentation":"<p>Category of the term.</p>"
         }
       },
       "documentation":"<p>Defines a short-term free pricing model where the buyers aren’t charged anything within a specified limit.</p>"
@@ -579,14 +585,18 @@
       "type":"list",
       "member":{"shape":"GrantItem"}
     },
+    "ISO8601Duration":{
+      "type":"string",
+      "pattern":"([-+]?)P(?:([-+]?[0-9]+)D)?(T(?:([-+]?[0-9]+)H)?(?:([-+]?[0-9]+)M)?(?:([-+]?[0-9]+)(?:[.,]([0-9]{0,9}))?S)?)?"
+    },
     "InternalServerException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"ExceptionMessage"},
         "requestId":{
           "shape":"RequestId",
           "documentation":"<p>The unique identifier for the error.</p>"
-        }
+        },
+        "message":{"shape":"ExceptionMessage"}
       },
       "documentation":"<p>Unexpected error during processing of request.</p>",
       "exception":true,
@@ -595,13 +605,13 @@
     "LegalTerm":{
       "type":"structure",
       "members":{
-        "documents":{
-          "shape":"DocumentList",
-          "documentation":"<p>List of references to legal resources proposed to the buyers. An example is the EULA.</p>"
-        },
         "type":{
           "shape":"UnversionedTermType",
           "documentation":"<p>Category of the term being updated.</p>"
+        },
+        "documents":{
+          "shape":"DocumentList",
+          "documentation":"<p>List of references to legal resources proposed to the buyers. An example is the EULA.</p>"
         }
       },
       "documentation":"<p>Defines the list of text agreements proposed to the acceptors. An example is the end user license agreement (EULA).</p>"
@@ -616,17 +626,32 @@
       "type":"string",
       "max":8192,
       "min":0,
-      "pattern":"^[a-zA-Z0-9+/=]+$"
+      "pattern":"[a-zA-Z0-9+/=]+"
     },
     "OfferId":{
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^\\S{1,64}$"
+      "pattern":"\\S{1,64}"
+    },
+    "OfferSetId":{
+      "type":"string",
+      "pattern":"\\S{1,50}"
+    },
+    "PaymentRequestApprovalStrategy":{
+      "type":"string",
+      "enum":[
+        "AUTO_APPROVE_ON_EXPIRATION",
+        "WAIT_FOR_APPROVAL"
+      ]
     },
     "PaymentScheduleTerm":{
       "type":"structure",
       "members":{
+        "type":{
+          "shape":"UnversionedTermType",
+          "documentation":"<p>Type of the term.</p>"
+        },
         "currencyCode":{
           "shape":"CurrencyCode",
           "documentation":"<p>Defines the currency for the prices mentioned in the term. </p>"
@@ -634,10 +659,6 @@
         "schedule":{
           "shape":"ScheduleList",
           "documentation":"<p>List of the payment schedule where each element defines one installment of payment. It contains the information necessary for calculating the price.</p>"
-        },
-        "type":{
-          "shape":"UnversionedTermType",
-          "documentation":"<p>Type of the term.</p>"
         }
       },
       "documentation":"<p>Defines an installment-based pricing model where customers are charged a fixed price on different dates during the agreement validity period. This is used most commonly for flexible payment schedule pricing.</p>"
@@ -650,13 +671,17 @@
     "ProposalSummary":{
       "type":"structure",
       "members":{
+        "resources":{
+          "shape":"Resources",
+          "documentation":"<p>The list of resources involved in the agreement.</p>"
+        },
         "offerId":{
           "shape":"OfferId",
           "documentation":"<p>The unique identifier of the offer in AWS Marketplace.</p>"
         },
-        "resources":{
-          "shape":"Resources",
-          "documentation":"<p>The list of resources involved in the agreement.</p>"
+        "offerSetId":{
+          "shape":"OfferSetId",
+          "documentation":"<p>A unique identifier for the offer set containing this offer. All agreements created from offers in this set include this identifier as context.</p>"
         }
       },
       "documentation":"<p>A summary of the proposal received from the proposer.</p>"
@@ -692,21 +717,21 @@
     "RecurringPaymentTerm":{
       "type":"structure",
       "members":{
-        "billingPeriod":{
-          "shape":"BoundedString",
-          "documentation":"<p>Defines the recurrence at which buyers are charged.</p>"
+        "type":{
+          "shape":"UnversionedTermType",
+          "documentation":"<p>Type of the term being updated.</p>"
         },
         "currencyCode":{
           "shape":"CurrencyCode",
           "documentation":"<p>Defines the currency for the prices mentioned in this term. </p>"
         },
+        "billingPeriod":{
+          "shape":"BoundedString",
+          "documentation":"<p>Defines the recurrence at which buyers are charged.</p>"
+        },
         "price":{
           "shape":"BoundedString",
           "documentation":"<p>Amount charged to the buyer every billing period.</p>"
-        },
-        "type":{
-          "shape":"UnversionedTermType",
-          "documentation":"<p>Type of the term being updated.</p>"
         }
       },
       "documentation":"<p>Defines a pricing model where customers are charged a fixed recurring price at the end of each billing period.</p>"
@@ -714,13 +739,13 @@
     "RenewalTerm":{
       "type":"structure",
       "members":{
-        "configuration":{
-          "shape":"RenewalTermConfiguration",
-          "documentation":"<p>Additional parameters specified by the acceptor while accepting the term.</p>"
-        },
         "type":{
           "shape":"UnversionedTermType",
           "documentation":"<p>Category of the term being updated. </p>"
+        },
+        "configuration":{
+          "shape":"RenewalTermConfiguration",
+          "documentation":"<p>Additional parameters specified by the acceptor while accepting the term.</p>"
         }
       },
       "documentation":"<p>Defines that on graceful expiration of the agreement (when the agreement ends on its pre-defined end date), a new agreement will be created using the accepted terms on the existing agreement. In other words, the agreement will be renewed. The presence of <code>RenewalTerm</code> in the offer document means that auto-renewal is allowed. Buyers will have the option to accept or decline auto-renewal at the offer acceptance/agreement creation. Buyers can also change this flag from <code>True</code> to <code>False</code> or <code>False</code> to <code>True</code> at anytime during the agreement's lifecycle.</p>"
@@ -740,7 +765,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^[A-Za-z0-9-]+$"
+      "pattern":"[A-Za-z0-9-]+"
     },
     "Resource":{
       "type":"structure",
@@ -760,16 +785,16 @@
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^[A-Za-z0-9_/-]+$"
+      "pattern":"[A-Za-z0-9_/-]+"
     },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"ExceptionMessage"},
         "requestId":{
           "shape":"RequestId",
           "documentation":"<p>The unique identifier for the error.</p>"
         },
+        "message":{"shape":"ExceptionMessage"},
         "resourceId":{
           "shape":"ResourceId",
           "documentation":"<p>The unique identifier for the resource.</p>"
@@ -793,13 +818,13 @@
     "ScheduleItem":{
       "type":"structure",
       "members":{
-        "chargeAmount":{
-          "shape":"BoundedString",
-          "documentation":"<p>The price that the customer would pay on the scheduled date (chargeDate).</p>"
-        },
         "chargeDate":{
           "shape":"Timestamp",
           "documentation":"<p>The date that the customer would pay the price defined in this payment schedule term. Invoices are generated on the date provided.</p>"
+        },
+        "chargeAmount":{
+          "shape":"BoundedString",
+          "documentation":"<p>The price that the customer would pay on the scheduled date (chargeDate).</p>"
         }
       },
       "documentation":"<p>An individual installment of the payment that includes the date and amount of the charge.</p>"
@@ -817,7 +842,11 @@
         },
         "filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filter name and value pair used to return a specific list of results.</p> <p>The following filters are supported:</p> <ul> <li> <p> <code>ResourceIdentifier</code> – The unique identifier of the resource.</p> </li> <li> <p> <code>ResourceType</code> – Type of the resource, which is the product (<code>AmiProduct</code>, <code>ContainerProduct</code>, or <code>SaaSProduct</code>).</p> </li> <li> <p> <code>PartyType</code> – The party type (either <code>Acceptor</code> or <code>Proposer</code>) of the caller. For agreements where the caller is the proposer, use the <code>Proposer</code> filter. For agreements where the caller is the acceptor, use the <code>Acceptor</code> filter.</p> </li> <li> <p> <code>AcceptorAccountId</code> – The AWS account ID of the party accepting the agreement terms.</p> </li> <li> <p> <code>OfferId</code> – The unique identifier of the offer in which the terms are registered in the agreement token.</p> </li> <li> <p> <code>Status</code> – The current status of the agreement. Values include <code>ACTIVE</code>, <code>ARCHIVED</code>, <code>CANCELLED</code>, <code>EXPIRED</code>, <code>RENEWED</code>, <code>REPLACED</code>, and <code>TERMINATED</code>.</p> </li> <li> <p> <code>BeforeEndTime</code> – A date used to filter agreements with a date before the <code>endTime</code> of an agreement.</p> </li> <li> <p> <code>AfterEndTime</code> – A date used to filter agreements with a date after the <code>endTime</code> of an agreement.</p> </li> <li> <p> <code>AgreementType</code> – The type of agreement. Values include <code>PurchaseAgreement</code> or <code>VendorInsightsAgreement</code>.</p> </li> </ul>"
+          "documentation":"<p>The filter name and value pair used to return a specific list of results.</p> <p>The following filters are supported:</p> <ul> <li> <p> <code>ResourceIdentifier</code> – The unique identifier of the resource.</p> </li> <li> <p> <code>ResourceType</code> – Type of the resource, which is the product (<code>AmiProduct</code>, <code>ContainerProduct</code>, <code>SaaSProduct</code>, <code>ProfessionalServicesProduct</code>, or <code>MachineLearningProduct</code>).</p> </li> <li> <p> <code>PartyType</code> – The party type of the caller. For agreements where the caller is the proposer, use the <code>Proposer</code> filter.</p> </li> <li> <p> <code>AcceptorAccountId</code> – The AWS account ID of the party accepting the agreement terms.</p> </li> <li> <p> <code>OfferId</code> – The unique identifier of the offer in which the terms are registered in the agreement token.</p> </li> <li> <p> <code>Status</code> – The current status of the agreement. Values include <code>ACTIVE</code>, <code>ARCHIVED</code>, <code>CANCELLED</code>, <code>EXPIRED</code>, <code>RENEWED</code>, <code>REPLACED</code>, and <code>TERMINATED</code>.</p> </li> <li> <p> <code>BeforeEndTime</code> – A date used to filter agreements with a date before the <code>endTime</code> of an agreement.</p> </li> <li> <p> <code>AfterEndTime</code> – A date used to filter agreements with a date after the <code>endTime</code> of an agreement.</p> </li> <li> <p> <code>AgreementType</code> – The type of agreement. Supported value includes <code>PurchaseAgreement</code>.</p> </li> <li> <p> <code>OfferSetId</code> – A unique identifier for the offer set containing this offer. All agreements created from offers in this set include this identifier as context.</p> </li> </ul>"
+        },
+        "sort":{
+          "shape":"Sort",
+          "documentation":"<p>An object that contains the <code>SortBy</code> and <code>SortOrder</code> attributes. Only <code>EndTime</code> is supported for <code>SearchAgreements</code>. The default sort is <code>EndTime</code> descending.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
@@ -826,10 +855,6 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>A token to specify where to start pagination.</p>"
-        },
-        "sort":{
-          "shape":"Sort",
-          "documentation":"<p>An object that contains the <code>SortBy</code> and <code>SortOrder</code> attributes.</p>"
         }
       }
     },
@@ -838,7 +863,7 @@
       "members":{
         "agreementViewSummaries":{
           "shape":"AgreementViewSummaryList",
-          "documentation":"<p>A summary of the agreement, including top-level attributes (for example, the agreement ID, version, proposer, and acceptor).</p>"
+          "documentation":"<p>A summary of the agreement, including top-level attributes (for example, the agreement ID, proposer, and acceptor).</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -878,7 +903,7 @@
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"^[A-Za-z_]+$"
+      "pattern":"[A-Za-z_]+"
     },
     "SortOrder":{
       "type":"string",
@@ -890,13 +915,13 @@
     "SupportTerm":{
       "type":"structure",
       "members":{
-        "refundPolicy":{
-          "shape":"BoundedString",
-          "documentation":"<p>Free-text field about the refund policy description that will be shown to customers as is on the website and console.</p>"
-        },
         "type":{
           "shape":"UnversionedTermType",
           "documentation":"<p>Category of the term being updated.</p>"
+        },
+        "refundPolicy":{
+          "shape":"BoundedString",
+          "documentation":"<p>Free-text field about the refund policy description that will be shown to customers as is on the website and console.</p>"
         }
       },
       "documentation":"<p>Defines the customer support available for the acceptors when they purchase the software.</p>"
@@ -904,11 +929,11 @@
     "ThrottlingException":{
       "type":"structure",
       "members":{
-        "message":{"shape":"ExceptionMessage"},
         "requestId":{
           "shape":"RequestId",
           "documentation":"<p>The unique identifier for the error.</p>"
-        }
+        },
+        "message":{"shape":"ExceptionMessage"}
       },
       "documentation":"<p>Request was denied due to request throttling.</p>",
       "exception":true
@@ -918,11 +943,15 @@
       "type":"string",
       "max":4096,
       "min":1,
-      "pattern":"^[A-Za-z]+$"
+      "pattern":"[A-Za-z]+"
     },
     "UsageBasedPricingTerm":{
       "type":"structure",
       "members":{
+        "type":{
+          "shape":"UnversionedTermType",
+          "documentation":"<p>Category of the term.</p>"
+        },
         "currencyCode":{
           "shape":"CurrencyCode",
           "documentation":"<p>Defines the currency for the prices mentioned in the term. </p>"
@@ -930,10 +959,6 @@
         "rateCards":{
           "shape":"UsageBasedRateCardList",
           "documentation":"<p>List of rate cards.</p>"
-        },
-        "type":{
-          "shape":"UnversionedTermType",
-          "documentation":"<p>Category of the term.</p>"
         }
       },
       "documentation":"<p>Defines a usage-based pricing model (typically, pay-as-you-go pricing), where the customers are charged based on product usage.</p>"
@@ -955,18 +980,18 @@
     "ValidationException":{
       "type":"structure",
       "members":{
-        "fields":{
-          "shape":"ValidationExceptionFieldList",
-          "documentation":"<p>The fields associated with the error.</p>"
+        "requestId":{
+          "shape":"RequestId",
+          "documentation":"<p>The unique identifier associated with the error.</p>"
         },
         "message":{"shape":"ExceptionMessage"},
         "reason":{
           "shape":"ValidationExceptionReason",
           "documentation":"<p>The reason associated with the error.</p>"
         },
-        "requestId":{
-          "shape":"RequestId",
-          "documentation":"<p>The unique identifier associated with the error.</p>"
+        "fields":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>The fields associated with the error.</p>"
         }
       },
       "documentation":"<p>The input fails to satisfy the constraints specified by the service.</p>",
@@ -975,17 +1000,17 @@
     "ValidationExceptionField":{
       "type":"structure",
       "required":[
-        "message",
-        "name"
+        "name",
+        "message"
       ],
       "members":{
-        "message":{
-          "shape":"BoundedString",
-          "documentation":"<p>See applicable actions.</p>"
-        },
         "name":{
           "shape":"BoundedString",
           "documentation":"<p>The name of the field associated with the error.</p>"
+        },
+        "message":{
+          "shape":"BoundedString",
+          "documentation":"<p>See applicable actions.</p>"
         }
       },
       "documentation":"<p>The input fails to satisfy the constraints specified by the service.</p>"
@@ -1013,24 +1038,61 @@
     "ValidityTerm":{
       "type":"structure",
       "members":{
+        "type":{
+          "shape":"UnversionedTermType",
+          "documentation":"<p>Category of the term being updated. </p>"
+        },
         "agreementDuration":{
           "shape":"BoundedString",
           "documentation":"<p>Defines the duration that the agreement remains active. If <code>AgreementStartDate</code> isn’t provided, the agreement duration is relative to the agreement signature time. The duration is represented in the ISO_8601 format.</p>"
-        },
-        "agreementEndDate":{
-          "shape":"Timestamp",
-          "documentation":"<p>Defines the date when the agreement ends. The agreement ends at 23:59:59.999 UTC on the date provided. If <code>AgreementEndDate</code> isn’t provided, the agreement end date is determined by the validity of individual terms.</p>"
         },
         "agreementStartDate":{
           "shape":"Timestamp",
           "documentation":"<p>Defines the date when agreement starts. The agreement starts at 00:00:00.000 UTC on the date provided. If <code>AgreementStartDate</code> isn’t provided, the agreement start date is determined based on agreement signature time.</p>"
         },
-        "type":{
-          "shape":"UnversionedTermType",
-          "documentation":"<p>Category of the term being updated. </p>"
+        "agreementEndDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>Defines the date when the agreement ends. The agreement ends at 23:59:59.999 UTC on the date provided. If <code>AgreementEndDate</code> isn’t provided, the agreement end date is determined by the validity of individual terms.</p>"
         }
       },
       "documentation":"<p>Defines the conditions that will keep an agreement created from this offer valid. </p>"
+    },
+    "VariablePaymentTerm":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"UnversionedTermType",
+          "documentation":"<p>Type of the term.</p>"
+        },
+        "currencyCode":{
+          "shape":"CurrencyCode",
+          "documentation":"<p>Defines the currency for the prices mentioned in the term.</p>"
+        },
+        "maxTotalChargeAmount":{
+          "shape":"BoundedString",
+          "documentation":"<p>The maximum total amount that can be charged to the customer through variable payment requests under this term.</p>"
+        },
+        "configuration":{
+          "shape":"VariablePaymentTermConfiguration",
+          "documentation":"<p>Additional parameters specified by the acceptor while accepting the term.</p>"
+        }
+      },
+      "documentation":"<p>Defines a payment model where sellers can submit variable payment requests up to a maximum charge amount, with configurable approval strategies and expiration timelines.</p>"
+    },
+    "VariablePaymentTermConfiguration":{
+      "type":"structure",
+      "required":["paymentRequestApprovalStrategy"],
+      "members":{
+        "paymentRequestApprovalStrategy":{
+          "shape":"PaymentRequestApprovalStrategy",
+          "documentation":"<p>Defines the strategy for approving payment requests. Values include <code>AUTO_APPROVE_ON_EXPIRATION</code> and <code>WAIT_FOR_APPROVAL</code> </p>"
+        },
+        "expirationDuration":{
+          "shape":"ISO8601Duration",
+          "documentation":"<p>Defines the duration after which a payment request is automatically approved if no further action is taken. This only applies when the payment request approval strategy is set to <code>AUTO_APPROVE_ON_EXPIRATION</code>. The duration is represented in the ISO_8601 format (e.g., P10D for 10 days).</p>"
+        }
+      },
+      "documentation":"<p>Additional parameters specified by the acceptor while accepting the variable payment term.</p>"
     },
     "ZeroValueInteger":{
       "type":"integer",

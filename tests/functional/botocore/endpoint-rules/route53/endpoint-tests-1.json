@@ -1,54 +1,51 @@
 {
     "testCases": [
         {
-            "documentation": "For region aws-global with FIPS disabled and DualStack disabled",
+            "documentation": "For custom endpoint with region not set and fips disabled",
             "expect": {
                 "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "route53",
-                                "signingRegion": "us-east-1"
-                            }
-                        ]
-                    },
-                    "url": "https://route53.amazonaws.com"
+                    "url": "https://example.com"
                 }
             },
             "params": {
-                "Region": "aws-global",
-                "UseFIPS": false,
-                "UseDualStack": false
+                "Endpoint": "https://example.com",
+                "UseFIPS": false
             }
         },
         {
-            "documentation": "For region aws-global with FIPS enabled and DualStack disabled",
+            "documentation": "For custom endpoint with fips enabled",
             "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "route53",
-                                "signingRegion": "us-east-1"
-                            }
-                        ]
-                    },
-                    "url": "https://route53-fips.amazonaws.com"
-                }
+                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
             },
             "params": {
-                "Region": "aws-global",
-                "UseFIPS": true,
-                "UseDualStack": false
+                "Endpoint": "https://example.com",
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "For custom endpoint with fips disabled and dualstack enabled",
+            "expect": {
+                "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
+            },
+            "params": {
+                "Endpoint": "https://example.com",
+                "UseFIPS": false,
+                "UseDualStack": true
             }
         },
         {
             "documentation": "For region us-east-1 with FIPS enabled and DualStack enabled",
             "expect": {
                 "endpoint": {
-                    "url": "https://route53-fips.us-east-1.api.aws"
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-east-1"
+                            }
+                        ]
+                    },
+                    "url": "https://route53-fips.global.api.aws"
                 }
             },
             "params": {
@@ -65,7 +62,6 @@
                         "authSchemes": [
                             {
                                 "name": "sigv4",
-                                "signingName": "route53",
                                 "signingRegion": "us-east-1"
                             }
                         ]
@@ -83,7 +79,15 @@
             "documentation": "For region us-east-1 with FIPS disabled and DualStack enabled",
             "expect": {
                 "endpoint": {
-                    "url": "https://route53.us-east-1.api.aws"
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-east-1"
+                            }
+                        ]
+                    },
+                    "url": "https://route53.global.api.aws"
                 }
             },
             "params": {
@@ -100,7 +104,6 @@
                         "authSchemes": [
                             {
                                 "name": "sigv4",
-                                "signingName": "route53",
                                 "signingRegion": "us-east-1"
                             }
                         ]
@@ -115,14 +118,76 @@
             }
         },
         {
-            "documentation": "For region aws-cn-global with FIPS disabled and DualStack disabled",
+            "documentation": "For region cn-northwest-1 with FIPS enabled and DualStack enabled",
             "expect": {
                 "endpoint": {
                     "properties": {
                         "authSchemes": [
                             {
                                 "name": "sigv4",
-                                "signingName": "route53",
+                                "signingRegion": "cn-northwest-1"
+                            }
+                        ]
+                    },
+                    "url": "https://route53-fips.api.amazonwebservices.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-northwest-1",
+                "UseFIPS": true,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region cn-northwest-1 with FIPS enabled and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "cn-northwest-1"
+                            }
+                        ]
+                    },
+                    "url": "https://route53-fips.amazonaws.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-northwest-1",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region cn-northwest-1 with FIPS disabled and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "cn-northwest-1"
+                            }
+                        ]
+                    },
+                    "url": "https://route53.global.api.amazonwebservices.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-northwest-1",
+                "UseFIPS": false,
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region cn-northwest-1 with FIPS disabled and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
                                 "signingRegion": "cn-northwest-1"
                             }
                         ]
@@ -131,204 +196,49 @@
                 }
             },
             "params": {
-                "Region": "aws-cn-global",
+                "Region": "cn-northwest-1",
                 "UseFIPS": false,
                 "UseDualStack": false
             }
         },
         {
-            "documentation": "For region cn-north-1 with FIPS enabled and DualStack enabled",
+            "documentation": "For region eusc-de-east-1 with FIPS enabled and DualStack disabled",
             "expect": {
                 "endpoint": {
-                    "url": "https://route53-fips.cn-north-1.api.amazonwebservices.com.cn"
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "eusc-de-east-1"
+                            }
+                        ]
+                    },
+                    "url": "https://route53-fips.amazonaws.eu"
                 }
             },
             "params": {
-                "Region": "cn-north-1",
-                "UseFIPS": true,
-                "UseDualStack": true
-            }
-        },
-        {
-            "documentation": "For region cn-north-1 with FIPS enabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://route53-fips.cn-north-1.amazonaws.com.cn"
-                }
-            },
-            "params": {
-                "Region": "cn-north-1",
+                "Region": "eusc-de-east-1",
                 "UseFIPS": true,
                 "UseDualStack": false
             }
         },
         {
-            "documentation": "For region cn-north-1 with FIPS disabled and DualStack enabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://route53.cn-north-1.api.amazonwebservices.com.cn"
-                }
-            },
-            "params": {
-                "Region": "cn-north-1",
-                "UseFIPS": false,
-                "UseDualStack": true
-            }
-        },
-        {
-            "documentation": "For region cn-north-1 with FIPS disabled and DualStack disabled",
+            "documentation": "For region eusc-de-east-1 with FIPS disabled and DualStack disabled",
             "expect": {
                 "endpoint": {
                     "properties": {
                         "authSchemes": [
                             {
                                 "name": "sigv4",
-                                "signingName": "route53",
-                                "signingRegion": "cn-northwest-1"
+                                "signingRegion": "eusc-de-east-1"
                             }
                         ]
                     },
-                    "url": "https://route53.amazonaws.com.cn"
+                    "url": "https://route53.amazonaws.eu"
                 }
             },
             "params": {
-                "Region": "cn-north-1",
-                "UseFIPS": false,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region aws-us-gov-global with FIPS disabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "route53",
-                                "signingRegion": "us-gov-west-1"
-                            }
-                        ]
-                    },
-                    "url": "https://route53.us-gov.amazonaws.com"
-                }
-            },
-            "params": {
-                "Region": "aws-us-gov-global",
-                "UseFIPS": false,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region aws-us-gov-global with FIPS enabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "route53",
-                                "signingRegion": "us-gov-west-1"
-                            }
-                        ]
-                    },
-                    "url": "https://route53.us-gov.amazonaws.com"
-                }
-            },
-            "params": {
-                "Region": "aws-us-gov-global",
-                "UseFIPS": true,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack enabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://route53-fips.us-gov-east-1.api.aws"
-                }
-            },
-            "params": {
-                "Region": "us-gov-east-1",
-                "UseFIPS": true,
-                "UseDualStack": true
-            }
-        },
-        {
-            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "route53",
-                                "signingRegion": "us-gov-west-1"
-                            }
-                        ]
-                    },
-                    "url": "https://route53.us-gov.amazonaws.com"
-                }
-            },
-            "params": {
-                "Region": "us-gov-east-1",
-                "UseFIPS": true,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region us-gov-east-1 with FIPS disabled and DualStack enabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://route53.us-gov-east-1.api.aws"
-                }
-            },
-            "params": {
-                "Region": "us-gov-east-1",
-                "UseFIPS": false,
-                "UseDualStack": true
-            }
-        },
-        {
-            "documentation": "For region us-gov-east-1 with FIPS disabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "route53",
-                                "signingRegion": "us-gov-west-1"
-                            }
-                        ]
-                    },
-                    "url": "https://route53.us-gov.amazonaws.com"
-                }
-            },
-            "params": {
-                "Region": "us-gov-east-1",
-                "UseFIPS": false,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region aws-iso-global with FIPS disabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "properties": {
-                        "authSchemes": [
-                            {
-                                "name": "sigv4",
-                                "signingName": "route53",
-                                "signingRegion": "us-iso-east-1"
-                            }
-                        ]
-                    },
-                    "url": "https://route53.c2s.ic.gov"
-                }
-            },
-            "params": {
-                "Region": "aws-iso-global",
+                "Region": "eusc-de-east-1",
                 "UseFIPS": false,
                 "UseDualStack": false
             }
@@ -337,7 +247,15 @@
             "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
             "expect": {
                 "endpoint": {
-                    "url": "https://route53-fips.us-iso-east-1.c2s.ic.gov"
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-iso-east-1"
+                            }
+                        ]
+                    },
+                    "url": "https://route53-fips.c2s.ic.gov"
                 }
             },
             "params": {
@@ -354,7 +272,6 @@
                         "authSchemes": [
                             {
                                 "name": "sigv4",
-                                "signingName": "route53",
                                 "signingRegion": "us-iso-east-1"
                             }
                         ]
@@ -369,32 +286,18 @@
             }
         },
         {
-            "documentation": "For region aws-iso-b-global with FIPS disabled and DualStack disabled",
+            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
             "expect": {
                 "endpoint": {
                     "properties": {
                         "authSchemes": [
                             {
                                 "name": "sigv4",
-                                "signingName": "route53",
                                 "signingRegion": "us-isob-east-1"
                             }
                         ]
                     },
-                    "url": "https://route53.sc2s.sgov.gov"
-                }
-            },
-            "params": {
-                "Region": "aws-iso-b-global",
-                "UseFIPS": false,
-                "UseDualStack": false
-            }
-        },
-        {
-            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://route53-fips.us-isob-east-1.sc2s.sgov.gov"
+                    "url": "https://route53-fips.sc2s.sgov.gov"
                 }
             },
             "params": {
@@ -411,7 +314,6 @@
                         "authSchemes": [
                             {
                                 "name": "sigv4",
-                                "signingName": "route53",
                                 "signingRegion": "us-isob-east-1"
                             }
                         ]
@@ -426,6 +328,27 @@
             }
         },
         {
+            "documentation": "For region eu-isoe-west-1 with FIPS enabled and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "eu-isoe-west-1"
+                            }
+                        ]
+                    },
+                    "url": "https://route53-fips.cloud.adc-e.uk"
+                }
+            },
+            "params": {
+                "Region": "eu-isoe-west-1",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
             "documentation": "For region eu-isoe-west-1 with FIPS disabled and DualStack disabled",
             "expect": {
                 "endpoint": {
@@ -433,7 +356,6 @@
                         "authSchemes": [
                             {
                                 "name": "sigv4",
-                                "signingName": "route53",
                                 "signingRegion": "eu-isoe-west-1"
                             }
                         ]
@@ -448,6 +370,27 @@
             }
         },
         {
+            "documentation": "For region us-isof-south-1 with FIPS enabled and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-isof-south-1"
+                            }
+                        ]
+                    },
+                    "url": "https://route53-fips.csp.hci.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-isof-south-1",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
             "documentation": "For region us-isof-south-1 with FIPS disabled and DualStack disabled",
             "expect": {
                 "endpoint": {
@@ -455,7 +398,6 @@
                         "authSchemes": [
                             {
                                 "name": "sigv4",
-                                "signingName": "route53",
                                 "signingRegion": "us-isof-south-1"
                             }
                         ]
@@ -470,54 +412,87 @@
             }
         },
         {
-            "documentation": "For custom endpoint with region set and fips disabled and dualstack disabled",
+            "documentation": "For region us-gov-west-1 with FIPS enabled and DualStack enabled",
             "expect": {
                 "endpoint": {
-                    "url": "https://example.com"
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-gov-west-1"
+                            }
+                        ]
+                    },
+                    "url": "https://route53.us-gov.api.aws"
                 }
             },
             "params": {
-                "Region": "us-east-1",
-                "UseFIPS": false,
-                "UseDualStack": false,
-                "Endpoint": "https://example.com"
-            }
-        },
-        {
-            "documentation": "For custom endpoint with region not set and fips disabled and dualstack disabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://example.com"
-                }
-            },
-            "params": {
-                "UseFIPS": false,
-                "UseDualStack": false,
-                "Endpoint": "https://example.com"
-            }
-        },
-        {
-            "documentation": "For custom endpoint with fips enabled and dualstack disabled",
-            "expect": {
-                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
-            },
-            "params": {
-                "Region": "us-east-1",
+                "Region": "us-gov-west-1",
                 "UseFIPS": true,
-                "UseDualStack": false,
-                "Endpoint": "https://example.com"
+                "UseDualStack": true
             }
         },
         {
-            "documentation": "For custom endpoint with fips disabled and dualstack enabled",
+            "documentation": "For region us-gov-west-1 with FIPS enabled and DualStack disabled",
             "expect": {
-                "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-gov-west-1"
+                            }
+                        ]
+                    },
+                    "url": "https://route53.us-gov.amazonaws.com"
+                }
             },
             "params": {
-                "Region": "us-east-1",
+                "Region": "us-gov-west-1",
+                "UseFIPS": true,
+                "UseDualStack": false
+            }
+        },
+        {
+            "documentation": "For region us-gov-west-1 with FIPS disabled and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-gov-west-1"
+                            }
+                        ]
+                    },
+                    "url": "https://route53.us-gov.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-gov-west-1",
                 "UseFIPS": false,
-                "UseDualStack": true,
-                "Endpoint": "https://example.com"
+                "UseDualStack": true
+            }
+        },
+        {
+            "documentation": "For region us-gov-west-1 with FIPS disabled and DualStack disabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-gov-west-1"
+                            }
+                        ]
+                    },
+                    "url": "https://route53.us-gov.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-gov-west-1",
+                "UseFIPS": false,
+                "UseDualStack": false
             }
         },
         {

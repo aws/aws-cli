@@ -479,7 +479,9 @@
       "enum":[
         "PRIMARY",
         "BILLING_GROUP",
-        "CUSTOM"
+        "CUSTOM",
+        "BILLING_TRANSFER",
+        "BILLING_TRANSFER_SHOWBACK"
       ]
     },
     "BillingViewTypeList":{
@@ -743,6 +745,10 @@
           "shape":"BillingViewTypeList",
           "documentation":"<p>The type of billing view.</p>"
         },
+        "names":{
+          "shape":"StringSearches",
+          "documentation":"<p> Filters the list of billing views by name. You can specify search criteria to match billing view names based on the search option provided. </p>"
+        },
         "ownerAccountId":{
           "shape":"AccountId",
           "documentation":"<p> The list of owners of the billing view. </p>"
@@ -909,6 +915,16 @@
       "max":1024,
       "min":1
     },
+    "SearchOption":{
+      "type":"string",
+      "enum":["STARTS_WITH"]
+    },
+    "SearchValue":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_\\+=\\.\\-@ ]+"
+    },
     "ServiceCode":{
       "type":"string",
       "max":1024,
@@ -944,6 +960,30 @@
       },
       "documentation":"<p> You've reached the limit of resources you can create, or exceeded the size of an individual resource. </p>",
       "exception":true
+    },
+    "StringSearch":{
+      "type":"structure",
+      "required":[
+        "searchOption",
+        "searchValue"
+      ],
+      "members":{
+        "searchOption":{
+          "shape":"SearchOption",
+          "documentation":"<p> The type of search operation to perform on the string value. Determines how the search value is matched against the target field. </p>"
+        },
+        "searchValue":{
+          "shape":"SearchValue",
+          "documentation":"<p> The string value to use in the search operation. This value is compared against the target field using the specified search option. </p>"
+        }
+      },
+      "documentation":"<p> A structure that defines how to search for string values. You can specify a search option and the value to search for. </p>"
+    },
+    "StringSearches":{
+      "type":"list",
+      "member":{"shape":"StringSearch"},
+      "max":1,
+      "min":1
     },
     "TagKey":{
       "type":"string",

@@ -30,7 +30,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Gets a batch of case rules. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
+      "documentation":"<p>Gets a batch of case rules. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
+      "readonly":true
     },
     "BatchGetField":{
       "name":"BatchGetField",
@@ -48,7 +49,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Returns the description for the list of fields in the request parameters. </p>"
+      "documentation":"<p>Returns the description for the list of fields in the request parameters. </p>",
+      "readonly":true
     },
     "BatchPutFieldOptions":{
       "name":"BatchPutFieldOptions",
@@ -189,7 +191,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a related item (comments, tasks, and contacts) and associates it with a case.</p> <note> <ul> <li> <p>A Related Item is a resource that is associated with a case. It may or may not have an external identifier linking it to an external resource (for example, a <code>contactArn</code>). All Related Items have their own internal identifier, the <code>relatedItemArn</code>. Examples of related items include <code>comments</code> and <code>contacts</code>.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> <li> <p>The <code>type</code> field is reserved for internal use only.</p> </li> </ul> </note>",
+      "documentation":"<p>Creates a related item (comments, tasks, and contacts) and associates it with a case.</p> <p>There's a quota for the number of fields allowed in a Custom type related item. See <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#cases-quotas\">Amazon Connect Cases quotas</a>.</p> <p> <b>Use cases</b> </p> <p>Following are examples of related items that you may want to associate with a case:</p> <ul> <li> <p>Related contacts, such as calls, chats, emails tasks</p> </li> <li> <p>Comments, for agent notes</p> </li> <li> <p>SLAs, to capture target resolution goals</p> </li> <li> <p>Cases, to capture related Amazon Connect Cases</p> </li> <li> <p>Files, such as policy documentation or customer-provided attachments</p> </li> <li> <p>Custom related items, which provide flexibility for you to define related items that such as bookings, orders, products, notices, and more</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>If you are associating a contact to a case by passing in <code>Contact</code> for a <code>type</code>, you must have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeContact.html\">DescribeContact</a> permission on the ARN of the contact that you provide in <code>content.contact.contactArn</code>.</p> </li> <li> <p>A Related Item is a resource that is associated with a case. It may or may not have an external identifier linking it to an external resource (for example, a <code>contactArn</code>). All Related Items have their own internal identifier, the <code>relatedItemArn</code>. Examples of related items include <code>comments</code> and <code>contacts</code>.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> <li> <p>The <code>type</code> field is reserved for internal use only.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect endpoints and quotas</a>.</p>",
       "idempotent":true
     },
     "CreateTemplate":{
@@ -289,7 +291,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Deletes a field from a cases template. You can delete up to 100 fields per domain.</p> <p>After a field is deleted:</p> <ul> <li> <p>You can still retrieve the field by calling <code>BatchGetField</code>.</p> </li> <li> <p>You cannot update a deleted field by calling <code>UpdateField</code>; it throws a <code>ValidationException</code>.</p> </li> <li> <p>Deleted fields are not included in the <code>ListFields</code> response.</p> </li> <li> <p>Calling <code>CreateCase</code> with a deleted field throws a <code>ValidationException</code> denoting which field IDs in the request have been deleted.</p> </li> <li> <p>Calling <code>GetCase</code> with a deleted field ID returns the deleted field's value if one exists.</p> </li> <li> <p>Calling <code>UpdateCase</code> with a deleted field ID throws a <code>ValidationException</code> if the case does not already contain a value for the deleted field. Otherwise it succeeds, allowing you to update or remove (using <code>emptyValue: {}</code>) the field's value from the case.</p> </li> <li> <p> <code>GetTemplate</code> does not return field IDs for deleted fields.</p> </li> <li> <p> <code>GetLayout</code> does not return field IDs for deleted fields.</p> </li> <li> <p>Calling <code>SearchCases</code> with the deleted field ID as a filter returns any cases that have a value for the deleted field that matches the filter criteria.</p> </li> <li> <p>Calling <code>SearchCases</code> with a <code>searchTerm</code> value that matches a deleted field's value on a case returns the case in the response.</p> </li> <li> <p>Calling <code>BatchPutFieldOptions</code> with a deleted field ID throw a <code>ValidationException</code>.</p> </li> <li> <p>Calling <code>GetCaseEventConfiguration</code> does not return field IDs for deleted fields.</p> </li> </ul>",
+      "documentation":"<p>Deletes a field from a cases template. You can delete up to 100 fields per domain.</p> <p>After a field is deleted:</p> <ul> <li> <p>You can still retrieve the field by calling <code>BatchGetField</code>.</p> </li> <li> <p>You cannot update a deleted field by calling <code>UpdateField</code>; it throws a <code>ValidationException</code>.</p> </li> <li> <p>Deleted fields are not included in the <code>ListFields</code> response.</p> </li> <li> <p>Calling <code>CreateCase</code> with a deleted field throws a <code>ValidationException</code> denoting which field identifiers in the request have been deleted.</p> </li> <li> <p>Calling <code>GetCase</code> with a deleted field identifier returns the deleted field's value if one exists.</p> </li> <li> <p>Calling <code>UpdateCase</code> with a deleted field ID throws a <code>ValidationException</code> if the case does not already contain a value for the deleted field. Otherwise it succeeds, allowing you to update or remove (using <code>emptyValue: {}</code>) the field's value from the case.</p> </li> <li> <p> <code>GetTemplate</code> does not return field IDs for deleted fields.</p> </li> <li> <p> <code>GetLayout</code> does not return field IDs for deleted fields.</p> </li> <li> <p>Calling <code>SearchCases</code> with the deleted field ID as a filter returns any cases that have a value for the deleted field that matches the filter criteria.</p> </li> <li> <p>Calling <code>SearchCases</code> with a <code>searchTerm</code> value that matches a deleted field's value on a case returns the case in the response.</p> </li> <li> <p>Calling <code>BatchPutFieldOptions</code> with a deleted field ID throw a <code>ValidationException</code>.</p> </li> <li> <p>Calling <code>GetCaseEventConfiguration</code> does not return field IDs for deleted fields.</p> </li> </ul>",
       "idempotent":true
     },
     "DeleteLayout":{
@@ -367,7 +369,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Returns information about a specific case if it exists. </p>"
+      "documentation":"<p>Returns information about a specific case if it exists. </p>",
+      "readonly":true
     },
     "GetCaseAuditEvents":{
       "name":"GetCaseAuditEvents",
@@ -385,7 +388,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Returns the audit history about a specific case if it exists.</p>"
+      "documentation":"<p>Returns the audit history about a specific case if it exists.</p>",
+      "readonly":true
     },
     "GetCaseEventConfiguration":{
       "name":"GetCaseEventConfiguration",
@@ -403,7 +407,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Returns the case event publishing configuration.</p>"
+      "documentation":"<p>Returns the case event publishing configuration.</p>",
+      "readonly":true
     },
     "GetDomain":{
       "name":"GetDomain",
@@ -421,7 +426,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Returns information about a specific domain if it exists. </p>"
+      "documentation":"<p>Returns information about a specific domain if it exists. </p>",
+      "readonly":true
     },
     "GetLayout":{
       "name":"GetLayout",
@@ -439,7 +445,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Returns the details for the requested layout.</p>"
+      "documentation":"<p>Returns the details for the requested layout.</p>",
+      "readonly":true
     },
     "GetTemplate":{
       "name":"GetTemplate",
@@ -457,7 +464,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Returns the details for the requested template. Other template APIs are: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateTemplate.html\">CreateTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_DeleteTemplate.html\">DeleteTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_ListTemplates.html\">ListTemplates</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_UpdateTemplate.html\">UpdateTemplate</a> </p> </li> </ul>"
+      "documentation":"<p>Returns the details for the requested template. Other template APIs are: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateTemplate.html\">CreateTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_DeleteTemplate.html\">DeleteTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_ListTemplates.html\">ListTemplates</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_UpdateTemplate.html\">UpdateTemplate</a> </p> </li> </ul>",
+      "readonly":true
     },
     "ListCaseRules":{
       "name":"ListCaseRules",
@@ -475,7 +483,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all case rules in a Cases domain. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
+      "documentation":"<p>Lists all case rules in a Cases domain. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
+      "readonly":true
     },
     "ListCasesForContact":{
       "name":"ListCasesForContact",
@@ -493,7 +502,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists cases for a given contact.</p>"
+      "documentation":"<p>Lists cases for a given contact.</p>",
+      "readonly":true
     },
     "ListDomains":{
       "name":"ListDomains",
@@ -510,7 +520,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all cases domains in the Amazon Web Services account. Each list item is a condensed summary object of the domain.</p>"
+      "documentation":"<p>Lists all cases domains in the Amazon Web Services account. Each list item is a condensed summary object of the domain.</p>",
+      "readonly":true
     },
     "ListFieldOptions":{
       "name":"ListFieldOptions",
@@ -528,7 +539,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all of the field options for a field identifier in the domain. </p>"
+      "documentation":"<p>Lists all of the field options for a field identifier in the domain. </p>",
+      "readonly":true
     },
     "ListFields":{
       "name":"ListFields",
@@ -546,7 +558,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all fields in a Cases domain.</p>"
+      "documentation":"<p>Lists all fields in a Cases domain.</p>",
+      "readonly":true
     },
     "ListLayouts":{
       "name":"ListLayouts",
@@ -564,7 +577,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all layouts in the given cases domain. Each list item is a condensed summary object of the layout.</p>"
+      "documentation":"<p>Lists all layouts in the given cases domain. Each list item is a condensed summary object of the layout.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -601,7 +615,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all of the templates in a Cases domain. Each list item is a condensed summary object of the template. </p> <p> Other template APIs are: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateTemplate.html\">CreateTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_DeleteTemplate.html\">DeleteTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_GetTemplate.html\">GetTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_UpdateTemplate.html\">UpdateTemplate</a> </p> </li> </ul>"
+      "documentation":"<p>Lists all of the templates in a Cases domain. Each list item is a condensed summary object of the template. </p> <p> Other template APIs are: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateTemplate.html\">CreateTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_DeleteTemplate.html\">DeleteTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_GetTemplate.html\">GetTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_UpdateTemplate.html\">UpdateTemplate</a> </p> </li> </ul>",
+      "readonly":true
     },
     "PutCaseEventConfiguration":{
       "name":"PutCaseEventConfiguration",
@@ -638,7 +653,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Searches for related items across all cases within a domain. This is a global search operation that returns related items from multiple cases, unlike the case-specific <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_SearchRelatedItems.html\">SearchRelatedItems</a> API.</p> <p> <b>Use cases</b> </p> <p>Following are common uses cases for this API:</p> <ul> <li> <p>Find cases with similar issues across the domain. For example, search for all cases containing comments about \"product defect\" to identify patterns and existing solutions.</p> </li> <li> <p>Locate all cases associated with specific contacts or orders. For example, find all cases linked to a contactArn to understand the complete customer journey. </p> </li> <li> <p>Monitor SLA compliance across cases. For example, search for all cases with \"Active\" SLA status to prioritize remediation efforts.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>This API returns case IDs, not complete case objects. To retrieve full case details, you must make additional calls to the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_GetCase.html\">GetCase</a> API for each returned case ID. </p> </li> <li> <p>This API searches across related items content, not case fields. Use the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_SearchCases.html\">SearchCases</a> API to search within case field values.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect endpoints and quotas</a>.</p>"
+      "documentation":"<p>Searches for related items across all cases within a domain. This is a global search operation that returns related items from multiple cases, unlike the case-specific <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_SearchRelatedItems.html\">SearchRelatedItems</a> API.</p> <p> <b>Use cases</b> </p> <p>Following are common uses cases for this API:</p> <ul> <li> <p>Find cases with similar issues across the domain. For example, search for all cases containing comments about \"product defect\" to identify patterns and existing solutions.</p> </li> <li> <p>Locate all cases associated with specific contacts or orders. For example, find all cases linked to a contactArn to understand the complete customer journey. </p> </li> <li> <p>Monitor SLA compliance across cases. For example, search for all cases with \"Active\" SLA status to prioritize remediation efforts.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>This API returns case identifiers, not complete case objects. To retrieve full case details, you must make additional calls to the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_GetCase.html\">GetCase</a> API for each returned case ID. </p> </li> <li> <p>This API searches across related items content, not case fields. Use the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_SearchCases.html\">SearchCases</a> API to search within case field values.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect endpoints and quotas</a>.</p>",
+      "readonly":true
     },
     "SearchCases":{
       "name":"SearchCases",
@@ -656,7 +672,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Searches for cases within their associated Cases domain. Search results are returned as a paginated list of abridged case documents.</p> <note> <p>For <code>customer_id</code> you must provide the full customer profile ARN in this format: <code> arn:aws:profile:your AWS Region:your AWS account ID:domains/profiles domain name/profiles/profile ID</code>. </p> </note>"
+      "documentation":"<p>Searches for cases within their associated Cases domain. Search results are returned as a paginated list of abridged case documents.</p> <note> <p>For <code>customer_id</code> you must provide the full customer profile ARN in this format: <code> arn:aws:profile:your AWS Region:your AWS account ID:domains/profiles domain name/profiles/profile ID</code>. </p> </note>",
+      "readonly":true
     },
     "SearchRelatedItems":{
       "name":"SearchRelatedItems",
@@ -674,7 +691,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Searches for related items that are associated with a case.</p> <note> <p>If no filters are provided, this returns all related items associated with a case.</p> </note>"
+      "documentation":"<p>Searches for related items that are associated with a case.</p> <note> <p>If no filters are provided, this returns all related items associated with a case.</p> </note>",
+      "readonly":true
     },
     "TagResource":{
       "name":"TagResource",
@@ -745,7 +763,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ConflictException"}
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Updates a case rule. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
       "idempotent":true
@@ -806,7 +825,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ConflictException"}
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Updates the attributes of an existing template. The template attributes that can be modified include <code>name</code>, <code>description</code>, <code>layoutConfiguration</code>, <code>requiredFields</code>, and <code>status</code>. At least one of these attributes must not be null. If a null value is provided for a given attribute, that attribute is ignored and its current value is preserved.</p> <p>Other template APIs are:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateTemplate.html\">CreateTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_DeleteTemplate.html\">DeleteTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_GetTemplate.html\">GetTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_ListTemplates.html\">ListTemplates</a> </p> </li> </ul>",
       "idempotent":true
@@ -989,7 +1009,7 @@
         },
         "caseRules":{
           "shape":"CaseRuleIdentifierList",
-          "documentation":"<p>List of case rule identifiers.</p>"
+          "documentation":"<p>A list of case rule identifiers.</p>"
         }
       }
     },
@@ -1002,11 +1022,15 @@
       "members":{
         "caseRules":{
           "shape":"BatchGetCaseRuleResponseCaseRulesList",
-          "documentation":"<p>List of detailed case rule information.</p>"
+          "documentation":"<p>A list of detailed case rule information.</p>"
         },
         "errors":{
           "shape":"BatchGetCaseRuleResponseErrorsList",
-          "documentation":"<p>List of case rule errors.</p>"
+          "documentation":"<p>A list of case rule errors.</p>"
+        },
+        "unprocessedCaseRules":{
+          "shape":"BatchGetCaseRuleResponseUnprocessedCaseRulesList",
+          "documentation":"<p>A list of unprocessed case rule identifiers.</p>"
         }
       }
     },
@@ -1019,6 +1043,12 @@
     "BatchGetCaseRuleResponseErrorsList":{
       "type":"list",
       "member":{"shape":"CaseRuleError"},
+      "max":50,
+      "min":0
+    },
+    "BatchGetCaseRuleResponseUnprocessedCaseRulesList":{
+      "type":"list",
+      "member":{"shape":"CaseRuleId"},
       "max":50,
       "min":0
     },
@@ -1246,6 +1276,14 @@
         "required":{
           "shape":"RequiredCaseRule",
           "documentation":"<p>Required rule type, used to indicate whether a field is required.</p>"
+        },
+        "fieldOptions":{
+          "shape":"FieldOptionsCaseRule",
+          "documentation":"<p>Which options are available in a child field based on the selected value in a parent field.</p>"
+        },
+        "hidden":{
+          "shape":"HiddenCaseRule",
+          "documentation":"<p>Whether a field is visible, based on values in other fields.</p>"
         }
       },
       "documentation":"<p>Represents what rule type should take place, under what conditions. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
@@ -1385,8 +1423,7 @@
     },
     "CommentFilter":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A filter for related items of type <code>Comment</code>.</p>"
     },
     "ConflictException":{
@@ -1930,8 +1967,7 @@
     },
     "DeleteCaseResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteCaseRuleRequest":{
       "type":"structure",
@@ -1956,8 +1992,7 @@
     },
     "DeleteCaseRuleResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteDomainRequest":{
       "type":"structure",
@@ -1973,8 +2008,7 @@
     },
     "DeleteDomainResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteFieldRequest":{
       "type":"structure",
@@ -1999,8 +2033,7 @@
     },
     "DeleteFieldResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteLayoutRequest":{
       "type":"structure",
@@ -2025,8 +2058,7 @@
     },
     "DeleteLayoutResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteRelatedItemRequest":{
       "type":"structure",
@@ -2058,8 +2090,7 @@
     },
     "DeleteRelatedItemResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteTemplateRequest":{
       "type":"structure",
@@ -2084,8 +2115,7 @@
     },
     "DeleteTemplateResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Deleted":{"type":"boolean"},
     "DomainArn":{
@@ -2145,14 +2175,12 @@
     },
     "EmptyFieldValue":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An empty value. You cannot set <code>EmptyFieldValue</code> on a field that is required on a case template.</p> <p>This structure will never have any data members. It signifies an empty value on a case field.</p>"
     },
     "EmptyOperandValue":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Represents an empty operand value. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
     },
     "EventBridgeConfiguration":{
@@ -2370,6 +2398,25 @@
       "max":100,
       "min":1,
       "pattern":".*[\\S]"
+    },
+    "FieldOptionsCaseRule":{
+      "type":"structure",
+      "required":["parentChildFieldOptionsMappings"],
+      "members":{
+        "parentFieldId":{
+          "shape":"FieldId",
+          "documentation":"<p>The identifier of the parent field that controls options.</p>"
+        },
+        "childFieldId":{
+          "shape":"FieldId",
+          "documentation":"<p>The identifier of the child field whose options are controlled.</p>"
+        },
+        "parentChildFieldOptionsMappings":{
+          "shape":"ParentChildFieldOptionsMappingList",
+          "documentation":"<p>A mapping between a parent field option value and child field option values.</p>"
+        }
+      },
+      "documentation":"<p>Rules that control which options are available in a child field based on the selected value in a parent field.</p>"
     },
     "FieldOptionsList":{
       "type":"list",
@@ -2937,6 +2984,24 @@
         }
       }
     },
+    "HiddenCaseRule":{
+      "type":"structure",
+      "required":[
+        "defaultValue",
+        "conditions"
+      ],
+      "members":{
+        "defaultValue":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the field is hidden when no conditions match.</p>"
+        },
+        "conditions":{
+          "shape":"BooleanConditionList",
+          "documentation":"<p>A list of conditions that determine field visibility.</p>"
+        }
+      },
+      "documentation":"<p>A rule that controls field visibility based on conditions. Fields can be shown or hidden dynamically based on values in other fields.</p>"
+    },
     "IamPrincipalArn":{
       "type":"string",
       "max":500,
@@ -3436,6 +3501,42 @@
         "Desc"
       ]
     },
+    "ParentChildFieldOptionValue":{
+      "type":"string",
+      "max":100,
+      "min":0,
+      "pattern":"$|^.*[\\S]"
+    },
+    "ParentChildFieldOptionsMapping":{
+      "type":"structure",
+      "required":[
+        "parentFieldOptionValue",
+        "childFieldOptionValues"
+      ],
+      "members":{
+        "parentFieldOptionValue":{
+          "shape":"ParentChildFieldOptionValue",
+          "documentation":"<p>The value in the parent field.</p>"
+        },
+        "childFieldOptionValues":{
+          "shape":"ParentChildFieldOptionsMappingChildFieldOptionValuesList",
+          "documentation":"<p>A list of allowed values in the child field.</p>"
+        }
+      },
+      "documentation":"<p>A mapping between a parent field option value and child field option values.</p>"
+    },
+    "ParentChildFieldOptionsMappingChildFieldOptionValuesList":{
+      "type":"list",
+      "member":{"shape":"ParentChildFieldOptionValue"},
+      "max":1500,
+      "min":0
+    },
+    "ParentChildFieldOptionsMappingList":{
+      "type":"list",
+      "member":{"shape":"ParentChildFieldOptionsMapping"},
+      "max":200,
+      "min":1
+    },
     "PutCaseEventConfigurationRequest":{
       "type":"structure",
       "required":[
@@ -3457,8 +3558,7 @@
     },
     "PutCaseEventConfigurationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "RelatedItemArn":{
       "type":"string",
@@ -3647,7 +3747,11 @@
     },
     "RuleType":{
       "type":"string",
-      "enum":["Required"]
+      "enum":[
+        "Required",
+        "Hidden",
+        "FieldOptions"
+      ]
     },
     "SearchAllRelatedItemsRequest":{
       "type":"structure",
@@ -4250,10 +4354,7 @@
     },
     "TemplateRule":{
       "type":"structure",
-      "required":[
-        "caseRuleId",
-        "fieldId"
-      ],
+      "required":["caseRuleId"],
       "members":{
         "caseRuleId":{
           "shape":"CaseRuleId",
@@ -4377,8 +4478,7 @@
     },
     "UpdateCaseResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateCaseRuleRequest":{
       "type":"structure",
@@ -4415,8 +4515,7 @@
     },
     "UpdateCaseRuleResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateFieldRequest":{
       "type":"structure",
@@ -4449,8 +4548,7 @@
     },
     "UpdateFieldResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateLayoutRequest":{
       "type":"structure",
@@ -4483,8 +4581,7 @@
     },
     "UpdateLayoutResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateTemplateRequest":{
       "type":"structure",
@@ -4533,8 +4630,7 @@
     },
     "UpdateTemplateResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UserArn":{
       "type":"string",

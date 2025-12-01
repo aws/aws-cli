@@ -108,7 +108,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns information about a service discovered by Application Signals.</p>"
+      "documentation":"<p>Returns information about a service discovered by Application Signals.</p>",
+      "readonly":true
     },
     "GetServiceLevelObjective":{
       "name":"GetServiceLevelObjective",
@@ -124,7 +125,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns information about one SLO created in the account. </p>"
+      "documentation":"<p>Returns information about one SLO created in the account. </p>",
+      "readonly":true
     },
     "ListAuditFindings":{
       "name":"ListAuditFindings",
@@ -139,7 +141,24 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns a list of audit findings that provide automated analysis of service behavior and root cause analysis. These findings help identify the most significant observations about your services, including performance issues, anomalies, and potential problems. The findings are generated using heuristic algorithms based on established troubleshooting patterns.</p>"
+      "documentation":"<p>Returns a list of audit findings that provide automated analysis of service behavior and root cause analysis. These findings help identify the most significant observations about your services, including performance issues, anomalies, and potential problems. The findings are generated using heuristic algorithms based on established troubleshooting patterns.</p>",
+      "readonly":true
+    },
+    "ListEntityEvents":{
+      "name":"ListEntityEvents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/events",
+        "responseCode":200
+      },
+      "input":{"shape":"ListEntityEventsInput"},
+      "output":{"shape":"ListEntityEventsOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a list of change events for a specific entity, such as deployments, configuration changes, or other state-changing activities. This operation helps track the history of changes that may have affected service performance.</p>",
+      "readonly":true
     },
     "ListGroupingAttributeDefinitions":{
       "name":"ListGroupingAttributeDefinitions",
@@ -155,7 +174,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Returns the current grouping configuration for this account, including all custom grouping attribute definitions that have been configured. These definitions determine how services are logically grouped based on telemetry attributes, Amazon Web Services tags, or predefined mappings.</p>"
+      "documentation":"<p>Returns the current grouping configuration for this account, including all custom grouping attribute definitions that have been configured. These definitions determine how services are logically grouped based on telemetry attributes, Amazon Web Services tags, or predefined mappings.</p>",
+      "readonly":true
     },
     "ListServiceDependencies":{
       "name":"ListServiceDependencies",
@@ -170,7 +190,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns a list of service dependencies of the service that you specify. A dependency is an infrastructure component that an operation of this service connects with. Dependencies can include Amazon Web Services services, Amazon Web Services resources, and third-party services. </p>"
+      "documentation":"<p>Returns a list of service dependencies of the service that you specify. A dependency is an infrastructure component that an operation of this service connects with. Dependencies can include Amazon Web Services services, Amazon Web Services resources, and third-party services. </p>",
+      "readonly":true
     },
     "ListServiceDependents":{
       "name":"ListServiceDependents",
@@ -185,7 +206,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns the list of dependents that invoked the specified service during the provided time range. Dependents include other services, CloudWatch Synthetics canaries, and clients that are instrumented with CloudWatch RUM app monitors.</p>"
+      "documentation":"<p>Returns the list of dependents that invoked the specified service during the provided time range. Dependents include other services, CloudWatch Synthetics canaries, and clients that are instrumented with CloudWatch RUM app monitors.</p>",
+      "readonly":true
     },
     "ListServiceLevelObjectiveExclusionWindows":{
       "name":"ListServiceLevelObjectiveExclusionWindows",
@@ -201,7 +223,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves all exclusion windows configured for a specific SLO.</p>"
+      "documentation":"<p>Retrieves all exclusion windows configured for a specific SLO.</p>",
+      "readonly":true
     },
     "ListServiceLevelObjectives":{
       "name":"ListServiceLevelObjectives",
@@ -216,7 +239,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns a list of SLOs created in this account.</p>"
+      "documentation":"<p>Returns a list of SLOs created in this account.</p>",
+      "readonly":true
     },
     "ListServiceOperations":{
       "name":"ListServiceOperations",
@@ -231,7 +255,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns a list of the <i>operations</i> of this service that have been discovered by Application Signals. Only the operations that were invoked during the specified time range are returned.</p>"
+      "documentation":"<p>Returns a list of the <i>operations</i> of this service that have been discovered by Application Signals. Only the operations that were invoked during the specified time range are returned.</p>",
+      "readonly":true
     },
     "ListServiceStates":{
       "name":"ListServiceStates",
@@ -261,7 +286,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns a list of services that have been discovered by Application Signals. A service represents a minimum logical and transactional unit that completes a business function. Services are discovered through Application Signals instrumentation.</p>"
+      "documentation":"<p>Returns a list of services that have been discovered by Application Signals. A service represents a minimum logical and transactional unit that completes a business function. Services are discovered through Application Signals instrumentation.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -276,7 +302,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Displays the tags associated with a CloudWatch resource. Tags can be assigned to service level objectives.</p>"
+      "documentation":"<p>Displays the tags associated with a CloudWatch resource. Tags can be assigned to service level objectives.</p>",
+      "readonly":true
     },
     "PutGroupingConfiguration":{
       "name":"PutGroupingConfiguration",
@@ -309,7 +336,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Enables this Amazon Web Services account to be able to use CloudWatch Application Signals by creating the <i>AWSServiceRoleForCloudWatchApplicationSignals</i> service-linked role. This service- linked role has the following permissions:</p> <ul> <li> <p> <code>xray:GetServiceGraph</code> </p> </li> <li> <p> <code>logs:StartQuery</code> </p> </li> <li> <p> <code>logs:GetQueryResults</code> </p> </li> <li> <p> <code>cloudwatch:GetMetricData</code> </p> </li> <li> <p> <code>cloudwatch:ListMetrics</code> </p> </li> <li> <p> <code>tag:GetResources</code> </p> </li> <li> <p> <code>autoscaling:DescribeAutoScalingGroups</code> </p> </li> </ul> <p>After completing this step, you still need to instrument your Java and Python applications to send data to Application Signals. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable.html\"> Enabling Application Signals</a>.</p>"
+      "documentation":"<p>Enables this Amazon Web Services account to be able to use CloudWatch Application Signals by creating the <i>AWSServiceRoleForCloudWatchApplicationSignals</i> service-linked role. This service- linked role has the following permissions:</p> <ul> <li> <p> <code>xray:GetServiceGraph</code> </p> </li> <li> <p> <code>logs:StartQuery</code> </p> </li> <li> <p> <code>logs:GetQueryResults</code> </p> </li> <li> <p> <code>cloudwatch:GetMetricData</code> </p> </li> <li> <p> <code>cloudwatch:ListMetrics</code> </p> </li> <li> <p> <code>tag:GetResources</code> </p> </li> <li> <p> <code>autoscaling:DescribeAutoScalingGroups</code> </p> </li> </ul> <p>A service-linked CloudTrail event channel is created to process CloudTrail events and return change event information. This includes last deployment time, userName, eventName, and other event metadata.</p> <p>After completing this step, you still need to instrument your Java and Python applications to send data to Application Signals. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Application-Signals-Enable.html\"> Enabling Application Signals</a>.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -490,14 +517,14 @@
       "members":{
         "Type":{
           "shape":"String",
-          "documentation":"<p>The type of entity being audited, such as <code>Service</code>, <code>SLO</code>, or <code>ServiceOperation</code>.</p>"
+          "documentation":"<p>The type of entity being audited, such as <code>service</code>, <code>SLO</code>, <code>service_operation</code>, or <code>canary</code>. </p>"
         },
         "Data":{
           "shape":"AuditTargetEntity",
           "documentation":"<p>The specific data identifying the audit target entity.</p>"
         }
       },
-      "documentation":"<p>A structure that specifies the target entity for audit analysis, such as a <code>service</code>, <code>SLO</code>, or <code>service_operation</code>.</p>"
+      "documentation":"<p>A structure that specifies the target entity for audit analysis, such as a <code>service</code>, <code>SLO</code>, <code>service_operation</code>, or <code>canary</code>.</p>"
     },
     "AuditTargetEntity":{
       "type":"structure",
@@ -513,6 +540,10 @@
         "ServiceOperation":{
           "shape":"ServiceOperationEntity",
           "documentation":"<p>Service operation entity information when the audit target is a specific service operation.</p>"
+        },
+        "Canary":{
+          "shape":"CanaryEntity",
+          "documentation":"<p>Canary entity information when the audit target is a CloudWatch Synthetics canary.</p>"
         }
       },
       "documentation":"<p>A union structure that contains the specific entity information for different types of audit targets.</p>",
@@ -535,12 +566,16 @@
           "shape":"AuditorResultDescriptionString",
           "documentation":"<p>A detailed description of the audit finding, explaining what was observed and potential implications.</p>"
         },
+        "Data":{
+          "shape":"DataMap",
+          "documentation":"<p>This is a string-to-string map. It contains additional data about the result of an automated audit analysis.</p>"
+        },
         "Severity":{
           "shape":"Severity",
           "documentation":"<p>The severity level of this audit finding, indicating the importance and potential impact of the issue.</p>"
         }
       },
-      "documentation":"<p>A structure that contains the result of an automated audit analysis, including the auditor name, description of findings, and severity level.</p>"
+      "documentation":"<p>A structure that contains the result of an automated audit analysis, including the auditor name, description of findings, additional data, and severity level.</p>"
     },
     "AuditorResultDescriptionString":{
       "type":"string",
@@ -727,6 +762,17 @@
       "box":true,
       "min":1
     },
+    "CanaryEntity":{
+      "type":"structure",
+      "required":["CanaryName"],
+      "members":{
+        "CanaryName":{
+          "shape":"String",
+          "documentation":"<p>The name of the CloudWatch Synthetics canary.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains identifying information for a CloudWatch Synthetics canary entity used in audit targeting.</p>"
+    },
     "ChangeEvent":{
       "type":"structure",
       "required":[
@@ -752,7 +798,7 @@
         },
         "Entity":{
           "shape":"Attributes",
-          "documentation":"<p>The entity (service or resource) that was affected by this change event, including its key attributes.</p>"
+          "documentation":"<p>The entity (service or resource) that was affected by this change event, including its key attributes.</p> <p>This is a string-to-string map. It can include the following fields.</p> <ul> <li> <p> <code>Type</code> designates the type of object this is.</p> </li> <li> <p> <code>ResourceType</code> specifies the type of the resource. This field is used only when the value of the <code>Type</code> field is <code>Resource</code> or <code>AWS::Resource</code>.</p> </li> <li> <p> <code>Name</code> specifies the name of the object. This is used only if the value of the <code>Type</code> field is <code>Service</code>, <code>RemoteService</code>, or <code>AWS::Service</code>.</p> </li> <li> <p> <code>Identifier</code> identifies the resource objects of this resource. This is used only if the value of the <code>Type</code> field is <code>Resource</code> or <code>AWS::Resource</code>.</p> </li> <li> <p> <code>Environment</code> specifies the location where this object is hosted, or what it belongs to.</p> </li> <li> <p> <code>AwsAccountId</code> specifies the account where this object is in.</p> </li> </ul> <p>Below is an example of a service.</p> <p> <code>{ \"Type\": \"Service\", \"Name\": \"visits-service\", \"Environment\": \"petclinic-test\" }</code> </p> <p>Below is an example of a resource.</p> <p> <code>{ \"Type\": \"AWS::Resource\", \"ResourceType\": \"AWS::DynamoDB::Table\", \"Identifier\": \"Customers\" }</code> </p>"
         },
         "ChangeEventType":{
           "shape":"ChangeEventType",
@@ -760,7 +806,7 @@
         },
         "EventId":{
           "shape":"String",
-          "documentation":"<p>A unique identifier for this change event.</p>"
+          "documentation":"<p>A unique identifier for this change event. For CloudTrail-based events, this is the CloudTrail event id. For other events, this will be <code>Unknown</code>.</p>"
         },
         "UserName":{
           "shape":"String",
@@ -775,7 +821,16 @@
     },
     "ChangeEventType":{
       "type":"string",
-      "enum":["DEPLOYMENT"]
+      "enum":[
+        "DEPLOYMENT",
+        "CONFIGURATION"
+      ]
+    },
+    "ChangeEvents":{
+      "type":"list",
+      "member":{"shape":"ChangeEvent"},
+      "max":250,
+      "min":0
     },
     "ConflictException":{
       "type":"structure",
@@ -841,6 +896,11 @@
         }
       }
     },
+    "DataMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"String"}
+    },
     "DeleteGroupingConfigurationOutput":{
       "type":"structure",
       "members":{}
@@ -892,6 +952,13 @@
         }
       },
       "documentation":"<p>A structure that represents the dependency relationships relevant to an audit finding, containing nodes and edges that show how services and resources are connected.</p>"
+    },
+    "DetailLevel":{
+      "type":"string",
+      "enum":[
+        "BRIEF",
+        "DETAILED"
+      ]
     },
     "Dimension":{
       "type":"structure",
@@ -1242,11 +1309,15 @@
         },
         "Auditors":{
           "shape":"Auditors",
-          "documentation":"<p>A list of auditor names to filter the findings by. Only findings generated by the specified auditors will be returned.</p> <p>The following auditors are available for configuration:</p> <ul> <li> <p> <code>slo</code> - SloAuditor: Identifies SLO violations and detects breached thresholds during the Assessment phase.</p> </li> <li> <p> <code>operation_metric</code> - OperationMetricAuditor: Detects anomalies in service operation metrics from Application Signals RED metrics during the Assessment phase</p> </li> <li> <p> <code>service_quota</code> - ServiceQuotaAuditor: Monitors resource utilization against service quotas during the Assessment phase</p> </li> <li> <p> <code>trace</code> - TraceAuditor: Performs deep-dive analysis of distributed traces, correlating traces with breached SLOs or abnormal RED metrics during the Analysis phase</p> </li> <li> <p> <code>dependency_metric</code> - CriticalPathAuditor: Analyzes service dependency impacts and maps dependency relationships from Application Signals RED metrics during the Analysis phase</p> </li> <li> <p> <code>top_contributor</code> - TopContributorAuditor: Identifies infrastructure-level contributors to issues by analyzing EMF logs of Application Signals RED metrics during the Analysis phase</p> </li> <li> <p> <code>log</code> - LogAuditor: Extracts insights from application logs, categorizing error types and ranking severity by frequency during the Analysis phase</p> </li> </ul> <note> <p> <code>InitAuditor</code> and <code>Summarizer</code> auditors are not configurable as they are automatically triggered during the audit process.</p> </note>"
+          "documentation":"<p>A list of auditor names to filter the findings by. Only findings generated by the specified auditors will be returned.</p> <p>The following auditors are available for configuration:</p> <ul> <li> <p> <code>slo</code> - SloAuditor: Identifies SLO violations and detects breached thresholds during the Assessment phase.</p> </li> <li> <p> <code>operation_metric</code> - OperationMetricAuditor: Detects anomalies in service operation metrics from Application Signals RED metrics during the Assessment phase</p> <note> <p>Anomaly detection is not supported for sparse metrics (those missing more than 80% of datapoints within the given time period).</p> </note> </li> <li> <p> <code>service_quota</code> - ServiceQuotaAuditor: Monitors resource utilization against service quotas during the Assessment phase</p> </li> <li> <p> <code>trace</code> - TraceAuditor: Performs deep-dive analysis of distributed traces, correlating traces with breached SLOs or abnormal RED metrics during the Analysis phase</p> </li> <li> <p> <code>dependency_metric</code> - CriticalPathAuditor: Analyzes service dependency impacts and maps dependency relationships from Application Signals RED metrics during the Analysis phase</p> </li> <li> <p> <code>top_contributor</code> - TopContributorAuditor: Identifies infrastructure-level contributors to issues by analyzing EMF logs of Application Signals RED metrics during the Analysis phase</p> </li> <li> <p> <code>log</code> - LogAuditor: Extracts insights from application logs, categorizing error types and ranking severity by frequency during the Analysis phase</p> </li> </ul> <note> <p> <code>InitAuditor</code> and <code>Summarizer</code> auditors are not configurable as they are automatically triggered during the audit process.</p> </note>"
         },
         "AuditTargets":{
           "shape":"AuditTargets",
           "documentation":"<p>A list of audit targets to filter the findings by. You can specify services, SLOs, or service operations to limit the audit findings to specific entities.</p>"
+        },
+        "DetailLevel":{
+          "shape":"DetailLevel",
+          "documentation":"<p>The level of details of the audit findings. Supported values: <code>BRIEF</code>, <code>DETAILED</code>.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -1262,6 +1333,14 @@
       "type":"structure",
       "required":["AuditFindings"],
       "members":{
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start of the time period that the returned audit findings apply to. When used in a raw HTTP Query API, it is formatted as epoch time in seconds. For example, <code>1698778057</code> </p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end of the time period that the returned audit findings apply to. When used in a raw HTTP Query API, it is formatted as epoch time in seconds. For example, <code>1698778057</code> </p>"
+        },
         "AuditFindings":{
           "shape":"AuditFindings",
           "documentation":"<p>An array of structures, where each structure contains information about one audit finding, including the auditor results, severity, and associated metric and dependency graphs.</p>"
@@ -1269,6 +1348,72 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>Include this value in your next use of this API to get the next set of audit findings.</p>"
+        }
+      }
+    },
+    "ListEntityEventsInput":{
+      "type":"structure",
+      "required":[
+        "Entity",
+        "StartTime",
+        "EndTime"
+      ],
+      "members":{
+        "Entity":{
+          "shape":"Attributes",
+          "documentation":"<p>The entity for which to retrieve change events. This specifies the service, resource, or other entity whose event history you want to examine.</p> <p>This is a string-to-string map. It can include the following fields.</p> <ul> <li> <p> <code>Type</code> designates the type of object this is.</p> </li> <li> <p> <code>ResourceType</code> specifies the type of the resource. This field is used only when the value of the <code>Type</code> field is <code>Resource</code> or <code>AWS::Resource</code>.</p> </li> <li> <p> <code>Name</code> specifies the name of the object. This is used only if the value of the <code>Type</code> field is <code>Service</code>, <code>RemoteService</code>, or <code>AWS::Service</code>.</p> </li> <li> <p> <code>Identifier</code> identifies the resource objects of this resource. This is used only if the value of the <code>Type</code> field is <code>Resource</code> or <code>AWS::Resource</code>.</p> </li> <li> <p> <code>Environment</code> specifies the location where this object is hosted, or what it belongs to.</p> </li> <li> <p> <code>AwsAccountId</code> specifies the account where this object is in.</p> </li> </ul> <p>Below is an example of a service.</p> <p> <code>{ \"Type\": \"Service\", \"Name\": \"visits-service\", \"Environment\": \"petclinic-test\" }</code> </p> <p>Below is an example of a resource.</p> <p> <code>{ \"Type\": \"AWS::Resource\", \"ResourceType\": \"AWS::DynamoDB::Table\", \"Identifier\": \"Customers\" }</code> </p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start of the time period to retrieve change events for. When used in a raw HTTP Query API, it is formatted as epoch time in seconds. For example: <code>1698778057</code> </p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end of the time period to retrieve change events for. When used in a raw HTTP Query API, it is formatted as epoch time in seconds. For example: <code>1698778057</code> </p>"
+        },
+        "MaxResults":{
+          "shape":"ListEntityEventsMaxResults",
+          "documentation":"<p>The maximum number of change events to return in one operation. If you omit this parameter, the default of 50 is used.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Include this value, if it was returned by the previous operation, to get the next set of change events.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListEntityEventsMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":250,
+      "min":1
+    },
+    "ListEntityEventsOutput":{
+      "type":"structure",
+      "required":[
+        "StartTime",
+        "EndTime",
+        "ChangeEvents"
+      ],
+      "members":{
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start of the time period that the returned change events apply to. When used in a raw HTTP Query API, it is formatted as epoch time in seconds. For example: <code>1698778057</code> </p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end of the time period that the returned change events apply to. When used in a raw HTTP Query API, it is formatted as epoch time in seconds. For example: <code>1698778057</code> </p>"
+        },
+        "ChangeEvents":{
+          "shape":"ChangeEvents",
+          "documentation":"<p>An array of structures, where each structure contains information about one change event that occurred for the specified entity during the requested time period.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Include this value in your next use of this API to get the next set of change events.</p>"
         }
       }
     },
@@ -1280,6 +1425,18 @@
           "documentation":"<p>Include this value, if it was returned by the previous operation, to get the next set of grouping attribute definitions.</p>",
           "location":"querystring",
           "locationName":"NextToken"
+        },
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The Amazon Web Services account ID to retrieve grouping attribute definitions for. Use this when accessing grouping configurations from a different account in cross-account monitoring scenarios.</p>",
+          "location":"querystring",
+          "locationName":"AwsAccountId"
+        },
+        "IncludeLinkedAccounts":{
+          "shape":"Boolean",
+          "documentation":"<p>If you are using this operation in a monitoring account, specify <code>true</code> to include grouping attributes from source accounts in the returned data.</p>",
+          "location":"querystring",
+          "locationName":"IncludeLinkedAccounts"
         }
       }
     },
@@ -2578,7 +2735,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:aws:application-signals:[^:]*:[^:]*:slo/[0-9A-Za-z][-._0-9A-Za-z ]{0,126}[0-9A-Za-z]"
+      "pattern":"arn:(aws|aws-us-gov):application-signals:[^:]*:[^:]*:slo/[0-9A-Za-z][-._0-9A-Za-z ]{0,126}[0-9A-Za-z]"
     },
     "ServiceLevelObjectiveBudgetReport":{
       "type":"structure",
@@ -2705,7 +2862,7 @@
     },
     "ServiceLevelObjectiveId":{
       "type":"string",
-      "pattern":"[0-9A-Za-z][-._0-9A-Za-z ]{0,126}[0-9A-Za-z]$|^arn:aws:application-signals:[^:]*:[^:]*:slo/[0-9A-Za-z][-._0-9A-Za-z ]{0,126}[0-9A-Za-z]"
+      "pattern":"[0-9A-Za-z][-._0-9A-Za-z ]{0,126}[0-9A-Za-z]$|^arn:(aws|aws-us-gov):application-signals:[^:]*:[^:]*:slo/[0-9A-Za-z][-._0-9A-Za-z ]{0,126}[0-9A-Za-z]"
     },
     "ServiceLevelObjectiveIds":{
       "type":"list",

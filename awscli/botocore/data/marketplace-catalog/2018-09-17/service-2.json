@@ -1230,7 +1230,11 @@
           "shape":"ResaleAuthorizationSummary",
           "documentation":"<p>An object that contains summary information about the Resale Authorization.</p>"
         },
-        "MachineLearningProductSummary":{"shape":"MachineLearningProductSummary"}
+        "MachineLearningProductSummary":{"shape":"MachineLearningProductSummary"},
+        "OfferSetSummary":{
+          "shape":"OfferSetSummary",
+          "documentation":"<p>An object that contains summary information about the offer set.</p>"
+        }
       },
       "documentation":"<p>This object is a container for common summary information about the entity. The summary doesn't contain the whole entity structure, but it does contain information common across all entities.</p>"
     },
@@ -1271,7 +1275,11 @@
           "shape":"ResaleAuthorizationFilters",
           "documentation":"<p>A filter for Resale Authorizations.</p>"
         },
-        "MachineLearningProductFilters":{"shape":"MachineLearningProductFilters"}
+        "MachineLearningProductFilters":{"shape":"MachineLearningProductFilters"},
+        "OfferSetFilters":{
+          "shape":"OfferSetFilters",
+          "documentation":"<p>A filter for offer sets.</p>"
+        }
       },
       "documentation":"<p>Object containing all the filter fields per entity type.</p>",
       "union":true
@@ -1303,7 +1311,11 @@
           "shape":"ResaleAuthorizationSort",
           "documentation":"<p>A sort for Resale Authorizations.</p>"
         },
-        "MachineLearningProductSort":{"shape":"MachineLearningProductSort"}
+        "MachineLearningProductSort":{"shape":"MachineLearningProductSort"},
+        "OfferSetSort":{
+          "shape":"OfferSetSort",
+          "documentation":"<p>A sort for offer sets.</p>"
+        }
       },
       "documentation":"<p>Object containing all the sort fields per entity type.</p>",
       "union":true
@@ -1501,7 +1513,7 @@
         },
         "EntityType":{
           "shape":"EntityType",
-          "documentation":"<p>The type of entities to retrieve. Valid values are: <code>AmiProduct</code>, <code>ContainerProduct</code>, <code>DataProduct</code>, <code>SaaSProduct</code>, <code>ProcurementPolicy</code>, <code>Experience</code>, <code>Audience</code>, <code>BrandingSettings</code>, <code>Offer</code>, <code>Seller</code>, <code>ResaleAuthorization</code>.</p>"
+          "documentation":"<p>The type of entities to retrieve. Valid values are: <code>AmiProduct</code>, <code>ContainerProduct</code>, <code>DataProduct</code>, <code>SaaSProduct</code>, <code>ProcurementPolicy</code>, <code>Experience</code>, <code>Audience</code>, <code>BrandingSettings</code>, <code>Offer</code>, <code>OfferSet</code>, <code>Seller</code>, <code>ResaleAuthorization</code>, <code>Solution</code>.</p>"
         },
         "FilterList":{
           "shape":"FilterList",
@@ -1854,6 +1866,10 @@
         "LastModifiedDate":{
           "shape":"OfferLastModifiedDateFilter",
           "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of an offer.</p>"
+        },
+        "OfferSetId":{
+          "shape":"OfferSetIdFilter",
+          "documentation":"<p>Allows filtering on the <code>OfferSetId</code> of an offer.</p>"
         }
       },
       "documentation":"<p>Object containing all the filter fields for offers entity. Client can add only one wildcard filter and a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
@@ -1976,6 +1992,278 @@
       "min":1,
       "pattern":"^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
     },
+    "OfferSetAssociatedOfferIdsFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"OfferSetAssociatedOfferIdsFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>AssociatedOfferIds</code> of an offer set with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>AssociatedOfferIds</code> of an offer set.</p>"
+    },
+    "OfferSetAssociatedOfferIdsFilterValueList":{
+      "type":"list",
+      "member":{"shape":"OfferSetAssociatedOfferIdsString"},
+      "max":10,
+      "min":1
+    },
+    "OfferSetAssociatedOfferIdsList":{
+      "type":"list",
+      "member":{"shape":"OfferSetAssociatedOfferIdsString"},
+      "max":10,
+      "min":0
+    },
+    "OfferSetAssociatedOfferIdsString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+    },
+    "OfferSetEntityIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"OfferSetEntityIdFilterValueList",
+          "documentation":"<p>Allows filtering on entity id of an offer set with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the entity id of an offer set.</p>"
+    },
+    "OfferSetEntityIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"OfferSetEntityIdString"},
+      "max":10,
+      "min":1
+    },
+    "OfferSetEntityIdString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^offerset-[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+    },
+    "OfferSetFilters":{
+      "type":"structure",
+      "members":{
+        "EntityId":{
+          "shape":"OfferSetEntityIdFilter",
+          "documentation":"<p>Allows filtering on <code>EntityId</code> of an offer set.</p>"
+        },
+        "Name":{
+          "shape":"OfferSetNameFilter",
+          "documentation":"<p>Allows filtering on the <code>Name</code> of an offer set.</p>"
+        },
+        "State":{
+          "shape":"OfferSetStateFilter",
+          "documentation":"<p>Allows filtering on the <code>State</code> of an offer set.</p>"
+        },
+        "ReleaseDate":{
+          "shape":"OfferSetReleaseDateFilter",
+          "documentation":"<p>Allows filtering on the <code>ReleaseDate</code> of an offer set.</p>"
+        },
+        "AssociatedOfferIds":{
+          "shape":"OfferSetAssociatedOfferIdsFilter",
+          "documentation":"<p>Allows filtering on the <code>AssociatedOfferIds</code> of an offer set.</p>"
+        },
+        "SolutionId":{
+          "shape":"OfferSetSolutionIdFilter",
+          "documentation":"<p>Allows filtering on the <code>SolutionId</code> of an offer set.</p>"
+        },
+        "LastModifiedDate":{
+          "shape":"OfferSetLastModifiedDateFilter",
+          "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of an offer set.</p>"
+        }
+      },
+      "documentation":"<p>Object containing all the filter fields for offer sets entity. Client can add a maximum of 8 filters in a single <code>ListEntities</code> request.</p>"
+    },
+    "OfferSetIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"OfferSetIdFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>OfferSetId</code> of an offer.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>OfferSetId</code> of an offer.</p>"
+    },
+    "OfferSetIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"OfferSetIdString"},
+      "max":10,
+      "min":1
+    },
+    "OfferSetIdString":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"^offerset-[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+    },
+    "OfferSetLastModifiedDateFilter":{
+      "type":"structure",
+      "members":{
+        "DateRange":{
+          "shape":"OfferSetLastModifiedDateFilterDateRange",
+          "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of an offer set with date range as input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of an offer set.</p>"
+    },
+    "OfferSetLastModifiedDateFilterDateRange":{
+      "type":"structure",
+      "members":{
+        "AfterValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of an offer set after a date.</p>"
+        },
+        "BeforeValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of an offer set before a date.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>LastModifiedDate</code> of an offer set with date range as input.</p>"
+    },
+    "OfferSetNameFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"OfferSetNameFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>Name</code> of an offer set with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>Name</code> of an offer set.</p>"
+    },
+    "OfferSetNameFilterValueList":{
+      "type":"list",
+      "member":{"shape":"OfferSetNameString"},
+      "max":10,
+      "min":1
+    },
+    "OfferSetNameString":{
+      "type":"string",
+      "max":150,
+      "min":1,
+      "pattern":"^(.)+$"
+    },
+    "OfferSetReleaseDateFilter":{
+      "type":"structure",
+      "members":{
+        "DateRange":{
+          "shape":"OfferSetReleaseDateFilterDateRange",
+          "documentation":"<p>Allows filtering on the <code>ReleaseDate</code> of an offer set with date range as input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>ReleaseDate</code> of an offer set.</p>"
+    },
+    "OfferSetReleaseDateFilterDateRange":{
+      "type":"structure",
+      "members":{
+        "AfterValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Allows filtering on the <code>ReleaseDate</code> of offer set after a date.</p>"
+        },
+        "BeforeValue":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>Allows filtering on the <code>ReleaseDate</code> of offer set before a date.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>ReleaseDate</code> of an offer set with date range as input.</p>"
+    },
+    "OfferSetSolutionIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"OfferSetSolutionIdFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>SolutionId</code> of an offer set with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>SolutionId</code> of an offer set.</p>"
+    },
+    "OfferSetSolutionIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"OfferSetSolutionIdString"},
+      "max":10,
+      "min":1
+    },
+    "OfferSetSolutionIdString":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
+    },
+    "OfferSetSort":{
+      "type":"structure",
+      "members":{
+        "SortBy":{
+          "shape":"OfferSetSortBy",
+          "documentation":"<p>Allows to sort offer sets.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Allows to sort offer sets.</p>"
+        }
+      },
+      "documentation":"<p>Allows to sort offer sets.</p>"
+    },
+    "OfferSetSortBy":{
+      "type":"string",
+      "enum":[
+        "Name",
+        "State",
+        "ReleaseDate",
+        "SolutionId",
+        "EntityId",
+        "LastModifiedDate"
+      ]
+    },
+    "OfferSetStateFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"OfferSetStateFilterValueList",
+          "documentation":"<p>Allows filtering on the <code>State</code> of an offer set with list input.</p>"
+        }
+      },
+      "documentation":"<p>Allows filtering on the <code>State</code> of an offer set.</p>"
+    },
+    "OfferSetStateFilterValueList":{
+      "type":"list",
+      "member":{"shape":"OfferSetStateString"},
+      "max":2,
+      "min":1
+    },
+    "OfferSetStateString":{
+      "type":"string",
+      "enum":[
+        "Draft",
+        "Released"
+      ]
+    },
+    "OfferSetSummary":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"OfferSetNameString",
+          "documentation":"<p>The name of the offer set.</p>"
+        },
+        "State":{
+          "shape":"OfferSetStateString",
+          "documentation":"<p>The state of the offer set.</p>"
+        },
+        "ReleaseDate":{
+          "shape":"DateTimeISO8601",
+          "documentation":"<p>The release date of the offer set.</p>"
+        },
+        "AssociatedOfferIds":{
+          "shape":"OfferSetAssociatedOfferIdsList",
+          "documentation":"<p>The list of offer IDs associated with the offer set.</p>"
+        },
+        "SolutionId":{
+          "shape":"OfferSetSolutionIdString",
+          "documentation":"<p>The solution ID associated with the offer set.</p>"
+        }
+      },
+      "documentation":"<p>Summarized information about an offer set.</p>"
+    },
     "OfferSort":{
       "type":"structure",
       "members":{
@@ -2002,7 +2290,8 @@
         "BuyerAccounts",
         "State",
         "Targeting",
-        "LastModifiedDate"
+        "LastModifiedDate",
+        "OfferSetId"
       ]
     },
     "OfferStateFilter":{
@@ -2062,6 +2351,10 @@
         "Targeting":{
           "shape":"OfferTargetingList",
           "documentation":"<p>The targeting in the offer.</p>"
+        },
+        "OfferSetId":{
+          "shape":"OfferSetIdString",
+          "documentation":"<p>The offer set ID of the offer.</p>"
         }
       },
       "documentation":"<p>Summarized information about an offer.</p>"

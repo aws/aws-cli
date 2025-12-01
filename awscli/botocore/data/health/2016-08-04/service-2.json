@@ -255,7 +255,7 @@
         },
         "statusCode":{
           "shape":"entityStatusCode",
-          "documentation":"<p>The most recent status of the entity affected by the event. The possible values are <code>IMPAIRED</code>, <code>UNIMPAIRED</code>, and <code>UNKNOWN</code>.</p>"
+          "documentation":"<p>The most recent status of the entity affected by the event. The possible values are <code>IMPAIRED</code>, <code>UNIMPAIRED</code>, <code>UNKNOWN</code>, <code>PENDING</code>, and <code>RESOLVED</code>.</p>"
         },
         "tags":{
           "shape":"tagSet",
@@ -787,6 +787,14 @@
         "eventScopeCode":{
           "shape":"eventScopeCode",
           "documentation":"<p>This parameter specifies if the Health event is a public Amazon Web Services service event or an account-specific event.</p> <ul> <li> <p>If the <code>eventScopeCode</code> value is <code>PUBLIC</code>, then the <code>affectedAccounts</code> value is always empty.</p> </li> <li> <p>If the <code>eventScopeCode</code> value is <code>ACCOUNT_SPECIFIC</code>, then the <code>affectedAccounts</code> value lists the affected Amazon Web Services accounts in your organization. For example, if an event affects a service such as Amazon Elastic Compute Cloud and you have Amazon Web Services accounts that use that service, those account IDs appear in the response.</p> </li> <li> <p>If the <code>eventScopeCode</code> value is <code>NONE</code>, then the <code>eventArn</code> that you specified in the request is invalid or doesn't exist.</p> </li> </ul>"
+        },
+        "actionability":{
+          "shape":"EventActionability",
+          "documentation":"<p>The actionability classification of the event. Possible values are <code>ACTION_REQUIRED</code>, <code>ACTION_MAY_BE_REQUIRED</code> and <code>INFORMATIONAL</code>. Events with <code>ACTION_REQUIRED</code> actionability require customer action to resolve or mitigate the event. Events with <code>ACTION_MAY_BE_REQUIRED</code> actionability indicates that the current status is unknown or conditional and inspection is needed to determine if action is required. Events with <code>INFORMATIONAL</code> actionability are provided for awareness and do not require immediate action.</p>"
+        },
+        "personas":{
+          "shape":"EventPersonaList",
+          "documentation":"<p>A list of persona classifications that indicate the target audience for the event. Possible values are <code>OPERATIONS</code>, <code>SECURITY</code>, and <code>BILLING</code>. Events can be associated with multiple personas to indicate relevance to different teams or roles within an organization.</p>"
         }
       },
       "documentation":"<p>Summary information about an Health event.</p> <p>Health events can be public or account-specific:</p> <ul> <li> <p> <i>Public events</i> might be service events that are not specific to an Amazon Web Services account. For example, if there is an issue with an Amazon Web Services Region, Health provides information about the event, even if you don't use services or resources in that Region.</p> </li> <li> <p> <i>Account-specific</i> events are specific to either your Amazon Web Services account or an account in your organization. For example, if there's an issue with Amazon Elastic Compute Cloud in a Region that you use, Health provides information about the event and the affected resources in the account.</p> </li> </ul> <p>You can determine if an event is public or account-specific by using the <code>eventScopeCode</code> parameter. For more information, see <a href=\"https://docs.aws.amazon.com/health/latest/APIReference/API_Event.html#AWSHealth-Type-Event-eventScopeCode\">eventScopeCode</a>.</p>"
@@ -805,6 +813,20 @@
         }
       },
       "documentation":"<p>The values used to filter results from the <a href=\"https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventDetailsForOrganization.html\">DescribeEventDetailsForOrganization</a> and <a href=\"https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeAffectedEntitiesForOrganization.html\">DescribeAffectedEntitiesForOrganization</a> operations.</p>"
+    },
+    "EventActionability":{
+      "type":"string",
+      "enum":[
+        "ACTION_REQUIRED",
+        "ACTION_MAY_BE_REQUIRED",
+        "INFORMATIONAL"
+      ]
+    },
+    "EventActionabilityList":{
+      "type":"list",
+      "member":{"shape":"EventActionability"},
+      "max":3,
+      "min":1
     },
     "EventAggregate":{
       "type":"structure",
@@ -879,6 +901,10 @@
     "EventFilter":{
       "type":"structure",
       "members":{
+        "actionabilities":{
+          "shape":"EventActionabilityList",
+          "documentation":"<p>A list of actionability values to filter events. Use this to filter events based on whether they require action (<code>ACTION_REQUIRED</code>), may require action (<code>ACTION_MAY_BE_REQUIRED</code>) or are informational (<code>INFORMATIONAL</code>).</p>"
+        },
         "eventArns":{
           "shape":"eventArnList",
           "documentation":"<p>A list of event ARNs (unique identifiers). For example: <code>\"arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-CDE456\", \"arn:aws:health:us-west-1::event/EBS/AWS_EBS_LOST_VOLUME/AWS_EBS_LOST_VOLUME_CHI789_JKL101\"</code> </p>"
@@ -930,6 +956,10 @@
         "eventStatusCodes":{
           "shape":"eventStatusCodeList",
           "documentation":"<p>A list of event status codes.</p>"
+        },
+        "personas":{
+          "shape":"EventPersonaList",
+          "documentation":"<p>A list of persona values to filter events. Use this to filter events based on their target audience: <code>OPERATIONS</code>, <code>SECURITY</code>, or <code>BILLING</code>.</p>"
         }
       },
       "documentation":"<p>The values to use to filter results from the <a href=\"https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEvents.html\">DescribeEvents</a> and <a href=\"https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventAggregates.html\">DescribeEventAggregates</a> operations.</p>"
@@ -937,6 +967,20 @@
     "EventList":{
       "type":"list",
       "member":{"shape":"Event"}
+    },
+    "EventPersona":{
+      "type":"string",
+      "enum":[
+        "OPERATIONS",
+        "SECURITY",
+        "BILLING"
+      ]
+    },
+    "EventPersonaList":{
+      "type":"list",
+      "member":{"shape":"EventPersona"},
+      "max":3,
+      "min":1
     },
     "EventType":{
       "type":"structure",
@@ -952,9 +996,31 @@
         "category":{
           "shape":"eventTypeCategory",
           "documentation":"<p>A list of event type category codes. Possible values are <code>issue</code>, <code>accountNotification</code>, or <code>scheduledChange</code>. Currently, the <code>investigation</code> value isn't supported at this time.</p>"
+        },
+        "actionability":{
+          "shape":"EventTypeActionability",
+          "documentation":"<p>The actionability classification of the event. Possible values are <code>ACTION_REQUIRED</code>, <code>ACTION_MAY_BE_REQUIRED</code> and <code>INFORMATIONAL</code>. Events with <code>ACTION_REQUIRED</code> actionability require customer action to resolve or mitigate the event. Events with <code>ACTION_MAY_BE_REQUIRED</code> actionability indicates that the current status is unknown or conditional and inspection is needed to determine if action is required. Events with <code>INFORMATIONAL</code> actionability are provided for awareness and do not require immediate action.</p>"
+        },
+        "personas":{
+          "shape":"EventTypePersonaList",
+          "documentation":"<p>A list of persona classifications that indicate the target audience for the event. Possible values are <code>OPERATIONS</code>, <code>SECURITY</code>, and <code>BILLING</code>. Events can be associated with multiple personas to indicate relevance to different teams or roles within an organization.</p>"
         }
       },
       "documentation":"<p>Contains the metadata about a type of event that is reported by Health. The <code>EventType</code> shows the category, service, and the event type code of the event. For example, an <code>issue</code> might be the category, <code>EC2</code> the service, and <code>AWS_EC2_SYSTEM_MAINTENANCE_EVENT</code> the event type code.</p> <p>You can use the <a href=\"https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventTypes.html\">DescribeEventTypes</a> API operation to return this information about an event.</p> <p>You can also use the Amazon CloudWatch Events console to create a rule so that you can get notified or take action when Health delivers a specific event to your Amazon Web Services account. For more information, see <a href=\"https://docs.aws.amazon.com/health/latest/ug/cloudwatch-events-health.html\">Monitor for Health events with Amazon CloudWatch Events</a> in the <i>Health User Guide</i>.</p>"
+    },
+    "EventTypeActionability":{
+      "type":"string",
+      "enum":[
+        "ACTION_REQUIRED",
+        "ACTION_MAY_BE_REQUIRED",
+        "INFORMATIONAL"
+      ]
+    },
+    "EventTypeActionabilityList":{
+      "type":"list",
+      "member":{"shape":"EventTypeActionability"},
+      "max":3,
+      "min":1
     },
     "EventTypeCategoryList":{
       "type":"list",
@@ -982,6 +1048,14 @@
         "eventTypeCategories":{
           "shape":"EventTypeCategoryList",
           "documentation":"<p>A list of event type category codes. Possible values are <code>issue</code>, <code>accountNotification</code>, or <code>scheduledChange</code>. Currently, the <code>investigation</code> value isn't supported at this time.</p>"
+        },
+        "actionabilities":{
+          "shape":"EventTypeActionabilityList",
+          "documentation":"<p>A list of actionability values to filter event types. Possible values are <code>ACTION_REQUIRED</code>, <code>ACTION_MAY_BE_REQUIRED</code> and <code>INFORMATIONAL</code>.</p>"
+        },
+        "personas":{
+          "shape":"EventTypePersonaList",
+          "documentation":"<p>A list of persona classifications to filter event types. Possible values are <code>OPERATIONS</code>, <code>SECURITY</code>, and <code>BILLING</code>.</p>"
         }
       },
       "documentation":"<p>The values to use to filter results from the <a href=\"https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventTypes.html\">DescribeEventTypes</a> operation.</p>"
@@ -989,6 +1063,20 @@
     "EventTypeList":{
       "type":"list",
       "member":{"shape":"EventType"}
+    },
+    "EventTypePersona":{
+      "type":"string",
+      "enum":[
+        "OPERATIONS",
+        "SECURITY",
+        "BILLING"
+      ]
+    },
+    "EventTypePersonaList":{
+      "type":"list",
+      "member":{"shape":"EventTypePersona"},
+      "max":3,
+      "min":1
     },
     "InvalidPaginationToken":{
       "type":"structure",
@@ -1106,6 +1194,14 @@
         "statusCode":{
           "shape":"eventStatusCode",
           "documentation":"<p>The most recent status of the event. Possible values are <code>open</code>, <code>closed</code>, and <code>upcoming</code>.</p>"
+        },
+        "actionability":{
+          "shape":"EventActionability",
+          "documentation":"<p>The actionability classification of the event. Possible values are <code>ACTION_REQUIRED</code>, <code>ACTION_MAY_BE_REQUIRED</code> and <code>INFORMATIONAL</code>. Events with <code>ACTION_REQUIRED</code> actionability require customer action to resolve or mitigate the event. Events with <code>ACTION_MAY_BE_REQUIRED</code> actionability indicates that the current status is unknown or conditional and inspection is needed to determine if action is required. Events with <code>INFORMATIONAL</code> actionability are provided for awareness and do not require immediate action.</p>"
+        },
+        "personas":{
+          "shape":"EventPersonaList",
+          "documentation":"<p>A list of persona classifications that indicate the target audience for the event. Possible values are <code>OPERATIONS</code>, <code>SECURITY</code>, and <code>BILLING</code>. Events can be associated with multiple personas to indicate relevance to different teams or roles within an organization.</p>"
         }
       },
       "documentation":"<p>Summary information about an event, returned by the <a href=\"https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventsForOrganization.html\">DescribeEventsForOrganization</a> operation.</p>"
@@ -1163,6 +1259,10 @@
     "OrganizationEventFilter":{
       "type":"structure",
       "members":{
+        "actionabilities":{
+          "shape":"EventActionabilityList",
+          "documentation":"<p>A list of actionability values to filter events. Use this to filter events based on whether they require action (<code>ACTION_REQUIRED</code>), may require action (<code>ACTION_MAY_BE_REQUIRED</code>) or are informational (<code>INFORMATIONAL</code>).</p>"
+        },
         "eventTypeCodes":{
           "shape":"eventTypeList",
           "documentation":"<p>A list of unique identifiers for event types. For example, <code>\"AWS_EC2_SYSTEM_MAINTENANCE_EVENT\",\"AWS_RDS_MAINTENANCE_SCHEDULED\".</code> </p>"
@@ -1197,6 +1297,10 @@
         "eventStatusCodes":{
           "shape":"eventStatusCodeList",
           "documentation":"<p>A list of event status codes.</p>"
+        },
+        "personas":{
+          "shape":"EventPersonaList",
+          "documentation":"<p>A list of persona values to filter events. Use this to filter events based on their target audience: <code>OPERATIONS</code>, <code>SECURITY</code>, or <code>BILLING</code>.</p>"
         }
       },
       "documentation":"<p>The values to filter results from the <a href=\"https://docs.aws.amazon.com/health/latest/APIReference/API_DescribeEventsForOrganization.html\">DescribeEventsForOrganization</a> operation.</p>"

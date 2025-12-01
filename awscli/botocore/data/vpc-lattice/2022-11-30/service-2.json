@@ -301,6 +301,25 @@
       "documentation":"<p>Deletes the specified auth policy. If an auth is set to <code>AWS_IAM</code> and the auth policy is deleted, all requests are denied. If you are trying to remove the auth policy completely, you must set the auth type to <code>NONE</code>. If auth is enabled on the resource, but no auth policy is set, all requests are denied.</p>",
       "idempotent":true
     },
+    "DeleteDomainVerification":{
+      "name":"DeleteDomainVerification",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domainverifications/{domainVerificationIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteDomainVerificationRequest"},
+      "output":{"shape":"DeleteDomainVerificationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Deletes the specified domain verification. </p>",
+      "idempotent":true
+    },
     "DeleteListener":{
       "name":"DeleteListener",
       "http":{
@@ -574,7 +593,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves information about the specified access log subscription.</p>"
+      "documentation":"<p>Retrieves information about the specified access log subscription.</p>",
+      "readonly":true
     },
     "GetAuthPolicy":{
       "name":"GetAuthPolicy",
@@ -592,7 +612,27 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves information about the auth policy for the specified service or service network.</p>"
+      "documentation":"<p>Retrieves information about the auth policy for the specified service or service network.</p>",
+      "readonly":true
+    },
+    "GetDomainVerification":{
+      "name":"GetDomainVerification",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domainverifications/{domainVerificationIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDomainVerificationRequest"},
+      "output":{"shape":"GetDomainVerificationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Retrieves information about a domain verification.ß </p>",
+      "readonly":true
     },
     "GetListener":{
       "name":"GetListener",
@@ -610,7 +650,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves information about the specified listener for the specified service.</p>"
+      "documentation":"<p>Retrieves information about the specified listener for the specified service.</p>",
+      "readonly":true
     },
     "GetResourceConfiguration":{
       "name":"GetResourceConfiguration",
@@ -628,7 +669,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves information about the specified resource configuration.</p>"
+      "documentation":"<p>Retrieves information about the specified resource configuration.</p>",
+      "readonly":true
     },
     "GetResourceGateway":{
       "name":"GetResourceGateway",
@@ -646,7 +688,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves information about the specified resource gateway.</p>"
+      "documentation":"<p>Retrieves information about the specified resource gateway.</p>",
+      "readonly":true
     },
     "GetResourcePolicy":{
       "name":"GetResourcePolicy",
@@ -664,7 +707,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves information about the specified resource policy. The resource policy is an IAM policy created on behalf of the resource owner when they share a resource.</p>"
+      "documentation":"<p>Retrieves information about the specified resource policy. The resource policy is an IAM policy created on behalf of the resource owner when they share a resource.</p>",
+      "readonly":true
     },
     "GetRule":{
       "name":"GetRule",
@@ -682,7 +726,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves information about the specified listener rules. You can also retrieve information about the default listener rule. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/listeners.html#listener-rules\">Listener rules</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>"
+      "documentation":"<p>Retrieves information about the specified listener rules. You can also retrieve information about the default listener rule. For more information, see <a href=\"https://docs.aws.amazon.com/vpc-lattice/latest/ug/listeners.html#listener-rules\">Listener rules</a> in the <i>Amazon VPC Lattice User Guide</i>.</p>",
+      "readonly":true
     },
     "GetService":{
       "name":"GetService",
@@ -700,7 +745,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves information about the specified service.</p>"
+      "documentation":"<p>Retrieves information about the specified service.</p>",
+      "readonly":true
     },
     "GetServiceNetwork":{
       "name":"GetServiceNetwork",
@@ -718,7 +764,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves information about the specified service network.</p>"
+      "documentation":"<p>Retrieves information about the specified service network.</p>",
+      "readonly":true
     },
     "GetServiceNetworkResourceAssociation":{
       "name":"GetServiceNetworkResourceAssociation",
@@ -736,7 +783,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves information about the specified association between a service network and a resource configuration.</p>"
+      "documentation":"<p>Retrieves information about the specified association between a service network and a resource configuration.</p>",
+      "readonly":true
     },
     "GetServiceNetworkServiceAssociation":{
       "name":"GetServiceNetworkServiceAssociation",
@@ -754,7 +802,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves information about the specified association between a service network and a service.</p>"
+      "documentation":"<p>Retrieves information about the specified association between a service network and a service.</p>",
+      "readonly":true
     },
     "GetServiceNetworkVpcAssociation":{
       "name":"GetServiceNetworkVpcAssociation",
@@ -772,7 +821,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves information about the specified association between a service network and a VPC.</p>"
+      "documentation":"<p>Retrieves information about the specified association between a service network and a VPC.</p>",
+      "readonly":true
     },
     "GetTargetGroup":{
       "name":"GetTargetGroup",
@@ -790,7 +840,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves information about the specified target group.</p>"
+      "documentation":"<p>Retrieves information about the specified target group.</p>",
+      "readonly":true
     },
     "ListAccessLogSubscriptions":{
       "name":"ListAccessLogSubscriptions",
@@ -807,7 +858,27 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the access log subscriptions for the specified service network or service.</p>"
+      "documentation":"<p>Lists the access log subscriptions for the specified service network or service.</p>",
+      "readonly":true
+    },
+    "ListDomainVerifications":{
+      "name":"ListDomainVerifications",
+      "http":{
+        "method":"GET",
+        "requestUri":"/domainverifications",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDomainVerificationsRequest"},
+      "output":{"shape":"ListDomainVerificationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Lists the domain verifications. </p>",
+      "readonly":true
     },
     "ListListeners":{
       "name":"ListListeners",
@@ -825,7 +896,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the listeners for the specified service.</p>"
+      "documentation":"<p>Lists the listeners for the specified service.</p>",
+      "readonly":true
     },
     "ListResourceConfigurations":{
       "name":"ListResourceConfigurations",
@@ -842,7 +914,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the resource configurations owned by or shared with this account.</p>"
+      "documentation":"<p>Lists the resource configurations owned by or shared with this account.</p>",
+      "readonly":true
     },
     "ListResourceEndpointAssociations":{
       "name":"ListResourceEndpointAssociations",
@@ -859,7 +932,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the associations for the specified VPC endpoint.</p>"
+      "documentation":"<p>Lists the associations for the specified VPC endpoint.</p>",
+      "readonly":true
     },
     "ListResourceGateways":{
       "name":"ListResourceGateways",
@@ -876,7 +950,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the resource gateways that you own or that were shared with you.</p>"
+      "documentation":"<p>Lists the resource gateways that you own or that were shared with you.</p>",
+      "readonly":true
     },
     "ListRules":{
       "name":"ListRules",
@@ -894,7 +969,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the rules for the specified listener.</p>"
+      "documentation":"<p>Lists the rules for the specified listener.</p>",
+      "readonly":true
     },
     "ListServiceNetworkResourceAssociations":{
       "name":"ListServiceNetworkResourceAssociations",
@@ -911,7 +987,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the associations between a service network and a resource configuration.</p>"
+      "documentation":"<p>Lists the associations between a service network and a resource configuration.</p>",
+      "readonly":true
     },
     "ListServiceNetworkServiceAssociations":{
       "name":"ListServiceNetworkServiceAssociations",
@@ -928,7 +1005,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the associations between a service network and a service. You can filter the list either by service or service network. You must provide either the service network identifier or the service identifier.</p> <p>Every association in Amazon VPC Lattice has a unique Amazon Resource Name (ARN), such as when a service network is associated with a VPC or when a service is associated with a service network. If the association is for a resource is shared with another account, the association includes the local account ID as the prefix in the ARN.</p>"
+      "documentation":"<p>Lists the associations between a service network and a service. You can filter the list either by service or service network. You must provide either the service network identifier or the service identifier.</p> <p>Every association in Amazon VPC Lattice has a unique Amazon Resource Name (ARN), such as when a service network is associated with a VPC or when a service is associated with a service network. If the association is for a resource is shared with another account, the association includes the local account ID as the prefix in the ARN.</p>",
+      "readonly":true
     },
     "ListServiceNetworkVpcAssociations":{
       "name":"ListServiceNetworkVpcAssociations",
@@ -945,7 +1023,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the associations between a service network and a VPC. You can filter the list either by VPC or service network. You must provide either the ID of the service network identifier or the ID of the VPC.</p>"
+      "documentation":"<p>Lists the associations between a service network and a VPC. You can filter the list either by VPC or service network. You must provide either the ID of the service network identifier or the ID of the VPC.</p>",
+      "readonly":true
     },
     "ListServiceNetworkVpcEndpointAssociations":{
       "name":"ListServiceNetworkVpcEndpointAssociations",
@@ -962,7 +1041,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the associations between a service network and a VPC endpoint.</p>"
+      "documentation":"<p>Lists the associations between a service network and a VPC endpoint.</p>",
+      "readonly":true
     },
     "ListServiceNetworks":{
       "name":"ListServiceNetworks",
@@ -979,7 +1059,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the service networks owned by or shared with this account. The account ID in the ARN shows which account owns the service network.</p>"
+      "documentation":"<p>Lists the service networks owned by or shared with this account. The account ID in the ARN shows which account owns the service network.</p>",
+      "readonly":true
     },
     "ListServices":{
       "name":"ListServices",
@@ -996,7 +1077,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the services owned by the caller account or shared with the caller account.</p>"
+      "documentation":"<p>Lists the services owned by the caller account or shared with the caller account.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -1013,7 +1095,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the tags for the specified resource.</p>"
+      "documentation":"<p>Lists the tags for the specified resource.</p>",
+      "readonly":true
     },
     "ListTargetGroups":{
       "name":"ListTargetGroups",
@@ -1030,7 +1113,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists your target groups. You can narrow your search by using the filters below in your request.</p>"
+      "documentation":"<p>Lists your target groups. You can narrow your search by using the filters below in your request.</p>",
+      "readonly":true
     },
     "ListTargets":{
       "name":"ListTargets",
@@ -1048,7 +1132,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the targets for the target group. By default, all targets are included. You can use this API to check the health status of targets. You can also ﬁlter the results by target.</p>"
+      "documentation":"<p>Lists the targets for the target group. By default, all targets are included. You can use this API to check the health status of targets. You can also ﬁlter the results by target.</p>",
+      "readonly":true
     },
     "PutAuthPolicy":{
       "name":"PutAuthPolicy",
@@ -1106,6 +1191,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Registers the targets with the target group. If it's a Lambda target, you can only have one target in a target group.</p>"
+    },
+    "StartDomainVerification":{
+      "name":"StartDomainVerification",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domainverifications",
+        "responseCode":201
+      },
+      "input":{"shape":"StartDomainVerificationRequest"},
+      "output":{"shape":"StartDomainVerificationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Starts the domain verification process for a custom domain name. </p>",
+      "idempotent":true
     },
     "TagResource":{
       "name":"TagResource",
@@ -1719,6 +1824,18 @@
           "shape":"Boolean",
           "documentation":"<p>(SINGLE, GROUP, ARN) Specifies whether the resource configuration can be associated with a sharable service network. The default is false.</p>"
         },
+        "customDomainName":{
+          "shape":"DomainName",
+          "documentation":"<p> A custom domain name for your resource configuration. Additionally, provide a DomainVerificationID to prove your ownership of a domain. </p>"
+        },
+        "groupDomain":{
+          "shape":"DomainName",
+          "documentation":"<p> (GROUP) The group domain for a group resource configuration. Any domains that you create for the child resource are subdomains of the group domain. Child resources inherit the verification status of the domain. </p>"
+        },
+        "domainVerificationIdentifier":{
+          "shape":"DomainVerificationIdentifier",
+          "documentation":"<p> The domain verification ID of your verified custom domain name. If you don't provide an ID, you must configure the DNS settings yourself. </p>"
+        },
         "clientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you retry a request that completed successfully using the same client token and parameters, the retry succeeds without performing any actions. If the parameters aren't identical, the retry fails.</p>",
@@ -1784,6 +1901,22 @@
         "failureReason":{
           "shape":"String",
           "documentation":"<p>The reason that the request failed.</p>"
+        },
+        "customDomainName":{
+          "shape":"DomainName",
+          "documentation":"<p> The custom domain name for your resource configuration. </p>"
+        },
+        "domainVerificationId":{
+          "shape":"DomainVerificationId",
+          "documentation":"<p> The domain name verification ID. </p>"
+        },
+        "groupDomain":{
+          "shape":"DomainName",
+          "documentation":"<p> (GROUP) The group domain for a group resource configuration. Any domains that you create for the child resource are subdomains of the group domain. Child resources inherit the verification status of the domain. </p>"
+        },
+        "domainVerificationArn":{
+          "shape":"DomainVerificationArn",
+          "documentation":"<p> The verification ID ARN </p>"
         }
       }
     },
@@ -1999,6 +2132,10 @@
           "shape":"ServiceNetworkIdentifierWithoutRegex",
           "documentation":"<p>The ID of the service network to associate with the resource configuration.</p>"
         },
+        "privateDnsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates if private DNS is enabled for the service network resource association. </p>"
+        },
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>A key-value pair to associate with a resource.</p>"
@@ -2023,6 +2160,10 @@
         "createdBy":{
           "shape":"AccountId",
           "documentation":"<p>The ID of the account that created the association.</p>"
+        },
+        "privateDnsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates if private DNS is is enabled for the service network resource association. </p>"
         }
       }
     },
@@ -2126,6 +2267,10 @@
           "shape":"VpcId",
           "documentation":"<p>The ID of the VPC.</p>"
         },
+        "privateDnsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates if private DNS is enabled for the VPC association. </p>"
+        },
         "securityGroupIds":{
           "shape":"CreateServiceNetworkVpcAssociationRequestSecurityGroupIdsList",
           "documentation":"<p>The IDs of the security groups. Security groups aren't added by default. You can add a security group to apply network level controls to control which resources in a VPC are allowed to access the service network and its services. For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html\">Control traffic to resources using security groups</a> in the <i>Amazon VPC User Guide</i>.</p>"
@@ -2133,6 +2278,10 @@
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags for the association.</p>"
+        },
+        "dnsOptions":{
+          "shape":"DnsOptions",
+          "documentation":"<p> DNS options for the service network VPC association. </p>"
         }
       }
     },
@@ -2164,7 +2313,12 @@
         "securityGroupIds":{
           "shape":"SecurityGroupList",
           "documentation":"<p>The IDs of the security groups.</p>"
-        }
+        },
+        "privateDnsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates if private DNS is enabled for the VPC association. </p>"
+        },
+        "dnsOptions":{"shape":"DnsOptions"}
       }
     },
     "CreateServiceRequest":{
@@ -2323,6 +2477,22 @@
       }
     },
     "DeleteAuthPolicyResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteDomainVerificationRequest":{
+      "type":"structure",
+      "required":["domainVerificationIdentifier"],
+      "members":{
+        "domainVerificationIdentifier":{
+          "shape":"DomainVerificationIdentifier",
+          "documentation":"<p> The ID of the domain verification to delete. </p>",
+          "location":"uri",
+          "locationName":"domainVerificationIdentifier"
+        }
+      }
+    },
+    "DeleteDomainVerificationResponse":{
       "type":"structure",
       "members":{}
     },
@@ -2702,6 +2872,20 @@
       },
       "documentation":"<p>Describes the DNS information of a service.</p>"
     },
+    "DnsOptions":{
+      "type":"structure",
+      "members":{
+        "privateDnsPreference":{
+          "shape":"PrivateDnsPreference",
+          "documentation":"<p> The preference for which private domains have a private hosted zone created for and associated with the specified VPC. Only supported when private DNS is enabled and when the VPC endpoint type is ServiceNetwork or Resource. </p> <ul> <li> <p> <code>ALL_DOMAINS</code> - VPC Lattice provisions private hosted zones for all custom domain names.</p> </li> <li> <p> <code>VERIFIED_DOMAINS_ONLY</code> - VPC Lattice provisions a private hosted zone only if custom domain name has been verified by the provider.</p> </li> <li> <p> <code>VERIFIED_DOMAINS_AND_SPECIFIED_DOMAINS</code> - VPC Lattice provisions private hosted zones for all verified custom domain names and other domain names that the resource consumer specifies. The resource consumer specifies the domain names in the privateDnsSpecifiedDomains parameter.</p> </li> <li> <p> <code>SPECIFIED_DOMAINS_ONLY</code> - VPC Lattice provisions a private hosted zone for domain names specified by the resource consumer. The resource consumer specifies the domain names in the privateDnsSpecifiedDomains parameter.</p> </li> </ul>"
+        },
+        "privateDnsSpecifiedDomains":{
+          "shape":"PrivateDnsSpecifiedDomainsList",
+          "documentation":"<p> Indicates which of the private domains to create private hosted zones for and associate with the specified VPC. Only supported when private DNS is enabled and the private DNS preference is <code>VERIFIED_DOMAINS_AND_SPECIFIED_DOMAINS</code> or <code>SPECIFIED_DOMAINS_ONLY</code>. </p>"
+        }
+      },
+      "documentation":"<p> The DNS configuration options. </p>"
+    },
     "DnsResource":{
       "type":"structure",
       "members":{
@@ -2720,6 +2904,73 @@
       "type":"string",
       "max":255,
       "min":3
+    },
+    "DomainVerificationArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:[a-z0-9f\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:domainverification/dv-[a-fA-F0-9]{17}"
+    },
+    "DomainVerificationId":{
+      "type":"string",
+      "max":20,
+      "min":20,
+      "pattern":"dv-[a-fA-F0-9]{17}"
+    },
+    "DomainVerificationIdentifier":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"((dv-[0-9a-z]{17})|(arn:[a-z0-9\\-]+:vpc-lattice:[a-zA-Z0-9\\-]+:\\d{12}:domainverification/dv-[a-fA-F0-9]{17}))"
+    },
+    "DomainVerificationList":{
+      "type":"list",
+      "member":{"shape":"DomainVerificationSummary"}
+    },
+    "DomainVerificationSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "domainName",
+        "status",
+        "createdAt"
+      ],
+      "members":{
+        "id":{
+          "shape":"DomainVerificationId",
+          "documentation":"<p> The ID of the domain verification. </p>"
+        },
+        "arn":{
+          "shape":"DomainVerificationArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the domain verification. </p>"
+        },
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p> The domain name being verified. </p>"
+        },
+        "status":{
+          "shape":"VerificationStatus",
+          "documentation":"<p> The current status of the domain verification process. </p>"
+        },
+        "txtMethodConfig":{
+          "shape":"TxtMethodConfig",
+          "documentation":"<p> The TXT record configuration used for domain verification. </p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The date and time that the domain verification was created, in ISO-8601 format. </p>"
+        },
+        "lastVerifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The date and time that the domain was last successfully verified, in ISO-8601 format. </p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p> The tags associated with the domain verification. </p>"
+        }
+      },
+      "documentation":"<p> Summary information about a domain verification. </p>"
     },
     "FailureCode":{"type":"string"},
     "FailureMessage":{"type":"string"},
@@ -2833,6 +3084,62 @@
         "lastUpdatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time that the auth policy was last updated, in ISO-8601 format.</p>"
+        }
+      }
+    },
+    "GetDomainVerificationRequest":{
+      "type":"structure",
+      "required":["domainVerificationIdentifier"],
+      "members":{
+        "domainVerificationIdentifier":{
+          "shape":"DomainVerificationIdentifier",
+          "documentation":"<p> The ID or ARN of the domain verification to retrieve. </p>",
+          "location":"uri",
+          "locationName":"domainVerificationIdentifier"
+        }
+      }
+    },
+    "GetDomainVerificationResponse":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "domainName",
+        "status",
+        "createdAt"
+      ],
+      "members":{
+        "id":{
+          "shape":"DomainVerificationId",
+          "documentation":"<p> The ID of the domain verification. </p>"
+        },
+        "arn":{
+          "shape":"DomainVerificationArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the domain verification. </p>"
+        },
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p> The domain name being verified. </p>"
+        },
+        "status":{
+          "shape":"VerificationStatus",
+          "documentation":"<p> The current status of the domain verification process. </p>"
+        },
+        "txtMethodConfig":{
+          "shape":"TxtMethodConfig",
+          "documentation":"<p> The TXT record configuration used for domain verification. </p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The date and time that the domain verification was created, in ISO-8601 format. </p>"
+        },
+        "lastVerifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p> The date and time that the domain was last successfully verified, in ISO-8601 format. </p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p> The tags associated with the domain verification. </p>"
         }
       }
     },
@@ -2980,6 +3287,22 @@
         "lastUpdatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The most recent date and time that the resource configuration was updated, in ISO-8601 format.</p>"
+        },
+        "domainVerificationId":{
+          "shape":"DomainVerificationId",
+          "documentation":"<p> The domain verification ID. </p>"
+        },
+        "domainVerificationArn":{
+          "shape":"DomainVerificationArn",
+          "documentation":"<p> The ARN of the domain verification. </p>"
+        },
+        "domainVerificationStatus":{
+          "shape":"VerificationStatus",
+          "documentation":"<p> The domain verification status. </p>"
+        },
+        "groupDomain":{
+          "shape":"DomainName",
+          "documentation":"<p> (GROUP) The group domain for a group resource configuration. Any domains that you create for the child resource are subdomains of the group domain. Child resources inherit the verification status of the domain. </p>"
         }
       }
     },
@@ -3221,6 +3544,10 @@
           "shape":"DnsEntry",
           "documentation":"<p>The private DNS entry for the service.</p>"
         },
+        "privateDnsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates if private DNS is enabled in the service network resource association. </p>"
+        },
         "dnsEntry":{
           "shape":"DnsEntry",
           "documentation":"<p>The DNS entry for the service.</p>"
@@ -3228,6 +3555,10 @@
         "isManagedAssociation":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the association is managed by Amazon.</p>"
+        },
+        "domainVerificationStatus":{
+          "shape":"VerificationStatus",
+          "documentation":"<p> The domain verification status in the service network resource association. </p>"
         }
       }
     },
@@ -3404,6 +3735,10 @@
           "shape":"SecurityGroupList",
           "documentation":"<p>The IDs of the security groups.</p>"
         },
+        "privateDnsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates if private DNS is enabled in the VPC association. </p>"
+        },
         "failureMessage":{
           "shape":"String",
           "documentation":"<p>The failure message.</p>"
@@ -3415,6 +3750,10 @@
         "lastUpdatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time that the association was last updated, in ISO-8601 format.</p>"
+        },
+        "dnsOptions":{
+          "shape":"DnsOptions",
+          "documentation":"<p> DNS options for the service network VPC association. </p>"
         }
       }
     },
@@ -3824,6 +4163,37 @@
         }
       }
     },
+    "ListDomainVerificationsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p> The maximum number of results to return. </p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> A pagination token for the next page of results. </p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListDomainVerificationsResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"DomainVerificationList",
+          "documentation":"<p> Information about the domain verifications. </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> A pagination token for the next page of results. </p>"
+        }
+      }
+    },
     "ListListenersRequest":{
       "type":"structure",
       "required":["serviceIdentifier"],
@@ -3876,6 +4246,12 @@
           "documentation":"<p>The ID of the resource configuration of type <code>Group</code>.</p>",
           "location":"querystring",
           "locationName":"resourceConfigurationGroupIdentifier"
+        },
+        "domainVerificationIdentifier":{
+          "shape":"DomainVerificationIdentifier",
+          "documentation":"<p> The domain verification ID. </p>",
+          "location":"querystring",
+          "locationName":"domainVerificationIdentifier"
         },
         "maxResults":{
           "shape":"MaxResults",
@@ -4542,6 +4918,26 @@
       "type":"list",
       "member":{"shape":"PortRange"}
     },
+    "PrivateDnsPreference":{
+      "type":"string",
+      "enum":[
+        "VERIFIED_DOMAINS_ONLY",
+        "ALL_DOMAINS",
+        "VERIFIED_DOMAINS_AND_SPECIFIED_DOMAINS",
+        "SPECIFIED_DOMAINS_ONLY"
+      ]
+    },
+    "PrivateDnsSpecifiedDomain":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "PrivateDnsSpecifiedDomainsList":{
+      "type":"list",
+      "member":{"shape":"PrivateDnsSpecifiedDomain"},
+      "max":10,
+      "min":1
+    },
     "ProtocolType":{
       "type":"string",
       "enum":["TCP"]
@@ -4750,6 +5146,18 @@
         "lastUpdatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The most recent date and time that the resource configuration was updated, in ISO-8601 format.</p>"
+        },
+        "customDomainName":{
+          "shape":"DomainName",
+          "documentation":"<p> The custom domain name. </p>"
+        },
+        "domainVerificationId":{
+          "shape":"DomainVerificationId",
+          "documentation":"<p> The domain verification ID. </p>"
+        },
+        "groupDomain":{
+          "shape":"DomainName",
+          "documentation":"<p> (GROUP) The group domain for a group resource configuration. Any domains that you create for the child resource are subdomains of the group domain. Child resources inherit the verification status of the domain. </p>"
         }
       },
       "documentation":"<p>Summary information about a resource configuration.</p>"
@@ -5375,6 +5783,10 @@
         "failureCode":{
           "shape":"String",
           "documentation":"<p>The failure code.</p>"
+        },
+        "privateDnsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates if private DNS is enabled for the service network resource association. </p>"
         }
       },
       "documentation":"<p>Summary information about an association between a service network and a resource configuration.</p>"
@@ -5570,6 +5982,14 @@
           "shape":"ServiceNetworkArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the service network.</p>"
         },
+        "privateDnsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p> Indicates if private DNS is enabled for the service network VPC association. </p>"
+        },
+        "dnsOptions":{
+          "shape":"DnsOptions",
+          "documentation":"<p> The DNS options for the service network VPC association. </p>"
+        },
         "vpcId":{
           "shape":"VpcId",
           "documentation":"<p>The ID of the VPC.</p>"
@@ -5676,6 +6096,56 @@
         }
       },
       "documentation":"<p>Specifies if the service network should be enabled for sharing.</p>"
+    },
+    "StartDomainVerificationRequest":{
+      "type":"structure",
+      "required":["domainName"],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p> A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you retry a request that completed successfully using the same client token and parameters, the retry succeeds without performing any actions. If the parameters aren't identical, the retry fails. </p>",
+          "idempotencyToken":true
+        },
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p> The domain name to verify ownership for. </p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p> The tags for the domain verification. </p>"
+        }
+      }
+    },
+    "StartDomainVerificationResponse":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "domainName",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"DomainVerificationId",
+          "documentation":"<p> The ID of the domain verification. </p>"
+        },
+        "arn":{
+          "shape":"DomainVerificationArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the domain verification. </p>"
+        },
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p> The domain name being verified. </p>"
+        },
+        "status":{
+          "shape":"VerificationStatus",
+          "documentation":"<p> The current status of the domain verification process. </p>"
+        },
+        "txtMethodConfig":{
+          "shape":"TxtMethodConfig",
+          "documentation":"<p> The TXT record configuration used for domain verification. </p>"
+        }
+      }
     },
     "String":{"type":"string"},
     "SubnetId":{
@@ -6018,6 +6488,24 @@
     "Timestamp":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
+    },
+    "TxtMethodConfig":{
+      "type":"structure",
+      "required":[
+        "value",
+        "name"
+      ],
+      "members":{
+        "value":{
+          "shape":"String",
+          "documentation":"<p> The value that must be added to the TXT record for domain verification. </p>"
+        },
+        "name":{
+          "shape":"String",
+          "documentation":"<p> The name of the TXT record that must be created for domain verification. </p>"
+        }
+      },
+      "documentation":"<p> Configuration for TXT record-based domain verification method. </p>"
     },
     "UnhealthyThresholdCount":{
       "type":"integer",
@@ -6609,6 +7097,14 @@
         "cannotParse",
         "fieldValidationFailed",
         "other"
+      ]
+    },
+    "VerificationStatus":{
+      "type":"string",
+      "enum":[
+        "VERIFIED",
+        "PENDING",
+        "VERIFICATION_TIMED_OUT"
       ]
     },
     "VpcEndpointId":{

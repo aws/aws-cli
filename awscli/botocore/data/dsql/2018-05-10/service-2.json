@@ -88,7 +88,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves information about a cluster.</p>"
+      "documentation":"<p>Retrieves information about a cluster.</p>",
+      "readonly":true
     },
     "GetClusterPolicy":{
       "name":"GetClusterPolicy",
@@ -106,7 +107,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves the resource-based policy document attached to a cluster. This policy defines the access permissions and conditions for the cluster.</p>"
+      "documentation":"<p>Retrieves the resource-based policy document attached to a cluster. This policy defines the access permissions and conditions for the cluster.</p>",
+      "readonly":true
     },
     "GetVpcEndpointServiceName":{
       "name":"GetVpcEndpointServiceName",
@@ -124,7 +126,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves the VPC endpoint service name.</p>"
+      "documentation":"<p>Retrieves the VPC endpoint service name.</p>",
+      "readonly":true
     },
     "ListClusters":{
       "name":"ListClusters",
@@ -142,7 +145,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves information about a list of clusters.</p>"
+      "documentation":"<p>Retrieves information about a list of clusters.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -160,7 +164,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists all of the tags for a resource.</p>"
+      "documentation":"<p>Lists all of the tags for a resource.</p>",
+      "readonly":true
     },
     "PutClusterPolicy":{
       "name":"PutClusterPolicy",
@@ -329,6 +334,10 @@
       },
       "documentation":"<p>A summary of the properties of a cluster.</p>"
     },
+    "ClusterVpcEndpoint":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9.-]+"
+    },
     "ConflictException":{
       "type":"structure",
       "required":["message"],
@@ -421,6 +430,10 @@
         "deletionProtectionEnabled":{
           "shape":"DeletionProtectionEnabled",
           "documentation":"<p>Whether deletion protection is enabled on this cluster.</p>"
+        },
+        "endpoint":{
+          "shape":"Endpoint",
+          "documentation":"<p>The connection endpoint for the created cluster.</p>"
         }
       },
       "documentation":"<p>The output of a created cluster.</p>"
@@ -548,6 +561,10 @@
         "CUSTOMER_MANAGED_KMS_KEY"
       ]
     },
+    "Endpoint":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9.-]+"
+    },
     "GetClusterInput":{
       "type":"structure",
       "required":["identifier"],
@@ -598,6 +615,10 @@
         "encryptionDetails":{
           "shape":"EncryptionDetails",
           "documentation":"<p>The current encryption configuration details for the cluster.</p>"
+        },
+        "endpoint":{
+          "shape":"Endpoint",
+          "documentation":"<p>The connection endpoint for the cluster.</p>"
         }
       },
       "documentation":"<p>The output of a cluster.</p>"
@@ -650,6 +671,10 @@
         "serviceName":{
           "shape":"ServiceName",
           "documentation":"<p>The VPC endpoint service name.</p>"
+        },
+        "clusterVpcEndpoint":{
+          "shape":"ClusterVpcEndpoint",
+          "documentation":"<p>The VPC connection endpoint for the cluster.</p>"
         }
       }
     },

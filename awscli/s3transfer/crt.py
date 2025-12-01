@@ -33,6 +33,7 @@ from awscrt.io import (
 )
 from awscrt.s3 import (
     S3Client,
+    S3FileIoOptions,
     S3RequestTlsMode,
     S3RequestType,
     S3ResponseError,
@@ -87,6 +88,7 @@ def create_s3_crt_client(
     part_size=8 * MB,
     use_ssl=True,
     verify=None,
+    fio_options=None,
 ):
     """
     :type region: str
@@ -130,6 +132,9 @@ def create_s3_crt_client(
         * path/to/cert/bundle.pem - A filename of the CA cert bundle to
             use. Specify this argument if you want to use a custom CA cert
             bundle instead of the default one on your system.
+
+    :type fio_options: Optional[dict]
+    :param fio_options: Kwargs to use to build an `awscrt.s3.S3FileIoOptions`.
     """
 
     event_loop_group = EventLoopGroup(num_threads)
@@ -153,6 +158,9 @@ def create_s3_crt_client(
     target_gbps = _get_crt_throughput_target_gbps(
         provided_throughput_target_bytes=target_throughput
     )
+    crt_fio_options = None
+    if fio_options:
+        crt_fio_options = S3FileIoOptions(**fio_options)
     return S3Client(
         bootstrap=bootstrap,
         region=region,
@@ -162,6 +170,7 @@ def create_s3_crt_client(
         tls_connection_options=tls_connection_options,
         throughput_target_gbps=target_gbps,
         enable_s3express=True,
+        fio_options=crt_fio_options,
     )
 
 

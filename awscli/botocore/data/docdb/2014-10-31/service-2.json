@@ -3458,6 +3458,37 @@
         "GlobalCluster":{"shape":"GlobalCluster"}
       }
     },
+    "FailoverState":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"FailoverStatus",
+          "documentation":"<p>The current status of the global cluster. Possible values are as follows:</p> <ul> <li> <p> <b>pending</b> – The service received a request to switch over or fail over the global cluster. The global cluster's primary cluster and the specified secondary cluster are being verified before the operation starts.</p> </li> <li> <p> <b>failing-over</b> – The chosen secondary cluster is being promoted to become the new primary cluster to fail over the global cluster.</p> </li> <li> <p> <b>cancelling</b> – The request to switch over or fail over the global cluster was cancelled and the primary cluster and the selected secondary cluster are returning to their previous states.</p> </li> </ul>"
+        },
+        "FromDbClusterArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon DocumentDB cluster that is currently being demoted, and which is associated with this state.</p>"
+        },
+        "ToDbClusterArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon DocumentDB cluster that is currently being promoted, and which is associated with this state.</p>"
+        },
+        "IsDataLossAllowed":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the operation is a global switchover or a global failover. If data loss is allowed, then the operation is a global failover. Otherwise, it's a switchover.</p>"
+        }
+      },
+      "documentation":"<p>Contains the state of scheduled or in-process operations on an Amazon DocumentDB global cluster. This data type is empty unless a switchover or failover operation is scheduled or is in progress on the global cluster.</p>",
+      "wrapper":true
+    },
+    "FailoverStatus":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "failing-over",
+        "cancelling"
+      ]
+    },
     "Filter":{
       "type":"structure",
       "required":[
@@ -3532,6 +3563,14 @@
         "GlobalClusterMembers":{
           "shape":"GlobalClusterMemberList",
           "documentation":"<p>The list of cluster IDs for secondary clusters within the global cluster. Currently limited to one item. </p>"
+        },
+        "FailoverState":{
+          "shape":"FailoverState",
+          "documentation":"<p>A data object containing all properties for the current state of an in-process or pending switchover or failover process for this global cluster. This object is empty unless the <code>SwitchoverGlobalCluster</code> or <code>FailoverGlobalCluster</code> operation was called on this global cluster.</p>"
+        },
+        "TagList":{
+          "shape":"TagList",
+          "documentation":"<p>A list of global cluster tags.</p>"
         }
       },
       "documentation":"<p>A data type representing an Amazon DocumentDB global cluster.</p>",
@@ -3575,6 +3614,10 @@
         "IsWriter":{
           "shape":"Boolean",
           "documentation":"<p> Specifies whether the Amazon DocumentDB cluster is the primary cluster (that is, has read-write capability) for the Amazon DocumentDB global cluster with which it is associated. </p>"
+        },
+        "SynchronizationStatus":{
+          "shape":"GlobalClusterMemberSynchronizationStatus",
+          "documentation":"<p>The status of synchronization of each Amazon DocumentDB cluster in the global cluster.</p>"
         }
       },
       "documentation":"<p>A data structure with information about any primary and secondary clusters associated with an Amazon DocumentDB global clusters. </p>",
@@ -3586,6 +3629,13 @@
         "shape":"GlobalClusterMember",
         "locationName":"GlobalClusterMember"
       }
+    },
+    "GlobalClusterMemberSynchronizationStatus":{
+      "type":"string",
+      "enum":[
+        "connected",
+        "pending-resync"
+      ]
     },
     "GlobalClusterNotFoundFault":{
       "type":"structure",

@@ -34,6 +34,26 @@
       "documentation":"<p>The <code>CreateAlertManagerDefinition</code> operation creates the alert manager definition in a workspace. If a workspace already has an alert manager definition, don't use this operation to update it. Instead, use <code>PutAlertManagerDefinition</code>.</p>",
       "idempotent":true
     },
+    "CreateAnomalyDetector":{
+      "name":"CreateAnomalyDetector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/workspaces/{workspaceId}/anomalydetectors",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateAnomalyDetectorRequest"},
+      "output":{"shape":"CreateAnomalyDetectorResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates an anomaly detector within a workspace using the Random Cut Forest algorithm for time-series analysis. The anomaly detector analyzes Amazon Managed Service for Prometheus metrics to identify unusual patterns and behaviors.</p>",
+      "idempotent":true
+    },
     "CreateLoggingConfiguration":{
       "name":"CreateLoggingConfiguration",
       "http":{
@@ -88,7 +108,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>The <code>CreateRuleGroupsNamespace</code> operation creates a rule groups namespace within a workspace. A rule groups namespace is associated with exactly one rules file. A workspace can have multiple rule groups namespaces.</p> <p>Use this operation only to create new rule groups namespaces. To update an existing rule groups namespace, use <code>PutRuleGroupsNamespace</code>.</p>",
+      "documentation":"<p>The <code>CreateRuleGroupsNamespace</code> operation creates a rule groups namespace within a workspace. A rule groups namespace is associated with exactly one rules file. A workspace can have multiple rule groups namespaces.</p> <important> <p>The combined length of a rule group namespace and a rule group name cannot exceed 721 UTF-8 bytes.</p> </important> <p>Use this operation only to create new rule groups namespaces. To update an existing rule groups namespace, use <code>PutRuleGroupsNamespace</code>.</p>",
       "idempotent":true
     },
     "CreateScraper":{
@@ -109,7 +129,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>The <code>CreateScraper</code> operation creates a scraper to collect metrics. A scraper pulls metrics from Prometheus-compatible sources within an Amazon EKS cluster, and sends them to your Amazon Managed Service for Prometheus workspace. Scrapers are flexible, and can be configured to control what metrics are collected, the frequency of collection, what transformations are applied to the metrics, and more.</p> <p>An IAM role will be created for you that Amazon Managed Service for Prometheus uses to access the metrics in your cluster. You must configure this role with a policy that allows it to scrape metrics from your cluster. For more information, see <a href=\"https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-collector-how-to.html#AMP-collector-eks-setup\">Configuring your Amazon EKS cluster</a> in the <i>Amazon Managed Service for Prometheus User Guide</i>.</p> <p>The <code>scrapeConfiguration</code> parameter contains the base-64 encoded YAML configuration for the scraper.</p> <p>When creating a scraper, the service creates a <code>Network Interface</code> in each <b>Availability Zone</b> that are passed into <code>CreateScraper</code> through subnets. These network interfaces are used to connect to the Amazon EKS cluster within the VPC for scraping metrics.</p> <note> <p>For more information about collectors, including what metrics are collected, and how to configure the scraper, see <a href=\"https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-collector-how-to.html\">Using an Amazon Web Services managed collector</a> in the <i>Amazon Managed Service for Prometheus User Guide</i>.</p> </note>",
+      "documentation":"<p>The <code>CreateScraper</code> operation creates a scraper to collect metrics. A scraper pulls metrics from Prometheus-compatible sources and sends them to your Amazon Managed Service for Prometheus workspace. You can configure scrapers to collect metrics from Amazon EKS clusters, Amazon MSK clusters, or from VPC-based sources that support DNS-based service discovery. Scrapers are flexible, and can be configured to control what metrics are collected, the frequency of collection, what transformations are applied to the metrics, and more.</p> <p>An IAM role will be created for you that Amazon Managed Service for Prometheus uses to access the metrics in your source. You must configure this role with a policy that allows it to scrape metrics from your source. For Amazon EKS sources, see <a href=\"https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-collector-how-to.html#AMP-collector-eks-setup\">Configuring your Amazon EKS cluster</a> in the <i>Amazon Managed Service for Prometheus User Guide</i>.</p> <p>The <code>scrapeConfiguration</code> parameter contains the base-64 encoded YAML configuration for the scraper.</p> <p>When creating a scraper, the service creates a <code>Network Interface</code> in each <b>Availability Zone</b> that are passed into <code>CreateScraper</code> through subnets. These network interfaces are used to connect to your source within the VPC for scraping metrics.</p> <note> <p>For more information about collectors, including what metrics are collected, and how to configure the scraper, see <a href=\"https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-collector-how-to.html\">Using an Amazon Web Services managed collector</a> in the <i>Amazon Managed Service for Prometheus User Guide</i>.</p> </note>",
       "idempotent":true
     },
     "CreateWorkspace":{
@@ -149,6 +169,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes the alert manager definition from a workspace.</p>",
+      "idempotent":true
+    },
+    "DeleteAnomalyDetector":{
+      "name":"DeleteAnomalyDetector",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/workspaces/{workspaceId}/anomalydetectors/{anomalyDetectorId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteAnomalyDetectorRequest"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Removes an anomaly detector from a workspace. This operation is idempotent.</p>",
       "idempotent":true
     },
     "DeleteLoggingConfiguration":{
@@ -298,7 +337,27 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves the full information about the alert manager definition for a workspace.</p>"
+      "documentation":"<p>Retrieves the full information about the alert manager definition for a workspace.</p>",
+      "readonly":true
+    },
+    "DescribeAnomalyDetector":{
+      "name":"DescribeAnomalyDetector",
+      "http":{
+        "method":"GET",
+        "requestUri":"/workspaces/{workspaceId}/anomalydetectors/{anomalyDetectorId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeAnomalyDetectorRequest"},
+      "output":{"shape":"DescribeAnomalyDetectorResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a specific anomaly detector, including its status and configuration.</p>",
+      "readonly":true
     },
     "DescribeLoggingConfiguration":{
       "name":"DescribeLoggingConfiguration",
@@ -315,7 +374,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns complete information about the current rules and alerting logging configuration of the workspace.</p> <note> <p>These logging configurations are only for rules and alerting logs.</p> </note>"
+      "documentation":"<p>Returns complete information about the current rules and alerting logging configuration of the workspace.</p> <note> <p>These logging configurations are only for rules and alerting logs.</p> </note>",
+      "readonly":true
     },
     "DescribeQueryLoggingConfiguration":{
       "name":"DescribeQueryLoggingConfiguration",
@@ -332,7 +392,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves the details of the query logging configuration for the specified workspace.</p>"
+      "documentation":"<p>Retrieves the details of the query logging configuration for the specified workspace.</p>",
+      "readonly":true
     },
     "DescribeResourcePolicy":{
       "name":"DescribeResourcePolicy",
@@ -350,7 +411,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns information about the resource-based policy attached to an Amazon Managed Service for Prometheus workspace.</p>"
+      "documentation":"<p>Returns information about the resource-based policy attached to an Amazon Managed Service for Prometheus workspace.</p>",
+      "readonly":true
     },
     "DescribeRuleGroupsNamespace":{
       "name":"DescribeRuleGroupsNamespace",
@@ -368,7 +430,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns complete information about one rule groups namespace. To retrieve a list of rule groups namespaces, use <code>ListRuleGroupsNamespaces</code>.</p>"
+      "documentation":"<p>Returns complete information about one rule groups namespace. To retrieve a list of rule groups namespaces, use <code>ListRuleGroupsNamespaces</code>.</p>",
+      "readonly":true
     },
     "DescribeScraper":{
       "name":"DescribeScraper",
@@ -386,7 +449,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>The <code>DescribeScraper</code> operation displays information about an existing scraper.</p>"
+      "documentation":"<p>The <code>DescribeScraper</code> operation displays information about an existing scraper.</p>",
+      "readonly":true
     },
     "DescribeScraperLoggingConfiguration":{
       "name":"DescribeScraperLoggingConfiguration",
@@ -403,7 +467,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Describes the logging configuration for a Amazon Managed Service for Prometheus scraper.</p>"
+      "documentation":"<p>Describes the logging configuration for a Amazon Managed Service for Prometheus scraper.</p>",
+      "readonly":true
     },
     "DescribeWorkspace":{
       "name":"DescribeWorkspace",
@@ -421,7 +486,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns information about an existing workspace. </p>"
+      "documentation":"<p>Returns information about an existing workspace. </p>",
+      "readonly":true
     },
     "DescribeWorkspaceConfiguration":{
       "name":"DescribeWorkspaceConfiguration",
@@ -439,7 +505,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Use this operation to return information about the configuration of a workspace. The configuration details returned include workspace configuration status, label set limits, and retention period.</p>"
+      "documentation":"<p>Use this operation to return information about the configuration of a workspace. The configuration details returned include workspace configuration status, label set limits, and retention period.</p>",
+      "readonly":true
     },
     "GetDefaultScraperConfiguration":{
       "name":"GetDefaultScraperConfiguration",
@@ -455,7 +522,27 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>The <code>GetDefaultScraperConfiguration</code> operation returns the default scraper configuration used when Amazon EKS creates a scraper for you.</p>"
+      "documentation":"<p>The <code>GetDefaultScraperConfiguration</code> operation returns the default scraper configuration used when Amazon EKS creates a scraper for you.</p>",
+      "readonly":true
+    },
+    "ListAnomalyDetectors":{
+      "name":"ListAnomalyDetectors",
+      "http":{
+        "method":"GET",
+        "requestUri":"/workspaces/{workspaceId}/anomalydetectors",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAnomalyDetectorsRequest"},
+      "output":{"shape":"ListAnomalyDetectorsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns a paginated list of anomaly detectors for a workspace with optional filtering by alias.</p>",
+      "readonly":true
     },
     "ListRuleGroupsNamespaces":{
       "name":"ListRuleGroupsNamespaces",
@@ -473,7 +560,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns a list of rule groups namespaces in a workspace.</p>"
+      "documentation":"<p>Returns a list of rule groups namespaces in a workspace.</p>",
+      "readonly":true
     },
     "ListScrapers":{
       "name":"ListScrapers",
@@ -490,7 +578,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>The <code>ListScrapers</code> operation lists all of the scrapers in your account. This includes scrapers being created or deleted. You can optionally filter the returned list.</p>"
+      "documentation":"<p>The <code>ListScrapers</code> operation lists all of the scrapers in your account. This includes scrapers being created or deleted. You can optionally filter the returned list.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -508,7 +597,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>The <code>ListTagsForResource</code> operation returns the tags that are associated with an Amazon Managed Service for Prometheus resource. Currently, the only resources that can be tagged are scrapers, workspaces, and rule groups namespaces. </p>"
+      "documentation":"<p>The <code>ListTagsForResource</code> operation returns the tags that are associated with an Amazon Managed Service for Prometheus resource. Currently, the only resources that can be tagged are scrapers, workspaces, and rule groups namespaces. </p>",
+      "readonly":true
     },
     "ListWorkspaces":{
       "name":"ListWorkspaces",
@@ -525,7 +615,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists all of the Amazon Managed Service for Prometheus workspaces in your account. This includes workspaces being created or deleted. </p>"
+      "documentation":"<p>Lists all of the Amazon Managed Service for Prometheus workspaces in your account. This includes workspaces being created or deleted. </p>",
+      "readonly":true
     },
     "PutAlertManagerDefinition":{
       "name":"PutAlertManagerDefinition",
@@ -546,6 +637,26 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Updates an existing alert manager definition in a workspace. If the workspace does not already have an alert manager definition, don't use this operation to create it. Instead, use <code>CreateAlertManagerDefinition</code>.</p>",
+      "idempotent":true
+    },
+    "PutAnomalyDetector":{
+      "name":"PutAnomalyDetector",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/workspaces/{workspaceId}/anomalydetectors/{anomalyDetectorId}",
+        "responseCode":202
+      },
+      "input":{"shape":"PutAnomalyDetectorRequest"},
+      "output":{"shape":"PutAnomalyDetectorResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>When you call <code>PutAnomalyDetector</code>, the operation creates a new anomaly detector if one doesn't exist, or updates an existing one. Each call to this operation triggers a complete retraining of the detector, which includes querying the minimum required samples and backfilling the detector with historical data. This process occurs regardless of whether you're making a minor change like updating the evaluation interval or making more substantial modifications. The operation serves as the single method for creating, updating, and retraining anomaly detectors.</p>",
       "idempotent":true
     },
     "PutResourcePolicy":{
@@ -586,7 +697,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Updates an existing rule groups namespace within a workspace. A rule groups namespace is associated with exactly one rules file. A workspace can have multiple rule groups namespaces.</p> <p>Use this operation only to update existing rule groups namespaces. To create a new rule groups namespace, use <code>CreateRuleGroupsNamespace</code>.</p> <p>You can't use this operation to add tags to an existing rule groups namespace. Instead, use <code>TagResource</code>.</p>",
+      "documentation":"<p>Updates an existing rule groups namespace within a workspace. A rule groups namespace is associated with exactly one rules file. A workspace can have multiple rule groups namespaces.</p> <important> <p>The combined length of a rule group namespace and a rule group name cannot exceed 721 UTF-8 bytes.</p> </important> <p>Use this operation only to update existing rule groups namespaces. To create a new rule groups namespace, use <code>CreateRuleGroupsNamespace</code>.</p> <p>You can't use this operation to add tags to an existing rule groups namespace. Instead, use <code>TagResource</code>.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -833,7 +944,190 @@
       },
       "documentation":"<p>The <code>AmpConfiguration</code> structure defines the Amazon Managed Service for Prometheus instance a scraper should send metrics to.</p>"
     },
+    "AnomalyDetectorAlias":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[0-9A-Za-z][-.0-9A-Z_a-z]*"
+    },
+    "AnomalyDetectorArn":{
+      "type":"string",
+      "pattern":"arn:aws[-a-z]*:aps:[-a-z0-9]+:[0-9]{12}:anomalydetector/ws-.+/ad-.+"
+    },
+    "AnomalyDetectorConfiguration":{
+      "type":"structure",
+      "members":{
+        "randomCutForest":{
+          "shape":"RandomCutForestConfiguration",
+          "documentation":"<p>The Random Cut Forest algorithm configuration for anomaly detection.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the anomaly detection algorithm.</p>",
+      "union":true
+    },
+    "AnomalyDetectorDescription":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "anomalyDetectorId",
+        "alias",
+        "status",
+        "createdAt",
+        "modifiedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"AnomalyDetectorArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the anomaly detector.</p>"
+        },
+        "anomalyDetectorId":{
+          "shape":"AnomalyDetectorId",
+          "documentation":"<p>The unique identifier of the anomaly detector.</p>"
+        },
+        "alias":{
+          "shape":"AnomalyDetectorAlias",
+          "documentation":"<p>The user-friendly name of the anomaly detector.</p>"
+        },
+        "evaluationIntervalInSeconds":{
+          "shape":"AnomalyDetectorEvaluationInterval",
+          "documentation":"<p>The frequency, in seconds, at which the anomaly detector evaluates metrics.</p>"
+        },
+        "missingDataAction":{
+          "shape":"AnomalyDetectorMissingDataAction",
+          "documentation":"<p>The action taken when data is missing during evaluation.</p>"
+        },
+        "configuration":{
+          "shape":"AnomalyDetectorConfiguration",
+          "documentation":"<p>The algorithm configuration of the anomaly detector.</p>"
+        },
+        "labels":{
+          "shape":"PrometheusMetricLabelMap",
+          "documentation":"<p>The Amazon Managed Service for Prometheus metric labels associated with the anomaly detector.</p>"
+        },
+        "status":{
+          "shape":"AnomalyDetectorStatus",
+          "documentation":"<p>The current status of the anomaly detector.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the anomaly detector was created.</p>"
+        },
+        "modifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the anomaly detector was last modified.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags applied to the anomaly detector.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about an anomaly detector.</p>"
+    },
+    "AnomalyDetectorEvaluationInterval":{
+      "type":"integer",
+      "box":true,
+      "max":86400,
+      "min":30
+    },
+    "AnomalyDetectorId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"ad-[0-9A-Za-z][-.0-9A-Z_a-z]*"
+    },
+    "AnomalyDetectorMissingDataAction":{
+      "type":"structure",
+      "members":{
+        "markAsAnomaly":{
+          "shape":"Boolean",
+          "documentation":"<p>Marks missing data points as anomalies.</p>"
+        },
+        "skip":{
+          "shape":"Boolean",
+          "documentation":"<p>Skips evaluation when data is missing.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the action to take when data is missing during anomaly detection evaluation.</p>",
+      "union":true
+    },
+    "AnomalyDetectorStatus":{
+      "type":"structure",
+      "required":["statusCode"],
+      "members":{
+        "statusCode":{
+          "shape":"AnomalyDetectorStatusCode",
+          "documentation":"<p>The status code of the anomaly detector.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>A description of the current status of the anomaly detector.</p>"
+        }
+      },
+      "documentation":"<p>The status information of an anomaly detector.</p>"
+    },
+    "AnomalyDetectorStatusCode":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "DELETING",
+        "CREATION_FAILED",
+        "UPDATE_FAILED",
+        "DELETION_FAILED"
+      ]
+    },
+    "AnomalyDetectorSummary":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "anomalyDetectorId",
+        "alias",
+        "status",
+        "createdAt",
+        "modifiedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"AnomalyDetectorArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the anomaly detector.</p>"
+        },
+        "anomalyDetectorId":{
+          "shape":"AnomalyDetectorId",
+          "documentation":"<p>The unique identifier of the anomaly detector.</p>"
+        },
+        "alias":{
+          "shape":"AnomalyDetectorAlias",
+          "documentation":"<p>The user-friendly name of the anomaly detector.</p>"
+        },
+        "status":{
+          "shape":"AnomalyDetectorStatus",
+          "documentation":"<p>The current status of the anomaly detector.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the anomaly detector was created.</p>"
+        },
+        "modifiedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the anomaly detector was last modified.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags applied to the anomaly detector.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about an anomaly detector for list operations.</p>"
+    },
+    "AnomalyDetectorSummaryList":{
+      "type":"list",
+      "member":{"shape":"AnomalyDetectorSummary"}
+    },
     "Blob":{"type":"blob"},
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
     "CloudWatchLogDestination":{
       "type":"structure",
       "required":["logGroupArn"],
@@ -923,6 +1217,84 @@
         }
       },
       "documentation":"<p>Represents the output of a <code>CreateAlertManagerDefinition</code> operation.</p>"
+    },
+    "CreateAnomalyDetectorRequest":{
+      "type":"structure",
+      "required":[
+        "workspaceId",
+        "alias",
+        "configuration"
+      ],
+      "members":{
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The identifier of the workspace where the anomaly detector will be created.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        },
+        "alias":{
+          "shape":"AnomalyDetectorAlias",
+          "documentation":"<p>A user-friendly name for the anomaly detector.</p>"
+        },
+        "evaluationIntervalInSeconds":{
+          "shape":"AnomalyDetectorEvaluationInterval",
+          "documentation":"<p>The frequency, in seconds, at which the anomaly detector evaluates metrics. The default value is 60 seconds.</p>"
+        },
+        "missingDataAction":{
+          "shape":"AnomalyDetectorMissingDataAction",
+          "documentation":"<p>Specifies the action to take when data is missing during evaluation.</p>"
+        },
+        "configuration":{
+          "shape":"AnomalyDetectorConfiguration",
+          "documentation":"<p>The algorithm configuration for the anomaly detector.</p>"
+        },
+        "labels":{
+          "shape":"CreateAnomalyDetectorRequestLabelsMap",
+          "documentation":"<p>The Amazon Managed Service for Prometheus metric labels to associate with the anomaly detector.</p>"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The metadata to apply to the anomaly detector to assist with categorization and organization.</p>"
+        }
+      }
+    },
+    "CreateAnomalyDetectorRequestLabelsMap":{
+      "type":"map",
+      "key":{"shape":"PrometheusMetricLabelKey"},
+      "value":{"shape":"PrometheusMetricLabelValue"},
+      "max":140,
+      "min":0
+    },
+    "CreateAnomalyDetectorResponse":{
+      "type":"structure",
+      "required":[
+        "anomalyDetectorId",
+        "arn",
+        "status"
+      ],
+      "members":{
+        "anomalyDetectorId":{
+          "shape":"AnomalyDetectorId",
+          "documentation":"<p>The unique identifier of the created anomaly detector.</p>"
+        },
+        "arn":{
+          "shape":"AnomalyDetectorArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created anomaly detector.</p>"
+        },
+        "status":{
+          "shape":"AnomalyDetectorStatus",
+          "documentation":"<p>The status information of the created anomaly detector.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags applied to the created anomaly detector.</p>"
+        }
+      }
     },
     "CreateLoggingConfigurationRequest":{
       "type":"structure",
@@ -1073,7 +1445,7 @@
         },
         "source":{
           "shape":"Source",
-          "documentation":"<p>The Amazon EKS cluster from which the scraper will collect metrics.</p>"
+          "documentation":"<p>The Amazon EKS or Amazon Web Services cluster from which the scraper will collect metrics.</p>"
         },
         "destination":{
           "shape":"Destination",
@@ -1195,6 +1567,34 @@
         }
       },
       "documentation":"<p>Represents the input of a <code>DeleteAlertManagerDefinition</code> operation.</p>"
+    },
+    "DeleteAnomalyDetectorRequest":{
+      "type":"structure",
+      "required":[
+        "workspaceId",
+        "anomalyDetectorId"
+      ],
+      "members":{
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The identifier of the workspace containing the anomaly detector to delete.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        },
+        "anomalyDetectorId":{
+          "shape":"AnomalyDetectorId",
+          "documentation":"<p>The identifier of the anomaly detector to delete.</p>",
+          "location":"uri",
+          "locationName":"anomalyDetectorId"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
     },
     "DeleteLoggingConfigurationRequest":{
       "type":"structure",
@@ -1389,6 +1789,37 @@
         }
       },
       "documentation":"<p>Represents the output of a <code>DescribeAlertManagerDefinition</code> operation.</p>"
+    },
+    "DescribeAnomalyDetectorRequest":{
+      "type":"structure",
+      "required":[
+        "workspaceId",
+        "anomalyDetectorId"
+      ],
+      "members":{
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The identifier of the workspace containing the anomaly detector.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        },
+        "anomalyDetectorId":{
+          "shape":"AnomalyDetectorId",
+          "documentation":"<p>The identifier of the anomaly detector to describe.</p>",
+          "location":"uri",
+          "locationName":"anomalyDetectorId"
+        }
+      }
+    },
+    "DescribeAnomalyDetectorResponse":{
+      "type":"structure",
+      "required":["anomalyDetector"],
+      "members":{
+        "anomalyDetector":{
+          "shape":"AnomalyDetectorDescription",
+          "documentation":"<p>The detailed information about the anomaly detector.</p>"
+        }
+      }
     },
     "DescribeLoggingConfigurationRequest":{
       "type":"structure",
@@ -1697,6 +2128,31 @@
       "min":1,
       "pattern":"[!-~]+"
     },
+    "IgnoreNearExpected":{
+      "type":"structure",
+      "members":{
+        "amount":{
+          "shape":"IgnoreNearExpectedAmountDouble",
+          "documentation":"<p>The absolute amount by which values can differ from expected values before being considered anomalous.</p>"
+        },
+        "ratio":{
+          "shape":"IgnoreNearExpectedRatioDouble",
+          "documentation":"<p>The ratio by which values can differ from expected values before being considered anomalous.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for threshold settings that determine when values near expected values should be ignored during anomaly detection.</p>",
+      "union":true
+    },
+    "IgnoreNearExpectedAmountDouble":{
+      "type":"double",
+      "box":true,
+      "min":0
+    },
+    "IgnoreNearExpectedRatioDouble":{
+      "type":"double",
+      "box":true,
+      "min":0
+    },
     "Integer":{
       "type":"integer",
       "box":true
@@ -1779,6 +2235,56 @@
     "LimitsPerLabelSetList":{
       "type":"list",
       "member":{"shape":"LimitsPerLabelSet"}
+    },
+    "ListAnomalyDetectorsRequest":{
+      "type":"structure",
+      "required":["workspaceId"],
+      "members":{
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The identifier of the workspace containing the anomaly detectors to list.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        },
+        "alias":{
+          "shape":"AnomalyDetectorAlias",
+          "documentation":"<p>Filters the results to anomaly detectors with the specified alias.</p>",
+          "location":"querystring",
+          "locationName":"alias"
+        },
+        "maxResults":{
+          "shape":"ListAnomalyDetectorsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in a single call. Valid range is 1 to 1000.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token to continue retrieving results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListAnomalyDetectorsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListAnomalyDetectorsResponse":{
+      "type":"structure",
+      "required":["anomalyDetectors"],
+      "members":{
+        "anomalyDetectors":{
+          "shape":"AnomalyDetectorSummaryList",
+          "documentation":"<p>The list of anomaly detectors in the workspace.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The pagination token to retrieve the next set of results.</p>"
+        }
+      }
     },
     "ListRuleGroupsNamespacesRequest":{
       "type":"structure",
@@ -2053,6 +2559,22 @@
       "max":1000,
       "min":0
     },
+    "PrometheusMetricLabelKey":{
+      "type":"string",
+      "max":7168,
+      "min":1,
+      "pattern":"(?!__)[a-zA-Z_][a-zA-Z0-9_]*"
+    },
+    "PrometheusMetricLabelMap":{
+      "type":"map",
+      "key":{"shape":"PrometheusMetricLabelKey"},
+      "value":{"shape":"PrometheusMetricLabelValue"}
+    },
+    "PrometheusMetricLabelValue":{
+      "type":"string",
+      "max":7168,
+      "min":1
+    },
     "PutAlertManagerDefinitionRequest":{
       "type":"structure",
       "required":[
@@ -2088,6 +2610,75 @@
         }
       },
       "documentation":"<p>Represents the output of a <code>PutAlertManagerDefinition</code> operation.</p>"
+    },
+    "PutAnomalyDetectorRequest":{
+      "type":"structure",
+      "required":[
+        "workspaceId",
+        "anomalyDetectorId",
+        "configuration"
+      ],
+      "members":{
+        "workspaceId":{
+          "shape":"WorkspaceId",
+          "documentation":"<p>The identifier of the workspace containing the anomaly detector to update.</p>",
+          "location":"uri",
+          "locationName":"workspaceId"
+        },
+        "anomalyDetectorId":{
+          "shape":"AnomalyDetectorId",
+          "documentation":"<p>The identifier of the anomaly detector to update.</p>",
+          "location":"uri",
+          "locationName":"anomalyDetectorId"
+        },
+        "evaluationIntervalInSeconds":{
+          "shape":"AnomalyDetectorEvaluationInterval",
+          "documentation":"<p>The frequency, in seconds, at which the anomaly detector evaluates metrics.</p>"
+        },
+        "missingDataAction":{
+          "shape":"AnomalyDetectorMissingDataAction",
+          "documentation":"<p>Specifies the action to take when data is missing during evaluation.</p>"
+        },
+        "configuration":{
+          "shape":"AnomalyDetectorConfiguration",
+          "documentation":"<p>The algorithm configuration for the anomaly detector.</p>"
+        },
+        "labels":{
+          "shape":"PrometheusMetricLabelMap",
+          "documentation":"<p>The Amazon Managed Service for Prometheus metric labels to associate with the anomaly detector.</p>"
+        },
+        "clientToken":{
+          "shape":"IdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "PutAnomalyDetectorResponse":{
+      "type":"structure",
+      "required":[
+        "anomalyDetectorId",
+        "arn",
+        "status"
+      ],
+      "members":{
+        "anomalyDetectorId":{
+          "shape":"AnomalyDetectorId",
+          "documentation":"<p>The unique identifier of the updated anomaly detector.</p>"
+        },
+        "arn":{
+          "shape":"AnomalyDetectorArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated anomaly detector.</p>"
+        },
+        "status":{
+          "shape":"AnomalyDetectorStatus",
+          "documentation":"<p>The status information of the updated anomaly detector.</p>"
+        },
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags applied to the updated anomaly detector.</p>"
+        }
+      }
     },
     "PutResourcePolicyRequest":{
       "type":"structure",
@@ -2251,6 +2842,50 @@
         "CREATION_FAILED",
         "UPDATE_FAILED"
       ]
+    },
+    "RandomCutForestConfiguration":{
+      "type":"structure",
+      "required":["query"],
+      "members":{
+        "query":{
+          "shape":"RandomCutForestQuery",
+          "documentation":"<p>The Prometheus query used to retrieve the time-series data for anomaly detection.</p> <important> <p>Random Cut Forest queries must be wrapped by a supported PromQL aggregation operator. For more information, see <a href=\"https://prometheus.io/docs/prometheus/latest/querying/operators/#aggregation-operators\">Aggregation operators</a> on the <i>Prometheus docs</i> website.</p> <p> <b>Supported PromQL aggregation operators</b>: <code>avg</code>, <code>count</code>, <code>group</code>, <code>max</code>, <code>min</code>, <code>quantile</code>, <code>stddev</code>, <code>stdvar</code>, and <code>sum</code>.</p> </important>"
+        },
+        "shingleSize":{
+          "shape":"RandomCutForestConfigurationShingleSizeInteger",
+          "documentation":"<p>The number of consecutive data points used to create a shingle for the Random Cut Forest algorithm. The default number is 8 consecutive data points.</p>"
+        },
+        "sampleSize":{
+          "shape":"RandomCutForestConfigurationSampleSizeInteger",
+          "documentation":"<p>The number of data points sampled from the input stream for the Random Cut Forest algorithm. The default number is 256 consecutive data points.</p>"
+        },
+        "ignoreNearExpectedFromAbove":{
+          "shape":"IgnoreNearExpected",
+          "documentation":"<p>Configuration for ignoring values that are near expected values from above during anomaly detection.</p>"
+        },
+        "ignoreNearExpectedFromBelow":{
+          "shape":"IgnoreNearExpected",
+          "documentation":"<p>Configuration for ignoring values that are near expected values from below during anomaly detection.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for the Random Cut Forest algorithm used for anomaly detection in time-series data.</p>"
+    },
+    "RandomCutForestConfigurationSampleSizeInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1024,
+      "min":256
+    },
+    "RandomCutForestConfigurationShingleSizeInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1024,
+      "min":2
+    },
+    "RandomCutForestQuery":{
+      "type":"string",
+      "max":8192,
+      "min":1
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -2748,6 +3383,10 @@
         "eksConfiguration":{
           "shape":"EksConfiguration",
           "documentation":"<p>The Amazon EKS cluster from which a scraper collects metrics.</p>"
+        },
+        "vpcConfiguration":{
+          "shape":"VpcConfiguration",
+          "documentation":"<p>The Amazon VPC configuration for the Prometheus collector when connecting to Amazon MSK clusters. This configuration enables secure, private network connectivity between the collector and your Amazon MSK cluster within your Amazon VPC.</p>"
         }
       },
       "documentation":"<p>The source of collected metrics for a scraper.</p>",
@@ -3177,6 +3816,24 @@
         "FIELD_VALIDATION_FAILED",
         "OTHER"
       ]
+    },
+    "VpcConfiguration":{
+      "type":"structure",
+      "required":[
+        "securityGroupIds",
+        "subnetIds"
+      ],
+      "members":{
+        "securityGroupIds":{
+          "shape":"SecurityGroupIds",
+          "documentation":"<p>The security group IDs that control network access for the Prometheus collector. These security groups must allow the collector to communicate with your Amazon MSK cluster on the required ports.</p>"
+        },
+        "subnetIds":{
+          "shape":"SubnetIds",
+          "documentation":"<p>The subnet IDs where the Prometheus collector will be deployed. The subnets must be in the same Amazon VPC as your Amazon MSK cluster and have network connectivity to the cluster.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon VPC configuration that specifies the network settings for a Prometheus collector to securely connect to Amazon MSK clusters. This configuration includes the security groups and subnets that control network access and placement for the collector.</p>"
     },
     "WorkspaceAlias":{
       "type":"string",

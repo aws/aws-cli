@@ -219,6 +219,30 @@
       ],
       "documentation":"<p>Creates a new origin access identity. If you're using Amazon S3 for your origin, you can use an origin access identity to require users to access your content using a CloudFront URL instead of the Amazon S3 URL. For more information about how to use origin access identities, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html\">Serving Private Content through CloudFront</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
     },
+    "CreateConnectionFunction":{
+      "name":"CreateConnectionFunction2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/connection-function",
+        "responseCode":201
+      },
+      "input":{
+        "shape":"CreateConnectionFunctionRequest",
+        "locationName":"CreateConnectionFunctionRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"CreateConnectionFunctionResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"EntityAlreadyExists"},
+        {"shape":"InvalidTagging"},
+        {"shape":"EntityLimitExceeded"},
+        {"shape":"InvalidArgument"},
+        {"shape":"EntitySizeLimitExceeded"}
+      ],
+      "documentation":"<p>Creates a connection function.</p>"
+    },
     "CreateConnectionGroup":{
       "name":"CreateConnectionGroup2020_05_31",
       "http":{
@@ -755,6 +779,29 @@
       ],
       "documentation":"<p>This API is deprecated. Amazon CloudFront is deprecating real-time messaging protocol (RTMP) distributions on December 31, 2020. For more information, <a href=\"http://forums.aws.amazon.com/ann.jspa?annID=7356\">read the announcement</a> on the Amazon CloudFront discussion forum.</p>"
     },
+    "CreateTrustStore":{
+      "name":"CreateTrustStore2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/trust-store",
+        "responseCode":201
+      },
+      "input":{
+        "shape":"CreateTrustStoreRequest",
+        "locationName":"CreateTrustStoreRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"CreateTrustStoreResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"EntityAlreadyExists"},
+        {"shape":"InvalidTagging"},
+        {"shape":"EntityLimitExceeded"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Creates a trust store.</p>"
+    },
     "CreateVpcOrigin":{
       "name":"CreateVpcOrigin2020_05_31",
       "http":{
@@ -834,6 +881,25 @@
       ],
       "documentation":"<p>Delete an origin access identity.</p>"
     },
+    "DeleteConnectionFunction":{
+      "name":"DeleteConnectionFunction2020_05_31",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2020-05-31/connection-function/{Id}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteConnectionFunctionRequest"},
+      "errors":[
+        {"shape":"CannotDeleteEntityWhileInUse"},
+        {"shape":"PreconditionFailed"},
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Deletes a connection function.</p>"
+    },
     "DeleteConnectionGroup":{
       "name":"DeleteConnectionGroup2020_05_31",
       "http":{
@@ -886,7 +952,7 @@
         {"shape":"DistributionNotDisabled"},
         {"shape":"InvalidIfMatchVersion"}
       ],
-      "documentation":"<p>Delete a distribution.</p>"
+      "documentation":"<p>Delete a distribution.</p> <important> <p>Before you can delete a distribution, you must disable it, which requires permission to update the distribution. Once deleted, a distribution cannot be recovered.</p> </important>"
     },
     "DeleteDistributionTenant":{
       "name":"DeleteDistributionTenant2020_05_31",
@@ -1080,6 +1146,28 @@
       ],
       "documentation":"<p>Deletes a real-time log configuration.</p> <p>You cannot delete a real-time log configuration if it's attached to a cache behavior. First update your distributions to remove the real-time log configuration from all cache behaviors, then delete the real-time log configuration.</p> <p>To delete a real-time log configuration, you can provide the configuration's name or its Amazon Resource Name (ARN). You must provide at least one. If you provide both, CloudFront uses the name to identify the real-time log configuration to delete.</p>"
     },
+    "DeleteResourcePolicy":{
+      "name":"DeleteResourcePolicy2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/delete-resource-policy",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"DeleteResourcePolicyRequest",
+        "locationName":"DeleteResourcePolicyRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "errors":[
+        {"shape":"PreconditionFailed"},
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"IllegalDelete"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Deletes the resource policy attached to the CloudFront resource.</p>"
+    },
     "DeleteResponseHeadersPolicy":{
       "name":"DeleteResponseHeadersPolicy2020_05_31",
       "http":{
@@ -1115,6 +1203,24 @@
       ],
       "documentation":"<p>Delete a streaming distribution. To delete an RTMP distribution using the CloudFront API, perform the following steps.</p> <p> <b>To delete an RTMP distribution using the CloudFront API</b>:</p> <ol> <li> <p>Disable the RTMP distribution.</p> </li> <li> <p>Submit a <code>GET Streaming Distribution Config</code> request to get the current configuration and the <code>Etag</code> header for the distribution. </p> </li> <li> <p>Update the XML document that was returned in the response to your <code>GET Streaming Distribution Config</code> request to change the value of <code>Enabled</code> to <code>false</code>.</p> </li> <li> <p>Submit a <code>PUT Streaming Distribution Config</code> request to update the configuration for your distribution. In the request body, include the XML document that you updated in Step 3. Then set the value of the HTTP <code>If-Match</code> header to the value of the <code>ETag</code> header that CloudFront returned when you submitted the <code>GET Streaming Distribution Config</code> request in Step 2.</p> </li> <li> <p>Review the response to the <code>PUT Streaming Distribution Config</code> request to confirm that the distribution was successfully disabled.</p> </li> <li> <p>Submit a <code>GET Streaming Distribution Config</code> request to confirm that your changes have propagated. When propagation is complete, the value of <code>Status</code> is <code>Deployed</code>.</p> </li> <li> <p>Submit a <code>DELETE Streaming Distribution</code> request. Set the value of the HTTP <code>If-Match</code> header to the value of the <code>ETag</code> header that CloudFront returned when you submitted the <code>GET Streaming Distribution Config</code> request in Step 2.</p> </li> <li> <p>Review the response to your <code>DELETE Streaming Distribution</code> request to confirm that the distribution was successfully deleted.</p> </li> </ol> <p>For information about deleting a distribution using the CloudFront console, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/HowToDeleteDistribution.html\">Deleting a Distribution</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
     },
+    "DeleteTrustStore":{
+      "name":"DeleteTrustStore2020_05_31",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2020-05-31/trust-store/{Id}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteTrustStoreRequest"},
+      "errors":[
+        {"shape":"CannotDeleteEntityWhileInUse"},
+        {"shape":"PreconditionFailed"},
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"InvalidArgument"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Deletes a trust store.</p>"
+    },
     "DeleteVpcOrigin":{
       "name":"DeleteVpcOrigin2020_05_31",
       "http":{
@@ -1135,6 +1241,23 @@
         {"shape":"InvalidIfMatchVersion"}
       ],
       "documentation":"<p>Delete an Amazon CloudFront VPC origin.</p>"
+    },
+    "DescribeConnectionFunction":{
+      "name":"DescribeConnectionFunction2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/connection-function/{Identifier}/describe",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeConnectionFunctionRequest"},
+      "output":{"shape":"DescribeConnectionFunctionResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Describes a connection function.</p>"
     },
     "DescribeFunction":{
       "name":"DescribeFunction2020_05_31",
@@ -1280,6 +1403,22 @@
         {"shape":"NoSuchCloudFrontOriginAccessIdentity"}
       ],
       "documentation":"<p>Get the configuration information about an origin access identity.</p>"
+    },
+    "GetConnectionFunction":{
+      "name":"GetConnectionFunction2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/connection-function/{Identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetConnectionFunctionRequest"},
+      "output":{"shape":"GetConnectionFunctionResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"UnsupportedOperation"}
+      ],
+      "documentation":"<p>Gets a connection function.</p>"
     },
     "GetConnectionGroup":{
       "name":"GetConnectionGroup2020_05_31",
@@ -1678,6 +1817,27 @@
       ],
       "documentation":"<p>Gets a real-time log configuration.</p> <p>To get a real-time log configuration, you can provide the configuration's name or its Amazon Resource Name (ARN). You must provide at least one. If you provide both, CloudFront uses the name to identify the real-time log configuration to get.</p>"
     },
+    "GetResourcePolicy":{
+      "name":"GetResourcePolicy2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/get-resource-policy",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"GetResourcePolicyRequest",
+        "locationName":"GetResourcePolicyRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"GetResourcePolicyResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Retrieves the resource policy for the specified CloudFront resource that you own and have shared.</p>"
+    },
     "GetResponseHeadersPolicy":{
       "name":"GetResponseHeadersPolicy2020_05_31",
       "http":{
@@ -1737,6 +1897,22 @@
         {"shape":"NoSuchStreamingDistribution"}
       ],
       "documentation":"<p>Get the configuration information about a streaming distribution.</p>"
+    },
+    "GetTrustStore":{
+      "name":"GetTrustStore2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/trust-store/{Identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTrustStoreRequest"},
+      "output":{"shape":"GetTrustStoreResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Gets a trust store.</p>"
     },
     "GetVpcOrigin":{
       "name":"GetVpcOrigin2020_05_31",
@@ -1816,6 +1992,26 @@
         {"shape":"InvalidArgument"}
       ],
       "documentation":"<p><note> <p>The <code>ListConflictingAliases</code> API operation only supports standard distributions. To list domain conflicts for both standard distributions and distribution tenants, we recommend that you use the <a href=\"https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_ListDomainConflicts.html\">ListDomainConflicts</a> API operation instead.</p> </note> <p>Gets a list of aliases that conflict or overlap with the provided alias, and the associated CloudFront standard distribution and Amazon Web Services accounts for each conflicting alias. An alias is commonly known as a custom domain or vanity domain. It can also be called a CNAME or alternate domain name.</p> <p>In the returned list, the standard distribution and account IDs are partially hidden, which allows you to identify the standard distribution and accounts that you own, and helps to protect the information of ones that you don't own.</p> <p>Use this operation to find aliases that are in use in CloudFront that conflict or overlap with the provided alias. For example, if you provide <code>www.example.com</code> as input, the returned list can include <code>www.example.com</code> and the overlapping wildcard alternate domain name (<code><em>.example.com</code>), if they exist. If you provide <code></em>.example.com</code> as input, the returned list can include <code>*.example.com</code> and any alternate domain names covered by that wildcard (for example, <code>www.example.com</code>, <code>test.example.com</code>, <code>dev.example.com</code>, and so on), if they exist.</p> <p>To list conflicting aliases, specify the alias to search and the ID of a standard distribution in your account that has an attached TLS certificate that includes the provided alias. For more information, including how to set up the standard distribution and certificate, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/CNAMEs.html#alternate-domain-names-move\">Moving an alternate domain name to a different standard distribution or distribution tenant</a> in the <i>Amazon CloudFront Developer Guide</i>.</p> <p>You can optionally specify the maximum number of items to receive in the response. If the total number of items in the list exceeds the maximum that you specify, or the default maximum, the response is paginated. To get the next page of items, send a subsequent request that specifies the <code>NextMarker</code> value from the current response as the <code>Marker</code> value in the subsequent request.</p></p>"
+    },
+    "ListConnectionFunctions":{
+      "name":"ListConnectionFunctions2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/connection-functions",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"ListConnectionFunctionsRequest",
+        "locationName":"ListConnectionFunctionsRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"ListConnectionFunctionsResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Lists connection functions.</p>"
     },
     "ListConnectionGroups":{
       "name":"ListConnectionGroups2020_05_31",
@@ -1940,6 +2136,22 @@
       ],
       "documentation":"<p>Gets a list of distribution IDs for distributions that have a cache behavior that's associated with the specified cache policy.</p> <p>You can optionally specify the maximum number of items to receive in the response. If the total number of items in the list exceeds the maximum that you specify, or the default maximum, the response is paginated. To get the next page of items, send a subsequent request that specifies the <code>NextMarker</code> value from the current response as the <code>Marker</code> value in the subsequent request.</p>"
     },
+    "ListDistributionsByConnectionFunction":{
+      "name":"ListDistributionsByConnectionFunction2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/distributionsByConnectionFunction",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDistributionsByConnectionFunctionRequest"},
+      "output":{"shape":"ListDistributionsByConnectionFunctionResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Lists distributions by connection function.</p>"
+    },
     "ListDistributionsByConnectionMode":{
       "name":"ListDistributionsByConnectionMode2020_05_31",
       "http":{
@@ -1986,6 +2198,23 @@
       ],
       "documentation":"<p>Gets a list of distribution IDs for distributions that have a cache behavior that's associated with the specified origin request policy.</p> <p>You can optionally specify the maximum number of items to receive in the response. If the total number of items in the list exceeds the maximum that you specify, or the default maximum, the response is paginated. To get the next page of items, send a subsequent request that specifies the <code>NextMarker</code> value from the current response as the <code>Marker</code> value in the subsequent request.</p>"
     },
+    "ListDistributionsByOwnedResource":{
+      "name":"ListDistributionsByOwnedResource2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/distributionsByOwnedResource/{ResourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDistributionsByOwnedResourceRequest"},
+      "output":{"shape":"ListDistributionsByOwnedResourceResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Lists the CloudFront distributions that are associated with the specified resource that you own.</p>"
+    },
     "ListDistributionsByRealtimeLogConfig":{
       "name":"ListDistributionsByRealtimeLogConfig2020_05_31",
       "http":{
@@ -2019,6 +2248,22 @@
         {"shape":"InvalidArgument"}
       ],
       "documentation":"<p>Gets a list of distribution IDs for distributions that have a cache behavior that's associated with the specified response headers policy.</p> <p>You can optionally specify the maximum number of items to receive in the response. If the total number of items in the list exceeds the maximum that you specify, or the default maximum, the response is paginated. To get the next page of items, send a subsequent request that specifies the <code>NextMarker</code> value from the current response as the <code>Marker</code> value in the subsequent request.</p>"
+    },
+    "ListDistributionsByTrustStore":{
+      "name":"ListDistributionsByTrustStore2020_05_31",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2020-05-31/distributionsByTrustStore",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDistributionsByTrustStoreRequest"},
+      "output":{"shape":"ListDistributionsByTrustStoreResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Lists distributions by trust store.</p>"
     },
     "ListDistributionsByVpcOriginId":{
       "name":"ListDistributionsByVpcOriginId2020_05_31",
@@ -2284,6 +2529,26 @@
       ],
       "documentation":"<p>List tags for a CloudFront resource. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/tagging.html\">Tagging a distribution</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
     },
+    "ListTrustStores":{
+      "name":"ListTrustStores2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/trust-stores",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"ListTrustStoresRequest",
+        "locationName":"ListTrustStoresRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"ListTrustStoresResult"},
+      "errors":[
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"InvalidArgument"}
+      ],
+      "documentation":"<p>Lists trust stores.</p>"
+    },
     "ListVpcOrigins":{
       "name":"ListVpcOrigins2020_05_31",
       "http":{
@@ -2300,6 +2565,25 @@
         {"shape":"InvalidArgument"}
       ],
       "documentation":"<p>List the CloudFront VPC origins in your account.</p>"
+    },
+    "PublishConnectionFunction":{
+      "name":"PublishConnectionFunction2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/connection-function/{Id}/publish",
+        "responseCode":200
+      },
+      "input":{"shape":"PublishConnectionFunctionRequest"},
+      "output":{"shape":"PublishConnectionFunctionResult"},
+      "errors":[
+        {"shape":"PreconditionFailed"},
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Publishes a connection function.</p>"
     },
     "PublishFunction":{
       "name":"PublishFunction2020_05_31",
@@ -2319,6 +2603,29 @@
       ],
       "documentation":"<p>Publishes a CloudFront function by copying the function code from the <code>DEVELOPMENT</code> stage to <code>LIVE</code>. This automatically updates all cache behaviors that are using this function to use the newly published copy in the <code>LIVE</code> stage.</p> <p>When a function is published to the <code>LIVE</code> stage, you can attach the function to a distribution's cache behavior, using the function's Amazon Resource Name (ARN).</p> <p>To publish a function, you must provide the function's name and version (<code>ETag</code> value). To get these values, you can use <code>ListFunctions</code> and <code>DescribeFunction</code>.</p>"
     },
+    "PutResourcePolicy":{
+      "name":"PutResourcePolicy2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/put-resource-policy",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"PutResourcePolicyRequest",
+        "locationName":"PutResourcePolicyRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"PutResourcePolicyResult"},
+      "errors":[
+        {"shape":"PreconditionFailed"},
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"},
+        {"shape":"IllegalUpdate"}
+      ],
+      "documentation":"<p>Creates a resource control policy for a given CloudFront resource.</p>"
+    },
     "TagResource":{
       "name":"TagResource2020_05_31",
       "http":{
@@ -2334,6 +2641,29 @@
         {"shape":"NoSuchResource"}
       ],
       "documentation":"<p>Add tags to a CloudFront resource. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/tagging.html\">Tagging a distribution</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
+    },
+    "TestConnectionFunction":{
+      "name":"TestConnectionFunction2020_05_31",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2020-05-31/connection-function/{Id}/test",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"TestConnectionFunctionRequest",
+        "locationName":"TestConnectionFunctionRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"TestConnectionFunctionResult"},
+      "errors":[
+        {"shape":"TestFunctionFailed"},
+        {"shape":"PreconditionFailed"},
+        {"shape":"EntityNotFound"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Tests a connection function.</p>"
     },
     "TestFunction":{
       "name":"TestFunction2020_05_31",
@@ -2372,6 +2702,29 @@
         {"shape":"NoSuchResource"}
       ],
       "documentation":"<p>Remove tags from a CloudFront resource. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/tagging.html\">Tagging a distribution</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
+    },
+    "UpdateAnycastIpList":{
+      "name":"UpdateAnycastIpList2020_05_31",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2020-05-31/anycast-ip-list/{Id}",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"UpdateAnycastIpListRequest",
+        "locationName":"UpdateAnycastIpListRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"UpdateAnycastIpListResult"},
+      "errors":[
+        {"shape":"PreconditionFailed"},
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Updates an Anycast static IP list.</p>"
     },
     "UpdateCachePolicy":{
       "name":"UpdateCachePolicy2020_05_31",
@@ -2417,6 +2770,30 @@
         {"shape":"NoSuchCloudFrontOriginAccessIdentity"}
       ],
       "documentation":"<p>Update an origin access identity.</p>"
+    },
+    "UpdateConnectionFunction":{
+      "name":"UpdateConnectionFunction2020_05_31",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2020-05-31/connection-function/{Id}",
+        "responseCode":200
+      },
+      "input":{
+        "shape":"UpdateConnectionFunctionRequest",
+        "locationName":"UpdateConnectionFunctionRequest",
+        "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+      },
+      "output":{"shape":"UpdateConnectionFunctionResult"},
+      "errors":[
+        {"shape":"PreconditionFailed"},
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"InvalidArgument"},
+        {"shape":"EntitySizeLimitExceeded"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Updates a connection function.</p>"
     },
     "UpdateConnectionGroup":{
       "name":"UpdateConnectionGroup2020_05_31",
@@ -2917,6 +3294,24 @@
       ],
       "documentation":"<p>Update a streaming distribution.</p>"
     },
+    "UpdateTrustStore":{
+      "name":"UpdateTrustStore2020_05_31",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2020-05-31/trust-store/{Id}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateTrustStoreRequest"},
+      "output":{"shape":"UpdateTrustStoreResult"},
+      "errors":[
+        {"shape":"PreconditionFailed"},
+        {"shape":"AccessDenied"},
+        {"shape":"EntityNotFound"},
+        {"shape":"InvalidArgument"},
+        {"shape":"InvalidIfMatchVersion"}
+      ],
+      "documentation":"<p>Updates a trust store.</p>"
+    },
     "UpdateVpcOrigin":{
       "name":"UpdateVpcOrigin2020_05_31",
       "http":{
@@ -3137,6 +3532,14 @@
           "shape":"string",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Anycast static IP list.</p>"
         },
+        "IpAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type for the Anycast static IP list.</p>"
+        },
+        "IpamConfig":{
+          "shape":"IpamConfig",
+          "documentation":"<p>The IPAM configuration for the Anycast static IP list, that contains the quantity and list of IPAM CIDR configurations.</p>"
+        },
         "AnycastIps":{
           "shape":"AnycastIps",
           "documentation":"<p>The static IP addresses that are allocated to the Anycast static IP list.</p>"
@@ -3235,6 +3638,18 @@
         "LastModifiedTime":{
           "shape":"timestamp",
           "documentation":"<p>The last time the Anycast static IP list was modified.</p>"
+        },
+        "IpAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type for the Anycast static IP list.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version (ETag value) of the Anycast static IP list.</p>"
+        },
+        "IpamConfig":{
+          "shape":"IpamConfig",
+          "documentation":"<p>The IPAM configuration for the Anycast static IP list, that contains the quantity and list of IPAM CIDR configurations.</p>"
         }
       },
       "documentation":"<p>An abbreviated version of the <a>AnycastIpList</a> structure. Omits the allocated static IP addresses (<a>AnycastIpList$AnycastIps</a>).</p>"
@@ -3385,6 +3800,50 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "CaCertificatesBundleS3Location":{
+      "type":"structure",
+      "required":[
+        "Bucket",
+        "Key",
+        "Region"
+      ],
+      "members":{
+        "Bucket":{
+          "shape":"string",
+          "documentation":"<p>The S3 bucket.</p>"
+        },
+        "Key":{
+          "shape":"string",
+          "documentation":"<p>The location's key.</p>"
+        },
+        "Region":{
+          "shape":"CaCertificatesBundleS3LocationRegionString",
+          "documentation":"<p>The location's Region.</p>"
+        },
+        "Version":{
+          "shape":"string",
+          "documentation":"<p>The location's version.</p>"
+        }
+      },
+      "documentation":"<p>The CA certificates bundle location in Amazon S3.</p>"
+    },
+    "CaCertificatesBundleS3LocationRegionString":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"[a-z]{2}-[a-z]+-\\d"
+    },
+    "CaCertificatesBundleSource":{
+      "type":"structure",
+      "members":{
+        "CaCertificatesBundleS3Location":{
+          "shape":"CaCertificatesBundleS3Location",
+          "documentation":"<p>The CA certificates bundle location in Amazon S3.</p>"
+        }
+      },
+      "documentation":"<p>A CA certificates bundle source.</p>",
+      "union":true
     },
     "CacheBehavior":{
       "type":"structure",
@@ -3964,6 +4423,95 @@
       },
       "documentation":"<p>A list of aliases (also called CNAMEs) and the CloudFront standard distributions and Amazon Web Services accounts that they are associated with. In the list, the standard distribution and account IDs are partially hidden, which allows you to identify the standard distributions and accounts that you own, but helps to protect the information of ones that you don't own.</p>"
     },
+    "ConnectionFunctionAssociation":{
+      "type":"structure",
+      "required":["Id"],
+      "members":{
+        "Id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The association's ID.</p>"
+        }
+      },
+      "documentation":"<p>A connection function association.</p>"
+    },
+    "ConnectionFunctionSummary":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Id",
+        "ConnectionFunctionConfig",
+        "ConnectionFunctionArn",
+        "Status",
+        "Stage",
+        "CreatedTime",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "Name":{
+          "shape":"FunctionName",
+          "documentation":"<p>The connection function name.</p>"
+        },
+        "Id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The connection function ID.</p>"
+        },
+        "ConnectionFunctionConfig":{"shape":"FunctionConfig"},
+        "ConnectionFunctionArn":{
+          "shape":"string",
+          "documentation":"<p>The connection function Amazon Resource Name (ARN).</p>"
+        },
+        "Status":{
+          "shape":"string",
+          "documentation":"<p>The connection function status.</p>"
+        },
+        "Stage":{
+          "shape":"FunctionStage",
+          "documentation":"<p>The connection function stage.</p>"
+        },
+        "CreatedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The connection function created time.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The connection function last modified time.</p>"
+        }
+      },
+      "documentation":"<p>A connection function summary.</p>"
+    },
+    "ConnectionFunctionSummaryList":{
+      "type":"list",
+      "member":{
+        "shape":"ConnectionFunctionSummary",
+        "locationName":"ConnectionFunctionSummary"
+      }
+    },
+    "ConnectionFunctionTestResult":{
+      "type":"structure",
+      "members":{
+        "ConnectionFunctionSummary":{
+          "shape":"ConnectionFunctionSummary",
+          "documentation":"<p>The connection function summary.</p>"
+        },
+        "ComputeUtilization":{
+          "shape":"string",
+          "documentation":"<p>The connection function compute utilization.</p>"
+        },
+        "ConnectionFunctionExecutionLogs":{
+          "shape":"FunctionExecutionLogList",
+          "documentation":"<p>The connection function execution logs.</p>"
+        },
+        "ConnectionFunctionErrorMessage":{
+          "shape":"sensitiveStringType",
+          "documentation":"<p>The connection function error message.</p>"
+        },
+        "ConnectionFunctionOutput":{
+          "shape":"sensitiveStringType",
+          "documentation":"<p>The connection function output.</p>"
+        }
+      },
+      "documentation":"<p>A connection function test result.</p>"
+    },
     "ConnectionGroup":{
       "type":"structure",
       "members":{
@@ -4410,7 +4958,15 @@
           "shape":"integer",
           "documentation":"<p>The number of static IP addresses that are allocated to the Anycast static IP list. Valid values: 21 or 3.</p>"
         },
-        "Tags":{"shape":"Tags"}
+        "Tags":{"shape":"Tags"},
+        "IpAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type for the Anycast static IP list. You can specify one of the following options:</p> <ul> <li> <p> <code>ipv4</code> only</p> </li> <li> <p> <code>ipv6</code> only </p> </li> <li> <p> <code>dualstack</code> - Allocate a list of both IPv4 and IPv6 addresses</p> </li> </ul>"
+        },
+        "IpamCidrConfigs":{
+          "shape":"IpamCidrConfigList",
+          "documentation":"<p> A list of IPAM CIDR configurations that specify the IP address ranges and IPAM pool settings for creating the Anycast static IP list. </p>"
+        }
       }
     },
     "CreateAnycastIpListResult":{
@@ -4500,6 +5056,48 @@
       },
       "documentation":"<p>The returned result of the corresponding request.</p>",
       "payload":"CloudFrontOriginAccessIdentity"
+    },
+    "CreateConnectionFunctionRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "ConnectionFunctionConfig",
+        "ConnectionFunctionCode"
+      ],
+      "members":{
+        "Name":{
+          "shape":"FunctionName",
+          "documentation":"<p>A name for the connection function.</p>"
+        },
+        "ConnectionFunctionConfig":{"shape":"FunctionConfig"},
+        "ConnectionFunctionCode":{
+          "shape":"FunctionBlob",
+          "documentation":"<p>The code for the connection function.</p>"
+        },
+        "Tags":{"shape":"Tags"}
+      }
+    },
+    "CreateConnectionFunctionResult":{
+      "type":"structure",
+      "members":{
+        "ConnectionFunctionSummary":{
+          "shape":"ConnectionFunctionSummary",
+          "documentation":"<p>The summary for the connection function.</p>"
+        },
+        "Location":{
+          "shape":"string",
+          "documentation":"<p>The location of the connection function.</p>",
+          "location":"header",
+          "locationName":"Location"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The version identifier for the current version of the connection function.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"ConnectionFunctionSummary"
     },
     "CreateConnectionGroupRequest":{
       "type":"structure",
@@ -5257,6 +5855,40 @@
       "documentation":"<p>The returned result of the corresponding request.</p>",
       "payload":"StreamingDistribution"
     },
+    "CreateTrustStoreRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "CaCertificatesBundleSource"
+      ],
+      "members":{
+        "Name":{
+          "shape":"string",
+          "documentation":"<p>A name for the trust store.</p>"
+        },
+        "CaCertificatesBundleSource":{
+          "shape":"CaCertificatesBundleSource",
+          "documentation":"<p>The CA certificates bundle source for the trust store.</p>"
+        },
+        "Tags":{"shape":"Tags"}
+      }
+    },
+    "CreateTrustStoreResult":{
+      "type":"structure",
+      "members":{
+        "TrustStore":{
+          "shape":"TrustStore",
+          "documentation":"<p>The trust store.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The version identifier for the current version of the trust store.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"TrustStore"
+    },
     "CreateVpcOriginRequest":{
       "type":"structure",
       "required":["VpcOriginEndpointConfig"],
@@ -5559,6 +6191,27 @@
       },
       "documentation":"<p>Deletes a origin access identity.</p>"
     },
+    "DeleteConnectionFunctionRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "IfMatch"
+      ],
+      "members":{
+        "Id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The connection function's ID.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The current version (<code>ETag</code> value) of the connection function you are deleting.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      }
+    },
     "DeleteConnectionGroupRequest":{
       "type":"structure",
       "required":[
@@ -5817,6 +6470,16 @@
         }
       }
     },
+    "DeleteResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudFront resource for which the resource policy should be deleted.</p>"
+        }
+      }
+    },
     "DeleteResponseHeadersPolicyRequest":{
       "type":"structure",
       "required":["Id"],
@@ -5854,6 +6517,27 @@
       },
       "documentation":"<p>The request to delete a streaming distribution.</p>"
     },
+    "DeleteTrustStoreRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "IfMatch"
+      ],
+      "members":{
+        "Id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The trust store's ID.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The current version (<code>ETag</code> value) of the trust store you are deleting.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      }
+    },
     "DeleteVpcOriginRequest":{
       "type":"structure",
       "required":[
@@ -5890,6 +6574,40 @@
         }
       },
       "payload":"VpcOrigin"
+    },
+    "DescribeConnectionFunctionRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"string",
+          "documentation":"<p>The connection function's identifier.</p>",
+          "location":"uri",
+          "locationName":"Identifier"
+        },
+        "Stage":{
+          "shape":"FunctionStage",
+          "documentation":"<p>The connection function's stage.</p>",
+          "location":"querystring",
+          "locationName":"Stage"
+        }
+      }
+    },
+    "DescribeConnectionFunctionResult":{
+      "type":"structure",
+      "members":{
+        "ConnectionFunctionSummary":{
+          "shape":"ConnectionFunctionSummary",
+          "documentation":"<p>The connection function's summary.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The version identifier for the current version of the connection function.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"ConnectionFunctionSummary"
     },
     "DescribeFunctionRequest":{
       "type":"structure",
@@ -6183,6 +6901,14 @@
         "ConnectionMode":{
           "shape":"ConnectionMode",
           "documentation":"<p>This field specifies whether the connection mode is through a standard distribution (direct) or a multi-tenant distribution with distribution tenants (tenant-only).</p>"
+        },
+        "ViewerMtlsConfig":{
+          "shape":"ViewerMtlsConfig",
+          "documentation":"<p>The distribution's viewer mTLS configuration.</p>"
+        },
+        "ConnectionFunctionAssociation":{
+          "shape":"ConnectionFunctionAssociation",
+          "documentation":"<p>The distribution's connection function association.</p>"
         }
       },
       "documentation":"<p>A distribution configuration.</p>"
@@ -6247,6 +6973,67 @@
         "shape":"string",
         "locationName":"DistributionId"
       }
+    },
+    "DistributionIdOwner":{
+      "type":"structure",
+      "required":[
+        "DistributionId",
+        "OwnerAccountId"
+      ],
+      "members":{
+        "DistributionId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the distribution.</p>"
+        },
+        "OwnerAccountId":{
+          "shape":"string",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the distribution. </p>"
+        }
+      },
+      "documentation":"<p>A structure that pairs a CloudFront distribution ID with its owning Amazon Web Services account ID.</p>"
+    },
+    "DistributionIdOwnerItemList":{
+      "type":"list",
+      "member":{
+        "shape":"DistributionIdOwner",
+        "locationName":"DistributionIdOwner"
+      }
+    },
+    "DistributionIdOwnerList":{
+      "type":"structure",
+      "required":[
+        "Marker",
+        "MaxItems",
+        "IsTruncated",
+        "Quantity"
+      ],
+      "members":{
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>Use this field when paginating results to indicate where to begin in your list of <code>DistributionIdOwner</code> objects. The response includes distributions in the list that occur after the marker. To get the next page of the list, set this field's value to the value of <code>NextMarker</code> from the current page's response.</p>"
+        },
+        "NextMarker":{
+          "shape":"string",
+          "documentation":"<p>A token used for pagination of results returned in the response. You can use the token from the previous request to define where the current request should begin.</p>"
+        },
+        "MaxItems":{
+          "shape":"integer",
+          "documentation":"<p>The maximum number of <code>DistributionIdOwner</code> objects to return.</p>"
+        },
+        "IsTruncated":{
+          "shape":"boolean",
+          "documentation":"<p>A flag that indicates whether more <code>DistributionIdOwner</code> objects remain to be listed. If your results were truncated, you can make a follow-up pagination request using the <code>Marker</code> request parameter to retrieve more results in the list.</p>"
+        },
+        "Quantity":{
+          "shape":"integer",
+          "documentation":"<p>Specifies the actual number of <code>DistributionIdOwner</code> objects included in the list for the current page.</p>"
+        },
+        "Items":{
+          "shape":"DistributionIdOwnerItemList",
+          "documentation":"<p>The number of <code>DistributionIdOwner</code> objects.</p>"
+        }
+      },
+      "documentation":"<p>The list of distribution IDs and the Amazon Web Services accounts that they belong to.</p>"
     },
     "DistributionList":{
       "type":"structure",
@@ -6436,6 +7223,14 @@
         "AnycastIpListId":{
           "shape":"string",
           "documentation":"<p>ID of the Anycast static IP list that is associated with the distribution.</p>"
+        },
+        "ViewerMtlsConfig":{
+          "shape":"ViewerMtlsConfig",
+          "documentation":"<p>The distribution's viewer mTLS configuration.</p>"
+        },
+        "ConnectionFunctionAssociation":{
+          "shape":"ConnectionFunctionAssociation",
+          "documentation":"<p>The distribution's connection function association.</p>"
         }
       },
       "documentation":"<p>A summary of the information about a CloudFront distribution.</p>"
@@ -7587,6 +8382,46 @@
       "documentation":"<p>The returned result of the corresponding request.</p>",
       "payload":"CloudFrontOriginAccessIdentity"
     },
+    "GetConnectionFunctionRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"string",
+          "documentation":"<p>The connection function's identifier.</p>",
+          "location":"uri",
+          "locationName":"Identifier"
+        },
+        "Stage":{
+          "shape":"FunctionStage",
+          "documentation":"<p>The connection function's stage.</p>",
+          "location":"querystring",
+          "locationName":"Stage"
+        }
+      }
+    },
+    "GetConnectionFunctionResult":{
+      "type":"structure",
+      "members":{
+        "ConnectionFunctionCode":{
+          "shape":"FunctionBlob",
+          "documentation":"<p>The connection function's code.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The version identifier for the current version of the connection function.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        },
+        "ContentType":{
+          "shape":"string",
+          "documentation":"<p>The connection function's content type.</p>",
+          "location":"header",
+          "locationName":"Content-Type"
+        }
+      },
+      "payload":"ConnectionFunctionCode"
+    },
     "GetConnectionGroupByRoutingEndpointRequest":{
       "type":"structure",
       "required":["RoutingEndpoint"],
@@ -8309,6 +9144,29 @@
         }
       }
     },
+    "GetResourcePolicyRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudFront resource that is associated with the resource policy.</p>"
+        }
+      }
+    },
+    "GetResourcePolicyResult":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudFront resource that is associated with the resource policy.</p>"
+        },
+        "PolicyDocument":{
+          "shape":"string",
+          "documentation":"<p>The resource policy in JSON format.</p>"
+        }
+      }
+    },
     "GetResponseHeadersPolicyConfigRequest":{
       "type":"structure",
       "required":["Id"],
@@ -8424,6 +9282,34 @@
       },
       "documentation":"<p>The returned result of the corresponding request.</p>",
       "payload":"StreamingDistribution"
+    },
+    "GetTrustStoreRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"string",
+          "documentation":"<p>The trust store's identifier.</p>",
+          "location":"uri",
+          "locationName":"Identifier"
+        }
+      }
+    },
+    "GetTrustStoreResult":{
+      "type":"structure",
+      "members":{
+        "TrustStore":{
+          "shape":"TrustStore",
+          "documentation":"<p>The trust store.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The version identifier for the current version of the trust store.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"TrustStore"
     },
     "GetVpcOriginRequest":{
       "type":"structure",
@@ -9029,6 +9915,74 @@
         "dualstack"
       ]
     },
+    "IpamCidrConfig":{
+      "type":"structure",
+      "required":[
+        "Cidr",
+        "IpamPoolArn"
+      ],
+      "members":{
+        "Cidr":{
+          "shape":"string",
+          "documentation":"<p>The CIDR that specifies the IP address range for this IPAM configuration.</p>"
+        },
+        "IpamPoolArn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IPAM pool that the CIDR block is assigned to.</p>"
+        },
+        "AnycastIp":{
+          "shape":"string",
+          "documentation":"<p>The specified Anycast IP address allocated from the IPAM pool for this CIDR configuration.</p>"
+        },
+        "Status":{
+          "shape":"IpamCidrStatus",
+          "documentation":"<p>The current status of the IPAM CIDR configuration.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for an IPAM CIDR that defines a specific IP address range, IPAM pool, and associated Anycast IP address.</p>"
+    },
+    "IpamCidrConfigList":{
+      "type":"list",
+      "member":{
+        "shape":"IpamCidrConfig",
+        "locationName":"IpamCidrConfig"
+      }
+    },
+    "IpamCidrStatus":{
+      "type":"string",
+      "enum":[
+        "provisioned",
+        "failed-provision",
+        "provisioning",
+        "deprovisioned",
+        "failed-deprovision",
+        "deprovisioning",
+        "advertised",
+        "failed-advertise",
+        "advertising",
+        "withdrawn",
+        "failed-withdraw",
+        "withdrawing"
+      ]
+    },
+    "IpamConfig":{
+      "type":"structure",
+      "required":[
+        "Quantity",
+        "IpamCidrConfigs"
+      ],
+      "members":{
+        "Quantity":{
+          "shape":"integer",
+          "documentation":"<p>The number of IPAM CIDR configurations in the <code>IpamCidrConfigs</code> list.</p>"
+        },
+        "IpamCidrConfigs":{
+          "shape":"IpamCidrConfigList",
+          "documentation":"<p>A list of IPAM CIDR configurations that define the IP address ranges, IPAM pools, and associated Anycast IP addresses.</p>"
+        }
+      },
+      "documentation":"<p>The configuration IPAM settings that includes the quantity of CIDR configurations and the list of IPAM CIDR configurations.</p>"
+    },
     "ItemSelection":{
       "type":"string",
       "enum":[
@@ -9494,6 +10448,36 @@
       },
       "payload":"ConflictingAliasesList"
     },
+    "ListConnectionFunctionsRequest":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>Use this field when paginating results to indicate where to begin in your list. The response includes items in the list that occur after the marker. To get the next page of the list, set this field's value to the value of <code>NextMarker</code> from the current page's response.</p>"
+        },
+        "MaxItems":{
+          "shape":"integer",
+          "documentation":"<p>The maximum number of connection functions that you want returned in the response.</p>"
+        },
+        "Stage":{
+          "shape":"FunctionStage",
+          "documentation":"<p>The connection function's stage.</p>"
+        }
+      }
+    },
+    "ListConnectionFunctionsResult":{
+      "type":"structure",
+      "members":{
+        "NextMarker":{
+          "shape":"string",
+          "documentation":"<p>Indicates the next page of connection functions. To get the next page of the list, use this value in the <code>Marker</code> field of your request.</p>"
+        },
+        "ConnectionFunctions":{
+          "shape":"ConnectionFunctionSummaryList",
+          "documentation":"<p>A list of connection functions.</p>"
+        }
+      }
+    },
     "ListConnectionGroupsRequest":{
       "type":"structure",
       "members":{
@@ -9677,6 +10661,37 @@
       },
       "payload":"DistributionIdList"
     },
+    "ListDistributionsByConnectionFunctionRequest":{
+      "type":"structure",
+      "required":["ConnectionFunctionIdentifier"],
+      "members":{
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>Use this field when paginating results to indicate where to begin in your list. The response includes items in the list that occur after the marker. To get the next page of the list, set this field's value to the value of <code>NextMarker</code> from the current page's response.</p>",
+          "location":"querystring",
+          "locationName":"Marker"
+        },
+        "MaxItems":{
+          "shape":"integer",
+          "documentation":"<p>The maximum number of distributions that you want returned in the response.</p>",
+          "location":"querystring",
+          "locationName":"MaxItems"
+        },
+        "ConnectionFunctionIdentifier":{
+          "shape":"string",
+          "documentation":"<p>The distributions by connection function identifier.</p>",
+          "location":"querystring",
+          "locationName":"ConnectionFunctionIdentifier"
+        }
+      }
+    },
+    "ListDistributionsByConnectionFunctionResult":{
+      "type":"structure",
+      "members":{
+        "DistributionList":{"shape":"DistributionList"}
+      },
+      "payload":"DistributionList"
+    },
     "ListDistributionsByConnectionModeRequest":{
       "type":"structure",
       "required":["ConnectionMode"],
@@ -9773,6 +10788,40 @@
       },
       "payload":"DistributionIdList"
     },
+    "ListDistributionsByOwnedResourceRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"string",
+          "documentation":"<p>The ARN of the CloudFront resource that you've shared with other Amazon Web Services accounts.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        },
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>Use this field when paginating results to indicate where to begin in your list of distributions. The response includes distributions in the list that occur after the marker. To get the next page of the list, set this field's value to the value of <code>NextMarker</code> from the current page's response.</p>",
+          "location":"querystring",
+          "locationName":"Marker"
+        },
+        "MaxItems":{
+          "shape":"string",
+          "documentation":"<p>The maximum number of distributions to return.</p>",
+          "location":"querystring",
+          "locationName":"MaxItems"
+        }
+      }
+    },
+    "ListDistributionsByOwnedResourceResult":{
+      "type":"structure",
+      "members":{
+        "DistributionList":{
+          "shape":"DistributionIdOwnerList",
+          "documentation":"<p>The list of distributions that are using the shared resource.</p>"
+        }
+      },
+      "payload":"DistributionList"
+    },
     "ListDistributionsByRealtimeLogConfigRequest":{
       "type":"structure",
       "members":{
@@ -9831,6 +10880,37 @@
         "DistributionIdList":{"shape":"DistributionIdList"}
       },
       "payload":"DistributionIdList"
+    },
+    "ListDistributionsByTrustStoreRequest":{
+      "type":"structure",
+      "required":["TrustStoreIdentifier"],
+      "members":{
+        "TrustStoreIdentifier":{
+          "shape":"string",
+          "documentation":"<p>The distributions by trust store identifier.</p>",
+          "location":"querystring",
+          "locationName":"TrustStoreIdentifier"
+        },
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>Use this field when paginating results to indicate where to begin in your list. The response includes items in the list that occur after the marker. To get the next page of the list, set this field's value to the value of <code>NextMarker</code> from the current page's response.</p>",
+          "location":"querystring",
+          "locationName":"Marker"
+        },
+        "MaxItems":{
+          "shape":"string",
+          "documentation":"<p>The maximum number of distributions that you want returned in the response.</p>",
+          "location":"querystring",
+          "locationName":"MaxItems"
+        }
+      }
+    },
+    "ListDistributionsByTrustStoreResult":{
+      "type":"structure",
+      "members":{
+        "DistributionList":{"shape":"DistributionList"}
+      },
+      "payload":"DistributionList"
     },
     "ListDistributionsByVpcOriginIdRequest":{
       "type":"structure",
@@ -10380,6 +11460,32 @@
       },
       "documentation":"<p>The returned result of the corresponding request.</p>",
       "payload":"Tags"
+    },
+    "ListTrustStoresRequest":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"string",
+          "documentation":"<p>Use this field when paginating results to indicate where to begin in your list. The response includes items in the list that occur after the marker. To get the next page of the list, set this field's value to the value of <code>NextMarker</code> from the current page's response.</p>"
+        },
+        "MaxItems":{
+          "shape":"integer",
+          "documentation":"<p>The maximum number of trust stores that you want returned in the response.</p>"
+        }
+      }
+    },
+    "ListTrustStoresResult":{
+      "type":"structure",
+      "members":{
+        "NextMarker":{
+          "shape":"string",
+          "documentation":"<p>Indicates the next page of trust stores. To get the next page of the list, use this value in the <code>Marker</code> field of your request.</p>"
+        },
+        "TrustStoreList":{
+          "shape":"TrustStoreList",
+          "documentation":"<p>The trust store list.</p>"
+        }
+      }
     },
     "ListVpcOriginsRequest":{
       "type":"structure",
@@ -11689,6 +12795,37 @@
         "locationName":"PublicKeySummary"
       }
     },
+    "PublishConnectionFunctionRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "IfMatch"
+      ],
+      "members":{
+        "Id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The connection function ID.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The current version (<code>ETag</code> value) of the connection function.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      }
+    },
+    "PublishConnectionFunctionResult":{
+      "type":"structure",
+      "members":{
+        "ConnectionFunctionSummary":{
+          "shape":"ConnectionFunctionSummary",
+          "documentation":"<p>The connection function summary.</p>"
+        }
+      },
+      "payload":"ConnectionFunctionSummary"
+    },
     "PublishFunctionRequest":{
       "type":"structure",
       "required":[
@@ -11719,6 +12856,32 @@
         }
       },
       "payload":"FunctionSummary"
+    },
+    "PutResourcePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "PolicyDocument"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudFront resource for which the policy is being created.</p>"
+        },
+        "PolicyDocument":{
+          "shape":"string",
+          "documentation":"<p>The JSON-formatted resource policy to create.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyResult":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the CloudFront resource for which the policy was created.</p>"
+        }
+      }
     },
     "QueryArgProfile":{
       "type":"structure",
@@ -11969,6 +13132,11 @@
     "ResourceARN":{
       "type":"string",
       "pattern":"arn:aws(-cn)?:cloudfront::[0-9]+:.*"
+    },
+    "ResourceId":{
+      "type":"string",
+      "max":64,
+      "min":1
     },
     "ResourceInUse":{
       "type":"structure",
@@ -13048,6 +14216,46 @@
       },
       "documentation":"<p><note> <p>This field only supports multi-tenant distributions. You can't specify this field for standard distributions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-config-options.html#unsupported-saas\">Unsupported features for SaaS Manager for Amazon CloudFront</a> in the <i>Amazon CloudFront Developer Guide</i>.</p> </note> <p>The configuration for a distribution tenant.</p></p>"
     },
+    "TestConnectionFunctionRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "IfMatch",
+        "ConnectionObject"
+      ],
+      "members":{
+        "Id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The connection function ID.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The current version (<code>ETag</code> value) of the connection function.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        },
+        "Stage":{
+          "shape":"FunctionStage",
+          "documentation":"<p>The connection function stage.</p>"
+        },
+        "ConnectionObject":{
+          "shape":"FunctionEventObject",
+          "documentation":"<p>The connection object.</p>"
+        }
+      }
+    },
+    "TestConnectionFunctionResult":{
+      "type":"structure",
+      "members":{
+        "ConnectionFunctionTestResult":{
+          "shape":"ConnectionFunctionTestResult",
+          "documentation":"<p>The connection function test result.</p>"
+        }
+      },
+      "payload":"ConnectionFunctionTestResult"
+    },
     "TestFunctionFailed":{
       "type":"structure",
       "members":{
@@ -13767,6 +14975,121 @@
       },
       "documentation":"<p>The traffic configuration of your continuous deployment.</p>"
     },
+    "TrustStore":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The trust store's ID.</p>"
+        },
+        "Arn":{
+          "shape":"string",
+          "documentation":"<p>The trust store's Amazon Resource Name (ARN).</p>"
+        },
+        "Name":{
+          "shape":"string",
+          "documentation":"<p>The trust store's name.</p>"
+        },
+        "Status":{
+          "shape":"TrustStoreStatus",
+          "documentation":"<p>The trust store's status.</p>"
+        },
+        "NumberOfCaCertificates":{
+          "shape":"integer",
+          "documentation":"<p>The trust store's number of CA certificates.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The trust store's last modified time.</p>"
+        },
+        "Reason":{
+          "shape":"string",
+          "documentation":"<p>The trust store's reason.</p>"
+        }
+      },
+      "documentation":"<p>A trust store.</p>"
+    },
+    "TrustStoreConfig":{
+      "type":"structure",
+      "required":["TrustStoreId"],
+      "members":{
+        "TrustStoreId":{
+          "shape":"string",
+          "documentation":"<p>The trust store ID.</p>"
+        },
+        "AdvertiseTrustStoreCaNames":{
+          "shape":"boolean",
+          "documentation":"<p>The configuration to use to advertise trust store CA names.</p>"
+        },
+        "IgnoreCertificateExpiry":{
+          "shape":"boolean",
+          "documentation":"<p>The configuration to use to ignore certificate expiration.</p>"
+        }
+      },
+      "documentation":"<p>A trust store configuration.</p>"
+    },
+    "TrustStoreList":{
+      "type":"list",
+      "member":{
+        "shape":"TrustStoreSummary",
+        "locationName":"TrustStoreSummary"
+      }
+    },
+    "TrustStoreStatus":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "active",
+        "failed"
+      ]
+    },
+    "TrustStoreSummary":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Arn",
+        "Name",
+        "Status",
+        "NumberOfCaCertificates",
+        "LastModifiedTime",
+        "ETag"
+      ],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The trust store's ID.</p>"
+        },
+        "Arn":{
+          "shape":"string",
+          "documentation":"<p>The trust store's Amazon Resource Name (ARN).</p>"
+        },
+        "Name":{
+          "shape":"string",
+          "documentation":"<p>The trust store's name.</p>"
+        },
+        "Status":{
+          "shape":"TrustStoreStatus",
+          "documentation":"<p>The trust store's status.</p>"
+        },
+        "NumberOfCaCertificates":{
+          "shape":"integer",
+          "documentation":"<p>The trust store's number of CA certificates.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The trust store's last modified time.</p>"
+        },
+        "Reason":{
+          "shape":"string",
+          "documentation":"<p>The trust store's reason.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The version identifier for the current version of the trust store.</p>"
+        }
+      },
+      "documentation":"<p>A trust store summary.</p>"
+    },
     "TrustedKeyGroupDoesNotExist":{
       "type":"structure",
       "members":{
@@ -13877,6 +15200,44 @@
       "documentation":"<p>The request to remove tags from a CloudFront resource.</p>",
       "payload":"TagKeys"
     },
+    "UpdateAnycastIpListRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "IfMatch"
+      ],
+      "members":{
+        "Id":{
+          "shape":"string",
+          "documentation":"<p>The ID of the Anycast static IP list.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "IpAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type for the Anycast static IP list. You can specify one of the following options:</p> <ul> <li> <p> <code>ipv4</code> only</p> </li> <li> <p> <code>ipv6</code> only</p> </li> <li> <p> <code>dualstack</code> - Allocate a list of both IPv4 and IPv6 addresses</p> </li> </ul>"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The current version (ETag value) of the Anycast static IP list that you are updating.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      }
+    },
+    "UpdateAnycastIpListResult":{
+      "type":"structure",
+      "members":{
+        "AnycastIpList":{"shape":"AnycastIpList"},
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The current version of the Anycast static IP list.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"AnycastIpList"
+    },
     "UpdateCachePolicyRequest":{
       "type":"structure",
       "required":[
@@ -13966,6 +15327,50 @@
       },
       "documentation":"<p>The returned result of the corresponding request.</p>",
       "payload":"CloudFrontOriginAccessIdentity"
+    },
+    "UpdateConnectionFunctionRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "IfMatch",
+        "ConnectionFunctionConfig",
+        "ConnectionFunctionCode"
+      ],
+      "members":{
+        "Id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The connection function ID.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The current version (<code>ETag</code> value) of the connection function you are updating.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        },
+        "ConnectionFunctionConfig":{"shape":"FunctionConfig"},
+        "ConnectionFunctionCode":{
+          "shape":"FunctionBlob",
+          "documentation":"<p>The connection function code.</p>"
+        }
+      }
+    },
+    "UpdateConnectionFunctionResult":{
+      "type":"structure",
+      "members":{
+        "ConnectionFunctionSummary":{
+          "shape":"ConnectionFunctionSummary",
+          "documentation":"<p>The connection function summary.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The version identifier for the current version of the connection function.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"ConnectionFunctionSummary"
     },
     "UpdateConnectionGroupRequest":{
       "type":"structure",
@@ -14727,6 +16132,51 @@
       "documentation":"<p>The returned result of the corresponding request.</p>",
       "payload":"StreamingDistribution"
     },
+    "UpdateTrustStoreRequest":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "CaCertificatesBundleSource",
+        "IfMatch"
+      ],
+      "members":{
+        "Id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The trust store ID.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "CaCertificatesBundleSource":{
+          "shape":"CaCertificatesBundleSource",
+          "documentation":"<p>The CA certificates bundle source.</p>",
+          "locationName":"CaCertificatesBundleSource",
+          "xmlNamespace":{"uri":"http://cloudfront.amazonaws.com/doc/2020-05-31/"}
+        },
+        "IfMatch":{
+          "shape":"string",
+          "documentation":"<p>The current version (<code>ETag</code> value) of the trust store you are updating.</p>",
+          "location":"header",
+          "locationName":"If-Match"
+        }
+      },
+      "payload":"CaCertificatesBundleSource"
+    },
+    "UpdateTrustStoreResult":{
+      "type":"structure",
+      "members":{
+        "TrustStore":{
+          "shape":"TrustStore",
+          "documentation":"<p>The trust store.</p>"
+        },
+        "ETag":{
+          "shape":"string",
+          "documentation":"<p>The version identifier for the current version of the trust store.</p>",
+          "location":"header",
+          "locationName":"ETag"
+        }
+      },
+      "payload":"TrustStore"
+    },
     "UpdateVpcOriginRequest":{
       "type":"structure",
       "required":[
@@ -14861,6 +16311,27 @@
       },
       "documentation":"<p>A complex type that determines the distribution's SSL/TLS configuration for communicating with viewers.</p> <p>If the distribution doesn't use <code>Aliases</code> (also known as alternate domain names or CNAMEs)—that is, if the distribution uses the CloudFront domain name such as <code>d111111abcdef8.cloudfront.net</code>—set <code>CloudFrontDefaultCertificate</code> to <code>true</code> and leave all other fields empty.</p> <p>If the distribution uses <code>Aliases</code> (alternate domain names or CNAMEs), use the fields in this type to specify the following settings:</p> <ul> <li> <p>Which viewers the distribution accepts HTTPS connections from: only viewers that support <a href=\"https://en.wikipedia.org/wiki/Server_Name_Indication\">server name indication (SNI)</a> (recommended), or all viewers including those that don't support SNI.</p> <ul> <li> <p>To accept HTTPS connections from only viewers that support SNI, set <code>SSLSupportMethod</code> to <code>sni-only</code>. This is recommended. Most browsers and clients support SNI. </p> </li> <li> <p>To accept HTTPS connections from all viewers, including those that don't support SNI, set <code>SSLSupportMethod</code> to <code>vip</code>. This is not recommended, and results in additional monthly charges from CloudFront.</p> </li> </ul> </li> <li> <p>The minimum SSL/TLS protocol version that the distribution can use to communicate with viewers. To specify a minimum version, choose a value for <code>MinimumProtocolVersion</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValues-security-policy\">Security Policy</a> in the <i>Amazon CloudFront Developer Guide</i>.</p> </li> <li> <p>The location of the SSL/TLS certificate, <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html\">Certificate Manager (ACM)</a> (recommended) or <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_server-certs.html\">Identity and Access Management (IAM)</a>. You specify the location by setting a value in one of the following fields (not both):</p> <ul> <li> <p> <code>ACMCertificateArn</code> </p> </li> <li> <p> <code>IAMCertificateId</code> </p> </li> </ul> </li> </ul> <p>All distributions support HTTPS connections from viewers. To require viewers to use HTTPS only, or to redirect them from HTTP to HTTPS, use <code>ViewerProtocolPolicy</code> in the <code>CacheBehavior</code> or <code>DefaultCacheBehavior</code>. To specify how CloudFront should use SSL/TLS to communicate with your custom origin, use <code>CustomOriginConfig</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https.html\">Using HTTPS with CloudFront</a> and <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https-alternate-domain-names.html\"> Using Alternate Domain Names and HTTPS</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
     },
+    "ViewerMtlsConfig":{
+      "type":"structure",
+      "members":{
+        "Mode":{
+          "shape":"ViewerMtlsMode",
+          "documentation":"<p>The viewer mTLS mode.</p>"
+        },
+        "TrustStoreConfig":{
+          "shape":"TrustStoreConfig",
+          "documentation":"<p>The trust store configuration associated with the viewer mTLS configuration.</p>"
+        }
+      },
+      "documentation":"<p>A viewer mTLS configuration.</p>"
+    },
+    "ViewerMtlsMode":{
+      "type":"string",
+      "enum":[
+        "required",
+        "optional"
+      ]
+    },
     "ViewerProtocolPolicy":{
       "type":"string",
       "enum":[
@@ -14888,6 +16359,10 @@
           "shape":"string",
           "documentation":"<p>The VPC origin ARN.</p>"
         },
+        "AccountId":{
+          "shape":"string",
+          "documentation":"<p>The account ID of the Amazon Web Services account that owns the VPC origin.</p>"
+        },
         "Status":{
           "shape":"string",
           "documentation":"<p>The VPC origin status.</p>"
@@ -14914,6 +16389,10 @@
         "VpcOriginId":{
           "shape":"string",
           "documentation":"<p>The VPC origin ID.</p>"
+        },
+        "OwnerAccountId":{
+          "shape":"string",
+          "documentation":"<p>The account ID of the Amazon Web Services account that owns the VPC origin.</p>"
         },
         "OriginReadTimeout":{
           "shape":"integer",
@@ -15031,6 +16510,10 @@
         "Arn":{
           "shape":"string",
           "documentation":"<p>The VPC origin summary ARN.</p>"
+        },
+        "AccountId":{
+          "shape":"string",
+          "documentation":"<p>The account ID of the Amazon Web Services account that owns the VPC origin.</p>"
         },
         "OriginEndpointArn":{
           "shape":"string",

@@ -257,7 +257,14 @@ def compat_input(prompt):
     """
     sys.stdout.write(prompt)
     sys.stdout.flush()
-    return raw_input()
+    try:
+        # This is unused directly when the user pastes the cross-device
+        # verification code, which may be longer than some terminal's buffers
+        import readline  # noqa: F401
+        return raw_input()
+    except ImportError:
+        LOG.debug('readline module not available')
+        return raw_input()
 
 
 def compat_shell_quote(s, platform=None):

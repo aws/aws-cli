@@ -49,19 +49,6 @@
             }
         },
         {
-            "documentation": "For region us-east-1 with FIPS disabled and DualStack enabled",
-            "expect": {
-                "endpoint": {
-                    "url": "https://savingsplans.us-east-1.api.aws"
-                }
-            },
-            "params": {
-                "Region": "us-east-1",
-                "UseFIPS": false,
-                "UseDualStack": true
-            }
-        },
-        {
             "documentation": "For region us-east-1 with FIPS disabled and DualStack disabled",
             "expect": {
                 "endpoint": {
@@ -279,21 +266,88 @@
             }
         },
         {
-            "documentation": "For custom endpoint with fips disabled and dualstack enabled",
-            "expect": {
-                "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
-            },
-            "params": {
-                "Region": "us-east-1",
-                "UseFIPS": false,
-                "UseDualStack": true,
-                "Endpoint": "https://example.com"
-            }
-        },
-        {
             "documentation": "Missing region",
             "expect": {
                 "error": "Invalid Configuration: Missing Region"
+            }
+        },
+        {
+            "documentation": "For region not set with FIPS disabled and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "savingsplans",
+                                "signingRegion": "us-east-1"
+                            }
+                        ]
+                    },
+                    "url": "https://savingsplans.global.api.aws"
+                }
+            },
+            "params": {
+                "UseDualStack": true,
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "For region us-east-1 with FIPS disabled and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "savingsplans",
+                                "signingRegion": "us-east-1"
+                            }
+                        ]
+                    },
+                    "url": "https://savingsplans.global.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseDualStack": true,
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "For region us-west-1 with FIPS disabled and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "savingsplans",
+                                "signingRegion": "us-east-1"
+                            }
+                        ]
+                    },
+                    "url": "https://savingsplans.global.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-west-1",
+                "UseDualStack": true,
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "Commercial region with custom SDK endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://custom.example.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseDualStack": false,
+                "UseFIPS": false,
+                "Endpoint": "https://custom.example.com"
             }
         }
     ],

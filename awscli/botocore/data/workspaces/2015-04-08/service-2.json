@@ -4109,6 +4109,10 @@
       "type":"list",
       "member":{"shape":"IpAddress"}
     },
+    "DnsIpv6Addresses":{
+      "type":"list",
+      "member":{"shape":"Ipv6Address"}
+    },
     "DomainName":{
       "type":"string",
       "pattern":"^([a-zA-Z0-9]+[.-])+([a-zA-Z0-9])+$"
@@ -4760,6 +4764,10 @@
     "IpRuleList":{
       "type":"list",
       "member":{"shape":"IpRuleItem"}
+    },
+    "Ipv6Address":{
+      "type":"string",
+      "pattern":"^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|[0-9a-fA-F]{1,4}(?::[0-9a-fA-F]{1,4}){0,6}::[0-9a-fA-F]{1,4}$"
     },
     "Limit":{
       "type":"integer",
@@ -6534,6 +6542,10 @@
           "shape":"IpAddress",
           "documentation":"<p>The IP address of the WorkSpace.</p>"
         },
+        "Ipv6Address":{
+          "shape":"Ipv6Address",
+          "documentation":"<p>The IPv6 address of the WorkSpace.</p>"
+        },
         "State":{
           "shape":"WorkspaceState",
           "documentation":"<p>The operational state of the WorkSpace.</p> <ul> <li> <p> <code>PENDING</code> – The WorkSpace is in a waiting state (for example, the WorkSpace is being created).</p> </li> <li> <p> <code>AVAILABLE</code> – The WorkSpace is running and has passed the health checks.</p> </li> <li> <p> <code>IMPAIRED</code> – Refer to <code>UNHEALTHY</code> state.</p> </li> <li> <p> <code>UNHEALTHY</code> – The WorkSpace is not responding to health checks.</p> </li> <li> <p> <code>REBOOTING</code> – The WorkSpace is being rebooted (restarted).</p> </li> <li> <p> <code>STARTING</code> – The WorkSpace is starting up and health checks are being run.</p> </li> <li> <p> <code>REBUILDING</code> – The WorkSpace is being rebuilt.</p> </li> <li> <p> <code>RESTORING</code> – The WorkSpace is being restored.</p> </li> <li> <p> <code>MAINTENANCE</code> – The WorkSpace is undergoing scheduled maintenance by Amazon Web Services.</p> </li> <li> <p> <code>ADMIN_MAINTENANCE</code> – The WorkSpace is undergoing maintenance by the WorkSpaces administrator.</p> </li> <li> <p> <code>TERMINATING</code> – The WorkSpace is being deleted.</p> </li> <li> <p> <code>TERMINATED</code> – The WorkSpace has been deleted.</p> </li> <li> <p> <code>SUSPENDED</code> – The WorkSpace has been suspended for image creation.</p> </li> <li> <p> <code>UPDATING</code> – The WorkSpace is undergoing an update.</p> </li> <li> <p> <code>STOPPING</code> – The WorkSpace is being stopped.</p> </li> <li> <p> <code>STOPPED</code> – The WorkSpace has been stopped.</p> </li> <li> <p> <code>ERROR </code> – The WorkSpace is an error state (for example, an error occurred during startup).</p> </li> </ul> <note> <p>After a WorkSpace is terminated, the <code>TERMINATED</code> state is returned only briefly before the WorkSpace directory metadata is cleaned up, so this state is rarely returned. To confirm that a WorkSpace is terminated, check for the WorkSpace ID by using <a href=\"https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaces.html\"> DescribeWorkSpaces</a>. If the WorkSpace ID isn't returned, then the WorkSpace has been successfully terminated.</p> </note>"
@@ -6799,6 +6811,10 @@
         "DnsIpAddresses":{
           "shape":"DnsIpAddresses",
           "documentation":"<p>The IP addresses of the DNS servers for the directory.</p>"
+        },
+        "DnsIpv6Addresses":{
+          "shape":"DnsIpv6Addresses",
+          "documentation":"<p>The IPv6 addresses of the DNS servers for the directory.</p>"
         },
         "CustomerUserName":{
           "shape":"UserName",
@@ -7186,6 +7202,10 @@
         "WorkspaceName":{
           "shape":"WorkspaceName",
           "documentation":"<p>The name of the user-decoupled WorkSpace.</p> <note> <p> <code>WorkspaceName</code> is required if <code>UserName</code> is <code>[UNDEFINED]</code> for user-decoupled WorkSpaces. <code>WorkspaceName</code> is not applicable if <code>UserName</code> is specified for user-assigned WorkSpaces.</p> </note>"
+        },
+        "Ipv6Address":{
+          "shape":"Ipv6Address",
+          "documentation":"<p>The IPv6 address for the WorkSpace.</p>"
         }
       },
       "documentation":"<p>Describes the information used to create a WorkSpace.</p>"

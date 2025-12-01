@@ -234,7 +234,7 @@
         {"shape":"InternalServiceError"},
         {"shape":"DecryptionFailure"}
       ],
-      "documentation":"<p>Creates a new version with a new encrypted secret value and attaches it to the secret. The version can contain a new <code>SecretString</code> value or a new <code>SecretBinary</code> value. </p> <p>We recommend you avoid calling <code>PutSecretValue</code> at a sustained rate of more than once every 10 minutes. When you update the secret value, Secrets Manager creates a new version of the secret. Secrets Manager removes outdated versions when there are more than 100, but it does not remove versions created less than 24 hours ago. If you call <code>PutSecretValue</code> more than once every 10 minutes, you create more versions than Secrets Manager removes, and you will reach the quota for secret versions.</p> <p>You can specify the staging labels to attach to the new version in <code>VersionStages</code>. If you don't include <code>VersionStages</code>, then Secrets Manager automatically moves the staging label <code>AWSCURRENT</code> to this version. If this operation creates the first version for the secret, then Secrets Manager automatically attaches the staging label <code>AWSCURRENT</code> to it. If this operation moves the staging label <code>AWSCURRENT</code> from another version to this version, then Secrets Manager also automatically moves the staging label <code>AWSPREVIOUS</code> to the version that <code>AWSCURRENT</code> was removed from.</p> <p>This operation is idempotent. If you call this operation with a <code>ClientRequestToken</code> that matches an existing version's VersionId, and you specify the same secret data, the operation succeeds but does nothing. However, if the secret data is different, then the operation fails because you can't modify an existing version; you can only create new ones.</p> <p>Secrets Manager generates a CloudTrail log entry when you call this action. Do not include sensitive information in request parameters except <code>SecretBinary</code>, <code>SecretString</code>, or <code>RotationToken</code> because it might be logged. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/retrieve-ct-entries.html\">Logging Secrets Manager events with CloudTrail</a>.</p> <p> <b>Required permissions: </b> <code>secretsmanager:PutSecretValue</code>. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/reference_iam-permissions.html#reference_iam-permissions_actions\"> IAM policy actions for Secrets Manager</a> and <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access.html\">Authentication and access control in Secrets Manager</a>. </p> <important> <p>When you enter commands in a command shell, there is a risk of the command history being accessed or utilities having access to your command parameters. This is a concern if the command includes the value of a secret. Learn how to <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/security_cli-exposure-risks.html\">Mitigate the risks of using command-line tools to store Secrets Manager secrets</a>.</p> </important>"
+      "documentation":"<p>Creates a new version of your secret by creating a new encrypted value and attaching it to the secret. version can contain a new <code>SecretString</code> value or a new <code>SecretBinary</code> value. </p> <p>Do not call <code>PutSecretValue</code> at a sustained rate of more than once every 10 minutes. When you update the secret value, Secrets Manager creates a new version of the secret. Secrets Manager keeps 100 of the most recent versions, but it keeps <i>all</i> secret versions created in the last 24 hours. If you call <code>PutSecretValue</code> more than once every 10 minutes, you will create more versions than Secrets Manager removes, and you will reach the quota for secret versions.</p> <p>You can specify the staging labels to attach to the new version in <code>VersionStages</code>. If you don't include <code>VersionStages</code>, then Secrets Manager automatically moves the staging label <code>AWSCURRENT</code> to this version. If this operation creates the first version for the secret, then Secrets Manager automatically attaches the staging label <code>AWSCURRENT</code> to it. If this operation moves the staging label <code>AWSCURRENT</code> from another version to this version, then Secrets Manager also automatically moves the staging label <code>AWSPREVIOUS</code> to the version that <code>AWSCURRENT</code> was removed from.</p> <p>This operation is idempotent. If you call this operation with a <code>ClientRequestToken</code> that matches an existing version's VersionId, and you specify the same secret data, the operation succeeds but does nothing. However, if the secret data is different, then the operation fails because you can't modify an existing version; you can only create new ones.</p> <p>Secrets Manager generates a CloudTrail log entry when you call this action. Do not include sensitive information in request parameters except <code>SecretBinary</code>, <code>SecretString</code>, or <code>RotationToken</code> because it might be logged. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/retrieve-ct-entries.html\">Logging Secrets Manager events with CloudTrail</a>.</p> <p> <b>Required permissions: </b> <code>secretsmanager:PutSecretValue</code>. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/reference_iam-permissions.html#reference_iam-permissions_actions\"> IAM policy actions for Secrets Manager</a> and <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access.html\">Authentication and access control in Secrets Manager</a>. </p> <important> <p>When you enter commands in a command shell, there is a risk of the command history being accessed or utilities having access to your command parameters. This is a concern if the command includes the value of a secret. Learn how to <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/security_cli-exposure-risks.html\">Mitigate the risks of using command-line tools to store Secrets Manager secrets</a>.</p> </important>"
     },
     "RemoveRegionsFromReplication":{
       "name":"RemoveRegionsFromReplication",
@@ -548,6 +548,10 @@
         "ForceOverwriteReplicaSecret":{
           "shape":"BooleanType",
           "documentation":"<p>Specifies whether to overwrite a secret with the same name in the destination Region. By default, secrets aren't overwritten.</p>"
+        },
+        "Type":{
+          "shape":"MedeaTypeType",
+          "documentation":"<p>The exact string that identifies the partner that holds the external secret. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/managed-external-secrets.html\">Using Secrets Manager managed external secrets</a>.</p>"
         }
       }
     },
@@ -665,6 +669,10 @@
           "shape":"SecretNameType",
           "documentation":"<p>The name of the secret.</p>"
         },
+        "Type":{
+          "shape":"MedeaTypeType",
+          "documentation":"<p>The exact string that identifies the partner that holds the external secret. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/managed-external-secrets.html\">Using Secrets Manager managed external secrets</a>.</p>"
+        },
         "Description":{
           "shape":"DescriptionType",
           "documentation":"<p>The description of the secret.</p>"
@@ -685,6 +693,14 @@
         "RotationRules":{
           "shape":"RotationRulesType",
           "documentation":"<p>The rotation schedule and Lambda function for this secret. If the secret previously had rotation turned on, but it is now turned off, this field shows the previous rotation schedule and rotation function. If the secret never had rotation turned on, this field is omitted.</p>"
+        },
+        "ExternalSecretRotationMetadata":{
+          "shape":"ExternalSecretRotationMetadataType",
+          "documentation":"<p>The metadata needed to successfully rotate a managed external secret. A list of key value pairs in JSON format specified by the partner. For more information about the required information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/mes-partners.html\">Managed external secrets partners</a>.</p>"
+        },
+        "ExternalSecretRotationRoleArn":{
+          "shape":"RoleARNType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the role that allows Secrets Manager to rotate a secret held by a third-party partner. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/mes-security.html\">Security and permissions</a>.</p>"
         },
         "LastRotatedDate":{
           "shape":"LastRotatedDateType",
@@ -745,7 +761,7 @@
       "type":"string",
       "max":3,
       "min":2,
-      "pattern":"[0-9h]+"
+      "pattern":"[0-9]+h"
     },
     "EncryptionFailure":{
       "type":"structure",
@@ -766,6 +782,34 @@
     "ExcludeNumbersType":{"type":"boolean"},
     "ExcludePunctuationType":{"type":"boolean"},
     "ExcludeUppercaseType":{"type":"boolean"},
+    "ExternalSecretRotationMetadataItem":{
+      "type":"structure",
+      "members":{
+        "Key":{
+          "shape":"ExternalSecretRotationMetadataItemKeyType",
+          "documentation":"<p>The key that identifies the item.</p>"
+        },
+        "Value":{
+          "shape":"ExternalSecretRotationMetadataItemValueType",
+          "documentation":"<p>The value of the specified item.</p>"
+        }
+      },
+      "documentation":"<p>The metadata needed to successfully rotate a managed external secret. A list of key value pairs in JSON format specified by the partner. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/mes-partners.html\">Managed external secret partners</a>.</p>"
+    },
+    "ExternalSecretRotationMetadataItemKeyType":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ExternalSecretRotationMetadataItemValueType":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "ExternalSecretRotationMetadataType":{
+      "type":"list",
+      "member":{"shape":"ExternalSecretRotationMetadataItem"}
+    },
     "Filter":{
       "type":"structure",
       "members":{
@@ -1098,6 +1142,11 @@
       "max":100,
       "min":1
     },
+    "MedeaTypeType":{
+      "type":"string",
+      "max":256,
+      "min":0
+    },
     "NameType":{
       "type":"string",
       "max":512,
@@ -1202,7 +1251,7 @@
         },
         "RotationToken":{
           "shape":"RotationTokenType",
-          "documentation":"<p>A unique identifier that indicates the source of the request. For cross-account rotation (when you rotate a secret in one account by using a Lambda rotation function in another account) and the Lambda rotation function assumes an IAM role to call Secrets Manager, Secrets Manager validates the identity with the rotation token. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets.html\">How rotation works</a>.</p> <p>Sensitive: This field contains sensitive information, so the service does not include it in CloudTrail log entries. If you create your own log entries, you must also avoid logging the information in this field.</p>"
+          "documentation":"<p>A unique identifier that indicates the source of the request. Required for secret rotations using an IAM assumed role or cross-account rotation, in which you rotate a secret in one account by using a Lambda rotation function in another account. In both cases, the rotation function assumes an IAM role to call Secrets Manager, and then Secrets Manager validates the identity using the token. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets.html\">How rotation works</a> and <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotate-secrets_lambda\">Rotation by Lambda functions</a>.</p> <p>Sensitive: This field contains sensitive information, so the service does not include it in CloudTrail log entries. If you create your own log entries, you must also avoid logging the information in this field.</p>"
         }
       }
     },
@@ -1393,6 +1442,11 @@
         }
       }
     },
+    "RoleARNType":{
+      "type":"string",
+      "max":2048,
+      "min":20
+    },
     "RotateSecretRequest":{
       "type":"structure",
       "required":["SecretId"],
@@ -1412,11 +1466,19 @@
         },
         "RotationRules":{
           "shape":"RotationRulesType",
-          "documentation":"<p>A structure that defines the rotation configuration for this secret.</p>"
+          "documentation":"<p>A structure that defines the rotation configuration for this secret.</p> <important> <p>When changing an existing rotation schedule and setting <code>RotateImmediately</code> to <code>false</code>:</p> <ul> <li> <p>If using <code>AutomaticallyAfterDays</code> or a <code>ScheduleExpression</code> with <code>rate()</code>, the previously scheduled rotation might still occur.</p> </li> <li> <p>To prevent unintended rotations, use a <code>ScheduleExpression</code> with <code>cron()</code> for granular control over rotation windows.</p> </li> </ul> </important>"
+        },
+        "ExternalSecretRotationMetadata":{
+          "shape":"ExternalSecretRotationMetadataType",
+          "documentation":"<p>The metadata needed to successfully rotate a managed external secret. A list of key value pairs in JSON format specified by the partner. For more information about the required information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/managed-external-secrets.html\">Using Secrets Manager managed external secrets</a> </p>"
+        },
+        "ExternalSecretRotationRoleArn":{
+          "shape":"RoleARNType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the role that allows Secrets Manager to rotate a secret held by a third-party partner. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/mes-security.html\">Security and permissions</a>.</p>"
         },
         "RotateImmediately":{
           "shape":"BooleanType",
-          "documentation":"<p>Specifies whether to rotate the secret immediately or wait until the next scheduled rotation window. The rotation schedule is defined in <a>RotateSecretRequest$RotationRules</a>.</p> <p>For secrets that use a Lambda rotation function to rotate, if you don't immediately rotate the secret, Secrets Manager tests the rotation configuration by running the <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotate-secrets_lambda-functions.html#rotate-secrets_lambda-functions-code\"> <code>testSecret</code> step</a> of the Lambda rotation function. The test creates an <code>AWSPENDING</code> version of the secret and then removes it.</p> <p>By default, Secrets Manager rotates the secret immediately.</p>",
+          "documentation":"<p>Specifies whether to rotate the secret immediately or wait until the next scheduled rotation window. The rotation schedule is defined in <a>RotateSecretRequest$RotationRules</a>.</p> <p>The default for <code>RotateImmediately</code> is <code>true</code>. If you don't specify this value, Secrets Manager rotates the secret immediately.</p> <p>If you set <code>RotateImmediately</code> to <code>false</code>, Secrets Manager tests the rotation configuration by running the <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotate-secrets_how.html\"> <code>testSecret</code> step</a> of the Lambda rotation function. This test creates an <code>AWSPENDING</code> version of the secret and then removes it.</p> <p>When changing an existing rotation schedule and setting <code>RotateImmediately</code> to <code>false</code>:</p> <ul> <li> <p>If using <code>AutomaticallyAfterDays</code> or a <code>ScheduleExpression</code> with <code>rate()</code>, the previously scheduled rotation might still occur.</p> </li> <li> <p>To prevent unintended rotations, use a <code>ScheduleExpression</code> with <code>cron()</code> for granular control over rotation windows.</p> </li> </ul> <p>Rotation is an asynchronous process. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotate-secrets_how.html\">How rotation works</a>.</p>",
           "box":true
         }
       }
@@ -1510,6 +1572,10 @@
           "shape":"SecretNameType",
           "documentation":"<p>The friendly name of the secret. </p>"
         },
+        "Type":{
+          "shape":"MedeaTypeType",
+          "documentation":"<p>The exact string that identifies the third-party partner that holds the external secret. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/mes-partners.html\">Managed external secret partners</a>.</p>"
+        },
         "Description":{
           "shape":"DescriptionType",
           "documentation":"<p>The user-provided description of the secret.</p>"
@@ -1530,6 +1596,14 @@
         "RotationRules":{
           "shape":"RotationRulesType",
           "documentation":"<p>A structure that defines the rotation configuration for the secret.</p>"
+        },
+        "ExternalSecretRotationMetadata":{
+          "shape":"ExternalSecretRotationMetadataType",
+          "documentation":"<p>The metadata needed to successfully rotate a managed external secret. A list of key value pairs in JSON format specified by the partner. For more information about the required information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/mes-partners.html\">Managed external secrets partners</a>.</p>"
+        },
+        "ExternalSecretRotationRoleArn":{
+          "shape":"RoleARNType",
+          "documentation":"<p>The role that Secrets Manager assumes to call APIs required to perform the rotation. For more information about the required information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/mes-partners.html\">Managed external secrets partners</a>.</p>"
         },
         "LastRotatedDate":{
           "shape":"LastRotatedDateType",
@@ -1711,7 +1785,7 @@
       "members":{
         "SecretId":{
           "shape":"SecretIdType",
-          "documentation":"<p>The ARN of the primary secret. </p>"
+          "documentation":"<p>The name of the secret or the replica ARN. The replica ARN is the same as the original primary secret ARN expect the Region is changed to the replica Region. </p>"
         }
       }
     },
@@ -1819,6 +1893,10 @@
         "SecretString":{
           "shape":"SecretStringType",
           "documentation":"<p>The text data to encrypt and store in the new version of the secret. We recommend you use a JSON structure of key/value pairs for your secret value. </p> <p>Either <code>SecretBinary</code> or <code>SecretString</code> must have a value, but not both. </p> <p>Sensitive: This field contains sensitive information, so the service does not include it in CloudTrail log entries. If you create your own log entries, you must also avoid logging the information in this field.</p>"
+        },
+        "Type":{
+          "shape":"MedeaTypeType",
+          "documentation":"<p>The exact string that identifies the third-party partner that holds the external secret. For more information, see <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/mes-partners.html\">Managed external secret partners</a>.</p>"
         }
       }
     },

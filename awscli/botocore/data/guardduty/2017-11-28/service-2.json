@@ -640,6 +640,22 @@
       ],
       "documentation":"<p>Retrieves the Malware Protection plan details associated with a Malware Protection plan ID.</p>"
     },
+    "GetMalwareScan":{
+      "name":"GetMalwareScan",
+      "http":{
+        "method":"GET",
+        "requestUri":"/malware-scan/{scanId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetMalwareScanRequest"},
+      "output":{"shape":"GetMalwareScanResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the detailed information for a specific malware scan. Each member account can view the malware scan details for their own account. An administrator can view malware scan details for all accounts in the organization.</p> <p>There might be regional differences because some data sources might not be available in all the Amazon Web Services Regions where GuardDuty is presently supported. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html\">Regions and endpoints</a>.</p>"
+    },
     "GetMalwareScanSettings":{
       "name":"GetMalwareScanSettings",
       "http":{
@@ -912,6 +928,21 @@
       ],
       "documentation":"<p>Lists the Malware Protection plan IDs associated with the protected resources in your Amazon Web Services account.</p>"
     },
+    "ListMalwareScans":{
+      "name":"ListMalwareScans",
+      "http":{
+        "method":"POST",
+        "requestUri":"/malware-scan",
+        "responseCode":200
+      },
+      "input":{"shape":"ListMalwareScansRequest"},
+      "output":{"shape":"ListMalwareScansResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Returns a list of malware scans. Each member account can view the malware scans for their own accounts. An administrator can view the malware scans for all of its members' accounts.</p>"
+    },
     "ListMembers":{
       "name":"ListMembers",
       "http":{
@@ -1018,6 +1049,22 @@
       ],
       "documentation":"<p>Lists the trusted entity sets associated with the specified GuardDuty detector ID. If you use this operation from a member account, the trusted entity sets that are returned as a response, belong to the administrator account.</p>"
     },
+    "SendObjectMalwareScan":{
+      "name":"SendObjectMalwareScan",
+      "http":{
+        "method":"POST",
+        "requestUri":"/object-malware-scan/send",
+        "responseCode":200
+      },
+      "input":{"shape":"SendObjectMalwareScanRequest"},
+      "output":{"shape":"SendObjectMalwareScanResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerErrorException"}
+      ],
+      "documentation":"<p>Initiates a malware scan for a specific S3 object. This API allows you to perform on-demand malware scanning of individual objects in S3 buckets that have Malware Protection for S3 enabled.</p> <p>When you use this API, the Amazon Web Services service terms for GuardDuty Malware Protection apply. For more information, see <a href=\"http://aws.amazon.com/service-terms/#87._Amazon_GuardDuty\">Amazon Web Services service terms for GuardDuty Malware Protection</a>.</p>"
+    },
     "StartMalwareScan":{
       "name":"StartMalwareScan",
       "http":{
@@ -1032,7 +1079,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Initiates the malware scan. Invoking this API will automatically create the <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/slr-permissions-malware-protection.html\">Service-linked role</a> in the corresponding account.</p> <p>When the malware scan starts, you can use the associated scan ID to track the status of the scan. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_DescribeMalwareScans.html\">DescribeMalwareScans</a>.</p>"
+      "documentation":"<p>Initiates the malware scan. Invoking this API will automatically create the <a href=\"https://docs.aws.amazon.com/guardduty/latest/ug/slr-permissions-malware-protection.html\">Service-linked role</a> in the corresponding account if the resourceArn belongs to an EC2 instance.</p> <p>When the malware scan starts, you can use the associated scan ID to track the status of the scan. For more information, see <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListMalwareScans.html\">ListMalwareScans</a> and <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_GetMalwareScan.html\">GetMalwareScan</a>.</p> <p>When you use this API, the Amazon Web Services service terms for GuardDuty Malware Protection apply. For more information, see <a href=\"http://aws.amazon.com/service-terms/#87._Amazon_GuardDuty\">Amazon Web Services service terms for GuardDuty Malware Protection</a>.</p>"
     },
     "StartMonitoringMembers":{
       "name":"StartMonitoringMembers",
@@ -1671,6 +1718,22 @@
       "type":"list",
       "member":{"shape":"Actor"},
       "max":400
+    },
+    "AdditionalInfo":{
+      "type":"structure",
+      "members":{
+        "VersionId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The version ID of the S3 object, if applicable.</p>",
+          "locationName":"versionId"
+        },
+        "DeviceName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The device name of the EBS volume, if applicable.</p>",
+          "locationName":"deviceName"
+        }
+      },
+      "documentation":"<p>Contains additional information about the detected threat.</p>"
     },
     "AdditionalSequenceTypes":{
       "type":"list",
@@ -2855,6 +2918,11 @@
           "documentation":"<p>The idempotency token for the request.</p>",
           "idempotencyToken":true,
           "locationName":"clientToken"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to be added to a new publishing destination resource.</p>",
+          "locationName":"tags"
         }
       }
     },
@@ -3726,6 +3794,11 @@
           "shape":"DestinationProperties",
           "documentation":"<p>A <code>DestinationProperties</code> object that includes the <code>DestinationArn</code> and <code>KmsKeyArn</code> of the publishing destination.</p>",
           "locationName":"destinationProperties"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags of the publishing destination resource.</p>",
+          "locationName":"tags"
         }
       }
     },
@@ -3796,6 +3869,13 @@
         }
       },
       "documentation":"<p>Contains information about the detected behavior.</p>"
+    },
+    "DetectionSource":{
+      "type":"string",
+      "enum":[
+        "AMAZON",
+        "BITDEFENDER"
+      ]
     },
     "DetectorAdditionalConfiguration":{
       "type":"structure",
@@ -4069,6 +4149,28 @@
       "documentation":"<p>Contains information about the domain.</p>"
     },
     "Double":{"type":"double"},
+    "EbsSnapshot":{
+      "type":"structure",
+      "members":{
+        "DeviceName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The device name of the EBS snapshot that was scanned.</p>",
+          "locationName":"deviceName"
+        }
+      },
+      "documentation":"<p>Contains information about an EBS snapshot that was scanned for malware.</p>"
+    },
+    "EbsSnapshotDetails":{
+      "type":"structure",
+      "members":{
+        "SnapshotArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the EBS snapshot.</p>",
+          "locationName":"snapshotArn"
+        }
+      },
+      "documentation":"<p>Contains details about the EBS snapshot that was scanned for malware.</p>"
+    },
     "EbsSnapshotPreservation":{
       "type":"string",
       "enum":[
@@ -4148,6 +4250,17 @@
         }
       },
       "documentation":"<p>Describes the configuration of scanning EBS volumes as a data source.</p>"
+    },
+    "Ec2ImageDetails":{
+      "type":"structure",
+      "members":{
+        "ImageArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the EC2 AMI.</p>",
+          "locationName":"imageArn"
+        }
+      },
+      "documentation":"<p>Contains details about the EC2 AMI that was scanned.</p>"
     },
     "Ec2Instance":{
       "type":"structure",
@@ -5297,6 +5410,154 @@
         }
       }
     },
+    "GetMalwareScanRequest":{
+      "type":"structure",
+      "required":["ScanId"],
+      "members":{
+        "ScanId":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier that gets generated when you invoke the API without any error. Each malware scan has a corresponding scan ID. Using this scan ID, you can monitor the status of your malware scan.</p>",
+          "location":"uri",
+          "locationName":"scanId"
+        }
+      }
+    },
+    "GetMalwareScanResponse":{
+      "type":"structure",
+      "members":{
+        "ScanId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A unique identifier associated with the malware scan. Each malware scan has a corresponding scan ID. Using this scan ID, you can monitor the status of your malware scan.</p>",
+          "locationName":"scanId"
+        },
+        "DetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique ID of the detector that is associated with the request, if it belongs to an account which is a GuardDuty customer.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
+          "locationName":"detectorId"
+        },
+        "AdminDetectorId":{
+          "shape":"DetectorId",
+          "documentation":"<p>The unique detector ID of the administrator account that the request is associated with. If the account is an administrator, the <code>AdminDetectorId</code> will be the same as the one used for <code>DetectorId. If the customer is not a GuardDuty customer, this field will not be present.</code>.</p> <p>To find the <code>detectorId</code> in the current Region, see the Settings page in the GuardDuty console, or run the <a href=\"https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html\">ListDetectors</a> API.</p>",
+          "locationName":"adminDetectorId"
+        },
+        "ResourceArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Amazon Resource Name (ARN) of the resource on which a malware scan was invoked.</p>",
+          "locationName":"resourceArn"
+        },
+        "ResourceType":{
+          "shape":"MalwareProtectionResourceType",
+          "documentation":"<p>The type of resource that was scanned for malware.</p>",
+          "locationName":"resourceType"
+        },
+        "ScannedResourcesCount":{
+          "shape":"NonNegativeInteger",
+          "documentation":"<p>The total number of resources that were successfully scanned. This is dependent on the resource type.</p>",
+          "locationName":"scannedResourcesCount"
+        },
+        "SkippedResourcesCount":{
+          "shape":"NonNegativeInteger",
+          "documentation":"<p>The total number of resources that were skipped during the scan.</p>",
+          "locationName":"skippedResourcesCount"
+        },
+        "FailedResourcesCount":{
+          "shape":"NonNegativeInteger",
+          "documentation":"<p>The total number of resources that failed to be scanned.</p>",
+          "locationName":"failedResourcesCount"
+        },
+        "ScannedResources":{
+          "shape":"ScannedResources",
+          "documentation":"<p>A list of resources along with their metadata that were scanned as part of the malware scan operation.</p>",
+          "locationName":"scannedResources"
+        },
+        "ScanConfiguration":{
+          "shape":"ScanConfiguration",
+          "documentation":"<p>Information about the scan configuration used for the malware scan.</p>",
+          "locationName":"scanConfiguration"
+        },
+        "ScanCategory":{
+          "shape":"ScanCategory",
+          "documentation":"<p>The category of the malware scan, indicating the type of scan performed.</p>",
+          "locationName":"scanCategory"
+        },
+        "ScanStatus":{
+          "shape":"MalwareProtectionScanStatus",
+          "documentation":"<p>A value representing the current status of the malware scan.</p>",
+          "locationName":"scanStatus"
+        },
+        "ScanStatusReason":{
+          "shape":"ScanStatusReason",
+          "documentation":"<p>Represents the reason for the current scan status, if applicable.</p>",
+          "locationName":"scanStatusReason"
+        },
+        "ScanType":{
+          "shape":"MalwareProtectionScanType",
+          "documentation":"<p>A value representing the initiator of the scan.</p>",
+          "locationName":"scanType"
+        },
+        "ScanStartedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp representing when the malware scan was started.</p>",
+          "locationName":"scanStartedAt"
+        },
+        "ScanCompletedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp representing when the malware scan was completed.</p>",
+          "locationName":"scanCompletedAt"
+        },
+        "ScanResultDetails":{
+          "shape":"GetMalwareScanResultDetails",
+          "documentation":"<p>Detailed information about the results of the malware scan, if the scan completed.</p>",
+          "locationName":"scanResultDetails"
+        }
+      }
+    },
+    "GetMalwareScanResultDetails":{
+      "type":"structure",
+      "members":{
+        "ScanResultStatus":{
+          "shape":"ScanResultStatus",
+          "documentation":"<p>Status indicating whether threats were found for a completed scan.</p>",
+          "locationName":"scanResultStatus"
+        },
+        "SkippedFileCount":{
+          "shape":"PositiveLong",
+          "documentation":"<p>The total number of files that were skipped during the scan.</p>",
+          "locationName":"skippedFileCount"
+        },
+        "FailedFileCount":{
+          "shape":"PositiveLong",
+          "documentation":"<p>The total number of files that failed to be scanned.</p>",
+          "locationName":"failedFileCount"
+        },
+        "ThreatFoundFileCount":{
+          "shape":"PositiveLong",
+          "documentation":"<p>The total number of files in which threats were detected.</p>",
+          "locationName":"threatFoundFileCount"
+        },
+        "TotalFileCount":{
+          "shape":"PositiveLong",
+          "documentation":"<p>The total number of files that were processed during the scan.</p>",
+          "locationName":"totalFileCount"
+        },
+        "TotalBytes":{
+          "shape":"PositiveLong",
+          "documentation":"<p>The total number of bytes that were scanned.</p>",
+          "locationName":"totalBytes"
+        },
+        "UniqueThreatCount":{
+          "shape":"PositiveLong",
+          "documentation":"<p>The total number of unique threats that were detected during the scan.</p>",
+          "locationName":"uniqueThreatCount"
+        },
+        "Threats":{
+          "shape":"ScanResultThreats",
+          "documentation":"<p>The threats that were detected during the malware scan.</p>",
+          "locationName":"threats"
+        }
+      },
+      "documentation":"<p>Contains information about the results of the malware scan.</p>"
+    },
     "GetMalwareScanSettingsRequest":{
       "type":"structure",
       "required":["DetectorId"],
@@ -5845,6 +6106,18 @@
       },
       "documentation":"<p>Contains information about the impersonated user.</p>"
     },
+    "IncrementalScanDetails":{
+      "type":"structure",
+      "required":["BaselineResourceArn"],
+      "members":{
+        "BaselineResourceArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Amazon Resource Name (ARN) of the baseline resource used for incremental scanning. The scan will only process changes since this baseline resource was created.</p>",
+          "locationName":"baselineResourceArn"
+        }
+      },
+      "documentation":"<p>Contains information about the incremental scan configuration.</p>"
+    },
     "Indicator":{
       "type":"structure",
       "required":["Key"],
@@ -6123,6 +6396,36 @@
       "member":{"shape":"String"},
       "max":50,
       "min":0
+    },
+    "ItemDetails":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Amazon Resource Name (ARN) of the resource where the threat was detected.</p>",
+          "locationName":"resourceArn"
+        },
+        "ItemPath":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The path where the threat was detected.</p>",
+          "locationName":"itemPath"
+        },
+        "Hash":{
+          "shape":"String",
+          "documentation":"<p>The hash value of the infected item.</p>",
+          "locationName":"hash"
+        },
+        "AdditionalInfo":{
+          "shape":"AdditionalInfo",
+          "documentation":"<p>Additional information about the detected threat item.</p>",
+          "locationName":"additionalInfo"
+        }
+      },
+      "documentation":"<p>Contains detailed information about where a threat was detected.</p>"
+    },
+    "ItemDetailsList":{
+      "type":"list",
+      "member":{"shape":"ItemDetails"}
     },
     "ItemPath":{
       "type":"structure",
@@ -6851,6 +7154,95 @@
         }
       }
     },
+    "ListMalwareScansCriterionKey":{
+      "type":"string",
+      "enum":[
+        "RESOURCE_ARN",
+        "SCAN_ID",
+        "ACCOUNT_ID",
+        "GUARDDUTY_FINDING_ID",
+        "RESOURCE_TYPE",
+        "SCAN_START_TIME",
+        "SCAN_STATUS",
+        "SCAN_TYPE"
+      ]
+    },
+    "ListMalwareScansFilterCriteria":{
+      "type":"structure",
+      "members":{
+        "ListMalwareScansFilterCriterion":{
+          "shape":"ListMalwareScansFilterCriterionList",
+          "documentation":"<p>Represents a condition that when matched will be added to the response of the operation.</p>",
+          "locationName":"filterCriterion"
+        }
+      },
+      "documentation":"<p>Represents the criteria used to filter the malware scan entries.</p>"
+    },
+    "ListMalwareScansFilterCriterion":{
+      "type":"structure",
+      "members":{
+        "ListMalwareScansCriterionKey":{
+          "shape":"ListMalwareScansCriterionKey",
+          "documentation":"<p>An enum value representing possible scan properties to match with given scan entries.</p>",
+          "locationName":"criterionKey"
+        },
+        "FilterCondition":{
+          "shape":"FilterCondition",
+          "documentation":"<p>Contains information about the condition.</p>",
+          "locationName":"filterCondition"
+        }
+      },
+      "documentation":"<p>Represents a condition that when matched will be added to the response of the operation. Irrespective of using any filter criteria, an administrator account can view the scan entries for all of its member accounts. However, each member account can view the scan entries only for their own account.</p>"
+    },
+    "ListMalwareScansFilterCriterionList":{
+      "type":"list",
+      "member":{"shape":"ListMalwareScansFilterCriterion"},
+      "max":1,
+      "min":0
+    },
+    "ListMalwareScansRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>You can use this parameter to indicate the maximum number of items that you want in the response. The default value is 50. The maximum value is 50.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>You can use this parameter when paginating results. Set the value of this parameter to null on your first call to the list action. For subsequent calls to the action, fill nextToken in the request with the value of NextToken from the previous response to continue listing results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "FilterCriteria":{
+          "shape":"ListMalwareScansFilterCriteria",
+          "documentation":"<p>Represents the criteria used to filter the malware scan entries.</p>",
+          "locationName":"filterCriteria"
+        },
+        "SortCriteria":{
+          "shape":"SortCriteria",
+          "documentation":"<p>Represents the criteria used for sorting malware scan entries.</p>",
+          "locationName":"sortCriteria"
+        }
+      }
+    },
+    "ListMalwareScansResponse":{
+      "type":"structure",
+      "required":["Scans"],
+      "members":{
+        "Scans":{
+          "shape":"MalwareScans",
+          "documentation":"<p>The list of malware scans associated with the provided input parameters.</p>",
+          "locationName":"scans"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination parameter to be used on the next list operation to retrieve more scans.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
     "ListMembersRequest":{
       "type":"structure",
       "required":["DetectorId"],
@@ -7217,6 +7609,21 @@
       },
       "documentation":"<p>Provides details about Malware Protection when it is enabled as a data source.</p>"
     },
+    "MalwareProtectionFindingsScanConfiguration":{
+      "type":"structure",
+      "members":{
+        "TriggerType":{
+          "shape":"TriggerType",
+          "documentation":"<p>The event that triggered the malware scan.</p>",
+          "locationName":"triggerType"
+        },
+        "IncrementalScanDetails":{
+          "shape":"IncrementalScanDetails",
+          "locationName":"incrementalScanDetails"
+        }
+      },
+      "documentation":"<p>Contains finding configuration details about the malware scan.</p>"
+    },
     "MalwareProtectionPlanActions":{
       "type":"structure",
       "members":{
@@ -7297,6 +7704,83 @@
       "type":"list",
       "member":{"shape":"MalwareProtectionPlanSummary"}
     },
+    "MalwareProtectionResourceType":{
+      "type":"string",
+      "enum":[
+        "EBS_RECOVERY_POINT",
+        "EBS_SNAPSHOT",
+        "EBS_VOLUME",
+        "EC2_AMI",
+        "EC2_INSTANCE",
+        "EC2_RECOVERY_POINT",
+        "S3_RECOVERY_POINT",
+        "S3_BUCKET"
+      ]
+    },
+    "MalwareProtectionScanStatus":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "COMPLETED",
+        "COMPLETED_WITH_ISSUES",
+        "FAILED",
+        "SKIPPED"
+      ]
+    },
+    "MalwareProtectionScanType":{
+      "type":"string",
+      "enum":[
+        "BACKUP_INITIATED",
+        "ON_DEMAND",
+        "GUARDDUTY_INITIATED"
+      ]
+    },
+    "MalwareScan":{
+      "type":"structure",
+      "members":{
+        "ResourceArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Amazon Resource Name (ARN) of the resource for the given malware scan.</p>",
+          "locationName":"resourceArn"
+        },
+        "ResourceType":{
+          "shape":"MalwareProtectionResourceType",
+          "documentation":"<p>The type of resource that was scanned for malware.</p>",
+          "locationName":"resourceType"
+        },
+        "ScanId":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A unique identifier that gets generated when you invoke the API without any error. Each malware scan has a corresponding scan ID. Using this scan ID, you can monitor the status of your malware scan.</p>",
+          "locationName":"scanId"
+        },
+        "ScanStatus":{
+          "shape":"MalwareProtectionScanStatus",
+          "documentation":"<p>An enum value representing the current status of the malware scan.</p>",
+          "locationName":"scanStatus"
+        },
+        "ScanResultStatus":{
+          "shape":"ScanResultStatus",
+          "documentation":"<p>An enum value representing the result of the malware scan.</p>",
+          "locationName":"scanResultStatus"
+        },
+        "ScanType":{
+          "shape":"MalwareProtectionScanType",
+          "documentation":"<p>An enum value representing the type of scan that was initiated.</p>",
+          "locationName":"scanType"
+        },
+        "ScanStartedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp representing when the malware scan was started.</p>",
+          "locationName":"scanStartedAt"
+        },
+        "ScanCompletedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp representing when the malware scan was completed.</p>",
+          "locationName":"scanCompletedAt"
+        }
+      },
+      "documentation":"<p>Contains information about a particular malware scan.</p>"
+    },
     "MalwareScanDetails":{
       "type":"structure",
       "members":{
@@ -7304,9 +7788,38 @@
           "shape":"Threats",
           "documentation":"<p>Information about the detected threats associated with the generated GuardDuty finding.</p>",
           "locationName":"threats"
+        },
+        "ScanId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier for the malware scan.</p>",
+          "locationName":"scanId"
+        },
+        "ScanType":{
+          "shape":"MalwareProtectionScanType",
+          "documentation":"<p>The type of malware scan performed.</p>",
+          "locationName":"scanType"
+        },
+        "ScanCategory":{
+          "shape":"ScanCategory",
+          "documentation":"<p>The category of the malware scan.</p>",
+          "locationName":"scanCategory"
+        },
+        "ScanConfiguration":{
+          "shape":"MalwareProtectionFindingsScanConfiguration",
+          "documentation":"<p>The configuration settings used for the malware scan.</p>",
+          "locationName":"scanConfiguration"
+        },
+        "UniqueThreatCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of unique malware threats detected during the scan.</p>",
+          "locationName":"uniqueThreatCount"
         }
       },
       "documentation":"<p>Information about the malware scan that generated a GuardDuty finding.</p>"
+    },
+    "MalwareScans":{
+      "type":"list",
+      "member":{"shape":"MalwareScan"}
     },
     "ManagementType":{
       "type":"string",
@@ -7773,6 +8286,10 @@
       "type":"string",
       "max":200,
       "min":1
+    },
+    "NonNegativeInteger":{
+      "type":"integer",
+      "min":0
     },
     "NotEquals":{
       "type":"list",
@@ -8624,6 +9141,34 @@
       },
       "documentation":"<p>Indicates that a login attempt was made to the potentially compromised database from a remote IP address.</p>"
     },
+    "RecoveryPoint":{
+      "type":"structure",
+      "required":["BackupVaultName"],
+      "members":{
+        "BackupVaultName":{
+          "shape":"String",
+          "documentation":"<p>The name of the Amazon Web Services Backup vault that contains the name of the recovery point to be scanned.</p>",
+          "locationName":"backupVaultName"
+        }
+      },
+      "documentation":"<p>Contains information about the recovery point configuration for scanning backup data from Amazon Web Services Backup.</p>"
+    },
+    "RecoveryPointDetails":{
+      "type":"structure",
+      "members":{
+        "RecoveryPointArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the recovery point.</p>",
+          "locationName":"recoveryPointArn"
+        },
+        "BackupVaultName":{
+          "shape":"String",
+          "documentation":"<p>The name of the backup vault containing the recovery point.</p>",
+          "locationName":"backupVaultName"
+        }
+      },
+      "documentation":"<p>Contains details about the backup recovery point.</p>"
+    },
     "RemoteAccountDetails":{
       "type":"structure",
       "members":{
@@ -8758,13 +9303,28 @@
           "shape":"LambdaDetails",
           "documentation":"<p>Contains information about the Lambda function that was involved in a finding.</p>",
           "locationName":"lambdaDetails"
+        },
+        "EbsSnapshotDetails":{
+          "shape":"EbsSnapshotDetails",
+          "documentation":"<p>Contains details about the EBS snapshot that was scanned.</p>",
+          "locationName":"ebsSnapshotDetails"
+        },
+        "Ec2ImageDetails":{
+          "shape":"Ec2ImageDetails",
+          "documentation":"<p>Contains details about the EC2 image that was scanned.</p>",
+          "locationName":"ec2ImageDetails"
+        },
+        "RecoveryPointDetails":{
+          "shape":"RecoveryPointDetails",
+          "documentation":"<p>Contains details about the backup recovery point that was scanned.</p>",
+          "locationName":"recoveryPointDetails"
         }
       },
       "documentation":"<p>Contains information about the Amazon Web Services resource associated with the activity that prompted GuardDuty to generate a finding.</p>"
     },
     "ResourceArn":{
       "type":"string",
-      "pattern":"^arn:[A-Za-z-]+:[A-Za-z0-9]+:[A-Za-z0-9-]+:\\d+:(([A-Za-z0-9-]+)[:\\/])?[A-Za-z0-9-]*$"
+      "pattern":"^arn:[A-Za-z-]+:[A-Za-z0-9]+:[A-Za-z0-9-]+:\\d+:(([A-Za-z0-9-]+)[:\\/])?[A-Za-z0-9:-]*$"
     },
     "ResourceData":{
       "type":"structure",
@@ -9287,6 +9847,27 @@
       "type":"list",
       "member":{"shape":"S3ObjectDetail"}
     },
+    "S3ObjectForSendObjectMalwareScan":{
+      "type":"structure",
+      "members":{
+        "Bucket":{
+          "shape":"String",
+          "documentation":"<p>The name of the S3 bucket containing the object to scan. The bucket must have GuardDuty Malware Protection enabled.</p>",
+          "locationName":"bucket"
+        },
+        "Key":{
+          "shape":"String",
+          "documentation":"<p>The key (name) of the S3 object to scan for malware. This must be the full key path of the object within the bucket.</p>",
+          "locationName":"key"
+        },
+        "VersionId":{
+          "shape":"String",
+          "documentation":"<p>The version ID of the S3 object to scan. If not specified, the latest version of the object is scanned.</p>",
+          "locationName":"versionId"
+        }
+      },
+      "documentation":"<p>The S3 object path to initiate a scan, including bucket name, object key, and optional version ID.</p>"
+    },
     "S3ObjectUids":{
       "type":"list",
       "member":{"shape":"String"}
@@ -9372,6 +9953,13 @@
       },
       "documentation":"<p>Contains information about malware scans associated with GuardDuty Malware Protection for EC2.</p>"
     },
+    "ScanCategory":{
+      "type":"string",
+      "enum":[
+        "FULL_SCAN",
+        "INCREMENTAL_SCAN"
+      ]
+    },
     "ScanCondition":{
       "type":"structure",
       "required":["MapEquals"],
@@ -9400,6 +9988,43 @@
         }
       },
       "documentation":"<p>Represents the <code>key:value</code> pair to be matched against given resource property.</p>"
+    },
+    "ScanConfiguration":{
+      "type":"structure",
+      "members":{
+        "Role":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Amazon Resource Name (ARN) of the IAM role that should contain the required permissions for the scan.</p>",
+          "locationName":"role"
+        },
+        "TriggerDetails":{
+          "shape":"TriggerDetails",
+          "documentation":"<p>Information about the entity that triggered the malware scan.</p>",
+          "locationName":"triggerDetails"
+        },
+        "IncrementalScanDetails":{
+          "shape":"IncrementalScanDetails",
+          "documentation":"<p>Information about the incremental scan configuration, if applicable.</p>",
+          "locationName":"incrementalScanDetails"
+        },
+        "RecoveryPoint":{
+          "shape":"ScanConfigurationRecoveryPoint",
+          "documentation":"<p>Information about the recovery point configuration used for the scan, if applicable.</p>",
+          "locationName":"recoveryPoint"
+        }
+      },
+      "documentation":"<p>Contains information about the configuration used for the malware scan.</p>"
+    },
+    "ScanConfigurationRecoveryPoint":{
+      "type":"structure",
+      "members":{
+        "BackupVaultName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the Amazon Web Services Backup vault that contains the recovery point for the scanned.</p>",
+          "locationName":"backupVaultName"
+        }
+      },
+      "documentation":"<p>Contains information about the recovery point configuration used in the scan.</p>"
     },
     "ScanCriterion":{
       "type":"map",
@@ -9520,6 +10145,48 @@
       },
       "documentation":"<p>Represents the result of the scan.</p>"
     },
+    "ScanResultStatus":{
+      "type":"string",
+      "enum":[
+        "NO_THREATS_FOUND",
+        "THREATS_FOUND"
+      ]
+    },
+    "ScanResultThreat":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the detected threat.</p>",
+          "locationName":"name"
+        },
+        "Source":{
+          "shape":"DetectionSource",
+          "documentation":"<p>The source that detected this threat.</p>",
+          "locationName":"source"
+        },
+        "Count":{
+          "shape":"PositiveLong",
+          "documentation":"<p>The number of instances of this threat that were detected.</p>",
+          "locationName":"count"
+        },
+        "Hash":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The hash value associated with the detected threat.</p>",
+          "locationName":"hash"
+        },
+        "ItemDetails":{
+          "shape":"ItemDetailsList",
+          "documentation":"<p>Additional information about where this threat was detected.</p>",
+          "locationName":"itemDetails"
+        }
+      },
+      "documentation":"<p>Contains information about a specific threat that was detected during the malware scan.</p>"
+    },
+    "ScanResultThreats":{
+      "type":"list",
+      "member":{"shape":"ScanResultThreat"}
+    },
     "ScanStatus":{
       "type":"string",
       "enum":[
@@ -9527,6 +10194,27 @@
         "COMPLETED",
         "FAILED",
         "SKIPPED"
+      ]
+    },
+    "ScanStatusReason":{
+      "type":"string",
+      "enum":[
+        "ACCESS_DENIED",
+        "RESOURCE_NOT_FOUND",
+        "SNAPSHOT_SIZE_LIMIT_EXCEEDED",
+        "RESOURCE_UNAVAILABLE",
+        "INCONSISTENT_SOURCE",
+        "INCREMENTAL_NO_DIFFERENCE",
+        "NO_EBS_VOLUMES_FOUND",
+        "UNSUPPORTED_PRODUCT_CODE_TYPE",
+        "AMI_SNAPSHOT_LIMIT_EXCEEDED",
+        "UNRELATED_RESOURCES",
+        "BASE_RESOURCE_NOT_SCANNED",
+        "BASE_CREATED_AFTER_TARGET",
+        "UNSUPPORTED_FOR_INCREMENTAL",
+        "UNSUPPORTED_AMI",
+        "UNSUPPORTED_SNAPSHOT",
+        "UNSUPPORTED_COMPOSITE_RECOVERY_POINT"
       ]
     },
     "ScanThreatName":{
@@ -9587,6 +10275,57 @@
       },
       "documentation":"<p>Total number of scanned files.</p>"
     },
+    "ScannedResource":{
+      "type":"structure",
+      "members":{
+        "ScannedResourceArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Amazon Resource Name (ARN) of the scanned resource.</p>",
+          "locationName":"scannedResourceArn"
+        },
+        "ScannedResourceType":{
+          "shape":"MalwareProtectionResourceType",
+          "documentation":"<p>The resource type of the scanned resource.</p>",
+          "locationName":"scannedResourceType"
+        },
+        "ScannedResourceStatus":{
+          "shape":"MalwareProtectionScanStatus",
+          "documentation":"<p>The status of the scanned resource.</p>",
+          "locationName":"scannedResourceStatus"
+        },
+        "ScanStatusReason":{
+          "shape":"ScanStatusReason",
+          "documentation":"<p>The reason for the scan status of this particular resource, if applicable.</p>",
+          "locationName":"scanStatusReason"
+        },
+        "ResourceDetails":{
+          "shape":"ScannedResourceDetails",
+          "documentation":"<p>Information about the scanned resource.</p>",
+          "locationName":"resourceDetails"
+        }
+      },
+      "documentation":"<p>Contains information about a resource that was scanned as part of the malware scan operation.</p>"
+    },
+    "ScannedResourceDetails":{
+      "type":"structure",
+      "members":{
+        "EbsVolume":{
+          "shape":"VolumeDetail",
+          "documentation":"<p>Contains information about the EBS volume that was scanned.</p>",
+          "locationName":"ebsVolume"
+        },
+        "EbsSnapshot":{
+          "shape":"EbsSnapshot",
+          "documentation":"<p>Contains information about the EBS snapshot that was scanned.</p>",
+          "locationName":"ebsSnapshot"
+        }
+      },
+      "documentation":"<p>Contains additional information about a resource that was scanned.</p>"
+    },
+    "ScannedResources":{
+      "type":"list",
+      "member":{"shape":"ScannedResource"}
+    },
     "Scans":{
       "type":"list",
       "member":{"shape":"Scan"}
@@ -9626,6 +10365,20 @@
     "SecurityGroups":{
       "type":"list",
       "member":{"shape":"SecurityGroup"}
+    },
+    "SendObjectMalwareScanRequest":{
+      "type":"structure",
+      "members":{
+        "S3Object":{
+          "shape":"S3ObjectForSendObjectMalwareScan",
+          "documentation":"<p>The S3 object information for the object you want to scan. The bucket must have a Malware Protection plan configured to use this API.</p>",
+          "locationName":"s3Object"
+        }
+      }
+    },
+    "SendObjectMalwareScanResponse":{
+      "type":"structure",
+      "members":{}
     },
     "SensitiveString":{
       "type":"string",
@@ -9971,6 +10724,28 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "StartMalwareScanConfiguration":{
+      "type":"structure",
+      "required":["Role"],
+      "members":{
+        "Role":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>Amazon Resource Name (ARN) of the IAM role that is used for scanning the resource.</p>",
+          "locationName":"role"
+        },
+        "IncrementalScanDetails":{
+          "shape":"IncrementalScanDetails",
+          "documentation":"<p>Contains information about the incremental scan configuration. When specified, the scan will only process changes since the baseline resource.</p>",
+          "locationName":"incrementalScanDetails"
+        },
+        "RecoveryPoint":{
+          "shape":"RecoveryPoint",
+          "documentation":"<p>Contains information about the recovery point configuration for the requested scan.</p>",
+          "locationName":"recoveryPoint"
+        }
+      },
+      "documentation":"<p>Contains information about the configuration to be used for the malware scan.</p>"
+    },
     "StartMalwareScanRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -9979,6 +10754,17 @@
           "shape":"ResourceArn",
           "documentation":"<p>Amazon Resource Name (ARN) of the resource for which you invoked the API.</p>",
           "locationName":"resourceArn"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The idempotency token for the create request.</p>",
+          "idempotencyToken":true,
+          "locationName":"clientToken"
+        },
+        "ScanConfiguration":{
+          "shape":"StartMalwareScanConfiguration",
+          "documentation":"<p>Contains information about the configuration to be used for the malware scan.</p>",
+          "locationName":"scanConfiguration"
         }
       }
     },
@@ -10143,6 +10929,21 @@
           "shape":"ItemPaths",
           "documentation":"<p>Information about the nested item path and hash of the protected resource.</p>",
           "locationName":"itemPaths"
+        },
+        "Count":{
+          "shape":"Long",
+          "documentation":"<p>The number of occurrences of this specific threat detected during the scan.</p>",
+          "locationName":"count"
+        },
+        "Hash":{
+          "shape":"String",
+          "documentation":"<p>The hash identifier of the detected malware threat.</p>",
+          "locationName":"hash"
+        },
+        "ItemDetails":{
+          "shape":"ItemDetailsList",
+          "documentation":"<p>Detailed information about the detected malware threat.</p>",
+          "locationName":"itemDetails"
         }
       },
       "documentation":"<p>Information about the detected threats associated with the generated finding.</p>"
@@ -10312,9 +11113,21 @@
           "shape":"NonEmptyString",
           "documentation":"<p>The description of the scan trigger.</p>",
           "locationName":"description"
+        },
+        "TriggerType":{
+          "shape":"TriggerType",
+          "documentation":"<p>Specifies the trigger type that started the malware scan.</p>",
+          "locationName":"triggerType"
         }
       },
       "documentation":"<p>Represents the reason the scan was triggered.</p>"
+    },
+    "TriggerType":{
+      "type":"string",
+      "enum":[
+        "BACKUP",
+        "GUARDDUTY"
+      ]
     },
     "TrustedEntitySetFormat":{
       "type":"string",

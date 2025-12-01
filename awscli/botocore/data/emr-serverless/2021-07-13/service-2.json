@@ -79,7 +79,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Displays detailed information about a specified application.</p>"
+      "documentation":"<p>Displays detailed information about a specified application.</p>",
+      "readonly":true
     },
     "GetDashboardForJobRun":{
       "name":"GetDashboardForJobRun",
@@ -111,7 +112,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Displays detailed information about a job run.</p>"
+      "documentation":"<p>Displays detailed information about a job run.</p>",
+      "readonly":true
     },
     "ListApplications":{
       "name":"ListApplications",
@@ -126,7 +128,8 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists applications based on a set of parameters.</p>"
+      "documentation":"<p>Lists applications based on a set of parameters.</p>",
+      "readonly":true
     },
     "ListJobRunAttempts":{
       "name":"ListJobRunAttempts",
@@ -142,7 +145,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists all attempt of a job run.</p>"
+      "documentation":"<p>Lists all attempt of a job run.</p>",
+      "readonly":true
     },
     "ListJobRuns":{
       "name":"ListJobRuns",
@@ -157,7 +161,8 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists job runs based on a set of parameters.</p>"
+      "documentation":"<p>Lists job runs based on a set of parameters.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -173,7 +178,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists the tags assigned to the resources.</p>"
+      "documentation":"<p>Lists the tags assigned to the resources.</p>",
+      "readonly":true
     },
     "StartApplication":{
       "name":"StartApplication",
@@ -378,7 +384,7 @@
         },
         "identityCenterConfiguration":{
           "shape":"IdentityCenterConfiguration",
-          "documentation":"<p>The IAM Identity Center configuration applied to enable trusted identity propagation. </p>"
+          "documentation":"<p>The IAM Identity Center configuration applied to enable trusted identity propagation.</p>"
         }
       },
       "documentation":"<p>Information about an application. Amazon EMR Serverless uses applications to run jobs.</p>"
@@ -796,8 +802,7 @@
     },
     "DeleteApplicationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DiskSize":{
       "type":"string",
@@ -995,9 +1000,13 @@
         "identityCenterApplicationArn":{
           "shape":"IdentityCenterApplicationArn",
           "documentation":"<p>The ARN of the EMR Serverless created IAM Identity Center Application that provides trusted-identity propagation.</p>"
+        },
+        "userBackgroundSessionsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables user background sessions for this application so Livy sessions can continue running after users log out of their interactive notebook or their Identity Center sessions expire.</p>"
         }
       },
-      "documentation":"<p>The IAM Identity Center Configuration that includes the Identify Center instance and application ARNs that provide trusted-identity propagation.</p>"
+      "documentation":"<p>The IAM Identity Center Configuration accepts the Identity Center instance parameter required to enable trusted identity propagation. This configuration allows identity propagation between integrated services and the Identity Center instance.</p>"
     },
     "IdentityCenterConfigurationInput":{
       "type":"structure",
@@ -1005,9 +1014,13 @@
         "identityCenterInstanceArn":{
           "shape":"IdentityCenterInstanceArn",
           "documentation":"<p>The ARN of the IAM Identity Center instance.</p>"
+        },
+        "userBackgroundSessionsEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables user background sessions for this application so Livy sessions can continue running after users log out of their interactive notebook or their Identity Center sessions expire.</p>"
         }
       },
-      "documentation":"<p>Specifies the IAM Identity Center configuration used to enable or disable trusted identity propagation. When provided, this configuration determines how the application interacts with IAM Identity Center for user authentication and access control.</p>"
+      "documentation":"<p>The IAM Identity Center Configuration accepts the Identity Center instance parameter required to enable trusted identity propagation. This configuration allows identity propagation between integrated services and the Identity Center instance.</p>"
     },
     "IdentityCenterInstanceArn":{
       "type":"string",
@@ -1985,8 +1998,7 @@
     },
     "StartApplicationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "StartJobRunRequest":{
       "type":"structure",
@@ -2082,8 +2094,7 @@
     },
     "StopApplicationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "String1024":{
       "type":"string",
@@ -2149,8 +2160,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -2199,8 +2209,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateApplicationRequest":{
       "type":"structure",

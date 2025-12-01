@@ -408,7 +408,7 @@ class TestDebugPanel(BasicPromptToolkitTest):
             app_runner.feed_input(Keys.F2)
             self.assert_current_buffer(app_runner.app, 'input_buffer')
 
-    @mock.patch('awscrt.io.init_logging')
+    @mock.patch('awscrt.io.set_log_level')
     def test_debug_mode_does_not_allow_crt_logging(
         self, mock_init_logging, app_runner, prompter
     ):
@@ -418,7 +418,7 @@ class TestDebugPanel(BasicPromptToolkitTest):
         ):
             assert app_runner.app.debug
         mock_init_logging.assert_called_with(
-            awscrt.io.LogLevel.NoLogs, 'stderr'
+            awscrt.io.LogLevel.NoLogs,
         )
 
 

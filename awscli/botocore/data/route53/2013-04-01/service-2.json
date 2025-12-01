@@ -1149,6 +1149,26 @@
       ],
       "documentation":"<p>Updates the comment for a specified hosted zone.</p>"
     },
+    "UpdateHostedZoneFeatures":{
+      "name":"UpdateHostedZoneFeatures",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2013-04-01/hostedzone/{Id}/features"
+      },
+      "input":{
+        "shape":"UpdateHostedZoneFeaturesRequest",
+        "locationName":"UpdateHostedZoneFeaturesRequest",
+        "xmlNamespace":{"uri":"https://route53.amazonaws.com/doc/2013-04-01/"}
+      },
+      "output":{"shape":"UpdateHostedZoneFeaturesResponse"},
+      "errors":[
+        {"shape":"NoSuchHostedZone"},
+        {"shape":"InvalidInput"},
+        {"shape":"PriorRequestNotComplete"},
+        {"shape":"LimitsExceeded"}
+      ],
+      "documentation":"<p>Updates the features configuration for a hosted zone. This operation allows you to enable or disable specific features for your hosted zone, such as accelerated recovery.</p> <p>Accelerated recovery enables you to update DNS records in your public hosted zone even when the us-east-1 region is unavailable.</p>"
+    },
     "UpdateTrafficPolicyComment":{
       "name":"UpdateTrafficPolicyComment",
       "http":{
@@ -1202,6 +1222,20 @@
       "type":"string",
       "max":64,
       "min":1
+    },
+    "AcceleratedRecoveryEnabled":{"type":"boolean"},
+    "AcceleratedRecoveryStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLING",
+        "ENABLE_FAILED",
+        "ENABLING_HOSTED_ZONE_LOCKED",
+        "ENABLED",
+        "DISABLING",
+        "DISABLE_FAILED",
+        "DISABLED",
+        "DISABLING_HOSTED_ZONE_LOCKED"
+      ]
     },
     "AccountLimit":{
       "type":"structure",
@@ -2790,6 +2824,7 @@
       "type":"integer",
       "min":1
     },
+    "FailureReason":{"type":"string"},
     "FailureThreshold":{
       "type":"integer",
       "max":10,
@@ -3454,15 +3489,15 @@
         },
         "RequestInterval":{
           "shape":"RequestInterval",
-          "documentation":"<p>The number of seconds between the time that Amazon Route 53 gets a response from your endpoint and the time that it sends the next health check request. Each Route 53 health checker makes requests at this interval.</p> <important> <p>You can't change the value of <code>RequestInterval</code> after you create a health check.</p> </important> <p>If you don't specify a value for <code>RequestInterval</code>, the default value is <code>30</code> seconds.</p>"
+          "documentation":"<p>The number of seconds between the time that Amazon Route 53 gets a response from your endpoint and the time that it sends the next health check request. Each Route 53 health checker makes requests at this interval.</p> <p> <code>RequestInterval</code> is not supported when you specify a value for <code>Type</code> of <code>RECOVERY_CONTROL</code>.</p> <important> <p>You can't change the value of <code>RequestInterval</code> after you create a health check.</p> </important> <p>If you don't specify a value for <code>RequestInterval</code>, the default value is <code>30</code> seconds.</p>"
         },
         "FailureThreshold":{
           "shape":"FailureThreshold",
-          "documentation":"<p>The number of consecutive health checks that an endpoint must pass or fail for Amazon Route 53 to change the current status of the endpoint from unhealthy to healthy or vice versa. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-determining-health-of-endpoints.html\">How Amazon Route 53 Determines Whether an Endpoint Is Healthy</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> <p>If you don't specify a value for <code>FailureThreshold</code>, the default value is three health checks.</p>"
+          "documentation":"<p>The number of consecutive health checks that an endpoint must pass or fail for Amazon Route 53 to change the current status of the endpoint from unhealthy to healthy or vice versa. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-determining-health-of-endpoints.html\">How Amazon Route 53 Determines Whether an Endpoint Is Healthy</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> <p> <code>FailureThreshold</code> is not supported when you specify a value for <code>Type</code> of <code>RECOVERY_CONTROL</code>.</p> <p>Otherwise, if you don't specify a value for <code>FailureThreshold</code>, the default value is three health checks.</p>"
         },
         "MeasureLatency":{
           "shape":"MeasureLatency",
-          "documentation":"<p>Specify whether you want Amazon Route 53 to measure the latency between health checkers in multiple Amazon Web Services regions and your endpoint, and to display CloudWatch latency graphs on the <b>Health Checks</b> page in the Route 53 console.</p> <important> <p>You can't change the value of <code>MeasureLatency</code> after you create a health check.</p> </important>"
+          "documentation":"<p>Specify whether you want Amazon Route 53 to measure the latency between health checkers in multiple Amazon Web Services regions and your endpoint, and to display CloudWatch latency graphs on the <b>Health Checks</b> page in the Route 53 console.</p> <p> <code>MeasureLatency</code> is not supported when you specify a value for <code>Type</code> of <code>RECOVERY_CONTROL</code>.</p> <important> <p>You can't change the value of <code>MeasureLatency</code> after you create a health check.</p> </important>"
         },
         "Inverted":{
           "shape":"Inverted",
@@ -3644,6 +3679,10 @@
         "LinkedService":{
           "shape":"LinkedService",
           "documentation":"<p>If the hosted zone was created by another service, the service that created the hosted zone. When a hosted zone is created by another service, you can't edit or delete it using Route 53. </p>"
+        },
+        "Features":{
+          "shape":"HostedZoneFeatures",
+          "documentation":"<p>The features configuration for the hosted zone, including accelerated recovery settings and status information.</p>"
         }
       },
       "documentation":"<p>A complex type that contains general information about the hosted zone.</p>"
@@ -3675,6 +3714,30 @@
       "documentation":"<p>A complex type that contains an optional comment about your hosted zone. If you don't want to specify a comment, omit both the <code>HostedZoneConfig</code> and <code>Comment</code> elements.</p>"
     },
     "HostedZoneCount":{"type":"long"},
+    "HostedZoneFailureReasons":{
+      "type":"structure",
+      "members":{
+        "AcceleratedRecovery":{
+          "shape":"FailureReason",
+          "documentation":"<p>The reason why accelerated recovery failed to be enabled or disabled for the hosted zone, if applicable.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about why certain features failed to be enabled or configured for the hosted zone.</p>"
+    },
+    "HostedZoneFeatures":{
+      "type":"structure",
+      "members":{
+        "AcceleratedRecoveryStatus":{
+          "shape":"AcceleratedRecoveryStatus",
+          "documentation":"<p>The current status of accelerated recovery for the hosted zone.</p>"
+        },
+        "FailureReasons":{
+          "shape":"HostedZoneFailureReasons",
+          "documentation":"<p>Information about any failures that occurred when attempting to enable or configure features for the hosted zone.</p>"
+        }
+      },
+      "documentation":"<p>Represents the features configuration for a hosted zone, including the status of various features and any associated failure reasons.</p>"
+    },
     "HostedZoneLimit":{
       "type":"structure",
       "required":[
@@ -6201,7 +6264,7 @@
         },
         "FailureThreshold":{
           "shape":"FailureThreshold",
-          "documentation":"<p>The number of consecutive health checks that an endpoint must pass or fail for Amazon Route 53 to change the current status of the endpoint from unhealthy to healthy or vice versa. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-determining-health-of-endpoints.html\">How Amazon Route 53 Determines Whether an Endpoint Is Healthy</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> <p>If you don't specify a value for <code>FailureThreshold</code>, the default value is three health checks.</p>"
+          "documentation":"<p>The number of consecutive health checks that an endpoint must pass or fail for Amazon Route 53 to change the current status of the endpoint from unhealthy to healthy or vice versa. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-determining-health-of-endpoints.html\">How Amazon Route 53 Determines Whether an Endpoint Is Healthy</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> <p>Otherwise, if you don't specify a value for <code>FailureThreshold</code>, the default value is three health checks.</p>"
         },
         "Inverted":{
           "shape":"Inverted",
@@ -6280,6 +6343,26 @@
         }
       },
       "documentation":"<p>A complex type that contains the response to the <code>UpdateHostedZoneComment</code> request.</p>"
+    },
+    "UpdateHostedZoneFeaturesRequest":{
+      "type":"structure",
+      "required":["HostedZoneId"],
+      "members":{
+        "HostedZoneId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the hosted zone for which you want to update features. This is the unique identifier for your hosted zone.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "EnableAcceleratedRecovery":{
+          "shape":"AcceleratedRecoveryEnabled",
+          "documentation":"<p>Specifies whether to enable accelerated recovery for the hosted zone. Set to <code>true</code> to enable accelerated recovery, or <code>false</code> to disable it.</p>"
+        }
+      }
+    },
+    "UpdateHostedZoneFeaturesResponse":{
+      "type":"structure",
+      "members":{}
     },
     "UpdateTrafficPolicyCommentRequest":{
       "type":"structure",

@@ -514,6 +514,25 @@
       "documentation":"<p>Deletes a custom model deployment. This operation stops the deployment and removes it from your account. After deletion, the deployment ARN can no longer be used for inference requests.</p> <p>The following actions are related to the <code>DeleteCustomModelDeployment</code> operation:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_CreateCustomModelDeployment.html\">CreateCustomModelDeployment</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetCustomModelDeployment.html\">GetCustomModelDeployment</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListCustomModelDeployments.html\">ListCustomModelDeployments</a> </p> </li> </ul>",
       "idempotent":true
     },
+    "DeleteEnforcedGuardrailConfiguration":{
+      "name":"DeleteEnforcedGuardrailConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/enforcedGuardrailsConfiguration/{configId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteEnforcedGuardrailConfigurationRequest"},
+      "output":{"shape":"DeleteEnforcedGuardrailConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes the account-level enforced guardrail configuration.</p>",
+      "idempotent":true
+    },
     "DeleteFoundationModelAgreement":{
       "name":"DeleteFoundationModelAgreement",
       "http":{
@@ -1272,6 +1291,25 @@
       "documentation":"<p>Returns a list of the custom models that you have created with the <code>CreateModelCustomizationJob</code> operation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html\">Custom models</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
       "readonly":true
     },
+    "ListEnforcedGuardrailsConfiguration":{
+      "name":"ListEnforcedGuardrailsConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/enforcedGuardrailsConfiguration",
+        "responseCode":200
+      },
+      "input":{"shape":"ListEnforcedGuardrailsConfigurationRequest"},
+      "output":{"shape":"ListEnforcedGuardrailsConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the account-level enforced guardrail configurations.</p>",
+      "readonly":true
+    },
     "ListEvaluationJobs":{
       "name":"ListEvaluationJobs",
       "http":{
@@ -1527,6 +1565,26 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>List the tags associated with the specified resource.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Tagging resources</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
+    },
+    "PutEnforcedGuardrailConfiguration":{
+      "name":"PutEnforcedGuardrailConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/enforcedGuardrailsConfiguration",
+        "responseCode":200
+      },
+      "input":{"shape":"PutEnforcedGuardrailConfigurationRequest"},
+      "output":{"shape":"PutEnforcedGuardrailConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Sets the account-level enforced guardrail configuration.</p>",
+      "idempotent":true
     },
     "PutModelInvocationLoggingConfiguration":{
       "name":"PutModelInvocationLoggingConfiguration",
@@ -1852,6 +1910,85 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "AccountEnforcedGuardrailConfigurationId":{
+      "type":"string",
+      "pattern":"[a-z0-9]+"
+    },
+    "AccountEnforcedGuardrailInferenceInputConfiguration":{
+      "type":"structure",
+      "required":[
+        "guardrailIdentifier",
+        "guardrailVersion",
+        "inputTags"
+      ],
+      "members":{
+        "guardrailIdentifier":{
+          "shape":"GuardrailIdentifier",
+          "documentation":"<p>Identifier for the guardrail, could be the ID or the ARN.</p>"
+        },
+        "guardrailVersion":{
+          "shape":"GuardrailNumericalVersion",
+          "documentation":"<p>Numerical guardrail version.</p>"
+        },
+        "inputTags":{
+          "shape":"InputTags",
+          "documentation":"<p>Whether to honor or ignore input tags at runtime.</p>"
+        }
+      },
+      "documentation":"<p>Account-level enforced guardrail input configuration.</p>"
+    },
+    "AccountEnforcedGuardrailOutputConfiguration":{
+      "type":"structure",
+      "members":{
+        "configId":{
+          "shape":"AccountEnforcedGuardrailConfigurationId",
+          "documentation":"<p>Unique ID for the account enforced configuration.</p>"
+        },
+        "guardrailArn":{
+          "shape":"GuardrailArn",
+          "documentation":"<p>ARN representation for the guardrail.</p>"
+        },
+        "guardrailId":{
+          "shape":"GuardrailId",
+          "documentation":"<p>Unique ID for the guardrail.</p>"
+        },
+        "inputTags":{
+          "shape":"InputTags",
+          "documentation":"<p>Whether to honor or ignore input tags at runtime.</p>"
+        },
+        "guardrailVersion":{
+          "shape":"GuardrailNumericalVersion",
+          "documentation":"<p>Numerical guardrail version.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp.</p>"
+        },
+        "createdBy":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the role used to update the configuration.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp.</p>"
+        },
+        "updatedBy":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the role used to update the configuration.</p>"
+        },
+        "owner":{
+          "shape":"ConfigurationOwner",
+          "documentation":"<p>Configuration owner type.</p>"
+        }
+      },
+      "documentation":"<p>Account enforced guardrail output configuration.</p>"
+    },
+    "AccountEnforcedGuardrailsOutputConfiguration":{
+      "type":"list",
+      "member":{"shape":"AccountEnforcedGuardrailOutputConfiguration"},
+      "max":1,
+      "min":1
     },
     "AccountId":{
       "type":"string",
@@ -2597,7 +2734,8 @@
       "enum":[
         "BUILD_LOG",
         "QUALITY_REPORT",
-        "POLICY_DEFINITION"
+        "POLICY_DEFINITION",
+        "GENERATED_TEST_CASES"
       ]
     },
     "AutomatedReasoningPolicyBuildResultAssets":{
@@ -2614,9 +2752,13 @@
         "buildLog":{
           "shape":"AutomatedReasoningPolicyBuildLog",
           "documentation":"<p>The complete build log containing detailed information about each step in the policy generation process.</p>"
+        },
+        "generatedTestCases":{
+          "shape":"AutomatedReasoningPolicyGeneratedTestCases",
+          "documentation":"<p>A comprehensive test suite generated by the build workflow, providing validation capabilities for automated reasoning policies.</p>"
         }
       },
-      "documentation":"<p>Contains the various assets generated during a policy build workflow, including logs, quality reports, and the final policy definition.</p>",
+      "documentation":"<p>Contains the various assets generated during a policy build workflow, including logs, quality reports, test cases, and the final policy definition.</p>",
       "union":true
     },
     "AutomatedReasoningPolicyBuildStep":{
@@ -3228,6 +3370,44 @@
       "min":0
     },
     "AutomatedReasoningPolicyFormatVersion":{"type":"string"},
+    "AutomatedReasoningPolicyGeneratedTestCase":{
+      "type":"structure",
+      "required":[
+        "queryContent",
+        "guardContent",
+        "expectedAggregatedFindingsResult"
+      ],
+      "members":{
+        "queryContent":{
+          "shape":"AutomatedReasoningPolicyTestQueryContent",
+          "documentation":"<p>The input query or prompt that generated the content. This provides context for the validation.</p>"
+        },
+        "guardContent":{
+          "shape":"AutomatedReasoningPolicyTestGuardContent",
+          "documentation":"<p>The output content that's validated by the Automated Reasoning policy. This represents the foundation model response that will be checked for accuracy.</p>"
+        },
+        "expectedAggregatedFindingsResult":{
+          "shape":"AutomatedReasoningCheckResult",
+          "documentation":"<p>The expected results of the generated test case. Possible values include:</p> <ul> <li> <p> <code>VALID</code> - The claims are true. The claims are implied by the premises and the Automated Reasoning policy. Given the Automated Reasoning policy and premises, it is not possible for these claims to be false. In other words, there are no alternative answers that are true that contradict the claims.</p> </li> <li> <p> <code>INVALID</code> - The claims are false. The claims are not implied by the premises and Automated Reasoning policy. Furthermore, there exists different claims that are consistent with the premises and Automated Reasoning policy.</p> </li> <li> <p> <code>SATISFIABLE</code> - The claims can be true or false. It depends on what assumptions are made for the claim to be implied from the premises and Automated Reasoning policy rules. In this situation, different assumptions can make input claims false and alternative claims true.</p> </li> <li> <p> <code>IMPOSSIBLE</code> - Automated Reasoning can’t make a statement about the claims. This can happen if the premises are logically incorrect, or if there is a conflict within the Automated Reasoning policy itself.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Represents a generated test case, consisting of query content, guard content, and expected results.</p>"
+    },
+    "AutomatedReasoningPolicyGeneratedTestCaseList":{
+      "type":"list",
+      "member":{"shape":"AutomatedReasoningPolicyGeneratedTestCase"}
+    },
+    "AutomatedReasoningPolicyGeneratedTestCases":{
+      "type":"structure",
+      "required":["generatedTestCases"],
+      "members":{
+        "generatedTestCases":{
+          "shape":"AutomatedReasoningPolicyGeneratedTestCaseList",
+          "documentation":"<p>Represents a collection of generated test cases.</p>"
+        }
+      },
+      "documentation":"<p>Contains a comprehensive test suite generated by the build workflow, providing validation capabilities for automated reasoning policies.</p>"
+    },
     "AutomatedReasoningPolicyHash":{
       "type":"string",
       "max":128,
@@ -3937,6 +4117,10 @@
         "OneMonth",
         "SixMonths"
       ]
+    },
+    "ConfigurationOwner":{
+      "type":"string",
+      "enum":["ACCOUNT"]
     },
     "ConflictException":{
       "type":"structure",
@@ -5231,6 +5415,22 @@
       }
     },
     "DeleteCustomModelResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteEnforcedGuardrailConfigurationRequest":{
+      "type":"structure",
+      "required":["configId"],
+      "members":{
+        "configId":{
+          "shape":"AccountEnforcedGuardrailConfigurationId",
+          "documentation":"<p>Unique ID for the account enforced configuration.</p>",
+          "location":"uri",
+          "locationName":"configId"
+        }
+      }
+    },
+    "DeleteEnforcedGuardrailConfigurationResponse":{
       "type":"structure",
       "members":{}
     },
@@ -7432,7 +7632,7 @@
         },
         "status":{
           "shape":"ModelInvocationJobStatus",
-          "documentation":"<p>The status of the batch inference job.</p> <p>The following statuses are possible:</p> <ul> <li> <p>Submitted – This job has been submitted to a queue for validation.</p> </li> <li> <p>Validating – This job is being validated for the requirements described in <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-data.html\">Format and upload your batch inference data</a>. The criteria include the following:</p> <ul> <li> <p>Your IAM service role has access to the Amazon S3 buckets containing your files.</p> </li> <li> <p>Your files are .jsonl files and each individual record is a JSON object in the correct format. Note that validation doesn't check if the <code>modelInput</code> value matches the request body for the model.</p> </li> <li> <p>Your files fulfill the requirements for file size and number of records. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html\">Quotas for Amazon Bedrock</a>.</p> </li> </ul> </li> <li> <p>Scheduled – This job has been validated and is now in a queue. The job will automatically start when it reaches its turn.</p> </li> <li> <p>Expired – This job timed out because it was scheduled but didn't begin before the set timeout duration. Submit a new job request.</p> </li> <li> <p>InProgress – This job has begun. You can start viewing the results in the output S3 location.</p> </li> <li> <p>Completed – This job has successfully completed. View the output files in the output S3 location.</p> </li> <li> <p>PartiallyCompleted – This job has partially completed. Not all of your records could be processed in time. View the output files in the output S3 location.</p> </li> <li> <p>Failed – This job has failed. Check the failure message for any further details. For further assistance, reach out to the <a href=\"https://console.aws.amazon.com/support/home/\">Amazon Web ServicesSupport Center</a>.</p> </li> <li> <p>Stopped – This job was stopped by a user.</p> </li> <li> <p>Stopping – This job is being stopped by a user.</p> </li> </ul>"
+          "documentation":"<p>The status of the batch inference job.</p> <p>The following statuses are possible:</p> <ul> <li> <p>Submitted – This job has been submitted to a queue for validation.</p> </li> <li> <p>Validating – This job is being validated for the requirements described in <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-data.html\">Format and upload your batch inference data</a>. The criteria include the following:</p> <ul> <li> <p>Your IAM service role has access to the Amazon S3 buckets containing your files.</p> </li> <li> <p>Your files are .jsonl files and each individual record is a JSON object in the correct format. Note that validation doesn't check if the <code>modelInput</code> value matches the request body for the model.</p> </li> <li> <p>Your files fulfill the requirements for file size and number of records. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html\">Quotas for Amazon Bedrock</a>.</p> </li> </ul> </li> <li> <p>Scheduled – This job has been validated and is now in a queue. The job will automatically start when it reaches its turn.</p> </li> <li> <p>Expired – This job timed out because it was scheduled but didn't begin before the set timeout duration. Submit a new job request.</p> </li> <li> <p>InProgress – This job has begun. You can start viewing the results in the output S3 location.</p> </li> <li> <p>Completed – This job has successfully completed. View the output files in the output S3 location.</p> </li> <li> <p>PartiallyCompleted – This job has partially completed. Not all of your records could be processed in time. View the output files in the output S3 location.</p> </li> <li> <p>Failed – This job has failed. Check the failure message for any further details. For further assistance, reach out to the <a href=\"https://console.aws.amazon.com/support/home/\">Amazon Web Services Support Center</a>.</p> </li> <li> <p>Stopped – This job was stopped by a user.</p> </li> <li> <p>Stopping – This job is being stopped by a user.</p> </li> </ul>"
         },
         "message":{
           "shape":"Message",
@@ -9160,6 +9360,13 @@
       "type":"list",
       "member":{"shape":"InferenceType"}
     },
+    "InputTags":{
+      "type":"string",
+      "enum":[
+        "HONOR",
+        "IGNORE"
+      ]
+    },
     "InstanceCount":{
       "type":"integer",
       "box":true,
@@ -9679,6 +9886,31 @@
         "modelSummaries":{
           "shape":"CustomModelSummaryList",
           "documentation":"<p>Model summaries.</p>"
+        }
+      }
+    },
+    "ListEnforcedGuardrailsConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Opaque continuation token of previous paginated response.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListEnforcedGuardrailsConfigurationResponse":{
+      "type":"structure",
+      "required":["guardrailsConfig"],
+      "members":{
+        "guardrailsConfig":{
+          "shape":"AccountEnforcedGuardrailsOutputConfiguration",
+          "documentation":"<p>Array of AccountEnforcedGuardrailOutputConfiguration objects.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Opaque continuation token of previous paginated response.</p>"
         }
       }
     },
@@ -10223,7 +10455,7 @@
         },
         "statusEquals":{
           "shape":"ModelInvocationJobStatus",
-          "documentation":"<p>Specify a status to filter for batch inference jobs whose statuses match the string you specify.</p> <p>The following statuses are possible:</p> <ul> <li> <p>Submitted – This job has been submitted to a queue for validation.</p> </li> <li> <p>Validating – This job is being validated for the requirements described in <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-data.html\">Format and upload your batch inference data</a>. The criteria include the following:</p> <ul> <li> <p>Your IAM service role has access to the Amazon S3 buckets containing your files.</p> </li> <li> <p>Your files are .jsonl files and each individual record is a JSON object in the correct format. Note that validation doesn't check if the <code>modelInput</code> value matches the request body for the model.</p> </li> <li> <p>Your files fulfill the requirements for file size and number of records. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html\">Quotas for Amazon Bedrock</a>.</p> </li> </ul> </li> <li> <p>Scheduled – This job has been validated and is now in a queue. The job will automatically start when it reaches its turn.</p> </li> <li> <p>Expired – This job timed out because it was scheduled but didn't begin before the set timeout duration. Submit a new job request.</p> </li> <li> <p>InProgress – This job has begun. You can start viewing the results in the output S3 location.</p> </li> <li> <p>Completed – This job has successfully completed. View the output files in the output S3 location.</p> </li> <li> <p>PartiallyCompleted – This job has partially completed. Not all of your records could be processed in time. View the output files in the output S3 location.</p> </li> <li> <p>Failed – This job has failed. Check the failure message for any further details. For further assistance, reach out to the <a href=\"https://console.aws.amazon.com/support/home/\">Amazon Web ServicesSupport Center</a>.</p> </li> <li> <p>Stopped – This job was stopped by a user.</p> </li> <li> <p>Stopping – This job is being stopped by a user.</p> </li> </ul>",
+          "documentation":"<p>Specify a status to filter for batch inference jobs whose statuses match the string you specify.</p> <p>The following statuses are possible:</p> <ul> <li> <p>Submitted – This job has been submitted to a queue for validation.</p> </li> <li> <p>Validating – This job is being validated for the requirements described in <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-data.html\">Format and upload your batch inference data</a>. The criteria include the following:</p> <ul> <li> <p>Your IAM service role has access to the Amazon S3 buckets containing your files.</p> </li> <li> <p>Your files are .jsonl files and each individual record is a JSON object in the correct format. Note that validation doesn't check if the <code>modelInput</code> value matches the request body for the model.</p> </li> <li> <p>Your files fulfill the requirements for file size and number of records. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html\">Quotas for Amazon Bedrock</a>.</p> </li> </ul> </li> <li> <p>Scheduled – This job has been validated and is now in a queue. The job will automatically start when it reaches its turn.</p> </li> <li> <p>Expired – This job timed out because it was scheduled but didn't begin before the set timeout duration. Submit a new job request.</p> </li> <li> <p>InProgress – This job has begun. You can start viewing the results in the output S3 location.</p> </li> <li> <p>Completed – This job has successfully completed. View the output files in the output S3 location.</p> </li> <li> <p>PartiallyCompleted – This job has partially completed. Not all of your records could be processed in time. View the output files in the output S3 location.</p> </li> <li> <p>Failed – This job has failed. Check the failure message for any further details. For further assistance, reach out to the <a href=\"https://console.aws.amazon.com/support/home/\">Amazon Web Services Support Center</a>.</p> </li> <li> <p>Stopped – This job was stopped by a user.</p> </li> <li> <p>Stopping – This job is being stopped by a user.</p> </li> </ul>",
           "location":"querystring",
           "locationName":"statusEquals"
         },
@@ -11029,7 +11261,7 @@
         },
         "status":{
           "shape":"ModelInvocationJobStatus",
-          "documentation":"<p>The status of the batch inference job.</p> <p>The following statuses are possible:</p> <ul> <li> <p>Submitted – This job has been submitted to a queue for validation.</p> </li> <li> <p>Validating – This job is being validated for the requirements described in <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-data.html\">Format and upload your batch inference data</a>. The criteria include the following:</p> <ul> <li> <p>Your IAM service role has access to the Amazon S3 buckets containing your files.</p> </li> <li> <p>Your files are .jsonl files and each individual record is a JSON object in the correct format. Note that validation doesn't check if the <code>modelInput</code> value matches the request body for the model.</p> </li> <li> <p>Your files fulfill the requirements for file size and number of records. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html\">Quotas for Amazon Bedrock</a>.</p> </li> </ul> </li> <li> <p>Scheduled – This job has been validated and is now in a queue. The job will automatically start when it reaches its turn.</p> </li> <li> <p>Expired – This job timed out because it was scheduled but didn't begin before the set timeout duration. Submit a new job request.</p> </li> <li> <p>InProgress – This job has begun. You can start viewing the results in the output S3 location.</p> </li> <li> <p>Completed – This job has successfully completed. View the output files in the output S3 location.</p> </li> <li> <p>PartiallyCompleted – This job has partially completed. Not all of your records could be processed in time. View the output files in the output S3 location.</p> </li> <li> <p>Failed – This job has failed. Check the failure message for any further details. For further assistance, reach out to the <a href=\"https://console.aws.amazon.com/support/home/\">Amazon Web ServicesSupport Center</a>.</p> </li> <li> <p>Stopped – This job was stopped by a user.</p> </li> <li> <p>Stopping – This job is being stopped by a user.</p> </li> </ul>"
+          "documentation":"<p>The status of the batch inference job.</p> <p>The following statuses are possible:</p> <ul> <li> <p>Submitted – This job has been submitted to a queue for validation.</p> </li> <li> <p>Validating – This job is being validated for the requirements described in <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-data.html\">Format and upload your batch inference data</a>. The criteria include the following:</p> <ul> <li> <p>Your IAM service role has access to the Amazon S3 buckets containing your files.</p> </li> <li> <p>Your files are .jsonl files and each individual record is a JSON object in the correct format. Note that validation doesn't check if the <code>modelInput</code> value matches the request body for the model.</p> </li> <li> <p>Your files fulfill the requirements for file size and number of records. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/quotas.html\">Quotas for Amazon Bedrock</a>.</p> </li> </ul> </li> <li> <p>Scheduled – This job has been validated and is now in a queue. The job will automatically start when it reaches its turn.</p> </li> <li> <p>Expired – This job timed out because it was scheduled but didn't begin before the set timeout duration. Submit a new job request.</p> </li> <li> <p>InProgress – This job has begun. You can start viewing the results in the output S3 location.</p> </li> <li> <p>Completed – This job has successfully completed. View the output files in the output S3 location.</p> </li> <li> <p>PartiallyCompleted – This job has partially completed. Not all of your records could be processed in time. View the output files in the output S3 location.</p> </li> <li> <p>Failed – This job has failed. Check the failure message for any further details. For further assistance, reach out to the <a href=\"https://console.aws.amazon.com/support/home/\">Amazon Web Services Support Center</a>.</p> </li> <li> <p>Stopped – This job was stopped by a user.</p> </li> <li> <p>Stopping – This job is being stopped by a user.</p> </li> </ul>"
         },
         "message":{
           "shape":"Message",
@@ -11424,6 +11656,37 @@
         }
       },
       "documentation":"<p>A summary of information about a Provisioned Throughput.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_ListProvisionedModelThroughputs.html#API_ListProvisionedModelThroughputs_ResponseSyntax\">ListProvisionedThroughputs response</a> </p> </li> </ul>"
+    },
+    "PutEnforcedGuardrailConfigurationRequest":{
+      "type":"structure",
+      "required":["guardrailInferenceConfig"],
+      "members":{
+        "configId":{
+          "shape":"AccountEnforcedGuardrailConfigurationId",
+          "documentation":"<p>Unique ID for the account enforced configuration.</p>"
+        },
+        "guardrailInferenceConfig":{
+          "shape":"AccountEnforcedGuardrailInferenceInputConfiguration",
+          "documentation":"<p>Account-level enforced guardrail input configuration.</p>"
+        }
+      }
+    },
+    "PutEnforcedGuardrailConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "configId":{
+          "shape":"AccountEnforcedGuardrailConfigurationId",
+          "documentation":"<p>Unique ID for the account enforced configuration.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Timestamp.</p>"
+        },
+        "updatedBy":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the role used to update the configuration.</p>"
+        }
+      }
     },
     "PutModelInvocationLoggingConfigurationRequest":{
       "type":"structure",

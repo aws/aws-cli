@@ -639,6 +639,10 @@
         "lambdaAuthorizerArn":{
           "shape":"LambdaArn",
           "documentation":"<p>The ARN of the authorizer's Lambda function.</p>"
+        },
+        "losslessStorageFormat":{
+          "shape":"LosslessStorageFormat",
+          "documentation":"<p>The lossless storage format for the datastore.</p>"
         }
       }
     },
@@ -1001,6 +1005,10 @@
         "lambdaAuthorizerArn":{
           "shape":"LambdaArn",
           "documentation":"<p>The ARN of the authorizer's Lambda function.</p>"
+        },
+        "losslessStorageFormat":{
+          "shape":"LosslessStorageFormat",
+          "documentation":"<p>The datastore's lossless storage format.</p>"
         },
         "datastoreArn":{
           "shape":"Arn",
@@ -1374,6 +1382,14 @@
         "isPrimary":{
           "shape":"Boolean",
           "documentation":"<p>The flag to determine whether the image set is primary or not.</p>"
+        },
+        "lastAccessedAt":{
+          "shape":"Date",
+          "documentation":"<p>When the image set was last accessed.</p>"
+        },
+        "storageTier":{
+          "shape":"StorageTier",
+          "documentation":"<p>The storage tier of the image set.</p>"
         }
       }
     },
@@ -1508,6 +1524,14 @@
         "updatedAt":{
           "shape":"Date",
           "documentation":"<p>The time an image set was last updated.</p>"
+        },
+        "lastAccessedAt":{
+          "shape":"Date",
+          "documentation":"<p>When the image set was last accessed.</p>"
+        },
+        "storageTier":{
+          "shape":"StorageTier",
+          "documentation":"<p>The image set's storage tier.</p>"
         },
         "DICOMTags":{
           "shape":"DICOMTags",
@@ -1733,6 +1757,13 @@
           "documentation":"<p>A list of all tags associated with a medical imaging resource.</p>"
         }
       }
+    },
+    "LosslessStorageFormat":{
+      "type":"string",
+      "enum":[
+        "HTJ2K",
+        "JPEG_2000_LOSSLESS"
+      ]
     },
     "Message":{
       "type":"string",
@@ -2074,6 +2105,14 @@
           "documentation":"<p>The timestamp when the import job was submitted.</p>"
         }
       }
+    },
+    "StorageTier":{
+      "type":"string",
+      "documentation":"<p>Storage tier for image sets</p>",
+      "enum":[
+        "FREQUENT_ACCESS",
+        "ARCHIVE_INSTANT_ACCESS"
+      ]
     },
     "String":{"type":"string"},
     "TagKey":{

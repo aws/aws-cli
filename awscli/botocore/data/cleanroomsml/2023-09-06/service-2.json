@@ -1879,6 +1879,22 @@
       },
       "documentation":"<p>Provides summary information about a trained model in a collaboration.</p>"
     },
+    "ColumnClassificationDetails":{
+      "type":"structure",
+      "required":["columnMapping"],
+      "members":{
+        "columnMapping":{
+          "shape":"ColumnMappingList",
+          "documentation":"<p>A mapping that defines the classification of data columns for synthetic data generation and specifies how each column should be handled during the privacy-preserving data synthesis process.</p>"
+        }
+      },
+      "documentation":"<p>Contains classification information for data columns, including mappings that specify how columns should be handled during synthetic data generation and privacy analysis.</p>"
+    },
+    "ColumnMappingList":{
+      "type":"list",
+      "member":{"shape":"SyntheticDataColumnProperties"},
+      "min":5
+    },
     "ColumnName":{
       "type":"string",
       "max":128,
@@ -2579,6 +2595,17 @@
       },
       "documentation":"<p>The configuration for defining custom patterns to be redacted from logs and error messages. This is for the CUSTOM config under entitiesToRedact. Both CustomEntityConfig and entitiesToRedact need to be present or not present.</p>"
     },
+    "DataPrivacyScores":{
+      "type":"structure",
+      "required":["membershipInferenceAttackScores"],
+      "members":{
+        "membershipInferenceAttackScores":{
+          "shape":"MembershipInferenceAttackScoreList",
+          "documentation":"<p>Scores that evaluate the vulnerability of the synthetic data to membership inference attacks, which attempt to determine whether a specific individual was a member of the original dataset.</p>"
+        }
+      },
+      "documentation":"<p>Privacy evaluation scores that measure the privacy characteristics of the generated synthetic data, including assessments of potential privacy risks such as membership inference attacks.</p>"
+    },
     "DataSource":{
       "type":"structure",
       "required":["glueDataSource"],
@@ -3141,6 +3168,10 @@
           "shape":"ResourceDescription",
           "documentation":"<p>The description of the ML input channel.</p>"
         },
+        "syntheticDataConfiguration":{
+          "shape":"SyntheticDataConfiguration",
+          "documentation":"<p>The synthetic data configuration for this ML input channel, including parameters for generating privacy-preserving synthetic data and evaluation scores for measuring the privacy of the generated data.</p>"
+        },
         "createTime":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The time at which the ML input channel was created.</p>"
@@ -3664,6 +3695,10 @@
         "description":{
           "shape":"ResourceDescription",
           "documentation":"<p>The description of the ML input channel.</p>"
+        },
+        "syntheticDataConfiguration":{
+          "shape":"SyntheticDataConfiguration",
+          "documentation":"<p>The synthetic data configuration for this ML input channel, including parameters for generating privacy-preserving synthetic data and evaluation scores for measuring the privacy of the generated data.</p>"
         },
         "createTime":{
           "shape":"SyntheticTimestamp_date_time",
@@ -5387,11 +5422,80 @@
       },
       "documentation":"<p>Configuration information about how the exported model artifacts are stored.</p>"
     },
+    "MLSyntheticDataParameters":{
+      "type":"structure",
+      "required":[
+        "epsilon",
+        "maxMembershipInferenceAttackScore",
+        "columnClassification"
+      ],
+      "members":{
+        "epsilon":{
+          "shape":"MLSyntheticDataParametersEpsilonDouble",
+          "documentation":"<p>The epsilon value for differential privacy, which controls the privacy-utility tradeoff in synthetic data generation. Lower values provide stronger privacy guarantees but may reduce data utility.</p>"
+        },
+        "maxMembershipInferenceAttackScore":{
+          "shape":"MLSyntheticDataParametersMaxMembershipInferenceAttackScoreDouble",
+          "documentation":"<p>The maximum acceptable score for membership inference attack vulnerability. Synthetic data generation fails if the score for the resulting data exceeds this threshold.</p>"
+        },
+        "columnClassification":{
+          "shape":"ColumnClassificationDetails",
+          "documentation":"<p>Classification details for data columns that specify how each column should be treated during synthetic data generation.</p>"
+        }
+      },
+      "documentation":"<p>Parameters that control the generation of synthetic data for custom model training, including privacy settings and column classification details.</p>"
+    },
+    "MLSyntheticDataParametersEpsilonDouble":{
+      "type":"double",
+      "box":true,
+      "max":10,
+      "min":0.0001
+    },
+    "MLSyntheticDataParametersMaxMembershipInferenceAttackScoreDouble":{
+      "type":"double",
+      "box":true,
+      "max":1,
+      "min":0.5
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
       "max":100,
       "min":1
+    },
+    "MembershipInferenceAttackScore":{
+      "type":"structure",
+      "required":[
+        "attackVersion",
+        "score"
+      ],
+      "members":{
+        "attackVersion":{
+          "shape":"MembershipInferenceAttackVersion",
+          "documentation":"<p>The version of the membership inference attack, which consists of the attack type and its version number, used to generate this privacy score.</p>"
+        },
+        "score":{
+          "shape":"MembershipInferenceAttackScoreScoreDouble",
+          "documentation":"<p>The numerical score representing the vulnerability to membership inference attacks.</p>"
+        }
+      },
+      "documentation":"<p>A score that measures the vulnerability of synthetic data to membership inference attacks and provides both the numerical score and the version of the attack methodology used for evaluation.</p>"
+    },
+    "MembershipInferenceAttackScoreList":{
+      "type":"list",
+      "member":{"shape":"MembershipInferenceAttackScore"},
+      "max":1,
+      "min":1
+    },
+    "MembershipInferenceAttackScoreScoreDouble":{
+      "type":"double",
+      "box":true,
+      "max":1.0,
+      "min":0.0
+    },
+    "MembershipInferenceAttackVersion":{
+      "type":"string",
+      "enum":["DISTANCE_TO_CLOSEST_RECORD_V1"]
     },
     "MetricDefinition":{
       "type":"structure",
@@ -6054,6 +6158,68 @@
       "min":1
     },
     "String":{"type":"string"},
+    "SyntheticDataColumnName":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"[a-z0-9_](([a-z0-9_]+-)*([a-z0-9_]+))?"
+    },
+    "SyntheticDataColumnProperties":{
+      "type":"structure",
+      "required":[
+        "columnName",
+        "columnType",
+        "isPredictiveValue"
+      ],
+      "members":{
+        "columnName":{
+          "shape":"SyntheticDataColumnName",
+          "documentation":"<p>The name of the data column as it appears in the dataset.</p>"
+        },
+        "columnType":{
+          "shape":"SyntheticDataColumnType",
+          "documentation":"<p>The data type of the column, which determines how the synthetic data generation algorithm processes and synthesizes values for this column.</p>"
+        },
+        "isPredictiveValue":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates if this column contains predictive values that should be treated as target variables in machine learning models. This affects how the synthetic data generation preserves statistical relationships.</p>"
+        }
+      },
+      "documentation":"<p>Properties that define how a specific data column should be handled during synthetic data generation, including its name, type, and role in predictive modeling.</p>"
+    },
+    "SyntheticDataColumnType":{
+      "type":"string",
+      "enum":[
+        "CATEGORICAL",
+        "NUMERICAL"
+      ]
+    },
+    "SyntheticDataConfiguration":{
+      "type":"structure",
+      "required":["syntheticDataParameters"],
+      "members":{
+        "syntheticDataParameters":{
+          "shape":"MLSyntheticDataParameters",
+          "documentation":"<p>The parameters that control how synthetic data is generated, including privacy settings, column classifications, and other configuration options that affect the data synthesis process.</p>"
+        },
+        "syntheticDataEvaluationScores":{
+          "shape":"SyntheticDataEvaluationScores",
+          "documentation":"<p>Evaluation scores that assess the quality and privacy characteristics of the generated synthetic data, providing metrics on data utility and privacy preservation.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for synthetic data generation, including the parameters that control data synthesis and the evaluation scores that measure the quality and privacy characteristics of the generated synthetic data.</p>"
+    },
+    "SyntheticDataEvaluationScores":{
+      "type":"structure",
+      "required":["dataPrivacyScores"],
+      "members":{
+        "dataPrivacyScores":{
+          "shape":"DataPrivacyScores",
+          "documentation":"<p>Privacy-specific evaluation scores that measure how well the synthetic data protects individual privacy, including assessments of potential privacy risks such as membership inference attacks.</p>"
+        }
+      },
+      "documentation":"<p>Comprehensive evaluation metrics for synthetic data that assess both the utility of the generated data for machine learning tasks and its privacy preservation characteristics.</p>"
+    },
     "SyntheticTimestamp_date_time":{
       "type":"timestamp",
       "timestampFormat":"iso8601"

@@ -26,6 +26,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
+        {"shape":"UnauthorizedException"},
         {"shape":"ConflictException"},
         {"shape":"ServiceUnavailableException"},
         {"shape":"ThrottlingException"},
@@ -64,8 +65,10 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
+        {"shape":"UnauthorizedException"},
         {"shape":"ConflictException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Create a connector destination for connecting a cloud-to-cloud (C2C) connector to the customer's Amazon Web Services account.</p>"
     },
@@ -87,7 +90,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Create a product credential locker. This operation will trigger the creation of all the manufacturing resources including the Wi-Fi setup key pair and device certificate.</p>"
+      "documentation":"<p>Create a credential locker.</p> <note> <p>This operation will not trigger the creation of all the manufacturing resources.</p> </note>"
     },
     "CreateDestination":{
       "name":"CreateDestination",
@@ -105,7 +108,7 @@
         {"shape":"ConflictException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> Create a destination. IoT managed integrations uses the destination to determine where to deliver notifications for a device. </p>"
+      "documentation":"<p> Create a notification destination such as Kinesis Data Streams that receive events and notifications from Managed integrations. Managed integrations uses the destination to determine where to deliver notifications.</p>"
     },
     "CreateEventLogConfiguration":{
       "name":"CreateEventLogConfiguration",
@@ -145,7 +148,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a managed thing. A managed thing contains the device identifier, protocol supported, and capabilities of the device in a protocol-specific format.</p>"
+      "documentation":"<p>Creates a managed thing. A managed thing contains the device identifier, protocol supported, and capabilities of the device in a data model format defined by Managed integrations.</p>"
     },
     "CreateNotificationConfiguration":{
       "name":"CreateNotificationConfiguration",
@@ -183,7 +186,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Create an over-the-air (OTA) task to update a device.</p>"
+      "documentation":"<p>Create an over-the-air (OTA) task to target a device.</p>"
     },
     "CreateOtaTaskConfiguration":{
       "name":"CreateOtaTaskConfiguration",
@@ -240,7 +243,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Remove a third party account and related devices from an end user.</p>",
+      "documentation":"<p>Remove a third-party account association for an end user.</p> <note> <p>You must first call the <code>DeregisterAccountAssociation</code> to remove the connection between the managed thing and the third-party account before calling the <code>DeleteAccountAssociation</code> API.</p> </note>",
       "idempotent":true
     },
     "DeleteCloudConnector":{
@@ -255,6 +258,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
+        {"shape":"UnauthorizedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
@@ -276,7 +280,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Delete a connector destination for connecting a cloud-to-cloud (C2C) connector to the customer's Amazon Web Services account.</p>",
+      "documentation":"<p>Delete a connector destination linked to a cloud-to-cloud (C2C) connector.</p> <note> <p>Deletion can't be done if the account association has used this connector destination.</p> </note>",
       "idempotent":true
     },
     "DeleteCredentialLocker":{
@@ -313,7 +317,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Deletes a customer-managed destination specified by id. </p>",
+      "documentation":"<p>Deletes a notification destination specified by name. </p>",
       "idempotent":true
     },
     "DeleteEventLogConfiguration":{
@@ -352,7 +356,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Delete a managed thing. If a controller is deleted, all of the devices connected to it will have their status changed to <code>PENDING</code>. It is not possible to remove a cloud device.</p>",
+      "documentation":"<p>Delete a managed thing. For direct-connected and hub-connected devices connecting with Managed integrations via a controller, all of the devices connected to it will have their status changed to <code>PENDING</code>. It is not possible to remove a cloud-to-cloud device.</p>",
       "idempotent":true
     },
     "DeleteNotificationConfiguration":{
@@ -445,7 +449,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Deregisters an account association, removing the connection between a managed thing and a third-party account.</p>",
+      "documentation":"<p>Deregister an account association from a managed thing.</p>",
       "idempotent":true
     },
     "GetAccountAssociation":{
@@ -483,7 +487,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Gets all the information about a connector for a connector developer.</p>"
+      "documentation":"<p>Get configuration details for a cloud connector.</p>"
     },
     "GetConnectorDestination":{
       "name":"GetConnectorDestination",
@@ -501,7 +505,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Get a connector destination of a cloud-to-cloud (C2C) connector connecting to a customer's Amazon Web Services account.</p>"
+      "documentation":"<p>Get connector destination details linked to a cloud-to-cloud (C2C) connector.</p>"
     },
     "GetCredentialLocker":{
       "name":"GetCredentialLocker",
@@ -578,7 +582,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Gets a destination by ID. </p>"
+      "documentation":"<p>Gets a destination by name. </p>"
     },
     "GetDeviceDiscovery":{
       "name":"GetDeviceDiscovery",
@@ -655,7 +659,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> Get the attributes and capabilities associated with a managed thing.</p>"
+      "documentation":"<p> Get details of a managed thing including its attributes and capabilities.</p>"
     },
     "GetManagedThingCapabilities":{
       "name":"GetManagedThingCapabilities",
@@ -676,6 +680,26 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Get the capabilities for a managed thing using the device ID.</p>"
+    },
+    "GetManagedThingCertificate":{
+      "name":"GetManagedThingCertificate",
+      "http":{
+        "method":"GET",
+        "requestUri":"/managed-things-certificate/{Identifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetManagedThingCertificateRequest"},
+      "output":{"shape":"GetManagedThingCertificateResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the certificate PEM for a managed IoT thing.</p>"
     },
     "GetManagedThingConnectivityData":{
       "name":"GetManagedThingConnectivityData",
@@ -753,7 +777,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> Get a notification configuration.</p>"
+      "documentation":"<p> Get a notification configuration for a specified event type.</p>"
     },
     "GetOtaTask":{
       "name":"GetOtaTask",
@@ -771,7 +795,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Get the over-the-air (OTA) task.</p>"
+      "documentation":"<p>Get details of the over-the-air (OTA) task by its task id.</p>"
     },
     "GetOtaTaskConfiguration":{
       "name":"GetOtaTaskConfiguration",
@@ -827,7 +851,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Get the runtime log configuration for a specific managed thing or for all managed things as a group.</p>"
+      "documentation":"<p>Get the runtime log configuration for a specific managed thing.</p>"
     },
     "GetSchemaVersion":{
       "name":"GetSchemaVersion",
@@ -882,7 +906,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns a list of connectors based on permissions. </p>"
+      "documentation":"<p>Returns a list of connectors filtered by its Lambda Amazon Resource Name (ARN) and <code>type</code>.</p>"
     },
     "ListConnectorDestinations":{
       "name":"ListConnectorDestinations",
@@ -934,7 +958,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> List all destination names under one Amazon Web Services account.</p>"
+      "documentation":"<p> List all notification destinations.</p>"
     },
     "ListDeviceDiscoveries":{
       "name":"ListDeviceDiscoveries",
@@ -1286,7 +1310,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Reset a runtime log configuration for a specific managed thing or for all managed things as a group.</p>",
+      "documentation":"<p>Reset a runtime log configuration for a specific managed thing.</p>",
       "idempotent":true
     },
     "SendConnectorEvent":{
@@ -1367,7 +1391,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> This API is used to start device discovery for hub-connected and third-party-connected devices. The authentication material (install code) is passed as a message to the controller telling it to start the discovery.</p>"
+      "documentation":"<p> This API is used to start device discovery for hub-connected and third-party-connected devices. The authentication material (install code) is delivered as a message to the controller instructing it to start the discovery.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -1439,6 +1463,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
+        {"shape":"UnauthorizedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
@@ -1478,7 +1503,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> Update a destination specified by id. </p>",
+      "documentation":"<p> Update a destination specified by name. </p>",
       "idempotent":true
     },
     "UpdateEventLogConfiguration":{
@@ -1685,7 +1710,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"[/a-zA-Z0-9\\._ ]+"
+      "pattern":"[/a-zA-Z0-9\\._ -]+"
     },
     "ActionReference":{
       "type":"string",
@@ -1843,7 +1868,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"[/a-zA-Z0-9\\._ ]+"
+      "pattern":"[/a-zA-Z0-9\\._ -]+"
     },
     "CapabilityProperties":{
       "type":"structure",
@@ -2015,6 +2040,12 @@
       "max":64,
       "min":1,
       "pattern":"(0|[1-9][0-9]*)"
+    },
+    "CertificatePem":{
+      "type":"string",
+      "max":65536,
+      "min":1,
+      "pattern":"[\\s\\S]*"
     },
     "ClaimCertificate":{
       "type":"string",
@@ -3450,7 +3481,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"[/a-zA-Z0-9\\._ ]+"
+      "pattern":"[/a-zA-Z0-9\\._ -]+"
     },
     "EventType":{
       "type":"string",
@@ -3927,6 +3958,31 @@
         }
       }
     },
+    "GetManagedThingCertificateRequest":{
+      "type":"structure",
+      "required":["Identifier"],
+      "members":{
+        "Identifier":{
+          "shape":"ManagedThingId",
+          "documentation":"<p>The identifier of the managed thing.</p>",
+          "location":"uri",
+          "locationName":"Identifier"
+        }
+      }
+    },
+    "GetManagedThingCertificateResponse":{
+      "type":"structure",
+      "members":{
+        "ManagedThingId":{
+          "shape":"ManagedThingId",
+          "documentation":"<p>The identifier of the managed thing.</p>"
+        },
+        "CertificatePem":{
+          "shape":"CertificatePem",
+          "documentation":"<p>The PEM-encoded certificate for the managed thing.</p>"
+        }
+      }
+    },
     "GetManagedThingConnectivityDataRequest":{
       "type":"structure",
       "required":["Identifier"],
@@ -4316,7 +4372,7 @@
         },
         "Id":{
           "shape":"ProvisioningProfileId",
-          "documentation":"<p>The provisioning profile id..</p>"
+          "documentation":"<p>The provisioning profile id.</p>"
         },
         "ClaimCertificate":{
           "shape":"ClaimCertificate",
@@ -6118,7 +6174,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"[/a-zA-Z0-9\\._ ]+"
+      "pattern":"[/a-zA-Z0-9\\._ -]+"
     },
     "ProvisioningProfileArn":{
       "type":"string",
@@ -6648,7 +6704,7 @@
         },
         "TraceId":{
           "shape":"TraceId",
-          "documentation":"<p>The trace request identifier used to correlate a command request and response. This is specified by the device owner, but will be generated by IoT managed integrations if not provided by the device owner.</p>"
+          "documentation":"<p>The trace request identifier. This is generated by IoT managed integrations and can be used to trace this command and its related operations in CloudWatch.</p>"
         },
         "Devices":{
           "shape":"Devices",
@@ -6705,7 +6761,7 @@
       "members":{
         "TraceId":{
           "shape":"TraceId",
-          "documentation":"<p>The trace request identifier. This is specified by the device owner, but will be generated by IoT managed integrations if not provided by the device owner.</p>"
+          "documentation":"<p>The trace request identifier. This is generated by IoT managed integrations and can be used to trace this command and its related operations in CloudWatch.</p>"
         }
       }
     },

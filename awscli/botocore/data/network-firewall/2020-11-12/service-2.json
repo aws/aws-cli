@@ -88,6 +88,22 @@
       ],
       "documentation":"<p>Associates the specified subnets in the Amazon VPC to the firewall. You can specify one subnet for each of the Availability Zones that the VPC spans. </p> <p>This request creates an Network Firewall firewall endpoint in each of the subnets. To enable the firewall's protections, you must also modify the VPC's route tables for each subnet's Availability Zone, to redirect the traffic that's coming into and going out of the zone through the firewall endpoint. </p>"
     },
+    "AttachRuleGroupsToProxyConfiguration":{
+      "name":"AttachRuleGroupsToProxyConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AttachRuleGroupsToProxyConfigurationRequest"},
+      "output":{"shape":"AttachRuleGroupsToProxyConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Attaches <a>ProxyRuleGroup</a> resources to a <a>ProxyConfiguration</a> </p> <p>A Proxy Configuration defines the monitoring and protection behavior for a Proxy. The details of the behavior are defined in the rule groups that you add to your configuration. </p>"
+    },
     "CreateFirewall":{
       "name":"CreateFirewall",
       "http":{
@@ -122,6 +138,72 @@
         {"shape":"InsufficientCapacityException"}
       ],
       "documentation":"<p>Creates the firewall policy for the firewall according to the specifications. </p> <p>An Network Firewall firewall policy defines the behavior of a firewall, in a collection of stateless and stateful rule groups and other settings. You can use one firewall policy for multiple firewalls. </p>"
+    },
+    "CreateProxy":{
+      "name":"CreateProxy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateProxyRequest"},
+      "output":{"shape":"CreateProxyResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an Network Firewall <a>Proxy</a> </p> <p>Attaches a Proxy configuration to a NAT Gateway. </p> <p>To manage a proxy's tags, use the standard Amazon Web Services resource tagging operations, <a>ListTagsForResource</a>, <a>TagResource</a>, and <a>UntagResource</a>.</p> <p>To retrieve information about proxies, use <a>ListProxies</a> and <a>DescribeProxy</a>.</p>"
+    },
+    "CreateProxyConfiguration":{
+      "name":"CreateProxyConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateProxyConfigurationRequest"},
+      "output":{"shape":"CreateProxyConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an Network Firewall <a>ProxyConfiguration</a> </p> <p>A Proxy Configuration defines the monitoring and protection behavior for a Proxy. The details of the behavior are defined in the rule groups that you add to your configuration. </p> <p>To manage a proxy configuration's tags, use the standard Amazon Web Services resource tagging operations, <a>ListTagsForResource</a>, <a>TagResource</a>, and <a>UntagResource</a>.</p> <p>To retrieve information about proxies, use <a>ListProxyConfigurations</a> and <a>DescribeProxyConfiguration</a>.</p>"
+    },
+    "CreateProxyRuleGroup":{
+      "name":"CreateProxyRuleGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateProxyRuleGroupRequest"},
+      "output":{"shape":"CreateProxyRuleGroupResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an Network Firewall <a>ProxyRuleGroup</a> </p> <p>Collections of related proxy filtering rules. Rule groups help you manage and reuse sets of rules across multiple proxy configurations. </p> <p>To manage a proxy rule group's tags, use the standard Amazon Web Services resource tagging operations, <a>ListTagsForResource</a>, <a>TagResource</a>, and <a>UntagResource</a>.</p> <p>To retrieve information about proxy rule groups, use <a>ListProxyRuleGroups</a> and <a>DescribeProxyRuleGroup</a>.</p> <p>To retrieve information about individual proxy rules, use <a>DescribeProxyRuleGroup</a> and <a>DescribeProxyRule</a>.</p>"
+    },
+    "CreateProxyRules":{
+      "name":"CreateProxyRules",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateProxyRulesRequest"},
+      "output":{"shape":"CreateProxyRulesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates Network Firewall <a>ProxyRule</a> resources. </p> <p>Attaches new proxy rule(s) to an existing proxy rule group. </p> <p>To retrieve information about individual proxy rules, use <a>DescribeProxyRuleGroup</a> and <a>DescribeProxyRule</a>.</p>"
     },
     "CreateRuleGroup":{
       "name":"CreateRuleGroup",
@@ -227,6 +309,71 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Deletes a transit gateway attachment from a Network Firewall. Either the firewall owner or the transit gateway owner can delete the attachment.</p> <important> <p>After you delete a transit gateway attachment, traffic will no longer flow through the firewall endpoints.</p> </important> <p>After you initiate the delete operation, use <a>DescribeFirewall</a> to monitor the deletion status.</p>"
+    },
+    "DeleteProxy":{
+      "name":"DeleteProxy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteProxyRequest"},
+      "output":{"shape":"DeleteProxyResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes the specified <a>Proxy</a>. </p> <p>Detaches a Proxy configuration from a NAT Gateway. </p>"
+    },
+    "DeleteProxyConfiguration":{
+      "name":"DeleteProxyConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteProxyConfigurationRequest"},
+      "output":{"shape":"DeleteProxyConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes the specified <a>ProxyConfiguration</a>. </p>"
+    },
+    "DeleteProxyRuleGroup":{
+      "name":"DeleteProxyRuleGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteProxyRuleGroupRequest"},
+      "output":{"shape":"DeleteProxyRuleGroupResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes the specified <a>ProxyRuleGroup</a>. </p>"
+    },
+    "DeleteProxyRules":{
+      "name":"DeleteProxyRules",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteProxyRulesRequest"},
+      "output":{"shape":"DeleteProxyRulesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes the specified <a>ProxyRule</a>(s). currently attached to a <a>ProxyRuleGroup</a> </p>"
     },
     "DeleteResourcePolicy":{
       "name":"DeleteResourcePolicy",
@@ -377,6 +524,70 @@
       ],
       "documentation":"<p>Returns the logging configuration for the specified firewall. </p>"
     },
+    "DescribeProxy":{
+      "name":"DescribeProxy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeProxyRequest"},
+      "output":{"shape":"DescribeProxyResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns the data objects for the specified proxy. </p>"
+    },
+    "DescribeProxyConfiguration":{
+      "name":"DescribeProxyConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeProxyConfigurationRequest"},
+      "output":{"shape":"DescribeProxyConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns the data objects for the specified proxy configuration. </p>"
+    },
+    "DescribeProxyRule":{
+      "name":"DescribeProxyRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeProxyRuleRequest"},
+      "output":{"shape":"DescribeProxyRuleResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns the data objects for the specified proxy configuration for the specified proxy rule group.</p>"
+    },
+    "DescribeProxyRuleGroup":{
+      "name":"DescribeProxyRuleGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeProxyRuleGroupRequest"},
+      "output":{"shape":"DescribeProxyRuleGroupResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns the data objects for the specified proxy rule group. </p>"
+    },
     "DescribeResourcePolicy":{
       "name":"DescribeResourcePolicy",
       "http":{
@@ -472,6 +683,22 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns the data object for the specified VPC endpoint association. </p>"
+    },
+    "DetachRuleGroupsFromProxyConfiguration":{
+      "name":"DetachRuleGroupsFromProxyConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DetachRuleGroupsFromProxyConfigurationRequest"},
+      "output":{"shape":"DetachRuleGroupsFromProxyConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Detaches <a>ProxyRuleGroup</a> resources from a <a>ProxyConfiguration</a> </p> <p>A Proxy Configuration defines the monitoring and protection behavior for a Proxy. The details of the behavior are defined in the rule groups that you add to your configuration. </p>"
     },
     "DisassociateAvailabilityZones":{
       "name":"DisassociateAvailabilityZones",
@@ -602,6 +829,53 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns a list of all flow operations ran in a specific firewall. You can optionally narrow the request scope by specifying the operation type or Availability Zone associated with a firewall's flow operations. </p> <p>Flow operations let you manage the flows tracked in the flow table, also known as the firewall table.</p> <p>A flow is network traffic that is monitored by a firewall, either by stateful or stateless rules. For traffic to be considered part of a flow, it must share Destination, DestinationPort, Direction, Protocol, Source, and SourcePort. </p>"
+    },
+    "ListProxies":{
+      "name":"ListProxies",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListProxiesRequest"},
+      "output":{"shape":"ListProxiesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the metadata for the proxies that you have defined. Depending on your setting for max results and the number of proxies, a single call might not return the full list. </p>"
+    },
+    "ListProxyConfigurations":{
+      "name":"ListProxyConfigurations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListProxyConfigurationsRequest"},
+      "output":{"shape":"ListProxyConfigurationsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the metadata for the proxy configuration that you have defined. Depending on your setting for max results and the number of proxy configurations, a single call might not return the full list. </p>"
+    },
+    "ListProxyRuleGroups":{
+      "name":"ListProxyRuleGroups",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListProxyRuleGroupsRequest"},
+      "output":{"shape":"ListProxyRuleGroupsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the metadata for the proxy rule groups that you have defined. Depending on your setting for max results and the number of proxy rule groups, a single call might not return the full list. </p>"
     },
     "ListRuleGroups":{
       "name":"ListRuleGroups",
@@ -807,7 +1081,8 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InternalServerError"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidTokenException"}
       ],
       "documentation":"<p>Enables specific types of firewall analysis on a specific firewall you define.</p>"
     },
@@ -916,6 +1191,87 @@
         {"shape":"LogDestinationPermissionException"}
       ],
       "documentation":"<p>Sets the logging configuration for the specified firewall. </p> <p>To change the logging configuration, retrieve the <a>LoggingConfiguration</a> by calling <a>DescribeLoggingConfiguration</a>, then change it and provide the modified object to this update call. You must change the logging configuration one <a>LogDestinationConfig</a> at a time inside the retrieved <a>LoggingConfiguration</a> object. </p> <p>You can perform only one of the following actions in any call to <code>UpdateLoggingConfiguration</code>: </p> <ul> <li> <p>Create a new log destination object by adding a single <code>LogDestinationConfig</code> array element to <code>LogDestinationConfigs</code>.</p> </li> <li> <p>Delete a log destination object by removing a single <code>LogDestinationConfig</code> array element from <code>LogDestinationConfigs</code>.</p> </li> <li> <p>Change the <code>LogDestination</code> setting in a single <code>LogDestinationConfig</code> array element.</p> </li> </ul> <p>You can't change the <code>LogDestinationType</code> or <code>LogType</code> in a <code>LogDestinationConfig</code>. To change these settings, delete the existing <code>LogDestinationConfig</code> object and create a new one, using two separate calls to this update operation.</p>"
+    },
+    "UpdateProxy":{
+      "name":"UpdateProxy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateProxyRequest"},
+      "output":{"shape":"UpdateProxyResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"UnsupportedOperationException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates the properties of the specified proxy.</p>"
+    },
+    "UpdateProxyConfiguration":{
+      "name":"UpdateProxyConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateProxyConfigurationRequest"},
+      "output":{"shape":"UpdateProxyConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates the properties of the specified proxy configuration.</p>"
+    },
+    "UpdateProxyRule":{
+      "name":"UpdateProxyRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateProxyRuleRequest"},
+      "output":{"shape":"UpdateProxyRuleResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates the properties of the specified proxy rule.</p>"
+    },
+    "UpdateProxyRuleGroupPriorities":{
+      "name":"UpdateProxyRuleGroupPriorities",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateProxyRuleGroupPrioritiesRequest"},
+      "output":{"shape":"UpdateProxyRuleGroupPrioritiesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates proxy rule group priorities within a proxy configuration.</p>"
+    },
+    "UpdateProxyRulePriorities":{
+      "name":"UpdateProxyRulePriorities",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateProxyRulePrioritiesRequest"},
+      "output":{"shape":"UpdateProxyRulePrioritiesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServerError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates proxy rule priorities within a proxy rule group.</p>"
     },
     "UpdateRuleGroup":{
       "name":"UpdateRuleGroup",
@@ -1276,6 +1632,44 @@
       "key":{"shape":"AvailabilityZone"},
       "value":{"shape":"AZSyncState"}
     },
+    "AttachRuleGroupsToProxyConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "RuleGroups",
+        "UpdateToken"
+      ],
+      "members":{
+        "ProxyConfigurationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy configuration. You can't change the name of a proxy configuration after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ProxyConfigurationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy configuration.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "RuleGroups":{
+          "shape":"ProxyRuleGroupAttachmentList",
+          "documentation":"<p>The proxy rule group(s) to attach to the proxy configuration</p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy configuration. The token marks the state of the proxy configuration resource at the time of the request. </p> <p>To make changes to the proxy configuration, you provide the token in your request. Network Firewall uses the token to ensure that the proxy configuration hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy configuration again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
+    "AttachRuleGroupsToProxyConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "ProxyConfiguration":{
+          "shape":"ProxyConfiguration",
+          "documentation":"<p>The updated proxy configuration resource that reflects the updates from the request.</p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy configuration. The token marks the state of the proxy configuration resource at the time of the request. </p> <p>To make changes to the proxy configuration, you provide the token in your request. Network Firewall uses the token to ensure that the proxy configuration hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy configuration again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
     "Attachment":{
       "type":"structure",
       "members":{
@@ -1406,6 +1800,8 @@
       "documentation":"<p>Defines the actions to take on the SSL/TLS connection if the certificate presented by the server in the connection has a revoked or unknown status.</p>"
     },
     "CollectionMember_String":{"type":"string"},
+    "ConditionKey":{"type":"string"},
+    "ConditionOperator":{"type":"string"},
     "ConfigurationSyncState":{
       "type":"string",
       "enum":[
@@ -1543,6 +1939,219 @@
         }
       }
     },
+    "CreateProxyConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "ProxyConfigurationName",
+        "DefaultRulePhaseActions"
+      ],
+      "members":{
+        "ProxyConfigurationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy configuration. You can't change the name of a proxy configuration after you create it.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the proxy configuration. </p>"
+        },
+        "RuleGroupNames":{
+          "shape":"ResourceNameList",
+          "documentation":"<p>The proxy rule group name(s) to attach to the proxy configuration.</p> <p>You must specify the ARNs or the names, and you can specify both. </p>"
+        },
+        "RuleGroupArns":{
+          "shape":"ResourceArnList",
+          "documentation":"<p>The proxy rule group arn(s) to attach to the proxy configuration.</p> <p>You must specify the ARNs or the names, and you can specify both. </p>"
+        },
+        "DefaultRulePhaseActions":{
+          "shape":"ProxyConfigDefaultRulePhaseActionsRequest",
+          "documentation":"<p>Evaluation points in the traffic flow where rules are applied. There are three phases in a traffic where the rule match is applied. </p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The key:value pairs to associate with the resource.</p>"
+        }
+      }
+    },
+    "CreateProxyConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "ProxyConfiguration":{
+          "shape":"ProxyConfiguration",
+          "documentation":"<p>The properties that define the proxy configuration. </p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy configuration. The token marks the state of the proxy configuration resource at the time of the request. </p> <p>To make changes to the proxy configuration, you provide the token in your request. Network Firewall uses the token to ensure that the proxy configuration hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy configuration again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
+    "CreateProxyRequest":{
+      "type":"structure",
+      "required":[
+        "ProxyName",
+        "NatGatewayId",
+        "TlsInterceptProperties"
+      ],
+      "members":{
+        "ProxyName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy. You can't change the name of a proxy after you create it.</p>"
+        },
+        "NatGatewayId":{
+          "shape":"NatGatewayId",
+          "documentation":"<p>A unique identifier for the NAT gateway to use with proxy resources.</p>"
+        },
+        "ProxyConfigurationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy configuration. You can't change the name of a proxy configuration after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ProxyConfigurationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy configuration.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ListenerProperties":{
+          "shape":"ListenerPropertiesRequest",
+          "documentation":"<p>Listener properties for HTTP and HTTPS traffic.</p>"
+        },
+        "TlsInterceptProperties":{
+          "shape":"TlsInterceptPropertiesRequest",
+          "documentation":"<p>TLS decryption on traffic to filter on attributes in the HTTP header. </p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The key:value pairs to associate with the resource.</p>"
+        }
+      }
+    },
+    "CreateProxyResponse":{
+      "type":"structure",
+      "members":{
+        "Proxy":{
+          "shape":"Proxy",
+          "documentation":"<p>Proxy attached to a NAT gateway. </p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy. The token marks the state of the proxy resource at the time of the request. </p> <p>To make changes to the proxy, you provide the token in your request. Network Firewall uses the token to ensure that the proxy hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
+    "CreateProxyRule":{
+      "type":"structure",
+      "members":{
+        "ProxyRuleName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule. You can't change the name of a proxy rule after you create it.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the proxy rule. </p>"
+        },
+        "Action":{
+          "shape":"ProxyRulePhaseAction",
+          "documentation":"<p>Action to take. </p>"
+        },
+        "Conditions":{
+          "shape":"ProxyRuleConditionList",
+          "documentation":"<p>Match criteria that specify what traffic attributes to examine. Conditions include operators (StringEquals, StringLike) and values to match against. </p>"
+        },
+        "InsertPosition":{
+          "shape":"InsertPosition",
+          "documentation":"<p>Where to insert a proxy rule in a proxy rule group. </p>"
+        }
+      },
+      "documentation":"<p>Individual rules that define match conditions and actions for application-layer traffic. Rules specify what to inspect (domains, headers, methods) and what action to take (allow, deny, alert). </p>"
+    },
+    "CreateProxyRuleGroupRequest":{
+      "type":"structure",
+      "required":["ProxyRuleGroupName"],
+      "members":{
+        "ProxyRuleGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule group. You can't change the name of a proxy rule group after you create it.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the proxy rule group. </p>"
+        },
+        "Rules":{
+          "shape":"ProxyRulesByRequestPhase",
+          "documentation":"<p>Individual rules that define match conditions and actions for application-layer traffic. Rules specify what to inspect (domains, headers, methods) and what action to take (allow, deny, alert). </p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The key:value pairs to associate with the resource.</p>"
+        }
+      }
+    },
+    "CreateProxyRuleGroupResponse":{
+      "type":"structure",
+      "members":{
+        "ProxyRuleGroup":{
+          "shape":"ProxyRuleGroup",
+          "documentation":"<p>The properties that define the proxy rule group. </p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy rule group. The token marks the state of the proxy rule group resource at the time of the request. </p> <p>To make changes to the proxy rule group, you provide the token in your request. Network Firewall uses the token to ensure that the proxy rule group hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy rule group again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
+    "CreateProxyRuleList":{
+      "type":"list",
+      "member":{"shape":"CreateProxyRule"},
+      "max":50,
+      "min":1
+    },
+    "CreateProxyRulesByRequestPhase":{
+      "type":"structure",
+      "members":{
+        "PreDNS":{
+          "shape":"CreateProxyRuleList",
+          "documentation":"<p>Before domain resolution. </p>"
+        },
+        "PreREQUEST":{
+          "shape":"CreateProxyRuleList",
+          "documentation":"<p>After DNS, before request.</p>"
+        },
+        "PostRESPONSE":{
+          "shape":"CreateProxyRuleList",
+          "documentation":"<p>After receiving response.</p>"
+        }
+      },
+      "documentation":"<p>Evaluation points in the traffic flow where rules are applied. There are three phases in a traffic where the rule match is applied. </p> <p>This data type is used specifically for the <a>CreateProxyRules</a> API.</p> <p>Pre-DNS - before domain resolution.</p> <p>Pre-Request - after DNS, before request.</p> <p>Post-Response - after receiving response.</p>"
+    },
+    "CreateProxyRulesRequest":{
+      "type":"structure",
+      "required":["Rules"],
+      "members":{
+        "ProxyRuleGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy rule group.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ProxyRuleGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule group. You can't change the name of a proxy rule group after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "Rules":{
+          "shape":"CreateProxyRulesByRequestPhase",
+          "documentation":"<p>Individual rules that define match conditions and actions for application-layer traffic. Rules specify what to inspect (domains, headers, methods) and what action to take (allow, deny, alert). </p>"
+        }
+      }
+    },
+    "CreateProxyRulesResponse":{
+      "type":"structure",
+      "members":{
+        "ProxyRuleGroup":{
+          "shape":"ProxyRuleGroup",
+          "documentation":"<p>The properties that define the proxy rule group with the newly created proxy rule(s). </p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy rule. The token marks the state of the proxy rule resource at the time of the request. </p> <p>To make changes to the proxy rule, you provide the token in your request. Network Firewall uses the token to ensure that the proxy rule hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy rule again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
     "CreateRuleGroupRequest":{
       "type":"structure",
       "required":[
@@ -1661,6 +2270,7 @@
         }
       }
     },
+    "CreateTime":{"type":"timestamp"},
     "CreateVpcEndpointAssociationRequest":{
       "type":"structure",
       "required":[
@@ -1794,6 +2404,120 @@
         }
       }
     },
+    "DeleteProxyConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "ProxyConfigurationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy configuration. You can't change the name of a proxy configuration after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ProxyConfigurationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy configuration.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        }
+      }
+    },
+    "DeleteProxyConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "ProxyConfigurationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy configuration. You can't change the name of a proxy configuration after you create it.</p>"
+        },
+        "ProxyConfigurationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy configuration.</p>"
+        }
+      }
+    },
+    "DeleteProxyRequest":{
+      "type":"structure",
+      "required":["NatGatewayId"],
+      "members":{
+        "NatGatewayId":{
+          "shape":"NatGatewayId",
+          "documentation":"<p>The NAT Gateway the proxy is attached to. </p>"
+        },
+        "ProxyName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy. You can't change the name of a proxy after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ProxyArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        }
+      }
+    },
+    "DeleteProxyResponse":{
+      "type":"structure",
+      "members":{
+        "NatGatewayId":{
+          "shape":"NatGatewayId",
+          "documentation":"<p>The NAT Gateway the Proxy was attached to. </p>"
+        },
+        "ProxyName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy. You can't change the name of a proxy after you create it.</p>"
+        },
+        "ProxyArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy.</p>"
+        }
+      }
+    },
+    "DeleteProxyRuleGroupRequest":{
+      "type":"structure",
+      "members":{
+        "ProxyRuleGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule group. You can't change the name of a proxy rule group after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ProxyRuleGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy rule group.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        }
+      }
+    },
+    "DeleteProxyRuleGroupResponse":{
+      "type":"structure",
+      "members":{
+        "ProxyRuleGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule group. You can't change the name of a proxy rule group after you create it.</p>"
+        },
+        "ProxyRuleGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy rule group.</p>"
+        }
+      }
+    },
+    "DeleteProxyRulesRequest":{
+      "type":"structure",
+      "required":["Rules"],
+      "members":{
+        "ProxyRuleGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy rule group.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ProxyRuleGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule group. You can't change the name of a proxy rule group after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "Rules":{
+          "shape":"ResourceNameList",
+          "documentation":"<p>The proxy rule(s) to remove from the existing proxy rule group. </p>"
+        }
+      }
+    },
+    "DeleteProxyRulesResponse":{
+      "type":"structure",
+      "members":{
+        "ProxyRuleGroup":{
+          "shape":"ProxyRuleGroup",
+          "documentation":"<p>The properties that define the proxy rule group with the newly created proxy rule(s). </p>"
+        }
+      }
+    },
     "DeleteResourcePolicyRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -1858,6 +2582,7 @@
         }
       }
     },
+    "DeleteTime":{"type":"timestamp"},
     "DeleteVpcEndpointAssociationRequest":{
       "type":"structure",
       "required":["VpcEndpointAssociationArn"],
@@ -2084,6 +2809,189 @@
         }
       }
     },
+    "DescribeProxyConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "ProxyConfigurationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy configuration. You can't change the name of a proxy configuration after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ProxyConfigurationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy configuration.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        }
+      }
+    },
+    "DescribeProxyConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "ProxyConfiguration":{
+          "shape":"ProxyConfiguration",
+          "documentation":"<p>The configuration for the specified proxy configuration. </p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy configuration. The token marks the state of the proxy configuration resource at the time of the request. </p> <p>To make changes to the proxy configuration, you provide the token in your request. Network Firewall uses the token to ensure that the proxy configuration hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy configuration again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
+    "DescribeProxyRequest":{
+      "type":"structure",
+      "members":{
+        "ProxyName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy. You can't change the name of a proxy after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ProxyArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        }
+      }
+    },
+    "DescribeProxyResource":{
+      "type":"structure",
+      "members":{
+        "ProxyName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy. You can't change the name of a proxy after you create it.</p>"
+        },
+        "ProxyArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy.</p>"
+        },
+        "ProxyConfigurationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy configuration. You can't change the name of a proxy configuration after you create it.</p>"
+        },
+        "ProxyConfigurationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy configuration.</p>"
+        },
+        "NatGatewayId":{
+          "shape":"NatGatewayId",
+          "documentation":"<p>The NAT Gateway for the proxy. </p>"
+        },
+        "ProxyState":{
+          "shape":"ProxyState",
+          "documentation":"<p>Current attachment/detachment status of the Proxy. </p>"
+        },
+        "ProxyModifyState":{
+          "shape":"ProxyModifyState",
+          "documentation":"<p>Current modification status of the Proxy. </p>"
+        },
+        "ListenerProperties":{
+          "shape":"ListenerProperties",
+          "documentation":"<p>Listener properties for HTTP and HTTPS traffic. </p>"
+        },
+        "TlsInterceptProperties":{
+          "shape":"TlsInterceptProperties",
+          "documentation":"<p>TLS decryption on traffic to filter on attributes in the HTTP header. </p>"
+        },
+        "VpcEndpointServiceName":{
+          "shape":"VpcEndpointServiceName",
+          "documentation":"<p>The service endpoint created in the VPC. </p>"
+        },
+        "PrivateDNSName":{
+          "shape":"PrivateDNSName",
+          "documentation":"<p>The private DNS name of the Proxy. </p>"
+        },
+        "CreateTime":{
+          "shape":"CreateTime",
+          "documentation":"<p>Time the Proxy was created. </p>"
+        },
+        "DeleteTime":{
+          "shape":"DeleteTime",
+          "documentation":"<p>Time the Proxy was deleted. </p>"
+        },
+        "UpdateTime":{
+          "shape":"UpdateTime",
+          "documentation":"<p>Time the Proxy was updated. </p>"
+        },
+        "FailureCode":{
+          "shape":"FailureCode",
+          "documentation":"<p>Failure code for cases when the Proxy fails to attach or update. </p>"
+        },
+        "FailureMessage":{
+          "shape":"FailureMessage",
+          "documentation":"<p>Failure message for cases when the Proxy fails to attach or update. </p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The key:value pairs to associate with the resource.</p>"
+        }
+      },
+      "documentation":"<p>Proxy attached to a NAT gateway. </p>"
+    },
+    "DescribeProxyResponse":{
+      "type":"structure",
+      "members":{
+        "Proxy":{
+          "shape":"DescribeProxyResource",
+          "documentation":"<p>Proxy attached to a NAT gateway. </p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy. The token marks the state of the proxy resource at the time of the request. </p> <p>To make changes to the proxy, you provide the token in your request. Network Firewall uses the token to ensure that the proxy hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
+    "DescribeProxyRuleGroupRequest":{
+      "type":"structure",
+      "members":{
+        "ProxyRuleGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule group. You can't change the name of a proxy rule group after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ProxyRuleGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy rule group.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        }
+      }
+    },
+    "DescribeProxyRuleGroupResponse":{
+      "type":"structure",
+      "members":{
+        "ProxyRuleGroup":{
+          "shape":"ProxyRuleGroup",
+          "documentation":"<p>The configuration for the specified proxy rule group. </p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy rule group. The token marks the state of the proxy rule group resource at the time of the request. </p> <p>To make changes to the proxy rule group, you provide the token in your request. Network Firewall uses the token to ensure that the proxy rule group hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy rule group again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
+    "DescribeProxyRuleRequest":{
+      "type":"structure",
+      "required":["ProxyRuleName"],
+      "members":{
+        "ProxyRuleName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule. You can't change the name of a proxy rule after you create it.</p>"
+        },
+        "ProxyRuleGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule group. You can't change the name of a proxy rule group after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ProxyRuleGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy rule group.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        }
+      }
+    },
+    "DescribeProxyRuleResponse":{
+      "type":"structure",
+      "members":{
+        "ProxyRule":{
+          "shape":"ProxyRule",
+          "documentation":"<p>The configuration for the specified proxy rule. </p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy rule. The token marks the state of the proxy rule resource at the time of the request. </p> <p>To make changes to the proxy rule, you provide the token in your request. Network Firewall uses the token to ensure that the proxy rule hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy rule again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
     "DescribeResourcePolicyRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -2151,6 +3059,18 @@
         "LastModifiedTime":{
           "shape":"LastUpdateTime",
           "documentation":"<p>A timestamp indicating when the rule group was last modified.</p>"
+        },
+        "VendorName":{
+          "shape":"VendorName",
+          "documentation":"<p>The name of the Amazon Web Services Marketplace vendor that provides this rule group.</p>"
+        },
+        "ProductId":{
+          "shape":"ProductId",
+          "documentation":"<p>The unique identifier for the product listing associated with this rule group.</p>"
+        },
+        "ListingName":{
+          "shape":"ListingName",
+          "documentation":"<p>The display name of the product listing for this rule group.</p>"
         }
       }
     },
@@ -2298,6 +3218,45 @@
       "max":1024,
       "min":1,
       "pattern":"^.*$"
+    },
+    "DetachRuleGroupsFromProxyConfigurationRequest":{
+      "type":"structure",
+      "required":["UpdateToken"],
+      "members":{
+        "ProxyConfigurationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy configuration. You can't change the name of a proxy configuration after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ProxyConfigurationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy configuration.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "RuleGroupNames":{
+          "shape":"ResourceNameList",
+          "documentation":"<p>The proxy rule group names to detach from the proxy configuration</p>"
+        },
+        "RuleGroupArns":{
+          "shape":"ResourceArnList",
+          "documentation":"<p>The proxy rule group arns to detach from the proxy configuration</p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy configuration. The token marks the state of the proxy configuration resource at the time of the request. </p> <p>To make changes to the proxy configuration, you provide the token in your request. Network Firewall uses the token to ensure that the proxy configuration hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy configuration again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
+    "DetachRuleGroupsFromProxyConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "ProxyConfiguration":{
+          "shape":"ProxyConfiguration",
+          "documentation":"<p>The updated proxy configuration resource that reflects the updates from the request.</p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy configuration. The token marks the state of the proxy configuration resource at the time of the request. </p> <p>To make changes to the proxy configuration, you provide the token in your request. Network Firewall uses the token to ensure that the proxy configuration hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy configuration again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
     },
     "Dimension":{
       "type":"structure",
@@ -2447,6 +3406,8 @@
     "EndTime":{"type":"timestamp"},
     "EndpointId":{"type":"string"},
     "ErrorMessage":{"type":"string"},
+    "FailureCode":{"type":"string"},
+    "FailureMessage":{"type":"string"},
     "Firewall":{
       "type":"structure",
       "required":[
@@ -3048,6 +4009,7 @@
         "STATELESS_RULE_CONTAINS_TCP_FLAGS"
       ]
     },
+    "InsertPosition":{"type":"integer"},
     "InsufficientCapacityException":{
       "type":"structure",
       "members":{
@@ -3339,6 +4301,84 @@
         }
       }
     },
+    "ListProxiesRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        },
+        "MaxResults":{
+          "shape":"PaginationMaxResults",
+          "documentation":"<p>The maximum number of objects that you want Network Firewall to return for this request. If more objects are available, in the response, Network Firewall provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p>"
+        }
+      }
+    },
+    "ListProxiesResponse":{
+      "type":"structure",
+      "members":{
+        "Proxies":{
+          "shape":"Proxies",
+          "documentation":"<p>The metadata for the proxies. Depending on your setting for max results and the number of proxies that you have, this might not be the full list. </p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        }
+      }
+    },
+    "ListProxyConfigurationsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        },
+        "MaxResults":{
+          "shape":"PaginationMaxResults",
+          "documentation":"<p>The maximum number of objects that you want Network Firewall to return for this request. If more objects are available, in the response, Network Firewall provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p>"
+        }
+      }
+    },
+    "ListProxyConfigurationsResponse":{
+      "type":"structure",
+      "members":{
+        "ProxyConfigurations":{
+          "shape":"ProxyConfigurations",
+          "documentation":"<p>The metadata for the proxy configurations. Depending on your setting for max results and the number of proxy configurations that you have, this might not be the full list. </p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        }
+      }
+    },
+    "ListProxyRuleGroupsRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        },
+        "MaxResults":{
+          "shape":"PaginationMaxResults",
+          "documentation":"<p>The maximum number of objects that you want Network Firewall to return for this request. If more objects are available, in the response, Network Firewall provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of objects.</p>"
+        }
+      }
+    },
+    "ListProxyRuleGroupsResponse":{
+      "type":"structure",
+      "members":{
+        "ProxyRuleGroups":{
+          "shape":"ProxyRuleGroups",
+          "documentation":"<p>The metadata for the proxy rule groups. Depending on your setting for max results and the number of proxy rule groups that you have, this might not be the full list. </p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>When you request a list of objects with a <code>MaxResults</code> setting, if the number of objects that are still available for retrieval exceeds the maximum you requested, Network Firewall returns a <code>NextToken</code> value in the response. To retrieve the next batch of objects, use the token returned from the prior request in your next request.</p>"
+        }
+      }
+    },
     "ListRuleGroupsRequest":{
       "type":"structure",
       "members":{
@@ -3357,6 +4397,10 @@
         "ManagedType":{
           "shape":"ResourceManagedType",
           "documentation":"<p>Indicates the general category of the Amazon Web Services managed rule group.</p>"
+        },
+        "SubscriptionStatus":{
+          "shape":"SubscriptionStatus",
+          "documentation":"<p>Filters the results to show only rule groups with the specified subscription status. Use this to find subscribed or unsubscribed rule groups.</p>"
         },
         "Type":{
           "shape":"RuleGroupType",
@@ -3464,6 +4508,56 @@
         }
       }
     },
+    "ListenerProperties":{
+      "type":"list",
+      "member":{"shape":"ListenerProperty"}
+    },
+    "ListenerPropertiesRequest":{
+      "type":"list",
+      "member":{"shape":"ListenerPropertyRequest"},
+      "max":2,
+      "min":0
+    },
+    "ListenerProperty":{
+      "type":"structure",
+      "members":{
+        "Port":{
+          "shape":"NatGatewayPort",
+          "documentation":"<p>Port for processing traffic.</p>"
+        },
+        "Type":{
+          "shape":"ListenerPropertyType",
+          "documentation":"<p>Selection of HTTP or HTTPS traffic.</p>"
+        }
+      },
+      "documentation":"<p>Open port for taking HTTP or HTTPS traffic. </p>"
+    },
+    "ListenerPropertyRequest":{
+      "type":"structure",
+      "required":[
+        "Port",
+        "Type"
+      ],
+      "members":{
+        "Port":{
+          "shape":"NatGatewayPort",
+          "documentation":"<p>Port for processing traffic.</p>"
+        },
+        "Type":{
+          "shape":"ListenerPropertyType",
+          "documentation":"<p>Selection of HTTP or HTTPS traffic.</p>"
+        }
+      },
+      "documentation":"<p>This data type is used specifically for the <a>CreateProxy</a> and <a>UpdateProxy</a> APIs.</p> <p>Open port for taking HTTP or HTTPS traffic.</p>"
+    },
+    "ListenerPropertyType":{
+      "type":"string",
+      "enum":[
+        "HTTP",
+        "HTTPS"
+      ]
+    },
+    "ListingName":{"type":"string"},
     "LogDestinationConfig":{
       "type":"structure",
       "required":[
@@ -3564,6 +4658,11 @@
       },
       "documentation":"<p>Criteria for Network Firewall to use to inspect an individual packet in stateless rule inspection. Each match attributes set can include one or more items such as IP address, CIDR range, port number, protocol, and TCP flags. </p>"
     },
+    "NatGatewayId":{
+      "type":"string",
+      "min":1
+    },
+    "NatGatewayPort":{"type":"integer"},
     "NumberOfAssociations":{"type":"integer"},
     "OverrideAction":{
       "type":"string",
@@ -3600,7 +4699,9 @@
       "enum":[
         "PENDING",
         "IN_SYNC",
-        "CAPACITY_CONSTRAINED"
+        "CAPACITY_CONSTRAINED",
+        "NOT_SUBSCRIBED",
+        "DEPRECATED"
       ]
     },
     "PolicyString":{
@@ -3672,6 +4773,8 @@
       "max":65535,
       "min":1
     },
+    "PrivateDNSName":{"type":"string"},
+    "ProductId":{"type":"string"},
     "ProtocolNumber":{
       "type":"integer",
       "max":255,
@@ -3690,6 +4793,415 @@
     "ProtocolStrings":{
       "type":"list",
       "member":{"shape":"ProtocolString"}
+    },
+    "Proxies":{
+      "type":"list",
+      "member":{"shape":"ProxyMetadata"}
+    },
+    "Proxy":{
+      "type":"structure",
+      "members":{
+        "CreateTime":{
+          "shape":"CreateTime",
+          "documentation":"<p>Time the Proxy was created. </p>"
+        },
+        "DeleteTime":{
+          "shape":"DeleteTime",
+          "documentation":"<p>Time the Proxy was deleted. </p>"
+        },
+        "UpdateTime":{
+          "shape":"UpdateTime",
+          "documentation":"<p>Time the Proxy was updated. </p>"
+        },
+        "FailureCode":{
+          "shape":"FailureCode",
+          "documentation":"<p>Failure code for cases when the Proxy fails to attach or update. </p>"
+        },
+        "FailureMessage":{
+          "shape":"FailureMessage",
+          "documentation":"<p>Failure message for cases when the Proxy fails to attach or update. </p>"
+        },
+        "ProxyState":{
+          "shape":"ProxyState",
+          "documentation":"<p>Current attachment/detachment status of the Proxy. </p>"
+        },
+        "ProxyModifyState":{
+          "shape":"ProxyModifyState",
+          "documentation":"<p>Current modification status of the Proxy. </p>"
+        },
+        "NatGatewayId":{
+          "shape":"NatGatewayId",
+          "documentation":"<p>The NAT Gateway for the proxy. </p>"
+        },
+        "ProxyConfigurationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy configuration. You can't change the name of a proxy configuration after you create it.</p>"
+        },
+        "ProxyConfigurationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy configuration.</p>"
+        },
+        "ProxyName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy. You can't change the name of a proxy after you create it.</p>"
+        },
+        "ProxyArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy.</p>"
+        },
+        "ListenerProperties":{
+          "shape":"ListenerProperties",
+          "documentation":"<p>Listener properties for HTTP and HTTPS traffic. </p>"
+        },
+        "TlsInterceptProperties":{
+          "shape":"TlsInterceptProperties",
+          "documentation":"<p>TLS decryption on traffic to filter on attributes in the HTTP header. </p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The key:value pairs to associate with the resource.</p>"
+        }
+      },
+      "documentation":"<p>Proxy attached to a NAT gateway. </p>"
+    },
+    "ProxyConditionValue":{"type":"string"},
+    "ProxyConditionValueList":{
+      "type":"list",
+      "member":{"shape":"ProxyConditionValue"}
+    },
+    "ProxyConfigDefaultRulePhaseActionsRequest":{
+      "type":"structure",
+      "members":{
+        "PreDNS":{
+          "shape":"ProxyRulePhaseAction",
+          "documentation":"<p>Before domain resolution. </p>"
+        },
+        "PreREQUEST":{
+          "shape":"ProxyRulePhaseAction",
+          "documentation":"<p>After DNS, before request.</p>"
+        },
+        "PostRESPONSE":{
+          "shape":"ProxyRulePhaseAction",
+          "documentation":"<p>After receiving response.</p>"
+        }
+      },
+      "documentation":"<p>Evaluation points in the traffic flow where rules are applied. There are three phases in a traffic where the rule match is applied. </p> <p>This data type is used specifically for the <a>CreateProxyConfiguration</a> and <a>UpdateProxyConfiguration</a> APIs.</p>"
+    },
+    "ProxyConfigRuleGroup":{
+      "type":"structure",
+      "members":{
+        "ProxyRuleGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule group. You can't change the name of a proxy rule group after you create it.</p>"
+        },
+        "ProxyRuleGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy rule group.</p>"
+        },
+        "Type":{
+          "shape":"ProxyConfigRuleGroupType",
+          "documentation":"<p>Proxy rule group type. </p>"
+        },
+        "Priority":{
+          "shape":"ProxyConfigRuleGroupPriority",
+          "documentation":"<p>Priority of the proxy rule group in the proxy configuration. </p>"
+        }
+      },
+      "documentation":"<p>Proxy rule group contained within a proxy configuration. </p>"
+    },
+    "ProxyConfigRuleGroupPriority":{"type":"integer"},
+    "ProxyConfigRuleGroupSet":{
+      "type":"list",
+      "member":{"shape":"ProxyConfigRuleGroup"}
+    },
+    "ProxyConfigRuleGroupType":{"type":"string"},
+    "ProxyConfiguration":{
+      "type":"structure",
+      "members":{
+        "ProxyConfigurationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy configuration. You can't change the name of a proxy configuration after you create it.</p>"
+        },
+        "ProxyConfigurationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy configuration.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the proxy configuration. </p>"
+        },
+        "CreateTime":{
+          "shape":"CreateTime",
+          "documentation":"<p>Time the Proxy Configuration was created. </p>"
+        },
+        "DeleteTime":{
+          "shape":"DeleteTime",
+          "documentation":"<p>Time the Proxy Configuration was deleted. </p>"
+        },
+        "RuleGroups":{
+          "shape":"ProxyConfigRuleGroupSet",
+          "documentation":"<p>Proxy rule groups within the proxy configuration. </p>"
+        },
+        "DefaultRulePhaseActions":{
+          "shape":"ProxyConfigDefaultRulePhaseActionsRequest",
+          "documentation":"<p>Evaluation points in the traffic flow where rules are applied. There are three phases in a traffic where the rule match is applied. </p> <p>Pre-DNS - before domain resolution.</p> <p>Pre-Request - after DNS, before request.</p> <p>Post-Response - after receiving response.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The key:value pairs to associate with the resource.</p>"
+        }
+      },
+      "documentation":"<p>A Proxy Configuration defines the monitoring and protection behavior for a Proxy. The details of the behavior are defined in the rule groups that you add to your configuration. </p>"
+    },
+    "ProxyConfigurationMetadata":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy configuration. You can't change the name of a proxy configuration after you create it.</p>"
+        },
+        "Arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy configuration.</p>"
+        }
+      },
+      "documentation":"<p>High-level information about a proxy configuration, returned by operations like create and describe. You can use the information provided in the metadata to retrieve and manage a proxy configuration. You can retrieve all objects for a proxy configuration by calling <a>DescribeProxyConfiguration</a>. </p>"
+    },
+    "ProxyConfigurations":{
+      "type":"list",
+      "member":{"shape":"ProxyConfigurationMetadata"}
+    },
+    "ProxyMetadata":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy. You can't change the name of a proxy after you create it.</p>"
+        },
+        "Arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy.</p>"
+        }
+      },
+      "documentation":"<p>High-level information about a proxy, returned by operations like create and describe. You can use the information provided in the metadata to retrieve and manage a proxy. You can retrieve all objects for a proxy by calling <a>DescribeProxy</a>. </p>"
+    },
+    "ProxyModifyState":{
+      "type":"string",
+      "enum":[
+        "MODIFYING",
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
+    "ProxyRule":{
+      "type":"structure",
+      "members":{
+        "ProxyRuleName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule. You can't change the name of a proxy rule after you create it.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the proxy rule. </p>"
+        },
+        "Action":{
+          "shape":"ProxyRulePhaseAction",
+          "documentation":"<p>Action to take. </p>"
+        },
+        "Conditions":{
+          "shape":"ProxyRuleConditionList",
+          "documentation":"<p>Match criteria that specify what traffic attributes to examine. Conditions include operators (StringEquals, StringLike) and values to match against. </p>"
+        }
+      },
+      "documentation":"<p>Individual rules that define match conditions and actions for application-layer traffic. Rules specify what to inspect (domains, headers, methods) and what action to take (allow, deny, alert). </p>"
+    },
+    "ProxyRuleCondition":{
+      "type":"structure",
+      "members":{
+        "ConditionOperator":{
+          "shape":"ConditionOperator",
+          "documentation":"<p>Defines how to perform a match.</p>"
+        },
+        "ConditionKey":{
+          "shape":"ConditionKey",
+          "documentation":"<p>Defines what is to be matched.</p>"
+        },
+        "ConditionValues":{
+          "shape":"ProxyConditionValueList",
+          "documentation":"<p>Specifes the exact value that needs to be matched against.</p>"
+        }
+      },
+      "documentation":"<p>Match criteria that specify what traffic attributes to examine.</p>"
+    },
+    "ProxyRuleConditionList":{
+      "type":"list",
+      "member":{"shape":"ProxyRuleCondition"}
+    },
+    "ProxyRuleGroup":{
+      "type":"structure",
+      "members":{
+        "ProxyRuleGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule group. You can't change the name of a proxy rule group after you create it.</p>"
+        },
+        "ProxyRuleGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy rule group.</p>"
+        },
+        "CreateTime":{
+          "shape":"CreateTime",
+          "documentation":"<p>Time the Proxy Rule Group was created. </p>"
+        },
+        "DeleteTime":{
+          "shape":"DeleteTime",
+          "documentation":"<p>Time the Proxy Rule Group was deleted. </p>"
+        },
+        "Rules":{
+          "shape":"ProxyRulesByRequestPhase",
+          "documentation":"<p>Individual rules that define match conditions and actions for application-layer traffic. Rules specify what to inspect (domains, headers, methods) and what action to take (allow, deny, alert). </p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the proxy rule group. </p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The key:value pairs to associate with the resource.</p>"
+        }
+      },
+      "documentation":"<p>Collections of related proxy filtering rules. Rule groups help you manage and reuse sets of rules across multiple proxy configurations. </p>"
+    },
+    "ProxyRuleGroupAttachment":{
+      "type":"structure",
+      "members":{
+        "ProxyRuleGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule group. You can't change the name of a proxy rule group after you create it.</p>"
+        },
+        "InsertPosition":{
+          "shape":"InsertPosition",
+          "documentation":"<p>Where to insert a proxy rule group in a proxy configuration. </p>"
+        }
+      },
+      "documentation":"<p>The proxy rule group(s) to attach to the proxy configuration</p>"
+    },
+    "ProxyRuleGroupAttachmentList":{
+      "type":"list",
+      "member":{"shape":"ProxyRuleGroupAttachment"}
+    },
+    "ProxyRuleGroupMetadata":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule group. You can't change the name of a proxy rule group after you create it.</p>"
+        },
+        "Arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy rule group.</p>"
+        }
+      },
+      "documentation":"<p>High-level information about a proxy rule group, returned by operations like create and describe. You can use the information provided in the metadata to retrieve and manage a proxy rule group. You can retrieve all objects for a proxy rule group by calling <a>DescribeProxyRuleGroup</a>. </p>"
+    },
+    "ProxyRuleGroupPriority":{
+      "type":"structure",
+      "members":{
+        "ProxyRuleGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule group. You can't change the name of a proxy rule group after you create it.</p>"
+        },
+        "NewPosition":{
+          "shape":"InsertPosition",
+          "documentation":"<p>Where to move a proxy rule group in a proxy configuration. </p>"
+        }
+      },
+      "documentation":"<p>Proxy rule group name and new desired position. </p>"
+    },
+    "ProxyRuleGroupPriorityList":{
+      "type":"list",
+      "member":{"shape":"ProxyRuleGroupPriority"}
+    },
+    "ProxyRuleGroupPriorityResult":{
+      "type":"structure",
+      "members":{
+        "ProxyRuleGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule group. You can't change the name of a proxy rule group after you create it.</p>"
+        },
+        "Priority":{
+          "shape":"ProxyRuleGroupPriorityResultPriority",
+          "documentation":"<p>Priority of the proxy rule group in the proxy configuration. </p>"
+        }
+      },
+      "documentation":"<p>Proxy rule group along with its priority. </p>"
+    },
+    "ProxyRuleGroupPriorityResultList":{
+      "type":"list",
+      "member":{"shape":"ProxyRuleGroupPriorityResult"}
+    },
+    "ProxyRuleGroupPriorityResultPriority":{"type":"integer"},
+    "ProxyRuleGroups":{
+      "type":"list",
+      "member":{"shape":"ProxyRuleGroupMetadata"}
+    },
+    "ProxyRuleList":{
+      "type":"list",
+      "member":{"shape":"ProxyRule"}
+    },
+    "ProxyRulePhaseAction":{
+      "type":"string",
+      "enum":[
+        "ALLOW",
+        "DENY",
+        "ALERT"
+      ]
+    },
+    "ProxyRulePriority":{
+      "type":"structure",
+      "members":{
+        "ProxyRuleName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule. You can't change the name of a proxy rule after you create it.</p>"
+        },
+        "NewPosition":{
+          "shape":"InsertPosition",
+          "documentation":"<p>Where to move a proxy rule in a proxy rule group. </p>"
+        }
+      },
+      "documentation":"<p>Proxy rule name and new desired position. </p>"
+    },
+    "ProxyRulePriorityList":{
+      "type":"list",
+      "member":{"shape":"ProxyRulePriority"}
+    },
+    "ProxyRulesByRequestPhase":{
+      "type":"structure",
+      "members":{
+        "PreDNS":{
+          "shape":"ProxyRuleList",
+          "documentation":"<p>Before domain resolution. </p>"
+        },
+        "PreREQUEST":{
+          "shape":"ProxyRuleList",
+          "documentation":"<p>After DNS, before request.</p>"
+        },
+        "PostRESPONSE":{
+          "shape":"ProxyRuleList",
+          "documentation":"<p>After receiving response.</p>"
+        }
+      },
+      "documentation":"<p>Evaluation points in the traffic flow where rules are applied. There are three phases in a traffic where the rule match is applied. </p>"
+    },
+    "ProxyState":{
+      "type":"string",
+      "enum":[
+        "ATTACHING",
+        "ATTACHED",
+        "DETACHING",
+        "DETACHED",
+        "ATTACH_FAILED",
+        "DETACH_FAILED"
+      ]
     },
     "PublishMetricAction":{
       "type":"structure",
@@ -3767,6 +5279,10 @@
       "min":1,
       "pattern":"^arn:aws.*"
     },
+    "ResourceArnList":{
+      "type":"list",
+      "member":{"shape":"ResourceArn"}
+    },
     "ResourceId":{
       "type":"string",
       "max":36,
@@ -3785,7 +5301,8 @@
       "enum":[
         "AWS_MANAGED_THREAT_SIGNATURES",
         "AWS_MANAGED_DOMAIN_LISTS",
-        "ACTIVE_THREAT_DEFENSE"
+        "ACTIVE_THREAT_DEFENSE",
+        "PARTNER_MANAGED"
       ]
     },
     "ResourceName":{
@@ -3793,6 +5310,10 @@
       "max":128,
       "min":1,
       "pattern":"^[a-zA-Z0-9-]+$"
+    },
+    "ResourceNameList":{
+      "type":"list",
+      "member":{"shape":"ResourceName"}
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -3878,9 +5399,21 @@
         "Arn":{
           "shape":"ResourceArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the rule group.</p>"
+        },
+        "VendorName":{
+          "shape":"VendorName",
+          "documentation":"<p>The name of the Amazon Web Services Marketplace seller that provides this rule group.</p>"
         }
       },
       "documentation":"<p>High-level information about a rule group, returned by <a>ListRuleGroups</a>. You can use the information provided in the metadata to retrieve and manage a rule group.</p>"
+    },
+    "RuleGroupRequestPhase":{
+      "type":"string",
+      "enum":[
+        "PRE_DNS",
+        "PRE_REQ",
+        "POST_RES"
+      ]
     },
     "RuleGroupResponse":{
       "type":"structure",
@@ -4560,6 +6093,13 @@
       "type":"list",
       "member":{"shape":"SubnetMapping"}
     },
+    "SubscriptionStatus":{
+      "type":"string",
+      "enum":[
+        "NOT_SUBSCRIBED",
+        "SUBSCRIBED"
+      ]
+    },
     "Summary":{
       "type":"structure",
       "members":{
@@ -4842,6 +6382,41 @@
         }
       },
       "documentation":"<p>Contains metadata about an Certificate Manager certificate.</p>"
+    },
+    "TlsInterceptMode":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "TlsInterceptProperties":{
+      "type":"structure",
+      "members":{
+        "PcaArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>Private Certificate Authority (PCA) used to issue private TLS certificates so that the proxy can present PCA-signed certificates which applications trust through the same root, establishing a secure and consistent trust model for encrypted communication.</p>"
+        },
+        "TlsInterceptMode":{
+          "shape":"TlsInterceptMode",
+          "documentation":"<p>Specifies whether to enable or disable TLS Intercept Mode. </p>"
+        }
+      },
+      "documentation":"<p>TLS decryption on traffic to filter on attributes in the HTTP header. </p>"
+    },
+    "TlsInterceptPropertiesRequest":{
+      "type":"structure",
+      "members":{
+        "PcaArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>Private Certificate Authority (PCA) used to issue private TLS certificates so that the proxy can present PCA-signed certificates which applications trust through the same root, establishing a secure and consistent trust model for encrypted communication.</p>"
+        },
+        "TlsInterceptMode":{
+          "shape":"TlsInterceptMode",
+          "documentation":"<p>Specifies whether to enable or disable TLS Intercept Mode. </p>"
+        }
+      },
+      "documentation":"<p>This data type is used specifically for the <a>CreateProxy</a> and <a>UpdateProxy</a> APIs.</p> <p>TLS decryption on traffic to filter on attributes in the HTTP header. </p>"
     },
     "TransitGatewayAttachmentId":{
       "type":"string",
@@ -5269,6 +6844,245 @@
         }
       }
     },
+    "UpdateProxyConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "DefaultRulePhaseActions",
+        "UpdateToken"
+      ],
+      "members":{
+        "ProxyConfigurationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy configuration. You can't change the name of a proxy configuration after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ProxyConfigurationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy configuration.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "DefaultRulePhaseActions":{
+          "shape":"ProxyConfigDefaultRulePhaseActionsRequest",
+          "documentation":"<p>Evaluation points in the traffic flow where rules are applied. There are three phases in a traffic where the rule match is applied. </p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy configuration. The token marks the state of the proxy configuration resource at the time of the request. </p> <p>To make changes to the proxy configuration, you provide the token in your request. Network Firewall uses the token to ensure that the proxy configuration hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy configuration again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
+    "UpdateProxyConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "ProxyConfiguration":{
+          "shape":"ProxyConfiguration",
+          "documentation":"<p>The updated proxy configuration resource that reflects the updates from the request.</p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy configuration. The token marks the state of the proxy configuration resource at the time of the request. </p> <p>To make changes to the proxy configuration, you provide the token in your request. Network Firewall uses the token to ensure that the proxy configuration hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy configuration again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
+    "UpdateProxyRequest":{
+      "type":"structure",
+      "required":[
+        "NatGatewayId",
+        "UpdateToken"
+      ],
+      "members":{
+        "NatGatewayId":{
+          "shape":"NatGatewayId",
+          "documentation":"<p>The NAT Gateway the proxy is attached to. </p>"
+        },
+        "ProxyName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy. You can't change the name of a proxy after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ProxyArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ListenerPropertiesToAdd":{
+          "shape":"ListenerPropertiesRequest",
+          "documentation":"<p>Listener properties for HTTP and HTTPS traffic to add. </p>"
+        },
+        "ListenerPropertiesToRemove":{
+          "shape":"ListenerPropertiesRequest",
+          "documentation":"<p>Listener properties for HTTP and HTTPS traffic to remove. </p>"
+        },
+        "TlsInterceptProperties":{
+          "shape":"TlsInterceptPropertiesRequest",
+          "documentation":"<p>TLS decryption on traffic to filter on attributes in the HTTP header. </p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy. The token marks the state of the proxy resource at the time of the request. </p> <p>To make changes to the proxy, you provide the token in your request. Network Firewall uses the token to ensure that the proxy hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
+    "UpdateProxyResponse":{
+      "type":"structure",
+      "members":{
+        "Proxy":{
+          "shape":"Proxy",
+          "documentation":"<p>The updated proxy resource that reflects the updates from the request.</p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy. The token marks the state of the proxy resource at the time of the request. </p> <p>To make changes to the proxy, you provide the token in your request. Network Firewall uses the token to ensure that the proxy hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
+    "UpdateProxyRuleGroupPrioritiesRequest":{
+      "type":"structure",
+      "required":[
+        "RuleGroups",
+        "UpdateToken"
+      ],
+      "members":{
+        "ProxyConfigurationName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy configuration. You can't change the name of a proxy configuration after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ProxyConfigurationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy configuration.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "RuleGroups":{
+          "shape":"ProxyRuleGroupPriorityList",
+          "documentation":"<p>proxy rule group resources to update to new positions. </p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy configuration. The token marks the state of the proxy configuration resource at the time of the request. </p> <p>To make changes to the proxy configuration, you provide the token in your request. Network Firewall uses the token to ensure that the proxy configuration hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy configuration again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
+    "UpdateProxyRuleGroupPrioritiesResponse":{
+      "type":"structure",
+      "members":{
+        "ProxyRuleGroups":{
+          "shape":"ProxyRuleGroupPriorityResultList",
+          "documentation":"<p>The updated proxy rule group hierarchy that reflects the updates from the request.</p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy configuration. The token marks the state of the proxy configuration resource at the time of the request. </p> <p>To make changes to the proxy configuration, you provide the token in your request. Network Firewall uses the token to ensure that the proxy configuration hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy configuration again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
+    "UpdateProxyRulePrioritiesRequest":{
+      "type":"structure",
+      "required":[
+        "RuleGroupRequestPhase",
+        "Rules",
+        "UpdateToken"
+      ],
+      "members":{
+        "ProxyRuleGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule group. You can't change the name of a proxy rule group after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ProxyRuleGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy rule group.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "RuleGroupRequestPhase":{
+          "shape":"RuleGroupRequestPhase",
+          "documentation":"<p>Evaluation points in the traffic flow where rules are applied. There are three phases in a traffic where the rule match is applied. </p>"
+        },
+        "Rules":{
+          "shape":"ProxyRulePriorityList",
+          "documentation":"<p>proxy rule resources to update to new positions. </p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy rule group. The token marks the state of the proxy rule group resource at the time of the request. </p> <p>To make changes to the proxy rule group, you provide the token in your request. Network Firewall uses the token to ensure that the proxy rule group hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy rule group again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
+    "UpdateProxyRulePrioritiesResponse":{
+      "type":"structure",
+      "members":{
+        "ProxyRuleGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule group. You can't change the name of a proxy rule group after you create it.</p>"
+        },
+        "ProxyRuleGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy rule group.</p>"
+        },
+        "RuleGroupRequestPhase":{
+          "shape":"RuleGroupRequestPhase",
+          "documentation":"<p>Evaluation points in the traffic flow where rules are applied. There are three phases in a traffic where the rule match is applied. </p>"
+        },
+        "Rules":{
+          "shape":"ProxyRulePriorityList",
+          "documentation":"<p>The updated proxy rule hierarchy that reflects the updates from the request.</p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy rule group. The token marks the state of the proxy rule group resource at the time of the request. </p> <p>To make changes to the proxy rule group, you provide the token in your request. Network Firewall uses the token to ensure that the proxy rule group hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy rule group again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
+    "UpdateProxyRuleRequest":{
+      "type":"structure",
+      "required":[
+        "ProxyRuleName",
+        "UpdateToken"
+      ],
+      "members":{
+        "ProxyRuleGroupName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule group. You can't change the name of a proxy rule group after you create it.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ProxyRuleGroupArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a proxy rule group.</p> <p>You must specify the ARN or the name, and you can specify both. </p>"
+        },
+        "ProxyRuleName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the proxy rule. You can't change the name of a proxy rule after you create it.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the proxy rule. </p>"
+        },
+        "Action":{
+          "shape":"ProxyRulePhaseAction",
+          "documentation":"<p>Depending on the match action, the proxy either stops the evaluation (if the action is terminal - allow or deny), or continues it (if the action is alert) until it matches a rule with a terminal action. </p>"
+        },
+        "AddConditions":{
+          "shape":"ProxyRuleConditionList",
+          "documentation":"<p>Proxy rule conditions to add. Match criteria that specify what traffic attributes to examine. Conditions include operators (StringEquals, StringLike) and values to match against. </p>"
+        },
+        "RemoveConditions":{
+          "shape":"ProxyRuleConditionList",
+          "documentation":"<p>Proxy rule conditions to remove. Match criteria that specify what traffic attributes to examine. Conditions include operators (StringEquals, StringLike) and values to match against. </p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy rule. The token marks the state of the proxy rule resource at the time of the request. </p> <p>To make changes to the proxy rule, you provide the token in your request. Network Firewall uses the token to ensure that the proxy rule hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy rule again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
+    "UpdateProxyRuleResponse":{
+      "type":"structure",
+      "members":{
+        "ProxyRule":{
+          "shape":"ProxyRule",
+          "documentation":"<p>The updated proxy rule resource that reflects the updates from the request.</p>"
+        },
+        "RemovedConditions":{
+          "shape":"ProxyRuleConditionList",
+          "documentation":"<p>Proxy rule conditions removed from the rule. </p>"
+        },
+        "UpdateToken":{
+          "shape":"UpdateToken",
+          "documentation":"<p>A token used for optimistic locking. Network Firewall returns a token to your requests that access the proxy rule. The token marks the state of the proxy rule resource at the time of the request. </p> <p>To make changes to the proxy rule, you provide the token in your request. Network Firewall uses the token to ensure that the proxy rule hasn't changed since you last retrieved it. If it has changed, the operation fails with an <code>InvalidTokenException</code>. If this happens, retrieve the proxy rule again to get a current copy of it with a current token. Reapply your changes as needed, then try the operation again using the new token. </p>"
+        }
+      }
+    },
     "UpdateRuleGroupRequest":{
       "type":"structure",
       "required":["UpdateToken"],
@@ -5433,6 +7247,7 @@
         }
       }
     },
+    "UpdateTime":{"type":"timestamp"},
     "UpdateToken":{
       "type":"string",
       "max":1024,
@@ -5448,6 +7263,7 @@
       "type":"list",
       "member":{"shape":"VariableDefinition"}
     },
+    "VendorName":{"type":"string"},
     "VpcEndpointAssociation":{
       "type":"structure",
       "required":[
@@ -5520,6 +7336,7 @@
       "min":5,
       "pattern":"^vpce-[a-zA-Z0-9]*$"
     },
+    "VpcEndpointServiceName":{"type":"string"},
     "VpcId":{
       "type":"string",
       "max":128,

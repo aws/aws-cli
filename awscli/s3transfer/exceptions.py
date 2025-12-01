@@ -27,6 +27,10 @@ class S3DownloadFailedError(Exception):
     pass
 
 
+class S3CopyFailedError(Exception):
+    pass
+
+
 class InvalidSubscriberMethodError(Exception):
     pass
 

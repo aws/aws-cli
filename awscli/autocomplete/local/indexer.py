@@ -25,7 +25,7 @@ class ModelIndexer:
         'ddb': 'High level DynamoDB commands',
     }
 
-    _NON_SERVICE_COMMANDS = ['configure', 'history', 'cli-dev']
+    _NON_SERVICE_COMMANDS = ['configure', 'history', 'cli-dev', 'login', 'logout']
 
     _CREATE_CMD_TABLE = """\
         CREATE TABLE IF NOT EXISTS command_table (
@@ -130,7 +130,7 @@ class ModelIndexer:
                 command=name, parent=parent, arg_table=command.arg_table
             )
             self._generate_command_index(
-                command.subcommand_table, parent='%s.%s' % (parent, name)
+                command.subcommand_table, parent=f'{parent}.{name}'
             )
 
     def _generate_table_indexes(self):

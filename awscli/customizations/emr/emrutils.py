@@ -102,6 +102,8 @@ def build_step(
     args=None,
     main_class=None,
     properties=None,
+    log_uri=None,
+    encryption_key_arn=None,
 ):
     check_required_field(structure='HadoopJarStep', name='Jar', value=jar)
 
@@ -114,6 +116,17 @@ def build_step(
     apply_dict(jar_config, 'MainClass', main_class)
     apply_dict(jar_config, 'Properties', properties)
     step['HadoopJarStep'] = jar_config
+    step_monitoring_config = {}
+    s3_monitoring_configuration = {}
+    apply_dict(s3_monitoring_configuration, 'LogUri', log_uri)
+    apply_dict(
+        s3_monitoring_configuration, 'EncryptionKeyArn', encryption_key_arn
+    )
+    if s3_monitoring_configuration:
+        step_monitoring_config['S3MonitoringConfiguration'] = (
+            s3_monitoring_configuration
+        )
+        step['StepMonitoringConfiguration'] = step_monitoring_config
 
     return step
 

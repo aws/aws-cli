@@ -182,6 +182,25 @@
       ],
       "documentation":"<p>Creates a core network as part of your global network, and optionally, with a core network policy.</p>"
     },
+    "CreateCoreNetworkPrefixListAssociation":{
+      "name":"CreateCoreNetworkPrefixListAssociation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/prefix-list"
+      },
+      "input":{"shape":"CreateCoreNetworkPrefixListAssociationRequest"},
+      "output":{"shape":"CreateCoreNetworkPrefixListAssociationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates an association between a core network and a prefix list for routing control.</p>"
+    },
     "CreateDevice":{
       "name":"CreateDevice",
       "http":{
@@ -436,6 +455,25 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Deletes a policy version from a core network. You can't delete the current LIVE policy.</p>"
+    },
+    "DeleteCoreNetworkPrefixListAssociation":{
+      "name":"DeleteCoreNetworkPrefixListAssociation",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/prefix-list/{prefixListArn}/core-network/{coreNetworkId}"
+      },
+      "input":{"shape":"DeleteCoreNetworkPrefixListAssociationRequest"},
+      "output":{"shape":"DeleteCoreNetworkPrefixListAssociationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes an association between a core network and a prefix list.</p>"
     },
     "DeleteDevice":{
       "name":"DeleteDevice",
@@ -1129,6 +1167,23 @@
       ],
       "documentation":"<p>Returns information about a VPC attachment.</p>"
     },
+    "ListAttachmentRoutingPolicyAssociations":{
+      "name":"ListAttachmentRoutingPolicyAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/routing-policy-label/core-network/{coreNetworkId}"
+      },
+      "input":{"shape":"ListAttachmentRoutingPolicyAssociationsRequest"},
+      "output":{"shape":"ListAttachmentRoutingPolicyAssociationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the routing policy associations for attachments in a core network.</p>"
+    },
     "ListAttachments":{
       "name":"ListAttachments",
       "http":{
@@ -1177,6 +1232,40 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Returns a list of core network policy versions.</p>"
+    },
+    "ListCoreNetworkPrefixListAssociations":{
+      "name":"ListCoreNetworkPrefixListAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/prefix-list/core-network/{coreNetworkId}"
+      },
+      "input":{"shape":"ListCoreNetworkPrefixListAssociationsRequest"},
+      "output":{"shape":"ListCoreNetworkPrefixListAssociationsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the prefix list associations for a core network.</p>"
+    },
+    "ListCoreNetworkRoutingInformation":{
+      "name":"ListCoreNetworkRoutingInformation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/core-networks/{coreNetworkId}/core-network-routing-information"
+      },
+      "input":{"shape":"ListCoreNetworkRoutingInformationRequest"},
+      "output":{"shape":"ListCoreNetworkRoutingInformationResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists routing information for a core network, including routes and their attributes.</p>"
     },
     "ListCoreNetworks":{
       "name":"ListCoreNetworks",
@@ -1236,6 +1325,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists the tags for a specified resource.</p>"
+    },
+    "PutAttachmentRoutingPolicyLabel":{
+      "name":"PutAttachmentRoutingPolicyLabel",
+      "http":{
+        "method":"POST",
+        "requestUri":"/routing-policy-label"
+      },
+      "input":{"shape":"PutAttachmentRoutingPolicyLabelRequest"},
+      "output":{"shape":"PutAttachmentRoutingPolicyLabelResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Applies a routing policy label to an attachment for traffic routing decisions.</p>"
     },
     "PutCoreNetworkPolicy":{
       "name":"PutCoreNetworkPolicy",
@@ -1309,6 +1417,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Rejects a core network attachment request.</p>"
+    },
+    "RemoveAttachmentRoutingPolicyLabel":{
+      "name":"RemoveAttachmentRoutingPolicyLabel",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/routing-policy-label/core-network/{coreNetworkId}/attachment/{attachmentId}"
+      },
+      "input":{"shape":"RemoveAttachmentRoutingPolicyLabelRequest"},
+      "output":{"shape":"RemoveAttachmentRoutingPolicyLabelResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Removes a routing policy label from an attachment.</p>"
     },
     "RestoreCoreNetworkPolicyVersion":{
       "name":"RestoreCoreNetworkPolicyVersion",
@@ -1902,7 +2029,9 @@
         "MAXIMUM_NO_ENCAP_LIMIT_EXCEEDED",
         "DIRECT_CONNECT_GATEWAY_NOT_FOUND",
         "DIRECT_CONNECT_GATEWAY_EXISTING_ATTACHMENTS",
-        "DIRECT_CONNECT_GATEWAY_NO_PRIVATE_VIF"
+        "DIRECT_CONNECT_GATEWAY_NO_PRIVATE_VIF",
+        "VPN_EXISTING_ASSOCIATIONS",
+        "VPC_UNSUPPORTED_FEATURES"
       ]
     },
     "AttachmentErrorList":{
@@ -1920,6 +2049,32 @@
     "AttachmentList":{
       "type":"list",
       "member":{"shape":"Attachment"}
+    },
+    "AttachmentRoutingPolicyAssociationSummary":{
+      "type":"structure",
+      "members":{
+        "AttachmentId":{
+          "shape":"AttachmentId",
+          "documentation":"<p>The ID of the attachment associated with the routing policy.</p>"
+        },
+        "PendingRoutingPolicies":{
+          "shape":"ConstrainedStringList",
+          "documentation":"<p>The list of routing policies that are pending association with the attachment.</p>"
+        },
+        "AssociatedRoutingPolicies":{
+          "shape":"ConstrainedStringList",
+          "documentation":"<p>The list of routing policies currently associated with the attachment.</p>"
+        },
+        "RoutingPolicyLabel":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The routing policy label associated with the attachment.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about routing policy associations for an attachment.</p>"
+    },
+    "AttachmentRoutingPolicyAssociationsList":{
+      "type":"list",
+      "member":{"shape":"AttachmentRoutingPolicyAssociationSummary"}
     },
     "AttachmentState":{
       "type":"string",
@@ -2007,6 +2162,10 @@
         "ATTACHMENT_MAPPING",
         "ATTACHMENT_ROUTE_PROPAGATION",
         "ATTACHMENT_ROUTE_STATIC",
+        "ROUTING_POLICY",
+        "ROUTING_POLICY_SEGMENT_ASSOCIATION",
+        "ROUTING_POLICY_EDGE_ASSOCIATION",
+        "ROUTING_POLICY_ATTACHMENT_ASSOCIATION",
         "CORE_NETWORK_CONFIGURATION",
         "SEGMENTS_CONFIGURATION",
         "SEGMENT_ACTIONS_CONFIGURATION",
@@ -2550,6 +2709,16 @@
           "shape":"ExternalRegionCode",
           "documentation":"<p>The edge location for the core network change event.</p>"
         },
+        "PeerEdgeLocation":{
+          "shape":"ExternalRegionCode",
+          "documentation":"<p>The edge location of the peer in a core network change event.</p>",
+          "box":true
+        },
+        "RoutingPolicyDirection":{
+          "shape":"RoutingPolicyDirection",
+          "documentation":"<p>The routing policy direction (inbound/outbound) in a core network change event.</p>",
+          "box":true
+        },
         "SegmentName":{
           "shape":"ConstrainedString",
           "documentation":"<p>The segment name if the change event is associated with a segment.</p>"
@@ -2565,6 +2734,11 @@
         "Cidr":{
           "shape":"ConstrainedString",
           "documentation":"<p>For a <code>STATIC_ROUTE</code> event, this is the IP address.</p>"
+        },
+        "RoutingPolicyAssociationDetails":{
+          "shape":"RoutingPolicyAssociationDetailsList",
+          "documentation":"<p>The names of the routing policies and other association details in the core network change values.</p>",
+          "box":true
         }
       },
       "documentation":"<p>Describes a core network change event.</p>"
@@ -2623,6 +2797,31 @@
         "SecurityGroupReferencingSupport":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether security group referencing is enabled for the core network.</p>"
+        },
+        "RoutingPolicyDirection":{
+          "shape":"RoutingPolicyDirection",
+          "documentation":"<p>The routing policy direction (inbound/outbound) in a core network change event.</p>",
+          "box":true
+        },
+        "RoutingPolicy":{
+          "shape":"CoreNetworkPolicyDocument",
+          "documentation":"<p>The routing policy configuration in the core network change values.</p>",
+          "box":true
+        },
+        "PeerEdgeLocations":{
+          "shape":"ExternalRegionCodeList",
+          "documentation":"<p>The edge locations of peers in the core network change values.</p>",
+          "box":true
+        },
+        "AttachmentId":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The attachment identifier in the core network change values.</p>",
+          "box":true
+        },
+        "RoutingPolicyAssociationDetails":{
+          "shape":"RoutingPolicyAssociationDetailsList",
+          "documentation":"<p>The names of the routing policies and other association details in the core network change values.</p>",
+          "box":true
         }
       },
       "documentation":"<p>Describes a core network change.</p>"
@@ -2821,6 +3020,40 @@
       "type":"list",
       "member":{"shape":"CoreNetworkPolicyVersion"}
     },
+    "CoreNetworkRoutingInformation":{
+      "type":"structure",
+      "members":{
+        "Prefix":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The IP prefix for the route.</p>"
+        },
+        "NextHop":{
+          "shape":"RoutingInformationNextHop",
+          "documentation":"<p>The next hop information for the route.</p>"
+        },
+        "LocalPreference":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The BGP local preference value for the route.</p>"
+        },
+        "Med":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The BGP Multi-Exit Discriminator (MED) value for the route.</p>"
+        },
+        "AsPath":{
+          "shape":"ConstrainedStringList",
+          "documentation":"<p>The BGP AS path for the route.</p>"
+        },
+        "Communities":{
+          "shape":"ConstrainedStringList",
+          "documentation":"<p>The BGP community values for the route.</p>"
+        }
+      },
+      "documentation":"<p>Routing information for a core network, including route details and BGP attributes.</p>"
+    },
+    "CoreNetworkRoutingInformationList":{
+      "type":"list",
+      "member":{"shape":"CoreNetworkRoutingInformation"}
+    },
     "CoreNetworkSegment":{
       "type":"structure",
       "members":{
@@ -2928,6 +3161,10 @@
         "TransportAttachmentId":{
           "shape":"AttachmentId",
           "documentation":"<p>The ID of the attachment between the two connections.</p>"
+        },
+        "RoutingPolicyLabel":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The routing policy label to apply to the Connect attachment for traffic routing decisions.</p>"
         },
         "Options":{
           "shape":"ConnectAttachmentOptions",
@@ -3053,6 +3290,50 @@
         }
       }
     },
+    "CreateCoreNetworkPrefixListAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "CoreNetworkId",
+        "PrefixListArn",
+        "PrefixListAlias"
+      ],
+      "members":{
+        "CoreNetworkId":{
+          "shape":"CoreNetworkId",
+          "documentation":"<p>The ID of the core network to associate with the prefix list.</p>"
+        },
+        "PrefixListArn":{
+          "shape":"PrefixListArn",
+          "documentation":"<p>The ARN of the prefix list to associate with the core network.</p>"
+        },
+        "PrefixListAlias":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>An optional alias for the prefix list association.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateCoreNetworkPrefixListAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "CoreNetworkId":{
+          "shape":"CoreNetworkId",
+          "documentation":"<p>The ID of the core network associated with the prefix list.</p>"
+        },
+        "PrefixListArn":{
+          "shape":"PrefixListArn",
+          "documentation":"<p>The ARN of the prefix list that was associated with the core network.</p>"
+        },
+        "PrefixListAlias":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The alias of the prefix list association, if provided.</p>"
+        }
+      }
+    },
     "CreateCoreNetworkRequest":{
       "type":"structure",
       "required":["GlobalNetworkId"],
@@ -3161,6 +3442,10 @@
         "DirectConnectGatewayArn":{
           "shape":"DirectConnectGatewayArn",
           "documentation":"<p>The ARN of the Direct Connect gateway attachment.</p>"
+        },
+        "RoutingPolicyLabel":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The routing policy label to apply to the Direct Connect Gateway attachment for traffic routing decisions.</p>"
         },
         "EdgeLocations":{
           "shape":"ExternalRegionCodeList",
@@ -3305,6 +3590,10 @@
           "shape":"VpnConnectionArn",
           "documentation":"<p>The ARN identifying the VPN attachment.</p>"
         },
+        "RoutingPolicyLabel":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The routing policy label to apply to the Site-to-Site VPN attachment for traffic routing decisions.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The tags associated with the request.</p>"
@@ -3375,6 +3664,10 @@
           "shape":"TransitGatewayRouteTableArn",
           "documentation":"<p>The ARN of the transit gateway route table for the attachment request. For example, <code>\"TransitGatewayRouteTableArn\": \"arn:aws:ec2:us-west-2:123456789012:transit-gateway-route-table/tgw-rtb-9876543210123456\"</code>.</p>"
         },
+        "RoutingPolicyLabel":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The routing policy label to apply to the Transit Gateway route table attachment for traffic routing decisions.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>The list of key-value tags associated with the request.</p>"
@@ -3418,6 +3711,10 @@
         "Options":{
           "shape":"VpcOptions",
           "documentation":"<p>Options for the VPC attachment.</p>"
+        },
+        "RoutingPolicyLabel":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The routing policy label to apply to the VPC attachment for traffic routing decisions.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -3588,6 +3885,40 @@
         "CoreNetworkPolicy":{
           "shape":"CoreNetworkPolicy",
           "documentation":"<p>Returns information about the deleted policy version. </p>"
+        }
+      }
+    },
+    "DeleteCoreNetworkPrefixListAssociationRequest":{
+      "type":"structure",
+      "required":[
+        "CoreNetworkId",
+        "PrefixListArn"
+      ],
+      "members":{
+        "CoreNetworkId":{
+          "shape":"CoreNetworkId",
+          "documentation":"<p>The ID of the core network from which to delete the prefix list association.</p>",
+          "location":"uri",
+          "locationName":"coreNetworkId"
+        },
+        "PrefixListArn":{
+          "shape":"PrefixListArn",
+          "documentation":"<p>The ARN of the prefix list to disassociate from the core network.</p>",
+          "location":"uri",
+          "locationName":"prefixListArn"
+        }
+      }
+    },
+    "DeleteCoreNetworkPrefixListAssociationResponse":{
+      "type":"structure",
+      "members":{
+        "CoreNetworkId":{
+          "shape":"CoreNetworkId",
+          "documentation":"<p>The ID of the core network from which the prefix list association was deleted.</p>"
+        },
+        "PrefixListArn":{
+          "shape":"PrefixListArn",
+          "documentation":"<p>The ARN of the prefix list that was disassociated from the core network.</p>"
         }
       }
     },
@@ -5447,6 +5778,49 @@
         "UPDATING"
       ]
     },
+    "ListAttachmentRoutingPolicyAssociationsRequest":{
+      "type":"structure",
+      "required":["CoreNetworkId"],
+      "members":{
+        "CoreNetworkId":{
+          "shape":"CoreNetworkId",
+          "documentation":"<p>The ID of the core network to list attachment routing policy associations for.</p>",
+          "location":"uri",
+          "locationName":"coreNetworkId"
+        },
+        "AttachmentId":{
+          "shape":"AttachmentId",
+          "documentation":"<p>The ID of a specific attachment to filter the routing policy associations.</p>",
+          "location":"querystring",
+          "locationName":"attachmentId"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListAttachmentRoutingPolicyAssociationsResponse":{
+      "type":"structure",
+      "members":{
+        "AttachmentRoutingPolicyAssociations":{
+          "shape":"AttachmentRoutingPolicyAssociationsList",
+          "documentation":"<p>The list of attachment routing policy associations.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
     "ListAttachmentsRequest":{
       "type":"structure",
       "members":{
@@ -5573,6 +5947,118 @@
         "CoreNetworkPolicyVersions":{
           "shape":"CoreNetworkPolicyVersionList",
           "documentation":"<p>Describes core network policy versions.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListCoreNetworkPrefixListAssociationsRequest":{
+      "type":"structure",
+      "required":["CoreNetworkId"],
+      "members":{
+        "CoreNetworkId":{
+          "shape":"CoreNetworkId",
+          "documentation":"<p>The ID of the core network to list prefix list associations for.</p>",
+          "location":"uri",
+          "locationName":"coreNetworkId"
+        },
+        "PrefixListArn":{
+          "shape":"PrefixListArn",
+          "documentation":"<p>The ARN of a specific prefix list to filter the associations.</p>",
+          "location":"querystring",
+          "locationName":"prefixListArn"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListCoreNetworkPrefixListAssociationsResponse":{
+      "type":"structure",
+      "members":{
+        "PrefixListAssociations":{
+          "shape":"PrefixListAssociationList",
+          "documentation":"<p>The list of prefix list associations for the core network.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListCoreNetworkRoutingInformationRequest":{
+      "type":"structure",
+      "required":[
+        "CoreNetworkId",
+        "SegmentName",
+        "EdgeLocation"
+      ],
+      "members":{
+        "CoreNetworkId":{
+          "shape":"CoreNetworkId",
+          "documentation":"<p>The ID of the core network to retrieve routing information for.</p>",
+          "location":"uri",
+          "locationName":"coreNetworkId"
+        },
+        "SegmentName":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The name of the segment to filter routing information by.</p>"
+        },
+        "EdgeLocation":{
+          "shape":"ExternalRegionCode",
+          "documentation":"<p>The edge location to filter routing information by.</p>"
+        },
+        "NextHopFilters":{
+          "shape":"FilterMap",
+          "documentation":"<p>Filters to apply based on next hop information.</p>"
+        },
+        "LocalPreferenceMatches":{
+          "shape":"ConstrainedStringList",
+          "documentation":"<p>Local preference values to match when filtering routing information.</p>"
+        },
+        "ExactAsPathMatches":{
+          "shape":"ConstrainedStringList",
+          "documentation":"<p>Exact AS path values to match when filtering routing information.</p>"
+        },
+        "MedMatches":{
+          "shape":"ConstrainedStringList",
+          "documentation":"<p>Multi-Exit Discriminator (MED) values to match when filtering routing information.</p>"
+        },
+        "CommunityMatches":{
+          "shape":"ConstrainedStringList",
+          "documentation":"<p>BGP community values to match when filtering routing information.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of routing information entries to return in a single page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListCoreNetworkRoutingInformationResponse":{
+      "type":"structure",
+      "members":{
+        "CoreNetworkRoutingInformation":{
+          "shape":"CoreNetworkRoutingInformationList",
+          "documentation":"<p>The list of routing information for the core network.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -6166,6 +6652,34 @@
       },
       "documentation":"<p>Describes additional information about missing permissions. </p>"
     },
+    "PrefixListArn":{
+      "type":"string",
+      "max":500,
+      "min":0,
+      "pattern":"[\\s\\S]*"
+    },
+    "PrefixListAssociation":{
+      "type":"structure",
+      "members":{
+        "CoreNetworkId":{
+          "shape":"CoreNetworkId",
+          "documentation":"<p>The core network id in the association.</p>"
+        },
+        "PrefixListArn":{
+          "shape":"PrefixListArn",
+          "documentation":"<p>The ARN of the prefix list in the association.</p>"
+        },
+        "PrefixListAlias":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The alias of the prefix list in the association.</p>"
+        }
+      },
+      "documentation":"<p>Information about a prefix list association with a core network.</p>"
+    },
+    "PrefixListAssociationList":{
+      "type":"list",
+      "member":{"shape":"PrefixListAssociation"}
+    },
     "ProposedNetworkFunctionGroupChange":{
       "type":"structure",
       "members":{
@@ -6201,6 +6715,50 @@
         }
       },
       "documentation":"<p>Describes a proposed segment change. In some cases, the segment change must first be evaluated and accepted. </p>"
+    },
+    "PutAttachmentRoutingPolicyLabelRequest":{
+      "type":"structure",
+      "required":[
+        "CoreNetworkId",
+        "AttachmentId",
+        "RoutingPolicyLabel"
+      ],
+      "members":{
+        "CoreNetworkId":{
+          "shape":"CoreNetworkId",
+          "documentation":"<p>The ID of the core network containing the attachment.</p>"
+        },
+        "AttachmentId":{
+          "shape":"AttachmentId",
+          "documentation":"<p>The ID of the attachment to apply the routing policy label to.</p>"
+        },
+        "RoutingPolicyLabel":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The routing policy label to apply to the attachment.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "PutAttachmentRoutingPolicyLabelResponse":{
+      "type":"structure",
+      "members":{
+        "CoreNetworkId":{
+          "shape":"CoreNetworkId",
+          "documentation":"<p>The ID of the core network containing the attachment.</p>"
+        },
+        "AttachmentId":{
+          "shape":"AttachmentId",
+          "documentation":"<p>The ID of the attachment that received the routing policy label.</p>"
+        },
+        "RoutingPolicyLabel":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The routing policy label that was applied to the attachment.</p>"
+        }
+      }
     },
     "PutCoreNetworkPolicyRequest":{
       "type":"structure",
@@ -6351,6 +6909,44 @@
     "RelationshipList":{
       "type":"list",
       "member":{"shape":"Relationship"}
+    },
+    "RemoveAttachmentRoutingPolicyLabelRequest":{
+      "type":"structure",
+      "required":[
+        "CoreNetworkId",
+        "AttachmentId"
+      ],
+      "members":{
+        "CoreNetworkId":{
+          "shape":"CoreNetworkId",
+          "documentation":"<p>The ID of the core network containing the attachment.</p>",
+          "location":"uri",
+          "locationName":"coreNetworkId"
+        },
+        "AttachmentId":{
+          "shape":"AttachmentId",
+          "documentation":"<p>The ID of the attachment to remove the routing policy label from.</p>",
+          "location":"uri",
+          "locationName":"attachmentId"
+        }
+      }
+    },
+    "RemoveAttachmentRoutingPolicyLabelResponse":{
+      "type":"structure",
+      "members":{
+        "CoreNetworkId":{
+          "shape":"CoreNetworkId",
+          "documentation":"<p>The ID of the core network containing the attachment.</p>"
+        },
+        "AttachmentId":{
+          "shape":"AttachmentId",
+          "documentation":"<p>The ID of the attachment from which the routing policy label was removed.</p>"
+        },
+        "RoutingPolicyLabel":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The routing policy label that was removed from the attachment.</p>"
+        }
+      }
     },
     "ResourceArn":{
       "type":"string",
@@ -6613,6 +7209,62 @@
     "RouteTypeList":{
       "type":"list",
       "member":{"shape":"RouteType"}
+    },
+    "RoutingInformationNextHop":{
+      "type":"structure",
+      "members":{
+        "IpAddress":{
+          "shape":"IPAddress",
+          "documentation":"<p>The IP address of the next hop.</p>"
+        },
+        "CoreNetworkAttachmentId":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The ID of the core network attachment for the next hop.</p>"
+        },
+        "ResourceId":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The ID of the resource for the next hop.</p>"
+        },
+        "ResourceType":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The type of resource for the next hop.</p>"
+        },
+        "SegmentName":{
+          "shape":"ConstrainedString",
+          "documentation":"<p>The name of the segment for the next hop.</p>"
+        },
+        "EdgeLocation":{
+          "shape":"ExternalRegionCode",
+          "documentation":"<p>The edge location for the next hop.</p>"
+        }
+      },
+      "documentation":"<p>Information about the next hop for a route in the core network.</p>"
+    },
+    "RoutingPolicyAssociationDetail":{
+      "type":"structure",
+      "members":{
+        "RoutingPolicyNames":{
+          "shape":"ConstrainedStringList",
+          "documentation":"<p>The names of the routing policies in the association.</p>"
+        },
+        "SharedSegments":{
+          "shape":"ConstrainedStringList",
+          "documentation":"<p>The names of the segments that are shared with each other in the association.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Information about a routing policy association.</p>"
+    },
+    "RoutingPolicyAssociationDetailsList":{
+      "type":"list",
+      "member":{"shape":"RoutingPolicyAssociationDetail"}
+    },
+    "RoutingPolicyDirection":{
+      "type":"string",
+      "enum":[
+        "inbound",
+        "outbound"
+      ]
     },
     "SLRDeploymentStatus":{
       "type":"string",

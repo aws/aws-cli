@@ -663,6 +663,17 @@ STEPS_SCHEMA = {
                 "runs. You can use these properties to pass key value "
                 "pairs to your main function.",
             },
+            "LogUri": {
+                "type": "string",
+                "description": "The Amazon S3 destination URI for log publishing. If "
+                "not specified, the cluster logging location is used.",
+            },
+            "EncryptionKeyArn": {
+                "type": "string",
+                "description": "The KMS key ARN to encrypt the logs published to the "
+                "given Amazon S3 destination. If not specified, the "
+                "cluster KMS key is used.",
+            },
         },
     },
 }

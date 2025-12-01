@@ -29,7 +29,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns details about a specific control, most notably a list of Amazon Web Services Regions where this control is supported. Input a value for the <i>ControlArn</i> parameter, in ARN form. <code>GetControl</code> accepts <i>controltower</i> or <i>controlcatalog</i> control ARNs as input. Returns a <i>controlcatalog</i> ARN format.</p> <p>In the API response, controls that have the value <code>GLOBAL</code> in the <code>Scope</code> field do not show the <code>DeployableRegions</code> field, because it does not apply. Controls that have the value <code>REGIONAL</code> in the <code>Scope</code> field return a value for the <code>DeployableRegions</code> field, as shown in the example.</p>"
+      "documentation":"<p>Returns details about a specific control, most notably a list of Amazon Web Services Regions where this control is supported. Input a value for the <i>ControlArn</i> parameter, in ARN form. <code>GetControl</code> accepts <i>controltower</i> or <i>controlcatalog</i> control ARNs as input. Returns a <i>controlcatalog</i> ARN format.</p> <p>In the API response, controls that have the value <code>GLOBAL</code> in the <code>Scope</code> field do not show the <code>DeployableRegions</code> field, because it does not apply. Controls that have the value <code>REGIONAL</code> in the <code>Scope</code> field return a value for the <code>DeployableRegions</code> field, as shown in the example.</p>",
+      "readonly":true
     },
     "ListCommonControls":{
       "name":"ListCommonControls",
@@ -46,7 +47,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns a paginated list of common controls from the Amazon Web Services Control Catalog.</p> <p>You can apply an optional filter to see common controls that have a specific objective. If you don’t provide a filter, the operation returns all common controls. </p>"
+      "documentation":"<p>Returns a paginated list of common controls from the Amazon Web Services Control Catalog.</p> <p>You can apply an optional filter to see common controls that have a specific objective. If you don’t provide a filter, the operation returns all common controls. </p>",
+      "readonly":true
     },
     "ListControlMappings":{
       "name":"ListControlMappings",
@@ -63,7 +65,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns a paginated list of control mappings from the Control Catalog. Control mappings show relationships between controls and other entities, such as common controls or compliance frameworks.</p>"
+      "documentation":"<p>Returns a paginated list of control mappings from the Control Catalog. Control mappings show relationships between controls and other entities, such as common controls or compliance frameworks.</p>",
+      "readonly":true
     },
     "ListControls":{
       "name":"ListControls",
@@ -80,7 +83,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns a paginated list of all available controls in the Control Catalog library. Allows you to discover available controls. The list of controls is given as structures of type <i>controlSummary</i>. The ARN is returned in the global <i>controlcatalog</i> format, as shown in the examples.</p>"
+      "documentation":"<p>Returns a paginated list of all available controls in the Control Catalog library. Allows you to discover available controls. The list of controls is given as structures of type <i>controlSummary</i>. The ARN is returned in the global <i>controlcatalog</i> format, as shown in the examples.</p>",
+      "readonly":true
     },
     "ListDomains":{
       "name":"ListDomains",
@@ -97,7 +101,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns a paginated list of domains from the Control Catalog.</p>"
+      "documentation":"<p>Returns a paginated list of domains from the Control Catalog.</p>",
+      "readonly":true
     },
     "ListObjectives":{
       "name":"ListObjectives",
@@ -114,7 +119,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Returns a paginated list of objectives from the Control Catalog.</p> <p>You can apply an optional filter to see the objectives that belong to a specific domain. If you don’t provide a filter, the operation returns all objectives. </p>"
+      "documentation":"<p>Returns a paginated list of objectives from the Control Catalog.</p> <p>You can apply an optional filter to see the objectives that belong to a specific domain. If you don’t provide a filter, the operation returns all objectives. </p>",
+      "readonly":true
     }
   },
   "shapes":{
@@ -290,11 +296,11 @@
         },
         "MappingType":{
           "shape":"MappingType",
-          "documentation":"<p>The type of mapping relationship between the control and other entities. Indicates whether the mapping is to a framework or common control.</p>"
+          "documentation":"<p>The type of mapping relationship between the control and other entities.</p>"
         },
         "Mapping":{
           "shape":"Mapping",
-          "documentation":"<p>The details of the mapping relationship, containing either framework or common control information.</p>"
+          "documentation":"<p>The details of the mapping relationship, for example, containing framework, common control, or related control information.</p>"
         }
       },
       "documentation":"<p>A structure that contains information about a control mapping, including the control ARN, mapping type, and mapping details.</p>"
@@ -335,6 +341,14 @@
     "ControlParameters":{
       "type":"list",
       "member":{"shape":"ControlParameter"}
+    },
+    "ControlRelationType":{
+      "type":"string",
+      "enum":[
+        "COMPLEMENTARY",
+        "ALTERNATIVE",
+        "MUTUALLY_EXCLUSIVE"
+      ]
     },
     "ControlScope":{
       "type":"string",
@@ -823,6 +837,10 @@
         "CommonControl":{
           "shape":"CommonControlMappingDetails",
           "documentation":"<p>The common control mapping details when the mapping type relates to a common control.</p>"
+        },
+        "RelatedControl":{
+          "shape":"RelatedControlMappingDetails",
+          "documentation":"<p>Returns information about controls that are related to the specified control.</p>"
         }
       },
       "documentation":"<p>A structure that contains the details of a mapping relationship, which can be either to a framework or to a common control.</p>",
@@ -832,7 +850,8 @@
       "type":"string",
       "enum":[
         "FRAMEWORK",
-        "COMMON_CONTROL"
+        "COMMON_CONTROL",
+        "RELATED_CONTROL"
       ]
     },
     "MappingTypeFilterList":{
@@ -966,6 +985,21 @@
         }
       },
       "documentation":"<p>Returns information about the control, including the scope of the control, if enabled, and the Regions in which the control is available for deployment. For more information about scope, see <a href=\"https://docs.aws.amazon.com/whitepapers/latest/aws-fault-isolation-boundaries/global-services.html\">Global services</a>.</p> <p>If you are applying controls through an Amazon Web Services Control Tower landing zone environment, remember that the values returned in the <code>RegionConfiguration</code> API operation are not related to the governed Regions in your landing zone. For example, if you are governing Regions <code>A</code>,<code>B</code>,and <code>C</code> while the control is available in Regions <code>A</code>, <code>B</code>, C<code>,</code> and <code>D</code>, you'd see a response with <code>DeployableRegions</code> of <code>A</code>, <code>B</code>, <code>C</code>, and <code>D</code> for a control with <code>REGIONAL</code> scope, even though you may not intend to deploy the control in Region <code>D</code>, because you do not govern it through your landing zone.</p>"
+    },
+    "RelatedControlMappingDetails":{
+      "type":"structure",
+      "required":["RelationType"],
+      "members":{
+        "ControlArn":{
+          "shape":"ControlArn",
+          "documentation":"<p>The unique identifier of a control.</p>"
+        },
+        "RelationType":{
+          "shape":"ControlRelationType",
+          "documentation":"<p>Returns an enumerated value that represents the relationship between two or more controls.</p>"
+        }
+      },
+      "documentation":"<p>A structure that describes a control's relationship status with other controls.</p>"
     },
     "ResourceNotFoundException":{
       "type":"structure",

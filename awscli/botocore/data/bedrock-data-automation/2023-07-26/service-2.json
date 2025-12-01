@@ -127,7 +127,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Gets an existing Amazon Bedrock Data Automation Blueprint</p>"
+      "documentation":"<p>Gets an existing Amazon Bedrock Data Automation Blueprint</p>",
+      "readonly":true
     },
     "GetDataAutomationProject":{
       "name":"GetDataAutomationProject",
@@ -145,7 +146,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Gets an existing Amazon Bedrock Data Automation Project</p>"
+      "documentation":"<p>Gets an existing Amazon Bedrock Data Automation Project</p>",
+      "readonly":true
     },
     "ListBlueprints":{
       "name":"ListBlueprints",
@@ -163,7 +165,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists all existing Amazon Bedrock Data Automation Blueprints</p>"
+      "documentation":"<p>Lists all existing Amazon Bedrock Data Automation Blueprints</p>",
+      "readonly":true
     },
     "ListDataAutomationProjects":{
       "name":"ListDataAutomationProjects",
@@ -181,7 +184,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists all existing Amazon Bedrock Data Automation Projects</p>"
+      "documentation":"<p>Lists all existing Amazon Bedrock Data Automation Projects</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -323,10 +327,37 @@
       "member":{"shape":"AudioExtractionCategoryType"},
       "documentation":"<p>List of Audio Extraction Category Type</p>"
     },
+    "AudioGenerativeOutputLanguage":{
+      "type":"string",
+      "documentation":"<p>Configuration for Audio output language</p>",
+      "enum":[
+        "DEFAULT",
+        "EN"
+      ]
+    },
+    "AudioInputLanguages":{
+      "type":"list",
+      "member":{"shape":"Language"},
+      "documentation":"<p>List of supported audio languages</p>"
+    },
+    "AudioLanguageConfiguration":{
+      "type":"structure",
+      "members":{
+        "inputLanguages":{"shape":"AudioInputLanguages"},
+        "generativeOutputLanguage":{"shape":"AudioGenerativeOutputLanguage"},
+        "identifyMultipleLanguages":{
+          "shape":"Boolean",
+          "documentation":"<p>Enable multiple language identification in audio</p>"
+        }
+      },
+      "documentation":"<p>Optional configuration for audio language settings</p>"
+    },
     "AudioOverrideConfiguration":{
       "type":"structure",
       "members":{
-        "modalityProcessing":{"shape":"ModalityProcessingConfiguration"}
+        "modalityProcessing":{"shape":"ModalityProcessingConfiguration"},
+        "languageConfiguration":{"shape":"AudioLanguageConfiguration"},
+        "sensitiveDataConfiguration":{"shape":"SensitiveDataConfiguration"}
       },
       "documentation":"<p>Override Configuration of Audio</p>"
     },
@@ -484,6 +515,10 @@
       "member":{"shape":"BlueprintSummary"},
       "documentation":"<p>List of Blueprints</p>"
     },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
     "ChannelLabelingConfiguration":{
       "type":"structure",
       "required":["state"],
@@ -575,6 +610,7 @@
         "projectName":{"shape":"DataAutomationProjectName"},
         "projectDescription":{"shape":"DataAutomationProjectDescription"},
         "projectStage":{"shape":"DataAutomationProjectStage"},
+        "projectType":{"shape":"DataAutomationProjectType"},
         "standardOutputConfiguration":{"shape":"StandardOutputConfiguration"},
         "customOutputConfiguration":{"shape":"CustomOutputConfiguration"},
         "overrideConfiguration":{"shape":"OverrideConfiguration"},
@@ -619,6 +655,7 @@
         "lastModifiedTime":{"shape":"DateTimestamp"},
         "projectName":{"shape":"DataAutomationProjectName"},
         "projectStage":{"shape":"DataAutomationProjectStage"},
+        "projectType":{"shape":"DataAutomationProjectType"},
         "projectDescription":{"shape":"DataAutomationProjectDescription"},
         "standardOutputConfiguration":{"shape":"StandardOutputConfiguration"},
         "customOutputConfiguration":{"shape":"CustomOutputConfiguration"},
@@ -700,10 +737,19 @@
       "members":{
         "projectArn":{"shape":"DataAutomationProjectArn"},
         "projectStage":{"shape":"DataAutomationProjectStage"},
+        "projectType":{"shape":"DataAutomationProjectType"},
         "projectName":{"shape":"DataAutomationProjectName"},
         "creationTime":{"shape":"DateTimestamp"}
       },
       "documentation":"<p>Summary of a DataAutomationProject</p>"
+    },
+    "DataAutomationProjectType":{
+      "type":"string",
+      "documentation":"<p>Type of the DataAutomationProject</p>",
+      "enum":[
+        "ASYNC",
+        "SYNC"
+      ]
     },
     "DateTimestamp":{
       "type":"timestamp",
@@ -841,7 +887,8 @@
       "type":"structure",
       "members":{
         "splitter":{"shape":"SplitterConfiguration"},
-        "modalityProcessing":{"shape":"ModalityProcessingConfiguration"}
+        "modalityProcessing":{"shape":"ModalityProcessingConfiguration"},
+        "sensitiveDataConfiguration":{"shape":"SensitiveDataConfiguration"}
       },
       "documentation":"<p>Override Configuration of Document</p>"
     },
@@ -984,7 +1031,8 @@
     "ImageOverrideConfiguration":{
       "type":"structure",
       "members":{
-        "modalityProcessing":{"shape":"ModalityProcessingConfiguration"}
+        "modalityProcessing":{"shape":"ModalityProcessingConfiguration"},
+        "sensitiveDataConfiguration":{"shape":"SensitiveDataConfiguration"}
       },
       "documentation":"<p>Override Configuration of Image</p>"
     },
@@ -1052,6 +1100,23 @@
       "max":2048,
       "min":1,
       "pattern":"[A-Za-z0-9][A-Za-z0-9:_/+=,@.-]+"
+    },
+    "Language":{
+      "type":"string",
+      "documentation":"<p>Supported input languages</p>",
+      "enum":[
+        "EN",
+        "DE",
+        "ES",
+        "FR",
+        "IT",
+        "PT",
+        "JA",
+        "KO",
+        "CN",
+        "TW",
+        "HK"
+      ]
     },
     "ListBlueprintsRequest":{
       "type":"structure",
@@ -1154,6 +1219,73 @@
       },
       "documentation":"<p>Override configuration</p>"
     },
+    "PIIEntitiesConfiguration":{
+      "type":"structure",
+      "members":{
+        "piiEntityTypes":{
+          "shape":"PIIEntityTypes",
+          "documentation":"<p>Types of PII entities to detect</p>"
+        },
+        "redactionMaskMode":{
+          "shape":"PIIRedactionMaskMode",
+          "documentation":"<p>Mode for redacting detected PII</p>"
+        }
+      },
+      "documentation":"<p>Configuration for PII entities detection and redaction</p>"
+    },
+    "PIIEntityType":{
+      "type":"string",
+      "documentation":"<p>Types of PII entities that can be detected, we will support every types that Guardrails can support</p>",
+      "enum":[
+        "ALL",
+        "ADDRESS",
+        "AGE",
+        "NAME",
+        "EMAIL",
+        "PHONE",
+        "USERNAME",
+        "PASSWORD",
+        "DRIVER_ID",
+        "LICENSE_PLATE",
+        "VEHICLE_IDENTIFICATION_NUMBER",
+        "CREDIT_DEBIT_CARD_CVV",
+        "CREDIT_DEBIT_CARD_EXPIRY",
+        "CREDIT_DEBIT_CARD_NUMBER",
+        "PIN",
+        "INTERNATIONAL_BANK_ACCOUNT_NUMBER",
+        "SWIFT_CODE",
+        "IP_ADDRESS",
+        "MAC_ADDRESS",
+        "URL",
+        "AWS_ACCESS_KEY",
+        "AWS_SECRET_KEY",
+        "US_BANK_ACCOUNT_NUMBER",
+        "US_BANK_ROUTING_NUMBER",
+        "US_INDIVIDUAL_TAX_IDENTIFICATION_NUMBER",
+        "US_PASSPORT_NUMBER",
+        "US_SOCIAL_SECURITY_NUMBER",
+        "CA_HEALTH_NUMBER",
+        "CA_SOCIAL_INSURANCE_NUMBER",
+        "UK_NATIONAL_HEALTH_SERVICE_NUMBER",
+        "UK_NATIONAL_INSURANCE_NUMBER",
+        "UK_UNIQUE_TAXPAYER_REFERENCE_NUMBER"
+      ]
+    },
+    "PIIEntityTypes":{
+      "type":"list",
+      "member":{"shape":"PIIEntityType"},
+      "documentation":"<p>List of PII entity types</p>",
+      "max":32,
+      "min":1
+    },
+    "PIIRedactionMaskMode":{
+      "type":"string",
+      "documentation":"<p>Mode for redacting detected PII</p>",
+      "enum":[
+        "PII",
+        "ENTITY_TYPE"
+      ]
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
@@ -1172,6 +1304,48 @@
       "enum":[
         "SERVICE",
         "ACCOUNT"
+      ]
+    },
+    "SensitiveDataConfiguration":{
+      "type":"structure",
+      "required":["detectionMode"],
+      "members":{
+        "detectionMode":{
+          "shape":"SensitiveDataDetectionMode",
+          "documentation":"<p>Mode for sensitive data detection</p>"
+        },
+        "detectionScope":{
+          "shape":"SensitiveDataDetectionScope",
+          "documentation":"<p>Scope of detection - what types of sensitive data to detect</p>"
+        },
+        "piiEntitiesConfiguration":{
+          "shape":"PIIEntitiesConfiguration",
+          "documentation":"<p>Configuration for PII entities detection and redaction</p>"
+        }
+      },
+      "documentation":"<p>Configuration for sensitive data detection and redaction</p>"
+    },
+    "SensitiveDataDetectionMode":{
+      "type":"string",
+      "documentation":"<p>Mode for sensitive data detection</p>",
+      "enum":[
+        "DETECTION",
+        "DETECTION_AND_REDACTION"
+      ]
+    },
+    "SensitiveDataDetectionScope":{
+      "type":"list",
+      "member":{"shape":"SensitiveDataDetectionScopeType"},
+      "documentation":"<p>Scope of sensitive data detection</p>",
+      "max":2,
+      "min":1
+    },
+    "SensitiveDataDetectionScopeType":{
+      "type":"string",
+      "documentation":"<p>Types of sensitive data detection scope</p>",
+      "enum":[
+        "STANDARD",
+        "CUSTOM"
       ]
     },
     "ServiceQuotaExceededException":{
@@ -1447,7 +1621,8 @@
     "VideoOverrideConfiguration":{
       "type":"structure",
       "members":{
-        "modalityProcessing":{"shape":"ModalityProcessingConfiguration"}
+        "modalityProcessing":{"shape":"ModalityProcessingConfiguration"},
+        "sensitiveDataConfiguration":{"shape":"SensitiveDataConfiguration"}
       },
       "documentation":"<p>Override Configuration of Video</p>"
     },

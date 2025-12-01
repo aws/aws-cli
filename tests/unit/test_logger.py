@@ -47,16 +47,16 @@ class TestLogger(unittest.TestCase):
         log = logging.getLogger('test_stream_logger')
         self.assertEqual(len(log.handlers), 0)
 
-    @mock.patch('awscrt.io.init_logging')
+    @mock.patch('awscrt.io.set_log_level')
     def test_can_enable_crt_logging(self, mock_init_logging):
         enable_crt_logging()
         mock_init_logging.assert_called_with(
-            awscrt.io.LogLevel.Debug, 'stderr'
+            awscrt.io.LogLevel.Debug,
         )
 
-    @mock.patch('awscrt.io.init_logging')
+    @mock.patch('awscrt.io.set_log_level')
     def test_can_disable_crt_logging(self, mock_init_logging):
         disable_crt_logging()
         mock_init_logging.assert_called_with(
-            awscrt.io.LogLevel.NoLogs, 'stderr'
+            awscrt.io.LogLevel.NoLogs,
         )

@@ -2985,6 +2985,14 @@
       "enum":["UtteranceTimestamp"]
     },
     "AnswerField":{"type":"string"},
+    "AssistedNluMode":{
+      "type":"string",
+      "documentation":"<p>Defines the operational mode for Assisted Natural Language Understanding. This enum determines how the enhanced NLU capabilities integrate with standard intent recognition.</p>",
+      "enum":[
+        "Primary",
+        "Fallback"
+      ]
+    },
     "AssociatedTranscript":{
       "type":"structure",
       "members":{
@@ -3778,7 +3786,19 @@
           "shape":"ConfidenceThreshold",
           "documentation":"<p>Determines the threshold where Amazon Lex will insert the <code>AMAZON.FallbackIntent</code>, <code>AMAZON.KendraSearchIntent</code>, or both when returning alternative intents. <code>AMAZON.FallbackIntent</code> and <code>AMAZON.KendraSearchIntent</code> are only inserted if they are configured for the bot. </p> <p>For example, suppose a bot is configured with the confidence threshold of 0.80 and the <code>AMAZON.FallbackIntent</code>. Amazon Lex returns three alternative intents with the following confidence scores: IntentA (0.70), IntentB (0.60), IntentC (0.50). The response from the <code>PostText</code> operation would be:</p> <ul> <li> <p> <code>AMAZON.FallbackIntent</code> </p> </li> <li> <p> <code>IntentA</code> </p> </li> <li> <p> <code>IntentB</code> </p> </li> <li> <p> <code>IntentC</code> </p> </li> </ul>"
         },
-        "voiceSettings":{"shape":"VoiceSettings"}
+        "voiceSettings":{"shape":"VoiceSettings"},
+        "speechRecognitionSettings":{
+          "shape":"SpeechRecognitionSettings",
+          "documentation":"<p>Speech-to-text settings to apply when importing the bot locale configuration.</p>"
+        },
+        "speechDetectionSensitivity":{
+          "shape":"SpeechDetectionSensitivity",
+          "documentation":"<p>The sensitivity level for voice activity detection (VAD) in the bot locale. This setting helps optimize speech recognition accuracy by adjusting how the system responds to background noise during voice interactions.</p>"
+        },
+        "unifiedSpeechSettings":{
+          "shape":"UnifiedSpeechSettings",
+          "documentation":"<p>Unified speech settings to apply when importing the bot locale configuration.</p>"
+        }
       },
       "documentation":"<p>Provides the bot locale parameters required for importing a bot locale.</p>"
     },
@@ -4907,7 +4927,19 @@
           "shape":"VoiceSettings",
           "documentation":"<p>The Amazon Polly voice ID that Amazon Lex uses for voice interaction with the user.</p>"
         },
-        "generativeAISettings":{"shape":"GenerativeAISettings"}
+        "unifiedSpeechSettings":{
+          "shape":"UnifiedSpeechSettings",
+          "documentation":"<p>Unified speech settings to configure for the new bot locale.</p>"
+        },
+        "speechRecognitionSettings":{
+          "shape":"SpeechRecognitionSettings",
+          "documentation":"<p>Speech-to-text settings to configure for the new bot locale.</p>"
+        },
+        "generativeAISettings":{"shape":"GenerativeAISettings"},
+        "speechDetectionSensitivity":{
+          "shape":"SpeechDetectionSensitivity",
+          "documentation":"<p>The sensitivity level for voice activity detection (VAD) in the bot locale. This setting helps optimize speech recognition accuracy by adjusting how the system responds to background noise during voice interactions.</p>"
+        }
       }
     },
     "CreateBotLocaleResponse":{
@@ -4941,6 +4973,14 @@
           "shape":"VoiceSettings",
           "documentation":"<p>The Amazon Polly voice ID that Amazon Lex uses for voice interaction with the user.</p>"
         },
+        "unifiedSpeechSettings":{
+          "shape":"UnifiedSpeechSettings",
+          "documentation":"<p>The unified speech settings configured for the created bot locale.</p>"
+        },
+        "speechRecognitionSettings":{
+          "shape":"SpeechRecognitionSettings",
+          "documentation":"<p>The speech-to-text settings configured for the created bot locale.</p>"
+        },
         "botLocaleStatus":{
           "shape":"BotLocaleStatus",
           "documentation":"<p>The status of the bot.</p> <p>When the status is <code>Creating</code> the bot locale is being configured. When the status is <code>Building</code> Amazon Lex is building the bot for testing and use.</p> <p>If the status of the bot is <code>ReadyExpressTesting</code>, you can test the bot using the exact utterances specified in the bots' intents. When the bot is ready for full testing or to run, the status is <code>Built</code>.</p> <p>If there was a problem with building the bot, the status is <code>Failed</code>. If the bot was saved but not built, the status is <code>NotBuilt</code>.</p>"
@@ -4949,7 +4989,11 @@
           "shape":"Timestamp",
           "documentation":"<p>A timestamp specifying the date and time that the bot locale was created.</p>"
         },
-        "generativeAISettings":{"shape":"GenerativeAISettings"}
+        "generativeAISettings":{"shape":"GenerativeAISettings"},
+        "speechDetectionSensitivity":{
+          "shape":"SpeechDetectionSensitivity",
+          "documentation":"<p>The sensitivity level for voice activity detection (VAD) that was specified for the bot locale.</p>"
+        }
       }
     },
     "CreateBotReplicaRequest":{
@@ -5221,6 +5265,10 @@
           "shape":"Name",
           "documentation":"<p>The name of the intent. Intent names must be unique in the locale that contains the intent and cannot match the name of any built-in intent.</p>"
         },
+        "intentDisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>A display name for the intent. If configured, This name will be shown to users during Intent Disambiguation instead of the intent name. Display names should be user-friendly, descriptive and match the intent's purpose to improve user experience during disambiguation.</p>"
+        },
         "description":{
           "shape":"Description",
           "documentation":"<p>A description of the intent. Use the description to help identify the intent in lists.</p>"
@@ -5303,6 +5351,10 @@
         "intentName":{
           "shape":"Name",
           "documentation":"<p>The name specified for the intent.</p>"
+        },
+        "intentDisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The display name specified for the intent.</p>"
         },
         "description":{
           "shape":"Description",
@@ -5752,6 +5804,11 @@
         }
       }
     },
+    "CustomDisambiguationMessage":{
+      "type":"string",
+      "max":1000,
+      "min":1
+    },
     "CustomPayload":{
       "type":"structure",
       "required":["value"],
@@ -5943,6 +6000,27 @@
         }
       },
       "documentation":"<p>The object used for specifying the data range that the customer wants Amazon Lex to read through in the input transcripts.</p>"
+    },
+    "DeepgramModelId":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"[A-Za-z0-9-_]+"
+    },
+    "DeepgramSpeechModelConfig":{
+      "type":"structure",
+      "required":["apiTokenSecretArn"],
+      "members":{
+        "apiTokenSecretArn":{
+          "shape":"SecretsManagerSecretArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Secrets Manager secret that contains the Deepgram API token.</p>"
+        },
+        "modelId":{
+          "shape":"DeepgramModelId",
+          "documentation":"<p>The identifier of the Deepgram speech-to-text model to use for processing speech input.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for integrating Deepgram speech-to-text models with Amazon Lex.</p>"
     },
     "DefaultConditionalBranch":{
       "type":"structure",
@@ -6629,6 +6707,14 @@
           "shape":"VoiceSettings",
           "documentation":"<p>The Amazon Polly voice Amazon Lex uses for voice interaction with the user.</p>"
         },
+        "unifiedSpeechSettings":{
+          "shape":"UnifiedSpeechSettings",
+          "documentation":"<p>The unified speech settings configured for the bot locale.</p>"
+        },
+        "speechRecognitionSettings":{
+          "shape":"SpeechRecognitionSettings",
+          "documentation":"<p>The speech-to-text settings configured for the bot locale.</p>"
+        },
         "intentsCount":{
           "shape":"ResourceCount",
           "documentation":"<p>The number of intents defined for the locale.</p>"
@@ -6668,6 +6754,10 @@
         "generativeAISettings":{
           "shape":"GenerativeAISettings",
           "documentation":"<p>Contains settings for Amazon Bedrock's generative AI features for your bot locale.</p>"
+        },
+        "speechDetectionSensitivity":{
+          "shape":"SpeechDetectionSensitivity",
+          "documentation":"<p>The sensitivity level for voice activity detection (VAD) configured for the bot locale.</p>"
         }
       }
     },
@@ -7240,6 +7330,10 @@
         "intentName":{
           "shape":"Name",
           "documentation":"<p>The name specified for the intent.</p>"
+        },
+        "intentDisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The display name specified for the intent.</p>"
         },
         "description":{
           "shape":"Description",
@@ -7870,6 +7964,11 @@
         }
       },
       "documentation":"<p>The current state of the conversation with the user.</p>"
+    },
+    "DisplayName":{
+      "type":"string",
+      "max":100,
+      "min":1
     },
     "DomainEndpoint":{
       "type":"string",
@@ -8826,6 +8925,25 @@
       },
       "documentation":"<p>Provides a prompt for making sure that the user is ready for the intent to be fulfilled.</p>"
     },
+    "IntentDisambiguationSettings":{
+      "type":"structure",
+      "required":["enabled"],
+      "members":{
+        "enabled":{
+          "shape":"Enabled",
+          "documentation":"<p>Determines whether the Intent Disambiguation feature is enabled. When set to <code>true</code>, Amazon Lex will present disambiguation options to users when multiple intents could match their input, with the default being <code>false</code>.</p>"
+        },
+        "maxDisambiguationIntents":{
+          "shape":"MaxDisambiguationIntents",
+          "documentation":"<p>Specifies the maximum number of intent options (2-5) to present to users when disambiguation is needed. This setting determines how many intent options will be shown to users when the system detects ambiguous input. The default value is 3.</p>"
+        },
+        "customDisambiguationMessage":{
+          "shape":"CustomDisambiguationMessage",
+          "documentation":"<p>Provides a custom message that will be displayed before presenting the disambiguation options to users. This message helps set the context for users and can be customized to match your bot's tone and brand. If not specified, a default message will be used.</p>"
+        }
+      },
+      "documentation":"<p>Configures the Intent Disambiguation feature that helps resolve ambiguous user inputs when multiple intents could match. When enabled, the system presents clarifying questions to users, helping them specify their exact intent for improved conversation accuracy.</p>"
+    },
     "IntentFilter":{
       "type":"structure",
       "required":[
@@ -8975,6 +9093,10 @@
         "intentName":{
           "shape":"Name",
           "documentation":"<p>The name of the intent.</p>"
+        },
+        "intentDisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The display name of the intent.</p>"
         },
         "description":{
           "shape":"Description",
@@ -10760,6 +10882,12 @@
       "type":"string",
       "max":1024
     },
+    "MaxDisambiguationIntents":{
+      "type":"integer",
+      "box":true,
+      "max":5,
+      "min":2
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
@@ -10884,10 +11012,18 @@
       "members":{
         "enabled":{
           "shape":"Enabled",
-          "documentation":"<p>Specifies whether the assisted nlu feature is enabled.</p>"
+          "documentation":"<p>Determines whether the Assisted NLU feature is enabled for the bot. When set to <code>true</code>, Amazon Lex uses advanced models to improve intent recognition and slot resolution, with the default being <code>false</code>.</p>"
+        },
+        "assistedNluMode":{
+          "shape":"AssistedNluMode",
+          "documentation":"<p>Specifies the mode for Assisted NLU operation. Use <code>Primary</code> to make Assisted NLU the primary intent recognition method, or <code>Fallback</code> to use it only when standard NLU confidence is low.</p>"
+        },
+        "intentDisambiguationSettings":{
+          "shape":"IntentDisambiguationSettings",
+          "documentation":"<p>An object containing specifications for the Intent Disambiguation feature within the Assisted NLU settings. These settings determine how the bot handles ambiguous user inputs that could match multiple intents.</p>"
         }
       },
-      "documentation":"<p>Specifies whether the assisted nlu feature is turned on or off.</p>"
+      "documentation":"<p>Configures the Assisted Natural Language Understanding (NLU) feature for your bot. This specification determines whether enhanced intent recognition and utterance understanding capabilities are active.</p>"
     },
     "NonEmptyString":{
       "type":"string",
@@ -11513,7 +11649,7 @@
         },
         "nluImprovement":{
           "shape":"NluImprovementSpecification",
-          "documentation":"<p>An object containing specifications for the assisted nlu feature.</p>"
+          "documentation":"<p>An object containing specifications for the Assisted NLU feature within the bot's runtime settings. These settings determine how the bot processes and interprets user utterances during conversations.</p>"
         }
       },
       "documentation":"<p>Contains specifications about the Amazon Lex runtime generative AI capabilities from Amazon Bedrock that you can turn on for your bot.</p>"
@@ -11734,6 +11870,12 @@
         "Ascending",
         "Descending"
       ]
+    },
+    "SecretsManagerSecretArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws[A-Za-z-]*:secretsmanager:[a-z0-9-]{1,20}:[0-9]{12}:secret:[A-Za-z0-9/_+=.@-]{1,512}-[A-Za-z0-9]{6}$"
     },
     "SentimentAnalysisSettings":{
       "type":"structure",
@@ -12417,6 +12559,62 @@
         }
       },
       "documentation":"<p>Subslot specifications.</p>"
+    },
+    "SpeechDetectionSensitivity":{
+      "type":"string",
+      "documentation":"<p>Determines the sensitivity level for voice activity detection (VAD) in noisy environments. This setting helps optimize speech recognition accuracy by adjusting how the system responds to background noise.</p> <p>Valid values include:</p> <ul> <li> <p> <code>Default</code> - Standard sensitivity level suitable for most environments</p> </li> <li> <p> <code>HighNoiseTolerance</code> - Increased tolerance for moderate background noise</p> </li> <li> <p> <code>MaximumNoiseTolerance</code> - Maximum tolerance for high levels of background noise</p> </li> </ul>",
+      "enum":[
+        "Default",
+        "HighNoiseTolerance",
+        "MaximumNoiseTolerance"
+      ]
+    },
+    "SpeechFoundationModel":{
+      "type":"structure",
+      "required":["modelArn"],
+      "members":{
+        "modelArn":{
+          "shape":"BedrockModelArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the foundation model used for speech processing.</p>"
+        },
+        "voiceId":{
+          "shape":"VoiceId",
+          "documentation":"<p>The identifier of the voice to use for speech synthesis with the foundation model.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a foundation model used for speech synthesis and recognition capabilities.</p>"
+    },
+    "SpeechModelConfig":{
+      "type":"structure",
+      "members":{
+        "deepgramConfig":{
+          "shape":"DeepgramSpeechModelConfig",
+          "documentation":"<p>Configuration settings for using Deepgram as the speech-to-text provider.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings that define which speech-to-text model to use for processing speech input.</p>"
+    },
+    "SpeechModelPreference":{
+      "type":"string",
+      "enum":[
+        "Standard",
+        "Neural",
+        "Deepgram"
+      ]
+    },
+    "SpeechRecognitionSettings":{
+      "type":"structure",
+      "members":{
+        "speechModelPreference":{
+          "shape":"SpeechModelPreference",
+          "documentation":"<p>The speech-to-text model to use.</p>"
+        },
+        "speechModelConfig":{
+          "shape":"SpeechModelConfig",
+          "documentation":"<p>Configuration settings for the selected speech-to-text model.</p>"
+        }
+      },
+      "documentation":"<p>Settings that control how Amazon Lex processes and recognizes speech input from users.</p>"
     },
     "StartBotRecommendationRequest":{
       "type":"structure",
@@ -13639,6 +13837,17 @@
       },
       "documentation":"<p>Contains information about the messages in the turn.</p>"
     },
+    "UnifiedSpeechSettings":{
+      "type":"structure",
+      "required":["speechFoundationModel"],
+      "members":{
+        "speechFoundationModel":{
+          "shape":"SpeechFoundationModel",
+          "documentation":"<p>The foundation model configuration to use for unified speech processing capabilities.</p>"
+        }
+      },
+      "documentation":"<p>Unified configuration settings that combine speech recognition and synthesis capabilities.</p>"
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -13792,9 +14001,21 @@
           "shape":"VoiceSettings",
           "documentation":"<p>The new Amazon Polly voice Amazon Lex should use for voice interaction with the user.</p>"
         },
+        "unifiedSpeechSettings":{
+          "shape":"UnifiedSpeechSettings",
+          "documentation":"<p>Updated unified speech settings to apply to the bot locale.</p>"
+        },
+        "speechRecognitionSettings":{
+          "shape":"SpeechRecognitionSettings",
+          "documentation":"<p>Updated speech-to-text settings to apply to the bot locale.</p>"
+        },
         "generativeAISettings":{
           "shape":"GenerativeAISettings",
           "documentation":"<p>Contains settings for generative AI features powered by Amazon Bedrock for your bot locale. Use this object to turn generative AI features on and off. Pricing may differ if you turn a feature on. For more information, see LINK.</p>"
+        },
+        "speechDetectionSensitivity":{
+          "shape":"SpeechDetectionSensitivity",
+          "documentation":"<p>The new sensitivity level for voice activity detection (VAD) in the bot locale. This setting helps optimize speech recognition accuracy by adjusting how the system responds to background noise during voice interactions.</p>"
         }
       }
     },
@@ -13829,6 +14050,14 @@
           "shape":"VoiceSettings",
           "documentation":"<p>The updated Amazon Polly voice to use for voice interaction with the user.</p>"
         },
+        "unifiedSpeechSettings":{
+          "shape":"UnifiedSpeechSettings",
+          "documentation":"<p>The updated unified speech settings for the bot locale.</p>"
+        },
+        "speechRecognitionSettings":{
+          "shape":"SpeechRecognitionSettings",
+          "documentation":"<p>The updated speech-to-text settings for the bot locale.</p>"
+        },
         "botLocaleStatus":{
           "shape":"BotLocaleStatus",
           "documentation":"<p>The current status of the locale. When the bot status is <code>Built</code> the locale is ready for use.</p>"
@@ -13852,6 +14081,10 @@
         "generativeAISettings":{
           "shape":"GenerativeAISettings",
           "documentation":"<p>Contains settings for generative AI features powered by Amazon Bedrock for your bot locale.</p>"
+        },
+        "speechDetectionSensitivity":{
+          "shape":"SpeechDetectionSensitivity",
+          "documentation":"<p>The updated sensitivity level for voice activity detection (VAD) in the bot locale.</p>"
         }
       }
     },
@@ -14110,6 +14343,10 @@
           "shape":"Name",
           "documentation":"<p>The new name for the intent.</p>"
         },
+        "intentDisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The new display name for the intent.</p>"
+        },
         "description":{
           "shape":"Description",
           "documentation":"<p>The new description of the intent.</p>"
@@ -14196,6 +14433,10 @@
         "intentName":{
           "shape":"Name",
           "documentation":"<p>The updated name of the intent.</p>"
+        },
+        "intentDisplayName":{
+          "shape":"DisplayName",
+          "documentation":"<p>The updated display name of the intent.</p>"
         },
         "description":{
           "shape":"Description",
@@ -15017,13 +15258,13 @@
       "type":"structure",
       "required":["voiceId"],
       "members":{
-        "voiceId":{
-          "shape":"VoiceId",
-          "documentation":"<p>The identifier of the Amazon Polly voice to use.</p>"
-        },
         "engine":{
           "shape":"VoiceEngine",
           "documentation":"<p>Indicates the type of Amazon Polly voice that Amazon Lex should use for voice interaction with the user. For more information, see the <a href=\"https://docs.aws.amazon.com/polly/latest/dg/API_SynthesizeSpeech.html#polly-SynthesizeSpeech-request-Engine\"> <code>engine</code> parameter of the <code>SynthesizeSpeech</code> operation</a> in the <i>Amazon Polly developer guide</i>.</p> <p>If you do not specify a value, the default is <code>standard</code>.</p>"
+        },
+        "voiceId":{
+          "shape":"VoiceId",
+          "documentation":"<p>The identifier of the Amazon Polly voice to use.</p>"
         }
       },
       "documentation":"<p>Defines settings for using an Amazon Polly voice to communicate with a user.</p> <p>Valid values include:</p> <ul> <li> <p> <code>standard</code> </p> </li> <li> <p> <code>neural</code> </p> </li> <li> <p> <code>long-form</code> </p> </li> <li> <p> <code>generative</code> </p> </li> </ul>"
@@ -15061,5 +15302,5 @@
       "min":0
     }
   },
-  "documentation":"<p/>"
+  "documentation":"<p>Amazon Lex Model Building Service provides APIs for creating, managing, and deploying conversational bots and their components.</p>"
 }

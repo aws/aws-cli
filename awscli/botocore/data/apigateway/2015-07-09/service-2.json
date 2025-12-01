@@ -2300,6 +2300,15 @@
       },
       "documentation":"<p>API stage name of the associated API stage in a usage plan.</p>"
     },
+    "ApiStatus":{
+      "type":"string",
+      "enum":[
+        "UPDATING",
+        "AVAILABLE",
+        "PENDING",
+        "FAILED"
+      ]
+    },
     "Authorizer":{
       "type":"structure",
       "members":{
@@ -2815,7 +2824,11 @@
         },
         "securityPolicy":{
           "shape":"SecurityPolicy",
-          "documentation":"<p>The Transport Layer Security (TLS) version + cipher suite for this DomainName. The valid values are <code>TLS_1_0</code> and <code>TLS_1_2</code>.</p>"
+          "documentation":"<p>The Transport Layer Security (TLS) version + cipher suite for this DomainName.</p>"
+        },
+        "endpointAccessMode":{
+          "shape":"EndpointAccessMode",
+          "documentation":"<p> The endpoint access mode of the DomainName. Only available for DomainNames that use security policies that start with <code>SecurityPolicy_</code>. </p>"
         },
         "mutualTlsAuthentication":{"shape":"MutualTlsAuthenticationInput"},
         "ownershipVerificationCertificateArn":{
@@ -2965,6 +2978,14 @@
         "disableExecuteApiEndpoint":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether clients can invoke your API by using the default <code>execute-api</code> endpoint. By default, clients can invoke your API with the default <code>https://{api_id}.execute-api.{region}.amazonaws.com</code> endpoint. To require that clients use a custom domain name to invoke your API, disable the default endpoint</p>"
+        },
+        "securityPolicy":{
+          "shape":"SecurityPolicy",
+          "documentation":"<p> The Transport Layer Security (TLS) version + cipher suite for this RestApi. </p>"
+        },
+        "endpointAccessMode":{
+          "shape":"EndpointAccessMode",
+          "documentation":"<p> The endpoint access mode of the RestApi. Only available for RestApis that use security policies that start with <code>SecurityPolicy_</code>.</p>"
         }
       },
       "documentation":"<p>The POST Request to add a new RestApi resource to your collection.</p>"
@@ -3821,7 +3842,11 @@
         },
         "securityPolicy":{
           "shape":"SecurityPolicy",
-          "documentation":"<p>The Transport Layer Security (TLS) version + cipher suite for this DomainName. The valid values are <code>TLS_1_0</code> and <code>TLS_1_2</code>.</p>"
+          "documentation":"<p>The Transport Layer Security (TLS) version + cipher suite for this DomainName.</p>"
+        },
+        "endpointAccessMode":{
+          "shape":"EndpointAccessMode",
+          "documentation":"<p> The endpoint access mode of the DomainName. </p>"
         },
         "tags":{
           "shape":"MapOfStringToString",
@@ -3894,7 +3919,8 @@
         "UPDATING",
         "PENDING",
         "PENDING_CERTIFICATE_REIMPORT",
-        "PENDING_OWNERSHIP_VERIFICATION"
+        "PENDING_OWNERSHIP_VERIFICATION",
+        "FAILED"
       ]
     },
     "DomainNames":{
@@ -3910,6 +3936,13 @@
       "documentation":"<p>Represents a collection of DomainName resources.</p>"
     },
     "Double":{"type":"double"},
+    "EndpointAccessMode":{
+      "type":"string",
+      "enum":[
+        "BASIC",
+        "STRICT"
+      ]
+    },
     "EndpointConfiguration":{
       "type":"structure",
       "members":{
@@ -5390,6 +5423,14 @@
         "tlsConfig":{
           "shape":"TlsConfig",
           "documentation":"<p>Specifies the TLS configuration for an integration.</p>"
+        },
+        "responseTransferMode":{
+          "shape":"ResponseTransferMode",
+          "documentation":"<p> The response transfer mode of the integration. </p>"
+        },
+        "integrationTarget":{
+          "shape":"String",
+          "documentation":"<p> The ALB or NLB listener to send the request to. </p>"
         }
       },
       "documentation":"<p>Represents an <code>HTTP</code>, <code>HTTP_PROXY</code>, <code>AWS</code>, <code>AWS_PROXY</code>, or Mock integration.</p>"
@@ -5985,7 +6026,15 @@
           "shape":"NullableInteger",
           "documentation":"<p>Custom timeout between 50 and 29,000 milliseconds. The default value is 29,000 milliseconds or 29 seconds. You can increase the default value to longer than 29 seconds for Regional or private APIs only.</p>"
         },
-        "tlsConfig":{"shape":"TlsConfig"}
+        "tlsConfig":{"shape":"TlsConfig"},
+        "responseTransferMode":{
+          "shape":"ResponseTransferMode",
+          "documentation":"<p> The response transfer mode of the integration. </p>"
+        },
+        "integrationTarget":{
+          "shape":"String",
+          "documentation":"<p> The ALB or NLB listener to send the request to. </p>"
+        }
       },
       "documentation":"<p>Sets up a method's integration.</p>"
     },
@@ -6318,6 +6367,13 @@
       },
       "documentation":"<p>Represents a collection of Resource resources.</p>"
     },
+    "ResponseTransferMode":{
+      "type":"string",
+      "enum":[
+        "BUFFERED",
+        "STREAM"
+      ]
+    },
     "RestApi":{
       "type":"structure",
       "members":{
@@ -6376,6 +6432,22 @@
         "rootResourceId":{
           "shape":"String",
           "documentation":"<p>The API's root resource ID.</p>"
+        },
+        "securityPolicy":{
+          "shape":"SecurityPolicy",
+          "documentation":"<p> The Transport Layer Security (TLS) version + cipher suite for this RestApi. </p>"
+        },
+        "endpointAccessMode":{
+          "shape":"EndpointAccessMode",
+          "documentation":"<p> The endpoint access mode of the RestApi. </p>"
+        },
+        "apiStatus":{
+          "shape":"ApiStatus",
+          "documentation":"<p>The ApiStatus of the RestApi. </p>"
+        },
+        "apiStatusMessage":{
+          "shape":"String",
+          "documentation":"<p> The status message of the RestApi. When the status message is <code>UPDATING</code> you can still invoke it. </p>"
         }
       },
       "documentation":"<p>Represents a REST API.</p>"
@@ -6487,7 +6559,16 @@
       "type":"string",
       "enum":[
         "TLS_1_0",
-        "TLS_1_2"
+        "TLS_1_2",
+        "SecurityPolicy_TLS13_1_3_2025_09",
+        "SecurityPolicy_TLS13_1_3_FIPS_2025_09",
+        "SecurityPolicy_TLS13_1_2_PFS_PQ_2025_09",
+        "SecurityPolicy_TLS13_1_2_FIPS_PQ_2025_09",
+        "SecurityPolicy_TLS13_1_2_PQ_2025_09",
+        "SecurityPolicy_TLS13_1_2_2021_06",
+        "SecurityPolicy_TLS13_2025_EDGE",
+        "SecurityPolicy_TLS12_PFS_2025_EDGE",
+        "SecurityPolicy_TLS12_2018_EDGE"
       ]
     },
     "ServiceUnavailableException":{

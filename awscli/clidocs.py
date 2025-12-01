@@ -18,7 +18,7 @@ from botocore import xform_name
 from botocore.model import StringShape
 from botocore.utils import is_json_value_header
 
-from awscli import SCALAR_TYPES
+from awscli import SCALAR_TYPES, __version__ as AWS_CLI_VERSION
 from awscli.argprocess import ParamShorthandDocGen
 from awscli.bcdoc.docevents import DOC_EVENTS
 from awscli.topictags import TopicTagDB
@@ -115,7 +115,8 @@ class CLIDocumentEventHandler:
                 full_cmd_list.append(cmd)
                 full_cmd_name = ' '.join(full_cmd_list)
                 doc.write(f':ref:`{cmd} <cli:{full_cmd_name}>`')
-            doc.write(' ]')
+            doc.writeln(' ]')
+            doc.writeln('')
 
     def doc_title(self, help_command, **kwargs):
         doc = help_command.doc
@@ -236,6 +237,9 @@ class CLIDocumentEventHandler:
             label=f'cli:{related_item}', text=related_item
         )
         doc.write('\n')
+
+    def doc_meta_description(self, help_command, **kwargs):
+        pass
 
     def _document_enums(self, model, doc):
         """Documents top-level parameter enums"""
@@ -476,6 +480,13 @@ class ServiceDocumentEventHandler(CLIDocumentEventHandler):
         else:
             doc.style.tocitem(command_name)
 
+    def doc_meta_description(self, help_command, **kwargs):
+        doc = help_command.doc
+        reference = help_command.event_class.replace('.', ' ')
+        doc.writeln(".. meta::")
+        doc.writeln(f"   :description: Learn about the AWS CLI {AWS_CLI_VERSION} {reference} commands.")
+        doc.writeln("")
+
 
 class OperationDocumentEventHandler(CLIDocumentEventHandler):
     AWS_DOC_BASE = 'https://docs.aws.amazon.com/goto/WebAPI'
@@ -683,6 +694,12 @@ class OperationDocumentEventHandler(CLIDocumentEventHandler):
             for member_name, member_shape in output_shape.members.items():
                 self._doc_member(doc, member_name, member_shape, stack=[])
 
+    def doc_meta_description(self, help_command, **kwargs):
+        doc = help_command.doc
+        reference = help_command.event_class.replace('.', ' ')
+        doc.writeln(".. meta::")
+        doc.writeln(f"   :description: Use the AWS CLI {AWS_CLI_VERSION} to run the {reference} command.")
+        doc.writeln("")
 
 class TopicListerDocumentEventHandler(CLIDocumentEventHandler):
     DESCRIPTION = (

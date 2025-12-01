@@ -464,7 +464,7 @@
     },
     "ApplicationNamespace":{
       "type":"string",
-      "max":32,
+      "max":211,
       "min":1,
       "pattern":"^[a-zA-Z0-9\\/\\._\\-]+$"
     },
@@ -507,7 +507,14 @@
         },
         "IsService":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the application is a service.</p>"
+          "documentation":"<p>Indicates whether the application is a service.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"IsService has been deprecated in favor of ApplicationType",
+          "deprecatedSince":"2025-12-01"
+        },
+        "ApplicationType":{
+          "shape":"ApplicationType",
+          "documentation":"<p>The type of application.</p>"
         }
       },
       "documentation":"<p>Summary information about the Application.</p>"
@@ -517,6 +524,15 @@
       "max":128,
       "min":1,
       "pattern":"^\\w+\\:\\/\\/.*$"
+    },
+    "ApplicationType":{
+      "type":"string",
+      "documentation":"<value>The type of application</value>",
+      "enum":[
+        "STANDARD",
+        "SERVICE",
+        "MCP_SERVER"
+      ]
     },
     "ApplicationsList":{
       "type":"list",
@@ -616,7 +632,10 @@
         },
         "IsService":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the application is a service.</p>"
+          "documentation":"<p>Indicates whether the application is a service.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"IsService has been deprecated in favor of ApplicationType",
+          "deprecatedSince":"2025-12-01"
         },
         "InitializationTimeout":{
           "shape":"InitializationTimeout",
@@ -629,6 +648,10 @@
         "IframeConfig":{
           "shape":"IframeConfig",
           "documentation":"<p>The iframe configuration for the application.</p>"
+        },
+        "ApplicationType":{
+          "shape":"ApplicationType",
+          "documentation":"<p>The type of application.</p>"
         }
       }
     },
@@ -1214,7 +1237,10 @@
         },
         "IsService":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether the application is a service.</p>"
+          "documentation":"<p>Indicates whether the application is a service.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"IsService has been deprecated in favor of ApplicationType",
+          "deprecatedSince":"2025-12-01"
         },
         "InitializationTimeout":{
           "shape":"InitializationTimeout",
@@ -1227,6 +1253,10 @@
         "IframeConfig":{
           "shape":"IframeConfig",
           "documentation":"<p>The iframe configuration for the application.</p>"
+        },
+        "ApplicationType":{
+          "shape":"ApplicationType",
+          "documentation":"<p>The type of application.</p>"
         }
       }
     },
@@ -1457,6 +1487,12 @@
           "documentation":"<p>The maximum number of results to return per page.</p>",
           "location":"querystring",
           "locationName":"maxResults"
+        },
+        "ApplicationType":{
+          "shape":"ApplicationType",
+          "documentation":"<p>The type of application.</p>",
+          "location":"querystring",
+          "locationName":"applicationType"
         }
       }
     },
@@ -1937,7 +1973,10 @@
         "IsService":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the application is a service.</p>",
-          "box":true
+          "box":true,
+          "deprecated":true,
+          "deprecatedMessage":"IsService has been deprecated in favor of ApplicationType",
+          "deprecatedSince":"2025-12-01"
         },
         "InitializationTimeout":{
           "shape":"InitializationTimeout",
@@ -1950,6 +1989,10 @@
         "IframeConfig":{
           "shape":"IframeConfig",
           "documentation":"<p>The iframe configuration for the application.</p>"
+        },
+        "ApplicationType":{
+          "shape":"ApplicationType",
+          "documentation":"<p>The type of application.</p>"
         }
       }
     },

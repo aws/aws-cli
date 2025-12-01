@@ -191,7 +191,7 @@ class TestOpenBrowserHandler(BaseHandlerTest):
     def test_call_browser_success(self):
         self.handler(**self.pending_authorization)
         self.open_browser.assert_called_with(self.verification_uri_complete)
-        self.assert_text_in_output('automatically', 'open')
+        self.assert_text_in_output('Attempting', 'open')
         # assert the URI and user coe are still displayed
         self.assert_text_in_output(self.user_code, self.verification_uri)
 

@@ -1544,17 +1544,12 @@ class TestMemoryUtilization(BaseS3IntegrationTest):
 
     def assert_max_memory_used(self, process, max_mem_allowed, full_command):
         peak_memory = max(process.memory_usage)
-        if peak_memory > max_mem_allowed:
-            failure_message = (
-                'Exceeded max memory allowed (%s MB) for command '
-                '"%s": %s MB'
-                % (
-                    self.max_mem_allowed / 1024.0 / 1024.0,
-                    full_command,
-                    peak_memory / 1024.0 / 1024.0,
-                )
-            )
-            self.fail(failure_message)
+
+        assert peak_memory <= max_mem_allowed, (
+            "Exceeded max memory allowed "
+            f"({max_mem_allowed / 1024.0 / 1024.0} MB) for command "
+            f'"{full_command}": {peak_memory / 1024.0 / 1024.0} MB'
+        )
 
     def test_transfer_single_large_file(self, files, shared_bucket):
         # 40MB will force a multipart upload.

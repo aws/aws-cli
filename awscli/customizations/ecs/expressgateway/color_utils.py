@@ -15,9 +15,6 @@
 
 from colorama import Fore, Style, init
 
-# Initialize colorama for cross-platform support
-init()
-
 # Status symbols
 CHECK_MARK = '✓'
 
@@ -25,60 +22,57 @@ CHECK_MARK = '✓'
 class ColorUtils:
     """Utility class for applying colors to text using colorama."""
 
-    @staticmethod
-    def make_green(text, use_color=True):
+    def __init__(self):
+        # Initialize colorama
+        init(autoreset=True, strip=False)
+
+    def make_green(self, text, use_color=True):
         if not use_color:
             return text
         return f"{Fore.GREEN}{text}{Style.RESET_ALL}"
 
-    @staticmethod
-    def make_red(text, use_color=True):
+    def make_red(self, text, use_color=True):
         if not use_color:
             return text
         return f"{Fore.RED}{text}{Style.RESET_ALL}"
 
-    @staticmethod
-    def make_purple(text, use_color=True):
+    def make_purple(self, text, use_color=True):
         if not use_color:
             return text
         return f"{Fore.MAGENTA}{text}{Style.RESET_ALL}"
 
-    @staticmethod
-    def make_yellow(text, use_color=True):
+    def make_yellow(self, text, use_color=True):
         if not use_color:
             return text
         return f"{Fore.YELLOW}{text}{Style.RESET_ALL}"
 
-    @staticmethod
-    def make_cyan(text, use_color=True):
+    def make_cyan(self, text, use_color=True):
         if not use_color:
             return text
         return f"{Fore.CYAN}{text}{Style.RESET_ALL}"
 
-    @staticmethod
-    def color_by_status(text, status, use_color=True):
+    def color_by_status(self, text, status, use_color=True):
         """Color text based on resource status."""
         if not status or status == "ACTIVE" or status == "SUCCESSFUL":
-            return ColorUtils.make_green(text, use_color)
+            return self.make_green(text, use_color)
         elif status == "FAILED":
-            return ColorUtils.make_red(text, use_color)
+            return self.make_red(text, use_color)
         elif status == "DELETED":
-            return ColorUtils.make_yellow(text, use_color)
+            return self.make_yellow(text, use_color)
         else:
-            return ColorUtils.make_purple(text, use_color)
+            return self.make_purple(text, use_color)
 
-    @staticmethod
-    def make_status_symbol(status, spinner_char, use_color=True):
+    def make_status_symbol(self, status, spinner_char, use_color=True):
         """Create status symbol with appropriate color."""
         if not status or status == "ACTIVE" or status == "SUCCESSFUL":
-            return ColorUtils.make_green(f"{CHECK_MARK} ", use_color)
+            return self.make_green(f"{CHECK_MARK} ", use_color)
         elif status == "FAILED" or status == "ROLLBACK_FAILED":
-            return ColorUtils.make_red("X ", use_color)
+            return self.make_red("X ", use_color)
         elif (
             status == "DELETED"
             or status == "STOPPED"
             or status == "ROLLBACK_SUCCESSFUL"
         ):
-            return ColorUtils.make_yellow("— ", use_color)
+            return self.make_yellow("— ", use_color)
         else:
-            return ColorUtils.make_purple(f"{spinner_char} ", use_color)
+            return self.make_purple(f"{spinner_char} ", use_color)

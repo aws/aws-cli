@@ -29,6 +29,8 @@
   
   *   yaml-stream
   
+  *   off
+  
   
 ``--query`` (string)
   

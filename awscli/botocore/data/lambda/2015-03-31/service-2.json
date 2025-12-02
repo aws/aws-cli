@@ -53,6 +53,23 @@
       ],
       "documentation":"<p>Grants a <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html#Principal_specifying\">principal</a> permission to use a function. You can apply the policy at the function level, or specify a qualifier to restrict access to a single version or alias. If you use a qualifier, the invoker must use the full Amazon Resource Name (ARN) of that version or alias to invoke the function. Note: Lambda does not support adding policies to version $LATEST.</p> <p>To grant permission to another account, specify the account ID as the <code>Principal</code>. To grant permission to an organization defined in Organizations, specify the organization ID as the <code>PrincipalOrgID</code>. For Amazon Web Services services, the principal is a domain-style identifier that the service defines, such as <code>s3.amazonaws.com</code> or <code>sns.amazonaws.com</code>. For Amazon Web Services services, you can also specify the ARN of the associated resource as the <code>SourceArn</code>. If you grant permission to a service principal without specifying the source, other accounts could potentially configure resources in their account to invoke your Lambda function.</p> <p>This operation adds a statement to a resource-based permissions policy for the function. For more information about function policies, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/access-control-resource-based.html\">Using resource-based policies for Lambda</a>.</p>"
     },
+    "CheckpointDurableExecution":{
+      "name":"CheckpointDurableExecution",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2025-12-01/durable-executions/{DurableExecutionArn}/checkpoint",
+        "responseCode":200
+      },
+      "input":{"shape":"CheckpointDurableExecutionRequest"},
+      "output":{"shape":"CheckpointDurableExecutionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"}
+      ],
+      "documentation":"<p>Saves the progress of a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable function</a> execution during runtime. This API is used by the Lambda durable functions SDK to checkpoint completed steps and schedule asynchronous operations. You typically don't need to call this API directly as the SDK handles checkpointing automatically.</p> <p>Each checkpoint operation consumes the current checkpoint token and returns a new one for the next checkpoint. This ensures that checkpoints are applied in the correct order and prevents duplicate or out-of-order state updates.</p>",
+      "idempotent":true
+    },
     "CreateAlias":{
       "name":"CreateAlias",
       "http":{
@@ -429,6 +446,59 @@
       "documentation":"<p>Returns information about the specified code signing configuration.</p>",
       "readonly":true
     },
+    "GetDurableExecution":{
+      "name":"GetDurableExecution",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2025-12-01/durable-executions/{DurableExecutionArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDurableExecutionRequest"},
+      "output":{"shape":"GetDurableExecutionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a specific <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>, including its current status, input payload, result or error information, and execution metadata such as start time and usage statistics.</p>",
+      "readonly":true
+    },
+    "GetDurableExecutionHistory":{
+      "name":"GetDurableExecutionHistory",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2025-12-01/durable-executions/{DurableExecutionArn}/history",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDurableExecutionHistoryRequest"},
+      "output":{"shape":"GetDurableExecutionHistoryResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the execution history for a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>, showing all the steps, callbacks, and events that occurred during the execution. This provides a detailed audit trail of the execution's progress over time.</p> <p>The history is available while the execution is running and for a retention period after it completes (1-90 days, default 30 days). You can control whether to include execution data such as step results and callback payloads.</p>",
+      "readonly":true
+    },
+    "GetDurableExecutionState":{
+      "name":"GetDurableExecutionState",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2025-12-01/durable-executions/{DurableExecutionArn}/state",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDurableExecutionStateRequest"},
+      "output":{"shape":"GetDurableExecutionStateResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"}
+      ],
+      "documentation":"<p>Retrieves the current execution state required for the replay process during <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable function</a> execution. This API is used by the Lambda durable functions SDK to get state information needed for replay. You typically don't need to call this API directly as the SDK handles state management automatically.</p> <p>The response contains operations ordered by start sequence number in ascending order. Completed operations with children don't include child operation details since they don't need to be replayed.</p>",
+      "readonly":true
+    },
     "GetEventSourceMapping":{
       "name":"GetEventSourceMapping",
       "http":{
@@ -740,6 +810,7 @@
         {"shape":"EFSMountTimeoutException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidRequestContentException"},
+        {"shape":"DurableExecutionAlreadyStartedException"},
         {"shape":"InvalidZipFileException"},
         {"shape":"EFSMountFailureException"}
       ],
@@ -858,6 +929,24 @@
         {"shape":"ServiceException"}
       ],
       "documentation":"<p>Returns a list of <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuring-codesigning.html\">code signing configurations</a>. A request returns up to 10,000 configurations per call. You can use the <code>MaxItems</code> parameter to return fewer configurations per call. </p>",
+      "readonly":true
+    },
+    "ListDurableExecutionsByFunction":{
+      "name":"ListDurableExecutionsByFunction",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2025-12-01/functions/{FunctionName}/durable-executions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDurableExecutionsByFunctionRequest"},
+      "output":{"shape":"ListDurableExecutionsByFunctionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Returns a list of <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable executions</a> for a specified Lambda function. You can filter the results by execution name, status, and start time range. This API supports pagination for large result sets.</p>",
       "readonly":true
     },
     "ListEventSourceMappings":{
@@ -1255,6 +1344,74 @@
         {"shape":"PreconditionFailedException"}
       ],
       "documentation":"<p>Revokes function-use permission from an Amazon Web Services service or another Amazon Web Services account. You can get the ID of the statement from the output of <a>GetPolicy</a>.</p>"
+    },
+    "SendDurableExecutionCallbackFailure":{
+      "name":"SendDurableExecutionCallbackFailure",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2025-12-01/durable-execution-callbacks/{CallbackId}/fail",
+        "responseCode":200
+      },
+      "input":{"shape":"SendDurableExecutionCallbackFailureRequest"},
+      "output":{"shape":"SendDurableExecutionCallbackFailureResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"CallbackTimeoutException"}
+      ],
+      "documentation":"<p>Sends a failure response for a callback operation in a durable execution. Use this API when an external system cannot complete a callback operation successfully.</p>"
+    },
+    "SendDurableExecutionCallbackHeartbeat":{
+      "name":"SendDurableExecutionCallbackHeartbeat",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2025-12-01/durable-execution-callbacks/{CallbackId}/heartbeat",
+        "responseCode":200
+      },
+      "input":{"shape":"SendDurableExecutionCallbackHeartbeatRequest"},
+      "output":{"shape":"SendDurableExecutionCallbackHeartbeatResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"CallbackTimeoutException"}
+      ],
+      "documentation":"<p>Sends a heartbeat signal for a long-running callback operation to prevent timeout. Use this API to extend the callback timeout period while the external operation is still in progress.</p>"
+    },
+    "SendDurableExecutionCallbackSuccess":{
+      "name":"SendDurableExecutionCallbackSuccess",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2025-12-01/durable-execution-callbacks/{CallbackId}/succeed",
+        "responseCode":200
+      },
+      "input":{"shape":"SendDurableExecutionCallbackSuccessRequest"},
+      "output":{"shape":"SendDurableExecutionCallbackSuccessResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"CallbackTimeoutException"}
+      ],
+      "documentation":"<p>Sends a successful completion response for a callback operation in a durable execution. Use this API when an external system has successfully completed a callback operation.</p>"
+    },
+    "StopDurableExecution":{
+      "name":"StopDurableExecution",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2025-12-01/durable-executions/{DurableExecutionArn}/stop",
+        "responseCode":200
+      },
+      "input":{"shape":"StopDurableExecutionRequest"},
+      "output":{"shape":"StopDurableExecutionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Stops a running <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>. The execution transitions to STOPPED status and cannot be resumed. Any in-progress operations are terminated.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -1750,11 +1907,21 @@
       "type":"string",
       "pattern":"arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}(-gov)?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)"
     },
+    "AttemptCount":{
+      "type":"integer",
+      "min":0
+    },
     "BatchSize":{
       "type":"integer",
       "box":true,
       "max":10000,
       "min":1
+    },
+    "BinaryOperationPayload":{
+      "type":"blob",
+      "max":262144,
+      "min":0,
+      "sensitive":true
     },
     "BisectBatchOnFunctionError":{
       "type":"boolean",
@@ -1769,6 +1936,112 @@
       "streaming":true
     },
     "Boolean":{"type":"boolean"},
+    "CallbackDetails":{
+      "type":"structure",
+      "members":{
+        "CallbackId":{
+          "shape":"CallbackId",
+          "documentation":"<p>The callback ID. Callback IDs are generated by the <code>DurableContext</code> when a durable function calls <code>ctx.waitForCallback</code>.</p>"
+        },
+        "Result":{
+          "shape":"OperationPayload",
+          "documentation":"<p>The response payload from the callback operation as a string.</p>"
+        },
+        "Error":{
+          "shape":"ErrorObject",
+          "documentation":"<p>An error object that contains details about the failure.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a callback operation in a durable execution, including the callback token and timeout configuration.</p>"
+    },
+    "CallbackFailedDetails":{
+      "type":"structure",
+      "required":["Error"],
+      "members":{
+        "Error":{
+          "shape":"EventError",
+          "documentation":"<p>An error object that contains details about the failure.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a failed callback operation, including error information and the reason for failure.</p>"
+    },
+    "CallbackId":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[A-Za-z0-9+/]+={0,2}"
+    },
+    "CallbackOptions":{
+      "type":"structure",
+      "members":{
+        "TimeoutSeconds":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>The timeout for the callback operation in seconds. If not specified or set to 0, the callback has no timeout.</p>"
+        },
+        "HeartbeatTimeoutSeconds":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>The heartbeat timeout for the callback operation, in seconds. If not specified or set to 0, heartbeat timeout is disabled.</p>"
+        }
+      },
+      "documentation":"<p>Configuration options for callback operations in durable executions, including timeout settings and retry behavior.</p>"
+    },
+    "CallbackStartedDetails":{
+      "type":"structure",
+      "required":["CallbackId"],
+      "members":{
+        "CallbackId":{
+          "shape":"CallbackId",
+          "documentation":"<p>The callback ID. Callback IDs are generated by the <code>DurableContext</code> when a durable function calls <code>ctx.waitForCallback</code>.</p>"
+        },
+        "HeartbeatTimeout":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>The heartbeat timeout value, in seconds.</p>"
+        },
+        "Timeout":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>The timeout value, in seconds.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a callback operation that has started, including timing information and callback metadata.</p>"
+    },
+    "CallbackSucceededDetails":{
+      "type":"structure",
+      "required":["Result"],
+      "members":{
+        "Result":{
+          "shape":"EventResult",
+          "documentation":"<p>The response payload from the successful operation.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a successfully completed callback operation, including the result data and completion timestamp.</p>"
+    },
+    "CallbackTimedOutDetails":{
+      "type":"structure",
+      "required":["Error"],
+      "members":{
+        "Error":{
+          "shape":"EventError",
+          "documentation":"<p>Details about the callback timeout.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a callback operation that timed out, including timeout duration and any partial results.</p>"
+    },
+    "CallbackTimeoutException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The callback ID token has either expired or the callback associated with the token has already been closed.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "CapacityProvider":{
       "type":"structure",
       "required":[
@@ -1949,6 +2222,175 @@
       "max":50,
       "min":0
     },
+    "ChainedInvokeDetails":{
+      "type":"structure",
+      "members":{
+        "Result":{
+          "shape":"OperationPayload",
+          "documentation":"<p>The response payload from the chained invocation.</p>"
+        },
+        "Error":{
+          "shape":"ErrorObject",
+          "documentation":"<p>Details about the chained invocation failure.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a chained function invocation in a durable execution, including the target function and invocation parameters.</p>"
+    },
+    "ChainedInvokeFailedDetails":{
+      "type":"structure",
+      "required":["Error"],
+      "members":{
+        "Error":{
+          "shape":"EventError",
+          "documentation":"<p>Details about the chained invocation failure.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a failed chained function invocation, including error information and failure reason.</p>"
+    },
+    "ChainedInvokeOptions":{
+      "type":"structure",
+      "required":["FunctionName"],
+      "members":{
+        "FunctionName":{
+          "shape":"NamespacedFunctionName",
+          "documentation":"<p>The name or ARN of the Lambda function to invoke.</p>"
+        },
+        "TenantId":{
+          "shape":"TenantId",
+          "documentation":"<p>The tenant identifier for the chained invocation.</p>"
+        }
+      },
+      "documentation":"<p>Configuration options for chained function invocations in durable executions, including retry settings and timeout configuration.</p>"
+    },
+    "ChainedInvokeStartedDetails":{
+      "type":"structure",
+      "required":["FunctionName"],
+      "members":{
+        "FunctionName":{
+          "shape":"NamespacedFunctionName",
+          "documentation":"<p>The name or ARN of the Lambda function being invoked.</p>"
+        },
+        "TenantId":{
+          "shape":"TenantId",
+          "documentation":"<p>The tenant identifier for the chained invocation.</p>"
+        },
+        "Input":{
+          "shape":"EventInput",
+          "documentation":"<p>The JSON input payload provided to the chained invocation.</p>"
+        },
+        "ExecutedVersion":{
+          "shape":"VersionWithLatestPublished",
+          "documentation":"<p>The version of the function that was executed.</p>"
+        },
+        "DurableExecutionArn":{
+          "shape":"DurableExecutionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the durable execution.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a chained function invocation that has started execution, including start time and execution context.</p>"
+    },
+    "ChainedInvokeStoppedDetails":{
+      "type":"structure",
+      "required":["Error"],
+      "members":{
+        "Error":{
+          "shape":"EventError",
+          "documentation":"<p>Details about why the chained invocation stopped.</p>"
+        }
+      },
+      "documentation":"<p>Details about a chained invocation that was stopped.</p>"
+    },
+    "ChainedInvokeSucceededDetails":{
+      "type":"structure",
+      "required":["Result"],
+      "members":{
+        "Result":{
+          "shape":"EventResult",
+          "documentation":"<p>The response payload from the successful operation.</p>"
+        }
+      },
+      "documentation":"<p>Details about a chained invocation that succeeded.</p>"
+    },
+    "ChainedInvokeTimedOutDetails":{
+      "type":"structure",
+      "required":["Error"],
+      "members":{
+        "Error":{
+          "shape":"EventError",
+          "documentation":"<p>Details about the chained invocation timeout.</p>"
+        }
+      },
+      "documentation":"<p>Details about a chained invocation that timed out.</p>"
+    },
+    "CheckpointDurableExecutionRequest":{
+      "type":"structure",
+      "required":[
+        "DurableExecutionArn",
+        "CheckpointToken"
+      ],
+      "members":{
+        "DurableExecutionArn":{
+          "shape":"DurableExecutionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the durable execution.</p>",
+          "location":"uri",
+          "locationName":"DurableExecutionArn"
+        },
+        "CheckpointToken":{
+          "shape":"CheckpointToken",
+          "documentation":"<p>A unique token that identifies the current checkpoint state. This token is provided by the Lambda runtime and must be used to ensure checkpoints are applied in the correct order. Each checkpoint operation consumes this token and returns a new one.</p>"
+        },
+        "Updates":{
+          "shape":"OperationUpdates",
+          "documentation":"<p>An array of state updates to apply during this checkpoint. Each update represents a change to the execution state, such as completing a step, starting a callback, or scheduling a timer. Updates are applied atomically as part of the checkpoint operation.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>An optional idempotency token to ensure that duplicate checkpoint requests are handled correctly. If provided, Lambda uses this token to detect and handle duplicate requests within a 15-minute window.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CheckpointDurableExecutionResponse":{
+      "type":"structure",
+      "required":["NewExecutionState"],
+      "members":{
+        "CheckpointToken":{
+          "shape":"CheckpointToken",
+          "documentation":"<p>A new checkpoint token to use for the next checkpoint operation. This token replaces the one provided in the request and must be used for subsequent checkpoints to maintain proper ordering.</p>"
+        },
+        "NewExecutionState":{
+          "shape":"CheckpointUpdatedExecutionState",
+          "documentation":"<p>Updated execution state information that includes any changes that occurred since the last checkpoint, such as completed callbacks or expired timers. This allows the SDK to update its internal state during replay.</p>"
+        }
+      },
+      "documentation":"<p>The response from the CheckpointDurableExecution operation.</p>"
+    },
+    "CheckpointToken":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"[A-Za-z0-9+/]+={0,2}"
+    },
+    "CheckpointUpdatedExecutionState":{
+      "type":"structure",
+      "members":{
+        "Operations":{
+          "shape":"Operations",
+          "documentation":"<p>A list of operations that have been updated since the last checkpoint.</p>"
+        },
+        "NextMarker":{
+          "shape":"String",
+          "documentation":"<p>Indicates that more results are available. Use this value in a subsequent call to retrieve the next page of results.</p>"
+        }
+      },
+      "documentation":"<p>Contains operations that have been updated since the last checkpoint, such as completed asynchronous work like timers or callbacks.</p>"
+    },
+    "ClientToken":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[\\x21-\\x7E]+"
+    },
     "CodeSigningConfig":{
       "type":"structure",
       "required":[
@@ -2085,6 +2527,61 @@
           "documentation":"<p>The number of concurrent executions that are reserved for this function. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html\">Managing Lambda reserved concurrency</a>.</p>"
         }
       }
+    },
+    "ContextDetails":{
+      "type":"structure",
+      "members":{
+        "ReplayChildren":{
+          "shape":"ReplayChildren",
+          "documentation":"<p>Whether the state data of child operations of this completed context should be included in the invoke payload and <code>GetDurableExecutionState</code> response.</p>"
+        },
+        "Result":{
+          "shape":"OperationPayload",
+          "documentation":"<p>The response payload from the context.</p>"
+        },
+        "Error":{
+          "shape":"ErrorObject",
+          "documentation":"<p>Details about the context failure.</p>"
+        }
+      },
+      "documentation":"<p>Details about a durable execution context.</p>"
+    },
+    "ContextFailedDetails":{
+      "type":"structure",
+      "required":["Error"],
+      "members":{
+        "Error":{
+          "shape":"EventError",
+          "documentation":"<p>Details about the context failure.</p>"
+        }
+      },
+      "documentation":"<p>Details about a context that failed.</p>"
+    },
+    "ContextOptions":{
+      "type":"structure",
+      "members":{
+        "ReplayChildren":{
+          "shape":"ReplayChildren",
+          "documentation":"<p>Whether the state data of children of the completed context should be included in the invoke payload and <code>GetDurableExecutionState</code> response.</p>"
+        }
+      },
+      "documentation":"<p>Configuration options for a durable execution context.</p>"
+    },
+    "ContextStartedDetails":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Details about a context that has started.</p>"
+    },
+    "ContextSucceededDetails":{
+      "type":"structure",
+      "required":["Result"],
+      "members":{
+        "Result":{
+          "shape":"EventResult",
+          "documentation":"<p>The JSON response payload from the successful context.</p>"
+        }
+      },
+      "documentation":"<p>Details about a context that succeeded.</p>"
     },
     "Cors":{
       "type":"structure",
@@ -2454,6 +2951,10 @@
           "shape":"FunctionVersionLatestPublished",
           "documentation":"<p>Specifies where to publish the function version or configuration.</p>"
         },
+        "DurableConfig":{
+          "shape":"DurableConfig",
+          "documentation":"<p>Configuration settings for durable functions. Enables creating functions with durability that can remember their state and continue execution even after interruptions.</p>"
+        },
         "TenancyConfig":{
           "shape":"TenancyConfig",
           "documentation":"<p>Configuration for multi-tenant applications that use Lambda functions. Defines tenant isolation settings and resource allocations. Required for functions supporting multiple tenants.</p>"
@@ -2789,6 +3290,57 @@
       },
       "documentation":"<p> Specific configuration settings for a DocumentDB event source. </p>"
     },
+    "DurableConfig":{
+      "type":"structure",
+      "members":{
+        "RetentionPeriodInDays":{
+          "shape":"RetentionPeriodInDays",
+          "documentation":"<p>The number of days to retain execution history after a durable execution completes. After this period, execution history is no longer available through the GetDurableExecutionHistory API.</p>"
+        },
+        "ExecutionTimeout":{
+          "shape":"ExecutionTimeout",
+          "documentation":"<p>The maximum time (in seconds) that a durable execution can run before timing out. This timeout applies to the entire durable execution, not individual function invocations.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable functions</a>, including execution timeout and retention period for execution history.</p>"
+    },
+    "DurableExecutionAlreadyStartedException":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The exception type.</p>"
+        },
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The durable execution with the specified name has already been started. Each durable execution name must be unique within the function. Use a different name or check the status of the existing execution.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "DurableExecutionArn":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"arn:([a-zA-Z0-9-]+):lambda:([a-zA-Z0-9-]+):(\\d{12}):function:([a-zA-Z0-9_-]+):(\\$LATEST(?:\\.PUBLISHED)?|[0-9]+)/durable-execution/([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)"
+    },
+    "DurableExecutionName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-_]+"
+    },
+    "DurableExecutions":{
+      "type":"list",
+      "member":{"shape":"Execution"}
+    },
+    "DurationSeconds":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
     "EC2AccessDeniedException":{
       "type":"structure",
       "members":{
@@ -2983,6 +3535,199 @@
       "max":10240,
       "min":512
     },
+    "ErrorData":{
+      "type":"string",
+      "sensitive":true
+    },
+    "ErrorMessage":{
+      "type":"string",
+      "sensitive":true
+    },
+    "ErrorObject":{
+      "type":"structure",
+      "members":{
+        "ErrorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>A human-readable error message.</p>"
+        },
+        "ErrorType":{
+          "shape":"ErrorType",
+          "documentation":"<p>The error type.</p>"
+        },
+        "ErrorData":{
+          "shape":"ErrorData",
+          "documentation":"<p>Machine-readable error data.</p>"
+        },
+        "StackTrace":{
+          "shape":"StackTraceEntries",
+          "documentation":"<p>Stack trace information for the error.</p>"
+        }
+      },
+      "documentation":"<p>An object that contains error information.</p>"
+    },
+    "ErrorType":{
+      "type":"string",
+      "sensitive":true
+    },
+    "Event":{
+      "type":"structure",
+      "members":{
+        "EventType":{
+          "shape":"EventType",
+          "documentation":"<p>The type of event that occurred.</p>"
+        },
+        "SubType":{
+          "shape":"OperationSubType",
+          "documentation":"<p>The subtype of the event, providing additional categorization.</p>"
+        },
+        "EventId":{
+          "shape":"EventId",
+          "documentation":"<p>The unique identifier for this event. Event IDs increment sequentially.</p>"
+        },
+        "Id":{
+          "shape":"OperationId",
+          "documentation":"<p>The unique identifier for this operation.</p>"
+        },
+        "Name":{
+          "shape":"OperationName",
+          "documentation":"<p>The customer-provided name for this operation.</p>"
+        },
+        "EventTimestamp":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>The date and time when this event occurred, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        },
+        "ParentId":{
+          "shape":"OperationId",
+          "documentation":"<p>The unique identifier of the parent operation, if this operation is running within a child context.</p>"
+        },
+        "ExecutionStartedDetails":{
+          "shape":"ExecutionStartedDetails",
+          "documentation":"<p>Details about an execution that started.</p>"
+        },
+        "ExecutionSucceededDetails":{
+          "shape":"ExecutionSucceededDetails",
+          "documentation":"<p>Details about an execution that succeeded.</p>"
+        },
+        "ExecutionFailedDetails":{
+          "shape":"ExecutionFailedDetails",
+          "documentation":"<p>Details about an execution that failed.</p>"
+        },
+        "ExecutionTimedOutDetails":{
+          "shape":"ExecutionTimedOutDetails",
+          "documentation":"<p>Details about an execution that timed out.</p>"
+        },
+        "ExecutionStoppedDetails":{
+          "shape":"ExecutionStoppedDetails",
+          "documentation":"<p>Details about an execution that was stopped.</p>"
+        },
+        "ContextStartedDetails":{
+          "shape":"ContextStartedDetails",
+          "documentation":"<p>Details about a context that started.</p>"
+        },
+        "ContextSucceededDetails":{
+          "shape":"ContextSucceededDetails",
+          "documentation":"<p>Details about a context that succeeded.</p>"
+        },
+        "ContextFailedDetails":{
+          "shape":"ContextFailedDetails",
+          "documentation":"<p>Details about a context that failed.</p>"
+        },
+        "WaitStartedDetails":{
+          "shape":"WaitStartedDetails",
+          "documentation":"<p>Details about a wait operation that started.</p>"
+        },
+        "WaitSucceededDetails":{
+          "shape":"WaitSucceededDetails",
+          "documentation":"<p>Details about a wait operation that succeeded.</p>"
+        },
+        "WaitCancelledDetails":{
+          "shape":"WaitCancelledDetails",
+          "documentation":"<p>Details about a wait operation that was cancelled.</p>"
+        },
+        "StepStartedDetails":{
+          "shape":"StepStartedDetails",
+          "documentation":"<p>Details about a step that started.</p>"
+        },
+        "StepSucceededDetails":{
+          "shape":"StepSucceededDetails",
+          "documentation":"<p>Details about a step that succeeded.</p>"
+        },
+        "StepFailedDetails":{
+          "shape":"StepFailedDetails",
+          "documentation":"<p>Details about a step that failed.</p>"
+        },
+        "ChainedInvokeStartedDetails":{"shape":"ChainedInvokeStartedDetails"},
+        "ChainedInvokeSucceededDetails":{
+          "shape":"ChainedInvokeSucceededDetails",
+          "documentation":"<p>Details about a chained invocation that succeeded.</p>"
+        },
+        "ChainedInvokeFailedDetails":{"shape":"ChainedInvokeFailedDetails"},
+        "ChainedInvokeTimedOutDetails":{
+          "shape":"ChainedInvokeTimedOutDetails",
+          "documentation":"<p>Details about a chained invocation that timed out.</p>"
+        },
+        "ChainedInvokeStoppedDetails":{
+          "shape":"ChainedInvokeStoppedDetails",
+          "documentation":"<p>Details about a chained invocation that was stopped.</p>"
+        },
+        "CallbackStartedDetails":{"shape":"CallbackStartedDetails"},
+        "CallbackSucceededDetails":{"shape":"CallbackSucceededDetails"},
+        "CallbackFailedDetails":{"shape":"CallbackFailedDetails"},
+        "CallbackTimedOutDetails":{"shape":"CallbackTimedOutDetails"},
+        "InvocationCompletedDetails":{
+          "shape":"InvocationCompletedDetails",
+          "documentation":"<p>Details about a function invocation that completed.</p>"
+        }
+      },
+      "documentation":"<p>An event that occurred during the execution of a durable function.</p>"
+    },
+    "EventError":{
+      "type":"structure",
+      "members":{
+        "Payload":{
+          "shape":"ErrorObject",
+          "documentation":"<p>The error payload.</p>"
+        },
+        "Truncated":{
+          "shape":"Truncated",
+          "documentation":"<p>Indicates if the error payload was truncated due to size limits.</p>"
+        }
+      },
+      "documentation":"<p>Error information for an event.</p>"
+    },
+    "EventId":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "EventInput":{
+      "type":"structure",
+      "members":{
+        "Payload":{
+          "shape":"InputPayload",
+          "documentation":"<p>The input payload.</p>"
+        },
+        "Truncated":{
+          "shape":"Truncated",
+          "documentation":"<p>Indicates if the error payload was truncated due to size limits.</p>"
+        }
+      },
+      "documentation":"<p>Input information for an event.</p>"
+    },
+    "EventResult":{
+      "type":"structure",
+      "members":{
+        "Payload":{
+          "shape":"OperationPayload",
+          "documentation":"<p>The result payload.</p>"
+        },
+        "Truncated":{
+          "shape":"Truncated",
+          "documentation":"<p>Indicates if the error payload was truncated due to size limits.</p>"
+        }
+      },
+      "documentation":"<p>Result information for an event.</p>"
+    },
     "EventSourceMappingArn":{
       "type":"string",
       "max":120,
@@ -3161,12 +3906,176 @@
       "min":0,
       "pattern":"[a-zA-Z0-9._\\-]+"
     },
+    "EventType":{
+      "type":"string",
+      "enum":[
+        "ExecutionStarted",
+        "ExecutionSucceeded",
+        "ExecutionFailed",
+        "ExecutionTimedOut",
+        "ExecutionStopped",
+        "ContextStarted",
+        "ContextSucceeded",
+        "ContextFailed",
+        "WaitStarted",
+        "WaitSucceeded",
+        "WaitCancelled",
+        "StepStarted",
+        "StepSucceeded",
+        "StepFailed",
+        "ChainedInvokeStarted",
+        "ChainedInvokeSucceeded",
+        "ChainedInvokeFailed",
+        "ChainedInvokeTimedOut",
+        "ChainedInvokeStopped",
+        "CallbackStarted",
+        "CallbackSucceeded",
+        "CallbackFailed",
+        "CallbackTimedOut",
+        "InvocationCompleted"
+      ]
+    },
+    "Events":{
+      "type":"list",
+      "member":{"shape":"Event"}
+    },
+    "Execution":{
+      "type":"structure",
+      "required":[
+        "DurableExecutionArn",
+        "DurableExecutionName",
+        "FunctionArn",
+        "Status",
+        "StartTimestamp"
+      ],
+      "members":{
+        "DurableExecutionArn":{
+          "shape":"DurableExecutionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the durable execution, if this execution is a durable execution.</p>"
+        },
+        "DurableExecutionName":{
+          "shape":"DurableExecutionName",
+          "documentation":"<p>The unique name of the durable execution, if one was provided when the execution was started.</p>"
+        },
+        "FunctionArn":{
+          "shape":"NameSpacedFunctionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function.</p>"
+        },
+        "Status":{
+          "shape":"ExecutionStatus",
+          "documentation":"<p>The current status of the durable execution.</p>"
+        },
+        "StartTimestamp":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>The date and time when the durable execution started, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        },
+        "EndTimestamp":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>The date and time when the durable execution ended, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        }
+      },
+      "documentation":"<p>Information about a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>.</p>"
+    },
+    "ExecutionDetails":{
+      "type":"structure",
+      "members":{
+        "InputPayload":{
+          "shape":"InputPayload",
+          "documentation":"<p>The original input payload provided for the durable execution.</p>"
+        }
+      },
+      "documentation":"<p>Details about a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>.</p>"
+    },
     "ExecutionEnvironmentMemoryGiBPerVCpu":{
       "type":"double",
       "box":true,
       "max":8.0,
       "min":2.0
     },
+    "ExecutionFailedDetails":{
+      "type":"structure",
+      "required":["Error"],
+      "members":{
+        "Error":{
+          "shape":"EventError",
+          "documentation":"<p>Details about the execution failure.</p>"
+        }
+      },
+      "documentation":"<p>Details about a failed <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>.</p>"
+    },
+    "ExecutionStartedDetails":{
+      "type":"structure",
+      "required":[
+        "Input",
+        "ExecutionTimeout"
+      ],
+      "members":{
+        "Input":{
+          "shape":"EventInput",
+          "documentation":"<p>The input payload provided for the durable execution.</p>"
+        },
+        "ExecutionTimeout":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>The maximum amount of time that the durable execution is allowed to run, in seconds.</p>"
+        }
+      },
+      "documentation":"<p>Details about a durable execution that started.</p>"
+    },
+    "ExecutionStatus":{
+      "type":"string",
+      "enum":[
+        "RUNNING",
+        "SUCCEEDED",
+        "FAILED",
+        "TIMED_OUT",
+        "STOPPED"
+      ]
+    },
+    "ExecutionStatusList":{
+      "type":"list",
+      "member":{"shape":"ExecutionStatus"},
+      "max":10,
+      "min":1
+    },
+    "ExecutionStoppedDetails":{
+      "type":"structure",
+      "required":["Error"],
+      "members":{
+        "Error":{
+          "shape":"EventError",
+          "documentation":"<p>Details about why the execution stopped.</p>"
+        }
+      },
+      "documentation":"<p>Details about a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a> that stopped.</p>"
+    },
+    "ExecutionSucceededDetails":{
+      "type":"structure",
+      "required":["Result"],
+      "members":{
+        "Result":{
+          "shape":"EventResult",
+          "documentation":"<p>The response payload from the successful operation.</p>"
+        }
+      },
+      "documentation":"<p>Details about a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a> that succeeded.</p>"
+    },
+    "ExecutionTimedOutDetails":{
+      "type":"structure",
+      "members":{
+        "Error":{
+          "shape":"EventError",
+          "documentation":"<p>Details about the execution timeout.</p>"
+        }
+      },
+      "documentation":"<p>Details about a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a> that timed out.</p>"
+    },
+    "ExecutionTimeout":{
+      "type":"integer",
+      "box":true,
+      "max":31622400,
+      "min":1
+    },
+    "ExecutionTimestamp":{"type":"timestamp"},
     "FileSystemArn":{
       "type":"string",
       "max":200,
@@ -3475,6 +4384,10 @@
           "shape":"String",
           "documentation":"<p>The SHA256 hash of the function configuration.</p>"
         },
+        "DurableConfig":{
+          "shape":"DurableConfig",
+          "documentation":"<p>The function's durable execution configuration settings, if the function is configured for durability.</p>"
+        },
         "TenancyConfig":{
           "shape":"TenancyConfig",
           "documentation":"<p>The function's tenant isolation configuration settings. Determines whether the Lambda function runs on a shared or dedicated infrastructure per unique tenant.</p>"
@@ -3743,6 +4656,174 @@
           "documentation":"<p>The code signing configuration</p>"
         }
       }
+    },
+    "GetDurableExecutionHistoryRequest":{
+      "type":"structure",
+      "required":["DurableExecutionArn"],
+      "members":{
+        "DurableExecutionArn":{
+          "shape":"DurableExecutionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the durable execution.</p>",
+          "location":"uri",
+          "locationName":"DurableExecutionArn"
+        },
+        "IncludeExecutionData":{
+          "shape":"IncludeExecutionData",
+          "documentation":"<p>Specifies whether to include execution data such as step results and callback payloads in the history events. Set to <code>true</code> to include data, or <code>false</code> to exclude it for a more compact response. The default is <code>true</code>.</p>",
+          "location":"querystring",
+          "locationName":"IncludeExecutionData"
+        },
+        "MaxItems":{
+          "shape":"ItemCount",
+          "documentation":"<p>The maximum number of history events to return per call. You can use <code>Marker</code> to retrieve additional pages of results. The default is 100 and the maximum allowed is 1000. A value of 0 uses the default.</p>",
+          "location":"querystring",
+          "locationName":"MaxItems"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>If <code>NextMarker</code> was returned from a previous request, use this value to retrieve the next page of results. Each pagination token expires after 24 hours.</p>",
+          "location":"querystring",
+          "locationName":"Marker"
+        },
+        "ReverseOrder":{
+          "shape":"ReverseOrder",
+          "documentation":"<p>When set to <code>true</code>, returns the history events in reverse chronological order (newest first). By default, events are returned in chronological order (oldest first).</p>",
+          "location":"querystring",
+          "locationName":"ReverseOrder"
+        }
+      }
+    },
+    "GetDurableExecutionHistoryResponse":{
+      "type":"structure",
+      "required":["Events"],
+      "members":{
+        "Events":{
+          "shape":"Events",
+          "documentation":"<p>An array of execution history events, ordered chronologically unless <code>ReverseOrder</code> is set to <code>true</code>. Each event represents a significant occurrence during the execution, such as step completion or callback resolution.</p>"
+        },
+        "NextMarker":{
+          "shape":"String",
+          "documentation":"<p>If present, indicates that more history events are available. Use this value as the <code>Marker</code> parameter in a subsequent request to retrieve the next page of results.</p>"
+        }
+      },
+      "documentation":"<p>The response from the GetDurableExecutionHistory operation, containing the execution history and events.</p>"
+    },
+    "GetDurableExecutionRequest":{
+      "type":"structure",
+      "required":["DurableExecutionArn"],
+      "members":{
+        "DurableExecutionArn":{
+          "shape":"DurableExecutionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the durable execution.</p>",
+          "location":"uri",
+          "locationName":"DurableExecutionArn"
+        }
+      }
+    },
+    "GetDurableExecutionResponse":{
+      "type":"structure",
+      "required":[
+        "DurableExecutionArn",
+        "DurableExecutionName",
+        "FunctionArn",
+        "StartTimestamp",
+        "Status"
+      ],
+      "members":{
+        "DurableExecutionArn":{
+          "shape":"DurableExecutionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the durable execution.</p>"
+        },
+        "DurableExecutionName":{
+          "shape":"DurableExecutionName",
+          "documentation":"<p>The name of the durable execution. This is either the name you provided when invoking the function, or a system-generated unique identifier if no name was provided.</p>"
+        },
+        "FunctionArn":{
+          "shape":"NameSpacedFunctionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Lambda function that was invoked to start this durable execution.</p>"
+        },
+        "InputPayload":{
+          "shape":"InputPayload",
+          "documentation":"<p>The JSON input payload that was provided when the durable execution was started. For asynchronous invocations, this is limited to 256 KB. For synchronous invocations, this can be up to 6 MB.</p>"
+        },
+        "Result":{
+          "shape":"OutputPayload",
+          "documentation":"<p>The JSON result returned by the durable execution if it completed successfully. This field is only present when the execution status is <code>SUCCEEDED</code>. The result is limited to 256 KB.</p>"
+        },
+        "Error":{
+          "shape":"ErrorObject",
+          "documentation":"<p>Error information if the durable execution failed. This field is only present when the execution status is <code>FAILED</code>, <code>TIMED_OUT</code>, or <code>STOPPED</code>. The combined size of all error fields is limited to 256 KB.</p>"
+        },
+        "StartTimestamp":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>The date and time when the durable execution started, in Unix timestamp format.</p>"
+        },
+        "Status":{
+          "shape":"ExecutionStatus",
+          "documentation":"<p>The current status of the durable execution. Valid values are <code>RUNNING</code>, <code>SUCCEEDED</code>, <code>FAILED</code>, <code>TIMED_OUT</code>, and <code>STOPPED</code>.</p>"
+        },
+        "EndTimestamp":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>The date and time when the durable execution ended, in Unix timestamp format. This field is only present if the execution has completed (status is <code>SUCCEEDED</code>, <code>FAILED</code>, <code>TIMED_OUT</code>, or <code>STOPPED</code>).</p>"
+        },
+        "Version":{
+          "shape":"VersionWithLatestPublished",
+          "documentation":"<p>The version of the Lambda function that was invoked for this durable execution. This ensures that all replays during the execution use the same function version.</p>"
+        },
+        "TraceHeader":{
+          "shape":"TraceHeader",
+          "documentation":"<p>The trace headers associated with the durable execution.</p>"
+        }
+      },
+      "documentation":"<p>The response from the GetDurableExecution operation, containing detailed information about the durable execution.</p>"
+    },
+    "GetDurableExecutionStateRequest":{
+      "type":"structure",
+      "required":[
+        "DurableExecutionArn",
+        "CheckpointToken"
+      ],
+      "members":{
+        "DurableExecutionArn":{
+          "shape":"DurableExecutionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the durable execution.</p>",
+          "location":"uri",
+          "locationName":"DurableExecutionArn"
+        },
+        "CheckpointToken":{
+          "shape":"CheckpointToken",
+          "documentation":"<p>A checkpoint token that identifies the current state of the execution. This token is provided by the Lambda runtime and ensures that state retrieval is consistent with the current execution context.</p>",
+          "location":"querystring",
+          "locationName":"CheckpointToken"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>If <code>NextMarker</code> was returned from a previous request, use this value to retrieve the next page of operations. Each pagination token expires after 24 hours.</p>",
+          "location":"querystring",
+          "locationName":"Marker"
+        },
+        "MaxItems":{
+          "shape":"ItemCount",
+          "documentation":"<p>The maximum number of operations to return per call. You can use <code>Marker</code> to retrieve additional pages of results. The default is 100 and the maximum allowed is 1000. A value of 0 uses the default.</p>",
+          "location":"querystring",
+          "locationName":"MaxItems"
+        }
+      }
+    },
+    "GetDurableExecutionStateResponse":{
+      "type":"structure",
+      "required":["Operations"],
+      "members":{
+        "Operations":{
+          "shape":"Operations",
+          "documentation":"<p>An array of operations that represent the current state of the durable execution. Operations are ordered by their start sequence number in ascending order and include information needed for replay processing.</p>"
+        },
+        "NextMarker":{
+          "shape":"String",
+          "documentation":"<p>If present, indicates that more operations are available. Use this value as the <code>Marker</code> parameter in a subsequent request to retrieve the next page of results.</p>"
+        }
+      },
+      "documentation":"<p>The response from the GetDurableExecutionState operation, containing the current execution state for replay.</p>"
     },
     "GetEventSourceMappingRequest":{
       "type":"structure",
@@ -4291,6 +5372,16 @@
       },
       "documentation":"<p>Response to a <code>GetFunctionConfiguration</code> request.</p>"
     },
+    "IncludeExecutionData":{
+      "type":"boolean",
+      "box":true
+    },
+    "InputPayload":{
+      "type":"string",
+      "max":6291456,
+      "min":0,
+      "sensitive":true
+    },
     "InstanceRequirements":{
       "type":"structure",
       "members":{
@@ -4417,6 +5508,33 @@
       "exception":true,
       "fault":true
     },
+    "InvocationCompletedDetails":{
+      "type":"structure",
+      "required":[
+        "StartTimestamp",
+        "EndTimestamp",
+        "RequestId"
+      ],
+      "members":{
+        "StartTimestamp":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>The date and time when the invocation started, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        },
+        "EndTimestamp":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>The date and time when the invocation ended, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The request ID for the invocation.</p>"
+        },
+        "Error":{
+          "shape":"EventError",
+          "documentation":"<p>Details about the invocation failure.</p>"
+        }
+      },
+      "documentation":"<p>Details about a function invocation that completed.</p>"
+    },
     "InvocationRequest":{
       "type":"structure",
       "required":["FunctionName"],
@@ -4444,6 +5562,12 @@
           "documentation":"<p>Up to 3,583 bytes of base64-encoded data about the invoking client to pass to the function in the context object. Lambda passes the <code>ClientContext</code> object to your function for synchronous invocations only.</p>",
           "location":"header",
           "locationName":"X-Amz-Client-Context"
+        },
+        "DurableExecutionName":{
+          "shape":"DurableExecutionName",
+          "documentation":"<p>Optional unique name for the durable execution. When you start your special function, you can give it a unique name to identify this specific execution. It's like giving a nickname to a task.</p>",
+          "location":"header",
+          "locationName":"X-Amz-Durable-Execution-Name"
         },
         "Payload":{
           "shape":"Blob",
@@ -4493,6 +5617,12 @@
           "documentation":"<p>The version of the function that executed. When you invoke a function with an alias, this indicates which version the alias resolved to.</p>",
           "location":"header",
           "locationName":"X-Amz-Executed-Version"
+        },
+        "DurableExecutionArn":{
+          "shape":"DurableExecutionArn",
+          "documentation":"<p>The ARN of the durable execution that was started. This is returned when invoking a durable function and provides a unique identifier for tracking the execution.</p>",
+          "location":"header",
+          "locationName":"X-Amz-Durable-Execution-Arn"
         }
       },
       "payload":"Payload"
@@ -4668,6 +5798,11 @@
     "InvokedViaFunctionUrl":{
       "type":"boolean",
       "box":true
+    },
+    "ItemCount":{
+      "type":"integer",
+      "max":1000,
+      "min":0
     },
     "KMSAccessDeniedException":{
       "type":"structure",
@@ -5139,6 +6274,80 @@
           "documentation":"<p>The code signing configurations</p>"
         }
       }
+    },
+    "ListDurableExecutionsByFunctionRequest":{
+      "type":"structure",
+      "required":["FunctionName"],
+      "members":{
+        "FunctionName":{
+          "shape":"NamespacedFunctionName",
+          "documentation":"<p>The name or ARN of the Lambda function. You can specify a function name, a partial ARN, or a full ARN.</p>",
+          "location":"uri",
+          "locationName":"FunctionName"
+        },
+        "Qualifier":{
+          "shape":"NumericLatestPublishedOrAliasQualifier",
+          "documentation":"<p>The function version or alias. If not specified, lists executions for the $LATEST version.</p>",
+          "location":"querystring",
+          "locationName":"Qualifier"
+        },
+        "DurableExecutionName":{
+          "shape":"DurableExecutionName",
+          "documentation":"<p>Filter executions by name. Only executions with names that contain this string are returned.</p>",
+          "location":"querystring",
+          "locationName":"DurableExecutionName"
+        },
+        "Statuses":{
+          "shape":"ExecutionStatusList",
+          "documentation":"<p>Filter executions by status. Valid values: RUNNING, SUCCEEDED, FAILED, TIMED_OUT, STOPPED.</p>",
+          "location":"querystring",
+          "locationName":"Statuses"
+        },
+        "StartedAfter":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>Filter executions that started after this timestamp (ISO 8601 format).</p>",
+          "location":"querystring",
+          "locationName":"StartedAfter"
+        },
+        "StartedBefore":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>Filter executions that started before this timestamp (ISO 8601 format).</p>",
+          "location":"querystring",
+          "locationName":"StartedBefore"
+        },
+        "ReverseOrder":{
+          "shape":"ReverseOrder",
+          "documentation":"<p>Set to true to return results in reverse chronological order (newest first). Default is false.</p>",
+          "location":"querystring",
+          "locationName":"ReverseOrder"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>Pagination token from a previous request to continue retrieving results.</p>",
+          "location":"querystring",
+          "locationName":"Marker"
+        },
+        "MaxItems":{
+          "shape":"ItemCount",
+          "documentation":"<p>Maximum number of executions to return (1-1000). Default is 100.</p>",
+          "location":"querystring",
+          "locationName":"MaxItems"
+        }
+      }
+    },
+    "ListDurableExecutionsByFunctionResponse":{
+      "type":"structure",
+      "members":{
+        "DurableExecutions":{
+          "shape":"DurableExecutions",
+          "documentation":"<p>List of durable execution summaries matching the filter criteria.</p>"
+        },
+        "NextMarker":{
+          "shape":"String",
+          "documentation":"<p>Pagination token for retrieving additional results. Present only if there are more results available.</p>"
+        }
+      },
+      "documentation":"<p>The response from the ListDurableExecutionsByFunction operation, containing a list of durable executions and pagination information.</p>"
     },
     "ListEventSourceMappingsRequest":{
       "type":"structure",
@@ -5798,6 +7007,191 @@
       },
       "documentation":"<p>A destination for events that were processed successfully.</p> <p>To retain records of successful <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-async-destinations\">asynchronous invocations</a>, you can configure an Amazon SNS topic, Amazon SQS queue, Lambda function, or Amazon EventBridge event bus as the destination.</p> <note> <p> <code>OnSuccess</code> is not supported in <code>CreateEventSourceMapping</code> or <code>UpdateEventSourceMapping</code> requests.</p> </note>"
     },
+    "Operation":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Type",
+        "StartTimestamp",
+        "Status"
+      ],
+      "members":{
+        "Id":{
+          "shape":"OperationId",
+          "documentation":"<p>The unique identifier for this operation.</p>"
+        },
+        "ParentId":{
+          "shape":"OperationId",
+          "documentation":"<p>The unique identifier of the parent operation, if this operation is running within a child context.</p>"
+        },
+        "Name":{
+          "shape":"OperationName",
+          "documentation":"<p>The customer-provided name for this operation.</p>"
+        },
+        "Type":{
+          "shape":"OperationType",
+          "documentation":"<p>The type of operation.</p>"
+        },
+        "SubType":{
+          "shape":"OperationSubType",
+          "documentation":"<p>The subtype of the operation, providing additional categorization.</p>"
+        },
+        "StartTimestamp":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>The date and time when the operation started, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        },
+        "EndTimestamp":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>The date and time when the operation ended, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        },
+        "Status":{
+          "shape":"OperationStatus",
+          "documentation":"<p>The current status of the operation.</p>"
+        },
+        "ExecutionDetails":{
+          "shape":"ExecutionDetails",
+          "documentation":"<p>Details about the execution, if this operation represents an execution.</p>"
+        },
+        "ContextDetails":{
+          "shape":"ContextDetails",
+          "documentation":"<p>Details about the context, if this operation represents a context.</p>"
+        },
+        "StepDetails":{
+          "shape":"StepDetails",
+          "documentation":"<p>Details about the step, if this operation represents a step.</p>"
+        },
+        "WaitDetails":{
+          "shape":"WaitDetails",
+          "documentation":"<p>Details about the wait operation, if this operation represents a wait.</p>"
+        },
+        "CallbackDetails":{"shape":"CallbackDetails"},
+        "ChainedInvokeDetails":{"shape":"ChainedInvokeDetails"}
+      },
+      "documentation":"<p>Information about an operation within a durable execution.</p>"
+    },
+    "OperationAction":{
+      "type":"string",
+      "enum":[
+        "START",
+        "SUCCEED",
+        "FAIL",
+        "RETRY",
+        "CANCEL"
+      ]
+    },
+    "OperationId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-_]+"
+    },
+    "OperationName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[\\x20-\\x7E]+"
+    },
+    "OperationPayload":{
+      "type":"string",
+      "max":6291456,
+      "min":0,
+      "sensitive":true
+    },
+    "OperationStatus":{
+      "type":"string",
+      "enum":[
+        "STARTED",
+        "PENDING",
+        "READY",
+        "SUCCEEDED",
+        "FAILED",
+        "CANCELLED",
+        "TIMED_OUT",
+        "STOPPED"
+      ]
+    },
+    "OperationSubType":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-_]+"
+    },
+    "OperationType":{
+      "type":"string",
+      "enum":[
+        "EXECUTION",
+        "CONTEXT",
+        "STEP",
+        "WAIT",
+        "CALLBACK",
+        "CHAINED_INVOKE"
+      ]
+    },
+    "OperationUpdate":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Type",
+        "Action"
+      ],
+      "members":{
+        "Id":{
+          "shape":"OperationId",
+          "documentation":"<p>The unique identifier for this operation.</p>"
+        },
+        "ParentId":{
+          "shape":"OperationId",
+          "documentation":"<p>The unique identifier of the parent operation, if this operation is running within a child context.</p>"
+        },
+        "Name":{
+          "shape":"OperationName",
+          "documentation":"<p>The customer-provided name for this operation.</p>"
+        },
+        "Type":{
+          "shape":"OperationType",
+          "documentation":"<p>The type of operation to update.</p>"
+        },
+        "SubType":{
+          "shape":"OperationSubType",
+          "documentation":"<p>The subtype of the operation, providing additional categorization.</p>"
+        },
+        "Action":{
+          "shape":"OperationAction",
+          "documentation":"<p>The action to take on the operation.</p>"
+        },
+        "Payload":{
+          "shape":"OperationPayload",
+          "documentation":"<p>The payload for successful operations.</p>"
+        },
+        "Error":{
+          "shape":"ErrorObject",
+          "documentation":"<p>The error information for failed operations.</p>"
+        },
+        "ContextOptions":{
+          "shape":"ContextOptions",
+          "documentation":"<p>Options for context operations.</p>"
+        },
+        "StepOptions":{
+          "shape":"StepOptions",
+          "documentation":"<p>Options for step operations.</p>"
+        },
+        "WaitOptions":{
+          "shape":"WaitOptions",
+          "documentation":"<p>Options for wait operations.</p>"
+        },
+        "CallbackOptions":{"shape":"CallbackOptions"},
+        "ChainedInvokeOptions":{"shape":"ChainedInvokeOptions"}
+      },
+      "documentation":"<p>An update to be applied to an operation during checkpointing.</p>"
+    },
+    "OperationUpdates":{
+      "type":"list",
+      "member":{"shape":"OperationUpdate"}
+    },
+    "Operations":{
+      "type":"list",
+      "member":{"shape":"Operation"}
+    },
     "OrganizationId":{
       "type":"string",
       "max":34,
@@ -5809,6 +7203,12 @@
       "max":253,
       "min":1,
       "pattern":".*"
+    },
+    "OutputPayload":{
+      "type":"string",
+      "max":6291456,
+      "min":0,
+      "sensitive":true
     },
     "PackageType":{
       "type":"string",
@@ -6438,6 +7838,10 @@
         }
       }
     },
+    "ReplayChildren":{
+      "type":"boolean",
+      "box":true
+    },
     "RequestTooLargeException":{
       "type":"structure",
       "members":{
@@ -6528,6 +7932,30 @@
         "RequestResponse",
         "DryRun"
       ]
+    },
+    "RetentionPeriodInDays":{
+      "type":"integer",
+      "box":true,
+      "max":90,
+      "min":1
+    },
+    "RetryDetails":{
+      "type":"structure",
+      "members":{
+        "CurrentAttempt":{
+          "shape":"AttemptCount",
+          "documentation":"<p>The current attempt number for this operation.</p>"
+        },
+        "NextAttemptDelaySeconds":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>The delay before the next retry attempt, in seconds.</p>"
+        }
+      },
+      "documentation":"<p>Information about retry attempts for an operation.</p>"
+    },
+    "ReverseOrder":{
+      "type":"boolean",
+      "box":true
     },
     "RoleArn":{
       "type":"string",
@@ -6686,6 +8114,64 @@
       },
       "documentation":"<p>Specific configuration settings for a self-managed Apache Kafka event source.</p>"
     },
+    "SendDurableExecutionCallbackFailureRequest":{
+      "type":"structure",
+      "required":["CallbackId"],
+      "members":{
+        "CallbackId":{
+          "shape":"CallbackId",
+          "documentation":"<p>The unique identifier for the callback operation.</p>",
+          "location":"uri",
+          "locationName":"CallbackId"
+        },
+        "Error":{
+          "shape":"ErrorObject",
+          "documentation":"<p>Error details describing why the callback operation failed.</p>"
+        }
+      },
+      "payload":"Error"
+    },
+    "SendDurableExecutionCallbackFailureResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "SendDurableExecutionCallbackHeartbeatRequest":{
+      "type":"structure",
+      "required":["CallbackId"],
+      "members":{
+        "CallbackId":{
+          "shape":"CallbackId",
+          "documentation":"<p>The unique identifier for the callback operation.</p>",
+          "location":"uri",
+          "locationName":"CallbackId"
+        }
+      }
+    },
+    "SendDurableExecutionCallbackHeartbeatResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "SendDurableExecutionCallbackSuccessRequest":{
+      "type":"structure",
+      "required":["CallbackId"],
+      "members":{
+        "CallbackId":{
+          "shape":"CallbackId",
+          "documentation":"<p>The unique identifier for the callback operation.</p>",
+          "location":"uri",
+          "locationName":"CallbackId"
+        },
+        "Result":{
+          "shape":"BinaryOperationPayload",
+          "documentation":"<p>The result data from the successful callback operation. Maximum size is 256 KB.</p>"
+        }
+      },
+      "payload":"Result"
+    },
+    "SendDurableExecutionCallbackSuccessResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "SensitiveString":{
       "type":"string",
       "sensitive":true
@@ -6839,6 +8325,14 @@
       "min":0,
       "pattern":"\\d{12}"
     },
+    "StackTraceEntries":{
+      "type":"list",
+      "member":{"shape":"StackTraceEntry"}
+    },
+    "StackTraceEntry":{
+      "type":"string",
+      "sensitive":true
+    },
     "State":{
       "type":"string",
       "enum":[
@@ -6880,6 +8374,7 @@
         "InvalidRuntime",
         "InvalidZipFileException",
         "FunctionError",
+        "DrainingDurableExecutions",
         "VcpuLimitExceeded",
         "CapacityProviderScalingLimitExceeded",
         "InsufficientCapacity",
@@ -6899,6 +8394,112 @@
       "max":100,
       "min":1,
       "pattern":"([a-zA-Z0-9-_]+)"
+    },
+    "StepDetails":{
+      "type":"structure",
+      "members":{
+        "Attempt":{
+          "shape":"AttemptCount",
+          "documentation":"<p>The current attempt number for this step.</p>"
+        },
+        "NextAttemptTimestamp":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>The date and time when the next attempt is scheduled, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD). Only populated when the step is in a pending state.</p>"
+        },
+        "Result":{
+          "shape":"OperationPayload",
+          "documentation":"<p>The JSON response payload from the step operation.</p>"
+        },
+        "Error":{
+          "shape":"ErrorObject",
+          "documentation":"<p>Details about the step failure.</p>"
+        }
+      },
+      "documentation":"<p>Details about a step operation.</p>"
+    },
+    "StepFailedDetails":{
+      "type":"structure",
+      "required":[
+        "Error",
+        "RetryDetails"
+      ],
+      "members":{
+        "Error":{
+          "shape":"EventError",
+          "documentation":"<p>Details about the step failure.</p>"
+        },
+        "RetryDetails":{
+          "shape":"RetryDetails",
+          "documentation":"<p>Information about retry attempts for this step operation.</p>"
+        }
+      },
+      "documentation":"<p>Details about a step that failed.</p>"
+    },
+    "StepOptions":{
+      "type":"structure",
+      "members":{
+        "NextAttemptDelaySeconds":{
+          "shape":"StepOptionsNextAttemptDelaySecondsInteger",
+          "documentation":"<p>The delay in seconds before the next retry attempt.</p>"
+        }
+      },
+      "documentation":"<p>Configuration options for a step operation.</p>"
+    },
+    "StepOptionsNextAttemptDelaySecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":31622400,
+      "min":1
+    },
+    "StepStartedDetails":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Details about a step that has started.</p>"
+    },
+    "StepSucceededDetails":{
+      "type":"structure",
+      "required":[
+        "Result",
+        "RetryDetails"
+      ],
+      "members":{
+        "Result":{
+          "shape":"EventResult",
+          "documentation":"<p>The response payload from the successful operation.</p>"
+        },
+        "RetryDetails":{
+          "shape":"RetryDetails",
+          "documentation":"<p>Information about retry attempts for this step operation.</p>"
+        }
+      },
+      "documentation":"<p>Details about a step that succeeded.</p>"
+    },
+    "StopDurableExecutionRequest":{
+      "type":"structure",
+      "required":["DurableExecutionArn"],
+      "members":{
+        "DurableExecutionArn":{
+          "shape":"DurableExecutionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the durable execution.</p>",
+          "location":"uri",
+          "locationName":"DurableExecutionArn"
+        },
+        "Error":{
+          "shape":"ErrorObject",
+          "documentation":"<p>Optional error details explaining why the execution is being stopped.</p>"
+        }
+      },
+      "payload":"Error"
+    },
+    "StopDurableExecutionResponse":{
+      "type":"structure",
+      "required":["StopTimestamp"],
+      "members":{
+        "StopTimestamp":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>The timestamp when the execution was stopped (ISO 8601 format).</p>"
+        }
+      }
     },
     "String":{"type":"string"},
     "StringList":{
@@ -7087,6 +8688,16 @@
       "max":1,
       "min":1
     },
+    "TraceHeader":{
+      "type":"structure",
+      "members":{
+        "XAmznTraceId":{
+          "shape":"XAmznTraceId",
+          "documentation":"<p>The X-Ray trace header associated with the durable execution.</p>"
+        }
+      },
+      "documentation":"<p>Contains trace headers for the Lambda durable execution.</p>"
+    },
     "TracingConfig":{
       "type":"structure",
       "members":{
@@ -7113,6 +8724,10 @@
         "Active",
         "PassThrough"
       ]
+    },
+    "Truncated":{
+      "type":"boolean",
+      "box":true
     },
     "TumblingWindowInSeconds":{
       "type":"integer",
@@ -7495,6 +9110,10 @@
         "CapacityProviderConfig":{
           "shape":"CapacityProviderConfig",
           "documentation":"<p>Configuration for the capacity provider that manages compute resources for Lambda functions.</p>"
+        },
+        "DurableConfig":{
+          "shape":"DurableConfig",
+          "documentation":"<p>Configuration settings for durable functions. Allows updating execution timeout and retention period for functions with durability enabled.</p>"
         }
       }
     },
@@ -7659,6 +9278,70 @@
       "documentation":"<p>The VPC security groups and subnets that are attached to a Lambda function.</p>"
     },
     "VpcId":{"type":"string"},
+    "WaitCancelledDetails":{
+      "type":"structure",
+      "members":{
+        "Error":{
+          "shape":"EventError",
+          "documentation":"<p>Details about why the wait operation was cancelled.</p>"
+        }
+      },
+      "documentation":"<p>Details about a wait operation that was cancelled.</p>"
+    },
+    "WaitDetails":{
+      "type":"structure",
+      "members":{
+        "ScheduledEndTimestamp":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>The date and time when the wait operation is scheduled to complete, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        }
+      },
+      "documentation":"<p>Details about a wait operation.</p>"
+    },
+    "WaitOptions":{
+      "type":"structure",
+      "members":{
+        "WaitSeconds":{
+          "shape":"WaitOptionsWaitSecondsInteger",
+          "documentation":"<p>The duration to wait, in seconds.</p>"
+        }
+      },
+      "documentation":"<p>Specifies how long to pause the durable execution.</p>"
+    },
+    "WaitOptionsWaitSecondsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":31622400,
+      "min":1
+    },
+    "WaitStartedDetails":{
+      "type":"structure",
+      "required":[
+        "Duration",
+        "ScheduledEndTimestamp"
+      ],
+      "members":{
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>The duration to wait, in seconds.</p>"
+        },
+        "ScheduledEndTimestamp":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>The date and time when the wait operation is scheduled to complete, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        }
+      },
+      "documentation":"<p>Details about a wait operation that has started.</p>"
+    },
+    "WaitSucceededDetails":{
+      "type":"structure",
+      "members":{
+        "Duration":{
+          "shape":"DurationSeconds",
+          "documentation":"<p>The wait duration, in seconds.</p>"
+        }
+      },
+      "documentation":"<p>Details about a wait operation that succeeded.</p>"
+    },
     "Weight":{
       "type":"double",
       "max":1.0,
@@ -7667,6 +9350,11 @@
     "WorkingDirectory":{
       "type":"string",
       "max":1000,
+      "min":0
+    },
+    "XAmznTraceId":{
+      "type":"string",
+      "max":8192,
       "min":0
     }
   },

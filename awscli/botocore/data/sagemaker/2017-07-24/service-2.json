@@ -233,7 +233,7 @@
         {"shape":"ResourceInUse"},
         {"shape":"ResourceLimitExceeded"}
       ],
-      "documentation":"<p>Creates a SageMaker HyperPod cluster. SageMaker HyperPod is a capability of SageMaker for creating and managing persistent clusters for developing large machine learning models, such as large language models (LLMs) and diffusion models. To learn more, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod.html\">Amazon SageMaker HyperPod</a> in the <i>Amazon SageMaker Developer Guide</i>.</p>"
+      "documentation":"<p>Creates an Amazon SageMaker HyperPod cluster. SageMaker HyperPod is a capability of SageMaker for creating and managing persistent clusters for developing large machine learning models, such as large language models (LLMs) and diffusion models. To learn more, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod.html\">Amazon SageMaker HyperPod</a> in the <i>Amazon SageMaker Developer Guide</i>.</p>"
     },
     "CreateClusterSchedulerConfig":{
       "name":"CreateClusterSchedulerConfig",
@@ -596,6 +596,19 @@
       ],
       "documentation":"<p>Creates a job that uses workers to label the data objects in your input dataset. You can use the labeled data to train machine learning models. </p> <p>You can select your workforce from one of three providers:</p> <ul> <li> <p>A private workforce that you create. It can include employees, contractors, and outside experts. Use a private workforce when want the data to stay within your organization or when a specific set of skills is required.</p> </li> <li> <p>One or more vendors that you select from the Amazon Web Services Marketplace. Vendors provide expertise in specific areas. </p> </li> <li> <p>The Amazon Mechanical Turk workforce. This is the largest workforce, but it should only be used for public data or data that has been stripped of any personally identifiable information.</p> </li> </ul> <p>You can also use <i>automated data labeling</i> to reduce the number of data objects that need to be labeled by a human. Automated data labeling uses <i>active learning</i> to determine if a data object can be labeled by machine or if it needs to be sent to a human worker. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-automated-labeling.html\">Using Automated Data Labeling</a>.</p> <p>The data objects to be labeled are contained in an Amazon S3 bucket. You create a <i>manifest file</i> that describes the location of each object. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-data.html\">Using Input and Output Data</a>.</p> <p>The output can be used as the manifest file for another labeling job or as training data for your machine learning models.</p> <p>You can use this operation to create a static labeling job or a streaming labeling job. A static labeling job stops if all data objects in the input manifest file identified in <code>ManifestS3Uri</code> have been labeled. A streaming labeling job runs perpetually until it is manually stopped, or remains idle for 10 days. You can send new data objects to an active (<code>InProgress</code>) streaming labeling job in real time. To learn how to create a static labeling job, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-create-labeling-job-api.html\">Create a Labeling Job (API) </a> in the Amazon SageMaker Developer Guide. To learn how to create a streaming labeling job, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sms-streaming-create-job.html\">Create a Streaming Labeling Job</a>.</p>"
     },
+    "CreateMlflowApp":{
+      "name":"CreateMlflowApp",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateMlflowAppRequest"},
+      "output":{"shape":"CreateMlflowAppResponse"},
+      "errors":[
+        {"shape":"ResourceLimitExceeded"}
+      ],
+      "documentation":"<p>Creates an MLflow Tracking Server using a general purpose Amazon S3 bucket as the artifact store.</p>"
+    },
     "CreateMlflowTrackingServer":{
       "name":"CreateMlflowTrackingServer",
       "http":{
@@ -828,6 +841,19 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Creates a URL for a specified UserProfile in a Domain. When accessed in a web browser, the user will be automatically signed in to the domain, and granted access to all of the Apps and files associated with the Domain's Amazon Elastic File System volume. This operation can only be called when the authentication mode equals IAM. </p> <p>The IAM role or user passed to this API defines the permissions to access the app. Once the presigned URL is created, no additional permission is required to access this URL. IAM authorization policies for this API are also enforced for every HTTP request and WebSocket frame that attempts to connect to the app.</p> <p>You can restrict access to this API and to the URL that it returns to a list of IP addresses, Amazon VPCs or Amazon VPC Endpoints that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/studio-interface-endpoint.html\">Connect to Amazon SageMaker AI Studio Through an Interface VPC Endpoint</a> .</p> <note> <ul> <li> <p>The URL that you get from a call to <code>CreatePresignedDomainUrl</code> has a default timeout of 5 minutes. You can configure this value using <code>ExpiresInSeconds</code>. If you try to use the URL after the timeout limit expires, you are directed to the Amazon Web Services console sign-in page.</p> </li> <li> <p>The JupyterLab session default expiration time is 12 hours. You can configure this value using SessionExpirationDurationInSeconds.</p> </li> </ul> </note>"
+    },
+    "CreatePresignedMlflowAppUrl":{
+      "name":"CreatePresignedMlflowAppUrl",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreatePresignedMlflowAppUrlRequest"},
+      "output":{"shape":"CreatePresignedMlflowAppUrlResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Returns a presigned URL that you can use to connect to the MLflow UI attached to your MLflow App. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/mlflow-launch-ui.html\">Launch the MLflow UI using a presigned URL</a>.</p>"
     },
     "CreatePresignedMlflowTrackingServerUrl":{
       "name":"CreatePresignedMlflowTrackingServerUrl",
@@ -1393,6 +1419,19 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Deletes an inference experiment.</p> <note> <p> This operation does not delete your endpoint, variants, or any underlying resources. This operation only deletes the metadata of your experiment. </p> </note>"
+    },
+    "DeleteMlflowApp":{
+      "name":"DeleteMlflowApp",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteMlflowAppRequest"},
+      "output":{"shape":"DeleteMlflowAppResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Deletes an MLflow App.</p>"
     },
     "DeleteMlflowTrackingServer":{
       "name":"DeleteMlflowTrackingServer",
@@ -2191,6 +2230,19 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Provides a list of properties for the requested lineage group. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/xaccount-lineage-tracking.html\"> Cross-Account Lineage Tracking </a> in the <i>Amazon SageMaker Developer Guide</i>.</p>"
+    },
+    "DescribeMlflowApp":{
+      "name":"DescribeMlflowApp",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeMlflowAppRequest"},
+      "output":{"shape":"DescribeMlflowAppResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Returns information about an MLflow App.</p>"
     },
     "DescribeMlflowTrackingServer":{
       "name":"DescribeMlflowTrackingServer",
@@ -3154,6 +3206,16 @@
       "input":{"shape":"ListLineageGroupsRequest"},
       "output":{"shape":"ListLineageGroupsResponse"},
       "documentation":"<p>A list of lineage groups shared with your Amazon Web Services account. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/xaccount-lineage-tracking.html\"> Cross-Account Lineage Tracking </a> in the <i>Amazon SageMaker Developer Guide</i>.</p>"
+    },
+    "ListMlflowApps":{
+      "name":"ListMlflowApps",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListMlflowAppsRequest"},
+      "output":{"shape":"ListMlflowAppsResponse"},
+      "documentation":"<p>Lists all MLflow Apps</p>"
     },
     "ListMlflowTrackingServers":{
       "name":"ListMlflowTrackingServers",
@@ -4347,6 +4409,20 @@
       ],
       "documentation":"<p> Updates an inference experiment that you created. The status of the inference experiment has to be either <code>Created</code>, <code>Running</code>. For more information on the status of an inference experiment, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeInferenceExperiment.html\">DescribeInferenceExperiment</a>. </p>"
     },
+    "UpdateMlflowApp":{
+      "name":"UpdateMlflowApp",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateMlflowAppRequest"},
+      "output":{"shape":"UpdateMlflowAppResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Updates an MLflow App.</p>"
+    },
     "UpdateMlflowTrackingServer":{
       "name":"UpdateMlflowTrackingServer",
       "http":{
@@ -4650,6 +4726,13 @@
       "pattern":".*"
     },
     "AcceptEula":{"type":"boolean"},
+    "AccountDefaultStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "AccountId":{
       "type":"string",
       "max":12,
@@ -8987,11 +9070,11 @@
         },
         "TargetStateCount":{
           "shape":"ClusterInstanceCount",
-          "documentation":"<p>The number of nodes running a specific image ID since the last software update request.</p>"
+          "documentation":"<p>Represents the number of running nodes using the desired Image ID.</p> <ol> <li> <p> <b>During software update operations:</b> This count shows the number of nodes running on the desired Image ID. If a rollback occurs, the current image ID and desired image ID (both included in the describe cluster response) swap values. The TargetStateCount then shows the number of nodes running on the newly designated desired image ID (which was previously the current image ID).</p> </li> <li> <p> <b>During simultaneous scaling and software update operations:</b> This count shows the number of instances running on the desired image ID, including any new instances created as part of the scaling request. New nodes are always created using the desired image ID, so TargetStateCount reflects the total count of nodes running on the desired image ID, even during rollback scenarios.</p> </li> </ol>"
         },
         "SoftwareUpdateStatus":{
           "shape":"SoftwareUpdateStatus",
-          "documentation":"<p>Status of the last software udpate request.</p>"
+          "documentation":"<p>Status of the last software udpate request.</p> <p>Status transitions follow these possible sequences:</p> <ul> <li> <p>Pending -&gt; InProgress -&gt; Succeeded</p> </li> <li> <p>Pending -&gt; InProgress -&gt; RollbackInProgress -&gt; RollbackComplete</p> </li> <li> <p>Pending -&gt; InProgress -&gt; RollbackInProgress -&gt; Failed</p> </li> </ul>"
         },
         "ActiveSoftwareUpdateConfig":{"shape":"DeploymentConfiguration"}
       },
@@ -9162,6 +9245,7 @@
         "ml.p4d.24xlarge",
         "ml.p4de.24xlarge",
         "ml.p5.48xlarge",
+        "ml.p5.4xlarge",
         "ml.p6e-gb200.36xlarge",
         "ml.trn1.32xlarge",
         "ml.trn1n.32xlarge",
@@ -9640,7 +9724,6 @@
     },
     "ClusterOrchestrator":{
       "type":"structure",
-      "required":["Eks"],
       "members":{
         "Eks":{
           "shape":"ClusterOrchestratorEksConfig",
@@ -12431,6 +12514,57 @@
         }
       }
     },
+    "CreateMlflowAppRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "ArtifactStoreUri",
+        "RoleArn"
+      ],
+      "members":{
+        "Name":{
+          "shape":"MlflowAppName",
+          "documentation":"<p>A string identifying the MLflow app name. This string is not part of the tracking server ARN.</p>"
+        },
+        "ArtifactStoreUri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The S3 URI for a general purpose bucket to use as the MLflow App artifact store.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for an IAM role in your account that the MLflow App uses to access the artifact store in Amazon S3. The role should have the <code>AmazonS3FullAccess</code> permission.</p>"
+        },
+        "ModelRegistrationMode":{
+          "shape":"ModelRegistrationMode",
+          "documentation":"<p>Whether to enable or disable automatic registration of new MLflow models to the SageMaker Model Registry. To enable automatic model registration, set this value to <code>AutoModelRegistrationEnabled</code>. To disable automatic model registration, set this value to <code>AutoModelRegistrationDisabled</code>. If not specified, <code>AutomaticModelRegistration</code> defaults to <code>AutoModelRegistrationDisabled</code>.</p>"
+        },
+        "WeeklyMaintenanceWindowStart":{
+          "shape":"WeeklyMaintenanceWindowStart",
+          "documentation":"<p>The day and time of the week in Coordinated Universal Time (UTC) 24-hour standard time that weekly maintenance updates are scheduled. For example: TUE:03:30.</p>"
+        },
+        "AccountDefaultStatus":{
+          "shape":"AccountDefaultStatus",
+          "documentation":"<p>Indicates whether this MLflow app is the default for the entire account.</p>"
+        },
+        "DefaultDomainIdList":{
+          "shape":"DefaultDomainIdList",
+          "documentation":"<p>List of SageMaker domain IDs for which this MLflow App is used as the default.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>Tags consisting of key-value pairs used to manage metadata for the MLflow App.</p>"
+        }
+      }
+    },
+    "CreateMlflowAppResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"MlflowAppArn",
+          "documentation":"<p>The ARN of the MLflow App.</p>"
+        }
+      }
+    },
     "CreateMlflowTrackingServerRequest":{
       "type":"structure",
       "required":[
@@ -13313,6 +13447,33 @@
         "AuthorizedUrl":{
           "shape":"PresignedDomainUrl",
           "documentation":"<p>The presigned URL.</p>"
+        }
+      }
+    },
+    "CreatePresignedMlflowAppUrlRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"MlflowAppArn",
+          "documentation":"<p>The ARN of the MLflow App to connect to your MLflow UI.</p>"
+        },
+        "ExpiresInSeconds":{
+          "shape":"ExpiresInSeconds",
+          "documentation":"<p>The duration in seconds that your presigned URL is valid. The presigned URL can be used only once.</p>"
+        },
+        "SessionExpirationDurationInSeconds":{
+          "shape":"SessionExpirationDurationInSeconds",
+          "documentation":"<p>The duration in seconds that your presigned URL is valid. The presigned URL can be used only once.</p>"
+        }
+      }
+    },
+    "CreatePresignedMlflowAppUrlResponse":{
+      "type":"structure",
+      "members":{
+        "AuthorizedUrl":{
+          "shape":"MlflowAppUrl",
+          "documentation":"<p>A presigned URL with an authorization token.</p>"
         }
       }
     },
@@ -14524,6 +14685,10 @@
         "InstanceConnectivity"
       ]
     },
+    "DefaultDomainIdList":{
+      "type":"list",
+      "member":{"shape":"DomainId"}
+    },
     "DefaultEbsStorageSettings":{
       "type":"structure",
       "required":[
@@ -15055,6 +15220,25 @@
         "InferenceExperimentArn":{
           "shape":"InferenceExperimentArn",
           "documentation":"<p>The ARN of the deleted inference experiment.</p>"
+        }
+      }
+    },
+    "DeleteMlflowAppRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"MlflowAppArn",
+          "documentation":"<p>The ARN of the MLflow App to delete.</p>"
+        }
+      }
+    },
+    "DeleteMlflowAppResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"MlflowAppArn",
+          "documentation":"<p>The ARN of the deleted MLflow App.</p>"
         }
       }
     },
@@ -18321,6 +18505,75 @@
           "documentation":"<p>The last modified time of the lineage group.</p>"
         },
         "LastModifiedBy":{"shape":"UserContext"}
+      }
+    },
+    "DescribeMlflowAppRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"MlflowAppArn",
+          "documentation":"<p>The ARN of the MLflow App for which to get information.</p>"
+        }
+      }
+    },
+    "DescribeMlflowAppResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"MlflowAppArn",
+          "documentation":"<p>The ARN of the MLflow App.</p>"
+        },
+        "Name":{
+          "shape":"MlflowAppName",
+          "documentation":"<p>The name of the MLflow App.</p>"
+        },
+        "ArtifactStoreUri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The S3 URI of the general purpose bucket used as the MLflow App artifact store.</p>"
+        },
+        "MlflowVersion":{
+          "shape":"MlflowVersion",
+          "documentation":"<p>The MLflow version used.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for an IAM role in your account that the MLflow App uses to access the artifact store in Amazon S3.</p>"
+        },
+        "Status":{
+          "shape":"MlflowAppStatus",
+          "documentation":"<p>The current creation status of the described MLflow App.</p>"
+        },
+        "ModelRegistrationMode":{
+          "shape":"ModelRegistrationMode",
+          "documentation":"<p>Whether automatic registration of new MLflow models to the SageMaker Model Registry is enabled.</p>"
+        },
+        "AccountDefaultStatus":{
+          "shape":"AccountDefaultStatus",
+          "documentation":"<p>Indicates whether this MLflow app is the default for the entire account.</p>"
+        },
+        "DefaultDomainIdList":{
+          "shape":"DefaultDomainIdList",
+          "documentation":"<p>List of SageMaker Domain IDs for which this MLflow App is the default.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the MLflow App was created.</p>"
+        },
+        "CreatedBy":{"shape":"UserContext"},
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the MLflow App was last modified.</p>"
+        },
+        "LastModifiedBy":{"shape":"UserContext"},
+        "WeeklyMaintenanceWindowStart":{
+          "shape":"WeeklyMaintenanceWindowStart",
+          "documentation":"<p>The day and time of the week when weekly maintenance occurs.</p>"
+        },
+        "MaintenanceStatus":{
+          "shape":"MaintenanceStatus",
+          "documentation":"<p>Current maintenance status of the MLflow App.</p>"
+        }
       }
     },
     "DescribeMlflowTrackingServerRequest":{
@@ -23704,7 +23957,7 @@
     },
     "HubContentDocument":{
       "type":"string",
-      "max":65535,
+      "max":170391,
       "min":0,
       "pattern":".*"
     },
@@ -23781,7 +24034,7 @@
     },
     "HubContentMarkdown":{
       "type":"string",
-      "max":65535,
+      "max":170391,
       "min":0
     },
     "HubContentName":{
@@ -23790,9 +24043,15 @@
       "min":0,
       "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
     },
+    "HubContentSearchKeyword":{
+      "type":"string",
+      "max":255,
+      "min":0,
+      "pattern":".*"
+    },
     "HubContentSearchKeywordList":{
       "type":"list",
-      "member":{"shape":"HubSearchKeyword"},
+      "member":{"shape":"HubContentSearchKeyword"},
       "max":50,
       "min":0
     },
@@ -23811,7 +24070,9 @@
         "Importing",
         "Deleting",
         "ImportFailed",
-        "DeleteFailed"
+        "DeleteFailed",
+        "PendingImport",
+        "PendingDelete"
       ]
     },
     "HubContentSupportStatus":{
@@ -23827,7 +24088,9 @@
       "enum":[
         "Model",
         "Notebook",
-        "ModelReference"
+        "ModelReference",
+        "DataSet",
+        "JsonDoc"
       ]
     },
     "HubContentVersion":{
@@ -29367,6 +29630,64 @@
       "type":"integer",
       "max":100
     },
+    "ListMlflowAppsRequest":{
+      "type":"structure",
+      "members":{
+        "CreatedAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Use the <code>CreatedAfter</code> filter to only list MLflow Apps created after a specific date and time. Listed MLflow Apps are shown with a date and time such as <code>\"2024-03-16T01:46:56+00:00\"</code>. The <code>CreatedAfter</code> parameter takes in a Unix timestamp.</p>"
+        },
+        "CreatedBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Use the <code>CreatedBefore</code> filter to only list MLflow Apps created before a specific date and time. Listed MLflow Apps are shown with a date and time such as <code>\"2024-03-16T01:46:56+00:00\"</code>. The <code>CreatedAfter</code> parameter takes in a Unix timestamp.</p>"
+        },
+        "Status":{
+          "shape":"MlflowAppStatus",
+          "documentation":"<p>Filter for Mlflow apps with a specific creation status.</p>"
+        },
+        "MlflowVersion":{
+          "shape":"MlflowVersion",
+          "documentation":"<p>Filter for Mlflow Apps with the specified version.</p>"
+        },
+        "DefaultForDomainId":{
+          "shape":"String",
+          "documentation":"<p>Filter for MLflow Apps with the specified default SageMaker Domain ID.</p>"
+        },
+        "AccountDefaultStatus":{
+          "shape":"AccountDefaultStatus",
+          "documentation":"<p>Filter for MLflow Apps with the specified <code>AccountDefaultStatus</code>.</p>"
+        },
+        "SortBy":{
+          "shape":"SortMlflowAppBy",
+          "documentation":"<p>Filter for MLflow Apps sorting by name, creation time, or creation status.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>Change the order of the listed MLflow Apps. By default, MLflow Apps are listed in <code>Descending</code> order by creation time. To change the list order, specify <code>SortOrder</code> to be <code>Ascending</code>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the previous response was truncated, use this token in your next request to receive the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of MLflow Apps to list.</p>"
+        }
+      }
+    },
+    "ListMlflowAppsResponse":{
+      "type":"structure",
+      "members":{
+        "Summaries":{
+          "shape":"MlflowAppSummaries",
+          "documentation":"<p>A list of MLflow Apps according to chosen filters.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the previous response was truncated, you will receive this token. Use it in your next request to receive the next set of results.</p>"
+        }
+      }
+    },
     "ListMlflowTrackingServersRequest":{
       "type":"structure",
       "members":{
@@ -31486,6 +31807,14 @@
       "min":1,
       "pattern":"[a-zA-Z]+ ?\\d+\\.\\d+(\\.\\d+)?"
     },
+    "MaintenanceStatus":{
+      "type":"string",
+      "enum":[
+        "MaintenanceInProgress",
+        "MaintenanceComplete",
+        "MaintenanceFailed"
+      ]
+    },
     "MajorMinorVersion":{
       "type":"string",
       "max":64,
@@ -31866,8 +32195,78 @@
         "Comet",
         "DeepchecksLLMEvaluation",
         "Fiddler",
-        "HyperPodClusters"
+        "HyperPodClusters",
+        "RunningInstances",
+        "Datasets",
+        "Evaluators"
       ]
+    },
+    "MlflowAppArn":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:mlflow-app/.*"
+    },
+    "MlflowAppName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){0,255}"
+    },
+    "MlflowAppStatus":{
+      "type":"string",
+      "enum":[
+        "Creating",
+        "Created",
+        "CreateFailed",
+        "Updating",
+        "Updated",
+        "UpdateFailed",
+        "Deleting",
+        "DeleteFailed",
+        "Deleted"
+      ]
+    },
+    "MlflowAppSummaries":{
+      "type":"list",
+      "member":{"shape":"MlflowAppSummary"},
+      "max":100,
+      "min":0
+    },
+    "MlflowAppSummary":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"MlflowAppArn",
+          "documentation":"<p>The ARN of a listed MLflow App.</p>"
+        },
+        "Name":{
+          "shape":"MlflowAppName",
+          "documentation":"<p>The name of the MLflow App.</p>"
+        },
+        "Status":{
+          "shape":"MlflowAppStatus",
+          "documentation":"<p>The status of the MLflow App.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The creation time of a listed MLflow App.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last modified time of a listed MLflow App.</p>"
+        },
+        "MlflowVersion":{
+          "shape":"MlflowVersion",
+          "documentation":"<p>The version of a listed MLflow App.</p>"
+        }
+      },
+      "documentation":"<p>The summary of the Mlflow App to list.</p>"
+    },
+    "MlflowAppUrl":{
+      "type":"string",
+      "max":2048,
+      "min":0
     },
     "MlflowVersion":{
       "type":"string",
@@ -33429,6 +33828,13 @@
         }
       },
       "documentation":"<p>The model registry settings for the SageMaker Canvas application.</p>"
+    },
+    "ModelRegistrationMode":{
+      "type":"string",
+      "enum":[
+        "AutoModelRegistrationEnabled",
+        "AutoModelRegistrationDisabled"
+      ]
     },
     "ModelSetupTime":{
       "type":"integer",
@@ -40584,6 +40990,14 @@
         "CreationTime"
       ]
     },
+    "SortMlflowAppBy":{
+      "type":"string",
+      "enum":[
+        "Name",
+        "CreationTime",
+        "Status"
+      ]
+    },
     "SortOrder":{
       "type":"string",
       "enum":[
@@ -45373,6 +45787,49 @@
         "InferenceExperimentArn":{
           "shape":"InferenceExperimentArn",
           "documentation":"<p>The ARN of the updated inference experiment.</p>"
+        }
+      }
+    },
+    "UpdateMlflowAppRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"MlflowAppArn",
+          "documentation":"<p>The ARN of the MLflow App to update.</p>"
+        },
+        "Name":{
+          "shape":"MlflowAppName",
+          "documentation":"<p>The name of the MLflow App to update.</p>"
+        },
+        "ArtifactStoreUri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The new S3 URI for the general purpose bucket to use as the artifact store for the MLflow App.</p>"
+        },
+        "ModelRegistrationMode":{
+          "shape":"ModelRegistrationMode",
+          "documentation":"<p>Whether to enable or disable automatic registration of new MLflow models to the SageMaker Model Registry. To enable automatic model registration, set this value to <code>AutoModelRegistrationEnabled</code>. To disable automatic model registration, set this value to <code>AutoModelRegistrationDisabled</code>. If not specified, <code>AutomaticModelRegistration</code> defaults to <code>AutoModelRegistrationEnabled</code> </p>"
+        },
+        "WeeklyMaintenanceWindowStart":{
+          "shape":"WeeklyMaintenanceWindowStart",
+          "documentation":"<p>The new weekly maintenance window start day and time to update. The maintenance window day and time should be in Coordinated Universal Time (UTC) 24-hour standard time. For example: TUE:03:30.</p>"
+        },
+        "DefaultDomainIdList":{
+          "shape":"DefaultDomainIdList",
+          "documentation":"<p>List of SageMaker Domain IDs for which this MLflow App is the default.</p>"
+        },
+        "AccountDefaultStatus":{
+          "shape":"AccountDefaultStatus",
+          "documentation":"<p>Indicates whether this this MLflow App is the default for the account.</p>"
+        }
+      }
+    },
+    "UpdateMlflowAppResponse":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"MlflowAppArn",
+          "documentation":"<p>The ARN of the updated MLflow App.</p>"
         }
       }
     },

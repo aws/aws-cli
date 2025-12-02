@@ -1947,6 +1947,17 @@
       },
       "documentation":"<p>Contains information about the Autonomous System (AS) associated with the network endpoints involved in an attack sequence.</p>"
     },
+    "AutoscalingAutoScalingGroup":{
+      "type":"structure",
+      "members":{
+        "Ec2InstanceUids":{
+          "shape":"Ec2InstanceUids",
+          "documentation":"<p>A list of unique identifiers for the compromised Amazon EC2 instances that are part of the same Auto Scaling Group.</p>",
+          "locationName":"ec2InstanceUids"
+        }
+      },
+      "documentation":"<p>Contains information about the Auto Scaling Group involved in a GuardDuty finding, including unique identifiers of the Amazon EC2 instances.</p>"
+    },
     "AwsApiCallAction":{
       "type":"structure",
       "members":{
@@ -2113,6 +2124,17 @@
       },
       "documentation":"<p>Contains information on the status of CloudTrail as a data source for the detector.</p>"
     },
+    "CloudformationStack":{
+      "type":"structure",
+      "members":{
+        "Ec2InstanceUids":{
+          "shape":"Ec2InstanceUids",
+          "documentation":"<p>A list of unique identifiers for the compromised Amazon EC2 instances that were created as part of the same CloudFormation stack.</p>",
+          "locationName":"ec2InstanceUids"
+        }
+      },
+      "documentation":"<p>Contains information about the CloudFormation stack involved in a GuardDuty finding, including unique identifiers of the Amazon EC2 instances.</p>"
+    },
     "ClusterStatus":{
       "type":"string",
       "enum":[
@@ -2192,6 +2214,16 @@
           "shape":"Long",
           "documentation":"<p>Represents a <i>less than or equal</i> condition to be applied to a single field when querying for findings.</p>",
           "locationName":"lessThanOrEqual"
+        },
+        "Matches":{
+          "shape":"Matches",
+          "documentation":"<p>Represents the <i>match</i> condition to be applied to a single field when querying for findings. </p> <note> <p> The <i>matches</i> condition is available only for create-filter and update-filter APIs. </p> </note>",
+          "locationName":"matches"
+        },
+        "NotMatches":{
+          "shape":"NotMatches",
+          "documentation":"<p>Represents the <i>not match</i> condition to be applied to a single field when querying for findings. </p> <note> <p> The <i>not-matches</i> condition is available only for create-filter and update-filter APIs. </p> </note>",
+          "locationName":"notMatches"
         }
       },
       "documentation":"<p>Contains information about the condition.</p>"
@@ -4251,6 +4283,17 @@
       },
       "documentation":"<p>Describes the configuration of scanning EBS volumes as a data source.</p>"
     },
+    "Ec2Image":{
+      "type":"structure",
+      "members":{
+        "Ec2InstanceUids":{
+          "shape":"Ec2InstanceUids",
+          "documentation":"<p>A list of unique identifiers for the compromised Amazon EC2 instances that were launched with the same Amazon Machine Image (AMI).</p>",
+          "locationName":"ec2InstanceUids"
+        }
+      },
+      "documentation":"<p>Contains information about the Amazon EC2 Image involved in a GuardDuty finding, including unique identifiers of the Amazon EC2 instances.</p>"
+    },
     "Ec2ImageDetails":{
       "type":"structure",
       "members":{
@@ -4320,6 +4363,21 @@
       "max":25,
       "min":0
     },
+    "Ec2LaunchTemplate":{
+      "type":"structure",
+      "members":{
+        "Ec2InstanceUids":{
+          "shape":"Ec2InstanceUids",
+          "documentation":"<p>A list of unique identifiers for the compromised Amazon EC2 instances that share the same Amazon EC2 launch template.</p>",
+          "locationName":"ec2InstanceUids"
+        },
+        "Version":{
+          "shape":"LaunchTemplateVersion",
+          "documentation":"<p>Version of the EC2 launch template.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the Amazon EC2 launch template involved in a GuardDuty finding, including unique identifiers of the Amazon EC2 instances.</p>"
+    },
     "Ec2NetworkInterface":{
       "type":"structure",
       "members":{
@@ -4359,6 +4417,33 @@
     "Ec2NetworkInterfaceUids":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "Ec2Vpc":{
+      "type":"structure",
+      "members":{
+        "Ec2InstanceUids":{
+          "shape":"Ec2InstanceUids",
+          "documentation":"<p>A list of unique identifiers for the compromised Amazon EC2 instances that were launched within the same Virtual Private Cloud (VPC).</p>",
+          "locationName":"ec2InstanceUids"
+        }
+      },
+      "documentation":"<p>Contains information about the Amazon EC2 VPC involved in a GuardDuty finding, including unique identifiers of the Amazon EC2 instances.</p>"
+    },
+    "EcsCluster":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"EcsClusterStatus",
+          "documentation":"<p>The current status of the Amazon ECS cluster.</p>",
+          "locationName":"status"
+        },
+        "Ec2InstanceUids":{
+          "shape":"Ec2InstanceUids",
+          "documentation":"<p>A list of unique identifiers for the Amazon EC2 instances that serve as container instances in the Amazon ECS cluster.</p>",
+          "locationName":"ec2InstanceUids"
+        }
+      },
+      "documentation":"<p>Contains information about the Amazon ECS cluster involved in a GuardDuty finding, including cluster identification and status.</p>"
     },
     "EcsClusterDetails":{
       "type":"structure",
@@ -4405,6 +4490,49 @@
         }
       },
       "documentation":"<p>Contains information about the details of the ECS Cluster.</p>"
+    },
+    "EcsClusterStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "PROVISIONING",
+        "DEPROVISIONING",
+        "FAILED",
+        "INACTIVE"
+      ]
+    },
+    "EcsLaunchType":{
+      "type":"string",
+      "enum":[
+        "FARGATE",
+        "EC2"
+      ]
+    },
+    "EcsTask":{
+      "type":"structure",
+      "members":{
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp indicating when the Amazon ECS task was created, in UTC format.</p>",
+          "locationName":"createdAt"
+        },
+        "TaskDefinitionArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of task definition which describes the container and volume definitions of the Amazon ECS task.</p>",
+          "locationName":"taskDefinitionArn"
+        },
+        "LaunchType":{
+          "shape":"EcsLaunchType",
+          "documentation":"<p>The infrastructure type on which the Amazon ECS task runs.</p>",
+          "locationName":"launchType"
+        },
+        "ContainerUids":{
+          "shape":"ContainerUids",
+          "documentation":"<p>A list of unique identifiers for the containers associated with the Amazon ECS task.</p>",
+          "locationName":"containerUids"
+        }
+      },
+      "documentation":"<p>Contains information about Amazon ECS task involved in a GuardDuty finding, including task definition and container identifiers.</p>"
     },
     "EcsTaskDetails":{
       "type":"structure",
@@ -4847,7 +4975,15 @@
         "ACCESS_KEY",
         "EKS_CLUSTER",
         "KUBERNETES_WORKLOAD",
-        "CONTAINER"
+        "CONTAINER",
+        "ECS_CLUSTER",
+        "ECS_TASK",
+        "AUTOSCALING_AUTO_SCALING_GROUP",
+        "IAM_INSTANCE_PROFILE",
+        "CLOUDFORMATION_STACK",
+        "EC2_LAUNCH_TEMPLATE",
+        "EC2_VPC",
+        "EC2_IMAGE"
       ]
     },
     "FindingStatisticType":{
@@ -6090,6 +6226,17 @@
       },
       "documentation":"<p>Contains information about the EC2 instance profile.</p>"
     },
+    "IamInstanceProfileV2":{
+      "type":"structure",
+      "members":{
+        "Ec2InstanceUids":{
+          "shape":"Ec2InstanceUids",
+          "documentation":"<p>A list of unique identifiers for the compromised Amazon EC2 instances that share the same IAM instance profile.</p>",
+          "locationName":"ec2InstanceUids"
+        }
+      },
+      "documentation":"<p>Contains information about the IAM instance profile involved in a GuardDuty finding, including unique identifiers of the Amazon EC2 instances.</p>"
+    },
     "ImpersonatedUser":{
       "type":"structure",
       "members":{
@@ -6831,6 +6978,10 @@
         }
       },
       "documentation":"<p>Information about the Lambda function involved in the finding.</p>"
+    },
+    "LaunchTemplateVersion":{
+      "type":"string",
+      "max":256
     },
     "Lineage":{
       "type":"list",
@@ -7859,6 +8010,17 @@
       },
       "documentation":"<p>Contains information about the administrator account and invitation.</p>"
     },
+    "Match":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "Matches":{
+      "type":"list",
+      "member":{"shape":"Match"},
+      "max":5,
+      "min":1
+    },
     "MaxResults":{
       "type":"integer",
       "max":50,
@@ -8294,6 +8456,17 @@
     "NotEquals":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "NotMatch":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "NotMatches":{
+      "type":"list",
+      "member":{"shape":"NotMatch"},
+      "max":5,
+      "min":1
     },
     "ObservationTexts":{
       "type":"list",
@@ -9368,6 +9541,46 @@
           "shape":"ContainerFindingResource",
           "documentation":"<p>Contains detailed information about the container associated with the activity that prompted GuardDuty to generate a finding.</p>",
           "locationName":"container"
+        },
+        "EcsCluster":{
+          "shape":"EcsCluster",
+          "documentation":"<p>Contains detailed information about the Amazon ECS cluster associated with the activity that prompted GuardDuty to generate a finding.</p>",
+          "locationName":"ecsCluster"
+        },
+        "EcsTask":{
+          "shape":"EcsTask",
+          "documentation":"<p>Contains detailed information about the Amazon ECS task associated with the activity that prompted GuardDuty to generate a finding.</p>",
+          "locationName":"ecsTask"
+        },
+        "IamInstanceProfile":{
+          "shape":"IamInstanceProfileV2",
+          "documentation":"<p>Contains detailed information about the IAM instance profile associated with the activity that prompted GuardDuty to generate a finding.</p>",
+          "locationName":"iamInstanceProfile"
+        },
+        "AutoscalingAutoScalingGroup":{
+          "shape":"AutoscalingAutoScalingGroup",
+          "documentation":"<p>Contains detailed information about the Auto Scaling Group associated with the activity that prompted GuardDuty to generate a finding.</p>",
+          "locationName":"autoscalingAutoScalingGroup"
+        },
+        "Ec2LaunchTemplate":{
+          "shape":"Ec2LaunchTemplate",
+          "documentation":"<p>Contains detailed information about the EC2 launch template associated with the activity that prompted GuardDuty to generate a finding.</p>",
+          "locationName":"ec2LaunchTemplate"
+        },
+        "Ec2Vpc":{
+          "shape":"Ec2Vpc",
+          "documentation":"<p>Contains detailed information about the EC2 VPC associated with the activity that prompted GuardDuty to generate a finding.</p>",
+          "locationName":"ec2Vpc"
+        },
+        "Ec2Image":{
+          "shape":"Ec2Image",
+          "documentation":"<p>Contains detailed information about the EC2 Image associated with the activity that prompted GuardDuty to generate a finding.</p>",
+          "locationName":"ec2Image"
+        },
+        "CloudformationStack":{
+          "shape":"CloudformationStack",
+          "documentation":"<p>Contains detailed information about the CloudFormation stack associated with the activity that prompted GuardDuty to generate a finding.</p>",
+          "locationName":"cloudformationStack"
         }
       },
       "documentation":"<p>Contains information about the Amazon Web Services resource that is associated with the activity that prompted GuardDuty to generate a finding.</p>"

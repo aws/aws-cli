@@ -119,6 +119,25 @@
       "documentation":"<p>Creates a custom code interpreter.</p>",
       "idempotent":true
     },
+    "CreateEvaluator":{
+      "name":"CreateEvaluator",
+      "http":{
+        "method":"POST",
+        "requestUri":"/evaluators/create",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateEvaluatorRequest"},
+      "output":{"shape":"CreateEvaluatorResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Creates a custom evaluator for agent quality assessment. Custom evaluators use LLM-as-a-Judge configurations with user-defined prompts, rating scales, and model settings to evaluate agent performance at tool call, trace, or session levels. </p>"
+    },
     "CreateGateway":{
       "name":"CreateGateway",
       "http":{
@@ -205,6 +224,64 @@
       ],
       "documentation":"<p>Creates a new OAuth2 credential provider.</p>",
       "idempotent":true
+    },
+    "CreateOnlineEvaluationConfig":{
+      "name":"CreateOnlineEvaluationConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/online-evaluation-configs/create",
+        "responseCode":202
+      },
+      "input":{"shape":"CreateOnlineEvaluationConfigRequest"},
+      "output":{"shape":"CreateOnlineEvaluationConfigResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Creates an online evaluation configuration for continuous monitoring of agent performance. Online evaluation automatically samples live traffic from CloudWatch logs at specified rates and applies evaluators to assess agent quality in production. </p>"
+    },
+    "CreatePolicy":{
+      "name":"CreatePolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/policy-engines/{policyEngineId}/policies",
+        "responseCode":202
+      },
+      "input":{"shape":"CreatePolicyRequest"},
+      "output":{"shape":"CreatePolicyResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a policy within the AgentCore Policy system. Policies provide real-time, deterministic control over agentic interactions with AgentCore Gateway. Using the Cedar policy language, you can define fine-grained policies that specify which interactions with Gateway tools are permitted based on input parameters and OAuth claims, ensuring agents operate within defined boundaries and business rules. The policy is validated during creation against the Cedar schema generated from the Gateway's tools' input schemas, which defines the available tools, their parameters, and expected data types. This is an asynchronous operation. Use the <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/API_GetPolicy.html\">GetPolicy</a> operation to poll the <code>status</code> field to track completion.</p>"
+    },
+    "CreatePolicyEngine":{
+      "name":"CreatePolicyEngine",
+      "http":{
+        "method":"POST",
+        "requestUri":"/policy-engines",
+        "responseCode":202
+      },
+      "input":{"shape":"CreatePolicyEngineRequest"},
+      "output":{"shape":"CreatePolicyEngineResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a new policy engine within the AgentCore Policy system. A policy engine is a collection of policies that evaluates and authorizes agent tool calls. When associated with Gateways (each Gateway can be associated with at most one policy engine, but multiple Gateways can be associated with the same engine), the policy engine intercepts all agent requests and determines whether to allow or deny each action based on the defined policies. This is an asynchronous operation. Use the <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/API_GetPolicyEngine.html\">GetPolicyEngine</a> operation to poll the <code>status</code> field to track completion.</p>"
     },
     "CreateWorkloadIdentity":{
       "name":"CreateWorkloadIdentity",
@@ -326,6 +403,26 @@
       "documentation":"<p>Deletes a custom code interpreter.</p>",
       "idempotent":true
     },
+    "DeleteEvaluator":{
+      "name":"DeleteEvaluator",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/evaluators/{evaluatorId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteEvaluatorRequest"},
+      "output":{"shape":"DeleteEvaluatorResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Deletes a custom evaluator. Builtin evaluators cannot be deleted. The evaluator must not be referenced by any active online evaluation configurations. </p>",
+      "idempotent":true
+    },
     "DeleteGateway":{
       "name":"DeleteGateway",
       "http":{
@@ -379,6 +476,7 @@
         {"shape":"ServiceException"},
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottledException"}
       ],
@@ -403,6 +501,85 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes an OAuth2 credential provider.</p>",
+      "idempotent":true
+    },
+    "DeleteOnlineEvaluationConfig":{
+      "name":"DeleteOnlineEvaluationConfig",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/online-evaluation-configs/{onlineEvaluationConfigId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteOnlineEvaluationConfigRequest"},
+      "output":{"shape":"DeleteOnlineEvaluationConfigResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Deletes an online evaluation configuration and stops any ongoing evaluation processes associated with it. </p>",
+      "idempotent":true
+    },
+    "DeletePolicy":{
+      "name":"DeletePolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/policy-engines/{policyEngineId}/policies/{policyId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeletePolicyRequest"},
+      "output":{"shape":"DeletePolicyResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes an existing policy from the AgentCore Policy system. Once deleted, the policy can no longer be used for agent behavior control and all references to it become invalid. This is an asynchronous operation. Use the <code>GetPolicy</code> operation to poll the <code>status</code> field to track completion.</p>",
+      "idempotent":true
+    },
+    "DeletePolicyEngine":{
+      "name":"DeletePolicyEngine",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/policy-engines/{policyEngineId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeletePolicyEngineRequest"},
+      "output":{"shape":"DeletePolicyEngineResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes an existing policy engine from the AgentCore Policy system. The policy engine must not have any associated policies before deletion. Once deleted, the policy engine and all its configurations become unavailable for policy management and evaluation. This is an asynchronous operation. Use the <code>GetPolicyEngine</code> operation to poll the <code>status</code> field to track completion.</p>",
+      "idempotent":true
+    },
+    "DeleteResourcePolicy":{
+      "name":"DeleteResourcePolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/resourcepolicy/{resourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteResourcePolicyRequest"},
+      "output":{"shape":"DeleteResourcePolicyResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes the resource-based policy for a specified resource.</p> <note> <p>This feature is currently available only for AgentCore Runtime and Gateway.</p> </note>",
       "idempotent":true
     },
     "DeleteWorkloadIdentity":{
@@ -522,6 +699,25 @@
       "documentation":"<p>Gets information about a custom code interpreter.</p>",
       "readonly":true
     },
+    "GetEvaluator":{
+      "name":"GetEvaluator",
+      "http":{
+        "method":"GET",
+        "requestUri":"/evaluators/{evaluatorId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetEvaluatorRequest"},
+      "output":{"shape":"GetEvaluatorResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Retrieves detailed information about an evaluator, including its configuration, status, and metadata. Works with both built-in and custom evaluators. </p>",
+      "readonly":true
+    },
     "GetGateway":{
       "name":"GetGateway",
       "http":{
@@ -598,6 +794,101 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves information about an OAuth2 credential provider.</p>",
+      "readonly":true
+    },
+    "GetOnlineEvaluationConfig":{
+      "name":"GetOnlineEvaluationConfig",
+      "http":{
+        "method":"GET",
+        "requestUri":"/online-evaluation-configs/{onlineEvaluationConfigId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetOnlineEvaluationConfigRequest"},
+      "output":{"shape":"GetOnlineEvaluationConfigResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Retrieves detailed information about an online evaluation configuration, including its rules, data sources, evaluators, and execution status. </p>",
+      "readonly":true
+    },
+    "GetPolicy":{
+      "name":"GetPolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/policy-engines/{policyEngineId}/policies/{policyId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPolicyRequest"},
+      "output":{"shape":"GetPolicyResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a specific policy within the AgentCore Policy system. This operation returns the complete policy definition, metadata, and current status, allowing administrators to review and manage policy configurations.</p>",
+      "readonly":true
+    },
+    "GetPolicyEngine":{
+      "name":"GetPolicyEngine",
+      "http":{
+        "method":"GET",
+        "requestUri":"/policy-engines/{policyEngineId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPolicyEngineRequest"},
+      "output":{"shape":"GetPolicyEngineResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a specific policy engine within the AgentCore Policy system. This operation returns the complete policy engine configuration, metadata, and current status, allowing administrators to review and manage policy engine settings.</p>",
+      "readonly":true
+    },
+    "GetPolicyGeneration":{
+      "name":"GetPolicyGeneration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/policy-engines/{policyEngineId}/policy-generations/{policyGenerationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPolicyGenerationRequest"},
+      "output":{"shape":"GetPolicyGenerationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves information about a policy generation request within the AgentCore Policy system. Policy generation converts natural language descriptions into Cedar policy statements using AI-powered translation, enabling non-technical users to create policies.</p>",
+      "readonly":true
+    },
+    "GetResourcePolicy":{
+      "name":"GetResourcePolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/resourcepolicy/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetResourcePolicyRequest"},
+      "output":{"shape":"GetResourcePolicyResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the resource-based policy for a specified resource.</p> <note> <p>This feature is currently available only for AgentCore Runtime and Gateway.</p> </note>",
       "readonly":true
     },
     "GetTokenVault":{
@@ -751,6 +1042,24 @@
       "documentation":"<p>Lists all custom code interpreters in your account.</p>",
       "readonly":true
     },
+    "ListEvaluators":{
+      "name":"ListEvaluators",
+      "http":{
+        "method":"POST",
+        "requestUri":"/evaluators",
+        "responseCode":200
+      },
+      "input":{"shape":"ListEvaluatorsRequest"},
+      "output":{"shape":"ListEvaluatorsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Lists all available evaluators, including both builtin evaluators provided by the service and custom evaluators created by the user. </p>",
+      "readonly":true
+    },
     "ListGatewayTargets":{
       "name":"ListGatewayTargets",
       "http":{
@@ -826,6 +1135,99 @@
       "documentation":"<p>Lists all OAuth2 credential providers in your account.</p>",
       "readonly":true
     },
+    "ListOnlineEvaluationConfigs":{
+      "name":"ListOnlineEvaluationConfigs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/online-evaluation-configs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListOnlineEvaluationConfigsRequest"},
+      "output":{"shape":"ListOnlineEvaluationConfigsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Lists all online evaluation configurations in the account, providing summary information about each configuration's status and settings. </p>",
+      "readonly":true
+    },
+    "ListPolicies":{
+      "name":"ListPolicies",
+      "http":{
+        "method":"GET",
+        "requestUri":"/policy-engines/{policyEngineId}/policies",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPoliciesRequest"},
+      "output":{"shape":"ListPoliciesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a list of policies within the AgentCore Policy engine. This operation supports pagination and filtering to help administrators manage and discover policies across policy engines. Results can be filtered by policy engine or resource associations.</p>",
+      "readonly":true
+    },
+    "ListPolicyEngines":{
+      "name":"ListPolicyEngines",
+      "http":{
+        "method":"GET",
+        "requestUri":"/policy-engines",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPolicyEnginesRequest"},
+      "output":{"shape":"ListPolicyEnginesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a list of policy engines within the AgentCore Policy system. This operation supports pagination to help administrators discover and manage policy engines across their account. Each policy engine serves as a container for related policies.</p>",
+      "readonly":true
+    },
+    "ListPolicyGenerationAssets":{
+      "name":"ListPolicyGenerationAssets",
+      "http":{
+        "method":"GET",
+        "requestUri":"/policy-engines/{policyEngineId}/policy-generations/{policyGenerationId}/assets",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPolicyGenerationAssetsRequest"},
+      "output":{"shape":"ListPolicyGenerationAssetsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a list of generated policy assets from a policy generation request within the AgentCore Policy system. This operation returns the actual Cedar policies and related artifacts produced by the AI-powered policy generation process, allowing users to review and select from multiple generated policy options.</p>",
+      "readonly":true
+    },
+    "ListPolicyGenerations":{
+      "name":"ListPolicyGenerations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/policy-engines/{policyEngineId}/policy-generations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPolicyGenerationsRequest"},
+      "output":{"shape":"ListPolicyGenerationsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves a list of policy generation requests within the AgentCore Policy system. This operation supports pagination and filtering to help track and manage AI-powered policy generation operations.</p>",
+      "readonly":true
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -865,6 +1267,25 @@
       "documentation":"<p>Lists all workload identities in your account.</p>",
       "readonly":true
     },
+    "PutResourcePolicy":{
+      "name":"PutResourcePolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/resourcepolicy/{resourceArn}",
+        "responseCode":201
+      },
+      "input":{"shape":"PutResourcePolicyRequest"},
+      "output":{"shape":"PutResourcePolicyResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates or updates a resource-based policy for a resource with the specified resourceArn.</p> <note> <p>This feature is currently available only for AgentCore Runtime and Gateway.</p> </note>",
+      "idempotent":true
+    },
     "SetTokenVaultCMK":{
       "name":"SetTokenVaultCMK",
       "http":{
@@ -884,6 +1305,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Sets the customer master key (CMK) for a token vault.</p>"
+    },
+    "StartPolicyGeneration":{
+      "name":"StartPolicyGeneration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/policy-engines/{policyEngineId}/policy-generations",
+        "responseCode":202
+      },
+      "input":{"shape":"StartPolicyGenerationRequest"},
+      "output":{"shape":"StartPolicyGenerationResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Initiates the AI-powered generation of Cedar policies from natural language descriptions within the AgentCore Policy system. This feature enables both technical and non-technical users to create policies by describing their authorization requirements in plain English, which is then automatically translated into formal Cedar policy statements. The generation process analyzes the natural language input along with the Gateway's tool context to produce validated policy options. Generated policy assets are automatically deleted after 7 days, so you should review and create policies from the generated assets within this timeframe. Once created, policies are permanent and not subject to this expiration. Generated policies should be reviewed and tested in log-only mode before deploying to production. Use this when you want to describe policy intent naturally rather than learning Cedar syntax, though generated policies may require refinement for complex scenarios.</p>"
     },
     "SynchronizeGatewayTargets":{
       "name":"SynchronizeGatewayTargets",
@@ -1010,6 +1451,27 @@
       "documentation":"<p>Updates an existing API key credential provider.</p>",
       "idempotent":true
     },
+    "UpdateEvaluator":{
+      "name":"UpdateEvaluator",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/evaluators/{evaluatorId}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateEvaluatorRequest"},
+      "output":{"shape":"UpdateEvaluatorResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Updates a custom evaluator's configuration, description, or evaluation level. Built-in evaluators cannot be updated. The evaluator must not be locked for modification. </p>",
+      "idempotent":true
+    },
     "UpdateGateway":{
       "name":"UpdateGateway",
       "http":{
@@ -1096,6 +1558,67 @@
       ],
       "documentation":"<p>Updates an existing OAuth2 credential provider.</p>"
     },
+    "UpdateOnlineEvaluationConfig":{
+      "name":"UpdateOnlineEvaluationConfig",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/online-evaluation-configs/{onlineEvaluationConfigId}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateOnlineEvaluationConfigRequest"},
+      "output":{"shape":"UpdateOnlineEvaluationConfigResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p> Updates an online evaluation configuration's settings, including rules, data sources, evaluators, and execution status. Changes take effect immediately for ongoing evaluations. </p>",
+      "idempotent":true
+    },
+    "UpdatePolicy":{
+      "name":"UpdatePolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/policy-engines/{policyEngineId}/policies/{policyId}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdatePolicyRequest"},
+      "output":{"shape":"UpdatePolicyResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates an existing policy within the AgentCore Policy system. This operation allows modification of the policy description and definition while maintaining the policy's identity. The updated policy is validated against the Cedar schema before being applied. This is an asynchronous operation. Use the <code>GetPolicy</code> operation to poll the <code>status</code> field to track completion.</p>",
+      "idempotent":true
+    },
+    "UpdatePolicyEngine":{
+      "name":"UpdatePolicyEngine",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/policy-engines/{policyEngineId}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdatePolicyEngineRequest"},
+      "output":{"shape":"UpdatePolicyEngineResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates an existing policy engine within the AgentCore Policy system. This operation allows modification of the policy engine description while maintaining its identity. This is an asynchronous operation. Use the <code>GetPolicyEngine</code> operation to poll the <code>status</code> field to track completion.</p>",
+      "idempotent":true
+    },
     "UpdateWorkloadIdentity":{
       "name":"UpdateWorkloadIdentity",
       "http":{
@@ -1129,6 +1652,11 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "AdditionalModelRequestFields":{
+      "type":"structure",
+      "members":{},
+      "document":true
     },
     "AgentEndpointDescription":{
       "type":"string",
@@ -1325,6 +1853,108 @@
       "member":{"shape":"AllowedClient"},
       "min":1
     },
+    "AllowedScopeType":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[\\x21\\x23-\\x5B\\x5D-\\x7E]+"
+    },
+    "AllowedScopesType":{
+      "type":"list",
+      "member":{"shape":"AllowedScopeType"},
+      "min":1
+    },
+    "ApiGatewayTargetConfiguration":{
+      "type":"structure",
+      "required":[
+        "restApiId",
+        "stage",
+        "apiGatewayToolConfiguration"
+      ],
+      "members":{
+        "restApiId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the API Gateway REST API.</p>"
+        },
+        "stage":{
+          "shape":"String",
+          "documentation":"<p>The ID of the stage of the REST API to add as a target.</p>"
+        },
+        "apiGatewayToolConfiguration":{
+          "shape":"ApiGatewayToolConfiguration",
+          "documentation":"<p>The configuration for defining REST API tool filters and overrides for the gateway target.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an Amazon API Gateway target.</p>"
+    },
+    "ApiGatewayToolConfiguration":{
+      "type":"structure",
+      "required":["toolFilters"],
+      "members":{
+        "toolOverrides":{
+          "shape":"ApiGatewayToolOverrides",
+          "documentation":"<p>A list of explicit tool definitions with optional custom names and descriptions.</p>"
+        },
+        "toolFilters":{
+          "shape":"ApiGatewayToolFilters",
+          "documentation":"<p>A list of path and method patterns to expose as tools using metadata from the REST API's OpenAPI specification.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for defining REST API tool filters and overrides for the gateway target.</p>"
+    },
+    "ApiGatewayToolFilter":{
+      "type":"structure",
+      "required":[
+        "filterPath",
+        "methods"
+      ],
+      "members":{
+        "filterPath":{
+          "shape":"String",
+          "documentation":"<p>Resource path to match in the REST API. Supports exact paths (for example, <code>/pets</code>) or wildcard paths (for example, <code>/pets/*</code> to match all paths under <code>/pets</code>). Must match existing paths in the REST API.</p>"
+        },
+        "methods":{
+          "shape":"RestApiMethods",
+          "documentation":"<p>The methods to filter for.</p>"
+        }
+      },
+      "documentation":"<p>Specifies which operations from an API Gateway REST API are exposed as tools. Tool names and descriptions are derived from the operationId and description fields in the API's exported OpenAPI specification.</p>"
+    },
+    "ApiGatewayToolFilters":{
+      "type":"list",
+      "member":{"shape":"ApiGatewayToolFilter"}
+    },
+    "ApiGatewayToolOverride":{
+      "type":"structure",
+      "required":[
+        "name",
+        "path",
+        "method"
+      ],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of tool. Identifies the tool in the Model Context Protocol.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The description of the tool. Provides information about the purpose and usage of the tool. If not provided, uses the description from the API's OpenAPI specification.</p>"
+        },
+        "path":{
+          "shape":"String",
+          "documentation":"<p>Resource path in the REST API (e.g., <code>/pets</code>). Must explicitly match an existing path in the REST API.</p>"
+        },
+        "method":{
+          "shape":"RestApiMethod",
+          "documentation":"<p>The HTTP method to expose for the specified path.</p>"
+        }
+      },
+      "documentation":"<p>Settings to override configurations for a tool.</p>"
+    },
+    "ApiGatewayToolOverrides":{
+      "type":"list",
+      "member":{"shape":"ApiGatewayToolOverride"}
+    },
     "ApiKeyCredentialLocation":{
       "type":"string",
       "enum":[
@@ -1477,9 +2107,51 @@
         "NONE"
       ]
     },
+    "AuthorizingClaimMatchValueType":{
+      "type":"structure",
+      "required":[
+        "claimMatchValue",
+        "claimMatchOperator"
+      ],
+      "members":{
+        "claimMatchValue":{
+          "shape":"ClaimMatchValueType",
+          "documentation":"<p>The value or values to match for.</p>"
+        },
+        "claimMatchOperator":{
+          "shape":"ClaimMatchOperatorType",
+          "documentation":"<p>Defines the relationship between the claim field value and the value or values you're matching for.</p>"
+        }
+      },
+      "documentation":"<p>Defines the value or values to match for and the relationship of the match.</p>"
+    },
     "AwsAccountId":{
       "type":"string",
       "pattern":"[0-9]{12}"
+    },
+    "BedrockAgentcoreResourceArn":{
+      "type":"string",
+      "max":1011,
+      "min":20
+    },
+    "BedrockEvaluatorModelConfig":{
+      "type":"structure",
+      "required":["modelId"],
+      "members":{
+        "modelId":{
+          "shape":"ModelId",
+          "documentation":"<p> The identifier of the Amazon Bedrock model to use for evaluation. Must be a supported foundation model available in your region. </p>"
+        },
+        "inferenceConfig":{
+          "shape":"InferenceConfiguration",
+          "documentation":"<p> The inference configuration parameters that control model behavior during evaluation, including temperature, token limits, and sampling settings. </p>"
+        },
+        "additionalModelRequestFields":{
+          "shape":"AdditionalModelRequestFields",
+          "documentation":"<p> Additional model-specific request fields to customize model behavior beyond the standard inference configuration. </p>"
+        }
+      },
+      "documentation":"<p> The configuration for using Amazon Bedrock models in evaluator assessments, including model selection and inference parameters. </p>"
     },
     "Boolean":{
       "type":"boolean",
@@ -1589,6 +2261,67 @@
       },
       "documentation":"<p>Contains summary information about a browser. A browser enables Amazon Bedrock Agent to interact with web content.</p>"
     },
+    "CategoricalScaleDefinition":{
+      "type":"structure",
+      "required":[
+        "definition",
+        "label"
+      ],
+      "members":{
+        "definition":{
+          "shape":"String",
+          "documentation":"<p> The description that explains what this categorical rating represents and when it should be used. </p>"
+        },
+        "label":{
+          "shape":"CategoricalScaleDefinitionLabelString",
+          "documentation":"<p> The label or name of this categorical rating option. </p>"
+        }
+      },
+      "documentation":"<p> The definition of a categorical rating scale option that provides a named category with its description for evaluation scoring. </p>"
+    },
+    "CategoricalScaleDefinitionLabelString":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "CategoricalScaleDefinitions":{
+      "type":"list",
+      "member":{"shape":"CategoricalScaleDefinition"}
+    },
+    "CedarPolicy":{
+      "type":"structure",
+      "required":["statement"],
+      "members":{
+        "statement":{
+          "shape":"Statement",
+          "documentation":"<p>The Cedar policy statement that defines the authorization logic. This statement follows Cedar syntax and specifies principals, actions, resources, and conditions that determine when access should be allowed or denied.</p>"
+        }
+      },
+      "documentation":"<p>Represents a Cedar policy statement within the AgentCore Policy system. Cedar is a policy language designed for authorization that provides human-readable, analyzable, and high-performance policy evaluation for controlling agent behavior and access decisions. </p>"
+    },
+    "ClaimMatchOperatorType":{
+      "type":"string",
+      "enum":[
+        "EQUALS",
+        "CONTAINS",
+        "CONTAINS_ANY"
+      ]
+    },
+    "ClaimMatchValueType":{
+      "type":"structure",
+      "members":{
+        "matchValueString":{
+          "shape":"MatchValueString",
+          "documentation":"<p>The string value to match for.</p>"
+        },
+        "matchValueStringList":{
+          "shape":"MatchValueStringList",
+          "documentation":"<p>An array of strings to check for a match.</p>"
+        }
+      },
+      "documentation":"<p>The value or values to match for.</p> <ul> <li> <p>Include a <code>matchValueString</code> with the <code>EQUALS</code> operator to specify a string that matches the claim field value.</p> </li> <li> <p>Include a <code>matchValueArray</code> to specify an array of string values. You can use the following operators:</p> <ul> <li> <p>Use <code>CONTAINS</code> to yield a match if the claim field value is in the array.</p> </li> <li> <p>Use <code>CONTAINS_ANY</code> to yield a match if the claim field value contains any of the strings in the array.</p> </li> </ul> </li> </ul>",
+      "union":true
+    },
     "ClientIdType":{
       "type":"string",
       "max":256,
@@ -1605,6 +2338,47 @@
       "max":256,
       "min":33,
       "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9]){0,256}"
+    },
+    "CloudWatchLogsInputConfig":{
+      "type":"structure",
+      "required":[
+        "logGroupNames",
+        "serviceNames"
+      ],
+      "members":{
+        "logGroupNames":{
+          "shape":"CloudWatchLogsInputConfigLogGroupNamesList",
+          "documentation":"<p> The list of CloudWatch log group names to monitor for agent traces.</p>"
+        },
+        "serviceNames":{
+          "shape":"CloudWatchLogsInputConfigServiceNamesList",
+          "documentation":"<p> The list of service names to filter traces within the specified log groups. Used to identify relevant agent sessions. </p>"
+        }
+      },
+      "documentation":"<p> The configuration for reading agent traces from CloudWatch logs as input for online evaluation. </p>"
+    },
+    "CloudWatchLogsInputConfigLogGroupNamesList":{
+      "type":"list",
+      "member":{"shape":"LogGroupName"},
+      "max":5,
+      "min":1
+    },
+    "CloudWatchLogsInputConfigServiceNamesList":{
+      "type":"list",
+      "member":{"shape":"ServiceName"},
+      "max":1,
+      "min":1
+    },
+    "CloudWatchOutputConfig":{
+      "type":"structure",
+      "required":["logGroupName"],
+      "members":{
+        "logGroupName":{
+          "shape":"LogGroupName",
+          "documentation":"<p> The name of the CloudWatch log group where evaluation results will be written. The log group will be created if it doesn't exist. </p>"
+        }
+      },
+      "documentation":"<p> The configuration for writing evaluation results to CloudWatch logs with embedded metric format (EMF) for monitoring. </p>"
     },
     "Code":{
       "type":"structure",
@@ -1775,6 +2549,17 @@
         }
       },
       "documentation":"<p>Representation of a container configuration.</p>"
+    },
+    "Content":{
+      "type":"structure",
+      "members":{
+        "rawText":{
+          "shape":"NaturalLanguage",
+          "documentation":"<p>The raw text content containing natural language descriptions of desired policy behavior. This text is processed by AI to generate corresponding Cedar policy statements that match the described intent.</p>"
+        }
+      },
+      "documentation":"<p>Represents content input for policy generation operations. This structure encapsulates the natural language descriptions or other content formats that are used as input for AI-powered policy generation.</p>",
+      "union":true
     },
     "CreateAgentRuntimeEndpointRequest":{
       "type":"structure",
@@ -2118,6 +2903,64 @@
         }
       }
     },
+    "CreateEvaluatorRequest":{
+      "type":"structure",
+      "required":[
+        "evaluatorName",
+        "evaluatorConfig",
+        "level"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "evaluatorName":{
+          "shape":"CustomEvaluatorName",
+          "documentation":"<p> The name of the evaluator. Must be unique within your account. </p>"
+        },
+        "description":{
+          "shape":"EvaluatorDescription",
+          "documentation":"<p> The description of the evaluator that explains its purpose and evaluation criteria. </p>"
+        },
+        "evaluatorConfig":{
+          "shape":"EvaluatorConfig",
+          "documentation":"<p> The configuration for the evaluator, including LLM-as-a-Judge settings with instructions, rating scale, and model configuration. </p>"
+        },
+        "level":{
+          "shape":"EvaluatorLevel",
+          "documentation":"<p> The evaluation level that determines the scope of evaluation. Valid values are <code>TOOL_CALL</code> for individual tool invocations, <code>TRACE</code> for single request-response interactions, or <code>SESSION</code> for entire conversation sessions. </p>"
+        }
+      }
+    },
+    "CreateEvaluatorResponse":{
+      "type":"structure",
+      "required":[
+        "evaluatorArn",
+        "evaluatorId",
+        "createdAt",
+        "status"
+      ],
+      "members":{
+        "evaluatorArn":{
+          "shape":"CustomEvaluatorArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the created evaluator. </p>"
+        },
+        "evaluatorId":{
+          "shape":"EvaluatorId",
+          "documentation":"<p> The unique identifier of the created evaluator. </p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp when the evaluator was created. </p>"
+        },
+        "status":{
+          "shape":"EvaluatorStatus",
+          "documentation":"<p> The status of the evaluator creation operation. </p>"
+        }
+      }
+    },
     "CreateGatewayRequest":{
       "type":"structure",
       "required":[
@@ -2167,6 +3010,10 @@
         "interceptorConfigurations":{
           "shape":"GatewayInterceptorConfigurations",
           "documentation":"<p>A list of configuration settings for a gateway interceptor. Gateway interceptors allow custom code to be invoked during gateway invocations.</p>"
+        },
+        "policyEngineConfiguration":{
+          "shape":"GatewayPolicyEngineConfiguration",
+          "documentation":"<p>The policy engine configuration for the gateway. A policy engine is a collection of policies that evaluates and authorizes agent tool calls. When associated with a gateway, the policy engine intercepts all agent requests and determines whether to allow or deny each action based on the defined policies.</p>"
         },
         "exceptionLevel":{
           "shape":"ExceptionLevel",
@@ -2254,6 +3101,10 @@
         "interceptorConfigurations":{
           "shape":"GatewayInterceptorConfigurations",
           "documentation":"<p>The list of interceptor configurations for the created gateway.</p>"
+        },
+        "policyEngineConfiguration":{
+          "shape":"GatewayPolicyEngineConfiguration",
+          "documentation":"<p>The policy engine configuration for the created gateway.</p>"
         },
         "workloadIdentityDetails":{
           "shape":"WorkloadIdentityDetails",
@@ -2412,7 +3263,7 @@
       "type":"integer",
       "box":true,
       "max":365,
-      "min":7
+      "min":3
     },
     "CreateMemoryOutput":{
       "type":"structure",
@@ -2474,6 +3325,247 @@
           "documentation":"<p>Callback URL to register on the OAuth2 credential provider as an allowed callback URL. This URL is where the OAuth2 authorization server redirects users after they complete the authorization flow.</p>"
         },
         "oauth2ProviderConfigOutput":{"shape":"Oauth2ProviderConfigOutput"}
+      }
+    },
+    "CreateOnlineEvaluationConfigRequest":{
+      "type":"structure",
+      "required":[
+        "onlineEvaluationConfigName",
+        "rule",
+        "dataSourceConfig",
+        "evaluators",
+        "evaluationExecutionRoleArn",
+        "enableOnCreate"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "onlineEvaluationConfigName":{
+          "shape":"EvaluationConfigName",
+          "documentation":"<p> The name of the online evaluation configuration. Must be unique within your account. </p>"
+        },
+        "description":{
+          "shape":"EvaluationConfigDescription",
+          "documentation":"<p> The description of the online evaluation configuration that explains its monitoring purpose and scope. </p>"
+        },
+        "rule":{
+          "shape":"Rule",
+          "documentation":"<p> The evaluation rule that defines sampling configuration, filters, and session detection settings for the online evaluation. </p>"
+        },
+        "dataSourceConfig":{
+          "shape":"DataSourceConfig",
+          "documentation":"<p> The data source configuration that specifies CloudWatch log groups and service names to monitor for agent traces. </p>"
+        },
+        "evaluators":{
+          "shape":"EvaluatorList",
+          "documentation":"<p> The list of evaluators to apply during online evaluation. Can include both built-in evaluators and custom evaluators created with <code>CreateEvaluator</code>. </p>"
+        },
+        "evaluationExecutionRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the IAM role that grants permissions to read from CloudWatch logs, write evaluation results, and invoke Amazon Bedrock models for evaluation. </p>"
+        },
+        "enableOnCreate":{
+          "shape":"Boolean",
+          "documentation":"<p> Whether to enable the online evaluation configuration immediately upon creation. If true, evaluation begins automatically. </p>"
+        }
+      }
+    },
+    "CreateOnlineEvaluationConfigResponse":{
+      "type":"structure",
+      "required":[
+        "onlineEvaluationConfigArn",
+        "onlineEvaluationConfigId",
+        "createdAt",
+        "status",
+        "executionStatus"
+      ],
+      "members":{
+        "onlineEvaluationConfigArn":{
+          "shape":"OnlineEvaluationConfigArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the created online evaluation configuration. </p>"
+        },
+        "onlineEvaluationConfigId":{
+          "shape":"OnlineEvaluationConfigId",
+          "documentation":"<p> The unique identifier of the created online evaluation configuration. </p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp when the online evaluation configuration was created. </p>"
+        },
+        "outputConfig":{"shape":"OutputConfig"},
+        "status":{
+          "shape":"OnlineEvaluationConfigStatus",
+          "documentation":"<p> The status of the online evaluation configuration. </p>"
+        },
+        "executionStatus":{
+          "shape":"OnlineEvaluationExecutionStatus",
+          "documentation":"<p> The execution status indicating whether the online evaluation is currently running. </p>"
+        },
+        "failureReason":{
+          "shape":"String",
+          "documentation":"<p> The reason for failure if the online evaluation configuration creation or execution failed. </p>"
+        }
+      }
+    },
+    "CreatePolicyEngineRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"PolicyEngineName",
+          "documentation":"<p>The customer-assigned immutable name for the policy engine. This name identifies the policy engine and cannot be changed after creation.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the policy engine's purpose and scope (1-4,096 characters). This helps administrators understand the policy engine's role in the overall governance strategy. Document which Gateway this engine will be associated with, what types of tools or workflows it governs, and the team or service responsible for maintaining it. Clear descriptions are essential when managing multiple policy engines across different services or environments.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you retry a request with the same client token, the service returns the same response without creating a duplicate policy engine.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreatePolicyEngineResponse":{
+      "type":"structure",
+      "required":[
+        "policyEngineId",
+        "name",
+        "createdAt",
+        "updatedAt",
+        "policyEngineArn",
+        "status",
+        "statusReasons"
+      ],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the created policy engine. This system-generated identifier consists of the user name plus a 10-character generated suffix and is used for all subsequent policy engine operations.</p>"
+        },
+        "name":{
+          "shape":"PolicyEngineName",
+          "documentation":"<p>The customer-assigned name of the created policy engine. This matches the name provided in the request and serves as the human-readable identifier.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the policy engine's purpose.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy engine was created. This is automatically set by the service and used for auditing and lifecycle management.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy engine was last updated. For newly created policy engines, this matches the <code>createdAt</code> timestamp.</p>"
+        },
+        "policyEngineArn":{
+          "shape":"PolicyEngineArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created policy engine. This globally unique identifier can be used for cross-service references and IAM policy statements.</p>"
+        },
+        "status":{
+          "shape":"PolicyEngineStatus",
+          "documentation":"<p>The current status of the policy engine. A status of <code>ACTIVE</code> indicates the policy engine is ready for use.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the policy engine status. This provides details about any failures or the current state of the policy engine creation process.</p>"
+        }
+      }
+    },
+    "CreatePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "definition",
+        "policyEngineId"
+      ],
+      "members":{
+        "name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The customer-assigned immutable name for the policy. Must be unique within the account. This name is used for policy identification and cannot be changed after creation.</p>"
+        },
+        "definition":{
+          "shape":"PolicyDefinition",
+          "documentation":"<p>The Cedar policy statement that defines the access control rules. This contains the actual policy logic written in Cedar policy language, specifying effect (permit or forbid), principals, actions, resources, and conditions for agent behavior control.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the policy's purpose and functionality (1-4,096 characters). This helps policy administrators understand the policy's intent, business rules, and operational scope. Use this field to document why the policy exists, what business requirement it addresses, and any special considerations for maintenance. Clear descriptions are essential for policy governance, auditing, and troubleshooting.</p>"
+        },
+        "validationMode":{
+          "shape":"PolicyValidationMode",
+          "documentation":"<p>The validation mode for the policy creation. Determines how Cedar analyzer validation results are handled during policy creation. FAIL_ON_ANY_FINDINGS (default) runs the Cedar analyzer to validate the policy against the Cedar schema and tool context, failing creation if the analyzer detects any validation issues to ensure strict conformance. IGNORE_ALL_FINDINGS runs the Cedar analyzer but allows policy creation even if validation issues are detected, useful for testing or when the policy schema is evolving. Use FAIL_ON_ANY_FINDINGS for production policies to ensure correctness, and IGNORE_ALL_FINDINGS only when you understand and accept the analyzer findings.</p>"
+        },
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine which contains this policy. Policy engines group related policies and provide the execution context for policy evaluation.</p>",
+          "location":"uri",
+          "locationName":"policyEngineId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure the idempotency of the request. The AWS SDK automatically generates this token, so you don't need to provide it in most cases. If you retry a request with the same client token, the service returns the same response without creating a duplicate policy.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreatePolicyResponse":{
+      "type":"structure",
+      "required":[
+        "policyId",
+        "name",
+        "policyEngineId",
+        "definition",
+        "createdAt",
+        "updatedAt",
+        "policyArn",
+        "status",
+        "statusReasons"
+      ],
+      "members":{
+        "policyId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the created policy. This is a system-generated identifier consisting of the user name plus a 10-character generated suffix, used for all subsequent policy operations.</p>"
+        },
+        "name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The customer-assigned name of the created policy. This matches the name provided in the request and serves as the human-readable identifier for the policy.</p>"
+        },
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine that manages this policy. This confirms the policy engine assignment and is used for policy evaluation routing.</p>"
+        },
+        "definition":{
+          "shape":"PolicyDefinition",
+          "documentation":"<p>The Cedar policy statement that was created. This is the validated policy definition that will be used for agent behavior control and access decisions.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The human-readable description of the policy's purpose and functionality. This helps administrators understand and manage the policy.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy was created. This is automatically set by the service and used for auditing and lifecycle management.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy was last updated. For newly created policies, this matches the createdAt timestamp.</p>"
+        },
+        "policyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created policy. This globally unique identifier can be used for cross-service references and IAM policy statements.</p>"
+        },
+        "status":{
+          "shape":"PolicyStatus",
+          "documentation":"<p>The current status of the policy. A status of <code>ACTIVE</code> indicates the policy is ready for use.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the policy status. This provides details about any failures or the current state of the policy creation process.</p>"
+        }
       }
     },
     "CreateWorkloadIdentityRequest":{
@@ -2599,6 +3691,34 @@
         "CognitoOauth2"
       ]
     },
+    "CustomClaimValidationType":{
+      "type":"structure",
+      "required":[
+        "inboundTokenClaimName",
+        "inboundTokenClaimValueType",
+        "authorizingClaimMatchValue"
+      ],
+      "members":{
+        "inboundTokenClaimName":{
+          "shape":"InboundTokenClaimNameType",
+          "documentation":"<p>The name of the custom claim field to check.</p>"
+        },
+        "inboundTokenClaimValueType":{
+          "shape":"InboundTokenClaimValueType",
+          "documentation":"<p>The data type of the claim value to check for.</p> <ul> <li> <p>Use <code>STRING</code> if you want to find an exact match to a string you define.</p> </li> <li> <p>Use <code>STRING_ARRAY</code> if you want to fnd a match to at least one value in an array you define.</p> </li> </ul>"
+        },
+        "authorizingClaimMatchValue":{
+          "shape":"AuthorizingClaimMatchValueType",
+          "documentation":"<p>Defines the value or values to match for and the relationship of the match.</p>"
+        }
+      },
+      "documentation":"<p>Defines the name of a custom claim field and rules for finding matches to authenticate its value.</p>"
+    },
+    "CustomClaimValidationsType":{
+      "type":"list",
+      "member":{"shape":"CustomClaimValidationType"},
+      "min":1
+    },
     "CustomConfigurationInput":{
       "type":"structure",
       "members":{
@@ -2613,6 +3733,10 @@
         "userPreferenceOverride":{
           "shape":"UserPreferenceOverrideConfigurationInput",
           "documentation":"<p>The user preference override configuration for a custom memory strategy.</p>"
+        },
+        "episodicOverride":{
+          "shape":"EpisodicOverrideConfigurationInput",
+          "documentation":"<p>The episodic memory strategy override configuration for a custom memory strategy.</p>"
         },
         "selfManagedConfiguration":{
           "shape":"SelfManagedConfigurationInput",
@@ -2636,6 +3760,10 @@
         "userPreferenceConsolidationOverride":{
           "shape":"UserPreferenceConsolidationOverride",
           "documentation":"<p>The user preference consolidation override configuration.</p>"
+        },
+        "episodicConsolidationOverride":{
+          "shape":"EpisodicConsolidationOverride",
+          "documentation":"<p>The configurations to override the default consolidation step for the episodic memory strategy.</p>"
         }
       },
       "documentation":"<p>Contains custom consolidation configuration information.</p>",
@@ -2655,10 +3783,22 @@
         "userPreferenceConsolidationOverride":{
           "shape":"UserPreferenceOverrideConsolidationConfigurationInput",
           "documentation":"<p>The user preference consolidation override configuration input.</p>"
+        },
+        "episodicConsolidationOverride":{
+          "shape":"EpisodicOverrideConsolidationConfigurationInput",
+          "documentation":"<p>Configurations to override the consolidation step of the episodic strategy.</p>"
         }
       },
       "documentation":"<p>Input for a custom consolidation configuration.</p>",
       "union":true
+    },
+    "CustomEvaluatorArn":{
+      "type":"string",
+      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+    },
+    "CustomEvaluatorName":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
     },
     "CustomExtractionConfiguration":{
       "type":"structure",
@@ -2670,6 +3810,10 @@
         "userPreferenceExtractionOverride":{
           "shape":"UserPreferenceExtractionOverride",
           "documentation":"<p>The user preference extraction override configuration.</p>"
+        },
+        "episodicExtractionOverride":{
+          "shape":"EpisodicExtractionOverride",
+          "documentation":"<p>The configurations to override the default extraction step for the episodic memory strategy.</p>"
         }
       },
       "documentation":"<p>Contains custom extraction configuration information.</p>",
@@ -2685,6 +3829,10 @@
         "userPreferenceExtractionOverride":{
           "shape":"UserPreferenceOverrideExtractionConfigurationInput",
           "documentation":"<p>The user preference extraction override configuration input.</p>"
+        },
+        "episodicExtractionOverride":{
+          "shape":"EpisodicOverrideExtractionConfigurationInput",
+          "documentation":"<p>Configurations to override the extraction step of the episodic strategy.</p>"
         }
       },
       "documentation":"<p>Input for a custom extraction configuration.</p>",
@@ -2705,6 +3853,14 @@
         "allowedClients":{
           "shape":"AllowedClientsList",
           "documentation":"<p>Represents individual client IDs that are validated in the incoming JWT token validation process.</p>"
+        },
+        "allowedScopes":{
+          "shape":"AllowedScopesType",
+          "documentation":"<p>An array of scopes that are allowed to access the token.</p>"
+        },
+        "customClaims":{
+          "shape":"CustomClaimValidationsType",
+          "documentation":"<p>An array of objects that define a custom claim validation name, value, and operation </p>"
         }
       },
       "documentation":"<p>Configuration for inbound JWT-based authorization, specifying how incoming requests should be authenticated.</p>"
@@ -2769,6 +3925,39 @@
         }
       },
       "documentation":"<p>Output configuration for a custom OAuth2 provider.</p>"
+    },
+    "CustomReflectionConfiguration":{
+      "type":"structure",
+      "members":{
+        "episodicReflectionOverride":{
+          "shape":"EpisodicReflectionOverride",
+          "documentation":"<p>The configuration for a reflection strategy to override the default one.</p>"
+        }
+      },
+      "documentation":"<p>Contains configurations for a custom reflection strategy.</p>",
+      "union":true
+    },
+    "CustomReflectionConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "episodicReflectionOverride":{
+          "shape":"EpisodicOverrideReflectionConfigurationInput",
+          "documentation":"<p>The reflection override configuration input.</p>"
+        }
+      },
+      "documentation":"<p>Input for a custom reflection configuration.</p>",
+      "union":true
+    },
+    "DataSourceConfig":{
+      "type":"structure",
+      "members":{
+        "cloudWatchLogs":{
+          "shape":"CloudWatchLogsInputConfig",
+          "documentation":"<p> The CloudWatch logs configuration for reading agent traces from log groups. </p>"
+        }
+      },
+      "documentation":"<p> The configuration that specifies where to read agent traces for online evaluation. </p>",
+      "union":true
     },
     "DateTimestamp":{
       "type":"timestamp",
@@ -2962,6 +4151,40 @@
         }
       }
     },
+    "DeleteEvaluatorRequest":{
+      "type":"structure",
+      "required":["evaluatorId"],
+      "members":{
+        "evaluatorId":{
+          "shape":"EvaluatorId",
+          "documentation":"<p> The unique identifier of the evaluator to delete. </p>",
+          "location":"uri",
+          "locationName":"evaluatorId"
+        }
+      }
+    },
+    "DeleteEvaluatorResponse":{
+      "type":"structure",
+      "required":[
+        "evaluatorArn",
+        "evaluatorId",
+        "status"
+      ],
+      "members":{
+        "evaluatorArn":{
+          "shape":"EvaluatorArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the deleted evaluator. </p>"
+        },
+        "evaluatorId":{
+          "shape":"EvaluatorId",
+          "documentation":"<p> The unique identifier of the deleted evaluator. </p>"
+        },
+        "status":{
+          "shape":"EvaluatorStatus",
+          "documentation":"<p> The status of the evaluator deletion operation. </p>"
+        }
+      }
+    },
     "DeleteGatewayRequest":{
       "type":"structure",
       "required":["gatewayIdentifier"],
@@ -3109,6 +4332,188 @@
       "type":"structure",
       "members":{}
     },
+    "DeleteOnlineEvaluationConfigRequest":{
+      "type":"structure",
+      "required":["onlineEvaluationConfigId"],
+      "members":{
+        "onlineEvaluationConfigId":{
+          "shape":"OnlineEvaluationConfigId",
+          "documentation":"<p> The unique identifier of the online evaluation configuration to delete. </p>",
+          "location":"uri",
+          "locationName":"onlineEvaluationConfigId"
+        }
+      }
+    },
+    "DeleteOnlineEvaluationConfigResponse":{
+      "type":"structure",
+      "required":[
+        "onlineEvaluationConfigArn",
+        "onlineEvaluationConfigId",
+        "status"
+      ],
+      "members":{
+        "onlineEvaluationConfigArn":{
+          "shape":"OnlineEvaluationConfigArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the deleted online evaluation configuration. </p>"
+        },
+        "onlineEvaluationConfigId":{
+          "shape":"OnlineEvaluationConfigId",
+          "documentation":"<p> The unique identifier of the deleted online evaluation configuration. </p>"
+        },
+        "status":{
+          "shape":"OnlineEvaluationConfigStatus",
+          "documentation":"<p> The status of the online evaluation configuration deletion operation. </p>"
+        }
+      }
+    },
+    "DeletePolicyEngineRequest":{
+      "type":"structure",
+      "required":["policyEngineId"],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the policy engine to be deleted. This must be a valid policy engine ID that exists within the account.</p>",
+          "location":"uri",
+          "locationName":"policyEngineId"
+        }
+      }
+    },
+    "DeletePolicyEngineResponse":{
+      "type":"structure",
+      "required":[
+        "policyEngineId",
+        "name",
+        "createdAt",
+        "updatedAt",
+        "policyEngineArn",
+        "status",
+        "statusReasons"
+      ],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the policy engine being deleted. This confirms which policy engine the deletion operation targets.</p>"
+        },
+        "name":{
+          "shape":"PolicyEngineName",
+          "documentation":"<p>The customer-assigned name of the deleted policy engine.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The human-readable description of the deleted policy engine.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the deleted policy engine was originally created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the deleted policy engine was last modified before deletion. This tracks the final state of the policy engine before it was removed from the system.</p>"
+        },
+        "policyEngineArn":{
+          "shape":"PolicyEngineArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted policy engine. This globally unique identifier confirms which policy engine resource was successfully removed.</p>"
+        },
+        "status":{
+          "shape":"PolicyEngineStatus",
+          "documentation":"<p>The status of the policy engine deletion operation. This provides status about any issues that occurred during the deletion process.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the deletion status. This provides details about the deletion process or any issues that may have occurred.</p>"
+        }
+      }
+    },
+    "DeletePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "policyEngineId",
+        "policyId"
+      ],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine that manages the policy to be deleted. This ensures the policy is deleted from the correct policy engine context.</p>",
+          "location":"uri",
+          "locationName":"policyEngineId"
+        },
+        "policyId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the policy to be deleted. This must be a valid policy ID that exists within the specified policy engine.</p>",
+          "location":"uri",
+          "locationName":"policyId"
+        }
+      }
+    },
+    "DeletePolicyResponse":{
+      "type":"structure",
+      "required":[
+        "policyId",
+        "name",
+        "policyEngineId",
+        "definition",
+        "createdAt",
+        "updatedAt",
+        "policyArn",
+        "status",
+        "statusReasons"
+      ],
+      "members":{
+        "policyId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the policy being deleted. This confirms which policy the deletion operation targets.</p>"
+        },
+        "name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The customer-assigned name of the deleted policy. This confirms which policy was successfully removed from the system and matches the name that was originally assigned during policy creation.</p>"
+        },
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine from which the policy was deleted. This confirms the policy engine context for the deletion operation.</p>"
+        },
+        "definition":{"shape":"PolicyDefinition"},
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The human-readable description of the deleted policy.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the deleted policy was originally created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the deleted policy was last modified before deletion. This tracks the final state of the policy before it was removed from the system.</p>"
+        },
+        "policyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted policy. This globally unique identifier confirms which policy resource was successfully removed.</p>"
+        },
+        "status":{
+          "shape":"PolicyStatus",
+          "documentation":"<p>The status of the policy deletion operation. This provides information about any issues that occurred during the deletion process.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the deletion status. This provides details about the deletion process or any issues that may have occurred.</p>"
+        }
+      }
+    },
+    "DeleteResourcePolicyRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"BedrockAgentcoreResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource for which to delete the resource policy.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "DeleteResourcePolicyResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteWorkloadIdentityRequest":{
       "type":"structure",
       "required":["name"],
@@ -3136,6 +4541,10 @@
     "DiscoveryUrlType":{
       "type":"string",
       "pattern":".+/\\.well-known/openid-configuration"
+    },
+    "Double":{
+      "type":"double",
+      "box":true
     },
     "EncryptionFailure":{
       "type":"structure",
@@ -3173,6 +4582,342 @@
       "min":0,
       "sensitive":true
     },
+    "EpisodicConsolidationOverride":{
+      "type":"structure",
+      "required":[
+        "appendToPrompt",
+        "modelId"
+      ],
+      "members":{
+        "appendToPrompt":{
+          "shape":"Prompt",
+          "documentation":"<p>The text appended to the prompt for the consolidation step of the episodic memory strategy.</p>"
+        },
+        "modelId":{
+          "shape":"String",
+          "documentation":"<p>The model ID used for the consolidation step of the episodic memory strategy.</p>"
+        }
+      },
+      "documentation":"<p>Contains configurations to override the default consolidation step for the episodic memory strategy.</p>"
+    },
+    "EpisodicExtractionOverride":{
+      "type":"structure",
+      "required":[
+        "appendToPrompt",
+        "modelId"
+      ],
+      "members":{
+        "appendToPrompt":{
+          "shape":"Prompt",
+          "documentation":"<p>The text appended to the prompt for the extraction step of the episodic memory strategy.</p>"
+        },
+        "modelId":{
+          "shape":"String",
+          "documentation":"<p>The model ID used for the extraction step of the episodic memory strategy.</p>"
+        }
+      },
+      "documentation":"<p>Contains configurations to override the default extraction step for the episodic memory strategy.</p>"
+    },
+    "EpisodicMemoryStrategyInput":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"Name",
+          "documentation":"<p>The name of the episodic memory strategy.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the episodic memory strategy.</p>"
+        },
+        "namespaces":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaces for which to create episodes.</p>"
+        },
+        "reflectionConfiguration":{
+          "shape":"EpisodicReflectionConfigurationInput",
+          "documentation":"<p>The configuration for the reflections created with the episodic memory strategy.</p>"
+        }
+      },
+      "documentation":"<p>Input for creating an episodic memory strategy.</p>"
+    },
+    "EpisodicOverrideConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "extraction":{
+          "shape":"EpisodicOverrideExtractionConfigurationInput",
+          "documentation":"<p>Contains configurations for overriding the extraction step of the episodic memory strategy.</p>"
+        },
+        "consolidation":{
+          "shape":"EpisodicOverrideConsolidationConfigurationInput",
+          "documentation":"<p>Contains configurations for overriding the consolidation step of the episodic memory strategy.</p>"
+        },
+        "reflection":{
+          "shape":"EpisodicOverrideReflectionConfigurationInput",
+          "documentation":"<p>Contains configurations for overriding the reflection step of the episodic memory strategy.</p>"
+        }
+      },
+      "documentation":"<p>Input for the configuration to override the episodic memory strategy.</p>"
+    },
+    "EpisodicOverrideConsolidationConfigurationInput":{
+      "type":"structure",
+      "required":[
+        "appendToPrompt",
+        "modelId"
+      ],
+      "members":{
+        "appendToPrompt":{
+          "shape":"Prompt",
+          "documentation":"<p>The text to append to the prompt for the consolidation step of the episodic memory strategy.</p>"
+        },
+        "modelId":{
+          "shape":"String",
+          "documentation":"<p>The model ID to use for the consolidation step of the episodic memory strategy.</p>"
+        }
+      },
+      "documentation":"<p>Configurations for overriding the consolidation step of the episodic memory strategy.</p>"
+    },
+    "EpisodicOverrideExtractionConfigurationInput":{
+      "type":"structure",
+      "required":[
+        "appendToPrompt",
+        "modelId"
+      ],
+      "members":{
+        "appendToPrompt":{
+          "shape":"Prompt",
+          "documentation":"<p>The text to append to the prompt for the extraction step of the episodic memory strategy.</p>"
+        },
+        "modelId":{
+          "shape":"String",
+          "documentation":"<p>The model ID to use for the extraction step of the episodic memory strategy.</p>"
+        }
+      },
+      "documentation":"<p>Configurations for overriding the extraction step of the episodic memory strategy.</p>"
+    },
+    "EpisodicOverrideReflectionConfigurationInput":{
+      "type":"structure",
+      "required":[
+        "appendToPrompt",
+        "modelId"
+      ],
+      "members":{
+        "appendToPrompt":{
+          "shape":"Prompt",
+          "documentation":"<p>The text to append to the prompt for reflection step of the episodic memory strategy.</p>"
+        },
+        "modelId":{
+          "shape":"String",
+          "documentation":"<p>The model ID to use for the reflection step of the episodic memory strategy.</p>"
+        },
+        "namespaces":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaces to use for episodic reflection. Can be less nested than the episodic namespaces.</p>"
+        }
+      },
+      "documentation":"<p>Configurations for overriding the reflection step of the episodic memory strategy.</p>"
+    },
+    "EpisodicReflectionConfiguration":{
+      "type":"structure",
+      "required":["namespaces"],
+      "members":{
+        "namespaces":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaces for which to create reflections. Can be less nested than the episodic namespaces.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for the reflections created with the episodic memory strategy.</p>"
+    },
+    "EpisodicReflectionConfigurationInput":{
+      "type":"structure",
+      "required":["namespaces"],
+      "members":{
+        "namespaces":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaces over which to create reflections. Can be less nested than episode namespaces.</p>"
+        }
+      },
+      "documentation":"<p>An episodic reflection configuration input.</p>"
+    },
+    "EpisodicReflectionOverride":{
+      "type":"structure",
+      "required":[
+        "appendToPrompt",
+        "modelId"
+      ],
+      "members":{
+        "appendToPrompt":{
+          "shape":"Prompt",
+          "documentation":"<p>The text appended to the prompt for the reflection step of the episodic memory strategy.</p>"
+        },
+        "modelId":{
+          "shape":"String",
+          "documentation":"<p>The model ID used for the reflection step of the episodic memory strategy.</p>"
+        },
+        "namespaces":{
+          "shape":"NamespacesList",
+          "documentation":"<p>The namespaces over which reflections were created. Can be less nested than the episodic namespaces.</p>"
+        }
+      },
+      "documentation":"<p>Contains configurations to override the default reflection step for the episodic memory strategy.</p>"
+    },
+    "EvaluationConfigDescription":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":".+",
+      "sensitive":true
+    },
+    "EvaluationConfigName":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
+    },
+    "EvaluatorArn":{
+      "type":"string",
+      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$|^arn:aws:bedrock-agentcore:::evaluator/Builtin.[a-zA-Z0-9_-]+"
+    },
+    "EvaluatorConfig":{
+      "type":"structure",
+      "members":{
+        "llmAsAJudge":{
+          "shape":"LlmAsAJudgeEvaluatorConfig",
+          "documentation":"<p> The LLM-as-a-Judge configuration that uses a language model to evaluate agent performance based on custom instructions and rating scales. </p>"
+        }
+      },
+      "documentation":"<p> The configuration that defines how an evaluator assesses agent performance, including the evaluation method and parameters. </p>",
+      "union":true
+    },
+    "EvaluatorDescription":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "sensitive":true
+    },
+    "EvaluatorId":{
+      "type":"string",
+      "pattern":"(Builtin.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10})"
+    },
+    "EvaluatorInstructions":{
+      "type":"string",
+      "sensitive":true
+    },
+    "EvaluatorLevel":{
+      "type":"string",
+      "enum":[
+        "TOOL_CALL",
+        "TRACE",
+        "SESSION"
+      ]
+    },
+    "EvaluatorList":{
+      "type":"list",
+      "member":{"shape":"EvaluatorReference"},
+      "max":10,
+      "min":1
+    },
+    "EvaluatorModelConfig":{
+      "type":"structure",
+      "members":{
+        "bedrockEvaluatorModelConfig":{
+          "shape":"BedrockEvaluatorModelConfig",
+          "documentation":"<p> The Amazon Bedrock model configuration for evaluation. </p>"
+        }
+      },
+      "documentation":"<p> The model configuration that specifies which foundation model to use for evaluation and how to configure it. </p>",
+      "union":true
+    },
+    "EvaluatorName":{
+      "type":"string",
+      "pattern":"(Builtin.[a-zA-Z0-9_-]+|[a-zA-Z][a-zA-Z0-9_]{0,47})"
+    },
+    "EvaluatorReference":{
+      "type":"structure",
+      "members":{
+        "evaluatorId":{
+          "shape":"EvaluatorId",
+          "documentation":"<p> The unique identifier of the evaluator. Can reference builtin evaluators (e.g., Builtin.Helpfulness) or custom evaluators. </p>"
+        }
+      },
+      "documentation":"<p> The reference to an evaluator used in online evaluation configurations, containing the evaluator identifier. </p>",
+      "union":true
+    },
+    "EvaluatorStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "CREATING",
+        "CREATE_FAILED",
+        "UPDATING",
+        "UPDATE_FAILED",
+        "DELETING"
+      ]
+    },
+    "EvaluatorSummary":{
+      "type":"structure",
+      "required":[
+        "evaluatorArn",
+        "evaluatorId",
+        "evaluatorName",
+        "evaluatorType",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "evaluatorArn":{
+          "shape":"EvaluatorArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the evaluator. </p>"
+        },
+        "evaluatorId":{
+          "shape":"EvaluatorId",
+          "documentation":"<p> The unique identifier of the evaluator. </p>"
+        },
+        "evaluatorName":{
+          "shape":"EvaluatorName",
+          "documentation":"<p> The name of the evaluator. </p>"
+        },
+        "description":{
+          "shape":"EvaluatorDescription",
+          "documentation":"<p> The description of the evaluator. </p>"
+        },
+        "evaluatorType":{
+          "shape":"EvaluatorType",
+          "documentation":"<p> The type of evaluator, indicating whether it is a built-in evaluator provided by the service or a custom evaluator created by the user. </p>"
+        },
+        "level":{
+          "shape":"EvaluatorLevel",
+          "documentation":"<p> The evaluation level (<code>TOOL_CALL</code>, <code>TRACE</code>, or <code>SESSION</code>) that determines the scope of evaluation. </p>"
+        },
+        "status":{
+          "shape":"EvaluatorStatus",
+          "documentation":"<p> The current status of the evaluator. </p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp when the evaluator was created. </p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp when the evaluator was last updated. </p>"
+        },
+        "lockedForModification":{
+          "shape":"Boolean",
+          "documentation":"<p> Whether the evaluator is locked for modification due to being referenced by active online evaluation configurations. </p>"
+        }
+      },
+      "documentation":"<p> The summary information about an evaluator, including basic metadata and status information. </p>"
+    },
+    "EvaluatorSummaryList":{
+      "type":"list",
+      "member":{"shape":"EvaluatorSummary"}
+    },
+    "EvaluatorType":{
+      "type":"string",
+      "enum":[
+        "Builtin",
+        "Custom"
+      ]
+    },
     "ExceptionLevel":{
       "type":"string",
       "enum":["DEBUG"]
@@ -3187,6 +4932,108 @@
       },
       "documentation":"<p>Contains extraction configuration information for a memory strategy.</p>",
       "union":true
+    },
+    "Filter":{
+      "type":"structure",
+      "required":[
+        "key",
+        "operator",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"FilterKeyString",
+          "documentation":"<p> The key or field name to filter on within the agent trace data. </p>"
+        },
+        "operator":{
+          "shape":"FilterOperator",
+          "documentation":"<p> The comparison operator to use for filtering. </p>"
+        },
+        "value":{
+          "shape":"FilterValue",
+          "documentation":"<p> The value to compare against using the specified operator. </p>"
+        }
+      },
+      "documentation":"<p> The filter that applies conditions to agent traces during online evaluation to determine which traces should be evaluated. </p>"
+    },
+    "FilterKeyString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9._-]+"
+    },
+    "FilterList":{
+      "type":"list",
+      "member":{"shape":"Filter"},
+      "max":5,
+      "min":0
+    },
+    "FilterOperator":{
+      "type":"string",
+      "enum":[
+        "Equals",
+        "NotEquals",
+        "GreaterThan",
+        "LessThan",
+        "GreaterThanOrEqual",
+        "LessThanOrEqual",
+        "Contains",
+        "NotContains"
+      ]
+    },
+    "FilterValue":{
+      "type":"structure",
+      "members":{
+        "stringValue":{
+          "shape":"FilterValueStringValueString",
+          "documentation":"<p> The string value for text-based filtering. </p>"
+        },
+        "doubleValue":{
+          "shape":"Double",
+          "documentation":"<p> The numeric value for numerical filtering and comparisons. </p>"
+        },
+        "booleanValue":{
+          "shape":"Boolean",
+          "documentation":"<p> The boolean value for true/false filtering conditions. </p>"
+        }
+      },
+      "documentation":"<p> The value used in filter comparisons, supporting different data types for flexible filtering criteria. </p>",
+      "union":true
+    },
+    "FilterValueStringValueString":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "Finding":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"FindingType",
+          "documentation":"<p>The type or category of the finding. This classifies the finding as an error, warning, recommendation, or informational message to help users understand the severity and nature of the issue.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A human-readable description of the finding. This provides detailed information about the issue, recommendation, or validation result to help users understand and address the finding. </p>"
+        }
+      },
+      "documentation":"<p>Represents a finding or issue discovered during policy generation or validation. Findings provide insights about potential problems, recommendations, or validation results from policy analysis operations. Finding types include: VALID (policy is ready to use), INVALID (policy has validation errors that must be fixed), NOT_TRANSLATABLE (input couldn't be converted to policy), ALLOW_ALL (policy would allow all actions, potential security risk), ALLOW_NONE (policy would allow no actions, unusable), DENY_ALL (policy would deny all actions, may be too restrictive), and DENY_NONE (policy would deny no actions, ineffective). Review all findings before creating policies from generated assets to ensure they match your security requirements.</p>"
+    },
+    "FindingType":{
+      "type":"string",
+      "enum":[
+        "VALID",
+        "INVALID",
+        "NOT_TRANSLATABLE",
+        "ALLOW_ALL",
+        "ALLOW_NONE",
+        "DENY_ALL",
+        "DENY_NONE"
+      ]
+    },
+    "Findings":{
+      "type":"list",
+      "member":{"shape":"Finding"}
     },
     "GatewayArn":{
       "type":"string",
@@ -3263,6 +5110,37 @@
       "max":2048,
       "min":1,
       "pattern":"\\S*"
+    },
+    "GatewayPolicyEngineArn":{
+      "type":"string",
+      "max":170,
+      "min":1,
+      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:policy-engine\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9_]{10}"
+    },
+    "GatewayPolicyEngineConfiguration":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "mode"
+      ],
+      "members":{
+        "arn":{
+          "shape":"GatewayPolicyEngineArn",
+          "documentation":"<p>The ARN of the policy engine. The policy engine contains Cedar policies that define fine-grained authorization rules specifying who can perform what actions on which resources as agents interact through the gateway.</p>"
+        },
+        "mode":{
+          "shape":"GatewayPolicyEngineMode",
+          "documentation":"<p>The enforcement mode for the policy engine. Valid values include:</p> <ul> <li> <p> <code>LOG_ONLY</code> - The policy engine evaluates each action against your policies and adds traces on whether tool calls would be allowed or denied, but does not enforce the decision. Use this mode to test and validate policies before enabling enforcement.</p> </li> <li> <p> <code>ENFORCE</code> - The policy engine evaluates actions against your policies and enforces decisions by allowing or denying agent operations. Test and validate policies in <code>LOG_ONLY</code> mode before enabling enforcement to avoid unintended denials or adversely affecting production traffic.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The configuration for a policy engine associated with a gateway. A policy engine is a collection of policies that evaluates and authorizes agent tool calls. When associated with a gateway, the policy engine intercepts all agent requests and determines whether to allow or deny each action based on the defined policies.</p>"
+    },
+    "GatewayPolicyEngineMode":{
+      "type":"string",
+      "enum":[
+        "LOG_ONLY",
+        "ENFORCE"
+      ]
     },
     "GatewayProtocolConfiguration":{
       "type":"structure",
@@ -3559,6 +5437,10 @@
           "shape":"LifecycleConfiguration",
           "documentation":"<p>The life cycle configuration for the AgentCore Runtime.</p>"
         },
+        "failureReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for failure if the AgentCore Runtime is in a failed state.</p>"
+        },
         "description":{
           "shape":"Description",
           "documentation":"<p>The description of the AgentCore Runtime.</p>"
@@ -3759,6 +5641,73 @@
         }
       }
     },
+    "GetEvaluatorRequest":{
+      "type":"structure",
+      "required":["evaluatorId"],
+      "members":{
+        "evaluatorId":{
+          "shape":"EvaluatorId",
+          "documentation":"<p> The unique identifier of the evaluator to retrieve. Can be a built-in evaluator ID (e.g., Builtin.Helpfulness) or a custom evaluator ID. </p>",
+          "location":"uri",
+          "locationName":"evaluatorId"
+        }
+      }
+    },
+    "GetEvaluatorResponse":{
+      "type":"structure",
+      "required":[
+        "evaluatorArn",
+        "evaluatorId",
+        "evaluatorName",
+        "evaluatorConfig",
+        "level",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "evaluatorArn":{
+          "shape":"EvaluatorArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the evaluator. </p>"
+        },
+        "evaluatorId":{
+          "shape":"EvaluatorId",
+          "documentation":"<p> The unique identifier of the evaluator. </p>"
+        },
+        "evaluatorName":{
+          "shape":"EvaluatorName",
+          "documentation":"<p> The name of the evaluator. </p>"
+        },
+        "description":{
+          "shape":"EvaluatorDescription",
+          "documentation":"<p> The description of the evaluator. </p>"
+        },
+        "evaluatorConfig":{
+          "shape":"EvaluatorConfig",
+          "documentation":"<p> The configuration of the evaluator, including LLM-as-a-Judge settings for custom evaluators. </p>"
+        },
+        "level":{
+          "shape":"EvaluatorLevel",
+          "documentation":"<p> The evaluation level (<code>TOOL_CALL</code>, <code>TRACE</code>, or <code>SESSION</code>) that determines the scope of evaluation. </p>"
+        },
+        "status":{
+          "shape":"EvaluatorStatus",
+          "documentation":"<p> The current status of the evaluator. </p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp when the evaluator was created. </p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp when the evaluator was last updated. </p>"
+        },
+        "lockedForModification":{
+          "shape":"Boolean",
+          "documentation":"<p> Whether the evaluator is locked for modification due to being referenced by active online evaluation configurations. </p>"
+        }
+      }
+    },
     "GetGatewayRequest":{
       "type":"structure",
       "required":["gatewayIdentifier"],
@@ -3844,6 +5793,10 @@
         "interceptorConfigurations":{
           "shape":"GatewayInterceptorConfigurations",
           "documentation":"<p>The interceptors configured on the gateway.</p>"
+        },
+        "policyEngineConfiguration":{
+          "shape":"GatewayPolicyEngineConfiguration",
+          "documentation":"<p>The policy engine configuration for the gateway.</p>"
         },
         "workloadIdentityDetails":{
           "shape":"WorkloadIdentityDetails",
@@ -4010,6 +5963,324 @@
         }
       }
     },
+    "GetOnlineEvaluationConfigRequest":{
+      "type":"structure",
+      "required":["onlineEvaluationConfigId"],
+      "members":{
+        "onlineEvaluationConfigId":{
+          "shape":"OnlineEvaluationConfigId",
+          "documentation":"<p> The unique identifier of the online evaluation configuration to retrieve. </p>",
+          "location":"uri",
+          "locationName":"onlineEvaluationConfigId"
+        }
+      }
+    },
+    "GetOnlineEvaluationConfigResponse":{
+      "type":"structure",
+      "required":[
+        "onlineEvaluationConfigArn",
+        "onlineEvaluationConfigId",
+        "onlineEvaluationConfigName",
+        "rule",
+        "dataSourceConfig",
+        "evaluators",
+        "status",
+        "executionStatus",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "onlineEvaluationConfigArn":{
+          "shape":"OnlineEvaluationConfigArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the online evaluation configuration. </p>"
+        },
+        "onlineEvaluationConfigId":{
+          "shape":"OnlineEvaluationConfigId",
+          "documentation":"<p> The unique identifier of the online evaluation configuration. </p>"
+        },
+        "onlineEvaluationConfigName":{
+          "shape":"EvaluationConfigName",
+          "documentation":"<p> The name of the online evaluation configuration. </p>"
+        },
+        "description":{
+          "shape":"EvaluationConfigDescription",
+          "documentation":"<p> The description of the online evaluation configuration. </p>"
+        },
+        "rule":{
+          "shape":"Rule",
+          "documentation":"<p> The evaluation rule containing sampling configuration, filters, and session settings. </p>"
+        },
+        "dataSourceConfig":{
+          "shape":"DataSourceConfig",
+          "documentation":"<p> The data source configuration specifying CloudWatch log groups and service names to monitor. </p>"
+        },
+        "evaluators":{
+          "shape":"EvaluatorList",
+          "documentation":"<p> The list of evaluators applied during online evaluation. </p>"
+        },
+        "outputConfig":{
+          "shape":"OutputConfig",
+          "documentation":"<p> The output configuration specifying where evaluation results are written. </p>"
+        },
+        "evaluationExecutionRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the IAM role used for evaluation execution. </p>"
+        },
+        "status":{
+          "shape":"OnlineEvaluationConfigStatus",
+          "documentation":"<p> The status of the online evaluation configuration. </p>"
+        },
+        "executionStatus":{
+          "shape":"OnlineEvaluationExecutionStatus",
+          "documentation":"<p> The execution status indicating whether the online evaluation is currently running. </p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp when the online evaluation configuration was created. </p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp when the online evaluation configuration was last updated. </p>"
+        },
+        "failureReason":{
+          "shape":"String",
+          "documentation":"<p> The reason for failure if the online evaluation configuration execution failed. </p>"
+        }
+      }
+    },
+    "GetPolicyEngineRequest":{
+      "type":"structure",
+      "required":["policyEngineId"],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the policy engine to be retrieved. This must be a valid policy engine ID that exists within the account.</p>",
+          "location":"uri",
+          "locationName":"policyEngineId"
+        }
+      }
+    },
+    "GetPolicyEngineResponse":{
+      "type":"structure",
+      "required":[
+        "policyEngineId",
+        "name",
+        "createdAt",
+        "updatedAt",
+        "policyEngineArn",
+        "status",
+        "statusReasons"
+      ],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the retrieved policy engine. This matches the policy engine ID provided in the request and serves as the system identifier.</p>"
+        },
+        "name":{
+          "shape":"PolicyEngineName",
+          "documentation":"<p>The customer-assigned name of the policy engine. This is the human-readable identifier that was specified when the policy engine was created.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The human-readable description of the policy engine's purpose and scope. This helps administrators understand the policy engine's role in governance.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy engine was originally created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy engine was last modified. This tracks the most recent changes to the policy engine configuration.</p>"
+        },
+        "policyEngineArn":{
+          "shape":"PolicyEngineArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the policy engine. This globally unique identifier can be used for cross-service references and IAM policy statements.</p>"
+        },
+        "status":{
+          "shape":"PolicyEngineStatus",
+          "documentation":"<p>The current status of the policy engine.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the policy engine status. This provides details about any failures or the current state of the policy engine.</p>"
+        }
+      }
+    },
+    "GetPolicyGenerationRequest":{
+      "type":"structure",
+      "required":[
+        "policyGenerationId",
+        "policyEngineId"
+      ],
+      "members":{
+        "policyGenerationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the policy generation request to be retrieved. This must be a valid generation ID from a previous <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/API_StartPolicyGeneration.html\">StartPolicyGeneration</a> call.</p>",
+          "location":"uri",
+          "locationName":"policyGenerationId"
+        },
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine associated with the policy generation request. This provides the context for the generation operation and schema validation.</p>",
+          "location":"uri",
+          "locationName":"policyEngineId"
+        }
+      }
+    },
+    "GetPolicyGenerationResponse":{
+      "type":"structure",
+      "required":[
+        "policyEngineId",
+        "policyGenerationId",
+        "name",
+        "policyGenerationArn",
+        "resource",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "statusReasons"
+      ],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine associated with this policy generation. This confirms the policy engine context for the generation operation.</p>"
+        },
+        "policyGenerationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the policy generation request. This matches the generation ID provided in the request and serves as the tracking identifier.</p>"
+        },
+        "name":{
+          "shape":"PolicyGenerationName",
+          "documentation":"<p>The customer-assigned name for the policy generation request. This helps identify and track generation operations across multiple requests.</p>"
+        },
+        "policyGenerationArn":{
+          "shape":"PolicyGenerationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the policy generation. This globally unique identifier can be used for tracking, auditing, and cross-service references.</p>"
+        },
+        "resource":{
+          "shape":"Resource",
+          "documentation":"<p>The resource information associated with the policy generation. This provides context about the target resources for which the policies are being generated.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy generation request was created. This is used for tracking and auditing generation operations and their lifecycle.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy generation was last updated. This tracks the progress of the generation process and any status changes.</p>"
+        },
+        "status":{
+          "shape":"PolicyGenerationStatus",
+          "documentation":"<p>The current status of the policy generation. This indicates whether the generation is in progress, completed successfully, or failed during processing.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the generation status. This provides details about any failures, warnings, or the current state of the generation process.</p>"
+        },
+        "findings":{
+          "shape":"String",
+          "documentation":"<p>The findings and results from the policy generation process. This includes any issues, recommendations, validation results, or insights from the generated policies.</p>"
+        }
+      }
+    },
+    "GetPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "policyEngineId",
+        "policyId"
+      ],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine that manages the policy to be retrieved.</p>",
+          "location":"uri",
+          "locationName":"policyEngineId"
+        },
+        "policyId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the policy to be retrieved. This must be a valid policy ID that exists within the specified policy engine.</p>",
+          "location":"uri",
+          "locationName":"policyId"
+        }
+      }
+    },
+    "GetPolicyResponse":{
+      "type":"structure",
+      "required":[
+        "policyId",
+        "name",
+        "policyEngineId",
+        "definition",
+        "createdAt",
+        "updatedAt",
+        "policyArn",
+        "status",
+        "statusReasons"
+      ],
+      "members":{
+        "policyId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the retrieved policy. This matches the policy ID provided in the request and serves as the system identifier for the policy.</p>"
+        },
+        "name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The customer-assigned name of the policy. This is the human-readable identifier that was specified when the policy was created.</p>"
+        },
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine that manages this policy. This confirms the policy engine context for the retrieved policy.</p>"
+        },
+        "definition":{
+          "shape":"PolicyDefinition",
+          "documentation":"<p>The Cedar policy statement that defines the access control rules. This contains the actual policy logic used for agent behavior control and access decisions.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The human-readable description of the policy's purpose and functionality. This helps administrators understand and manage the policy.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy was originally created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy was last modified. This tracks the most recent changes to the policy configuration.</p>"
+        },
+        "policyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the policy. This globally unique identifier can be used for cross-service references and IAM policy statements.</p>"
+        },
+        "status":{
+          "shape":"PolicyStatus",
+          "documentation":"<p>The current status of the policy.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the policy status. This provides details about any failures or the current state of the policy.</p>"
+        }
+      }
+    },
+    "GetResourcePolicyRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"BedrockAgentcoreResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource for which to retrieve the resource policy.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "GetResourcePolicyResponse":{
+      "type":"structure",
+      "members":{
+        "policy":{
+          "shape":"ResourcePolicyBody",
+          "documentation":"<p>The resource policy associated with the specified resource.</p>"
+        }
+      }
+    },
     "GetTokenVaultRequest":{
       "type":"structure",
       "members":{
@@ -4154,6 +6425,19 @@
       "min":1,
       "pattern":"(Authorization|X-Amzn-Bedrock-AgentCore-Runtime-Custom-[a-zA-Z0-9-]+)"
     },
+    "InboundTokenClaimNameType":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[A-Za-z0-9_.-:]+"
+    },
+    "InboundTokenClaimValueType":{
+      "type":"string",
+      "enum":[
+        "STRING",
+        "STRING_ARRAY"
+      ]
+    },
     "IncludedOauth2ProviderConfigInput":{
       "type":"structure",
       "required":[
@@ -4195,6 +6479,51 @@
         }
       },
       "documentation":"<p>The configuration details returned for a supported OAuth2 provider, including client credentials and OAuth2 discovery information.</p>"
+    },
+    "InferenceConfiguration":{
+      "type":"structure",
+      "members":{
+        "maxTokens":{
+          "shape":"InferenceConfigurationMaxTokensInteger",
+          "documentation":"<p> The maximum number of tokens to generate in the model response during evaluation. </p>"
+        },
+        "temperature":{
+          "shape":"InferenceConfigurationTemperatureFloat",
+          "documentation":"<p> The temperature value that controls randomness in the model's responses. Lower values produce more deterministic outputs. </p>"
+        },
+        "topP":{
+          "shape":"InferenceConfigurationTopPFloat",
+          "documentation":"<p> The top-p sampling parameter that controls the diversity of the model's responses by limiting the cumulative probability of token choices. </p>"
+        },
+        "stopSequences":{
+          "shape":"InferenceConfigurationStopSequencesList",
+          "documentation":"<p> The list of sequences that will cause the model to stop generating tokens when encountered. </p>"
+        }
+      },
+      "documentation":"<p> The configuration parameters that control how the foundation model behaves during evaluation, including response generation settings. </p>"
+    },
+    "InferenceConfigurationMaxTokensInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "InferenceConfigurationStopSequencesList":{
+      "type":"list",
+      "member":{"shape":"NonEmptyString"},
+      "max":2500,
+      "min":0
+    },
+    "InferenceConfigurationTemperatureFloat":{
+      "type":"float",
+      "box":true,
+      "max":1,
+      "min":0
+    },
+    "InferenceConfigurationTopPFloat":{
+      "type":"float",
+      "box":true,
+      "max":1,
+      "min":0
     },
     "InlinePayload":{
       "type":"string",
@@ -4586,6 +6915,43 @@
         }
       }
     },
+    "ListEvaluatorsRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p> The pagination token from a previous request to retrieve the next page of results. </p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListEvaluatorsRequestMaxResultsInteger",
+          "documentation":"<p> The maximum number of evaluators to return in a single response. </p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListEvaluatorsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListEvaluatorsResponse":{
+      "type":"structure",
+      "required":["evaluators"],
+      "members":{
+        "evaluators":{
+          "shape":"EvaluatorSummaryList",
+          "documentation":"<p> The list of evaluator summaries containing basic information about each evaluator. </p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p> The pagination token to use in a subsequent request to retrieve the next page of results. </p>"
+        }
+      }
+    },
     "ListGatewayTargetsRequest":{
       "type":"structure",
       "required":["gatewayIdentifier"],
@@ -4721,6 +7087,202 @@
         }
       }
     },
+    "ListOnlineEvaluationConfigsRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p> The pagination token from a previous request to retrieve the next page of results. </p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListOnlineEvaluationConfigsRequestMaxResultsInteger",
+          "documentation":"<p> The maximum number of online evaluation configurations to return in a single response. </p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListOnlineEvaluationConfigsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListOnlineEvaluationConfigsResponse":{
+      "type":"structure",
+      "required":["onlineEvaluationConfigs"],
+      "members":{
+        "onlineEvaluationConfigs":{
+          "shape":"OnlineEvaluationConfigSummaryList",
+          "documentation":"<p> The list of online evaluation configuration summaries containing basic information about each configuration. </p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p> The pagination token to use in a subsequent request to retrieve the next page of results. </p>"
+        }
+      }
+    },
+    "ListPoliciesRequest":{
+      "type":"structure",
+      "required":["policyEngineId"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token returned from a previous <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/API_ListPolicies.html\">ListPolicies</a> call. Use this token to retrieve the next page of results when the response is paginated.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of policies to return in a single response. If not specified, the default is 10 policies per page, with a maximum of 100 per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine whose policies to retrieve.</p>",
+          "location":"uri",
+          "locationName":"policyEngineId"
+        },
+        "targetResourceScope":{
+          "shape":"BedrockAgentcoreResourceArn",
+          "documentation":"<p>Optional filter to list policies that apply to a specific resource scope or resource type. This helps narrow down policy results to those relevant for particular Amazon Web Services resources, agent tools, or operational contexts within the policy engine ecosystem.</p>",
+          "location":"querystring",
+          "locationName":"targetResourceScope"
+        }
+      }
+    },
+    "ListPoliciesResponse":{
+      "type":"structure",
+      "required":["policies"],
+      "members":{
+        "policies":{
+          "shape":"Policies",
+          "documentation":"<p>An array of policy objects that match the specified criteria. Each policy object contains the policy metadata, status, and key identifiers for further operations.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token that can be used in subsequent ListPolicies calls to retrieve additional results. This token is only present when there are more results available.</p>"
+        }
+      }
+    },
+    "ListPolicyEnginesRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token returned from a previous <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/API_ListPolicyEngines.html\">ListPolicyEngines</a> call. Use this token to retrieve the next page of results when the response is paginated.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of policy engines to return in a single response. If not specified, the default is 10 policy engines per page, with a maximum of 100 per page.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListPolicyEnginesResponse":{
+      "type":"structure",
+      "required":["policyEngines"],
+      "members":{
+        "policyEngines":{
+          "shape":"PolicyEngines",
+          "documentation":"<p>An array of policy engine objects that exist in the account. Each policy engine object contains the engine metadata, status, and key identifiers for further operations.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token that can be used in subsequent <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/API_ListPolicyEngines.html\">ListPolicyEngines</a> calls to retrieve additional results. This token is only present when there are more results available. </p>"
+        }
+      }
+    },
+    "ListPolicyGenerationAssetsRequest":{
+      "type":"structure",
+      "required":[
+        "policyGenerationId",
+        "policyEngineId"
+      ],
+      "members":{
+        "policyGenerationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the policy generation request whose assets are to be retrieved. This must be a valid generation ID from a previous <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/API_StartPolicyGeneration.html\">StartPolicyGeneration</a> call that has completed processing.</p>",
+          "location":"uri",
+          "locationName":"policyGenerationId"
+        },
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the policy engine associated with the policy generation request. This provides the context for the generation operation and ensures assets are retrieved from the correct policy engine.</p>",
+          "location":"uri",
+          "locationName":"policyEngineId"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token returned from a previous <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/API_ListPolicyGenerationAssets.html\">ListPolicyGenerationAssets</a> call. Use this token to retrieve the next page of assets when the response is paginated due to large numbers of generated policy options.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of policy generation assets to return in a single response. If not specified, the default is 10 assets per page, with a maximum of 100 per page. This helps control response size when dealing with policy generations that produce many alternative policy options.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListPolicyGenerationAssetsResponse":{
+      "type":"structure",
+      "members":{
+        "policyGenerationAssets":{
+          "shape":"PolicyGenerationAssets",
+          "documentation":"<p>An array of generated policy assets including Cedar policies and related artifacts from the AI-powered policy generation process. Each asset represents a different policy option or variation generated from the original natural language input.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token that can be used in subsequent <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/API_ListPolicyGenerationAssets.html\">ListPolicyGenerationAssets</a> calls to retrieve additional assets. This token is only present when there are more generated policy assets available beyond the current response.</p>"
+        }
+      }
+    },
+    "ListPolicyGenerationsRequest":{
+      "type":"structure",
+      "required":["policyEngineId"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token for retrieving additional policy generations when results are paginated.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of policy generations to return in a single response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine whose policy generations to retrieve.</p>",
+          "location":"uri",
+          "locationName":"policyEngineId"
+        }
+      }
+    },
+    "ListPolicyGenerationsResponse":{
+      "type":"structure",
+      "required":["policyGenerations"],
+      "members":{
+        "policyGenerations":{
+          "shape":"PolicyGenerations",
+          "documentation":"<p>An array of policy generation objects that match the specified criteria.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A pagination token for retrieving additional policy generations if more results are available.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["resourceArn"],
@@ -4775,6 +7337,35 @@
         }
       }
     },
+    "LlmAsAJudgeEvaluatorConfig":{
+      "type":"structure",
+      "required":[
+        "instructions",
+        "ratingScale",
+        "modelConfig"
+      ],
+      "members":{
+        "instructions":{
+          "shape":"EvaluatorInstructions",
+          "documentation":"<p> The evaluation instructions that guide the language model in assessing agent performance, including criteria and evaluation guidelines. </p>"
+        },
+        "ratingScale":{
+          "shape":"RatingScale",
+          "documentation":"<p> The rating scale that defines how the evaluator should score agent performance, either numerical or categorical. </p>"
+        },
+        "modelConfig":{
+          "shape":"EvaluatorModelConfig",
+          "documentation":"<p> The model configuration that specifies which foundation model to use and how to configure it for evaluation. </p>"
+        }
+      },
+      "documentation":"<p> The configuration for LLM-as-a-Judge evaluation that uses a language model to assess agent performance based on custom instructions and rating scales. </p>"
+    },
+    "LogGroupName":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[.\\-_/#A-Za-z0-9]+"
+    },
     "MCPGatewayConfiguration":{
       "type":"structure",
       "members":{
@@ -4792,6 +7383,17 @@
         }
       },
       "documentation":"<p>The configuration for a Model Context Protocol (MCP) gateway. This structure defines how the gateway implements the MCP protocol.</p>"
+    },
+    "MatchValueString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[A-Za-z0-9_.-]+"
+    },
+    "MatchValueStringList":{
+      "type":"list",
+      "member":{"shape":"MatchValueString"},
+      "min":1
     },
     "MaxResults":{
       "type":"integer",
@@ -4859,6 +7461,10 @@
         "mcpServer":{
           "shape":"McpServerTargetConfiguration",
           "documentation":"<p>The MCP server specified as the gateway target.</p>"
+        },
+        "apiGateway":{
+          "shape":"ApiGatewayTargetConfiguration",
+          "documentation":"<p>The configuration for an Amazon API Gateway target.</p>"
         }
       },
       "documentation":"<p>The Model Context Protocol (MCP) configuration for a target. This structure defines how the gateway uses MCP to communicate with the target.</p>",
@@ -5023,6 +7629,10 @@
         "customMemoryStrategy":{
           "shape":"CustomMemoryStrategyInput",
           "documentation":"<p>Input for creating a custom memory strategy.</p>"
+        },
+        "episodicMemoryStrategy":{
+          "shape":"EpisodicMemoryStrategyInput",
+          "documentation":"<p>Input for creating an episodic memory strategy</p>"
         }
       },
       "documentation":"<p>Contains input information for creating a memory strategy.</p>",
@@ -5051,7 +7661,8 @@
         "SEMANTIC",
         "SUMMARIZATION",
         "USER_PREFERENCE",
-        "CUSTOM"
+        "CUSTOM",
+        "EPISODIC"
       ]
     },
     "MemorySummary":{
@@ -5151,6 +7762,7 @@
       },
       "documentation":"<p>Output configuration for a Microsoft OAuth2 provider.</p>"
     },
+    "ModelId":{"type":"string"},
     "ModifyConsolidationConfiguration":{
       "type":"structure",
       "members":{
@@ -5236,6 +7848,21 @@
       },
       "documentation":"<p>Input for modifying a memory strategy.</p>"
     },
+    "ModifyReflectionConfiguration":{
+      "type":"structure",
+      "members":{
+        "episodicReflectionConfiguration":{
+          "shape":"EpisodicReflectionConfigurationInput",
+          "documentation":"<p>The updated episodic reflection configuration.</p>"
+        },
+        "customReflectionConfiguration":{
+          "shape":"CustomReflectionConfigurationInput",
+          "documentation":"<p>The updated custom reflection configuration.</p>"
+        }
+      },
+      "documentation":"<p>Contains information for modifying a reflection configuration.</p>",
+      "union":true
+    },
     "ModifySelfManagedConfiguration":{
       "type":"structure",
       "members":{
@@ -5271,6 +7898,10 @@
           "shape":"ModifyConsolidationConfiguration",
           "documentation":"<p>The updated consolidation configuration.</p>"
         },
+        "reflection":{
+          "shape":"ModifyReflectionConfiguration",
+          "documentation":"<p>The updated reflection configuration.</p>"
+        },
         "selfManagedConfiguration":{
           "shape":"ModifySelfManagedConfiguration",
           "documentation":"<p>The updated self-managed configuration.</p>"
@@ -5291,6 +7922,11 @@
     "NamespacesList":{
       "type":"list",
       "member":{"shape":"Namespace"},
+      "min":1
+    },
+    "NaturalLanguage":{
+      "type":"string",
+      "max":2000,
       "min":1
     },
     "NetworkConfiguration":{
@@ -5325,6 +7961,47 @@
       "type":"string",
       "pattern":"[\\s\\S]+"
     },
+    "NonEmptyString":{
+      "type":"string",
+      "min":1
+    },
+    "NumericalScaleDefinition":{
+      "type":"structure",
+      "required":[
+        "definition",
+        "value",
+        "label"
+      ],
+      "members":{
+        "definition":{
+          "shape":"String",
+          "documentation":"<p> The description that explains what this numerical rating represents and when it should be used. </p>"
+        },
+        "value":{
+          "shape":"NumericalScaleDefinitionValueDouble",
+          "documentation":"<p> The numerical value for this rating scale option. </p>"
+        },
+        "label":{
+          "shape":"NumericalScaleDefinitionLabelString",
+          "documentation":"<p> The label or name that describes this numerical rating option. </p>"
+        }
+      },
+      "documentation":"<p> The definition of a numerical rating scale option that provides a numeric value with its description for evaluation scoring. </p>"
+    },
+    "NumericalScaleDefinitionLabelString":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "NumericalScaleDefinitionValueDouble":{
+      "type":"double",
+      "box":true,
+      "min":0
+    },
+    "NumericalScaleDefinitions":{
+      "type":"list",
+      "member":{"shape":"NumericalScaleDefinition"}
+    },
     "OAuthCredentialProvider":{
       "type":"structure",
       "required":[
@@ -5343,6 +8020,14 @@
         "customParameters":{
           "shape":"OAuthCustomParameters",
           "documentation":"<p>The custom parameters for the OAuth credential provider. These parameters provide additional configuration for the OAuth authentication process.</p>"
+        },
+        "grantType":{
+          "shape":"OAuthGrantType",
+          "documentation":"<p>Specifies the kind of credentials to use for authorization:</p> <ul> <li> <p> <code>CLIENT_CREDENTIALS</code> - Authorization with a client ID and secret.</p> </li> <li> <p> <code>AUTHORIZATION_CODE</code> - Authorization with a token that is specific to an individual end user.</p> </li> </ul>"
+        },
+        "defaultReturnUrl":{
+          "shape":"OAuthDefaultReturnUrl",
+          "documentation":"<p>The URL where the end user's browser is redirected after obtaining the authorization code. Generally points to the customer's application.</p>"
         }
       },
       "documentation":"<p>An OAuth credential provider for gateway authentication. This structure contains the configuration for authenticating with the target endpoint using OAuth.</p>"
@@ -5368,6 +8053,19 @@
       "max":2048,
       "min":1,
       "sensitive":true
+    },
+    "OAuthDefaultReturnUrl":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"\\w+:(\\/?\\/?)[^\\s]+"
+    },
+    "OAuthGrantType":{
+      "type":"string",
+      "enum":[
+        "CLIENT_CREDENTIALS",
+        "AUTHORIZATION_CODE"
+      ]
     },
     "OAuthScope":{
       "type":"string",
@@ -5549,13 +8247,404 @@
       "documentation":"<p>Contains the output configuration for an OAuth2 provider.</p>",
       "union":true
     },
+    "OnlineEvaluationConfigArn":{
+      "type":"string",
+      "pattern":"arn:aws:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:online-evaluation-config\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+    },
+    "OnlineEvaluationConfigId":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+    },
+    "OnlineEvaluationConfigStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "CREATING",
+        "CREATE_FAILED",
+        "UPDATING",
+        "UPDATE_FAILED",
+        "DELETING"
+      ]
+    },
+    "OnlineEvaluationConfigSummary":{
+      "type":"structure",
+      "required":[
+        "onlineEvaluationConfigArn",
+        "onlineEvaluationConfigId",
+        "onlineEvaluationConfigName",
+        "status",
+        "executionStatus",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "onlineEvaluationConfigArn":{
+          "shape":"OnlineEvaluationConfigArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the online evaluation configuration. </p>"
+        },
+        "onlineEvaluationConfigId":{
+          "shape":"OnlineEvaluationConfigId",
+          "documentation":"<p> The unique identifier of the online evaluation configuration. </p>"
+        },
+        "onlineEvaluationConfigName":{
+          "shape":"EvaluationConfigName",
+          "documentation":"<p> The name of the online evaluation configuration. </p>"
+        },
+        "description":{
+          "shape":"EvaluationConfigDescription",
+          "documentation":"<p> The description of the online evaluation configuration. </p>"
+        },
+        "status":{
+          "shape":"OnlineEvaluationConfigStatus",
+          "documentation":"<p> The status of the online evaluation configuration. </p>"
+        },
+        "executionStatus":{
+          "shape":"OnlineEvaluationExecutionStatus",
+          "documentation":"<p> The execution status indicating whether the online evaluation is currently running. </p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp when the online evaluation configuration was created. </p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp when the online evaluation configuration was last updated. </p>"
+        },
+        "failureReason":{
+          "shape":"String",
+          "documentation":"<p> The reason for failure if the online evaluation configuration execution failed. </p>"
+        }
+      },
+      "documentation":"<p> The summary information about an online evaluation configuration, including basic metadata and execution status. </p>"
+    },
+    "OnlineEvaluationConfigSummaryList":{
+      "type":"list",
+      "member":{"shape":"OnlineEvaluationConfigSummary"}
+    },
+    "OnlineEvaluationExecutionStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "OutputConfig":{
+      "type":"structure",
+      "required":["cloudWatchConfig"],
+      "members":{
+        "cloudWatchConfig":{
+          "shape":"CloudWatchOutputConfig",
+          "documentation":"<p> The CloudWatch configuration for writing evaluation results to CloudWatch logs with embedded metric format. </p>"
+        }
+      },
+      "documentation":"<p> The configuration that specifies where evaluation results should be written for monitoring and analysis. </p>"
+    },
     "OverrideType":{
       "type":"string",
       "enum":[
         "SEMANTIC_OVERRIDE",
         "SUMMARY_OVERRIDE",
         "USER_PREFERENCE_OVERRIDE",
-        "SELF_MANAGED"
+        "SELF_MANAGED",
+        "EPISODIC_OVERRIDE"
+      ]
+    },
+    "Policies":{
+      "type":"list",
+      "member":{"shape":"Policy"},
+      "max":100,
+      "min":0
+    },
+    "Policy":{
+      "type":"structure",
+      "required":[
+        "policyId",
+        "name",
+        "policyEngineId",
+        "definition",
+        "createdAt",
+        "updatedAt",
+        "policyArn",
+        "status",
+        "statusReasons"
+      ],
+      "members":{
+        "policyId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the policy. This system-generated identifier consists of the user name plus a 10-character generated suffix and serves as the primary key for policy operations.</p>"
+        },
+        "name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The customer-assigned immutable name for the policy. This human-readable identifier must be unique within the account and cannot exceed 48 characters.</p>"
+        },
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine that manages this policy. This establishes the policy engine context for policy evaluation and management.</p>"
+        },
+        "definition":{
+          "shape":"PolicyDefinition",
+          "documentation":"<p>The Cedar policy statement that defines the access control rules. This contains the actual policy logic used for agent behavior control and access decisions.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the policy's purpose and functionality. Limited to 4,096 characters, this helps administrators understand and manage the policy.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy was originally created. This is automatically set by the service and used for auditing and lifecycle management.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy was last modified. This tracks the most recent changes to the policy configuration or metadata.</p>"
+        },
+        "policyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the policy. This globally unique identifier can be used for cross-service references and IAM policy statements.</p>"
+        },
+        "status":{
+          "shape":"PolicyStatus",
+          "documentation":"<p>The current status of the policy.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the policy status. This provides details about any failures or the current state of the policy lifecycle.</p>"
+        }
+      },
+      "documentation":"<p>Represents a complete policy resource within the AgentCore Policy system. Policies are ARN-able resources that contain Cedar policy statements and associated metadata for controlling agent behavior and access decisions. Each policy belongs to a policy engine and defines fine-grained authorization rules that are evaluated in real-time as agents interact with tools through Gateway. Policies use the Cedar policy language to specify who (principals based on OAuth claims like username, role, or scope) can perform what actions (tool calls) on which resources (Gateways), with optional conditions for attribute-based access control. Multiple policies can apply to a single request, with Cedar's forbid-wins semantics ensuring that security restrictions are never accidentally overridden.</p>"
+    },
+    "PolicyArn":{
+      "type":"string",
+      "max":203,
+      "min":96,
+      "pattern":"arn:aws[-a-z]{0,7}:bedrock-agentcore:[a-z0-9-]{9,15}:[0-9]{12}:policy-engine/[a-zA-Z][a-zA-Z0-9-_]{0,47}-[a-zA-Z0-9_]{10}/policy/[a-zA-Z][a-zA-Z0-9-_]{0,47}-[a-zA-Z0-9_]{10}"
+    },
+    "PolicyDefinition":{
+      "type":"structure",
+      "members":{
+        "cedar":{
+          "shape":"CedarPolicy",
+          "documentation":"<p>The Cedar policy definition within the policy definition structure. This contains the Cedar policy statement that defines the authorization logic using Cedar's human-readable, analyzable policy language. Cedar policies specify principals (who can access), actions (what operations are allowed), resources (what can be accessed), and optional conditions for fine-grained control. Cedar provides a formal policy language designed for authorization with deterministic evaluation, making policies testable, reviewable, and auditable. All Cedar policies follow a default-deny model where actions are denied unless explicitly permitted, and forbid policies always override permit policies.</p>"
+        }
+      },
+      "documentation":"<p>Represents the definition structure for policies within the AgentCore Policy system. This structure encapsulates different policy formats and languages that can be used to define access control rules.</p>",
+      "union":true
+    },
+    "PolicyEngine":{
+      "type":"structure",
+      "required":[
+        "policyEngineId",
+        "name",
+        "createdAt",
+        "updatedAt",
+        "policyEngineArn",
+        "status",
+        "statusReasons"
+      ],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the policy engine. This system-generated identifier consists of the user name plus a 10-character generated suffix and serves as the primary key for policy engine operations.</p>"
+        },
+        "name":{
+          "shape":"PolicyEngineName",
+          "documentation":"<p>The customer-assigned immutable name for the policy engine. This human-readable identifier must be unique within the account and cannot exceed 48 characters.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A human-readable description of the policy engine's purpose and scope. Limited to 4,096 characters, this helps administrators understand the policy engine's role in the overall governance strategy.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy engine was originally created. This is automatically set by the service and used for auditing and lifecycle management.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy engine was last modified. This tracks the most recent changes to the policy engine configuration or metadata.</p>"
+        },
+        "policyEngineArn":{
+          "shape":"PolicyEngineArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the policy engine. This globally unique identifier can be used for cross-service references and IAM policy statements.</p>"
+        },
+        "status":{
+          "shape":"PolicyEngineStatus",
+          "documentation":"<p>The current status of the policy engine.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the policy engine status. This provides details about any failures or the current state of the policy engine lifecycle.</p>"
+        }
+      },
+      "documentation":"<p>Represents a policy engine resource within the AgentCore Policy system. Policy engines serve as containers for grouping related policies and provide the execution context for policy evaluation and management. Each policy engine can be associated with one Gateway (one engine per Gateway), where it intercepts all agent tool calls and evaluates them against the contained policies before allowing tools to execute. The policy engine maintains the Cedar schema generated from the Gateway's tool manifest, ensuring that policies are validated against the actual tools and parameters available. Policy engines support two enforcement modes that can be configured when associating with a Gateway: log-only mode for testing (evaluates decisions without blocking) and enforce mode for production (actively allows or denies based on policy evaluation).</p>"
+    },
+    "PolicyEngineArn":{
+      "type":"string",
+      "max":136,
+      "min":76,
+      "pattern":"arn:aws[-a-z]{0,7}:bedrock-agentcore:[a-z0-9-]{9,15}:[0-9]{12}:policy-engine/[a-zA-Z][a-zA-Z0-9-_]{0,47}-[a-zA-Z0-9_]{10}"
+    },
+    "PolicyEngineName":{
+      "type":"string",
+      "max":48,
+      "min":1,
+      "pattern":"[A-Za-z][A-Za-z0-9_]*"
+    },
+    "PolicyEngineStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "DELETING",
+        "CREATE_FAILED",
+        "UPDATE_FAILED",
+        "DELETE_FAILED"
+      ]
+    },
+    "PolicyEngines":{
+      "type":"list",
+      "member":{"shape":"PolicyEngine"},
+      "max":100,
+      "min":0
+    },
+    "PolicyGeneration":{
+      "type":"structure",
+      "required":[
+        "policyEngineId",
+        "policyGenerationId",
+        "name",
+        "policyGenerationArn",
+        "resource",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "statusReasons"
+      ],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine associated with this generation request.</p>"
+        },
+        "policyGenerationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for this policy generation request.</p>"
+        },
+        "name":{
+          "shape":"PolicyGenerationName",
+          "documentation":"<p>The customer-assigned name for this policy generation request.</p>"
+        },
+        "policyGenerationArn":{
+          "shape":"PolicyGenerationArn",
+          "documentation":"<p>The ARN of this policy generation request.</p>"
+        },
+        "resource":{
+          "shape":"Resource",
+          "documentation":"<p>The resource information associated with this policy generation.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when this policy generation request was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when this policy generation was last updated.</p>"
+        },
+        "status":{
+          "shape":"PolicyGenerationStatus",
+          "documentation":"<p>The current status of this policy generation request.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the generation status.</p>"
+        },
+        "findings":{
+          "shape":"String",
+          "documentation":"<p>Findings and insights from this policy generation process.</p>"
+        }
+      },
+      "documentation":"<p>Represents a policy generation request within the AgentCore Policy system. Tracks the AI-powered conversion of natural language descriptions into Cedar policy statements, enabling users to author policies by describing authorization requirements in plain English. The generation process analyzes the natural language input along with the Gateway's tool context and Cedar schema to produce one or more validated policy options. Each generation request tracks the status of the conversion process and maintains findings about the generated policies, including validation results and potential issues. Generated policy assets remain available for one week after successful generation, allowing time to review and create policies from the generated options.</p>"
+    },
+    "PolicyGenerationArn":{
+      "type":"string",
+      "max":210,
+      "min":103,
+      "pattern":"arn:aws[-a-z]{0,7}:bedrock-agentcore:[a-z0-9-]{9,15}:[0-9]{12}:policy-engine/[a-zA-Z][a-zA-Z0-9-_]{0,47}-[a-zA-Z0-9_]{10}/policy-generation/[a-zA-Z][a-zA-Z0-9-_]{0,47}-[a-zA-Z0-9_]{10}"
+    },
+    "PolicyGenerationAsset":{
+      "type":"structure",
+      "required":[
+        "policyGenerationAssetId",
+        "rawTextFragment",
+        "findings"
+      ],
+      "members":{
+        "policyGenerationAssetId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for this generated policy asset within the policy generation request. This ID can be used to reference specific generated policy options when creating actual policies from the generation results.</p>"
+        },
+        "definition":{"shape":"PolicyDefinition"},
+        "rawTextFragment":{
+          "shape":"NaturalLanguage",
+          "documentation":"<p>The portion of the original natural language input that this generated policy asset addresses. This helps users understand which part of their policy description was translated into this specific Cedar policy statement, enabling better policy selection and refinement. When a single natural language input describes multiple authorization requirements, the generation process creates separate policy assets for each requirement, with each asset's rawTextFragment showing which requirement it addresses. Use this mapping to verify that all parts of your natural language input were correctly translated into Cedar policies.</p>"
+        },
+        "findings":{
+          "shape":"Findings",
+          "documentation":"<p>Analysis findings and insights related to this specific generated policy asset. These findings may include validation results, potential issues, or recommendations for improvement to help users evaluate the quality and appropriateness of the generated policy.</p>"
+        }
+      },
+      "documentation":"<p>Represents a generated policy asset from the AI-powered policy generation process within the AgentCore Policy system. Each asset contains a Cedar policy statement generated from natural language input, along with associated metadata and analysis findings to help users evaluate and select the most appropriate policy option.</p>"
+    },
+    "PolicyGenerationAssets":{
+      "type":"list",
+      "member":{"shape":"PolicyGenerationAsset"}
+    },
+    "PolicyGenerationName":{
+      "type":"string",
+      "max":48,
+      "min":1,
+      "pattern":"[A-Za-z][A-Za-z0-9_]*"
+    },
+    "PolicyGenerationStatus":{
+      "type":"string",
+      "enum":[
+        "GENERATING",
+        "GENERATED",
+        "GENERATE_FAILED",
+        "DELETE_FAILED"
+      ]
+    },
+    "PolicyGenerations":{
+      "type":"list",
+      "member":{"shape":"PolicyGeneration"},
+      "max":100,
+      "min":0
+    },
+    "PolicyName":{
+      "type":"string",
+      "max":48,
+      "min":1,
+      "pattern":"[A-Za-z][A-Za-z0-9_]*"
+    },
+    "PolicyStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "DELETING",
+        "CREATE_FAILED",
+        "UPDATE_FAILED",
+        "DELETE_FAILED"
+      ]
+    },
+    "PolicyStatusReasons":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "PolicyValidationMode":{
+      "type":"string",
+      "enum":[
+        "FAIL_ON_ANY_FINDINGS",
+        "IGNORE_ALL_FINDINGS"
       ]
     },
     "Prompt":{
@@ -5575,6 +8664,50 @@
       },
       "documentation":"<p>The protocol configuration for an agent runtime. This structure defines how the agent runtime communicates with clients.</p>"
     },
+    "PutResourcePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "policy"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"BedrockAgentcoreResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource for which to create or update the resource policy.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "policy":{
+          "shape":"ResourcePolicyBody",
+          "documentation":"<p>The resource policy to create or update.</p>"
+        }
+      }
+    },
+    "PutResourcePolicyResponse":{
+      "type":"structure",
+      "required":["policy"],
+      "members":{
+        "policy":{
+          "shape":"ResourcePolicyBody",
+          "documentation":"<p>The resource policy that was created or updated.</p>"
+        }
+      }
+    },
+    "RatingScale":{
+      "type":"structure",
+      "members":{
+        "numerical":{
+          "shape":"NumericalScaleDefinitions",
+          "documentation":"<p> The numerical rating scale with defined score values and descriptions for quantitative evaluation. </p>"
+        },
+        "categorical":{
+          "shape":"CategoricalScaleDefinitions",
+          "documentation":"<p> The categorical rating scale with named categories and definitions for qualitative evaluation. </p>"
+        }
+      },
+      "documentation":"<p> The rating scale that defines how evaluators should score agent performance, supporting both numerical and categorical scales. </p>",
+      "union":true
+    },
     "RecordingConfig":{
       "type":"structure",
       "members":{
@@ -5588,6 +8721,21 @@
         }
       },
       "documentation":"<p>The recording configuration for a browser. This structure defines how browser sessions are recorded.</p>"
+    },
+    "ReflectionConfiguration":{
+      "type":"structure",
+      "members":{
+        "customReflectionConfiguration":{
+          "shape":"CustomReflectionConfiguration",
+          "documentation":"<p>The configuration for a custom reflection strategy.</p>"
+        },
+        "episodicReflectionConfiguration":{
+          "shape":"EpisodicReflectionConfiguration",
+          "documentation":"<p>The configuration for the episodic reflection strategy.</p>"
+        }
+      },
+      "documentation":"<p>Contains reflection configuration information for a memory strategy.</p>",
+      "union":true
     },
     "RequestHeaderAllowlist":{
       "type":"list",
@@ -5609,6 +8757,23 @@
     "RequiredProperties":{
       "type":"list",
       "member":{"shape":"String"}
+    },
+    "Resource":{
+      "type":"structure",
+      "members":{
+        "arn":{
+          "shape":"BedrockAgentcoreResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource. This globally unique identifier specifies the exact resource that policies will be evaluated against for access control decisions. </p>"
+        }
+      },
+      "documentation":"<p>Represents a resource within the AgentCore Policy system. Resources are the targets of policy evaluation. Currently, only AgentCore Gateways are supported as resources for policy enforcement.</p>",
+      "union":true
+    },
+    "ResourceId":{
+      "type":"string",
+      "max":59,
+      "min":12,
+      "pattern":"[A-Za-z][A-Za-z0-9_]*-[a-z0-9_]{10}"
     },
     "ResourceLimitExceededException":{
       "type":"structure",
@@ -5644,6 +8809,11 @@
       "min":1,
       "pattern":"\\w+:(\\/?\\/?)[^\\s]+"
     },
+    "ResourcePolicyBody":{
+      "type":"string",
+      "max":20480,
+      "min":1
+    },
     "ResourceType":{
       "type":"string",
       "enum":[
@@ -5656,11 +8826,46 @@
       "member":{"shape":"ResponseType"}
     },
     "ResponseType":{"type":"string"},
+    "RestApiMethod":{
+      "type":"string",
+      "enum":[
+        "GET",
+        "DELETE",
+        "HEAD",
+        "OPTIONS",
+        "PATCH",
+        "PUT",
+        "POST"
+      ]
+    },
+    "RestApiMethods":{
+      "type":"list",
+      "member":{"shape":"RestApiMethod"}
+    },
     "RoleArn":{
       "type":"string",
       "max":2048,
       "min":1,
       "pattern":"arn:aws(-[^:]+)?:iam::([0-9]{12})?:role/.+"
+    },
+    "Rule":{
+      "type":"structure",
+      "required":["samplingConfig"],
+      "members":{
+        "samplingConfig":{
+          "shape":"SamplingConfig",
+          "documentation":"<p> The sampling configuration that determines what percentage of agent traces to evaluate. </p>"
+        },
+        "filters":{
+          "shape":"FilterList",
+          "documentation":"<p> The list of filters that determine which agent traces should be included in the evaluation based on trace properties. </p>"
+        },
+        "sessionConfig":{
+          "shape":"SessionConfig",
+          "documentation":"<p> The session configuration that defines timeout settings for detecting when agent sessions are complete and ready for evaluation. </p>"
+        }
+      },
+      "documentation":"<p> The evaluation rule that defines sampling configuration, filtering criteria, and session detection settings for online evaluation. </p>"
     },
     "RuntimeContainerUri":{
       "type":"string",
@@ -5754,6 +8959,23 @@
         }
       },
       "documentation":"<p>Output configuration for a Salesforce OAuth2 provider.</p>"
+    },
+    "SamplingConfig":{
+      "type":"structure",
+      "required":["samplingPercentage"],
+      "members":{
+        "samplingPercentage":{
+          "shape":"SamplingConfigSamplingPercentageDouble",
+          "documentation":"<p> The percentage of agent traces to sample for evaluation, ranging from 0.01% to 100%. </p>"
+        }
+      },
+      "documentation":"<p> The configuration that controls what percentage of agent traces are sampled for evaluation to manage evaluation volume and costs. </p>"
+    },
+    "SamplingConfigSamplingPercentageDouble":{
+      "type":"double",
+      "box":true,
+      "max":100.0,
+      "min":0.01
     },
     "SandboxName":{
       "type":"string",
@@ -6003,6 +9225,12 @@
       "fault":true,
       "retryable":{"throttling":false}
     },
+    "ServiceName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9._-]+"
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -6014,6 +9242,23 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "SessionConfig":{
+      "type":"structure",
+      "required":["sessionTimeoutMinutes"],
+      "members":{
+        "sessionTimeoutMinutes":{
+          "shape":"SessionConfigSessionTimeoutMinutesInteger",
+          "documentation":"<p> The number of minutes of inactivity after which an agent session is considered complete and ready for evaluation. Default is 15 minutes. </p>"
+        }
+      },
+      "documentation":"<p> The configuration that defines how agent sessions are detected and when they are considered complete for evaluation. </p>"
+    },
+    "SessionConfigSessionTimeoutMinutesInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1440,
+      "min":1
     },
     "SetTokenVaultCMKRequest":{
       "type":"structure",
@@ -6084,6 +9329,101 @@
       },
       "documentation":"<p>Output configuration for a Slack OAuth2 provider.</p>"
     },
+    "StartPolicyGenerationRequest":{
+      "type":"structure",
+      "required":[
+        "policyEngineId",
+        "resource",
+        "content",
+        "name"
+      ],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine that provides the context for policy generation. This engine's schema and tool context are used to ensure generated policies are valid and applicable.</p>",
+          "location":"uri",
+          "locationName":"policyEngineId"
+        },
+        "resource":{
+          "shape":"Resource",
+          "documentation":"<p>The resource information that provides context for policy generation. This helps the AI understand the target resources and generate appropriate access control rules.</p>"
+        },
+        "content":{
+          "shape":"Content",
+          "documentation":"<p>The natural language description of the desired policy behavior. This content is processed by AI to generate corresponding Cedar policy statements that match the described intent.</p>"
+        },
+        "name":{
+          "shape":"PolicyGenerationName",
+          "documentation":"<p>A customer-assigned name for the policy generation request. This helps track and identify generation operations, especially when running multiple generations simultaneously.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure the idempotency of the request. The AWS SDK automatically generates this token, so you don't need to provide it in most cases. If you retry a request with the same client token, the service returns the same response without starting a duplicate generation.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartPolicyGenerationResponse":{
+      "type":"structure",
+      "required":[
+        "policyEngineId",
+        "policyGenerationId",
+        "name",
+        "policyGenerationArn",
+        "resource",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "statusReasons"
+      ],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine associated with the started policy generation. </p>"
+        },
+        "policyGenerationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier assigned to the policy generation request for tracking progress. </p>"
+        },
+        "name":{
+          "shape":"PolicyGenerationName",
+          "documentation":"<p>The customer-assigned name for the policy generation request.</p>"
+        },
+        "policyGenerationArn":{
+          "shape":"PolicyGenerationArn",
+          "documentation":"<p>The ARN of the created policy generation request.</p>"
+        },
+        "resource":{
+          "shape":"Resource",
+          "documentation":"<p>The resource information associated with the policy generation request.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy generation request was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy generation was last updated.</p>"
+        },
+        "status":{
+          "shape":"PolicyGenerationStatus",
+          "documentation":"<p>The initial status of the policy generation request.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the generation status.</p>"
+        },
+        "findings":{
+          "shape":"String",
+          "documentation":"<p>Initial findings from the policy generation process.</p>"
+        }
+      }
+    },
+    "Statement":{
+      "type":"string",
+      "max":153600,
+      "min":35
+    },
     "StatusReason":{
       "type":"string",
       "max":2048,
@@ -6109,6 +9449,10 @@
         "consolidation":{
           "shape":"ConsolidationConfiguration",
           "documentation":"<p>The consolidation configuration for the memory strategy.</p>"
+        },
+        "reflection":{
+          "shape":"ReflectionConfiguration",
+          "documentation":"<p>The reflection configuration for the memory strategy.</p>"
         },
         "selfManagedConfiguration":{
           "shape":"SelfManagedConfiguration",
@@ -6823,6 +10167,62 @@
         }
       }
     },
+    "UpdateEvaluatorRequest":{
+      "type":"structure",
+      "required":["evaluatorId"],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "evaluatorId":{
+          "shape":"EvaluatorId",
+          "documentation":"<p> The unique identifier of the evaluator to update. </p>",
+          "location":"uri",
+          "locationName":"evaluatorId"
+        },
+        "description":{
+          "shape":"EvaluatorDescription",
+          "documentation":"<p> The updated description of the evaluator. </p>"
+        },
+        "evaluatorConfig":{
+          "shape":"EvaluatorConfig",
+          "documentation":"<p> The updated configuration for the evaluator, including LLM-as-a-Judge settings with instructions, rating scale, and model configuration. </p>"
+        },
+        "level":{
+          "shape":"EvaluatorLevel",
+          "documentation":"<p> The updated evaluation level (<code>TOOL_CALL</code>, <code>TRACE</code>, or <code>SESSION</code>) that determines the scope of evaluation. </p>"
+        }
+      }
+    },
+    "UpdateEvaluatorResponse":{
+      "type":"structure",
+      "required":[
+        "evaluatorArn",
+        "evaluatorId",
+        "updatedAt",
+        "status"
+      ],
+      "members":{
+        "evaluatorArn":{
+          "shape":"EvaluatorArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the updated evaluator. </p>"
+        },
+        "evaluatorId":{
+          "shape":"EvaluatorId",
+          "documentation":"<p> The unique identifier of the updated evaluator. </p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp when the evaluator was last updated. </p>"
+        },
+        "status":{
+          "shape":"EvaluatorStatus",
+          "documentation":"<p> The status of the evaluator update operation. </p>"
+        }
+      }
+    },
     "UpdateGatewayRequest":{
       "type":"structure",
       "required":[
@@ -6871,6 +10271,10 @@
         "interceptorConfigurations":{
           "shape":"GatewayInterceptorConfigurations",
           "documentation":"<p>The updated interceptor configurations for the gateway.</p>"
+        },
+        "policyEngineConfiguration":{
+          "shape":"GatewayPolicyEngineConfiguration",
+          "documentation":"<p>The updated policy engine configuration for the gateway. A policy engine is a collection of policies that evaluates and authorizes agent tool calls. When associated with a gateway, the policy engine intercepts all agent requests and determines whether to allow or deny each action based on the defined policies.</p>"
         },
         "exceptionLevel":{
           "shape":"ExceptionLevel",
@@ -6951,6 +10355,10 @@
         "interceptorConfigurations":{
           "shape":"GatewayInterceptorConfigurations",
           "documentation":"<p>The updated interceptor configurations for the gateway.</p>"
+        },
+        "policyEngineConfiguration":{
+          "shape":"GatewayPolicyEngineConfiguration",
+          "documentation":"<p>The updated policy engine configuration for the gateway.</p>"
         },
         "workloadIdentityDetails":{
           "shape":"WorkloadIdentityDetails",
@@ -7096,7 +10504,7 @@
       "type":"integer",
       "box":true,
       "max":365,
-      "min":7
+      "min":3
     },
     "UpdateMemoryOutput":{
       "type":"structure",
@@ -7172,6 +10580,235 @@
         "lastUpdatedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the OAuth2 credential provider was last updated.</p>"
+        }
+      }
+    },
+    "UpdateOnlineEvaluationConfigRequest":{
+      "type":"structure",
+      "required":["onlineEvaluationConfigId"],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "onlineEvaluationConfigId":{
+          "shape":"OnlineEvaluationConfigId",
+          "documentation":"<p> The unique identifier of the online evaluation configuration to update. </p>",
+          "location":"uri",
+          "locationName":"onlineEvaluationConfigId"
+        },
+        "description":{
+          "shape":"EvaluationConfigDescription",
+          "documentation":"<p> The updated description of the online evaluation configuration. </p>"
+        },
+        "rule":{
+          "shape":"Rule",
+          "documentation":"<p> The updated evaluation rule containing sampling configuration, filters, and session settings. </p>"
+        },
+        "dataSourceConfig":{
+          "shape":"DataSourceConfig",
+          "documentation":"<p> The updated data source configuration specifying CloudWatch log groups and service names to monitor. </p>"
+        },
+        "evaluators":{
+          "shape":"EvaluatorList",
+          "documentation":"<p> The updated list of evaluators to apply during online evaluation. </p>"
+        },
+        "evaluationExecutionRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p> The updated Amazon Resource Name (ARN) of the IAM role used for evaluation execution. </p>"
+        },
+        "executionStatus":{
+          "shape":"OnlineEvaluationExecutionStatus",
+          "documentation":"<p> The updated execution status to enable or disable the online evaluation. </p>"
+        }
+      }
+    },
+    "UpdateOnlineEvaluationConfigResponse":{
+      "type":"structure",
+      "required":[
+        "onlineEvaluationConfigArn",
+        "onlineEvaluationConfigId",
+        "updatedAt",
+        "status",
+        "executionStatus"
+      ],
+      "members":{
+        "onlineEvaluationConfigArn":{
+          "shape":"OnlineEvaluationConfigArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the updated online evaluation configuration. </p>"
+        },
+        "onlineEvaluationConfigId":{
+          "shape":"OnlineEvaluationConfigId",
+          "documentation":"<p> The unique identifier of the updated online evaluation configuration. </p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp when the online evaluation configuration was last updated. </p>"
+        },
+        "status":{
+          "shape":"OnlineEvaluationConfigStatus",
+          "documentation":"<p> The status of the online evaluation configuration. </p>"
+        },
+        "executionStatus":{
+          "shape":"OnlineEvaluationExecutionStatus",
+          "documentation":"<p> The execution status indicating whether the online evaluation is currently running. </p>"
+        },
+        "failureReason":{
+          "shape":"String",
+          "documentation":"<p> The reason for failure if the online evaluation configuration update or execution failed. </p>"
+        }
+      }
+    },
+    "UpdatePolicyEngineRequest":{
+      "type":"structure",
+      "required":["policyEngineId"],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the policy engine to be updated.</p>",
+          "location":"uri",
+          "locationName":"policyEngineId"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The new description for the policy engine.</p>"
+        }
+      }
+    },
+    "UpdatePolicyEngineResponse":{
+      "type":"structure",
+      "required":[
+        "policyEngineId",
+        "name",
+        "createdAt",
+        "updatedAt",
+        "policyEngineArn",
+        "status",
+        "statusReasons"
+      ],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the updated policy engine.</p>"
+        },
+        "name":{
+          "shape":"PolicyEngineName",
+          "documentation":"<p>The name of the updated policy engine.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The updated description of the policy engine.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The original creation timestamp of the policy engine.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy engine was last updated.</p>"
+        },
+        "policyEngineArn":{
+          "shape":"PolicyEngineArn",
+          "documentation":"<p>The ARN of the updated policy engine.</p>"
+        },
+        "status":{
+          "shape":"PolicyEngineStatus",
+          "documentation":"<p>The current status of the updated policy engine.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the update status.</p>"
+        }
+      }
+    },
+    "UpdatePolicyRequest":{
+      "type":"structure",
+      "required":[
+        "policyEngineId",
+        "policyId",
+        "definition"
+      ],
+      "members":{
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine that manages the policy to be updated. This ensures the policy is updated within the correct policy engine context.</p>",
+          "location":"uri",
+          "locationName":"policyEngineId"
+        },
+        "policyId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the policy to be updated. This must be a valid policy ID that exists within the specified policy engine.</p>",
+          "location":"uri",
+          "locationName":"policyId"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The new human-readable description for the policy. This optional field allows updating the policy's documentation while keeping the same policy logic.</p>"
+        },
+        "definition":{
+          "shape":"PolicyDefinition",
+          "documentation":"<p>The new Cedar policy statement that defines the access control rules. This replaces the existing policy definition with new logic while maintaining the policy's identity.</p>"
+        },
+        "validationMode":{
+          "shape":"PolicyValidationMode",
+          "documentation":"<p>The validation mode for the policy update. Determines how Cedar analyzer validation results are handled during policy updates. FAIL_ON_ANY_FINDINGS runs the Cedar analyzer and fails the update if validation issues are detected, ensuring the policy conforms to the Cedar schema and tool context. IGNORE_ALL_FINDINGS runs the Cedar analyzer but allows updates despite validation warnings. Use FAIL_ON_ANY_FINDINGS to ensure policy correctness during updates, especially when modifying policy logic or conditions.</p>"
+        }
+      }
+    },
+    "UpdatePolicyResponse":{
+      "type":"structure",
+      "required":[
+        "policyId",
+        "name",
+        "policyEngineId",
+        "definition",
+        "createdAt",
+        "updatedAt",
+        "policyArn",
+        "status",
+        "statusReasons"
+      ],
+      "members":{
+        "policyId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the updated policy.</p>"
+        },
+        "name":{
+          "shape":"PolicyName",
+          "documentation":"<p>The name of the updated policy.</p>"
+        },
+        "policyEngineId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the policy engine managing the updated policy.</p>"
+        },
+        "definition":{
+          "shape":"PolicyDefinition",
+          "documentation":"<p>The updated Cedar policy statement.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The updated description of the policy.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The original creation timestamp of the policy.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the policy was last updated.</p>"
+        },
+        "policyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The ARN of the updated policy.</p>"
+        },
+        "status":{
+          "shape":"PolicyStatus",
+          "documentation":"<p>The current status of the updated policy.</p>"
+        },
+        "statusReasons":{
+          "shape":"PolicyStatusReasons",
+          "documentation":"<p>Additional information about the update status.</p>"
         }
       }
     },

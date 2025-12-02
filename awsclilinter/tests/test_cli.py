@@ -68,7 +68,7 @@ class TestCLI:
             fixed_content = script_file.read_text()
             # 1 command, 2 rules = 2 flags added
             assert "--cli-binary-format" in fixed_content
-            assert "--no-cli-paginate" in fixed_content
+            assert "--no-cli-pager" in fixed_content
 
     def test_output_mode(self, tmp_path):
         """Test output mode creates new file."""
@@ -87,7 +87,7 @@ class TestCLI:
             content = output_file.read_text()
             # 1 command, 2 rules = 2 flags added
             assert "--cli-binary-format" in content
-            assert "--no-cli-paginate" in content
+            assert "--no-cli-pager" in content
 
     def test_interactive_mode_accept_all(self, tmp_path):
         """Test interactive mode with 'y' to accept all changes."""
@@ -116,7 +116,7 @@ class TestCLI:
                 print(fixed_content)
                 # 2 commands, 2 rules = 4 findings, so 2 of each flag
                 assert fixed_content.count("--cli-binary-format") == 2
-                assert fixed_content.count("--no-cli-paginate") == 2
+                assert fixed_content.count("--no-cli-pager") == 2
 
     def test_interactive_mode_reject_all(self, tmp_path, capsys):
         """Test interactive mode with 'n' to reject all changes."""
@@ -156,7 +156,7 @@ class TestCLI:
                 fixed_content = output_file.read_text()
                 # 2 commands, 2 rules = 4 findings, so 2 of each flag
                 assert fixed_content.count("--cli-binary-format") == 2
-                assert fixed_content.count("--no-cli-paginate") == 2
+                assert fixed_content.count("--no-cli-pager") == 2
 
     def test_interactive_mode_save_and_exit(self, tmp_path):
         """Test interactive mode with 's' to save and exit."""

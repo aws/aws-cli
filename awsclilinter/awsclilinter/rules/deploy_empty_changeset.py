@@ -5,7 +5,7 @@ from ast_grep_py.ast_grep_py import SgRoot
 from awsclilinter.rules import LintFinding, LintRule
 
 
-class DeployEmptyChangeset(LintRule):
+class DeployEmptyChangesetRule(LintRule):
     """Detects AWS CLI CloudFormation deploy commands."""
 
     @property

@@ -10,9 +10,9 @@ from awsclilinter import linter
 from awsclilinter.linter import parse
 from awsclilinter.rules import LintFinding, LintRule
 from awsclilinter.rules.binary_params_base64 import Base64BinaryFormatRule
-from awsclilinter.rules.deploy_empty_changeset import DeployEmptyChangeset
+from awsclilinter.rules.default_pager import DefaultPagerRule
+from awsclilinter.rules.deploy_empty_changeset import DeployEmptyChangesetRule
 from awsclilinter.rules.hidden_aliases import create_all_hidden_alias_rules
-from awsclilinter.rules.pagination import PaginationRule
 from awsclilinter.rules.s3_copies import S3CopyRule
 
 # ANSI color codes
@@ -207,9 +207,9 @@ def main():
 
     rules = [
         Base64BinaryFormatRule(),
-        PaginationRule(),
+        DefaultPagerRule(),
         S3CopyRule(),
-        DeployEmptyChangeset(),
+        DeployEmptyChangesetRule(),
         *create_all_hidden_alias_rules(),
     ]
 

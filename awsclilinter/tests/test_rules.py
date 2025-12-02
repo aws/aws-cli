@@ -1,6 +1,6 @@
 from ast_grep_py import SgRoot
 
-from awsclilinter.rules.base64_rule import Base64BinaryFormatRule
+from awsclilinter.rules.binary_params_base64 import Base64BinaryFormatRule
 
 
 class TestBase64BinaryFormatRule:

@@ -10,7 +10,7 @@ class PaginationRule(LintRule):
 
     @property
     def name(self) -> str:
-        return "no-cli-paginate"
+        return "pagination-by-default"
 
     @property
     def description(self) -> str:
@@ -23,7 +23,7 @@ class PaginationRule(LintRule):
         """Check for AWS CLI commands missing --no-cli-paginate."""
         node = root.root()
         nodes = node.find_all(
-            all=[
+            all=[  # type: ignore[arg-type]
                 {"kind": "command"},
                 {"pattern": "aws $SERVICE $OPERATION $$$ARGS"},
                 {"not": {"has": {"kind": "word", "pattern": "--no-cli-paginate"}}},

@@ -25,7 +25,7 @@ class Base64BinaryFormatRule(LintRule):
         """Check for AWS CLI commands missing --cli-binary-format."""
         node = root.root()
         base64_broken_nodes = node.find_all(
-            all=[
+            all=[  # type: ignore[arg-type]
                 {"kind": "command"},
                 {"pattern": "aws $SERVICE $OPERATION $$$ARGS"},
                 {"not": {"has": {"kind": "word", "pattern": "--cli-binary-format"}}},

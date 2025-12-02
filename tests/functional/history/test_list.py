@@ -45,7 +45,7 @@ class TestListCommand(BaseHistoryCommandParamsTest):
             'to the config file.'
         )
         self.assertEqual('', ensure_text_type(out))
-        self.assertEqual('\n%s\n' % error_message, ensure_text_type(err))
+        self.assertEqual('\naws: [ERROR]: %s\n' % error_message, ensure_text_type(err))
 
     def test_show_one_call_present(self):
         self.parsed_responses = [

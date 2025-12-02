@@ -333,7 +333,7 @@ class TestCliDriver:
                 rc = self.driver.main('s3 list-objects --bucket foo'.split())
         stderr.flush()
         assert rc == 255
-        assert stderr_b.getvalue().strip() == "☃".encode()
+        assert stderr_b.getvalue().strip() == "aws: [ERROR]: ☃".encode()
 
     @pytest.mark.parametrize(
         'env_vars',
@@ -354,7 +354,7 @@ class TestCliDriver:
                 rc = self.driver.main('s3 list-objects --bucket foo'.split())
         stderr.flush()
         assert rc == 255
-        assert stderr_b.getvalue().strip() == "☃".encode()
+        assert stderr_b.getvalue().strip() == "aws: [ERROR]: ☃".encode()
 
     def test_invalid_output_encoding_throws(self):
         stderr_b = io.BytesIO()
@@ -368,7 +368,7 @@ class TestCliDriver:
         fake_stderr.flush()
         assert (
             stderr_b.getvalue().decode().strip()
-            == 'Unknown codec `invalid` specified for AWS_CLI_OUTPUT_ENCODING.'
+            == 'aws: [ERROR]: Unknown codec `invalid` specified for AWS_CLI_OUTPUT_ENCODING.'
         )
 
     def test_can_access_subcommand_table(self):
@@ -725,7 +725,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             driver.main('ec2 describe-instances'.split())
         self.assertEqual(
             f.write.call_args_list[1][0][0],
-            'Unable to locate credentials. '
+            'aws: [ERROR]: Unable to locate credentials. '
             'You can configure credentials by running "aws login".',
         )
 

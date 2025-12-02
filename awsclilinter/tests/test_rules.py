@@ -1,6 +1,10 @@
 from ast_grep_py import SgRoot
 
 from awsclilinter.rules.binary_params_base64 import Base64BinaryFormatRule
+from awsclilinter.rules.default_pager import DefaultPagerRule
+from awsclilinter.rules.deploy_empty_changeset import DeployEmptyChangesetRule
+from awsclilinter.rules.hidden_aliases import HiddenAliasRule
+from awsclilinter.rules.s3_copies import S3CopyRule
 
 
 class TestBase64BinaryFormatRule:
@@ -32,3 +36,171 @@ class TestBase64BinaryFormatRule:
         findings = rule.check(root)
 
         assert len(findings) == 0
+
+
+class TestDefaultPagerRule:
+    """Test cases for DefaultPagerRule."""
+
+    def test_rule_properties(self):
+        """Test rule description."""
+        rule = DefaultPagerRule()
+        assert "pager" in rule.description
+
+    def test_detects_missing_flag(self):
+        """Test detection of missing --no-cli-pager flag."""
+        script = "aws s3 ls s3://my-bucket"
+        root = SgRoot(script, "bash")
+        rule = DefaultPagerRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 1
+        assert "--no-cli-pager" in findings[0].edit.inserted_text
+
+    def test_no_detection_with_flag(self):
+        """Test no detection when flag is present."""
+        script = "aws s3 ls s3://my-bucket --no-cli-pager"
+        root = SgRoot(script, "bash")
+        rule = DefaultPagerRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 0
+
+    def test_detects_multiple_commands(self):
+        """Test detection across multiple commands."""
+        script = "aws ec2 describe-instances\naws s3 ls"
+        root = SgRoot(script, "bash")
+        rule = DefaultPagerRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 2
+
+
+class TestDeployEmptyChangesetRule:
+    """Test cases for DeployEmptyChangesetRule."""
+
+    def test_rule_properties(self):
+        """Test rule description."""
+        rule = DeployEmptyChangesetRule()
+        assert "changeset" in rule.description
+
+    def test_detects_missing_flag(self):
+        """Test detection of missing --fail-on-empty-changeset flag."""
+        script = "aws cloudformation deploy --template-file template.yaml --stack-name my-stack"
+        root = SgRoot(script, "bash")
+        rule = DeployEmptyChangesetRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 1
+        assert "--fail-on-empty-changeset" in findings[0].edit.inserted_text
+
+    def test_no_detection_with_fail_flag(self):
+        """Test no detection when --fail-on-empty-changeset is present."""
+        script = "aws cloudformation deploy --template-file template.yaml --fail-on-empty-changeset"
+        root = SgRoot(script, "bash")
+        rule = DeployEmptyChangesetRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 0
+
+    def test_no_detection_with_no_fail_flag(self):
+        """Test no detection when --no-fail-on-empty-changeset is present."""
+        script = "aws cloudformation deploy --template-file template.yaml --no-fail-on-empty-changeset"
+        root = SgRoot(script, "bash")
+        rule = DeployEmptyChangesetRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 0
+
+
+class TestS3CopyRule:
+    """Test cases for S3CopyRule."""
+
+    def test_rule_properties(self):
+        """Test rule description."""
+        rule = S3CopyRule()
+        assert "copy" in rule.description.lower()
+
+    def test_detects_s3_cp_bucket_to_bucket(self):
+        """Test detection of s3 cp bucket-to-bucket without --copy-props."""
+        script = "aws s3 cp s3://source-bucket/file.txt s3://dest-bucket/file.txt"
+        root = SgRoot(script, "bash")
+        rule = S3CopyRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 1
+        assert "--copy-props none" in findings[0].edit.inserted_text
+
+    def test_detects_s3_mv_bucket_to_bucket(self):
+        """Test detection of s3 mv bucket-to-bucket without --copy-props."""
+        script = "aws s3 mv s3://source-bucket/file.txt s3://dest-bucket/file.txt"
+        root = SgRoot(script, "bash")
+        rule = S3CopyRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 1
+
+    def test_detects_s3_sync_bucket_to_bucket(self):
+        """Test detection of s3 sync bucket-to-bucket without --copy-props."""
+        script = "aws s3 sync s3://source-bucket s3://dest-bucket"
+        root = SgRoot(script, "bash")
+        rule = S3CopyRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 1
+
+    def test_no_detection_with_copy_props(self):
+        """Test no detection when --copy-props is present."""
+        script = "aws s3 cp s3://source-bucket/file.txt s3://dest-bucket/file.txt --copy-props none"
+        root = SgRoot(script, "bash")
+        rule = S3CopyRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 0
+
+    def test_no_detection_local_to_s3(self):
+        """Test no detection for local to s3 copy."""
+        script = "aws s3 cp file.txt s3://dest-bucket/file.txt"
+        root = SgRoot(script, "bash")
+        rule = S3CopyRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 0
+
+
+class TestHiddenAliasRule:
+    """Test cases for HiddenAliasRule."""
+
+    def test_rule_properties(self):
+        """Test rule description."""
+        rule = HiddenAliasRule("authentication-code-1", "authentication-code1", "iam", "enable-mfa-device")
+        assert "authentication-code-1" in rule.description
+        assert "authentication-code1" in rule.description
+
+    def test_detects_hidden_alias(self):
+        """Test detection of hidden alias usage."""
+        script = "aws iam enable-mfa-device --user-name Bob --authentication-code-1 123456"
+        root = SgRoot(script, "bash")
+        rule = HiddenAliasRule("authentication-code-1", "authentication-code1", "iam", "enable-mfa-device")
+        findings = rule.check(root)
+
+        assert len(findings) == 1
+        assert "--authentication-code1" in findings[0].edit.inserted_text
+
+    def test_no_detection_with_correct_param(self):
+        """Test no detection when correct parameter is used."""
+        script = "aws iam enable-mfa-device --user-name Bob --authentication-code1 123456"
+        root = SgRoot(script, "bash")
+        rule = HiddenAliasRule("authentication-code-1", "authentication-code1", "iam", "enable-mfa-device")
+        findings = rule.check(root)
+
+        assert len(findings) == 0
+
+    def test_detects_different_service_alias(self):
+        """Test detection of alias in different service."""
+        script = "aws lambda publish-version --function-name my-func --code-sha-256 abc123"
+        root = SgRoot(script, "bash")
+        rule = HiddenAliasRule("code-sha-256", "code-sha256", "lambda", "publish-version")
+        findings = rule.check(root)
+
+        assert len(findings) == 1
+        assert "--code-sha256" in findings[0].edit.inserted_text

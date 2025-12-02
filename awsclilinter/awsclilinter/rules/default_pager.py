@@ -27,7 +27,7 @@ class DefaultPagerRule(LintRule):
         nodes = node.find_all(
             all=[  # type: ignore[arg-type]
                 {"kind": "command"},
-                {"pattern": "aws $SERVICE $OPERATION $$$ARGS"},
+                {"pattern": "aws $SERVICE $OPERATION"},
                 {"not": {"has": {"kind": "word", "pattern": "--no-cli-pager"}}},
             ]
         )

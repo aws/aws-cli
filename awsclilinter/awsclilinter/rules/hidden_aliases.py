@@ -163,7 +163,7 @@ class HiddenAliasRule(LintRule):
         nodes = node.find_all(
             all=[  # type: ignore[arg-type]
                 {"kind": "command"},
-                {"pattern": f"aws {self._service} {self._operation} $$$ARGS"},
+                {"pattern": f"aws {self._service} {self._operation}"},
                 {"has": {"kind": "word", "pattern": f"--{self._hidden_alias}"}},
             ]
         )

@@ -28,7 +28,7 @@ class Base64BinaryFormatRule(LintRule):
         base64_broken_nodes = node.find_all(
             all=[  # type: ignore[arg-type]
                 {"kind": "command"},
-                {"pattern": "aws $SERVICE $OPERATION $$$ARGS"},
+                {"pattern": "aws $SERVICE $OPERATION"},
                 {"not": {"has": {"kind": "word", "pattern": "--cli-binary-format"}}},
             ]
         )

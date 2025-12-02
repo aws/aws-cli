@@ -31,9 +31,9 @@ class S3CopyRule(LintRule):
                 {"kind": "command"},
                 {
                     "any": [
-                        {"pattern": "aws s3 cp $$$ARGS"},
-                        {"pattern": "aws s3 mv $$$ARGS"},
-                        {"pattern": "aws s3 sync $$$ARGS"},
+                        {"pattern": "aws s3 cp"},
+                        {"pattern": "aws s3 mv"},
+                        {"pattern": "aws s3 sync"},
                     ]
                 },
                 {"has": {"kind": "word", "regex": "\\As3://"}},

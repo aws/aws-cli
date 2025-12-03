@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 from ast_grep_py.ast_grep_py import Edit, SgRoot
 
@@ -11,10 +11,23 @@ class LintFinding:
 
     line_start: int
     line_end: int
-    edit: Edit
+    edit: Optional[Edit]
     original_text: str
     rule_name: str
     description: str
+    suggested_manual_fix: Optional[str] = None
+
+
+    def __post_init__(self):
+        if self.edit is None and self.suggested_manual_fix is None:
+            raise ValueError(
+                f"suggested_manual_fix must be provided when edit is None for rule {self.rule_name}."
+            )
+
+    @property
+    def auto_fixable(self) -> bool:
+        """Return True if this finding can be automatically fixed."""
+        return self.edit is not None
 
 
 class LintRule(ABC):

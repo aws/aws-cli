@@ -29,19 +29,50 @@ class S3CopyRule(LintRule):
         nodes = node.find_all(
             all=[  # type: ignore[arg-type]
                 {"kind": "command"},
-                {
-                    "any": [
-                        {"pattern": "aws s3 cp"},
-                        {"pattern": "aws s3 mv"},
-                        {"pattern": "aws s3 sync"},
-                    ]
-                },
-                {"has": {"kind": "word", "regex": "\\As3://"}},
+                {"has": {
+                    "kind": "command_name",
+                    "has": {
+                        "kind": "word",
+                        "pattern": "aws",
+                    },
+                }},
+                {"has": {
+                    "kind": "word",
+                    "pattern": "s3",
+                }},
+                {"any": [
+                    {
+                        "has": {
+                            "kind": "word",
+                            "pattern": "cp",
+                        }
+                    },
+                    {
+                        "has": {
+                            "kind": "word",
+                            "pattern": "mv",
+                        }
+                    },
+                    {
+                        "has": {
+                            "kind": "word",
+                            "pattern": "sync",
+                        }
+                    }
+                ]},
+                {"has": {
+                    "kind": "word",
+                    "regex": "\\As3://"
+                }},
                 {
                     "has": {
                         "kind": "word",
                         "regex": "\\As3://",
-                        "follows": {"stopBy": "end", "kind": "word", "regex": "\\As3://"},
+                        "follows": {
+                            "stopBy": "end",
+                            "kind": "word",
+                            "regex": "\\As3://"
+                        },
                     }
                 },
                 {"not": {"has": {"kind": "word", "pattern": "--copy-props"}}},

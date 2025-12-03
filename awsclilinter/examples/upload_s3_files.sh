@@ -10,3 +10,5 @@ if
 fi
 
 aws s3 ls s3://mybucket
+
+aws ecr --debug get-login

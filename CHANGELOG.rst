@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.32.9
+======
+
+* api-change:``sagemaker``: Introduces Serverless training: A fully managed compute infrastructure that abstracts away all infrastructure complexity, allowing you to focus purely on model development.
+
+Added AI model customization assets used to train, refine, and evaluate custom models during the model customization process.
+* api-change:``bedrock``: Adding support in Amazon Bedrock to customize models with reinforcement fine-tuning (RFT) and support for updating the existing Custom Model Deployments.
+
+
 2.32.8
 ======
 

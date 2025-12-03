@@ -213,6 +213,11 @@ class CreateCluster(Command):
             'help_text': helptext.AUTO_TERMINATION_POLICY,
         },
         {
+            'name': 'monitoring-configuration',
+            'schema': argumentschema.MONITORING_CONFIGURATION_SCHEMA,
+            'help_text': helptext.MONITORING_CONFIGURATION,
+        },
+        {
             'name': 'extended-support',
             'action': 'store_true',
             'group_name': 'extended-support',
@@ -551,6 +556,13 @@ class CreateCluster(Command):
                 params,
                 'AutoTerminationPolicy',
                 parsed_args.auto_termination_policy,
+            )
+
+        if parsed_args.monitoring_configuration is not None:
+            emrutils.apply_dict(
+                params,
+                'MonitoringConfiguration',
+                parsed_args.monitoring_configuration,
             )
 
         self._validate_required_applications(parsed_args)

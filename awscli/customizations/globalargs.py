@@ -175,7 +175,7 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
             'cliv2-migration-changes.html#cliv2-migration-ecr-get-login.\n',
             out_file=sys.stderr
         )
-    if url_params and session.get_scoped_config().get('cli_pager', None):
+    if url_params and session.get_scoped_config().get('cli_follow_urlparam', True):
         uni_print(
             'AWS CLI v2 UPGRADE WARNING: For input parameters that have '
             'a prefix of http:// or https://, AWS CLI v2 will no longer '

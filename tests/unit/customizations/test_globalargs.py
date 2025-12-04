@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from unittest.mock import patch
+from unittest.mock import patch, Mock
 
 from botocore.session import get_session
 from botocore import UNSIGNED
@@ -302,5 +302,60 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         self.assertIn(
             'AWS CLI v2 UPGRADE WARNING: The AWS CLI v2 only uses Signature '
             'v4 to authenticate Amazon S3 requests.',
+            output.stderr.getvalue()
+        )
+
+    def test_v2_debug_s3_us_east_1(self):
+        parsed_args = FakeParsedArgs(v2_debug=True, region='us-east-1')
+        session = get_session()
+        globalargs.detect_migration_breakage(parsed_args, [], session)
+        def mock_get(key: str):
+            if key == 'retries':
+                return {'invocation-id': '012345'}
+            return None
+
+        with capture_output() as output:
+            mock_request = Mock()
+            mock_request.url = 'https://s3.amazonaws.com'
+            mock_request.context.get.side_effect = mock_get
+            mock_request.headers = {}
+
+            session.emit(
+                'request-created.s3.ListBuckets',
+                request=mock_request,
+                operation_name='ListBuckets',
+            )
+        self.assertIn(
+            'AWS CLI v2 UPGRADE WARNING: When you configure AWS CLI v2 '
+            'to use the `us-east-1` region, it uses the true regional '
+            'endpoint rather than the global endpoint.',
+            output.stderr.getvalue()
+        )
+
+    def test_v2_debug_s3api_us_east_1(self):
+        parsed_args = FakeParsedArgs(v2_debug=True, region='us-east-1')
+        session = get_session()
+        globalargs.detect_migration_breakage(parsed_args, [], session)
+
+        def mock_get(key: str):
+            if key == 'retries':
+                return {'invocation-id': '012345'}
+            return None
+
+        with capture_output() as output:
+            mock_request = Mock()
+            mock_request.url = 'https://s3.amazonaws.com'
+            mock_request.context.get.side_effect = mock_get
+            mock_request.headers = {}
+
+            session.emit(
+                'request-created.s3api.ListBuckets',
+                request=mock_request,
+                operation_name='ListBuckets',
+            )
+        self.assertIn(
+            'AWS CLI v2 UPGRADE WARNING: When you configure AWS CLI v2 '
+            'to use the `us-east-1` region, it uses the true regional '
+            'endpoint rather than the global endpoint.',
             output.stderr.getvalue()
         )

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.32.10
+=======
+
+* api-change:``lambda``: Add DisallowedByVpcEncryptionControl to the LastUpdateStatusReasonCode and StateReasonCode enums to represent failures caused by VPC Encryption Controls.
+
+
 2.32.9
 ======
 

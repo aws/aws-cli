@@ -136,27 +136,22 @@ class TestFindServiceAndOperationNameFromEvent(unittest.TestCase):
 
 
 class TestV2DebugResolution(unittest.TestCase):
-    def test_no_v2_debug_flag_takes_precedence(self):
-        args = mock.Mock(no_v2_debug=True, v2_debug=True)
-        with mock.patch.dict(os.environ, {'AWS_CLI_UPGRADE_DEBUG_MODE': 'true'}):
-            self.assertFalse(resolve_v2_debug_mode(args))
-
     def test_v2_debug_flag_enabled(self):
-        args = mock.Mock(no_v2_debug=False, v2_debug=True)
+        args = mock.Mock(v2_debug=True)
         self.assertTrue(resolve_v2_debug_mode(args))
 
     def test_env_var_enabled(self):
-        args = mock.Mock(no_v2_debug=False, v2_debug=False)
+        args = mock.Mock(v2_debug=False)
         with mock.patch.dict(os.environ, {'AWS_CLI_UPGRADE_DEBUG_MODE': 'true'}):
             self.assertTrue(resolve_v2_debug_mode(args))
 
     def test_all_disabled(self):
-        args = mock.Mock(no_v2_debug=False, v2_debug=False)
+        args = mock.Mock(v2_debug=False)
         with mock.patch.dict(os.environ, {}, clear=True):
             self.assertFalse(resolve_v2_debug_mode(args))
 
     def test_env_var_non_true_value(self):
-        args = mock.Mock(no_v2_debug=False, v2_debug=False)
+        args = mock.Mock(v2_debug=False)
         with mock.patch.dict(os.environ, {'AWS_CLI_UPGRADE_DEBUG_MODE': 'false'}):
             self.assertFalse(resolve_v2_debug_mode(args))
 

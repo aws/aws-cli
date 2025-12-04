@@ -335,7 +335,6 @@ class TestPaginateV2Debug(TestPaginateBase):
         # migration warning should be printed.
         # From setUp(), the limit_key is 'Bar'
         input_tokens = ['Foo', 'Bar']
-        self.parsed_globals.no_v2_debug = False
         self.parsed_globals.v2_debug = True
         self.parsed_globals.paginate = True
         self.session.emit_first_non_none_response.side_effect = partial(

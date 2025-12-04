@@ -137,8 +137,6 @@ def find_service_and_method_in_event_name(event_name):
 def resolve_v2_debug_mode(args):
     # Resolve whether v2-debug mode is enabled,
     # following the correct precedence order.
-    if no_v2_debug := getattr(args, 'no_v2_debug', False):
-        return False
     if getattr(args, 'v2_debug', False):
         return True
     if os.environ.get('AWS_CLI_UPGRADE_DEBUG_MODE', '').lower() == 'true':

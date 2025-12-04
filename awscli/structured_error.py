@@ -36,8 +36,7 @@ class StructuredErrorHandler:
         error_info = error_response.get('Error', {})
 
         if self.should_display(error_info, parsed_globals):
-            filtered_error_info = self._filter_sensitive_fields(error_info)
-            self.display(filtered_error_info, parsed_globals)
+            self.display(error_info, parsed_globals)
 
     def should_display(self, error_info, parsed_globals):
         if not self._has_additional_error_members(error_info):
@@ -75,16 +74,6 @@ class StructuredErrorHandler:
         if output is None:
             output = self._session.get_config_variable('output')
         return output
-
-    def _filter_sensitive_fields(self, error_info):
-        """Filter sensitive fields from error response before display.
-
-        TODO: Implement sensitive output mitigation to filter fields
-        marked with the sensitive trait according to AWS CLI sensitive
-        output mitigation design when finalized.
-        """
-        # Currently returns unfiltered
-        return error_info
 
     def _has_additional_error_members(self, error_response):
         if not error_response:

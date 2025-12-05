@@ -570,3 +570,13 @@ UNHEALTHY_NODE_REPLACEMENT = (
 )
 
 EXTENDED_SUPPORT = '<p>Reserved.</p> '
+
+MONITORING_CONFIGURATION = (
+    '<p>Monitoring configuration for an Amazon EMR cluster. '
+    'The configuration specifies CloudWatch logging settings for the cluster. '
+    'You can configure the CloudWatchLogConfiguration which includes '
+    'the Enabled flag (required), LogGroupName, LogStreamNamePrefix, '
+    'EncryptionKeyArn, and LogTypes. The LogTypes parameter is a map '
+    'of log type categories (e.g., "STEP_LOGS", "SPARK_DRIVER", '
+    '"SPARK_EXECUTOR") to a list of file names (e.g., "STDOUT", "STDERR").</p>'
+)

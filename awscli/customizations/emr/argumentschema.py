@@ -868,3 +868,47 @@ AUTO_TERMINATION_POLICY_SCHEMA = {
         }
     },
 }
+
+MONITORING_CONFIGURATION_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "CloudWatchLogConfiguration": {
+            "type": "object",
+            "description": "CloudWatch log configuration settings and metadata that specify settings like log files to monitor and where to send them.",
+            "properties": {
+                "Enabled": {
+                    "type": "boolean",
+                    "description": "Specifies if CloudWatch logging is enabled.",
+                    "required": True
+                },
+                "LogGroupName": {
+                    "type": "string",
+                    "description": "The name of the CloudWatch log group where logs are published."
+                },
+                "LogStreamNamePrefix": {
+                    "type": "string",
+                    "description": "The prefix of the log stream name."
+                },
+                "EncryptionKeyArn": {
+                    "type": "string",
+                    "description": "The ARN of the encryption key used to encrypt the logs."
+                },
+                "LogTypes": {
+                    "type": "map",
+                    "key": {
+                        "type": "string",
+                        "description": "Log type category"
+                    },
+                    "value": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "File names (STDOUT or STDERR) for the log type"
+                    },
+                    "description": "A map of log types to file names for publishing logs to the standard output or standard error streams for CloudWatch. Valid log types include STEP_LOGS, SPARK_DRIVER, and SPARK_EXECUTOR. Valid file names for each type include STDOUT and STDERR."
+                }
+            }
+        }
+    }
+}

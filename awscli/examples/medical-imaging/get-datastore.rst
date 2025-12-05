@@ -9,14 +9,34 @@ The following ``get-datastore`` code example gets a data store's properties. ::
 Output::
 
     {
-    "datastoreProperties": {
-        "datastoreId": "12345678901234567890123456789012",
-        "datastoreName": "TestDatastore123",
-        "datastoreStatus": "ACTIVE",
-        "losslessStorageFormat": "JPEG_2000_LOSSLESS",
-        "datastoreArn": "arn:aws:medical-imaging:us-east-1:123456789012:datastore/12345678901234567890123456789012",
-        "createdAt": "2022-11-15T23:33:09.643000+00:00",
-        "updatedAt": "2022-11-15T23:33:09.643000+00:00"
+        "datastoreProperties": {
+            "datastoreId": "12345678901234567890123456789012",
+            "datastoreName": "TestDatastore123",
+            "datastoreStatus": "ACTIVE",
+            "losslessStorageFormat": "HTJ2K"
+            "datastoreArn": "arn:aws:medical-imaging:us-east-1:123456789012:datastore/12345678901234567890123456789012",
+            "createdAt": "2022-11-15T23:33:09.643000+00:00",
+            "updatedAt": "2022-11-15T23:33:09.643000+00:00"
+        }
+    }
+
+The following ``get-datastore`` code example gets a data store's properties with store configured for JPEG 2000 Lossless storage format. ::
+
+    aws medical-imaging get-datastore \
+        --datastore-id 12345678901234567890123456789012
+
+
+Output::
+
+    {
+        "datastoreProperties": {
+            "datastoreId": "12345678901234567890123456789012",
+            "datastoreName": "TestDatastore123",
+            "datastoreStatus": "ACTIVE",
+            "losslessStorageFormat": "JPEG_2000_LOSSLESS",
+            "datastoreArn": "arn:aws:medical-imaging:us-east-1:123456789012:datastore/12345678901234567890123456789012",
+            "createdAt": "2022-11-15T23:33:09.643000+00:00",
+            "updatedAt": "2022-11-15T23:33:09.643000+00:00"
         }
     }
 

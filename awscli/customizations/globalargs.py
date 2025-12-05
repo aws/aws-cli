@@ -252,7 +252,8 @@ def warn_if_sigv2(
             'AWS CLI v2 UPGRADE WARNING: The AWS CLI v2 only uses Signature '
             'v4 to authenticate Amazon S3 requests. To migrate to AWS CLI '
             'v2 behavior, configure the Signature Version S3 setting to '
-            'version 4.\n',
+            'version 4. See https://docs.aws.amazon.com/cli/latest/userguide/'
+            'cliv2-migration-changes.html#cliv2-migration-sigv4\n',
             out_file=sys.stderr
         )
 

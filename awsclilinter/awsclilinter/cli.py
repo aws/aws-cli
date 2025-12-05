@@ -42,10 +42,10 @@ def prompt_user_choice_interactive_mode(auto_fixable: bool = True) -> str:
                 return choice
             print("Invalid choice. Please enter y, n, u, s, or q.")
         else:
-            choice = input("\n[n] next, [q] quit: ").lower().strip()
-            if choice in ["n", "q"]:
+            choice = input("\n[n] next, [s] save, [q] quit: ").lower().strip()
+            if choice in ["n", "s", "q"]:
                 return choice
-            print("Invalid choice. Please enter n or q.")
+            print("Invalid choice. Please enter n, s, or q.")
 
 
 def display_finding(finding: LintFinding, index: int, script_content: str):
@@ -166,11 +166,16 @@ def interactive_mode_for_rule(
         display_finding(finding, finding_offset + i + 1, ast.root().text())
 
         if not finding.auto_fixable:
-            # Non-fixable finding - only allow next or quit
+            # Non-fixable finding - only allow next, save, or quit
             last_choice = prompt_user_choice_interactive_mode(auto_fixable=False)
             if last_choice == "q":
                 print("Quit without saving.")
                 sys.exit(0)
+            elif last_choice == "s":
+                # Save and exit - apply accepted findings before returning
+                if accepted_findings:
+                    ast = parse(linter.apply_fixes(ast, accepted_findings))
+                return ast, len(accepted_findings) > 0, last_choice
             # 'n' means continue to next finding
             continue
 

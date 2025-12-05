@@ -280,7 +280,7 @@ class TestCLI:
                 assert "MANUAL REVIEW REQUIRED" in captured.out
                 assert "This issue requires manual intervention" in captured.out
                 
-                # Should only prompt with [n]ext, [q]uit for manual review
+                # Should prompt with [n]ext, [s]ave and exit, [q]uit for manual review
                 # (not [y]es, [n]o, [u]pdate all, etc.)
                 
                 # Output should have auto-fixes but not manual review changes
@@ -288,3 +288,40 @@ class TestCLI:
                 assert "--cli-binary-format" in fixed_content
                 assert "--no-cli-pager" in fixed_content
                 assert "aws ecr get-login" in fixed_content
+
+    def test_interactive_mode_manual_review_save_and_exit(self, tmp_path):
+        """Test interactive mode with 's' on manual review finding."""
+        script_file = tmp_path / "test.sh"
+        output_file = tmp_path / "output.sh"
+        script_file.write_text(
+            "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json\n"
+            "aws ecr get-login --region us-west-2\n"
+            "aws kinesis put-record --stream-name samplestream --data file://data --partition-key samplepartitionkey"
+        )
+
+        with patch(
+            "sys.argv",
+            [
+                "upgrade-aws-cli",
+                "--script",
+                str(script_file),
+                "--interactive",
+                "--output",
+                str(output_file),
+            ],
+        ):
+            # Accept all 4 auto-fixable findings, then 's' on manual review finding (5th)
+            # This should save and exit without processing any remaining findings
+            with patch("builtins.input", side_effect=["y", "y", "y", "y", "s"]):
+                main()
+                
+                # Output should have all auto-fixes applied
+                fixed_content = output_file.read_text()
+                assert fixed_content.count("--cli-binary-format") == 2
+                assert fixed_content.count("--no-cli-pager") == 2
+                
+                # Manual review command should be unchanged
+                assert "aws ecr get-login" in fixed_content
+                
+                # Should have saved and exited
+                assert output_file.exists()

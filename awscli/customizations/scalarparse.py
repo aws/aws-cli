@@ -33,6 +33,7 @@ from botocore.utils import parse_timestamp
 from botocore.exceptions import ProfileNotFound
 
 from awscli.customizations.utils import uni_print
+from awscli.utils import resolve_v2_debug_mode
 
 
 def register_scalar_parser(event_handlers):
@@ -50,10 +51,18 @@ def iso_format(value):
 
 def add_timestamp_parser(session, v2_debug):
     factory = session.get_component('response_parser_factory')
+    print_v2_debug_warnings = v2_debug
     try:
         timestamp_format = session.get_scoped_config().get(
             'cli_timestamp_format',
-            'wire')
+            None)
+        if timestamp_format is not None:
+            # We do not want to print v2 debug warnings if the user explicitly
+            # configured the cli_timestamp_format, they would not be
+            # broken in that case.
+            print_v2_debug_warnings = False
+        else:
+            timestamp_format = 'wire'
     except ProfileNotFound:
         # If a --profile is provided that does not exist, loading
         # a value from get_scoped_config will crash the CLI.
@@ -79,17 +88,19 @@ def add_timestamp_parser(session, v2_debug):
             if not encountered_timestamp:
                 encountered_timestamp = True
                 uni_print(
-                    'AWS CLI v2 MIGRATION WARNING: In AWS CLI v2, all timestamp '
+                    'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, all timestamp '
                     'response values are returned in the ISO 8601 format. To '
-                    'migrate to v2 behavior and resolve this warning, set the '
-                    'configuration variable `cli_timestamp_format` to `iso8601`. '
-                    'See https://docs.aws.amazon.com/cli/latest/userguide/'
-                    'cliv2-migration-changes.html#cliv2-migration-timestamp.\n',
+                    'migrate to v2 behavior, set the configuration variable '
+                    '`cli_timestamp_format` to `iso8601`. See https://'
+                    'docs.aws.amazon.com/cli/latest/userguide/'
+                    'cliv2-migration-changes.html'
+                    '#cliv2-migration-timestamp.\n',
                     out_file=sys.stderr
                 )
             return identity(x)
 
-        timestamp_parser = identity_with_warning if v2_debug else identity
+        timestamp_parser = identity_with_warning \
+            if print_v2_debug_warnings else identity
     elif timestamp_format == 'iso8601':
         timestamp_parser = iso_format
     else:
@@ -101,4 +112,4 @@ def add_timestamp_parser(session, v2_debug):
 def add_scalar_parsers(session, parsed_args, **kwargs):
     factory = session.get_component('response_parser_factory')
     factory.set_parser_defaults(blob_parser=identity)
-    add_timestamp_parser(session, parsed_args.v2_debug)
+    add_timestamp_parser(session, resolve_v2_debug_mode(parsed_args))

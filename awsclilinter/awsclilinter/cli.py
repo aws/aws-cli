@@ -91,7 +91,7 @@ def display_finding(finding: LintFinding, index: int, script_content: str):
         context_start = max(0, start_line - CONTEXT_SIZE)
         context_end = min(len(src_lines), end_line + CONTEXT_SIZE + 1)
 
-        print(f"\n[{index}/{total}] {finding.rule_name} {YELLOW}[MANUAL REVIEW REQUIRED]{RESET}")
+        print(f"\n[{index}] {finding.rule_name} {YELLOW}[MANUAL REVIEW REQUIRED]{RESET}")
         print(f"{finding.description}")
 
         print(f"\n{CYAN}Lines {context_start + 1}-{context_end + 1}{RESET}")
@@ -246,6 +246,8 @@ def main():
         DeployEmptyChangesetRule(),
         EcrGetLoginRule(),
         *create_all_hidden_alias_rules(),
+        # Rules that do not automatically generate fixes go last
+        EcrGetLoginRule(),
     ]
 
     if args.interactive:
@@ -320,7 +322,7 @@ def main():
         if non_fixable:
             print(f"\n{YELLOW}⚠️  {len(non_fixable)} issue(s) require manual review:{RESET}\n")
             for i, (finding, _) in enumerate(non_fixable, 1):
-                display_finding(finding, i, len(non_fixable), script_content)
+                display_finding(finding, i, script_content)
     else:
         current_ast = parse(script_content)
         findings_with_rules = linter.lint(current_ast, rules)
@@ -339,7 +341,7 @@ def main():
         print()
 
         for i, (finding, _) in enumerate(findings_with_rules, 1):
-            display_finding(finding, i, len(findings_with_rules), script_content)
+            display_finding(finding, i, script_content)
 
         if fixable:
             print("\n\nRun with --fix to apply automatic fixes")

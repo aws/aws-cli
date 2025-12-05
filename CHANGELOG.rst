@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.32.11
+=======
+
+* api-change:``inspector2``: This release adds a new ScanStatus called "Unsupported Code Artifacts". This ScanStatus will be returned when a Lambda function was not code scanned because it has unsupported code artifacts.
+* api-change:``iam``: Adding the ExpirationTime attribute to the delegation request resource.
+* api-change:``partnercentral-account``: Adding Verification API's to Partner Central Account SDK.
+* api-change:``ecs``: Updating stop-task API to encapsulate containers with custom stop signal
+* api-change:``sesv2``: Updating the desired url for `PutEmailIdentityDkimSigningAttributes` from v1 to v2
+
+
 2.32.10
 =======
 

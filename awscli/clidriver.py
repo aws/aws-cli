@@ -13,6 +13,7 @@
 import logging
 import signal
 import sys
+from typing import Any, Optional
 
 import botocore.session
 from botocore.compat import OrderedDict, copy_kwargs
@@ -69,14 +70,14 @@ HISTORY_RECORDER = get_global_history_recorder()
 ''.encode('idna')
 
 
-def main():
+def main() -> int:
     driver = create_clidriver()
     rc = driver.main()
     HISTORY_RECORDER.record('CLI_RC', rc, 'CLI')
     return rc
 
 
-def create_clidriver():
+def create_clidriver() -> "CLIDriver":
     session = botocore.session.Session(EnvironmentVariables)
     _set_user_agent_for_session(session)
     load_plugins(
@@ -90,11 +91,11 @@ def create_clidriver():
 def _set_user_agent_for_session(session):
     session.user_agent_name = 'aws-cli'
     session.user_agent_version = __version__
-    session.user_agent_extra = 'botocore/%s' % botocore_version
+    session.user_agent_extra = f'botocore/{botocore_version}'
 
 
 class CLIDriver:
-    def __init__(self, session=None):
+    def __init__(self, session: Optional[botocore.session.Session] = None) -> None:
         if session is None:
             self.session = botocore.session.get_session(EnvironmentVariables)
             _set_user_agent_for_session(self.session)
@@ -206,7 +207,7 @@ class CLIDriver:
         )
         return parser
 
-    def main(self, args=None):
+    def main(self, args: Optional[list[str]] = None) -> int:
         """
 
         :param args: List of arguments, with the 'aws' removed.  For example,
@@ -233,14 +234,14 @@ class CLIDriver:
             HISTORY_RECORDER.record('CLI_ARGUMENTS', args, 'CLI')
             return command_table[parsed_args.command](remaining, parsed_args)
         except UnknownArgumentError as e:
-            sys.stderr.write("usage: %s\n" % USAGE)
+            sys.stderr.write(f"usage: {USAGE}\n")
             sys.stderr.write(str(e))
             sys.stderr.write("\n")
             return 255
         except NoRegionError as e:
             msg = (
-                '%s You can also configure your region by running '
-                '"aws configure".' % e
+                f'{e} You can also configure your region by running '
+                '"aws configure".'
             )
             self._show_error(msg)
             return 255
@@ -593,7 +594,7 @@ class ServiceOperation:
     def _build_call_parameters(self, args, arg_table):
         # We need to convert the args specified on the command
         # line as valid **kwargs we can hand to botocore.
-        service_params = {}
+        service_params: dict[str, Any] = {}
         # args is an argparse.Namespace object so we're using vars()
         # so we can iterate over the parsed key/values.
         parsed_args = vars(args)

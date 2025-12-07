@@ -41,7 +41,6 @@ from awscli.arguments import (
 )
 from awscli.commands import CLICommand
 from awscli.compat import get_stderr_text_writer
-from awscli.customizations.utils import uni_print
 from awscli.formatter import get_formatter
 from awscli.help import (
     OperationHelpCommand,
@@ -49,7 +48,7 @@ from awscli.help import (
     ServiceHelpCommand,
 )
 from awscli.plugin import load_plugins
-from awscli.utils import emit_top_level_args_parsed_event, write_exception, create_nested_client
+from awscli.utils import emit_top_level_args_parsed_event, write_exception, create_nested_client, resolve_v2_debug_mode
 from botocore import __version__ as botocore_version
 from botocore import xform_name
 
@@ -682,7 +681,7 @@ class ServiceOperation:
             # if cli_binary_format is set to raw-in-base64-out, then v2 behavior will
             # be the same as v1, so there is no breaking change in this case.
             return
-        if parsed_globals.v2_debug:
+        if resolve_v2_debug_mode(parsed_globals):
             parsed_args_to_check = {
                 arg: getattr(parsed_args, arg)
                 for arg in vars(parsed_args) if getattr(parsed_args, arg)
@@ -692,19 +691,18 @@ class ServiceOperation:
                 arg.py_name for arg in arg_table.values()
                 if arg.py_name in parsed_args_to_check
                    and arg.argument_model.type_name == 'blob'
-                   and parsed_args_to_check[arg.py_name].startswith('file://')
             ]
             if arg_values_to_check:
-                uni_print(
-                    'AWS CLI v2 MIGRATION WARNING: When specifying a blob-type '
-                    'parameter starting with `file://`, AWS CLI v2 will assume '
-                    'the content of the file is already base64-encoded. To '
-                    'maintain v1 behavior after upgrading to v2, set the '
-                    '`cli_binary_format` configuration variable to '
-                    '`raw-in-base64-out`. See https://docs.aws.amazon.com/cli/'
-                    'latest/userguide/cliv2-migration-changes.html#'
-                    'cliv2-migration-binaryparam.\n',
-                    out_file=sys.stderr
+                print(
+                    'AWS CLI v2 UPGRADE WARNING: When specifying a blob-type '
+                    'parameter, AWS CLI v2 will assume the parameter value is '
+                    'base64-encoded. To maintain v1 behavior after upgrading '
+                    'to v2, set the `cli_binary_format` configuration '
+                    'variable to `raw-in-base64-out`. See '
+                    'https://docs.aws.amazon.com/cli/latest/userguide'
+                    '/cliv2-migration-changes.html'
+                    '#cliv2-migration-binaryparam.\n',
+                    file=sys.stderr
                 )
 
 

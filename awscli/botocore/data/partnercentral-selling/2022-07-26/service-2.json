@@ -990,8 +990,14 @@
     },
     "Amount":{
       "type":"string",
-      "pattern":"(0|([1-9][0-9]{0,30}))(\\.[0-9]{0,2})?",
+      "pattern":"((0|([1-9][0-9]{0,30}))(\\.[0-9]{0,2})?)?",
       "sensitive":true
+    },
+    "AmountMap":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"MonetaryAmount"},
+      "documentation":"<p>Maps spend amounts to AWS programs and strategic initiatives</p>"
     },
     "ApnPrograms":{
       "type":"list",
@@ -1220,7 +1226,8 @@
         "EngagementScore":{
           "shape":"EngagementScore",
           "documentation":"<p>Represents a score assigned by AWS to indicate the level of engagement and potential success for the opportunity. This score helps partners prioritize their efforts.</p>"
-        }
+        },
+        "AwsProductsSpendInsightsBySource":{"shape":"AwsProductsSpendInsightsBySource"}
       },
       "documentation":"<p>Contains insights provided by AWS for the opportunity, offering recommendations and analysis that can help the partner optimize their engagement and strategy.</p>"
     },
@@ -1318,10 +1325,316 @@
       "type":"list",
       "member":{"shape":"AwsTeamMember"}
     },
+    "AwsProductDetails":{
+      "type":"structure",
+      "required":[
+        "ProductCode",
+        "Categories",
+        "Optimizations"
+      ],
+      "members":{
+        "ProductCode":{
+          "shape":"String",
+          "documentation":"<p>AWS Partner Central product identifier used for opportunity association</p>"
+        },
+        "ServiceCode":{
+          "shape":"String",
+          "documentation":"<p>Pricing Calculator service code (links to original calculator URL)</p>"
+        },
+        "Categories":{
+          "shape":"AwsProductDetailsCategoriesList",
+          "documentation":"<p>List of program and pathway categories this product is eligible for</p>"
+        },
+        "Amount":{
+          "shape":"MonetaryAmount",
+          "documentation":"<p>Baseline service cost before optimizations (may be null for AWS-sourced predictions)</p>"
+        },
+        "OptimizedAmount":{
+          "shape":"MonetaryAmount",
+          "documentation":"<p>Service cost after applying optimizations (may be null for AWS-sourced predictions)</p>"
+        },
+        "PotentialSavingsAmount":{
+          "shape":"MonetaryAmount",
+          "documentation":"<p>Service-specific cost reduction through optimizations (may be null for AWS-sourced predictions)</p>"
+        },
+        "Optimizations":{
+          "shape":"AwsProductOptimizationsList",
+          "documentation":"<p>List of specific optimization recommendations for this product</p>"
+        }
+      },
+      "documentation":"<p>AWS services with program eligibility indicators (MAP, modernization pathways), cost estimates, and optimization recommendations.</p>"
+    },
+    "AwsProductDetailsCategoriesList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":20,
+      "min":0
+    },
     "AwsProductIdentifier":{"type":"string"},
     "AwsProductIdentifiers":{
       "type":"list",
       "member":{"shape":"AwsProductIdentifier"}
+    },
+    "AwsProductInsights":{
+      "type":"structure",
+      "required":[
+        "CurrencyCode",
+        "Frequency",
+        "TotalAmountByCategory",
+        "AwsProducts"
+      ],
+      "members":{
+        "CurrencyCode":{
+          "shape":"AwsProductInsightsCurrencyCodeEnum",
+          "documentation":"<p>ISO 4217 currency code (e.g., &quot;USD&quot;) ensuring consistent representation across calculations</p>"
+        },
+        "Frequency":{
+          "shape":"PaymentFrequency",
+          "documentation":"<p>Time period for spend amounts: &quot;Monthly&quot; or &quot;Annually&quot;</p>"
+        },
+        "TotalAmount":{
+          "shape":"MonetaryAmount",
+          "documentation":"<p>Total estimated spend for this source before optimizations</p>"
+        },
+        "TotalOptimizedAmount":{
+          "shape":"MonetaryAmount",
+          "documentation":"<p>Total estimated spend after applying recommended optimizations</p>"
+        },
+        "TotalPotentialSavingsAmount":{
+          "shape":"MonetaryAmount",
+          "documentation":"<p>Quantified savings achievable through implementing optimizations</p>"
+        },
+        "TotalAmountByCategory":{
+          "shape":"AmountMap",
+          "documentation":"<p>Spend amounts mapped to AWS programs and modernization pathways</p>"
+        },
+        "AwsProducts":{
+          "shape":"AwsProductsList",
+          "documentation":"<p>Product-level details including costs and optimization recommendations</p>"
+        }
+      },
+      "documentation":"<p>Comprehensive spend analysis for a single source (AWS or Partner) including total amounts, optimization savings, program category breakdowns, and detailed product-level insights.</p>"
+    },
+    "AwsProductInsightsCurrencyCodeEnum":{
+      "type":"string",
+      "enum":[
+        "USD",
+        "EUR",
+        "GBP",
+        "AUD",
+        "CAD",
+        "CNY",
+        "NZD",
+        "INR",
+        "JPY",
+        "CHF",
+        "SEK",
+        "AED",
+        "AFN",
+        "ALL",
+        "AMD",
+        "ANG",
+        "AOA",
+        "ARS",
+        "AWG",
+        "AZN",
+        "BAM",
+        "BBD",
+        "BDT",
+        "BGN",
+        "BHD",
+        "BIF",
+        "BMD",
+        "BND",
+        "BOB",
+        "BOV",
+        "BRL",
+        "BSD",
+        "BTN",
+        "BWP",
+        "BYN",
+        "BZD",
+        "CDF",
+        "CHE",
+        "CHW",
+        "CLF",
+        "CLP",
+        "COP",
+        "COU",
+        "CRC",
+        "CUC",
+        "CUP",
+        "CVE",
+        "CZK",
+        "DJF",
+        "DKK",
+        "DOP",
+        "DZD",
+        "EGP",
+        "ERN",
+        "ETB",
+        "FJD",
+        "FKP",
+        "GEL",
+        "GHS",
+        "GIP",
+        "GMD",
+        "GNF",
+        "GTQ",
+        "GYD",
+        "HKD",
+        "HNL",
+        "HRK",
+        "HTG",
+        "HUF",
+        "IDR",
+        "ILS",
+        "IQD",
+        "IRR",
+        "ISK",
+        "JMD",
+        "JOD",
+        "KES",
+        "KGS",
+        "KHR",
+        "KMF",
+        "KPW",
+        "KRW",
+        "KWD",
+        "KYD",
+        "KZT",
+        "LAK",
+        "LBP",
+        "LKR",
+        "LRD",
+        "LSL",
+        "LYD",
+        "MAD",
+        "MDL",
+        "MGA",
+        "MKD",
+        "MMK",
+        "MNT",
+        "MOP",
+        "MRU",
+        "MUR",
+        "MVR",
+        "MWK",
+        "MXN",
+        "MXV",
+        "MYR",
+        "MZN",
+        "NAD",
+        "NGN",
+        "NIO",
+        "NOK",
+        "NPR",
+        "OMR",
+        "PAB",
+        "PEN",
+        "PGK",
+        "PHP",
+        "PKR",
+        "PLN",
+        "PYG",
+        "QAR",
+        "RON",
+        "RSD",
+        "RUB",
+        "RWF",
+        "SAR",
+        "SBD",
+        "SCR",
+        "SDG",
+        "SGD",
+        "SHP",
+        "SLL",
+        "SOS",
+        "SRD",
+        "SSP",
+        "STN",
+        "SVC",
+        "SYP",
+        "SZL",
+        "THB",
+        "TJS",
+        "TMT",
+        "TND",
+        "TOP",
+        "TRY",
+        "TTD",
+        "TWD",
+        "TZS",
+        "UAH",
+        "UGX",
+        "USN",
+        "UYI",
+        "UYU",
+        "UZS",
+        "VEF",
+        "VND",
+        "VUV",
+        "WST",
+        "XAF",
+        "XCD",
+        "XDR",
+        "XOF",
+        "XPF",
+        "XSU",
+        "XUA",
+        "YER",
+        "ZAR",
+        "ZMW",
+        "ZWL"
+      ],
+      "pattern":"USD",
+      "sensitive":true
+    },
+    "AwsProductOptimization":{
+      "type":"structure",
+      "required":[
+        "Description",
+        "SavingsAmount"
+      ],
+      "members":{
+        "Description":{
+          "shape":"String",
+          "documentation":"<p>Human-readable explanation of the optimization strategy</p>"
+        },
+        "SavingsAmount":{
+          "shape":"MonetaryAmount",
+          "documentation":"<p>Quantified cost savings achievable by implementing this optimization</p>"
+        }
+      },
+      "documentation":"<p>Details for a specific optimization recommendation</p>"
+    },
+    "AwsProductOptimizationsList":{
+      "type":"list",
+      "member":{"shape":"AwsProductOptimization"},
+      "documentation":"<p>List of optimization recommendations</p>",
+      "max":10,
+      "min":0
+    },
+    "AwsProductsList":{
+      "type":"list",
+      "member":{"shape":"AwsProductDetails"},
+      "documentation":"<p>AwsProductDetailsList of AWS services with program eligibility indicators (MAP, modernization pathways), cost estimates, and optimization recommendations.</p>",
+      "max":100,
+      "min":0
+    },
+    "AwsProductsSpendInsightsBySource":{
+      "type":"structure",
+      "members":{
+        "Partner":{
+          "shape":"AwsProductInsights",
+          "documentation":"<p>Partner-sourced insights derived from Pricing Calculator URLs including detailed service costs and optimizations</p>"
+        },
+        "AWS":{
+          "shape":"AwsProductInsights",
+          "documentation":"<p>AI-generated insights including recommended products from AWS</p>"
+        }
+      },
+      "documentation":"<p>Source-separated spend insights that provide independent analysis for AWS predictions and partner estimates</p>"
     },
     "AwsSubmission":{
       "type":"structure",
@@ -2801,10 +3114,13 @@
       "type":"string",
       "pattern":"(?s).{1,255}"
     },
+    "EstimationUrl":{
+      "type":"string",
+      "pattern":"https://calculator\\.aws/#/estimate\\?id=[a-f0-9]{32,64}"
+    },
     "ExpectedCustomerSpend":{
       "type":"structure",
       "required":[
-        "Amount",
         "CurrencyCode",
         "Frequency",
         "TargetCompany"
@@ -2827,7 +3143,7 @@
           "documentation":"<p>Specifies the name of the partner company that is expected to generate revenue from the opportunity. This field helps track the partner’s involvement in the opportunity. This field only accepts the value <code>AWS</code>. If any other value is provided, the system will automatically set it to <code>AWS</code>.</p>"
         },
         "EstimationUrl":{
-          "shape":"WebsiteUrl",
+          "shape":"EstimationUrl",
           "documentation":"<p>A URL providing additional information or context about the spend estimation.</p>"
         }
       },
@@ -4869,6 +5185,11 @@
       "box":true,
       "max":10,
       "min":1
+    },
+    "MonetaryAmount":{
+      "type":"string",
+      "pattern":"(0|([1-9][0-9]{0,30}))(\\.[0-9]{0,2})?",
+      "sensitive":true
     },
     "MonetaryValue":{
       "type":"structure",

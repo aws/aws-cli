@@ -439,10 +439,12 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
     def _handle_multiple_accounts(self, accounts):
         available_accounts_msg = (
             'There are {} AWS accounts available to you.\n'
+            'Use arrow keys to navigate, type to filter, and press Enter to select.\n'
         )
         uni_print(available_accounts_msg.format(len(accounts)))
         selected_account = self._selector(
-            accounts, display_format=display_account
+            accounts, display_format=display_account, enable_filter=True,
+            no_results_message='No matching accounts found'
         )
         sso_account_id = selected_account['accountId']
         return sso_account_id
@@ -456,6 +458,8 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         accounts = self._get_all_accounts(sso, sso_token)['accountList']
         if not accounts:
             raise RuntimeError('No AWS accounts are available to you.')
+        # Sort accounts by accountName for consistent ordering
+        accounts = sorted(accounts, key=lambda x: x.get('accountName', ''))
         if len(accounts) == 1:
             sso_account_id = self._handle_single_account(accounts)
         else:
@@ -489,6 +493,8 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         if not roles:
             error_msg = 'No roles are available for the account {}'
             raise RuntimeError(error_msg.format(sso_account_id))
+        # Sort roles by roleName for consistent ordering
+        roles = sorted(roles, key=lambda x: x.get('roleName', ''))
         if len(roles) == 1:
             sso_role_name = self._handle_single_role(roles)
         else:

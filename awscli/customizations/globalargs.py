@@ -101,10 +101,6 @@ def resolve_cli_connect_timeout(parsed_args, session, **kwargs):
 def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
     if not resolve_v2_debug_mode(parsed_args):
         return
-    url_params = [
-        param for param in remaining_args
-        if param.startswith('http://') or param.startswith('https://')
-    ]
     region = parsed_args.region or session.get_config_variable('region')
     s3_config = session.get_config_variable('s3')
     if (
@@ -178,17 +174,6 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
             'been removed in AWS CLI v2. You must use `ecr get-login-password` '
             'instead. See https://docs.aws.amazon.com/cli/latest/userguide/'
             'cliv2-migration-changes.html#cliv2-migration-ecr-get-login.\n',
-            out_file=sys.stderr
-        )
-    if url_params and session.get_scoped_config().get('cli_follow_urlparam', True):
-        uni_print(
-            'AWS CLI v2 UPGRADE WARNING: For input parameters that have '
-            'a prefix of http:// or https://, AWS CLI v2 will no longer '
-            'automatically request the content of the URL for the '
-            'parameter, and the `cli_follow_urlparam` option has been '
-            'removed. See https://docs.aws.amazon.com/cli/latest/'
-            'userguide/cliv2-migration-changes.html'
-            '#cliv2-migration-paramfile.\n',
             out_file=sys.stderr
         )
     for working, obsolete in HIDDEN_ALIASES.items():

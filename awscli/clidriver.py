@@ -542,7 +542,7 @@ class ServiceOperation:
             event, parsed_args=parsed_args, parsed_globals=parsed_globals
         )
         call_parameters = self._build_call_parameters(
-            parsed_args, self.arg_table
+            parsed_args, self.arg_table, parsed_globals
         )
 
         self._detect_binary_file_migration_change(
@@ -596,7 +596,7 @@ class ServiceOperation:
         # CLIArguments for values.
         parser.add_argument('help', nargs='?')
 
-    def _build_call_parameters(self, args, arg_table):
+    def _build_call_parameters(self, args, arg_table, parsed_globals):
         # We need to convert the args specified on the command
         # line as valid **kwargs we can hand to botocore.
         service_params = {}
@@ -607,11 +607,11 @@ class ServiceOperation:
             py_name = arg_object.py_name
             if py_name in parsed_args:
                 value = parsed_args[py_name]
-                value = self._unpack_arg(arg_object, value)
+                value = self._unpack_arg(arg_object, value, parsed_globals)
                 arg_object.add_to_params(service_params, value)
         return service_params
 
-    def _unpack_arg(self, cli_argument, value):
+    def _unpack_arg(self, cli_argument, value, parsed_globals):
         # Unpacks a commandline argument into a Python value by firing the
         # load-cli-arg.service-name.operation-name event.
         session = self._session
@@ -619,7 +619,7 @@ class ServiceOperation:
         operation_name = xform_name(self._name, '-')
 
         return unpack_argument(
-            session, service_name, operation_name, cli_argument, value
+            session, service_name, operation_name, cli_argument, value, parsed_globals
         )
 
     def _create_argument_table(self):

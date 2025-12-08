@@ -1060,7 +1060,7 @@ class CommandArchitecture(object):
         if self.parameters['v2_debug']:
             if operation_name == 'copy':
                 uni_print(
-                    'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, object '
+                    '\nAWS CLI v2 UPGRADE WARNING: In AWS CLI v2, object '
                     'properties will be copied from the source in multipart '
                     'copies between S3 buckets. This may result in extra S3 '
                     'API calls being made. Breakage may occur if the principal '

@@ -333,7 +333,7 @@ class DeployCommand(BasicCommand):
         try:
             if v2_debug and fail_on_empty_changeset:
                 uni_print(
-                    'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, '
+                    '\nAWS CLI v2 UPGRADE WARNING: In AWS CLI v2, '
                     'deploying an AWS CloudFormation Template that '
                     'results in an empty changeset will NOT result in an '
                     'error. You can add the -–no-fail-on-empty-changeset '

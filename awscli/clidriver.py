@@ -694,7 +694,7 @@ class ServiceOperation:
             ]
             if arg_values_to_check:
                 print(
-                    'AWS CLI v2 UPGRADE WARNING: When specifying a blob-type '
+                    '\nAWS CLI v2 UPGRADE WARNING: When specifying a blob-type '
                     'parameter, AWS CLI v2 will assume the parameter value is '
                     'base64-encoded. To maintain v1 behavior after upgrading '
                     'to v2, set the `cli_binary_format` configuration '

@@ -187,7 +187,7 @@ class URIArgumentHandler:
             param_file = get_paramfile(value, self._prefixes)
             if param_file is not None and resolve_v2_debug_mode(parsed_globals):
                 print(
-                    'AWS CLI v2 UPGRADE WARNING: For input parameters that '
+                    '\nAWS CLI v2 UPGRADE WARNING: For input parameters that '
                     'have a prefix of http:// or https://, AWS CLI v2 will '
                     'not automatically request the content of the URL for the '
                     'parameter, and the `cli_follow_urlparam` option has been '

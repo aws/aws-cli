@@ -22,6 +22,7 @@ import botocore.session
 import distro
 from botocore import xform_name
 from botocore.compat import OrderedDict, copy_kwargs
+from botocore.exceptions import ClientError
 from botocore.configprovider import (
     ChainProvider,
     ConstantProvider,
@@ -76,6 +77,7 @@ from awscli.logger import (
 )
 from awscli.plugin import load_plugins
 from awscli.telemetry import add_session_id_component_to_user_agent_extra
+from awscli.structured_error import StructuredErrorHandler
 from awscli.utils import (
     IMDSRegionProvider,
     OutputStreamFactory,
@@ -275,6 +277,9 @@ class CLIDriver:
         config_store.set_config_provider(
             'cli_help_output', self._construct_cli_help_output_chain()
         )
+        config_store.set_config_provider(
+            'cli_error_format', self._construct_cli_error_format_chain()
+        )
 
     def _construct_cli_region_chain(self):
         providers = [
@@ -365,6 +370,20 @@ class CLIDriver:
                 config_var_name='cli_auto_prompt', session=self.session
             ),
             ConstantProvider(value='off'),
+        ]
+        return ChainProvider(providers=providers)
+
+    def _construct_cli_error_format_chain(self):
+        providers = [
+            EnvironmentProvider(
+                name='AWS_CLI_ERROR_FORMAT',
+                env=os.environ,
+            ),
+            ScopedConfigProvider(
+                config_var_name='cli_error_format',
+                session=self.session,
+            ),
+            ConstantProvider(value='STANDARD'),
         ]
         return ChainProvider(providers=providers)
 
@@ -983,6 +1002,9 @@ class CLIOperationCaller:
     def __init__(self, session):
         self._session = session
         self._output_stream_factory = OutputStreamFactory(session)
+        self._structured_error_handler = StructuredErrorHandler(
+            session, self._output_stream_factory
+        )
 
     def invoke(self, service_name, operation_name, parameters, parsed_globals):
         """Invoke an operation and format the response.
@@ -1023,15 +1045,44 @@ class CLIOperationCaller:
     def _make_client_call(
         self, client, operation_name, parameters, parsed_globals
     ):
-        py_operation_name = xform_name(operation_name)
-        if client.can_paginate(py_operation_name) and parsed_globals.paginate:
-            paginator = client.get_paginator(py_operation_name)
-            response = paginator.paginate(**parameters)
-        else:
-            response = getattr(client, xform_name(operation_name))(
-                **parameters
+        try:
+            py_operation_name = xform_name(operation_name)
+            if (
+                client.can_paginate(py_operation_name)
+                and parsed_globals.paginate
+            ):
+                paginator = client.get_paginator(py_operation_name)
+                response = paginator.paginate(**parameters)
+            else:
+                response = getattr(client, py_operation_name)(**parameters)
+            return response
+        except ClientError as e:
+            # Display structured error output before re-raising
+            self._display_structured_error_for_exception(
+                e, parsed_globals
             )
-        return response
+            raise
+
+    def _display_structured_error_for_exception(
+        self, exception, parsed_globals
+    ):
+        try:
+            error_response = (
+                self._structured_error_handler.extract_error_response(
+                    exception
+                )
+            )
+            if error_response:
+                self._structured_error_handler.handle_error(
+                    error_response, parsed_globals
+                )
+        except Exception as e:
+            # Don't let structured error display break error handling
+            LOG.debug(
+                'Failed to display structured error: %s',
+                e,
+                exc_info=True,
+            )
 
     def _display_response(self, command_name, response, parsed_globals):
         output = parsed_globals.output
@@ -1039,5 +1090,9 @@ class CLIOperationCaller:
             output = self._session.get_config_variable('output')
 
         formatter = get_formatter(output, parsed_globals)
-        with self._output_stream_factory.get_output_stream() as stream:
-            formatter(command_name, response, stream)
+        try:
+            with self._output_stream_factory.get_output_stream() as stream:
+                formatter(command_name, response, stream)
+        except ClientError as e:
+            self._display_structured_error_for_exception(e, parsed_globals)
+            raise

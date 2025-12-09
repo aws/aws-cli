@@ -120,7 +120,7 @@ class TestInstallApplications(BaseAWSCommandParamsTest):
         cmdline = self.prefix + ' Name=Impala'
 
         expected_error_msg = (
-            "\naws: error: Impala cannot be installed on"
+            "\naws: [ERROR]: Impala cannot be installed on"
             + " a running cluster. 'Name' should be one of the following:"
             + " HIVE, PIG\n"
         )
@@ -131,7 +131,7 @@ class TestInstallApplications(BaseAWSCommandParamsTest):
         cmdline = self.prefix + 'Name=unknown'
 
         expected_error_msg = (
-            "\naws: error: Unknown application: unknown."
+            "\naws: [ERROR]: Unknown application: unknown."
             + " 'Name' should be one of the following: HIVE, PIG, HBASE,"
             + " GANGLIA, IMPALA, SPARK, MAPR, MAPR_M3, MAPR_M5, MAPR_M7\n"
         )
@@ -149,7 +149,7 @@ class TestInstallApplications(BaseAWSCommandParamsTest):
         )
 
         expected_error_msg = (
-            "\naws: error: install-applications"
+            "\naws: [ERROR]: install-applications"
             " is not supported with 'emr-4.0' release.\n"
         )
         result = self.run_cmd(cmdline, 252)

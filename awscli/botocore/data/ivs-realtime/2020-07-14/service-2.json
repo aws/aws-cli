@@ -1535,6 +1535,14 @@
         "replica":{
           "shape":"Replica",
           "documentation":"<p>If true, this indicates the <code>participantId</code> is a replicated participant. If this is a subscribe event, then this flag refers to <code>remoteParticipantId</code>. Default: <code>false</code>.</p>"
+        },
+        "previousToken":{
+          "shape":"ExchangedParticipantToken",
+          "documentation":"<p>Source participant token for <code>TOKEN_EXCHANGED</code> event.</p>"
+        },
+        "newToken":{
+          "shape":"ExchangedParticipantToken",
+          "documentation":"<p>Participant token created during <code>TOKEN_EXCHANGED</code> event.</p>"
         }
       },
       "documentation":"<p>An occurrence during a stage session.</p>"
@@ -1575,8 +1583,31 @@
         "SUBSCRIBE_ERROR",
         "JOIN_ERROR",
         "REPLICATION_STARTED",
-        "REPLICATION_STOPPED"
+        "REPLICATION_STOPPED",
+        "TOKEN_EXCHANGED"
       ]
+    },
+    "ExchangedParticipantToken":{
+      "type":"structure",
+      "members":{
+        "capabilities":{
+          "shape":"ParticipantTokenCapabilities",
+          "documentation":"<p>Set of capabilities that the user is allowed to perform in the stage.</p>"
+        },
+        "attributes":{
+          "shape":"ParticipantTokenAttributes",
+          "documentation":"<p>Application-provided attributes to encode into the token and attach to a stage. Map keys and values can contain UTF-8 encoded text. The maximum length of this field is 1 KB total. <i>This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.</i> </p>"
+        },
+        "userId":{
+          "shape":"ParticipantTokenUserId",
+          "documentation":"<p>Customer-assigned name to help identify the token; this can be used to link a participant to a user in the customer’s own systems. This can be any UTF-8 encoded text. <i>This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.</i> </p>"
+        },
+        "expirationTime":{
+          "shape":"ParticipantTokenExpirationTime",
+          "documentation":"<p>ISO 8601 timestamp (returned as a string) for when this token expires.</p>"
+        }
+      },
+      "documentation":"<p>Object specifying an exchanged participant token in a stage, created when an original participant token is updated.</p> <p> <b>Important</b>: Treat tokens as opaque; i.e., do not build functionality based on token contents. The format of tokens could change in the future.</p>"
     },
     "Framerate":{
       "type":"float",
@@ -2780,7 +2811,7 @@
         },
         "attributes":{
           "shape":"ParticipantTokenAttributes",
-          "documentation":"<p>Application-provided attributes to encode into the token and attach to a stage. <i>This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.</i> </p>"
+          "documentation":"<p>Application-provided attributes to encode into the token and attach to a stage. Map keys and values can contain UTF-8 encoded text. The maximum length of this field is 1 KB total. <i>This field is exposed to all stage participants and should not be used for personally identifying, confidential, or sensitive information.</i> </p>"
         },
         "duration":{
           "shape":"ParticipantTokenDurationMinutes",

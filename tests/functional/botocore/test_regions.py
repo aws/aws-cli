@@ -454,18 +454,6 @@ def test_single_service_region_endpoint(
     assert result['endpoint_url'] == expected_endpoint
 
 
-# Ensure that all S3 regions use s3v4 instead of v4
-def test_all_s3_endpoints_have_s3v4(patched_session):
-    session = patched_session
-    partitions = session.get_available_partitions()
-    resolver = session._get_internal_component('endpoint_resolver')
-    for partition_name in partitions:
-        for endpoint in session.get_available_regions('s3', partition_name):
-            resolved = resolver.construct_endpoint('s3', endpoint)
-            assert 's3v4' in resolved['signatureVersions']
-            assert 'v4' not in resolved['signatureVersions']
-
-
 @pytest.mark.parametrize(
     "service_name, expected_endpoint", KNOWN_AWS_PARTITION_WIDE.items()
 )

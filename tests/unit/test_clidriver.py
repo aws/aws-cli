@@ -543,6 +543,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             param=mock.ANY,
             service_name='ec2',
             value='file:///foo',
+            parsed_globals=mock.ANY,
         )
         # Make sure it was called with our passed-in URI
         self.assertEqual(
@@ -572,6 +573,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             param=mock.ANY,
             service_name='custom',
             value='file:///foo',
+            parsed_globals=mock.ANY,
         )
 
     def test_custom_arg_no_paramfile(self):

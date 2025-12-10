@@ -59,9 +59,9 @@ class TestAPIVersions(BaseAWSCommandParamsTest):
         # Make sure that the migration warning is printed since the user
         # specified --v2-debug
         self.assertIn(
-            'AWS CLI v2 UPGRADE WARNING: The AWS CLI v2 does not support '
-            'calling earlier versions of AWS service APIs via the '
-            '`api_versions` configuration file setting.',
+            'AWS CLI v2 UPGRADE WARNING: AWS CLI v2 UPGRADE WARNING: The AWS '
+            'CLI v2 does not support calling older versions of AWS service '
+            'APIs via the `api_versions` configuration file setting.',
             stderr
         )
 

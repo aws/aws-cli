@@ -1060,15 +1060,18 @@ class CommandArchitecture(object):
         if self.parameters['v2_debug']:
             if operation_name == 'copy':
                 uni_print(
-                    'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, object '
+                    '\nAWS CLI v2 UPGRADE WARNING: In AWS CLI v2, object '
                     'properties will be copied from the source in multipart '
-                    'copies between S3 buckets. This may result in extra S3 '
-                    'API calls being made. Breakage may occur if the principal '
-                    'does not have permission to call these extra APIs. This '
-                    'warning cannot be resolved. See '
+                    'copies between S3 buckets initiated via `aws s3` '
+                    'commands, resulting in additional S3 API calls to '
+                    'transfer the metadata. Note that the principal must '
+                    'have permission to call these APIs, or the command may '
+                    'fail. This is different from v1 behavior, where metadata '
+                    'is not copied. For guidance on retaining v1 behavior in '
+                    'AWS CLI v2, or for more details, see '
                     'https://docs.aws.amazon.com/cli/latest/userguide/'
                     'cliv2-migration-changes.html'
-                    '#cliv2-migration-s3-copy-metadata\n\n',
+                    '#cliv2-migration-s3-copy-metadata.\n\n',
                     out_file=sys.stderr
                 )
 

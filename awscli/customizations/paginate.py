@@ -304,10 +304,12 @@ def check_should_enable_pagination_call_parameters(
         ]
         if pagination_params_in_input_tokens:
             uni_print(
-                'AWS CLI v2 UPGRADE WARNING: In AWS CLI v2, if you specify '
+                '\nAWS CLI v2 UPGRADE WARNING: In AWS CLI v2, if you specify '
                 'pagination parameters by using a file with the '
                 '`--cli-input-json` parameter, automatic pagination will be '
-                'turned off. To retain AWS CLI v1 behavior after upgrading to '
+                'turned off. This is different from v1 behavior, where '
+                'pagination parameters specified via the `--cli-input-json` '
+                'parameter are ignored. To retain AWS CLI v1 behavior in '
                 'AWS CLI v2, remove all pagination parameters from the input '
                 'JSON. See https://docs.aws.amazon.com/cli/latest/userguide/'
                 'cliv2-migration-changes.html'

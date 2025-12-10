@@ -188,11 +188,13 @@ class URIArgumentHandler:
             if param_file is not None and resolve_v2_debug_mode(parsed_globals):
                 print(
                     '\nAWS CLI v2 UPGRADE WARNING: For input parameters that '
-                    'have a prefix of http:// or https://, AWS CLI v2 will '
-                    'not automatically request the content of the URL for the '
-                    'parameter, and the `cli_follow_urlparam` option has been '
-                    'removed. See https://docs.aws.amazon.com/cli/latest/'
-                    'userguide/cliv2-migration-changes.html'
+                    'have a prefix of `http://` or `https://`, AWS CLI v2 '
+                    'will not automatically request the content of the URL '
+                    'for the parameter, and the `cli_follow_urlparam` option '
+                    'has been removed. For guidance on how to adapt this '
+                    'command to AWS CLI v2 usage, see '
+                    'https://docs.aws.amazon.com/cli/latest/userguide/'
+                    'cliv2-migration-changes.html'
                     '#cliv2-migration-paramfile.\n',
                     file=sys.stderr,
                 )

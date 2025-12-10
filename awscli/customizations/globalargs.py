@@ -108,24 +108,26 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
             == '' and 'AWS_PAGER' not in os.environ
     ):
         uni_print(
-            '\nAWS CLI v2 UPGRADE WARNING: By default, the AWS CLI version 2 '
-            'returns all output through your operating system’s default pager '
-            'program. To retain AWS CLI v1 behavior after upgrading to AWS '
-            'CLI v2, set the `cli_pager` configuration setting, or the '
+            '\nAWS CLI v2 UPGRADE WARNING: By default, the AWS CLI v2 returns '
+            'all output through your operating system’s default pager '
+            'program. This is different from v1 behavior, where the system '
+            'pager is not used by default. To retain AWS CLI v1 behavior in '
+            'AWS CLI v2, set the `cli_pager` configuration setting, or the '
             '`AWS_PAGER` environment variable, to the empty string. See '
-            'https://docs.aws.amazon.com/cli/latest/userguide'
-            '/cliv2-migration-changes.html#cliv2-migration-output-pager.\n',
+            'https://docs.aws.amazon.com/cli/latest/userguide/'
+            'cliv2-migration-changes.html#cliv2-migration-output-pager.\n',
             out_file=sys.stderr
         )
     if 'PYTHONUTF8' in os.environ or 'PYTHONIOENCODING' in os.environ:
         if 'AWS_CLI_FILE_ENCODING' not in os.environ:
             uni_print(
-                '\nAWS CLI v2 UPGRADE WARNING: The PYTHONUTF8 and '
-                'PYTHONIOENCODING environment variables are unsupported '
-                'in AWS CLI v2. AWS CLI v2 uses the `AWS_CLI_FILE_ENCODING` '
-                'variable instead; set this environment variable to retain '
-                'AWS CLI v1 behavior after upgrading to AWS CLI v2. See '
-                'https://docs.aws.amazon.com/cli/latest/userguide/'
+                '\nThe AWS CLI v2 does not support The `PYTHONUTF8` and '
+                '`PYTHONIOENCODING` environment variables, and instead uses '
+                'the `AWS_CLI_FILE_ENCODING` variable. This is different from '
+                'v1 behavior, where the former two variables are used '
+                'instead. To retain AWS CLI v1 behavior in AWS CLI v2, set '
+                'the `AWS_CLI_FILE_ENCODING` environment variable instead. '
+                'See https://docs.aws.amazon.com/cli/latest/userguide/'
                 'cliv2-migration-changes.html'
                 '#cliv2-migration-encodingenvvar.\n',
                 out_file=sys.stderr
@@ -148,24 +150,28 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
         )
     if session.get_config_variable('api_versions'):
         uni_print(
-            '\nAWS CLI v2 UPGRADE WARNING: The AWS CLI v2 does not support '
-            'calling earlier versions of AWS service APIs via the '
-            '`api_versions` configuration file setting. To migrate to v2 '
+            '\nAWS CLI v2 UPGRADE WARNING: AWS CLI v2 UPGRADE WARNING: '
+            'The AWS CLI v2 does not support calling older versions of AWS '
+            'service APIs via the `api_versions` configuration file setting. This '
+            'is different from v1 behavior, where this configuration setting '
+            'can be used to pin older API versions. To migrate to v2 '
             'behavior, remove the `api_versions` configuration setting, and '
-            'test against the latest API versions. See '
+            'test against the latest service API versions. See '
             'https://docs.aws.amazon.com/cli/latest/userguide/'
             'cliv2-migration-changes.html#cliv2-migration-api-versions.\n',
             out_file = sys.stderr
         )
     if session.full_config.get('plugins', {}):
         uni_print(
-            '\nAWS CLI v2 UPGRADE WARNING: In AWS CLI v2, plugin support '
-            'is provisional. If you rely on plugins, be sure to lock into '
-            'a particular version of the AWS CLI and test the '
-            'functionality of your plugins for each upgrade. See '
-            'https://docs.aws.amazon.com/cli/latest/userguide/'
-            'cliv2-migration-changes.html#'
-            'cliv2-migration-profile-plugins\n',
+            '\nAWS CLI v2 UPGRADE WARNING: In AWS CLI v2, plugins are '
+            'disabled by default, and support for plugins is provisional. '
+            'This is different from v1 behavior, where plugin support is URL '
+            'below to update your configuration to enable plugins in AWS CLI '
+            'v2. Also, be sure to lock into a particular version of the AWS '
+            'CLI and test the functionality of your plugins every time AWS '
+            'CLI v2 is upgraded. See https://docs.aws.amazon.com/cli/latest/'
+            'userguide/cliv2-migration-changes.html'
+            '#cliv2-migration-profile-plugins.\n',
             out_file=sys.stderr
         )
     if parsed_args.command == 'ecr' and remaining_args[0] == 'get-login':
@@ -188,11 +194,12 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
         ):
             uni_print(
                 '\nAWS CLI v2 UPGRADE WARNING: You have entered command '
-                'arguments that uses at least 1 of 21 hidden aliases that '
-                'were removed in AWS CLI v2. You must replace usage of the '
-                'obsolete alias with the corresponding working parameter. See '
-                'https://docs.aws.amazon.com/cli/latest/userguide'
-                '/cliv2-migration-changes.html#cliv2-migration-aliases.\n',
+                'arguments that use at least 1 of 21 built-in ("hidden") '
+                'aliases that were removed in AWS CLI v2. For this command '
+                'to work in AWS CLI v2, you must replace usage of the alias '
+                'with the corresponding parameter in AWS CLI v2. See '
+                'https://docs.aws.amazon.com/cli/latest/userguide/'
+                'cliv2-migration-changes.html#cliv2-migration-aliases.\n',
                 out_file=sys.stderr
             )
     # Register against the provide-client-params event to ensure that the
@@ -215,12 +222,14 @@ def warn_if_east_configured_global_endpoint(request, operation_name, **kwargs):
     # from botocore, we check the endpoint URL directly.
     if 's3.amazonaws.com' in request.url:
         uni_print(
-            '\nAWS CLI v2 UPGRADE WARNING: When you configure AWS CLI v2 '
-            'to use the `us-east-1` region, it uses the true regional '
-            'endpoint rather than the global endpoint. To retain AWS CLI v1 '
-            'behavior after upgrading to AWS CLI v2, configure the `region` '
-            'setting to `aws-global`. See https://docs.aws.amazon.com/cli'
-            '/latest/userguide/cliv2-migration-changes.html'
+            '\nAWS CLI v2 UPGRADE WARNING: When you configure AWS CLI v2 to '
+            'use the `us-east-1` region, it uses the true regional endpoint '
+            'rather than the global endpoint. This is different from v1 '
+            'behavior, where the global endpoint would be used when the '
+            'region is `us-east-1`. To retain AWS CLI v1 behavior in AWS '
+            'CLI v2, configure the region setting to `aws-global`. See '
+            'https://docs.aws.amazon.com/cli/latest/userguide/'
+            'cliv2-migration-changes.html'
             '#cliv2-migration-s3-regional-endpoint.\n',
             out_file=sys.stderr
         )
@@ -235,10 +244,13 @@ def warn_if_sigv2(
     if context.get('auth_type', None) == 'v2':
         uni_print(
             '\nAWS CLI v2 UPGRADE WARNING: The AWS CLI v2 only uses Signature '
-            'v4 to authenticate Amazon S3 requests. To migrate to AWS CLI '
-            'v2 behavior, configure the Signature Version S3 setting to '
-            'version 4. See https://docs.aws.amazon.com/cli/latest/userguide/'
-            'cliv2-migration-changes.html#cliv2-migration-sigv4\n',
+            'v4 to authenticate Amazon S3 requests. This is different from '
+            'v1 behavior, where the signature used for Amazon S3 requests may '
+            'vary depending on configuration settings, region, and the '
+            'bucket being used. To migrate to AWS CLI v2 behavior, configure '
+            'the Signature Version S3 setting to version 4. See '
+            'https://docs.aws.amazon.com/cli/latest/userguide/'
+            'cliv2-migration-changes.html#cliv2-migration-sigv4.\n',
             out_file=sys.stderr
         )
 

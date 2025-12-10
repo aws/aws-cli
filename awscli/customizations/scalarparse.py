@@ -88,11 +88,14 @@ def add_timestamp_parser(session, v2_debug):
             if not encountered_timestamp:
                 encountered_timestamp = True
                 uni_print(
-                    '\nAWS CLI v2 UPGRADE WARNING: In AWS CLI v2, all timestamp '
-                    'response values are returned in the ISO 8601 format. To '
-                    'migrate to v2 behavior, set the configuration variable '
-                    '`cli_timestamp_format` to `iso8601`. See https://'
-                    'docs.aws.amazon.com/cli/latest/userguide/'
+                    '\nAWS CLI v2 UPGRADE WARNING: In AWS CLI v2, all '
+                    'timestamp response values are returned in the ISO 8601 '
+                    'format. This is different from v1 behavior, where the '
+                    'timestamps are returned as they appear in the service '
+                    'API response. To retain AWS CLI v1 behavior in AWS CLI '
+                    'v2, set the configuration variable '
+                    '`cli_timestamp_format` to `wire`. See '
+                    'https://docs.aws.amazon.com/cli/latest/userguide/'
                     'cliv2-migration-changes.html'
                     '#cliv2-migration-timestamp.\n',
                     out_file=sys.stderr

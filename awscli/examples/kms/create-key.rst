@@ -17,6 +17,7 @@ Output::
             "AWSAccountId": "111122223333",
             "Arn": "arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
             "CreationDate": "2017-07-05T14:04:55-07:00",
+            "CurrentKeyMaterialId": "0b7fd7ddbac6eef27907413567cad8c810e2883dc8a7534067a82ee1142fc1e6",
             "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
             "Description": "",
             "Enabled": true,
@@ -40,7 +41,7 @@ For more information, see `Creating keys <https://docs.aws.amazon.com/kms/latest
 
 **Example 2: To create an asymmetric RSA KMS key for encryption and decryption**
 
-The following ``create-key`` example creates a KMS key that contains an asymmetric RSA key pair for encryption and decryption. ::
+The following ``create-key`` example creates a KMS key that contains an asymmetric RSA key pair for encryption and decryption. The key spec and key usage can't be changed after the key is created.::
 
     aws kms create-key \
        --key-spec RSA_4096 \
@@ -75,7 +76,7 @@ For more information, see `Asymmetric keys in AWS KMS <https://docs.aws.amazon.c
 
 **Example 3: To create an asymmetric elliptic curve KMS key for signing and verification**
 
-To create an asymmetric KMS key that contains an asymmetric elliptic curve (ECC) key pair for signing and verification. The ``--key-usage`` parameter is required even though ``SIGN_VERIFY`` is the only valid value for ECC KMS keys. ::
+To create an asymmetric KMS key that contains an asymmetric elliptic curve (ECC) key pair for signing and verification. The ``--key-usage`` parameter is required even though ``SIGN_VERIFY`` is the only valid value for ECC KMS keys. The key spec and key usage can't be changed after the key is created.::
 
     aws kms create-key \
         --key-spec ECC_NIST_P521 \
@@ -105,10 +106,43 @@ Output::
     }
 
 
-For more information, see `Asymmetric keys in AWS KMS <https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html>`__ in the *AWS Key Management Service Developer Guide*.   
+For more information, see `Asymmetric keys in AWS KMS <https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html>`__ in the *AWS Key Management Service Developer Guide*.
+
+**Example 4: To create an asymmetric ML-DSA KMS key for signing and verification**
+
+This example creates a module-lattice digital signature algorithm (ML-DSA) key for signing and verification. The key-usage parameter is required even though ``SIGN_VERIFY`` is the only valid value for ML-DSA keys. ::
+
+    aws kms create-key \
+        --key-spec ML_DSA_65 \
+        --key-usage SIGN_VERIFY
+
+Output::
+
+    {
+        "KeyMetadata": {
+            "Arn": "arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab",
+            "AWSAccountId": "111122223333",
+            "CreationDate": "2019-12-02T07:48:55-07:00",
+            "Description": "",
+            "Enabled": true,
+            "KeyId": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "KeyManager": "CUSTOMER",
+            "KeySpec": "ML_DSA_65",
+            "KeyState": "Enabled",
+            "KeyUsage": "SIGN_VERIFY",
+            "MultiRegion": false,
+            "Origin": "AWS_KMS",
+            "SigningAlgorithms": [
+                "ML_DSA_SHAKE_256"
+            ]
+        }
+    }
 
 
-**Example 4: To create an HMAC KMS key**
+For more information, see `Asymmetric keys in AWS KMS <https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html>`__ in the *AWS Key Management Service Developer Guide*.
+
+
+**Example 5: To create an HMAC KMS key**
 
 The following ``create-key`` example creates a 384-bit HMAC KMS key. The ``GENERATE_VERIFY_MAC`` value for the ``--key-usage`` parameter is required even though it's the only valid value for HMAC KMS keys. ::
 
@@ -142,7 +176,7 @@ Output::
 For more information, see `HMAC keys in AWS KMS <https://docs.aws.amazon.com/kms/latest/developerguide/hmac.html>`__ in the *AWS Key Management Service Developer Guide*.  
 
 
-**Example 4: To create a multi-Region primary KMS key**
+**Example 6: To create a multi-Region primary KMS key**
 
 The following ``create-key`` example creates a multi-Region primary symmetric encryption key. Because the default values for all parameters create a symmetric encryption key, only the ``--multi-region`` parameter is required for this KMS key. In the AWS CLI, to indicate that a Boolean parameter is true, just specify the parameter name. ::
 
@@ -156,6 +190,7 @@ Output::
             "Arn": "arn:aws:kms:us-west-2:111122223333:key/mrk-1234abcd12ab34cd56ef12345678990ab",
             "AWSAccountId": "111122223333",
             "CreationDate": "2021-09-02T016:15:21-09:00",
+            "CurrentKeyMaterialId": "0b7fd7ddbac6eef27907413567cad8c810e2883dc8a7534067a82ee1142fc1e6",
             "CustomerMasterKeySpec": "SYMMETRIC_DEFAULT",
             "Description": "",
             "Enabled": true,
@@ -183,7 +218,7 @@ Output::
 For more information, see `Asymmetric keys in AWS KMS <https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html>`__ in the *AWS Key Management Service Developer Guide*.  
 
 
-**Example 5: To create a KMS key for imported key material**
+**Example 7: To create a KMS key for imported key material**
 
 The following ``create-key`` example creates a creates a KMS key with no key material. When the operation is complete, you can import your own key material into the KMS key. To create this KMS key, set the ``--origin`` parameter to ``EXTERNAL``. ::
 
@@ -253,7 +288,7 @@ Output::
 For more information, see `AWS CloudHSM key stores <https://docs.aws.amazon.com/kms/latest/developerguide/keystore-cloudhsm.html>`__ in the *AWS Key Management Service Developer Guide*. 
 
 
-**Example 7: To create a KMS key in an external key store**
+**Example 8: To create a KMS key in an external key store**
 
 The following ``create-key`` example creates a creates a KMS key in the specified external key store. The ``--custom-key-store-id``, ``--origin``, and ``--xks-key-id`` parameters are required in this command. 
 

@@ -89,6 +89,27 @@
       "documentation":"<p>Updates an existing volume by using a snapshot from another Amazon FSx for OpenZFS file system. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/on-demand-replication.html\">on-demand data replication</a> in the Amazon FSx for OpenZFS User Guide.</p>",
       "idempotent":true
     },
+    "CreateAndAttachS3AccessPoint":{
+      "name":"CreateAndAttachS3AccessPoint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateAndAttachS3AccessPointRequest"},
+      "output":{"shape":"CreateAndAttachS3AccessPointResponse"},
+      "errors":[
+        {"shape":"BadRequest"},
+        {"shape":"IncompatibleParameterError"},
+        {"shape":"InternalServerError"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"VolumeNotFound"},
+        {"shape":"InvalidAccessPoint"},
+        {"shape":"InvalidRequest"},
+        {"shape":"AccessPointAlreadyOwnedByYou"},
+        {"shape":"TooManyAccessPoints"}
+      ],
+      "documentation":"<p>Creates an S3 access point and attaches it to an Amazon FSx volume. For FSx for OpenZFS file systems, the volume must be hosted on a high-availability file system, either Single-AZ or Multi-AZ. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/s3accesspoints-for-FSx.html\">Accessing your data using Amazon S3 access points</a>. in the Amazon FSx for OpenZFS User Guide. </p> <p>The requester requires the following permissions to perform these actions:</p> <ul> <li> <p> <code>fsx:CreateAndAttachS3AccessPoint</code> </p> </li> <li> <p> <code>s3:CreateAccessPoint</code> </p> </li> <li> <p> <code>s3:GetAccessPoint</code> </p> </li> <li> <p> <code>s3:PutAccessPointPolicy</code> </p> </li> <li> <p> <code>s3:DeleteAccessPoint</code> </p> </li> </ul> <p>The following actions are related to <code>CreateAndAttachS3AccessPoint</code>:</p> <ul> <li> <p> <a>DescribeS3AccessPointAttachments</a> </p> </li> <li> <p> <a>DetachAndDeleteS3AccessPoint</a> </p> </li> </ul>"
+    },
     "CreateBackup":{
       "name":"CreateBackup",
       "http":{
@@ -359,7 +380,7 @@
         {"shape":"ServiceLimitExceeded"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Deletes a file system. After deletion, the file system no longer exists, and its data is gone. Any existing automatic backups and snapshots are also deleted.</p> <p>To delete an Amazon FSx for NetApp ONTAP file system, first delete all the volumes and storage virtual machines (SVMs) on the file system. Then provide a <code>FileSystemId</code> value to the <code>DeleteFileSystem</code> operation.</p> <p>By default, when you delete an Amazon FSx for Windows File Server file system, a final backup is created upon deletion. This final backup isn't subject to the file system's retention policy, and must be manually deleted.</p> <p>To delete an Amazon FSx for Lustre file system, first <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/unmounting-fs.html\">unmount</a> it from every connected Amazon EC2 instance, then provide a <code>FileSystemId</code> value to the <code>DeleteFileSystem</code> operation. By default, Amazon FSx will not take a final backup when the <code>DeleteFileSystem</code> operation is invoked. On file systems not linked to an Amazon S3 bucket, set <code>SkipFinalBackup</code> to <code>false</code> to take a final backup of the file system you are deleting. Backups cannot be enabled on S3-linked file systems. To ensure all of your data is written back to S3 before deleting your file system, you can either monitor for the <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/monitoring-cloudwatch.html#auto-import-export-metrics\">AgeOfOldestQueuedMessage</a> metric to be zero (if using automatic export) or you can run an <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/export-data-repo-task-dra.html\">export data repository task</a>. If you have automatic export enabled and want to use an export data repository task, you have to disable automatic export before executing the export data repository task.</p> <p>The <code>DeleteFileSystem</code> operation returns while the file system has the <code>DELETING</code> status. You can check the file system deletion status by calling the <a href=\"https://docs.aws.amazon.com/fsx/latest/APIReference/API_DescribeFileSystems.html\">DescribeFileSystems</a> operation, which returns a list of file systems in your account. If you pass the file system ID for a deleted file system, the <code>DescribeFileSystems</code> operation returns a <code>FileSystemNotFound</code> error.</p> <note> <p>If a data repository task is in a <code>PENDING</code> or <code>EXECUTING</code> state, deleting an Amazon FSx for Lustre file system will fail with an HTTP status code 400 (Bad Request).</p> </note> <important> <p>The data in a deleted file system is also deleted and can't be recovered by any means.</p> </important>",
+      "documentation":"<p>Deletes a file system. After deletion, the file system no longer exists, and its data is gone. Any existing automatic backups and snapshots are also deleted.</p> <p>To delete an Amazon FSx for NetApp ONTAP file system, first delete all the volumes and storage virtual machines (SVMs) on the file system. Then provide a <code>FileSystemId</code> value to the <code>DeleteFileSystem</code> operation.</p> <p>Before deleting an Amazon FSx for OpenZFS file system, make sure that there aren't any Amazon S3 access points attached to any volume. For more information on how to list S3 access points that are attached to volumes, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/access-points-list.html\">Listing S3 access point attachments</a>. For more information on how to delete S3 access points, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/delete-access-point.html\">Deleting an S3 access point attachment</a>.</p> <p>By default, when you delete an Amazon FSx for Windows File Server file system, a final backup is created upon deletion. This final backup isn't subject to the file system's retention policy, and must be manually deleted.</p> <p>To delete an Amazon FSx for Lustre file system, first <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/unmounting-fs.html\">unmount</a> it from every connected Amazon EC2 instance, then provide a <code>FileSystemId</code> value to the <code>DeleteFileSystem</code> operation. By default, Amazon FSx will not take a final backup when the <code>DeleteFileSystem</code> operation is invoked. On file systems not linked to an Amazon S3 bucket, set <code>SkipFinalBackup</code> to <code>false</code> to take a final backup of the file system you are deleting. Backups cannot be enabled on S3-linked file systems. To ensure all of your data is written back to S3 before deleting your file system, you can either monitor for the <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/monitoring-cloudwatch.html#auto-import-export-metrics\">AgeOfOldestQueuedMessage</a> metric to be zero (if using automatic export) or you can run an <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/export-data-repo-task-dra.html\">export data repository task</a>. If you have automatic export enabled and want to use an export data repository task, you have to disable automatic export before executing the export data repository task.</p> <p>The <code>DeleteFileSystem</code> operation returns while the file system has the <code>DELETING</code> status. You can check the file system deletion status by calling the <a href=\"https://docs.aws.amazon.com/fsx/latest/APIReference/API_DescribeFileSystems.html\">DescribeFileSystems</a> operation, which returns a list of file systems in your account. If you pass the file system ID for a deleted file system, the <code>DescribeFileSystems</code> operation returns a <code>FileSystemNotFound</code> error.</p> <note> <p>If a data repository task is in a <code>PENDING</code> or <code>EXECUTING</code> state, deleting an Amazon FSx for Lustre file system will fail with an HTTP status code 400 (Bad Request).</p> </note> <important> <p>The data in a deleted file system is also deleted and can't be recovered by any means.</p> </important>",
       "idempotent":true
     },
     "DeleteSnapshot":{
@@ -508,6 +529,22 @@
       ],
       "documentation":"<p>Returns the description of specific Amazon FSx file systems, if a <code>FileSystemIds</code> value is provided for that file system. Otherwise, it returns descriptions of all file systems owned by your Amazon Web Services account in the Amazon Web Services Region of the endpoint that you're calling.</p> <p>When retrieving all file system descriptions, you can optionally specify the <code>MaxResults</code> parameter to limit the number of descriptions in a response. If more file system descriptions remain, Amazon FSx returns a <code>NextToken</code> value in the response. In this case, send a later request with the <code>NextToken</code> request parameter set to the value of <code>NextToken</code> from the last response.</p> <p>This operation is used in an iterative process to retrieve a list of your file system descriptions. <code>DescribeFileSystems</code> is called first without a <code>NextToken</code>value. Then the operation continues to be called with the <code>NextToken</code> parameter set to the value of the last <code>NextToken</code> value until a response has no <code>NextToken</code>.</p> <p>When using this operation, keep the following in mind:</p> <ul> <li> <p>The implementation might return fewer than <code>MaxResults</code> file system descriptions while still including a <code>NextToken</code> value.</p> </li> <li> <p>The order of file systems returned in the response of one <code>DescribeFileSystems</code> call and the order of file systems returned across the responses of a multicall iteration is unspecified.</p> </li> </ul>"
     },
+    "DescribeS3AccessPointAttachments":{
+      "name":"DescribeS3AccessPointAttachments",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeS3AccessPointAttachmentsRequest"},
+      "output":{"shape":"DescribeS3AccessPointAttachmentsResponse"},
+      "errors":[
+        {"shape":"S3AccessPointAttachmentNotFound"},
+        {"shape":"BadRequest"},
+        {"shape":"InternalServerError"},
+        {"shape":"UnsupportedOperation"}
+      ],
+      "documentation":"<p>Describes one or more S3 access points attached to Amazon FSx volumes.</p> <p>The requester requires the following permission to perform this action:</p> <ul> <li> <p> <code>fsx:DescribeS3AccessPointAttachments</code> </p> </li> </ul>"
+    },
     "DescribeSharedVpcConfiguration":{
       "name":"DescribeSharedVpcConfiguration",
       "http":{
@@ -566,6 +603,23 @@
         {"shape":"VolumeNotFound"}
       ],
       "documentation":"<p>Describes one or more Amazon FSx for NetApp ONTAP or Amazon FSx for OpenZFS volumes.</p>"
+    },
+    "DetachAndDeleteS3AccessPoint":{
+      "name":"DetachAndDeleteS3AccessPoint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DetachAndDeleteS3AccessPointRequest"},
+      "output":{"shape":"DetachAndDeleteS3AccessPointResponse"},
+      "errors":[
+        {"shape":"BadRequest"},
+        {"shape":"IncompatibleParameterError"},
+        {"shape":"InternalServerError"},
+        {"shape":"UnsupportedOperation"},
+        {"shape":"S3AccessPointAttachmentNotFound"}
+      ],
+      "documentation":"<p>Detaches an S3 access point from an Amazon FSx volume and deletes the S3 access point.</p> <p>The requester requires the following permission to perform this action:</p> <ul> <li> <p> <code>fsx:DetachAndDeleteS3AccessPoint</code> </p> </li> <li> <p> <code>s3:DeleteAccessPoint</code> </p> </li> </ul>"
     },
     "DisassociateFileSystemAliases":{
       "name":"DisassociateFileSystemAliases",
@@ -740,7 +794,7 @@
         {"shape":"MissingFileSystemConfiguration"},
         {"shape":"ServiceLimitExceeded"}
       ],
-      "documentation":"<p>Use this operation to update the configuration of an existing Amazon FSx file system. You can update multiple properties in a single request.</p> <p>For FSx for Windows File Server file systems, you can update the following properties:</p> <ul> <li> <p> <code>AuditLogConfiguration</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DiskIopsConfiguration</code> </p> </li> <li> <p> <code>SelfManagedActiveDirectoryConfiguration</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>StorageType</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul> <p>For FSx for Lustre file systems, you can update the following properties:</p> <ul> <li> <p> <code>AutoImportPolicy</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DataCompressionType</code> </p> </li> <li> <p> <code>FileSystemTypeVersion</code> </p> </li> <li> <p> <code>LogConfiguration</code> </p> </li> <li> <p> <code>LustreReadCacheConfiguration</code> </p> </li> <li> <p> <code>LustreRootSquashConfiguration</code> </p> </li> <li> <p> <code>MetadataConfiguration</code> </p> </li> <li> <p> <code>PerUnitStorageThroughput</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul> <p>For FSx for ONTAP file systems, you can update the following properties:</p> <ul> <li> <p> <code>AddRouteTableIds</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DiskIopsConfiguration</code> </p> </li> <li> <p> <code>FsxAdminPassword</code> </p> </li> <li> <p> <code>HAPairs</code> </p> </li> <li> <p> <code>RemoveRouteTableIds</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacityPerHAPair</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul> <p>For FSx for OpenZFS file systems, you can update the following properties:</p> <ul> <li> <p> <code>AddRouteTableIds</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>CopyTagsToBackups</code> </p> </li> <li> <p> <code>CopyTagsToVolumes</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DiskIopsConfiguration</code> </p> </li> <li> <p> <code>ReadCacheConfiguration</code> </p> </li> <li> <p> <code>RemoveRouteTableIds</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul>"
+      "documentation":"<p>Use this operation to update the configuration of an existing Amazon FSx file system. You can update multiple properties in a single request.</p> <p>For FSx for Windows File Server file systems, you can update the following properties:</p> <ul> <li> <p> <code>AuditLogConfiguration</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DiskIopsConfiguration</code> </p> </li> <li> <p> <code>SelfManagedActiveDirectoryConfiguration</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>StorageType</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul> <p>For FSx for Lustre file systems, you can update the following properties:</p> <ul> <li> <p> <code>AutoImportPolicy</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DataCompressionType</code> </p> </li> <li> <p> <code>FileSystemTypeVersion</code> </p> </li> <li> <p> <code>LogConfiguration</code> </p> </li> <li> <p> <code>LustreReadCacheConfiguration</code> </p> </li> <li> <p> <code>LustreRootSquashConfiguration</code> </p> </li> <li> <p> <code>MetadataConfiguration</code> </p> </li> <li> <p> <code>PerUnitStorageThroughput</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul> <p>For FSx for ONTAP file systems, you can update the following properties:</p> <ul> <li> <p> <code>AddRouteTableIds</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DiskIopsConfiguration</code> </p> </li> <li> <p> <code>EndpointIpv6AddressRange</code> </p> </li> <li> <p> <code>FsxAdminPassword</code> </p> </li> <li> <p> <code>HAPairs</code> </p> </li> <li> <p> <code>RemoveRouteTableIds</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacityPerHAPair</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul> <p>For FSx for OpenZFS file systems, you can update the following properties:</p> <ul> <li> <p> <code>AddRouteTableIds</code> </p> </li> <li> <p> <code>AutomaticBackupRetentionDays</code> </p> </li> <li> <p> <code>CopyTagsToBackups</code> </p> </li> <li> <p> <code>CopyTagsToVolumes</code> </p> </li> <li> <p> <code>DailyAutomaticBackupStartTime</code> </p> </li> <li> <p> <code>DiskIopsConfiguration</code> </p> </li> <li> <p> <code>EndpointIpv6AddressRange</code> </p> </li> <li> <p> <code>ReadCacheConfiguration</code> </p> </li> <li> <p> <code>RemoveRouteTableIds</code> </p> </li> <li> <p> <code>StorageCapacity</code> </p> </li> <li> <p> <code>ThroughputCapacity</code> </p> </li> <li> <p> <code>WeeklyMaintenanceStartTime</code> </p> </li> </ul>"
     },
     "UpdateSharedVpcConfiguration":{
       "name":"UpdateSharedVpcConfiguration",
@@ -816,6 +870,23 @@
       "min":12,
       "pattern":"^\\d{12}$"
     },
+    "AccessPointAlreadyOwnedByYou":{
+      "type":"structure",
+      "members":{
+        "ErrorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>An error code indicating that an access point with that name already exists in the Amazon Web Services Region in your Amazon Web Services account.</p>"
+        },
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>An access point with that name already exists in the Amazon Web Services Region in your Amazon Web Services account.</p>",
+      "exception":true
+    },
+    "AccessPointPolicy":{
+      "type":"string",
+      "max":200000,
+      "min":1
+    },
     "ActiveDirectoryBackupAttributes":{
       "type":"structure",
       "members":{
@@ -855,6 +926,7 @@
         "DOMAIN_NOT_FOUND",
         "INCOMPATIBLE_DOMAIN_MODE",
         "WRONG_VPC",
+        "INVALID_NETWORK_TYPE",
         "INVALID_DOMAIN_STAGE"
       ]
     },
@@ -901,7 +973,8 @@
         "RemainingTransferBytes":{
           "shape":"RemainingTransferBytes",
           "documentation":"<p>The remaining bytes to transfer for the FSx for OpenZFS snapshot that you're copying.</p>"
-        }
+        },
+        "Message":{"shape":"ErrorMessage"}
       },
       "documentation":"<p>Describes a specific Amazon FSx administrative action for the current Windows, Lustre, OpenZFS, or ONTAP file system or volume.</p>"
     },
@@ -998,7 +1071,7 @@
     "Aliases":{
       "type":"list",
       "member":{"shape":"Alias"},
-      "documentation":"<p>An array of one or more DNS aliases that are currently associated with the Amazon FSx file system. Aliases allow you to use existing DNS names to access the data in your Amazon FSx file system. You can associate up to 50 aliases with a file system at any time. You can associate additional DNS aliases after you create the file system using the AssociateFileSystemAliases operation. You can remove DNS aliases from the file system after it is created using the DisassociateFileSystemAliases operation. You only need to specify the alias name in the request payload. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/managing-dns-aliases.html\">DNS aliases</a>.</p>",
+      "documentation":"<p>An array of one or more DNS aliases that are currently associated with the Amazon FSx file system. Aliases allow you to use existing DNS names to access the data in your Amazon FSx file system. You can associate up to 50 aliases with a file system at any time. You can associate additional DNS aliases after you create the file system using the AssociateFileSystemAliases operation. You can remove DNS aliases from the file system after it is created using the DisassociateFileSystemAliases operation. You only need to specify the alias name in the request payload. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/managing-dns-aliases.html\">Managing DNS aliases</a>.</p>",
       "max":50
     },
     "AlternateDNSName":{
@@ -1434,6 +1507,95 @@
       },
       "documentation":"<p>Used to specify the configuration options for an FSx for ONTAP volume's storage aggregate or aggregates.</p>"
     },
+    "CreateAndAttachS3AccessPointOntapConfiguration":{
+      "type":"structure",
+      "required":[
+        "VolumeId",
+        "FileSystemIdentity"
+      ],
+      "members":{
+        "VolumeId":{
+          "shape":"VolumeId",
+          "documentation":"<p>The ID of the FSx for ONTAP volume to which you want the S3 access point attached.</p>"
+        },
+        "FileSystemIdentity":{
+          "shape":"OntapFileSystemIdentity",
+          "documentation":"<p>Specifies the file system user identity to use for authorizing file read and write requests that are made using this S3 access point.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the FSx for ONTAP volume that the S3 access point will be attached to, and the file system user identity.</p>"
+    },
+    "CreateAndAttachS3AccessPointOpenZFSConfiguration":{
+      "type":"structure",
+      "required":[
+        "VolumeId",
+        "FileSystemIdentity"
+      ],
+      "members":{
+        "VolumeId":{
+          "shape":"VolumeId",
+          "documentation":"<p>The ID of the FSx for OpenZFS volume to which you want the S3 access point attached.</p>"
+        },
+        "FileSystemIdentity":{
+          "shape":"OpenZFSFileSystemIdentity",
+          "documentation":"<p>Specifies the file system user identity to use for authorizing file read and write requests that are made using this S3 access point.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the FSx for OpenZFS volume that the S3 access point will be attached to, and the file system user identity.</p>"
+    },
+    "CreateAndAttachS3AccessPointRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Type"
+      ],
+      "members":{
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "idempotencyToken":true
+        },
+        "Name":{
+          "shape":"S3AccessPointAttachmentName",
+          "documentation":"<p>The name you want to assign to this S3 access point.</p>"
+        },
+        "Type":{
+          "shape":"S3AccessPointAttachmentType",
+          "documentation":"<p>The type of S3 access point you want to create. Only <code>OpenZFS</code> is supported.</p>"
+        },
+        "OpenZFSConfiguration":{
+          "shape":"CreateAndAttachS3AccessPointOpenZFSConfiguration",
+          "documentation":"<p>Specifies the configuration to use when creating and attaching an S3 access point to an FSx for OpenZFS volume.</p>"
+        },
+        "OntapConfiguration":{"shape":"CreateAndAttachS3AccessPointOntapConfiguration"},
+        "S3AccessPoint":{
+          "shape":"CreateAndAttachS3AccessPointS3Configuration",
+          "documentation":"<p>Specifies the virtual private cloud (VPC) configuration if you're creating an access point that is restricted to a VPC. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/access-points-vpc.html\">Creating access points restricted to a virtual private cloud</a>.</p>"
+        }
+      }
+    },
+    "CreateAndAttachS3AccessPointResponse":{
+      "type":"structure",
+      "members":{
+        "S3AccessPointAttachment":{
+          "shape":"S3AccessPointAttachment",
+          "documentation":"<p>Describes the configuration of the S3 access point created.</p>"
+        }
+      }
+    },
+    "CreateAndAttachS3AccessPointS3Configuration":{
+      "type":"structure",
+      "members":{
+        "VpcConfiguration":{
+          "shape":"S3AccessPointVpcConfiguration",
+          "documentation":"<p>If included, Amazon S3 restricts access to this S3 access point to requests made from the specified virtual private cloud (VPC).</p>"
+        },
+        "Policy":{
+          "shape":"AccessPointPolicy",
+          "documentation":"<p>Specifies an access policy to associate with the S3 access point configuration. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/userguide/access-points-policies.html\">Configuring IAM policies for using access points</a> in the Amazon Simple Storage Service User Guide.</p>"
+        }
+      },
+      "documentation":"<p>Used to create an S3 access point that accepts requests only from a virtual private cloud (VPC) to restrict data access to a private network.</p>"
+    },
     "CreateBackupRequest":{
       "type":"structure",
       "members":{
@@ -1690,6 +1852,10 @@
         "StorageCapacity":{
           "shape":"StorageCapacity",
           "documentation":"<p>Sets the storage capacity of the OpenZFS file system that you're creating from a backup, in gibibytes (GiB). Valid values are from 64 GiB up to 524,288 GiB (512 TiB). However, the value that you specify must be equal to or greater than the backup's storage capacity value. If you don't use the <code>StorageCapacity</code> parameter, the default is the backup's <code>StorageCapacity</code> value.</p> <p>If used to create a file system other than OpenZFS, you must provide a value that matches the backup's <code>StorageCapacity</code> value. If you provide any other value, Amazon FSx responds with an HTTP status code 400 Bad Request. </p>"
+        },
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>Sets the network type for the Amazon FSx for OpenZFS file system that you're creating from a backup.</p>"
         }
       },
       "documentation":"<p>The request object for the <code>CreateFileSystemFromBackup</code> operation.</p>"
@@ -1806,7 +1972,7 @@
         },
         "EndpointIpAddressRange":{
           "shape":"IpAddressRange",
-          "documentation":"<p>(Multi-AZ only) Specifies the IP address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API, Amazon FSx selects an unused IP address range for you from the 198.19.* range. By default in the Amazon FSx console, Amazon FSx chooses the last 64 IP addresses from the VPC’s primary CIDR range to use as the endpoint IP address range for the file system. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables, as long as they don't overlap with any subnet.</p>"
+          "documentation":"<p>(Multi-AZ only) Specifies the IPv4 address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API, Amazon FSx selects an unused IP address range for you from the 198.19.* range. By default in the Amazon FSx console, Amazon FSx chooses the last 64 IP addresses from the VPC’s primary CIDR range to use as the endpoint IP address range for the file system. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables, as long as they don't overlap with any subnet.</p>"
         },
         "FsxAdminPassword":{
           "shape":"AdminPassword",
@@ -1836,6 +2002,10 @@
         "ThroughputCapacityPerHAPair":{
           "shape":"ThroughputCapacityPerHAPair",
           "documentation":"<p>Use to choose the throughput capacity per HA pair, rather than the total throughput for the file system. </p> <p>You can define either the <code>ThroughputCapacityPerHAPair</code> or the <code>ThroughputCapacity</code> when creating a file system, but not both.</p> <p>This field and <code>ThroughputCapacity</code> are the same for file systems powered by one HA pair.</p> <ul> <li> <p>For <code>SINGLE_AZ_1</code> and <code>MULTI_AZ_1</code> file systems, valid values are 128, 256, 512, 1024, 2048, or 4096 MBps.</p> </li> <li> <p>For <code>SINGLE_AZ_2</code>, valid values are 1536, 3072, or 6144 MBps.</p> </li> <li> <p>For <code>MULTI_AZ_2</code>, valid values are 384, 768, 1536, 3072, or 6144 MBps.</p> </li> </ul> <p>Amazon FSx responds with an HTTP status code 400 (Bad Request) for the following conditions:</p> <ul> <li> <p>The value of <code>ThroughputCapacity</code> and <code>ThroughputCapacityPerHAPair</code> are not the same value for file systems with one HA pair.</p> </li> <li> <p>The value of deployment type is <code>SINGLE_AZ_2</code> and <code>ThroughputCapacity</code> / <code>ThroughputCapacityPerHAPair</code> is not a valid HA pair (a value between 1 and 12).</p> </li> <li> <p>The value of <code>ThroughputCapacityPerHAPair</code> is not a valid value.</p> </li> </ul>"
+        },
+        "EndpointIpv6AddressRange":{
+          "shape":"Ipv6AddressRange",
+          "documentation":"<p>(Multi-AZ only) Specifies the IPv6 address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API and Amazon FSx console, Amazon FSx selects an available /118 IP address range for you from one of the VPC's CIDR ranges. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables, as long as they don't overlap with any subnet.</p>"
         }
       },
       "documentation":"<p>The ONTAP configuration properties of the FSx for ONTAP file system that you are creating.</p>"
@@ -1877,7 +2047,11 @@
         },
         "EndpointIpAddressRange":{
           "shape":"IpAddressRange",
-          "documentation":"<p>(Multi-AZ only) Specifies the IP address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API and Amazon FSx console, Amazon FSx selects an available /28 IP address range for you from one of the VPC's CIDR ranges. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables, as long as they don't overlap with any subnet.</p>"
+          "documentation":"<p>(Multi-AZ only) Specifies the IPv4 address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API and Amazon FSx console, Amazon FSx selects an available /28 IP address range for you from one of the VPC's CIDR ranges. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables, as long as they don't overlap with any subnet.</p>"
+        },
+        "EndpointIpv6AddressRange":{
+          "shape":"Ipv6AddressRange",
+          "documentation":"<p>(Multi-AZ only) Specifies the IPv6 address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API and Amazon FSx console, Amazon FSx selects an available /118 IP address range for you from one of the VPC's CIDR ranges. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables, as long as they don't overlap with any subnet.</p>"
         },
         "RouteTableIds":{
           "shape":"RouteTableIds",
@@ -1912,7 +2086,7 @@
         },
         "StorageType":{
           "shape":"StorageType",
-          "documentation":"<p>Sets the storage class for the file system that you're creating. Valid values are <code>SSD</code>, <code>HDD</code>, and <code>INTELLIGENT_TIERING</code>.</p> <ul> <li> <p>Set to <code>SSD</code> to use solid state drive storage. SSD is supported on all Windows, Lustre, ONTAP, and OpenZFS deployment types.</p> </li> <li> <p>Set to <code>HDD</code> to use hard disk drive storage, which is supported on <code>SINGLE_AZ_2</code> and <code>MULTI_AZ_1</code> Windows file system deployment types, and on <code>PERSISTENT_1</code> Lustre file system deployment types.</p> </li> <li> <p>Set to <code>INTELLIGENT_TIERING</code> to use fully elastic, intelligently-tiered storage. Intelligent-Tiering is only available for OpenZFS file systems with the Multi-AZ deployment type and for Lustre file systems with the Persistent_2 deployment type.</p> </li> </ul> <p>Default value is <code>SSD</code>. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/optimize-fsx-costs.html#storage-type-options\"> Storage type options</a> in the <i>FSx for Windows File Server User Guide</i>, <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/lustre-storage-classes\">FSx for Lustre storage classes</a> in the <i>FSx for Lustre User Guide</i>, and <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/performance-intelligent-tiering\">Working with Intelligent-Tiering</a> in the <i>Amazon FSx for OpenZFS User Guide</i>.</p>"
+          "documentation":"<p>Sets the storage class for the file system that you're creating. Valid values are <code>SSD</code>, <code>HDD</code>, and <code>INTELLIGENT_TIERING</code>.</p> <ul> <li> <p>Set to <code>SSD</code> to use solid state drive storage. SSD is supported on all Windows, Lustre, ONTAP, and OpenZFS deployment types.</p> </li> <li> <p>Set to <code>HDD</code> to use hard disk drive storage, which is supported on <code>SINGLE_AZ_2</code> and <code>MULTI_AZ_1</code> Windows file system deployment types, and on <code>PERSISTENT_1</code> Lustre file system deployment types.</p> </li> <li> <p>Set to <code>INTELLIGENT_TIERING</code> to use fully elastic, intelligently-tiered storage. Intelligent-Tiering is only available for OpenZFS file systems with the Multi-AZ deployment type and for Lustre file systems with the Persistent_2 deployment type.</p> </li> </ul> <p>Default value is <code>SSD</code>. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/optimize-fsx-costs.html#storage-type-options\"> Storage type options</a> in the <i>FSx for Windows File Server User Guide</i>, <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/using-fsx-lustre.html#lustre-storage-classes\">FSx for Lustre storage classes</a> in the <i>FSx for Lustre User Guide</i>, and <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/performance-intelligent-tiering\">Working with Intelligent-Tiering</a> in the <i>Amazon FSx for OpenZFS User Guide</i>.</p>"
         },
         "SubnetIds":{
           "shape":"SubnetIds",
@@ -1940,6 +2114,10 @@
         "OpenZFSConfiguration":{
           "shape":"CreateFileSystemOpenZFSConfiguration",
           "documentation":"<p>The OpenZFS configuration for the file system that's being created.</p>"
+        },
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>The network type of the Amazon FSx file system that you are creating. Valid values are <code>IPV4</code> (which supports IPv4 only) and <code>DUAL</code> (for dual-stack mode, which supports both IPv4 and IPv6). The default is <code>IPV4</code>. Supported for FSx for OpenZFS, FSx for ONTAP, and FSx for Windows File Server file systems.</p>"
         }
       },
       "documentation":"<p>The request object used to create a new Amazon FSx file system.</p>"
@@ -1993,7 +2171,7 @@
         },
         "Aliases":{
           "shape":"AlternateDNSNames",
-          "documentation":"<p>An array of one or more DNS alias names that you want to associate with the Amazon FSx file system. Aliases allow you to use existing DNS names to access the data in your Amazon FSx file system. You can associate up to 50 aliases with a file system at any time. You can associate additional DNS aliases after you create the file system using the AssociateFileSystemAliases operation. You can remove DNS aliases from the file system after it is created using the DisassociateFileSystemAliases operation. You only need to specify the alias name in the request payload.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/managing-dns-aliases.html\">Working with DNS Aliases</a> and <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/walkthrough05-file-system-custom-CNAME.html\">Walkthrough 5: Using DNS aliases to access your file system</a>, including additional steps you must take to be able to access your file system using a DNS alias.</p> <p>An alias name has to meet the following requirements:</p> <ul> <li> <p>Formatted as a fully-qualified domain name (FQDN), <code>hostname.domain</code>, for example, <code>accounting.example.com</code>.</p> </li> <li> <p>Can contain alphanumeric characters, the underscore (_), and the hyphen (-).</p> </li> <li> <p>Cannot start or end with a hyphen.</p> </li> <li> <p>Can start with a numeric.</p> </li> </ul> <p>For DNS alias names, Amazon FSx stores alphabetic characters as lowercase letters (a-z), regardless of how you specify them: as uppercase letters, lowercase letters, or the corresponding letters in escape codes.</p>"
+          "documentation":"<p>An array of one or more DNS alias names that you want to associate with the Amazon FSx file system. Aliases allow you to use existing DNS names to access the data in your Amazon FSx file system. You can associate up to 50 aliases with a file system at any time. You can associate additional DNS aliases after you create the file system using the AssociateFileSystemAliases operation. You can remove DNS aliases from the file system after it is created using the DisassociateFileSystemAliases operation. You only need to specify the alias name in the request payload. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/managing-dns-aliases.html\">Managing DNS aliases</a> and <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/dns-aliases.html\">Accessing data using DNS aliases</a>.</p> <p>An alias name has to meet the following requirements:</p> <ul> <li> <p>Formatted as a fully-qualified domain name (FQDN), <code>hostname.domain</code>, for example, <code>accounting.example.com</code>.</p> </li> <li> <p>Can contain alphanumeric characters, the underscore (_), and the hyphen (-).</p> </li> <li> <p>Cannot start or end with a hyphen.</p> </li> <li> <p>Can start with a numeric.</p> </li> </ul> <p>For DNS alias names, Amazon FSx stores alphabetic characters as lowercase letters (a-z), regardless of how you specify them: as uppercase letters, lowercase letters, or the corresponding letters in escape codes.</p>"
         },
         "AuditLogConfiguration":{
           "shape":"WindowsAuditLogCreateConfiguration",
@@ -2002,6 +2180,10 @@
         "DiskIopsConfiguration":{
           "shape":"DiskIopsConfiguration",
           "documentation":"<p>The SSD IOPS (input/output operations per second) configuration for an Amazon FSx for Windows file system. By default, Amazon FSx automatically provisions 3 IOPS per GiB of storage capacity. You can provision additional IOPS per GiB of storage, up to the maximum limit associated with your chosen throughput capacity.</p>"
+        },
+        "FsrmConfiguration":{
+          "shape":"WindowsFsrmConfiguration",
+          "documentation":"<p>The File Server Resource Manager (FSRM) configuration that Amazon FSx for Windows File Server uses for the file system. FSRM is disabled by default.</p>"
         }
       },
       "documentation":"<p>The configuration object for the Microsoft Windows file system used in <code>CreateFileSystem</code> and <code>CreateFileSystemFromBackup</code> operations.</p>"
@@ -2314,6 +2496,12 @@
     "CreationTime":{
       "type":"timestamp",
       "documentation":"<p>The time that the resource was created, in seconds (since 1970-01-01T00:00:00Z), also known as Unix time.</p>"
+    },
+    "CustomerSecretsManagerARN":{
+      "type":"string",
+      "max":1024,
+      "min":64,
+      "pattern":"^arn:[^:]{1,63}:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+-[a-zA-Z0-9]{6}$"
     },
     "DNSName":{
       "type":"string",
@@ -3193,6 +3381,31 @@
       },
       "documentation":"<p>The response object for <code>DescribeFileSystems</code> operation.</p>"
     },
+    "DescribeS3AccessPointAttachmentsRequest":{
+      "type":"structure",
+      "members":{
+        "Names":{
+          "shape":"S3AccessPointAttachmentNames",
+          "documentation":"<p>The names of the S3 access point attachments whose descriptions you want to retrieve.</p>"
+        },
+        "Filters":{
+          "shape":"S3AccessPointAttachmentsFilters",
+          "documentation":"<p>Enter a filter Name and Values pair to view a select set of S3 access point attachments.</p>"
+        },
+        "MaxResults":{"shape":"MaxResults"},
+        "NextToken":{"shape":"NextToken"}
+      }
+    },
+    "DescribeS3AccessPointAttachmentsResponse":{
+      "type":"structure",
+      "members":{
+        "S3AccessPointAttachments":{
+          "shape":"S3AccessPointAttachments",
+          "documentation":"<p>Array of S3 access point attachments returned after a successful <code>DescribeS3AccessPointAttachments</code> operation.</p>"
+        },
+        "NextToken":{"shape":"NextToken"}
+      }
+    },
     "DescribeSharedVpcConfigurationRequest":{
       "type":"structure",
       "members":{}
@@ -3283,6 +3496,33 @@
           "documentation":"<p>Returned after a successful <code>DescribeVolumes</code> operation, describing each volume.</p>"
         },
         "NextToken":{"shape":"NextToken"}
+      }
+    },
+    "DetachAndDeleteS3AccessPointRequest":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "idempotencyToken":true
+        },
+        "Name":{
+          "shape":"S3AccessPointAttachmentName",
+          "documentation":"<p>The name of the S3 access point attachment that you want to delete.</p>"
+        }
+      }
+    },
+    "DetachAndDeleteS3AccessPointResponse":{
+      "type":"structure",
+      "members":{
+        "Lifecycle":{
+          "shape":"S3AccessPointAttachmentLifecycle",
+          "documentation":"<p>The lifecycle status of the S3 access point attachment.</p>"
+        },
+        "Name":{
+          "shape":"S3AccessPointAttachmentName",
+          "documentation":"<p>The name of the S3 access point attachment being deleted.</p>"
+        }
       }
     },
     "DirectoryId":{
@@ -3385,6 +3625,11 @@
       "documentation":"<p>Defines the minimum amount of time since last access for a file to be eligible for release. Only files that have been exported to S3 and that were last accessed or modified before this point-in-time are eligible to be released from the Amazon FSx for Lustre file system.</p>"
     },
     "EndTime":{"type":"timestamp"},
+    "ErrorCode":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
     "ErrorMessage":{
       "type":"string",
       "documentation":"<p>A detailed error message.</p>",
@@ -3725,6 +3970,10 @@
         "OpenZFSConfiguration":{
           "shape":"OpenZFSFileSystemConfiguration",
           "documentation":"<p>The configuration for this Amazon FSx for OpenZFS file system.</p>"
+        },
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>The network type of the file system.</p>"
         }
       },
       "documentation":"<p>A description of a specific Amazon FSx file system.</p>"
@@ -3741,7 +3990,11 @@
         "DNSName":{"shape":"DNSName"},
         "IpAddresses":{
           "shape":"OntapEndpointIpAddresses",
-          "documentation":"<p>IP addresses of the file system endpoint.</p>"
+          "documentation":"<p>The IPv4 addresses of the file system endpoint.</p>"
+        },
+        "Ipv6Addresses":{
+          "shape":"OntapEndpointIpAddresses",
+          "documentation":"<p>The IPv6 addresses of the file system endpoint.</p>"
         }
       },
       "documentation":"<p>An Amazon FSx for NetApp ONTAP file system has two endpoints that are used to access data or to manage the file system using the NetApp ONTAP CLI, REST API, or NetApp SnapMirror. They are the <code>Management</code> and <code>Intercluster</code> endpoints.</p>"
@@ -3769,6 +4022,11 @@
         }
       },
       "documentation":"<p>A structure providing details of any failures that occurred.</p>"
+    },
+    "FileSystemGID":{
+      "type":"long",
+      "max":4294967295,
+      "min":0
     },
     "FileSystemId":{
       "type":"string",
@@ -3833,6 +4091,11 @@
       "documentation":"<p>No Amazon FSx file systems were found based upon supplied parameters.</p>",
       "exception":true
     },
+    "FileSystemSecondaryGIDs":{
+      "type":"list",
+      "member":{"shape":"FileSystemGID"},
+      "max":15
+    },
     "FileSystemType":{
       "type":"string",
       "documentation":"<p>The type of Amazon FSx file system.</p>",
@@ -3848,6 +4111,11 @@
       "max":20,
       "min":1,
       "pattern":"^[0-9](.[0-9]*)*$"
+    },
+    "FileSystemUID":{
+      "type":"long",
+      "max":4294967295,
+      "min":0
     },
     "FileSystems":{
       "type":"list",
@@ -3974,6 +4242,18 @@
       "exception":true,
       "fault":true
     },
+    "InvalidAccessPoint":{
+      "type":"structure",
+      "members":{
+        "ErrorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>An error code indicating that the access point specified doesn't exist.</p>"
+        },
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The access point specified doesn't exist.</p>",
+      "exception":true
+    },
     "InvalidDataRepositoryType":{
       "type":"structure",
       "members":{
@@ -4045,6 +4325,18 @@
       "documentation":"<p>The Region provided for <code>SourceRegion</code> is not valid or is in a different Amazon Web Services partition.</p>",
       "exception":true
     },
+    "InvalidRequest":{
+      "type":"structure",
+      "members":{
+        "ErrorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>An error code indicating that the action or operation requested is invalid.</p>"
+        },
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The action or operation requested is invalid. Verify that the action is typed correctly.</p>",
+      "exception":true
+    },
     "InvalidSourceKmsKey":{
       "type":"structure",
       "members":{
@@ -4060,15 +4352,21 @@
     },
     "IpAddress":{
       "type":"string",
-      "max":15,
-      "min":7,
-      "pattern":"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+      "max":45,
+      "min":1,
+      "pattern":"(^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$|^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$)"
     },
     "IpAddressRange":{
       "type":"string",
       "max":17,
       "min":9,
       "pattern":"^[^\\u0000\\u0085\\u2028\\u2029\\r\\n]{9,17}$"
+    },
+    "Ipv6AddressRange":{
+      "type":"string",
+      "max":43,
+      "min":4,
+      "pattern":"^[^\\u0000\\u0085\\u2028\\u2029\\r\\n]{4,43}$"
     },
     "JunctionPath":{
       "type":"string",
@@ -4399,6 +4697,13 @@
       "documentation":"<p>A list of network interface IDs.</p>",
       "max":50
     },
+    "NetworkType":{
+      "type":"string",
+      "enum":[
+        "IPV4",
+        "DUAL"
+      ]
+    },
     "NextToken":{
       "type":"string",
       "documentation":"<p>(Optional) Opaque pagination token returned from a previous operation (String). If present, this token indicates from what point you can continue processing the request, where the previous <code>NextToken</code> value left off.</p>",
@@ -4449,7 +4754,7 @@
         },
         "EndpointIpAddressRange":{
           "shape":"IpAddressRange",
-          "documentation":"<p>(Multi-AZ only) Specifies the IP address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API, Amazon FSx selects an unused IP address range for you from the 198.19.* range. By default in the Amazon FSx console, Amazon FSx chooses the last 64 IP addresses from the VPC’s primary CIDR range to use as the endpoint IP address range for the file system. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables.</p>"
+          "documentation":"<p>(Multi-AZ only) Specifies the IPv4 address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API, Amazon FSx selects an unused IP address range for you from the 198.19.* range. By default in the Amazon FSx console, Amazon FSx chooses the last 64 IP addresses from the VPC’s primary CIDR range to use as the endpoint IP address range for the file system. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables.</p>"
         },
         "Endpoints":{
           "shape":"FileSystemEndpoints",
@@ -4477,9 +4782,56 @@
         "ThroughputCapacityPerHAPair":{
           "shape":"ThroughputCapacityPerHAPair",
           "documentation":"<p>Use to choose the throughput capacity per HA pair. When the value of <code>HAPairs</code> is equal to 1, the value of <code>ThroughputCapacityPerHAPair</code> is the total throughput for the file system.</p> <p>This field and <code>ThroughputCapacity</code> cannot be defined in the same API call, but one is required.</p> <p>This field and <code>ThroughputCapacity</code> are the same for file systems with one HA pair.</p> <ul> <li> <p>For <code>SINGLE_AZ_1</code> and <code>MULTI_AZ_1</code> file systems, valid values are 128, 256, 512, 1024, 2048, or 4096 MBps.</p> </li> <li> <p>For <code>SINGLE_AZ_2</code>, valid values are 1536, 3072, or 6144 MBps.</p> </li> <li> <p>For <code>MULTI_AZ_2</code>, valid values are 384, 768, 1536, 3072, or 6144 MBps.</p> </li> </ul> <p>Amazon FSx responds with an HTTP status code 400 (Bad Request) for the following conditions:</p> <ul> <li> <p>The value of <code>ThroughputCapacity</code> and <code>ThroughputCapacityPerHAPair</code> are not the same value.</p> </li> <li> <p>The value of deployment type is <code>SINGLE_AZ_2</code> and <code>ThroughputCapacity</code> / <code>ThroughputCapacityPerHAPair</code> is not a valid HA pair (a value between 1 and 12).</p> </li> <li> <p>The value of <code>ThroughputCapacityPerHAPair</code> is not a valid value.</p> </li> </ul>"
+        },
+        "EndpointIpv6AddressRange":{
+          "shape":"Ipv6AddressRange",
+          "documentation":"<p>(Multi-AZ only) Specifies the IPv6 address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API and Amazon FSx console, Amazon FSx selects an available /118 IP address range for you from one of the VPC's CIDR ranges. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables, as long as they don't overlap with any subnet.</p>"
         }
       },
       "documentation":"<p>Configuration for the FSx for NetApp ONTAP file system.</p>"
+    },
+    "OntapFileSystemIdentity":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"OntapFileSystemUserType",
+          "documentation":"<p>Specifies the FSx for ONTAP user identity type. Valid values are <code>UNIX</code> and <code>WINDOWS</code>.</p>"
+        },
+        "UnixUser":{
+          "shape":"OntapUnixFileSystemUser",
+          "documentation":"<p>Specifies the UNIX user identity for file system operations.</p>"
+        },
+        "WindowsUser":{
+          "shape":"OntapWindowsFileSystemUser",
+          "documentation":"<p>Specifies the Windows user identity for file system operations.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the file system user identity that will be used for authorizing all file access requests that are made using the S3 access point. The identity can be either a UNIX user or a Windows user.</p>"
+    },
+    "OntapFileSystemUserName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[^\\u0000\\u0085\\u2028\\u2029\\r\\n]{1,256}$"
+    },
+    "OntapFileSystemUserType":{
+      "type":"string",
+      "enum":[
+        "UNIX",
+        "WINDOWS"
+      ]
+    },
+    "OntapUnixFileSystemUser":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"OntapFileSystemUserName",
+          "documentation":"<p>The name of the UNIX user. The name can be up to 256 characters long.</p>"
+        }
+      },
+      "documentation":"<p>The FSx for ONTAP UNIX file system user that is used for authorizing all file access requests that are made using the S3 access point.</p>"
     },
     "OntapVolumeConfiguration":{
       "type":"structure",
@@ -4558,6 +4910,17 @@
         "DP",
         "LS"
       ]
+    },
+    "OntapWindowsFileSystemUser":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"OntapFileSystemUserName",
+          "documentation":"<p>The name of the Windows user. The name can be up to 256 characters long and supports Active Directory users.</p>"
+        }
+      },
+      "documentation":"<p>The FSx for ONTAP Windows file system user that is used for authorizing all file access requests that are made using the S3 access point.</p>"
     },
     "OpenZFSClientConfiguration":{
       "type":"structure",
@@ -4677,7 +5040,11 @@
         },
         "EndpointIpAddressRange":{
           "shape":"IpAddressRange",
-          "documentation":"<p>(Multi-AZ only) Specifies the IP address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API and Amazon FSx console, Amazon FSx selects an available /28 IP address range for you from one of the VPC's CIDR ranges. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables.</p>"
+          "documentation":"<p>(Multi-AZ only) Specifies the IPv4 address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API and Amazon FSx console, Amazon FSx selects an available /28 IP address range for you from one of the VPC's CIDR ranges. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables.</p>"
+        },
+        "EndpointIpv6AddressRange":{
+          "shape":"Ipv6AddressRange",
+          "documentation":"<p>(Multi-AZ only) Specifies the IPv6 address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API and Amazon FSx console, Amazon FSx selects an available /118 IP address range for you from one of the VPC's CIDR ranges. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables, as long as they don't overlap with any subnet.</p>"
         },
         "RouteTableIds":{
           "shape":"RouteTableIds",
@@ -4685,7 +5052,11 @@
         },
         "EndpointIpAddress":{
           "shape":"IpAddress",
-          "documentation":"<p>The IP address of the endpoint that is used to access data or to manage the file system.</p>"
+          "documentation":"<p>The IPv4 address of the endpoint that is used to access data or to manage the file system.</p>"
+        },
+        "EndpointIpv6Address":{
+          "shape":"IpAddress",
+          "documentation":"<p>The IPv6 address of the endpoint that is used to access data or to manage the file system.</p>"
         },
         "ReadCacheConfiguration":{
           "shape":"OpenZFSReadCacheConfiguration",
@@ -4693,6 +5064,25 @@
         }
       },
       "documentation":"<p>The configuration for the Amazon FSx for OpenZFS file system. </p>"
+    },
+    "OpenZFSFileSystemIdentity":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"OpenZFSFileSystemUserType",
+          "documentation":"<p>Specifies the FSx for OpenZFS user identity type, accepts only <code>POSIX</code>.</p>"
+        },
+        "PosixUser":{
+          "shape":"OpenZFSPosixFileSystemUser",
+          "documentation":"<p>Specifies the UID and GIDs of the file system POSIX user.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the file system user identity that will be used for authorizing all file access requests that are made using the S3 access point.</p>"
+    },
+    "OpenZFSFileSystemUserType":{
+      "type":"string",
+      "enum":["POSIX"]
     },
     "OpenZFSNfsExport":{
       "type":"structure",
@@ -4732,6 +5122,28 @@
         }
       },
       "documentation":"<p>The snapshot configuration used when creating an Amazon FSx for OpenZFS volume from a snapshot.</p>"
+    },
+    "OpenZFSPosixFileSystemUser":{
+      "type":"structure",
+      "required":[
+        "Uid",
+        "Gid"
+      ],
+      "members":{
+        "Uid":{
+          "shape":"FileSystemUID",
+          "documentation":"<p>The UID of the file system user.</p>"
+        },
+        "Gid":{
+          "shape":"FileSystemGID",
+          "documentation":"<p>The GID of the file system user.</p>"
+        },
+        "SecondaryGids":{
+          "shape":"FileSystemSecondaryGIDs",
+          "documentation":"<p>The list of secondary GIDs for the file system user. </p>"
+        }
+      },
+      "documentation":"<p>The FSx for OpenZFS file system user that is used for authorizing all file access requests that are made using the S3 access point.</p>"
     },
     "OpenZFSQuotaType":{
       "type":"string",
@@ -5086,6 +5498,180 @@
       "member":{"shape":"RouteTableId"},
       "max":50
     },
+    "S3AccessPoint":{
+      "type":"structure",
+      "members":{
+        "ResourceARN":{
+          "shape":"GeneralARN",
+          "documentation":"<p>he S3 access point's ARN.</p>"
+        },
+        "Alias":{
+          "shape":"S3AccessPointAlias",
+          "documentation":"<p>The S3 access point's alias.</p>"
+        },
+        "VpcConfiguration":{
+          "shape":"S3AccessPointVpcConfiguration",
+          "documentation":"<p>The S3 access point's virtual private cloud (VPC) configuration.</p>"
+        }
+      },
+      "documentation":"<p>Describes the S3 access point configuration of the S3 access point attachment.</p>"
+    },
+    "S3AccessPointAlias":{
+      "type":"string",
+      "max":63,
+      "min":1,
+      "pattern":"^[0-9a-z\\\\-]{1,63}"
+    },
+    "S3AccessPointAttachment":{
+      "type":"structure",
+      "members":{
+        "Lifecycle":{
+          "shape":"S3AccessPointAttachmentLifecycle",
+          "documentation":"<p>The lifecycle status of the S3 access point attachment. The lifecycle can have the following values:</p> <ul> <li> <p>AVAILABLE - the S3 access point attachment is available for use</p> </li> <li> <p>CREATING - Amazon FSx is creating the S3 access point and attachment</p> </li> <li> <p>DELETING - Amazon FSx is deleting the S3 access point and attachment</p> </li> <li> <p>FAILED - The S3 access point attachment is in a failed state. Delete and detach the S3 access point attachment, and create a new one.</p> </li> <li> <p>UPDATING - Amazon FSx is updating the S3 access point attachment</p> </li> </ul>"
+        },
+        "LifecycleTransitionReason":{"shape":"LifecycleTransitionReason"},
+        "CreationTime":{"shape":"CreationTime"},
+        "Name":{
+          "shape":"S3AccessPointAttachmentName",
+          "documentation":"<p>The name of the S3 access point attachment; also used for the name of the S3 access point.</p>"
+        },
+        "Type":{
+          "shape":"S3AccessPointAttachmentType",
+          "documentation":"<p>The type of Amazon FSx volume that the S3 access point is attached to. </p>"
+        },
+        "OpenZFSConfiguration":{
+          "shape":"S3AccessPointOpenZFSConfiguration",
+          "documentation":"<p>The OpenZFSConfiguration of the S3 access point attachment.</p>"
+        },
+        "OntapConfiguration":{
+          "shape":"S3AccessPointOntapConfiguration",
+          "documentation":"<p>The ONTAP configuration of the S3 access point attachment.</p>"
+        },
+        "S3AccessPoint":{
+          "shape":"S3AccessPoint",
+          "documentation":"<p>The S3 access point configuration of the S3 access point attachment.</p>"
+        }
+      },
+      "documentation":"<p>An S3 access point attached to an Amazon FSx volume.</p>"
+    },
+    "S3AccessPointAttachmentLifecycle":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "CREATING",
+        "DELETING",
+        "UPDATING",
+        "FAILED",
+        "MISCONFIGURED"
+      ]
+    },
+    "S3AccessPointAttachmentName":{
+      "type":"string",
+      "max":50,
+      "min":3,
+      "pattern":"^(?=[a-z0-9])[a-z0-9-]{1,48}[a-z0-9]$"
+    },
+    "S3AccessPointAttachmentNames":{
+      "type":"list",
+      "member":{"shape":"S3AccessPointAttachmentName"},
+      "max":50
+    },
+    "S3AccessPointAttachmentNotFound":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The access point specified was not found.</p>",
+      "exception":true
+    },
+    "S3AccessPointAttachmentType":{
+      "type":"string",
+      "enum":[
+        "OPENZFS",
+        "ONTAP"
+      ]
+    },
+    "S3AccessPointAttachments":{
+      "type":"list",
+      "member":{"shape":"S3AccessPointAttachment"},
+      "max":1000
+    },
+    "S3AccessPointAttachmentsFilter":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"S3AccessPointAttachmentsFilterName",
+          "documentation":"<p>The name of the filter.</p>"
+        },
+        "Values":{
+          "shape":"S3AccessPointAttachmentsFilterValues",
+          "documentation":"<p>The values of the filter.</p>"
+        }
+      },
+      "documentation":"<p>A set of Name and Values pairs used to view a select set of S3 access point attachments.</p>"
+    },
+    "S3AccessPointAttachmentsFilterName":{
+      "type":"string",
+      "enum":[
+        "file-system-id",
+        "volume-id",
+        "type"
+      ]
+    },
+    "S3AccessPointAttachmentsFilterValue":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[0-9a-zA-Z\\*\\.\\\\/\\?\\-\\_]*$"
+    },
+    "S3AccessPointAttachmentsFilterValues":{
+      "type":"list",
+      "member":{"shape":"S3AccessPointAttachmentsFilterValue"},
+      "max":20
+    },
+    "S3AccessPointAttachmentsFilters":{
+      "type":"list",
+      "member":{"shape":"S3AccessPointAttachmentsFilter"},
+      "max":2
+    },
+    "S3AccessPointOntapConfiguration":{
+      "type":"structure",
+      "members":{
+        "VolumeId":{
+          "shape":"VolumeId",
+          "documentation":"<p>The ID of the FSx for ONTAP volume that the S3 access point is attached to.</p>"
+        },
+        "FileSystemIdentity":{
+          "shape":"OntapFileSystemIdentity",
+          "documentation":"<p>The file system identity used to authorize file access requests made using the S3 access point.</p>"
+        }
+      },
+      "documentation":"<p>Describes the FSx for ONTAP attachment configuration of an S3 access point attachment.</p>"
+    },
+    "S3AccessPointOpenZFSConfiguration":{
+      "type":"structure",
+      "members":{
+        "VolumeId":{
+          "shape":"VolumeId",
+          "documentation":"<p>The ID of the FSx for OpenZFS volume that the S3 access point is attached to.</p>"
+        },
+        "FileSystemIdentity":{
+          "shape":"OpenZFSFileSystemIdentity",
+          "documentation":"<p>The file system identity used to authorize file access requests made using the S3 access point.</p>"
+        }
+      },
+      "documentation":"<p>Describes the FSx for OpenZFS attachment configuration of an S3 access point attachment.</p>"
+    },
+    "S3AccessPointVpcConfiguration":{
+      "type":"structure",
+      "members":{
+        "VpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>Specifies the virtual private cloud (VPC) for the S3 access point VPC configuration, if one exists.</p>"
+        }
+      },
+      "documentation":"<p>If included, Amazon S3 restricts access to this access point to requests from the specified virtual private cloud (VPC).</p>"
+    },
     "S3DataRepositoryConfiguration":{
       "type":"structure",
       "members":{
@@ -5143,6 +5729,10 @@
         "DnsIps":{
           "shape":"DnsIps",
           "documentation":"<p>A list of up to three IP addresses of DNS servers or domain controllers in the self-managed AD directory.</p>"
+        },
+        "DomainJoinServiceAccountSecret":{
+          "shape":"CustomerSecretsManagerARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret containing the service account credentials used to join the file system to your self-managed Active Directory domain.</p>"
         }
       },
       "documentation":"<p>The configuration of the self-managed Microsoft Active Directory (AD) directory to which the Windows File Server or ONTAP storage virtual machine (SVM) instance is joined.</p>"
@@ -5151,8 +5741,6 @@
       "type":"structure",
       "required":[
         "DomainName",
-        "UserName",
-        "Password",
         "DnsIps"
       ],
       "members":{
@@ -5179,6 +5767,10 @@
         "DnsIps":{
           "shape":"DnsIps",
           "documentation":"<p>A list of up to three IP addresses of DNS servers or domain controllers in the self-managed AD directory. </p>"
+        },
+        "DomainJoinServiceAccountSecret":{
+          "shape":"CustomerSecretsManagerARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret containing the self-managed Active Directory domain join service account credentials. When provided, Amazon FSx uses the credentials stored in this secret to join the file system to your self-managed Active Directory domain.</p> <p>The secret must contain two key-value pairs:</p> <ul> <li> <p> <code>CUSTOMER_MANAGED_ACTIVE_DIRECTORY_USERNAME</code> - The username for the service account</p> </li> <li> <p> <code>CUSTOMER_MANAGED_ACTIVE_DIRECTORY_PASSWORD</code> - The password for the service account</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/self-manage-prereqs.html\"> Using Amazon FSx for Windows with your self-managed Microsoft Active Directory</a> or <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/self-manage-prereqs.html\"> Using Amazon FSx for ONTAP with your self-managed Microsoft Active Directory</a>.</p>"
         }
       },
       "documentation":"<p>The configuration that Amazon FSx uses to join a FSx for Windows File Server file system or an FSx for ONTAP storage virtual machine (SVM) to a self-managed (including on-premises) Microsoft Active Directory (AD) directory. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/self-managed-AD.html\"> Using Amazon FSx for Windows with your self-managed Microsoft Active Directory</a> or <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-svms.html\">Managing FSx for ONTAP SVMs</a>.</p>"
@@ -5209,13 +5801,17 @@
         "FileSystemAdministratorsGroup":{
           "shape":"FileSystemAdministratorsGroupName",
           "documentation":"<p>For FSx for ONTAP file systems only - Specifies the updated name of the self-managed Active Directory domain group whose members are granted administrative privileges for the Amazon FSx resource.</p>"
+        },
+        "DomainJoinServiceAccountSecret":{
+          "shape":"CustomerSecretsManagerARN",
+          "documentation":"<p>Specifies the updated Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret containing the self-managed Active Directory domain join service account credentials. Amazon FSx uses this account to join to your self-managed Active Directory domain.</p>"
         }
       },
       "documentation":"<p>Specifies changes you are making to the self-managed Microsoft Active Directory configuration to which an FSx for Windows File Server file system or an FSx for ONTAP SVM is joined.</p>"
     },
     "ServiceLimit":{
       "type":"string",
-      "documentation":"<p>The types of limits on your service utilization. Limits include file system count, total throughput capacity, total storage, and total user-initiated backups. These limits apply for a specific account in a specific Amazon Web Services Region. You can increase some of them by contacting Amazon Web ServicesSupport.</p>",
+      "documentation":"<p>The types of limits on your service utilization. Limits include file system count, total throughput capacity, total storage, and total user-initiated backups. These limits apply for a specific account in a specific Amazon Web Services Region. You can increase some of them by contacting Amazon Web Services Support.</p>",
       "enum":[
         "FILE_SYSTEM_COUNT",
         "TOTAL_THROUGHPUT_CAPACITY",
@@ -5239,7 +5835,7 @@
         },
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>An error indicating that a particular service limit was exceeded. You can increase some service limits by contacting Amazon Web ServicesSupport.</p>",
+      "documentation":"<p>An error indicating that a particular service limit was exceeded. You can increase some service limits by contacting Amazon Web Services Support.</p>",
       "exception":true
     },
     "SizeInBytes":{
@@ -5458,7 +6054,9 @@
         "PENDING",
         "COMPLETED",
         "UPDATED_OPTIMIZING",
-        "OPTIMIZING"
+        "OPTIMIZING",
+        "PAUSED",
+        "CANCELLED"
       ]
     },
     "StorageCapacity":{
@@ -5650,7 +6248,11 @@
         "DNSName":{"shape":"DNSName"},
         "IpAddresses":{
           "shape":"OntapEndpointIpAddresses",
-          "documentation":"<p>The SVM endpoint's IP addresses.</p>"
+          "documentation":"<p>The SVM endpoint's IPv4 addresses.</p>"
+        },
+        "Ipv6Addresses":{
+          "shape":"OntapEndpointIpAddresses",
+          "documentation":"<p>The SVM endpoint's IPv6 addresses.</p>"
         }
       },
       "documentation":"<p>An Amazon FSx for NetApp ONTAP storage virtual machine (SVM) has four endpoints that are used to access data or to manage the SVM using the NetApp ONTAP CLI, REST API, or NetApp CloudManager. They are the <code>Iscsi</code>, <code>Management</code>, <code>Nfs</code>, and <code>Smb</code> endpoints.</p>"
@@ -5789,6 +6391,18 @@
         "ALL",
         "NONE"
       ]
+    },
+    "TooManyAccessPoints":{
+      "type":"structure",
+      "members":{
+        "ErrorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>An error code indicating that you have reached the maximum number of S3 access points attachments allowed for your account in this Amazon Web Services Region, or for the file system.</p>"
+        },
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>You have reached the maximum number of S3 access points attachments allowed for your account in this Amazon Web Services Region, or for the file system. For more information, or to request an increase, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/limits.html\">Service quotas on FSx resources</a> in the FSx for OpenZFS User Guide.</p>",
+      "exception":true
     },
     "TotalConstituents":{
       "type":"integer",
@@ -5978,7 +6592,7 @@
         "WeeklyMaintenanceStartTime":{"shape":"WeeklyTime"},
         "DiskIopsConfiguration":{
           "shape":"DiskIopsConfiguration",
-          "documentation":"<p>The SSD IOPS (input output operations per second) configuration for an Amazon FSx for NetApp ONTAP file system. The default is 3 IOPS per GB of storage capacity, but you can provision additional IOPS per GB of storage. The configuration consists of an IOPS mode (<code>AUTOMATIC</code> or <code>USER_PROVISIONED</code>), and in the case of <code>USER_PROVISIONED</code> IOPS, the total number of SSD IOPS provisioned. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/increase-primary-storage.html\">Updating SSD storage capacity and IOPS</a>.</p>"
+          "documentation":"<p>The SSD IOPS (input output operations per second) configuration for an Amazon FSx for NetApp ONTAP file system. The default is 3 IOPS per GB of storage capacity, but you can provision additional IOPS per GB of storage. The configuration consists of an IOPS mode (<code>AUTOMATIC</code> or <code>USER_PROVISIONED</code>), and in the case of <code>USER_PROVISIONED</code> IOPS, the total number of SSD IOPS provisioned. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/storage-capacity-and-IOPS.html\">File system storage capacity and IOPS</a>.</p>"
         },
         "ThroughputCapacity":{
           "shape":"MegabytesPerSecond",
@@ -5999,6 +6613,10 @@
         "HAPairs":{
           "shape":"HAPairs",
           "documentation":"<p>Use to update the number of high-availability (HA) pairs for a second-generation single-AZ file system. If you increase the number of HA pairs for your file system, you must specify proportional increases for <code>StorageCapacity</code>, <code>Iops</code>, and <code>ThroughputCapacity</code>. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/administering-file-systems.html#HA-pairs\">High-availability (HA) pairs</a> in the FSx for ONTAP user guide. Block storage protocol support (iSCSI and NVMe over TCP) is disabled on file systems with more than 6 HA pairs. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/supported-fsx-clients.html#using-block-storage\">Using block storage protocols</a>.</p>"
+        },
+        "EndpointIpv6AddressRange":{
+          "shape":"Ipv6AddressRange",
+          "documentation":"<p>(Multi-AZ only) Specifies the IPv6 address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API and Amazon FSx console, Amazon FSx selects an available /118 IP address range for you from one of the VPC's CIDR ranges. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables, as long as they don't overlap with any subnet.</p>"
         }
       },
       "documentation":"<p>The configuration updates for an Amazon FSx for NetApp ONTAP file system.</p>"
@@ -6033,6 +6651,10 @@
         "ReadCacheConfiguration":{
           "shape":"OpenZFSReadCacheConfiguration",
           "documentation":"<p> The configuration for the optional provisioned SSD read cache on file systems that use the Intelligent-Tiering storage class.</p>"
+        },
+        "EndpointIpv6AddressRange":{
+          "shape":"Ipv6AddressRange",
+          "documentation":"<p>(Multi-AZ only) Specifies the IPv6 address range in which the endpoints to access your file system will be created. By default in the Amazon FSx API and Amazon FSx console, Amazon FSx selects an available /118 IP address range for you from one of the VPC's CIDR ranges. You can have overlapping endpoint IP addresses for file systems deployed in the same VPC/route tables, as long as they don't overlap with any subnet.</p>"
         }
       },
       "documentation":"<p>The configuration updates for an Amazon FSx for OpenZFS file system.</p>"
@@ -6052,7 +6674,7 @@
         },
         "StorageCapacity":{
           "shape":"StorageCapacity",
-          "documentation":"<p>Use this parameter to increase the storage capacity of an FSx for Windows File Server, FSx for Lustre, FSx for OpenZFS, or FSx for ONTAP file system. Specifies the storage capacity target value, in GiB, to increase the storage capacity for the file system that you're updating. </p> <note> <p>You can't make a storage capacity increase request if there is an existing storage capacity increase request in progress.</p> </note> <p>For Lustre file systems, the storage capacity target value can be the following:</p> <ul> <li> <p>For <code>SCRATCH_2</code>, <code>PERSISTENT_1</code>, and <code>PERSISTENT_2 SSD</code> deployment types, valid values are in multiples of 2400 GiB. The value must be greater than the current storage capacity.</p> </li> <li> <p>For <code>PERSISTENT HDD</code> file systems, valid values are multiples of 6000 GiB for 12-MBps throughput per TiB file systems and multiples of 1800 GiB for 40-MBps throughput per TiB file systems. The values must be greater than the current storage capacity.</p> </li> <li> <p>For <code>SCRATCH_1</code> file systems, you can't increase the storage capacity.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/managing-storage-capacity.html\">Managing storage and throughput capacity</a> in the <i>FSx for Lustre User Guide</i>.</p> <p>For FSx for OpenZFS file systems, the storage capacity target value must be at least 10 percent greater than the current storage capacity value. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/managing-storage-capacity.html\">Managing storage capacity</a> in the <i>FSx for OpenZFS User Guide</i>.</p> <p>For Windows file systems, the storage capacity target value must be at least 10 percent greater than the current storage capacity value. To increase storage capacity, the file system must have at least 16 MBps of throughput capacity. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/managing-storage-capacity.html\">Managing storage capacity</a> in the <i>Amazon FSxfor Windows File Server User Guide</i>.</p> <p>For ONTAP file systems, the storage capacity target value must be at least 10 percent greater than the current storage capacity value. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/managing-storage-capacity.html\">Managing storage capacity and provisioned IOPS</a> in the <i>Amazon FSx for NetApp ONTAP User Guide</i>.</p>"
+          "documentation":"<p>Use this parameter to increase the storage capacity of an FSx for Windows File Server, FSx for Lustre, FSx for OpenZFS, or FSx for ONTAP file system. For second-generation FSx for ONTAP file systems, you can also decrease the storage capacity. Specifies the storage capacity target value, in GiB, for the file system that you're updating. </p> <note> <p>You can't make a storage capacity increase request if there is an existing storage capacity increase request in progress.</p> </note> <p>For Lustre file systems, the storage capacity target value can be the following:</p> <ul> <li> <p>For <code>SCRATCH_2</code>, <code>PERSISTENT_1</code>, and <code>PERSISTENT_2 SSD</code> deployment types, valid values are in multiples of 2400 GiB. The value must be greater than the current storage capacity.</p> </li> <li> <p>For <code>PERSISTENT HDD</code> file systems, valid values are multiples of 6000 GiB for 12-MBps throughput per TiB file systems and multiples of 1800 GiB for 40-MBps throughput per TiB file systems. The values must be greater than the current storage capacity.</p> </li> <li> <p>For <code>SCRATCH_1</code> file systems, you can't increase the storage capacity.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/LustreGuide/managing-storage-capacity.html\">Managing storage and throughput capacity</a> in the <i>FSx for Lustre User Guide</i>.</p> <p>For FSx for OpenZFS file systems, the storage capacity target value must be at least 10 percent greater than the current storage capacity value. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/managing-storage-capacity.html\">Managing storage capacity</a> in the <i>FSx for OpenZFS User Guide</i>.</p> <p>For Windows file systems, the storage capacity target value must be at least 10 percent greater than the current storage capacity value. To increase storage capacity, the file system must have at least 16 MBps of throughput capacity. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/managing-storage-capacity.html\">Managing storage capacity</a> in the <i>Amazon FSxfor Windows File Server User Guide</i>.</p> <p>For ONTAP file systems, when increasing storage capacity, the storage capacity target value must be at least 10 percent greater than the current storage capacity value. When decreasing storage capacity on second-generation file systems, the target value must be at least 9 percent smaller than the current SSD storage capacity. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/ONTAPGuide/storage-capacity-and-IOPS.html\">File system storage capacity and IOPS</a> in the Amazon FSx for NetApp ONTAP User Guide.</p>"
         },
         "WindowsConfiguration":{
           "shape":"UpdateFileSystemWindowsConfiguration",
@@ -6068,6 +6690,10 @@
         "FileSystemTypeVersion":{
           "shape":"FileSystemTypeVersion",
           "documentation":"<p>The Lustre version you are updating an FSx for Lustre file system to. Valid values are <code>2.12</code> and <code>2.15</code>. The value you choose must be newer than the file system's current Lustre version.</p>"
+        },
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>Changes the network type of an FSx for OpenZFS file system.</p>"
         }
       },
       "documentation":"<p>The request object for the <code>UpdateFileSystem</code> operation.</p>"
@@ -6112,6 +6738,10 @@
         "DiskIopsConfiguration":{
           "shape":"DiskIopsConfiguration",
           "documentation":"<p>The SSD IOPS (input/output operations per second) configuration for an Amazon FSx for Windows file system. By default, Amazon FSx automatically provisions 3 IOPS per GiB of storage capacity. You can provision additional IOPS per GiB of storage, up to the maximum limit associated with your chosen throughput capacity.</p>"
+        },
+        "FsrmConfiguration":{
+          "shape":"WindowsFsrmConfiguration",
+          "documentation":"<p>The File Server Resource Manager (FSRM) configuration that Amazon FSx for Windows File Server uses for the file system. FSRM is disabled by default.</p>"
         }
       },
       "documentation":"<p>Updates the configuration for an existing Amazon FSx for Windows File Server file system. Amazon FSx only overwrites existing properties with non-null values provided in the request.</p>"
@@ -6611,7 +7241,7 @@
         },
         "PreferredFileServerIp":{
           "shape":"IpAddress",
-          "documentation":"<p>For <code>MULTI_AZ_1</code> deployment types, the IP address of the primary, or preferred, file server.</p> <p>Use this IP address when mounting the file system on Linux SMB clients or Windows SMB clients that are not joined to a Microsoft Active Directory. Applicable for all Windows file system deployment types. This IP address is temporarily unavailable when the file system is undergoing maintenance. For Linux and Windows SMB clients that are joined to an Active Directory, use the file system's DNSName instead. For more information on mapping and mounting file shares, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/accessing-file-shares.html\">Accessing File Shares</a>.</p>"
+          "documentation":"<p>For <code>MULTI_AZ_1</code> deployment types, the IPv4 address of the primary, or preferred, file server.</p> <p>Use this IP address when mounting the file system on Linux SMB clients or Windows SMB clients that are not joined to a Microsoft Active Directory. Applicable for all Windows file system deployment types. This IPv4 address is temporarily unavailable when the file system is undergoing maintenance. For Linux and Windows SMB clients that are joined to an Active Directory, use the file system's DNSName instead. For more information on mapping and mounting file shares, see <a href=\"https://docs.aws.amazon.com/fsx/latest/WindowsGuide/using-file-shares.html\">Accessing data using file shares</a>.</p>"
         },
         "ThroughputCapacity":{
           "shape":"MegabytesPerSecond",
@@ -6645,9 +7275,32 @@
         "DiskIopsConfiguration":{
           "shape":"DiskIopsConfiguration",
           "documentation":"<p>The SSD IOPS (input/output operations per second) configuration for an Amazon FSx for Windows file system. By default, Amazon FSx automatically provisions 3 IOPS per GiB of storage capacity. You can provision additional IOPS per GiB of storage, up to the maximum limit associated with your chosen throughput capacity.</p>"
+        },
+        "PreferredFileServerIpv6":{
+          "shape":"IpAddress",
+          "documentation":"<p>For MULTI_AZ_1 deployment types, the IPv6 address of the primary, or preferred, file server. Use this IP address when mounting the file system on Linux SMB clients or Windows SMB clients that are not joined to a Microsoft Active Directory. Applicable for all Windows file system deployment types. This IPv6 address is temporarily unavailable when the file system is undergoing maintenance. For Linux and Windows SMB clients that are joined to an Active Directory, use the file system's DNSName instead.</p>"
+        },
+        "FsrmConfiguration":{
+          "shape":"WindowsFsrmConfiguration",
+          "documentation":"<p>The File Server Resource Manager (FSRM) configuration that Amazon FSx for Windows File Server uses for the file system. FSRM is disabled by default.</p>"
         }
       },
       "documentation":"<p>The configuration for this Microsoft Windows file system.</p>"
+    },
+    "WindowsFsrmConfiguration":{
+      "type":"structure",
+      "required":["FsrmServiceEnabled"],
+      "members":{
+        "FsrmServiceEnabled":{
+          "shape":"Flag",
+          "documentation":"<p>Specifies whether FSRM is enabled or disabled on the file system. When <code>TRUE</code>, the FSRM service is enabled and monitor file operations according to configured policies. When <code>FALSE</code> or omitted, FSRM is disabled. The default value is <code>FALSE</code>. </p>"
+        },
+        "EventLogDestination":{
+          "shape":"GeneralARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the destination of the FSRM event logs. The destination can be any Amazon CloudWatch Logs log group ARN or Amazon Kinesis Data Firehose delivery stream ARN.</p> <p>The name of the Amazon CloudWatch Logs log group must begin with the <code>/aws/fsx</code> prefix. The name of the Amazon Kinesis Data Firehose delivery stream must begin with the <code>aws-fsx</code> prefix.</p> <p>The destination ARN (either CloudWatch Logs log group or Kinesis Data Firehose delivery stream) must be in the same Amazon Web Services partition, Amazon Web Services Region, and Amazon Web Services account as your Amazon FSx file system.</p>"
+        }
+      },
+      "documentation":"<p>The File Server Resource Manager (FSRM) configuration that Amazon FSx for Windows File Server uses for the file system. When FSRM is enabled, you can manage and monitor storage quotas, file screening, storage reports, and file classification.</p>"
     }
   },
   "documentation":"<p>Amazon FSx is a fully managed service that makes it easy for storage and application administrators to launch and use shared file storage.</p>"

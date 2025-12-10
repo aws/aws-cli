@@ -276,7 +276,9 @@
         {"shape":"InvalidRetentionPeriodFault"},
         {"shape":"Ipv6CidrBlockNotFoundFault"},
         {"shape":"UnsupportedOperationFault"},
-        {"shape":"RedshiftIdcApplicationNotExistsFault"}
+        {"shape":"RedshiftIdcApplicationNotExistsFault"},
+        {"shape":"DependentServiceUnavailableFault"},
+        {"shape":"DependentServiceAccessDeniedFault"}
       ],
       "documentation":"<p>Creates a new cluster with the specified parameters.</p> <p>To create a cluster in Virtual Private Cloud (VPC), you must provide a cluster subnet group name. The cluster subnet group identifies the subnets of your VPC that Amazon Redshift uses when creating the cluster. For more information about managing clusters, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html\">Amazon Redshift Clusters</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p> <p>VPC Block Public Access (BPA) enables you to block resources in VPCs and subnets that you own in a Region from reaching or being reached from the internet through internet gateways and egress-only internet gateways. If a subnet group for a provisioned cluster is in an account with VPC BPA turned on, the following capabilities are blocked:</p> <ul> <li> <p>Creating a public cluster</p> </li> <li> <p>Restoring a public cluster</p> </li> <li> <p>Modifying a private cluster to be public</p> </li> <li> <p>Adding a subnet with VPC BPA turned on to the subnet group when there's at least one public cluster within the group</p> </li> </ul> <p>For more information about VPC BPA, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html\">Block public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
@@ -510,7 +512,9 @@
         {"shape":"DependentServiceUnavailableFault"},
         {"shape":"UnsupportedOperationFault"},
         {"shape":"DependentServiceAccessDeniedFault"},
-        {"shape":"RedshiftIdcApplicationQuotaExceededFault"}
+        {"shape":"RedshiftIdcApplicationQuotaExceededFault"},
+        {"shape":"TagLimitExceededFault"},
+        {"shape":"InvalidTagFault"}
       ],
       "documentation":"<p>Creates an Amazon Redshift application for use with IAM Identity Center.</p>"
     },
@@ -1778,6 +1782,25 @@
       ],
       "documentation":"<p>Returns a database user name and temporary password with temporary authorization to log in to an Amazon Redshift database. The database user is mapped 1:1 to the source Identity and Access Management (IAM) identity. For more information about IAM identities, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id.html\">IAM Identities (users, user groups, and roles)</a> in the Amazon Web Services Identity and Access Management User Guide.</p> <p>The Identity and Access Management (IAM) identity that runs this operation must have an IAM policy attached that allows access to all necessary actions and resources. For more information about permissions, see <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-identity-based.html\">Using identity-based policies (IAM policies)</a> in the Amazon Redshift Cluster Management Guide. </p>"
     },
+    "GetIdentityCenterAuthToken":{
+      "name":"GetIdentityCenterAuthToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIdentityCenterAuthTokenRequest"},
+      "output":{
+        "shape":"GetIdentityCenterAuthTokenResponse",
+        "resultWrapper":"GetIdentityCenterAuthTokenResult"
+      },
+      "errors":[
+        {"shape":"ClusterNotFoundFault"},
+        {"shape":"InvalidClusterStateFault"},
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"RedshiftInvalidParameterFault"}
+      ],
+      "documentation":"<p>Generates an encrypted authentication token that propagates the caller's Amazon Web Services IAM Identity Center identity to Amazon Redshift clusters. This API extracts the Amazon Web Services IAM Identity Center identity from enhanced credentials and creates a secure token that Amazon Redshift drivers can use for authentication.</p> <p>The token is encrypted using Key Management Service (KMS) and can only be decrypted by the specified Amazon Redshift clusters. The token contains the caller's Amazon Web Services IAM Identity Center identity information and is valid for a limited time period.</p> <p>This API is exclusively for use with Amazon Web Services IAM Identity Center enhanced credentials. If the caller is not using enhanced credentials with embedded Amazon Web Services IAM Identity Center identity, the API will return an error.</p>"
+    },
     "GetReservedNodeExchangeConfigurationOptions":{
       "name":"GetReservedNodeExchangeConfigurationOptions",
       "http":{
@@ -2137,6 +2160,28 @@
       ],
       "documentation":"<p>Modifies a zero-ETL integration or S3 event integration with Amazon Redshift.</p>"
     },
+    "ModifyLakehouseConfiguration":{
+      "name":"ModifyLakehouseConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyLakehouseConfigurationMessage"},
+      "output":{
+        "shape":"LakehouseConfiguration",
+        "resultWrapper":"ModifyLakehouseConfigurationResult"
+      },
+      "errors":[
+        {"shape":"ClusterNotFoundFault"},
+        {"shape":"InvalidClusterStateFault"},
+        {"shape":"UnsupportedOperationFault"},
+        {"shape":"UnauthorizedOperation"},
+        {"shape":"RedshiftIdcApplicationNotExistsFault"},
+        {"shape":"DependentServiceUnavailableFault"},
+        {"shape":"DependentServiceAccessDeniedFault"}
+      ],
+      "documentation":"<p>Modifies the lakehouse configuration for a cluster. This operation allows you to manage Amazon Redshift federated permissions and Amazon Web Services IAM Identity Center trusted identity propagation.</p>"
+    },
     "ModifyRedshiftIdcApplication":{
       "name":"ModifyRedshiftIdcApplication",
       "http":{
@@ -2432,6 +2477,8 @@
         {"shape":"DependentServiceUnavailableFault"},
         {"shape":"ReservedNodeAlreadyExistsFault"},
         {"shape":"UnsupportedOperationFault"},
+        {"shape":"RedshiftIdcApplicationNotExistsFault"},
+        {"shape":"DependentServiceAccessDeniedFault"},
         {"shape":"Ipv6CidrBlockNotFoundFault"}
       ],
       "documentation":"<p>Creates a new cluster from a snapshot. By default, Amazon Redshift creates the resulting cluster with the same configuration as the original cluster from which the snapshot was created, except that the new cluster is created with the default cluster security and parameter groups. After Amazon Redshift creates the cluster, you can use the <a>ModifyCluster</a> API to associate a different security group and different parameter group with the restored cluster. If you are using a DS node type, you can also choose to change to another DS node type of the same size during restore.</p> <p>If you restore a cluster into a VPC, you must provide a cluster subnet group where you want the cluster restored.</p> <p>VPC Block Public Access (BPA) enables you to block resources in VPCs and subnets that you own in a Region from reaching or being reached from the internet through internet gateways and egress-only internet gateways. If a subnet group for a provisioned cluster is in an account with VPC BPA turned on, the following capabilities are blocked:</p> <ul> <li> <p>Creating a public cluster</p> </li> <li> <p>Restoring a public cluster</p> </li> <li> <p>Modifying a private cluster to be public</p> </li> <li> <p>Adding a subnet with VPC BPA turned on to the subnet group when there's at least one public cluster within the group</p> </li> </ul> <p>For more information about VPC BPA, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html\">Block public access to VPCs and subnets</a> in the <i>Amazon VPC User Guide</i>.</p> <p> For more information about working with snapshots, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-snapshots.html\">Amazon Redshift Snapshots</a> in the <i>Amazon Redshift Cluster Management Guide</i>.</p>"
@@ -2604,8 +2651,7 @@
     },
     "AccessToClusterDeniedFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You are not authorized to access the cluster.</p>",
       "error":{
         "code":"AccessToClusterDenied",
@@ -2616,8 +2662,7 @@
     },
     "AccessToSnapshotDeniedFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The owner of the specified snapshot has not authorized your account to access the snapshot.</p>",
       "error":{
         "code":"AccessToSnapshotDenied",
@@ -2676,6 +2721,13 @@
         "restore-cluster",
         "recommend-node-config",
         "resize-cluster"
+      ]
+    },
+    "ApplicationType":{
+      "type":"string",
+      "enum":[
+        "None",
+        "Lakehouse"
       ]
     },
     "AquaConfiguration":{
@@ -2814,8 +2866,7 @@
     },
     "AuthenticationProfileAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The authentication profile already exists.</p>",
       "error":{
         "code":"AuthenticationProfileAlreadyExistsFault",
@@ -2835,8 +2886,7 @@
     },
     "AuthenticationProfileNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The authentication profile can't be found.</p>",
       "error":{
         "code":"AuthenticationProfileNotFoundFault",
@@ -2847,8 +2897,7 @@
     },
     "AuthenticationProfileQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The size or number of authentication profiles has exceeded the quota. The maximum length of the JSON string and maximum number of authentication profiles is determined by a quota for your account.</p>",
       "error":{
         "code":"AuthenticationProfileQuotaExceededFault",
@@ -2859,8 +2908,7 @@
     },
     "AuthorizationAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified CIDR block or EC2 security group is already authorized for the specified cluster security group.</p>",
       "error":{
         "code":"AuthorizationAlreadyExists",
@@ -2871,8 +2919,7 @@
     },
     "AuthorizationNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified CIDR IP range or EC2 security group is not authorized for the specified cluster security group.</p>",
       "error":{
         "code":"AuthorizationNotFound",
@@ -2883,8 +2930,7 @@
     },
     "AuthorizationQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The authorization quota for the cluster security group has been reached.</p>",
       "error":{
         "code":"AuthorizationQuotaExceeded",
@@ -3066,8 +3112,7 @@
     },
     "BatchDeleteRequestSizeExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The maximum number for a batch delete of snapshots has been reached. The limit is 100. </p>",
       "error":{
         "code":"BatchDeleteRequestSizeExceeded",
@@ -3078,8 +3123,7 @@
     },
     "BatchModifyClusterSnapshotsLimitExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The maximum number for snapshot identifiers has been reached. The limit is 100. </p>",
       "error":{
         "code":"BatchModifyClusterSnapshotsLimitExceededFault",
@@ -3137,8 +3181,7 @@
     "BooleanOptional":{"type":"boolean"},
     "BucketNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Could not find the specified S3 bucket.</p>",
       "error":{
         "code":"BucketNotFoundFault",
@@ -3156,6 +3199,12 @@
           "documentation":"<p>The unique identifier for the cluster that you want to cancel a resize operation for.</p>"
         }
       }
+    },
+    "CatalogNameString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-z0-9_-]*[a-z]+[a-z0-9_-]*$"
     },
     "CertificateAssociation":{
       "type":"structure",
@@ -3420,6 +3469,14 @@
         "MultiAZSecondary":{
           "shape":"SecondaryClusterInfo",
           "documentation":"<p>The secondary compute unit of a cluster, if Multi-AZ deployment is turned on.</p>"
+        },
+        "LakehouseRegistrationStatus":{
+          "shape":"String",
+          "documentation":"<p>The status of the lakehouse registration for the cluster. Indicates whether the cluster is successfully registered with Amazon Redshift federated permissions.</p>"
+        },
+        "CatalogArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Glue data catalog associated with the cluster enabled with Amazon Redshift federated permissions.</p>"
         }
       },
       "documentation":"<p>Describes a cluster.</p>",
@@ -3427,8 +3484,7 @@
     },
     "ClusterAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The account already has a cluster with the given identifier.</p>",
       "error":{
         "code":"ClusterAlreadyExists",
@@ -3553,6 +3609,13 @@
         "locationName":"ClusterIamRole"
       }
     },
+    "ClusterIdentifierList":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"ClusterIdentifier"
+      }
+    },
     "ClusterList":{
       "type":"list",
       "member":{
@@ -3584,8 +3647,7 @@
     },
     "ClusterNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The <code>ClusterIdentifier</code> parameter does not refer to an existing cluster. </p>",
       "error":{
         "code":"ClusterNotFound",
@@ -3596,8 +3658,7 @@
     },
     "ClusterOnLatestRevisionFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Cluster is already on the latest database revision.</p>",
       "error":{
         "code":"ClusterOnLatestRevision",
@@ -3631,8 +3692,7 @@
     },
     "ClusterParameterGroupAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A cluster parameter group with the same name already exists.</p>",
       "error":{
         "code":"ClusterParameterGroupAlreadyExists",
@@ -3671,8 +3731,7 @@
     },
     "ClusterParameterGroupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The parameter group name does not refer to an existing parameter group.</p>",
       "error":{
         "code":"ClusterParameterGroupNotFound",
@@ -3683,8 +3742,7 @@
     },
     "ClusterParameterGroupQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request would result in the user exceeding the allowed number of cluster parameter groups. For information about increasing your quota, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html\">Limits in Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p>",
       "error":{
         "code":"ClusterParameterGroupQuotaExceeded",
@@ -3756,8 +3814,7 @@
     },
     "ClusterQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request would exceed the allowed number of cluster instances for this account. For information about increasing your quota, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html\">Limits in Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p>",
       "error":{
         "code":"ClusterQuotaExceeded",
@@ -3795,8 +3852,7 @@
     },
     "ClusterSecurityGroupAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A cluster security group with the same name already exists.</p>",
       "error":{
         "code":"ClusterSecurityGroupAlreadyExists",
@@ -3849,8 +3905,7 @@
     },
     "ClusterSecurityGroupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The cluster security group name does not refer to an existing cluster security group.</p>",
       "error":{
         "code":"ClusterSecurityGroupNotFound",
@@ -3861,8 +3916,7 @@
     },
     "ClusterSecurityGroupQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request would result in the user exceeding the allowed number of cluster security groups. For information about increasing your quota, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html\">Limits in Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p>",
       "error":{
         "code":"QuotaExceeded.ClusterSecurityGroup",
@@ -3880,8 +3934,7 @@
     },
     "ClusterSnapshotAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The value specified as a snapshot identifier is already used by an existing snapshot.</p>",
       "error":{
         "code":"ClusterSnapshotAlreadyExists",
@@ -3914,8 +3967,7 @@
     },
     "ClusterSnapshotNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The snapshot identifier does not refer to an existing cluster snapshot.</p>",
       "error":{
         "code":"ClusterSnapshotNotFound",
@@ -3926,8 +3978,7 @@
     },
     "ClusterSnapshotQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request would result in the user exceeding the allowed number of cluster snapshots.</p>",
       "error":{
         "code":"ClusterSnapshotQuotaExceeded",
@@ -3973,8 +4024,7 @@
     },
     "ClusterSubnetGroupAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A <i>ClusterSubnetGroupName</i> is already used by an existing cluster subnet group. </p>",
       "error":{
         "code":"ClusterSubnetGroupAlreadyExists",
@@ -3999,8 +4049,7 @@
     },
     "ClusterSubnetGroupNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The cluster subnet group name does not refer to an existing cluster subnet group.</p>",
       "error":{
         "code":"ClusterSubnetGroupNotFoundFault",
@@ -4011,8 +4060,7 @@
     },
     "ClusterSubnetGroupQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request would result in user exceeding the allowed number of cluster subnet groups. For information about increasing your quota, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html\">Limits in Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p>",
       "error":{
         "code":"ClusterSubnetGroupQuotaExceeded",
@@ -4030,8 +4078,7 @@
     },
     "ClusterSubnetQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request would result in user exceeding the allowed number of subnets in a cluster subnet groups. For information about increasing your quota, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html\">Limits in Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p>",
       "error":{
         "code":"ClusterSubnetQuotaExceededFault",
@@ -4095,8 +4142,7 @@
     },
     "ConflictPolicyUpdateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>There is a conflict while updating the resource policy.</p>",
       "error":{
         "code":"ConflictPolicyUpdateFault",
@@ -4104,6 +4150,17 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "Connect":{
+      "type":"structure",
+      "required":["Authorization"],
+      "members":{
+        "Authorization":{
+          "shape":"ServiceAuthorization",
+          "documentation":"<p>Determines whether the Amazon Redshift connect integration is enabled or disabled for the application.</p>"
+        }
+      },
+      "documentation":"<p>A structure that defines the Amazon Redshift connect service integration scope.</p>"
     },
     "ConsumerIdentifierList":{
       "type":"list",
@@ -4145,8 +4202,7 @@
     },
     "CopyToRegionDisabledFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Cross-region snapshot copy was temporarily disabled. Try your request again.</p>",
       "error":{
         "code":"CopyToRegionDisabledFault",
@@ -4348,6 +4404,10 @@
         "RedshiftIdcApplicationArn":{
           "shape":"String",
           "documentation":"<p>The Amazon resource name (ARN) of the Amazon Redshift IAM Identity Center application.</p>"
+        },
+        "CatalogName":{
+          "shape":"CatalogNameString",
+          "documentation":"<p>The name of the Glue data catalog that will be associated with the cluster enabled with Amazon Redshift federated permissions.</p> <p>Constraints:</p> <ul> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Can only contain lowercase letters (a-z), numbers (0-9), underscores (_), and hyphens (-).</p> </li> </ul> <p>Pattern: <code>^[a-z0-9_-]*[a-z]+[a-z0-9_-]*$</code> </p> <p>Example: <code>my-catalog_01</code> </p>"
         }
       },
       "documentation":"<p/>"
@@ -4747,6 +4807,18 @@
         "ServiceIntegrations":{
           "shape":"ServiceIntegrationList",
           "documentation":"<p>A collection of service integrations for the Redshift IAM Identity Center application.</p>"
+        },
+        "ApplicationType":{
+          "shape":"ApplicationType",
+          "documentation":"<p>The type of application being created. Valid values are <code>None</code> or <code>Lakehouse</code>. Use <code>Lakehouse</code> to enable Amazon Redshift federated permissions on cluster.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags.</p>"
+        },
+        "SsoTagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>A list of tags keys that Redshift Identity Center applications copy to IAM Identity Center. For each input key, the tag corresponding to the key-value pair is propagated.</p>"
         }
       }
     },
@@ -4912,8 +4984,7 @@
     },
     "CustomCnameAssociationFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An error occurred when an attempt was made to change the custom domain association.</p>",
       "error":{
         "code":"CustomCnameAssociationFault",
@@ -4924,8 +4995,7 @@
     },
     "CustomDomainAssociationNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An error occurred. The custom domain name couldn't be found.</p>",
       "error":{
         "code":"CustomDomainAssociationNotFoundFault",
@@ -5433,8 +5503,7 @@
     },
     "DependentServiceAccessDeniedFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A dependent service denied access for the integration.</p>",
       "error":{
         "code":"DependentServiceAccessDenied",
@@ -5445,8 +5514,7 @@
     },
     "DependentServiceRequestThrottlingFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request cannot be completed because a dependent service is throttling requests made by Amazon Redshift on your behalf. Wait and retry the request.</p>",
       "error":{
         "code":"DependentServiceRequestThrottlingFault",
@@ -5457,8 +5525,7 @@
     },
     "DependentServiceUnavailableFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Your request cannot be completed because a dependent internal service is temporarily unavailable. Wait 30 to 60 seconds and try again.</p>",
       "error":{
         "code":"DependentServiceUnavailableFault",
@@ -6827,8 +6894,7 @@
     },
     "EndpointAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The account already has a Redshift-managed VPC endpoint with the given identifier.</p>",
       "error":{
         "code":"EndpointAlreadyExists",
@@ -6881,8 +6947,7 @@
     },
     "EndpointAuthorizationAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The authorization already exists for this endpoint.</p>",
       "error":{
         "code":"EndpointAuthorizationAlreadyExists",
@@ -6906,8 +6971,7 @@
     },
     "EndpointAuthorizationNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The authorization for this endpoint can't be found.</p>",
       "error":{
         "code":"EndpointAuthorizationNotFound",
@@ -6922,8 +6986,7 @@
     },
     "EndpointAuthorizationsPerClusterLimitExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The number of endpoint authorizations per cluster has exceeded its limit.</p>",
       "error":{
         "code":"EndpointAuthorizationsPerClusterLimitExceeded",
@@ -6934,8 +6997,7 @@
     },
     "EndpointNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The endpoint name doesn't refer to an existing endpoint.</p>",
       "error":{
         "code":"EndpointNotFound",
@@ -6946,8 +7008,7 @@
     },
     "EndpointsPerAuthorizationLimitExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The number of Redshift-managed VPC endpoints per authorization has exceeded its limit.</p>",
       "error":{
         "code":"EndpointsPerAuthorizationLimitExceeded",
@@ -6958,8 +7019,7 @@
     },
     "EndpointsPerClusterLimitExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The number of Redshift-managed VPC endpoints per cluster has exceeded its limit.</p>",
       "error":{
         "code":"EndpointsPerClusterLimitExceeded",
@@ -7131,8 +7191,7 @@
     },
     "EventSubscriptionQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request would exceed the allowed number of event subscriptions for this account. For information about increasing your quota, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html\">Limits in Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p>",
       "error":{
         "code":"EventSubscriptionQuotaExceeded",
@@ -7248,6 +7307,31 @@
         }
       }
     },
+    "GetIdentityCenterAuthTokenRequest":{
+      "type":"structure",
+      "required":["ClusterIds"],
+      "members":{
+        "ClusterIds":{
+          "shape":"ClusterIdentifierList",
+          "documentation":"<p>A list of cluster identifiers that the generated token can be used with. The token will be scoped to only allow authentication to the specified clusters.</p> <p>Constraints:</p> <ul> <li> <p> <code>ClusterIds</code> must contain at least 1 cluster identifier.</p> </li> <li> <p> <code>ClusterIds</code> can hold a maximum of 20 cluster identifiers.</p> </li> <li> <p>Cluster identifiers must be 1 to 63 characters in length.</p> </li> <li> <p>The characters accepted for cluster identifiers are the following:</p> <ul> <li> <p>Alphanumeric characters</p> </li> <li> <p>Hyphens</p> </li> </ul> </li> <li> <p>Cluster identifiers must start with a letter.</p> </li> <li> <p>Cluster identifiers can't end with a hyphen or contain two consecutive hyphens.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The request parameters for <code>GetIdentityCenterAuthToken</code>.</p>"
+    },
+    "GetIdentityCenterAuthTokenResponse":{
+      "type":"structure",
+      "members":{
+        "Token":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The encrypted authentication token containing the caller's Amazon Web Services IAM Identity Center identity information. This token is encrypted using Key Management Service and can only be decrypted by the specified Amazon Redshift clusters. Use this token with Amazon Redshift drivers to authenticate using your Amazon Web Services IAM Identity Center identity.</p>"
+        },
+        "ExpirationTime":{
+          "shape":"TStamp",
+          "documentation":"<p>The time (UTC) when the token expires. After this timestamp, the token will no longer be valid for authentication.</p>"
+        }
+      },
+      "documentation":"<p>The response from GetIdentityCenterAuthToken containing the encrypted authentication token and expiration time.</p>"
+    },
     "GetReservedNodeExchangeConfigurationOptionsInputMessage":{
       "type":"structure",
       "required":["ActionType"],
@@ -7359,8 +7443,7 @@
     },
     "HsmClientCertificateAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>There is already an existing Amazon Redshift HSM client certificate with the specified identifier.</p>",
       "error":{
         "code":"HsmClientCertificateAlreadyExistsFault",
@@ -7392,8 +7475,7 @@
     },
     "HsmClientCertificateNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>There is no Amazon Redshift HSM client certificate with the specified identifier.</p>",
       "error":{
         "code":"HsmClientCertificateNotFoundFault",
@@ -7404,8 +7486,7 @@
     },
     "HsmClientCertificateQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The quota for HSM client certificates has been reached. For information about increasing your quota, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html\">Limits in Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p>",
       "error":{
         "code":"HsmClientCertificateQuotaExceededFault",
@@ -7443,8 +7524,7 @@
     },
     "HsmConfigurationAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>There is already an existing Amazon Redshift HSM configuration with the specified identifier.</p>",
       "error":{
         "code":"HsmConfigurationAlreadyExistsFault",
@@ -7476,8 +7556,7 @@
     },
     "HsmConfigurationNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>There is no Amazon Redshift HSM configuration with the specified identifier.</p>",
       "error":{
         "code":"HsmConfigurationNotFoundFault",
@@ -7488,8 +7567,7 @@
     },
     "HsmConfigurationQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The quota for HSM configurations has been reached. For information about increasing your quota, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html\">Limits in Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p>",
       "error":{
         "code":"HsmConfigurationQuotaExceededFault",
@@ -7582,8 +7660,7 @@
     },
     "InProgressTableRestoreQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You have exceeded the allowed number of table restore requests. Wait for your current table restore requests to complete before making a new request.</p>",
       "error":{
         "code":"InProgressTableRestoreQuotaExceededFault",
@@ -7650,8 +7727,7 @@
     },
     "IncompatibleOrderableOptions":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified options are incompatible.</p>",
       "error":{
         "code":"IncompatibleOrderableOptions",
@@ -7662,8 +7738,7 @@
     },
     "InsufficientClusterCapacityFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The number of nodes specified exceeds the allotted capacity of the cluster.</p>",
       "error":{
         "code":"InsufficientClusterCapacity",
@@ -7674,8 +7749,7 @@
     },
     "InsufficientS3BucketPolicyFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The cluster does not have read bucket or put object permissions on the S3 bucket specified when enabling logging.</p>",
       "error":{
         "code":"InsufficientS3BucketPolicyFault",
@@ -7737,8 +7811,7 @@
     },
     "IntegrationAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The integration you are trying to create already exists.</p>",
       "error":{
         "code":"IntegrationAlreadyExistsFault",
@@ -7755,8 +7828,7 @@
     },
     "IntegrationConflictOperationFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A conflicting conditional operation is currently in progress against this resource. This typically occurs when there are multiple requests being made to the same resource at the same time, and these requests conflict with each other.</p>",
       "error":{
         "code":"IntegrationConflictOperationFault",
@@ -7767,8 +7839,7 @@
     },
     "IntegrationConflictStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The integration is in an invalid state and can't perform the requested operation.</p>",
       "error":{
         "code":"IntegrationConflictStateFault",
@@ -7820,8 +7891,7 @@
     },
     "IntegrationNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The integration can't be found.</p>",
       "error":{
         "code":"IntegrationNotFoundFault",
@@ -7832,8 +7902,7 @@
     },
     "IntegrationQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You can't create any more zero-ETL or S3 event integrations because the quota has been reached.</p>",
       "error":{
         "code":"IntegrationQuotaExceededFault",
@@ -7844,8 +7913,7 @@
     },
     "IntegrationSourceNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified integration source can't be found.</p>",
       "error":{
         "code":"IntegrationSourceNotFoundFault",
@@ -7856,8 +7924,7 @@
     },
     "IntegrationTargetNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified integration target can't be found.</p>",
       "error":{
         "code":"IntegrationTargetNotFoundFault",
@@ -7881,8 +7948,7 @@
     },
     "InvalidAuthenticationProfileRequestFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The authentication profile request is not valid. The profile name can't be null or empty. The authentication profile API operation must be available in the Amazon Web Services Region.</p>",
       "error":{
         "code":"InvalidAuthenticationProfileRequestFault",
@@ -7893,8 +7959,7 @@
     },
     "InvalidAuthorizationStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The status of the authorization is not valid.</p>",
       "error":{
         "code":"InvalidAuthorizationState",
@@ -7905,8 +7970,7 @@
     },
     "InvalidClusterParameterGroupStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The cluster parameter group action can not be completed because another task is in progress that involves the parameter group. Wait a few moments and try the operation again.</p>",
       "error":{
         "code":"InvalidClusterParameterGroupState",
@@ -7917,8 +7981,7 @@
     },
     "InvalidClusterSecurityGroupStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The state of the cluster security group is not <code>available</code>. </p>",
       "error":{
         "code":"InvalidClusterSecurityGroupState",
@@ -7929,8 +7992,7 @@
     },
     "InvalidClusterSnapshotScheduleStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The cluster snapshot schedule state is not valid.</p>",
       "error":{
         "code":"InvalidClusterSnapshotScheduleState",
@@ -7941,8 +8003,7 @@
     },
     "InvalidClusterSnapshotStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified cluster snapshot is not in the <code>available</code> state, or other accounts are authorized to access the snapshot. </p>",
       "error":{
         "code":"InvalidClusterSnapshotState",
@@ -7953,8 +8014,7 @@
     },
     "InvalidClusterStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified cluster is not in the <code>available</code> state. </p>",
       "error":{
         "code":"InvalidClusterState",
@@ -7965,8 +8025,7 @@
     },
     "InvalidClusterSubnetGroupStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The cluster subnet group cannot be deleted because it is in use.</p>",
       "error":{
         "code":"InvalidClusterSubnetGroupStateFault",
@@ -7977,8 +8036,7 @@
     },
     "InvalidClusterSubnetStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The state of the subnet is invalid.</p>",
       "error":{
         "code":"InvalidClusterSubnetStateFault",
@@ -7989,8 +8047,7 @@
     },
     "InvalidClusterTrackFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The provided cluster track name is not valid.</p>",
       "error":{
         "code":"InvalidClusterTrack",
@@ -8001,8 +8058,7 @@
     },
     "InvalidDataShareFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>There is an error with the datashare.</p>",
       "error":{
         "code":"InvalidDataShareFault",
@@ -8013,8 +8069,7 @@
     },
     "InvalidElasticIpFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The Elastic IP (EIP) is invalid or cannot be found.</p>",
       "error":{
         "code":"InvalidElasticIpFault",
@@ -8025,8 +8080,7 @@
     },
     "InvalidEndpointStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The status of the endpoint is not valid.</p>",
       "error":{
         "code":"InvalidEndpointState",
@@ -8037,8 +8091,7 @@
     },
     "InvalidHsmClientCertificateStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified HSM client certificate is not in the <code>available</code> state, or it is still in use by one or more Amazon Redshift clusters.</p>",
       "error":{
         "code":"InvalidHsmClientCertificateStateFault",
@@ -8049,8 +8102,7 @@
     },
     "InvalidHsmConfigurationStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified HSM configuration is not in the <code>available</code> state, or it is still in use by one or more Amazon Redshift clusters.</p>",
       "error":{
         "code":"InvalidHsmConfigurationStateFault",
@@ -8061,8 +8113,7 @@
     },
     "InvalidNamespaceFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The namespace isn't valid because the namespace doesn't exist. Provide a valid namespace.</p>",
       "error":{
         "code":"InvalidNamespaceFault",
@@ -8073,8 +8124,7 @@
     },
     "InvalidPolicyFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The resource policy isn't valid.</p>",
       "error":{
         "code":"InvalidPolicyFault",
@@ -8085,8 +8135,7 @@
     },
     "InvalidReservedNodeStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Indicates that the Reserved Node being exchanged is not in an active state.</p>",
       "error":{
         "code":"InvalidReservedNodeState",
@@ -8097,8 +8146,7 @@
     },
     "InvalidRestoreFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The restore is invalid.</p>",
       "error":{
         "code":"InvalidRestore",
@@ -8109,8 +8157,7 @@
     },
     "InvalidRetentionPeriodFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The retention period specified is either in the past or is not a valid value.</p> <p>The value must be either -1 or an integer between 1 and 3,653.</p>",
       "error":{
         "code":"InvalidRetentionPeriodFault",
@@ -8121,8 +8168,7 @@
     },
     "InvalidS3BucketNameFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The S3 bucket name is invalid. For more information about naming rules, go to <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html\">Bucket Restrictions and Limitations</a> in the Amazon Simple Storage Service (S3) Developer Guide.</p>",
       "error":{
         "code":"InvalidS3BucketNameFault",
@@ -8133,8 +8179,7 @@
     },
     "InvalidS3KeyPrefixFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The string specified for the logging S3 key prefix does not comply with the documented constraints.</p>",
       "error":{
         "code":"InvalidS3KeyPrefixFault",
@@ -8145,8 +8190,7 @@
     },
     "InvalidScheduleFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The schedule you submitted isn't valid.</p>",
       "error":{
         "code":"InvalidSchedule",
@@ -8157,8 +8201,7 @@
     },
     "InvalidScheduledActionFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The scheduled action is not valid. </p>",
       "error":{
         "code":"InvalidScheduledAction",
@@ -8169,8 +8212,7 @@
     },
     "InvalidSnapshotCopyGrantStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The snapshot copy grant can't be deleted because it is used by one or more clusters.</p>",
       "error":{
         "code":"InvalidSnapshotCopyGrantStateFault",
@@ -8181,8 +8223,7 @@
     },
     "InvalidSubnet":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The requested subnet is not valid, or not all of the subnets are in the same VPC.</p>",
       "error":{
         "code":"InvalidSubnet",
@@ -8193,8 +8234,7 @@
     },
     "InvalidSubscriptionStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The subscription request is invalid because it is a duplicate request. This subscription request is already in progress.</p>",
       "error":{
         "code":"InvalidSubscriptionStateFault",
@@ -8205,8 +8245,7 @@
     },
     "InvalidTableRestoreArgumentFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The value specified for the <code>sourceDatabaseName</code>, <code>sourceSchemaName</code>, or <code>sourceTableName</code> parameter, or a combination of these, doesn't exist in the snapshot.</p>",
       "error":{
         "code":"InvalidTableRestoreArgument",
@@ -8217,8 +8256,7 @@
     },
     "InvalidTagFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The tag is invalid.</p>",
       "error":{
         "code":"InvalidTagFault",
@@ -8229,8 +8267,7 @@
     },
     "InvalidUsageLimitFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The usage limit is not valid.</p>",
       "error":{
         "code":"InvalidUsageLimit",
@@ -8241,8 +8278,7 @@
     },
     "InvalidVPCNetworkStateFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The cluster subnet group does not cover all Availability Zones.</p>",
       "error":{
         "code":"InvalidVPCNetworkStateFault",
@@ -8253,8 +8289,7 @@
     },
     "Ipv6CidrBlockNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>There are no subnets in your VPC with associated IPv6 CIDR blocks. To use dual-stack mode, associate an IPv6 CIDR block with each subnet in your VPC.</p>",
       "error":{
         "code":"Ipv6CidrBlockNotFoundFault",
@@ -8289,10 +8324,45 @@
       "type":"list",
       "member":{"shape":"LakeFormationScopeUnion"}
     },
-    "LimitExceededFault":{
+    "LakehouseConfiguration":{
       "type":"structure",
       "members":{
+        "ClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the cluster associated with this lakehouse configuration.</p>"
+        },
+        "LakehouseIdcApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Identity Center application used for enabling Amazon Web Services IAM Identity Center trusted identity propagation on a cluster enabled with Amazon Redshift federated permissions.</p>"
+        },
+        "LakehouseRegistrationStatus":{
+          "shape":"String",
+          "documentation":"<p>The current status of the lakehouse registration. Indicates whether the cluster is successfully registered with the lakehouse.</p>"
+        },
+        "CatalogArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Glue data catalog associated with the lakehouse configuration.</p>"
+        }
       },
+      "documentation":"<p>Contains configuration information for lakehouse integration, including the cluster identifier, catalog ARN, and registration status.</p>"
+    },
+    "LakehouseIdcRegistration":{
+      "type":"string",
+      "enum":[
+        "Associate",
+        "Disassociate"
+      ]
+    },
+    "LakehouseRegistration":{
+      "type":"string",
+      "enum":[
+        "Register",
+        "Deregister"
+      ]
+    },
+    "LimitExceededFault":{
+      "type":"structure",
+      "members":{},
       "documentation":"<p>The encryption key has exceeded its grant limit in Amazon Web Services KMS.</p>",
       "error":{
         "code":"LimitExceededFault",
@@ -8885,6 +8955,36 @@
         }
       }
     },
+    "ModifyLakehouseConfigurationMessage":{
+      "type":"structure",
+      "required":["ClusterIdentifier"],
+      "members":{
+        "ClusterIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the cluster whose lakehouse configuration you want to modify.</p>"
+        },
+        "LakehouseRegistration":{
+          "shape":"LakehouseRegistration",
+          "documentation":"<p>Specifies whether to register or deregister the cluster with Amazon Redshift federated permissions. Valid values are <code>Register</code> or <code>Deregister</code>.</p>"
+        },
+        "CatalogName":{
+          "shape":"CatalogNameString",
+          "documentation":"<p>The name of the Glue data catalog that will be associated with the cluster enabled with Amazon Redshift federated permissions.</p> <p>Constraints:</p> <ul> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Can only contain lowercase letters (a-z), numbers (0-9), underscores (_), and hyphens (-).</p> </li> </ul> <p>Pattern: <code>^[a-z0-9_-]*[a-z]+[a-z0-9_-]*$</code> </p> <p>Example: <code>my-catalog_01</code> </p>"
+        },
+        "LakehouseIdcRegistration":{
+          "shape":"LakehouseIdcRegistration",
+          "documentation":"<p>Modifies the Amazon Web Services IAM Identity Center trusted identity propagation on a cluster enabled with Amazon Redshift federated permissions. Valid values are <code>Associate</code> or <code>Disassociate</code>.</p>"
+        },
+        "LakehouseIdcApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Identity Center application used for enabling Amazon Web Services IAM Identity Center trusted identity propagation on a cluster enabled with Amazon Redshift federated permissions.</p>"
+        },
+        "DryRun":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>A boolean value that, if <code>true</code>, validates the request without actually modifying the lakehouse configuration. Use this to check for errors before making changes.</p>"
+        }
+      }
+    },
     "ModifyRedshiftIdcApplicationMessage":{
       "type":"structure",
       "required":["RedshiftIdcApplicationArn"],
@@ -9156,8 +9256,7 @@
     },
     "NumberOfNodesPerClusterLimitExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The operation would exceed the number of nodes allowed for a cluster.</p>",
       "error":{
         "code":"NumberOfNodesPerClusterLimitExceeded",
@@ -9168,8 +9267,7 @@
     },
     "NumberOfNodesQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The operation would exceed the number of nodes allotted to the account. For information about increasing your quota, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html\">Limits in Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p>",
       "error":{
         "code":"NumberOfNodesQuotaExceeded",
@@ -9411,8 +9509,7 @@
     },
     "PartnerNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The name of the partner was not found.</p>",
       "error":{
         "code":"PartnerNotFound",
@@ -9739,6 +9836,18 @@
         "ServiceIntegrations":{
           "shape":"ServiceIntegrationList",
           "documentation":"<p>A list of service integrations for the Redshift IAM Identity Center application.</p>"
+        },
+        "ApplicationType":{
+          "shape":"ApplicationType",
+          "documentation":"<p>The type of application being created. Valid values are <code>None</code> or <code>Lakehouse</code>. Use <code>Lakehouse</code> to enable Amazon Redshift federated permissions on cluster.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of tags.</p>"
+        },
+        "SsoTagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p>A list of tags keys that Redshift Identity Center applications copy to IAM Identity Center. For each input key, the tag corresponding to the key-value pair is propagated.</p>"
         }
       },
       "documentation":"<p>Contains properties for the Redshift IDC application.</p>",
@@ -9746,8 +9855,7 @@
     },
     "RedshiftIdcApplicationAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The application you attempted to add already exists.</p>",
       "error":{
         "code":"RedshiftIdcApplicationAlreadyExists",
@@ -9768,8 +9876,7 @@
     },
     "RedshiftIdcApplicationNotExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The application you attempted to find doesn't exist.</p>",
       "error":{
         "code":"RedshiftIdcApplicationNotExists",
@@ -9780,8 +9887,7 @@
     },
     "RedshiftIdcApplicationQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The maximum number of Redshift IAM Identity Center applications was exceeded.</p>",
       "error":{
         "code":"RedshiftIdcApplicationQuotaExceeded",
@@ -9789,6 +9895,32 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "RedshiftInvalidParameterFault":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The request contains one or more invalid parameters. This error occurs when required parameters are missing, parameter values are outside acceptable ranges, or parameter formats are incorrect.</p>",
+      "error":{
+        "code":"RedshiftInvalidParameter",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "RedshiftScopeUnion":{
+      "type":"structure",
+      "members":{
+        "Connect":{
+          "shape":"Connect",
+          "documentation":"<p>The Amazon Redshift connect integration scope configuration. Defines authorization settings for Amazon Redshift connect service integration.</p>"
+        }
+      },
+      "documentation":"<p>A union structure that defines the scope of Amazon Redshift service integrations. Contains configuration for different integration types such as Amazon Redshift.</p>",
+      "union":true
+    },
+    "RedshiftServiceIntegrations":{
+      "type":"list",
+      "member":{"shape":"RedshiftScopeUnion"}
     },
     "ReferenceLink":{
       "type":"structure",
@@ -9908,8 +10040,7 @@
     },
     "ReservedNodeAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>User already has a reservation with the given identifier.</p>",
       "error":{
         "code":"ReservedNodeAlreadyExists",
@@ -9920,8 +10051,7 @@
     },
     "ReservedNodeAlreadyMigratedFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Indicates that the reserved node has already been exchanged.</p>",
       "error":{
         "code":"ReservedNodeAlreadyMigrated",
@@ -9959,8 +10089,7 @@
     },
     "ReservedNodeExchangeNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The reserved-node exchange status wasn't found.</p>",
       "error":{
         "code":"ReservedNodeExchangeNotFond",
@@ -10039,8 +10168,7 @@
     },
     "ReservedNodeNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified reserved compute node not found.</p>",
       "error":{
         "code":"ReservedNodeNotFound",
@@ -10101,8 +10229,7 @@
     },
     "ReservedNodeOfferingNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Specified offering does not exist.</p>",
       "error":{
         "code":"ReservedNodeOfferingNotFound",
@@ -10134,8 +10261,7 @@
     },
     "ReservedNodeQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Request would exceed the user's compute node quota. For information about increasing your quota, go to <a href=\"https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html\">Limits in Amazon Redshift</a> in the <i>Amazon Redshift Cluster Management Guide</i>. </p>",
       "error":{
         "code":"ReservedNodeQuotaExceeded",
@@ -10234,8 +10360,7 @@
     },
     "ResizeNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A resize operation for the specified cluster is not found.</p>",
       "error":{
         "code":"ResizeNotFound",
@@ -10316,8 +10441,7 @@
     },
     "ResourceNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The resource could not be found.</p>",
       "error":{
         "code":"ResourceNotFoundFault",
@@ -10498,6 +10622,14 @@
         "MultiAZ":{
           "shape":"BooleanOptional",
           "documentation":"<p>If true, the snapshot will be restored to a cluster deployed in two Availability Zones.</p>"
+        },
+        "CatalogName":{
+          "shape":"CatalogNameString",
+          "documentation":"<p>The name of the Glue Data Catalog that will be associated with the cluster enabled with Amazon Redshift federated permissions.</p> <p>Constraints:</p> <ul> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Can only contain lowercase letters (a-z), numbers (0-9), underscores (_), and hyphens (-).</p> </li> </ul> <p>Pattern: <code>^[a-z0-9_-]*[a-z]+[a-z0-9_-]*$</code> </p> <p>Example: <code>my-catalog_01</code> </p>"
+        },
+        "RedshiftIdcApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM Identity Center application used for enabling Amazon Web Services IAM Identity Center trusted identity propagation on a cluster enabled with Amazon Redshift federated permissions.</p>"
         }
       },
       "documentation":"<p/>"
@@ -10753,8 +10885,7 @@
     },
     "SNSInvalidTopicFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Amazon SNS has responded that there is a problem with the specified Amazon SNS topic.</p>",
       "error":{
         "code":"SNSInvalidTopic",
@@ -10765,8 +10896,7 @@
     },
     "SNSNoAuthorizationFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You do not have permission to publish to the specified Amazon SNS topic.</p>",
       "error":{
         "code":"SNSNoAuthorization",
@@ -10777,8 +10907,7 @@
     },
     "SNSTopicArnNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An Amazon SNS topic with the specified Amazon Resource Name (ARN) does not exist.</p>",
       "error":{
         "code":"SNSTopicArnNotFound",
@@ -10796,8 +10925,7 @@
     },
     "ScheduleDefinitionTypeUnsupportedFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The definition you submitted is not supported.</p>",
       "error":{
         "code":"ScheduleDefinitionTypeUnsupported",
@@ -10858,8 +10986,7 @@
     },
     "ScheduledActionAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The scheduled action already exists. </p>",
       "error":{
         "code":"ScheduledActionAlreadyExists",
@@ -10909,8 +11036,7 @@
     },
     "ScheduledActionNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The scheduled action cannot be found. </p>",
       "error":{
         "code":"ScheduledActionNotFound",
@@ -10921,8 +11047,7 @@
     },
     "ScheduledActionQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The quota for scheduled actions exceeded. </p>",
       "error":{
         "code":"ScheduledActionQuotaExceeded",
@@ -10965,8 +11090,7 @@
     },
     "ScheduledActionTypeUnsupportedFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The action type specified for a scheduled action is not supported. </p>",
       "error":{
         "code":"ScheduledActionTypeUnsupported",
@@ -11060,6 +11184,10 @@
         "S3AccessGrants":{
           "shape":"S3AccessGrantsServiceIntegrations",
           "documentation":"<p>A list of scopes set up for S3 Access Grants integration.</p>"
+        },
+        "Redshift":{
+          "shape":"RedshiftServiceIntegrations",
+          "documentation":"<p>A list of scopes set up for Amazon Redshift integration.</p>"
         }
       },
       "documentation":"<p>A list of service integrations.</p>",
@@ -11230,8 +11358,7 @@
     },
     "SnapshotCopyAlreadyDisabledFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The cluster already has cross-region snapshot copy disabled.</p>",
       "error":{
         "code":"SnapshotCopyAlreadyDisabledFault",
@@ -11242,8 +11369,7 @@
     },
     "SnapshotCopyAlreadyEnabledFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The cluster already has cross-region snapshot copy enabled.</p>",
       "error":{
         "code":"SnapshotCopyAlreadyEnabledFault",
@@ -11254,8 +11380,7 @@
     },
     "SnapshotCopyDisabledFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Cross-region snapshot copy was temporarily disabled. Try your request again.</p>",
       "error":{
         "code":"SnapshotCopyDisabledFault",
@@ -11285,8 +11410,7 @@
     },
     "SnapshotCopyGrantAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The snapshot copy grant can't be created because a grant with the same name already exists.</p>",
       "error":{
         "code":"SnapshotCopyGrantAlreadyExistsFault",
@@ -11318,8 +11442,7 @@
     },
     "SnapshotCopyGrantNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified snapshot copy grant can't be found. Make sure that the name is typed correctly and that the grant exists in the destination region.</p>",
       "error":{
         "code":"SnapshotCopyGrantNotFoundFault",
@@ -11330,8 +11453,7 @@
     },
     "SnapshotCopyGrantQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The Amazon Web Services account has exceeded the maximum number of snapshot copy grants in this region.</p>",
       "error":{
         "code":"SnapshotCopyGrantQuotaExceededFault",
@@ -11426,8 +11548,7 @@
     },
     "SnapshotScheduleAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified snapshot schedule already exists. </p>",
       "error":{
         "code":"SnapshotScheduleAlreadyExists",
@@ -11445,8 +11566,7 @@
     },
     "SnapshotScheduleNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>We could not find the specified snapshot schedule. </p>",
       "error":{
         "code":"SnapshotScheduleNotFound",
@@ -11457,8 +11577,7 @@
     },
     "SnapshotScheduleQuotaExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You have exceeded the quota of snapshot schedules. </p>",
       "error":{
         "code":"SnapshotScheduleQuotaExceeded",
@@ -11469,8 +11588,7 @@
     },
     "SnapshotScheduleUpdateInProgressFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified snapshot schedule is already being updated.</p>",
       "error":{
         "code":"SnapshotScheduleUpdateInProgress",
@@ -11523,8 +11641,7 @@
     },
     "SourceNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified Amazon Redshift event source could not be found.</p>",
       "error":{
         "code":"SourceNotFound",
@@ -11567,8 +11684,7 @@
     },
     "SubnetAlreadyInUse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A specified subnet is already in use by another cluster.</p>",
       "error":{
         "code":"SubnetAlreadyInUse",
@@ -11593,8 +11709,7 @@
     },
     "SubscriptionAlreadyExistFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>There is already an existing event notification subscription with the specified name.</p>",
       "error":{
         "code":"SubscriptionAlreadyExist",
@@ -11605,8 +11720,7 @@
     },
     "SubscriptionCategoryNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The value specified for the event category was not one of the allowed values, or it specified a category that does not apply to the specified source type. The allowed values are Configuration, Management, Monitoring, and Security.</p>",
       "error":{
         "code":"SubscriptionCategoryNotFound",
@@ -11617,8 +11731,7 @@
     },
     "SubscriptionEventIdNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An Amazon Redshift event with the specified event ID does not exist.</p>",
       "error":{
         "code":"SubscriptionEventIdNotFound",
@@ -11629,8 +11742,7 @@
     },
     "SubscriptionNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An Amazon Redshift event notification subscription with the specified name does not exist.</p>",
       "error":{
         "code":"SubscriptionNotFound",
@@ -11641,8 +11753,7 @@
     },
     "SubscriptionSeverityNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The value specified for the event severity was not one of the allowed values, or it specified a severity that does not apply to the specified source type. The allowed values are ERROR and INFO.</p>",
       "error":{
         "code":"SubscriptionSeverityNotFound",
@@ -11689,8 +11800,7 @@
     "TStamp":{"type":"timestamp"},
     "TableLimitExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The number of tables in the cluster exceeds the limit for the requested new cluster node type. </p>",
       "error":{
         "code":"TableLimitExceeded",
@@ -11701,8 +11811,7 @@
     },
     "TableRestoreNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified <code>TableRestoreRequestId</code> value was not found.</p>",
       "error":{
         "code":"TableRestoreNotFoundFault",
@@ -11828,8 +11937,7 @@
     },
     "TagLimitExceededFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You have exceeded the number of tags allowed.</p>",
       "error":{
         "code":"TagLimitExceededFault",
@@ -11919,8 +12027,7 @@
     },
     "UnauthorizedOperation":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Your account is not authorized to perform the requested operation.</p>",
       "error":{
         "code":"UnauthorizedOperation",
@@ -11931,8 +12038,7 @@
     },
     "UnauthorizedPartnerIntegrationFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The partner integration is not authorized.</p>",
       "error":{
         "code":"UnauthorizedPartnerIntegration",
@@ -11943,8 +12049,7 @@
     },
     "UnknownSnapshotCopyRegionFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified region is incorrect or does not exist.</p>",
       "error":{
         "code":"UnknownSnapshotCopyRegionFault",
@@ -11955,8 +12060,7 @@
     },
     "UnsupportedOperationFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The requested operation isn't supported.</p>",
       "error":{
         "code":"UnsupportedOperation",
@@ -11967,8 +12071,7 @@
     },
     "UnsupportedOptionFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A request option was specified that is not supported.</p>",
       "error":{
         "code":"UnsupportedOptionFault",
@@ -12071,8 +12174,7 @@
     },
     "UsageLimitAlreadyExistsFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The usage limit already exists. </p>",
       "error":{
         "code":"UsageLimitAlreadyExists",
@@ -12119,8 +12221,7 @@
     },
     "UsageLimitNotFoundFault":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The usage limit identifier can't be found.</p>",
       "error":{
         "code":"UsageLimitNotFound",

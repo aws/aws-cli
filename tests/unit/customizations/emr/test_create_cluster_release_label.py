@@ -16,7 +16,7 @@ import os
 
 from botocore.compat import OrderedDict, json
 
-from awscli.testutils import mock
+from awscli.testutils import mock, unittest
 from tests.unit.customizations.emr import (
     EMRBaseAWSCommandParamsTest as BaseAWSCommandParamsTest,
 )
@@ -557,6 +557,27 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         result = self.run_cmd(cmd, 252)
         self.assertEqual(expected_error_msg, result[1])
 
+    def test_extended_support(self):
+        cmd = DEFAULT_CMD + '--extended-support'
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['ExtendedSupport'] = True
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_no_extended_support(self):
+        cmd = DEFAULT_CMD + '--no-extended-support'
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['ExtendedSupport'] = False
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_extended_support_and_no_extended_support(self):
+        cmd = DEFAULT_CMD + '--extended-support --no-extended-support'
+        expected_error_msg = (
+            '\naws: error: cannot use both --extended-support'
+            ' and --no-extended-support options together.\n'
+        )
+        result = self.run_cmd(cmd, 252)
+        self.assertEqual(expected_error_msg, result[1])
+
     def test_tags(self):
         cmd = DEFAULT_CMD.split() + ['--tags', 'k1=v1', 'k2', 'k3=spaces  v3']
         result = copy.deepcopy(DEFAULT_RESULT)
@@ -761,10 +782,6 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--auto-terminate '
             '--instance-groups '
             'Name=Master,InstanceGroupType=MASTER,InstanceCount=1'
-        )
-        expect_error_msg = (
-            '\nThe following required parameters are missing'
-            ' for structure:: InstanceType\n'
         )
         stderr = self.run_cmd(cmd, 252)[1]
         self.assert_error_message_has_field_name(stderr, 'InstanceType')
@@ -1947,6 +1964,45 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             'VisibleToAllUsers': True,
             'Tags': [],
         }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_with_steps_with_step_monitoring_configuration(
+        self,
+    ):
+        # For ease of testing, we only test the handling of StepMonitoringConfig in create-cluster
+        # with a CUSTOM_JAR step. Under the hood, it uses the same handler as add-steps. The remaining
+        # step types are unit tested in test_add_steps.py.
+        cmd = (
+            DEFAULT_CMD
+            + '--steps '
+            + (
+                'Name=Custom,Type=Custom_JAR,'
+                'Jar=s3://mybucket/mytest.jar,'
+                'Args=arg1,arg2,MainClass=mymainclass,'
+                'ActionOnFailure=TERMINATE_CLUSTER,'
+                'LogUri=TestLogUri,'
+                'EncryptionKeyArn=TestEncryptionKeyArn'
+            )
+        )
+        expected_steps = [
+            {
+                'Name': 'Custom',
+                'ActionOnFailure': 'TERMINATE_CLUSTER',
+                'HadoopJarStep': {
+                    'Jar': 's3://mybucket/mytest.jar',
+                    'Args': ['arg1', 'arg2'],
+                    'MainClass': 'mymainclass',
+                },
+                'StepMonitoringConfiguration': {
+                    'S3MonitoringConfiguration': {
+                        'LogUri': 'TestLogUri',
+                        'EncryptionKeyArn': 'TestEncryptionKeyArn',
+                    }
+                },
+            }
+        ]
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['Steps'] = expected_steps
         self.assert_params_for_cmd(cmd, result)
 
 

@@ -179,13 +179,21 @@ class OpenBrowserHandler(BaseAuthorizationhandler):
     def __call__(
         self, userCode, verificationUri, verificationUriComplete, **kwargs
     ):
-        opening_msg = (
-            f'Attempting to automatically open the SSO authorization page in '
-            f'your default browser.\nIf the browser does not open or you wish '
-            f'to use a different device to authorize this request, open the '
-            f'following URL:\n'
-            f'\n{verificationUri}\n'
-        )
+        if userCode:  # only the device code flow supports different devices
+            opening_msg = (
+                f'Attempting to open your default browser.\n'
+                f'If the browser does not open or '
+                f'you wish to use a different device to authorize this '
+                f'request, open the following URL:\n'
+                f'\n{verificationUri}\n'
+            )
+        else:
+            opening_msg = (
+                f'Attempting to open your default browser.\n'
+                f'If the browser does not open, open '
+                f'the following URL:\n'
+                f'\n{verificationUri}\n'
+            )
 
         user_code_msg = f'\nThen enter the code:\n\n{userCode}\n'
         uni_print(opening_msg, self._outfile)
@@ -235,6 +243,7 @@ class AuthCodeFetcher:
         """Blocks until the expected redirect request with either the
         authorization code/state or and error is handled
         """
+        LOG.debug(f'Waiting for auth code at {self.redirect_uri_with_port()}')
         start = time.time()
         while (
             not self._is_done and time.time() < start + self._OVERALL_TIMEOUT
@@ -331,9 +340,7 @@ class BaseSSOCommand(BasicCommand):
             sso_config['registration_scopes'] = parsed_scopes
 
         if missing:
-            error_msg = (
-                'Missing the following required SSO configuration values: %s. '
-            ) % ', '.join(missing)
+            error_msg = f'Missing the following required SSO configuration values: {", ".join(missing)}. '
             raise InvalidSSOConfigError(error_msg)
 
         return sso_config
@@ -342,9 +349,9 @@ class BaseSSOCommand(BasicCommand):
         sso_config, missing = self._get_required_config_vars(scoped_config)
         if missing:
             raise InvalidSSOConfigError(
-                'Missing the following required SSO configuration values: %s. '
+                f'Missing the following required SSO configuration values: {", ".join(missing)}. '
                 'To make sure this profile is properly configured to use SSO, '
-                'please run: aws configure sso' % ', '.join(missing)
+                'please run: aws configure sso'
             )
         return sso_config
 

@@ -36,12 +36,17 @@ from botocore.credentials import (
     CredentialProvider,
     Credentials,
     EnvProvider,
+    LoginProvider,
     ProcessProvider,
     ProfileProviderBuilder,
     SharedCredentialProvider,
     SSOCredentialFetcher,
     SSOProvider,
     create_assume_role_refresher,
+)
+from botocore.exceptions import (
+    ClientError,
+    LoginError,
 )
 from botocore.session import Session
 from botocore.stub import Stubber
@@ -57,6 +62,14 @@ from tests import BaseEnvVar, IntegerRefresher, mock, skip_if_windows, unittest
 
 # Passed to session to keep it from finding default config file
 TESTENVVARS = {'config_file': (None, 'AWS_CONFIG_FILE', None)}
+
+SAMPLE_SIGN_IN_DPOP_PEM = (
+    '-----BEGIN EC PRIVATE KEY-----\n'
+    'MHcCAQEEIDXxfh2F6vl+AX+tK/jvY5ll6aZ9n8sI2ODsWCmrsx'
+    'SDoAoGCCqGSM49\nAwEHoUQDQgAERKnl1X15pEx7ebbMQ0dFw6'
+    'VeOuCjEuh3NT8dwnBHYyF/7YDy8+Fu\nCx+4wgiSs9sRD3LaDK'
+    'CjIbbmEq07Jw59YQ==\n-----END EC PRIVATE KEY-----\n'
+)
 
 
 raw_metadata = {
@@ -739,6 +752,30 @@ class TestAssumeRoleCredentialFetcher(BaseEnvVar):
         self.assertEqual(response, expected_response)
         self.assertEqual(response['account_id'], None)
 
+    @mock.patch('botocore.credentials.register_feature_ids')
+    def test_feature_ids_registered_during_get_credentials(
+        self, mock_register
+    ):
+        response = {
+            'Credentials': {
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': self.some_future_time(),
+            }
+        }
+        client_creator = self.create_client_creator(with_response=response)
+        fetcher = credentials.AssumeRoleCredentialFetcher(
+            client_creator, self.source_creds, self.role_arn
+        )
+
+        test_feature_ids = {'test_feature_1', 'test_feature_2'}
+        fetcher.feature_ids = test_feature_ids
+
+        fetcher.fetch_credentials()
+        # Verify register_credential_feature_ids was called with test feature IDs
+        mock_register.assert_called_once_with(test_feature_ids)
+
 
 class TestAssumeRoleWithWebIdentityCredentialFetcher(BaseEnvVar):
     def setUp(self):
@@ -847,52 +884,76 @@ class TestAssumeRoleWithWebIdentityCredentialFetcher(BaseEnvVar):
 
         self.assertEqual(response, expected)
 
-        def test_account_id_with_valid_arn(self):
-            response = {
-                'Credentials': {
-                    'AccessKeyId': 'foo',
-                    'SecretAccessKey': 'bar',
-                    'SessionToken': 'baz',
-                    'Expiration': self.some_future_time().isoformat(),
-                    'AccountId': '123456789012',
-                },
-                'AssumedRoleUser': {
-                    'AssumedRoleId': 'myroleid',
-                    'Arn': 'arn:aws:iam::123456789012:role/RoleA',
-                },
-            }
-            client_creator = self.create_client_creator(with_response=response)
-            refresher = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
-                client_creator, self.load_token, self.role_arn
-            )
-            expected_response = self.get_expected_creds_from_response(response)
-            response = refresher.fetch_credentials()
-            self.assertEqual(response, expected_response)
-            self.assertEqual(response['account_id'], '123456789012')
+    def test_account_id_with_valid_arn(self):
+        response = {
+            'Credentials': {
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': self.some_future_time().isoformat(),
+                'AccountId': '123456789012',
+            },
+            'AssumedRoleUser': {
+                'AssumedRoleId': 'myroleid',
+                'Arn': 'arn:aws:iam::123456789012:role/RoleA',
+            },
+        }
+        client_creator = self.create_client_creator(with_response=response)
+        refresher = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
+            client_creator, self.load_token, self.role_arn
+        )
+        expected_response = self.get_expected_creds_from_response(response)
+        response = refresher.fetch_credentials()
+        self.assertEqual(response, expected_response)
+        self.assertEqual(response['account_id'], '123456789012')
 
-        def test_account_id_with_invalid_arn(self):
-            response = {
-                'Credentials': {
-                    'AccessKeyId': 'foo',
-                    'SecretAccessKey': 'bar',
-                    'SessionToken': 'baz',
-                    'Expiration': self.some_future_time().isoformat(),
-                },
-                'AssumedRoleUser': {
-                    'AssumedRoleId': 'myroleid',
-                    'Arn': 'invalid-arn',
-                },
+    def test_account_id_with_invalid_arn(self):
+        response = {
+            'Credentials': {
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': self.some_future_time().isoformat(),
+            },
+            'AssumedRoleUser': {
+                'AssumedRoleId': 'myroleid',
+                'Arn': 'invalid-arn',
+            },
+        }
+        client_creator = self.create_client_creator(with_response=response)
+        refresher = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
+            client_creator,
+            self.load_token,
+            self.role_arn,
+        )
+        expected_response = self.get_expected_creds_from_response(response)
+        response = refresher.fetch_credentials()
+        self.assertEqual(response, expected_response)
+        self.assertEqual(response['account_id'], None)
+
+    @mock.patch('botocore.credentials.register_feature_ids')
+    def test_feature_ids_registered_during_get_credentials(
+        self, mock_register
+    ):
+        response = {
+            'Credentials': {
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': self.some_future_time(),
             }
-            client_creator = self.create_client_creator(with_response=response)
-            refresher = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
-                client_creator,
-                self.load_token,
-                self.role_arn,
-            )
-            expected_response = self.get_expected_creds_from_response(response)
-            response = refresher.fetch_credentials()
-            self.assertEqual(response, expected_response)
-            self.assertEqual(response['account_id'], None)
+        }
+        client_creator = self.create_client_creator(with_response=response)
+        fetcher = credentials.AssumeRoleWithWebIdentityCredentialFetcher(
+            client_creator, self.load_token, self.role_arn
+        )
+
+        test_feature_ids = {'test_feature_1', 'test_feature_2'}
+        fetcher.feature_ids = test_feature_ids
+
+        fetcher.fetch_credentials()
+        # Verify register_credential_feature_ids was called with test feature IDs
+        mock_register.assert_called_once_with(test_feature_ids)
 
 
 class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
@@ -3702,6 +3763,7 @@ class TestProfileProviderBuilder(unittest.TestCase):
             AssumeRoleWithWebIdentityProvider,
             SSOProvider,
             SharedCredentialProvider,
+            LoginProvider,
             ProcessProvider,
             ConfigProvider,
         ]
@@ -3820,10 +3882,56 @@ class TestSSOCredentialFetcher(unittest.TestCase):
             fetcher.fetch_credentials()
         self.assertFalse(mock_client.get_role_credentials.called)
 
+    @mock.patch('botocore.credentials.register_feature_ids')
+    def test_feature_ids_registered_during_get_credentials(
+        self, mock_register
+    ):
+        response = {
+            'roleCredentials': {
+                'accessKeyId': 'foo',
+                'secretAccessKey': 'bar',
+                'sessionToken': 'baz',
+                'expiration': self.now_timestamp + 1000000,
+            }
+        }
+        params = {
+            'roleName': self.role_name,
+            'accountId': self.account_id,
+            'accessToken': self.access_token['accessToken'],
+        }
+        self.stubber.add_response(
+            'get_role_credentials',
+            response,
+            expected_params=params,
+        )
+
+        self.stubber.activate()
+        try:
+            fetcher = SSOCredentialFetcher(
+                self.start_url,
+                self.sso_region,
+                self.role_name,
+                self.account_id,
+                self.mock_session.create_client,
+                token_loader=self.loader,
+                cache=self.cache,
+                time_fetcher=self.mock_time_fetcher,
+            )
+            test_feature_ids = {'test_feature_1', 'test_feature_2'}
+            fetcher.feature_ids = test_feature_ids
+            fetcher.fetch_credentials()
+            mock_register.assert_called_once_with(test_feature_ids)
+        finally:
+            self.stubber.deactivate()
+
 
 class TestSSOProvider(unittest.TestCase):
     def setUp(self):
-        self.sso = Session().create_client('sso', region_name='us-east-1')
+        with mock.patch(
+            'botocore.credentials.LoginProvider.load',
+            return_value=None,
+        ):
+            self.sso = Session().create_client('sso', region_name='us-east-1')
         self.stubber = Stubber(self.sso)
         self.mock_session = mock.Mock(spec=Session)
         self.mock_session.create_client.return_value = self.sso
@@ -3997,3 +4105,286 @@ def test_add_account_id_to_response_with_invalid_arn(
         )
     assert 'AccountId' not in response['Credentials']
     assert 'Unable to extract account ID from Arn' in caplog.text
+
+
+def load_login_test_cases():
+    test_dir = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        'login',
+        'login-provider-test-cases.json',
+    )
+    with open(test_dir) as f:
+        data = json.load(f)
+    return data
+
+
+class TestLoginProvider:
+    FROZEN_TIME = datetime(2025, 11, 19, 0, 0, 0, tzinfo=tzutc())
+
+    @pytest.mark.parametrize(
+        "test_case", load_login_test_cases(), ids=lambda x: x["documentation"]
+    )
+    def test_login_credentials(self, test_case):
+        tempdir = tempfile.mkdtemp()
+        config_file = os.path.join(tempdir, 'config')
+        cache_dir = os.path.join(tempdir, 'cache')
+        os.makedirs(cache_dir)
+
+        config_contents = test_case.get('configContents')
+        with open(config_file, 'w') as f:
+            f.write(config_contents)
+
+        cache_contents = test_case.get('cacheContents', {})
+        for filename, cache_data in cache_contents.items():
+            cache_file_path = os.path.join(cache_dir, filename)
+            with open(cache_file_path, 'w') as f:
+                json.dump(cache_data, f)
+
+        original_config_file = os.environ.get('AWS_CONFIG_FILE')
+        original_cache_dir = os.environ.get('AWS_LOGIN_CACHE_DIRECTORY')
+
+        os.environ['AWS_CONFIG_FILE'] = config_file
+        os.environ['AWS_LOGIN_CACHE_DIRECTORY'] = cache_dir
+
+        try:
+            session = botocore.session.Session(profile='signin')
+            token_cache = credentials.JSONFileCache(cache_dir)
+
+            def load_config():
+                profile_config = session.get_scoped_config()
+                return {'profiles': {'signin': profile_config}}
+
+            mock_client = mock.Mock()
+            mock_client.exceptions.AccessDeniedException = (
+                botocore.exceptions.ClientError
+            )
+
+            for api_call in test_case.get('mockApiCalls', []):
+                if (
+                    'responseCode' in api_call
+                    and api_call['responseCode'] >= 400
+                ):
+                    mock_client.create_o_auth2_token.side_effect = ClientError(
+                        {}, 'CreateOAuth2Token'
+                    )
+                else:
+                    mock_client.create_o_auth2_token.return_value = api_call[
+                        'response'
+                    ]
+
+            with mock.patch(
+                'botocore.credentials._local_now',
+                return_value=self.FROZEN_TIME,
+            ):
+                provider = credentials.LoginProvider(
+                    token_cache=token_cache,
+                    load_config=load_config,
+                    profile_name='signin',
+                    client_creator=lambda service_name, **kwargs: mock_client,
+                )
+
+                try:
+                    # Get frozen credentials to trigger the refresh if needed
+                    refreshable_creds = provider.load()
+                    frozen_creds = refreshable_creds.get_frozen_credentials()
+
+                    outcomes = test_case.get('outcomes', [])
+                    for outcome in outcomes:
+                        if outcome.get('result') == 'credentials':
+                            self._validate_creds(frozen_creds, outcome)
+
+                        elif outcome.get('result') == 'cacheContents':
+                            for (
+                                cache_filename,
+                                expected_cache_data,
+                            ) in outcome.items():
+                                if cache_filename == 'result':
+                                    continue
+
+                                self._validate_cached_token_contents(
+                                    cache_dir,
+                                    cache_filename,
+                                    expected_cache_data,
+                                )
+
+                    self._validate_refresh_calls(
+                        mock_client, test_case.get('mockApiCalls', [])
+                    )
+
+                except LoginError as e:
+                    if any(
+                        outcome.get('result') == 'error'
+                        for outcome in test_case.get('outcomes')
+                    ):
+                        pass  # verify that an error was raised as expected
+                    else:
+                        raise e
+
+        finally:
+            if original_config_file is not None:
+                os.environ['AWS_CONFIG_FILE'] = original_config_file
+            elif 'AWS_CONFIG_FILE' in os.environ:
+                del os.environ['AWS_CONFIG_FILE']
+
+            if original_cache_dir is not None:
+                os.environ['AWS_LOGIN_CACHE_DIRECTORY'] = original_cache_dir
+            elif 'AWS_LOGIN_CACHE_DIRECTORY' in os.environ:
+                del os.environ['AWS_LOGIN_CACHE_DIRECTORY']
+
+            shutil.rmtree(tempdir)
+
+    @staticmethod
+    def _validate_refresh_calls(mock_client, mock_api_calls):
+        if not mock_api_calls:
+            mock_client.create_o_auth2_token.assert_not_called()
+            return
+
+        call_args_list = mock_client.create_o_auth2_token.call_args_list
+
+        for i, expected_api_call in enumerate(mock_api_calls):
+            actual_call = call_args_list[i]
+            actual_kwargs = actual_call.kwargs if actual_call.kwargs else {}
+            expected_request = expected_api_call['request']
+
+            assert 'tokenInput' in actual_kwargs
+            assert (
+                expected_request['tokenInput'] == actual_kwargs['tokenInput']
+            )
+
+    @staticmethod
+    def _validate_cached_token_contents(
+        cache_dir, cache_filename, expected_cache_data
+    ):
+        cache_file_path = os.path.join(cache_dir, cache_filename)
+        assert os.path.exists(cache_file_path)
+
+        with open(cache_file_path) as f:
+            actual_cache_data = json.load(f)
+
+        assert actual_cache_data == expected_cache_data
+
+    @staticmethod
+    def _validate_creds(resolved_credentials, expected_output):
+        assert resolved_credentials is not None
+
+        if 'accessKeyId' in expected_output:
+            assert (
+                resolved_credentials.access_key
+                == expected_output['accessKeyId']
+            )
+
+        if 'secretAccessKey' in expected_output:
+            assert (
+                resolved_credentials.secret_key
+                == expected_output['secretAccessKey']
+            )
+
+        if 'sessionToken' in expected_output:
+            assert (
+                resolved_credentials.token == expected_output['sessionToken']
+            )
+
+        if 'accountId' in expected_output:
+            assert (
+                resolved_credentials.account_id == expected_output['accountId']
+            )
+
+
+def test_login_provider_feature_ids_in_context(client_context):
+    profile_name = 'test-profile'
+    mock_token_cache = mock.Mock()
+    mock_client_creator = mock.Mock()
+    mock_load_config = mock.Mock()
+
+    mock_load_config.return_value = {
+        'profiles': {
+            profile_name: {
+                'login_session': 'my-session',
+                'region': 'us-east-1',
+            }
+        }
+    }
+
+    with (
+        mock.patch('botocore.credentials.LoginCredentialsLoader'),
+        mock.patch(
+            'botocore.credentials.LoginCredentialFetcher'
+        ) as mock_fetcher_class,
+    ):
+        mock_fetcher = mock.Mock()
+        date_in_future = datetime.utcnow() + timedelta(hours=1)
+        expiry_time = date_in_future.isoformat() + 'Z'
+        expected_creds = {
+            'access_key': 'test-access-key',
+            'secret_key': 'test-secret-key',
+            'token': 'test-token',
+            'expiry_time': expiry_time,
+            'account_id': '123456789012',
+        }
+        mock_fetcher.load_cached_credentials.return_value = expected_creds
+        mock_fetcher_class.return_value = mock_fetcher
+
+        provider = LoginProvider(
+            token_cache=mock_token_cache,
+            load_config=mock_load_config,
+            profile_name=profile_name,
+            client_creator=mock_client_creator,
+        )
+
+        result = provider.load()
+
+        assert result is not None
+        assert result.access_key == expected_creds['access_key']
+        assert result.secret_key == expected_creds['secret_key']
+
+        mock_fetcher.load_cached_credentials.assert_called_once()
+
+        assert 'AC' in client_context.features
+        assert 'AD' in client_context.features
+
+
+@pytest.mark.parametrize(
+    'error_type,expected_exception',
+    [
+        ('TOKEN_EXPIRED', botocore.exceptions.LoginRefreshTokenExpired),
+        (
+            'USER_CREDENTIALS_CHANGED',
+            botocore.exceptions.LoginRefreshPasswordChanged,
+        ),
+        (
+            'INSUFFICIENT_PERMISSIONS',
+            botocore.exceptions.LoginInsufficientPermissions,
+        ),
+        ('UNKNOWN_ERROR', botocore.exceptions.LoginError),
+    ],
+)
+def test_login_credential_fetcher_access_denied_errors(
+    error_type, expected_exception
+):
+    token_loader = mock.Mock()
+    client_creator = mock.Mock()
+
+    base_token = {
+        'clientId': 'test-client',
+        'refreshToken': 'test-refresh-token',
+        'dpopKey': SAMPLE_SIGN_IN_DPOP_PEM,
+        'accessToken': {'expiresAt': '2020-01-01T00:00:00Z'},
+    }
+    token_loader.load_token.return_value = base_token
+
+    client = mock.Mock()
+    client.exceptions.AccessDeniedException = ClientError
+    client.create_o_auth2_token.side_effect = ClientError(
+        {'Error': {'Code': 'AccessDeniedException'}, 'error': error_type},
+        'CreateOAuth2Token',
+    )
+    client_creator.return_value = client
+
+    fetcher = credentials.LoginCredentialFetcher(
+        session_name='test-session',
+        token_loader=token_loader,
+        client_creator=client_creator,
+    )
+
+    with pytest.raises(expected_exception):
+        fetcher.refresh_credentials()

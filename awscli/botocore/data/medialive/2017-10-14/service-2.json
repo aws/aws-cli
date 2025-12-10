@@ -5442,6 +5442,144 @@
         }
       ],
       "documentation": "Change some of the settings in an SdiSource."
+    },
+    "ListAlerts": {
+      "name": "ListAlerts",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/channels/{channelId}/alerts",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListAlertsRequest"
+      },
+      "output": {
+        "shape": "ListAlertsResponse",
+        "documentation": "List of alerts"
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to list the alerts."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error"
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The specified channel doesn't exist."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded for this operation."
+        }
+      ],
+      "documentation": "List the alerts for a channel with optional filtering based on alert state."
+    },
+    "ListClusterAlerts": {
+      "name": "ListClusterAlerts",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/clusters/{clusterId}/alerts",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListClusterAlertsRequest"
+      },
+      "output": {
+        "shape": "ListClusterAlertsResponse",
+        "documentation": "List of alerts"
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to list the alerts."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error."
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The specified cluster doesn't exist."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded for this operation."
+        }
+      ],
+      "documentation": "List the alerts for a cluster with optional filtering based on alert state."
+    },
+    "ListMultiplexAlerts": {
+      "name": "ListMultiplexAlerts",
+      "http": {
+        "method": "GET",
+        "requestUri": "/prod/multiplexes/{multiplexId}/alerts",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListMultiplexAlertsRequest"
+      },
+      "output": {
+        "shape": "ListMultiplexAlertsResponse",
+        "documentation": "List of alerts"
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "This request was invalid."
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "Internal Service Error"
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "You do not have permission to list the alerts."
+        },
+        {
+          "shape": "BadGatewayException",
+          "documentation": "Bad Gateway Error"
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "The specified multiplex doesn't exist."
+        },
+        {
+          "shape": "GatewayTimeoutException",
+          "documentation": "Gateway Timeout"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "Request limit exceeded for this operation."
+        }
+      ],
+      "documentation": "List the alerts for a multiplex with optional filtering based on alert state."
     }
   },
   "shapes": {
@@ -5783,7 +5921,7 @@
         "ContainerSettings": {
           "shape": "ArchiveContainerSettings",
           "locationName": "containerSettings",
-          "documentation": "Settings specific to the container type of the file."
+          "documentation": "Container for this output. Can be auto-detected from extension field."
         },
         "Extension": {
           "shape": "__string",
@@ -6891,6 +7029,11 @@
           "shape": "__integerMin0",
           "locationName": "yPosition",
           "documentation": "Specifies the vertical position of the caption relative to the top of the output in pixels. A value of 10 would result in the captions starting 10 pixels from the top of the output. If no explicit yPosition is provided, the caption will be positioned towards the bottom of the output.  All burn-in and DVB-Sub font settings must match."
+        },
+        "SubtitleRows": {
+          "shape": "BurnInDestinationSubtitleRows",
+          "locationName": "subtitleRows",
+          "documentation": "Applies only when the input captions are Teletext and the output captions are DVB-Sub or Burn-In. Choose the number of lines for the captions bitmap. The captions bitmap is 700 wide × 576 high and will be laid over the video. For example, a value of 16 divides the bitmap into 16 lines, with each line 36 pixels high (16 × 36 = 576). The default is 24 (24 pixels high). Enter the same number in every encode in every output that converts the same Teletext source to DVB-Sub or Burn-in."
         }
       },
       "documentation": "Burn In Destination Settings"
@@ -7821,6 +7964,10 @@
         "SdiSources": {
           "shape": "InputSdiSources",
           "locationName": "sdiSources"
+        },
+        "RouterSettings": {
+          "shape": "RouterSettings",
+          "locationName": "routerSettings"
         }
       },
       "documentation": "Placeholder documentation for CreateInput"
@@ -7905,6 +8052,10 @@
         "SdiSources": {
           "shape": "InputSdiSources",
           "locationName": "sdiSources"
+        },
+        "RouterSettings": {
+          "shape": "RouterSettings",
+          "locationName": "routerSettings"
         }
       },
       "documentation": "The name of the input"
@@ -9089,6 +9240,11 @@
         "SdiSources": {
           "shape": "InputSdiSources",
           "locationName": "sdiSources"
+        },
+        "RouterSettings": {
+          "shape": "RouterInputSettings",
+          "locationName": "routerSettings",
+          "documentation": "Information about any MediaConnect router association with this input."
         }
       },
       "documentation": "Placeholder documentation for DescribeInputResponse"
@@ -9777,6 +9933,11 @@
           "shape": "__integerMin0",
           "locationName": "yPosition",
           "documentation": "Specifies the vertical position of the caption relative to the top of the output in pixels. A value of 10 would result in the captions starting 10 pixels from the top of the output. If no explicit yPosition is provided, the caption will be positioned towards the bottom of the output.  This option is not valid for source captions that are STL, 608/embedded or teletext.  These source settings are already pre-defined by the caption stream.  All burn-in and DVB-Sub font settings must match."
+        },
+        "SubtitleRows": {
+          "shape": "DvbSubDestinationSubtitleRows",
+          "locationName": "subtitleRows",
+          "documentation": "Applies only when the input captions are Teletext and the output captions are DVB-Sub or Burn-In. Choose the number of lines for the captions bitmap. The captions bitmap is 700 wide × 576 high and will be laid over the video. For example, a value of 16 divides the bitmap into 16 lines, with each line 36 pixels high (16 × 36 = 576). The default is 24 (24 pixels high). Enter the same number in every encode in every output that converts the same Teletext source to DVB-Sub or Burn-in."
         }
       },
       "documentation": "Dvb Sub Destination Settings"
@@ -10966,7 +11127,7 @@
         "AdaptiveQuantization": {
           "shape": "H264AdaptiveQuantization",
           "locationName": "adaptiveQuantization",
-          "documentation": "Enables or disables adaptive quantization, which is a technique MediaLive can apply to video on a frame-by-frame basis to produce more compression without losing quality. There are three types of adaptive quantization: flicker, spatial, and temporal. Set the field in one of these ways: Set to Auto. Recommended. For each type of AQ, MediaLive will determine if AQ is needed, and if so, the appropriate strength. Set a strength (a value other than Auto or Disable). This strength will apply to any of the AQ fields that you choose to enable. Set to Disabled to disable all types of adaptive quantization."
+          "documentation": "Enables or disables adaptive quantization (AQ), which is a technique MediaLive can apply to video on a frame-by-frame basis to produce more compression without losing quality. There are three types of adaptive quantization: spatial, temporal, and flicker. We recommend that you set the field to Auto. For more information about all the options, see the topic about video adaptive quantization in the MediaLive user guide."
         },
         "AfdSignaling": {
           "shape": "AfdSignaling",
@@ -10996,7 +11157,7 @@
         "ColorSpaceSettings": {
           "shape": "H264ColorSpaceSettings",
           "locationName": "colorSpaceSettings",
-          "documentation": "Color Space settings"
+          "documentation": "Specify the type of color space to apply or choose to pass through. The default is to pass through the color space that is in the source."
         },
         "EntropyEncoding": {
           "shape": "H264EntropyEncoding",
@@ -11016,7 +11177,7 @@
         "FlickerAq": {
           "shape": "H264FlickerAq",
           "locationName": "flickerAq",
-          "documentation": "Flicker AQ makes adjustments within each frame to reduce flicker or 'pop' on I-frames. The value to enter in this field depends on the value in the Adaptive quantization field: If you have set the Adaptive quantization field to Auto, MediaLive ignores any value in this field. MediaLive will determine if flicker AQ is appropriate and will apply the appropriate strength. If you have set the Adaptive quantization field to a strength, you can set this field to Enabled or Disabled. Enabled: MediaLive will apply flicker AQ using the specified strength. Disabled: MediaLive won't apply flicker AQ. If you have set the Adaptive quantization to Disabled, MediaLive ignores any value in this field and doesn't apply flicker AQ."
+          "documentation": "Flicker AQ makes adjustments within each frame to reduce flicker or 'pop' on I-frames. The value to enter in this field depends on the value in the Adaptive quantization field. For more information, see the topic about video adaptive quantization in the MediaLive user guide."
         },
         "ForceFieldPictures": {
           "shape": "H264ForceFieldPictures",
@@ -11146,7 +11307,7 @@
         "SpatialAq": {
           "shape": "H264SpatialAq",
           "locationName": "spatialAq",
-          "documentation": "Spatial AQ makes adjustments within each frame based on spatial variation of content complexity. The value to enter in this field depends on the value in the Adaptive quantization field: If you have set the Adaptive quantization field to Auto, MediaLive ignores any value in this field. MediaLive will determine if spatial AQ is appropriate and will apply the appropriate strength. If you have set the Adaptive quantization field to a strength, you can set this field to Enabled or Disabled. Enabled: MediaLive will apply spatial AQ using the specified strength. Disabled: MediaLive won't apply spatial AQ. If you have set the Adaptive quantization to Disabled, MediaLive ignores any value in this field and doesn't apply spatial AQ."
+          "documentation": "Spatial AQ makes adjustments within each frame based on spatial variation of content complexity. The value to enter in this field depends on the value in the Adaptive quantization field. For more information, see the topic about video adaptive quantization in the MediaLive user guide."
         },
         "SubgopLength": {
           "shape": "H264SubGopLength",
@@ -11161,7 +11322,7 @@
         "TemporalAq": {
           "shape": "H264TemporalAq",
           "locationName": "temporalAq",
-          "documentation": "Temporal makes adjustments within each frame based on temporal variation of content complexity. The value to enter in this field depends on the value in the Adaptive quantization field: If you have set the Adaptive quantization field to Auto, MediaLive ignores any value in this field. MediaLive will determine if temporal AQ is appropriate and will apply the appropriate strength. If you have set the Adaptive quantization field to a strength, you can set this field to Enabled or Disabled. Enabled: MediaLive will apply temporal AQ using the specified strength. Disabled: MediaLive won't apply temporal AQ. If you have set the Adaptive quantization to Disabled, MediaLive ignores any value in this field and doesn't apply temporal AQ."
+          "documentation": "Temporal makes adjustments within each frame based on variations in content complexity over time. The value to enter in this field depends on the value in the Adaptive quantization field. For more information, see the topic about video adaptive quantization in the MediaLive user guide."
         },
         "TimecodeInsertion": {
           "shape": "H264TimecodeInsertionBehavior",
@@ -11177,6 +11338,11 @@
           "shape": "__integerMin1Max51",
           "locationName": "minQp",
           "documentation": "Sets the minimum QP. If you aren't familiar with quantization adjustment, leave the field empty. MediaLive will\napply an appropriate value."
+        },
+        "MinBitrate": {
+          "shape": "__integerMin0",
+          "locationName": "minBitrate",
+          "documentation": "Used for QVBR rate control mode only.\nOptional.\nEnter a minimum bitrate if you want to keep the output bitrate about a threshold, in order to prevent the downstream system from de-allocating network bandwidth for this output."
         }
       },
       "documentation": "H264 Settings"
@@ -11272,6 +11438,10 @@
         "Rec709Settings": {
           "shape": "Rec709Settings",
           "locationName": "rec709Settings"
+        },
+        "Hlg2020Settings": {
+          "shape": "Hlg2020Settings",
+          "locationName": "hlg2020Settings"
         }
       },
       "documentation": "H265 Color Space Settings"
@@ -11374,7 +11544,7 @@
         "AdaptiveQuantization": {
           "shape": "H265AdaptiveQuantization",
           "locationName": "adaptiveQuantization",
-          "documentation": "Adaptive quantization. Allows intra-frame quantizers to vary to improve visual quality."
+          "documentation": "Enables or disables adaptive quantization (AQ), which is a technique MediaLive can apply to video on a frame-by-frame basis to produce more compression without losing quality. There are three types of adaptive quantization: spatial, temporal, and flicker. Flicker is the only type that you can customize. We recommend that you set the field to Auto. For more information about all the options, see the topic about video adaptive quantization in the MediaLive user guide."
         },
         "AfdSignaling": {
           "shape": "AfdSignaling",
@@ -11404,7 +11574,7 @@
         "ColorSpaceSettings": {
           "shape": "H265ColorSpaceSettings",
           "locationName": "colorSpaceSettings",
-          "documentation": "Color Space settings"
+          "documentation": "Specify the type of color space to apply or choose to pass through. The default is to pass through the color space that is in the source."
         },
         "FilterSettings": {
           "shape": "H265FilterSettings",
@@ -11419,7 +11589,7 @@
         "FlickerAq": {
           "shape": "H265FlickerAq",
           "locationName": "flickerAq",
-          "documentation": "If set to enabled, adjust quantization within each frame to reduce flicker or 'pop' on I-frames."
+          "documentation": "Flicker AQ makes adjustments within each frame to reduce flicker or 'pop' on I-frames. The value to enter in this field depends on the value in the Adaptive quantization field. For more information, see the topic about video adaptive quantization in the MediaLive user guide."
         },
         "FramerateDenominator": {
           "shape": "__integerMin1Max3003",
@@ -11560,6 +11730,26 @@
           "shape": "H265Deblocking",
           "locationName": "deblocking",
           "documentation": "Enable or disable the deblocking filter for this codec. The filter reduces blocking artifacts at block boundaries,\nwhich improves overall video quality. If the filter is disabled, visible block edges might appear in the output,\nespecially at lower bitrates."
+        },
+        "GopBReference": {
+          "shape": "H265GopBReference",
+          "locationName": "gopBReference",
+          "documentation": "Allows the encoder to use a B-Frame as a reference frame as well.\nENABLED: B-frames will also serve as reference frames.\nDISABLED: B-frames won't be reference frames.\nMust be DISABLED if resolution is greater than 1080p or when using tiled hevc encoding."
+        },
+        "GopNumBFrames": {
+          "shape": "__integerMin0Max3",
+          "locationName": "gopNumBFrames",
+          "documentation": "Sets the number of B-frames between reference frames.\nSet to 2 if resolution is greater than 1080p or when using tiled hevc encoding."
+        },
+        "MinBitrate": {
+          "shape": "__integerMin0Max40000000",
+          "locationName": "minBitrate",
+          "documentation": "Used for QVBR rate control mode only.\nOptional.\nEnter a minimum bitrate if you want to keep the output bitrate about a threshold, in order to prevent the downstream system from de-allocating network bandwidth for this output."
+        },
+        "SubgopLength": {
+          "shape": "H265SubGopLength",
+          "locationName": "subgopLength",
+          "documentation": "Sets the number of B-frames in each sub-GOP.\nFIXED: Use the value in Num B-frames.\nDYNAMIC: Optimizes the number of B-frames in each sub-GOP to improve visual quality.\nMust be FIXED if resolution is greater than 1080p or when using tiled hevc encoding."
         }
       },
       "documentation": "H265 Settings",
@@ -12460,6 +12650,11 @@
         "SdiSources": {
           "shape": "InputSdiSources",
           "locationName": "sdiSources"
+        },
+        "RouterSettings": {
+          "shape": "RouterInputSettings",
+          "locationName": "routerSettings",
+          "documentation": "Information about any MediaConnect router association with this input."
         }
       },
       "documentation": "Placeholder documentation for Input"
@@ -13612,7 +13807,8 @@
         "SRT_CALLER",
         "MULTICAST",
         "SMPTE_2110_RECEIVER_GROUP",
-        "SDI"
+        "SDI",
+        "MEDIACONNECT_ROUTER"
       ]
     },
     "InputVpcRequest": {
@@ -14925,8 +15121,6 @@
     },
     "MaxResults": {
       "type": "integer",
-      "min": 1,
-      "max": 1000,
       "documentation": "Placeholder documentation for MaxResults"
     },
     "MediaConnectFlow": {
@@ -14958,6 +15152,11 @@
           "shape": "OutputLocationRef",
           "locationName": "destination",
           "documentation": "MediaPackage channel destination."
+        },
+        "MediapackageV2GroupSettings": {
+          "shape": "MediaPackageV2GroupSettings",
+          "locationName": "mediapackageV2GroupSettings",
+          "documentation": "Parameters that apply only if the destination parameter (for the output group) specifies a channelGroup and channelName. Use of these two paramters indicates that the output group is for MediaPackage V2 (CMAF Ingest)."
         }
       },
       "documentation": "Media Package Group Settings",
@@ -14988,7 +15187,13 @@
     },
     "MediaPackageOutputSettings": {
       "type": "structure",
-      "members": {},
+      "members": {
+        "MediaPackageV2DestinationSettings": {
+          "shape": "MediaPackageV2DestinationSettings",
+          "locationName": "mediaPackageV2DestinationSettings",
+          "documentation": "Optional settings for MediaPackage V2 destinations"
+        }
+      },
       "documentation": "Media Package Output Settings"
     },
     "MotionGraphicsActivateScheduleActionSettings": {
@@ -19074,6 +19279,11 @@
         "SdiSources": {
           "shape": "InputSdiSources",
           "locationName": "sdiSources"
+        },
+        "SpecialRouterSettings": {
+          "shape": "SpecialRouterSettings",
+          "locationName": "specialRouterSettings",
+          "documentation": "When using MediaConnect Router as the source of a MediaLive input there's a special handoff that occurs when a router output\nis created. This group of settings is set on your behalf by the MediaConnect Router service using this set of settings. This\nsetting object can only by used by that service."
         }
       },
       "documentation": "Placeholder documentation for UpdateInput"
@@ -19287,6 +19497,11 @@
         "SdiSources": {
           "shape": "InputSdiSources",
           "locationName": "sdiSources"
+        },
+        "SpecialRouterSettings": {
+          "shape": "SpecialRouterSettings",
+          "locationName": "specialRouterSettings",
+          "documentation": "When using MediaConnect Router as the source of a MediaLive input there's a special handoff that occurs when a router output\nis created. This group of settings is set on your behalf by the MediaConnect Router service using this set of settings. This\nsetting object can only by used by that service."
         }
       },
       "documentation": "A request to update an input.",
@@ -19679,12 +19894,12 @@
         "ColorSpace": {
           "shape": "VideoSelectorColorSpace",
           "locationName": "colorSpace",
-          "documentation": "Specifies the color space of an input. This setting works in tandem with colorSpaceUsage and a video description's colorSpaceSettingsChoice to determine if any conversion will be performed."
+          "documentation": "Controls how MediaLive will use the color space metadata from the source. Typically, choose FOLLOW, which means to use the color space metadata without changing it. Or choose another value (a standard). In this case, the handling is controlled by the colorspaceUsage property."
         },
         "ColorSpaceSettings": {
           "shape": "VideoSelectorColorSpaceSettings",
           "locationName": "colorSpaceSettings",
-          "documentation": "Color space settings"
+          "documentation": "Choose HDR10 only if the following situation applies. Firstly, you specified HDR10 in ColorSpace. Secondly, the attached input is for AWS Elemental Link. Thirdly, you plan to convert the content to another color space. You need to specify the color space metadata that is missing from the source sent from AWS Elemental Link."
         },
         "ColorSpaceUsage": {
           "shape": "VideoSelectorColorSpaceUsage",
@@ -19918,308 +20133,210 @@
     },
     "__integerMin0": {
       "type": "integer",
-      "min": 0,
       "documentation": "Placeholder documentation for __integerMin0"
     },
     "__integerMin0Max10": {
       "type": "integer",
-      "min": 0,
-      "max": 10,
       "documentation": "Placeholder documentation for __integerMin0Max10"
     },
     "__integerMin0Max100": {
       "type": "integer",
-      "min": 0,
-      "max": 100,
       "documentation": "Placeholder documentation for __integerMin0Max100"
     },
     "__integerMin0Max1000": {
       "type": "integer",
-      "min": 0,
-      "max": 1000,
       "documentation": "Placeholder documentation for __integerMin0Max1000"
     },
     "__integerMin0Max10000": {
       "type": "integer",
-      "min": 0,
-      "max": 10000,
       "documentation": "Placeholder documentation for __integerMin0Max10000"
     },
     "__integerMin0Max1000000": {
       "type": "integer",
-      "min": 0,
-      "max": 1000000,
       "documentation": "Placeholder documentation for __integerMin0Max1000000"
     },
     "__integerMin0Max100000000": {
       "type": "integer",
-      "min": 0,
-      "max": 100000000,
       "documentation": "Placeholder documentation for __integerMin0Max100000000"
     },
     "__integerMin0Max128": {
       "type": "integer",
-      "min": 0,
-      "max": 128,
       "documentation": "Placeholder documentation for __integerMin0Max128"
     },
     "__integerMin0Max15": {
       "type": "integer",
-      "min": 0,
-      "max": 15,
       "documentation": "Placeholder documentation for __integerMin0Max15"
     },
     "__integerMin0Max2000": {
       "type": "integer",
-      "min": 0,
-      "max": 2000,
       "documentation": "Placeholder documentation for __integerMin0Max2000"
     },
     "__integerMin0Max255": {
       "type": "integer",
-      "min": 0,
-      "max": 255,
       "documentation": "Placeholder documentation for __integerMin0Max255"
     },
     "__integerMin0Max30": {
       "type": "integer",
-      "min": 0,
-      "max": 30,
       "documentation": "Placeholder documentation for __integerMin0Max30"
     },
     "__integerMin0Max32768": {
       "type": "integer",
-      "min": 0,
-      "max": 32768,
       "documentation": "Placeholder documentation for __integerMin0Max32768"
     },
     "__integerMin0Max3600": {
       "type": "integer",
-      "min": 0,
-      "max": 3600,
       "documentation": "Placeholder documentation for __integerMin0Max3600"
     },
     "__integerMin0Max500": {
       "type": "integer",
-      "min": 0,
-      "max": 500,
       "documentation": "Placeholder documentation for __integerMin0Max500"
     },
     "__integerMin0Max600": {
       "type": "integer",
-      "min": 0,
-      "max": 600,
       "documentation": "Placeholder documentation for __integerMin0Max600"
     },
     "__integerMin0Max65535": {
       "type": "integer",
-      "min": 0,
-      "max": 65535,
       "documentation": "Placeholder documentation for __integerMin0Max65535"
     },
     "__integerMin0Max65536": {
       "type": "integer",
-      "min": 0,
-      "max": 65536,
       "documentation": "Placeholder documentation for __integerMin0Max65536"
     },
     "__integerMin0Max7": {
       "type": "integer",
-      "min": 0,
-      "max": 7,
       "documentation": "Placeholder documentation for __integerMin0Max7"
     },
     "__integerMin0Max8191": {
       "type": "integer",
-      "min": 0,
-      "max": 8191,
       "documentation": "Placeholder documentation for __integerMin0Max8191"
     },
     "__integerMin1": {
       "type": "integer",
-      "min": 1,
       "documentation": "Placeholder documentation for __integerMin1"
     },
     "__integerMin100": {
       "type": "integer",
-      "min": 100,
       "documentation": "Placeholder documentation for __integerMin100"
     },
     "__integerMin1000": {
       "type": "integer",
-      "min": 1000,
       "documentation": "Placeholder documentation for __integerMin1000"
     },
     "__integerMin1000000Max100000000": {
       "type": "integer",
-      "min": 1000000,
-      "max": 100000000,
       "documentation": "Placeholder documentation for __integerMin1000000Max100000000"
     },
     "__integerMin100000Max100000000": {
       "type": "integer",
-      "min": 100000,
-      "max": 100000000,
       "documentation": "Placeholder documentation for __integerMin100000Max100000000"
     },
     "__integerMin100000Max40000000": {
       "type": "integer",
-      "min": 100000,
-      "max": 40000000,
       "documentation": "Placeholder documentation for __integerMin100000Max40000000"
     },
     "__integerMin100000Max80000000": {
       "type": "integer",
-      "min": 100000,
-      "max": 80000000,
       "documentation": "Placeholder documentation for __integerMin100000Max80000000"
     },
     "__integerMin1000Max30000": {
       "type": "integer",
-      "min": 1000,
-      "max": 30000,
       "documentation": "Placeholder documentation for __integerMin1000Max30000"
     },
     "__integerMin1Max10": {
       "type": "integer",
-      "min": 1,
-      "max": 10,
       "documentation": "Placeholder documentation for __integerMin1Max10"
     },
     "__integerMin1Max1000000": {
       "type": "integer",
-      "min": 1,
-      "max": 1000000,
       "documentation": "Placeholder documentation for __integerMin1Max1000000"
     },
     "__integerMin1Max16": {
       "type": "integer",
-      "min": 1,
-      "max": 16,
       "documentation": "Placeholder documentation for __integerMin1Max16"
     },
     "__integerMin1Max20": {
       "type": "integer",
-      "min": 1,
-      "max": 20,
       "documentation": "Placeholder documentation for __integerMin1Max20"
     },
     "__integerMin1Max3003": {
       "type": "integer",
-      "min": 1,
-      "max": 3003,
       "documentation": "Placeholder documentation for __integerMin1Max3003"
     },
     "__integerMin1Max31": {
       "type": "integer",
-      "min": 1,
-      "max": 31,
       "documentation": "Placeholder documentation for __integerMin1Max31"
     },
     "__integerMin1Max32": {
       "type": "integer",
-      "min": 1,
-      "max": 32,
       "documentation": "Placeholder documentation for __integerMin1Max32"
     },
     "__integerMin1Max3600000": {
       "type": "integer",
-      "min": 1,
-      "max": 3600000,
       "documentation": "Placeholder documentation for __integerMin1Max3600000"
     },
     "__integerMin1Max4": {
       "type": "integer",
-      "min": 1,
-      "max": 4,
       "documentation": "Placeholder documentation for __integerMin1Max4"
     },
     "__integerMin1Max5": {
       "type": "integer",
-      "min": 1,
-      "max": 5,
       "documentation": "Placeholder documentation for __integerMin1Max5"
     },
     "__integerMin1Max6": {
       "type": "integer",
-      "min": 1,
-      "max": 6,
       "documentation": "Placeholder documentation for __integerMin1Max6"
     },
     "__integerMin1Max8": {
       "type": "integer",
-      "min": 1,
-      "max": 8,
       "documentation": "Placeholder documentation for __integerMin1Max8"
     },
     "__integerMin25Max10000": {
       "type": "integer",
-      "min": 25,
-      "max": 10000,
       "documentation": "Placeholder documentation for __integerMin25Max10000"
     },
     "__integerMin25Max2000": {
       "type": "integer",
-      "min": 25,
-      "max": 2000,
       "documentation": "Placeholder documentation for __integerMin25Max2000"
     },
     "__integerMin3": {
       "type": "integer",
-      "min": 3,
       "documentation": "Placeholder documentation for __integerMin3"
     },
     "__integerMin30": {
       "type": "integer",
-      "min": 30,
       "documentation": "Placeholder documentation for __integerMin30"
     },
     "__integerMin32Max8191": {
       "type": "integer",
-      "min": 32,
-      "max": 8191,
       "documentation": "Placeholder documentation for __integerMin32Max8191"
     },
     "__integerMin4Max20": {
       "type": "integer",
-      "min": 4,
-      "max": 20,
       "documentation": "Placeholder documentation for __integerMin4Max20"
     },
     "__integerMin800Max3000": {
       "type": "integer",
-      "min": 800,
-      "max": 3000,
       "documentation": "Placeholder documentation for __integerMin800Max3000"
     },
     "__integerMin96Max600": {
       "type": "integer",
-      "min": 96,
-      "max": 600,
       "documentation": "Placeholder documentation for __integerMin96Max600"
     },
     "__integerMinNegative1000Max1000": {
       "type": "integer",
-      "min": -1000,
-      "max": 1000,
       "documentation": "Placeholder documentation for __integerMinNegative1000Max1000"
     },
     "__integerMinNegative5Max5": {
       "type": "integer",
-      "min": -5,
-      "max": 5,
       "documentation": "Placeholder documentation for __integerMinNegative5Max5"
     },
     "__integerMinNegative60Max6": {
       "type": "integer",
-      "min": -60,
-      "max": 6,
       "documentation": "Placeholder documentation for __integerMinNegative60Max6"
     },
     "__integerMinNegative60Max60": {
       "type": "integer",
-      "min": -60,
-      "max": 60,
       "documentation": "Placeholder documentation for __integerMinNegative60Max60"
     },
     "__listOfAudioChannelMapping": {
@@ -20592,26 +20709,18 @@
     },
     "__longMin0Max1099511627775": {
       "type": "long",
-      "min": 0,
-      "max": 1099511627775,
       "documentation": "Placeholder documentation for __longMin0Max1099511627775"
     },
     "__longMin0Max4294967295": {
       "type": "long",
-      "min": 0,
-      "max": 4294967295,
       "documentation": "Placeholder documentation for __longMin0Max4294967295"
     },
     "__longMin0Max8589934591": {
       "type": "long",
-      "min": 0,
-      "max": 8589934591,
       "documentation": "Placeholder documentation for __longMin0Max8589934591"
     },
     "__longMin0Max86400000": {
       "type": "long",
-      "min": 0,
-      "max": 86400000,
       "documentation": "Placeholder documentation for __longMin0Max86400000"
     },
     "__string": {
@@ -20620,91 +20729,66 @@
     },
     "__stringMax1000": {
       "type": "string",
-      "max": 1000,
       "documentation": "Placeholder documentation for __stringMax1000"
     },
     "__stringMax2048": {
       "type": "string",
-      "max": 2048,
       "documentation": "Placeholder documentation for __stringMax2048"
     },
     "__stringMax255": {
       "type": "string",
-      "max": 255,
       "documentation": "Placeholder documentation for __stringMax255"
     },
     "__stringMax256": {
       "type": "string",
-      "max": 256,
       "documentation": "Placeholder documentation for __stringMax256"
     },
     "__stringMax32": {
       "type": "string",
-      "max": 32,
       "documentation": "Placeholder documentation for __stringMax32"
     },
     "__stringMin1": {
       "type": "string",
-      "min": 1,
       "documentation": "Placeholder documentation for __stringMin1"
     },
     "__stringMin1Max255": {
       "type": "string",
-      "min": 1,
-      "max": 255,
       "documentation": "Placeholder documentation for __stringMin1Max255"
     },
     "__stringMin1Max256": {
       "type": "string",
-      "min": 1,
-      "max": 256,
       "documentation": "Placeholder documentation for __stringMin1Max256"
     },
     "__stringMin1Max35": {
       "type": "string",
-      "min": 1,
-      "max": 35,
       "documentation": "Placeholder documentation for __stringMin1Max35"
     },
     "__stringMin1Max7": {
       "type": "string",
-      "min": 1,
-      "max": 7,
       "documentation": "Placeholder documentation for __stringMin1Max7"
     },
     "__stringMin2Max2": {
       "type": "string",
-      "min": 2,
-      "max": 2,
       "documentation": "Placeholder documentation for __stringMin2Max2"
     },
     "__stringMin32Max32": {
       "type": "string",
-      "min": 32,
-      "max": 32,
       "documentation": "Placeholder documentation for __stringMin32Max32"
     },
     "__stringMin34Max34": {
       "type": "string",
-      "min": 34,
-      "max": 34,
       "documentation": "Placeholder documentation for __stringMin34Max34"
     },
     "__stringMin3Max3": {
       "type": "string",
-      "min": 3,
-      "max": 3,
       "documentation": "Placeholder documentation for __stringMin3Max3"
     },
     "__stringMin6Max6": {
       "type": "string",
-      "min": 6,
-      "max": 6,
       "documentation": "Placeholder documentation for __stringMin6Max6"
     },
     "__stringPattern010920300": {
       "type": "string",
-      "pattern": "^([0,1]?[0-9]|2[0-3]):00$",
       "documentation": "Placeholder documentation for __stringPattern010920300"
     },
     "__timestampIso8601": {
@@ -20992,14 +21076,10 @@
     },
     "__integerMin256Max3840": {
       "type": "integer",
-      "min": 256,
-      "max": 3840,
       "documentation": "Placeholder documentation for __integerMin256Max3840"
     },
     "__integerMin64Max2160": {
       "type": "integer",
-      "min": 64,
-      "max": 2160,
       "documentation": "Placeholder documentation for __integerMin64Max2160"
     },
     "CmafIngestGroupSettings": {
@@ -21084,6 +21164,11 @@
           "shape": "CmafTimedMetadataPassthrough",
           "locationName": "timedMetadataPassthrough",
           "documentation": "Set to enabled to pass through ID3 metadata from the input sources."
+        },
+        "AdditionalDestinations": {
+          "shape": "__listOfAdditionalDestinations",
+          "locationName": "additionalDestinations",
+          "documentation": "Optional an array of additional destinational HTTP destinations for the OutputGroup outputs"
         }
       },
       "documentation": "Cmaf Ingest Group Settings",
@@ -25356,13 +25441,10 @@
     },
     "__integerMax5": {
       "type": "integer",
-      "max": 5,
       "documentation": "Placeholder documentation for __integerMax5"
     },
     "__integerMin10Max86400": {
       "type": "integer",
-      "min": 10,
-      "max": 86400,
       "documentation": "Placeholder documentation for __integerMin10Max86400"
     },
     "__listOfCloudWatchAlarmTemplateGroupSummary": {
@@ -25430,70 +25512,50 @@
     },
     "__stringMax64": {
       "type": "string",
-      "max": 64,
       "documentation": "Placeholder documentation for __stringMax64"
     },
     "__stringMin0Max1024": {
       "type": "string",
-      "min": 0,
-      "max": 1024,
       "documentation": "Placeholder documentation for __stringMin0Max1024"
     },
     "__stringMin1Max2048": {
       "type": "string",
-      "min": 1,
-      "max": 2048,
       "documentation": "Placeholder documentation for __stringMin1Max2048"
     },
     "__stringMin1Max2048PatternArn": {
       "type": "string",
-      "min": 1,
-      "max": 2048,
-      "pattern": "^arn.+$",
       "documentation": "Placeholder documentation for __stringMin1Max2048PatternArn"
     },
     "__stringMin1Max255PatternS": {
       "type": "string",
-      "min": 1,
-      "max": 255,
-      "pattern": "^[^\\s]+$",
       "documentation": "Placeholder documentation for __stringMin1Max255PatternS"
     },
     "__stringMin7Max11PatternAws097": {
       "type": "string",
-      "min": 7,
-      "max": 11,
-      "pattern": "^(aws-)?[0-9]{7}$",
       "documentation": "Placeholder documentation for __stringMin7Max11PatternAws097"
     },
     "__stringPatternArnMedialiveCloudwatchAlarmTemplate": {
       "type": "string",
-      "pattern": "^arn:.+:medialive:.+:cloudwatch-alarm-template:.+$",
       "documentation": "Placeholder documentation for __stringPatternArnMedialiveCloudwatchAlarmTemplate"
     },
     "__stringPatternArnMedialiveCloudwatchAlarmTemplateGroup": {
       "type": "string",
-      "pattern": "^arn:.+:medialive:.+:cloudwatch-alarm-template-group:.+$",
       "documentation": "Placeholder documentation for __stringPatternArnMedialiveCloudwatchAlarmTemplateGroup"
     },
     "__stringPatternArnMedialiveEventbridgeRuleTemplate": {
       "type": "string",
-      "pattern": "^arn:.+:medialive:.+:eventbridge-rule-template:.+$",
       "documentation": "Placeholder documentation for __stringPatternArnMedialiveEventbridgeRuleTemplate"
     },
     "__stringPatternArnMedialiveEventbridgeRuleTemplateGroup": {
       "type": "string",
-      "pattern": "^arn:.+:medialive:.+:eventbridge-rule-template-group:.+$",
       "documentation": "Placeholder documentation for __stringPatternArnMedialiveEventbridgeRuleTemplateGroup"
     },
     "__stringPatternArnMedialiveSignalMap": {
       "type": "string",
-      "pattern": "^arn:.+:medialive:.+:signal-map:.+$",
       "documentation": "Placeholder documentation for __stringPatternArnMedialiveSignalMap"
     },
     "__stringPatternS": {
       "type": "string",
-      "pattern": "^[^\\s]+$",
       "documentation": "Placeholder documentation for __stringPatternS"
     },
     "Scte35SegmentationScope": {
@@ -25651,8 +25713,6 @@
     },
     "__integerMin1Max51": {
       "type": "integer",
-      "min": 1,
-      "max": 51,
       "documentation": "Placeholder documentation for __integerMin1Max51"
     },
     "AnywhereSettings": {
@@ -25748,14 +25808,14 @@
           "documentation": "Configures whether MediaLive will write AFD values into the video.\nAUTO: MediaLive will try to preserve the input AFD value (in cases where multiple AFD values are valid).\nFIXED: the AFD value will be the value configured in the fixedAfd parameter.\nNONE: MediaLive won't write AFD into the video"
         },
         "BufSize": {
-          "shape": "__integerMin50000Max16000000",
+          "shape": "__integerMin50000Max24000000",
           "locationName": "bufSize",
           "documentation": "The size of the buffer (HRD buffer model) in bits."
         },
         "ColorSpaceSettings": {
           "shape": "Av1ColorSpaceSettings",
           "locationName": "colorSpaceSettings",
-          "documentation": "Color Space settings"
+          "documentation": "Specify the type of color space to apply or choose to pass through. The default is to pass through the color space that is in the source."
         },
         "FixedAfd": {
           "shape": "FixedAfd",
@@ -25793,7 +25853,7 @@
           "documentation": "Sets the amount of lookahead. A value of LOW can decrease latency and memory usage. A value of HIGH can produce better quality for certain content."
         },
         "MaxBitrate": {
-          "shape": "__integerMin50000Max8000000",
+          "shape": "__integerMin50000Max12000000",
           "locationName": "maxBitrate",
           "documentation": "The maximum bitrate to assign.\nFor recommendations, see the description for qvbrQualityLevel."
         },
@@ -25828,7 +25888,7 @@
           "documentation": "Configures the timecode burn-in feature. If you enable this feature, the timecode will become part of the video."
         },
         "Bitrate": {
-          "shape": "__integerMin50000Max8000000",
+          "shape": "__integerMin50000Max12000000",
           "locationName": "bitrate",
           "documentation": "Average bitrate in bits/second. Required when the rate control mode is CBR. Not used for QVBR."
         },
@@ -25836,6 +25896,21 @@
           "shape": "Av1RateControlMode",
           "locationName": "rateControlMode",
           "documentation": "Rate control mode.\n\nQVBR: Quality will match the specified quality level except when it is constrained by the\nmaximum bitrate.  Recommended if you or your viewers pay for bandwidth.\n\nCBR: Quality varies, depending on the video complexity. Recommended only if you distribute\nyour assets to devices that cannot handle variable bitrates."
+        },
+        "MinBitrate": {
+          "shape": "__integerMin0Max8000000",
+          "locationName": "minBitrate",
+          "documentation": "Used for QVBR rate control mode only.\nOptional.\nEnter a minimum bitrate if you want to keep the output bitrate about a threshold, in order to prevent the downstream system from de-allocating network bandwidth for this output."
+        },
+        "SpatialAq": {
+          "shape": "Av1SpatialAq",
+          "locationName": "spatialAq",
+          "documentation": "Spatial AQ makes adjustments within each frame based on spatial variation of content complexity. Enabled: MediaLive will determine the appropriate level of spatial AQ to apply. Disabled: No spatial AQ. For more information, see the topic about video adaptive quantization in the MediaLive user guide."
+        },
+        "TemporalAq": {
+          "shape": "Av1TemporalAq",
+          "locationName": "temporalAq",
+          "documentation": "Temporal AQ makes adjustments within each frame based on variations in content complexity over time. Enabled: MediaLive will determine the appropriate level of temporal AQ to apply. Disabled: No temporal AQ. For more information, see the topic about video adaptive quantization in the MediaLive user guide."
         }
       },
       "documentation": "Av1 Settings",
@@ -28397,21 +28472,15 @@
     },
     "__integerMin40Max16000": {
       "type": "integer",
-      "min": 40,
-      "max": 16000,
       "documentation": "Placeholder documentation for __integerMin40Max16000"
     },
-    "__integerMin50000Max16000000": {
+    "__integerMin50000Max24000000": {
       "type": "integer",
-      "min": 50000,
-      "max": 16000000,
-      "documentation": "Placeholder documentation for __integerMin50000Max16000000"
+      "documentation": "Placeholder documentation for __integerMin50000Max24000000"
     },
-    "__integerMin50000Max8000000": {
+    "__integerMin50000Max12000000": {
       "type": "integer",
-      "min": 50000,
-      "max": 8000000,
-      "documentation": "Placeholder documentation for __integerMin50000Max8000000"
+      "documentation": "Placeholder documentation for __integerMin50000Max12000000"
     },
     "__listOfDescribeChannelPlacementGroupSummary": {
       "type": "list",
@@ -28701,7 +28770,6 @@
     },
     "__stringMax100": {
       "type": "string",
-      "max": 100,
       "documentation": "Placeholder documentation for __stringMax100"
     },
     "ChannelEngineVersionRequest": {
@@ -28794,21 +28862,14 @@
     },
     "__stringMin1Max256PatternS": {
       "type": "string",
-      "min": 1,
-      "max": 256,
-      "pattern": "^[\\S]+$",
       "documentation": "Placeholder documentation for __stringMin1Max256PatternS"
     },
     "__integerMin1Max800": {
       "type": "integer",
-      "min": 1,
-      "max": 800,
       "documentation": "Placeholder documentation for __integerMin1Max800"
     },
     "__integerMin80Max800": {
       "type": "integer",
-      "min": 80,
-      "max": 800,
       "documentation": "Placeholder documentation for __integerMin80Max800"
     },
     "InputSdpLocation": {
@@ -29277,6 +29338,665 @@
         "CBR",
         "QVBR"
       ]
+    },
+    "AdditionalDestinations": {
+      "type": "structure",
+      "members": {
+        "Destination": {
+          "shape": "OutputLocationRef",
+          "locationName": "destination",
+          "documentation": "The destination location"
+        }
+      },
+      "documentation": "Additional output destinations for a CMAF Ingest output group",
+      "required": [
+        "Destination"
+      ]
+    },
+    "__listOfAdditionalDestinations": {
+      "type": "list",
+      "member": {
+        "shape": "AdditionalDestinations"
+      },
+      "documentation": "Placeholder documentation for __listOfAdditionalDestinations"
+    },
+    "BurnInDestinationSubtitleRows": {
+      "type": "string",
+      "documentation": "Burn In Destination Subtitle Rows",
+      "enum": [
+        "ROWS_16",
+        "ROWS_20",
+        "ROWS_24"
+      ]
+    },
+    "DvbSubDestinationSubtitleRows": {
+      "type": "string",
+      "documentation": "Dvb Sub Destination Subtitle Rows",
+      "enum": [
+        "ROWS_16",
+        "ROWS_20",
+        "ROWS_24"
+      ]
+    },
+    "HlsAutoSelect": {
+      "type": "string",
+      "documentation": "Hls Auto Select",
+      "enum": [
+        "NO",
+        "OMIT",
+        "YES"
+      ]
+    },
+    "HlsDefault": {
+      "type": "string",
+      "documentation": "Hls Default",
+      "enum": [
+        "NO",
+        "OMIT",
+        "YES"
+      ]
+    },
+    "MediaPackageV2DestinationSettings": {
+      "type": "structure",
+      "members": {
+        "AudioGroupId": {
+          "shape": "__string",
+          "locationName": "audioGroupId",
+          "documentation": "Applies only to an output that contains audio. If you want to put several audio encodes into one audio rendition group, decide on a name (ID) for the group. Then in every audio output that you want to belong to that group, enter that ID in this field. Note that this information is part of the HLS specification (not the CMAF specification), but if you include it then MediaPackage will include it in the manifest it creates for the video player."
+        },
+        "AudioRenditionSets": {
+          "shape": "__string",
+          "locationName": "audioRenditionSets",
+          "documentation": "Applies only to an output that contains video, and only if you want to associate one or more audio groups to this video. In this field you assign the groups that you create (in the Group ID fields in the various audio outputs). Enter one group ID, or enter a comma-separated list of group IDs. Note that this information is part of the HLS specification (not the CMAF specification), but if you include it then MediaPackage will include it in the manifest it creates for the video player."
+        },
+        "HlsAutoSelect": {
+          "shape": "HlsAutoSelect",
+          "locationName": "hlsAutoSelect",
+          "documentation": "Specifies whether MediaPackage should set this output as the auto-select rendition in the HLS manifest. YES means this must be the auto-select. NO means this should never be the auto-select. OMIT means MediaPackage decides what to set on this rendition.\nWhen you consider all the renditions, follow these guidelines. You can set zero or one renditions to YES. You can set zero or more renditions to NO, but you can't set all renditions to NO. You can set zero, some, or all to OMIT."
+        },
+        "HlsDefault": {
+          "shape": "HlsDefault",
+          "locationName": "hlsDefault",
+          "documentation": "Specifies whether MediaPackage should set this output as the default rendition in the HLS manifest. YES means this must be the default. NO means this should never be the default. OMIT means MediaPackage decides what to set on this rendition.\nWhen you consider all the renditions, follow these guidelines. You can set zero or one renditions to YES. You can set zero or more renditions to NO, but you can't set all renditions to NO. You can set zero, some, or all to OMIT."
+        }
+      },
+      "documentation": "Media Package V2 Destination Settings"
+    },
+    "MediaPackageV2GroupSettings": {
+      "type": "structure",
+      "members": {
+        "CaptionLanguageMappings": {
+          "shape": "__listOfCaptionLanguageMapping",
+          "locationName": "captionLanguageMappings",
+          "documentation": "Mapping of up to 4 caption channels to caption languages."
+        },
+        "Id3Behavior": {
+          "shape": "CmafId3Behavior",
+          "locationName": "id3Behavior",
+          "documentation": "Set to ENABLED to enable ID3 metadata insertion. To include metadata, you configure other parameters in the output group, or you add an ID3 action to the channel schedule."
+        },
+        "KlvBehavior": {
+          "shape": "CmafKLVBehavior",
+          "locationName": "klvBehavior",
+          "documentation": "If set to passthrough, passes any KLV data from the input source to this output."
+        },
+        "NielsenId3Behavior": {
+          "shape": "CmafNielsenId3Behavior",
+          "locationName": "nielsenId3Behavior",
+          "documentation": "If set to passthrough, Nielsen inaudible tones for media tracking will be detected in the input audio and an equivalent ID3 tag will be inserted in the output."
+        },
+        "Scte35Type": {
+          "shape": "Scte35Type",
+          "locationName": "scte35Type",
+          "documentation": "Type of scte35 track to add. none or scte35WithoutSegmentation"
+        },
+        "SegmentLength": {
+          "shape": "__integerMin1",
+          "locationName": "segmentLength",
+          "documentation": "The nominal duration of segments. The units are specified in SegmentLengthUnits. The segments will end on the next keyframe after the specified duration, so the actual segment length might be longer, and it might be a fraction of the units."
+        },
+        "SegmentLengthUnits": {
+          "shape": "CmafIngestSegmentLengthUnits",
+          "locationName": "segmentLengthUnits",
+          "documentation": "Time unit for segment length parameter."
+        },
+        "TimedMetadataId3Frame": {
+          "shape": "CmafTimedMetadataId3Frame",
+          "locationName": "timedMetadataId3Frame",
+          "documentation": "Set to none if you don't want to insert a timecode in the output. Otherwise choose the frame type for the timecode."
+        },
+        "TimedMetadataId3Period": {
+          "shape": "__integerMin0Max10000",
+          "locationName": "timedMetadataId3Period",
+          "documentation": "If you set up to insert a timecode in the output, specify the frequency for the frame, in seconds."
+        },
+        "TimedMetadataPassthrough": {
+          "shape": "CmafTimedMetadataPassthrough",
+          "locationName": "timedMetadataPassthrough",
+          "documentation": "Set to enabled to pass through ID3 metadata from the input sources."
+        }
+      },
+      "documentation": "Media Package V2 Group Settings"
+    },
+    "H265GopBReference": {
+      "type": "string",
+      "documentation": "H265 Gop BReference",
+      "enum": [
+        "DISABLED",
+        "ENABLED"
+      ]
+    },
+    "H265SubGopLength": {
+      "type": "string",
+      "documentation": "H265 Sub Gop Length",
+      "enum": [
+        "DYNAMIC",
+        "FIXED"
+      ]
+    },
+    "__integerMin0Max3": {
+      "type": "integer",
+      "documentation": "Placeholder documentation for __integerMin0Max3"
+    },
+    "__integerMin0Max40000000": {
+      "type": "integer",
+      "documentation": "Placeholder documentation for __integerMin0Max40000000"
+    },
+    "__integerMin0Max8000000": {
+      "type": "integer",
+      "documentation": "Placeholder documentation for __integerMin0Max8000000"
+    },
+    "ChannelAlert": {
+      "type": "structure",
+      "members": {
+        "AlertType": {
+          "shape": "__string",
+          "locationName": "alertType",
+          "documentation": "The type of the alert"
+        },
+        "ClearedTimestamp": {
+          "shape": "__timestampIso8601",
+          "locationName": "clearedTimestamp",
+          "documentation": "The time when the alert was cleared"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The unique ID for this alert instance"
+        },
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "The user facing alert message which can have more context"
+        },
+        "PipelineId": {
+          "shape": "__string",
+          "locationName": "pipelineId",
+          "documentation": "The ID of the pipeline this alert is associated with"
+        },
+        "SetTimestamp": {
+          "shape": "__timestampIso8601",
+          "locationName": "setTimestamp",
+          "documentation": "The time when the alert was set"
+        },
+        "State": {
+          "shape": "ChannelAlertState",
+          "locationName": "state",
+          "documentation": "The state of the alert"
+        }
+      },
+      "documentation": "An alert on a channel"
+    },
+    "ChannelAlertState": {
+      "type": "string",
+      "documentation": "The possible states of a channel alert. SET - The alert is actively happening. CLEARED - The alert is no longer happening.",
+      "enum": [
+        "SET",
+        "CLEARED"
+      ]
+    },
+    "ClusterAlert": {
+      "type": "structure",
+      "members": {
+        "AlertType": {
+          "shape": "__string",
+          "locationName": "alertType",
+          "documentation": "The type of the alert"
+        },
+        "ChannelId": {
+          "shape": "__string",
+          "locationName": "channelId",
+          "documentation": "The ID of the channel this alert is associated with"
+        },
+        "ClearedTimestamp": {
+          "shape": "__timestampIso8601",
+          "locationName": "clearedTimestamp",
+          "documentation": "The time when the alert was cleared"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The further subtype of this alert"
+        },
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "The user facing alert message which can have more context"
+        },
+        "NodeId": {
+          "shape": "__string",
+          "locationName": "nodeId",
+          "documentation": "The ID of the node this alert is associated with"
+        },
+        "SetTimestamp": {
+          "shape": "__timestampIso8601",
+          "locationName": "setTimestamp",
+          "documentation": "The time when the alert was set"
+        },
+        "State": {
+          "shape": "ClusterAlertState",
+          "locationName": "state",
+          "documentation": "The state of the alert"
+        }
+      },
+      "documentation": "An alert on a cluster"
+    },
+    "ClusterAlertState": {
+      "type": "string",
+      "documentation": "The possible states of a cluster alert. SET - The alert is actively happening. CLEARED - The alert is no longer happening.",
+      "enum": [
+        "SET",
+        "CLEARED"
+      ]
+    },
+    "ListAlertsRequest": {
+      "type": "structure",
+      "members": {
+        "ChannelId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "channelId",
+          "documentation": "The unique ID of the channel"
+        },
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "The maximum number of items to return"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "The next pagination token"
+        },
+        "StateFilter": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "stateFilter",
+          "documentation": "Specifies the set of alerts to return based on their state. SET - Return only alerts with SET state. CLEARED - Return only alerts with CLEARED state. ALL - Return all alerts."
+        }
+      },
+      "required": [
+        "ChannelId"
+      ],
+      "documentation": "Placeholder documentation for ListAlertsRequest"
+    },
+    "ListAlertsResponse": {
+      "type": "structure",
+      "members": {
+        "Alerts": {
+          "shape": "__listOfChannelAlert",
+          "locationName": "alerts",
+          "documentation": "The alerts found for this channel"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "The token to use to retrieve the next page of results"
+        }
+      },
+      "documentation": "Placeholder documentation for ListAlertsResponse"
+    },
+    "ListAlertsResultModel": {
+      "type": "structure",
+      "members": {
+        "Alerts": {
+          "shape": "__listOfChannelAlert",
+          "locationName": "alerts",
+          "documentation": "The alerts found for this channel"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "The token to use to retrieve the next page of results"
+        }
+      },
+      "documentation": "The result of a successful ListAlerts request"
+    },
+    "ListClusterAlertsRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterId",
+          "documentation": "The unique ID of the cluster"
+        },
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "The maximum number of items to return"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "The next pagination token"
+        },
+        "StateFilter": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "stateFilter",
+          "documentation": "Specifies the set of alerts to return based on their state. SET - Return only alerts with SET state. CLEARED - Return only alerts with CLEARED state. ALL - Return all alerts."
+        }
+      },
+      "required": [
+        "ClusterId"
+      ],
+      "documentation": "Placeholder documentation for ListClusterAlertsRequest"
+    },
+    "ListClusterAlertsResponse": {
+      "type": "structure",
+      "members": {
+        "Alerts": {
+          "shape": "__listOfClusterAlert",
+          "locationName": "alerts",
+          "documentation": "The alerts found for this cluster"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "The token to use to retrieve the next page of results"
+        }
+      },
+      "documentation": "Placeholder documentation for ListClusterAlertsResponse"
+    },
+    "ListClusterAlertsResultModel": {
+      "type": "structure",
+      "members": {
+        "Alerts": {
+          "shape": "__listOfClusterAlert",
+          "locationName": "alerts",
+          "documentation": "The alerts found for this cluster"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "The token to use to retrieve the next page of results"
+        }
+      },
+      "documentation": "The result of a successful ListClusterAlerts request"
+    },
+    "ListMultiplexAlertsRequest": {
+      "type": "structure",
+      "members": {
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "The maximum number of items to return"
+        },
+        "MultiplexId": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "multiplexId",
+          "documentation": "The unique ID of the multiplex"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "The next pagination token"
+        },
+        "StateFilter": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "stateFilter",
+          "documentation": "Specifies the set of alerts to return based on their state. SET - Return only alerts with SET state. CLEARED - Return only alerts with CLEARED state. ALL - Return all alerts."
+        }
+      },
+      "required": [
+        "MultiplexId"
+      ],
+      "documentation": "Placeholder documentation for ListMultiplexAlertsRequest"
+    },
+    "ListMultiplexAlertsResponse": {
+      "type": "structure",
+      "members": {
+        "Alerts": {
+          "shape": "__listOfMultiplexAlert",
+          "locationName": "alerts",
+          "documentation": "The alerts found for this multiplex"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "The token to use to retrieve the next page of results"
+        }
+      },
+      "documentation": "Placeholder documentation for ListMultiplexAlertsResponse"
+    },
+    "ListMultiplexAlertsResultModel": {
+      "type": "structure",
+      "members": {
+        "Alerts": {
+          "shape": "__listOfMultiplexAlert",
+          "locationName": "alerts",
+          "documentation": "The alerts found for this multiplex"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "The token to use to retrieve the next page of results"
+        }
+      },
+      "documentation": "The result of a successful ListMultiplexAlerts request."
+    },
+    "MultiplexAlert": {
+      "type": "structure",
+      "members": {
+        "AlertType": {
+          "shape": "__string",
+          "locationName": "alertType",
+          "documentation": "The type of the alert"
+        },
+        "ClearedTimestamp": {
+          "shape": "__timestampIso8601",
+          "locationName": "clearedTimestamp",
+          "documentation": "The time when the alert was cleared"
+        },
+        "Id": {
+          "shape": "__string",
+          "locationName": "id",
+          "documentation": "The unique ID for this alert instance"
+        },
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "The user facing alert message which can have more context"
+        },
+        "PipelineId": {
+          "shape": "__string",
+          "locationName": "pipelineId",
+          "documentation": "The ID of the pipeline this alert is associated with"
+        },
+        "SetTimestamp": {
+          "shape": "__timestampIso8601",
+          "locationName": "setTimestamp",
+          "documentation": "The time when the alert was set"
+        },
+        "State": {
+          "shape": "MultiplexAlertState",
+          "locationName": "state",
+          "documentation": "The state of the alert"
+        }
+      },
+      "documentation": "An alert on a multiplex"
+    },
+    "MultiplexAlertState": {
+      "type": "string",
+      "documentation": "The possible states of a multiplex alert. SET - The alert is actively happening. CLEARED - The alert is no longer happening.",
+      "enum": [
+        "SET",
+        "CLEARED"
+      ]
+    },
+    "__listOfChannelAlert": {
+      "type": "list",
+      "member": {
+        "shape": "ChannelAlert"
+      },
+      "documentation": "Placeholder documentation for __listOfChannelAlert"
+    },
+    "__listOfClusterAlert": {
+      "type": "list",
+      "member": {
+        "shape": "ClusterAlert"
+      },
+      "documentation": "Placeholder documentation for __listOfClusterAlert"
+    },
+    "__listOfMultiplexAlert": {
+      "type": "list",
+      "member": {
+        "shape": "MultiplexAlert"
+      },
+      "documentation": "Placeholder documentation for __listOfMultiplexAlert"
+    },
+    "Av1SpatialAq": {
+      "type": "string",
+      "documentation": "Av1 Spatial Aq",
+      "enum": [
+        "DISABLED",
+        "ENABLED"
+      ]
+    },
+    "Av1TemporalAq": {
+      "type": "string",
+      "documentation": "Av1 Temporal Aq",
+      "enum": [
+        "DISABLED",
+        "ENABLED"
+      ]
+    },
+    "Hlg2020Settings": {
+      "type": "structure",
+      "members": {},
+      "documentation": "Hlg2020 Settings"
+    },
+    "RouterDestination": {
+      "type": "structure",
+      "members": {
+        "AvailabilityZoneName": {
+          "shape": "__string",
+          "locationName": "availabilityZoneName",
+          "documentation": "The Availability Zone (AZ) names of the AZs this destination is created in."
+        },
+        "RouterOutputArn": {
+          "shape": "__string",
+          "locationName": "routerOutputArn",
+          "documentation": "ARN of the output from MediaConnect Router currently connected to this input."
+        }
+      },
+      "documentation": "Placeholder documentation for RouterDestination"
+    },
+    "RouterDestinationSettings": {
+      "type": "structure",
+      "members": {
+        "AvailabilityZoneName": {
+          "shape": "__string",
+          "locationName": "availabilityZoneName",
+          "documentation": "Availability Zone for this MediaConnect Router destination."
+        }
+      },
+      "required": [
+        "AvailabilityZoneName"
+      ],
+      "documentation": "Placeholder documentation for RouterDestinationSettings"
+    },
+    "RouterEncryptionType": {
+      "type": "string",
+      "documentation": "Encryption configuration for MediaConnect router. When using SECRETS_MANAGER encryption, you must provide the ARN of the secret used to encrypt data in transit. When using AUTOMATIC encryption, a service-managed secret will be used instead.",
+      "enum": [
+        "AUTOMATIC",
+        "SECRETS_MANAGER"
+      ]
+    },
+    "RouterInputSettings": {
+      "type": "structure",
+      "members": {
+        "Destinations": {
+          "shape": "__listOfRouterDestination",
+          "locationName": "destinations",
+          "documentation": "MediaConnect Router destinations associated with the MediaLive Input."
+        },
+        "EncryptionType": {
+          "shape": "RouterEncryptionType",
+          "locationName": "encryptionType"
+        },
+        "SecretArn": {
+          "shape": "__string",
+          "locationName": "secretArn",
+          "documentation": "ARN of the secret used to encrypt this input."
+        }
+      },
+      "documentation": "The settings for a MediaConnect Router Input."
+    },
+    "RouterSettings": {
+      "type": "structure",
+      "members": {
+        "Destinations": {
+          "shape": "__listOfRouterDestinationSettings",
+          "locationName": "destinations",
+          "documentation": "Destinations for the input from MediaConnect Router. Provide one for a single-pipeline input and two for a standard input."
+        },
+        "EncryptionType": {
+          "shape": "RouterEncryptionType",
+          "locationName": "encryptionType"
+        },
+        "SecretArn": {
+          "shape": "__string",
+          "locationName": "secretArn",
+          "documentation": "ARN of the secret used to encrypt this input."
+        }
+      },
+      "documentation": "This is the collection of settings that are used during the creation of a MediaConnect router input."
+    },
+    "SpecialRouterSettings": {
+      "type": "structure",
+      "members": {
+        "RouterArn": {
+          "shape": "__string",
+          "locationName": "routerArn",
+          "documentation": "This is the arn of the MediaConnect Router resource being associated with the MediaLive Input."
+        }
+      },
+      "documentation": "When using MediaConnect Router as the source of a MediaLive input there's a special handoff that occurs when a router output\nis created. This group of settings is set on your behalf by the MediaConnect Router service using this set of settings. This\nsetting object can only by used by that service."
+    },
+    "__listOfRouterDestination": {
+      "type": "list",
+      "member": {
+        "shape": "RouterDestination"
+      },
+      "documentation": "Placeholder documentation for __listOfRouterDestination"
+    },
+    "__listOfRouterDestinationSettings": {
+      "type": "list",
+      "member": {
+        "shape": "RouterDestinationSettings"
+      },
+      "documentation": "Placeholder documentation for __listOfRouterDestinationSettings"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

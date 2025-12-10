@@ -132,6 +132,23 @@
       ],
       "documentation":"<p>Retrieves the status of the association for the quota request template.</p>"
     },
+    "GetAutoManagementConfiguration":{
+      "name":"GetAutoManagementConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAutoManagementConfigurationRequest"},
+      "output":{"shape":"GetAutoManagementConfigurationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"NoSuchResourceException"},
+        {"shape":"IllegalArgumentException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"}
+      ],
+      "documentation":"<p>Retrieves information about your <a href=\"https://docs.aws.amazon.com/servicequotas/latest/userguide/automatic-management.html\">Service Quotas Automatic Management</a> configuration. Automatic Management monitors your Service Quotas utilization and notifies you before you run out of your allocated quotas.</p>"
+    },
     "GetRequestedServiceQuotaChange":{
       "name":"GetRequestedServiceQuotaChange",
       "http":{
@@ -356,6 +373,40 @@
       ],
       "documentation":"<p>Submits a quota increase request for the specified quota at the account or resource level.</p>"
     },
+    "StartAutoManagement":{
+      "name":"StartAutoManagement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartAutoManagementRequest"},
+      "output":{"shape":"StartAutoManagementResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"NoSuchResourceException"},
+        {"shape":"IllegalArgumentException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"}
+      ],
+      "documentation":"<p>Starts <a href=\"https://docs.aws.amazon.com/servicequotas/latest/userguide/automatic-management.html\">Service Quotas Automatic Management</a> for an Amazon Web Services account, including notification preferences and excluded quotas configurations. Automatic Management monitors your Service Quotas utilization and notifies you before you run out of your allocated quotas.</p>"
+    },
+    "StopAutoManagement":{
+      "name":"StopAutoManagement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopAutoManagementRequest"},
+      "output":{"shape":"StopAutoManagementResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"NoSuchResourceException"},
+        {"shape":"IllegalArgumentException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"}
+      ],
+      "documentation":"<p>Stops <a href=\"https://docs.aws.amazon.com/servicequotas/latest/userguide/automatic-management.html\">Service Quotas Automatic Management</a> for an Amazon Web Services account and removes all associated configurations. Automatic Management monitors your Service Quotas utilization and notifies you before you run out of your allocated quotas.</p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -391,6 +442,23 @@
         {"shape":"ServiceException"}
       ],
       "documentation":"<p>Removes tags from the specified applied quota. You can specify one or more tags to remove.</p>"
+    },
+    "UpdateAutoManagement":{
+      "name":"UpdateAutoManagement",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateAutoManagementRequest"},
+      "output":{"shape":"UpdateAutoManagementResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"NoSuchResourceException"},
+        {"shape":"IllegalArgumentException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ServiceException"}
+      ],
+      "documentation":"<p>Updates your <a href=\"https://docs.aws.amazon.com/servicequotas/latest/userguide/automatic-management.html\">Service Quotas Automatic Management</a> configuration, including notification preferences and excluded quotas. Automatic Management monitors your Service Quotas utilization and notifies you before you run out of your allocated quotas.</p>"
     }
   },
   "shapes":{
@@ -521,6 +589,32 @@
       "documentation":"<p>An error that explains why an action did not succeed.</p>"
     },
     "ExceptionMessage":{"type":"string"},
+    "ExcludedLimit":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z0-9-_ /]{1,128}"
+    },
+    "ExcludedQuotaList":{
+      "type":"list",
+      "member":{"shape":"ExcludedLimit"}
+    },
+    "ExcludedService":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z0-9-_ /]{1,128}"
+    },
+    "ExclusionList":{
+      "type":"map",
+      "key":{"shape":"ExcludedService"},
+      "value":{"shape":"ExcludedQuotaList"}
+    },
+    "ExclusionQuotaList":{
+      "type":"map",
+      "key":{"shape":"ExcludedService"},
+      "value":{"shape":"QuotaInfoList"}
+    },
     "GetAWSDefaultServiceQuotaRequest":{
       "type":"structure",
       "required":[
@@ -557,6 +651,35 @@
         "ServiceQuotaTemplateAssociationStatus":{
           "shape":"ServiceQuotaTemplateAssociationStatus",
           "documentation":"<p>The association status. If the status is <code>ASSOCIATED</code>, the quota increase requests in the template are automatically applied to new Amazon Web Services accounts in your organization.</p>"
+        }
+      }
+    },
+    "GetAutoManagementConfigurationRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetAutoManagementConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "OptInLevel":{
+          "shape":"OptInLevel",
+          "documentation":"<p>Information on the opt-in level for Automatic Management. Only Amazon Web Services account level is supported.</p>"
+        },
+        "OptInType":{
+          "shape":"OptInType",
+          "documentation":"<p>Information on the opt-in type for Automatic Management. There are two modes: Notify only and Notify and Auto-Adjust. Currently, only NotifyOnly is available.</p>"
+        },
+        "NotificationArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/notifications/latest/userguide/resource-level-permissions.html#rlp-table\">User Notifications</a> Amazon Resource Name (ARN) for Automatic Management notifications.</p>"
+        },
+        "OptInStatus":{
+          "shape":"OptInStatus",
+          "documentation":"<p>Status on whether Automatic Management is started or stopped.</p>"
+        },
+        "ExclusionList":{
+          "shape":"ExclusionQuotaList",
+          "documentation":"<p>List of Amazon Web Services services excluded from Automatic Management. You won't be notified of Service Quotas utilization for Amazon Web Services services added to the Automatic Management exclusion list. </p>"
         }
       }
     },
@@ -963,6 +1086,24 @@
       "documentation":"<p>The specified resource does not exist.</p>",
       "exception":true
     },
+    "OptInLevel":{
+      "type":"string",
+      "enum":["ACCOUNT"]
+    },
+    "OptInStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "OptInType":{
+      "type":"string",
+      "enum":[
+        "NotifyOnly",
+        "NotifyAndAdjust"
+      ]
+    },
     "OrganizationNotInAllFeaturesModeException":{
       "type":"structure",
       "members":{
@@ -1073,6 +1214,24 @@
       },
       "documentation":"<p>You have exceeded your service quota. To perform the requested action, remove some of the relevant resources, or use Service Quotas to request a service quota increase.</p>",
       "exception":true
+    },
+    "QuotaInfo":{
+      "type":"structure",
+      "members":{
+        "QuotaCode":{
+          "shape":"QuotaCode",
+          "documentation":"<p>The Service Quotas code for the Amazon Web Services service monitored with Automatic Management.</p>"
+        },
+        "QuotaName":{
+          "shape":"QuotaName",
+          "documentation":"<p>The Service Quotas name for the Amazon Web Services service monitored with Automatic Management.</p>"
+        }
+      },
+      "documentation":"<p>Information on your Service Quotas for <a href=\"https://docs.aws.amazon.com/servicequotas/latest/userguide/automatic-management.html\">Service Quotas Automatic Management</a>. Automatic Management monitors your Service Quotas utilization and notifies you before you run out of your allocated quotas.</p>"
+    },
+    "QuotaInfoList":{
+      "type":"list",
+      "member":{"shape":"QuotaInfo"}
     },
     "QuotaMetricName":{"type":"string"},
     "QuotaMetricNamespace":{"type":"string"},
@@ -1398,11 +1557,48 @@
       "documentation":"<p>The quota request template is not associated with your organization.</p>",
       "exception":true
     },
+    "StartAutoManagementRequest":{
+      "type":"structure",
+      "required":[
+        "OptInLevel",
+        "OptInType"
+      ],
+      "members":{
+        "OptInLevel":{
+          "shape":"OptInLevel",
+          "documentation":"<p>Sets the opt-in level for Automatic Management. Only Amazon Web Services account level is supported.</p>"
+        },
+        "OptInType":{
+          "shape":"OptInType",
+          "documentation":"<p>Sets the opt-in type for Automatic Management. There are two modes: Notify only and Notify and Auto-Adjust. Currently, only NotifyOnly is available.</p>"
+        },
+        "NotificationArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/notifications/latest/userguide/resource-level-permissions.html#rlp-table\">User Notifications</a> Amazon Resource Name (ARN) for Automatic Management notifications.</p>"
+        },
+        "ExclusionList":{
+          "shape":"ExclusionList",
+          "documentation":"<p>List of Amazon Web Services services excluded from Automatic Management. You won't be notified of Service Quotas utilization for Amazon Web Services services added to the Automatic Management exclusion list. </p>"
+        }
+      }
+    },
+    "StartAutoManagementResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "Statistic":{
       "type":"string",
       "max":256,
       "min":1,
       "pattern":"(Sum|Maximum)"
+    },
+    "StopAutoManagementRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "StopAutoManagementResponse":{
+      "type":"structure",
+      "members":{}
     },
     "SupportCaseAllowed":{"type":"boolean"},
     "Tag":{
@@ -1506,6 +1702,27 @@
       }
     },
     "UntagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateAutoManagementRequest":{
+      "type":"structure",
+      "members":{
+        "OptInType":{
+          "shape":"OptInType",
+          "documentation":"<p>Information on the opt-in type for your Automatic Management configuration. There are two modes: Notify only and Notify and Auto-Adjust. Currently, only NotifyOnly is available.</p>"
+        },
+        "NotificationArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/notifications/latest/userguide/resource-level-permissions.html#rlp-table\">User Notifications</a> Amazon Resource Name (ARN) for Automatic Management notifications you want to update.</p>"
+        },
+        "ExclusionList":{
+          "shape":"ExclusionList",
+          "documentation":"<p>List of Amazon Web Services services you want to exclude from Automatic Management. You won't be notified of Service Quotas utilization for Amazon Web Services services added to the Automatic Management exclusion list. </p>"
+        }
+      }
+    },
+    "UpdateAutoManagementResponse":{
       "type":"structure",
       "members":{}
     }

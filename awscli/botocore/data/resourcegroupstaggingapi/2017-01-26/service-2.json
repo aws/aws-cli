@@ -5,11 +5,13 @@
     "endpointPrefix":"tagging",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceFullName":"AWS Resource Groups Tagging API",
     "serviceId":"Resource Groups Tagging API",
     "signatureVersion":"v4",
     "targetPrefix":"ResourceGroupsTaggingAPI_20170126",
-    "uid":"resourcegroupstaggingapi-2017-01-26"
+    "uid":"resourcegroupstaggingapi-2017-01-26",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "DescribeReportCreation":{
@@ -58,7 +60,7 @@
         {"shape":"InternalServiceException"},
         {"shape":"PaginationTokenExpiredException"}
       ],
-      "documentation":"<p>Returns all the tagged or previously tagged resources that are located in the specified Amazon Web Services Region for the account.</p> <p>Depending on what information you want returned, you can also specify the following:</p> <ul> <li> <p> <i>Filters</i> that specify what tags and resource types you want returned. The response includes all tags that are associated with the requested resources.</p> </li> <li> <p>Information about compliance with the account's effective tag policy. For more information on tag policies, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html\">Tag Policies</a> in the <i>Organizations User Guide.</i> </p> </li> </ul> <p>This operation supports pagination, where the response can be sent in multiple pages. You should check the <code>PaginationToken</code> response parameter to determine if there are additional results available to return. Repeat the query, passing the <code>PaginationToken</code> response parameter value as an input to the next request until you recieve a <code>null</code> value. A null value for <code>PaginationToken</code> indicates that there are no more results waiting to be returned.</p>"
+      "documentation":"<p>Returns all the tagged or previously tagged resources that are located in the specified Amazon Web Services Region for the account. </p> <p>Depending on what information you want returned, you can also specify the following:</p> <ul> <li> <p> <i>Filters</i> that specify what tags and resource types you want returned. The response includes all tags that are associated with the requested resources.</p> </li> <li> <p>Information about compliance with the account's effective tag policy. For more information on tag policies, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html\">Tag Policies</a> in the <i>Organizations User Guide.</i> </p> </li> </ul> <p>This operation supports pagination, where the response can be sent in multiple pages. You should check the <code>PaginationToken</code> response parameter to determine if there are additional results available to return. Repeat the query, passing the <code>PaginationToken</code> response parameter value as an input to the next request until you recieve a <code>null</code> value. A null value for <code>PaginationToken</code> indicates that there are no more results waiting to be returned.</p> <note> <p> <code>GetResources</code> does not return untagged resources. </p> <p>To find untagged resources in your account, use Amazon Web Services Resource Explorer with a query that uses <code>tag:none</code>. For more information, see <a href=\"https://docs.aws.amazon.com/resource-explorer/latest/userguide/using-search-query-syntax.html\"> Search query syntax reference for Resource Explorer</a>. </p> </note>"
     },
     "GetTagKeys":{
       "name":"GetTagKeys",
@@ -92,6 +94,22 @@
       ],
       "documentation":"<p>Returns all tag values for the specified key that are used in the specified Amazon Web Services Region for the calling account.</p> <p>This operation supports pagination, where the response can be sent in multiple pages. You should check the <code>PaginationToken</code> response parameter to determine if there are additional results available to return. Repeat the query, passing the <code>PaginationToken</code> response parameter value as an input to the next request until you recieve a <code>null</code> value. A null value for <code>PaginationToken</code> indicates that there are no more results waiting to be returned.</p>"
     },
+    "ListRequiredTags":{
+      "name":"ListRequiredTags",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListRequiredTagsInput"},
+      "output":{"shape":"ListRequiredTagsOutput"},
+      "errors":[
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"PaginationTokenExpiredException"},
+        {"shape":"ThrottledException"}
+      ],
+      "documentation":"<p>Lists the required tags for supported resource types in an Amazon Web Services account.</p>"
+    },
     "StartReportCreation":{
       "name":"StartReportCreation",
       "http":{
@@ -107,7 +125,7 @@
         {"shape":"InvalidParameterException"},
         {"shape":"ThrottledException"}
       ],
-      "documentation":"<p>Generates a report that lists all tagged resources in the accounts across your organization and tells whether each resource is compliant with the effective tag policy. Compliance data is refreshed daily. The report is generated asynchronously.</p> <p>The generated report is saved to the following location:</p> <p> <code>s3://example-bucket/AwsTagPolicies/o-exampleorgid/YYYY-MM-ddTHH:mm:ssZ/report.csv</code> </p> <p>You can call this operation only from the organization's management account and from the us-east-1 Region.</p>"
+      "documentation":"<p>Generates a report that lists all tagged resources in the accounts across your organization and tells whether each resource is compliant with the effective tag policy. Compliance data is refreshed daily. The report is generated asynchronously.</p> <p>The generated report is saved to the following location:</p> <p> <code>s3://amzn-s3-demo-bucket/AwsTagPolicies/o-exampleorgid/YYYY-MM-ddTHH:mm:ssZ/report.csv</code> </p> <p>For more information about evaluating resource compliance with tag policies, including the required permissions, review <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/tag-policies-orgs.html#tag-policies-permissions-org\">Permissions for evaluating organization-wide compliance</a> in the <i>Tagging Amazon Web Services Resources and Tag Editor</i> user guide. </p> <p>You can call this operation only from the organization's management account and from the us-east-1 Region.</p> <p>If the account associated with the identity used to call <code>StartReportCreation</code> is different from the account that owns the Amazon S3 bucket, there must be a bucket policy attached to the bucket to provide access. For more information, review <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/tag-policies-orgs.html#bucket-policy\">Amazon S3 bucket policy for report storage</a> in the <i>Tagging Amazon Web Services Resources and Tag Editor</i> user guide.</p>"
     },
     "TagResources":{
       "name":"TagResources",
@@ -122,7 +140,7 @@
         {"shape":"ThrottledException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Applies one or more tags to the specified resources. Note the following:</p> <ul> <li> <p>Not all resources can have tags. For a list of services with resources that support tagging using this operation, see <a href=\"https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/supported-services.html\">Services that support the Resource Groups Tagging API</a>. If the resource doesn't yet support this operation, the resource's service might support tagging using its own API operations. For more information, refer to the documentation for that service.</p> </li> <li> <p>Each resource can have up to 50 tags. For other limits, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html#tag-conventions\">Tag Naming and Usage Conventions</a> in the <i>Amazon Web Services General Reference.</i> </p> </li> <li> <p>You can only tag resources that are located in the specified Amazon Web Services Region for the Amazon Web Services account.</p> </li> <li> <p>To add tags to a resource, you need the necessary permissions for the service that the resource belongs to as well as permissions for adding tags. For more information, see the documentation for each service.</p> </li> </ul> <important> <p>Do not store personally identifiable information (PII) or other confidential or sensitive information in tags. We use tags to provide you with billing and administration services. Tags are not intended to be used for private or sensitive data.</p> </important> <p> <b>Minimum permissions</b> </p> <p>In addition to the <code>tag:TagResources</code> permission required by this operation, you must also have the tagging permission defined by the service that created the resource. For example, to tag an Amazon EC2 instance using the <code>TagResources</code> operation, you must have both of the following permissions:</p> <ul> <li> <p> <code>tag:TagResource</code> </p> </li> <li> <p> <code>ec2:CreateTags</code> </p> </li> </ul>"
+      "documentation":"<p>Applies one or more tags to the specified resources. Note the following:</p> <ul> <li> <p>Not all resources can have tags. For a list of services with resources that support tagging using this operation, see <a href=\"https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/supported-services.html\">Services that support the Resource Groups Tagging API</a>. If the resource doesn't yet support this operation, the resource's service might support tagging using its own API operations. For more information, refer to the documentation for that service.</p> </li> <li> <p>Each resource can have up to 50 tags. For other limits, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html#tag-conventions\">Tag Naming and Usage Conventions</a> in the <i>Amazon Web Services General Reference.</i> </p> </li> <li> <p>You can only tag resources that are located in the specified Amazon Web Services Region for the Amazon Web Services account.</p> </li> <li> <p>To add tags to a resource, you need the necessary permissions for the service that the resource belongs to as well as permissions for adding tags. For more information, see the documentation for each service.</p> </li> <li> <p>When you use the <a href=\"https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/overview.html\">Amazon Web Services Resource Groups Tagging API</a> to update tags for Amazon Web Services CloudFormation stack sets, Amazon Web Services calls the <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/APIReference/API_UpdateStack.html\">Amazon Web Services CloudFormation <code>UpdateStack</code> </a> operation. This operation may initiate additional resource property updates in addition to the desired tag updates. To avoid unexpected resource updates, Amazon Web Services recommends that you only apply or update tags to your CloudFormation stack sets using Amazon Web Services CloudFormation. </p> </li> </ul> <important> <p>Do not store personally identifiable information (PII) or other confidential or sensitive information in tags. We use tags to provide you with billing and administration services. Tags are not intended to be used for private or sensitive data.</p> </important> <p> <b>Minimum permissions</b> </p> <p>In addition to the <code>tag:TagResources</code> permission required by this operation, you must also have the tagging permission defined by the service that created the resource. For example, to tag an Amazon EC2 instance using the <code>TagResources</code> operation, you must have both of the following permissions:</p> <ul> <li> <p> <code>tag:TagResources</code> </p> </li> <li> <p> <code>ec2:CreateTags</code> </p> </li> </ul> <note> <p>In addition, some services might have specific requirements for tagging some types of resources. For example, to tag an Amazon S3 bucket, you must also have the <code>s3:GetBucketTagging</code> permission. If the expected minimum permissions don't work, check the documentation for that service's tagging APIs for more information.</p> </note>"
     },
     "UntagResources":{
       "name":"UntagResources",
@@ -137,7 +155,7 @@
         {"shape":"ThrottledException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Removes the specified tags from the specified resources. When you specify a tag key, the action removes both that key and its associated value. The operation succeeds even if you attempt to remove tags from a resource that were already removed. Note the following:</p> <ul> <li> <p>To remove tags from a resource, you need the necessary permissions for the service that the resource belongs to as well as permissions for removing tags. For more information, see the documentation for the service whose resource you want to untag.</p> </li> <li> <p>You can only tag resources that are located in the specified Amazon Web Services Region for the calling Amazon Web Services account.</p> </li> </ul> <p> <b>Minimum permissions</b> </p> <p>In addition to the <code>tag:UntagResources</code> permission required by this operation, you must also have the remove tags permission defined by the service that created the resource. For example, to remove the tags from an Amazon EC2 instance using the <code>UntagResources</code> operation, you must have both of the following permissions:</p> <ul> <li> <p> <code>tag:UntagResource</code> </p> </li> <li> <p> <code>ec2:DeleteTags</code> </p> </li> </ul>"
+      "documentation":"<p>Removes the specified tags from the specified resources. When you specify a tag key, the action removes both that key and its associated value. The operation succeeds even if you attempt to remove tags from a resource that were already removed. Note the following:</p> <ul> <li> <p>To remove tags from a resource, you need the necessary permissions for the service that the resource belongs to as well as permissions for removing tags. For more information, see the documentation for the service whose resource you want to untag.</p> </li> <li> <p>You can only tag resources that are located in the specified Amazon Web Services Region for the calling Amazon Web Services account.</p> </li> </ul> <p> <b>Minimum permissions</b> </p> <p>In addition to the <code>tag:UntagResources</code> permission required by this operation, you must also have the remove tags permission defined by the service that created the resource. For example, to remove the tags from an Amazon EC2 instance using the <code>UntagResources</code> operation, you must have both of the following permissions:</p> <ul> <li> <p> <code>tag:UntagResources</code> </p> </li> <li> <p> <code>ec2:DeleteTags</code> </p> </li> </ul> <note> <p>In addition, some services might have specific requirements for untagging some types of resources. For example, to untag Amazon Web Services Glue Connection, you must also have the <code>glue:GetConnection</code> permission. If the expected minimum permissions don't work, check the documentation for that service's tagging APIs for more information.</p> </note>"
     }
   },
   "shapes":{
@@ -146,6 +164,11 @@
       "max":256,
       "min":0,
       "pattern":"[\\s\\S]*"
+    },
+    "CloudFormationResourceType":{"type":"string"},
+    "CloudFormationResourceTypes":{
+      "type":"list",
+      "member":{"shape":"CloudFormationResourceType"}
     },
     "ComplianceDetails":{
       "type":"structure",
@@ -171,7 +194,7 @@
       "members":{
         "Message":{"shape":"ExceptionMessage"}
       },
-      "documentation":"<p>The target of the operation is currently being modified by a different request. Try again later.</p>",
+      "documentation":"<p>The request failed because the target of the operation is currently being modified by a different request. Try again later.</p>",
       "exception":true
     },
     "ConstraintViolationException":{
@@ -179,13 +202,12 @@
       "members":{
         "Message":{"shape":"ExceptionMessage"}
       },
-      "documentation":"<p>The request was denied because performing this operation violates a constraint. </p> <p>Some of the reasons in the following list might not apply to this specific operation.</p> <ul> <li> <p>You must meet the prerequisites for using tag policies. For information, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies-prereqs.html\">Prerequisites and Permissions for Using Tag Policies</a> in the <i>Organizations User Guide.</i> </p> </li> <li> <p>You must enable the tag policies service principal (<code>tagpolicies.tag.amazonaws.com</code>) to integrate with Organizations For information, see <a href=\"https://docs.aws.amazon.com/organizations/latest/APIReference/API_EnableAWSServiceAccess.html\">EnableAWSServiceAccess</a>.</p> </li> <li> <p>You must have a tag policy attached to the organization root, an OU, or an account.</p> </li> </ul>",
+      "documentation":"<p>The request failed because performing the operation would violate a constraint.</p> <p>Some of the reasons in the following list might not apply to this specific operation.</p> <ul> <li> <p>You must meet the prerequisites for using tag policies. For information, see <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/tag-policies-orgs.html#tag-policies-prereqs\">Prerequisites and permissions</a> in the <i>Tagging Amazon Web Services resources and Tag Editor</i> user guide. </p> </li> <li> <p>You must enable the tag policies service principal (<code>tagpolicies.tag.amazonaws.com</code>) to integrate with Organizations For information, see <a href=\"https://docs.aws.amazon.com/organizations/latest/APIReference/API_EnableAWSServiceAccess.html\">EnableAWSServiceAccess</a>.</p> </li> <li> <p>You must have a tag policy attached to the organization root, an OU, or an account.</p> </li> </ul>",
       "exception":true
     },
     "DescribeReportCreationInput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescribeReportCreationOutput":{
       "type":"structure",
@@ -254,7 +276,7 @@
         },
         "ResourceTypeFilters":{
           "shape":"ResourceTypeFilterList",
-          "documentation":"<p>Specifies that you want the response to include information for only resources of the specified types. The format of each resource type is <code>service[:resourceType]</code>. For example, specifying a resource type of <code>ec2</code> returns all Amazon EC2 resources (which includes EC2 instances). Specifying a resource type of <code>ec2:instance</code> returns only EC2 instances.</p> <p>The string for each service name and resource type is the same as that embedded in a resource's Amazon Resource Name (ARN). Consult the <i> <a href=\"https://docs.aws.amazon.com/general/latest/gr/\">Amazon Web Services General Reference</a> </i> for the following:</p> <ul> <li> <p>For a list of service name strings, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces\">Amazon Web Services Service Namespaces</a>.</p> </li> <li> <p>For resource type strings, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arns-syntax\">Example ARNs</a>.</p> </li> <li> <p>For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a>.</p> </li> </ul> <p>You can specify multiple resource types by using a comma separated array. The array can include up to 100 items. Note that the length constraint requirement applies to each resource type filter. </p>"
+          "documentation":"<p>Specifies that you want the response to include information for only resources of the specified types. The format of each resource type is <code>service[:resourceType]</code>. For example, specifying a resource type of <code>ec2</code> returns all Amazon EC2 resources (which includes EC2 instances). Specifying a resource type of <code>ec2:instance</code> returns only EC2 instances.</p> <p>The string for each service name and resource type is the same as that embedded in a resource's Amazon Resource Name (ARN). Consult the <i> <a href=\"https://docs.aws.amazon.com/general/latest/gr/\">Amazon Web Services General Reference</a> </i> for the following:</p> <ul> <li> <p>For a list of service name strings, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#genref-aws-service-namespaces\">Amazon Web Services Service Namespaces</a>.</p> </li> <li> <p>For resource type strings, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arns-syntax\">Example ARNs</a>.</p> </li> <li> <p>For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a>.</p> </li> </ul> <note> <p>For the list of services whose resources you can tag using the Resource Groups Tagging API, see <a href=\"https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/supported-services.html\">Services that support the Resource Groups Tagging API</a>. If an Amazon Web Services service isn't listed on that page, you might still be able to tag that service's resources by using that service's native tagging operations instead of using Resource Groups Tagging API operations. All tagged resources, whether the tagging used the Resource Groups Tagging API or not, are returned by the <code>Get*</code> operation.</p> </note> <p>You can specify multiple resource types by using a comma separated array. The array can include up to 100 items. Note that the length constraint requirement applies to each resource type filter. </p>"
         },
         "TagKeyFilters":{
           "shape":"TagKeyFilterList",
@@ -296,7 +318,7 @@
         },
         "TagFilters":{
           "shape":"TagFilterList",
-          "documentation":"<p>Specifies a list of TagFilters (keys and values) to restrict the output to only those resources that have tags with the specified keys and, if included, the specified values. Each <code>TagFilter</code> must contain a key with values optional. A request can include up to 50 keys, and each key can include up to 20 values. </p> <p>Note the following when deciding how to use TagFilters:</p> <ul> <li> <p>If you <i>don't</i> specify a <code>TagFilter</code>, the response includes all resources that are currently tagged or ever had a tag. Resources that currently don't have tags are shown with an empty tag set, like this: <code>\"Tags\": []</code>.</p> </li> <li> <p>If you specify more than one filter in a single request, the response returns only those resources that satisfy all filters.</p> </li> <li> <p>If you specify a filter that contains more than one value for a key, the response returns resources that match <i>any</i> of the specified values for that key.</p> </li> <li> <p>If you don't specify a value for a key, the response returns all resources that are tagged with that key, with any or no value.</p> <p>For example, for the following filters: <code>filter1= {keyA,{value1}}</code>, <code>filter2={keyB,{value2,value3,value4}}</code>, <code>filter3= {keyC}</code>:</p> <ul> <li> <p> <code>GetResources({filter1})</code> returns resources tagged with <code>key1=value1</code> </p> </li> <li> <p> <code>GetResources({filter2})</code> returns resources tagged with <code>key2=value2</code> or <code>key2=value3</code> or <code>key2=value4</code> </p> </li> <li> <p> <code>GetResources({filter3})</code> returns resources tagged with any tag with the key <code>key3</code>, and with any or no value</p> </li> <li> <p> <code>GetResources({filter1,filter2,filter3})</code> returns resources tagged with <code>(key1=value1) and (key2=value2 or key2=value3 or key2=value4) and (key3, any or no value)</code> </p> </li> </ul> </li> </ul>"
+          "documentation":"<p>Specifies a list of TagFilters (keys and values) to restrict the output to only those resources that have tags with the specified keys and, if included, the specified values. Each <code>TagFilter</code> must contain a key with values optional. A request can include up to 50 keys, and each key can include up to 20 values. </p> <p>You can't specify both this parameter and the <code>ResourceArnList</code> parameter in the same request. If you do, you get an <code>Invalid Parameter</code> exception.</p> <p>Note the following when deciding how to use TagFilters:</p> <ul> <li> <p>If you <i>don't</i> specify a <code>TagFilter</code>, the response includes all resources that are currently tagged or ever had a tag. Resources that were previously tagged, <i>but do not currently</i> have tags, are shown with an empty tag set, like this: <code>\"Tags\": []</code>.</p> </li> <li> <p>If you specify more than one filter in a single request, the response returns only those resources that satisfy all filters.</p> </li> <li> <p>If you specify a filter that contains more than one value for a key, the response returns resources that match <i>any</i> of the specified values for that key.</p> </li> <li> <p>If you don't specify a value for a key, the response returns all resources that are tagged with that key, with any or no value.</p> <p>For example, for the following filters: <code>filter1= {key1,{value1}}</code>, <code>filter2={key2,{value2,value3,value4}}</code>, <code>filter3= {key3}</code>:</p> <ul> <li> <p> <code>GetResources({filter1})</code> returns resources tagged with <code>key1=value1</code> </p> </li> <li> <p> <code>GetResources({filter2})</code> returns resources tagged with <code>key2=value2</code> or <code>key2=value3</code> or <code>key2=value4</code> </p> </li> <li> <p> <code>GetResources({filter3})</code> returns resources tagged with any tag with the key <code>key3</code>, and with any or no value</p> </li> <li> <p> <code>GetResources({filter1,filter2,filter3})</code> returns resources tagged with <code>(key1=value1) and (key2=value2 or key2=value3 or key2=value4) and (key3, any or no value)</code> </p> </li> </ul> </li> </ul>"
         },
         "ResourcesPerPage":{
           "shape":"ResourcesPerPage",
@@ -308,7 +330,7 @@
         },
         "ResourceTypeFilters":{
           "shape":"ResourceTypeFilterList",
-          "documentation":"<p>Specifies the resource types that you want included in the response. The format of each resource type is <code>service[:resourceType]</code>. For example, specifying a resource type of <code>ec2</code> returns all Amazon EC2 resources (which includes EC2 instances). Specifying a resource type of <code>ec2:instance</code> returns only EC2 instances. </p> <p>The string for each service name and resource type is the same as that embedded in a resource's Amazon Resource Name (ARN). For the list of services whose resources you can use in this parameter, see <a href=\"https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/supported-services.html\">Services that support the Resource Groups Tagging API</a>.</p> <p>You can specify multiple resource types by using an array. The array can include up to 100 items. Note that the length constraint requirement applies to each resource type filter. For example, the following string would limit the response to only Amazon EC2 instances, Amazon S3 buckets, or any Audit Manager resource:</p> <p> <code>ec2:instance,s3:bucket,auditmanager</code> </p>"
+          "documentation":"<p>Specifies the resource types that you want included in the response. The format of each resource type is <code>service[:resourceType]</code>. For example, specifying a service of <code>ec2</code> returns all Amazon EC2 resources (which includes EC2 instances). Specifying a resource type of <code>ec2:instance</code> returns only EC2 instances. </p> <p>You can't specify both this parameter and the <code>ResourceArnList</code> parameter in the same request. If you do, you get an <code>Invalid Parameter</code> exception.</p> <p>The string for each service name and resource type is the same as that embedded in a resource's Amazon Resource Name (ARN).</p> <note> <p>For the list of services whose resources you can tag using the Resource Groups Tagging API, see <a href=\"https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/supported-services.html\">Services that support the Resource Groups Tagging API</a>. If an Amazon Web Services service isn't listed on that page, you might still be able to tag that service's resources by using that service's native tagging operations instead of using Resource Groups Tagging API operations. All tagged resources, whether the tagging used the Resource Groups Tagging API or not, are returned by the <code>Get*</code> operation.</p> </note> <p>You can specify multiple resource types by using an array. The array can include up to 100 items. Note that the length constraint requirement applies to each resource type filter. For example, the following string would limit the response to only Amazon EC2 instances, Amazon S3 buckets, or any Audit Manager resource:</p> <p> <code>ec2:instance,s3:bucket,auditmanager</code> </p>"
         },
         "IncludeComplianceDetails":{
           "shape":"IncludeComplianceDetails",
@@ -320,7 +342,7 @@
         },
         "ResourceARNList":{
           "shape":"ResourceARNListForGet",
-          "documentation":"<p>Specifies a list of ARNs of resources for which you want to retrieve tag data. You can't specify both this parameter and any of the pagination parameters (<code>ResourcesPerPage</code>, <code>TagsPerPage</code>, <code>PaginationToken</code>) in the same request. If you specify both, you get an <code>Invalid Parameter</code> exception.</p> <p>If a resource specified by this parameter doesn't exist, it doesn't generate an error; it simply isn't included in the response.</p> <p>An ARN (Amazon Resource Name) uniquely identifies a resource. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+          "documentation":"<p>Specifies a list of ARNs of resources for which you want to retrieve tag data.</p> <p>You can't specify both this parameter and the <code>ResourceTypeFilters</code> parameter in the same request. If you do, you get an <code>Invalid Parameter</code> exception.</p> <p>You can't specify both this parameter and the <code>TagFilters</code> parameter in the same request. If you do, you get an <code>Invalid Parameter</code> exception.</p> <p>You can't specify both this parameter and any of the pagination parameters (<code>ResourcesPerPage</code>, <code>TagsPerPage</code>, <code>PaginationToken</code>) in the same request. If you do, you get an <code>Invalid Parameter</code> exception.</p> <p>If a resource specified by this parameter doesn't exist, it doesn't generate an error; it simply isn't included in the response.</p> <p>An ARN (Amazon Resource Name) uniquely identifies a resource. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
         }
       }
     },
@@ -413,10 +435,41 @@
       "members":{
         "Message":{"shape":"ExceptionMessage"}
       },
-      "documentation":"<p>This error indicates one of the following:</p> <ul> <li> <p>A parameter is missing.</p> </li> <li> <p>A malformed string was supplied for the request parameter.</p> </li> <li> <p>An out-of-range value was supplied for the request parameter.</p> </li> <li> <p>The target ID is invalid, unsupported, or doesn't exist.</p> </li> <li> <p>You can't access the Amazon S3 bucket for report storage. For more information, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies-prereqs.html#bucket-policies-org-report\">Additional Requirements for Organization-wide Tag Compliance Reports</a> in the <i>Organizations User Guide.</i> </p> </li> </ul>",
+      "documentation":"<p>The request failed because of one of the following reasons:</p> <ul> <li> <p>A required parameter is missing.</p> </li> <li> <p>A provided string parameter is malformed.</p> </li> <li> <p>An provided parameter value is out of range.</p> </li> <li> <p>The target ID is invalid, unsupported, or doesn't exist.</p> </li> <li> <p>You can't access the Amazon S3 bucket for report storage. For more information, see <a href=\"https://docs.aws.amazon.com/tag-editor/latest/userguide/tag-policies-orgs.html#bucket-policy\">Amazon S3 bucket policy for report storage</a> in the <i>Tagging Amazon Web Services resources and Tag Editor</i> user guide. </p> </li> <li> <p>The partition specified in an ARN parameter in the request doesn't match the partition where you invoked the operation. The partition is specified by the second field of the ARN.</p> </li> </ul>",
       "exception":true
     },
     "LastUpdated":{"type":"string"},
+    "ListRequiredTagsInput":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token for requesting another page of required tags if the <code>NextToken</code> response element indicates that more required tags are available. Use the value of the returned <code>NextToken</code> element in your request until the token comes back as null. Pass null if this is the first call.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResultsForListRequiredTags",
+          "documentation":"<p>The maximum number of required tags.</p>"
+        }
+      }
+    },
+    "ListRequiredTagsOutput":{
+      "type":"structure",
+      "members":{
+        "RequiredTags":{
+          "shape":"RequiredTagsForListRequiredTags",
+          "documentation":"<p>The required tags.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>A token for requesting another page of required tags if the <code>NextToken</code> response element indicates that more required tags are available. Use the value of the returned <code>NextToken</code> element in your request until the token comes back as null. Pass null if this is the first call.</p>"
+        }
+      }
+    },
+    "MaxResultsForListRequiredTags":{
+      "type":"integer",
+      "max":200,
+      "min":1
+    },
     "MaxResultsGetComplianceSummary":{
       "type":"integer",
       "max":1000,
@@ -434,7 +487,7 @@
       "members":{
         "Message":{"shape":"ExceptionMessage"}
       },
-      "documentation":"<p>A <code>PaginationToken</code> is valid for a maximum of 15 minutes. Your request was denied because the specified <code>PaginationToken</code> has expired.</p>",
+      "documentation":"<p>The request failed because the specified <code>PaginationToken</code> has expired. A <code>PaginationToken</code> is valid for a maximum of 15 minutes.</p>",
       "exception":true
     },
     "Region":{
@@ -448,6 +501,32 @@
       "member":{"shape":"Region"},
       "max":100,
       "min":1
+    },
+    "ReportingTagKeys":{
+      "type":"list",
+      "member":{"shape":"TagKey"}
+    },
+    "RequiredTag":{
+      "type":"structure",
+      "members":{
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>Describes the resource type for the required tag keys.</p>"
+        },
+        "CloudFormationResourceTypes":{
+          "shape":"CloudFormationResourceTypes",
+          "documentation":"<p>Describes the CloudFormation resource type assigned the required tag keys.</p>"
+        },
+        "ReportingTagKeys":{
+          "shape":"ReportingTagKeys",
+          "documentation":"<p>These tag keys are marked as <code>required</code> in the <code>report_required_tag_for</code> block of the effective tag policy.</p>"
+        }
+      },
+      "documentation":"<p>Information that describes the required tags for a given resource type.</p>"
+    },
+    "RequiredTagsForListRequiredTags":{
+      "type":"list",
+      "member":{"shape":"RequiredTag"}
     },
     "ResourceARN":{
       "type":"string",
@@ -489,6 +568,7 @@
       "type":"list",
       "member":{"shape":"ResourceTagMapping"}
     },
+    "ResourceType":{"type":"string"},
     "ResourceTypeFilterList":{
       "type":"list",
       "member":{"shape":"AmazonResourceType"}
@@ -507,14 +587,13 @@
       "members":{
         "S3Bucket":{
           "shape":"S3Bucket",
-          "documentation":"<p>The name of the Amazon S3 bucket where the report will be stored; for example:</p> <p> <code>awsexamplebucket</code> </p> <p>For more information on S3 bucket requirements, including an example bucket policy, see the example S3 bucket policy on this page.</p>"
+          "documentation":"<p>The name of the Amazon S3 bucket where the report will be stored; for example:</p> <p> <code>amzn-s3-demo-bucket</code> </p> <p>For more information on S3 bucket requirements, including an example bucket policy, see the example Amazon S3 bucket policy on this page.</p>"
         }
       }
     },
     "StartReportCreationOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Status":{"type":"string"},
     "StatusCode":{"type":"integer"},
@@ -691,7 +770,7 @@
       "members":{
         "Message":{"shape":"ExceptionMessage"}
       },
-      "documentation":"<p>The request was denied to limit the frequency of submitted requests.</p>",
+      "documentation":"<p>The request failed because it exceeded the allowed frequency of submitted requests.</p>",
       "exception":true
     },
     "UntagResourcesInput":{

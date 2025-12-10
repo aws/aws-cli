@@ -14,6 +14,7 @@ import copy
 import math
 
 from botocore.exceptions import ClientError
+from s3transfer.exceptions import S3CopyFailedError
 from s3transfer.tasks import (
     CompleteMultipartUploadTask,
     CreateMultipartUploadTask,
@@ -106,8 +107,10 @@ class CopySubmissionTask(SubmissionTask):
             transfer request that tasks are being submitted for
         """
         call_args = transfer_future.meta.call_args
-        # Determine the size if it was not provided
-        if transfer_future.meta.size is None:
+        if (
+            transfer_future.meta.size is None
+            or transfer_future.meta.etag is None
+        ):
             # If a size was not provided figure out the size for the
             # user. Note that we will only use the client provided to
             # the TransferManager. If the object is outside of the region
@@ -134,6 +137,10 @@ class CopySubmissionTask(SubmissionTask):
             transfer_future.meta.provide_transfer_size(
                 response['ContentLength']
             )
+            # Provide an etag to ensure a stored object is not modified
+            # during a multipart copy.
+            transfer_future.meta.provide_object_etag(response.get('ETag'))
+
         # Check for ifNoneMatch is enabled and file has content
         # Special handling for 0-byte files: Since multipart copy works with object size
         # and divides the object into smaller chunks, there's an edge case when the object
@@ -245,6 +252,10 @@ class CopySubmissionTask(SubmissionTask):
                 num_parts,
                 transfer_future.meta.size,
             )
+            if transfer_future.meta.etag is not None:
+                extra_part_args['CopySourceIfMatch'] = (
+                    transfer_future.meta.etag
+                )
             # Get the size of the part copy as well for the progress
             # callbacks.
             size = self._get_transfer_size(
@@ -394,14 +405,27 @@ class CopyPartTask(Task):
             the multipart upload. If a checksum is in the response,
             it will also be included.
         """
-        response = client.upload_part_copy(
-            CopySource=copy_source,
-            Bucket=bucket,
-            Key=key,
-            UploadId=upload_id,
-            PartNumber=part_number,
-            **extra_args,
-        )
+        try:
+            response = client.upload_part_copy(
+                CopySource=copy_source,
+                Bucket=bucket,
+                Key=key,
+                UploadId=upload_id,
+                PartNumber=part_number,
+                **extra_args,
+            )
+        except ClientError as e:
+            error_code = e.response.get('Error', {}).get('Code')
+            src_key = copy_source['Key']
+            src_bucket = copy_source['Bucket']
+            if error_code == "PreconditionFailed":
+                raise S3CopyFailedError(
+                    f'Contents of stored object "{src_key}" '
+                    f'in bucket "{src_bucket}" did not match '
+                    'expected ETag.'
+                )
+            else:
+                raise
         for callback in callbacks:
             callback(bytes_transferred=size)
         etag = response['CopyPartResult']['ETag']

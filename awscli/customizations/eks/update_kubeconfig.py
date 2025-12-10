@@ -84,6 +84,14 @@ class UpdateKubeconfigCommand(BasicCommand):
             'required': False,
         },
         {
+            'name': 'proxy-url',
+            'help_text': (
+                "Optionally specify a proxy url to route "
+                "traffic via when connecting to a cluster."
+            ),
+            'required': False,
+        },
+        {
             'name': 'dry-run',
             'action': 'store_true',
             'default': False,
@@ -172,15 +180,11 @@ class UpdateKubeconfigCommand(BasicCommand):
 
             if updating_existing:
                 uni_print(
-                    "Updated context {0} in {1}\n".format(
-                        new_context_dict["name"], config.path
-                    )
+                    f"Updated context {new_context_dict['name']} in {config.path}\n"
                 )
             else:
                 uni_print(
-                    "Added new context {0} to {1}\n".format(
-                        new_context_dict["name"], config.path
-                    )
+                    f"Added new context {new_context_dict['name']} to {config.path}\n"
                 )
 
             if parsed_args.verbose:
@@ -327,7 +331,7 @@ class EKSClient:
         endpoint = self.cluster_description.get("endpoint")
         arn = self.cluster_description.get("arn")
 
-        return OrderedDict(
+        generated_cluster = OrderedDict(
             [
                 (
                     "cluster",
@@ -341,6 +345,13 @@ class EKSClient:
                 ("name", arn),
             ]
         )
+
+        if self._parsed_args.proxy_url is not None:
+            generated_cluster["cluster"]["proxy-url"] = (
+                self._parsed_args.proxy_url
+            )
+
+        return generated_cluster
 
     def get_user_entry(self, user_alias=None):
         """

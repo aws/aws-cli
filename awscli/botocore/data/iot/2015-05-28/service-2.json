@@ -869,7 +869,8 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceAlreadyExistsException"},
         {"shape":"ServiceUnavailableException"},
-        {"shape":"ConflictingResourceUpdateException"}
+        {"shape":"ConflictingResourceUpdateException"},
+        {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Creates a rule. Creating rules is an administrator-level action. Any user who has permission to create rules will be able to access data processed by the rule.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateTopicRule</a> action.</p>"
     },
@@ -886,7 +887,8 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceAlreadyExistsException"},
         {"shape":"ServiceUnavailableException"},
-        {"shape":"ConflictingResourceUpdateException"}
+        {"shape":"ConflictingResourceUpdateException"},
+        {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Creates a topic rule destination. The destination must be confirmed prior to use.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">CreateTopicRuleDestination</a> action.</p>"
     },
@@ -1770,6 +1772,23 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Gets summary information about a domain configuration.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">DescribeDomainConfiguration</a> action.</p>"
+    },
+    "DescribeEncryptionConfiguration":{
+      "name":"DescribeEncryptionConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/encryption-configuration"
+      },
+      "input":{"shape":"DescribeEncryptionConfigurationRequest"},
+      "output":{"shape":"DescribeEncryptionConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Retrieves the encryption configuration for resources and data of your Amazon Web Services account in Amazon Web Services IoT Core. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/key-management.html\">Key management in IoT</a> from the <i>Amazon Web Services IoT Core Developer Guide</i>.</p>"
     },
     "DescribeEndpoint":{
       "name":"DescribeEndpoint",
@@ -3622,7 +3641,8 @@
       "errors":[
         {"shape":"InternalException"},
         {"shape":"InvalidRequestException"},
-        {"shape":"ServiceUnavailableException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"UnauthorizedException"}
       ],
       "documentation":"<p>Lists the rules for the specific topic.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">ListTopicRules</a> action.</p>"
     },
@@ -4077,7 +4097,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Transfers the specified certificate to the specified Amazon Web Services account.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">TransferCertificate</a> action.</p> <p>You can cancel the transfer until it is acknowledged by the recipient.</p> <p>No notification is sent to the transfer destination's account. It is up to the caller to notify the transfer target.</p> <p>The certificate being transferred must not be in the ACTIVE state. You can use the <a>UpdateCertificate</a> action to deactivate it.</p> <p>The certificate must not have any policies attached to it. You can use the <a>DetachPolicy</a> action to detach them.</p>"
+      "documentation":"<p>Transfers the specified certificate to the specified Amazon Web Services account.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">TransferCertificate</a> action.</p> <p>You can cancel the transfer until it is acknowledged by the recipient.</p> <p>No notification is sent to the transfer destination's account. It's up to the caller to notify the transfer target.</p> <p>The certificate being transferred must not be in the <code>ACTIVE</code> state. You can use the <a>UpdateCertificate</a> action to deactivate it.</p> <p>The certificate must not have any policies attached to it. You can use the <a>DetachPolicy</a> action to detach them.</p> <p> <b>Customer managed key behavior:</b> When you use a customer managed key to secure your data and then transfer the key to a customer in a different account using the <a>TransferCertificate</a> operation, the certificates will no longer be protected by their customer managed key configuration. During the transfer process, certificates are encrypted using IoT owned keys.</p> <p>While a certificate is in the <b>PENDING_TRANSFER</b> state, it's always protected by IoT owned keys, regardless of the customer managed key configuration of either the source or destination account. </p> <p>Once the transfer is completed through <a>AcceptCertificateTransfer</a>, <a>RejectCertificateTransfer</a>, or <a>CancelCertificateTransfer</a>, the certificate will be protected by the customer managed key configuration of the account that owns the certificate after the transfer operation:</p> <ul> <li> <p>If the transfer is accepted: The certificate is protected by the destination account's customer managed key configuration.</p> </li> <li> <p>If the transfer is rejected or cancelled: The certificate is protected by the source account's customer managed key configuration.</p> </li> </ul>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -4300,6 +4320,23 @@
         {"shape":"InvalidQueryException"}
       ],
       "documentation":"<p>Updates a dynamic thing group.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">UpdateDynamicThingGroup</a> action.</p>"
+    },
+    "UpdateEncryptionConfiguration":{
+      "name":"UpdateEncryptionConfiguration",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/encryption-configuration"
+      },
+      "input":{"shape":"UpdateEncryptionConfigurationRequest"},
+      "output":{"shape":"UpdateEncryptionConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates the encryption configuration. By default, all Amazon Web Services IoT Core data at rest is encrypted using Amazon Web Services owned keys. Amazon Web Services IoT Core also supports symmetric customer managed keys from Amazon Web Services Key Management Service (KMS). With customer managed keys, you create, own, and manage the KMS keys in your Amazon Web Services account. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/data-encryption.html\">Data encryption</a> in the <i>Amazon Web Services IoT Core Developer Guide</i>.</p>"
     },
     "UpdateEventConfigurations":{
       "name":"UpdateEventConfigurations",
@@ -4895,8 +4932,7 @@
     },
     "AddThingToBillingGroupResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AddThingToThingGroupRequest":{
       "type":"structure",
@@ -4925,8 +4961,7 @@
     },
     "AddThingToThingGroupResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AddThingsToThingGroupParams":{
       "type":"structure",
@@ -5286,8 +5321,7 @@
     },
     "AttachSecurityProfileResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AttachThingPrincipalRequest":{
       "type":"structure",
@@ -5319,8 +5353,7 @@
     },
     "AttachThingPrincipalResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The output from the AttachThingPrincipal operation.</p>"
     },
     "AttributeKey":{"type":"string"},
@@ -6374,8 +6407,7 @@
     },
     "CancelAuditMitigationActionsTaskResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CancelAuditTaskRequest":{
       "type":"structure",
@@ -6391,8 +6423,7 @@
     },
     "CancelAuditTaskResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CancelCertificateTransferRequest":{
       "type":"structure",
@@ -6421,8 +6452,7 @@
     },
     "CancelDetectMitigationActionsTaskResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CancelJobExecutionRequest":{
       "type":"structure",
@@ -6762,13 +6792,11 @@
     },
     "ClearDefaultAuthorizerRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "ClearDefaultAuthorizerResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "ClientCertificateCallbackArn":{
       "type":"string",
@@ -7230,6 +7258,31 @@
       },
       "documentation":"<p>Configuration.</p>"
     },
+    "ConfigurationDetails":{
+      "type":"structure",
+      "members":{
+        "configurationStatus":{
+          "shape":"ConfigurationStatus",
+          "documentation":"<p>The health status of KMS key and KMS access role. If either KMS key or KMS access role is <code>UNHEALTHY</code>, the return value will be <code>UNHEALTHY</code>. To use a customer-managed KMS key, the value of <code>configurationStatus</code> must be <code>HEALTHY</code>. </p>"
+        },
+        "errorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The error code that indicates either the KMS key or the KMS access role is <code>UNHEALTHY</code>. Valid values: <code>KMS_KEY_VALIDATION_ERROR</code> and <code>ROLE_VALIDATION_ERROR</code>. </p>"
+        },
+        "errorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>The detailed error message that corresponds to the <code>errorCode</code>.</p>"
+        }
+      },
+      "documentation":"<p>The encryption configuration details that include the status information of the Amazon Web Services Key Management Service (KMS) key and the KMS access role.</p>"
+    },
+    "ConfigurationStatus":{
+      "type":"string",
+      "enum":[
+        "HEALTHY",
+        "UNHEALTHY"
+      ]
+    },
     "ConfirmTopicRuleDestinationRequest":{
       "type":"structure",
       "required":["confirmationToken"],
@@ -7244,8 +7297,7 @@
     },
     "ConfirmTopicRuleDestinationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "ConfirmationToken":{
       "type":"string",
@@ -7342,8 +7394,7 @@
     },
     "CreateAuditSuppressionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CreateAuthorizerRequest":{
       "type":"structure",
@@ -8997,8 +9048,7 @@
     },
     "DeleteAccountAuditConfigurationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteAdditionalMetricsToRetain":{"type":"boolean"},
     "DeleteAlertTargets":{"type":"boolean"},
@@ -9015,8 +9065,7 @@
     },
     "DeleteAuditSuppressionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteAuthorizerRequest":{
       "type":"structure",
@@ -9032,8 +9081,7 @@
     },
     "DeleteAuthorizerResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteBehaviors":{"type":"boolean"},
     "DeleteBillingGroupRequest":{
@@ -9056,8 +9104,7 @@
     },
     "DeleteBillingGroupResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteCACertificateRequest":{
       "type":"structure",
@@ -9074,8 +9121,7 @@
     },
     "DeleteCACertificateResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The output for the DeleteCACertificate operation.</p>"
     },
     "DeleteCertificateProviderRequest":{
@@ -9092,8 +9138,7 @@
     },
     "DeleteCertificateProviderResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteCertificateRequest":{
       "type":"structure",
@@ -9137,8 +9182,7 @@
     },
     "DeleteCommandExecutionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteCommandRequest":{
       "type":"structure",
@@ -9188,8 +9232,7 @@
     },
     "DeleteCustomMetricResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteDimensionRequest":{
       "type":"structure",
@@ -9205,8 +9248,7 @@
     },
     "DeleteDimensionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteDomainConfigurationRequest":{
       "type":"structure",
@@ -9222,8 +9264,7 @@
     },
     "DeleteDomainConfigurationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteDynamicThingGroupRequest":{
       "type":"structure",
@@ -9245,8 +9286,7 @@
     },
     "DeleteDynamicThingGroupResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteFleetMetricRequest":{
       "type":"structure",
@@ -9357,8 +9397,7 @@
     },
     "DeleteMitigationActionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteOTAUpdateRequest":{
       "type":"structure",
@@ -9386,8 +9425,7 @@
     },
     "DeleteOTAUpdateResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeletePackageRequest":{
       "type":"structure",
@@ -9410,8 +9448,7 @@
     },
     "DeletePackageResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeletePackageVersionRequest":{
       "type":"structure",
@@ -9443,8 +9480,7 @@
     },
     "DeletePackageVersionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeletePolicyRequest":{
       "type":"structure",
@@ -9495,8 +9531,7 @@
     },
     "DeleteProvisioningTemplateResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteProvisioningTemplateVersionRequest":{
       "type":"structure",
@@ -9521,19 +9556,16 @@
     },
     "DeleteProvisioningTemplateVersionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteRegistrationCodeRequest":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The input for the DeleteRegistrationCode operation.</p>"
     },
     "DeleteRegistrationCodeResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The output for the DeleteRegistrationCode operation.</p>"
     },
     "DeleteRoleAliasRequest":{
@@ -9550,8 +9582,7 @@
     },
     "DeleteRoleAliasResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteScheduledAuditRequest":{
       "type":"structure",
@@ -9567,8 +9598,7 @@
     },
     "DeleteScheduledAuditResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteScheduledAudits":{"type":"boolean"},
     "DeleteSecurityProfileRequest":{
@@ -9591,8 +9621,7 @@
     },
     "DeleteSecurityProfileResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteStream":{"type":"boolean"},
     "DeleteStreamRequest":{
@@ -9609,8 +9638,7 @@
     },
     "DeleteStreamResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteThingGroupRequest":{
       "type":"structure",
@@ -9632,8 +9660,7 @@
     },
     "DeleteThingGroupResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteThingRequest":{
       "type":"structure",
@@ -9656,8 +9683,7 @@
     },
     "DeleteThingResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The output of the DeleteThing operation.</p>"
     },
     "DeleteThingTypeRequest":{
@@ -9675,8 +9701,7 @@
     },
     "DeleteThingTypeResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The output for the DeleteThingType operation.</p>"
     },
     "DeleteTopicRuleDestinationRequest":{
@@ -9693,8 +9718,7 @@
     },
     "DeleteTopicRuleDestinationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteTopicRuleRequest":{
       "type":"structure",
@@ -9764,16 +9788,14 @@
     },
     "DeprecateThingTypeResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The output for the DeprecateThingType operation.</p>"
     },
     "DeprecationDate":{"type":"timestamp"},
     "DeprecationFlag":{"type":"boolean"},
     "DescribeAccountAuditConfigurationRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescribeAccountAuditConfigurationResponse":{
       "type":"structure",
@@ -10122,8 +10144,7 @@
     },
     "DescribeDefaultAuthorizerRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescribeDefaultAuthorizerResponse":{
       "type":"structure",
@@ -10269,6 +10290,35 @@
         }
       }
     },
+    "DescribeEncryptionConfigurationRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "DescribeEncryptionConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "encryptionType":{
+          "shape":"EncryptionType",
+          "documentation":"<p>The type of the Amazon Web Services Key Management Service (KMS) key.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role assumed by Amazon Web Services IoT Core to call KMS on behalf of the customer.</p>"
+        },
+        "kmsAccessRoleArn":{
+          "shape":"KmsAccessRoleArn",
+          "documentation":"<p>The ARN of the customer-managed KMS key.</p>"
+        },
+        "configurationDetails":{
+          "shape":"ConfigurationDetails",
+          "documentation":"<p>The encryption configuration details that include the status information of the KMS key and the KMS access role.</p>"
+        },
+        "lastModifiedDate":{
+          "shape":"DateType",
+          "documentation":"<p>The date when encryption configuration is last updated.</p>"
+        }
+      }
+    },
     "DescribeEndpointRequest":{
       "type":"structure",
       "members":{
@@ -10293,8 +10343,7 @@
     },
     "DescribeEventConfigurationsRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescribeEventConfigurationsResponse":{
       "type":"structure",
@@ -11175,8 +11224,7 @@
     },
     "DetachSecurityProfileResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DetachThingPrincipalRequest":{
       "type":"structure",
@@ -11202,8 +11250,7 @@
     },
     "DetachThingPrincipalResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The output from the DetachThingPrincipal operation.</p>"
     },
     "DetailsKey":{
@@ -11472,8 +11519,7 @@
     },
     "DisassociateSbomFromPackageVersionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisconnectReason":{"type":"string"},
     "DisconnectReasonValue":{
@@ -11772,6 +11818,13 @@
     "EnabledBoolean":{
       "type":"boolean",
       "box":true
+    },
+    "EncryptionType":{
+      "type":"string",
+      "enum":[
+        "CUSTOMER_MANAGED_KMS_KEY",
+        "AWS_OWNED_KMS_KEY"
+      ]
     },
     "EndpointAddress":{"type":"string"},
     "EndpointType":{
@@ -12357,8 +12410,7 @@
     },
     "GetIndexingConfigurationRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "GetIndexingConfigurationResponse":{
       "type":"structure",
@@ -12402,8 +12454,7 @@
     },
     "GetLoggingOptionsRequest":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The input for the GetLoggingOptions operation.</p>"
     },
     "GetLoggingOptionsResponse":{
@@ -12443,8 +12494,7 @@
     },
     "GetPackageConfigurationRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "GetPackageConfigurationResponse":{
       "type":"structure",
@@ -12718,8 +12768,7 @@
     },
     "GetRegistrationCodeRequest":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The input to the GetRegistrationCode operation.</p>"
     },
     "GetRegistrationCodeResponse":{
@@ -12846,8 +12895,7 @@
     },
     "GetV2LoggingOptionsRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "GetV2LoggingOptionsResponse":{
       "type":"structure",
@@ -13846,6 +13894,14 @@
         }
       },
       "documentation":"<p>Describes an action to write data to an Amazon Kinesis stream.</p>"
+    },
+    "KmsAccessRoleArn":{
+      "type":"string",
+      "max":2048
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":2048
     },
     "LambdaAction":{
       "type":"structure",
@@ -18011,8 +18067,7 @@
     },
     "PutVerificationStateOnViolationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Qos":{
       "type":"integer",
@@ -18329,8 +18384,7 @@
     },
     "RemoveThingFromBillingGroupResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "RemoveThingFromThingGroupRequest":{
       "type":"structure",
@@ -18355,8 +18409,7 @@
     },
     "RemoveThingFromThingGroupResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "RemoveThingType":{"type":"boolean"},
     "RemovedThings":{"type":"integer"},
@@ -19645,8 +19698,7 @@
     },
     "StopThingRegistrationTaskResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Stream":{
       "type":"structure",
@@ -19855,8 +19907,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -20993,8 +21044,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateAccountAuditConfigurationRequest":{
       "type":"structure",
@@ -21015,8 +21065,7 @@
     },
     "UpdateAccountAuditConfigurationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateAuditSuppressionRequest":{
       "type":"structure",
@@ -21043,8 +21092,7 @@
     },
     "UpdateAuditSuppressionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateAuthorizerRequest":{
       "type":"structure",
@@ -21479,6 +21527,28 @@
         }
       }
     },
+    "UpdateEncryptionConfigurationRequest":{
+      "type":"structure",
+      "required":["encryptionType"],
+      "members":{
+        "encryptionType":{
+          "shape":"EncryptionType",
+          "documentation":"<p>The type of the Amazon Web Services Key Management Service (KMS) key.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the customer-managed KMS key.</p>"
+        },
+        "kmsAccessRoleArn":{
+          "shape":"KmsAccessRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role assumed by Amazon Web Services IoT Core to call KMS on behalf of the customer.</p>"
+        }
+      }
+    },
+    "UpdateEncryptionConfigurationResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "UpdateEventConfigurationsRequest":{
       "type":"structure",
       "members":{
@@ -21490,8 +21560,7 @@
     },
     "UpdateEventConfigurationsResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateFleetMetricRequest":{
       "type":"structure",
@@ -21559,8 +21628,7 @@
     },
     "UpdateIndexingConfigurationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateJobRequest":{
       "type":"structure",
@@ -21655,8 +21723,7 @@
     },
     "UpdatePackageConfigurationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdatePackageRequest":{
       "type":"structure",
@@ -21691,8 +21758,7 @@
     },
     "UpdatePackageResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdatePackageVersionRequest":{
       "type":"structure",
@@ -21744,8 +21810,7 @@
     },
     "UpdatePackageVersionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateProvisioningTemplateRequest":{
       "type":"structure",
@@ -21785,8 +21850,7 @@
     },
     "UpdateProvisioningTemplateResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateRoleAliasRequest":{
       "type":"structure",
@@ -22069,8 +22133,7 @@
     },
     "UpdateThingGroupsForThingResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateThingRequest":{
       "type":"structure",
@@ -22103,8 +22166,7 @@
     },
     "UpdateThingResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The output from the UpdateThing operation.</p>"
     },
     "UpdateThingTypeRequest":{
@@ -22122,8 +22184,7 @@
     },
     "UpdateThingTypeResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateTopicRuleDestinationRequest":{
       "type":"structure",
@@ -22144,8 +22205,7 @@
     },
     "UpdateTopicRuleDestinationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Url":{
       "type":"string",

@@ -1,6 +1,44 @@
 {
   "version" : 2,
   "waiters" : {
+    "AnomalyDetectorActive" : {
+      "description" : "Wait until the anomaly detector reaches ACTIVE status",
+      "delay" : 2,
+      "maxAttempts" : 60,
+      "operation" : "DescribeAnomalyDetector",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "anomalyDetector.status.statusCode",
+        "state" : "success",
+        "expected" : "ACTIVE"
+      }, {
+        "matcher" : "path",
+        "argument" : "anomalyDetector.status.statusCode",
+        "state" : "retry",
+        "expected" : "CREATING"
+      }, {
+        "matcher" : "path",
+        "argument" : "anomalyDetector.status.statusCode",
+        "state" : "retry",
+        "expected" : "UPDATING"
+      } ]
+    },
+    "AnomalyDetectorDeleted" : {
+      "description" : "Wait until the anomaly detector reaches DELETED status",
+      "delay" : 2,
+      "maxAttempts" : 60,
+      "operation" : "DescribeAnomalyDetector",
+      "acceptors" : [ {
+        "matcher" : "error",
+        "state" : "success",
+        "expected" : "ResourceNotFoundException"
+      }, {
+        "matcher" : "path",
+        "argument" : "anomalyDetector.status.statusCode",
+        "state" : "retry",
+        "expected" : "DELETING"
+      } ]
+    },
     "ScraperActive" : {
       "description" : "Wait until a scraper reaches ACTIVE status",
       "delay" : 2,

@@ -2,7 +2,10 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2023-09-30",
-    "auth":["aws.auth#sigv4"],
+    "auth":[
+      "aws.auth#sigv4",
+      "smithy.api#httpBearerAuth"
+    ],
     "endpointPrefix":"bedrock-runtime",
     "protocol":"rest-json",
     "protocolSettings":{"h2":"optional"},
@@ -28,6 +31,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
@@ -77,6 +81,26 @@
       ],
       "documentation":"<p>Sends messages to the specified Amazon Bedrock model and returns the response in a stream. <code>ConverseStream</code> provides a consistent API that works with all Amazon Bedrock models that support messages. This allows you to write code once and use it with different models. Should a model have unique inference parameters, you can also pass those unique parameters to the model. </p> <p>To find out if a model supports streaming, call <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_GetFoundationModel.html\">GetFoundationModel</a> and check the <code>responseStreamingSupported</code> field in the response.</p> <note> <p>The CLI doesn't support streaming operations in Amazon Bedrock, including <code>ConverseStream</code>.</p> </note> <p>Amazon Bedrock doesn't store any text, images, or documents that you provide as content. The data is only used to generate the response.</p> <p>You can submit a prompt by including it in the <code>messages</code> field, specifying the <code>modelId</code> of a foundation model or inference profile to run inference on it, and including any other fields that are relevant to your use case.</p> <p>You can also submit a prompt from Prompt management by specifying the ARN of the prompt version and including a map of variables to values in the <code>promptVariables</code> field. You can append more messages to the prompt by using the <code>messages</code> field. If you use a prompt from Prompt management, you can't include the following fields in the request: <code>additionalModelRequestFields</code>, <code>inferenceConfig</code>, <code>system</code>, or <code>toolConfig</code>. Instead, these fields must be defined through Prompt management. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-management-use.html\">Use a prompt from Prompt management</a>.</p> <p>For information about the Converse API, see <i>Use the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. To use a guardrail, see <i>Use a guardrail with the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. To use a tool with a model, see <i>Tool use (Function calling)</i> in the <i>Amazon Bedrock User Guide</i> </p> <p>For example code, see <i>Conversation streaming example</i> in the <i>Amazon Bedrock User Guide</i>. </p> <p>This operation requires permission for the <code>bedrock:InvokeModelWithResponseStream</code> action.</p> <important> <p>To deny all inference access to resources that you specify in the modelId field, you need to deny access to the <code>bedrock:InvokeModel</code> and <code>bedrock:InvokeModelWithResponseStream</code> actions. Doing this also denies access to the resource through the base inference actions (<a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModel.html\">InvokeModel</a> and <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InvokeModelWithResponseStream.html\">InvokeModelWithResponseStream</a>). For more information see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/security_iam_id-based-policy-examples.html#security_iam_id-based-policy-examples-deny-inference\">Deny access for inference on specific models</a>. </p> </important> <p>For troubleshooting some of the common errors you might encounter when using the <code>ConverseStream</code> API, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/troubleshooting-api-error-codes.html\">Troubleshooting Amazon Bedrock API Error Codes</a> in the Amazon Bedrock User Guide</p>"
     },
+    "CountTokens":{
+      "name":"CountTokens",
+      "http":{
+        "method":"POST",
+        "requestUri":"/model/{modelId}/count-tokens",
+        "responseCode":200
+      },
+      "input":{"shape":"CountTokensRequest"},
+      "output":{"shape":"CountTokensResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns the token count for a given inference request. This operation helps you estimate token usage before sending requests to foundation models by returning the token count that would be used if the same input were sent to the model in an inference request.</p> <p>Token counting is model-specific because different models use different tokenization strategies. The token count returned by this operation will match the token count that would be charged if the same input were sent to the model in an <code>InvokeModel</code> or <code>Converse</code> request.</p> <p>You can use this operation to:</p> <ul> <li> <p>Estimate costs before sending inference requests.</p> </li> <li> <p>Optimize prompts to fit within token limits.</p> </li> <li> <p>Plan for token usage in your applications.</p> </li> </ul> <p>This operation accepts the same input formats as <code>InvokeModel</code> and <code>Converse</code>, allowing you to count tokens for both raw text inputs and structured conversation formats.</p> <p>The following operations are related to <code>CountTokens</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/API/API_runtime_InvokeModel.html\">InvokeModel</a> - Sends inference requests to foundation models</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/API/API_runtime_Converse.html\">Converse</a> - Sends conversation-based inference requests to foundation models</p> </li> </ul>",
+      "readonly":true
+    },
     "GetAsyncInvoke":{
       "name":"GetAsyncInvoke",
       "http":{
@@ -92,7 +116,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieve information about an asynchronous invocation.</p>"
+      "documentation":"<p>Retrieve information about an asynchronous invocation.</p>",
+      "readonly":true
     },
     "InvokeModel":{
       "name":"InvokeModel",
@@ -180,7 +205,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Lists asynchronous invocations.</p>"
+      "documentation":"<p>Lists asynchronous invocations.</p>",
+      "readonly":true
     },
     "StartAsyncInvoke":{
       "name":"StartAsyncInvoke",
@@ -224,9 +250,34 @@
     },
     "AnyToolChoice":{
       "type":"structure",
+      "members":{},
+      "documentation":"<p>The model must request at least one tool (no text is generated). For example, <code>{\"any\" : {}}</code>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>"
+    },
+    "AppliedGuardrailDetails":{
+      "type":"structure",
       "members":{
+        "guardrailId":{
+          "shape":"GuardrailId",
+          "documentation":"<p>The unique ID of the guardrail that was applied.</p>"
+        },
+        "guardrailVersion":{
+          "shape":"GuardrailVersion",
+          "documentation":"<p>The version of the guardrail that was applied.</p>"
+        },
+        "guardrailArn":{
+          "shape":"GuardrailArn",
+          "documentation":"<p>The ARN of the guardrail that was applied.</p>"
+        },
+        "guardrailOrigin":{
+          "shape":"GuardrailOriginList",
+          "documentation":"<p>The origin of how the guardrail was applied. This can be either requested at the API level or enforced at the account or organization level as a default guardrail.</p>"
+        },
+        "guardrailOwnership":{
+          "shape":"GuardrailOwnership",
+          "documentation":"<p>The ownership type of the guardrail, indicating whether it is owned by the requesting account or is a cross-account guardrail shared from another AWS account.</p>"
+        }
       },
-      "documentation":"<p>The model must request at least one tool (no text is generated). For example, <code>{\"any\" : {}}</code>.</p>"
+      "documentation":"<p>Details about the specific guardrail that was applied during this assessment, including its identifier, version, ARN, origin, and ownership information.</p>"
     },
     "ApplyGuardrailRequest":{
       "type":"structure",
@@ -412,11 +463,78 @@
       },
       "documentation":"<p>A summary of an asynchronous invocation.</p>"
     },
-    "AutoToolChoice":{
+    "AudioBlock":{
+      "type":"structure",
+      "required":[
+        "format",
+        "source"
+      ],
+      "members":{
+        "format":{
+          "shape":"AudioFormat",
+          "documentation":"<p>The format of the audio data, such as MP3, WAV, FLAC, or other supported audio formats.</p>"
+        },
+        "source":{
+          "shape":"AudioSource",
+          "documentation":"<p>The source of the audio data, which can be provided as raw bytes or an S3 location.</p>"
+        },
+        "error":{
+          "shape":"ErrorBlock",
+          "documentation":"<p>Error information if the audio block could not be processed or contains invalid data.</p>"
+        }
+      },
+      "documentation":"<p>An audio content block that contains audio data in various supported formats.</p>"
+    },
+    "AudioFormat":{
+      "type":"string",
+      "enum":[
+        "mp3",
+        "opus",
+        "wav",
+        "aac",
+        "flac",
+        "mp4",
+        "ogg",
+        "mkv",
+        "mka",
+        "x-aac",
+        "m4a",
+        "mpeg",
+        "mpga",
+        "pcm",
+        "webm"
+      ]
+    },
+    "AudioSource":{
       "type":"structure",
       "members":{
+        "bytes":{
+          "shape":"AudioSourceBytesBlob",
+          "documentation":"<p>Audio data encoded in base64.</p>"
+        },
+        "s3Location":{
+          "shape":"S3Location",
+          "documentation":"<p>A reference to audio data stored in an Amazon S3 bucket. To see which models support S3 uploads, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference-supported-models-features.html\">Supported models and features for Converse</a>.</p>"
+        }
       },
-      "documentation":"<p>The Model automatically decides if a tool should be called or whether to generate text instead. For example, <code>{\"auto\" : {}}</code>.</p>"
+      "documentation":"<p>The source of audio data, which can be provided either as raw bytes or a reference to an S3 location.</p>",
+      "sensitive":true,
+      "union":true
+    },
+    "AudioSourceBytesBlob":{
+      "type":"blob",
+      "min":1
+    },
+    "AutoToolChoice":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The Model automatically decides if a tool should be called or whether to generate text instead. For example, <code>{\"auto\" : {}}</code>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide</p>"
+    },
+    "AutomatedReasoningRuleIdentifier":{
+      "type":"string",
+      "max":12,
+      "min":0,
+      "pattern":"[a-z0-9]{12}"
     },
     "BidirectionalInputPayloadPart":{
       "type":"structure",
@@ -468,6 +586,150 @@
       "type":"string",
       "enum":["default"]
     },
+    "Citation":{
+      "type":"structure",
+      "members":{
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title or identifier of the source document being cited.</p>"
+        },
+        "source":{
+          "shape":"String",
+          "documentation":"<p>The source from the original search result that provided the cited content.</p>"
+        },
+        "sourceContent":{
+          "shape":"CitationSourceContentList",
+          "documentation":"<p>The specific content from the source document that was referenced or cited in the generated response.</p>"
+        },
+        "location":{
+          "shape":"CitationLocation",
+          "documentation":"<p>The precise location within the source document where the cited content can be found, including character positions, page numbers, or chunk identifiers.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a citation that references a specific source document. Citations provide traceability between the model's generated response and the source documents that informed that response.</p>"
+    },
+    "CitationGeneratedContent":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p>The text content that was generated by the model and is supported by the associated citation.</p>"
+        }
+      },
+      "documentation":"<p>Contains the generated text content that corresponds to or is supported by a citation from a source document.</p>",
+      "union":true
+    },
+    "CitationGeneratedContentList":{
+      "type":"list",
+      "member":{"shape":"CitationGeneratedContent"}
+    },
+    "CitationLocation":{
+      "type":"structure",
+      "members":{
+        "web":{
+          "shape":"WebLocation",
+          "documentation":"<p>The web URL that was cited for this reference.</p>"
+        },
+        "documentChar":{
+          "shape":"DocumentCharLocation",
+          "documentation":"<p>The character-level location within the document where the cited content is found.</p>"
+        },
+        "documentPage":{
+          "shape":"DocumentPageLocation",
+          "documentation":"<p>The page-level location within the document where the cited content is found.</p>"
+        },
+        "documentChunk":{
+          "shape":"DocumentChunkLocation",
+          "documentation":"<p>The chunk-level location within the document where the cited content is found, typically used for documents that have been segmented into logical chunks.</p>"
+        },
+        "searchResultLocation":{
+          "shape":"SearchResultLocation",
+          "documentation":"<p>The search result location where the cited content is found, including the search result index and block positions within the content array.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the precise location within a source document where cited content can be found. This can include character-level positions, page numbers, or document chunks depending on the document type and indexing method.</p>",
+      "union":true
+    },
+    "CitationSourceContent":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p>The text content from the source document that is being cited.</p>"
+        }
+      },
+      "documentation":"<p>Contains the actual text content from a source document that is being cited or referenced in the model's response.</p>",
+      "union":true
+    },
+    "CitationSourceContentDelta":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p>An incremental update to the text content from the source document that is being cited.</p>"
+        }
+      },
+      "documentation":"<p>Contains incremental updates to the source content text during streaming responses, allowing clients to build up the cited content progressively.</p>"
+    },
+    "CitationSourceContentList":{
+      "type":"list",
+      "member":{"shape":"CitationSourceContent"}
+    },
+    "CitationSourceContentListDelta":{
+      "type":"list",
+      "member":{"shape":"CitationSourceContentDelta"}
+    },
+    "Citations":{
+      "type":"list",
+      "member":{"shape":"Citation"}
+    },
+    "CitationsConfig":{
+      "type":"structure",
+      "required":["enabled"],
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether citations from the selected document should be used in the model's response. When set to true, the model can generate citations that reference the source documents used to inform the response.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for enabling and controlling document citations in Converse API responses. When enabled, the model can include citation information that links generated content back to specific source documents.</p>"
+    },
+    "CitationsContentBlock":{
+      "type":"structure",
+      "members":{
+        "content":{
+          "shape":"CitationGeneratedContentList",
+          "documentation":"<p>The generated content that is supported by the associated citations.</p>"
+        },
+        "citations":{
+          "shape":"Citations",
+          "documentation":"<p>An array of citations that reference the source documents used to generate the associated content.</p>"
+        }
+      },
+      "documentation":"<p>A content block that contains both generated text and associated citation information. This block type is returned when document citations are enabled, providing traceability between the generated content and the source documents that informed the response.</p>"
+    },
+    "CitationsDelta":{
+      "type":"structure",
+      "members":{
+        "title":{
+          "shape":"String",
+          "documentation":"<p>The title or identifier of the source document being cited.</p>"
+        },
+        "source":{
+          "shape":"String",
+          "documentation":"<p>The source from the original search result that provided the cited content.</p>"
+        },
+        "sourceContent":{
+          "shape":"CitationSourceContentListDelta",
+          "documentation":"<p>The specific content from the source document that was referenced or cited in the generated response.</p>"
+        },
+        "location":{
+          "shape":"CitationLocation",
+          "documentation":"<p>Specifies the precise location within a source document where cited content can be found. This can include character-level positions, page numbers, or document chunks depending on the document type and indexing method.</p>"
+        }
+      },
+      "documentation":"<p>Contains incremental updates to citation information during streaming responses. This allows clients to build up citation data progressively as the response is generated.</p>"
+    },
     "ConflictException":{
       "type":"structure",
       "members":{
@@ -499,6 +761,10 @@
           "shape":"VideoBlock",
           "documentation":"<p>Video to include in the message. </p>"
         },
+        "audio":{
+          "shape":"AudioBlock",
+          "documentation":"<p>An audio content block containing audio data in the conversation.</p>"
+        },
         "toolUse":{
           "shape":"ToolUseBlock",
           "documentation":"<p>Information about a tool use request from a model.</p>"
@@ -509,7 +775,7 @@
         },
         "guardContent":{
           "shape":"GuardrailConverseContentBlock",
-          "documentation":"<p>Contains the content to assess with the guardrail. If you don't specify <code>guardContent</code> in a call to the Converse API, the guardrail (if passed in the Converse API) assesses the entire message.</p> <p>For more information, see <i>Use a guardrail with the Converse API</i> in the <i>Amazon Bedrock User Guide</i>. <pre><code> &lt;/p&gt; </code></pre>"
+          "documentation":"<p>Contains the content to assess with the guardrail. If you don't specify <code>guardContent</code> in a call to the Converse API, the guardrail (if passed in the Converse API) assesses the entire message.</p> <p>For more information, see <i>Use a guardrail with the Converse API</i> in the <i>Amazon Bedrock User Guide</i>.</p>"
         },
         "cachePoint":{
           "shape":"CachePointBlock",
@@ -518,6 +784,14 @@
         "reasoningContent":{
           "shape":"ReasoningContentBlock",
           "documentation":"<p>Contains content regarding the reasoning that is carried out by the model. Reasoning refers to a Chain of Thought (CoT) that the model generates to enhance the accuracy of its final response.</p>"
+        },
+        "citationsContent":{
+          "shape":"CitationsContentBlock",
+          "documentation":"<p>A content block that contains both generated text and associated citation information, providing traceability between the response and source documents.</p>"
+        },
+        "searchResult":{
+          "shape":"SearchResultBlock",
+          "documentation":"<p>Search result to include in the message.</p>"
         }
       },
       "documentation":"<p>A block of content for a message that you pass to, or receive from, a model with the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a> or <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a> API operations.</p>",
@@ -534,9 +808,21 @@
           "shape":"ToolUseBlockDelta",
           "documentation":"<p>Information about a tool that the model is requesting to use.</p>"
         },
+        "toolResult":{
+          "shape":"ToolResultBlocksDelta",
+          "documentation":"<p>An incremental update that contains the results from a tool call.</p>"
+        },
         "reasoningContent":{
           "shape":"ReasoningContentBlockDelta",
           "documentation":"<p>Contains content regarding the reasoning that is carried out by the model. Reasoning refers to a Chain of Thought (CoT) that the model generates to enhance the accuracy of its final response.</p>"
+        },
+        "citation":{
+          "shape":"CitationsDelta",
+          "documentation":"<p>Incremental citation information that is streamed as part of the response generation process.</p>"
+        },
+        "image":{
+          "shape":"ImageBlockDelta",
+          "documentation":"<p>A streaming delta event containing incremental image data.</p>"
         }
       },
       "documentation":"<p>A block of content in a streaming response.</p>",
@@ -567,6 +853,14 @@
         "toolUse":{
           "shape":"ToolUseBlockStart",
           "documentation":"<p>Information about a tool that the model is requesting to use.</p>"
+        },
+        "toolResult":{
+          "shape":"ToolResultBlockStart",
+          "documentation":"<p>The </p>"
+        },
+        "image":{
+          "shape":"ImageBlockStart",
+          "documentation":"<p>The initial event indicating the start of a streaming image block.</p>"
         }
       },
       "documentation":"<p>Content block start information.</p>",
@@ -618,7 +912,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|([0-9]{12}:imported-model/[a-z0-9]{12})|([0-9]{12}:provisioned-model/[a-z0-9]{12})|([0-9]{12}:(inference-profile|application-inference-profile)/[a-zA-Z0-9-:.]+)))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|(([0-9a-zA-Z][_-]?)+)|([a-zA-Z0-9-:.]+)|(^(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:prompt/[0-9a-zA-Z]{10}(?::[0-9]{1,5})?))$|(^arn:aws:sagemaker:[a-z0-9-]+:[0-9]{12}:endpoint/[a-zA-Z0-9-]+$)|(^arn:aws(-[^:]+)?:bedrock:([0-9a-z-]{1,20}):([0-9]{12}):(default-)?prompt-router/[a-zA-Z0-9-:.]+$)"
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|([0-9]{12}:imported-model/[a-z0-9]{12})|([0-9]{12}:provisioned-model/[a-z0-9]{12})|([0-9]{12}:custom-model-deployment/[a-z0-9]{12})|([0-9]{12}:(inference-profile|application-inference-profile)/[a-zA-Z0-9-:.]+)))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|(([0-9a-zA-Z][_-]?)+)|([a-zA-Z0-9-:.]+)|(^(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:prompt/[0-9a-zA-Z]{10}(?::[0-9]{1,5})?))$|(^arn:aws:sagemaker:[a-z0-9-]+:[0-9]{12}:endpoint/[a-zA-Z0-9-]+$)|(^arn:aws(-[^:]+)?:bedrock:([0-9a-z-]{1,20}):([0-9]{12}):(default-)?prompt-router/[a-zA-Z0-9-:.]+$)"
     },
     "ConverseMetrics":{
       "type":"structure",
@@ -691,6 +985,10 @@
         "performanceConfig":{
           "shape":"PerformanceConfiguration",
           "documentation":"<p>Model performance settings for the request.</p>"
+        },
+        "serviceTier":{
+          "shape":"ServiceTier",
+          "documentation":"<p>Specifies the processing tier configuration used for serving the request.</p>"
         }
       }
     },
@@ -741,6 +1039,10 @@
         "performanceConfig":{
           "shape":"PerformanceConfiguration",
           "documentation":"<p>Model performance settings for the request.</p>"
+        },
+        "serviceTier":{
+          "shape":"ServiceTier",
+          "documentation":"<p>Specifies the processing tier configuration used for serving the request.</p>"
         }
       }
     },
@@ -766,6 +1068,10 @@
         "performanceConfig":{
           "shape":"PerformanceConfiguration",
           "documentation":"<p>Model performance configuration metadata for the conversation stream event.</p>"
+        },
+        "serviceTier":{
+          "shape":"ServiceTier",
+          "documentation":"<p>Specifies the processing tier configuration used for serving the request.</p>"
         }
       },
       "documentation":"<p>A conversation stream metadata event.</p>",
@@ -819,11 +1125,11 @@
         },
         "validationException":{
           "shape":"ValidationException",
-          "documentation":"<p>The input fails to satisfy the constraints specified by <i>Amazon Bedrock</i>. For troubleshooting this error, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/troubleshooting-api-error-codes.html#ts-validation-error\">ValidationError</a> in the Amazon Bedrock User Guide</p>"
+          "documentation":"<p>The input fails to satisfy the constraints specified by <i>Amazon Bedrock</i>. For troubleshooting this error, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/troubleshooting-api-error-codes.html#ts-validation-error\">ValidationError</a> in the Amazon Bedrock User Guide.</p>"
         },
         "throttlingException":{
           "shape":"ThrottlingException",
-          "documentation":"<p>Your request was denied due to exceeding the account quotas for <i>Amazon Bedrock</i>. For troubleshooting this error, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/troubleshooting-api-error-codes.html#ts-throttling-exception\">ThrottlingException</a> in the Amazon Bedrock User Guide</p>"
+          "documentation":"<p>Your request was denied due to exceeding the account quotas for <i>Amazon Bedrock</i>. For troubleshooting this error, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/troubleshooting-api-error-codes.html#ts-throttling-exception\">ThrottlingException</a> in the Amazon Bedrock User Guide.</p>"
         },
         "serviceUnavailableException":{
           "shape":"ServiceUnavailableException",
@@ -882,6 +1188,10 @@
         "performanceConfig":{
           "shape":"PerformanceConfiguration",
           "documentation":"<p>Model performance settings for the request.</p>"
+        },
+        "serviceTier":{
+          "shape":"ServiceTier",
+          "documentation":"<p>Specifies the processing tier configuration used for serving the request.</p>"
         }
       }
     },
@@ -918,7 +1228,29 @@
           "documentation":"<p>The request's prompt router.</p>"
         }
       },
-      "documentation":"<p>The trace object in a response from <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a>. Currently, you can only trace guardrails.</p>"
+      "documentation":"<p>The trace object in a response from <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a>.</p>"
+    },
+    "ConverseTokensRequest":{
+      "type":"structure",
+      "members":{
+        "messages":{
+          "shape":"Messages",
+          "documentation":"<p>An array of messages to count tokens for.</p>"
+        },
+        "system":{
+          "shape":"SystemContentBlocks",
+          "documentation":"<p>The system content blocks to count tokens for. System content provides instructions or context to the model about how it should behave or respond. The token count will include any system content provided.</p>"
+        },
+        "toolConfig":{
+          "shape":"ToolConfiguration",
+          "documentation":"<p>The toolConfig of Converse input request to count tokens for. Configuration information for the tools that the model can use when generating a response.</p>"
+        },
+        "additionalModelRequestFields":{
+          "shape":"Document",
+          "documentation":"<p>The additionalModelRequestFields of Converse input request to count tokens for. Use this field when you want to pass additional parameters that the model supports.</p>"
+        }
+      },
+      "documentation":"<p>The inputs from a <code>Converse</code> API request for token counting.</p> <p>This structure mirrors the input format for the <code>Converse</code> operation, allowing you to count tokens for conversation-based inference requests.</p>"
     },
     "ConverseTrace":{
       "type":"structure",
@@ -932,18 +1264,60 @@
           "documentation":"<p>The request's prompt router.</p>"
         }
       },
-      "documentation":"<p>The trace object in a response from <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a>. Currently, you can only trace guardrails.</p>"
+      "documentation":"<p>The trace object in a response from <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html\">Converse</a>.</p>"
+    },
+    "CountTokensInput":{
+      "type":"structure",
+      "members":{
+        "invokeModel":{
+          "shape":"InvokeModelTokensRequest",
+          "documentation":"<p>An <code>InvokeModel</code> request for which to count tokens. Use this field when you want to count tokens for a raw text input that would be sent to the <code>InvokeModel</code> operation.</p>"
+        },
+        "converse":{
+          "shape":"ConverseTokensRequest",
+          "documentation":"<p>A <code>Converse</code> request for which to count tokens. Use this field when you want to count tokens for a conversation-based input that would be sent to the <code>Converse</code> operation.</p>"
+        }
+      },
+      "documentation":"<p>The input value for token counting. The value should be either an <code>InvokeModel</code> or <code>Converse</code> request body. </p>",
+      "union":true
+    },
+    "CountTokensRequest":{
+      "type":"structure",
+      "required":[
+        "modelId",
+        "input"
+      ],
+      "members":{
+        "modelId":{
+          "shape":"FoundationModelVersionIdentifier",
+          "documentation":"<p>The unique identifier or ARN of the foundation model to use for token counting. Each model processes tokens differently, so the token count is specific to the model you specify.</p>",
+          "location":"uri",
+          "locationName":"modelId"
+        },
+        "input":{
+          "shape":"CountTokensInput",
+          "documentation":"<p>The input for which to count tokens. The structure of this parameter depends on whether you're counting tokens for an <code>InvokeModel</code> or <code>Converse</code> request:</p> <ul> <li> <p>For <code>InvokeModel</code> requests, provide the request body in the <code>invokeModel</code> field</p> </li> <li> <p>For <code>Converse</code> requests, provide the messages and system content in the <code>converse</code> field</p> </li> </ul> <p>The input format must be compatible with the model specified in the <code>modelId</code> parameter.</p>"
+        }
+      }
+    },
+    "CountTokensResponse":{
+      "type":"structure",
+      "required":["inputTokens"],
+      "members":{
+        "inputTokens":{
+          "shape":"Integer",
+          "documentation":"<p>The number of tokens in the provided input according to the specified model's tokenization rules. This count represents the number of input tokens that would be processed if the same input were sent to the model in an inference request. Use this value to estimate costs and ensure your inputs stay within model token limits.</p>"
+        }
+      }
     },
     "Document":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "document":true
     },
     "DocumentBlock":{
       "type":"structure",
       "required":[
-        "format",
         "name",
         "source"
       ],
@@ -959,6 +1333,14 @@
         "source":{
           "shape":"DocumentSource",
           "documentation":"<p>Contains the content of the document.</p>"
+        },
+        "context":{
+          "shape":"String",
+          "documentation":"<p>Contextual information about how the document should be processed or interpreted by the model when generating citations.</p>"
+        },
+        "citations":{
+          "shape":"CitationsConfig",
+          "documentation":"<p>Configuration settings that control how citations should be generated for this specific document.</p>"
         }
       },
       "documentation":"<p>A document to include in a message.</p>"
@@ -967,6 +1349,87 @@
       "type":"string",
       "max":200,
       "min":1
+    },
+    "DocumentCharLocation":{
+      "type":"structure",
+      "members":{
+        "documentIndex":{
+          "shape":"DocumentCharLocationDocumentIndexInteger",
+          "documentation":"<p>The index of the document within the array of documents provided in the request.</p>"
+        },
+        "start":{
+          "shape":"DocumentCharLocationStartInteger",
+          "documentation":"<p>The starting character position of the cited content within the document.</p>"
+        },
+        "end":{
+          "shape":"DocumentCharLocationEndInteger",
+          "documentation":"<p>The ending character position of the cited content within the document.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a character-level location within a document, providing precise positioning information for cited content using start and end character indices.</p>"
+    },
+    "DocumentCharLocationDocumentIndexInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "DocumentCharLocationEndInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "DocumentCharLocationStartInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "DocumentChunkLocation":{
+      "type":"structure",
+      "members":{
+        "documentIndex":{
+          "shape":"DocumentChunkLocationDocumentIndexInteger",
+          "documentation":"<p>The index of the document within the array of documents provided in the request.</p>"
+        },
+        "start":{
+          "shape":"DocumentChunkLocationStartInteger",
+          "documentation":"<p>The starting chunk identifier or index of the cited content within the document.</p>"
+        },
+        "end":{
+          "shape":"DocumentChunkLocationEndInteger",
+          "documentation":"<p>The ending chunk identifier or index of the cited content within the document.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a chunk-level location within a document, providing positioning information for cited content using logical document segments or chunks.</p>"
+    },
+    "DocumentChunkLocationDocumentIndexInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "DocumentChunkLocationEndInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "DocumentChunkLocationStartInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "DocumentContentBlock":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p>The text content of the document.</p>"
+        }
+      },
+      "documentation":"<p>Contains the actual content of a document that can be processed by the model and potentially cited in the response.</p>",
+      "union":true
+    },
+    "DocumentContentBlocks":{
+      "type":"list",
+      "member":{"shape":"DocumentContentBlock"}
     },
     "DocumentFormat":{
       "type":"string",
@@ -982,6 +1445,39 @@
         "md"
       ]
     },
+    "DocumentPageLocation":{
+      "type":"structure",
+      "members":{
+        "documentIndex":{
+          "shape":"DocumentPageLocationDocumentIndexInteger",
+          "documentation":"<p>The index of the document within the array of documents provided in the request.</p>"
+        },
+        "start":{
+          "shape":"DocumentPageLocationStartInteger",
+          "documentation":"<p>The starting page number of the cited content within the document.</p>"
+        },
+        "end":{
+          "shape":"DocumentPageLocationEndInteger",
+          "documentation":"<p>The ending page number of the cited content within the document.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a page-level location within a document, providing positioning information for cited content using page numbers.</p>"
+    },
+    "DocumentPageLocationDocumentIndexInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "DocumentPageLocationEndInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "DocumentPageLocationStartInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
     "DocumentSource":{
       "type":"structure",
       "members":{
@@ -992,6 +1488,14 @@
         "s3Location":{
           "shape":"S3Location",
           "documentation":"<p>The location of a document object in an Amazon S3 bucket. To see which models support S3 uploads, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference-supported-models-features.html\">Supported models and features for Converse</a>.</p>"
+        },
+        "text":{
+          "shape":"String",
+          "documentation":"<p>The text content of the document source.</p>"
+        },
+        "content":{
+          "shape":"DocumentContentBlocks",
+          "documentation":"<p>The structured content of the document source, which may include various content blocks such as text, images, or other document elements.</p>"
         }
       },
       "documentation":"<p>Contains the content of a document.</p>",
@@ -1000,6 +1504,24 @@
     "DocumentSourceBytesBlob":{
       "type":"blob",
       "min":1
+    },
+    "ErrorBlock":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable error message describing what went wrong during content processing.</p>"
+        }
+      },
+      "documentation":"<p>A block containing error information when content processing fails.</p>",
+      "sensitive":true
+    },
+    "FoundationModelVersionIdentifier":{
+      "type":"string",
+      "documentation":"<p>ARN or ID of a Bedrock model</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z_\\.\\-/0-9:]+"
     },
     "GetAsyncInvokeRequest":{
       "type":"structure",
@@ -1068,6 +1590,12 @@
         "GUARDRAIL_INTERVENED"
       ]
     },
+    "GuardrailArn":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+)"
+    },
     "GuardrailAssessment":{
       "type":"structure",
       "members":{
@@ -1091,10 +1619,15 @@
           "shape":"GuardrailContextualGroundingPolicyAssessment",
           "documentation":"<p>The contextual grounding policy used for the guardrail assessment.</p>"
         },
+        "automatedReasoningPolicy":{
+          "shape":"GuardrailAutomatedReasoningPolicyAssessment",
+          "documentation":"<p>The automated reasoning policy assessment results, including logical validation findings for the input content.</p>"
+        },
         "invocationMetrics":{
           "shape":"GuardrailInvocationMetrics",
           "documentation":"<p>The invocation metrics for the guardrail assessment.</p>"
-        }
+        },
+        "appliedGuardrailDetails":{"shape":"AppliedGuardrailDetails"}
       },
       "documentation":"<p>A behavior assessment of the guardrail policies used in a call to the Converse API. </p>"
     },
@@ -1112,12 +1645,330 @@
       "key":{"shape":"String"},
       "value":{"shape":"GuardrailAssessment"}
     },
+    "GuardrailAutomatedReasoningDifferenceScenarioList":{
+      "type":"list",
+      "member":{"shape":"GuardrailAutomatedReasoningScenario"},
+      "max":2,
+      "min":0
+    },
+    "GuardrailAutomatedReasoningFinding":{
+      "type":"structure",
+      "members":{
+        "valid":{
+          "shape":"GuardrailAutomatedReasoningValidFinding",
+          "documentation":"<p>Contains the result when the automated reasoning evaluation determines that the claims in the input are logically valid and definitively true based on the provided premises and policy rules.</p>"
+        },
+        "invalid":{
+          "shape":"GuardrailAutomatedReasoningInvalidFinding",
+          "documentation":"<p>Contains the result when the automated reasoning evaluation determines that the claims in the input are logically invalid and contradict the established premises or policy rules.</p>"
+        },
+        "satisfiable":{
+          "shape":"GuardrailAutomatedReasoningSatisfiableFinding",
+          "documentation":"<p>Contains the result when the automated reasoning evaluation determines that the claims in the input could be either true or false depending on additional assumptions not provided in the input context.</p>"
+        },
+        "impossible":{
+          "shape":"GuardrailAutomatedReasoningImpossibleFinding",
+          "documentation":"<p>Contains the result when the automated reasoning evaluation determines that no valid logical conclusions can be drawn due to contradictions in the premises or policy rules themselves.</p>"
+        },
+        "translationAmbiguous":{
+          "shape":"GuardrailAutomatedReasoningTranslationAmbiguousFinding",
+          "documentation":"<p>Contains the result when the automated reasoning evaluation detects that the input has multiple valid logical interpretations, requiring additional context or clarification to proceed with validation.</p>"
+        },
+        "tooComplex":{
+          "shape":"GuardrailAutomatedReasoningTooComplexFinding",
+          "documentation":"<p>Contains the result when the automated reasoning evaluation cannot process the input due to its complexity or volume exceeding the system's processing capacity for logical analysis.</p>"
+        },
+        "noTranslations":{
+          "shape":"GuardrailAutomatedReasoningNoTranslationsFinding",
+          "documentation":"<p>Contains the result when the automated reasoning evaluation cannot extract any relevant logical information from the input that can be validated against the policy rules.</p>"
+        }
+      },
+      "documentation":"<p>Represents a logical validation result from automated reasoning policy evaluation. The finding indicates whether claims in the input are logically valid, invalid, satisfiable, impossible, or have other logical issues.</p>",
+      "union":true
+    },
+    "GuardrailAutomatedReasoningFindingList":{
+      "type":"list",
+      "member":{"shape":"GuardrailAutomatedReasoningFinding"}
+    },
+    "GuardrailAutomatedReasoningImpossibleFinding":{
+      "type":"structure",
+      "members":{
+        "translation":{
+          "shape":"GuardrailAutomatedReasoningTranslation",
+          "documentation":"<p>The logical translation of the input that this finding evaluates.</p>"
+        },
+        "contradictingRules":{
+          "shape":"GuardrailAutomatedReasoningRuleList",
+          "documentation":"<p>The automated reasoning policy rules that contradict the claims and/or premises in the input.</p>"
+        },
+        "logicWarning":{
+          "shape":"GuardrailAutomatedReasoningLogicWarning",
+          "documentation":"<p>Indication of a logic issue with the translation without needing to consider the automated reasoning policy rules.</p>"
+        }
+      },
+      "documentation":"<p>Indicates that no valid claims can be made due to logical contradictions in the premises or rules.</p>"
+    },
+    "GuardrailAutomatedReasoningInputTextReference":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"GuardrailAutomatedReasoningStatementNaturalLanguageContent",
+          "documentation":"<p>The specific text from the original input that this reference points to.</p>"
+        }
+      },
+      "documentation":"<p>References a portion of the original input text that corresponds to logical elements.</p>"
+    },
+    "GuardrailAutomatedReasoningInputTextReferenceList":{
+      "type":"list",
+      "member":{"shape":"GuardrailAutomatedReasoningInputTextReference"}
+    },
+    "GuardrailAutomatedReasoningInvalidFinding":{
+      "type":"structure",
+      "members":{
+        "translation":{
+          "shape":"GuardrailAutomatedReasoningTranslation",
+          "documentation":"<p>The logical translation of the input that this finding invalidates.</p>"
+        },
+        "contradictingRules":{
+          "shape":"GuardrailAutomatedReasoningRuleList",
+          "documentation":"<p>The automated reasoning policy rules that contradict the claims in the input.</p>"
+        },
+        "logicWarning":{
+          "shape":"GuardrailAutomatedReasoningLogicWarning",
+          "documentation":"<p>Indication of a logic issue with the translation without needing to consider the automated reasoning policy rules.</p>"
+        }
+      },
+      "documentation":"<p>Indicates that the claims are logically false and contradictory to the established rules or premises.</p>"
+    },
+    "GuardrailAutomatedReasoningLogicWarning":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"GuardrailAutomatedReasoningLogicWarningType",
+          "documentation":"<p>The category of the detected logical issue, such as statements that are always true or always false.</p>"
+        },
+        "premises":{
+          "shape":"GuardrailAutomatedReasoningStatementList",
+          "documentation":"<p>The logical statements that serve as premises under which the claims are validated.</p>"
+        },
+        "claims":{
+          "shape":"GuardrailAutomatedReasoningStatementList",
+          "documentation":"<p>The logical statements that are validated while assuming the policy and premises.</p>"
+        }
+      },
+      "documentation":"<p>Identifies logical issues in the translated statements that exist independent of any policy rules, such as statements that are always true or always false.</p>"
+    },
+    "GuardrailAutomatedReasoningLogicWarningType":{
+      "type":"string",
+      "enum":[
+        "ALWAYS_FALSE",
+        "ALWAYS_TRUE"
+      ]
+    },
+    "GuardrailAutomatedReasoningNoTranslationsFinding":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Indicates that no relevant logical information could be extracted from the input for validation.</p>"
+    },
+    "GuardrailAutomatedReasoningPoliciesProcessed":{
+      "type":"integer",
+      "box":true
+    },
+    "GuardrailAutomatedReasoningPolicyAssessment":{
+      "type":"structure",
+      "members":{
+        "findings":{
+          "shape":"GuardrailAutomatedReasoningFindingList",
+          "documentation":"<p>List of logical validation results produced by evaluating the input content against automated reasoning policies.</p>"
+        }
+      },
+      "documentation":"<p>Contains the results of automated reasoning policy evaluation, including logical findings about the validity of claims made in the input content.</p>"
+    },
+    "GuardrailAutomatedReasoningPolicyUnitsProcessed":{
+      "type":"integer",
+      "box":true
+    },
+    "GuardrailAutomatedReasoningPolicyVersionArn":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:automated-reasoning-policy/[a-z0-9]{12}(:([1-9][0-9]{0,11}))?"
+    },
+    "GuardrailAutomatedReasoningRule":{
+      "type":"structure",
+      "members":{
+        "identifier":{
+          "shape":"AutomatedReasoningRuleIdentifier",
+          "documentation":"<p>The unique identifier of the automated reasoning rule.</p>"
+        },
+        "policyVersionArn":{
+          "shape":"GuardrailAutomatedReasoningPolicyVersionArn",
+          "documentation":"<p>The ARN of the automated reasoning policy version that contains this rule.</p>"
+        }
+      },
+      "documentation":"<p>References a specific automated reasoning policy rule that was applied during evaluation.</p>"
+    },
+    "GuardrailAutomatedReasoningRuleList":{
+      "type":"list",
+      "member":{"shape":"GuardrailAutomatedReasoningRule"}
+    },
+    "GuardrailAutomatedReasoningSatisfiableFinding":{
+      "type":"structure",
+      "members":{
+        "translation":{
+          "shape":"GuardrailAutomatedReasoningTranslation",
+          "documentation":"<p>The logical translation of the input that this finding evaluates.</p>"
+        },
+        "claimsTrueScenario":{
+          "shape":"GuardrailAutomatedReasoningScenario",
+          "documentation":"<p>An example scenario demonstrating how the claims could be logically true.</p>"
+        },
+        "claimsFalseScenario":{
+          "shape":"GuardrailAutomatedReasoningScenario",
+          "documentation":"<p>An example scenario demonstrating how the claims could be logically false.</p>"
+        },
+        "logicWarning":{
+          "shape":"GuardrailAutomatedReasoningLogicWarning",
+          "documentation":"<p>Indication of a logic issue with the translation without needing to consider the automated reasoning policy rules.</p>"
+        }
+      },
+      "documentation":"<p>Indicates that the claims could be either true or false depending on additional assumptions not provided in the input.</p>"
+    },
+    "GuardrailAutomatedReasoningScenario":{
+      "type":"structure",
+      "members":{
+        "statements":{
+          "shape":"GuardrailAutomatedReasoningStatementList",
+          "documentation":"<p>List of logical assignments and statements that define this scenario.</p>"
+        }
+      },
+      "documentation":"<p>Represents a logical scenario where claims can be evaluated as true or false, containing specific logical assignments.</p>"
+    },
+    "GuardrailAutomatedReasoningStatement":{
+      "type":"structure",
+      "members":{
+        "logic":{
+          "shape":"GuardrailAutomatedReasoningStatementLogicContent",
+          "documentation":"<p>The formal logical representation of the statement.</p>"
+        },
+        "naturalLanguage":{
+          "shape":"GuardrailAutomatedReasoningStatementNaturalLanguageContent",
+          "documentation":"<p>The natural language explanation of the logical statement.</p>"
+        }
+      },
+      "documentation":"<p>A logical statement that includes both formal logic representation and natural language explanation.</p>"
+    },
+    "GuardrailAutomatedReasoningStatementList":{
+      "type":"list",
+      "member":{"shape":"GuardrailAutomatedReasoningStatement"}
+    },
+    "GuardrailAutomatedReasoningStatementLogicContent":{
+      "type":"string",
+      "max":1000,
+      "min":0,
+      "sensitive":true
+    },
+    "GuardrailAutomatedReasoningStatementNaturalLanguageContent":{
+      "type":"string",
+      "max":1000,
+      "min":0,
+      "sensitive":true
+    },
+    "GuardrailAutomatedReasoningTooComplexFinding":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Indicates that the input exceeds the processing capacity due to the volume or complexity of the logical information.</p>"
+    },
+    "GuardrailAutomatedReasoningTranslation":{
+      "type":"structure",
+      "members":{
+        "premises":{
+          "shape":"GuardrailAutomatedReasoningStatementList",
+          "documentation":"<p>The logical statements that serve as the foundation or assumptions for the claims.</p>"
+        },
+        "claims":{
+          "shape":"GuardrailAutomatedReasoningStatementList",
+          "documentation":"<p>The logical statements that are being validated against the premises and policy rules.</p>"
+        },
+        "untranslatedPremises":{
+          "shape":"GuardrailAutomatedReasoningInputTextReferenceList",
+          "documentation":"<p>References to portions of the original input text that correspond to the premises but could not be fully translated.</p>"
+        },
+        "untranslatedClaims":{
+          "shape":"GuardrailAutomatedReasoningInputTextReferenceList",
+          "documentation":"<p>References to portions of the original input text that correspond to the claims but could not be fully translated.</p>"
+        },
+        "confidence":{
+          "shape":"GuardrailAutomatedReasoningTranslationConfidence",
+          "documentation":"<p>A confidence score between 0 and 1 indicating how certain the system is about the logical translation.</p>"
+        }
+      },
+      "documentation":"<p>Contains the logical translation of natural language input into formal logical statements, including premises, claims, and confidence scores.</p>"
+    },
+    "GuardrailAutomatedReasoningTranslationAmbiguousFinding":{
+      "type":"structure",
+      "members":{
+        "options":{
+          "shape":"GuardrailAutomatedReasoningTranslationOptionList",
+          "documentation":"<p>Different logical interpretations that were detected during translation of the input.</p>"
+        },
+        "differenceScenarios":{
+          "shape":"GuardrailAutomatedReasoningDifferenceScenarioList",
+          "documentation":"<p>Scenarios showing how the different translation options differ in meaning.</p>"
+        }
+      },
+      "documentation":"<p>Indicates that the input has multiple valid logical interpretations, requiring additional context or clarification.</p>"
+    },
+    "GuardrailAutomatedReasoningTranslationConfidence":{
+      "type":"double",
+      "box":true,
+      "max":1,
+      "min":0
+    },
+    "GuardrailAutomatedReasoningTranslationList":{
+      "type":"list",
+      "member":{"shape":"GuardrailAutomatedReasoningTranslation"}
+    },
+    "GuardrailAutomatedReasoningTranslationOption":{
+      "type":"structure",
+      "members":{
+        "translations":{
+          "shape":"GuardrailAutomatedReasoningTranslationList",
+          "documentation":"<p>Example translations that provide this possible interpretation of the input.</p>"
+        }
+      },
+      "documentation":"<p>Represents one possible logical interpretation of ambiguous input content.</p>"
+    },
+    "GuardrailAutomatedReasoningTranslationOptionList":{
+      "type":"list",
+      "member":{"shape":"GuardrailAutomatedReasoningTranslationOption"},
+      "max":2,
+      "min":0
+    },
+    "GuardrailAutomatedReasoningValidFinding":{
+      "type":"structure",
+      "members":{
+        "translation":{
+          "shape":"GuardrailAutomatedReasoningTranslation",
+          "documentation":"<p>The logical translation of the input that this finding validates.</p>"
+        },
+        "claimsTrueScenario":{
+          "shape":"GuardrailAutomatedReasoningScenario",
+          "documentation":"<p>An example scenario demonstrating how the claims are logically true.</p>"
+        },
+        "supportingRules":{
+          "shape":"GuardrailAutomatedReasoningRuleList",
+          "documentation":"<p>The automated reasoning policy rules that support why this result is considered valid.</p>"
+        },
+        "logicWarning":{
+          "shape":"GuardrailAutomatedReasoningLogicWarning",
+          "documentation":"<p>Indication of a logic issue with the translation without needing to consider the automated reasoning policy rules.</p>"
+        }
+      },
+      "documentation":"<p>Indicates that the claims are definitively true and logically implied by the premises, with no possible alternative interpretations.</p>"
+    },
     "GuardrailConfiguration":{
       "type":"structure",
-      "required":[
-        "guardrailIdentifier",
-        "guardrailVersion"
-      ],
       "members":{
         "guardrailIdentifier":{
           "shape":"GuardrailIdentifier",
@@ -1420,7 +2271,7 @@
           "documentation":"<p>The qualifier details for the guardrails contextual grounding filter.</p>"
         }
       },
-      "documentation":"<p>A text block that contains text that you want to assess with a guardrail. For more information, see <a>GuardrailConverseContentBlock</a>.</p>"
+      "documentation":"<p>A text block that contains text that you want to assess with a guardrail. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_GuardrailConverseContentBlock.html\">GuardrailConverseContentBlock</a>.</p>"
     },
     "GuardrailCoverage":{
       "type":"structure",
@@ -1462,11 +2313,17 @@
       "type":"list",
       "member":{"shape":"GuardrailCustomWord"}
     },
+    "GuardrailId":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "pattern":"([a-z0-9]+)"
+    },
     "GuardrailIdentifier":{
       "type":"string",
       "max":2048,
       "min":0,
-      "pattern":"(([a-z0-9]+)|(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+))"
+      "pattern":"(|([a-z0-9]+)|(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:guardrail/[a-z0-9]+))"
     },
     "GuardrailImageBlock":{
       "type":"structure",
@@ -1577,6 +2434,18 @@
       "type":"string",
       "enum":["PROFANITY"]
     },
+    "GuardrailOrigin":{
+      "type":"string",
+      "enum":[
+        "REQUEST",
+        "ACCOUNT_ENFORCED",
+        "ORGANIZATION_ENFORCED"
+      ]
+    },
+    "GuardrailOriginList":{
+      "type":"list",
+      "member":{"shape":"GuardrailOrigin"}
+    },
     "GuardrailOutputContent":{
       "type":"structure",
       "members":{
@@ -1599,6 +2468,13 @@
       ]
     },
     "GuardrailOutputText":{"type":"string"},
+    "GuardrailOwnership":{
+      "type":"string",
+      "enum":[
+        "SELF",
+        "CROSS_ACCOUNT"
+      ]
+    },
     "GuardrailPiiEntityFilter":{
       "type":"structure",
       "required":[
@@ -1725,7 +2601,7 @@
           "documentation":"<p>The regex queries in the assessment.</p>"
         }
       },
-      "documentation":"<p>The assessment for aPersonally Identifiable Information (PII) policy. </p>"
+      "documentation":"<p>The assessment for a Personally Identifiable Information (PII) policy. </p>"
     },
     "GuardrailSensitiveInformationPolicyFreeUnitsProcessed":{
       "type":"integer",
@@ -1737,10 +2613,6 @@
     },
     "GuardrailStreamConfiguration":{
       "type":"structure",
-      "required":[
-        "guardrailIdentifier",
-        "guardrailVersion"
-      ],
       "members":{
         "guardrailIdentifier":{
           "shape":"GuardrailIdentifier",
@@ -1759,7 +2631,7 @@
           "documentation":"<p>The processing mode. </p> <p>The processing mode. For more information, see <i>Configure streaming response behavior</i> in the <i>Amazon Bedrock User Guide</i>. </p>"
         }
       },
-      "documentation":"<p>Configuration information for a guardrail that you use with the <a>ConverseStream</a> action. </p>"
+      "documentation":"<p>Configuration information for a guardrail that you use with the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseStream.html\">ConverseStream</a> action. </p>"
     },
     "GuardrailStreamProcessingMode":{
       "type":"string",
@@ -1882,7 +2754,7 @@
           "documentation":"<p>Provides the reason for the action taken when harmful content is detected.</p>"
         }
       },
-      "documentation":"<p>A Top level guardrail trace object. For more information, see <a>ConverseTrace</a>.</p>"
+      "documentation":"<p>A Top level guardrail trace object. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_ConverseTrace.html\">ConverseTrace</a>.</p>"
     },
     "GuardrailUsage":{
       "type":"structure",
@@ -1922,13 +2794,21 @@
         "contentPolicyImageUnits":{
           "shape":"GuardrailContentPolicyImageUnitsProcessed",
           "documentation":"<p>The content policy image units processed by the guardrail.</p>"
+        },
+        "automatedReasoningPolicyUnits":{
+          "shape":"GuardrailAutomatedReasoningPolicyUnitsProcessed",
+          "documentation":"<p>The number of text units processed by the automated reasoning policy.</p>"
+        },
+        "automatedReasoningPolicies":{
+          "shape":"GuardrailAutomatedReasoningPoliciesProcessed",
+          "documentation":"<p>The number of automated reasoning policies that were processed during the guardrail evaluation.</p>"
         }
       },
       "documentation":"<p>The details on the use of the guardrail.</p>"
     },
     "GuardrailVersion":{
       "type":"string",
-      "pattern":"(([1-9][0-9]{0,7})|(DRAFT))"
+      "pattern":"(|([1-9][0-9]{0,7})|(DRAFT))"
     },
     "GuardrailWordPolicyAction":{
       "type":"string",
@@ -1973,9 +2853,38 @@
         "source":{
           "shape":"ImageSource",
           "documentation":"<p>The source for the image.</p>"
+        },
+        "error":{
+          "shape":"ErrorBlock",
+          "documentation":"<p>Error information if the image block could not be processed or contains invalid data.</p>"
         }
       },
       "documentation":"<p>Image content for a message.</p>"
+    },
+    "ImageBlockDelta":{
+      "type":"structure",
+      "members":{
+        "source":{
+          "shape":"ImageSource",
+          "documentation":"<p>The incremental image source data for this delta event.</p>"
+        },
+        "error":{
+          "shape":"ErrorBlock",
+          "documentation":"<p>Error information if this image delta could not be processed.</p>"
+        }
+      },
+      "documentation":"<p>A streaming delta event that contains incremental image data during streaming responses.</p>"
+    },
+    "ImageBlockStart":{
+      "type":"structure",
+      "required":["format"],
+      "members":{
+        "format":{
+          "shape":"ImageFormat",
+          "documentation":"<p>The format of the image data that will be streamed in subsequent delta events.</p>"
+        }
+      },
+      "documentation":"<p>The initial event in a streaming image block that indicates the start of image content.</p>"
     },
     "ImageFormat":{
       "type":"string",
@@ -1999,6 +2908,7 @@
         }
       },
       "documentation":"<p>The source for an image.</p>",
+      "sensitive":true,
       "union":true
     },
     "ImageSourceBytesBlob":{
@@ -2043,7 +2953,7 @@
     "InferenceConfigurationStopSequencesList":{
       "type":"list",
       "member":{"shape":"NonEmptyString"},
-      "max":4,
+      "max":2500,
       "min":0
     },
     "InferenceConfigurationTemperatureFloat":{
@@ -2057,6 +2967,10 @@
       "box":true,
       "max":1,
       "min":0
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
     },
     "InternalServerException":{
       "type":"structure",
@@ -2078,7 +2992,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|([0-9]{12}:imported-model/[a-z0-9]{12})|([0-9]{12}:provisioned-model/[a-z0-9]{12})|([0-9]{12}:(inference-profile|application-inference-profile)/[a-zA-Z0-9-:.]+)))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|(([0-9a-zA-Z][_-]?)+)|([a-zA-Z0-9-:.]+)$|(^(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:prompt/[0-9a-zA-Z]{10}(?::[0-9]{1,5})?))$|(^arn:aws:sagemaker:[a-z0-9-]+:[0-9]{12}:endpoint/[a-zA-Z0-9-]+$)|(^arn:aws(-[^:]+)?:bedrock:([0-9a-z-]{1,20}):([0-9]{12}):(default-)?prompt-router/[a-zA-Z0-9-:.]+$)"
+      "pattern":"(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:(([0-9]{12}:custom-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}/[a-z0-9]{12})|(:foundation-model/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|([0-9]{12}:imported-model/[a-z0-9]{12})|([0-9]{12}:provisioned-model/[a-z0-9]{12})|([0-9]{12}:custom-model-deployment/[a-z0-9]{12})|([0-9]{12}:(inference-profile|application-inference-profile)/[a-zA-Z0-9-:.]+)))|([a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([.:]?[a-z0-9-]{1,63}))|(([0-9a-zA-Z][_-]?)+)|([a-zA-Z0-9-:.]+)$|(^(arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:prompt/[0-9a-zA-Z]{10}(?::[0-9]{1,5})?))$|(^arn:aws:sagemaker:[a-z0-9-]+:[0-9]{12}:endpoint/[a-zA-Z0-9-]+$)|(^arn:aws(-[^:]+)?:bedrock:([0-9a-z-]{1,20}):([0-9]{12}):(default-)?prompt-router/[a-zA-Z0-9-:.]+$)"
     },
     "InvokeModelRequest":{
       "type":"structure",
@@ -2102,7 +3016,7 @@
         },
         "modelId":{
           "shape":"InvokeModelIdentifier",
-          "documentation":"<p>The unique identifier of the model to invoke to run inference.</p> <p>The <code>modelId</code> to provide depends on the type of model or throughput that you use:</p> <ul> <li> <p>If you use a base model, specify the model ID or its ARN. For a list of model IDs for base models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html#model-ids-arns\">Amazon Bedrock base model IDs (on-demand throughput)</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use an inference profile, specify the inference profile ID or its ARN. For a list of inference profile IDs, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference-support.html\">Supported Regions and models for cross-region inference</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use a provisioned model, specify the ARN of the Provisioned Throughput. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-thru-use.html\">Run inference using a Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use a custom model, first purchase Provisioned Throughput for it. Then specify the ARN of the resulting provisioned model. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-use.html\">Use a custom model in Amazon Bedrock</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use an <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html\">imported model</a>, specify the ARN of the imported model. You can get the model ARN from a successful call to <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_CreateModelImportJob.html\">CreateModelImportJob</a> or from the Imported models page in the Amazon Bedrock console.</p> </li> </ul>",
+          "documentation":"<p>The unique identifier of the model to invoke to run inference.</p> <p>The <code>modelId</code> to provide depends on the type of model or throughput that you use:</p> <ul> <li> <p>If you use a base model, specify the model ID or its ARN. For a list of model IDs for base models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html#model-ids-arns\">Amazon Bedrock base model IDs (on-demand throughput)</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use an inference profile, specify the inference profile ID or its ARN. For a list of inference profile IDs, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference-support.html\">Supported Regions and models for cross-region inference</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use a provisioned model, specify the ARN of the Provisioned Throughput. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-thru-use.html\">Run inference using a Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use a custom model, specify the ARN of the custom model deployment (for on-demand inference) or the ARN of your provisioned model (for Provisioned Throughput). For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-use.html\">Use a custom model in Amazon Bedrock</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use an <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html\">imported model</a>, specify the ARN of the imported model. You can get the model ARN from a successful call to <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_CreateModelImportJob.html\">CreateModelImportJob</a> or from the Imported models page in the Amazon Bedrock console.</p> </li> </ul>",
           "location":"uri",
           "locationName":"modelId"
         },
@@ -2129,6 +3043,12 @@
           "documentation":"<p>Model performance settings for the request.</p>",
           "location":"header",
           "locationName":"X-Amzn-Bedrock-PerformanceConfig-Latency"
+        },
+        "serviceTier":{
+          "shape":"ServiceTierType",
+          "documentation":"<p>Specifies the processing tier type used for serving the request.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-Service-Tier"
         }
       },
       "payload":"body"
@@ -2155,9 +3075,26 @@
           "documentation":"<p>Model performance settings for the request.</p>",
           "location":"header",
           "locationName":"X-Amzn-Bedrock-PerformanceConfig-Latency"
+        },
+        "serviceTier":{
+          "shape":"ServiceTierType",
+          "documentation":"<p>Specifies the processing tier type used for serving the request.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-Service-Tier"
         }
       },
       "payload":"body"
+    },
+    "InvokeModelTokensRequest":{
+      "type":"structure",
+      "required":["body"],
+      "members":{
+        "body":{
+          "shape":"Body",
+          "documentation":"<p>The request body to count tokens for, formatted according to the model's expected input format. To learn about the input format for different models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\">Model inference parameters and responses</a>.</p>"
+        }
+      },
+      "documentation":"<p>The body of an <code>InvokeModel</code> API request for token counting. This structure mirrors the input format for the <code>InvokeModel</code> operation, allowing you to count tokens for raw text inference requests.</p>"
     },
     "InvokeModelWithBidirectionalStreamInput":{
       "type":"structure",
@@ -2258,7 +3195,7 @@
         },
         "modelId":{
           "shape":"InvokeModelIdentifier",
-          "documentation":"<p>The unique identifier of the model to invoke to run inference.</p> <p>The <code>modelId</code> to provide depends on the type of model or throughput that you use:</p> <ul> <li> <p>If you use a base model, specify the model ID or its ARN. For a list of model IDs for base models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html#model-ids-arns\">Amazon Bedrock base model IDs (on-demand throughput)</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use an inference profile, specify the inference profile ID or its ARN. For a list of inference profile IDs, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference-support.html\">Supported Regions and models for cross-region inference</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use a provisioned model, specify the ARN of the Provisioned Throughput. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-thru-use.html\">Run inference using a Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use a custom model, first purchase Provisioned Throughput for it. Then specify the ARN of the resulting provisioned model. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-use.html\">Use a custom model in Amazon Bedrock</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use an <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html\">imported model</a>, specify the ARN of the imported model. You can get the model ARN from a successful call to <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_CreateModelImportJob.html\">CreateModelImportJob</a> or from the Imported models page in the Amazon Bedrock console.</p> </li> </ul>",
+          "documentation":"<p>The unique identifier of the model to invoke to run inference.</p> <p>The <code>modelId</code> to provide depends on the type of model or throughput that you use:</p> <ul> <li> <p>If you use a base model, specify the model ID or its ARN. For a list of model IDs for base models, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html#model-ids-arns\">Amazon Bedrock base model IDs (on-demand throughput)</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use an inference profile, specify the inference profile ID or its ARN. For a list of inference profile IDs, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/cross-region-inference-support.html\">Supported Regions and models for cross-region inference</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use a provisioned model, specify the ARN of the Provisioned Throughput. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-thru-use.html\">Run inference using a Provisioned Throughput</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use a custom model, specify the ARN of the custom model deployment (for on-demand inference) or the ARN of your provisioned model (for Provisioned Throughput). For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-use.html\">Use a custom model in Amazon Bedrock</a> in the Amazon Bedrock User Guide.</p> </li> <li> <p>If you use an <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-customization-import-model.html\">imported model</a>, specify the ARN of the imported model. You can get the model ARN from a successful call to <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_CreateModelImportJob.html\">CreateModelImportJob</a> or from the Imported models page in the Amazon Bedrock console.</p> </li> </ul>",
           "location":"uri",
           "locationName":"modelId"
         },
@@ -2285,6 +3222,12 @@
           "documentation":"<p>Model performance settings for the request.</p>",
           "location":"header",
           "locationName":"X-Amzn-Bedrock-PerformanceConfig-Latency"
+        },
+        "serviceTier":{
+          "shape":"ServiceTierType",
+          "documentation":"<p>Specifies the processing tier type used for serving the request.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-Service-Tier"
         }
       },
       "payload":"body"
@@ -2311,6 +3254,12 @@
           "documentation":"<p>Model performance settings for the request.</p>",
           "location":"header",
           "locationName":"X-Amzn-Bedrock-PerformanceConfig-Latency"
+        },
+        "serviceTier":{
+          "shape":"ServiceTierType",
+          "documentation":"<p>Specifies the processing tier type used for serving the request.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-Bedrock-Service-Tier"
         }
       },
       "payload":"body"
@@ -2468,8 +3417,7 @@
     },
     "ModelInputPayload":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "document":true,
       "sensitive":true
     },
@@ -2743,6 +3691,81 @@
       "min":1,
       "pattern":"s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"
     },
+    "SearchResultBlock":{
+      "type":"structure",
+      "required":[
+        "source",
+        "title",
+        "content"
+      ],
+      "members":{
+        "source":{
+          "shape":"String",
+          "documentation":"<p>The source URL or identifier for the content.</p>"
+        },
+        "title":{
+          "shape":"String",
+          "documentation":"<p>A descriptive title for the search result.</p>"
+        },
+        "content":{
+          "shape":"SearchResultContentBlocks",
+          "documentation":"<p>An array of search result content block.</p>"
+        },
+        "citations":{
+          "shape":"CitationsConfig",
+          "documentation":"<p>Configuration setting for citations</p>"
+        }
+      },
+      "documentation":"<p>A search result block that enables natural citations with proper source attribution for retrieved content.</p> <note> <p>This field is only supported by Anthropic Claude Opus 4.1, Opus 4, Sonnet 4.5, Sonnet 4, Sonnet 3.7, and 3.5 Haiku models.</p> </note>"
+    },
+    "SearchResultContentBlock":{
+      "type":"structure",
+      "required":["text"],
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p>The actual text content</p>"
+        }
+      },
+      "documentation":"<p>A block within a search result that contains the content.</p>"
+    },
+    "SearchResultContentBlocks":{
+      "type":"list",
+      "member":{"shape":"SearchResultContentBlock"}
+    },
+    "SearchResultLocation":{
+      "type":"structure",
+      "members":{
+        "searchResultIndex":{
+          "shape":"SearchResultLocationSearchResultIndexInteger",
+          "documentation":"<p>The index of the search result content block where the cited content is found.</p>"
+        },
+        "start":{
+          "shape":"SearchResultLocationStartInteger",
+          "documentation":"<p>The starting position in the content array where the cited content begins.</p>"
+        },
+        "end":{
+          "shape":"SearchResultLocationEndInteger",
+          "documentation":"<p>The ending position in the content array where the cited content ends.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a search result location within the content array, providing positioning information for cited content using search result index and block positions.</p>"
+    },
+    "SearchResultLocationEndInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "SearchResultLocationSearchResultIndexInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "SearchResultLocationStartInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -2754,6 +3777,26 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ServiceTier":{
+      "type":"structure",
+      "required":["type"],
+      "members":{
+        "type":{
+          "shape":"ServiceTierType",
+          "documentation":"<p>Specifies the processing tier type used for serving the request.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the processing tier configuration used for serving the request.</p>"
+    },
+    "ServiceTierType":{
+      "type":"string",
+      "enum":[
+        "priority",
+        "default",
+        "flex",
+        "reserved"
+      ]
     },
     "ServiceUnavailableException":{
       "type":"structure",
@@ -2785,7 +3828,7 @@
           "documentation":"<p>The name of the tool that the model must request. </p>"
         }
       },
-      "documentation":"<p>The model must request a specific tool. For example, <code>{\"tool\" : {\"name\" : \"Your tool name\"}}</code>.</p> <note> <p>This field is only supported by Anthropic Claude 3 models.</p> </note>"
+      "documentation":"<p>The model must request a specific tool. For example, <code>{\"tool\" : {\"name\" : \"Your tool name\"}}</code>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide</p> <note> <p>This field is only supported by Anthropic Claude 3 models.</p> </note>"
     },
     "StartAsyncInvokeRequest":{
       "type":"structure",
@@ -2842,7 +3885,10 @@
         "max_tokens",
         "stop_sequence",
         "guardrail_intervened",
-        "content_filtered"
+        "content_filtered",
+        "malformed_model_output",
+        "malformed_tool_use",
+        "model_context_window_exceeded"
       ]
     },
     "String":{"type":"string"},
@@ -2862,12 +3908,23 @@
           "documentation":"<p>CachePoint to include in the system prompt.</p>"
         }
       },
-      "documentation":"<p>A system content block.</p>",
+      "documentation":"<p>Contains configurations for instructions to provide the model for how to handle input. To learn more, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference-call.html\">Using the Converse API</a>.</p>",
       "union":true
     },
     "SystemContentBlocks":{
       "type":"list",
       "member":{"shape":"SystemContentBlock"}
+    },
+    "SystemTool":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ToolName",
+          "documentation":"<p>The name of the system-defined tool that you want to call. </p>"
+        }
+      },
+      "documentation":"<p>Specifies a system-defined tool for the model to use. <i>System-defined tools</i> are tools that are created and provided by the model provider.</p>"
     },
     "Tag":{
       "type":"structure",
@@ -2990,14 +4047,18 @@
       "members":{
         "toolSpec":{
           "shape":"ToolSpecification",
-          "documentation":"<p>The specfication for the tool.</p>"
+          "documentation":"<p>The specfication for the tool. </p>"
+        },
+        "systemTool":{
+          "shape":"SystemTool",
+          "documentation":"<p>Specifies the system-defined tool that you want use.</p>"
         },
         "cachePoint":{
           "shape":"CachePointBlock",
           "documentation":"<p>CachePoint to include in the tool configuration.</p>"
         }
       },
-      "documentation":"<p>Information about a tool that you can use with the Converse API. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Tool use (function calling)</a> in the Amazon Bedrock User Guide.</p>",
+      "documentation":"<p>Information about a tool that you can use with the Converse API. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>",
       "union":true
     },
     "ToolChoice":{
@@ -3013,10 +4074,10 @@
         },
         "tool":{
           "shape":"SpecificToolChoice",
-          "documentation":"<p>The Model must request the specified tool. Only supported by Anthropic Claude 3 models. </p>"
+          "documentation":"<p>The Model must request the specified tool. Only supported by Anthropic Claude 3 and Amazon Nova models. </p>"
         }
       },
-      "documentation":"<p>Determines which tools the model should request in a call to <code>Converse</code> or <code>ConverseStream</code>. <code>ToolChoice</code> is only supported by Anthropic Claude 3 models and by Mistral AI Mistral Large.</p>",
+      "documentation":"<p>Determines which tools the model should request in a call to <code>Converse</code> or <code>ConverseStream</code>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>",
       "union":true
     },
     "ToolConfiguration":{
@@ -3025,11 +4086,11 @@
       "members":{
         "tools":{
           "shape":"ToolConfigurationToolsList",
-          "documentation":"<p>An array of tools that you want to pass to a model.</p>"
+          "documentation":"<p>An array of tools that you want to pass to a model. </p>"
         },
         "toolChoice":{
           "shape":"ToolChoice",
-          "documentation":"<p>If supported by model, forces the model to request a tool.</p>"
+          "documentation":"<p>If supported by model, forces the model to request a tool. </p>"
         }
       },
       "documentation":"<p>Configuration information for the tools that you pass to a model. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Tool use (function calling)</a> in the Amazon Bedrock User Guide.</p>"
@@ -3047,7 +4108,7 @@
           "documentation":"<p>The JSON schema for the tool. For more information, see <a href=\"https://json-schema.org/understanding-json-schema/reference\">JSON Schema Reference</a>.</p>"
         }
       },
-      "documentation":"<p>The schema for the tool. The top level schema type must be <code>object</code>. </p>",
+      "documentation":"<p>The schema for the tool. The top level schema type must be <code>object</code>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>",
       "union":true
     },
     "ToolName":{
@@ -3065,7 +4126,7 @@
       "members":{
         "toolUseId":{
           "shape":"ToolUseId",
-          "documentation":"<p>The ID of the tool request that this is the result for.</p>"
+          "documentation":"<p>The ID of the tool request that this is the result for. </p>"
         },
         "content":{
           "shape":"ToolResultContentBlocks",
@@ -3073,25 +4134,67 @@
         },
         "status":{
           "shape":"ToolResultStatus",
-          "documentation":"<p>The status for the tool result content block.</p> <note> <p>This field is only supported Anthropic Claude 3 models.</p> </note>"
+          "documentation":"<p>The status for the tool result content block.</p> <note> <p>This field is only supported by Amazon Nova and Anthropic Claude 3 and 4 models.</p> </note>"
+        },
+        "type":{
+          "shape":"String",
+          "documentation":"<p>The type for the tool result content block.</p>"
         }
       },
-      "documentation":"<p>A tool result block that contains the results for a tool request that the model previously made.</p>"
+      "documentation":"<p>A tool result block that contains the results for a tool request that the model previously made. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>"
+    },
+    "ToolResultBlockDelta":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"String",
+          "documentation":"<p>The reasoning the model used to return the output.</p>"
+        },
+        "json":{
+          "shape":"Document",
+          "documentation":"<p>The JSON schema for the tool result content block. see <a href=\"https://json-schema.org/understanding-json-schema/reference\">JSON Schema Reference</a>.</p>"
+        }
+      },
+      "documentation":"<p>Contains incremental updates to tool results information during streaming responses. This allows clients to build up tool results data progressively as the response is generated.</p>",
+      "union":true
+    },
+    "ToolResultBlockStart":{
+      "type":"structure",
+      "required":["toolUseId"],
+      "members":{
+        "toolUseId":{
+          "shape":"ToolUseId",
+          "documentation":"<p>The ID of the tool that was used to generate this tool result block.</p>"
+        },
+        "type":{
+          "shape":"String",
+          "documentation":"<p>The type for the tool that was used to generate this tool result block.</p>"
+        },
+        "status":{
+          "shape":"ToolResultStatus",
+          "documentation":"<p>The status of the tool result block.</p>"
+        }
+      },
+      "documentation":"<p>The start of a tool result block. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>"
+    },
+    "ToolResultBlocksDelta":{
+      "type":"list",
+      "member":{"shape":"ToolResultBlockDelta"}
     },
     "ToolResultContentBlock":{
       "type":"structure",
       "members":{
         "json":{
           "shape":"Document",
-          "documentation":"<p>A tool result that is JSON format data.</p>"
+          "documentation":"<p>A tool result that is JSON format data. </p>"
         },
         "text":{
           "shape":"String",
-          "documentation":"<p>A tool result that is text.</p>"
+          "documentation":"<p>A tool result that is text. </p>"
         },
         "image":{
           "shape":"ImageBlock",
-          "documentation":"<p>A tool result that is an image.</p> <note> <p>This field is only supported by Anthropic Claude 3 models.</p> </note>"
+          "documentation":"<p>A tool result that is an image. </p> <note> <p>This field is only supported by Amazon Nova and Anthropic Claude 3 and 4 models.</p> </note>"
         },
         "document":{
           "shape":"DocumentBlock",
@@ -3100,9 +4203,13 @@
         "video":{
           "shape":"VideoBlock",
           "documentation":"<p>A tool result that is video.</p>"
+        },
+        "searchResult":{
+          "shape":"SearchResultBlock",
+          "documentation":"<p>A tool result that is a search result.</p>"
         }
       },
-      "documentation":"<p>The tool result content block.</p>",
+      "documentation":"<p>The tool result content block. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>",
       "union":true
     },
     "ToolResultContentBlocks":{
@@ -3136,7 +4243,7 @@
           "documentation":"<p>The input schema for the tool in JSON format.</p>"
         }
       },
-      "documentation":"<p>The specification for the tool.</p>"
+      "documentation":"<p>The specification for the tool. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>"
     },
     "ToolUseBlock":{
       "type":"structure",
@@ -3157,9 +4264,13 @@
         "input":{
           "shape":"Document",
           "documentation":"<p>The input to pass to the tool. </p>"
+        },
+        "type":{
+          "shape":"ToolUseType",
+          "documentation":"<p>The type for the tool request.</p>"
         }
       },
-      "documentation":"<p>A tool use content block. Contains information about a tool that the model is requesting be run., The model uses the result from the tool to generate a response. </p>"
+      "documentation":"<p>A tool use content block. Contains information about a tool that the model is requesting be run., The model uses the result from the tool to generate a response. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>"
     },
     "ToolUseBlockDelta":{
       "type":"structure",
@@ -3186,15 +4297,23 @@
         "name":{
           "shape":"ToolName",
           "documentation":"<p>The name of the tool that the model is requesting to use.</p>"
+        },
+        "type":{
+          "shape":"ToolUseType",
+          "documentation":"<p>The type for the tool request.</p>"
         }
       },
-      "documentation":"<p>The start of a tool use block.</p>"
+      "documentation":"<p>The start of a tool use block. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html\">Call a tool with the Converse API</a> in the Amazon Bedrock User Guide.</p>"
     },
     "ToolUseId":{
       "type":"string",
       "max":64,
       "min":1,
       "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "ToolUseType":{
+      "type":"string",
+      "enum":["server_tool_use"]
     },
     "Trace":{
       "type":"string",
@@ -3266,6 +4385,20 @@
     "VideoSourceBytesBlob":{
       "type":"blob",
       "min":1
+    },
+    "WebLocation":{
+      "type":"structure",
+      "members":{
+        "url":{
+          "shape":"String",
+          "documentation":"<p>The URL that was cited when performing a web search.</p>"
+        },
+        "domain":{
+          "shape":"String",
+          "documentation":"<p>The domain that was cited when performing a web search.</p>"
+        }
+      },
+      "documentation":"<p>Provides the URL and domain information for the website that was cited when performing a web search.</p>"
     }
   },
   "documentation":"<p>Describes the API operations for running inference using Amazon Bedrock models.</p>"

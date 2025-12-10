@@ -15,6 +15,7 @@
 # commands.
 import logging
 
+from botocore.utils import ensure_boolean
 from s3transfer.manager import TransferConfig
 
 from awscli.customizations.s3 import constants
@@ -30,6 +31,10 @@ DEFAULTS = {
     'max_bandwidth': None,
     'preferred_transfer_client': constants.AUTO_RESOLVE_TRANSFER_CLIENT,
     'target_bandwidth': None,
+    'io_chunksize': 256 * 1024,
+    'should_stream': None,
+    'disk_throughput': None,
+    'direct_io': None,
 }
 
 
@@ -45,9 +50,19 @@ class RuntimeConfig:
         'max_queue_size',
         'max_bandwidth',
         'target_bandwidth',
+        'io_chunksize',
+        'disk_throughput',
     ]
-    HUMAN_READABLE_SIZES = ['multipart_chunksize', 'multipart_threshold']
-    HUMAN_READABLE_RATES = ['max_bandwidth', 'target_bandwidth']
+    HUMAN_READABLE_SIZES = [
+        'multipart_chunksize',
+        'multipart_threshold',
+        'io_chunksize',
+    ]
+    HUMAN_READABLE_RATES = [
+        'max_bandwidth',
+        'target_bandwidth',
+        'disk_throughput',
+    ]
     SUPPORTED_CHOICES = {
         'preferred_transfer_client': [
             constants.AUTO_RESOLVE_TRANSFER_CLIENT,
@@ -60,6 +75,7 @@ class RuntimeConfig:
             'default': constants.CLASSIC_TRANSFER_CLIENT
         }
     }
+    BOOLEANS = ['should_stream', 'direct_io']
 
     @staticmethod
     def defaults():
@@ -81,6 +97,7 @@ class RuntimeConfig:
             runtime_config.update(kwargs)
         self._convert_human_readable_sizes(runtime_config)
         self._convert_human_readable_rates(runtime_config)
+        self._convert_booleans(runtime_config)
         self._resolve_choice_aliases(runtime_config)
         self._validate_config(runtime_config)
         return runtime_config
@@ -113,6 +130,12 @@ class RuntimeConfig:
                         'per second (e.g. 10MB/s or 800KB/s) or bits per '
                         'second (e.g. 10Mb/s or 800Kb/s)' % value
                     )
+
+    def _convert_booleans(self, runtime_config):
+        for attr in self.BOOLEANS:
+            value = runtime_config.get(attr)
+            if value is not None:
+                runtime_config[attr] = ensure_boolean(value)
 
     def _human_readable_rate_to_int(self, value):
         # The human_readable_to_int() utility only supports integers (e.g. 1024)
@@ -206,6 +229,7 @@ def create_transfer_config_from_runtime_config(runtime_config):
         'multipart_threshold': 'multipart_threshold',
         'multipart_chunksize': 'multipart_chunksize',
         'max_bandwidth': 'max_bandwidth',
+        'io_chunksize': 'io_chunksize',
     }
     kwargs = {}
     for key, value in runtime_config.items():

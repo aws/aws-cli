@@ -5,13 +5,15 @@
     "endpointPrefix":"ssm-contacts",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"SSM Contacts",
     "serviceFullName":"AWS Systems Manager Incident Manager Contacts",
     "serviceId":"SSM Contacts",
     "signatureVersion":"v4",
     "signingName":"ssm-contacts",
     "targetPrefix":"SSMContacts",
-    "uid":"ssm-contacts-2021-05-03"
+    "uid":"ssm-contacts-2021-05-03",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "AcceptPage":{
@@ -154,7 +156,7 @@
         {"shape":"ConflictException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>To remove a contact from Incident Manager, you can delete the contact. Deleting a contact removes them from all escalation plans and related response plans. Deleting an escalation plan removes it from all related response plans. You will have to recreate the contact and its contact channels before you can use it again.</p>"
+      "documentation":"<p>To remove a contact from Incident Manager, you can delete the contact. However, deleting a contact does not remove it from escalation plans and related response plans. Deleting an escalation plan also does not remove it from all related response plans. To modify an escalation plan, we recommend using the <a>UpdateContact</a> action to specify a different existing contact.</p>"
     },
     "DeleteContactChannel":{
       "name":"DeleteContactChannel",
@@ -171,7 +173,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>To no longer receive engagements on a contact channel, you can delete the channel from a contact. Deleting the contact channel removes it from the contact's engagement plan. If you delete the only contact channel for a contact, you won't be able to engage that contact during an incident.</p>"
+      "documentation":"<p>To stop receiving engagements on a contact channel, you can delete the channel from a contact. Deleting the contact channel does not remove it from the contact's engagement plan, but the stage that includes the channel will be ignored. If you delete the only contact channel for a contact, you'll no longer be able to engage that contact during an incident.</p>"
     },
     "DeleteRotation":{
       "name":"DeleteRotation",
@@ -532,7 +534,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the tags of an escalation plan or contact.</p>"
+      "documentation":"<p>Lists the tags of a contact, escalation plan, rotation, or on-call schedule.</p>"
     },
     "PutContactPolicy":{
       "name":"PutContactPolicy",
@@ -748,8 +750,7 @@
     },
     "AcceptPageResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AcceptType":{
       "type":"string",
@@ -786,8 +787,7 @@
     },
     "ActivateContactChannelResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "ActivationCode":{
       "type":"string",
@@ -823,7 +823,7 @@
         },
         "RetryIntervalInMinutes":{
           "shape":"RetryIntervalInMinutes",
-          "documentation":"<p>The number of minutes to wait to retry sending engagement in the case the engagement initially fails.</p>"
+          "documentation":"<p>The number of minutes to wait before retrying to send engagement if the engagement initially failed.</p>"
         }
       },
       "documentation":"<p>Information about the contact channel that Incident Manager uses to engage the contact.</p>"
@@ -883,7 +883,7 @@
         },
         "Type":{
           "shape":"ContactType",
-          "documentation":"<p>Refers to the type of contact. A single contact is type <code>PERSONAL</code> and an escalation plan is type <code>ESCALATION</code>.</p>"
+          "documentation":"<p>The type of contact.</p> <ul> <li> <p> <code>PERSONAL</code>: A single, individual contact.</p> </li> <li> <p> <code>ESCALATION</code>: An escalation plan.</p> </li> <li> <p> <code>ONCALL_SCHEDULE</code>: An on-call schedule.</p> </li> </ul>"
         }
       },
       "documentation":"<p>A personal contact or escalation plan that Incident Manager engages during an incident.</p>"
@@ -1066,7 +1066,7 @@
         },
         "Type":{
           "shape":"ContactType",
-          "documentation":"<p>To create an escalation plan use <code>ESCALATION</code>. To create a contact use <code>PERSONAL</code>.</p>"
+          "documentation":"<p>The type of contact to create.</p> <ul> <li> <p> <code>PERSONAL</code>: A single, individual contact.</p> </li> <li> <p> <code>ESCALATION</code>: An escalation plan.</p> </li> <li> <p> <code>ONCALL_SCHEDULE</code>: An on-call schedule.</p> </li> </ul>"
         },
         "Plan":{
           "shape":"Plan",
@@ -1149,7 +1149,7 @@
         },
         "ContactIds":{
           "shape":"RotationContactsArnList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the contacts to add to the rotation.</p> <p>The order that you list the contacts in is their shift order in the rotation schedule. To change the order of the contact's shifts, use the <a>UpdateRotation</a> operation.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the contacts to add to the rotation.</p> <note> <p>Only the <code>PERSONAL</code> contact type is supported. The contact types <code>ESCALATION</code> and <code>ONCALL_SCHEDULE</code> are not supported for this operation. </p> </note> <p>The order that you list the contacts in is their shift order in the rotation schedule. To change the order of the contact's shifts, use the <a>UpdateRotation</a> operation.</p>"
         },
         "StartTime":{
           "shape":"DateTime",
@@ -1157,7 +1157,7 @@
         },
         "TimeZoneId":{
           "shape":"TimeZoneId",
-          "documentation":"<p>The time zone to base the rotation’s activity on in Internet Assigned Numbers Authority (IANA) format. For example: \"America/Los_Angeles\", \"UTC\", or \"Asia/Seoul\". For more information, see the <a href=\"https://www.iana.org/time-zones\">Time Zone Database</a> on the IANA website.</p> <note> <p>Designators for time zones that don’t support Daylight Savings Time rules, such as Pacific Standard Time (PST) and Pacific Daylight Time (PDT), are not supported.</p> </note>"
+          "documentation":"<p>The time zone to base the rotation’s activity on in Internet Assigned Numbers Authority (IANA) format. For example: \"America/Los_Angeles\", \"UTC\", or \"Asia/Seoul\". For more information, see the <a href=\"https://www.iana.org/time-zones\">Time Zone Database</a> on the IANA website.</p> <note> <p>Designators for time zones that don’t support Daylight Savings Time rules, such as Pacific Standard Time (PST), are not supported.</p> </note>"
         },
         "Recurrence":{
           "shape":"RecurrenceSettings",
@@ -1226,8 +1226,7 @@
     },
     "DeactivateContactChannelResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeferActivation":{
       "type":"boolean",
@@ -1245,8 +1244,7 @@
     },
     "DeleteContactChannelResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteContactRequest":{
       "type":"structure",
@@ -1260,8 +1258,7 @@
     },
     "DeleteContactResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteRotationOverrideRequest":{
       "type":"structure",
@@ -1282,8 +1279,7 @@
     },
     "DeleteRotationOverrideResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteRotationRequest":{
       "type":"structure",
@@ -1297,8 +1293,7 @@
     },
     "DeleteRotationResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DependentEntity":{
       "type":"structure",
@@ -1596,7 +1591,7 @@
         },
         "Type":{
           "shape":"ContactType",
-          "documentation":"<p>The type of contact, either <code>PERSONAL</code> or <code>ESCALATION</code>.</p>"
+          "documentation":"<p>The type of contact.</p>"
         },
         "Plan":{
           "shape":"Plan",
@@ -1799,7 +1794,7 @@
         },
         "Type":{
           "shape":"ContactType",
-          "documentation":"<p>The type of contact. A contact is type <code>PERSONAL</code> and an escalation plan is type <code>ESCALATION</code>.</p>"
+          "documentation":"<p>The type of contact.</p>"
         }
       }
     },
@@ -2164,7 +2159,7 @@
       "members":{
         "ResourceARN":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the contact or escalation plan.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the contact, escalation plan, rotation, or on-call schedule.</p>"
         }
       }
     },
@@ -2346,8 +2341,7 @@
     },
     "PutContactPolicyResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Receipt":{
       "type":"structure",
@@ -2421,12 +2415,12 @@
         },
         "NumberOfOnCalls":{
           "shape":"NumberOfOnCalls",
-          "documentation":"<p>The number of contacts, or shift team members designated to be on call concurrently during a shift. For example, in an on-call schedule containing ten contacts, a value of <code>2</code> designates that two of them are on call at any given time.</p>",
+          "documentation":"<p>The number of contacts, or shift team members designated to be on call concurrently during a shift. For example, in an on-call schedule that contains ten contacts, a value of <code>2</code> designates that two of them are on call at any given time.</p>",
           "box":true
         },
         "ShiftCoverages":{
           "shape":"ShiftCoveragesMap",
-          "documentation":"<p>Information about the days of the week included in on-call rotation coverage.</p>"
+          "documentation":"<p>Information about the days of the week that the on-call rotation coverage includes.</p>"
         },
         "RecurrenceMultiplier":{
           "shape":"RecurrenceMultiplier",
@@ -2642,8 +2636,7 @@
     },
     "SendActivationCodeResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Sender":{
       "type":"string",
@@ -2822,8 +2815,7 @@
     },
     "StopEngagementResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "StopReason":{
       "type":"string",
@@ -2882,8 +2874,7 @@
     },
     "TagResourceResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -2902,11 +2893,11 @@
       "members":{
         "ChannelTargetInfo":{
           "shape":"ChannelTargetInfo",
-          "documentation":"<p>Information about the contact channel Incident Manager is engaging.</p>"
+          "documentation":"<p>Information about the contact channel that Incident Manager engages.</p>"
         },
         "ContactTargetInfo":{
           "shape":"ContactTargetInfo",
-          "documentation":"<p>Information about the contact that Incident Manager is engaging.</p>"
+          "documentation":"<p>Information about the contact that Incident Manager engages.</p>"
         }
       },
       "documentation":"<p>The contact or contact channel that's being engaged.</p>"
@@ -2975,8 +2966,7 @@
     },
     "UntagResourceResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateContactChannelRequest":{
       "type":"structure",
@@ -2998,8 +2988,7 @@
     },
     "UpdateContactChannelResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateContactRequest":{
       "type":"structure",
@@ -3021,8 +3010,7 @@
     },
     "UpdateContactResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateRotationRequest":{
       "type":"structure",
@@ -3037,7 +3025,7 @@
         },
         "ContactIds":{
           "shape":"RotationContactsArnList",
-          "documentation":"<p>The Amazon Resource Names (ARNs) of the contacts to include in the updated rotation. </p> <p>The order in which you list the contacts is their shift order in the rotation schedule.</p>"
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the contacts to include in the updated rotation. </p> <note> <p>Only the <code>PERSONAL</code> contact type is supported. The contact types <code>ESCALATION</code> and <code>ONCALL_SCHEDULE</code> are not supported for this operation. </p> </note> <p>The order in which you list the contacts is their shift order in the rotation schedule.</p>"
         },
         "StartTime":{
           "shape":"DateTime",
@@ -3045,7 +3033,7 @@
         },
         "TimeZoneId":{
           "shape":"TimeZoneId",
-          "documentation":"<p>The time zone to base the updated rotation’s activity on, in Internet Assigned Numbers Authority (IANA) format. For example: \"America/Los_Angeles\", \"UTC\", or \"Asia/Seoul\". For more information, see the <a href=\"https://www.iana.org/time-zones\">Time Zone Database</a> on the IANA website.</p> <note> <p>Designators for time zones that don’t support Daylight Savings Time Rules, such as Pacific Standard Time (PST) and Pacific Daylight Time (PDT), aren't supported.</p> </note>"
+          "documentation":"<p>The time zone to base the updated rotation’s activity on, in Internet Assigned Numbers Authority (IANA) format. For example: \"America/Los_Angeles\", \"UTC\", or \"Asia/Seoul\". For more information, see the <a href=\"https://www.iana.org/time-zones\">Time Zone Database</a> on the IANA website.</p> <note> <p>Designators for time zones that don’t support Daylight Savings Time Rules, such as Pacific Standard Time (PST), aren't supported.</p> </note>"
         },
         "Recurrence":{
           "shape":"RecurrenceSettings",
@@ -3055,8 +3043,7 @@
     },
     "UpdateRotationResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Uuid":{
       "type":"string",

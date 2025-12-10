@@ -177,7 +177,8 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Describes the specific campaign.</p>"
+      "documentation":"<p>Describes the specific campaign.</p>",
+      "readonly":true
     },
     "GetCampaignState":{
       "name":"GetCampaignState",
@@ -229,7 +230,8 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Get the specific Connect instance config.</p>"
+      "documentation":"<p>Get the specific Connect instance config.</p>",
+      "readonly":true
     },
     "GetInstanceCommunicationLimits":{
       "name":"GetInstanceCommunicationLimits",
@@ -246,7 +248,8 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Get the instance communication limits.</p>"
+      "documentation":"<p>Get the instance communication limits.</p>",
+      "readonly":true
     },
     "GetInstanceOnboardingJobStatus":{
       "name":"GetInstanceOnboardingJobStatus",
@@ -263,7 +266,8 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Get the specific instance onboarding job status.</p>"
+      "documentation":"<p>Get the specific instance onboarding job status.</p>",
+      "readonly":true
     },
     "ListCampaigns":{
       "name":"ListCampaigns",
@@ -279,7 +283,8 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Provides summary information about the campaigns under the specified Amazon Connect account.</p>"
+      "documentation":"<p>Provides summary information about the campaigns under the specified Amazon Connect account.</p>",
+      "readonly":true
     },
     "ListConnectInstanceIntegrations":{
       "name":"ListConnectInstanceIntegrations",
@@ -297,7 +302,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Provides summary information about the integration under the specified Connect instance.</p>"
+      "documentation":"<p>Provides summary information about the integration under the specified Connect instance.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -679,10 +685,19 @@
       },
       "exception":true
     },
+    "AgentAction":{
+      "type":"string",
+      "documentation":"<p>Actions that can performed on a contact by an agent</p>",
+      "enum":["DISCARD"]
+    },
+    "AgentActions":{
+      "type":"list",
+      "member":{"shape":"AgentAction"},
+      "documentation":"<p>Actions that can be performed by agent during preview phase.</p>"
+    },
     "AgentlessConfig":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Agentless config</p>"
     },
     "AnswerMachineDetectionConfig":{
@@ -745,8 +760,7 @@
         "id",
         "arn",
         "name",
-        "connectInstanceId",
-        "channelSubtypeConfig"
+        "connectInstanceId"
       ],
       "members":{
         "id":{"shape":"CampaignId"},
@@ -754,6 +768,7 @@
         "name":{"shape":"CampaignName"},
         "connectInstanceId":{"shape":"InstanceId"},
         "channelSubtypeConfig":{"shape":"ChannelSubtypeConfig"},
+        "type":{"shape":"ExternalCampaignType"},
         "source":{"shape":"Source"},
         "connectCampaignFlowArn":{"shape":"Arn"},
         "schedule":{"shape":"Schedule"},
@@ -788,8 +803,8 @@
       "type":"string",
       "documentation":"<p>Identifier representing a Campaign</p>",
       "max":256,
-      "min":0,
-      "pattern":"[a-zA-Z0-9\\-:/]*"
+      "min":1,
+      "pattern":"[-:/a-zA-Z0-9]+"
     },
     "CampaignName":{
       "type":"string",
@@ -824,6 +839,7 @@
         "name":{"shape":"CampaignName"},
         "connectInstanceId":{"shape":"InstanceId"},
         "channelSubtypes":{"shape":"ChannelSubtypeList"},
+        "type":{"shape":"ExternalCampaignType"},
         "schedule":{"shape":"Schedule"},
         "connectCampaignFlowArn":{"shape":"Arn"}
       },
@@ -847,7 +863,8 @@
       "enum":[
         "TELEPHONY",
         "SMS",
-        "EMAIL"
+        "EMAIL",
+        "WHATSAPP"
       ]
     },
     "ChannelSubtypeConfig":{
@@ -855,7 +872,8 @@
       "members":{
         "telephony":{"shape":"TelephonyChannelSubtypeConfig"},
         "sms":{"shape":"SmsChannelSubtypeConfig"},
-        "email":{"shape":"EmailChannelSubtypeConfig"}
+        "email":{"shape":"EmailChannelSubtypeConfig"},
+        "whatsApp":{"shape":"WhatsAppChannelSubtypeConfig"}
       },
       "documentation":"<p>Campaign Channel Subtype config</p>"
     },
@@ -869,7 +887,8 @@
       "members":{
         "telephony":{"shape":"TelephonyChannelSubtypeParameters"},
         "sms":{"shape":"SmsChannelSubtypeParameters"},
-        "email":{"shape":"EmailChannelSubtypeParameters"}
+        "email":{"shape":"EmailChannelSubtypeParameters"},
+        "whatsApp":{"shape":"WhatsAppChannelSubtypeParameters"}
       },
       "documentation":"<p>ChannelSubtypeParameters for an outbound request</p>",
       "union":true
@@ -952,7 +971,8 @@
         "localTimeZoneConfig":{"shape":"LocalTimeZoneConfig"},
         "telephony":{"shape":"TimeWindow"},
         "sms":{"shape":"TimeWindow"},
-        "email":{"shape":"TimeWindow"}
+        "email":{"shape":"TimeWindow"},
+        "whatsApp":{"shape":"TimeWindow"}
       },
       "documentation":"<p>Campaign communication time config</p>"
     },
@@ -962,7 +982,8 @@
       "enum":[
         "TELEPHONY",
         "SMS",
-        "EMAIL"
+        "EMAIL",
+        "WHATSAPP"
       ]
     },
     "ConflictException":{
@@ -993,13 +1014,13 @@
       "type":"structure",
       "required":[
         "name",
-        "connectInstanceId",
-        "channelSubtypeConfig"
+        "connectInstanceId"
       ],
       "members":{
         "name":{"shape":"CampaignName"},
         "connectInstanceId":{"shape":"InstanceId"},
         "channelSubtypeConfig":{"shape":"ChannelSubtypeConfig"},
+        "type":{"shape":"ExternalCampaignType"},
         "source":{"shape":"Source"},
         "connectCampaignFlowArn":{"shape":"Arn"},
         "schedule":{"shape":"Schedule"},
@@ -1217,8 +1238,8 @@
       "type":"string",
       "documentation":"<p>Identifier representing a Dial request</p>",
       "max":256,
-      "min":0,
-      "pattern":"[a-zA-Z0-9_\\-.]*"
+      "min":1,
+      "pattern":"[-_.a-zA-Z0-9]+"
     },
     "EmailAddress":{
       "type":"string",
@@ -1323,6 +1344,14 @@
         "Campaign-SMS",
         "Campaign-Telephony",
         "Campaign-Orchestration"
+      ]
+    },
+    "ExternalCampaignType":{
+      "type":"string",
+      "documentation":"<p>The type of campaign externally exposed in APIs.</p>",
+      "enum":[
+        "MANAGED",
+        "JOURNEY"
       ]
     },
     "FailedCampaignStateResponse":{
@@ -1514,8 +1543,8 @@
       "type":"string",
       "documentation":"<p>Amazon Connect Instance Id</p>",
       "max":256,
-      "min":0,
-      "pattern":"[a-zA-Z0-9_\\-.]*"
+      "min":1,
+      "pattern":"[-_.a-zA-Z0-9]+"
     },
     "InstanceIdFilter":{
       "type":"structure",
@@ -1580,7 +1609,8 @@
       "type":"structure",
       "members":{
         "customerProfiles":{"shape":"CustomerProfilesIntegrationConfig"},
-        "qConnect":{"shape":"QConnectIntegrationConfig"}
+        "qConnect":{"shape":"QConnectIntegrationConfig"},
+        "lambda":{"shape":"LambdaIntegrationConfig"}
       },
       "documentation":"<p>Integration config for Connect Instance</p>",
       "union":true
@@ -1589,7 +1619,8 @@
       "type":"structure",
       "members":{
         "customerProfiles":{"shape":"CustomerProfilesIntegrationIdentifier"},
-        "qConnect":{"shape":"QConnectIntegrationIdentifier"}
+        "qConnect":{"shape":"QConnectIntegrationIdentifier"},
+        "lambda":{"shape":"LambdaIntegrationIdentifier"}
       },
       "documentation":"<p>Integration identifier for Connect instance</p>",
       "union":true
@@ -1598,7 +1629,8 @@
       "type":"structure",
       "members":{
         "customerProfiles":{"shape":"CustomerProfilesIntegrationSummary"},
-        "qConnect":{"shape":"QConnectIntegrationSummary"}
+        "qConnect":{"shape":"QConnectIntegrationSummary"},
+        "lambda":{"shape":"LambdaIntegrationSummary"}
       },
       "documentation":"<p>Integration summary for Connect instance.</p>",
       "union":true
@@ -1681,6 +1713,37 @@
       "type":"string",
       "documentation":"<p>Time in ISO 8601 format, e.g. T23:11</p>",
       "pattern":"T\\d{2}:\\d{2}"
+    },
+    "LambdaArn":{
+      "type":"string",
+      "documentation":"<p>Lambda ARN for integration with Connect instances</p>",
+      "max":140,
+      "min":1,
+      "pattern":"arn:aws[a-zA-Z-]*:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d:\\d{12}:function:([a-zA-Z0-9-_]+)(:([a-zA-Z0-9-_]+))?"
+    },
+    "LambdaIntegrationConfig":{
+      "type":"structure",
+      "required":["functionArn"],
+      "members":{
+        "functionArn":{"shape":"LambdaArn"}
+      },
+      "documentation":"<p>Lambda integration config</p>"
+    },
+    "LambdaIntegrationIdentifier":{
+      "type":"structure",
+      "required":["functionArn"],
+      "members":{
+        "functionArn":{"shape":"LambdaArn"}
+      },
+      "documentation":"<p>Lambda integration identifier</p>"
+    },
+    "LambdaIntegrationSummary":{
+      "type":"structure",
+      "required":["functionArn"],
+      "members":{
+        "functionArn":{"shape":"LambdaArn"}
+      },
+      "documentation":"<p>Lambda integration summary</p>"
     },
     "ListCampaignsRequest":{
       "type":"structure",
@@ -1842,6 +1905,19 @@
         "bandwidthAllocation":{"shape":"BandwidthAllocation"}
       },
       "documentation":"<p>Predictive config</p>"
+    },
+    "PreviewConfig":{
+      "type":"structure",
+      "required":[
+        "bandwidthAllocation",
+        "timeoutConfig"
+      ],
+      "members":{
+        "bandwidthAllocation":{"shape":"BandwidthAllocation"},
+        "timeoutConfig":{"shape":"TimeoutConfig"},
+        "agentActions":{"shape":"AgentActions"}
+      },
+      "documentation":"<p>Preview config</p>"
     },
     "ProfileId":{
       "type":"string",
@@ -2065,6 +2141,13 @@
         }
       },
       "documentation":"<p>The request for ResumeCampaign API.</p>"
+    },
+    "RingTimeout":{
+      "type":"integer",
+      "documentation":"<p>Ring timeout for outbound calls</p>",
+      "box":true,
+      "max":60,
+      "min":15
     },
     "Schedule":{
       "type":"structure",
@@ -2324,7 +2407,8 @@
         "destinationPhoneNumber":{"shape":"DestinationPhoneNumber"},
         "attributes":{"shape":"Attributes"},
         "connectSourcePhoneNumber":{"shape":"SourcePhoneNumber"},
-        "answerMachineDetectionConfig":{"shape":"AnswerMachineDetectionConfig"}
+        "answerMachineDetectionConfig":{"shape":"AnswerMachineDetectionConfig"},
+        "ringTimeout":{"shape":"RingTimeout"}
       },
       "documentation":"<p>Parameters for the Telephony Channel Subtype</p>"
     },
@@ -2334,7 +2418,8 @@
       "members":{
         "connectContactFlowId":{"shape":"ContactFlowId"},
         "connectSourcePhoneNumber":{"shape":"SourcePhoneNumber"},
-        "answerMachineDetectionConfig":{"shape":"AnswerMachineDetectionConfig"}
+        "answerMachineDetectionConfig":{"shape":"AnswerMachineDetectionConfig"},
+        "ringTimeout":{"shape":"RingTimeout"}
       },
       "documentation":"<p>Default Telephony Outbound config</p>"
     },
@@ -2343,7 +2428,8 @@
       "members":{
         "progressive":{"shape":"ProgressiveConfig"},
         "predictive":{"shape":"PredictiveConfig"},
-        "agentless":{"shape":"AgentlessConfig"}
+        "agentless":{"shape":"AgentlessConfig"},
+        "preview":{"shape":"PreviewConfig"}
       },
       "documentation":"<p>Telephony Outbound Mode</p>",
       "union":true
@@ -2404,6 +2490,21 @@
       "max":50,
       "min":0,
       "pattern":"[a-zA-Z0-9_\\-/]*"
+    },
+    "TimeoutConfig":{
+      "type":"structure",
+      "required":["durationInSeconds"],
+      "members":{
+        "durationInSeconds":{"shape":"TimeoutDuration"}
+      },
+      "documentation":"<p>Timeout Config for preview contacts.</p>"
+    },
+    "TimeoutDuration":{
+      "type":"integer",
+      "documentation":"<p>Timeout duration for a preview contact in seconds.</p>",
+      "box":true,
+      "max":300,
+      "min":1
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -2554,6 +2655,53 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "WhatsAppChannelSubtypeConfig":{
+      "type":"structure",
+      "required":[
+        "outboundMode",
+        "defaultOutboundConfig"
+      ],
+      "members":{
+        "capacity":{"shape":"Capacity"},
+        "outboundMode":{"shape":"WhatsAppOutboundMode"},
+        "defaultOutboundConfig":{"shape":"WhatsAppOutboundConfig"}
+      },
+      "documentation":"<p>WhatsApp Channel Subtype config</p>"
+    },
+    "WhatsAppChannelSubtypeParameters":{
+      "type":"structure",
+      "required":[
+        "destinationPhoneNumber",
+        "templateParameters"
+      ],
+      "members":{
+        "destinationPhoneNumber":{"shape":"DestinationPhoneNumber"},
+        "connectSourcePhoneNumberArn":{"shape":"Arn"},
+        "templateArn":{"shape":"Arn"},
+        "templateParameters":{"shape":"Attributes"}
+      },
+      "documentation":"<p>Parameters for the WhatsApp Channel Subtype</p>"
+    },
+    "WhatsAppOutboundConfig":{
+      "type":"structure",
+      "required":[
+        "connectSourcePhoneNumberArn",
+        "wisdomTemplateArn"
+      ],
+      "members":{
+        "connectSourcePhoneNumberArn":{"shape":"Arn"},
+        "wisdomTemplateArn":{"shape":"Arn"}
+      },
+      "documentation":"<p>Default WhatsApp Outbound config</p>"
+    },
+    "WhatsAppOutboundMode":{
+      "type":"structure",
+      "members":{
+        "agentless":{"shape":"AgentlessConfig"}
+      },
+      "documentation":"<p>WhatsApp Outbound Mode</p>",
+      "union":true
     },
     "XAmazonErrorType":{
       "type":"string",

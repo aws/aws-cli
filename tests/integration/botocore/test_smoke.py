@@ -60,7 +60,6 @@ SMOKE_TESTS = {
     'ecs': {'DescribeClusters': {}},
     'elasticache': {'DescribeCacheClusters': {}},
     'elasticbeanstalk': {'DescribeApplications': {}},
-    'elastictranscoder': {'ListPipelines': {}},
     'elb': {'DescribeLoadBalancers': {}},
     'emr': {'ListClusters': {}},
     'es': {'ListDomainNames': {}},
@@ -89,7 +88,6 @@ SMOKE_TESTS = {
     'sns': {'ListTopics': {}},
     'sqs': {'ListQueues': {}},
     'ssm': {'ListDocuments': {}},
-    'storagegateway': {'ListGateways': {}},
     # sts tests would normally go here, but
     # there aren't any calls you can make when
     # using session credentials so we don't run any
@@ -162,7 +160,6 @@ ERROR_TESTS = {
         'DescribeEnvironmentResources': {'EnvironmentId': 'x'},
     },
     'elb': {'DescribeLoadBalancers': {'LoadBalancerNames': ['fake']}},
-    'elastictranscoder': {'ReadJob': {'Id': 'fake'}},
     'emr': {'DescribeCluster': {'ClusterId': 'fake'}},
     'es': {'DescribeElasticsearchDomain': {'DomainName': 'not-a-domain'}},
     'gamelift': {'DescribeBuild': {'BuildId': 'fake-build-id'}},

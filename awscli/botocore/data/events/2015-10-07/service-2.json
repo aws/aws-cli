@@ -1904,6 +1904,10 @@
           "documentation":"<p>The identifier of the KMS customer managed key for EventBridge to use, if you choose to use a customer managed key to encrypt events on this event bus. The identifier can be the key Amazon Resource Name (ARN), KeyId, key alias, or key alias ARN.</p> <p>If you do not specify a customer managed key identifier, EventBridge uses an Amazon Web Services owned key to encrypt events on the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/viewing-keys.html\">Identify and view keys</a> in the <i>Key Management Service Developer Guide</i>. </p> <note> <p>Schema discovery is not supported for event buses encrypted using a customer managed key. EventBridge returns an error if: </p> <ul> <li> <p>You call <code> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/schema-reference/v1-discoverers.html#CreateDiscoverer\">CreateDiscoverer</a> </code> on an event bus set to use a customer managed key for encryption.</p> </li> <li> <p>You call <code> <a href=\"https://docs.aws.amazon.com/eventbridge/latest/APIReference/API_UpdatedEventBus.html\">UpdatedEventBus</a> </code> to set a customer managed key on an event bus with schema discovery enabled.</p> </li> </ul> <p>To enable schema discovery on an event bus, choose to use an Amazon Web Services owned key. For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-encryption-event-bus-cmkey.html\">Encrypting events</a> in the <i>Amazon EventBridge User Guide</i>.</p> </note> <important> <p>If you have specified that EventBridge use a customer managed key for encrypting the source event bus, we strongly recommend you also specify a customer managed key for any archives for the event bus as well. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/encryption-archives.html\">Encrypting archives</a> in the <i>Amazon EventBridge User Guide</i>.</p> </important>"
         },
         "DeadLetterConfig":{"shape":"DeadLetterConfig"},
+        "LogConfig":{
+          "shape":"LogConfig",
+          "documentation":"<p>The logging configuration settings for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eb-event-bus-logs.html\">Configuring logs for event buses</a> in the <i>EventBridge User Guide</i>.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>Tags to associate with the event bus.</p>"
@@ -1925,7 +1929,11 @@
           "shape":"KmsKeyIdentifier",
           "documentation":"<p>The identifier of the KMS customer managed key for EventBridge to use to encrypt events on this event bus, if one has been specified.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-encryption.html\">Data encryption in EventBridge</a> in the <i>Amazon EventBridge User Guide</i>.</p>"
         },
-        "DeadLetterConfig":{"shape":"DeadLetterConfig"}
+        "DeadLetterConfig":{"shape":"DeadLetterConfig"},
+        "LogConfig":{
+          "shape":"LogConfig",
+          "documentation":"<p>The logging configuration settings for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eb-event-bus-logs.html\">Configuring logs for event buses</a> in the <i>EventBridge User Guide</i>.</p>"
+        }
       }
     },
     "CreatePartnerEventSourceRequest":{
@@ -2465,6 +2473,10 @@
         "Policy":{
           "shape":"String",
           "documentation":"<p>The policy that enables the external account to send events to your account.</p>"
+        },
+        "LogConfig":{
+          "shape":"LogConfig",
+          "documentation":"<p>The logging configuration settings for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eb-event-bus-logs.html\">Configuring logs for event buses</a> in the <i>EventBridge User Guide</i>.</p>"
         },
         "CreationTime":{
           "shape":"Timestamp",
@@ -3099,6 +3111,13 @@
       "documentation":"<p>An error occurred because a replay can be canceled only when the state is Running or Starting.</p>",
       "exception":true
     },
+    "IncludeDetail":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "FULL"
+      ]
+    },
     "InputTransformer":{
       "type":"structure",
       "required":["InputTemplate"],
@@ -3162,6 +3181,15 @@
         "EC2",
         "FARGATE",
         "EXTERNAL"
+      ]
+    },
+    "Level":{
+      "type":"string",
+      "enum":[
+        "OFF",
+        "ERROR",
+        "INFO",
+        "TRACE"
       ]
     },
     "LimitExceededException":{
@@ -3601,6 +3629,20 @@
           "documentation":"<p>A token indicating there are more results available. If there are no more results, no token is included in the response.</p> <p>The value of <code>nextToken</code> is a unique pagination token for each page. To retrieve the next page of results, make the call again using the returned token. Keep all other arguments unchanged.</p> <p> Using an expired pagination token results in an <code>HTTP 400 InvalidToken</code> error.</p>"
         }
       }
+    },
+    "LogConfig":{
+      "type":"structure",
+      "members":{
+        "IncludeDetail":{
+          "shape":"IncludeDetail",
+          "documentation":"<p>Whether EventBridge include detailed event information in the records it generates. Detailed data can be useful for troubleshooting and debugging. This information includes details of the event itself, as well as target details.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-bus-logs.html#eb-event-logs-data\">Including detail data in event bus logs</a> in the <i>EventBridge User Guide</i>.</p>"
+        },
+        "Level":{
+          "shape":"Level",
+          "documentation":"<p>The level of logging detail to include. This applies to all log destinations for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-bus-logs.html#eb-event-bus-logs-level\">Specifying event bus log level</a> in the <i>EventBridge User Guide</i>.</p>"
+        }
+      },
+      "documentation":"<p>The logging configuration settings for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eb-event-bus-logs.html\">Configuring logs for event buses</a> in the <i>EventBridge User Guide</i>.</p>"
     },
     "Long":{"type":"long"},
     "ManagedBy":{
@@ -5302,7 +5344,11 @@
           "shape":"EventBusDescription",
           "documentation":"<p>The event bus description.</p>"
         },
-        "DeadLetterConfig":{"shape":"DeadLetterConfig"}
+        "DeadLetterConfig":{"shape":"DeadLetterConfig"},
+        "LogConfig":{
+          "shape":"LogConfig",
+          "documentation":"<p>The logging configuration settings for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eb-event-bus-logs.html\">Configuring logs for event buses</a> in the <i>EventBridge User Guide</i>.</p>"
+        }
       }
     },
     "UpdateEventBusResponse":{
@@ -5324,7 +5370,11 @@
           "shape":"EventBusDescription",
           "documentation":"<p>The event bus description.</p>"
         },
-        "DeadLetterConfig":{"shape":"DeadLetterConfig"}
+        "DeadLetterConfig":{"shape":"DeadLetterConfig"},
+        "LogConfig":{
+          "shape":"LogConfig",
+          "documentation":"<p>The logging configuration settings for the event bus.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/eb-event-bus-logs.html\">Configuring logs for event buses</a> in the <i>EventBridge User Guide</i>.</p>"
+        }
       }
     }
   },

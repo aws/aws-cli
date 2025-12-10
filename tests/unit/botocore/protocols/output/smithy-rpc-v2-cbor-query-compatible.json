@@ -1,0 +1,142 @@
+[
+    {
+        "description": "Test cases for QueryCompatibleOperation operation",
+        "metadata": {
+            "apiVersion": "2025-06-20",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "awsQueryCompatible": {},
+            "endpointPrefix": "querycompatiblerpcv2protocol",
+            "protocol": "smithy-rpc-v2-cbor",
+            "protocols": [
+                "smithy-rpc-v2-cbor"
+            ],
+            "serviceFullName": "QueryCompatibleRpcV2Protocol",
+            "serviceId": "Query Compatible RpcV2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "QueryCompatibleRpcV2Protocol",
+            "targetPrefix": "QueryCompatibleRpcV2Protocol",
+            "uid": "query-compatible-rpcv2-protocol-2025-06-20"
+        },
+        "shapes": {
+            "NoCustomCodeError": {
+                "type": "structure",
+                "members": {
+                    "message": {
+                        "shape": "String"
+                    }
+                },
+                "exception": true
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "QueryCompatibleRpcV2CborNoCustomCodeError",
+                "given": {
+                    "name": "QueryCompatibleOperation",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "NoCustomCodeError"
+                        }
+                    ]
+                },
+                "description": "Parses simple RpcV2 CBOR errors with no query error code",
+                "errorCode": "NoCustomCodeError",
+                "errorMessage": "Hi",
+                "error": {
+                    "message": "Hi"
+                },
+                "response": {
+                    "status_code": 400,
+                    "headers": {
+                        "Content-Type": "application/cbor",
+                        "smithy-protocol": "rpc-v2-cbor"
+                    },
+                    "body": "uQACZl9fdHlwZXgtYXdzLnByb3RvY29sdGVzdHMucnBjdjJjYm9yI05vQ3VzdG9tQ29kZUVycm9yZ21lc3NhZ2ViSGk="
+                }
+            }
+        ]
+    },
+    {
+        "description": "Test cases for QueryCompatibleOperation operation",
+        "metadata": {
+            "apiVersion": "2025-06-20",
+            "auth": [
+                "aws.auth#sigv4"
+            ],
+            "awsQueryCompatible": {},
+            "endpointPrefix": "querycompatiblerpcv2protocol",
+            "protocol": "smithy-rpc-v2-cbor",
+            "protocols": [
+                "smithy-rpc-v2-cbor"
+            ],
+            "serviceFullName": "QueryCompatibleRpcV2Protocol",
+            "serviceId": "Query Compatible RpcV2 Protocol",
+            "signatureVersion": "v4",
+            "signingName": "QueryCompatibleRpcV2Protocol",
+            "targetPrefix": "QueryCompatibleRpcV2Protocol",
+            "uid": "query-compatible-rpcv2-protocol-2025-06-20"
+        },
+        "shapes": {
+            "CustomCodeError": {
+                "type": "structure",
+                "members": {
+                    "message": {
+                        "shape": "String"
+                    }
+                },
+                "error": {
+                    "code": "Customized",
+                    "httpStatusCode": 402,
+                    "senderFault": true
+                },
+                "exception": true
+            },
+            "String": {
+                "type": "string"
+            }
+        },
+        "cases": [
+            {
+                "id": "QueryCompatibleRpcV2CborCustomCodeError",
+                "given": {
+                    "name": "QueryCompatibleOperation",
+                    "http": {
+                        "method": "POST",
+                        "requestUri": "/"
+                    },
+                    "idempotent": true,
+                    "errors": [
+                        {
+                            "shape": "CustomCodeError"
+                        }
+                    ]
+                },
+                "description": "Parses simple RpcV2 CBOR errors with query error code",
+                "errorCode": "Customized",
+                "errorMessage": "Hi",
+                "error": {
+                    "message": "Hi"
+                },
+                "response": {
+                    "status_code": 400,
+                    "headers": {
+                        "Content-Type": "application/cbor",
+                        "smithy-protocol": "rpc-v2-cbor",
+                        "x-amzn-query-error": "Customized;Sender"
+                    },
+                    "body": "uQACZl9fdHlwZXgrYXdzLnByb3RvY29sdGVzdHMucnBjdjJjYm9yI0N1c3RvbUNvZGVFcnJvcmdtZXNzYWdlYkhp"
+                }
+            }
+        ]
+    }
+]

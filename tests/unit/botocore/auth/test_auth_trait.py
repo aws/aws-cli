@@ -10,8 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-
-from botocore.auth import BaseSigner, resolve_auth_type
+import pytest
+from botocore.auth import (
+    BaseSigner,
+    resolve_auth_scheme_preference,
+    resolve_auth_type,
+)
 from botocore.exceptions import (
     UnknownSignatureVersionError,
     UnsupportedSignatureVersionError,
@@ -41,3 +45,33 @@ class TestAuthTraitResolution(unittest.TestCase):
     def test_no_known_auth_type(self):
         with self.assertRaises(UnsupportedSignatureVersionError):
             resolve_auth_type([])
+
+
+@pytest.mark.parametrize(
+    "preference_list, auth_options, expected",
+    [
+        (['sigv4', 'httpBearerAuth'], ['smithy.api#httpBearerAuth'], 'bearer'),
+        (['noAuth', 'sigv4'], ['aws.auth#sigv4'], 'v4'),
+        (['foo', 'httpBearerAuth'], ['smithy.api#httpBearerAuth'], 'bearer'),
+        (['noAuth', 'sigv4'], ['smithy.api#noAuth'], 'none'),
+        (['foo'], ['aws.auth#sigv4', 'smithy.api#httpBearerAuth'], 'v4'),
+    ],
+)
+def test_resolve_auth_scheme_preference(
+    preference_list, auth_options, expected
+):
+    assert (
+        resolve_auth_scheme_preference(preference_list, auth_options)
+        == expected
+    )
+
+
+@pytest.mark.parametrize(
+    "preference_list, auth_options",
+    [(['foo'], ['aws.auth#invalidAuth']), (['foo'], [])],
+)
+def test_resolve_auth_scheme_preference_unsupported(
+    preference_list, auth_options
+):
+    with pytest.raises(UnsupportedSignatureVersionError):
+        resolve_auth_scheme_preference(preference_list, auth_options)

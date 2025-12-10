@@ -51,7 +51,17 @@ class InstanceConnectEndpointRequestFetcher:
         self, ec2_client, instance_connect_endpoint_id
     ):
         args = {
-            "Filters": [{"Name": "state", "Values": ["create-complete"]}],
+            "Filters": [
+                {
+                    "Name": "state",
+                    "Values": [
+                        "create-complete",
+                        "update-in-progress",
+                        "update-failed",
+                        "update-complete",
+                    ],
+                }
+            ],
             "InstanceConnectEndpointIds": [instance_connect_endpoint_id],
         }
         describe_eice_response = (
@@ -72,7 +82,15 @@ class InstanceConnectEndpointRequestFetcher:
         ## Describe until subnet match and if none match subnet then return the first one based on vpc-id filter
         args = {
             "Filters": [
-                {"Name": "state", "Values": ["create-complete"]},
+                {
+                    "Name": "state",
+                    "Values": [
+                        "create-complete",
+                        "update-in-progress",
+                        "update-failed",
+                        "update-complete",
+                    ],
+                },
                 {"Name": "vpc-id", "Values": [vpc_id]},
             ]
         }
@@ -90,9 +108,7 @@ class InstanceConnectEndpointRequestFetcher:
             if page_result:
                 for eice in page_result:
                     if eice['SubnetId'] == subnet_id:
-                        logger.debug(
-                            f"Using EICE based on subnet: {instance_connect_endpoints[0]}"
-                        )
+                        logger.debug(f"Using EICE based on subnet: {eice}")
                         return eice
 
         if instance_connect_endpoints:

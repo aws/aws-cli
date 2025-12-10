@@ -1,0 +1,5204 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2022-09-27",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"route53globalresolver",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"Amazon Route 53 Global Resolver",
+    "serviceId":"Route53GlobalResolver",
+    "signatureVersion":"v4",
+    "signingName":"route53globalresolver",
+    "uid":"route53globalresolver-2022-09-27"
+  },
+  "operations":{
+    "AssociateHostedZone":{
+      "name":"AssociateHostedZone",
+      "http":{
+        "method":"POST",
+        "requestUri":"/hosted-zone-associations/{hostedZoneId}",
+        "responseCode":200
+      },
+      "input":{"shape":"AssociateHostedZoneInput"},
+      "output":{"shape":"AssociateHostedZoneOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Associates a Route 53 private hosted zone with a Route 53 Global Resolver resource. This allows the resolver to resolve DNS queries for the private hosted zone from anywhere globally.</p>",
+      "idempotent":true
+    },
+    "BatchCreateFirewallRule":{
+      "name":"BatchCreateFirewallRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/firewall-rules/batch-create",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchCreateFirewallRuleInput"},
+      "output":{"shape":"BatchCreateFirewallRuleOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates multiple DNS firewall rules in a single operation. This is more efficient than creating rules individually when you need to set up multiple rules at once.</p>",
+      "idempotent":true
+    },
+    "BatchDeleteFirewallRule":{
+      "name":"BatchDeleteFirewallRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/firewall-rules/batch-delete",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchDeleteFirewallRuleInput"},
+      "output":{"shape":"BatchDeleteFirewallRuleOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes multiple DNS firewall rules in a single operation. This is more efficient than deleting rules individually.</p>",
+      "idempotent":true
+    },
+    "BatchUpdateFirewallRule":{
+      "name":"BatchUpdateFirewallRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/firewall-rules/batch-update",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchUpdateFirewallRuleInput"},
+      "output":{"shape":"BatchUpdateFirewallRuleOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates multiple DNS firewall rules in a single operation. This is more efficient than updating rules individually.</p>",
+      "idempotent":true
+    },
+    "CreateAccessSource":{
+      "name":"CreateAccessSource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/access-sources",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateAccessSourceInput"},
+      "output":{"shape":"CreateAccessSourceOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates an access source for a DNS view. Access sources define IP addresses or CIDR ranges that are allowed to send DNS queries to the Route 53 Global Resolver, along with the permitted DNS protocols.</p>",
+      "idempotent":true
+    },
+    "CreateAccessToken":{
+      "name":"CreateAccessToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tokens/{dnsViewId}",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateAccessTokenInput"},
+      "output":{"shape":"CreateAccessTokenOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates an access token for a DNS view. Access tokens provide token-based authentication for DNS-over-HTTPS (DoH) and DNS-over-TLS (DoT) connections to the Route 53 Global Resolver.</p>",
+      "idempotent":true
+    },
+    "CreateDNSView":{
+      "name":"CreateDNSView",
+      "http":{
+        "method":"POST",
+        "requestUri":"/dns-views/{globalResolverId}",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateDNSViewInput"},
+      "output":{"shape":"CreateDNSViewOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates a DNS view within a Route 53 Global Resolver. A DNS view models end users, user groups, networks, and devices, and serves as a parent resource that holds configurations controlling access, authorization, DNS firewall rules, and forwarding rules.</p>",
+      "idempotent":true
+    },
+    "CreateFirewallDomainList":{
+      "name":"CreateFirewallDomainList",
+      "http":{
+        "method":"POST",
+        "requestUri":"/firewall-domain-lists/{globalResolverId}",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateFirewallDomainListInput"},
+      "output":{"shape":"CreateFirewallDomainListOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates a firewall domain list. Domain lists are reusable sets of domain specifications that you use in DNS firewall rules to allow, block, or alert on DNS queries to specific domains.</p>",
+      "idempotent":true
+    },
+    "CreateFirewallRule":{
+      "name":"CreateFirewallRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/firewall-rules",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateFirewallRuleInput"},
+      "output":{"shape":"CreateFirewallRuleOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates a DNS firewall rule. Firewall rules define actions (ALLOW, BLOCK, or ALERT) to take on DNS queries that match specified domain lists, managed domain lists, or advanced threat protections.</p>",
+      "idempotent":true
+    },
+    "CreateGlobalResolver":{
+      "name":"CreateGlobalResolver",
+      "http":{
+        "method":"POST",
+        "requestUri":"/global-resolver",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateGlobalResolverInput"},
+      "output":{"shape":"CreateGlobalResolverOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a new Route 53 Global Resolver instance. A Route 53 Global Resolver is a global, internet-accessible DNS resolver that provides secure DNS resolution for both public and private domains through global anycast IP addresses.</p>",
+      "idempotent":true
+    },
+    "DeleteAccessSource":{
+      "name":"DeleteAccessSource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/access-sources/{accessSourceId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteAccessSourceInput"},
+      "output":{"shape":"DeleteAccessSourceOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes an access source. This operation cannot be undone.</p>",
+      "idempotent":true
+    },
+    "DeleteAccessToken":{
+      "name":"DeleteAccessToken",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tokens/{accessTokenId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteAccessTokenInput"},
+      "output":{"shape":"DeleteAccessTokenOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes an access token. This operation cannot be undone.</p>",
+      "idempotent":true
+    },
+    "DeleteDNSView":{
+      "name":"DeleteDNSView",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/dns-views/{dnsViewId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteDNSViewInput"},
+      "output":{"shape":"DeleteDNSViewOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a DNS view. This operation cannot be undone.</p>",
+      "idempotent":true
+    },
+    "DeleteFirewallDomainList":{
+      "name":"DeleteFirewallDomainList",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/firewall-domain-lists/{firewallDomainListId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteFirewallDomainListInput"},
+      "output":{"shape":"DeleteFirewallDomainListOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a firewall domain list. This operation cannot be undone.</p>",
+      "idempotent":true
+    },
+    "DeleteFirewallRule":{
+      "name":"DeleteFirewallRule",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/firewall-rules/{firewallRuleId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteFirewallRuleInput"},
+      "output":{"shape":"DeleteFirewallRuleOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a DNS firewall rule. This operation cannot be undone.</p>",
+      "idempotent":true
+    },
+    "DeleteGlobalResolver":{
+      "name":"DeleteGlobalResolver",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/global-resolver/{globalResolverId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteGlobalResolverInput"},
+      "output":{"shape":"DeleteGlobalResolverOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a Route 53 Global Resolver instance. This operation cannot be undone. All associated DNS views, access sources, tokens, and firewall rules are also deleted.</p>",
+      "idempotent":true
+    },
+    "DisableDNSView":{
+      "name":"DisableDNSView",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/dns-views/{dnsViewId}/disable",
+        "responseCode":200
+      },
+      "input":{"shape":"DisableDNSViewInput"},
+      "output":{"shape":"DisableDNSViewOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Disables a DNS view, preventing it from serving DNS queries.</p>",
+      "idempotent":true
+    },
+    "DisassociateHostedZone":{
+      "name":"DisassociateHostedZone",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/hosted-zone-associations/hosted-zone/{hostedZoneId}/resource-arn/{resourceArn+}",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateHostedZoneInput"},
+      "output":{"shape":"DisassociateHostedZoneOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Disassociates a Route 53 private hosted zone from a Route 53 Global Resolver resource.</p>",
+      "idempotent":true
+    },
+    "EnableDNSView":{
+      "name":"EnableDNSView",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/dns-views/{dnsViewId}/enable",
+        "responseCode":200
+      },
+      "input":{"shape":"EnableDNSViewInput"},
+      "output":{"shape":"EnableDNSViewOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Enables a disabled DNS view, allowing it to serve DNS queries again.</p>",
+      "idempotent":true
+    },
+    "GetAccessSource":{
+      "name":"GetAccessSource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/access-sources/{accessSourceId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAccessSourceInput"},
+      "output":{"shape":"GetAccessSourceOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves information about an access source.</p>",
+      "readonly":true
+    },
+    "GetAccessToken":{
+      "name":"GetAccessToken",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tokens/{accessTokenId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAccessTokenInput"},
+      "output":{"shape":"GetAccessTokenOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves information about an access token.</p>",
+      "readonly":true
+    },
+    "GetDNSView":{
+      "name":"GetDNSView",
+      "http":{
+        "method":"GET",
+        "requestUri":"/dns-views/{dnsViewId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDNSViewInput"},
+      "output":{"shape":"GetDNSViewOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves information about a DNS view.</p>",
+      "readonly":true
+    },
+    "GetFirewallDomainList":{
+      "name":"GetFirewallDomainList",
+      "http":{
+        "method":"GET",
+        "requestUri":"/firewall-domain-lists/{firewallDomainListId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetFirewallDomainListInput"},
+      "output":{"shape":"GetFirewallDomainListOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves information about a firewall domain list.</p>",
+      "readonly":true
+    },
+    "GetFirewallRule":{
+      "name":"GetFirewallRule",
+      "http":{
+        "method":"GET",
+        "requestUri":"/firewall-rules/{firewallRuleId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetFirewallRuleInput"},
+      "output":{"shape":"GetFirewallRuleOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves information about a DNS firewall rule.</p>",
+      "readonly":true
+    },
+    "GetGlobalResolver":{
+      "name":"GetGlobalResolver",
+      "http":{
+        "method":"GET",
+        "requestUri":"/global-resolver/{globalResolverId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetGlobalResolverInput"},
+      "output":{"shape":"GetGlobalResolverOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves information about a Route 53 Global Resolver instance.</p>",
+      "readonly":true
+    },
+    "GetHostedZoneAssociation":{
+      "name":"GetHostedZoneAssociation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/hosted-zone-associations/{hostedZoneAssociationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetHostedZoneAssociationInput"},
+      "output":{"shape":"GetHostedZoneAssociationOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves information about a hosted zone association.</p>",
+      "readonly":true
+    },
+    "GetManagedFirewallDomainList":{
+      "name":"GetManagedFirewallDomainList",
+      "http":{
+        "method":"GET",
+        "requestUri":"/managed-firewall-domain-lists/{managedFirewallDomainListId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetManagedFirewallDomainListInput"},
+      "output":{"shape":"GetManagedFirewallDomainListOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves information about an AWS-managed firewall domain list. Managed domain lists contain domains associated with malicious activity, content categories, or specific threats.</p>",
+      "readonly":true
+    },
+    "ImportFirewallDomains":{
+      "name":"ImportFirewallDomains",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/firewall-domain-lists/{firewallDomainListId}/domains/s3_file_url",
+        "responseCode":200
+      },
+      "input":{"shape":"ImportFirewallDomainsInput"},
+      "output":{"shape":"ImportFirewallDomainsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Imports a list of domains from an Amazon S3 file into a firewall domain list. The file should contain one domain per line.</p>"
+    },
+    "ListAccessSources":{
+      "name":"ListAccessSources",
+      "http":{
+        "method":"GET",
+        "requestUri":"/access-sources",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAccessSourcesInput"},
+      "output":{"shape":"ListAccessSourcesOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists all access sources with pagination support.</p>",
+      "readonly":true
+    },
+    "ListAccessTokens":{
+      "name":"ListAccessTokens",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tokens/dns-view/{dnsViewId}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAccessTokensInput"},
+      "output":{"shape":"ListAccessTokensOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists all access tokens for a DNS view with pagination support.</p>",
+      "readonly":true
+    },
+    "ListDNSViews":{
+      "name":"ListDNSViews",
+      "http":{
+        "method":"GET",
+        "requestUri":"/dns-views/resolver/{globalResolverId}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDNSViewsInput"},
+      "output":{"shape":"ListDNSViewsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists all DNS views for a Route 53 Global Resolver with pagination support.</p>",
+      "readonly":true
+    },
+    "ListFirewallDomainLists":{
+      "name":"ListFirewallDomainLists",
+      "http":{
+        "method":"GET",
+        "requestUri":"/firewall-domain-lists",
+        "responseCode":200
+      },
+      "input":{"shape":"ListFirewallDomainListsInput"},
+      "output":{"shape":"ListFirewallDomainListsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists all firewall domain lists for a Route 53 Global Resolver with pagination support.</p>",
+      "readonly":true
+    },
+    "ListFirewallDomains":{
+      "name":"ListFirewallDomains",
+      "http":{
+        "method":"GET",
+        "requestUri":"/firewall-domain-lists/{firewallDomainListId}/domains",
+        "responseCode":200
+      },
+      "input":{"shape":"ListFirewallDomainsInput"},
+      "output":{"shape":"ListFirewallDomainsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists all the domains in DNS Firewall domain list you have created.</p>",
+      "readonly":true
+    },
+    "ListFirewallRules":{
+      "name":"ListFirewallRules",
+      "http":{
+        "method":"GET",
+        "requestUri":"/firewall-rules",
+        "responseCode":200
+      },
+      "input":{"shape":"ListFirewallRulesInput"},
+      "output":{"shape":"ListFirewallRulesOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists all DNS firewall rules for a DNS view with pagination support.</p>",
+      "readonly":true
+    },
+    "ListGlobalResolvers":{
+      "name":"ListGlobalResolvers",
+      "http":{
+        "method":"GET",
+        "requestUri":"/global-resolver",
+        "responseCode":200
+      },
+      "input":{"shape":"ListGlobalResolversInput"},
+      "output":{"shape":"ListGlobalResolversOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists all Route 53 Global Resolver instances in your account with pagination support.</p>",
+      "readonly":true
+    },
+    "ListHostedZoneAssociations":{
+      "name":"ListHostedZoneAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/hosted-zone-associations/resource-arn/{resourceArn+}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListHostedZoneAssociationsInput"},
+      "output":{"shape":"ListHostedZoneAssociationsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists all hosted zone associations for a Route 53 Global Resolver resource with pagination support.</p>",
+      "readonly":true
+    },
+    "ListManagedFirewallDomainLists":{
+      "name":"ListManagedFirewallDomainLists",
+      "http":{
+        "method":"GET",
+        "requestUri":"/list-managed-firewall-domain-lists/{managedFirewallDomainListType}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListManagedFirewallDomainListsInput"},
+      "output":{"shape":"ListManagedFirewallDomainListsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a paginated list of the AWS Managed DNS Lists and the categories for DNS Firewall. The categories are either <code>THREAT</code> or <code>CONTENT</code>.</p>",
+      "readonly":true
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/get-all-tags",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the tags associated with a Route 53 Global Resolver resource.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tag-resource",
+        "responseCode":200
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Adds or updates tags for a Route 53 Global Resolver resource. Tags are key-value pairs that help you organize and identify your resources.</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/untag-resource",
+        "responseCode":200
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Removes tags from a Route 53 Global Resolver resource.</p>"
+    },
+    "UpdateAccessSource":{
+      "name":"UpdateAccessSource",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/access-sources/{accessSourceId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAccessSourceInput"},
+      "output":{"shape":"UpdateAccessSourceOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the configuration of an access source.</p>",
+      "idempotent":true
+    },
+    "UpdateAccessToken":{
+      "name":"UpdateAccessToken",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/tokens/{accessTokenId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAccessTokenInput"},
+      "output":{"shape":"UpdateAccessTokenOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the configuration of an access token.</p>",
+      "idempotent":true
+    },
+    "UpdateDNSView":{
+      "name":"UpdateDNSView",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/dns-views/{dnsViewId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateDNSViewInput"},
+      "output":{"shape":"UpdateDNSViewOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the configuration of a DNS view.</p>",
+      "idempotent":true
+    },
+    "UpdateFirewallDomains":{
+      "name":"UpdateFirewallDomains",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/firewall-domain-lists/{firewallDomainListId}/domains",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateFirewallDomainsInput"},
+      "output":{"shape":"UpdateFirewallDomainsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates a DNS Firewall domain list from an array of specified domains.</p>"
+    },
+    "UpdateFirewallRule":{
+      "name":"UpdateFirewallRule",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/firewall-rules/{firewallRuleId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateFirewallRuleInput"},
+      "output":{"shape":"UpdateFirewallRuleOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the configuration of a DNS firewall rule.</p>",
+      "idempotent":true
+    },
+    "UpdateGlobalResolver":{
+      "name":"UpdateGlobalResolver",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/global-resolver/{globalResolverId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateGlobalResolverInput"},
+      "output":{"shape":"UpdateGlobalResolverOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the configuration of a Route 53 Global Resolver instance. You can modify the name, description, and observability region.</p>",
+      "idempotent":true
+    },
+    "UpdateHostedZoneAssociation":{
+      "name":"UpdateHostedZoneAssociation",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/hosted-zone-associations/{hostedZoneAssociationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateHostedZoneAssociationInput"},
+      "output":{"shape":"UpdateHostedZoneAssociationOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the configuration of a hosted zone association.</p>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>You don't have permission to perform this operation. Check your IAM permissions and try again.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "AccessSources":{
+      "type":"list",
+      "member":{"shape":"AccessSourcesItem"}
+    },
+    "AccessSourcesItem":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "cidr",
+        "createdAt",
+        "id",
+        "ipAddressType",
+        "dnsViewId",
+        "protocol",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the access source.</p>"
+        },
+        "cidr":{
+          "shape":"Cidr",
+          "documentation":"<p>The CIDR block that defines the IP address range for the access source.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the access source was created.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the access source.</p>"
+        },
+        "ipAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type of the access source.</p>"
+        },
+        "name":{
+          "shape":"ResourceNameShort",
+          "documentation":"<p>The name of the access source.</p>"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS view that the access source is associated with.</p>"
+        },
+        "protocol":{
+          "shape":"DnsProtocol",
+          "documentation":"<p>The protocol used by the access source.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The current status of the access source.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the access source was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about an access source.</p>"
+    },
+    "AccessTokenItem":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "createdAt",
+        "dnsViewId",
+        "expiresAt",
+        "globalResolverId",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the token.</p>"
+        },
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the token.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the token was created.</p>"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS view associated with the token.</p>"
+        },
+        "expiresAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the token expires.</p>"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the global resolver associated with the token.</p>"
+        },
+        "name":{
+          "shape":"ResourceNameShort",
+          "documentation":"<p>The name of the token.</p>"
+        },
+        "status":{
+          "shape":"TokenStatus",
+          "documentation":"<p>The current status of the token.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the token was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a token.</p>"
+    },
+    "AccessTokenValue":{
+      "type":"string",
+      "max":100,
+      "min":0,
+      "sensitive":true
+    },
+    "AccessTokens":{
+      "type":"list",
+      "member":{"shape":"AccessTokenItem"}
+    },
+    "AssociateHostedZoneInput":{
+      "type":"structure",
+      "required":[
+        "hostedZoneId",
+        "resourceArn",
+        "name"
+      ],
+      "members":{
+        "hostedZoneId":{
+          "shape":"HostedZoneId",
+          "documentation":"<p>The ID of the Route 53 private hosted zone to associate with the Route 53 Global Resolver resource.</p>",
+          "location":"uri",
+          "locationName":"hostedZoneId"
+        },
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>An Amazon Resource Name (ARN) of the Route 53 Global Resolver the private hosted zone will be associated to.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>Name for the private hosted zone association.</p>"
+        }
+      }
+    },
+    "AssociateHostedZoneOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "resourceArn",
+        "hostedZoneId",
+        "hostedZoneName",
+        "name",
+        "createdAt",
+        "updatedAt",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the association.</p>"
+        },
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>An Amazon Resource Name (ARN) of the Route 53 Global Resolver the private hosted zone is associated to.</p>"
+        },
+        "hostedZoneId":{
+          "shape":"HostedZoneId",
+          "documentation":"<p>ID of the private hosted zone.</p>"
+        },
+        "hostedZoneName":{
+          "shape":"HostedZoneName",
+          "documentation":"<p>Name of the hosted zone (also the domain associated with the hosted zone).</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>Name for the private hosted zone association.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time the private hosted zone association was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time the private hosted zone association was modified.</p>"
+        },
+        "status":{
+          "shape":"HostedZoneAssociationStatus",
+          "documentation":"<p>Aggregate status for all the AWS Regions in which the Route 53 Global Resolver exists.</p>"
+        }
+      }
+    },
+    "BatchCreateFirewallRuleInput":{
+      "type":"structure",
+      "required":["firewallRules"],
+      "members":{
+        "firewallRules":{
+          "shape":"BatchCreateFirewallRuleInputItems",
+          "documentation":"<p>The <code>BatchCreateFirewallRuleInputItem</code> objects contain the information for each Firewall rule.</p>"
+        }
+      }
+    },
+    "BatchCreateFirewallRuleInputItem":{
+      "type":"structure",
+      "required":[
+        "action",
+        "clientToken",
+        "name",
+        "dnsViewId"
+      ],
+      "members":{
+        "action":{
+          "shape":"FirewallRuleAction",
+          "documentation":"<p>The action to take when a DNS query matches the firewall rule.</p>"
+        },
+        "blockOverrideDnsType":{
+          "shape":"BlockOverrideDnsQueryType",
+          "documentation":"<p>The DNS record type for the custom response when the action is BLOCK.</p>"
+        },
+        "blockOverrideDomain":{
+          "shape":"Domain",
+          "documentation":"<p>The custom domain name for the BLOCK response.</p>"
+        },
+        "blockOverrideTtl":{
+          "shape":"BlockOverrideTtl",
+          "documentation":"<p>The TTL value for the custom response when the action is BLOCK.</p>"
+        },
+        "blockResponse":{
+          "shape":"FirewallBlockResponse",
+          "documentation":"<p>The type of block response to return when the action is BLOCK.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique string that identifies the request and ensures idempotency.</p>"
+        },
+        "confidenceThreshold":{
+          "shape":"ConfidenceThreshold",
+          "documentation":"<p>The confidence threshold for advanced threat detection.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A description of the firewall rule.</p>"
+        },
+        "dnsAdvancedProtection":{
+          "shape":"DnsAdvancedProtection",
+          "documentation":"<p>Whether to enable advanced DNS threat protection for the firewall rule.</p>"
+        },
+        "firewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the firewall domain list to associate with the rule.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>A name for the firewall rule.</p>"
+        },
+        "priority":{
+          "shape":"FirewallRulePriority",
+          "documentation":"<p>The priority of the firewall rule.</p>"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS view to associate the firewall rule with.</p>"
+        },
+        "qType":{
+          "shape":"DnsQueryType",
+          "documentation":"<p>The DNS query type that the firewall rule should match.</p>"
+        }
+      },
+      "documentation":"<p>Information about a DNS Firewall rule to create in a batch operation.</p>"
+    },
+    "BatchCreateFirewallRuleInputItems":{
+      "type":"list",
+      "member":{"shape":"BatchCreateFirewallRuleInputItem"}
+    },
+    "BatchCreateFirewallRuleOutput":{
+      "type":"structure",
+      "required":[
+        "failures",
+        "successes"
+      ],
+      "members":{
+        "failures":{
+          "shape":"BatchCreateFirewallRuleOutputItems",
+          "documentation":"<p>High level information about the DNS Firewall rules that failed to create.</p>"
+        },
+        "successes":{
+          "shape":"BatchCreateFirewallRuleOutputItems",
+          "documentation":"<p>High level information about the DNS Firewall rules that were created.</p>"
+        }
+      }
+    },
+    "BatchCreateFirewallRuleOutputItem":{
+      "type":"structure",
+      "required":[
+        "firewallRule",
+        "code"
+      ],
+      "members":{
+        "firewallRule":{
+          "shape":"BatchCreateFirewallRuleResult",
+          "documentation":"<p>The firewall rule that was created in the batch operation.</p>"
+        },
+        "code":{
+          "shape":"Integer",
+          "documentation":"<p>The HTTP response code for the batch operation result.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message describing the result of the batch operation, including error details if applicable.</p>"
+        }
+      },
+      "documentation":"<p>Information about the result of creating a DNS Firewall rule in a batch operation.</p>"
+    },
+    "BatchCreateFirewallRuleOutputItems":{
+      "type":"list",
+      "member":{"shape":"BatchCreateFirewallRuleOutputItem"}
+    },
+    "BatchCreateFirewallRuleResult":{
+      "type":"structure",
+      "required":[
+        "action",
+        "clientToken",
+        "name",
+        "dnsViewId"
+      ],
+      "members":{
+        "action":{
+          "shape":"FirewallRuleAction",
+          "documentation":"<p>The action configured for the created firewall rule.</p>"
+        },
+        "blockOverrideDnsType":{
+          "shape":"BlockOverrideDnsQueryType",
+          "documentation":"<p>The DNS record type configured for the created firewall rule's custom response.</p>"
+        },
+        "blockOverrideDomain":{
+          "shape":"Domain",
+          "documentation":"<p>The custom domain name configured for the created firewall rule's BLOCK response.</p>"
+        },
+        "blockOverrideTtl":{
+          "shape":"BlockOverrideTtl",
+          "documentation":"<p>The TTL value configured for the created firewall rule's custom response.</p>"
+        },
+        "blockResponse":{
+          "shape":"FirewallBlockResponse",
+          "documentation":"<p>The type of block response configured for the created firewall rule.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique string that identified the request and ensured idempotency.</p>"
+        },
+        "confidenceThreshold":{
+          "shape":"ConfidenceThreshold",
+          "documentation":"<p>The confidence threshold configured for the created firewall rule's advanced threat detection.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the firewall rule was created.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the created firewall rule.</p>"
+        },
+        "dnsAdvancedProtection":{
+          "shape":"DnsAdvancedProtection",
+          "documentation":"<p>Whether advanced DNS threat protection is enabled for the created firewall rule.</p>"
+        },
+        "firewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the firewall domain list associated with the created firewall rule.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the created firewall rule.</p>"
+        },
+        "managedDomainListName":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the managed domain list associated with the created firewall rule.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the created firewall rule.</p>"
+        },
+        "priority":{
+          "shape":"FirewallRulePriority",
+          "documentation":"<p>The priority of the created firewall rule.</p>"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS view associated with the created firewall rule.</p>"
+        },
+        "queryType":{
+          "shape":"DnsQueryType",
+          "documentation":"<p>The DNS query type that the created firewall rule matches.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The current status of the created firewall rule.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the firewall rule was last updated.</p>"
+        }
+      },
+      "documentation":"<p>The result of creating a firewall rule in a batch operation.</p>"
+    },
+    "BatchDeleteFirewallRuleInput":{
+      "type":"structure",
+      "required":["firewallRules"],
+      "members":{
+        "firewallRules":{
+          "shape":"BatchDeleteFirewallRuleInputItems",
+          "documentation":"<p>An array of the DNS Firewall IDs to be deleted.</p>"
+        }
+      }
+    },
+    "BatchDeleteFirewallRuleInputItem":{
+      "type":"structure",
+      "required":["firewallRuleId"],
+      "members":{
+        "firewallRuleId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS Firewall rule to delete.</p>"
+        }
+      },
+      "documentation":"<p>Information about a DNS Firewall rule to delete in a batch operation.</p>"
+    },
+    "BatchDeleteFirewallRuleInputItems":{
+      "type":"list",
+      "member":{"shape":"BatchDeleteFirewallRuleInputItem"}
+    },
+    "BatchDeleteFirewallRuleOutput":{
+      "type":"structure",
+      "required":[
+        "failures",
+        "successes"
+      ],
+      "members":{
+        "failures":{
+          "shape":"BatchDeleteFirewallRuleOutputItems",
+          "documentation":"<p>High level information about the DNS Firewall rules that failed to delete.</p>"
+        },
+        "successes":{
+          "shape":"BatchDeleteFirewallRuleOutputItems",
+          "documentation":"<p>High level information about the DNS Firewall rules that were deleted successfully.</p>"
+        }
+      }
+    },
+    "BatchDeleteFirewallRuleOutputItem":{
+      "type":"structure",
+      "required":[
+        "firewallRule",
+        "code"
+      ],
+      "members":{
+        "firewallRule":{
+          "shape":"BatchDeleteFirewallRuleResult",
+          "documentation":"<p>The firewall rule that was deleted in the batch operation.</p>"
+        },
+        "code":{
+          "shape":"Integer",
+          "documentation":"<p>The response code for the delete operation.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The response message for the delete operation.</p>"
+        }
+      },
+      "documentation":"<p>The result of deleting a firewall rule in a batch operation.</p>"
+    },
+    "BatchDeleteFirewallRuleOutputItems":{
+      "type":"list",
+      "member":{"shape":"BatchDeleteFirewallRuleOutputItem"}
+    },
+    "BatchDeleteFirewallRuleResult":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique string that identified the request and ensured idempotency.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the deleted firewall rule.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the deleted firewall rule.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The final status of the deleted firewall rule.</p>"
+        }
+      },
+      "documentation":"<p>Information about a firewall rule that was deleted in a batch operation.</p>"
+    },
+    "BatchUpdateFirewallRuleInput":{
+      "type":"structure",
+      "required":["firewallRules"],
+      "members":{
+        "firewallRules":{
+          "shape":"BatchUpdateFirewallRuleInputItems",
+          "documentation":"<p>The DNS Firewall rule IDs to be updated.</p>"
+        }
+      }
+    },
+    "BatchUpdateFirewallRuleInputItem":{
+      "type":"structure",
+      "required":["firewallRuleId"],
+      "members":{
+        "action":{
+          "shape":"FirewallRuleAction",
+          "documentation":"<p>The action to take when a DNS query matches the firewall rule.</p>"
+        },
+        "blockOverrideDnsType":{
+          "shape":"BlockOverrideDnsQueryType",
+          "documentation":"<p>The DNS record type for the custom response when the action is BLOCK.</p>"
+        },
+        "blockOverrideDomain":{
+          "shape":"Domain",
+          "documentation":"<p>The custom domain name for the BLOCK response.</p>"
+        },
+        "blockOverrideTtl":{
+          "shape":"BlockOverrideTtl",
+          "documentation":"<p>The TTL value for the custom response when the action is BLOCK.</p>"
+        },
+        "blockResponse":{
+          "shape":"FirewallBlockResponse",
+          "documentation":"<p>The type of block response to return when the action is BLOCK.</p>"
+        },
+        "confidenceThreshold":{
+          "shape":"ConfidenceThreshold",
+          "documentation":"<p>The confidence threshold for advanced threat detection.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A description of the firewall rule.</p>"
+        },
+        "dnsAdvancedProtection":{
+          "shape":"DnsAdvancedProtection",
+          "documentation":"<p>Whether to enable advanced DNS threat protection for the firewall rule.</p>"
+        },
+        "firewallRuleId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the firewall rule to update.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>A name for the firewall rule.</p>"
+        },
+        "priority":{
+          "shape":"FirewallRulePriority",
+          "documentation":"<p>The priority of the firewall rule.</p>"
+        }
+      },
+      "documentation":"<p>Information for updating a firewall rule in a batch operation.</p>"
+    },
+    "BatchUpdateFirewallRuleInputItems":{
+      "type":"list",
+      "member":{"shape":"BatchUpdateFirewallRuleInputItem"}
+    },
+    "BatchUpdateFirewallRuleOutput":{
+      "type":"structure",
+      "required":[
+        "failures",
+        "successes"
+      ],
+      "members":{
+        "failures":{
+          "shape":"BatchUpdateFirewallRuleOutputItems",
+          "documentation":"<p>High level information about the DNS Firewall rules that failed to update.</p>"
+        },
+        "successes":{
+          "shape":"BatchUpdateFirewallRuleOutputItems",
+          "documentation":"<p>High level information about the DNS Firewall rules that were successfully updated.</p>"
+        }
+      }
+    },
+    "BatchUpdateFirewallRuleOutputItem":{
+      "type":"structure",
+      "required":[
+        "firewallRule",
+        "code"
+      ],
+      "members":{
+        "firewallRule":{
+          "shape":"BatchUpdateFirewallRuleResult",
+          "documentation":"<p>The firewall rule that was updated in the batch operation.</p>"
+        },
+        "code":{
+          "shape":"Integer",
+          "documentation":"<p>The response code for the update operation.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The response message for the update operation.</p>"
+        }
+      },
+      "documentation":"<p>The result of updating a firewall rule in a batch operation.</p>"
+    },
+    "BatchUpdateFirewallRuleOutputItems":{
+      "type":"list",
+      "member":{"shape":"BatchUpdateFirewallRuleOutputItem"}
+    },
+    "BatchUpdateFirewallRuleResult":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "action":{
+          "shape":"FirewallRuleAction",
+          "documentation":"<p>The action configured for the updated firewall rule.</p>"
+        },
+        "blockOverrideDnsType":{
+          "shape":"BlockOverrideDnsQueryType",
+          "documentation":"<p>The DNS record type configured for the updated firewall rule's custom response.</p>"
+        },
+        "blockOverrideDomain":{
+          "shape":"Domain",
+          "documentation":"<p>The custom domain name configured for the updated firewall rule's BLOCK response.</p>"
+        },
+        "blockOverrideTtl":{
+          "shape":"BlockOverrideTtl",
+          "documentation":"<p>The TTL value configured for the updated firewall rule's custom response.</p>"
+        },
+        "blockResponse":{
+          "shape":"FirewallBlockResponse",
+          "documentation":"<p>The type of block response configured for the updated firewall rule.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique string that identified the request and ensured idempotency.</p>"
+        },
+        "confidenceThreshold":{
+          "shape":"ConfidenceThreshold",
+          "documentation":"<p>The confidence threshold configured for the updated firewall rule's advanced threat detection.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the firewall rule was originally created.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the updated firewall rule.</p>"
+        },
+        "dnsAdvancedProtection":{
+          "shape":"DnsAdvancedProtection",
+          "documentation":"<p>Whether advanced DNS threat protection is enabled for the updated firewall rule.</p>"
+        },
+        "firewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the firewall domain list associated with the updated firewall rule.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the updated firewall rule.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the updated firewall rule.</p>"
+        },
+        "priority":{
+          "shape":"FirewallRulePriority",
+          "documentation":"<p>The priority of the updated firewall rule.</p>"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS view associated with the updated firewall rule.</p>"
+        },
+        "queryType":{
+          "shape":"DnsQueryType",
+          "documentation":"<p>The DNS query type that the updated firewall rule matches.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The current status of the updated firewall rule.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the firewall rule was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Information about a firewall rule that was updated in a batch operation.</p>"
+    },
+    "BlockOverrideDnsQueryType":{
+      "type":"string",
+      "enum":["CNAME"]
+    },
+    "BlockOverrideTtl":{
+      "type":"integer",
+      "box":true,
+      "max":604800,
+      "min":0
+    },
+    "CRResourceStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "OPERATIONAL",
+        "UPDATING",
+        "DELETING"
+      ]
+    },
+    "Cidr":{
+      "type":"string",
+      "max":42,
+      "min":1
+    },
+    "ClientToken":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ConfidenceThreshold":{
+      "type":"string",
+      "enum":[
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceType"
+      ],
+      "members":{
+        "message":{"shape":"String"},
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the conflicting resource.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of the conflicting resource.</p>"
+        }
+      },
+      "documentation":"<p>The request conflicts with the current state of the resource. This can occur when trying to modify a resource that is not in a valid state for the requested operation.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "CreateAccessSourceInput":{
+      "type":"structure",
+      "required":[
+        "cidr",
+        "dnsViewId",
+        "protocol"
+      ],
+      "members":{
+        "cidr":{
+          "shape":"Cidr",
+          "documentation":"<p>The IP address or CIDR range that is allowed to send DNS queries to the Route 53 Global Resolver.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique string that identifies the request and ensures idempotency.</p>",
+          "idempotencyToken":true
+        },
+        "ipAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type for this access source. Valid values are IPv4 and IPv6 (if the Route 53 Global Resolver supports dual-stack).</p>"
+        },
+        "name":{
+          "shape":"ResourceNameShort",
+          "documentation":"<p>A descriptive name for the access source.</p>"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS view to associate with this access source.</p>"
+        },
+        "protocol":{
+          "shape":"DnsProtocol",
+          "documentation":"<p>The DNS protocol that is permitted for this access source. Valid values are Do53 (DNS over port 53), DoT (DNS over TLS), and DoH (DNS over HTTPS).</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags to associate with the access source.</p>"
+        }
+      }
+    },
+    "CreateAccessSourceOutput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "cidr",
+        "createdAt",
+        "id",
+        "ipAddressType",
+        "dnsViewId",
+        "protocol",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the access source.</p>"
+        },
+        "cidr":{
+          "shape":"Cidr",
+          "documentation":"<p>The IP address or CIDR range that is allowed to send DNS queries to the Route 53 Global Resolver.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the access source was created.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the access source.</p>"
+        },
+        "ipAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type for this access source (IPv4 or IPv6).</p>"
+        },
+        "name":{
+          "shape":"ResourceNameShort",
+          "documentation":"<p>The descriptive name of the access source.</p>"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS view associated with this access source.</p>"
+        },
+        "protocol":{
+          "shape":"DnsProtocol",
+          "documentation":"<p>The DNS protocol that is permitted for this access source (Do53, DoT, or DoH).</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The operational status of the access source.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the access source was last updated.</p>"
+        }
+      }
+    },
+    "CreateAccessTokenInput":{
+      "type":"structure",
+      "required":["dnsViewId"],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency. This means that making the same request multiple times with the same <code>clientToken</code> has the same result every time.</p>",
+          "idempotencyToken":true
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS view to associate with this token.</p>",
+          "location":"uri",
+          "locationName":"dnsViewId"
+        },
+        "expiresAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the token expires. Tokens can have a minimum expiration of 30 days and maximum of 365 days from creation.</p>"
+        },
+        "name":{
+          "shape":"ResourceNameShort",
+          "documentation":"<p>A descriptive name for the access token.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>An array of user-defined keys and optional values. These tags can be used for categorization and organization.</p>"
+        }
+      }
+    },
+    "CreateAccessTokenOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "createdAt",
+        "dnsViewId",
+        "expiresAt",
+        "status",
+        "value"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the access token.</p>"
+        },
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the access token.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique string that identifies the request and ensures idempotency.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the access token was created.</p>"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS view associated with this access token.</p>"
+        },
+        "expiresAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the access token expires.</p>"
+        },
+        "name":{
+          "shape":"ResourceNameShort",
+          "documentation":"<p>The name of the access token.</p>"
+        },
+        "status":{
+          "shape":"TokenStatus",
+          "documentation":"<p>The operational status of the access token.</p>"
+        },
+        "value":{
+          "shape":"AccessTokenValue",
+          "documentation":"<p>The access token value. This token should be included in DoH and DoT requests for authentication. Keep this value secure as it provides access to your Route 53 Global Resolver.</p>"
+        }
+      }
+    },
+    "CreateDNSViewInput":{
+      "type":"structure",
+      "required":[
+        "globalResolverId",
+        "name"
+      ],
+      "members":{
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Route 53 Global Resolver to associate with this DNS view.</p>",
+          "location":"uri",
+          "locationName":"globalResolverId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique string that identifies the request and ensures idempotency.</p>",
+          "idempotencyToken":true
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>A descriptive name for the DNS view.</p>"
+        },
+        "dnssecValidation":{
+          "shape":"DnsSecValidationType",
+          "documentation":"<p>Whether to enable DNSSEC validation for DNS queries in this DNS view. When enabled, the resolver verifies the authenticity and integrity of DNS responses from public name servers for DNSSEC-signed domains.</p>"
+        },
+        "ednsClientSubnet":{
+          "shape":"EdnsClientSubnetType",
+          "documentation":"<p>Whether to enable EDNS Client Subnet injection for DNS queries in this DNS view. When enabled, client subnet information is forwarded to provide more accurate geographic-based DNS responses.</p>"
+        },
+        "firewallRulesFailOpen":{
+          "shape":"FirewallRulesFailOpenType",
+          "documentation":"<p>Determines the behavior when Route 53 Global Resolver cannot apply DNS firewall rules due to service impairment. When enabled, DNS queries are allowed through; when disabled, queries are blocked.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>An optional description for the DNS view.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags to associate with the DNS view.</p>"
+        }
+      }
+    },
+    "CreateDNSViewOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "dnssecValidation",
+        "ednsClientSubnet",
+        "firewallRulesFailOpen",
+        "name",
+        "globalResolverId",
+        "createdAt",
+        "updatedAt",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the DNS view.</p>"
+        },
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the DNS view.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique string that identifies the request and ensures idempotency.</p>"
+        },
+        "dnssecValidation":{
+          "shape":"DnsSecValidationType",
+          "documentation":"<p>Whether DNSSEC validation is enabled for DNS queries in this DNS view.</p>"
+        },
+        "ednsClientSubnet":{
+          "shape":"EdnsClientSubnetType",
+          "documentation":"<p>Whether EDNS Client Subnet injection is enabled for DNS queries in this DNS view.</p>"
+        },
+        "firewallRulesFailOpen":{
+          "shape":"FirewallRulesFailOpenType",
+          "documentation":"<p>The behavior when Route 53 Global Resolver cannot apply DNS firewall rules due to service impairment.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The descriptive name of the DNS view.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the DNS view.</p>"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Route 53 Global Resolver instance the DNS view is created for.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the DNS view was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the DNS view was last updated.</p>"
+        },
+        "status":{
+          "shape":"ProfileResourceStatus",
+          "documentation":"<p>The operational status of the DNS view.</p>"
+        }
+      }
+    },
+    "CreateFirewallDomainListInput":{
+      "type":"structure",
+      "required":[
+        "globalResolverId",
+        "name"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency. This means that making the same request multiple times with the same <code>clientToken</code> has the same result every time.</p>",
+          "idempotencyToken":true
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Route 53 Global Resolver that the domain list will be associated with.</p>",
+          "location":"uri",
+          "locationName":"globalResolverId"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>An optional description for the firewall domain list.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>A descriptive name for the firewall domain list.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>An array of user-defined keys and optional values. These tags can be used for categorization and organization.</p>"
+        }
+      }
+    },
+    "CreateFirewallDomainListOutput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "globalResolverId",
+        "createdAt",
+        "domainCount",
+        "id",
+        "name",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>An Amazon Resource Name (ARN) for the domain list.</p>"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Route 53 Global Resolver that the domain list is associated with.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The time and date the domain list was created on.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>Description for the domain list.</p>"
+        },
+        "domainCount":{
+          "shape":"Integer",
+          "documentation":"<p>Number of domains in the domain list.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the domain list.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>Name of the domain list.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>Creation status of the domain list.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The time and date the domain list was updated.</p>"
+        }
+      }
+    },
+    "CreateFirewallRuleInput":{
+      "type":"structure",
+      "required":[
+        "action",
+        "name",
+        "dnsViewId"
+      ],
+      "members":{
+        "action":{
+          "shape":"FirewallRuleAction",
+          "documentation":"<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:</p> <ul> <li> <p> <code>ALLOW</code> - Permit the request to go through.</p> </li> <li> <p> <code>ALERT</code> - Permit the request and send metrics and logs to CloudWatch.</p> </li> <li> <p> <code>BLOCK</code> - Disallow the request. This option requires additional details in the rule's <code>BlockResponse</code>.</p> </li> </ul>"
+        },
+        "blockOverrideDnsType":{
+          "shape":"BlockOverrideDnsQueryType",
+          "documentation":"<p>The DNS record's type. This determines the format of the record value that you provided in <code>BlockOverrideDomain</code>. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p> <p>This setting is required if the <code>BlockResponse</code> setting is <code>OVERRIDE</code>.</p>"
+        },
+        "blockOverrideDomain":{
+          "shape":"Domain",
+          "documentation":"<p>The custom DNS record to send back in response to the query. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p> <p>This setting is required if the <code>BlockResponse</code> setting is <code>OVERRIDE</code>.</p>"
+        },
+        "blockOverrideTtl":{
+          "shape":"BlockOverrideTtl",
+          "documentation":"<p>The recommended amount of time, in seconds, for the DNS resolver or web browser to cache the provided override record. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p> <p>This setting is required if the <code>BlockResponse</code> setting is <code>OVERRIDE</code>.</p>"
+        },
+        "blockResponse":{
+          "shape":"FirewallBlockResponse",
+          "documentation":"<p>The response to return when the action is BLOCK. Valid values are NXDOMAIN (domain does not exist), NODATA (domain exists but no records), or OVERRIDE (return custom response).</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency. This means that making the same request multiple times with the same <code>clientToken</code> has the same result every time.</p>",
+          "idempotencyToken":true
+        },
+        "confidenceThreshold":{
+          "shape":"ConfidenceThreshold",
+          "documentation":"<p>The confidence threshold for advanced threat detection. Valid values are HIGH, MEDIUM, or LOW, indicating the accuracy level required for threat detection.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>An optional description for the firewall rule.</p>"
+        },
+        "dnsAdvancedProtection":{
+          "shape":"DnsAdvancedProtection",
+          "documentation":"<p>Whether to enable advanced DNS threat protection for this rule. Advanced protection can detect and block DNS tunneling and Domain Generation Algorithm (DGA) threats.</p>"
+        },
+        "firewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the firewall domain list to use in this rule.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>A descriptive name for the firewall rule.</p>"
+        },
+        "priority":{
+          "shape":"FirewallRulePriority",
+          "documentation":"<p>The priority of this rule. Rules are evaluated in priority order, with lower numbers having higher priority. When a DNS query matches multiple rules, the rule with the highest priority (lowest number) is applied.</p>"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS view to associate with this firewall rule.</p>"
+        },
+        "qType":{
+          "shape":"DnsQueryType",
+          "documentation":"<p>The DNS query type to match for this rule. Examples include A (IPv4 address), AAAA (IPv6 address), MX (mail exchange), or TXT (text record).</p>"
+        }
+      }
+    },
+    "CreateFirewallRuleOutput":{
+      "type":"structure",
+      "required":[
+        "action",
+        "createdAt",
+        "id",
+        "name",
+        "priority",
+        "dnsViewId",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "action":{
+          "shape":"FirewallRuleAction",
+          "documentation":"<p>The action that DNS Firewall takes on DNS queries that match this rule.</p>"
+        },
+        "blockOverrideDnsType":{
+          "shape":"BlockOverrideDnsQueryType",
+          "documentation":"<p>The DNS record type for the custom response when blockResponse is OVERRIDE.</p>"
+        },
+        "blockOverrideDomain":{
+          "shape":"Domain",
+          "documentation":"<p>The custom domain to return when the action is BLOCK and blockResponse is OVERRIDE.</p>"
+        },
+        "blockOverrideTtl":{
+          "shape":"BlockOverrideTtl",
+          "documentation":"<p>The time-to-live (TTL) value for the custom response when blockResponse is OVERRIDE.</p>"
+        },
+        "blockResponse":{
+          "shape":"FirewallBlockResponse",
+          "documentation":"<p>The response to return when the action is BLOCK.</p>"
+        },
+        "confidenceThreshold":{
+          "shape":"ConfidenceThreshold",
+          "documentation":"<p>The confidence threshold for advanced threat detection.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the firewall rule was created.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the firewall rule.</p>"
+        },
+        "dnsAdvancedProtection":{
+          "shape":"DnsAdvancedProtection",
+          "documentation":"<p>Whether advanced DNS threat protection is enabled for this rule.</p>"
+        },
+        "firewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the firewall domain list used in this rule.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the firewall rule.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the firewall rule.</p>"
+        },
+        "priority":{
+          "shape":"FirewallRulePriority",
+          "documentation":"<p>The priority of the firewall rule.</p>"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS view associated with this firewall rule.</p>"
+        },
+        "queryType":{
+          "shape":"DnsQueryType",
+          "documentation":"<p>The DNS query type that this rule matches.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The operational status of the firewall rule.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the firewall rule was last updated.</p>"
+        }
+      }
+    },
+    "CreateGlobalResolverInput":{
+      "type":"structure",
+      "required":[
+        "name",
+        "regions"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique string that identifies the request and ensures idempotency. If you make multiple requests with the same client token, only one Route 53 Global Resolver is created.</p>",
+          "idempotencyToken":true
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>An optional description for the Route 53 Global Resolver instance. Maximum length of 1024 characters.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>A descriptive name for the Route 53 Global Resolver instance. Maximum length of 64 characters.</p>"
+        },
+        "observabilityRegion":{
+          "shape":"Region",
+          "documentation":"<p>The AWS region where query resolution logs and metrics will be aggregated and delivered. If not specified, logging is not enabled.</p>"
+        },
+        "regions":{
+          "shape":"Regions",
+          "documentation":"<p>List of AWS regions where the Route 53 Global Resolver will operate. The resolver will be distributed across these regions to provide global availability and low-latency DNS resolution.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>Tags to associate with the Route 53 Global Resolver. Tags are key-value pairs that help you organize and identify your resources.</p>"
+        }
+      }
+    },
+    "CreateGlobalResolverOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "clientToken",
+        "createdAt",
+        "dnsName",
+        "ipv4Addresses",
+        "name",
+        "regions",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the Route 53 Global Resolver.</p>"
+        },
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Route 53 Global Resolver.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique string that identifies the request and ensures idempotency.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the Route 53 Global Resolver was created.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the Route 53 Global Resolver.</p>"
+        },
+        "dnsName":{
+          "shape":"Sni",
+          "documentation":"<p>The hostname that DNS clients should use for TLS certificate validation when connecting to the Route 53 Global Resolver. This value resolves to the global anycast IP addresses for the resolver.</p>"
+        },
+        "ipv4Addresses":{
+          "shape":"IPv4Addresses",
+          "documentation":"<p>The global anycast IPv4 addresses associated with the Route 53 Global Resolver. DNS clients can send queries to these addresses from anywhere on the internet.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the Route 53 Global Resolver.</p>"
+        },
+        "observabilityRegion":{
+          "shape":"Region",
+          "documentation":"<p>The AWS Region where observability data for the Route 53 Global Resolver is stored.</p>"
+        },
+        "regions":{
+          "shape":"Regions",
+          "documentation":"<p>The AWS Regions where the Route 53 Global Resolver is deployed and operational.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The current status of the Route 53 Global Resolver. Possible values are CREATING (being provisioned), UPDATING (being modified), OPERATIONAL (ready to serve queries), or DELETING (being removed).</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the Route 53 Global Resolver was last updated.</p>"
+        }
+      }
+    },
+    "DNSViewSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "clientToken",
+        "dnssecValidation",
+        "ednsClientSubnet",
+        "firewallRulesFailOpen",
+        "name",
+        "globalResolverId",
+        "createdAt",
+        "updatedAt",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the DNS view.</p>"
+        },
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the DNS view.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique string that identifies the request and ensures idempotency.</p>"
+        },
+        "dnssecValidation":{
+          "shape":"DnsSecValidationType",
+          "documentation":"<p>Whether DNSSEC validation is enabled for the DNS view.</p>"
+        },
+        "ednsClientSubnet":{
+          "shape":"EdnsClientSubnetType",
+          "documentation":"<p>Whether EDNS Client Subnet injection is enabled for the DNS view.</p>"
+        },
+        "firewallRulesFailOpen":{
+          "shape":"FirewallRulesFailOpenType",
+          "documentation":"<p>Whether firewall rules fail open when they cannot be evaluated.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the DNS view.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A description of the DNS view.</p>"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the global resolver that the DNS view is associated with.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the DNS view was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the DNS view was last updated.</p>"
+        },
+        "status":{
+          "shape":"ProfileResourceStatus",
+          "documentation":"<p>The current status of the DNS view.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a DNS view.</p>"
+    },
+    "DNSViews":{
+      "type":"list",
+      "member":{"shape":"DNSViewSummary"}
+    },
+    "DeleteAccessSourceInput":{
+      "type":"structure",
+      "required":["accessSourceId"],
+      "members":{
+        "accessSourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the access source to delete.</p>",
+          "location":"uri",
+          "locationName":"accessSourceId"
+        }
+      }
+    },
+    "DeleteAccessSourceOutput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "cidr",
+        "createdAt",
+        "id",
+        "ipAddressType",
+        "dnsViewId",
+        "protocol",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted access source.</p>"
+        },
+        "cidr":{
+          "shape":"Cidr",
+          "documentation":"<p>The IP address or CIDR range of the deleted access source.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the access source was originally created.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the deleted access source.</p>"
+        },
+        "ipAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type of the deleted access source (IPv4 or IPv6).</p>"
+        },
+        "name":{
+          "shape":"ResourceNameShort",
+          "documentation":"<p>The name of the deleted access source.</p>"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS view that was associated with the deleted access source.</p>"
+        },
+        "protocol":{
+          "shape":"DnsProtocol",
+          "documentation":"<p>The DNS protocol that was permitted for the deleted access source.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The final status of the deleted access source.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the access source was last updated before deletion.</p>"
+        }
+      }
+    },
+    "DeleteAccessTokenInput":{
+      "type":"structure",
+      "required":["accessTokenId"],
+      "members":{
+        "accessTokenId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the access token to delete.</p>",
+          "location":"uri",
+          "locationName":"accessTokenId"
+        }
+      }
+    },
+    "DeleteAccessTokenOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "status",
+        "deletedAt"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the deleted access token.</p>"
+        },
+        "status":{
+          "shape":"TokenStatus",
+          "documentation":"<p>The final status of the deleted access token.</p>"
+        },
+        "deletedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the access token was deleted.</p>"
+        }
+      }
+    },
+    "DeleteDNSViewInput":{
+      "type":"structure",
+      "required":["dnsViewId"],
+      "members":{
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the DNS view to delete.</p>",
+          "location":"uri",
+          "locationName":"dnsViewId"
+        }
+      }
+    },
+    "DeleteDNSViewOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "dnssecValidation",
+        "ednsClientSubnet",
+        "firewallRulesFailOpen",
+        "name",
+        "globalResolverId",
+        "createdAt",
+        "updatedAt",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the deleted DNS view.</p>"
+        },
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted DNS view.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique string that identifies the request and ensures idempotency.</p>"
+        },
+        "dnssecValidation":{
+          "shape":"DnsSecValidationType",
+          "documentation":"<p>Whether DNSSEC validation was enabled for the deleted DNS view.</p>"
+        },
+        "ednsClientSubnet":{
+          "shape":"EdnsClientSubnetType",
+          "documentation":"<p>Whether EDNS Client Subnet injection was enabled for the deleted DNS view.</p>"
+        },
+        "firewallRulesFailOpen":{
+          "shape":"FirewallRulesFailOpenType",
+          "documentation":"<p>The firewall rules fail-open behavior that was configured for the deleted DNS view.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the deleted DNS view.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the deleted DNS view.</p>"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Route 53 Global Resolver that the deleted DNS view was associated with.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the DNS view was originally created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the DNS view was last updated before deletion.</p>"
+        },
+        "status":{
+          "shape":"ProfileResourceStatus",
+          "documentation":"<p>The final status of the deleted DNS view.</p>"
+        }
+      }
+    },
+    "DeleteFirewallDomainListInput":{
+      "type":"structure",
+      "required":["firewallDomainListId"],
+      "members":{
+        "firewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the firewall domain list to delete.</p>",
+          "location":"uri",
+          "locationName":"firewallDomainListId"
+        }
+      }
+    },
+    "DeleteFirewallDomainListOutput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "id",
+        "name",
+        "status"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted firewall domain list.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the deleted firewall domain list.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the deleted firewall domain list.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The final status of the deleted firewall domain list.</p>"
+        }
+      }
+    },
+    "DeleteFirewallRuleInput":{
+      "type":"structure",
+      "required":["firewallRuleId"],
+      "members":{
+        "firewallRuleId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the firewall rule to delete.</p>",
+          "location":"uri",
+          "locationName":"firewallRuleId"
+        }
+      }
+    },
+    "DeleteFirewallRuleOutput":{
+      "type":"structure",
+      "required":[
+        "action",
+        "createdAt",
+        "id",
+        "name",
+        "priority",
+        "dnsViewId",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "action":{
+          "shape":"FirewallRuleAction",
+          "documentation":"<p>The action that was configured for the deleted firewall rule.</p>"
+        },
+        "blockOverrideDnsType":{
+          "shape":"BlockOverrideDnsQueryType",
+          "documentation":"<p>The DNS record type that was configured for the deleted firewall rule's custom response.</p>"
+        },
+        "blockOverrideDomain":{
+          "shape":"Domain",
+          "documentation":"<p>The custom domain that was configured for the deleted firewall rule's BLOCK response.</p>"
+        },
+        "blockOverrideTtl":{
+          "shape":"BlockOverrideTtl",
+          "documentation":"<p>The TTL value that was configured for the deleted firewall rule's custom response.</p>"
+        },
+        "blockResponse":{
+          "shape":"FirewallBlockResponse",
+          "documentation":"<p>The block response type that was configured for the deleted firewall rule.</p>"
+        },
+        "confidenceThreshold":{
+          "shape":"ConfidenceThreshold",
+          "documentation":"<p>The confidence threshold that was configured for the deleted firewall rule's advanced threat detection.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the firewall rule was originally created.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the deleted firewall rule.</p>"
+        },
+        "dnsAdvancedProtection":{
+          "shape":"DnsAdvancedProtection",
+          "documentation":"<p>Whether advanced DNS threat protection was enabled for the deleted firewall rule.</p>"
+        },
+        "firewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the firewall domain list that was associated with the deleted firewall rule.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the deleted firewall rule.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the deleted firewall rule.</p>"
+        },
+        "priority":{
+          "shape":"FirewallRulePriority",
+          "documentation":"<p>The priority that was configured for the deleted firewall rule.</p>"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS view that was associated with the deleted firewall rule.</p>"
+        },
+        "queryType":{
+          "shape":"DnsQueryType",
+          "documentation":"<p>The DNS query type that the deleted firewall rule was configured to match.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The final status of the deleted firewall rule.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the firewall rule was last updated before deletion.</p>"
+        }
+      }
+    },
+    "DeleteGlobalResolverInput":{
+      "type":"structure",
+      "required":["globalResolverId"],
+      "members":{
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the Route 53 Global Resolver to delete.</p>",
+          "location":"uri",
+          "locationName":"globalResolverId"
+        }
+      }
+    },
+    "DeleteGlobalResolverOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "clientToken",
+        "dnsName",
+        "name",
+        "regions",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "ipv4Addresses"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the deleted Route 53 Global Resolver.</p>"
+        },
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted Route 53 Global Resolver.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique string that identifies the request and ensures idempotency.</p>"
+        },
+        "dnsName":{
+          "shape":"Sni",
+          "documentation":"<p>The hostname that DNS clients used for TLS certificate validation when connecting to the deleted Route 53 Global Resolver.</p>"
+        },
+        "observabilityRegion":{
+          "shape":"Region",
+          "documentation":"<p>The AWS Region where observability data for the deleted Route 53 Global Resolver was stored.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the deleted Route 53 Global Resolver.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the deleted Route 53 Global Resolver.</p>"
+        },
+        "regions":{
+          "shape":"Regions",
+          "documentation":"<p>The AWS Regions where the deleted Route 53 Global Resolver was deployed and operational.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the Route 53 Global Resolver was originally created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the Route 53 Global Resolver was last updated before deletion.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The final status of the deleted Route 53 Global Resolver.</p>"
+        },
+        "ipv4Addresses":{
+          "shape":"IPv4Addresses",
+          "documentation":"<p>The global anycast IPv4 addresses that were associated with the deleted Route 53 Global Resolver.</p>"
+        }
+      }
+    },
+    "DisableDNSViewInput":{
+      "type":"structure",
+      "required":["dnsViewId"],
+      "members":{
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the DNS view to disable.</p>",
+          "location":"uri",
+          "locationName":"dnsViewId"
+        }
+      }
+    },
+    "DisableDNSViewOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "dnssecValidation",
+        "ednsClientSubnet",
+        "firewallRulesFailOpen",
+        "name",
+        "globalResolverId",
+        "createdAt",
+        "updatedAt",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the disabled DNS view.</p>"
+        },
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the disabled DNS view.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique string that identifies the request and ensures idempotency.</p>"
+        },
+        "dnssecValidation":{
+          "shape":"DnsSecValidationType",
+          "documentation":"<p>Whether DNSSEC validation is enabled for the disabled DNS view.</p>"
+        },
+        "ednsClientSubnet":{
+          "shape":"EdnsClientSubnetType",
+          "documentation":"<p>Whether EDNS Client Subnet injection is enabled for the disabled DNS view.</p>"
+        },
+        "firewallRulesFailOpen":{
+          "shape":"FirewallRulesFailOpenType",
+          "documentation":"<p>The firewall rules fail-open behavior configured for the disabled DNS view.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the disabled DNS view.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the disabled DNS view.</p>"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Route 53 Global Resolver that the disabled DNS view is associated with.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the DNS view was originally created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the DNS view was last updated.</p>"
+        },
+        "status":{
+          "shape":"ProfileResourceStatus",
+          "documentation":"<p>The current status of the disabled DNS view.</p>"
+        }
+      }
+    },
+    "DisassociateHostedZoneInput":{
+      "type":"structure",
+      "required":[
+        "hostedZoneId",
+        "resourceArn"
+      ],
+      "members":{
+        "hostedZoneId":{
+          "shape":"HostedZoneId",
+          "documentation":"<p>The ID of the Route 53 private hosted zone to disassociate.</p>",
+          "location":"uri",
+          "locationName":"hostedZoneId"
+        },
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Route 53 Global Resolver resource to disassociate the hosted zone from.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "DisassociateHostedZoneOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "resourceArn",
+        "hostedZoneId",
+        "hostedZoneName",
+        "name",
+        "createdAt",
+        "updatedAt",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the disassociation.</p>"
+        },
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Route 53 Global Resolver resource that the hosted zone was disassociated from.</p>"
+        },
+        "hostedZoneId":{
+          "shape":"HostedZoneId",
+          "documentation":"<p>The ID of the Route 53 private hosted zone that was disassociated.</p>"
+        },
+        "hostedZoneName":{
+          "shape":"HostedZoneName",
+          "documentation":"<p>The name of the Route 53 private hosted zone that was disassociated.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the association that was removed.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the association was originally created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the association was last updated before disassociation.</p>"
+        },
+        "status":{
+          "shape":"HostedZoneAssociationStatus",
+          "documentation":"<p>The final status of the disassociation.</p>"
+        }
+      }
+    },
+    "DnsAdvancedProtection":{
+      "type":"string",
+      "enum":[
+        "DGA",
+        "DNS_TUNNELING"
+      ]
+    },
+    "DnsProtocol":{
+      "type":"string",
+      "enum":[
+        "DO53",
+        "DOH",
+        "DOT"
+      ]
+    },
+    "DnsQueryType":{
+      "type":"string",
+      "max":16,
+      "min":0
+    },
+    "DnsSecValidationType":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "Domain":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"\\*?[-a-zA-Z0-9.]+"
+    },
+    "Domains":{
+      "type":"list",
+      "member":{"shape":"Domain"}
+    },
+    "EdnsClientSubnetType":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "EnableDNSViewInput":{
+      "type":"structure",
+      "required":["dnsViewId"],
+      "members":{
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the DNS view to enable.</p>",
+          "location":"uri",
+          "locationName":"dnsViewId"
+        }
+      }
+    },
+    "EnableDNSViewOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "dnssecValidation",
+        "ednsClientSubnet",
+        "firewallRulesFailOpen",
+        "name",
+        "globalResolverId",
+        "createdAt",
+        "updatedAt",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the enabled DNS view.</p>"
+        },
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the enabled DNS view.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique string that identifies the request and ensures idempotency.</p>"
+        },
+        "dnssecValidation":{
+          "shape":"DnsSecValidationType",
+          "documentation":"<p>Whether DNSSEC validation is enabled for the enabled DNS view.</p>"
+        },
+        "ednsClientSubnet":{
+          "shape":"EdnsClientSubnetType",
+          "documentation":"<p>Whether EDNS Client Subnet injection is enabled for the enabled DNS view.</p>"
+        },
+        "firewallRulesFailOpen":{
+          "shape":"FirewallRulesFailOpenType",
+          "documentation":"<p>The firewall rules fail-open behavior configured for the enabled DNS view.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the enabled DNS view.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the enabled DNS view.</p>"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Route 53 Global Resolver that the enabled DNS view is associated with.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the DNS view was originally created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the DNS view was last updated.</p>"
+        },
+        "status":{
+          "shape":"ProfileResourceStatus",
+          "documentation":"<p>The current status of the enabled DNS view.</p>"
+        }
+      }
+    },
+    "Filters":{
+      "type":"map",
+      "key":{"shape":"String"},
+      "value":{"shape":"Strings"}
+    },
+    "FirewallBlockResponse":{
+      "type":"string",
+      "enum":[
+        "NODATA",
+        "NXDOMAIN",
+        "OVERRIDE"
+      ]
+    },
+    "FirewallDomainLists":{
+      "type":"list",
+      "member":{"shape":"FirewallDomainListsItem"}
+    },
+    "FirewallDomainListsItem":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "globalResolverId",
+        "createdAt",
+        "id",
+        "name",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall domain list.</p>"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the global resolver that the firewall domain list is associated with.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the firewall domain list was created.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A description of the firewall domain list.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the firewall domain list.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the firewall domain list.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The current status of the firewall domain list.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the firewall domain list was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a firewall domain list.</p>"
+    },
+    "FirewallRuleAction":{
+      "type":"string",
+      "enum":[
+        "ALLOW",
+        "ALERT",
+        "BLOCK"
+      ]
+    },
+    "FirewallRulePriority":{
+      "type":"long",
+      "box":true,
+      "max":10000,
+      "min":1
+    },
+    "FirewallRules":{
+      "type":"list",
+      "member":{"shape":"FirewallRulesItem"}
+    },
+    "FirewallRulesFailOpenType":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "FirewallRulesItem":{
+      "type":"structure",
+      "required":[
+        "action",
+        "createdAt",
+        "id",
+        "name",
+        "priority",
+        "dnsViewId",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "action":{
+          "shape":"FirewallRuleAction",
+          "documentation":"<p>The action configured for the firewall rule.</p>"
+        },
+        "blockOverrideDnsType":{
+          "shape":"BlockOverrideDnsQueryType",
+          "documentation":"<p>The DNS record type configured for the firewall rule's custom response.</p>"
+        },
+        "blockOverrideDomain":{
+          "shape":"Domain",
+          "documentation":"<p>The custom domain name configured for the firewall rule's BLOCK response.</p>"
+        },
+        "blockOverrideTtl":{
+          "shape":"BlockOverrideTtl",
+          "documentation":"<p>The TTL value configured for the firewall rule's custom response.</p>"
+        },
+        "blockResponse":{
+          "shape":"FirewallBlockResponse",
+          "documentation":"<p>The type of block response configured for the firewall rule.</p>"
+        },
+        "confidenceThreshold":{
+          "shape":"ConfidenceThreshold",
+          "documentation":"<p>The confidence threshold configured for the firewall rule's advanced threat detection.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the firewall rule was created.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the firewall rule.</p>"
+        },
+        "dnsAdvancedProtection":{
+          "shape":"DnsAdvancedProtection",
+          "documentation":"<p>Whether advanced DNS threat protection is enabled for the firewall rule.</p>"
+        },
+        "firewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the firewall domain list associated with the firewall rule.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the firewall rule.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the firewall rule.</p>"
+        },
+        "priority":{
+          "shape":"FirewallRulePriority",
+          "documentation":"<p>The priority of the firewall rule.</p>"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS view associated with the firewall rule.</p>"
+        },
+        "queryType":{
+          "shape":"DnsQueryType",
+          "documentation":"<p>The DNS query type that the firewall rule matches.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The current status of the firewall rule.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the firewall rule was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a firewall rule.</p>"
+    },
+    "GetAccessSourceInput":{
+      "type":"structure",
+      "required":["accessSourceId"],
+      "members":{
+        "accessSourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the access source to retrieve.</p>",
+          "location":"uri",
+          "locationName":"accessSourceId"
+        }
+      }
+    },
+    "GetAccessSourceOutput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "cidr",
+        "createdAt",
+        "id",
+        "ipAddressType",
+        "dnsViewId",
+        "protocol",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the access source.</p>"
+        },
+        "cidr":{
+          "shape":"Cidr",
+          "documentation":"<p>The IP range for the rule's parameters in CIDR notation.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The time and date the rule was created.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID for the rule.</p>"
+        },
+        "ipAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type.</p>"
+        },
+        "name":{
+          "shape":"ResourceNameShort",
+          "documentation":"<p>Name for the access source.</p>"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID for the DNS view that the rule is associated to.</p>"
+        },
+        "protocol":{
+          "shape":"DnsProtocol",
+          "documentation":"<p>The protocol determines how data is transmitted to a Global Resolver instance.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>Information about the status of the rule.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The time and date the access source was updated.</p>"
+        }
+      }
+    },
+    "GetAccessTokenInput":{
+      "type":"structure",
+      "required":["accessTokenId"],
+      "members":{
+        "accessTokenId":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the token.</p>",
+          "location":"uri",
+          "locationName":"accessTokenId"
+        }
+      }
+    },
+    "GetAccessTokenOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "createdAt",
+        "dnsViewId",
+        "expiresAt",
+        "globalResolverId",
+        "status",
+        "updatedAt",
+        "value"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the token.</p>"
+        },
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the token.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency. This means that making the same request multiple times with the same <code>clientToken</code> has the same result every time.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The time and date the token was created.</p>"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the DNS view the token is associated to.</p>"
+        },
+        "expiresAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The token's expiration time and date.</p>"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the Global Resolver.</p>"
+        },
+        "name":{
+          "shape":"ResourceNameShort",
+          "documentation":"<p>Name of the token.</p>"
+        },
+        "status":{
+          "shape":"TokenStatus",
+          "documentation":"<p>The operational status of the token.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The time and date the token was created.</p>"
+        },
+        "value":{
+          "shape":"AccessTokenValue",
+          "documentation":"<p>The value of the token.</p>"
+        }
+      }
+    },
+    "GetDNSViewInput":{
+      "type":"structure",
+      "required":["dnsViewId"],
+      "members":{
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS view to retrieve information about.</p>",
+          "location":"uri",
+          "locationName":"dnsViewId"
+        }
+      }
+    },
+    "GetDNSViewOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "dnssecValidation",
+        "ednsClientSubnet",
+        "firewallRulesFailOpen",
+        "name",
+        "globalResolverId",
+        "createdAt",
+        "updatedAt",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the DNS view.</p>"
+        },
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the DNS view.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency. This means that making the same request multiple times with the same <code>clientToken</code> has the same result every time.</p>"
+        },
+        "dnssecValidation":{
+          "shape":"DnsSecValidationType",
+          "documentation":"<p>Specifies whether DNSSEC is enabled or disabled for the DNS view.</p>"
+        },
+        "ednsClientSubnet":{
+          "shape":"EdnsClientSubnetType",
+          "documentation":"<p>Specifies whether edns0 client subnet is enabled.</p>"
+        },
+        "firewallRulesFailOpen":{
+          "shape":"FirewallRulesFailOpenType",
+          "documentation":"<p>Specifies the DNS Firewall failure mode configuration. When enabled, the DNS Firewall allows DNS queries to proceed if it's unable to properly evaluate them. When disabled, the DNS Firewall blocks DNS queries it's unable to evaluate.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>Name of the DNS view.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>Description of the DNS view.</p>"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the Global Resolver the DNS view is associated to.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The time and date the DNS view was creates on.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The time and date the DNS view was updated on.</p>"
+        },
+        "status":{
+          "shape":"ProfileResourceStatus",
+          "documentation":"<p>Operational status of the DNS view.</p>"
+        }
+      }
+    },
+    "GetFirewallDomainListInput":{
+      "type":"structure",
+      "required":["firewallDomainListId"],
+      "members":{
+        "firewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the domain list.</p>",
+          "location":"uri",
+          "locationName":"firewallDomainListId"
+        }
+      }
+    },
+    "GetFirewallDomainListOutput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "globalResolverId",
+        "createdAt",
+        "domainCount",
+        "id",
+        "name",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the domain list.</p>"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the Global Resolver that the domain list is associated to.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency. This means that making the same request multiple times with the same <code>clientToken</code> has the same result every time.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The time and date the domain list was created.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the domain list.</p>"
+        },
+        "domainCount":{
+          "shape":"Integer",
+          "documentation":"<p>Number of domains in the domain list.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the domain list.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>Name of the domain list.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>Operational status of the domain list.</p>"
+        },
+        "statusMessage":{
+          "shape":"String",
+          "documentation":"<p>Additional information about the status of the domain list.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time the domain list was updated.</p>"
+        }
+      }
+    },
+    "GetFirewallRuleInput":{
+      "type":"structure",
+      "required":["firewallRuleId"],
+      "members":{
+        "firewallRuleId":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the DNS Firewall rule.</p>",
+          "location":"uri",
+          "locationName":"firewallRuleId"
+        }
+      }
+    },
+    "GetFirewallRuleOutput":{
+      "type":"structure",
+      "required":[
+        "action",
+        "createdAt",
+        "id",
+        "name",
+        "priority",
+        "dnsViewId",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "action":{
+          "shape":"FirewallRuleAction",
+          "documentation":"<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list, or a threat in a DNS Firewall Advanced rule.</p>"
+        },
+        "blockOverrideDnsType":{
+          "shape":"BlockOverrideDnsQueryType",
+          "documentation":"<p>The DNS record's type. This determines the format of the record value that you provided in <code>BlockOverrideDomain</code>. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p>"
+        },
+        "blockOverrideDomain":{
+          "shape":"Domain",
+          "documentation":"<p>The custom DNS record to send back in response to the query. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p>"
+        },
+        "blockOverrideTtl":{
+          "shape":"BlockOverrideTtl",
+          "documentation":"<p>The recommended amount of time, in seconds, for the DNS resolver or web browser to cache the provided override record. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p>"
+        },
+        "blockResponse":{
+          "shape":"FirewallBlockResponse",
+          "documentation":"<p>The way that you want DNS Firewall to block the request. Used for the rule action setting <code>BLOCK</code>.</p>"
+        },
+        "confidenceThreshold":{
+          "shape":"ConfidenceThreshold",
+          "documentation":"<p>The confidence threshold for DNS Firewall Advanced. You must provide this value when you create a DNS Firewall Advanced rule.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The time and date the DNS Firewall rule was created.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the DNS Firewall rule.</p>"
+        },
+        "dnsAdvancedProtection":{
+          "shape":"DnsAdvancedProtection",
+          "documentation":"<p>The type of the DNS Firewall Advanced rule. Valid values are DGA and DNS_TUNNELING.</p>"
+        },
+        "firewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of a DNS Firewall domain list.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the DNS Firewall rule.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the DNS Firewall rule.</p>"
+        },
+        "priority":{
+          "shape":"FirewallRulePriority",
+          "documentation":"<p>The setting that determines the processing order of the rule in the rule group. DNS Firewall processes the rules in a rule group by order of priority, starting from the lowest setting.</p>"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The DNS view ID the DNS Firewall is associated with.</p>"
+        },
+        "queryType":{
+          "shape":"DnsQueryType",
+          "documentation":"<p>The DNS query type you want the rule to evaluate.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The operational status of the DNS Firewall rule.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time the DNS Firewall rule was updated.</p>"
+        }
+      }
+    },
+    "GetGlobalResolverInput":{
+      "type":"structure",
+      "required":["globalResolverId"],
+      "members":{
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Route 53 Global Resolver to retrieve information about.</p>",
+          "location":"uri",
+          "locationName":"globalResolverId"
+        }
+      }
+    },
+    "GetGlobalResolverOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "clientToken",
+        "dnsName",
+        "name",
+        "regions",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "ipv4Addresses"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Global Resolver.</p>"
+        },
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Global Resolver.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency. This means that making the same request multiple times with the same <code>clientToken</code> has the same result every time.</p>"
+        },
+        "dnsName":{
+          "shape":"Sni",
+          "documentation":"<p>The hostname used by the customers' DNS clients for certification validation.</p>"
+        },
+        "observabilityRegion":{
+          "shape":"Region",
+          "documentation":"<p>The AWS Regions in which the users' Global Resolver query resolution logs will be propagated.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the Global Resolver.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the Global Resolver.</p>"
+        },
+        "regions":{
+          "shape":"Regions",
+          "documentation":"<p>The AWS Regions in which the Global Resolver operate.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time the Global Resolver was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time the Global Resolver was updated.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The operational status of the Global Resolver.</p>"
+        },
+        "ipv4Addresses":{
+          "shape":"IPv4Addresses",
+          "documentation":"<p>List of anycast IPv4 addresses associated with the Global Resolver instance.</p>"
+        }
+      }
+    },
+    "GetHostedZoneAssociationInput":{
+      "type":"structure",
+      "required":["hostedZoneAssociationId"],
+      "members":{
+        "hostedZoneAssociationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the private hosted zone association.</p>",
+          "location":"uri",
+          "locationName":"hostedZoneAssociationId"
+        }
+      }
+    },
+    "GetHostedZoneAssociationOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "resourceArn",
+        "hostedZoneId",
+        "hostedZoneName",
+        "name",
+        "createdAt",
+        "updatedAt",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the private hosted zone association.</p>"
+        },
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the DNS view the private hosted zone is associated to.</p>"
+        },
+        "hostedZoneId":{
+          "shape":"HostedZoneId",
+          "documentation":"<p>ID of the hosted zone associated to the DNS view.</p>"
+        },
+        "hostedZoneName":{
+          "shape":"HostedZoneName",
+          "documentation":"<p>Name of the domain associated with the private hosted zone.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>Name of the private hosted zone association.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The time and date the private hosted zone association was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The time and date the private hosted zone association was updated.</p>"
+        },
+        "status":{
+          "shape":"HostedZoneAssociationStatus",
+          "documentation":"<p>The operational status of the private hosted zone association.</p>"
+        }
+      }
+    },
+    "GetManagedFirewallDomainListInput":{
+      "type":"structure",
+      "required":["managedFirewallDomainListId"],
+      "members":{
+        "managedFirewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the Managed Domain List.</p>",
+          "location":"uri",
+          "locationName":"managedFirewallDomainListId"
+        }
+      }
+    },
+    "GetManagedFirewallDomainListOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name",
+        "managedListType"
+      ],
+      "members":{
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>Description of the Managed Domain List.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the Managed Domain List.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>Name of the Managed Domain List.</p>"
+        },
+        "managedListType":{
+          "shape":"String",
+          "documentation":"<p>Type of the managed category. This is either <code>THREAT</code> or <code>CONTENT</code>.</p>"
+        }
+      }
+    },
+    "GlobalResolvers":{
+      "type":"list",
+      "member":{"shape":"GlobalResolversItem"}
+    },
+    "GlobalResolversItem":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "clientToken",
+        "dnsName",
+        "name",
+        "regions",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "ipv4Addresses"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the global resolver.</p>"
+        },
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the global resolver.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique string that identifies the request and ensures idempotency.</p>"
+        },
+        "dnsName":{
+          "shape":"Sni",
+          "documentation":"<p>The DNS name of the global resolver.</p>"
+        },
+        "observabilityRegion":{
+          "shape":"Region",
+          "documentation":"<p>The AWS Region where observability data is collected for the global resolver.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the global resolver.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A description of the global resolver.</p>"
+        },
+        "regions":{
+          "shape":"Regions",
+          "documentation":"<p>The AWS Regions where the global resolver is deployed.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the global resolver was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the global resolver was last updated.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The current status of the global resolver.</p>"
+        },
+        "ipv4Addresses":{
+          "shape":"IPv4Addresses",
+          "documentation":"<p>The IPv4 addresses assigned to the global resolver.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a global resolver.</p>"
+    },
+    "HostedZoneAssociationStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "OPERATIONAL",
+        "DELETING"
+      ]
+    },
+    "HostedZoneAssociationSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "resourceArn",
+        "hostedZoneId",
+        "hostedZoneName",
+        "name",
+        "createdAt",
+        "updatedAt",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the hosted zone association.</p>"
+        },
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource associated with the hosted zone.</p>"
+        },
+        "hostedZoneId":{
+          "shape":"HostedZoneId",
+          "documentation":"<p>The ID of the hosted zone.</p>"
+        },
+        "hostedZoneName":{
+          "shape":"HostedZoneName",
+          "documentation":"<p>The name of the hosted zone.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the hosted zone association.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the hosted zone association was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the hosted zone association was last updated.</p>"
+        },
+        "status":{
+          "shape":"HostedZoneAssociationStatus",
+          "documentation":"<p>The current status of the hosted zone association.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a hosted zone association.</p>"
+    },
+    "HostedZoneAssociations":{
+      "type":"list",
+      "member":{"shape":"HostedZoneAssociationSummary"}
+    },
+    "HostedZoneId":{
+      "type":"string",
+      "max":32,
+      "min":1
+    },
+    "HostedZoneName":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "IPv4Address":{
+      "type":"string",
+      "max":15,
+      "min":1,
+      "pattern":"((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}"
+    },
+    "IPv4Addresses":{
+      "type":"list",
+      "member":{"shape":"IPv4Address"}
+    },
+    "ISO8601TimeString":{
+      "type":"timestamp",
+      "timestampFormat":"iso8601"
+    },
+    "ImportFirewallDomainsInput":{
+      "type":"structure",
+      "required":[
+        "domainFileUrl",
+        "firewallDomainListId",
+        "operation"
+      ],
+      "members":{
+        "domainFileUrl":{
+          "shape":"String",
+          "documentation":"<p>The fully qualified URL of the file in Amazon S3 that contains the list of domains to import. The file should contain one domain per line.</p>"
+        },
+        "firewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the DNS Firewall domain list that you want to import the domain list to.</p>",
+          "location":"uri",
+          "locationName":"firewallDomainListId"
+        },
+        "operation":{
+          "shape":"String",
+          "documentation":"<p>This value is <code>REPLACE</code>, and it updates the domain list to match the list of domains in the imported file.</p>"
+        }
+      }
+    },
+    "ImportFirewallDomainsOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the DNS Firewall domain list that you imported the domain list to.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>Name of the DNS Firewall domain list.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>Operational status of the DNS Firewall domain list.</p>"
+        }
+      }
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "retryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>Number of seconds in which the caller can retry the request.</p>",
+          "location":"header",
+          "locationName":"Retry-After"
+        }
+      },
+      "documentation":"<p>An internal server error occurred. Try again later.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
+    },
+    "IpAddressType":{
+      "type":"string",
+      "enum":[
+        "IPV4",
+        "IPV6"
+      ]
+    },
+    "ListAccessSourcesInput":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to retrieve in a single call.</p>",
+          "location":"querystring",
+          "locationName":"max_results"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response.</p>",
+          "location":"querystring",
+          "locationName":"next_token"
+        },
+        "filters":{
+          "shape":"Filters",
+          "documentation":"<p>Values to filter the results.</p>",
+          "location":"querystring"
+        }
+      }
+    },
+    "ListAccessSourcesOutput":{
+      "type":"structure",
+      "required":["accessSources"],
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response. Provide this token in the next call to get the results not returned in this call.</p>"
+        },
+        "accessSources":{
+          "shape":"AccessSources",
+          "documentation":"<p>An array containing information about the access sources, such as the ID, CIDR etc.</p>"
+        }
+      }
+    },
+    "ListAccessTokensInput":{
+      "type":"structure",
+      "required":["dnsViewId"],
+      "members":{
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to retrieve in a single call.</p>",
+          "location":"querystring",
+          "locationName":"max_results"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response.</p>",
+          "location":"querystring",
+          "locationName":"next_token"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS view to list the tokens for.</p>",
+          "location":"uri",
+          "locationName":"dnsViewId"
+        },
+        "filters":{
+          "shape":"Filters",
+          "documentation":"<p>Filtering parameters.</p>",
+          "location":"querystring"
+        }
+      }
+    },
+    "ListAccessTokensOutput":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response. Provide this token in the next call to get the results not returned in this call.</p>"
+        },
+        "accessTokens":{
+          "shape":"AccessTokens",
+          "documentation":"<p>List of the tokens.</p>"
+        }
+      }
+    },
+    "ListDNSViewsInput":{
+      "type":"structure",
+      "required":["globalResolverId"],
+      "members":{
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to retrieve in a single call.</p>",
+          "location":"querystring",
+          "locationName":"max_results"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response.</p>",
+          "location":"querystring",
+          "locationName":"next_token"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The Global Resolver ID.</p>",
+          "location":"uri",
+          "locationName":"globalResolverId"
+        }
+      }
+    },
+    "ListDNSViewsOutput":{
+      "type":"structure",
+      "required":["dnsViews"],
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response. Provide this token in the next call to get the results not returned in this call.</p>"
+        },
+        "dnsViews":{
+          "shape":"DNSViews",
+          "documentation":"<p>An array of information about the DNS views, such as whether DNSSEC is enabled, creation time, etc.</p>"
+        }
+      }
+    },
+    "ListFirewallDomainListsInput":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to retrieve in a single call.</p>",
+          "location":"querystring",
+          "locationName":"max_results"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response.</p>",
+          "location":"querystring",
+          "locationName":"next_token"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Global Resolver that contains the DNS view the domain lists are associated to.</p>",
+          "location":"querystring",
+          "locationName":"global_resolver_id"
+        }
+      }
+    },
+    "ListFirewallDomainListsOutput":{
+      "type":"structure",
+      "required":["firewallDomainLists"],
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response. Provide this token in the next call to get the results not returned in this call.</p>"
+        },
+        "firewallDomainLists":{
+          "shape":"FirewallDomainLists",
+          "documentation":"<p>List of the DNS Firewall domain lists.</p>"
+        }
+      }
+    },
+    "ListFirewallDomainsInput":{
+      "type":"structure",
+      "required":["firewallDomainListId"],
+      "members":{
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to retrieve in a single call.</p>",
+          "location":"querystring",
+          "locationName":"max_results"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response.</p>",
+          "location":"querystring",
+          "locationName":"next_token"
+        },
+        "firewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the DNS Firewall domain list.</p>",
+          "location":"uri",
+          "locationName":"firewallDomainListId"
+        }
+      }
+    },
+    "ListFirewallDomainsOutput":{
+      "type":"structure",
+      "required":["domains"],
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response. Provide this token in the next call to get the results not returned in this call.</p>"
+        },
+        "domains":{
+          "shape":"Domains",
+          "documentation":"<p>List of domains in the specified domain list.</p>"
+        }
+      }
+    },
+    "ListFirewallRulesInput":{
+      "type":"structure",
+      "required":["dnsViewId"],
+      "members":{
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to retrieve in a single call.</p>",
+          "location":"querystring",
+          "locationName":"max_results"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response.</p>",
+          "location":"querystring",
+          "locationName":"next_token"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>ID of the DNS view.</p>",
+          "location":"querystring",
+          "locationName":"dnsview_id"
+        },
+        "filters":{
+          "shape":"Filters",
+          "documentation":"<p>Values to filter the results.</p>",
+          "location":"querystring"
+        }
+      }
+    },
+    "ListFirewallRulesOutput":{
+      "type":"structure",
+      "required":["firewallRules"],
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response. Provide this token in the next call to get the results not returned in this call.</p>"
+        },
+        "firewallRules":{
+          "shape":"FirewallRules",
+          "documentation":"<p>List of the firewall rules and information about them.</p>"
+        }
+      }
+    },
+    "ListGlobalResolversInput":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of Route 53 Global Resolver instances to return in the response. Valid range is 1-100.</p>",
+          "location":"querystring",
+          "locationName":"max_results"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results. This value is returned in the response if there are more results to retrieve.</p>",
+          "location":"querystring",
+          "locationName":"next_token"
+        }
+      }
+    },
+    "ListGlobalResolversOutput":{
+      "type":"structure",
+      "required":["globalResolvers"],
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response. Provide this token in the next call to get the results not returned in this call.</p>"
+        },
+        "globalResolvers":{
+          "shape":"GlobalResolvers",
+          "documentation":"<p>Paginated list of Global Resolvers.</p>"
+        }
+      }
+    },
+    "ListHostedZoneAssociationsInput":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to retrieve in a single call.</p>",
+          "location":"querystring",
+          "locationName":"max_results"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response.</p>",
+          "location":"querystring",
+          "locationName":"next_token"
+        },
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the DNS view.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListHostedZoneAssociationsOutput":{
+      "type":"structure",
+      "required":["hostedZoneAssociations"],
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response. Provide this token in the next call to get the results not returned in this call.</p>"
+        },
+        "hostedZoneAssociations":{
+          "shape":"HostedZoneAssociations",
+          "documentation":"<p>List of the private hosted zone associations.</p>"
+        }
+      }
+    },
+    "ListManagedFirewallDomainListsInput":{
+      "type":"structure",
+      "required":["managedFirewallDomainListType"],
+      "members":{
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to retrieve in a single call.</p>",
+          "location":"querystring",
+          "locationName":"max_results"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response.</p>",
+          "location":"querystring",
+          "locationName":"next_token"
+        },
+        "managedFirewallDomainListType":{
+          "shape":"String",
+          "documentation":"<p>The category of the Manage DNS list either <code>THREAT</code> or <code>CONTENT</code>.</p>",
+          "location":"uri",
+          "locationName":"managedFirewallDomainListType"
+        }
+      }
+    },
+    "ListManagedFirewallDomainListsOutput":{
+      "type":"structure",
+      "required":["managedFirewallDomainLists"],
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response. Provide this token in the next call to get the results not returned in this call.</p>"
+        },
+        "managedFirewallDomainLists":{
+          "shape":"ManagedFirewallDomainLists",
+          "documentation":"<p>List of the Managed Domain Lists.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>Amazon Resource Name (ARN) for the resource.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>An array of user-defined keys and optional values. These tags can be used for categorization and organization.</p>"
+        }
+      }
+    },
+    "ManagedFirewallDomainLists":{
+      "type":"list",
+      "member":{"shape":"ManagedFirewallDomainListsItem"}
+    },
+    "ManagedFirewallDomainListsItem":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name",
+        "managedListType"
+      ],
+      "members":{
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A description of the managed firewall domain list.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the managed firewall domain list.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the managed firewall domain list.</p>"
+        },
+        "managedListType":{
+          "shape":"String",
+          "documentation":"<p>The type of the managed firewall domain list.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a managed firewall domain list.</p>"
+    },
+    "ProfileResourceStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "OPERATIONAL",
+        "UPDATING",
+        "ENABLING",
+        "DISABLING",
+        "DISABLED",
+        "DELETING"
+      ]
+    },
+    "Region":{
+      "type":"string",
+      "max":32,
+      "min":0
+    },
+    "Regions":{
+      "type":"list",
+      "member":{"shape":"Region"}
+    },
+    "ResourceArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:[-.a-z0-9]{1,63}:[-.a-z0-9]{1,63}:[-.a-z0-9]{0,63}:[-.a-z0-9]{0,63}:[^/].{0,1023}"
+    },
+    "ResourceDescription":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ResourceId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[-.a-zA-Z0-9]+"
+    },
+    "ResourceName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"(?!^[0-9]+$)([a-zA-Z0-9-_/' ']+)"
+    },
+    "ResourceNameShort":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"(?!^[0-9]+$)([a-zA-Z0-9-_/' ']+)"
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceType"
+      ],
+      "members":{
+        "message":{"shape":"String"},
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the resource referenced in the failed request.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The resource type of the resource referenced in the failed request.</p>"
+        }
+      },
+      "documentation":"<p>The specified resource was not found. Verify the resource ID and try again.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceType"
+      ],
+      "members":{
+        "message":{"shape":"String"},
+        "resourceId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the resource referenced in the failed request.</p>"
+        },
+        "resourceType":{
+          "shape":"String",
+          "documentation":"<p>The resource type of the resource referenced in the failed request.</p>"
+        },
+        "serviceCode":{
+          "shape":"String",
+          "documentation":"<p>The code for the AWS service that owns the quota.</p>"
+        },
+        "quotaCode":{
+          "shape":"String",
+          "documentation":"<p>The quota code recognized by the AWS Service Quotas service.</p>"
+        }
+      },
+      "documentation":"<p>The request would exceed one or more service quotas. Check your current usage and quotas, then try again.</p>",
+      "error":{
+        "httpStatusCode":402,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Sni":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "String":{"type":"string"},
+    "Strings":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
+    },
+    "TagKeys":{
+      "type":"list",
+      "member":{"shape":"TagKey"}
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the resource to be tagged.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>An array of user-defined keys and optional values. These tags can be used for categorization and organization.</p>"
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
+    },
+    "Tags":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":50,
+      "min":0
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"},
+        "serviceCode":{
+          "shape":"String",
+          "documentation":"<p>The code for the AWS service that owns the quota.</p>"
+        },
+        "quotaCode":{
+          "shape":"String",
+          "documentation":"<p>The quota code recognized by the AWS Service Quotas service.</p>"
+        },
+        "retryAfterSeconds":{
+          "shape":"Integer",
+          "documentation":"<p>Number of seconds in which the caller can retry the request.</p>",
+          "location":"header",
+          "locationName":"Retry-After"
+        }
+      },
+      "documentation":"<p>The request was throttled due to too many requests. Wait a moment and try again.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":true}
+    },
+    "TokenStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "OPERATIONAL",
+        "DELETING"
+      ]
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>Amazon Resource Name (ARN) of the resource.</p>"
+        },
+        "tagKeys":{
+          "shape":"TagKeys",
+          "documentation":"<p>The tag keys associated with the resource.</p>"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateAccessSourceInput":{
+      "type":"structure",
+      "required":["accessSourceId"],
+      "members":{
+        "accessSourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the access source to update.</p>",
+          "location":"uri",
+          "locationName":"accessSourceId"
+        },
+        "cidr":{
+          "shape":"Cidr",
+          "documentation":"<p>The CIDR block for the access source.</p>"
+        },
+        "ipAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type for the access source.</p>"
+        },
+        "name":{
+          "shape":"ResourceNameShort",
+          "documentation":"<p>The name of the access source.</p>"
+        },
+        "protocol":{
+          "shape":"DnsProtocol",
+          "documentation":"<p>The protocol for the access source.</p>"
+        }
+      }
+    },
+    "UpdateAccessSourceOutput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "cidr",
+        "createdAt",
+        "id",
+        "ipAddressType",
+        "dnsViewId",
+        "protocol",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated access source.</p>"
+        },
+        "cidr":{
+          "shape":"Cidr",
+          "documentation":"<p>The CIDR block of the updated access source.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the access source was originally created.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the updated access source.</p>"
+        },
+        "ipAddressType":{
+          "shape":"IpAddressType",
+          "documentation":"<p>The IP address type of the updated access source.</p>"
+        },
+        "name":{
+          "shape":"ResourceNameShort",
+          "documentation":"<p>The name of the updated access source.</p>"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS view associated with the updated access source.</p>"
+        },
+        "protocol":{
+          "shape":"DnsProtocol",
+          "documentation":"<p>The protocol of the updated access source.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The current status of the updated access source.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the access source was last updated.</p>"
+        }
+      }
+    },
+    "UpdateAccessTokenInput":{
+      "type":"structure",
+      "required":[
+        "accessTokenId",
+        "name"
+      ],
+      "members":{
+        "accessTokenId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the token.</p>",
+          "location":"uri",
+          "locationName":"accessTokenId"
+        },
+        "name":{
+          "shape":"ResourceNameShort",
+          "documentation":"<p>The new name of the token.</p>"
+        }
+      }
+    },
+    "UpdateAccessTokenOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the token.</p>"
+        },
+        "name":{
+          "shape":"ResourceNameShort",
+          "documentation":"<p>The name of the token.</p>"
+        }
+      }
+    },
+    "UpdateDNSViewInput":{
+      "type":"structure",
+      "required":["dnsViewId"],
+      "members":{
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the DNS view to update.</p>",
+          "location":"uri",
+          "locationName":"dnsViewId"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the DNS view.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>A description of the DNS view.</p>"
+        },
+        "dnssecValidation":{
+          "shape":"DnsSecValidationType",
+          "documentation":"<p>Whether to enable DNSSEC validation for the DNS view.</p>"
+        },
+        "ednsClientSubnet":{
+          "shape":"EdnsClientSubnetType",
+          "documentation":"<p>Whether to enable EDNS Client Subnet injection for the DNS view.</p>"
+        },
+        "firewallRulesFailOpen":{
+          "shape":"FirewallRulesFailOpenType",
+          "documentation":"<p>Whether firewall rules should fail open when they cannot be evaluated.</p>"
+        }
+      }
+    },
+    "UpdateDNSViewOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "dnssecValidation",
+        "ednsClientSubnet",
+        "firewallRulesFailOpen",
+        "name",
+        "globalResolverId",
+        "createdAt",
+        "updatedAt",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the updated DNS view.</p>"
+        },
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated DNS view.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The unique string that identifies the request and ensures idempotency.</p>"
+        },
+        "dnssecValidation":{
+          "shape":"DnsSecValidationType",
+          "documentation":"<p>Whether DNSSEC validation is enabled for the updated DNS view.</p>"
+        },
+        "ednsClientSubnet":{
+          "shape":"EdnsClientSubnetType",
+          "documentation":"<p>Whether EDNS Client Subnet injection is enabled for the updated DNS view.</p>"
+        },
+        "firewallRulesFailOpen":{
+          "shape":"FirewallRulesFailOpenType",
+          "documentation":"<p>Whether firewall rules fail open when they cannot be evaluated for the updated DNS view.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the updated DNS view.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the updated DNS view.</p>"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the global resolver associated with the updated DNS view.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the DNS view was originally created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the DNS view was last updated.</p>"
+        },
+        "status":{
+          "shape":"ProfileResourceStatus",
+          "documentation":"<p>The current status of the updated DNS view.</p>"
+        }
+      }
+    },
+    "UpdateFirewallDomainsInput":{
+      "type":"structure",
+      "required":[
+        "domains",
+        "firewallDomainListId",
+        "operation"
+      ],
+      "members":{
+        "domains":{
+          "shape":"Domains",
+          "documentation":"<p>A list of the domains. You can add up to 1000 domains per request.</p>"
+        },
+        "firewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS Firewall domain list to which you want to add the domains.</p>",
+          "location":"uri",
+          "locationName":"firewallDomainListId"
+        },
+        "operation":{
+          "shape":"String",
+          "documentation":"<p>The operation for updating the domain list. The allowed values are ADD, REMOVE, and REPLACE.</p>"
+        }
+      }
+    },
+    "UpdateFirewallDomainsOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS Firewall domain list.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the domain list.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The operational status of the domain list.</p>"
+        }
+      }
+    },
+    "UpdateFirewallRuleInput":{
+      "type":"structure",
+      "required":[
+        "clientToken",
+        "firewallRuleId"
+      ],
+      "members":{
+        "action":{
+          "shape":"FirewallRuleAction",
+          "documentation":"<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list, or a threat in a DNS Firewall Advanced rule.</p>"
+        },
+        "blockOverrideDnsType":{
+          "shape":"BlockOverrideDnsQueryType",
+          "documentation":"<p>The DNS record's type. This determines the format of the record value that you provided in <code>BlockOverrideDomain</code>. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p>"
+        },
+        "blockOverrideDomain":{
+          "shape":"Domain",
+          "documentation":"<p>The custom DNS record to send back in response to the query. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p>"
+        },
+        "blockOverrideTtl":{
+          "shape":"BlockOverrideTtl",
+          "documentation":"<p>The recommended amount of time, in seconds, for the DNS resolver or web browser to cache the provided override record. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p>"
+        },
+        "blockResponse":{
+          "shape":"FirewallBlockResponse",
+          "documentation":"<p>The way that you want DNS Firewall to block the request. Used for the rule action setting <code>BLOCK</code>.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency. This means that making the same request multiple times with the same <code>clientToken</code> has the same result every time.</p>",
+          "idempotencyToken":true
+        },
+        "confidenceThreshold":{
+          "shape":"ConfidenceThreshold",
+          "documentation":"<p>The confidence threshold for DNS Firewall Advanced. You must provide this value when you create a DNS Firewall Advanced rule.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description for the Firewall rule.</p>"
+        },
+        "dnsAdvancedProtection":{
+          "shape":"DnsAdvancedProtection",
+          "documentation":"<p>The type of the DNS Firewall Advanced rule. Valid values are DGA and DNS_TUNNELING.</p>"
+        },
+        "firewallRuleId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS Firewall rule.</p>",
+          "location":"uri",
+          "locationName":"firewallRuleId"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the DNS Firewall rule.</p>"
+        },
+        "priority":{
+          "shape":"FirewallRulePriority",
+          "documentation":"<p>The setting that determines the processing order of the rule in the rule group. DNS Firewall processes the rules in a rule group by order of priority, starting from the lowest setting.</p>"
+        }
+      }
+    },
+    "UpdateFirewallRuleOutput":{
+      "type":"structure",
+      "required":[
+        "action",
+        "createdAt",
+        "id",
+        "name",
+        "priority",
+        "dnsViewId",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "action":{
+          "shape":"FirewallRuleAction",
+          "documentation":"<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list, or a threat in a DNS Firewall Advanced rule.</p>"
+        },
+        "blockOverrideDnsType":{
+          "shape":"BlockOverrideDnsQueryType",
+          "documentation":"<p>The DNS record's type. This determines the format of the record value that you provided in <code>BlockOverrideDomain</code>. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p>"
+        },
+        "blockOverrideDomain":{
+          "shape":"Domain",
+          "documentation":"<p>The custom DNS record to send back in response to the query. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p>"
+        },
+        "blockOverrideTtl":{
+          "shape":"BlockOverrideTtl",
+          "documentation":"<p>The recommended amount of time, in seconds, for the DNS resolver or web browser to cache the provided override record. Used for the rule action <code>BLOCK</code> with a <code>BlockResponse</code> setting of <code>OVERRIDE</code>.</p>"
+        },
+        "blockResponse":{
+          "shape":"FirewallBlockResponse",
+          "documentation":"<p>The way that you want DNS Firewall to block the request. Used for the rule action setting <code>BLOCK</code>.</p>"
+        },
+        "confidenceThreshold":{
+          "shape":"ConfidenceThreshold",
+          "documentation":"<p>The confidence threshold for DNS Firewall Advanced. You must provide this value when you create a DNS Firewall Advanced rule.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The time and date the Firewall rule was created.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the Firewall rule.</p>"
+        },
+        "dnsAdvancedProtection":{
+          "shape":"DnsAdvancedProtection",
+          "documentation":"<p>The type of the DNS Firewall Advanced rule. Valid values are DGA and DNS_TUNNELING.</p>"
+        },
+        "firewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the domain list associated with the Firewall rule.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Firewall rule.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the Firewall rule.</p>"
+        },
+        "priority":{
+          "shape":"FirewallRulePriority",
+          "documentation":"<p>The setting that determines the processing order of the rule in the rule group. DNS Firewall processes the rules in a rule group by order of priority, starting from the lowest setting.</p>"
+        },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS view the Firewall rule is associated with.</p>"
+        },
+        "queryType":{
+          "shape":"DnsQueryType",
+          "documentation":"<p>The DNS query type you want the rule to evaluate.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The operational status of the firewall rule.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The time and date the rule was updated.</p>"
+        }
+      }
+    },
+    "UpdateGlobalResolverInput":{
+      "type":"structure",
+      "required":["globalResolverId"],
+      "members":{
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Global Resolver.</p>",
+          "location":"uri",
+          "locationName":"globalResolverId"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the Global Resolver.</p>"
+        },
+        "observabilityRegion":{
+          "shape":"Region",
+          "documentation":"<p>The AWS Regions in which the users' Global Resolver query resolution logs will be propagated.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The description of the Global Resolver.</p>"
+        }
+      }
+    },
+    "UpdateGlobalResolverOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "clientToken",
+        "dnsName",
+        "name",
+        "regions",
+        "createdAt",
+        "updatedAt",
+        "status",
+        "ipv4Addresses"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Global Resolver.</p>"
+        },
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Global Resolver.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency. This means that making the same request multiple times with the same <code>clientToken</code> has the same result every time.</p>"
+        },
+        "dnsName":{
+          "shape":"Sni",
+          "documentation":"<p>The hostname to be used by the customers' DNS clients for certification validation.</p>"
+        },
+        "observabilityRegion":{
+          "shape":"Region",
+          "documentation":"<p>The AWS Regions in which the users' Global Resolver query resolution logs will be propagated.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>Name of the Global Resolver.</p>"
+        },
+        "description":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>Description of the Global Resolver.</p>"
+        },
+        "regions":{
+          "shape":"Regions",
+          "documentation":"<p>The AWS Regions in which the Global Resolver will operate.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The time and date the Global Resolverwas created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The time and date the Global Resolver was updated.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The operational status of the Global Resolver.</p>"
+        },
+        "ipv4Addresses":{
+          "shape":"IPv4Addresses",
+          "documentation":"<p>List of anycast IPv4 addresses associated with the Global Resolver instance.</p>"
+        }
+      }
+    },
+    "UpdateHostedZoneAssociationInput":{
+      "type":"structure",
+      "required":["hostedZoneAssociationId"],
+      "members":{
+        "hostedZoneAssociationId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the private hosted zone association.</p>",
+          "location":"uri",
+          "locationName":"hostedZoneAssociationId"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name you want to update the hosted zone association to.</p>"
+        }
+      }
+    },
+    "UpdateHostedZoneAssociationOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "resourceArn",
+        "hostedZoneId",
+        "hostedZoneName",
+        "name",
+        "createdAt",
+        "updatedAt",
+        "status"
+      ],
+      "members":{
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the private hosted zone association.</p>"
+        },
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the private hosted zone association.</p>"
+        },
+        "hostedZoneId":{
+          "shape":"HostedZoneId",
+          "documentation":"<p>The ID of the private hosted zone.</p>"
+        },
+        "hostedZoneName":{
+          "shape":"HostedZoneName",
+          "documentation":"<p>The name of the domain associated with the private hosted zone.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the private hosted zone association.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The time and date the private hosted zone association was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The time and date the private hosted zone association was updated.</p>"
+        },
+        "status":{
+          "shape":"HostedZoneAssociationStatus",
+          "documentation":"<p>The operational status of the private hosted zone association.</p>"
+        }
+      }
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "reason"
+      ],
+      "members":{
+        "message":{"shape":"String"},
+        "reason":{
+          "shape":"ValidationExceptionReason",
+          "documentation":"<p>Reason the request failed validation.</p>"
+        },
+        "fieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>The list of fields that aren't valid.</p>"
+        }
+      },
+      "documentation":"<p>The input parameters are invalid. Check the parameter values and try again.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "required":[
+        "name",
+        "message"
+      ],
+      "members":{
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the field that failed validation.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The validation error message for the field.</p>"
+        }
+      },
+      "documentation":"<p>Information about a field that failed validation.</p>"
+    },
+    "ValidationExceptionFieldList":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"}
+    },
+    "ValidationExceptionReason":{
+      "type":"string",
+      "enum":[
+        "UNKNOWN_OPERATION",
+        "CANNOT_PARSE",
+        "FIELD_VALIDATION_FAILED",
+        "OTHER"
+      ]
+    }
+  },
+  "documentation":"<p> Amazon Route 53 Global Resolver is a global, internet-accessible DNS resolver that enables customers to resolve and forward traffic for both public and private domains while ensuring security and authenticity of queries over the internet. Route 53 Global Resolver supports DNS-over-port 53 (Do53), DNS-over-TLS (DoT), and DNS-over-HTTPS (DoH) protocols through global anycast IP addresses. </p>"
+}

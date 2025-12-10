@@ -673,6 +673,23 @@
       ],
       "documentation":"<p>Retrieves details about an application grant.</p>"
     },
+    "GetApplicationSessionConfiguration":{
+      "name":"GetApplicationSessionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetApplicationSessionConfigurationRequest"},
+      "output":{"shape":"GetApplicationSessionConfigurationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Retrieves the session configuration for an application in IAM Identity Center.</p> <p>The session configuration determines how users can access an application. This includes whether user background sessions are enabled. User background sessions allow users to start a job on a supported Amazon Web Services managed application without having to remain signed in to an active session while the job runs.</p>"
+    },
     "GetInlinePolicyForPermissionSet":{
       "name":"GetInlinePolicyForPermissionSet",
       "http":{
@@ -802,8 +819,8 @@
       "output":{"shape":"ListApplicationAccessScopesResponse"},
       "errors":[
         {"shape":"ThrottlingException"},
-        {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"}
       ],
@@ -853,8 +870,8 @@
       "output":{"shape":"ListApplicationAuthenticationMethodsResponse"},
       "errors":[
         {"shape":"ThrottlingException"},
-        {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"}
       ],
@@ -870,8 +887,8 @@
       "output":{"shape":"ListApplicationGrantsResponse"},
       "errors":[
         {"shape":"ThrottlingException"},
-        {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"}
       ],
@@ -1134,6 +1151,25 @@
       "documentation":"<p>Creates a configuration for an application to use grants. Conceptually grants are authorization to request actions related to tokens. This configuration will be used when parties are requesting and receiving tokens during the trusted identity propagation process. For more information on the IAM Identity Center supported grant workflows, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/customermanagedapps-saml2-oauth2.html\">SAML 2.0 and OAuth 2.0</a>.</p> <p>A grant is created between your applications and Identity Center instance which enables an application to use specified mechanisms to obtain tokens. These tokens are used by your applications to gain access to Amazon Web Services resources on behalf of users. The following elements are within these exchanges:</p> <ul> <li> <p> <b>Requester</b> - The application requesting access to Amazon Web Services resources.</p> </li> <li> <p> <b>Subject</b> - Typically the user that is requesting access to Amazon Web Services resources.</p> </li> <li> <p> <b>Grant</b> - Conceptually, a grant is authorization to access Amazon Web Services resources. These grants authorize token generation for authenticating access to the requester and for the request to make requests on behalf of the subjects. There are four types of grants:</p> <ul> <li> <p> <b>AuthorizationCode</b> - Allows an application to request authorization through a series of user-agent redirects.</p> </li> <li> <p> <b>JWT bearer </b> - Authorizes an application to exchange a JSON Web Token that came from an external identity provider. To learn more, see <a href=\"https://datatracker.ietf.org/doc/html/rfc6749\">RFC 6479</a>.</p> </li> <li> <p> <b>Refresh token</b> - Enables application to request new access tokens to replace expiring or expired access tokens.</p> </li> <li> <p> <b>Exchange token</b> - A grant that requests tokens from the authorization server by providing a ‘subject’ token with access scope authorizing trusted identity propagation to this application. To learn more, see <a href=\"https://datatracker.ietf.org/doc/html/rfc8693\">RFC 8693</a>.</p> </li> </ul> </li> <li> <p> <b>Authorization server</b> - IAM Identity Center requests tokens.</p> </li> </ul> <p>User credentials are never shared directly within these exchanges. Instead, applications use grants to request access tokens from IAM Identity Center. For more information, see <a href=\"https://datatracker.ietf.org/doc/html/rfc6749\">RFC 6479</a>.</p> <p class=\"title\"> <b>Use cases</b> </p> <ul> <li> <p>Connecting to custom applications.</p> </li> <li> <p>Configuring an Amazon Web Services service to make calls to another Amazon Web Services services using JWT tokens.</p> </li> </ul>",
       "idempotent":true
     },
+    "PutApplicationSessionConfiguration":{
+      "name":"PutApplicationSessionConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutApplicationSessionConfigurationRequest"},
+      "output":{"shape":"PutApplicationSessionConfigurationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the session configuration for an application in IAM Identity Center.</p> <p>The session configuration determines how users can access an application. This includes whether user background sessions are enabled. User background sessions allow users to start a job on a supported Amazon Web Services managed application without having to remain signed in to an active session while the job runs.</p>",
+      "idempotent":true
+    },
     "PutInlinePolicyToPermissionSet":{
       "name":"PutInlinePolicyToPermissionSet",
       "http":{
@@ -1237,6 +1273,7 @@
       "errors":[
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"ConflictException"}
@@ -1355,12 +1392,20 @@
     "AccessDeniedException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"AccessDeniedExceptionMessage"}
+        "Message":{"shape":"AccessDeniedExceptionMessage"},
+        "Reason":{
+          "shape":"AccessDeniedExceptionReason",
+          "documentation":"<p>The reason for the access denied exception.</p>"
+        }
       },
       "documentation":"<p>You do not have sufficient access to perform this action.</p>",
       "exception":true
     },
     "AccessDeniedExceptionMessage":{"type":"string"},
+    "AccessDeniedExceptionReason":{
+      "type":"string",
+      "enum":["KMS_AccessDeniedException"]
+    },
     "AccountAssignment":{
       "type":"structure",
       "members":{
@@ -1489,8 +1534,7 @@
     },
     "ActorPolicyDocument":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "document":true
     },
     "Application":{
@@ -1505,7 +1549,7 @@
           "documentation":"<p>The ARN of the application provider for this application.</p>"
         },
         "Name":{
-          "shape":"NameType",
+          "shape":"ApplicationNameType",
           "documentation":"<p>The name of the application.</p>"
         },
         "ApplicationAccount":{
@@ -1683,8 +1727,7 @@
     },
     "AttachCustomerManagedPolicyReferenceToPermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AttachManagedPolicyToPermissionSetRequest":{
       "type":"structure",
@@ -1710,8 +1753,7 @@
     },
     "AttachManagedPolicyToPermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AttachedManagedPolicy":{
       "type":"structure",
@@ -1885,8 +1927,7 @@
     },
     "CreateApplicationAssignmentResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CreateApplicationRequest":{
       "type":"structure",
@@ -1959,8 +2000,7 @@
     },
     "CreateInstanceAccessControlAttributeConfigurationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CreateInstanceRequest":{
       "type":"structure",
@@ -2183,8 +2223,7 @@
     },
     "DeleteApplicationAssignmentResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteApplicationAuthenticationMethodRequest":{
       "type":"structure",
@@ -2232,8 +2271,7 @@
     },
     "DeleteApplicationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteInlinePolicyFromPermissionSetRequest":{
       "type":"structure",
@@ -2254,8 +2292,7 @@
     },
     "DeleteInlinePolicyFromPermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteInstanceAccessControlAttributeConfigurationRequest":{
       "type":"structure",
@@ -2269,8 +2306,7 @@
     },
     "DeleteInstanceAccessControlAttributeConfigurationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteInstanceRequest":{
       "type":"structure",
@@ -2284,8 +2320,7 @@
     },
     "DeleteInstanceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeletePermissionSetRequest":{
       "type":"structure",
@@ -2306,8 +2341,7 @@
     },
     "DeletePermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeletePermissionsBoundaryFromPermissionSetRequest":{
       "type":"structure",
@@ -2328,8 +2362,7 @@
     },
     "DeletePermissionsBoundaryFromPermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteTrustedTokenIssuerRequest":{
       "type":"structure",
@@ -2343,8 +2376,7 @@
     },
     "DeleteTrustedTokenIssuerResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescribeAccountAssignmentCreationStatusRequest":{
       "type":"structure",
@@ -2491,7 +2523,7 @@
           "documentation":"<p>The ARN of the application provider under which the operation will run.</p>"
         },
         "Name":{
-          "shape":"NameType",
+          "shape":"ApplicationNameType",
           "documentation":"<p>The application name.</p>"
         },
         "ApplicationAccount":{
@@ -2583,6 +2615,14 @@
         "Status":{
           "shape":"InstanceStatus",
           "documentation":"<p>The status of the instance. </p>"
+        },
+        "StatusReason":{
+          "shape":"Reason",
+          "documentation":"<p>Provides additional context about the current status of the IAM Identity Center instance. This field is particularly useful when an instance is in a non-ACTIVE state, such as CREATE_FAILED. When an instance fails to create or update, this field contains information about the cause, which may include issues with KMS key configuration, permission problems with the specified KMS key, or service-related errors. </p>"
+        },
+        "EncryptionConfigurationDetails":{
+          "shape":"EncryptionConfigurationDetails",
+          "documentation":"<p>Contains the encryption configuration for your IAM Identity Center instance, including the encryption status, KMS key type, and KMS key ARN.</p>"
         }
       }
     },
@@ -2698,8 +2738,7 @@
     },
     "DetachCustomerManagedPolicyReferenceFromPermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DetachManagedPolicyFromPermissionSetRequest":{
       "type":"structure",
@@ -2725,8 +2764,7 @@
     },
     "DetachManagedPolicyFromPermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisplayData":{
       "type":"structure",
@@ -2751,6 +2789,43 @@
       "max":100,
       "min":1,
       "pattern":"(-?)P(?=\\d|T\\d)(?:(\\d+)Y)?(?:(\\d+)M)?(?:(\\d+)([DW]))?(?:T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d+)?)S)?)?"
+    },
+    "EncryptionConfiguration":{
+      "type":"structure",
+      "required":["KeyType"],
+      "members":{
+        "KeyType":{
+          "shape":"KmsKeyType",
+          "documentation":"<p>The type of KMS key used for encryption.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key used to encrypt data. Required when KeyType is CUSTOMER_MANAGED_KEY. Cannot be specified when KeyType is AWS_OWNED_KMS_KEY.</p>"
+        }
+      },
+      "documentation":"<p> A structure that specifies the KMS key type and KMS key ARN used to encrypt data in your IAM Identity Center instance.</p>"
+    },
+    "EncryptionConfigurationDetails":{
+      "type":"structure",
+      "members":{
+        "KeyType":{
+          "shape":"KmsKeyType",
+          "documentation":"<p>The type of KMS key used for encryption.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the KMS key currently used to encrypt data in your IAM Identity Center instance. </p>"
+        },
+        "EncryptionStatus":{
+          "shape":"KmsKeyStatus",
+          "documentation":"<p>The current status of encryption configuration.</p>"
+        },
+        "EncryptionStatusReason":{
+          "shape":"Reason",
+          "documentation":"<p>Provides additional context about the current encryption status. This field is particularly useful when the encryption status is UPDATE_FAILED. When encryption configuration update fails, this field contains information about the cause, which may include KMS key access issues, key not found errors, invalid key configuration, key in an invalid state, or a disabled key. </p>"
+        }
+      },
+      "documentation":"<p>The encryption configuration of your IAM Identity Center instance, including the key type, KMS key ARN, and current encryption status. </p>"
     },
     "FederationProtocol":{
       "type":"string",
@@ -2860,6 +2935,25 @@
         "Grant":{
           "shape":"Grant",
           "documentation":"<p>A structure that describes the requested grant.</p>"
+        }
+      }
+    },
+    "GetApplicationSessionConfigurationRequest":{
+      "type":"structure",
+      "required":["ApplicationArn"],
+      "members":{
+        "ApplicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the application for which to retrieve the session configuration.</p>"
+        }
+      }
+    },
+    "GetApplicationSessionConfigurationResponse":{
+      "type":"structure",
+      "members":{
+        "UserBackgroundSessionApplicationStatus":{
+          "shape":"UserBackgroundSessionApplicationStatus",
+          "documentation":"<p>The status of user background sessions for the application. </p>"
         }
       }
     },
@@ -3050,6 +3144,10 @@
         "Status":{
           "shape":"InstanceStatus",
           "documentation":"<p>The current status of this Identity Center instance.</p>"
+        },
+        "StatusReason":{
+          "shape":"Reason",
+          "documentation":"<p>Provides additional context about the current status of the IAM Identity Center instance. This field is particularly useful when an instance is in a non-ACTIVE state, such as CREATE_FAILED. When an instance creation fails, this field contains information about the cause, which may include issues with KMS key configuration or insufficient permissions. </p>"
         }
       },
       "documentation":"<p>Provides information about the IAM Identity Center instance.</p>"
@@ -3058,6 +3156,7 @@
       "type":"string",
       "enum":[
         "CREATE_IN_PROGRESS",
+        "CREATE_FAILED",
         "DELETE_IN_PROGRESS",
         "ACTIVE"
       ]
@@ -3091,6 +3190,27 @@
         }
       },
       "documentation":"<p>A structure that defines configuration settings for an application that supports the JWT Bearer Token Authorization Grant. The <code>AuthorizedAudience</code> field is the aud claim. For more information, see <a href=\"https://datatracker.ietf.org/doc/html/rfc7523\">RFC 7523</a>.</p>"
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-[bcd]):kms:([a-z]{2,}(-[a-z0-9]+)+){1}:[0-9]{12}:key/(mrk-[a-f0-9]{32}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})"
+    },
+    "KmsKeyStatus":{
+      "type":"string",
+      "enum":[
+        "UPDATING",
+        "ENABLED",
+        "UPDATE_FAILED"
+      ]
+    },
+    "KmsKeyType":{
+      "type":"string",
+      "enum":[
+        "AWS_OWNED_KMS_KEY",
+        "CUSTOMER_MANAGED_KEY"
+      ]
     },
     "ListAccountAssignmentCreationStatusRequest":{
       "type":"structure",
@@ -4163,8 +4283,7 @@
     },
     "PutApplicationAssignmentConfigurationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "PutApplicationAuthenticationMethodRequest":{
       "type":"structure",
@@ -4210,6 +4329,24 @@
         }
       }
     },
+    "PutApplicationSessionConfigurationRequest":{
+      "type":"structure",
+      "required":["ApplicationArn"],
+      "members":{
+        "ApplicationArn":{
+          "shape":"ApplicationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the application for which to update the session configuration.</p>"
+        },
+        "UserBackgroundSessionApplicationStatus":{
+          "shape":"UserBackgroundSessionApplicationStatus",
+          "documentation":"<p>The status of user background sessions for the application.</p>"
+        }
+      }
+    },
+    "PutApplicationSessionConfigurationResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "PutInlinePolicyToPermissionSetRequest":{
       "type":"structure",
       "required":[
@@ -4234,8 +4371,7 @@
     },
     "PutInlinePolicyToPermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "PutPermissionsBoundaryToPermissionSetRequest":{
       "type":"structure",
@@ -4261,8 +4397,7 @@
     },
     "PutPermissionsBoundaryToPermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Reason":{
       "type":"string",
@@ -4276,8 +4411,7 @@
     },
     "RefreshTokenGrant":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A structure that defines configuration settings for an application that supports the OAuth 2.0 Refresh Token Grant. For more, see <a href=\"https://datatracker.ietf.org/doc/html/rfc6749#section-1.5\">RFC 6749</a>.</p>"
     },
     "RelayState":{
@@ -4289,10 +4423,18 @@
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"ResourceNotFoundMessage"}
+        "Message":{"shape":"ResourceNotFoundMessage"},
+        "Reason":{
+          "shape":"ResourceNotFoundExceptionReason",
+          "documentation":"<p>The reason for the resource not found exception.</p>"
+        }
       },
       "documentation":"<p>Indicates that a requested resource is not found.</p>",
       "exception":true
+    },
+    "ResourceNotFoundExceptionReason":{
+      "type":"string",
+      "enum":["KMS_NotFoundException"]
     },
     "ResourceNotFoundMessage":{"type":"string"},
     "ResourceServerConfig":{
@@ -4465,8 +4607,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -4493,12 +4634,20 @@
     "ThrottlingException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"ThrottlingExceptionMessage"}
+        "Message":{"shape":"ThrottlingExceptionMessage"},
+        "Reason":{
+          "shape":"ThrottlingExceptionReason",
+          "documentation":"<p>The reason for the throttling exception.</p>"
+        }
       },
       "documentation":"<p>Indicates that the principal has crossed the throttling limits of the API operations.</p>",
       "exception":true
     },
     "ThrottlingExceptionMessage":{"type":"string"},
+    "ThrottlingExceptionReason":{
+      "type":"string",
+      "enum":["KMS_ThrottlingException"]
+    },
     "Token":{
       "type":"string",
       "max":2048,
@@ -4507,8 +4656,7 @@
     },
     "TokenExchangeGrant":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A structure that defines configuration settings for an application that supports the OAuth 2.0 Token Exchange Grant. For more information, see <a href=\"https://datatracker.ietf.org/doc/html/rfc8693\">RFC 8693</a>.</p>"
     },
     "TokenIssuerAudience":{
@@ -4618,8 +4766,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateApplicationPortalOptions":{
       "type":"structure",
@@ -4656,8 +4803,7 @@
     },
     "UpdateApplicationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateInstanceAccessControlAttributeConfigurationRequest":{
       "type":"structure",
@@ -4678,15 +4824,11 @@
     },
     "UpdateInstanceAccessControlAttributeConfigurationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateInstanceRequest":{
       "type":"structure",
-      "required":[
-        "Name",
-        "InstanceArn"
-      ],
+      "required":["InstanceArn"],
       "members":{
         "Name":{
           "shape":"NameType",
@@ -4695,13 +4837,16 @@
         "InstanceArn":{
           "shape":"InstanceArn",
           "documentation":"<p>The ARN of the instance of IAM Identity Center under which the operation will run. For more information about ARNs, see <a href=\"/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs) and Amazon Web Services Service Namespaces</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Specifies the encryption configuration for your IAM Identity Center instance. You can use this to configure customer managed KMS keys (CMK) or Amazon Web Services owned KMS keys for encrypting your instance data.</p>"
         }
       }
     },
     "UpdateInstanceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdatePermissionSetRequest":{
       "type":"structure",
@@ -4734,8 +4879,7 @@
     },
     "UpdatePermissionSetResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateTrustedTokenIssuerRequest":{
       "type":"structure",
@@ -4757,18 +4901,36 @@
     },
     "UpdateTrustedTokenIssuerResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
+    },
+    "UserBackgroundSessionApplicationStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "ValidationException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"ValidationExceptionMessage"}
+        "Message":{"shape":"ValidationExceptionMessage"},
+        "Reason":{
+          "shape":"ValidationExceptionReason",
+          "documentation":"<p>The reason for the validation exception.</p>"
+        }
       },
       "documentation":"<p>The request failed because it contains a syntax error.</p>",
       "exception":true
     },
-    "ValidationExceptionMessage":{"type":"string"}
+    "ValidationExceptionMessage":{"type":"string"},
+    "ValidationExceptionReason":{
+      "type":"string",
+      "enum":[
+        "KMS_InvalidKeyUsageException",
+        "KMS_InvalidStateException",
+        "KMS_DisabledException"
+      ]
+    }
   },
   "documentation":"<p>IAM Identity Center is the Amazon Web Services solution for connecting your workforce users to Amazon Web Services managed applications and other Amazon Web Services resources. You can connect your existing identity provider and synchronize users and groups from your directory, or create and manage your users directly in IAM Identity Center. You can then use IAM Identity Center for either or both of the following:</p> <ul> <li> <p>User access to applications</p> </li> <li> <p>User access to Amazon Web Services accounts</p> </li> </ul> <p>This guide provides information about single sign-on operations that you can use for access to applications and Amazon Web Services accounts. For information about IAM Identity Center features, see the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html\">IAM Identity Center User Guide</a>.</p> <note> <p>IAM Identity Center uses the <code>sso</code> and <code>identitystore</code> API namespaces.</p> </note> <p>Many API operations for IAM Identity Center rely on identifiers for users and groups, known as principals. For more information about how to work with principals and principal IDs in IAM Identity Center, see the <a href=\"https://docs.aws.amazon.com/singlesignon/latest/IdentityStoreAPIReference/welcome.html\">Identity Store API Reference</a>.</p> <note> <p>Amazon Web Services provides SDKs that consist of libraries and sample code for various programming languages and platforms (Java, Ruby, .Net, iOS, Android, and more). The SDKs provide a convenient way to create programmatic access to IAM Identity Center and other Amazon Web Services services. For more information about the Amazon Web Services SDKs, including how to download and install them, see <a href=\"http://aws.amazon.com/tools/\">Tools for Amazon Web Services</a>.</p> </note>"
 }

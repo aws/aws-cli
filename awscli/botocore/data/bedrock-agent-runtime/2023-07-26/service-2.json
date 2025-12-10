@@ -792,8 +792,7 @@
     },
     "AdditionalModelRequestFieldsValue":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "document":true
     },
     "AgentActionGroup":{
@@ -940,6 +939,10 @@
       "max":10,
       "min":0,
       "pattern":"^[0-9a-zA-Z]+$"
+    },
+    "AgentTraces":{
+      "type":"list",
+      "member":{"shape":"TracePart"}
     },
     "AgentVersion":{
       "type":"string",
@@ -1096,6 +1099,25 @@
         }
       },
       "documentation":"<p>Contains citations for a part of an agent response.</p>"
+    },
+    "AudioSegment":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "s3Uri":{
+          "shape":"AudioSegmentS3UriString",
+          "documentation":"<p>The S3 URI where this specific audio segment is stored in the multimodal storage destination.</p>"
+        },
+        "transcription":{
+          "shape":"String",
+          "documentation":"<p>The text transcription of the audio segment content.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an audio segment retrieved from a knowledge base, including its location and transcription.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_ResponseSyntax\">Retrieve response</a> – in the <code>audio</code> field</p> </li> </ul>"
+    },
+    "AudioSegmentS3UriString":{
+      "type":"string",
+      "min":1
     },
     "BadGatewayException":{
       "type":"structure",
@@ -1712,8 +1734,7 @@
     },
     "DeleteAgentMemoryResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteSessionRequest":{
       "type":"structure",
@@ -1729,8 +1750,7 @@
     },
     "DeleteSessionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DependencyFailedException":{
       "type":"structure",
@@ -1750,8 +1770,7 @@
     },
     "Document":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "document":true
     },
     "Double":{
@@ -2008,8 +2027,7 @@
     },
     "FilterValue":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "document":true
     },
     "FinalResponse":{
@@ -2058,6 +2076,13 @@
       "enum":[
         "SUCCESS",
         "INPUT_REQUIRED"
+      ]
+    },
+    "FlowControlNodeType":{
+      "type":"string",
+      "enum":[
+        "Iterator",
+        "Loop"
       ]
     },
     "FlowErrorCode":{
@@ -2124,6 +2149,14 @@
         "flowOutputEvent":{
           "shape":"FlowExecutionOutputEvent",
           "documentation":"<p>Contains information about the outputs produced by the flow at the end of execution.</p>"
+        },
+        "nodeActionEvent":{
+          "shape":"NodeActionEvent",
+          "documentation":"<p>Contains information about an action (operation) called by a node during execution.</p>"
+        },
+        "nodeDependencyEvent":{
+          "shape":"NodeDependencyEvent",
+          "documentation":"<p>Contains information about an internal trace of a specific node during execution.</p>"
         },
         "nodeFailureEvent":{
           "shape":"NodeFailureEvent",
@@ -2419,6 +2452,38 @@
       "event":true,
       "sensitive":true
     },
+    "FlowNodeIODataType":{
+      "type":"string",
+      "enum":[
+        "String",
+        "Number",
+        "Boolean",
+        "Object",
+        "Array"
+      ]
+    },
+    "FlowNodeInputCategory":{
+      "type":"string",
+      "enum":[
+        "LoopCondition",
+        "ReturnValueToLoopStart",
+        "ExitLoop"
+      ]
+    },
+    "FlowNodeInputExpression":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "sensitive":true
+    },
+    "FlowNodeInputName":{
+      "type":"string",
+      "pattern":"^[a-zA-Z]([_]?[0-9a-zA-Z]){1,50}$"
+    },
+    "FlowNodeOutputName":{
+      "type":"string",
+      "pattern":"^[a-zA-Z]([_]?[0-9a-zA-Z]){1,50}$"
+    },
     "FlowOutputContent":{
       "type":"structure",
       "members":{
@@ -2548,7 +2613,11 @@
         },
         "nodeActionTrace":{
           "shape":"FlowTraceNodeActionEvent",
-          "documentation":"<p>Contains information about an action (operation) called by a node. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html\">Track each step in your prompt flow by viewing its trace in Amazon Bedrock</a>.</p>"
+          "documentation":"<p>Contains information about an action (operation) called by a node.</p>"
+        },
+        "nodeDependencyTrace":{
+          "shape":"FlowTraceDependencyEvent",
+          "documentation":"<p>Contains information about an internal trace of a node.</p>"
         },
         "nodeInputTrace":{
           "shape":"FlowTraceNodeInputEvent",
@@ -2605,6 +2674,30 @@
       "max":5,
       "min":1
     },
+    "FlowTraceDependencyEvent":{
+      "type":"structure",
+      "required":[
+        "nodeName",
+        "timestamp",
+        "traceElements"
+      ],
+      "members":{
+        "nodeName":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the node that generated the dependency trace.</p>"
+        },
+        "timestamp":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The date and time that the dependency trace was generated.</p>"
+        },
+        "traceElements":{
+          "shape":"TraceElements",
+          "documentation":"<p>The trace elements containing detailed information about the dependency.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a dependency trace event in the flow.</p>",
+      "sensitive":true
+    },
     "FlowTraceEvent":{
       "type":"structure",
       "required":["trace"],
@@ -2634,6 +2727,14 @@
         "operationName":{
           "shape":"String",
           "documentation":"<p>The name of the operation that the node called.</p>"
+        },
+        "operationRequest":{
+          "shape":"Document",
+          "documentation":"<p>The request payload sent to the downstream service.</p>"
+        },
+        "operationResponse":{
+          "shape":"Document",
+          "documentation":"<p>The response payload received from the downstream service.</p>"
         },
         "requestId":{
           "shape":"String",
@@ -2687,6 +2788,34 @@
       "documentation":"<p>Contains information about the input into a node. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html\">Track each step in your prompt flow by viewing its trace in Amazon Bedrock</a>.</p>",
       "sensitive":true
     },
+    "FlowTraceNodeInputExecutionChain":{
+      "type":"list",
+      "member":{"shape":"FlowTraceNodeInputExecutionChainItem"},
+      "sensitive":true
+    },
+    "FlowTraceNodeInputExecutionChainItem":{
+      "type":"structure",
+      "required":[
+        "nodeName",
+        "type"
+      ],
+      "members":{
+        "index":{
+          "shape":"Integer",
+          "documentation":"<p>The index position of this item in the execution chain.</p>"
+        },
+        "nodeName":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the node in the execution chain.</p>"
+        },
+        "type":{
+          "shape":"FlowControlNodeType",
+          "documentation":"<p>The type of execution chain item. Supported values are Iterator and Loop.</p>"
+        }
+      },
+      "documentation":"<p>Represents an item in the execution chain for flow trace node input tracking.</p>",
+      "sensitive":true
+    },
     "FlowTraceNodeInputField":{
       "type":"structure",
       "required":[
@@ -2694,13 +2823,29 @@
         "nodeInputName"
       ],
       "members":{
+        "category":{
+          "shape":"FlowNodeInputCategory",
+          "documentation":"<p>The category of the input field.</p>"
+        },
         "content":{
           "shape":"FlowTraceNodeInputContent",
           "documentation":"<p>The content of the node input.</p>"
         },
+        "executionChain":{
+          "shape":"FlowTraceNodeInputExecutionChain",
+          "documentation":"<p>The execution path through nested nodes like iterators and loops.</p>"
+        },
         "nodeInputName":{
           "shape":"NodeInputName",
           "documentation":"<p>The name of the node input.</p>"
+        },
+        "source":{
+          "shape":"FlowTraceNodeInputSource",
+          "documentation":"<p>The source node that provides input data to this field.</p>"
+        },
+        "type":{
+          "shape":"FlowNodeIODataType",
+          "documentation":"<p>The data type of the input field for compatibility validation.</p>"
         }
       },
       "documentation":"<p>Contains information about a field in the input into a node. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html\">Track each step in your prompt flow by viewing its trace in Amazon Bedrock</a>.</p>",
@@ -2711,6 +2856,30 @@
       "member":{"shape":"FlowTraceNodeInputField"},
       "max":5,
       "min":1
+    },
+    "FlowTraceNodeInputSource":{
+      "type":"structure",
+      "required":[
+        "expression",
+        "nodeName",
+        "outputFieldName"
+      ],
+      "members":{
+        "expression":{
+          "shape":"FlowNodeInputExpression",
+          "documentation":"<p>The expression used to extract data from the source.</p>"
+        },
+        "nodeName":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the source node that provides the input data.</p>"
+        },
+        "outputFieldName":{
+          "shape":"FlowNodeOutputName",
+          "documentation":"<p>The name of the output field from the source node.</p>"
+        }
+      },
+      "documentation":"<p>Represents the source of input data for a flow trace node field.</p>",
+      "sensitive":true
     },
     "FlowTraceNodeOutputContent":{
       "type":"structure",
@@ -2758,9 +2927,17 @@
           "shape":"FlowTraceNodeOutputContent",
           "documentation":"<p>The content of the node output.</p>"
         },
+        "next":{
+          "shape":"FlowTraceNodeOutputNextList",
+          "documentation":"<p>The next node that receives output data from this field.</p>"
+        },
         "nodeOutputName":{
           "shape":"NodeOutputName",
           "documentation":"<p>The name of the node output.</p>"
+        },
+        "type":{
+          "shape":"FlowNodeIODataType",
+          "documentation":"<p>The data type of the output field for compatibility validation.</p>"
         }
       },
       "documentation":"<p>Contains information about a field in the output from a node. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/flows-trace.html\">Track each step in your prompt flow by viewing its trace in Amazon Bedrock</a>.</p>",
@@ -2771,6 +2948,29 @@
       "member":{"shape":"FlowTraceNodeOutputField"},
       "max":2,
       "min":1
+    },
+    "FlowTraceNodeOutputNext":{
+      "type":"structure",
+      "required":[
+        "inputFieldName",
+        "nodeName"
+      ],
+      "members":{
+        "inputFieldName":{
+          "shape":"FlowNodeInputName",
+          "documentation":"<p>The name of the input field in the next node that receives the data.</p>"
+        },
+        "nodeName":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the next node that receives the output data.</p>"
+        }
+      },
+      "documentation":"<p>Represents the next node that receives output data from a flow trace.</p>",
+      "sensitive":true
+    },
+    "FlowTraceNodeOutputNextList":{
+      "type":"list",
+      "member":{"shape":"FlowTraceNodeOutputNext"}
     },
     "Function":{
       "type":"string",
@@ -4041,6 +4241,39 @@
       "type":"list",
       "member":{"shape":"InputFile"}
     },
+    "InputImage":{
+      "type":"structure",
+      "required":[
+        "format",
+        "inlineContent"
+      ],
+      "members":{
+        "format":{
+          "shape":"InputImageFormat",
+          "documentation":"<p>The format of the input image. Supported formats include png, gif, jpeg, and webp.</p>"
+        },
+        "inlineContent":{
+          "shape":"InputImageInlineContentBlob",
+          "documentation":"<p>The base64-encoded image data for inline image content. Maximum size is 5MB.</p>"
+        }
+      },
+      "documentation":"<p>Contains the image data for multimodal knowledge base queries, including format and content.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_RequestSyntax\">Retrieve request</a> – in the <code>image</code> field</p> </li> </ul>"
+    },
+    "InputImageFormat":{
+      "type":"string",
+      "enum":[
+        "png",
+        "jpeg",
+        "gif",
+        "webp"
+      ]
+    },
+    "InputImageInlineContentBlob":{
+      "type":"blob",
+      "max":5242880,
+      "min":1,
+      "sensitive":true
+    },
     "InputPrompt":{
       "type":"structure",
       "members":{
@@ -4652,11 +4885,18 @@
     },
     "KnowledgeBaseQuery":{
       "type":"structure",
-      "required":["text"],
       "members":{
+        "image":{
+          "shape":"InputImage",
+          "documentation":"<p>An image to include in the knowledge base query for multimodal retrieval.</p>"
+        },
         "text":{
           "shape":"KnowledgeBaseQueryTextString",
           "documentation":"<p>The text of the query made to the knowledge base.</p>"
+        },
+        "type":{
+          "shape":"KnowledgeBaseQueryType",
+          "documentation":"<p>The type of query being performed.</p>"
         }
       },
       "documentation":"<p>Contains the query made to the knowledge base.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_RequestSyntax\">Retrieve request</a> – in the <code>retrievalQuery</code> field</p> </li> </ul>",
@@ -4664,8 +4904,15 @@
     },
     "KnowledgeBaseQueryTextString":{
       "type":"string",
-      "max":1000,
+      "max":20000,
       "min":0
+    },
+    "KnowledgeBaseQueryType":{
+      "type":"string",
+      "enum":[
+        "TEXT",
+        "IMAGE"
+      ]
     },
     "KnowledgeBaseRetrievalConfiguration":{
       "type":"structure",
@@ -5280,6 +5527,72 @@
       "min":1,
       "pattern":"^\\S*$"
     },
+    "NodeActionEvent":{
+      "type":"structure",
+      "required":[
+        "nodeName",
+        "operationName",
+        "requestId",
+        "serviceName",
+        "timestamp"
+      ],
+      "members":{
+        "nodeName":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the node that called the operation.</p>"
+        },
+        "operationName":{
+          "shape":"String",
+          "documentation":"<p>The name of the operation that the node called.</p>"
+        },
+        "operationRequest":{
+          "shape":"Document",
+          "documentation":"<p>The request payload sent to the downstream service.</p>"
+        },
+        "operationResponse":{
+          "shape":"Document",
+          "documentation":"<p>The response payload received from the downstream service.</p>"
+        },
+        "requestId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the request that the node made to the operation.</p>"
+        },
+        "serviceName":{
+          "shape":"String",
+          "documentation":"<p>The name of the service that the node called.</p>"
+        },
+        "timestamp":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The date and time that the operation was called.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an action (operation) called by a node during execution.</p>",
+      "sensitive":true
+    },
+    "NodeDependencyEvent":{
+      "type":"structure",
+      "required":[
+        "nodeName",
+        "timestamp",
+        "traceElements"
+      ],
+      "members":{
+        "nodeName":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the node that generated the dependency trace.</p>"
+        },
+        "timestamp":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The date and time that the dependency trace was generated.</p>"
+        },
+        "traceElements":{
+          "shape":"NodeTraceElements",
+          "documentation":"<p>The trace elements containing detailed information about the node execution.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about an internal trace of a specific node during execution.</p>",
+      "sensitive":true
+    },
     "NodeErrorCode":{
       "type":"string",
       "enum":[
@@ -5354,6 +5667,32 @@
       "documentation":"<p>Contains information about the inputs provided to a specific node during a flow execution.</p> <note> <p>Flow executions is in preview release for Amazon Bedrock and is subject to change.</p> </note>",
       "sensitive":true
     },
+    "NodeInputExecutionChain":{
+      "type":"list",
+      "member":{"shape":"NodeInputExecutionChainItem"}
+    },
+    "NodeInputExecutionChainItem":{
+      "type":"structure",
+      "required":[
+        "nodeName",
+        "type"
+      ],
+      "members":{
+        "index":{
+          "shape":"Integer",
+          "documentation":"<p>The index position of this item in the execution chain.</p>"
+        },
+        "nodeName":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the node in the execution chain.</p>"
+        },
+        "type":{
+          "shape":"FlowControlNodeType",
+          "documentation":"<p>The type of execution chain item. Supported values are Iterator and Loop.</p>"
+        }
+      },
+      "documentation":"<p>Represents an item in the execution chain for node input tracking.</p>"
+    },
     "NodeInputField":{
       "type":"structure",
       "required":[
@@ -5361,13 +5700,29 @@
         "name"
       ],
       "members":{
+        "category":{
+          "shape":"FlowNodeInputCategory",
+          "documentation":"<p>The category of the input field.</p>"
+        },
         "content":{
           "shape":"NodeExecutionContent",
           "documentation":"<p>The content of the input field, which can contain text or structured data.</p>"
         },
+        "executionChain":{
+          "shape":"NodeInputExecutionChain",
+          "documentation":"<p>The execution path through nested nodes like iterators and loops.</p>"
+        },
         "name":{
           "shape":"NodeInputName",
           "documentation":"<p>The name of the input field as defined in the node's input schema.</p>"
+        },
+        "source":{
+          "shape":"NodeInputSource",
+          "documentation":"<p>The source node that provides input data to this field.</p>"
+        },
+        "type":{
+          "shape":"FlowNodeIODataType",
+          "documentation":"<p>The data type of the input field for compatibility validation.</p>"
         }
       },
       "documentation":"<p>Represents an input field provided to a node during a flow execution.</p>",
@@ -5382,6 +5737,29 @@
     "NodeInputName":{
       "type":"string",
       "pattern":"^[a-zA-Z]([_]?[0-9a-zA-Z]){0,99}$"
+    },
+    "NodeInputSource":{
+      "type":"structure",
+      "required":[
+        "expression",
+        "nodeName",
+        "outputFieldName"
+      ],
+      "members":{
+        "expression":{
+          "shape":"FlowNodeInputExpression",
+          "documentation":"<p>The expression used to extract data from the source.</p>"
+        },
+        "nodeName":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the source node that provides the input data.</p>"
+        },
+        "outputFieldName":{
+          "shape":"FlowNodeOutputName",
+          "documentation":"<p>The name of the output field from the source node.</p>"
+        }
+      },
+      "documentation":"<p>Represents the source of input data for a node field.</p>"
     },
     "NodeName":{
       "type":"string",
@@ -5425,6 +5803,14 @@
         "name":{
           "shape":"NodeOutputName",
           "documentation":"<p>The name of the output field as defined in the node's output schema.</p>"
+        },
+        "next":{
+          "shape":"NodeOutputNextList",
+          "documentation":"<p>The next node that receives output data from this field.</p>"
+        },
+        "type":{
+          "shape":"FlowNodeIODataType",
+          "documentation":"<p>The data type of the output field for compatibility validation.</p>"
         }
       },
       "documentation":"<p>Represents an output field produced by a node during a flow execution.</p> <note> <p>Flow executions is in preview release for Amazon Bedrock and is subject to change.</p> </note>",
@@ -5439,6 +5825,41 @@
     "NodeOutputName":{
       "type":"string",
       "pattern":"^[a-zA-Z]([_]?[0-9a-zA-Z]){0,99}$"
+    },
+    "NodeOutputNext":{
+      "type":"structure",
+      "required":[
+        "inputFieldName",
+        "nodeName"
+      ],
+      "members":{
+        "inputFieldName":{
+          "shape":"FlowNodeInputName",
+          "documentation":"<p>The name of the input field in the next node that receives the data.</p>"
+        },
+        "nodeName":{
+          "shape":"NodeName",
+          "documentation":"<p>The name of the next node that receives the output data.</p>"
+        }
+      },
+      "documentation":"<p>Represents the next node that receives output data.</p>",
+      "sensitive":true
+    },
+    "NodeOutputNextList":{
+      "type":"list",
+      "member":{"shape":"NodeOutputNext"}
+    },
+    "NodeTraceElements":{
+      "type":"structure",
+      "members":{
+        "agentTraces":{
+          "shape":"AgentTraces",
+          "documentation":"<p>Agent trace information for the node execution.</p>"
+        }
+      },
+      "documentation":"<p>Contains trace elements for node execution tracking.</p>",
+      "sensitive":true,
+      "union":true
     },
     "NodeType":{
       "type":"string",
@@ -6042,7 +6463,7 @@
       "members":{
         "textPromptTemplate":{
           "shape":"TextPromptTemplate",
-          "documentation":"<p>The template for the prompt that's sent to the model for response generation. You can include prompt placeholders, which become replaced before the prompt is sent to the model to provide instructions and context to the model. In addition, you can include XML tags to delineate meaningful sections of the prompt template.</p> <p>For more information, see the following resources:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html#kb-test-config-sysprompt\">Knowledge base prompt templates</a> </p> </li> <li> <p> <a href=\"https://docs.anthropic.com/claude/docs/use-xml-tags\">Use XML tags with Anthropic Claude models</a> </p> </li> </ul>"
+          "documentation":"<p>The template for the prompt that's sent to the model for response generation. You can include prompt placeholders, which become replaced before the prompt is sent to the model to provide instructions and context to the model. In addition, you can include XML tags to delineate meaningful sections of the prompt template.</p> <p>For more information, see the following resources:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html#kb-test-config-sysprompt\">Knowledge base prompt templates</a> </p> </li> <li> <p> <a href=\"https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/use-xml-tags\">Use XML tags with Anthropic Claude models</a> </p> </li> </ul>"
         }
       },
       "documentation":"<p>Contains the template for the prompt that's sent to the model for response generation. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/kb-test-config.html#kb-test-config-sysprompt\">Knowledge base prompt templates</a>.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax\">RetrieveAndGenerate request</a> – in the <code>filter</code> field</p> </li> </ul>"
@@ -6379,7 +6800,7 @@
         },
         "index":{
           "shape":"RerankResultIndexInteger",
-          "documentation":"<p>The ranking of the document. The lower a number, the higher the document is ranked.</p>"
+          "documentation":"<p>The original index of the document from the input sources array.</p>"
         },
         "relevanceScore":{
           "shape":"Float",
@@ -6665,6 +7086,10 @@
     "RetrievalResultContent":{
       "type":"structure",
       "members":{
+        "audio":{
+          "shape":"AudioSegment",
+          "documentation":"<p>Audio segment information when the retrieval result contains audio content.</p>"
+        },
         "byteContent":{
           "shape":"String",
           "documentation":"<p>A data URI with base64-encoded content from the data source. The URI is in the following format: returned in the following format: <code>data:image/jpeg;base64,${base64-encoded string}</code>.</p>"
@@ -6680,6 +7105,10 @@
         "type":{
           "shape":"RetrievalResultContentType",
           "documentation":"<p>The type of content in the retrieval result.</p>"
+        },
+        "video":{
+          "shape":"VideoSegment",
+          "documentation":"<p>Video segment information when the retrieval result contains video content.</p>"
         }
       },
       "documentation":"<p>Contains information about a chunk of text from a data source in the knowledge base. If the result is from a structured data source, the cell in the database and the type of the value is also identified.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_ResponseSyntax\">Retrieve response</a> – in the <code>content</code> field</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_ResponseSyntax\">RetrieveAndGenerate response</a> – in the <code>content</code> field</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_InvokeAgent.html#API_agent-runtime_InvokeAgent_ResponseSyntax\">InvokeAgent response</a> – in the <code>content</code> field</p> </li> </ul>",
@@ -6725,7 +7154,9 @@
       "enum":[
         "TEXT",
         "IMAGE",
-        "ROW"
+        "ROW",
+        "AUDIO",
+        "VIDEO"
       ]
     },
     "RetrievalResultCustomDocumentLocation":{
@@ -6819,8 +7250,7 @@
     },
     "RetrievalResultMetadataValue":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "document":true
     },
     "RetrievalResultS3Location":{
@@ -6898,7 +7328,7 @@
       "members":{
         "text":{
           "shape":"RetrieveAndGenerateInputTextString",
-          "documentation":"<p>The query made to the knowledge base.</p>"
+          "documentation":"<p>The query made to the knowledge base, in characters.</p>"
         }
       },
       "documentation":"<p>Contains the query made to the knowledge base.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_RetrieveAndGenerate.html#API_agent-runtime_RetrieveAndGenerate_RequestSyntax\">RetrieveAndGenerate request</a> – in the <code>input</code> field</p> </li> </ul>",
@@ -7657,8 +8087,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -7838,6 +8267,18 @@
       "sensitive":true,
       "union":true
     },
+    "TraceElements":{
+      "type":"structure",
+      "members":{
+        "agentTraces":{
+          "shape":"AgentTraces",
+          "documentation":"<p>Agent trace information for the flow execution.</p>"
+        }
+      },
+      "documentation":"<p>Contains trace elements for flow execution tracking.</p>",
+      "sensitive":true,
+      "union":true
+    },
     "TraceId":{
       "type":"string",
       "max":16,
@@ -7936,8 +8377,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateSessionRequest":{
       "type":"structure",
@@ -8086,6 +8526,25 @@
       "max":5,
       "min":1,
       "pattern":"^(DRAFT|[0-9]{0,4}[1-9][0-9]{0,4})$"
+    },
+    "VideoSegment":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "s3Uri":{
+          "shape":"VideoSegmentS3UriString",
+          "documentation":"<p>The S3 URI where this specific video segment is stored in the multimodal storage destination.</p>"
+        },
+        "summary":{
+          "shape":"String",
+          "documentation":"<p>A text summary describing the content of the video segment.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a video segment retrieved from a knowledge base, including its location and summary.</p> <p>This data type is used in the following API operations:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_agent-runtime_Retrieve.html#API_agent-runtime_Retrieve_ResponseSyntax\">Retrieve response</a> – in the <code>video</code> field</p> </li> </ul>"
+    },
+    "VideoSegmentS3UriString":{
+      "type":"string",
+      "min":1
     }
   },
   "documentation":"<p>Contains APIs related to model invocation and querying of knowledge bases.</p>"

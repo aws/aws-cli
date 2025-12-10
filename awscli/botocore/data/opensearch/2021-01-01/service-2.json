@@ -204,6 +204,26 @@
       ],
       "documentation":"<p>Creates an Amazon OpenSearch Service domain. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/createupdatedomains.html\">Creating and managing Amazon OpenSearch Service domains</a>.</p>"
     },
+    "CreateIndex":{
+      "name":"CreateIndex",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/index"
+      },
+      "input":{"shape":"CreateIndexRequest"},
+      "output":{"shape":"CreateIndexResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"InternalException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"DependencyFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates an OpenSearch index with optional automatic semantic enrichment for specified text fields. Automatic semantic enrichment enables semantic search capabilities without requiring machine learning expertise, improving search relevance by up to 20% by understanding search intent and contextual meaning beyond keyword matching. The semantic enrichment process has zero impact on search latency as sparse encodings are stored directly within the index during indexing. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/opensearch-semantic-enrichment.html\">Automatic semantic enrichment</a>.</p>"
+    },
     "CreateOutboundConnection":{
       "name":"CreateOutboundConnection",
       "http":{
@@ -340,6 +360,25 @@
         {"shape":"DisabledOperationException"}
       ],
       "documentation":"<p>Allows the destination Amazon OpenSearch Service domain owner to delete an existing inbound cross-cluster search connection. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/cross-cluster-search.html\">Cross-cluster search for Amazon OpenSearch Service</a>.</p>"
+    },
+    "DeleteIndex":{
+      "name":"DeleteIndex",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/index/{IndexName}"
+      },
+      "input":{"shape":"DeleteIndexRequest"},
+      "output":{"shape":"DeleteIndexResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"DependencyFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes an OpenSearch index. This operation permanently removes the index and cannot be undone.</p>"
     },
     "DeleteOutboundConnection":{
       "name":"DeleteOutboundConnection",
@@ -665,7 +704,7 @@
         {"shape":"ConflictException"},
         {"shape":"DisabledOperationException"}
       ],
-      "documentation":"<p>Dissociates multiple packages from a domain simulatneously.</p>"
+      "documentation":"<p>Dissociates multiple packages from a domain simultaneously.</p>"
     },
     "GetApplication":{
       "name":"GetApplication",
@@ -721,6 +760,23 @@
       ],
       "documentation":"<p>Retrieves information about a direct query data source.</p>"
     },
+    "GetDefaultApplicationSetting":{
+      "name":"GetDefaultApplicationSetting",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-01-01/opensearch/defaultApplicationSetting",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDefaultApplicationSettingRequest"},
+      "output":{"shape":"GetDefaultApplicationSettingResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Gets the ARN of the current default application.</p> <p> If the default application isn't set, the operation returns a resource not found error.</p>"
+    },
     "GetDirectQueryDataSource":{
       "name":"GetDirectQueryDataSource",
       "http":{
@@ -754,6 +810,25 @@
         {"shape":"DisabledOperationException"}
       ],
       "documentation":"<p>The status of the maintenance action.</p>"
+    },
+    "GetIndex":{
+      "name":"GetIndex",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/index/{IndexName}"
+      },
+      "input":{"shape":"GetIndexRequest"},
+      "output":{"shape":"GetIndexResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"DependencyFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves information about an OpenSearch index including its schema and semantic enrichment configuration. Use this operation to view the current index structure and semantic search settings.</p>"
     },
     "GetPackageVersionHistory":{
       "name":"GetPackageVersionHistory",
@@ -1055,6 +1130,23 @@
       ],
       "documentation":"<p>Allows you to purchase Amazon OpenSearch Service Reserved Instances.</p>"
     },
+    "PutDefaultApplicationSetting":{
+      "name":"PutDefaultApplicationSetting",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2021-01-01/opensearch/defaultApplicationSetting",
+        "responseCode":200
+      },
+      "input":{"shape":"PutDefaultApplicationSettingRequest"},
+      "output":{"shape":"PutDefaultApplicationSettingResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Sets the default application to the application with the specified ARN.</p> <p> To remove the default application, use the <code>GetDefaultApplicationSetting</code> operation to get the current default and then call the <code>PutDefaultApplicationSetting</code> with the current applications ARN and the <code>setAsDefault</code> parameter set to <code>false</code>.</p>"
+    },
     "RejectInboundConnection":{
       "name":"RejectInboundConnection",
       "http":{
@@ -1206,6 +1298,25 @@
       ],
       "documentation":"<p>Modifies the cluster configuration of the specified Amazon OpenSearch Service domain.</p>"
     },
+    "UpdateIndex":{
+      "name":"UpdateIndex",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/2021-01-01/opensearch/domain/{DomainName}/index/{IndexName}"
+      },
+      "input":{"shape":"UpdateIndexRequest"},
+      "output":{"shape":"UpdateIndexResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalException"},
+        {"shape":"DisabledOperationException"},
+        {"shape":"DependencyFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates an existing OpenSearch index schema and semantic enrichment configuration. This operation allows modification of field mappings and semantic search settings for text fields. Changes to semantic enrichment configuration will apply to newly ingested documents.</p>"
+    },
     "UpdatePackage":{
       "name":"UpdatePackage",
       "http":{
@@ -1304,6 +1415,14 @@
         "NaturalLanguageQueryGenerationOptions":{
           "shape":"NaturalLanguageQueryGenerationOptionsInput",
           "documentation":"<p>Container for parameters required for natural language query generation on the specified domain.</p>"
+        },
+        "S3VectorsEngine":{
+          "shape":"S3VectorsEngine",
+          "documentation":"<p>Container for parameters required to enable S3 vectors engine features on the specified domain.</p>"
+        },
+        "ServerlessVectorAcceleration":{
+          "shape":"ServerlessVectorAcceleration",
+          "documentation":"<p>Specifies whether to enable serverless vector acceleration for the domain. When enabled, provides <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/gpu-acceleration-vector-index.html\">GPU-accelerated</a> vector search capabilities for improved performance on vector workloads.</p>"
         }
       },
       "documentation":"<p>Container for parameters required to enable all machine learning features.</p>"
@@ -1314,6 +1433,14 @@
         "NaturalLanguageQueryGenerationOptions":{
           "shape":"NaturalLanguageQueryGenerationOptionsOutput",
           "documentation":"<p>Container for parameters required for natural language query generation on the specified domain.</p>"
+        },
+        "S3VectorsEngine":{
+          "shape":"S3VectorsEngine",
+          "documentation":"<p>Container for parameters representing the state of S3 vectors engine features on the specified domain.</p>"
+        },
+        "ServerlessVectorAcceleration":{
+          "shape":"ServerlessVectorAcceleration",
+          "documentation":"<p>The current serverless vector acceleration configuration for the domain.</p>"
         }
       },
       "documentation":"<p>Container for parameters representing the state of machine learning features on the specified domain.</p>"
@@ -1388,8 +1515,7 @@
     },
     "AccessDeniedException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An error occurred because you don't have permissions to access the resource.</p>",
       "error":{"httpStatusCode":403},
       "exception":true
@@ -1593,6 +1719,10 @@
           "shape":"JWTOptionsOutput",
           "documentation":"<p>Container for information about the JWT configuration of the Amazon OpenSearch Service.</p>"
         },
+        "IAMFederationOptions":{
+          "shape":"IAMFederationOptionsOutput",
+          "documentation":"<p>Configuration options for IAM identity federation in advanced security settings.</p>"
+        },
         "AnonymousAuthDisableDate":{
           "shape":"DisableTimestamp",
           "documentation":"<p>Date and time when the migration period will be disabled. Only necessary when <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-enabling-existing\">enabling fine-grained access control on an existing domain</a>.</p>"
@@ -1626,6 +1756,10 @@
         "JWTOptions":{
           "shape":"JWTOptionsInput",
           "documentation":"<p>Container for information about the JWT configuration of the Amazon OpenSearch Service. </p>"
+        },
+        "IAMFederationOptions":{
+          "shape":"IAMFederationOptionsInput",
+          "documentation":"<p>Input configuration for IAM identity federation within advanced security options.</p>"
         },
         "AnonymousAuthEnabled":{
           "shape":"Boolean",
@@ -1664,7 +1798,7 @@
           "documentation":"<p>The value assigned to the configuration key, such as an IAM user ARN.</p>"
         }
       },
-      "documentation":"<p>Configuration settings for an OpenSearch application. For more information, see see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/application.html\">Using the OpenSearch user interface in Amazon OpenSearch Service</a>.</p>"
+      "documentation":"<p>Configuration settings for an OpenSearch application. For more information, see <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/application.html\">Using the OpenSearch user interface in Amazon OpenSearch Service</a>.</p>"
     },
     "AppConfigType":{
       "type":"string",
@@ -2474,8 +2608,7 @@
     },
     "ConflictException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An error occurred because the client attempts to remove a resource that is currently in use.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
@@ -2674,6 +2807,39 @@
       },
       "documentation":"<p>The result of a <code>CreateDomain</code> operation. Contains the status of the newly created domain.</p>"
     },
+    "CreateIndexRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "IndexName",
+        "IndexSchema"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "IndexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the index to create. Must be between 1 and 255 characters and follow OpenSearch naming conventions.</p>"
+        },
+        "IndexSchema":{
+          "shape":"IndexSchema",
+          "documentation":"<p>The JSON schema defining index mappings, settings, and semantic enrichment configuration. The schema specifies which text fields should be automatically enriched for semantic search capabilities and includes OpenSearch index configuration parameters.</p>"
+        }
+      }
+    },
+    "CreateIndexResponse":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"IndexStatus",
+          "documentation":"<p>The status of the index creation operation.</p>"
+        }
+      }
+    },
     "CreateOutboundConnectionRequest":{
       "type":"structure",
       "required":[
@@ -2843,7 +3009,7 @@
           "documentation":"<p>Detailed description of a data source.</p>"
         }
       },
-      "documentation":"<p>Data sources that are associated with an OpenSearch Application. </p>"
+      "documentation":"<p>Data sources that are associated with an OpenSearch application. </p>"
     },
     "DataSourceDescription":{
       "type":"string",
@@ -2918,8 +3084,7 @@
     },
     "DeleteApplicationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteDataSourceRequest":{
       "type":"structure",
@@ -3011,6 +3176,36 @@
       },
       "documentation":"<p>The results of a <code>DeleteInboundConnection</code> operation. Contains details about the deleted inbound connection.</p>"
     },
+    "DeleteIndexRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "IndexName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "IndexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the index to delete.</p>",
+          "location":"uri",
+          "locationName":"IndexName"
+        }
+      }
+    },
+    "DeleteIndexResponse":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"IndexStatus",
+          "documentation":"<p>The status of the index deletion operation.</p>"
+        }
+      }
+    },
     "DeleteOutboundConnectionRequest":{
       "type":"structure",
       "required":["ConnectionId"],
@@ -3081,8 +3276,7 @@
     },
     "DependencyFailureException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An exception for when a failure in one of the dependencies results in the service being unable to fetch details about the resource.</p>",
       "error":{"httpStatusCode":424},
       "exception":true
@@ -3722,8 +3916,7 @@
     "DisableTimestamp":{"type":"timestamp"},
     "DisabledOperationException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An error occured because the client wanted to access an unsupported operation.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
@@ -4173,7 +4366,7 @@
         },
         "ARN":{
           "shape":"ARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the domain. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html\">IAM identifiers </a> in the <i>AWS Identity and Access Management User Guide</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the domain. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html\">IAM identifiers </a> in the <i>Amazon Web Services Identity and Access Management User Guide</i>.</p>"
         },
         "Created":{
           "shape":"Boolean",
@@ -4656,6 +4849,16 @@
       },
       "documentation":"<p>The result of a <code>GetDataSource</code> operation.</p>"
     },
+    "GetDefaultApplicationSettingRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetDefaultApplicationSettingResponse":{
+      "type":"structure",
+      "members":{
+        "applicationArn":{"shape":"ARN"}
+      }
+    },
     "GetDirectQueryDataSourceRequest":{
       "type":"structure",
       "required":["DataSourceName"],
@@ -4744,6 +4947,36 @@
         }
       },
       "documentation":"<p>The result of a <code>GetDomainMaintenanceStatus</code> request that information about the requested action.</p>"
+    },
+    "GetIndexRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "IndexName"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "IndexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the index to retrieve information about.</p>",
+          "location":"uri",
+          "locationName":"IndexName"
+        }
+      }
+    },
+    "GetIndexResponse":{
+      "type":"structure",
+      "required":["IndexSchema"],
+      "members":{
+        "IndexSchema":{
+          "shape":"IndexSchema",
+          "documentation":"<p>The JSON schema of the index including mappings, settings, and semantic enrichment configuration.</p>"
+        }
+      }
     },
     "GetPackageVersionHistoryRequest":{
       "type":"structure",
@@ -4859,6 +5092,54 @@
       "documentation":"<p>Container for the response returned by the <code>GetUpgradeStatus</code> operation.</p>"
     },
     "HostedZoneId":{"type":"string"},
+    "IAMFederationOptionsInput":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether IAM identity federation is enabled for the OpenSearch domain.</p>"
+        },
+        "SubjectKey":{
+          "shape":"IAMFederationSubjectKey",
+          "documentation":"<p>The key in the SAML assertion that contains the user's subject identifier.</p>"
+        },
+        "RolesKey":{
+          "shape":"IAMFederationRolesKey",
+          "documentation":"<p>The key in the SAML assertion that contains the user's role information.</p>"
+        }
+      },
+      "documentation":"<p>Input parameters for configuring IAM identity federation settings.</p>"
+    },
+    "IAMFederationOptionsOutput":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether IAM identity federation is currently enabled for the domain.</p>"
+        },
+        "SubjectKey":{
+          "shape":"IAMFederationSubjectKey",
+          "documentation":"<p>The configured key in the SAML assertion for the user's subject identifier.</p>"
+        },
+        "RolesKey":{
+          "shape":"IAMFederationRolesKey",
+          "documentation":"<p>The configured key in the SAML assertion for the user's role information.</p>"
+        }
+      },
+      "documentation":"<p>Output parameters showing the current IAM identity federation configuration.</p>"
+    },
+    "IAMFederationRolesKey":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^(null|[A-Za-z][A-Za-z0-9_.:/=+\\-@]*)$"
+    },
+    "IAMFederationSubjectKey":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^(null|[A-Za-z][A-Za-z0-9_.:/=+\\-@]*)$"
+    },
     "IPAddressType":{
       "type":"string",
       "enum":[
@@ -4886,16 +5167,16 @@
       "members":{
         "enabled":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether IAM Identity Center is enabled for the OpenSearch Application.</p>"
+          "documentation":"<p>Indicates whether IAM Identity Center is enabled for the OpenSearch application.</p>"
         },
         "iamIdentityCenterInstanceArn":{"shape":"ARN"},
         "iamRoleForIdentityCenterApplicationArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role assigned to the IAM Identity Center application for the OpenSearch Application.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role assigned to the IAM Identity Center application for the OpenSearch application.</p>"
         },
         "iamIdentityCenterApplicationArn":{"shape":"ARN"}
       },
-      "documentation":"<p>Configuration settings for IAM Identity Center in an OpenSearch Application.</p>"
+      "documentation":"<p>Configuration settings for IAM Identity Center in an OpenSearch application.</p>"
     },
     "IamIdentityCenterOptionsInput":{
       "type":"structure",
@@ -5067,6 +5348,26 @@
       "type":"list",
       "member":{"shape":"InboundConnection"}
     },
+    "IndexName":{
+      "type":"string",
+      "documentation":"Name of OpenSearch index to be created/updated/retrieved/deleted for customer's domain",
+      "max":255,
+      "min":1,
+      "pattern":"^(?!\\.\\.?$)[^_ ,:\"+/*\\\\|?#><A-Z-][^ ,:\"+/*\\\\|?#><A-Z]*$"
+    },
+    "IndexSchema":{
+      "type":"structure",
+      "members":{},
+      "document":true
+    },
+    "IndexStatus":{
+      "type":"string",
+      "enum":[
+        "CREATED",
+        "UPDATED",
+        "DELETED"
+      ]
+    },
     "InitiatedBy":{
       "type":"string",
       "enum":[
@@ -5160,24 +5461,21 @@
     "IntegerClass":{"type":"integer"},
     "InternalException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Request processing failed because of an unknown error, exception, or internal failure.</p>",
       "error":{"httpStatusCode":500},
       "exception":true
     },
     "InvalidPaginationTokenException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Request processing failed because you provided an invalid pagination token.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
     "InvalidTypeException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An exception for trying to create or access a sub-resource that's either invalid or not supported.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
@@ -5260,8 +5558,7 @@
     },
     "LimitExceededException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An exception for trying to create more than the allowed number of resources or sub-resources.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
@@ -6706,6 +7003,26 @@
       },
       "documentation":"<p>Represents the output of a <code>PurchaseReservedInstanceOffering</code> operation.</p>"
     },
+    "PutDefaultApplicationSettingRequest":{
+      "type":"structure",
+      "required":[
+        "applicationArn",
+        "setAsDefault"
+      ],
+      "members":{
+        "applicationArn":{"shape":"ARN"},
+        "setAsDefault":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true to set the specified ARN as the default application. Set to false to clear the default application.</p>"
+        }
+      }
+    },
+    "PutDefaultApplicationSettingResponse":{
+      "type":"structure",
+      "members":{
+        "applicationArn":{"shape":"ARN"}
+      }
+    },
     "RecurringCharge":{
       "type":"structure",
       "members":{
@@ -6910,16 +7227,14 @@
     },
     "ResourceAlreadyExistsException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An exception for creating a resource that already exists.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
     },
     "ResourceNotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An exception for accessing or deleting a resource that doesn't exist.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
@@ -6946,8 +7261,7 @@
     },
     "RevokeVpcEndpointAccessResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "RoleArn":{
       "type":"string",
@@ -6994,6 +7308,16 @@
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "S3VectorsEngine":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables S3 vectors engine features.</p>"
+        }
+      },
+      "documentation":"<p>Options for enabling S3 vectors engine features on the specified domain.</p>"
     },
     "SAMLEntityId":{
       "type":"string",
@@ -7203,6 +7527,16 @@
         }
       },
       "documentation":"<p> Configuration details for a Security Lake data source that can be used for direct queries. </p>"
+    },
+    "ServerlessVectorAcceleration":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether serverless vector acceleration is enabled for the domain.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for serverless vector acceleration, which provides <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/gpu-acceleration-vector-index.html\">GPU-accelerated</a> vector search capabilities for improved performance on vector workloads.</p>"
     },
     "ServiceSoftwareOptions":{
       "type":"structure",
@@ -7508,6 +7842,13 @@
       "min":0,
       "pattern":".*"
     },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The request was denied due to request throttling. Reduce the frequency of your requests and try again.</p>",
+      "error":{"httpStatusCode":429},
+      "exception":true
+    },
     "TimeUnit":{
       "type":"string",
       "documentation":"<p>The unit of a maintenance schedule duration. Valid value is <code>HOUR</code>.</p>",
@@ -7764,6 +8105,41 @@
         }
       },
       "documentation":"<p>The results of an <code>UpdateDomain</code> request. Contains the status of the domain being updated.</p>"
+    },
+    "UpdateIndexRequest":{
+      "type":"structure",
+      "required":[
+        "DomainName",
+        "IndexName",
+        "IndexSchema"
+      ],
+      "members":{
+        "DomainName":{
+          "shape":"DomainName",
+          "location":"uri",
+          "locationName":"DomainName"
+        },
+        "IndexName":{
+          "shape":"IndexName",
+          "documentation":"<p>The name of the index to update.</p>",
+          "location":"uri",
+          "locationName":"IndexName"
+        },
+        "IndexSchema":{
+          "shape":"IndexSchema",
+          "documentation":"<p>The updated JSON schema for the index including any changes to mappings, settings, and semantic enrichment configuration.</p>"
+        }
+      }
+    },
+    "UpdateIndexResponse":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"IndexStatus",
+          "documentation":"<p>The status of the index update operation.</p>"
+        }
+      }
     },
     "UpdatePackageRequest":{
       "type":"structure",
@@ -8113,8 +8489,7 @@
     },
     "ValidationException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An exception for accessing or deleting a resource that doesn't exist.</p>",
       "error":{"httpStatusCode":400},
       "exception":true

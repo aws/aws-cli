@@ -4,7 +4,7 @@ The following ``re-encrypt`` command example demonstrates the recommended way to
 
 * Provide the ciphertext in a file. 
 
-    In the value of the ``--ciphertext-blob`` parameter, use the ``fileb://`` prefix, which tells the CLI to read the data from a binary file. If the file is not in the current directory, type the full path to file. For more information about reading AWS CLI parameter values from a file, see `Loading AWS CLI parameters from a file <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-file.html>` in the *AWS Command Line Interface User Guide* and `Best Practices for Local File Parameters<https://aws.amazon.com/blogs/developer/best-practices-for-local-file-parameters/>` in the *AWS Command Line Tool Blog*.
+    In the value of the ``--ciphertext-blob`` parameter, use the ``fileb://`` prefix, which tells the CLI to read the data from a binary file. If the file is not in the current directory, type the full path to file. For more information about reading AWS CLI parameter values from a file, see `Loading AWS CLI parameters from a file <https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-file.html>`__ in the *AWS Command Line Interface User Guide* and `Best Practices for Local File Parameters <https://aws.amazon.com/blogs/developer/best-practices-for-local-file-parameters/>`__ in the *AWS Command Line Tool Blog*.
 
 * Specify the source KMS key, which decrypts the ciphertext.
 
@@ -34,7 +34,7 @@ Before running this command, replace the example key IDs with valid key identifi
 
 This command produces no output. The output from the ``re-encrypt`` command is base64-decoded and saved in a file.
 
-For more information, see `ReEncrypt <https://docs.aws.amazon.com/kms/latest/APIReference/API_ReEncrypt.html`__ in the *AWS Key Management Service API Reference*.
+For more information, see `ReEncrypt <https://docs.aws.amazon.com/kms/latest/APIReference/API_ReEncrypt.html>`__ in the *AWS Key Management Service API Reference*.
 
 **Example 2: To re-encrypt an encrypted message under a different symmetric KMS key (Windows command prompt).**
 
@@ -59,4 +59,4 @@ Output::
     Output Length = 12
     CertUtil: -decode command completed successfully.
 
-For more information, see `ReEncrypt <https://docs.aws.amazon.com/kms/latest/APIReference/API_ReEncrypt.html`__ in the *AWS Key Management Service API Reference*.
+For more information, see `ReEncrypt <https://docs.aws.amazon.com/kms/latest/APIReference/API_ReEncrypt.html>`__ in the *AWS Key Management Service API Reference*.

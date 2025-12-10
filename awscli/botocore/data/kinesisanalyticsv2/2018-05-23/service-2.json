@@ -324,7 +324,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"UnsupportedOperationException"}
       ],
-      "documentation":"Returns information about a specific operation performed on a Managed Service for Apache Flink application"
+      "documentation":"<p>Provides a detailed description of a specified application operation. To see a list of all the operations of an application, invoke the <a>ListApplicationOperations</a> operation.</p> <note> <p>This operation is supported only for Managed Service for Apache Flink.</p> </note>"
     },
     "DescribeApplicationSnapshot":{
       "name":"DescribeApplicationSnapshot",
@@ -387,7 +387,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"UnsupportedOperationException"}
       ],
-      "documentation":"Lists information about operations performed on a Managed Service for Apache Flink application"
+      "documentation":"<p>Lists all the operations performed for the specified application such as UpdateApplication, StartApplication etc. The response also includes a summary of the operation.</p> <p>To get the complete description of a specific operation, invoke the <a>DescribeApplicationOperation</a> operation.</p> <note> <p>This operation is supported only for Managed Service for Apache Flink.</p> </note>"
     },
     "ListApplicationSnapshots":{
       "name":"ListApplicationSnapshots",
@@ -614,7 +614,7 @@
         },
         "OperationId":{
           "shape":"OperationId",
-          "documentation":"Operation ID for tracking AddApplicationCloudWatchLoggingOption request"
+          "documentation":"<p>The operation ID that can be used to track the request.</p>"
         }
       }
     },
@@ -825,7 +825,7 @@
         },
         "OperationId":{
           "shape":"OperationId",
-          "documentation":"Operation ID for tracking AddApplicationVpcConfiguration request"
+          "documentation":"<p>The operation ID that can be used to track the request.</p>"
         }
       }
     },
@@ -896,7 +896,10 @@
           "shape":"ApplicationSnapshotConfiguration",
           "documentation":"<p>Describes whether snapshots are enabled for a Managed Service for Apache Flink application.</p>"
         },
-        "ApplicationSystemRollbackConfiguration":{"shape":"ApplicationSystemRollbackConfiguration"},
+        "ApplicationSystemRollbackConfiguration":{
+          "shape":"ApplicationSystemRollbackConfiguration",
+          "documentation":"<p>Describes whether system rollbacks are enabled for a Managed Service for Apache Flink application.</p>"
+        },
         "VpcConfigurations":{
           "shape":"VpcConfigurations",
           "documentation":"<p>The array of descriptions of VPC configurations available to the application.</p>"
@@ -904,6 +907,10 @@
         "ZeppelinApplicationConfiguration":{
           "shape":"ZeppelinApplicationConfiguration",
           "documentation":"<p>The configuration parameters for a Managed Service for Apache Flink Studio notebook.</p>"
+        },
+        "ApplicationEncryptionConfiguration":{
+          "shape":"ApplicationEncryptionConfiguration",
+          "documentation":"<p>The configuration to manage encryption at rest.</p>"
         }
       },
       "documentation":"<p>Specifies the creation parameters for a Managed Service for Apache Flink application.</p>"
@@ -935,7 +942,10 @@
           "shape":"ApplicationSnapshotConfigurationDescription",
           "documentation":"<p>Describes whether snapshots are enabled for a Managed Service for Apache Flink application.</p>"
         },
-        "ApplicationSystemRollbackConfigurationDescription":{"shape":"ApplicationSystemRollbackConfigurationDescription"},
+        "ApplicationSystemRollbackConfigurationDescription":{
+          "shape":"ApplicationSystemRollbackConfigurationDescription",
+          "documentation":"<p>Describes whether system rollbacks are enabled for a Managed Service for Apache Flink application.</p>"
+        },
         "VpcConfigurationDescriptions":{
           "shape":"VpcConfigurationDescriptions",
           "documentation":"<p>The array of descriptions of VPC configurations available to the application.</p>"
@@ -943,6 +953,10 @@
         "ZeppelinApplicationConfigurationDescription":{
           "shape":"ZeppelinApplicationConfigurationDescription",
           "documentation":"<p>The configuration parameters for a Managed Service for Apache Flink Studio notebook.</p>"
+        },
+        "ApplicationEncryptionConfigurationDescription":{
+          "shape":"ApplicationEncryptionConfigurationDescription",
+          "documentation":"<p>Describes the encryption at rest configuration.</p>"
         }
       },
       "documentation":"<p>Describes details about the application code and starting parameters for a Managed Service for Apache Flink application.</p>"
@@ -970,7 +984,10 @@
           "shape":"ApplicationSnapshotConfigurationUpdate",
           "documentation":"<p>Describes whether snapshots are enabled for a Managed Service for Apache Flink application.</p>"
         },
-        "ApplicationSystemRollbackConfigurationUpdate":{"shape":"ApplicationSystemRollbackConfigurationUpdate"},
+        "ApplicationSystemRollbackConfigurationUpdate":{
+          "shape":"ApplicationSystemRollbackConfigurationUpdate",
+          "documentation":"<p>Describes whether system rollbacks are enabled for a Managed Service for Apache Flink application.</p>"
+        },
         "VpcConfigurationUpdates":{
           "shape":"VpcConfigurationUpdates",
           "documentation":"<p>Updates to the array of descriptions of VPC configurations available to the application.</p>"
@@ -978,6 +995,10 @@
         "ZeppelinApplicationConfigurationUpdate":{
           "shape":"ZeppelinApplicationConfigurationUpdate",
           "documentation":"<p>Updates to the configuration of a Managed Service for Apache Flink Studio notebook.</p>"
+        },
+        "ApplicationEncryptionConfigurationUpdate":{
+          "shape":"ApplicationEncryptionConfigurationUpdate",
+          "documentation":"<p>Represents an update for encryption at rest configuration.</p>"
         }
       },
       "documentation":"<p>Describes updates to an application's configuration.</p>"
@@ -1055,7 +1076,7 @@
         },
         "ApplicationVersionCreateTimestamp":{
           "shape":"Timestamp",
-          "documentation":"The current timestamp when the application version was created."
+          "documentation":"<p>The timestamp that indicates when the application version was created.</p>"
         },
         "ConditionalToken":{
           "shape":"ConditionalToken",
@@ -1071,6 +1092,51 @@
         }
       },
       "documentation":"<p>Describes the application, including the application Amazon Resource Name (ARN), status, latest version, and input and output configurations.</p>"
+    },
+    "ApplicationEncryptionConfiguration":{
+      "type":"structure",
+      "required":["KeyType"],
+      "members":{
+        "KeyId":{
+          "shape":"KeyId",
+          "documentation":"<p>The key ARN, key ID, alias ARN, or alias name of the KMS key used for encryption at rest.</p>"
+        },
+        "KeyType":{
+          "shape":"KeyType",
+          "documentation":"<p>Specifies the type of key used for encryption at rest.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the configuration to manage encryption at rest.</p>"
+    },
+    "ApplicationEncryptionConfigurationDescription":{
+      "type":"structure",
+      "required":["KeyType"],
+      "members":{
+        "KeyId":{
+          "shape":"KeyId",
+          "documentation":"<p>The key ARN, key ID, alias ARN, or alias name of the KMS key used for encryption at rest.</p>"
+        },
+        "KeyType":{
+          "shape":"KeyType",
+          "documentation":"<p>Specifies the type of key used for encryption at rest.</p>"
+        }
+      },
+      "documentation":"<p>Describes the encryption at rest configuration.</p>"
+    },
+    "ApplicationEncryptionConfigurationUpdate":{
+      "type":"structure",
+      "required":["KeyTypeUpdate"],
+      "members":{
+        "KeyIdUpdate":{
+          "shape":"KeyId",
+          "documentation":"<p>The key ARN, key ID, alias ARN, or alias name of the KMS key to be used for encryption at rest.</p>"
+        },
+        "KeyTypeUpdate":{
+          "shape":"KeyType",
+          "documentation":"<p>Specifies the type of key to be used for encryption at rest.</p>"
+        }
+      },
+      "documentation":"<p>Describes configuration updates to encryption at rest.</p>"
     },
     "ApplicationMaintenanceConfigurationDescription":{
       "type":"structure",
@@ -1122,7 +1188,7 @@
     },
     "ApplicationName":{
       "type":"string",
-      "documentation":"The name of the application",
+      "documentation":"<p>The name of the application.</p>",
       "max":128,
       "min":1,
       "pattern":"[a-zA-Z0-9_.-]+"
@@ -1134,15 +1200,15 @@
         "OperationId":{"shape":"OperationId"},
         "StartTime":{
           "shape":"Timestamp",
-          "documentation":"The timestamp at which the operation was created"
+          "documentation":"<p>The timestamp that indicates when the operation was created.</p>"
         },
         "EndTime":{
           "shape":"Timestamp",
-          "documentation":"The timestamp at which the operation finished for the application"
+          "documentation":"<p>The timestamp that indicates when the operation finished.</p>"
         },
         "OperationStatus":{"shape":"OperationStatus"}
       },
-      "documentation":"Provides a description of the operation, such as the type and status of operation"
+      "documentation":"<p>A description of the aplication operation that provides information about the updates that were made to the application.</p>"
     },
     "ApplicationOperationInfoDetails":{
       "type":"structure",
@@ -1156,22 +1222,22 @@
         "Operation":{"shape":"Operation"},
         "StartTime":{
           "shape":"Timestamp",
-          "documentation":"The timestamp at which the operation was created"
+          "documentation":"<p>The timestamp that indicates when the operation was created.</p>"
         },
         "EndTime":{
           "shape":"Timestamp",
-          "documentation":"The timestamp at which the operation finished for the application"
+          "documentation":"<p>The timestamp that indicates when the operation finished.</p>"
         },
         "OperationStatus":{"shape":"OperationStatus"},
         "ApplicationVersionChangeDetails":{"shape":"ApplicationVersionChangeDetails"},
         "OperationFailureDetails":{"shape":"OperationFailureDetails"}
       },
-      "documentation":"Provides a description of the operation, such as the operation-type and status"
+      "documentation":"<p>A description of the application operation that provides information about the updates that were made to the application.</p>"
     },
     "ApplicationOperationInfoList":{
       "type":"list",
       "member":{"shape":"ApplicationOperationInfo"},
-      "documentation":"List of ApplicationOperationInfo for an application"
+      "documentation":"<p>A list of <code>ApplicationOperationInfo</code> objects that are associated with an application.</p>"
     },
     "ApplicationRestoreConfiguration":{
       "type":"structure",
@@ -1292,10 +1358,10 @@
       "members":{
         "RollbackEnabled":{
           "shape":"BooleanObject",
-          "documentation":"Describes whether system rollbacks are enabled for a Managed Service for Apache Flink application"
+          "documentation":"<p>Describes whether system rollbacks are enabled for a Managed Service for Apache Flink application.</p>"
         }
       },
-      "documentation":"Describes system rollback configuration for a Managed Service for Apache Flink application"
+      "documentation":"<p>Describes the system rollback configuration for a Managed Service for Apache Flink application.</p>"
     },
     "ApplicationSystemRollbackConfigurationDescription":{
       "type":"structure",
@@ -1303,10 +1369,10 @@
       "members":{
         "RollbackEnabled":{
           "shape":"BooleanObject",
-          "documentation":"Describes whether system rollbacks are enabled for a Managed Service for Apache Flink application"
+          "documentation":"<p>Describes whether system rollbacks are enabled for a Managed Service for Apache Flink application.</p>"
         }
       },
-      "documentation":"Describes system rollback configuration for a Managed Service for Apache Flink application"
+      "documentation":"<p>Describes the system rollback configuration for a Managed Service for Apache Flink application.</p>"
     },
     "ApplicationSystemRollbackConfigurationUpdate":{
       "type":"structure",
@@ -1314,10 +1380,10 @@
       "members":{
         "RollbackEnabledUpdate":{
           "shape":"BooleanObject",
-          "documentation":"Describes whether system rollbacks are enabled for a Managed Service for Apache Flink application"
+          "documentation":"<p>Describes whether system rollbacks are enabled for a Managed Service for Apache Flink application.</p>"
         }
       },
-      "documentation":"Describes system rollback configuration for a Managed Service for Apache Flink application"
+      "documentation":"<p>Describes the system rollback configuration for a Managed Service for Apache Flink application.</p>"
     },
     "ApplicationVersionChangeDetails":{
       "type":"structure",
@@ -1328,14 +1394,14 @@
       "members":{
         "ApplicationVersionUpdatedFrom":{
           "shape":"ApplicationVersionId",
-          "documentation":"The operation was performed on this version of the application"
+          "documentation":"<p>The new version that the application was updated to.</p>"
         },
         "ApplicationVersionUpdatedTo":{
           "shape":"ApplicationVersionId",
-          "documentation":"The operation execution resulted in the transition to the following version of the application"
+          "documentation":"<p>The version that the operation execution applied to the applicartion.</p>"
         }
       },
-      "documentation":"Contains information about the application version changes due to an operation"
+      "documentation":"<p>Contains information about the version changes that the operation applied to the application.</p>"
     },
     "ApplicationVersionId":{
       "type":"long",
@@ -1458,10 +1524,10 @@
         },
         "MinPauseBetweenCheckpoints":{
           "shape":"MinPauseBetweenCheckpoints",
-          "documentation":"<p>Describes the minimum time in milliseconds after a checkpoint operation completes that a new checkpoint operation can start. If a checkpoint operation takes longer than the <code>CheckpointInterval</code>, the application otherwise performs continual checkpoint operations. For more information, see <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.19/docs/ops/state/large_state_tuning/#tuning-checkpointing\"> Tuning Checkpointing</a> in the <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.19/\">Apache Flink Documentation</a>.</p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>MinPauseBetweenCheckpoints</code> value of 5000, even if this value is set using this API or in application code.</p> </note>"
+          "documentation":"<p>Describes the minimum time in milliseconds after a checkpoint operation completes that a new checkpoint operation can start. If a checkpoint operation takes longer than the <code>CheckpointInterval</code>, the application otherwise performs continual checkpoint operations. For more information, see <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.20/docs/ops/state/large_state_tuning/#tuning-checkpointing\"> Tuning Checkpointing</a> in the <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.20/\">Apache Flink Documentation</a>.</p> <note> <p>If <code>CheckpointConfiguration.ConfigurationType</code> is <code>DEFAULT</code>, the application will use a <code>MinPauseBetweenCheckpoints</code> value of 5000, even if this value is set using this API or in application code.</p> </note>"
         }
       },
-      "documentation":"<p>Describes an application's checkpointing configuration. Checkpointing is the process of persisting application state for fault tolerance. For more information, see <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.19/docs/dev/datastream/fault-tolerance/checkpointing/#enabling-and-configuring-checkpointing\"> Checkpoints for Fault Tolerance</a> in the <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.19/\">Apache Flink Documentation</a>.</p>"
+      "documentation":"<p>Describes an application's checkpointing configuration. Checkpointing is the process of persisting application state for fault tolerance. For more information, see <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.20/docs/dev/datastream/fault-tolerance/checkpointing/#enabling-and-configuring-checkpointing\"> Checkpoints for Fault Tolerance</a> in the <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.20/\">Apache Flink Documentation</a>.</p>"
     },
     "CheckpointConfigurationDescription":{
       "type":"structure",
@@ -1773,8 +1839,7 @@
     },
     "CreateApplicationSnapshotResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CustomArtifactConfiguration":{
       "type":"structure",
@@ -1865,7 +1930,7 @@
         },
         "OperationId":{
           "shape":"OperationId",
-          "documentation":"Operation ID for tracking DeleteApplicationCloudWatchLoggingOption request"
+          "documentation":"<p>The operation ID that can be used to track the request.</p>"
         }
       }
     },
@@ -1993,8 +2058,7 @@
     },
     "DeleteApplicationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteApplicationSnapshotRequest":{
       "type":"structure",
@@ -2020,8 +2084,7 @@
     },
     "DeleteApplicationSnapshotResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteApplicationVpcConfigurationRequest":{
       "type":"structure",
@@ -2061,7 +2124,7 @@
         },
         "OperationId":{
           "shape":"OperationId",
-          "documentation":"Operation ID for tracking DeleteApplicationVpcConfiguration request"
+          "documentation":"<p>The operation ID that can be used to track the request.</p>"
         }
       }
     },
@@ -2107,14 +2170,14 @@
         "ApplicationName":{"shape":"ApplicationName"},
         "OperationId":{"shape":"OperationId"}
       },
-      "documentation":"Request for information about a specific operation performed on a Managed Service for Apache Flink application"
+      "documentation":"<p>A request for information about a specific operation that was performed on a Managed Service for Apache Flink application.</p>"
     },
     "DescribeApplicationOperationResponse":{
       "type":"structure",
       "members":{
         "ApplicationOperationInfoDetails":{"shape":"ApplicationOperationInfoDetails"}
       },
-      "documentation":"Provides details of the operation corresponding to the operation-ID on a Managed Service for Apache Flink application"
+      "documentation":"<p>Provides details of the operation that corresponds to the operation ID on a Managed Service for Apache Flink application.</p>"
     },
     "DescribeApplicationRequest":{
       "type":"structure",
@@ -2285,12 +2348,12 @@
       "members":{
         "ErrorString":{"shape":"ErrorString"}
       },
-      "documentation":"Provides a description of the operation failure error"
+      "documentation":"<p>A description of the error that caused an operation to fail.</p>"
     },
     "ErrorMessage":{"type":"string"},
     "ErrorString":{
       "type":"string",
-      "documentation":"Error message resulting in failure of the operation",
+      "documentation":"<p>An error message that is returned when an operation fails.</p>",
       "max":512,
       "min":1
     },
@@ -2304,7 +2367,7 @@
       "members":{
         "CheckpointConfiguration":{
           "shape":"CheckpointConfiguration",
-          "documentation":"<p>Describes an application's checkpointing configuration. Checkpointing is the process of persisting application state for fault tolerance. For more information, see <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.19/docs/dev/datastream/fault-tolerance/checkpointing/#enabling-and-configuring-checkpointing\"> Checkpoints for Fault Tolerance</a> in the <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.19/\">Apache Flink Documentation</a>. </p>"
+          "documentation":"<p>Describes an application's checkpointing configuration. Checkpointing is the process of persisting application state for fault tolerance. For more information, see <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.20/docs/dev/datastream/fault-tolerance/checkpointing/#enabling-and-configuring-checkpointing\"> Checkpoints for Fault Tolerance</a> in the <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.20/\">Apache Flink Documentation</a>. </p>"
         },
         "MonitoringConfiguration":{
           "shape":"MonitoringConfiguration",
@@ -2334,7 +2397,7 @@
         },
         "JobPlanDescription":{
           "shape":"JobPlanDescription",
-          "documentation":"<p>The job plan for an application. For more information about the job plan, see <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.19/internals/job_scheduling.html\">Jobs and Scheduling</a> in the <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.19/\">Apache Flink Documentation</a>. To retrieve the job plan for the application, use the <a>DescribeApplicationRequest$IncludeAdditionalDetails</a> parameter of the <a>DescribeApplication</a> operation.</p>"
+          "documentation":"<p>The job plan for an application. For more information about the job plan, see <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.20/internals/job_scheduling.html\">Jobs and Scheduling</a> in the <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.20/\">Apache Flink Documentation</a>. To retrieve the job plan for the application, use the <a>DescribeApplicationRequest$IncludeAdditionalDetails</a> parameter of the <a>DescribeApplication</a> operation.</p>"
         }
       },
       "documentation":"<p>Describes configuration parameters for a Managed Service for Apache Flink application.</p>"
@@ -2362,7 +2425,7 @@
       "members":{
         "AllowNonRestoredState":{
           "shape":"BooleanObject",
-          "documentation":"<p>When restoring from a snapshot, specifies whether the runtime is allowed to skip a state that cannot be mapped to the new program. This will happen if the program is updated between snapshots to remove stateful parameters, and state data in the snapshot no longer corresponds to valid application data. For more information, see <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.19/docs/ops/state/savepoints/#allowing-non-restored-state\"> Allowing Non-Restored State</a> in the <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.19/\">Apache Flink documentation</a>.</p> <note> <p>This value defaults to <code>false</code>. If you update your application without specifying this parameter, <code>AllowNonRestoredState</code> will be set to <code>false</code>, even if it was previously set to <code>true</code>.</p> </note>"
+          "documentation":"<p>When restoring from a snapshot, specifies whether the runtime is allowed to skip a state that cannot be mapped to the new program. This will happen if the program is updated between snapshots to remove stateful parameters, and state data in the snapshot no longer corresponds to valid application data. For more information, see <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.20/docs/ops/state/savepoints/#allowing-non-restored-state\"> Allowing Non-Restored State</a> in the <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.20/\">Apache Flink documentation</a>.</p> <note> <p>This value defaults to <code>false</code>. If you update your application without specifying this parameter, <code>AllowNonRestoredState</code> will be set to <code>false</code>, even if it was previously set to <code>true</code>.</p> </note>"
         }
       },
       "documentation":"<p>Describes the starting parameters for a Managed Service for Apache Flink application.</p>"
@@ -2711,6 +2774,18 @@
       "documentation":"<p>For a SQL-based Kinesis Data Analytics application, provides additional mapping information when JSON is the record format on the streaming source.</p>"
     },
     "JobPlanDescription":{"type":"string"},
+    "KeyId":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "KeyType":{
+      "type":"string",
+      "enum":[
+        "AWS_OWNED_KEY",
+        "CUSTOMER_MANAGED_KEY"
+      ]
+    },
     "KinesisAnalyticsARN":{
       "type":"string",
       "max":2048,
@@ -2912,7 +2987,7 @@
     },
     "ListApplicationOperationsInputLimit":{
       "type":"integer",
-      "documentation":"Limit on the number of records returned in the response",
+      "documentation":"<p>The limit on the number of records to be returned in the response.</p>",
       "max":50,
       "min":1
     },
@@ -2926,7 +3001,7 @@
         "Operation":{"shape":"Operation"},
         "OperationStatus":{"shape":"OperationStatus"}
       },
-      "documentation":"Request to list operations performed on an application"
+      "documentation":"<p>A request for a list of operations performed on an application.</p>"
     },
     "ListApplicationOperationsResponse":{
       "type":"structure",
@@ -2934,7 +3009,7 @@
         "ApplicationOperationInfoList":{"shape":"ApplicationOperationInfoList"},
         "NextToken":{"shape":"NextToken"}
       },
-      "documentation":"Response with the list of operations for an application"
+      "documentation":"<p>A response that returns a list of operations for an application.</p>"
     },
     "ListApplicationSnapshotsRequest":{
       "type":"structure",
@@ -3199,7 +3274,7 @@
     },
     "NextToken":{
       "type":"string",
-      "documentation":"If a previous command returned a pagination token, pass it into this value to retrieve the next set of results",
+      "documentation":"<p>A pagination token that can be used in a subsequent request.</p>",
       "max":512,
       "min":1
     },
@@ -3210,7 +3285,7 @@
     },
     "Operation":{
       "type":"string",
-      "documentation":"Type of operation performed on an application",
+      "documentation":"<p>The type of operation that is performed on an application.</p>",
       "max":64,
       "min":1
     },
@@ -3219,21 +3294,21 @@
       "members":{
         "RollbackOperationId":{
           "shape":"OperationId",
-          "documentation":"Provides the operation ID of a system-rollback operation executed due to failure in the current operation"
+          "documentation":"<p>The rollback operation ID of the system-rollback operation that executed due to failure in the current operation.</p>"
         },
         "ErrorInfo":{"shape":"ErrorInfo"}
       },
-      "documentation":"Provides a description of the operation failure"
+      "documentation":"<p>Provides a description of the operation failure.</p>"
     },
     "OperationId":{
       "type":"string",
-      "documentation":"Identifier of the Operation",
+      "documentation":"<p>The operation ID of the request.</p>",
       "max":64,
       "min":1
     },
     "OperationStatus":{
       "type":"string",
-      "documentation":"Status of the operation performed on an application",
+      "documentation":"<p>The status of the operation.</p>",
       "enum":[
         "IN_PROGRESS",
         "CANCELLED",
@@ -3358,7 +3433,7 @@
         },
         "Parallelism":{
           "shape":"Parallelism",
-          "documentation":"<p>Describes the initial number of parallel tasks that a Managed Service for Apache Flink application can perform. If <code>AutoScalingEnabled</code> is set to True, Managed Service for Apache Flink increases the <code>CurrentParallelism</code> value in response to application load. The service can increase the <code>CurrentParallelism</code> value up to the maximum parallelism, which is <code>ParalellismPerKPU</code> times the maximum KPUs for the application. The maximum KPUs for an application is 32 by default, and can be increased by requesting a limit increase. If application load is reduced, the service can reduce the <code>CurrentParallelism</code> value down to the <code>Parallelism</code> setting.</p>"
+          "documentation":"<p>Describes the initial number of parallel tasks that a Managed Service for Apache Flink application can perform. If <code>AutoScalingEnabled</code> is set to True, Managed Service for Apache Flink increases the <code>CurrentParallelism</code> value in response to application load. The service can increase the <code>CurrentParallelism</code> value up to the maximum parallelism, which is <code>ParalellismPerKPU</code> times the maximum KPUs for the application. The maximum KPUs for an application is 64 by default, and can be increased by requesting a limit increase. If application load is reduced, the service can reduce the <code>CurrentParallelism</code> value down to the <code>Parallelism</code> setting.</p>"
         },
         "ParallelismPerKPU":{
           "shape":"ParallelismPerKPU",
@@ -3369,7 +3444,7 @@
           "documentation":"<p>Describes whether the Managed Service for Apache Flink service can increase the parallelism of the application in response to increased throughput.</p>"
         }
       },
-      "documentation":"<p>Describes parameters for how a Managed Service for Apache Flink application executes multiple tasks simultaneously. For more information about parallelism, see <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.19/dev/parallel.html\">Parallel Execution</a> in the <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.19/\">Apache Flink Documentation</a>.</p>"
+      "documentation":"<p>Describes parameters for how a Managed Service for Apache Flink application executes multiple tasks simultaneously. For more information about parallelism, see <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.20/dev/parallel.html\">Parallel Execution</a> in the <a href=\"https://nightlies.apache.org/flink/flink-docs-release-1.20/\">Apache Flink Documentation</a>.</p>"
     },
     "ParallelismConfigurationDescription":{
       "type":"structure",
@@ -3380,7 +3455,7 @@
         },
         "Parallelism":{
           "shape":"Parallelism",
-          "documentation":"<p>Describes the initial number of parallel tasks that a Managed Service for Apache Flink application can perform. If <code>AutoScalingEnabled</code> is set to True, then Managed Service for Apache Flink can increase the <code>CurrentParallelism</code> value in response to application load. The service can increase <code>CurrentParallelism</code> up to the maximum parallelism, which is <code>ParalellismPerKPU</code> times the maximum KPUs for the application. The maximum KPUs for an application is 32 by default, and can be increased by requesting a limit increase. If application load is reduced, the service can reduce the <code>CurrentParallelism</code> value down to the <code>Parallelism</code> setting.</p>"
+          "documentation":"<p>Describes the initial number of parallel tasks that a Managed Service for Apache Flink application can perform. If <code>AutoScalingEnabled</code> is set to True, then Managed Service for Apache Flink can increase the <code>CurrentParallelism</code> value in response to application load. The service can increase <code>CurrentParallelism</code> up to the maximum parallelism, which is <code>ParalellismPerKPU</code> times the maximum KPUs for the application. The maximum KPUs for an application is 64 by default, and can be increased by requesting a limit increase. If application load is reduced, the service can reduce the <code>CurrentParallelism</code> value down to the <code>Parallelism</code> setting.</p>"
         },
         "ParallelismPerKPU":{
           "shape":"ParallelismPerKPU",
@@ -3714,7 +3789,7 @@
         "ApplicationDetail":{"shape":"ApplicationDetail"},
         "OperationId":{
           "shape":"OperationId",
-          "documentation":"Operation ID for tracking RollbackApplication request"
+          "documentation":"<p>The operation ID that can be used to track the request.</p>"
         }
       }
     },
@@ -4000,6 +4075,10 @@
         "RuntimeEnvironment":{
           "shape":"RuntimeEnvironment",
           "documentation":"<p>The Flink Runtime for the application snapshot.</p>"
+        },
+        "ApplicationEncryptionConfigurationDescription":{
+          "shape":"ApplicationEncryptionConfigurationDescription",
+          "documentation":"<p>Specifies the encryption settings of data at rest for the application snapshot.</p>"
         }
       },
       "documentation":"<p>Provides details about a snapshot of application state.</p>"
@@ -4140,7 +4219,7 @@
       "members":{
         "OperationId":{
           "shape":"OperationId",
-          "documentation":"Operation ID for tracking StartApplication request"
+          "documentation":"<p>The operation ID that can be used to track the request.</p>"
         }
       }
     },
@@ -4163,7 +4242,7 @@
       "members":{
         "OperationId":{
           "shape":"OperationId",
-          "documentation":"Operation ID for tracking StopApplication request"
+          "documentation":"<p>The operation ID that can be used to track the request.</p>"
         }
       }
     },
@@ -4219,8 +4298,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -4290,8 +4368,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateApplicationMaintenanceConfigurationRequest":{
       "type":"structure",
@@ -4371,7 +4448,7 @@
         },
         "OperationId":{
           "shape":"OperationId",
-          "documentation":"Operation ID for tracking UpdateApplication request"
+          "documentation":"<p>The operation ID that can be used to track the request.</p>"
         }
       }
     },

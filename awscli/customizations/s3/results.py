@@ -215,7 +215,7 @@ class ResultRecorder(BaseResultHandler):
         if not isinstance(result, BaseResult):
             raise ValueError(
                 'Any result using _get_ongoing_dict_key must subclass from '
-                'BaseResult. Provided result is of type: %s' % type(result)
+                f'BaseResult. Provided result is of type: {type(result)}'
             )
         key_parts = []
         for result_property in [result.transfer_type, result.src, result.dest]:
@@ -345,7 +345,14 @@ class ResultPrinter(BaseResultHandler):
     SRC_DEST_TRANSFER_LOCATION_FORMAT = '{src} to {dest}'
     SRC_TRANSFER_LOCATION_FORMAT = '{src}'
 
-    def __init__(self, result_recorder, out_file=None, error_file=None):
+    def __init__(
+        self,
+        result_recorder,
+        out_file=None,
+        error_file=None,
+        frequency=0,
+        oneline=True,
+    ):
         """Prints status of ongoing transfer
 
         :type result_recorder: ResultRecorder
@@ -358,9 +365,22 @@ class ResultPrinter(BaseResultHandler):
         :type error_file: file-like obj
         :param error_file: Location to write warnings and errors.
             By default, the location is sys.stderr.
+
+        :type frequency: int
+        :param frequency: Frequency in seconds to print progress.
+            By default, prints progress in real time.
+
+        :type oneline: boolean
+        :param oneline: Indicates if progress should be on one line.
+            By default, prints progress on one line, overwriting previous
+            progress message. Setting to False prints each progress
+            message on a new line.
+
         """
         self._result_recorder = result_recorder
         self._out_file = out_file
+        self._frequency = frequency
+        self._first = True
         if self._out_file is None:
             self._out_file = sys.stdout
         self._error_file = error_file
@@ -378,6 +398,8 @@ class ResultPrinter(BaseResultHandler):
             DryRunResult: self._print_dry_run,
             FinalTotalSubmissionsResult: self._clear_progress_if_no_more_expected_transfers,
         }
+        self._now = time.time()
+        self._oneline = oneline
 
     def __call__(self, result):
         """Print the progress of the ongoing transfer based on a result"""
@@ -459,8 +481,27 @@ class ResultPrinter(BaseResultHandler):
         else:
             self._clear_progress_if_no_more_expected_transfers(ending_char='\r')
 
+    def _should_print_progress_now(self):
+        """Check to see if should print progres based on frequency.
+
+        Will only return true if its the first time or enough time has elapsed
+        since the last time printing.
+        """
+
+        if (
+            self._first
+            or (self._frequency == 0)
+            or (time.time() - self._now >= self._frequency)
+        ):
+            self._now = time.time()
+            self._first = False
+            return True
+
+        return False
+
     def _print_progress(self, **kwargs):
-        # Get all the statistics in the correct form.
+        # Get all of the statistics in the correct form.
+
         remaining_files = self._get_expected_total(
             str(
                 self._result_recorder.expected_files_transferred
@@ -501,17 +542,22 @@ class ResultPrinter(BaseResultHandler):
         if not self._result_recorder.expected_totals_are_final():
             progress_statement += self._STILL_CALCULATING_TOTALS
 
-        # Make sure that it overrides any previous progress bar.
-        progress_statement = self._adjust_statement_padding(
-            progress_statement, ending_char='\r'
-        )
-        # We do not want to include the carriage return in this calculation
-        # as progress length is used for determining whitespace padding.
-        # So we subtract one off of the length.
-        self._progress_length = len(progress_statement) - 1
-
+        if self._oneline:
+            # Make sure that it overrides any previous progress bar.
+            progress_statement = self._adjust_statement_padding(
+                progress_statement, ending_char='\r'
+            )
+            # We do not want to include the carriage return in this calculation
+            # as progress length is used for determining whitespace padding.
+            # So we subtract one off of the length.
+            self._progress_length = len(progress_statement) - 1
+        else:
+            progress_statement = self._adjust_statement_padding(
+                progress_statement, ending_char='\n'
+            )
         # Print the progress out.
-        self._print_to_out_file(progress_statement)
+        if self._should_print_progress_now():
+            self._print_to_out_file(progress_statement)
 
     def _get_expected_total(self, expected_total):
         if not self._result_recorder.expected_totals_are_final():

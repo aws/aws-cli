@@ -22,7 +22,8 @@
       },
       "input":{"shape":"GetGlyphsRequest"},
       "output":{"shape":"GetGlyphsResponse"},
-      "documentation":"<p> <code>GetGlyphs</code> returns the map's glyphs.</p>"
+      "documentation":"<p> <code>GetGlyphs</code> returns the map's glyphs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/styling-labels-with-glyphs.html\">Style labels with glyphs</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
+      "readonly":true
     },
     "GetSprites":{
       "name":"GetSprites",
@@ -33,7 +34,8 @@
       },
       "input":{"shape":"GetSpritesRequest"},
       "output":{"shape":"GetSpritesResponse"},
-      "documentation":"<p> <code>GetSprites</code> returns the map's sprites.</p>"
+      "documentation":"<p> <code>GetSprites</code> returns the map's sprites.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/styling-iconography-with-sprites.html\">Style iconography with sprites</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
+      "readonly":true
     },
     "GetStaticMap":{
       "name":"GetStaticMap",
@@ -50,7 +52,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> <code>GetStaticMap</code> provides high-quality static map images with customizable options. You can modify the map's appearance and overlay additional information. It's an ideal solution for applications requiring tailored static map snapshots.</p>"
+      "documentation":"<p> <code>GetStaticMap</code> provides high-quality static map images with customizable options. You can modify the map's appearance and overlay additional information. It's an ideal solution for applications requiring tailored static map snapshots.</p> <p>For more information, see the following topics in the <i>Amazon Location Service Developer Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/static-maps.html\">Static maps</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/customizing-static-maps.html\">Customize static maps</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/overlaying-static-map.html\">Overlay on the static map</a> </p> </li> </ul>",
+      "readonly":true
     },
     "GetStyleDescriptor":{
       "name":"GetStyleDescriptor",
@@ -61,7 +64,8 @@
       },
       "input":{"shape":"GetStyleDescriptorRequest"},
       "output":{"shape":"GetStyleDescriptorResponse"},
-      "documentation":"<p> <code>GetStyleDescriptor</code> returns information about the style.</p>"
+      "documentation":"<p> <code>GetStyleDescriptor</code> returns information about the style.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/styling-dynamic-maps.html\">Style dynamic maps</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
+      "readonly":true
     },
     "GetTile":{
       "name":"GetTile",
@@ -74,11 +78,13 @@
       "output":{"shape":"GetTileResponse"},
       "errors":[
         {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> <code>GetTile</code> returns a tile. Map tiles are used by clients to render a map. they're addressed using a grid arrangement with an X coordinate, Y coordinate, and Z (zoom) level.</p>"
+      "documentation":"<p> <code>GetTile</code> returns a tile. Map tiles are used by clients to render a map. they're addressed using a grid arrangement with an X coordinate, Y coordinate, and Z (zoom) level.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/location/latest/developerguide/tiles.html\">Tiles</a> in the <i>Amazon Location Service Developer Guide</i>.</p>",
+      "readonly":true
     }
   },
   "shapes":{
@@ -119,23 +125,31 @@
     "CompactOverlay":{
       "type":"string",
       "max":7000,
-      "min":1
+      "min":1,
+      "sensitive":true
+    },
+    "ContourDensity":{
+      "type":"string",
+      "enum":["Medium"]
     },
     "CountryCode":{
       "type":"string",
       "max":3,
       "min":2,
-      "pattern":"([A-Z]{2}|[A-Z]{3})"
+      "pattern":"([A-Z]{2}|[A-Z]{3})",
+      "sensitive":true
     },
     "DistanceMeters":{
       "type":"long",
       "max":4294967295,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "GeoJsonOverlay":{
       "type":"string",
       "max":7000,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "GetGlyphsRequest":{
       "type":"structure",
@@ -152,7 +166,7 @@
         },
         "FontUnicodeRange":{
           "shape":"GetGlyphsRequestFontUnicodeRangeString",
-          "documentation":"<p>A Unicode range of characters to download glyphs for. This must be aligned to multiples of 256. </p> <p>Example: <code>0-255.pdf</code> </p>",
+          "documentation":"<p>A Unicode range of characters to download glyphs for. This must be aligned to multiples of 256. </p> <p>Example: <code>0-255.pbf</code> </p>",
           "location":"uri",
           "locationName":"FontUnicodeRange"
         }
@@ -165,6 +179,8 @@
     },
     "GetGlyphsRequestFontUnicodeRangeString":{
       "type":"string",
+      "max":50,
+      "min":0,
       "pattern":"[0-9]+-[0-9]+\\.pbf"
     },
     "GetGlyphsResponse":{
@@ -271,20 +287,20 @@
       ],
       "members":{
         "BoundingBox":{
-          "shape":"PositionListString",
-          "documentation":"<p>Takes in two pairs of coordinates, [Lon, Lat], denoting south-westerly and north-easterly edges of the image. The underlying area becomes the view of the image. </p> <p>Example: -123.17075,49.26959,-123.08125,49.31429</p>",
+          "shape":"GetStaticMapRequestBoundingBoxString",
+          "documentation":"<p>Takes in two pairs of coordinates in World Geodetic System (WGS 84) format: [longitude, latitude], denoting south-westerly and north-easterly edges of the image. The underlying area becomes the view of the image. </p> <p>Example: -123.17075,49.26959,-123.08125,49.31429</p>",
           "location":"querystring",
           "locationName":"bounding-box"
         },
         "BoundedPositions":{
-          "shape":"PositionListString",
-          "documentation":"<p>Takes in two or more pair of coordinates, [Lon, Lat], with each coordinate separated by a comma. The API will generate an image to encompass all of the provided coordinates. </p> <note> <p>Cannot be used with <code>Zoom</code> and or <code>Radius</code> </p> </note> <p>Example: 97.170451,78.039098,99.045536,27.176178</p>",
+          "shape":"GetStaticMapRequestBoundedPositionsString",
+          "documentation":"<p>Takes in two or more pair of coordinates in World Geodetic System (WGS 84) format: [longitude, latitude], with each coordinate separated by a comma. The API will generate an image to encompass all of the provided coordinates. </p> <note> <p>Cannot be used with <code>Zoom</code> and or <code>Radius</code> </p> </note> <p>Example: 97.170451,78.039098,99.045536,27.176178</p>",
           "location":"querystring",
           "locationName":"bounded-positions"
         },
         "Center":{
           "shape":"PositionString",
-          "documentation":"<p>Takes in a pair of coordinates, [Lon, Lat], which becomes the center point of the image. This parameter requires that either zoom or radius is set.</p> <note> <p>Cannot be used with <code>Zoom</code> and or <code>Radius</code> </p> </note> <p>Example: 49.295,-123.108</p>",
+          "documentation":"<p>Takes in a pair of coordinates in World Geodetic System (WGS 84) format: [longitude, latitude], which becomes the center point of the image. This parameter requires that either zoom or radius is set.</p> <note> <p>Cannot be used with <code>Zoom</code> and or <code>Radius</code> </p> </note> <p>Example: 49.295,-123.108</p>",
           "location":"querystring",
           "locationName":"center"
         },
@@ -337,7 +353,7 @@
           "locationName":"lang"
         },
         "Padding":{
-          "shape":"Integer",
+          "shape":"GetStaticMapRequestPaddingInteger",
           "documentation":"<p>Applies additional space (in pixels) around overlay feature to prevent them from being cut or obscured.</p> <note> <p>Value for max and min is determined by:</p> <p>Min: <code>1</code> </p> <p>Max: <code>min(height, width)/4</code> </p> </note> <p>Example: <code>100</code> </p>",
           "location":"querystring",
           "locationName":"padding"
@@ -393,6 +409,20 @@
         }
       }
     },
+    "GetStaticMapRequestBoundedPositionsString":{
+      "type":"string",
+      "max":2000,
+      "min":0,
+      "pattern":"(-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?)(,(-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?))*",
+      "sensitive":true
+    },
+    "GetStaticMapRequestBoundingBoxString":{
+      "type":"string",
+      "max":100,
+      "min":0,
+      "pattern":"(-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?)(,(-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?))*",
+      "sensitive":true
+    },
     "GetStaticMapRequestFileNameString":{
       "type":"string",
       "pattern":"map(@2x)?"
@@ -401,19 +431,29 @@
       "type":"integer",
       "box":true,
       "max":1400,
-      "min":64
+      "min":64,
+      "sensitive":true
+    },
+    "GetStaticMapRequestPaddingInteger":{
+      "type":"integer",
+      "box":true,
+      "max":350,
+      "min":0,
+      "sensitive":true
     },
     "GetStaticMapRequestWidthInteger":{
       "type":"integer",
       "box":true,
       "max":1400,
-      "min":64
+      "min":64,
+      "sensitive":true
     },
     "GetStaticMapRequestZoomFloat":{
       "type":"float",
       "box":true,
       "max":20,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "GetStaticMapResponse":{
       "type":"structure",
@@ -472,6 +512,30 @@
           "location":"querystring",
           "locationName":"political-view"
         },
+        "Terrain":{
+          "shape":"Terrain",
+          "documentation":"<p>Adjusts how physical terrain details are rendered on the map.</p> <p>The following terrain styles are currently supported:</p> <ul> <li> <p> <code>Hillshade</code>: Displays the physical terrain details through shading and highlighting of elevation change and geographic features.</p> </li> </ul> <p>This parameter is valid only for the <code>Standard</code> map style.</p>",
+          "location":"querystring",
+          "locationName":"terrain"
+        },
+        "ContourDensity":{
+          "shape":"ContourDensity",
+          "documentation":"<p>Displays the shape and steepness of terrain features using elevation lines. The density value controls how densely the available contour line information is rendered on the map.</p> <p>This parameter is valid only for the <code>Standard</code> map style.</p>",
+          "location":"querystring",
+          "locationName":"contour-density"
+        },
+        "Traffic":{
+          "shape":"Traffic",
+          "documentation":"<p>Displays real-time traffic information overlay on map, such as incident events and flow events.</p> <p>This parameter is valid only for the <code>Standard</code> map style.</p>",
+          "location":"querystring",
+          "locationName":"traffic"
+        },
+        "TravelModes":{
+          "shape":"TravelModeList",
+          "documentation":"<p>Renders additional map information relevant to selected travel modes. Information for multiple travel modes can be displayed simultaneously, although this increases the overall information density rendered on the map.</p> <p>This parameter is valid only for the <code>Standard</code> map style.</p>",
+          "location":"querystring",
+          "locationName":"travel-modes"
+        },
         "Key":{
           "shape":"ApiKey",
           "documentation":"<p>Optional: The API key to be used for authorization. Either an API key or valid SigV4 signature must be provided when making a request. </p>",
@@ -517,6 +581,12 @@
         "Y"
       ],
       "members":{
+        "AdditionalFeatures":{
+          "shape":"TileAdditionalFeatureList",
+          "documentation":"<p>A list of optional additional parameters such as map styles that can be requested for each result.</p>",
+          "location":"querystring",
+          "locationName":"additional-features"
+        },
         "Tileset":{
           "shape":"Tileset",
           "documentation":"<p>Specifies the desired tile set.</p> <p>Valid Values: <code>raster.satellite | vector.basemap</code> </p>",
@@ -551,15 +621,24 @@
     },
     "GetTileRequestXString":{
       "type":"string",
-      "pattern":".*\\d+.*"
+      "max":7,
+      "min":0,
+      "pattern":".*\\d+.*",
+      "sensitive":true
     },
     "GetTileRequestYString":{
       "type":"string",
-      "pattern":".*\\d+.*"
+      "max":7,
+      "min":0,
+      "pattern":".*\\d+.*",
+      "sensitive":true
     },
     "GetTileRequestZString":{
       "type":"string",
-      "pattern":".*\\d+.*"
+      "max":2,
+      "min":0,
+      "pattern":".*\\d+.*",
+      "sensitive":true
     },
     "GetTileResponse":{
       "type":"structure",
@@ -595,10 +674,6 @@
         }
       },
       "payload":"Blob"
-    },
-    "Integer":{
-      "type":"integer",
-      "box":true
     },
     "InternalServerException":{
       "type":"structure",
@@ -643,16 +718,28 @@
         "Satellite"
       ]
     },
-    "PositionListString":{
-      "type":"string",
-      "min":7,
-      "pattern":"(-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?)(,(-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?))*"
-    },
     "PositionString":{
       "type":"string",
       "max":36,
       "min":3,
-      "pattern":"-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?"
+      "pattern":"-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?",
+      "sensitive":true
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>Exception thrown when the associated resource could not be found.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
     },
     "ScaleBarUnit":{
       "type":"string",
@@ -671,6 +758,10 @@
       ]
     },
     "String":{"type":"string"},
+    "Terrain":{
+      "type":"string",
+      "enum":["Hillshade"]
+    },
     "ThrottlingException":{
       "type":"structure",
       "required":["Message"],
@@ -688,11 +779,43 @@
       "exception":true,
       "retryable":{"throttling":false}
     },
+    "TileAdditionalFeature":{
+      "type":"string",
+      "enum":[
+        "ContourLines",
+        "Hillshade",
+        "Logistics",
+        "Transit"
+      ]
+    },
+    "TileAdditionalFeatureList":{
+      "type":"list",
+      "member":{"shape":"TileAdditionalFeature"},
+      "max":4,
+      "min":0
+    },
     "Tileset":{
       "type":"string",
       "max":100,
       "min":1,
       "pattern":"[-.\\w]+"
+    },
+    "Traffic":{
+      "type":"string",
+      "enum":["All"]
+    },
+    "TravelMode":{
+      "type":"string",
+      "enum":[
+        "Transit",
+        "Truck"
+      ]
+    },
+    "TravelModeList":{
+      "type":"list",
+      "member":{"shape":"TravelMode"},
+      "max":2,
+      "min":0
     },
     "ValidationException":{
       "type":"structure",

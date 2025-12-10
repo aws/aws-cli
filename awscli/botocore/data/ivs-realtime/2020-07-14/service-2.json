@@ -1534,7 +1534,7 @@
         },
         "replica":{
           "shape":"Replica",
-          "documentation":"<p>If true, this indicates the <code>participantId</code> is a replicated participant. If this is a subscribe event, then this flag refers to <code>remoteParticipantId</code>.</p>"
+          "documentation":"<p>If true, this indicates the <code>participantId</code> is a replicated participant. If this is a subscribe event, then this flag refers to <code>remoteParticipantId</code>. Default: <code>false</code>.</p>"
         }
       },
       "documentation":"<p>An occurrence during a stage session.</p>"
@@ -1777,6 +1777,10 @@
         "gridGap":{
           "shape":"GridGap",
           "documentation":"<p>Specifies the spacing between participant tiles in pixels. Default: <code>2</code>.</p>"
+        },
+        "participantOrderAttribute":{
+          "shape":"AttributeKey",
+          "documentation":"<p>Attribute name in <a>ParticipantTokenConfiguration</a> identifying the participant ordering key. Participants with <code>participantOrderAttribute</code> set to <code>\"\"</code> or not specified are ordered based on their arrival time into the stage.</p>"
         }
       },
       "documentation":"<p>Configuration information specific to Grid layout, for server-side composition. See \"Layouts\" in <a href=\"https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/server-side-composition.html\">Server-Side Composition</a>.</p>"
@@ -2732,7 +2736,7 @@
         },
         "sourceStageArn":{
           "shape":"StageArn",
-          "documentation":"<p>ARN of the stage from which this participant is replicated.</p>"
+          "documentation":"<p>Source stage ARN from which this participant is replicated, if <code>replicationType</code> is <code>REPLICA</code>.</p>"
         },
         "sourceSessionId":{
           "shape":"StageSessionId",
@@ -2980,6 +2984,10 @@
         "pipHeight":{
           "shape":"PipHeight",
           "documentation":"<p>Specifies the height of the PiP window in pixels. When this is not set explicitly, <code>pipHeight</code>’s value will be based on the size of the composition and the aspect ratio of the participant’s video.</p>"
+        },
+        "participantOrderAttribute":{
+          "shape":"AttributeKey",
+          "documentation":"<p>Attribute name in <a>ParticipantTokenConfiguration</a> identifying the participant ordering key. Participants with <code>participantOrderAttribute</code> set to <code>\"\"</code> or not specified are ordered based on their arrival time into the stage.</p>"
         }
       },
       "documentation":"<p>Configuration information specific to Picture-in-Picture (PiP) layout, for <a href=\"https://docs.aws.amazon.com/ivs/latest/RealTimeUserGuide/server-side-composition.html\">server-side composition</a>. </p>"

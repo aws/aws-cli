@@ -1,6 +1,10 @@
 **To verify a digital signature**
 
-The following ``verify`` example verifies a cryptographic signature for a short, Base64-encoded message. The key ID, message, message type, and signing algorithm must be same ones that were used to sign the message. The signature that you specify cannot be base64-encoded. For help decoding the signature that the ``sign`` command returns, see the ``sign`` command examples.
+The following ``verify`` command verifies a cryptographic signature for a short, Base64-encoded message. The key ID, message, message type, and signing algorithm must be same ones that were used to sign the message.
+
+In AWS CLI v2, the value of the ``message`` parameter must be Base64-encoded. Or, you can save the message in a file and use the ``fileb://`` prefix, which tells the AWS CLI to read binary data from the file.
+
+The signature that you specify cannot be base64-encoded. For help decoding the signature that the ``sign`` command returns, see the ``sign`` command examples.
 
 The output of the command includes a Boolean ``SignatureValid`` field that indicates that the signature was verified. If the signature validation fails, the ``verify`` command fails, too.
 

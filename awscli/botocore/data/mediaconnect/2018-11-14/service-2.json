@@ -130,6 +130,63 @@
       ],
       "documentation":"<p> Adds VPC interfaces to a flow.</p>"
     },
+    "BatchGetRouterInput":{
+      "name":"BatchGetRouterInput",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/routerInputs",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetRouterInputRequest"},
+      "output":{"shape":"BatchGetRouterInputResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves information about multiple router inputs in AWS Elemental MediaConnect.</p>",
+      "readonly":true
+    },
+    "BatchGetRouterNetworkInterface":{
+      "name":"BatchGetRouterNetworkInterface",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/routerNetworkInterfaces",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetRouterNetworkInterfaceRequest"},
+      "output":{"shape":"BatchGetRouterNetworkInterfaceResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves information about multiple router network interfaces in AWS Elemental MediaConnect.</p>",
+      "readonly":true
+    },
+    "BatchGetRouterOutput":{
+      "name":"BatchGetRouterOutput",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/routerOutputs",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchGetRouterOutputRequest"},
+      "output":{"shape":"BatchGetRouterOutputResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves information about multiple router outputs in AWS Elemental MediaConnect.</p>",
+      "readonly":true
+    },
     "CreateBridge":{
       "name":"CreateBridge",
       "http":{
@@ -188,6 +245,66 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p> Creates a new gateway. The request must include at least one network (up to four).</p>"
+    },
+    "CreateRouterInput":{
+      "name":"CreateRouterInput",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/routerInput",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateRouterInputRequest"},
+      "output":{"shape":"CreateRouterInputResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"RouterInputServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a new router input in AWS Elemental MediaConnect.</p>"
+    },
+    "CreateRouterNetworkInterface":{
+      "name":"CreateRouterNetworkInterface",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/routerNetworkInterface",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateRouterNetworkInterfaceRequest"},
+      "output":{"shape":"CreateRouterNetworkInterfaceResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"RouterNetworkInterfaceServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a new router network interface in AWS Elemental MediaConnect.</p>"
+    },
+    "CreateRouterOutput":{
+      "name":"CreateRouterOutput",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/routerOutput",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateRouterOutputRequest"},
+      "output":{"shape":"CreateRouterOutputResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"RouterOutputServiceQuotaExceededException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Creates a new router output in AWS Elemental MediaConnect.</p>"
     },
     "DeleteBridge":{
       "name":"DeleteBridge",
@@ -251,6 +368,69 @@
       "documentation":"<p> Deletes a gateway. Before you can delete a gateway, you must deregister its instances and delete its bridges.</p>",
       "idempotent":true
     },
+    "DeleteRouterInput":{
+      "name":"DeleteRouterInput",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/routerInput/{Arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteRouterInputRequest"},
+      "output":{"shape":"DeleteRouterInputResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Deletes a router input from AWS Elemental MediaConnect.</p>",
+      "idempotent":true
+    },
+    "DeleteRouterNetworkInterface":{
+      "name":"DeleteRouterNetworkInterface",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/routerNetworkInterface/{Arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteRouterNetworkInterfaceRequest"},
+      "output":{"shape":"DeleteRouterNetworkInterfaceResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Deletes a router network interface from AWS Elemental MediaConnect.</p>",
+      "idempotent":true
+    },
+    "DeleteRouterOutput":{
+      "name":"DeleteRouterOutput",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/routerOutput/{Arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteRouterOutputRequest"},
+      "output":{"shape":"DeleteRouterOutputResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Deletes a router output from AWS Elemental MediaConnect.</p>",
+      "idempotent":true
+    },
     "DeregisterGatewayInstance":{
       "name":"DeregisterGatewayInstance",
       "http":{
@@ -290,7 +470,8 @@
         {"shape":"NotFoundException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p> Displays the details of a bridge.</p>"
+      "documentation":"<p> Displays the details of a bridge.</p>",
+      "readonly":true
     },
     "DescribeFlow":{
       "name":"DescribeFlow",
@@ -309,7 +490,8 @@
         {"shape":"NotFoundException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p> Displays the details of a flow. The response includes the flow Amazon Resource Name (ARN), name, and Availability Zone, as well as details about the source, outputs, and entitlements.</p>"
+      "documentation":"<p> Displays the details of a flow. The response includes the flow Amazon Resource Name (ARN), name, and Availability Zone, as well as details about the source, outputs, and entitlements.</p>",
+      "readonly":true
     },
     "DescribeFlowSourceMetadata":{
       "name":"DescribeFlowSourceMetadata",
@@ -328,7 +510,8 @@
         {"shape":"NotFoundException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p> The <code>DescribeFlowSourceMetadata</code> API is used to view information about the flow's source transport stream and programs. This API displays status messages about the flow's source as well as details about the program's video, audio, and other data. </p>"
+      "documentation":"<p> The <code>DescribeFlowSourceMetadata</code> API is used to view information about the flow's source transport stream and programs. This API displays status messages about the flow's source as well as details about the program's video, audio, and other data. </p>",
+      "readonly":true
     },
     "DescribeFlowSourceThumbnail":{
       "name":"DescribeFlowSourceThumbnail",
@@ -347,7 +530,8 @@
         {"shape":"NotFoundException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p> Describes the thumbnail for the flow source. </p>"
+      "documentation":"<p> Describes the thumbnail for the flow source. </p>",
+      "readonly":true
     },
     "DescribeGateway":{
       "name":"DescribeGateway",
@@ -367,7 +551,8 @@
         {"shape":"NotFoundException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p> Displays the details of a gateway. The response includes the gateway Amazon Resource Name (ARN), name, and CIDR blocks, as well as details about the networks.</p>"
+      "documentation":"<p> Displays the details of a gateway. The response includes the gateway Amazon Resource Name (ARN), name, and CIDR blocks, as well as details about the networks.</p>",
+      "readonly":true
     },
     "DescribeGatewayInstance":{
       "name":"DescribeGatewayInstance",
@@ -387,7 +572,8 @@
         {"shape":"NotFoundException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p> Displays the details of an instance. </p>"
+      "documentation":"<p> Displays the details of an instance. </p>",
+      "readonly":true
     },
     "DescribeOffering":{
       "name":"DescribeOffering",
@@ -405,7 +591,8 @@
         {"shape":"NotFoundException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p> Displays the details of an offering. The response includes the offering description, duration, outbound bandwidth, price, and Amazon Resource Name (ARN).</p>"
+      "documentation":"<p> Displays the details of an offering. The response includes the offering description, duration, outbound bandwidth, price, and Amazon Resource Name (ARN).</p>",
+      "readonly":true
     },
     "DescribeReservation":{
       "name":"DescribeReservation",
@@ -423,7 +610,111 @@
         {"shape":"NotFoundException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p> Displays the details of a reservation. The response includes the reservation name, state, start date and time, and the details of the offering that make up the rest of the reservation (such as price, duration, and outbound bandwidth).</p>"
+      "documentation":"<p> Displays the details of a reservation. The response includes the reservation name, state, start date and time, and the details of the offering that make up the rest of the reservation (such as price, duration, and outbound bandwidth).</p>",
+      "readonly":true
+    },
+    "GetRouterInput":{
+      "name":"GetRouterInput",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/routerInput/{Arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRouterInputRequest"},
+      "output":{"shape":"GetRouterInputResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves information about a specific router input in AWS Elemental MediaConnect.</p>",
+      "readonly":true
+    },
+    "GetRouterInputSourceMetadata":{
+      "name":"GetRouterInputSourceMetadata",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/routerInput/{Arn}/source-metadata",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRouterInputSourceMetadataRequest"},
+      "output":{"shape":"GetRouterInputSourceMetadataResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves detailed metadata information about a specific router input source, including stream details and connection state.</p>",
+      "readonly":true
+    },
+    "GetRouterInputThumbnail":{
+      "name":"GetRouterInputThumbnail",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/routerInput/{Arn}/thumbnail",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRouterInputThumbnailRequest"},
+      "output":{"shape":"GetRouterInputThumbnailResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves the thumbnail for a router input in AWS Elemental MediaConnect.</p>",
+      "readonly":true
+    },
+    "GetRouterNetworkInterface":{
+      "name":"GetRouterNetworkInterface",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/routerNetworkInterface/{Arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRouterNetworkInterfaceRequest"},
+      "output":{"shape":"GetRouterNetworkInterfaceResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves information about a specific router network interface in AWS Elemental MediaConnect.</p>",
+      "readonly":true
+    },
+    "GetRouterOutput":{
+      "name":"GetRouterOutput",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/routerOutput/{Arn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetRouterOutputRequest"},
+      "output":{"shape":"GetRouterOutputResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves information about a specific router output in AWS Elemental MediaConnect.</p>",
+      "readonly":true
     },
     "GrantFlowEntitlements":{
       "name":"GrantFlowEntitlements",
@@ -461,7 +752,8 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p> Displays a list of bridges that are associated with this account and an optionally specified Amazon Resource Name (ARN). This request returns a paginated result.</p>"
+      "documentation":"<p> Displays a list of bridges that are associated with this account and an optionally specified Amazon Resource Name (ARN). This request returns a paginated result.</p>",
+      "readonly":true
     },
     "ListEntitlements":{
       "name":"ListEntitlements",
@@ -478,7 +770,8 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p> Displays a list of all entitlements that have been granted to this account. This request returns 20 results per page.</p>"
+      "documentation":"<p> Displays a list of all entitlements that have been granted to this account. This request returns 20 results per page.</p>",
+      "readonly":true
     },
     "ListFlows":{
       "name":"ListFlows",
@@ -495,7 +788,8 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p> Displays a list of flows that are associated with this account. This request returns a paginated result.</p>"
+      "documentation":"<p> Displays a list of flows that are associated with this account. This request returns a paginated result.</p>",
+      "readonly":true
     },
     "ListGatewayInstances":{
       "name":"ListGatewayInstances",
@@ -513,7 +807,8 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p> Displays a list of instances associated with the Amazon Web Services account. This request returns a paginated result. You can use the filterArn property to display only the instances associated with the selected Gateway Amazon Resource Name (ARN).</p>"
+      "documentation":"<p> Displays a list of instances associated with the Amazon Web Services account. This request returns a paginated result. You can use the filterArn property to display only the instances associated with the selected Gateway Amazon Resource Name (ARN).</p>",
+      "readonly":true
     },
     "ListGateways":{
       "name":"ListGateways",
@@ -531,7 +826,8 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p> Displays a list of gateways that are associated with this account. This request returns a paginated result.</p>"
+      "documentation":"<p> Displays a list of gateways that are associated with this account. This request returns a paginated result.</p>",
+      "readonly":true
     },
     "ListOfferings":{
       "name":"ListOfferings",
@@ -548,7 +844,8 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p> Displays a list of all offerings that are available to this account in the current Amazon Web Services Region. If you have an active reservation (which means you've purchased an offering that has already started and hasn't expired yet), your account isn't eligible for other offerings.</p>"
+      "documentation":"<p> Displays a list of all offerings that are available to this account in the current Amazon Web Services Region. If you have an active reservation (which means you've purchased an offering that has already started and hasn't expired yet), your account isn't eligible for other offerings.</p>",
+      "readonly":true
     },
     "ListReservations":{
       "name":"ListReservations",
@@ -565,7 +862,82 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p> Displays a list of all reservations that have been purchased by this account in the current Amazon Web Services Region. This list includes all reservations in all states (such as active and expired).</p>"
+      "documentation":"<p> Displays a list of all reservations that have been purchased by this account in the current Amazon Web Services Region. This list includes all reservations in all states (such as active and expired).</p>",
+      "readonly":true
+    },
+    "ListRouterInputs":{
+      "name":"ListRouterInputs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/routerInputs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRouterInputsRequest"},
+      "output":{"shape":"ListRouterInputsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves a list of router inputs in AWS Elemental MediaConnect.</p>",
+      "readonly":true
+    },
+    "ListRouterNetworkInterfaces":{
+      "name":"ListRouterNetworkInterfaces",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/routerNetworkInterfaces",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRouterNetworkInterfacesRequest"},
+      "output":{"shape":"ListRouterNetworkInterfacesResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves a list of router network interfaces in AWS Elemental MediaConnect.</p>",
+      "readonly":true
+    },
+    "ListRouterOutputs":{
+      "name":"ListRouterOutputs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/routerOutputs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRouterOutputsRequest"},
+      "output":{"shape":"ListRouterOutputsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Retrieves a list of router outputs in AWS Elemental MediaConnect.</p>",
+      "readonly":true
+    },
+    "ListTagsForGlobalResource":{
+      "name":"ListTagsForGlobalResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags/global/{ResourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForGlobalResourceRequest"},
+      "output":{"shape":"ListTagsForGlobalResourceResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"}
+      ],
+      "documentation":"<p>Lists the tags associated with a global resource in AWS Elemental MediaConnect. The API supports the following global resources: router inputs, router outputs and router network interfaces. </p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -581,7 +953,8 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"NotFoundException"}
       ],
-      "documentation":"<p> List all tags on a MediaConnect resource.</p>"
+      "documentation":"<p> List all tags on a MediaConnect resource in the current region.</p>",
+      "readonly":true
     },
     "PurchaseOffering":{
       "name":"PurchaseOffering",
@@ -724,6 +1097,46 @@
       "documentation":"<p> Removes a VPC Interface from an existing flow. This request can be made only on a VPC interface that does not have a Source or Output associated with it. If the VPC interface is referenced by a Source or Output, you must first delete or update the Source or Output to no longer reference the VPC interface.</p>",
       "idempotent":true
     },
+    "RestartRouterInput":{
+      "name":"RestartRouterInput",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/routerInput/restart/{Arn}",
+        "responseCode":202
+      },
+      "input":{"shape":"RestartRouterInputRequest"},
+      "output":{"shape":"RestartRouterInputResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Restarts a router input. This operation can be used to recover from errors or refresh the input state.</p>"
+    },
+    "RestartRouterOutput":{
+      "name":"RestartRouterOutput",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/routerOutput/restart/{Arn}",
+        "responseCode":202
+      },
+      "input":{"shape":"RestartRouterOutputRequest"},
+      "output":{"shape":"RestartRouterOutputResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Restarts a router output. This operation can be used to recover from errors or refresh the output state.</p>"
+    },
     "RevokeFlowEntitlement":{
       "name":"RevokeFlowEntitlement",
       "http":{
@@ -763,6 +1176,46 @@
       ],
       "documentation":"<p> Starts a flow.</p>"
     },
+    "StartRouterInput":{
+      "name":"StartRouterInput",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/routerInput/start/{Arn}",
+        "responseCode":202
+      },
+      "input":{"shape":"StartRouterInputRequest"},
+      "output":{"shape":"StartRouterInputResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Starts a router input in AWS Elemental MediaConnect.</p>"
+    },
+    "StartRouterOutput":{
+      "name":"StartRouterOutput",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/routerOutput/start/{Arn}",
+        "responseCode":202
+      },
+      "input":{"shape":"StartRouterOutputRequest"},
+      "output":{"shape":"StartRouterOutputResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Starts a router output in AWS Elemental MediaConnect.</p>"
+    },
     "StopFlow":{
       "name":"StopFlow",
       "http":{
@@ -782,6 +1235,61 @@
       ],
       "documentation":"<p> Stops a flow.</p>"
     },
+    "StopRouterInput":{
+      "name":"StopRouterInput",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/routerInput/stop/{Arn}",
+        "responseCode":202
+      },
+      "input":{"shape":"StopRouterInputRequest"},
+      "output":{"shape":"StopRouterInputResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Stops a router input in AWS Elemental MediaConnect.</p>"
+    },
+    "StopRouterOutput":{
+      "name":"StopRouterOutput",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/routerOutput/stop/{Arn}",
+        "responseCode":202
+      },
+      "input":{"shape":"StopRouterOutputRequest"},
+      "output":{"shape":"StopRouterOutputResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Stops a router output in AWS Elemental MediaConnect.</p>"
+    },
+    "TagGlobalResource":{
+      "name":"TagGlobalResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags/global/{ResourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"TagGlobalResourceRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"}
+      ],
+      "documentation":"<p>Adds tags to a global resource in AWS Elemental MediaConnect. The API supports the following global resources: router inputs, router outputs and router network interfaces. </p>"
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -795,7 +1303,44 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"NotFoundException"}
       ],
-      "documentation":"<p> Associates the specified tags to a resource with the specified <code>resourceArn</code>. If existing tags on a resource are not specified in the request parameters, they are not changed. When a resource is deleted, the tags associated with that resource are deleted as well.</p>"
+      "documentation":"<p> Associates the specified tags to a resource with the specified <code>resourceArn</code> in the current region. If existing tags on a resource are not specified in the request parameters, they are not changed. When a resource is deleted, the tags associated with that resource are deleted as well.</p>"
+    },
+    "TakeRouterInput":{
+      "name":"TakeRouterInput",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/routerOutput/takeRouterInput/{RouterOutputArn}",
+        "responseCode":202
+      },
+      "input":{"shape":"TakeRouterInputRequest"},
+      "output":{"shape":"TakeRouterInputResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Associates a router input with a router output in AWS Elemental MediaConnect.</p>",
+      "idempotent":true
+    },
+    "UntagGlobalResource":{
+      "name":"UntagGlobalResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tags/global/{ResourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"UntagGlobalResourceRequest"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"}
+      ],
+      "documentation":"<p>Removes tags from a global resource in AWS Elemental MediaConnect. The API supports the following global resources: router inputs, router outputs and router network interfaces. </p>",
+      "idempotent":true
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -810,7 +1355,7 @@
         {"shape":"InternalServerErrorException"},
         {"shape":"NotFoundException"}
       ],
-      "documentation":"<p> Deletes specified tags from a resource.</p>",
+      "documentation":"<p> Deletes specified tags from a resource in the current region.</p>",
       "idempotent":true
     },
     "UpdateBridge":{
@@ -1016,6 +1561,68 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Updates an existing gateway instance. </p>",
+      "idempotent":true
+    },
+    "UpdateRouterInput":{
+      "name":"UpdateRouterInput",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/routerInput/{Arn}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateRouterInputRequest"},
+      "output":{"shape":"UpdateRouterInputResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Updates the configuration of an existing router input in AWS Elemental MediaConnect.</p>",
+      "idempotent":true
+    },
+    "UpdateRouterNetworkInterface":{
+      "name":"UpdateRouterNetworkInterface",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/routerNetworkInterface/{Arn}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateRouterNetworkInterfaceRequest"},
+      "output":{"shape":"UpdateRouterNetworkInterfaceResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Updates the configuration of an existing router network interface in AWS Elemental MediaConnect.</p>",
+      "idempotent":true
+    },
+    "UpdateRouterOutput":{
+      "name":"UpdateRouterOutput",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/routerOutput/{Arn}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateRouterOutputRequest"},
+      "output":{"shape":"UpdateRouterOutputResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"InternalServerErrorException"},
+        {"shape":"NotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Updates the configuration of an existing router output in AWS Elemental MediaConnect.</p>",
       "idempotent":true
     }
   },
@@ -1503,13 +2110,17 @@
           "shape":"String",
           "documentation":"<p> The resolution of the video.</p>",
           "locationName":"videoFormat"
+        },
+        "MediaStreamTags":{
+          "shape":"__mapOfString",
+          "documentation":"<p> The key-value pairs that can be used to tag and organize the media stream. </p>",
+          "locationName":"mediaStreamTags"
         }
       },
       "documentation":"<p> The media stream that you want to add to the flow. </p>"
     },
     "AddOutputRequest":{
       "type":"structure",
-      "required":["Protocol"],
       "members":{
         "CidrAllowList":{
           "shape":"__listOfString",
@@ -1600,6 +2211,20 @@
           "shape":"String",
           "documentation":"<p> A suffix for the names of the NDI sources that the flow creates. If a custom name isn't specified, MediaConnect uses the output name. </p>",
           "locationName":"ndiProgramName"
+        },
+        "OutputTags":{
+          "shape":"__mapOfString",
+          "documentation":"<p> The key-value pairs that can be used to tag and organize the output. </p>",
+          "locationName":"outputTags"
+        },
+        "RouterIntegrationState":{
+          "shape":"State",
+          "documentation":"<p>Indicates whether to enable or disable router integration when creating a new flow output.</p>",
+          "locationName":"routerIntegrationState"
+        },
+        "RouterIntegrationTransitEncryption":{
+          "shape":"FlowTransitEncryption",
+          "locationName":"routerIntegrationTransitEncryption"
         }
       },
       "documentation":"<p> A request to add an output to a flow.</p>"
@@ -1623,6 +2248,11 @@
       },
       "documentation":"<p> Specifies the configuration for audio stream metrics monitoring.</p>"
     },
+    "AutomaticEncryptionKeyConfiguration":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Configuration settings for automatic encryption key management, where MediaConnect handles key creation and rotation.</p>"
+    },
     "BadRequestException":{
       "type":"structure",
       "required":["Message"],
@@ -1638,6 +2268,207 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "BatchGetRouterInputError":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Code",
+        "Message"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router input for which the error occurred.</p>",
+          "locationName":"arn"
+        },
+        "Code":{
+          "shape":"String",
+          "documentation":"<p>The error code associated with the error.</p>",
+          "locationName":"code"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A message describing the error.</p>",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>An error that occurred when retrieving multiple router inputs in the BatchGetRouterInput operation, including the ARN, error code, and error message.</p>"
+    },
+    "BatchGetRouterInputErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchGetRouterInputError"}
+    },
+    "BatchGetRouterInputRequest":{
+      "type":"structure",
+      "required":["Arns"],
+      "members":{
+        "Arns":{
+          "shape":"BatchGetRouterInputRequestArnsList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the router inputs you want to retrieve information about.</p>",
+          "location":"querystring",
+          "locationName":"arns"
+        }
+      }
+    },
+    "BatchGetRouterInputRequestArnsList":{
+      "type":"list",
+      "member":{"shape":"RouterInputArn"},
+      "max":20,
+      "min":1
+    },
+    "BatchGetRouterInputResponse":{
+      "type":"structure",
+      "required":[
+        "RouterInputs",
+        "Errors"
+      ],
+      "members":{
+        "RouterInputs":{
+          "shape":"RouterInputList",
+          "documentation":"<p>An array of router inputs that were successfully retrieved.</p>",
+          "locationName":"routerInputs"
+        },
+        "Errors":{
+          "shape":"BatchGetRouterInputErrorList",
+          "documentation":"<p>An array of errors that occurred when retrieving the requested router inputs.</p>",
+          "locationName":"errors"
+        }
+      }
+    },
+    "BatchGetRouterNetworkInterfaceError":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Code",
+        "Message"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"RouterNetworkInterfaceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router network interface for which the error occurred.</p>",
+          "locationName":"arn"
+        },
+        "Code":{
+          "shape":"String",
+          "documentation":"<p>The error code associated with the error.</p>",
+          "locationName":"code"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A message describing the error.</p>",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>An error that occurred when retrieving multiple router network interfaces in the BatchGetRouterNetworkInterface operation, including the ARN, error code, and error message.</p>"
+    },
+    "BatchGetRouterNetworkInterfaceErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchGetRouterNetworkInterfaceError"}
+    },
+    "BatchGetRouterNetworkInterfaceRequest":{
+      "type":"structure",
+      "required":["Arns"],
+      "members":{
+        "Arns":{
+          "shape":"BatchGetRouterNetworkInterfaceRequestArnsList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the router network interfaces you want to retrieve information about.</p>",
+          "location":"querystring",
+          "locationName":"arns"
+        }
+      }
+    },
+    "BatchGetRouterNetworkInterfaceRequestArnsList":{
+      "type":"list",
+      "member":{"shape":"RouterNetworkInterfaceArn"},
+      "max":20,
+      "min":1
+    },
+    "BatchGetRouterNetworkInterfaceResponse":{
+      "type":"structure",
+      "required":[
+        "RouterNetworkInterfaces",
+        "Errors"
+      ],
+      "members":{
+        "RouterNetworkInterfaces":{
+          "shape":"RouterNetworkInterfaceList",
+          "documentation":"<p>An array of router network interfaces that were successfully retrieved.</p>",
+          "locationName":"routerNetworkInterfaces"
+        },
+        "Errors":{
+          "shape":"BatchGetRouterNetworkInterfaceErrorList",
+          "documentation":"<p>An array of errors that occurred when retrieving the requested router network interfaces.</p>",
+          "locationName":"errors"
+        }
+      }
+    },
+    "BatchGetRouterOutputError":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Code",
+        "Message"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"RouterOutputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router output for which the error occurred.</p>",
+          "locationName":"arn"
+        },
+        "Code":{
+          "shape":"String",
+          "documentation":"<p>The error code associated with the error.</p>",
+          "locationName":"code"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A message describing the error.</p>",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>An error that occurred when retrieving multiple router outputs in the BatchGetRouterOutput operation, including the ARN, error code, and error message.</p>"
+    },
+    "BatchGetRouterOutputErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchGetRouterOutputError"}
+    },
+    "BatchGetRouterOutputRequest":{
+      "type":"structure",
+      "required":["Arns"],
+      "members":{
+        "Arns":{
+          "shape":"BatchGetRouterOutputRequestArnsList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the router outputs you want to retrieve information about.</p>",
+          "location":"querystring",
+          "locationName":"arns"
+        }
+      }
+    },
+    "BatchGetRouterOutputRequestArnsList":{
+      "type":"list",
+      "member":{"shape":"RouterOutputArn"},
+      "max":20,
+      "min":1
+    },
+    "BatchGetRouterOutputResponse":{
+      "type":"structure",
+      "required":[
+        "RouterOutputs",
+        "Errors"
+      ],
+      "members":{
+        "RouterOutputs":{
+          "shape":"RouterOutputList",
+          "documentation":"<p>An array of router outputs that were successfully retrieved.</p>",
+          "locationName":"routerOutputs"
+        },
+        "Errors":{
+          "shape":"BatchGetRouterOutputErrorList",
+          "documentation":"<p>An array of errors that occurred when retrieving the requested router outputs.</p>",
+          "locationName":"errors"
+        }
+      }
     },
     "BlackFrames":{
       "type":"structure",
@@ -1655,6 +2486,7 @@
       },
       "documentation":"<p> Configures settings for the <code>BlackFrames</code> metric.</p>"
     },
+    "Blob":{"type":"blob"},
     "Boolean":{
       "type":"boolean",
       "box":true
@@ -2119,6 +2951,11 @@
           "shape":"NdiConfig",
           "documentation":"<p> Specifies the configuration settings for NDI outputs. Required when the flow includes NDI outputs. </p>",
           "locationName":"ndiConfig"
+        },
+        "FlowTags":{
+          "shape":"__mapOfString",
+          "documentation":"<p> The key-value pairs that can be used to tag and organize the flow. </p>",
+          "locationName":"flowTags"
         }
       }
     },
@@ -2182,6 +3019,237 @@
           "locationName":"gateway"
         }
       }
+    },
+    "CreateRouterInputRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Configuration",
+        "MaximumBitrate",
+        "RoutingScope",
+        "Tier"
+      ],
+      "members":{
+        "Name":{
+          "shape":"CreateRouterInputRequestNameString",
+          "documentation":"<p>The name of the router input.</p>",
+          "locationName":"name"
+        },
+        "Configuration":{
+          "shape":"RouterInputConfiguration",
+          "documentation":"<p>The configuration settings for the router input, which can include the protocol, network interface, and other details.</p>",
+          "locationName":"configuration"
+        },
+        "MaximumBitrate":{
+          "shape":"Long",
+          "documentation":"<p>The maximum bitrate for the router input.</p>",
+          "locationName":"maximumBitrate"
+        },
+        "RoutingScope":{
+          "shape":"RoutingScope",
+          "documentation":"<p>Specifies whether the router input can be assigned to outputs in different Regions. REGIONAL (default) - connects only to outputs in same Region. GLOBAL - connects to outputs in any Region.</p>",
+          "locationName":"routingScope"
+        },
+        "Tier":{
+          "shape":"RouterInputTier",
+          "documentation":"<p>The tier level for the router input.</p>",
+          "locationName":"tier"
+        },
+        "RegionName":{
+          "shape":"String",
+          "documentation":"<p>The AWS Region for the router input. Defaults to the current region if not specified.</p>",
+          "locationName":"regionName"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone where you want to create the router input. This must be a valid Availability Zone for the region specified by <code>regionName</code>, or the current region if no <code>regionName</code> is provided. </p>",
+          "locationName":"availabilityZone"
+        },
+        "TransitEncryption":{
+          "shape":"RouterInputTransitEncryption",
+          "documentation":"<p>The transit encryption settings for the router input.</p>",
+          "locationName":"transitEncryption"
+        },
+        "MaintenanceConfiguration":{
+          "shape":"MaintenanceConfiguration",
+          "documentation":"<p>The maintenance configuration settings for the router input, including preferred maintenance windows and schedules.</p>",
+          "locationName":"maintenanceConfiguration"
+        },
+        "Tags":{
+          "shape":"__mapOfString",
+          "documentation":"<p>Key-value pairs that can be used to tag and organize this router input.</p>",
+          "locationName":"tags"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier for the request to ensure idempotency.</p>",
+          "idempotencyToken":true,
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "CreateRouterInputRequestNameString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "CreateRouterInputResponse":{
+      "type":"structure",
+      "required":["RouterInput"],
+      "members":{
+        "RouterInput":{
+          "shape":"RouterInput",
+          "documentation":"<p>The newly-created router input.</p>",
+          "locationName":"routerInput"
+        }
+      }
+    },
+    "CreateRouterNetworkInterfaceRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Configuration"
+      ],
+      "members":{
+        "Name":{
+          "shape":"CreateRouterNetworkInterfaceRequestNameString",
+          "documentation":"<p>The name of the router network interface.</p>",
+          "locationName":"name"
+        },
+        "Configuration":{
+          "shape":"RouterNetworkInterfaceConfiguration",
+          "documentation":"<p>The configuration settings for the router network interface.</p>",
+          "locationName":"configuration"
+        },
+        "RegionName":{
+          "shape":"String",
+          "documentation":"<p>The AWS Region for the router network interface. Defaults to the current region if not specified.</p>",
+          "locationName":"regionName"
+        },
+        "Tags":{
+          "shape":"__mapOfString",
+          "documentation":"<p>Key-value pairs that can be used to tag and organize this router network interface.</p>",
+          "locationName":"tags"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier for the request to ensure idempotency.</p>",
+          "idempotencyToken":true,
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "CreateRouterNetworkInterfaceRequestNameString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "CreateRouterNetworkInterfaceResponse":{
+      "type":"structure",
+      "required":["RouterNetworkInterface"],
+      "members":{
+        "RouterNetworkInterface":{
+          "shape":"RouterNetworkInterface",
+          "documentation":"<p>The newly-created router network interface.</p>",
+          "locationName":"routerNetworkInterface"
+        }
+      }
+    },
+    "CreateRouterOutputRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Configuration",
+        "MaximumBitrate",
+        "RoutingScope",
+        "Tier"
+      ],
+      "members":{
+        "Name":{
+          "shape":"CreateRouterOutputRequestNameString",
+          "documentation":"<p>The name of the router output.</p>",
+          "locationName":"name"
+        },
+        "Configuration":{
+          "shape":"RouterOutputConfiguration",
+          "documentation":"<p>The configuration settings for the router output.</p>",
+          "locationName":"configuration"
+        },
+        "MaximumBitrate":{
+          "shape":"Long",
+          "documentation":"<p>The maximum bitrate for the router output.</p>",
+          "locationName":"maximumBitrate"
+        },
+        "RoutingScope":{
+          "shape":"RoutingScope",
+          "documentation":"<p>Specifies whether the router output can take inputs that are in different Regions. REGIONAL (default) - can only take inputs from same Region. GLOBAL - can take inputs from any Region.</p>",
+          "locationName":"routingScope"
+        },
+        "Tier":{
+          "shape":"RouterOutputTier",
+          "documentation":"<p>The tier level for the router output.</p>",
+          "locationName":"tier"
+        },
+        "RegionName":{
+          "shape":"String",
+          "documentation":"<p>The AWS Region for the router output. Defaults to the current region if not specified.</p>",
+          "locationName":"regionName"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone where you want to create the router output. This must be a valid Availability Zone for the region specified by <code>regionName</code>, or the current region if no <code>regionName</code> is provided. </p>",
+          "locationName":"availabilityZone"
+        },
+        "MaintenanceConfiguration":{
+          "shape":"MaintenanceConfiguration",
+          "documentation":"<p>The maintenance configuration settings for the router output, including preferred maintenance windows and schedules.</p>",
+          "locationName":"maintenanceConfiguration"
+        },
+        "Tags":{
+          "shape":"__mapOfString",
+          "documentation":"<p>Key-value pairs that can be used to tag this router output.</p>",
+          "locationName":"tags"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>A unique identifier for the request to ensure idempotency.</p>",
+          "idempotencyToken":true,
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "CreateRouterOutputRequestNameString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "CreateRouterOutputResponse":{
+      "type":"structure",
+      "required":["RouterOutput"],
+      "members":{
+        "RouterOutput":{
+          "shape":"RouterOutput",
+          "documentation":"<p>The newly-created router output.</p>",
+          "locationName":"routerOutput"
+        }
+      }
+    },
+    "Day":{
+      "type":"string",
+      "enum":[
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY",
+        "SUNDAY"
+      ]
+    },
+    "DefaultMaintenanceConfiguration":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Configuration settings for default maintenance scheduling.</p>"
     },
     "DeleteBridgeRequest":{
       "type":"structure",
@@ -2263,6 +3331,117 @@
           "shape":"String",
           "documentation":"<p> The ARN of the gateway that was deleted.</p>",
           "locationName":"gatewayArn"
+        }
+      }
+    },
+    "DeleteRouterInputRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router input that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        }
+      }
+    },
+    "DeleteRouterInputResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name",
+        "State"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The ARN of the deleted router input.</p>",
+          "locationName":"arn"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the deleted router input.</p>",
+          "locationName":"name"
+        },
+        "State":{
+          "shape":"RouterInputState",
+          "documentation":"<p>The current state of the deleted router input, indicating where it is in the deletion process.</p>",
+          "locationName":"state"
+        }
+      }
+    },
+    "DeleteRouterNetworkInterfaceRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"RouterNetworkInterfaceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router network interface that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        }
+      }
+    },
+    "DeleteRouterNetworkInterfaceResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name",
+        "State"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"RouterNetworkInterfaceArn",
+          "documentation":"<p>The ARN of the deleted router network interface.</p>",
+          "locationName":"arn"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the deleted router network interface.</p>",
+          "locationName":"name"
+        },
+        "State":{
+          "shape":"RouterNetworkInterfaceState",
+          "documentation":"<p>The current state of the deleted router network interface, indicating where it is in the deletion process.</p>",
+          "locationName":"state"
+        }
+      }
+    },
+    "DeleteRouterOutputRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"RouterOutputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router output that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        }
+      }
+    },
+    "DeleteRouterOutputResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name",
+        "State"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"RouterOutputArn",
+          "documentation":"<p>The ARN of the deleted router output.</p>",
+          "locationName":"arn"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the deleted router output.</p>",
+          "locationName":"name"
+        },
+        "State":{
+          "shape":"RouterOutputState",
+          "documentation":"<p>The current state of the deleted router output, indicating where it is in the deletion process.</p>",
+          "locationName":"state"
         }
       }
     },
@@ -2793,12 +3972,120 @@
       },
       "documentation":"<p> The settings for source failover.</p>"
     },
+    "FailoverInputSourcePriorityMode":{
+      "type":"string",
+      "enum":[
+        "NO_PRIORITY",
+        "PRIMARY_SECONDARY"
+      ]
+    },
     "FailoverMode":{
       "type":"string",
       "enum":[
         "MERGE",
         "FAILOVER"
       ]
+    },
+    "FailoverRouterInputConfiguration":{
+      "type":"structure",
+      "required":[
+        "NetworkInterfaceArn",
+        "ProtocolConfigurations",
+        "SourcePriorityMode"
+      ],
+      "members":{
+        "NetworkInterfaceArn":{
+          "shape":"RouterNetworkInterfaceArn",
+          "documentation":"<p>The ARN of the network interface to use for this failover router input.</p>",
+          "locationName":"networkInterfaceArn"
+        },
+        "ProtocolConfigurations":{
+          "shape":"FailoverRouterInputProtocolConfigurationList",
+          "documentation":"<p>A list of exactly two protocol configurations for the failover input sources. Both must use the same protocol type.</p>",
+          "locationName":"protocolConfigurations"
+        },
+        "SourcePriorityMode":{
+          "shape":"FailoverInputSourcePriorityMode",
+          "documentation":"<p>The mode for determining source priority in failover configurations.</p>",
+          "locationName":"sourcePriorityMode"
+        },
+        "PrimarySourceIndex":{
+          "shape":"FailoverRouterInputConfigurationPrimarySourceIndexInteger",
+          "documentation":"<p>The index (0 or 1) that specifies which source in the protocol configurations list is currently active. Used to control which of the two failover sources is currently selected. This field is ignored when sourcePriorityMode is set to NO_PRIORITY</p>",
+          "locationName":"primarySourceIndex"
+        }
+      },
+      "documentation":"<p>Configuration settings for a failover router input that allows switching between two input sources.</p>"
+    },
+    "FailoverRouterInputConfigurationPrimarySourceIndexInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1,
+      "min":0
+    },
+    "FailoverRouterInputIndexedStreamDetails":{
+      "type":"structure",
+      "required":["SourceIndex"],
+      "members":{
+        "SourceIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index number (0 or 1) assigned to this source in the failover configuration.</p>",
+          "locationName":"sourceIndex"
+        },
+        "SourceIpAddress":{
+          "shape":"String",
+          "documentation":"<p>The IP address of the source for this indexed stream.</p>",
+          "locationName":"sourceIpAddress"
+        }
+      },
+      "documentation":"<p>Configuration details for an indexed stream in a failover router input setup.</p>"
+    },
+    "FailoverRouterInputProtocolConfiguration":{
+      "type":"structure",
+      "members":{
+        "Rtp":{
+          "shape":"RtpRouterInputConfiguration",
+          "locationName":"rtp"
+        },
+        "Rist":{
+          "shape":"RistRouterInputConfiguration",
+          "locationName":"rist"
+        },
+        "SrtListener":{
+          "shape":"SrtListenerRouterInputConfiguration",
+          "locationName":"srtListener"
+        },
+        "SrtCaller":{
+          "shape":"SrtCallerRouterInputConfiguration",
+          "locationName":"srtCaller"
+        }
+      },
+      "documentation":"<p>Protocol configuration settings for failover router inputs.</p>",
+      "union":true
+    },
+    "FailoverRouterInputProtocolConfigurationList":{
+      "type":"list",
+      "member":{"shape":"FailoverRouterInputProtocolConfiguration"}
+    },
+    "FailoverRouterInputStreamDetails":{
+      "type":"structure",
+      "required":[
+        "SourceIndexZeroStreamDetails",
+        "SourceIndexOneStreamDetails"
+      ],
+      "members":{
+        "SourceIndexZeroStreamDetails":{
+          "shape":"FailoverRouterInputIndexedStreamDetails",
+          "documentation":"<p>Configuration details for the primary source (index 0) in the failover setup.</p>",
+          "locationName":"sourceIndexZeroStreamDetails"
+        },
+        "SourceIndexOneStreamDetails":{
+          "shape":"FailoverRouterInputIndexedStreamDetails",
+          "documentation":"<p>Configuration details for the secondary source (index 1) in the failover setup.</p>",
+          "locationName":"sourceIndexOneStreamDetails"
+        }
+      },
+      "documentation":"<p>Configuration details for a failover router input that can automatically switch between two sources.</p>"
     },
     "Flow":{
       "type":"structure",
@@ -2900,12 +4187,62 @@
       },
       "documentation":"<p> The settings for a flow, including its source, outputs, and entitlements.</p>"
     },
-    "FlowArn":{"type":"string"},
+    "FlowArn":{
+      "type":"string",
+      "pattern":"arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:flow:[a-zA-Z0-9-]+:[a-zA-Z0-9_-]+"
+    },
+    "FlowOutputArn":{
+      "type":"string",
+      "pattern":"arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:output:[a-zA-Z0-9-]+:[a-zA-Z0-9_-]+"
+    },
     "FlowSize":{
       "type":"string",
       "enum":[
         "MEDIUM",
         "LARGE"
+      ]
+    },
+    "FlowSourceArn":{
+      "type":"string",
+      "pattern":"arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:source:[a-zA-Z0-9-]+:[a-zA-Z0-9_-]+"
+    },
+    "FlowTransitEncryption":{
+      "type":"structure",
+      "required":["EncryptionKeyConfiguration"],
+      "members":{
+        "EncryptionKeyType":{
+          "shape":"FlowTransitEncryptionKeyType",
+          "documentation":"<p>The type of encryption key to use for flow transit encryption.</p>",
+          "locationName":"encryptionKeyType"
+        },
+        "EncryptionKeyConfiguration":{
+          "shape":"FlowTransitEncryptionKeyConfiguration",
+          "documentation":"<p>The configuration details for the encryption key.</p>",
+          "locationName":"encryptionKeyConfiguration"
+        }
+      },
+      "documentation":"<p>The configuration that defines how content is encrypted during transit between the MediaConnect router and a MediaConnect flow.</p>"
+    },
+    "FlowTransitEncryptionKeyConfiguration":{
+      "type":"structure",
+      "members":{
+        "SecretsManager":{
+          "shape":"SecretsManagerEncryptionKeyConfiguration",
+          "locationName":"secretsManager"
+        },
+        "Automatic":{
+          "shape":"AutomaticEncryptionKeyConfiguration",
+          "locationName":"automatic"
+        }
+      },
+      "documentation":"<p>Configuration settings for flow transit encryption keys.</p>",
+      "union":true
+    },
+    "FlowTransitEncryptionKeyType":{
+      "type":"string",
+      "enum":[
+        "SECRETS_MANAGER",
+        "AUTOMATIC"
       ]
     },
     "Fmtp":{
@@ -3005,6 +4342,13 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ForwardErrorCorrectionState":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "FrameResolution":{
       "type":"structure",
@@ -3187,6 +4531,149 @@
         "DELETED"
       ]
     },
+    "GetRouterInputRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router input to retrieve information about.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        }
+      }
+    },
+    "GetRouterInputResponse":{
+      "type":"structure",
+      "required":["RouterInput"],
+      "members":{
+        "RouterInput":{
+          "shape":"RouterInput",
+          "documentation":"<p>The details of the requested router input, including its configuration, state, and other attributes.</p>",
+          "locationName":"routerInput"
+        }
+      }
+    },
+    "GetRouterInputSourceMetadataRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router input to retrieve metadata for.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        }
+      }
+    },
+    "GetRouterInputSourceMetadataResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name",
+        "SourceMetadataDetails"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router input.</p>",
+          "locationName":"arn"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the router input.</p>",
+          "locationName":"name"
+        },
+        "SourceMetadataDetails":{
+          "shape":"RouterInputSourceMetadataDetails",
+          "documentation":"<p>Detailed metadata information about the router input source, including connection state, timestamps, and stream configuration.</p>",
+          "locationName":"sourceMetadataDetails"
+        }
+      }
+    },
+    "GetRouterInputThumbnailRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router input that you want to see a thumbnail of.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        }
+      }
+    },
+    "GetRouterInputThumbnailResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name",
+        "ThumbnailDetails"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The ARN of the router input.</p>",
+          "locationName":"arn"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the router input.</p>",
+          "locationName":"name"
+        },
+        "ThumbnailDetails":{
+          "shape":"RouterInputThumbnailDetails",
+          "documentation":"<p>The details of the thumbnail associated with the router input, including the thumbnail image, timecode, timestamp, and any associated error messages.</p>",
+          "locationName":"thumbnailDetails"
+        }
+      }
+    },
+    "GetRouterNetworkInterfaceRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"RouterNetworkInterfaceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router network interface that you want to retrieve information about.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        }
+      }
+    },
+    "GetRouterNetworkInterfaceResponse":{
+      "type":"structure",
+      "required":["RouterNetworkInterface"],
+      "members":{
+        "RouterNetworkInterface":{
+          "shape":"RouterNetworkInterface",
+          "documentation":"<p>The details of the requested router network interface, including its configuration and other attributes.</p>",
+          "locationName":"routerNetworkInterface"
+        }
+      }
+    },
+    "GetRouterOutputRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"RouterOutputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router output that you want to retrieve information about.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        }
+      }
+    },
+    "GetRouterOutputResponse":{
+      "type":"structure",
+      "required":["RouterOutput"],
+      "members":{
+        "RouterOutput":{
+          "shape":"RouterOutput",
+          "documentation":"<p>The details of the requested router output, including its configuration, state, and other attributes.</p>",
+          "locationName":"routerOutput"
+        }
+      }
+    },
     "GrantEntitlementRequest":{
       "type":"structure",
       "required":["Subscribers"],
@@ -3220,6 +4707,11 @@
           "shape":"__listOfString",
           "documentation":"<p> The Amazon Web Services account IDs that you want to share your content with. The receiving accounts (subscribers) will be allowed to create their own flows using your content as the source.</p>",
           "locationName":"subscribers"
+        },
+        "EntitlementTags":{
+          "shape":"__mapOfString",
+          "documentation":"<p> The key-value pairs that can be used to tag and organize the entitlement. </p>",
+          "locationName":"entitlementTags"
         }
       },
       "documentation":"<p> The entitlements that you want to grant on a flow.</p>"
@@ -3648,6 +5140,160 @@
         }
       }
     },
+    "ListRouterInputsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"ListRouterInputsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of router inputs to return in the response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A token used to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "Filters":{
+          "shape":"RouterInputFilterList",
+          "documentation":"<p>The filters to apply when retrieving the list of router inputs.</p>",
+          "locationName":"filters"
+        }
+      }
+    },
+    "ListRouterInputsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListRouterInputsResponse":{
+      "type":"structure",
+      "required":["RouterInputs"],
+      "members":{
+        "RouterInputs":{
+          "shape":"ListedRouterInputList",
+          "documentation":"<p>The summary information for the retrieved router inputs.</p>",
+          "locationName":"routerInputs"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListRouterNetworkInterfacesRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"ListRouterNetworkInterfacesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of router network interfaces to return in the response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A token used to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "Filters":{
+          "shape":"RouterNetworkInterfaceFilterList",
+          "documentation":"<p>The filters to apply when retrieving the list of router network interfaces.</p>",
+          "locationName":"filters"
+        }
+      }
+    },
+    "ListRouterNetworkInterfacesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListRouterNetworkInterfacesResponse":{
+      "type":"structure",
+      "required":["RouterNetworkInterfaces"],
+      "members":{
+        "RouterNetworkInterfaces":{
+          "shape":"ListedRouterNetworkInterfaceList",
+          "documentation":"<p>The summary information for the retrieved router network interfaces.</p>",
+          "locationName":"routerNetworkInterfaces"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListRouterOutputsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"ListRouterOutputsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of router outputs to return in the response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>A token used to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "Filters":{
+          "shape":"RouterOutputFilterList",
+          "documentation":"<p>The filters to apply when retrieving the list of router outputs.</p>",
+          "locationName":"filters"
+        }
+      }
+    },
+    "ListRouterOutputsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListRouterOutputsResponse":{
+      "type":"structure",
+      "required":["RouterOutputs"],
+      "members":{
+        "RouterOutputs":{
+          "shape":"ListedRouterOutputList",
+          "documentation":"<p>The summary information for the retrieved router outputs.</p>",
+          "locationName":"routerOutputs"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListTagsForGlobalResourceRequest":{
+      "type":"structure",
+      "required":["ResourceArn"],
+      "members":{
+        "ResourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the global resource whose tags you want to list.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        }
+      }
+    },
+    "ListTagsForGlobalResourceResponse":{
+      "type":"structure",
+      "members":{
+        "Tags":{
+          "shape":"__mapOfString",
+          "documentation":"<p>A map of tag keys and values associated with the global resource.</p>",
+          "locationName":"tags"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -3839,6 +5485,297 @@
       },
       "documentation":"<p> A summary of an instance. </p>"
     },
+    "ListedRouterInput":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "Id",
+        "InputType",
+        "State",
+        "RoutedOutputs",
+        "RegionName",
+        "AvailabilityZone",
+        "MaximumBitrate",
+        "RoutingScope",
+        "CreatedAt",
+        "UpdatedAt",
+        "MessageCount"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the router input.</p>",
+          "locationName":"name"
+        },
+        "Arn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router input.</p>",
+          "locationName":"arn"
+        },
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the router input.</p>",
+          "locationName":"id"
+        },
+        "InputType":{
+          "shape":"RouterInputType",
+          "documentation":"<p>The type of the router input.</p>",
+          "locationName":"inputType"
+        },
+        "State":{
+          "shape":"RouterInputState",
+          "documentation":"<p>The overall state of the router input.</p>",
+          "locationName":"state"
+        },
+        "RoutedOutputs":{
+          "shape":"Integer",
+          "documentation":"<p>The number of router outputs that are associated with this router input.</p>",
+          "locationName":"routedOutputs"
+        },
+        "RegionName":{
+          "shape":"String",
+          "documentation":"<p>The AWS Region where the router input is located.</p>",
+          "locationName":"regionName"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone of the router input.</p>",
+          "locationName":"availabilityZone"
+        },
+        "MaximumBitrate":{
+          "shape":"Long",
+          "documentation":"<p>The maximum bitrate of the router input.</p>",
+          "locationName":"maximumBitrate"
+        },
+        "RoutingScope":{
+          "shape":"RoutingScope",
+          "documentation":"<p>Indicates whether the router input is configured for Regional or global routing.</p>",
+          "locationName":"routingScope"
+        },
+        "CreatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the router input was created.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the router input was last updated.</p>",
+          "locationName":"updatedAt"
+        },
+        "MessageCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of messages associated with the router input.</p>",
+          "locationName":"messageCount"
+        },
+        "NetworkInterfaceArn":{
+          "shape":"RouterNetworkInterfaceArn",
+          "documentation":"<p>The ARN of the network interface associated with the router input.</p>",
+          "locationName":"networkInterfaceArn"
+        },
+        "MaintenanceScheduleType":{
+          "shape":"MaintenanceScheduleType",
+          "documentation":"<p>The type of maintenance schedule currently associated with the listed router input.</p>",
+          "locationName":"maintenanceScheduleType"
+        },
+        "MaintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>The details of the maintenance schedule for the listed router input.</p>",
+          "locationName":"maintenanceSchedule"
+        }
+      },
+      "documentation":"<p>A summary of a router input, including its name, type, ARN, ID, state, and other key details. This structure is used in the response of the ListRouterInputs operation.</p>"
+    },
+    "ListedRouterInputList":{
+      "type":"list",
+      "member":{"shape":"ListedRouterInput"}
+    },
+    "ListedRouterNetworkInterface":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "Id",
+        "NetworkInterfaceType",
+        "AssociatedOutputCount",
+        "AssociatedInputCount",
+        "State",
+        "RegionName",
+        "CreatedAt",
+        "UpdatedAt"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the router network interface.</p>",
+          "locationName":"name"
+        },
+        "Arn":{
+          "shape":"RouterNetworkInterfaceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router network interface.</p>",
+          "locationName":"arn"
+        },
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the router network interface.</p>",
+          "locationName":"id"
+        },
+        "NetworkInterfaceType":{
+          "shape":"RouterNetworkInterfaceType",
+          "documentation":"<p>The type of the router network interface.</p>",
+          "locationName":"networkInterfaceType"
+        },
+        "AssociatedOutputCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of router outputs associated with the network interface.</p>",
+          "locationName":"associatedOutputCount"
+        },
+        "AssociatedInputCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of router inputs associated with the network interface.</p>",
+          "locationName":"associatedInputCount"
+        },
+        "State":{
+          "shape":"RouterNetworkInterfaceState",
+          "documentation":"<p>The current state of the router network interface.</p>",
+          "locationName":"state"
+        },
+        "RegionName":{
+          "shape":"String",
+          "documentation":"<p>The AWS Region where the router network interface is located.</p>",
+          "locationName":"regionName"
+        },
+        "CreatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the network interface was created.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the router network interface was last updated.</p>",
+          "locationName":"updatedAt"
+        }
+      },
+      "documentation":"<p>A summary of a router network interface, including its name, type, ARN, ID, associated input/output counts, state, and other key details. This structure is used in the response of the ListRouterNetworkInterfaces operation.</p>"
+    },
+    "ListedRouterNetworkInterfaceList":{
+      "type":"list",
+      "member":{"shape":"ListedRouterNetworkInterface"}
+    },
+    "ListedRouterOutput":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "Id",
+        "OutputType",
+        "State",
+        "RoutedState",
+        "RegionName",
+        "AvailabilityZone",
+        "MaximumBitrate",
+        "RoutingScope",
+        "CreatedAt",
+        "UpdatedAt",
+        "MessageCount"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the router output.</p>",
+          "locationName":"name"
+        },
+        "Arn":{
+          "shape":"RouterOutputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router output.</p>",
+          "locationName":"arn"
+        },
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the router output.</p>",
+          "locationName":"id"
+        },
+        "OutputType":{
+          "shape":"RouterOutputType",
+          "documentation":"<p>The type of the router output.</p>",
+          "locationName":"outputType"
+        },
+        "State":{
+          "shape":"RouterOutputState",
+          "documentation":"<p>The overall state of the router output.</p>",
+          "locationName":"state"
+        },
+        "RoutedState":{
+          "shape":"RouterOutputRoutedState",
+          "documentation":"<p>The current state of the association between the router output and its input.</p>",
+          "locationName":"routedState"
+        },
+        "RegionName":{
+          "shape":"String",
+          "documentation":"<p>The AWS Region where the router output is located.</p>",
+          "locationName":"regionName"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone of the router output.</p>",
+          "locationName":"availabilityZone"
+        },
+        "MaximumBitrate":{
+          "shape":"Long",
+          "documentation":"<p>The maximum bitrate of the router output.</p>",
+          "locationName":"maximumBitrate"
+        },
+        "RoutingScope":{
+          "shape":"RoutingScope",
+          "documentation":"<p>Indicates whether the router output is configured for Regional or global routing.</p>",
+          "locationName":"routingScope"
+        },
+        "CreatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the router output was created.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the router output was last updated.</p>",
+          "locationName":"updatedAt"
+        },
+        "MessageCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of messages associated with the router output.</p>",
+          "locationName":"messageCount"
+        },
+        "RoutedInputArn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The ARN of the router input associated with the output.</p>",
+          "locationName":"routedInputArn"
+        },
+        "NetworkInterfaceArn":{
+          "shape":"RouterNetworkInterfaceArn",
+          "documentation":"<p>The ARN of the network interface associated with the router output.</p>",
+          "locationName":"networkInterfaceArn"
+        },
+        "MaintenanceScheduleType":{
+          "shape":"MaintenanceScheduleType",
+          "documentation":"<p>The type of maintenance schedule currently associated with the listed router output.</p>",
+          "locationName":"maintenanceScheduleType"
+        },
+        "MaintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>The details of the maintenance schedule for the listed router output.</p>",
+          "locationName":"maintenanceSchedule"
+        }
+      },
+      "documentation":"<p>A summary of a router output, including its name, type, ARN, ID, state, routed state, and other key details. This structure is used in the response of the ListRouterOutputs operation.</p>"
+    },
+    "ListedRouterOutputList":{
+      "type":"list",
+      "member":{"shape":"ListedRouterOutput"}
+    },
+    "Long":{
+      "type":"long",
+      "box":true
+    },
     "Maintenance":{
       "type":"structure",
       "members":{
@@ -3865,6 +5802,23 @@
       },
       "documentation":"<p> The maintenance setting of a flow.</p>"
     },
+    "MaintenanceConfiguration":{
+      "type":"structure",
+      "members":{
+        "PreferredDayTime":{
+          "shape":"PreferredDayTimeMaintenanceConfiguration",
+          "documentation":"<p>Preferred day and time maintenance configuration settings.</p>",
+          "locationName":"preferredDayTime"
+        },
+        "Default":{
+          "shape":"DefaultMaintenanceConfiguration",
+          "documentation":"<p>Default maintenance configuration settings.</p>",
+          "locationName":"default"
+        }
+      },
+      "documentation":"<p>The configuration settings for maintenance operations, including preferred maintenance windows and schedules.</p>",
+      "union":true
+    },
     "MaintenanceDay":{
       "type":"string",
       "enum":[
@@ -3877,11 +5831,164 @@
         "Sunday"
       ]
     },
+    "MaintenanceSchedule":{
+      "type":"structure",
+      "members":{
+        "Window":{
+          "shape":"WindowMaintenanceSchedule",
+          "locationName":"window"
+        }
+      },
+      "documentation":"<p>The details of the maintenance schedule.</p>",
+      "union":true
+    },
+    "MaintenanceScheduleType":{
+      "type":"string",
+      "enum":["WINDOW"]
+    },
+    "MaintenanceType":{
+      "type":"string",
+      "enum":[
+        "PREFERRED_DAY_TIME",
+        "DEFAULT"
+      ]
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
       "max":1000,
       "min":1
+    },
+    "MediaConnectFlowRouterInputConfiguration":{
+      "type":"structure",
+      "required":["SourceTransitDecryption"],
+      "members":{
+        "FlowArn":{
+          "shape":"FlowArn",
+          "documentation":"<p>The ARN of the flow to connect to.</p>",
+          "locationName":"flowArn"
+        },
+        "FlowOutputArn":{
+          "shape":"FlowOutputArn",
+          "documentation":"<p>The ARN of the flow output to connect to this router input.</p>",
+          "locationName":"flowOutputArn"
+        },
+        "SourceTransitDecryption":{
+          "shape":"FlowTransitEncryption",
+          "documentation":"<p>The decryption configuration for the flow source when connected to this router input.</p>",
+          "locationName":"sourceTransitDecryption"
+        }
+      },
+      "documentation":"<p>Configuration settings for connecting a router input to a flow output.</p>"
+    },
+    "MediaConnectFlowRouterInputStreamDetails":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Configuration details for a MediaConnect flow when used as a router input source.</p>"
+    },
+    "MediaConnectFlowRouterOutputConfiguration":{
+      "type":"structure",
+      "required":["DestinationTransitEncryption"],
+      "members":{
+        "FlowArn":{
+          "shape":"FlowArn",
+          "documentation":"<p>The ARN of the flow to connect to this router output.</p>",
+          "locationName":"flowArn"
+        },
+        "FlowSourceArn":{
+          "shape":"FlowSourceArn",
+          "documentation":"<p>The ARN of the flow source to connect to this router output.</p>",
+          "locationName":"flowSourceArn"
+        },
+        "DestinationTransitEncryption":{
+          "shape":"FlowTransitEncryption",
+          "documentation":"<p>The encryption configuration for the flow destination when connected to this router output.</p>",
+          "locationName":"destinationTransitEncryption"
+        }
+      },
+      "documentation":"<p>Configuration settings for connecting a router output to a MediaConnect flow source.</p>"
+    },
+    "MediaConnectFlowRouterOutputStreamDetails":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Configuration details for a MediaConnect flow when used as a router output destination.</p>"
+    },
+    "MediaLiveInputArn":{
+      "type":"string",
+      "pattern":"arn:(aws[a-zA-Z-]*):medialive:[a-z0-9-]+:[0-9]{12}:input:[a-zA-Z0-9]+"
+    },
+    "MediaLiveInputPipelineId":{
+      "type":"string",
+      "enum":[
+        "PIPELINE_0",
+        "PIPELINE_1"
+      ]
+    },
+    "MediaLiveInputRouterOutputConfiguration":{
+      "type":"structure",
+      "required":["DestinationTransitEncryption"],
+      "members":{
+        "MediaLiveInputArn":{
+          "shape":"MediaLiveInputArn",
+          "documentation":"<p>The ARN of the MediaLive input to connect to this router output.</p>",
+          "locationName":"mediaLiveInputArn"
+        },
+        "MediaLivePipelineId":{
+          "shape":"MediaLiveInputPipelineId",
+          "documentation":"<p>The index of the MediaLive pipeline to connect to this router output.</p>",
+          "locationName":"mediaLivePipelineId"
+        },
+        "DestinationTransitEncryption":{
+          "shape":"MediaLiveTransitEncryption",
+          "documentation":"<p>The encryption configuration for the MediaLive input when connected to this router output.</p>",
+          "locationName":"destinationTransitEncryption"
+        }
+      },
+      "documentation":"<p>Configuration settings for connecting a router output to a MediaLive input.</p>"
+    },
+    "MediaLiveInputRouterOutputStreamDetails":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Configuration details for a MediaLive input when used as a router output destination.</p>"
+    },
+    "MediaLiveTransitEncryption":{
+      "type":"structure",
+      "required":["EncryptionKeyConfiguration"],
+      "members":{
+        "EncryptionKeyType":{
+          "shape":"MediaLiveTransitEncryptionKeyType",
+          "documentation":"<p>The type of encryption key to use for MediaLive transit encryption.</p>",
+          "locationName":"encryptionKeyType"
+        },
+        "EncryptionKeyConfiguration":{
+          "shape":"MediaLiveTransitEncryptionKeyConfiguration",
+          "documentation":"<p>The configuration details for the MediaLive encryption key.</p>",
+          "locationName":"encryptionKeyConfiguration"
+        }
+      },
+      "documentation":"<p>The encryption configuration that defines how content is encrypted during transit between MediaConnect Router and MediaLive. This configuration determines whether encryption keys are automatically managed by the service or manually managed through AWS Secrets Manager.</p>"
+    },
+    "MediaLiveTransitEncryptionKeyConfiguration":{
+      "type":"structure",
+      "members":{
+        "SecretsManager":{
+          "shape":"SecretsManagerEncryptionKeyConfiguration",
+          "locationName":"secretsManager"
+        },
+        "Automatic":{
+          "shape":"AutomaticEncryptionKeyConfiguration",
+          "locationName":"automatic"
+        }
+      },
+      "documentation":"<p>Configuration settings for the MediaLive transit encryption key.</p>",
+      "union":true
+    },
+    "MediaLiveTransitEncryptionKeyType":{
+      "type":"string",
+      "enum":[
+        "SECRETS_MANAGER",
+        "AUTOMATIC"
+      ]
     },
     "MediaStream":{
       "type":"structure",
@@ -4085,6 +6192,88 @@
         "audio",
         "ancillary-data"
       ]
+    },
+    "MergeRouterInputConfiguration":{
+      "type":"structure",
+      "required":[
+        "NetworkInterfaceArn",
+        "ProtocolConfigurations",
+        "MergeRecoveryWindowMilliseconds"
+      ],
+      "members":{
+        "NetworkInterfaceArn":{
+          "shape":"RouterNetworkInterfaceArn",
+          "documentation":"<p>The ARN of the network interface to use for this merge router input.</p>",
+          "locationName":"networkInterfaceArn"
+        },
+        "ProtocolConfigurations":{
+          "shape":"MergeRouterInputProtocolConfigurationList",
+          "documentation":"<p>A list of exactly two protocol configurations for the merge input sources. Both must use the same protocol type.</p>",
+          "locationName":"protocolConfigurations"
+        },
+        "MergeRecoveryWindowMilliseconds":{
+          "shape":"Long",
+          "documentation":"<p>The time window in milliseconds for merging the two input sources.</p>",
+          "locationName":"mergeRecoveryWindowMilliseconds"
+        }
+      },
+      "documentation":"<p>Configuration settings for a merge router input that combines two input sources.</p>"
+    },
+    "MergeRouterInputIndexedStreamDetails":{
+      "type":"structure",
+      "required":["SourceIndex"],
+      "members":{
+        "SourceIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index number (0 or 1) assigned to this source in the merge configuration.</p>",
+          "locationName":"sourceIndex"
+        },
+        "SourceIpAddress":{
+          "shape":"String",
+          "documentation":"<p>The IP address of the source for this indexed stream in the merge setup.</p>",
+          "locationName":"sourceIpAddress"
+        }
+      },
+      "documentation":"<p>Configuration details for an indexed stream in a merge router input setup.</p>"
+    },
+    "MergeRouterInputProtocolConfiguration":{
+      "type":"structure",
+      "members":{
+        "Rtp":{
+          "shape":"RtpRouterInputConfiguration",
+          "locationName":"rtp"
+        },
+        "Rist":{
+          "shape":"RistRouterInputConfiguration",
+          "locationName":"rist"
+        }
+      },
+      "documentation":"<p>Protocol configuration settings for merge router inputs.</p>",
+      "union":true
+    },
+    "MergeRouterInputProtocolConfigurationList":{
+      "type":"list",
+      "member":{"shape":"MergeRouterInputProtocolConfiguration"}
+    },
+    "MergeRouterInputStreamDetails":{
+      "type":"structure",
+      "required":[
+        "SourceIndexZeroStreamDetails",
+        "SourceIndexOneStreamDetails"
+      ],
+      "members":{
+        "SourceIndexZeroStreamDetails":{
+          "shape":"MergeRouterInputIndexedStreamDetails",
+          "documentation":"<p>Configuration details for the first source (index 0) in the merge setup.</p>",
+          "locationName":"sourceIndexZeroStreamDetails"
+        },
+        "SourceIndexOneStreamDetails":{
+          "shape":"MergeRouterInputIndexedStreamDetails",
+          "documentation":"<p>Configuration details for the second source (index 1) in the merge setup.</p>",
+          "locationName":"sourceIndexOneStreamDetails"
+        }
+      },
+      "documentation":"<p>Configuration details for a merge router input that combines two input sources.</p>"
     },
     "MessageDetail":{
       "type":"structure",
@@ -4384,6 +6573,21 @@
           "shape":"String",
           "documentation":"<p>The IP address of the device that is currently receiving content from this output.</p> <note> <ul> <li> <p>For outputs that use protocols where you specify the destination (such as SRT Caller or Zixi Push), this value matches the configured destination address.</p> </li> <li> <p>For outputs that use listener protocols (such as SRT Listener), this value shows the address of the connected receiver. </p> </li> <li> <p>Peer IP addresses aren't available for entitlements, managed MediaLive outputs, NDI outputs, and CDI/ST2110 outputs. </p> </li> <li> <p>The peer IP address might not be visible for flows that haven't been started yet, or flows that were started before May 2025. In these cases, restart your flow to see the peer IP address.</p> </li> </ul> </note>",
           "locationName":"peerIpAddress"
+        },
+        "RouterIntegrationState":{
+          "shape":"State",
+          "documentation":"<p>Indicates if router integration is enabled or disabled on the flow output.</p>",
+          "locationName":"routerIntegrationState"
+        },
+        "RouterIntegrationTransitEncryption":{
+          "shape":"FlowTransitEncryption",
+          "documentation":"<p>The encryption configuration for the output when router integration is enabled.</p>",
+          "locationName":"routerIntegrationTransitEncryption"
+        },
+        "ConnectedRouterInputArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the router input that's connected to this flow output.</p>",
+          "locationName":"connectedRouterInputArn"
         }
       },
       "documentation":"<p>The settings for an output. </p>"
@@ -4394,6 +6598,26 @@
         "ENABLED",
         "DISABLED"
       ]
+    },
+    "PreferredDayTimeMaintenanceConfiguration":{
+      "type":"structure",
+      "required":[
+        "Day",
+        "Time"
+      ],
+      "members":{
+        "Day":{
+          "shape":"Day",
+          "documentation":"<p>The preferred day for maintenance operations.</p>",
+          "locationName":"day"
+        },
+        "Time":{
+          "shape":"String",
+          "documentation":"<p>The preferred time for maintenance operations.</p>",
+          "locationName":"time"
+        }
+      },
+      "documentation":"<p>Configuration for preferred day and time maintenance settings.</p>"
     },
     "PriceUnits":{
       "type":"string",
@@ -4415,6 +6639,36 @@
         "udp",
         "ndi-speed-hq"
       ]
+    },
+    "PublicRouterNetworkInterfaceConfiguration":{
+      "type":"structure",
+      "required":["AllowRules"],
+      "members":{
+        "AllowRules":{
+          "shape":"PublicRouterNetworkInterfaceConfigurationAllowRulesList",
+          "documentation":"<p>The list of allowed CIDR blocks for the public router network interface.</p>",
+          "locationName":"allowRules"
+        }
+      },
+      "documentation":"<p>The configuration settings for a public router network interface, including the list of allowed CIDR blocks.</p>"
+    },
+    "PublicRouterNetworkInterfaceConfigurationAllowRulesList":{
+      "type":"list",
+      "member":{"shape":"PublicRouterNetworkInterfaceRule"},
+      "max":10,
+      "min":0
+    },
+    "PublicRouterNetworkInterfaceRule":{
+      "type":"structure",
+      "required":["Cidr"],
+      "members":{
+        "Cidr":{
+          "shape":"String",
+          "documentation":"<p>The CIDR block that is allowed to access the public router network interface.</p>",
+          "locationName":"cidr"
+        }
+      },
+      "documentation":"<p>A rule that allows a specific CIDR block to access the public router network interface.</p>"
     },
     "PurchaseOfferingRequest":{
       "type":"structure",
@@ -4830,6 +7084,80 @@
       "type":"string",
       "enum":["Mbps_Outbound_Bandwidth"]
     },
+    "RestartRouterInputRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router input that you want to restart.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        }
+      }
+    },
+    "RestartRouterInputResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name",
+        "State"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The ARN of the router input that was restarted.</p>",
+          "locationName":"arn"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the router input that was restarted.</p>",
+          "locationName":"name"
+        },
+        "State":{
+          "shape":"RouterInputState",
+          "documentation":"<p>The current state of the router input after the restart operation.</p>",
+          "locationName":"state"
+        }
+      }
+    },
+    "RestartRouterOutputRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"RouterOutputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router output that you want to restart.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        }
+      }
+    },
+    "RestartRouterOutputResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name",
+        "State"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"RouterOutputArn",
+          "documentation":"<p>The ARN of the router output that was restarted.</p>",
+          "locationName":"arn"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the router output that was restarted.</p>",
+          "locationName":"name"
+        },
+        "State":{
+          "shape":"RouterOutputState",
+          "documentation":"<p>The current state of the router output after the restart operation.</p>",
+          "locationName":"state"
+        }
+      }
+    },
     "RevokeFlowEntitlementRequest":{
       "type":"structure",
       "required":[
@@ -4874,6 +7202,1094 @@
         }
       }
     },
+    "RistRouterInputConfiguration":{
+      "type":"structure",
+      "required":[
+        "Port",
+        "RecoveryLatencyMilliseconds"
+      ],
+      "members":{
+        "Port":{
+          "shape":"RistRouterInputConfigurationPortInteger",
+          "documentation":"<p>The port number used for the RIST protocol in the router input configuration.</p>",
+          "locationName":"port"
+        },
+        "RecoveryLatencyMilliseconds":{
+          "shape":"RistRouterInputConfigurationRecoveryLatencyMillisecondsLong",
+          "documentation":"<p>The recovery latency in milliseconds for the RIST protocol in the router input configuration.</p>",
+          "locationName":"recoveryLatencyMilliseconds"
+        }
+      },
+      "documentation":"<p>The configuration settings for a router input using the RIST (Reliable Internet Stream Transport) protocol, including the port and recovery latency.</p>"
+    },
+    "RistRouterInputConfigurationPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":30000,
+      "min":3000
+    },
+    "RistRouterInputConfigurationRecoveryLatencyMillisecondsLong":{
+      "type":"long",
+      "box":true,
+      "max":10000,
+      "min":10
+    },
+    "RistRouterOutputConfiguration":{
+      "type":"structure",
+      "required":[
+        "DestinationAddress",
+        "DestinationPort"
+      ],
+      "members":{
+        "DestinationAddress":{
+          "shape":"String",
+          "documentation":"<p>The destination IP address for the RIST protocol in the router output configuration.</p>",
+          "locationName":"destinationAddress"
+        },
+        "DestinationPort":{
+          "shape":"RistRouterOutputConfigurationDestinationPortInteger",
+          "documentation":"<p>The destination port number for the RIST protocol in the router output configuration.</p>",
+          "locationName":"destinationPort"
+        }
+      },
+      "documentation":"<p>The configuration settings for a router output using the RIST (Reliable Internet Stream Transport) protocol, including the destination address and port.</p>"
+    },
+    "RistRouterOutputConfigurationDestinationPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":0
+    },
+    "RoleArn":{
+      "type":"string",
+      "pattern":"arn:(aws[a-zA-Z-]*):iam::[0-9]{12}:role/[a-zA-Z0-9_+=,.@-]+"
+    },
+    "RouterInput":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "Id",
+        "State",
+        "InputType",
+        "Configuration",
+        "RoutedOutputs",
+        "RegionName",
+        "AvailabilityZone",
+        "MaximumBitrate",
+        "Tier",
+        "RoutingScope",
+        "CreatedAt",
+        "UpdatedAt",
+        "Messages",
+        "TransitEncryption",
+        "Tags",
+        "StreamDetails",
+        "MaintenanceType",
+        "MaintenanceConfiguration"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the router input.</p>",
+          "locationName":"name"
+        },
+        "Arn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router input.</p>",
+          "locationName":"arn"
+        },
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the router input.</p>",
+          "locationName":"id"
+        },
+        "State":{
+          "shape":"RouterInputState",
+          "documentation":"<p>The current state of the router input.</p>",
+          "locationName":"state"
+        },
+        "InputType":{
+          "shape":"RouterInputType",
+          "documentation":"<p>The type of the router input.</p>",
+          "locationName":"inputType"
+        },
+        "Configuration":{
+          "shape":"RouterInputConfiguration",
+          "locationName":"configuration"
+        },
+        "RoutedOutputs":{
+          "shape":"Integer",
+          "documentation":"<p>The number of router outputs associated with the router input.</p>",
+          "locationName":"routedOutputs"
+        },
+        "MaximumRoutedOutputs":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of outputs that can be simultaneously routed to this input.</p>",
+          "locationName":"maximumRoutedOutputs"
+        },
+        "RegionName":{
+          "shape":"String",
+          "documentation":"<p>The AWS Region where the router input is located.</p>",
+          "locationName":"regionName"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone of the router input.</p>",
+          "locationName":"availabilityZone"
+        },
+        "MaximumBitrate":{
+          "shape":"Long",
+          "documentation":"<p>The maximum bitrate for the router input.</p>",
+          "locationName":"maximumBitrate"
+        },
+        "Tier":{
+          "shape":"RouterInputTier",
+          "documentation":"<p>The tier level of the router input.</p>",
+          "locationName":"tier"
+        },
+        "RoutingScope":{
+          "shape":"RoutingScope",
+          "documentation":"<p>Indicates whether the router input is configured for Regional or global routing.</p>",
+          "locationName":"routingScope"
+        },
+        "CreatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the router input was created.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the router input was last updated.</p>",
+          "locationName":"updatedAt"
+        },
+        "Messages":{
+          "shape":"RouterInputMessages",
+          "documentation":"<p>The messages associated with the router input.</p>",
+          "locationName":"messages"
+        },
+        "TransitEncryption":{
+          "shape":"RouterInputTransitEncryption",
+          "locationName":"transitEncryption"
+        },
+        "Tags":{
+          "shape":"__mapOfString",
+          "documentation":"<p>Key-value pairs that can be used to tag and organize this router input.</p>",
+          "locationName":"tags"
+        },
+        "StreamDetails":{
+          "shape":"RouterInputStreamDetails",
+          "locationName":"streamDetails"
+        },
+        "IpAddress":{
+          "shape":"String",
+          "documentation":"<p>The IP address of the router input.</p>",
+          "locationName":"ipAddress"
+        },
+        "MaintenanceType":{
+          "shape":"MaintenanceType",
+          "documentation":"<p>The type of maintenance configuration applied to this router input.</p>",
+          "locationName":"maintenanceType"
+        },
+        "MaintenanceConfiguration":{
+          "shape":"MaintenanceConfiguration",
+          "documentation":"<p>The maintenance configuration settings applied to this router input.</p>",
+          "locationName":"maintenanceConfiguration"
+        },
+        "MaintenanceScheduleType":{
+          "shape":"MaintenanceScheduleType",
+          "documentation":"<p>The type of maintenance schedule currently in effect for this router input.</p>",
+          "locationName":"maintenanceScheduleType"
+        },
+        "MaintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>The current maintenance schedule details for this router input.</p>",
+          "locationName":"maintenanceSchedule"
+        }
+      },
+      "documentation":"<p>A router input in AWS Elemental MediaConnect. A router input is a source of media content that can be routed to one or more router outputs.</p>"
+    },
+    "RouterInputArn":{
+      "type":"string",
+      "pattern":"arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:routerInput:[a-z0-9]{12}"
+    },
+    "RouterInputArnList":{
+      "type":"list",
+      "member":{"shape":"RouterInputArn"}
+    },
+    "RouterInputConfiguration":{
+      "type":"structure",
+      "members":{
+        "Standard":{
+          "shape":"StandardRouterInputConfiguration",
+          "locationName":"standard"
+        },
+        "Failover":{
+          "shape":"FailoverRouterInputConfiguration",
+          "locationName":"failover"
+        },
+        "Merge":{
+          "shape":"MergeRouterInputConfiguration",
+          "locationName":"merge"
+        },
+        "MediaConnectFlow":{
+          "shape":"MediaConnectFlowRouterInputConfiguration",
+          "locationName":"mediaConnectFlow"
+        }
+      },
+      "documentation":"<p>The configuration settings for a router input.</p>",
+      "union":true
+    },
+    "RouterInputFilter":{
+      "type":"structure",
+      "members":{
+        "RegionNames":{
+          "shape":"StringList",
+          "documentation":"<p>The AWS Regions of the router inputs to include in the filter.</p>",
+          "locationName":"regionNames"
+        },
+        "InputTypes":{
+          "shape":"RouterInputTypeList",
+          "documentation":"<p>The types of router inputs to include in the filter.</p>",
+          "locationName":"inputTypes"
+        },
+        "NameContains":{
+          "shape":"StringList",
+          "documentation":"<p>The names of the router inputs to include in the filter.</p>",
+          "locationName":"nameContains"
+        },
+        "NetworkInterfaceArns":{
+          "shape":"RouterNetworkInterfaceArnList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the network interfaces associated with the router inputs to include in the filter.</p>",
+          "locationName":"networkInterfaceArns"
+        },
+        "RoutingScopes":{
+          "shape":"RoutingScopeList",
+          "documentation":"<p>Filter criteria to list router inputs based on their routing scope (REGIONAL or GLOBAL).</p>",
+          "locationName":"routingScopes"
+        }
+      },
+      "documentation":"<p>A filter that can be used to retrieve a list of router inputs.</p>",
+      "union":true
+    },
+    "RouterInputFilterList":{
+      "type":"list",
+      "member":{"shape":"RouterInputFilter"}
+    },
+    "RouterInputList":{
+      "type":"list",
+      "member":{"shape":"RouterInput"}
+    },
+    "RouterInputMessage":{
+      "type":"structure",
+      "required":[
+        "Code",
+        "Message"
+      ],
+      "members":{
+        "Code":{
+          "shape":"String",
+          "documentation":"<p>The code associated with the router input message.</p>",
+          "locationName":"code"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The message text associated with the router input message.</p>",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>A message associated with a router input, including a code and a message.</p>"
+    },
+    "RouterInputMessages":{
+      "type":"list",
+      "member":{"shape":"RouterInputMessage"}
+    },
+    "RouterInputMetadata":{
+      "type":"structure",
+      "members":{
+        "TransportStreamMediaInfo":{
+          "shape":"TransportMediaInfo",
+          "locationName":"transportStreamMediaInfo"
+        }
+      },
+      "documentation":"<p>Metadata information associated with the router input, including stream details and connection state.</p>",
+      "union":true
+    },
+    "RouterInputProtocol":{
+      "type":"string",
+      "enum":[
+        "RTP",
+        "RIST",
+        "SRT_CALLER",
+        "SRT_LISTENER"
+      ]
+    },
+    "RouterInputProtocolConfiguration":{
+      "type":"structure",
+      "members":{
+        "Rtp":{
+          "shape":"RtpRouterInputConfiguration",
+          "locationName":"rtp"
+        },
+        "Rist":{
+          "shape":"RistRouterInputConfiguration",
+          "locationName":"rist"
+        },
+        "SrtListener":{
+          "shape":"SrtListenerRouterInputConfiguration",
+          "locationName":"srtListener"
+        },
+        "SrtCaller":{
+          "shape":"SrtCallerRouterInputConfiguration",
+          "locationName":"srtCaller"
+        }
+      },
+      "documentation":"<p>The protocol configuration settings for a router input.</p>",
+      "union":true
+    },
+    "RouterInputServiceQuotaExceededException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>The request to create a new router input would exceed the service quotas for the account. </p>",
+      "error":{
+        "httpStatusCode":420,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "RouterInputSourceMetadataDetails":{
+      "type":"structure",
+      "required":[
+        "SourceMetadataMessages",
+        "Timestamp"
+      ],
+      "members":{
+        "SourceMetadataMessages":{
+          "shape":"RouterInputMessages",
+          "documentation":"<p>Collection of metadata messages associated with the router input source.</p>",
+          "locationName":"sourceMetadataMessages"
+        },
+        "Timestamp":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the metadata was last updated.</p>",
+          "locationName":"timestamp"
+        },
+        "RouterInputMetadata":{
+          "shape":"RouterInputMetadata",
+          "documentation":"<p>Metadata information specific to the router input configuration and state.</p>",
+          "locationName":"routerInputMetadata"
+        }
+      },
+      "documentation":"<p>Detailed metadata information about a router input source.</p>"
+    },
+    "RouterInputState":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "STANDBY",
+        "STARTING",
+        "ACTIVE",
+        "STOPPING",
+        "DELETING",
+        "UPDATING",
+        "ERROR",
+        "RECOVERING",
+        "MIGRATING"
+      ]
+    },
+    "RouterInputStreamDetails":{
+      "type":"structure",
+      "members":{
+        "Standard":{
+          "shape":"StandardRouterInputStreamDetails",
+          "locationName":"standard"
+        },
+        "Failover":{
+          "shape":"FailoverRouterInputStreamDetails",
+          "locationName":"failover"
+        },
+        "Merge":{
+          "shape":"MergeRouterInputStreamDetails",
+          "locationName":"merge"
+        },
+        "MediaConnectFlow":{
+          "shape":"MediaConnectFlowRouterInputStreamDetails",
+          "locationName":"mediaConnectFlow"
+        }
+      },
+      "documentation":"<p>Configuration details for the router input stream.</p>",
+      "union":true
+    },
+    "RouterInputThumbnailDetails":{
+      "type":"structure",
+      "required":["ThumbnailMessages"],
+      "members":{
+        "ThumbnailMessages":{
+          "shape":"RouterInputMessages",
+          "documentation":"<p>The messages associated with the router input thumbnail.</p>",
+          "locationName":"thumbnailMessages"
+        },
+        "Thumbnail":{
+          "shape":"Blob",
+          "documentation":"<p>The thumbnail image, encoded as a Base64-encoded binary data object.</p>",
+          "locationName":"thumbnail"
+        },
+        "Timecode":{
+          "shape":"String",
+          "documentation":"<p>The timecode associated with the thumbnail.</p>",
+          "locationName":"timecode"
+        },
+        "Timestamp":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp associated with the thumbnail.</p>",
+          "locationName":"timestamp"
+        }
+      },
+      "documentation":"<p>The details of a thumbnail associated with a router input, including the thumbnail messages, the thumbnail image, the timecode, and the timestamp.</p>"
+    },
+    "RouterInputTier":{
+      "type":"string",
+      "enum":[
+        "INPUT_100",
+        "INPUT_50",
+        "INPUT_20"
+      ]
+    },
+    "RouterInputTransitEncryption":{
+      "type":"structure",
+      "required":["EncryptionKeyConfiguration"],
+      "members":{
+        "EncryptionKeyType":{
+          "shape":"RouterInputTransitEncryptionKeyType",
+          "documentation":"<p>Specifies the type of encryption key to use for transit encryption.</p>",
+          "locationName":"encryptionKeyType"
+        },
+        "EncryptionKeyConfiguration":{
+          "shape":"RouterInputTransitEncryptionKeyConfiguration",
+          "documentation":"<p>Contains the configuration details for the encryption key used in transit encryption, including the key source and associated parameters.</p>",
+          "locationName":"encryptionKeyConfiguration"
+        }
+      },
+      "documentation":"<p>The transit encryption settings for a router input.</p>"
+    },
+    "RouterInputTransitEncryptionKeyConfiguration":{
+      "type":"structure",
+      "members":{
+        "SecretsManager":{
+          "shape":"SecretsManagerEncryptionKeyConfiguration",
+          "locationName":"secretsManager"
+        },
+        "Automatic":{
+          "shape":"AutomaticEncryptionKeyConfiguration",
+          "locationName":"automatic"
+        }
+      },
+      "documentation":"<p>Defines the configuration settings for transit encryption keys.</p>",
+      "union":true
+    },
+    "RouterInputTransitEncryptionKeyType":{
+      "type":"string",
+      "enum":[
+        "SECRETS_MANAGER",
+        "AUTOMATIC"
+      ]
+    },
+    "RouterInputType":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "FAILOVER",
+        "MERGE",
+        "MEDIACONNECT_FLOW"
+      ]
+    },
+    "RouterInputTypeList":{
+      "type":"list",
+      "member":{"shape":"RouterInputType"}
+    },
+    "RouterNetworkInterface":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "Id",
+        "State",
+        "NetworkInterfaceType",
+        "Configuration",
+        "AssociatedOutputCount",
+        "AssociatedInputCount",
+        "RegionName",
+        "CreatedAt",
+        "UpdatedAt",
+        "Tags"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the router network interface.</p>",
+          "locationName":"name"
+        },
+        "Arn":{
+          "shape":"RouterNetworkInterfaceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router network interface.</p>",
+          "locationName":"arn"
+        },
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the router network interface.</p>",
+          "locationName":"id"
+        },
+        "State":{
+          "shape":"RouterNetworkInterfaceState",
+          "documentation":"<p>The current state of the router network interface.</p>",
+          "locationName":"state"
+        },
+        "NetworkInterfaceType":{
+          "shape":"RouterNetworkInterfaceType",
+          "documentation":"<p>The type of the router network interface.</p>",
+          "locationName":"networkInterfaceType"
+        },
+        "Configuration":{
+          "shape":"RouterNetworkInterfaceConfiguration",
+          "locationName":"configuration"
+        },
+        "AssociatedOutputCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of router outputs associated with the network interface.</p>",
+          "locationName":"associatedOutputCount"
+        },
+        "AssociatedInputCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of router inputs associated with the network interface.</p>",
+          "locationName":"associatedInputCount"
+        },
+        "RegionName":{
+          "shape":"String",
+          "documentation":"<p>The AWS Region where the router network interface is located.</p>",
+          "locationName":"regionName"
+        },
+        "CreatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the router network interface was created.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the router network interface was last updated.</p>",
+          "locationName":"updatedAt"
+        },
+        "Tags":{
+          "shape":"__mapOfString",
+          "documentation":"<p>Key-value pairs that can be used to tag and organize this router network interface.</p>",
+          "locationName":"tags"
+        }
+      },
+      "documentation":"<p>A router network interface in AWS Elemental MediaConnect. A router network interface is a network interface that can be associated with one or more router inputs and outputs.</p>"
+    },
+    "RouterNetworkInterfaceArn":{
+      "type":"string",
+      "pattern":"arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:routerNetworkInterface:[a-z0-9]{12}"
+    },
+    "RouterNetworkInterfaceArnList":{
+      "type":"list",
+      "member":{"shape":"RouterNetworkInterfaceArn"}
+    },
+    "RouterNetworkInterfaceConfiguration":{
+      "type":"structure",
+      "members":{
+        "Public":{
+          "shape":"PublicRouterNetworkInterfaceConfiguration",
+          "locationName":"public"
+        },
+        "Vpc":{
+          "shape":"VpcRouterNetworkInterfaceConfiguration",
+          "locationName":"vpc"
+        }
+      },
+      "documentation":"<p>The configuration settings for a router network interface.</p>",
+      "union":true
+    },
+    "RouterNetworkInterfaceFilter":{
+      "type":"structure",
+      "members":{
+        "RegionNames":{
+          "shape":"StringList",
+          "documentation":"<p>The AWS Regions of the router network interfaces to include in the filter.</p>",
+          "locationName":"regionNames"
+        },
+        "NetworkInterfaceTypes":{
+          "shape":"RouterNetworkInterfaceTypeList",
+          "documentation":"<p>The types of router network interfaces to include in the filter.</p>",
+          "locationName":"networkInterfaceTypes"
+        },
+        "NameContains":{
+          "shape":"StringList",
+          "documentation":"<p>The names of the router network interfaces to include in the filter.</p>",
+          "locationName":"nameContains"
+        }
+      },
+      "documentation":"<p>A filter that can be used to retrieve a list of router network interfaces.</p>",
+      "union":true
+    },
+    "RouterNetworkInterfaceFilterList":{
+      "type":"list",
+      "member":{"shape":"RouterNetworkInterfaceFilter"}
+    },
+    "RouterNetworkInterfaceList":{
+      "type":"list",
+      "member":{"shape":"RouterNetworkInterface"}
+    },
+    "RouterNetworkInterfaceServiceQuotaExceededException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>The request to create a new router network interface would exceed the service quotas (limits) set for the account. </p>",
+      "error":{
+        "httpStatusCode":420,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "RouterNetworkInterfaceState":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "DELETING",
+        "ERROR",
+        "RECOVERING"
+      ]
+    },
+    "RouterNetworkInterfaceType":{
+      "type":"string",
+      "enum":[
+        "PUBLIC",
+        "VPC"
+      ]
+    },
+    "RouterNetworkInterfaceTypeList":{
+      "type":"list",
+      "member":{"shape":"RouterNetworkInterfaceType"}
+    },
+    "RouterOutput":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Arn",
+        "Id",
+        "State",
+        "OutputType",
+        "Configuration",
+        "RoutedState",
+        "RegionName",
+        "AvailabilityZone",
+        "MaximumBitrate",
+        "RoutingScope",
+        "Tier",
+        "CreatedAt",
+        "UpdatedAt",
+        "Messages",
+        "Tags",
+        "StreamDetails",
+        "MaintenanceType",
+        "MaintenanceConfiguration"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the router output.</p>",
+          "locationName":"name"
+        },
+        "Arn":{
+          "shape":"RouterOutputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router output.</p>",
+          "locationName":"arn"
+        },
+        "Id":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the router output.</p>",
+          "locationName":"id"
+        },
+        "State":{
+          "shape":"RouterOutputState",
+          "documentation":"<p>The overall state of the router output.</p>",
+          "locationName":"state"
+        },
+        "OutputType":{
+          "shape":"RouterOutputType",
+          "documentation":"<p>The type of the router output.</p>",
+          "locationName":"outputType"
+        },
+        "Configuration":{
+          "shape":"RouterOutputConfiguration",
+          "locationName":"configuration"
+        },
+        "RoutedState":{
+          "shape":"RouterOutputRoutedState",
+          "documentation":"<p>The current state of the association between the router output and its input.</p>",
+          "locationName":"routedState"
+        },
+        "RegionName":{
+          "shape":"String",
+          "documentation":"<p>The AWS Region where the router output is located.</p>",
+          "locationName":"regionName"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone of the router output.</p>",
+          "locationName":"availabilityZone"
+        },
+        "MaximumBitrate":{
+          "shape":"Long",
+          "documentation":"<p>The maximum bitrate for the router output.</p>",
+          "locationName":"maximumBitrate"
+        },
+        "RoutingScope":{
+          "shape":"RoutingScope",
+          "documentation":"<p>Indicates whether the router output is configured for Regional or global routing.</p>",
+          "locationName":"routingScope"
+        },
+        "Tier":{
+          "shape":"RouterOutputTier",
+          "documentation":"<p>The tier level of the router output.</p>",
+          "locationName":"tier"
+        },
+        "CreatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the router output was created.</p>",
+          "locationName":"createdAt"
+        },
+        "UpdatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The timestamp when the router output was last updated.</p>",
+          "locationName":"updatedAt"
+        },
+        "Messages":{
+          "shape":"RouterOutputMessages",
+          "documentation":"<p>The messages associated with the router output.</p>",
+          "locationName":"messages"
+        },
+        "Tags":{
+          "shape":"__mapOfString",
+          "documentation":"<p>Key-value pairs that can be used to tag and organize this router output.</p>",
+          "locationName":"tags"
+        },
+        "StreamDetails":{
+          "shape":"RouterOutputStreamDetails",
+          "locationName":"streamDetails"
+        },
+        "IpAddress":{
+          "shape":"String",
+          "documentation":"<p>The IP address of the router output.</p>",
+          "locationName":"ipAddress"
+        },
+        "RoutedInputArn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router input associated with the output.</p>",
+          "locationName":"routedInputArn"
+        },
+        "MaintenanceType":{
+          "shape":"MaintenanceType",
+          "documentation":"<p>The type of maintenance configuration applied to this router output.</p>",
+          "locationName":"maintenanceType"
+        },
+        "MaintenanceConfiguration":{
+          "shape":"MaintenanceConfiguration",
+          "documentation":"<p>The maintenance configuration settings applied to this router output.</p>",
+          "locationName":"maintenanceConfiguration"
+        },
+        "MaintenanceScheduleType":{
+          "shape":"MaintenanceScheduleType",
+          "documentation":"<p>The type of maintenance schedule currently in effect for this router output.</p>",
+          "locationName":"maintenanceScheduleType"
+        },
+        "MaintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>The current maintenance schedule details for this router output.</p>",
+          "locationName":"maintenanceSchedule"
+        }
+      },
+      "documentation":"<p>A router output in AWS Elemental MediaConnect. A router output is a destination for media content that can receive input from one or more router inputs.</p>"
+    },
+    "RouterOutputArn":{
+      "type":"string",
+      "pattern":"arn:(aws[a-zA-Z-]*):mediaconnect:[a-z0-9-]+:[0-9]{12}:routerOutput:[a-z0-9]{12}"
+    },
+    "RouterOutputConfiguration":{
+      "type":"structure",
+      "members":{
+        "Standard":{
+          "shape":"StandardRouterOutputConfiguration",
+          "locationName":"standard"
+        },
+        "MediaConnectFlow":{
+          "shape":"MediaConnectFlowRouterOutputConfiguration",
+          "locationName":"mediaConnectFlow"
+        },
+        "MediaLiveInput":{
+          "shape":"MediaLiveInputRouterOutputConfiguration",
+          "locationName":"mediaLiveInput"
+        }
+      },
+      "documentation":"<p>The configuration settings for a router output.</p>",
+      "union":true
+    },
+    "RouterOutputFilter":{
+      "type":"structure",
+      "members":{
+        "RegionNames":{
+          "shape":"StringList",
+          "documentation":"<p>The AWS Regions of the router outputs to include in the filter.</p>",
+          "locationName":"regionNames"
+        },
+        "OutputTypes":{
+          "shape":"RouterOutputTypeList",
+          "documentation":"<p>The types of router outputs to include in the filter.</p>",
+          "locationName":"outputTypes"
+        },
+        "NameContains":{
+          "shape":"StringList",
+          "documentation":"<p>The names of the router outputs to include in the filter.</p>",
+          "locationName":"nameContains"
+        },
+        "NetworkInterfaceArns":{
+          "shape":"RouterNetworkInterfaceArnList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the network interfaces associated with the router outputs to include in the filter.</p>",
+          "locationName":"networkInterfaceArns"
+        },
+        "RoutedInputArns":{
+          "shape":"RouterInputArnList",
+          "documentation":"<p>The ARNs of the router inputs associated with the router outputs to include in the filter.</p>",
+          "locationName":"routedInputArns"
+        },
+        "RoutingScopes":{
+          "shape":"RoutingScopeList",
+          "documentation":"<p>Filter criteria to list router outputs based on their routing scope.</p>",
+          "locationName":"routingScopes"
+        }
+      },
+      "documentation":"<p>A filter that can be used to retrieve a list of router outputs.</p>",
+      "union":true
+    },
+    "RouterOutputFilterList":{
+      "type":"list",
+      "member":{"shape":"RouterOutputFilter"}
+    },
+    "RouterOutputList":{
+      "type":"list",
+      "member":{"shape":"RouterOutput"}
+    },
+    "RouterOutputMessage":{
+      "type":"structure",
+      "required":[
+        "Code",
+        "Message"
+      ],
+      "members":{
+        "Code":{
+          "shape":"String",
+          "documentation":"<p>The code associated with the router output message.</p>",
+          "locationName":"code"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>The message text associated with the router output message.</p>",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>A message associated with a router output.</p>"
+    },
+    "RouterOutputMessages":{
+      "type":"list",
+      "member":{"shape":"RouterOutputMessage"}
+    },
+    "RouterOutputProtocol":{
+      "type":"string",
+      "enum":[
+        "RTP",
+        "RIST",
+        "SRT_CALLER",
+        "SRT_LISTENER"
+      ]
+    },
+    "RouterOutputProtocolConfiguration":{
+      "type":"structure",
+      "members":{
+        "Rtp":{
+          "shape":"RtpRouterOutputConfiguration",
+          "locationName":"rtp"
+        },
+        "Rist":{
+          "shape":"RistRouterOutputConfiguration",
+          "locationName":"rist"
+        },
+        "SrtListener":{
+          "shape":"SrtListenerRouterOutputConfiguration",
+          "locationName":"srtListener"
+        },
+        "SrtCaller":{
+          "shape":"SrtCallerRouterOutputConfiguration",
+          "locationName":"srtCaller"
+        }
+      },
+      "documentation":"<p>The protocol configuration settings for a router output.</p>",
+      "union":true
+    },
+    "RouterOutputRoutedState":{
+      "type":"string",
+      "enum":[
+        "ROUTED",
+        "ROUTING",
+        "UNROUTED"
+      ]
+    },
+    "RouterOutputServiceQuotaExceededException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "locationName":"message"
+        }
+      },
+      "documentation":"<p>The request to create a new router output would exceed the service quotas (limits) set for the account. </p>",
+      "error":{
+        "httpStatusCode":420,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "RouterOutputState":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "STANDBY",
+        "STARTING",
+        "ACTIVE",
+        "STOPPING",
+        "DELETING",
+        "UPDATING",
+        "ERROR",
+        "RECOVERING",
+        "MIGRATING"
+      ]
+    },
+    "RouterOutputStreamDetails":{
+      "type":"structure",
+      "members":{
+        "Standard":{
+          "shape":"StandardRouterOutputStreamDetails",
+          "locationName":"standard"
+        },
+        "MediaConnectFlow":{
+          "shape":"MediaConnectFlowRouterOutputStreamDetails",
+          "locationName":"mediaConnectFlow"
+        },
+        "MediaLiveInput":{
+          "shape":"MediaLiveInputRouterOutputStreamDetails",
+          "locationName":"mediaLiveInput"
+        }
+      },
+      "documentation":"<p>Information about the router output's stream, including connection state and destination details. The specific details provided vary based on the router output type.</p>",
+      "union":true
+    },
+    "RouterOutputTier":{
+      "type":"string",
+      "enum":[
+        "OUTPUT_100",
+        "OUTPUT_50",
+        "OUTPUT_20"
+      ]
+    },
+    "RouterOutputType":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "MEDIACONNECT_FLOW",
+        "MEDIALIVE_INPUT"
+      ]
+    },
+    "RouterOutputTypeList":{
+      "type":"list",
+      "member":{"shape":"RouterOutputType"}
+    },
+    "RoutingScope":{
+      "type":"string",
+      "enum":[
+        "REGIONAL",
+        "GLOBAL"
+      ]
+    },
+    "RoutingScopeList":{
+      "type":"list",
+      "member":{"shape":"RoutingScope"}
+    },
+    "RtpRouterInputConfiguration":{
+      "type":"structure",
+      "required":["Port"],
+      "members":{
+        "Port":{
+          "shape":"RtpRouterInputConfigurationPortInteger",
+          "documentation":"<p>The port number used for the RTP protocol in the router input configuration.</p>",
+          "locationName":"port"
+        },
+        "ForwardErrorCorrection":{
+          "shape":"ForwardErrorCorrectionState",
+          "documentation":"<p>The state of forward error correction for the RTP protocol in the router input configuration.</p>",
+          "locationName":"forwardErrorCorrection"
+        }
+      },
+      "documentation":"<p>The configuration settings for a Router Input using the RTP (Real-Time Transport Protocol) protocol, including the port and forward error correction state.</p>"
+    },
+    "RtpRouterInputConfigurationPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":30000,
+      "min":3000
+    },
+    "RtpRouterOutputConfiguration":{
+      "type":"structure",
+      "required":[
+        "DestinationAddress",
+        "DestinationPort"
+      ],
+      "members":{
+        "DestinationAddress":{
+          "shape":"String",
+          "documentation":"<p>The destination IP address for the RTP protocol in the router output configuration.</p>",
+          "locationName":"destinationAddress"
+        },
+        "DestinationPort":{
+          "shape":"RtpRouterOutputConfigurationDestinationPortInteger",
+          "documentation":"<p>The destination port number for the RTP protocol in the router output configuration.</p>",
+          "locationName":"destinationPort"
+        },
+        "ForwardErrorCorrection":{
+          "shape":"ForwardErrorCorrectionState",
+          "documentation":"<p>The state of forward error correction for the RTP protocol in the router output configuration.</p>",
+          "locationName":"forwardErrorCorrection"
+        }
+      },
+      "documentation":"<p>The configuration settings for a router output using the RTP (Real-Time Transport Protocol) protocol, including the destination address and port, and forward error correction state.</p>"
+    },
+    "RtpRouterOutputConfigurationDestinationPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65531,
+      "min":0
+    },
     "ScanMode":{
       "type":"string",
       "enum":[
@@ -4881,6 +8297,30 @@
         "interlace",
         "progressive-segmented-frame"
       ]
+    },
+    "SecretArn":{
+      "type":"string",
+      "pattern":"arn:(aws[a-zA-Z-]*):secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+"
+    },
+    "SecretsManagerEncryptionKeyConfiguration":{
+      "type":"structure",
+      "required":[
+        "SecretArn",
+        "RoleArn"
+      ],
+      "members":{
+        "SecretArn":{
+          "shape":"SecretArn",
+          "documentation":"<p>The ARN of the AWS Secrets Manager secret used for transit encryption.</p>",
+          "locationName":"secretArn"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The ARN of the IAM role assumed by MediaConnect to access the AWS Secrets Manager secret.</p>",
+          "locationName":"roleArn"
+        }
+      },
+      "documentation":"<p>The configuration settings for transit encryption using AWS Secrets Manager, including the secret ARN and role ARN.</p>"
     },
     "ServiceUnavailableException":{
       "type":"structure",
@@ -5015,6 +8455,21 @@
           "shape":"SetGatewayBridgeSourceRequest",
           "documentation":"<p> The source configuration for cloud flows receiving a stream from a bridge.</p>",
           "locationName":"gatewayBridgeSource"
+        },
+        "SourceTags":{
+          "shape":"__mapOfString",
+          "documentation":"<p> The key-value pairs that can be used to tag and organize the source. </p>",
+          "locationName":"sourceTags"
+        },
+        "RouterIntegrationState":{
+          "shape":"State",
+          "documentation":"<p>Indicates whether to enable or disable router integration when setting a flow source.</p>",
+          "locationName":"routerIntegrationState"
+        },
+        "RouterIntegrationTransitDecryption":{
+          "shape":"FlowTransitEncryption",
+          "documentation":"<p>The decryption configuration for the flow source when router integration is enabled. Specifies how the source content should be decrypted when router integration is used.</p>",
+          "locationName":"routerIntegrationTransitDecryption"
         }
       },
       "documentation":"<p> The settings for the source of the flow.</p>"
@@ -5125,6 +8580,21 @@
           "shape":"String",
           "documentation":"<p>The IP address of the device that is currently sending content to this source. </p> <note> <ul> <li> <p>For sources that use protocols where you specify the origin (such as SRT Caller), this value matches the configured origin address. </p> </li> <li> <p>For sources that use listener protocols (such as SRT Listener or RTP), this value shows the address of the connected sender. </p> </li> <li> <p>Peer IP addresses aren't available for entitlements and CDI/ST2110 sources.</p> </li> <li> <p>The peer IP address might not be visible for flows that haven't been started yet, or flows that were started before May 2025. In these cases, restart your flow to see the peer IP address.</p> </li> </ul> </note>",
           "locationName":"peerIpAddress"
+        },
+        "RouterIntegrationState":{
+          "shape":"State",
+          "documentation":"<p>Indicates if router integration is enabled or disabled on the flow source.</p>",
+          "locationName":"routerIntegrationState"
+        },
+        "RouterIntegrationTransitDecryption":{
+          "shape":"FlowTransitEncryption",
+          "documentation":"<p>The decryption configuration for the flow source when router integration is enabled.</p>",
+          "locationName":"routerIntegrationTransitDecryption"
+        },
+        "ConnectedRouterOutputArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the router output that's currently connected to this source.</p>",
+          "locationName":"connectedRouterOutputArn"
         }
       },
       "documentation":"<p> The settings for the source of the flow.</p>"
@@ -5146,6 +8616,272 @@
         "OWNED",
         "ENTITLED"
       ]
+    },
+    "SrtCallerRouterInputConfiguration":{
+      "type":"structure",
+      "required":[
+        "SourceAddress",
+        "SourcePort",
+        "MinimumLatencyMilliseconds"
+      ],
+      "members":{
+        "SourceAddress":{
+          "shape":"String",
+          "documentation":"<p>The source IP address for the SRT protocol in caller mode.</p>",
+          "locationName":"sourceAddress"
+        },
+        "SourcePort":{
+          "shape":"SrtCallerRouterInputConfigurationSourcePortInteger",
+          "documentation":"<p>The source port number for the SRT protocol in caller mode.</p>",
+          "locationName":"sourcePort"
+        },
+        "MinimumLatencyMilliseconds":{
+          "shape":"SrtCallerRouterInputConfigurationMinimumLatencyMillisecondsLong",
+          "documentation":"<p>The minimum latency in milliseconds for the SRT protocol in caller mode.</p>",
+          "locationName":"minimumLatencyMilliseconds"
+        },
+        "StreamId":{
+          "shape":"String",
+          "documentation":"<p>The stream ID for the SRT protocol in caller mode.</p>",
+          "locationName":"streamId"
+        },
+        "DecryptionConfiguration":{
+          "shape":"SrtDecryptionConfiguration",
+          "documentation":"<p>Specifies the decryption settings for an SRT caller input, including the encryption key configuration and associated parameters.</p>",
+          "locationName":"decryptionConfiguration"
+        }
+      },
+      "documentation":"<p>The configuration settings for a router input using the SRT (Secure Reliable Transport) protocol in caller mode, including the source address and port, minimum latency, stream ID, and decryption key configuration.</p>"
+    },
+    "SrtCallerRouterInputConfigurationMinimumLatencyMillisecondsLong":{
+      "type":"long",
+      "box":true,
+      "max":10000,
+      "min":10
+    },
+    "SrtCallerRouterInputConfigurationSourcePortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":0
+    },
+    "SrtCallerRouterOutputConfiguration":{
+      "type":"structure",
+      "required":[
+        "DestinationAddress",
+        "DestinationPort",
+        "MinimumLatencyMilliseconds"
+      ],
+      "members":{
+        "DestinationAddress":{
+          "shape":"String",
+          "documentation":"<p>The destination IP address for the SRT protocol in caller mode.</p>",
+          "locationName":"destinationAddress"
+        },
+        "DestinationPort":{
+          "shape":"SrtCallerRouterOutputConfigurationDestinationPortInteger",
+          "documentation":"<p>The destination port number for the SRT protocol in caller mode.</p>",
+          "locationName":"destinationPort"
+        },
+        "MinimumLatencyMilliseconds":{
+          "shape":"SrtCallerRouterOutputConfigurationMinimumLatencyMillisecondsLong",
+          "documentation":"<p>The minimum latency in milliseconds for the SRT protocol in caller mode.</p>",
+          "locationName":"minimumLatencyMilliseconds"
+        },
+        "StreamId":{
+          "shape":"String",
+          "documentation":"<p>The stream ID for the SRT protocol in caller mode.</p>",
+          "locationName":"streamId"
+        },
+        "EncryptionConfiguration":{
+          "shape":"SrtEncryptionConfiguration",
+          "documentation":"<p>Defines the encryption settings for an SRT caller output, including the encryption key configuration and associated parameters.</p>",
+          "locationName":"encryptionConfiguration"
+        }
+      },
+      "documentation":"<p>The configuration settings for a router output using the SRT (Secure Reliable Transport) protocol in caller mode, including the destination address and port, minimum latency, stream ID, and encryption key configuration.</p>"
+    },
+    "SrtCallerRouterOutputConfigurationDestinationPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":0
+    },
+    "SrtCallerRouterOutputConfigurationMinimumLatencyMillisecondsLong":{
+      "type":"long",
+      "box":true,
+      "max":10000,
+      "min":10
+    },
+    "SrtDecryptionConfiguration":{
+      "type":"structure",
+      "required":["EncryptionKey"],
+      "members":{
+        "EncryptionKey":{
+          "shape":"SecretsManagerEncryptionKeyConfiguration",
+          "documentation":"<p>Specifies the encryption key configuration used for decrypting SRT streams, including the key source and associated credentials.</p>",
+          "locationName":"encryptionKey"
+        }
+      },
+      "documentation":"<p>Contains the configuration settings for decrypting SRT streams, including the encryption key details and decryption parameters.</p>"
+    },
+    "SrtEncryptionConfiguration":{
+      "type":"structure",
+      "required":["EncryptionKey"],
+      "members":{
+        "EncryptionKey":{
+          "shape":"SecretsManagerEncryptionKeyConfiguration",
+          "documentation":"<p>Specifies the encryption key configuration used for encrypting SRT streams, including the key source and associated credentials.</p>",
+          "locationName":"encryptionKey"
+        }
+      },
+      "documentation":"<p>Contains the configuration settings for encrypting SRT streams, including the encryption key details and encryption parameters.</p>"
+    },
+    "SrtListenerRouterInputConfiguration":{
+      "type":"structure",
+      "required":[
+        "Port",
+        "MinimumLatencyMilliseconds"
+      ],
+      "members":{
+        "Port":{
+          "shape":"SrtListenerRouterInputConfigurationPortInteger",
+          "documentation":"<p>The port number for the SRT protocol in listener mode.</p>",
+          "locationName":"port"
+        },
+        "MinimumLatencyMilliseconds":{
+          "shape":"SrtListenerRouterInputConfigurationMinimumLatencyMillisecondsLong",
+          "documentation":"<p>The minimum latency in milliseconds for the SRT protocol in listener mode.</p>",
+          "locationName":"minimumLatencyMilliseconds"
+        },
+        "DecryptionConfiguration":{
+          "shape":"SrtDecryptionConfiguration",
+          "documentation":"<p>Specifies the decryption settings for an SRT listener input, including the encryption key configuration and associated parameters.</p>",
+          "locationName":"decryptionConfiguration"
+        }
+      },
+      "documentation":"<p>The configuration settings for a router input using the SRT (Secure Reliable Transport) protocol in listener mode, including the port, minimum latency, and decryption key configuration.</p>"
+    },
+    "SrtListenerRouterInputConfigurationMinimumLatencyMillisecondsLong":{
+      "type":"long",
+      "box":true,
+      "max":10000,
+      "min":10
+    },
+    "SrtListenerRouterInputConfigurationPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":30000,
+      "min":3000
+    },
+    "SrtListenerRouterOutputConfiguration":{
+      "type":"structure",
+      "required":[
+        "Port",
+        "MinimumLatencyMilliseconds"
+      ],
+      "members":{
+        "Port":{
+          "shape":"SrtListenerRouterOutputConfigurationPortInteger",
+          "documentation":"<p>The port number for the SRT protocol in listener mode.</p>",
+          "locationName":"port"
+        },
+        "MinimumLatencyMilliseconds":{
+          "shape":"SrtListenerRouterOutputConfigurationMinimumLatencyMillisecondsLong",
+          "documentation":"<p>The minimum latency in milliseconds for the SRT protocol in listener mode.</p>",
+          "locationName":"minimumLatencyMilliseconds"
+        },
+        "EncryptionConfiguration":{
+          "shape":"SrtEncryptionConfiguration",
+          "documentation":"<p>Defines the encryption settings for an SRT listener output, including the encryption key configuration and associated parameters.</p>",
+          "locationName":"encryptionConfiguration"
+        }
+      },
+      "documentation":"<p>The configuration settings for a router output using the SRT (Secure Reliable Transport) protocol in listener mode, including the port, minimum latency, and encryption key configuration.</p>"
+    },
+    "SrtListenerRouterOutputConfigurationMinimumLatencyMillisecondsLong":{
+      "type":"long",
+      "box":true,
+      "max":10000,
+      "min":10
+    },
+    "SrtListenerRouterOutputConfigurationPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":30000,
+      "min":3000
+    },
+    "StandardRouterInputConfiguration":{
+      "type":"structure",
+      "required":[
+        "NetworkInterfaceArn",
+        "ProtocolConfiguration"
+      ],
+      "members":{
+        "NetworkInterfaceArn":{
+          "shape":"RouterNetworkInterfaceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the network interface associated with the standard router input.</p>",
+          "locationName":"networkInterfaceArn"
+        },
+        "ProtocolConfiguration":{
+          "shape":"RouterInputProtocolConfiguration",
+          "documentation":"<p>The configuration settings for the protocol used by the standard router input.</p>",
+          "locationName":"protocolConfiguration"
+        },
+        "Protocol":{
+          "shape":"RouterInputProtocol",
+          "documentation":"<p>The protocol used by the standard router input.</p>",
+          "locationName":"protocol"
+        }
+      },
+      "documentation":"<p>The configuration settings for a standard router input, including the protocol, protocol-specific configuration, network interface, and availability zone.</p>"
+    },
+    "StandardRouterInputStreamDetails":{
+      "type":"structure",
+      "members":{
+        "SourceIpAddress":{
+          "shape":"String",
+          "documentation":"<p>The source IP address for the standard router input stream.</p>",
+          "locationName":"sourceIpAddress"
+        }
+      },
+      "documentation":"<p>Configuration details for a standard router input stream type.</p>"
+    },
+    "StandardRouterOutputConfiguration":{
+      "type":"structure",
+      "required":[
+        "NetworkInterfaceArn",
+        "ProtocolConfiguration"
+      ],
+      "members":{
+        "NetworkInterfaceArn":{
+          "shape":"RouterNetworkInterfaceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the network interface associated with the standard router output.</p>",
+          "locationName":"networkInterfaceArn"
+        },
+        "ProtocolConfiguration":{
+          "shape":"RouterOutputProtocolConfiguration",
+          "documentation":"<p>The configuration settings for the protocol used by the standard router output.</p>",
+          "locationName":"protocolConfiguration"
+        },
+        "Protocol":{
+          "shape":"RouterOutputProtocol",
+          "documentation":"<p>The protocol used by the standard router output.</p>",
+          "locationName":"protocol"
+        }
+      },
+      "documentation":"<p>The configuration settings for a standard router output, including the protocol, protocol-specific configuration, network interface, and availability zone.</p>"
+    },
+    "StandardRouterOutputStreamDetails":{
+      "type":"structure",
+      "members":{
+        "DestinationIpAddress":{
+          "shape":"String",
+          "documentation":"<p>The IP address where the output stream will be sent. This is the destination address that will receive the routed media content.</p>",
+          "locationName":"destinationIpAddress"
+        }
+      },
+      "documentation":"<p>Configuration details for a standard router output stream type. Contains information about the destination IP address and connection state for basic output routing.</p>"
     },
     "StartFlowRequest":{
       "type":"structure",
@@ -5175,6 +8911,104 @@
           "shape":"Status",
           "documentation":"<p> The status of the flow when the <code>StartFlow</code> process begins.</p>",
           "locationName":"status"
+        }
+      }
+    },
+    "StartRouterInputRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router input that you want to start.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        }
+      }
+    },
+    "StartRouterInputResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name",
+        "State",
+        "MaintenanceScheduleType",
+        "MaintenanceSchedule"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The ARN of the router input that was started.</p>",
+          "locationName":"arn"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the router input that was started.</p>",
+          "locationName":"name"
+        },
+        "State":{
+          "shape":"RouterInputState",
+          "documentation":"<p>The current state of the router input after being started.</p>",
+          "locationName":"state"
+        },
+        "MaintenanceScheduleType":{
+          "shape":"MaintenanceScheduleType",
+          "documentation":"<p>The type of maintenance schedule associated with the router input.</p>",
+          "locationName":"maintenanceScheduleType"
+        },
+        "MaintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>The details of the maintenance schedule for the router input.</p>",
+          "locationName":"maintenanceSchedule"
+        }
+      }
+    },
+    "StartRouterOutputRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"RouterOutputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router output that you want to start.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        }
+      }
+    },
+    "StartRouterOutputResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name",
+        "State",
+        "MaintenanceScheduleType",
+        "MaintenanceSchedule"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"RouterOutputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router output that was started.</p>",
+          "locationName":"arn"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the router output that was started.</p>",
+          "locationName":"name"
+        },
+        "State":{
+          "shape":"RouterOutputState",
+          "documentation":"<p>The current state of the router output after being started.</p>",
+          "locationName":"state"
+        },
+        "MaintenanceScheduleType":{
+          "shape":"MaintenanceScheduleType",
+          "documentation":"<p>The type of maintenance schedule associated with the router output.</p>",
+          "locationName":"maintenanceScheduleType"
+        },
+        "MaintenanceSchedule":{
+          "shape":"MaintenanceSchedule",
+          "documentation":"<p>The details of the maintenance schedule for the router output.</p>",
+          "locationName":"maintenanceSchedule"
         }
       }
     },
@@ -5228,10 +9062,108 @@
         }
       }
     },
+    "StopRouterInputRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router input that you want to stop.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        }
+      }
+    },
+    "StopRouterInputResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name",
+        "State"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The ARN of the router input that was stopped.</p>",
+          "locationName":"arn"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the router input that was stopped.</p>",
+          "locationName":"name"
+        },
+        "State":{
+          "shape":"RouterInputState",
+          "documentation":"<p>The current state of the router input after being stopped.</p>",
+          "locationName":"state"
+        }
+      }
+    },
+    "StopRouterOutputRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"RouterOutputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router output that you want to stop.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        }
+      }
+    },
+    "StopRouterOutputResponse":{
+      "type":"structure",
+      "required":[
+        "Arn",
+        "Name",
+        "State"
+      ],
+      "members":{
+        "Arn":{
+          "shape":"RouterOutputArn",
+          "documentation":"<p>The ARN of the router output that was stopped.</p>",
+          "locationName":"arn"
+        },
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the router output that was stopped.</p>",
+          "locationName":"name"
+        },
+        "State":{
+          "shape":"RouterOutputState",
+          "documentation":"<p>The current state of the router output after being stopped.</p>",
+          "locationName":"state"
+        }
+      }
+    },
     "String":{"type":"string"},
+    "StringList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
     "SyntheticTimestamp_date_time":{
       "type":"timestamp",
       "timestampFormat":"iso8601"
+    },
+    "TagGlobalResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "Tags"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the global resource to tag.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        },
+        "Tags":{
+          "shape":"__mapOfString",
+          "documentation":"<p>A map of tag keys and values to add to the global resource.</p>",
+          "locationName":"tags"
+        }
+      }
     },
     "TagResourceRequest":{
       "type":"structure",
@@ -5250,6 +9182,58 @@
           "shape":"__mapOfString",
           "documentation":"<p> A map from tag keys to values. Tag keys can have a maximum character length of 128 characters, and tag values can have a maximum length of 256 characters.</p>",
           "locationName":"tags"
+        }
+      }
+    },
+    "TakeRouterInputRequest":{
+      "type":"structure",
+      "required":["RouterOutputArn"],
+      "members":{
+        "RouterOutputArn":{
+          "shape":"RouterOutputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router output that you want to associate with a router input.</p>",
+          "location":"uri",
+          "locationName":"RouterOutputArn"
+        },
+        "RouterInputArn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router input that you want to associate with a router output.</p>",
+          "locationName":"routerInputArn"
+        }
+      }
+    },
+    "TakeRouterInputResponse":{
+      "type":"structure",
+      "required":[
+        "RoutedState",
+        "RouterOutputArn",
+        "RouterOutputName"
+      ],
+      "members":{
+        "RoutedState":{
+          "shape":"RouterOutputRoutedState",
+          "documentation":"<p>The state of the association between the router input and output.</p>",
+          "locationName":"routedState"
+        },
+        "RouterOutputArn":{
+          "shape":"RouterOutputArn",
+          "documentation":"<p>The ARN of the associated router output.</p>",
+          "locationName":"routerOutputArn"
+        },
+        "RouterOutputName":{
+          "shape":"String",
+          "documentation":"<p>The name of the associated router output.</p>",
+          "locationName":"routerOutputName"
+        },
+        "RouterInputArn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The ARN of the associated router input.</p>",
+          "locationName":"routerInputArn"
+        },
+        "RouterInputName":{
+          "shape":"String",
+          "documentation":"<p>The name of the associated router input.</p>",
+          "locationName":"routerInputName"
         }
       }
     },
@@ -5506,6 +9490,27 @@
         }
       },
       "documentation":"<p> The metadata of a single transport stream program.</p>"
+    },
+    "UntagGlobalResourceRequest":{
+      "type":"structure",
+      "required":[
+        "ResourceArn",
+        "TagKeys"
+      ],
+      "members":{
+        "ResourceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the global resource to remove tags from.</p>",
+          "location":"uri",
+          "locationName":"ResourceArn"
+        },
+        "TagKeys":{
+          "shape":"__listOfString",
+          "documentation":"<p>The keys of the tags to remove from the global resource.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -6110,6 +10115,15 @@
           "shape":"Integer",
           "documentation":"<p>A quality setting for the NDI Speed HQ encoder. </p>",
           "locationName":"ndiSpeedHqQuality"
+        },
+        "RouterIntegrationState":{
+          "shape":"State",
+          "documentation":"<p>Indicates whether to enable or disable router integration for this flow output.</p>",
+          "locationName":"routerIntegrationState"
+        },
+        "RouterIntegrationTransitEncryption":{
+          "shape":"FlowTransitEncryption",
+          "locationName":"routerIntegrationTransitEncryption"
         }
       }
     },
@@ -6165,6 +10179,11 @@
           "shape":"NdiConfig",
           "documentation":"<p> Specifies the configuration settings for NDI outputs. Required when the flow includes NDI outputs. </p>",
           "locationName":"ndiConfig"
+        },
+        "FlowSize":{
+          "shape":"FlowSize",
+          "documentation":"<p> Determines the processing capacity and feature set of the flow. </p>",
+          "locationName":"flowSize"
         }
       }
     },
@@ -6290,6 +10309,16 @@
           "shape":"UpdateGatewayBridgeSourceRequest",
           "documentation":"<p>The source configuration for cloud flows receiving a stream from a bridge. </p>",
           "locationName":"gatewayBridgeSource"
+        },
+        "RouterIntegrationState":{
+          "shape":"State",
+          "documentation":"<p>Indicates whether to enable or disable router integration for this flow source.</p>",
+          "locationName":"routerIntegrationState"
+        },
+        "RouterIntegrationTransitDecryption":{
+          "shape":"FlowTransitEncryption",
+          "documentation":"<p>The encryption configuration for the flow source when router integration is enabled.</p>",
+          "locationName":"routerIntegrationTransitDecryption"
         }
       }
     },
@@ -6413,6 +10442,165 @@
       },
       "documentation":"<p> Update maintenance setting for a flow.</p>"
     },
+    "UpdateRouterInputRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"RouterInputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router input that you want to update.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        },
+        "Name":{
+          "shape":"UpdateRouterInputRequestNameString",
+          "documentation":"<p>The updated name for the router input.</p>",
+          "locationName":"name"
+        },
+        "Configuration":{
+          "shape":"RouterInputConfiguration",
+          "documentation":"<p>The updated configuration settings for the router input. Changing the type of the configuration is not supported.</p>",
+          "locationName":"configuration"
+        },
+        "MaximumBitrate":{
+          "shape":"Long",
+          "documentation":"<p>The updated maximum bitrate for the router input.</p>",
+          "locationName":"maximumBitrate"
+        },
+        "RoutingScope":{
+          "shape":"RoutingScope",
+          "documentation":"<p>Specifies whether the router input can be assigned to outputs in different Regions. REGIONAL (default) - can be assigned only to outputs in the same Region. GLOBAL - can be assigned to outputs in any Region.</p>",
+          "locationName":"routingScope"
+        },
+        "Tier":{
+          "shape":"RouterInputTier",
+          "documentation":"<p>The updated tier level for the router input.</p>",
+          "locationName":"tier"
+        },
+        "TransitEncryption":{
+          "shape":"RouterInputTransitEncryption",
+          "documentation":"<p>The updated transit encryption settings for the router input.</p>",
+          "locationName":"transitEncryption"
+        },
+        "MaintenanceConfiguration":{
+          "shape":"MaintenanceConfiguration",
+          "documentation":"<p>The updated maintenance configuration settings for the router input, including any changes to preferred maintenance windows and schedules.</p>",
+          "locationName":"maintenanceConfiguration"
+        }
+      }
+    },
+    "UpdateRouterInputRequestNameString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "UpdateRouterInputResponse":{
+      "type":"structure",
+      "required":["RouterInput"],
+      "members":{
+        "RouterInput":{
+          "shape":"RouterInput",
+          "documentation":"<p>The updated router input.</p>",
+          "locationName":"routerInput"
+        }
+      }
+    },
+    "UpdateRouterNetworkInterfaceRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"RouterNetworkInterfaceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router network interface that you want to update.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        },
+        "Name":{
+          "shape":"UpdateRouterNetworkInterfaceRequestNameString",
+          "documentation":"<p>The updated name for the router network interface.</p>",
+          "locationName":"name"
+        },
+        "Configuration":{
+          "shape":"RouterNetworkInterfaceConfiguration",
+          "documentation":"<p>The updated configuration settings for the router network interface. Changing the type of the configuration is not supported.</p>",
+          "locationName":"configuration"
+        }
+      }
+    },
+    "UpdateRouterNetworkInterfaceRequestNameString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "UpdateRouterNetworkInterfaceResponse":{
+      "type":"structure",
+      "required":["RouterNetworkInterface"],
+      "members":{
+        "RouterNetworkInterface":{
+          "shape":"RouterNetworkInterface",
+          "documentation":"<p>The updated router network interface.</p>",
+          "locationName":"routerNetworkInterface"
+        }
+      }
+    },
+    "UpdateRouterOutputRequest":{
+      "type":"structure",
+      "required":["Arn"],
+      "members":{
+        "Arn":{
+          "shape":"RouterOutputArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the router output that you want to update.</p>",
+          "location":"uri",
+          "locationName":"Arn"
+        },
+        "Name":{
+          "shape":"UpdateRouterOutputRequestNameString",
+          "documentation":"<p>The updated name for the router output.</p>",
+          "locationName":"name"
+        },
+        "Configuration":{
+          "shape":"RouterOutputConfiguration",
+          "documentation":"<p>The updated configuration settings for the router output. Changing the type of the configuration is not supported.</p>",
+          "locationName":"configuration"
+        },
+        "MaximumBitrate":{
+          "shape":"Long",
+          "documentation":"<p>The updated maximum bitrate for the router output.</p>",
+          "locationName":"maximumBitrate"
+        },
+        "RoutingScope":{
+          "shape":"RoutingScope",
+          "documentation":"<p>Specifies whether the router output can take inputs that are in different Regions. REGIONAL (default) - can only take inputs from same Region. GLOBAL - can take inputs from any Region.</p>",
+          "locationName":"routingScope"
+        },
+        "Tier":{
+          "shape":"RouterOutputTier",
+          "documentation":"<p>The updated tier level for the router output.</p>",
+          "locationName":"tier"
+        },
+        "MaintenanceConfiguration":{
+          "shape":"MaintenanceConfiguration",
+          "documentation":"<p>The updated maintenance configuration settings for the router output, including any changes to preferred maintenance windows and schedules.</p>",
+          "locationName":"maintenanceConfiguration"
+        }
+      }
+    },
+    "UpdateRouterOutputRequestNameString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "UpdateRouterOutputResponse":{
+      "type":"structure",
+      "required":["RouterOutput"],
+      "members":{
+        "RouterOutput":{
+          "shape":"RouterOutput",
+          "documentation":"<p>The updated router output.</p>",
+          "locationName":"routerOutput"
+        }
+      }
+    },
     "VideoMonitoringSetting":{
       "type":"structure",
       "members":{
@@ -6517,9 +10705,66 @@
           "shape":"String",
           "documentation":"<p> The subnet IDs that you want to use for your VPC interface. A range of IP addresses in your VPC. When you create your VPC, you specify a range of IPv4 addresses for the VPC in the form of a Classless Inter-Domain Routing (CIDR) block; for example, 10.0.0.0/16. This is the primary CIDR block for your VPC. When you create a subnet for your VPC, you specify the CIDR block for the subnet, which is a subset of the VPC CIDR block. The subnets that you use across all VPC interfaces on the flow must be in the same Availability Zone as the flow. </p>",
           "locationName":"subnetId"
+        },
+        "VpcInterfaceTags":{
+          "shape":"__mapOfString",
+          "documentation":"<p> The key-value pairs that can be used to tag and organize the VPC network interface. </p>",
+          "locationName":"vpcInterfaceTags"
         }
       },
       "documentation":"<p>The details of the VPC interfaces that you want to add to the flow. </p>"
+    },
+    "VpcRouterNetworkInterfaceConfiguration":{
+      "type":"structure",
+      "required":[
+        "SecurityGroupIds",
+        "SubnetId"
+      ],
+      "members":{
+        "SecurityGroupIds":{
+          "shape":"VpcRouterNetworkInterfaceConfigurationSecurityGroupIdsList",
+          "documentation":"<p>The IDs of the security groups to associate with the router network interface within the VPC.</p>",
+          "locationName":"securityGroupIds"
+        },
+        "SubnetId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the subnet within the VPC to associate the router network interface with.</p>",
+          "locationName":"subnetId"
+        }
+      },
+      "documentation":"<p>The configuration settings for a router network interface within a VPC, including the security group IDs and subnet ID.</p>"
+    },
+    "VpcRouterNetworkInterfaceConfigurationSecurityGroupIdsList":{
+      "type":"list",
+      "member":{"shape":"String"},
+      "max":5,
+      "min":1
+    },
+    "WindowMaintenanceSchedule":{
+      "type":"structure",
+      "required":[
+        "Start",
+        "End",
+        "ScheduledTime"
+      ],
+      "members":{
+        "Start":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The start time of the maintenance window.</p>",
+          "locationName":"start"
+        },
+        "End":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The end time of the maintenance window.</p>",
+          "locationName":"end"
+        },
+        "ScheduledTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the maintenance window is scheduled to occur.</p>",
+          "locationName":"scheduledTime"
+        }
+      },
+      "documentation":"<p>Defines a specific time window for maintenance operations.</p>"
     },
     "__listOfAddBridgeOutputRequest":{
       "type":"list",

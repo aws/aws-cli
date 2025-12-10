@@ -5,12 +5,14 @@
     "endpointPrefix":"streams.dynamodb",
     "jsonVersion":"1.0",
     "protocol":"json",
+    "protocols":["json"],
     "serviceFullName":"Amazon DynamoDB Streams",
     "serviceId":"DynamoDB Streams",
     "signatureVersion":"v4",
     "signingName":"dynamodb",
     "targetPrefix":"DynamoDBStreams_20120810",
-    "uid":"streams-dynamodb-2012-08-10"
+    "uid":"streams-dynamodb-2012-08-10",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "DescribeStream":{
@@ -152,6 +154,10 @@
         "ExclusiveStartShardId":{
           "shape":"ShardId",
           "documentation":"<p>The shard ID of the first item that this operation will evaluate. Use the value that was returned for <code>LastEvaluatedShardId</code> in the previous operation. </p>"
+        },
+        "ShardFilter":{
+          "shape":"ShardFilter",
+          "documentation":"<p>This optional field contains the filter definition for the <code>DescribeStream</code> API.</p>"
         }
       },
       "documentation":"<p>Represents the input of a <code>DescribeStream</code> operation.</p>"
@@ -470,6 +476,24 @@
       "type":"list",
       "member":{"shape":"Shard"}
     },
+    "ShardFilter":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"ShardFilterType",
+          "documentation":"<p>Contains the type of filter to be applied on the <code>DescribeStream</code> API. Currently, the only value this parameter accepts is <code>CHILD_SHARDS</code>.</p>"
+        },
+        "ShardId":{
+          "shape":"ShardId",
+          "documentation":"<p>Contains the <code>shardId</code> of the parent shard for which you are requesting child shards.</p> <p> <i>Sample request:</i> </p>"
+        }
+      },
+      "documentation":"<p>This optional field contains the filter definition for the <code>DescribeStream</code> API.</p>"
+    },
+    "ShardFilterType":{
+      "type":"string",
+      "enum":["CHILD_SHARDS"]
+    },
     "ShardId":{
       "type":"string",
       "max":65,
@@ -563,7 +587,7 @@
       "members":{
         "ApproximateCreationDateTime":{
           "shape":"Date",
-          "documentation":"<p>The approximate date and time when the stream record was created, in <a href=\"http://www.epochconverter.com/\">UNIX epoch time</a> format and rounded down to the closest second.</p>"
+          "documentation":"<p>The approximate date and time when the stream record was created, in <a href=\"https://www.iso.org/iso-8601-date-and-time-format.html\">ISO 8601</a> format and rounded down to the closest second.</p>"
         },
         "Keys":{
           "shape":"AttributeMap",

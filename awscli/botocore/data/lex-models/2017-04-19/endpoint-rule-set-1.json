@@ -5,27 +5,27 @@
             "builtIn": "AWS::Region",
             "required": false,
             "documentation": "The AWS region used to dispatch the request.",
-            "type": "String"
+            "type": "string"
         },
         "UseDualStack": {
             "builtIn": "AWS::UseDualStack",
             "required": true,
             "default": false,
             "documentation": "When true, use the dual-stack endpoint. If the configured endpoint does not support dual-stack, dispatching the request MAY return an error.",
-            "type": "Boolean"
+            "type": "boolean"
         },
         "UseFIPS": {
             "builtIn": "AWS::UseFIPS",
             "required": true,
             "default": false,
             "documentation": "When true, send this request to the FIPS-compliant regional endpoint. If the configured endpoint does not have a FIPS compliant endpoint, dispatching the request will return an error.",
-            "type": "Boolean"
+            "type": "boolean"
         },
         "Endpoint": {
             "builtIn": "SDK::Endpoint",
             "required": false,
             "documentation": "Override the endpoint used to send this request",
-            "type": "String"
+            "type": "string"
         }
     },
     "rules": [
@@ -40,7 +40,6 @@
                     ]
                 }
             ],
-            "type": "tree",
             "rules": [
                 {
                     "conditions": [
@@ -83,7 +82,8 @@
                     },
                     "type": "endpoint"
                 }
-            ]
+            ],
+            "type": "tree"
         },
         {
             "conditions": [
@@ -96,7 +96,6 @@
                     ]
                 }
             ],
-            "type": "tree",
             "rules": [
                 {
                     "conditions": [
@@ -110,7 +109,6 @@
                             "assign": "PartitionResult"
                         }
                     ],
-                    "type": "tree",
                     "rules": [
                         {
                             "conditions": [
@@ -133,7 +131,6 @@
                                     ]
                                 }
                             ],
-                            "type": "tree",
                             "rules": [
                                 {
                                     "conditions": [
@@ -168,7 +165,6 @@
                                             ]
                                         }
                                     ],
-                                    "type": "tree",
                                     "rules": [
                                         {
                                             "conditions": [],
@@ -179,14 +175,16 @@
                                             },
                                             "type": "endpoint"
                                         }
-                                    ]
+                                    ],
+                                    "type": "tree"
                                 },
                                 {
                                     "conditions": [],
                                     "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
                                     "type": "error"
                                 }
-                            ]
+                            ],
+                            "type": "tree"
                         },
                         {
                             "conditions": [
@@ -200,14 +198,12 @@
                                     ]
                                 }
                             ],
-                            "type": "tree",
                             "rules": [
                                 {
                                     "conditions": [
                                         {
                                             "fn": "booleanEquals",
                                             "argv": [
-                                                true,
                                                 {
                                                     "fn": "getAttr",
                                                     "argv": [
@@ -216,18 +212,17 @@
                                                         },
                                                         "supportsFIPS"
                                                     ]
-                                                }
+                                                },
+                                                true
                                             ]
                                         }
                                     ],
-                                    "type": "tree",
                                     "rules": [
                                         {
                                             "conditions": [
                                                 {
                                                     "fn": "stringEquals",
                                                     "argv": [
-                                                        "aws",
                                                         {
                                                             "fn": "getAttr",
                                                             "argv": [
@@ -236,7 +231,8 @@
                                                                 },
                                                                 "name"
                                                             ]
-                                                        }
+                                                        },
+                                                        "aws"
                                                     ]
                                                 }
                                             ],
@@ -252,7 +248,6 @@
                                                 {
                                                     "fn": "stringEquals",
                                                     "argv": [
-                                                        "aws-us-gov",
                                                         {
                                                             "fn": "getAttr",
                                                             "argv": [
@@ -261,7 +256,8 @@
                                                                 },
                                                                 "name"
                                                             ]
-                                                        }
+                                                        },
+                                                        "aws-us-gov"
                                                     ]
                                                 }
                                             ],
@@ -281,14 +277,16 @@
                                             },
                                             "type": "endpoint"
                                         }
-                                    ]
+                                    ],
+                                    "type": "tree"
                                 },
                                 {
                                     "conditions": [],
                                     "error": "FIPS is enabled but this partition does not support FIPS",
                                     "type": "error"
                                 }
-                            ]
+                            ],
+                            "type": "tree"
                         },
                         {
                             "conditions": [
@@ -302,7 +300,6 @@
                                     ]
                                 }
                             ],
-                            "type": "tree",
                             "rules": [
                                 {
                                     "conditions": [
@@ -322,7 +319,6 @@
                                             ]
                                         }
                                     ],
-                                    "type": "tree",
                                     "rules": [
                                         {
                                             "conditions": [],
@@ -333,14 +329,16 @@
                                             },
                                             "type": "endpoint"
                                         }
-                                    ]
+                                    ],
+                                    "type": "tree"
                                 },
                                 {
                                     "conditions": [],
                                     "error": "DualStack is enabled but this partition does not support DualStack",
                                     "type": "error"
                                 }
-                            ]
+                            ],
+                            "type": "tree"
                         },
                         {
                             "conditions": [
@@ -401,9 +399,11 @@
                             },
                             "type": "endpoint"
                         }
-                    ]
+                    ],
+                    "type": "tree"
                 }
-            ]
+            ],
+            "type": "tree"
         },
         {
             "conditions": [],

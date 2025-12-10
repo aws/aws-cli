@@ -32,7 +32,7 @@ class TestServiceDocumenter(BaseDocsTest):
 
     def test_document_service(self):
         # Note that not everything will be included as it is just
-        # a smoke test to make sure all of the main parts are inluded.
+        # a smoke test to make sure all the main parts are included.
         contents = self.service_documenter.document_service().decode('utf-8')
         lines = [
             '*********',

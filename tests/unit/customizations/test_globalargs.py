@@ -253,9 +253,9 @@ class TestGlobalArgsCustomization(unittest.TestCase):
             with capture_output() as output:
                 globalargs.detect_migration_breakage(parsed_args, [], session)
                 self.assertIn(
-                    'AWS CLI v2 UPGRADE WARNING: The PYTHONUTF8 and '
-                    'PYTHONIOENCODING environment variables are unsupported '
-                    'in AWS CLI v2.',
+                    'The AWS CLI v2 does not support The `PYTHONUTF8` and '
+                    '`PYTHONIOENCODING` environment variables, and instead '
+                    'uses the `AWS_CLI_FILE_ENCODING` variable',
                     output.stderr.getvalue()
                 )
 
@@ -281,9 +281,9 @@ class TestGlobalArgsCustomization(unittest.TestCase):
             with capture_output() as output:
                 globalargs.detect_migration_breakage(parsed_args, [], session)
                 self.assertIn(
-                    'AWS CLI v2 UPGRADE WARNING: The PYTHONUTF8 and '
-                    'PYTHONIOENCODING environment variables are unsupported '
-                    'in AWS CLI v2.',
+                    'The AWS CLI v2 does not support The `PYTHONUTF8` and '
+                    '`PYTHONIOENCODING` environment variables, and instead '
+                    'uses the `AWS_CLI_FILE_ENCODING` variable',
                     output.stderr.getvalue()
                 )
 

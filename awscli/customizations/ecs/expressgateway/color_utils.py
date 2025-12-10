@@ -24,7 +24,7 @@ class ColorUtils:
 
     def __init__(self):
         # Initialize colorama
-        init(autoreset=True, strip=False)
+        init(autoreset=False, strip=False)
 
     def make_green(self, text, use_color=True):
         if not use_color:

@@ -238,6 +238,7 @@ class ECSExpressGatewayServiceWatcher:
             while True:
                 current_time = time.time()
                 if current_time - self.start_time > self.timeout_minutes * 60:
+                    self.display.app.exit()
                     break
                 try:
                     loop = asyncio.get_event_loop()

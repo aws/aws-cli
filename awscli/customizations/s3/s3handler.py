@@ -517,42 +517,7 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
     def _get_warning_handlers(self):
         return [
             self._warn_glacier,
-            self._warn_if_zero_byte_file_exists_with_no_overwrite,
         ]
-
-    def _warn_if_zero_byte_file_exists_with_no_overwrite(self, fileinfo):
-        """
-        Warning handler to skip zero-byte files when no_overwrite is set and file exists.
-
-        This method handles the transfer of zero-byte objects when the no-overwrite parameter is specified.
-        To prevent overwrite, it uses head_object to verify if the object exists at the destination:
-        If the object is present at destination: skip the file (return True)
-        If the object is not present at destination: allow transfer (return False)
-
-        :type fileinfo: FileInfo
-        :param fileinfo: The FileInfo object containing transfer details
-
-        :rtype: bool
-        :return: True if file should be skipped, False if transfer should proceed
-        """
-        if not self._cli_params.get('no_overwrite') or (
-            getattr(fileinfo, 'size') and fileinfo.size > 0
-        ):
-            return False
-
-        bucket, key = find_bucket_key(fileinfo.dest)
-        client = fileinfo.source_client
-        try:
-            client.head_object(Bucket=bucket, Key=key)
-            LOGGER.debug(
-                f"warning: skipping {fileinfo.src} -> {fileinfo.dest}, file exists at destination"
-            )
-            return True
-        except ClientError as e:
-            if e.response['Error']['Code'] == '404':
-                return False
-            else:
-                raise
 
     def _format_src_dest(self, fileinfo):
         src = self._format_s3_path(fileinfo.src)

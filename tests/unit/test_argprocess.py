@@ -80,7 +80,7 @@ class TestURIParams(BaseArgProcessTest):
             )
             f.write(json_argument)
             f.flush()
-            result = self.uri_param('event-name', p, 'file://%s' % f.name, mock.Mock())
+            result = self.uri_param('event-name', p, 'file://%s' % f.name)
         self.assertEqual(result, json_argument)
 
     def test_uri_param_no_paramfile_false(self):
@@ -90,7 +90,7 @@ class TestURIParams(BaseArgProcessTest):
             json_argument = json.dumps([{"Name": "instance-id", "Values": ["i-1234"]}])
             f.write(json_argument)
             f.flush()
-            result = self.uri_param('event-name', p, 'file://%s' % f.name, mock.Mock())
+            result = self.uri_param('event-name', p, 'file://%s' % f.name)
         self.assertEqual(result, json_argument)
 
     def test_uri_param_no_paramfile_true(self):
@@ -100,7 +100,7 @@ class TestURIParams(BaseArgProcessTest):
             json_argument = json.dumps([{"Name": "instance-id", "Values": ["i-1234"]}])
             f.write(json_argument)
             f.flush()
-            result = self.uri_param('event-name', p, 'file://%s' % f.name, mock.Mock())
+            result = self.uri_param('event-name', p, 'file://%s' % f.name)
         self.assertEqual(result, None)
 
 

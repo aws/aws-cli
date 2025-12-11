@@ -48,7 +48,7 @@ from awscli.help import (
     ServiceHelpCommand,
 )
 from awscli.plugin import load_plugins
-from awscli.utils import emit_top_level_args_parsed_event, write_exception, create_nested_client, resolve_v2_debug_mode
+from awscli.utils import emit_top_level_args_parsed_event, write_exception, create_nested_client
 from botocore import __version__ as botocore_version
 from botocore import xform_name
 
@@ -225,7 +225,7 @@ class CLIDriver:
             # that exceptions can be raised, which should have the same
             # general exception handling logic as calling into the
             # command table.  This is why it's in the try/except clause.
-            self._handle_top_level_args(parsed_args, remaining)
+            self._handle_top_level_args(parsed_args)
             self._emit_session_event(parsed_args)
             HISTORY_RECORDER.record(
                 'CLI_VERSION', self.session.user_agent(), 'CLI'
@@ -279,8 +279,8 @@ class CLIDriver:
         sys.stderr.write(msg)
         sys.stderr.write('\n')
 
-    def _handle_top_level_args(self, args, remaining):
-        emit_top_level_args_parsed_event(self.session, args, remaining)
+    def _handle_top_level_args(self, args):
+        emit_top_level_args_parsed_event(self.session, args)
         if args.profile:
             self.session.set_config_variable('profile', args.profile)
         if args.region:
@@ -542,15 +542,9 @@ class ServiceOperation:
             event, parsed_args=parsed_args, parsed_globals=parsed_globals
         )
         call_parameters = self._build_call_parameters(
-            parsed_args, self.arg_table, parsed_globals
+            parsed_args, self.arg_table
         )
 
-        self._detect_binary_file_migration_change(
-            self._session,
-            parsed_args,
-            parsed_globals,
-            self.arg_table
-        )
         event = f'calling-command.{self._parent_name}.{self._name}'
         override = self._emit_first_non_none_response(
             event,
@@ -596,7 +590,7 @@ class ServiceOperation:
         # CLIArguments for values.
         parser.add_argument('help', nargs='?')
 
-    def _build_call_parameters(self, args, arg_table, parsed_globals):
+    def _build_call_parameters(self, args, arg_table):
         # We need to convert the args specified on the command
         # line as valid **kwargs we can hand to botocore.
         service_params = {}
@@ -607,11 +601,11 @@ class ServiceOperation:
             py_name = arg_object.py_name
             if py_name in parsed_args:
                 value = parsed_args[py_name]
-                value = self._unpack_arg(arg_object, value, parsed_globals)
+                value = self._unpack_arg(arg_object, value)
                 arg_object.add_to_params(service_params, value)
         return service_params
 
-    def _unpack_arg(self, cli_argument, value, parsed_globals):
+    def _unpack_arg(self, cli_argument, value):
         # Unpacks a commandline argument into a Python value by firing the
         # load-cli-arg.service-name.operation-name event.
         session = self._session
@@ -619,7 +613,7 @@ class ServiceOperation:
         operation_name = xform_name(self._name, '-')
 
         return unpack_argument(
-            session, service_name, operation_name, cli_argument, value, parsed_globals
+            session, service_name, operation_name, cli_argument, value
         )
 
     def _create_argument_table(self):
@@ -666,46 +660,6 @@ class ServiceOperation:
     def _create_operation_parser(self, arg_table):
         parser = ArgTableArgParser(arg_table)
         return parser
-
-    def _detect_binary_file_migration_change(
-            self,
-            session,
-            parsed_args,
-            parsed_globals,
-            arg_table
-    ):
-        if (
-                session.get_scoped_config()
-                        .get('cli_binary_format', None) == 'raw-in-base64-out'
-        ):
-            # if cli_binary_format is set to raw-in-base64-out, then v2 behavior will
-            # be the same as v1, so there is no breaking change in this case.
-            return
-        if resolve_v2_debug_mode(parsed_globals):
-            parsed_args_to_check = {
-                arg: getattr(parsed_args, arg)
-                for arg in vars(parsed_args) if getattr(parsed_args, arg)
-            }
-
-            arg_values_to_check = [
-                arg.py_name for arg in arg_table.values()
-                if arg.py_name in parsed_args_to_check
-                   and arg.argument_model.type_name == 'blob'
-            ]
-            if arg_values_to_check:
-                print(
-                    '\nAWS CLI v2 UPGRADE WARNING: When specifying a '
-                    'blob-type parameter, AWS CLI v2 will assume the '
-                    'parameter value is base64-encoded. This is different '
-                    'from v1 behavior, where the AWS CLI will automatically '
-                    'encode the value to base64. To retain v1 behavior in '
-                    'AWS CLI v2, set the `cli_binary_format` configuration '
-                    'variable to `raw-in-base64-out`. See '
-                    'https://docs.aws.amazon.com/cli/latest/userguide/'
-                    'cliv2-migration-changes.html'
-                    '#cliv2-migration-binaryparam.\n',
-                    file=sys.stderr
-                )
 
 
 class CLIOperationCaller:

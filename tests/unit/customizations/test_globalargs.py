@@ -10,11 +10,13 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from unittest.mock import patch, Mock
+
 from botocore.session import get_session
 from botocore import UNSIGNED
 import os
 
-from awscli.testutils import mock, unittest
+from awscli.testutils import mock, unittest, capture_output
 from awscli.customizations import globalargs
 
 
@@ -185,3 +187,175 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         self.assertEqual(parsed_args.connect_timeout, None)
         self.assertEqual(
             session.get_default_client_config().connect_timeout, None)
+
+    def test_register_feature_id(self):
+        parsed_args = FakeParsedArgs(v2_debug=True)
+        session = get_session()
+        globalargs.detect_migration_breakage(
+            parsed_args,
+            [],
+            session
+        )
+        # Verify the correct feature ID is registered during the
+        # provide-client-params event.
+        with (mock.patch('awscli.customizations.globalargs.register_feature_id')
+              as mock_register_feature_id):
+            session.emit(
+                'provide-client-params.s3.ListBuckets',
+                params={},
+                model={},
+            )
+        mock_register_feature_id.assert_any_call(
+            'CLI_V1_TO_V2_MIGRATION_DEBUG_MODE'
+        )
+
+    def test_ecr_login_v2_debug(self):
+        parsed_args = FakeParsedArgs(command='ecr', v2_debug=True)
+        remaining_args = ['get-login']
+        session = get_session()
+        with capture_output() as output:
+            globalargs.detect_migration_breakage(
+                parsed_args,
+                remaining_args,
+                session
+            )
+        # Verify the expected warning is printed
+        self.assertIn(
+            'AWS CLI v2 UPGRADE WARNING: The `ecr get-login` command has '
+            'been removed in AWS CLI v2.',
+            output.stderr.getvalue()
+        )
+
+    def test_ecr_login_v2_debug_env_var(self):
+        parsed_args = FakeParsedArgs(command='ecr')
+        remaining_args = ['get-login']
+        session = get_session()
+        env = {'AWS_CLI_UPGRADE_DEBUG_MODE': 'true'}
+        with capture_output() as output:
+            with mock.patch('os.environ', env):
+                globalargs.detect_migration_breakage(
+                    parsed_args,
+                    remaining_args,
+                    session
+                )
+        # Verify the expected warning is printed
+        self.assertIn(
+            'AWS CLI v2 UPGRADE WARNING: The `ecr get-login` command has '
+            'been removed in AWS CLI v2.',
+            output.stderr.getvalue()
+        )
+
+    def test_v2_debug_python_utf8_env_var(self):
+        parsed_args = FakeParsedArgs(v2_debug=True)
+        session = get_session()
+        environ = {'PYTHONUTF8': '1'}
+        with mock.patch('os.environ', environ):
+            with capture_output() as output:
+                globalargs.detect_migration_breakage(parsed_args, [], session)
+                self.assertIn(
+                    'The AWS CLI v2 does not support The `PYTHONUTF8` and '
+                    '`PYTHONIOENCODING` environment variables, and instead '
+                    'uses the `AWS_CLI_FILE_ENCODING` variable',
+                    output.stderr.getvalue()
+                )
+
+    def test_v2_debug_python_utf8_resolved_env_var(self):
+        parsed_args = FakeParsedArgs(v2_debug=True)
+        session = get_session()
+        environ = {'PYTHONUTF8': '1', 'AWS_CLI_FILE_ENCODING': 'UTF-8'}
+        with mock.patch('os.environ', environ):
+            with capture_output() as output:
+                globalargs.detect_migration_breakage(parsed_args, [], session)
+                self.assertNotIn(
+                    'AWS CLI v2 UPGRADE WARNING: The PYTHONUTF8 and '
+                    'PYTHONIOENCODING environment variables are unsupported '
+                    'in AWS CLI v2.',
+                    output.stderr.getvalue()
+                )
+
+    def test_v2_debug_python_io_encoding_env_var(self):
+        parsed_args = FakeParsedArgs(v2_debug=True)
+        session = get_session()
+        environ = {'PYTHONIOENCODING': 'UTF8'}
+        with mock.patch('os.environ', environ):
+            with capture_output() as output:
+                globalargs.detect_migration_breakage(parsed_args, [], session)
+                self.assertIn(
+                    'The AWS CLI v2 does not support The `PYTHONUTF8` and '
+                    '`PYTHONIOENCODING` environment variables, and instead '
+                    'uses the `AWS_CLI_FILE_ENCODING` variable',
+                    output.stderr.getvalue()
+                )
+
+    def test_v2_debug_s3_sigv2(self):
+        parsed_args = FakeParsedArgs(v2_debug=True)
+        session = get_session()
+        globalargs.detect_migration_breakage(parsed_args, [], session)
+        with capture_output() as output:
+            session.emit(
+                'choose-signer.s3.*',
+                signing_name='s3',
+                region_name='us-west-2',
+                signature_version='v2',
+                context={'auth_type': 'v2'},
+            )
+        self.assertIn(
+            'AWS CLI v2 UPGRADE WARNING: The AWS CLI v2 only uses Signature '
+            'v4 to authenticate Amazon S3 requests.',
+            output.stderr.getvalue()
+        )
+
+    def test_v2_debug_s3_us_east_1(self):
+        parsed_args = FakeParsedArgs(v2_debug=True, region='us-east-1')
+        session = get_session()
+        globalargs.detect_migration_breakage(parsed_args, [], session)
+        def mock_get(key: str):
+            if key == 'retries':
+                return {'invocation-id': '012345'}
+            return None
+
+        with capture_output() as output:
+            mock_request = Mock()
+            mock_request.url = 'https://s3.amazonaws.com'
+            mock_request.context.get.side_effect = mock_get
+            mock_request.headers = {}
+
+            session.emit(
+                'request-created.s3.ListBuckets',
+                request=mock_request,
+                operation_name='ListBuckets',
+            )
+        self.assertIn(
+            'AWS CLI v2 UPGRADE WARNING: When you configure AWS CLI v2 '
+            'to use the `us-east-1` region, it uses the true regional '
+            'endpoint rather than the global endpoint.',
+            output.stderr.getvalue()
+        )
+
+    def test_v2_debug_s3api_us_east_1(self):
+        parsed_args = FakeParsedArgs(v2_debug=True, region='us-east-1')
+        session = get_session()
+        globalargs.detect_migration_breakage(parsed_args, [], session)
+
+        def mock_get(key: str):
+            if key == 'retries':
+                return {'invocation-id': '012345'}
+            return None
+
+        with capture_output() as output:
+            mock_request = Mock()
+            mock_request.url = 'https://s3.amazonaws.com'
+            mock_request.context.get.side_effect = mock_get
+            mock_request.headers = {}
+
+            session.emit(
+                'request-created.s3api.ListBuckets',
+                request=mock_request,
+                operation_name='ListBuckets',
+            )
+        self.assertIn(
+            'AWS CLI v2 UPGRADE WARNING: When you configure AWS CLI v2 '
+            'to use the `us-east-1` region, it uses the true regional '
+            'endpoint rather than the global endpoint.',
+            output.stderr.getvalue()
+        )

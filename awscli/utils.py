@@ -230,7 +230,7 @@ def _split_with_quotes(value):
     try:
         parts = list(csv.reader(StringIO(value), escapechar='\\'))[0]
     except csv.Error:
-        raise ValueError("Bad csv value: %s" % value)
+        raise ValueError(f"Bad csv value: {value}")
     iter_parts = iter(parts)
     new_parts = []
     for part in iter_parts:
@@ -508,7 +508,7 @@ class ShapeWalker:
         if shape.name in stack:
             return
         stack.append(shape.name)
-        getattr(self, '_walk_%s' % shape.type_name, self._default_scalar_walk)(
+        getattr(self, f'_walk_{shape.type_name}', self._default_scalar_walk)(
             shape, visitor, stack
         )
         stack.pop()

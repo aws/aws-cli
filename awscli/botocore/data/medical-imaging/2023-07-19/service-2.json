@@ -49,6 +49,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Create a data store.</p>",
@@ -112,7 +113,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Get the import job properties to learn more about the job or job progress.</p> <note> <p>The <code>jobStatus</code> refers to the execution of the import job. Therefore, an import job can return a <code>jobStatus</code> as <code>COMPLETED</code> even if validation issues are discovered during the import process. If a <code>jobStatus</code> returns as <code>COMPLETED</code>, we still recommend you review the output manifests written to S3, as they provide details on the success or failure of individual P10 object imports.</p> </note>"
+      "documentation":"<p>Get the import job properties to learn more about the job or job progress.</p> <note> <p>The <code>jobStatus</code> refers to the execution of the import job. Therefore, an import job can return a <code>jobStatus</code> as <code>COMPLETED</code> even if validation issues are discovered during the import process. If a <code>jobStatus</code> returns as <code>COMPLETED</code>, we still recommend you review the output manifests written to S3, as they provide details on the success or failure of individual P10 object imports.</p> </note>",
+      "readonly":true
     },
     "GetDatastore":{
       "name":"GetDatastore",
@@ -130,7 +132,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Get data store properties.</p>"
+      "documentation":"<p>Get data store properties.</p>",
+      "readonly":true
     },
     "GetImageFrame":{
       "name":"GetImageFrame",
@@ -150,7 +153,8 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Get an image frame (pixel data) for an image set.</p>",
-      "endpoint":{"hostPrefix":"runtime-"}
+      "endpoint":{"hostPrefix":"runtime-"},
+      "readonly":true
     },
     "GetImageSet":{
       "name":"GetImageSet",
@@ -170,7 +174,8 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Get image set properties.</p>",
-      "endpoint":{"hostPrefix":"runtime-"}
+      "endpoint":{"hostPrefix":"runtime-"},
+      "readonly":true
     },
     "GetImageSetMetadata":{
       "name":"GetImageSetMetadata",
@@ -190,7 +195,8 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Get metadata attributes for an image set.</p>",
-      "endpoint":{"hostPrefix":"runtime-"}
+      "endpoint":{"hostPrefix":"runtime-"},
+      "readonly":true
     },
     "ListDICOMImportJobs":{
       "name":"ListDICOMImportJobs",
@@ -209,7 +215,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>List import jobs created for a specific data store.</p>"
+      "documentation":"<p>List import jobs created for a specific data store.</p>",
+      "readonly":true
     },
     "ListDatastores":{
       "name":"ListDatastores",
@@ -226,7 +233,8 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>List data stores.</p>"
+      "documentation":"<p>List data stores.</p>",
+      "readonly":true
     },
     "ListImageSetVersions":{
       "name":"ListImageSetVersions",
@@ -246,7 +254,8 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>List image set versions.</p>",
-      "endpoint":{"hostPrefix":"runtime-"}
+      "endpoint":{"hostPrefix":"runtime-"},
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -264,7 +273,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists all tags associated with a medical imaging resource.</p>"
+      "documentation":"<p>Lists all tags associated with a medical imaging resource.</p>",
+      "readonly":true
     },
     "SearchImageSets":{
       "name":"SearchImageSets",
@@ -517,9 +527,15 @@
         },
         "force":{
           "shape":"Boolean",
-          "documentation":"<p>Setting this flag will force the <code>CopyImageSet</code> operation, even if Patient, Study, or Series level metadata are mismatched across the <code>sourceImageSet</code> and <code>destinationImageSet</code>.</p>",
+          "documentation":"<p>Providing this parameter will force completion of the <code>CopyImageSet</code> operation, even if there are inconsistent Patient, Study, and/or Series level metadata elements between the <code>sourceImageSet</code> and <code>destinationImageSet</code>.</p>",
           "location":"querystring",
           "locationName":"force"
+        },
+        "promoteToPrimary":{
+          "shape":"Boolean",
+          "documentation":"<p>Providing this parameter will configure the <code>CopyImageSet</code> operation to promote the given image set to the primary DICOM hierarchy. If successful, a new primary image set ID will be returned as the destination image set.</p>",
+          "location":"querystring",
+          "locationName":"promoteToPrimary"
         }
       },
       "payload":"copyImageSetInformation"
@@ -619,6 +635,14 @@
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) assigned to the Key Management Service (KMS) key for accessing encrypted data.</p>"
+        },
+        "lambdaAuthorizerArn":{
+          "shape":"LambdaArn",
+          "documentation":"<p>The ARN of the authorizer's Lambda function.</p>"
+        },
+        "losslessStorageFormat":{
+          "shape":"LosslessStorageFormat",
+          "documentation":"<p>The lossless storage format for the datastore.</p>"
         }
       }
     },
@@ -756,7 +780,7 @@
     },
     "DICOMNumberOfStudyRelatedInstances":{
       "type":"integer",
-      "max":10000,
+      "max":1000000,
       "min":0
     },
     "DICOMNumberOfStudyRelatedSeries":{
@@ -798,7 +822,7 @@
       "type":"string",
       "max":256,
       "min":0,
-      "pattern":"(?:[0-9][0-9]*|0)(\\.(?:[1-9][0-9]*|0))*",
+      "pattern":"(?:[0-9][0-9]*|0)(\\.(?:[0-9][0-9]*|0))*",
       "sensitive":true
     },
     "DICOMSeriesModality":{
@@ -837,13 +861,13 @@
     },
     "DICOMStudyDescription":{
       "type":"string",
-      "max":64,
+      "max":256,
       "min":0,
       "sensitive":true
     },
     "DICOMStudyId":{
       "type":"string",
-      "max":16,
+      "max":256,
       "min":0,
       "sensitive":true
     },
@@ -851,7 +875,7 @@
       "type":"string",
       "max":256,
       "min":0,
-      "pattern":"(?:[0-9][0-9]*|0)(\\.(?:[1-9][0-9]*|0))*",
+      "pattern":"(?:[0-9][0-9]*|0)(\\.(?:[0-9][0-9]*|0))*",
       "sensitive":true
     },
     "DICOMStudyTime":{
@@ -977,6 +1001,14 @@
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The Amazon Resource Name (ARN) assigned to the Key Management Service (KMS) key for accessing encrypted data.</p>"
+        },
+        "lambdaAuthorizerArn":{
+          "shape":"LambdaArn",
+          "documentation":"<p>The ARN of the authorizer's Lambda function.</p>"
+        },
+        "losslessStorageFormat":{
+          "shape":"LosslessStorageFormat",
+          "documentation":"<p>The datastore's lossless storage format.</p>"
         },
         "datastoreArn":{
           "shape":"Arn",
@@ -1210,7 +1242,7 @@
         },
         "contentType":{
           "shape":"String",
-          "documentation":"<p>The format in which the image frame information is returned to the customer. Default is <code>application/octet-stream</code>.</p>",
+          "documentation":"<p>The format in which the image frame information is returned to the customer. Default is <code>application/octet-stream</code>.</p> <note> <ul> <li> <p>If the stored transfer syntax is <code>1.2.840.10008.1.2.1</code>, the returned <code>contentType</code> is <code>application/octet-stream</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is <code>1.2.840.10008.1.2.4.50</code>, the returned <code>contentType</code> is <code>image/jpeg</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is <code>1.2.840.10008.1.2.4.91</code>, the returned <code>contentType</code> is <code>image/j2c</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is MPEG2, <code>1.2.840.10008.1.2.4.100</code>, <code>1.2.840.10008.1.2.4.100.1</code>, <code>1.2.840.10008.1.2.4.101</code>, or <code>1.2.840.10008.1.2.4.101.1</code>, the returned <code>contentType</code> is <code>video/mpeg</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is MPEG-4 AVC/H.264, UID <code>1.2.840.10008.1.2.4.102</code>, <code>1.2.840.10008.1.2.4.102.1</code>, <code>1.2.840.10008.1.2.4.103</code>, <code>1.2.840.10008.1.2.4.103.1</code>, <code>1.2.840.10008.1.2.4.104</code>, <code>1.2.840.10008.1.2.4.104.1</code>, <code>1.2.840.10008.1.2.4.105</code>, <code>1.2.840.10008.1.2.4.105.1</code>, <code>1.2.840.10008.1.2.4.106</code>, or <code>1.2.840.10008.1.2.4.106.1</code>, the returned <code>contentType</code> is <code>video/mp4</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is HEVC/H.265, UID <code>1.2.840.10008.1.2.4.107</code> or <code>1.2.840.10008.1.2.4.108</code>, the returned <code>contentType</code> is <code>video/H256</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is <code>1.2.840.10008.1.2.4.202</code> or if the stored transfer syntax is <i>missing</i>, the returned <code>contentType</code> is <code>image/jph</code>.</p> </li> </ul> <ul> <li> <p>If the stored transfer syntax is <code>1.2.840.10008.1.2.4.203</code>, the returned contentType is <code>image/jphc</code>.</p> </li> </ul> </note>",
           "location":"header",
           "locationName":"Content-Type"
         }
@@ -1346,6 +1378,18 @@
         "overrides":{
           "shape":"Overrides",
           "documentation":"<p>This object contains the details of any overrides used while creating a specific image set version. If an image set was copied or updated using the <code>force</code> flag, this object will contain the <code>forced</code> flag.</p>"
+        },
+        "isPrimary":{
+          "shape":"Boolean",
+          "documentation":"<p>The flag to determine whether the image set is primary or not.</p>"
+        },
+        "lastAccessedAt":{
+          "shape":"Date",
+          "documentation":"<p>When the image set was last accessed.</p>"
+        },
+        "storageTier":{
+          "shape":"StorageTier",
+          "documentation":"<p>The storage tier of the image set.</p>"
         }
       }
     },
@@ -1419,6 +1463,10 @@
         "overrides":{
           "shape":"Overrides",
           "documentation":"<p>Contains details on overrides used when creating the returned version of an image set. For example, if <code>forced</code> exists, the <code>forced</code> flag was used when creating the image set.</p>"
+        },
+        "isPrimary":{
+          "shape":"Boolean",
+          "documentation":"<p>The flag to determine whether the image set is primary or not.</p>"
         }
       },
       "documentation":"<p>The image set properties.</p>"
@@ -1447,7 +1495,10 @@
         "UPDATED",
         "UPDATE_FAILED",
         "DELETING",
-        "DELETED"
+        "DELETED",
+        "IMPORTING",
+        "IMPORTED",
+        "IMPORT_FAILED"
       ]
     },
     "ImageSetsMetadataSummaries":{
@@ -1474,9 +1525,21 @@
           "shape":"Date",
           "documentation":"<p>The time an image set was last updated.</p>"
         },
+        "lastAccessedAt":{
+          "shape":"Date",
+          "documentation":"<p>When the image set was last accessed.</p>"
+        },
+        "storageTier":{
+          "shape":"StorageTier",
+          "documentation":"<p>The image set's storage tier.</p>"
+        },
         "DICOMTags":{
           "shape":"DICOMTags",
           "documentation":"<p>The DICOM tags associated with the image set.</p>"
+        },
+        "isPrimary":{
+          "shape":"Boolean",
+          "documentation":"<p>The flag to determine whether the image set is primary or not.</p>"
         }
       },
       "documentation":"<p>Summary of the image set metadata.</p>"
@@ -1523,6 +1586,10 @@
       "max":512,
       "min":1,
       "pattern":"arn:aws[a-zA-Z-]{0,16}:kms:[a-z]{2}(-[a-z]{1,16}){1,3}-\\d{1}:\\d{12}:((key/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})|(alias/[a-zA-Z0-9:/_-]{1,256}))"
+    },
+    "LambdaArn":{
+      "type":"string",
+      "pattern":"arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?"
     },
     "ListDICOMImportJobsRequest":{
       "type":"structure",
@@ -1691,6 +1758,13 @@
         }
       }
     },
+    "LosslessStorageFormat":{
+      "type":"string",
+      "enum":[
+        "HTJ2K",
+        "JPEG_2000_LOSSLESS"
+      ]
+    },
     "Message":{
       "type":"string",
       "max":2048,
@@ -1741,7 +1815,7 @@
       "members":{
         "forced":{
           "shape":"Boolean",
-          "documentation":"<p>Setting this flag will force the <code>CopyImageSet</code> and <code>UpdateImageSetMetadata</code> operations, even if Patient, Study, or Series level metadata are mismatched.</p>"
+          "documentation":"<p>Providing this parameter will force completion of the <code>CopyImageSet</code> and <code>UpdateImageSetMetadata</code> actions, even if metadata is inconsistent at the Patient, Study, and/or Series levels.</p>"
         }
       },
       "documentation":"<p>Specifies the overrides used in image set modification calls to <code>CopyImageSet</code> and <code>UpdateImageSetMetadata</code>.</p>"
@@ -1809,6 +1883,10 @@
         "DICOMStudyDateAndTime":{
           "shape":"DICOMStudyDateAndTime",
           "documentation":"<p>The aggregated structure containing DICOM study date and study time for search.</p>"
+        },
+        "isPrimary":{
+          "shape":"Boolean",
+          "documentation":"<p>The primary image set flag provided for search.</p>"
         }
       },
       "documentation":"<p>The search input attribute value.</p>",
@@ -2028,6 +2106,14 @@
         }
       }
     },
+    "StorageTier":{
+      "type":"string",
+      "documentation":"<p>Storage tier for image sets</p>",
+      "enum":[
+        "FREQUENT_ACCESS",
+        "ARCHIVE_INSTANT_ACCESS"
+      ]
+    },
     "String":{"type":"string"},
     "TagKey":{
       "type":"string",
@@ -2067,8 +2153,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -2111,8 +2196,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateImageSetMetadataRequest":{
       "type":"structure",
@@ -2211,5 +2295,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>This is the <i>AWS HealthImaging API Reference</i>. AWS HealthImaging is a HIPAA eligible service that empowers healthcare providers, life science organizations, and their software partners to store, analyze, and share medical images in the cloud at petabyte scale. For an introduction to the service, see the <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/what-is.html\"> <i>AWS HealthImaging Developer Guide</i> </a>.</p> <note> <p>We recommend using one of the AWS Software Development Kits (SDKs) for your programming language, as they take care of request authentication, serialization, and connection management. For more information, see <a href=\"http://aws.amazon.com/developer/tools\">Tools to build on AWS</a>.</p> </note> <p>The following sections list AWS HealthImaging API actions categorized according to functionality. Links are provided to actions within this Reference, along with links back to corresponding sections in the <i>AWS HealthImaging Developer Guide</i> where you can view tested code examples.</p> <p class=\"title\"> <b>Data store actions</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/healthimaging/latest/APIReference/API_CreateDatastore.html\">CreateDatastore</a> – See <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/create-data-store.html\">Creating a data store</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/healthimaging/latest/APIReference/API_GetDatastore.html\">GetDatastore</a> – See <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/get-data-store.html\">Getting data store properties</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/healthimaging/latest/APIReference/API_ListDatastores.html\">ListDatastores</a> – See <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/list-data-stores.html\">Listing data stores</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/healthimaging/latest/APIReference/API_DeleteDatastore.html\">DeleteDatastore</a> – See <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/delete-data-store.html\">Deleting a data store</a>.</p> </li> </ul> <p class=\"title\"> <b>Import job actions</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/healthimaging/latest/APIReference/API_StartDICOMImportJob.html\">StartDICOMImportJob</a> – See <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/start-dicom-import-job.html\">Starting an import job</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/healthimaging/latest/APIReference/API_GetDICOMImportJob.html\">GetDICOMImportJob</a> – See <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/get-dicom-import-job.html\">Getting import job properties</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/healthimaging/latest/APIReference/API_ListDICOMImportJobs.html\">ListDICOMImportJobs</a> – See <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/list-dicom-import-jobs.html\">Listing import jobs</a>.</p> </li> </ul> <p class=\"title\"> <b>Image set access actions</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/healthimaging/latest/APIReference/API_SearchImageSets.html\">SearchImageSets</a> – See <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/search-image-sets.html\">Searching image sets</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/healthimaging/latest/APIReference/API_GetImageSet.html\">GetImageSet</a> – See <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/get-image-set-properties.html\">Getting image set properties</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/healthimaging/latest/APIReference/API_GetImageSetMetadata.html\">GetImageSetMetadata</a> – See <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/get-image-set-metadata.html\">Getting image set metadata</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/healthimaging/latest/APIReference/API_GetImageFrame.html\">GetImageFrame</a> – See <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/get-image-frame.html\">Getting image set pixel data</a>.</p> </li> </ul> <p class=\"title\"> <b>Image set modification actions</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/healthimaging/latest/APIReference/API_ListImageSetVersions.html\">ListImageSetVersions</a> – See <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/list-image-set-versions.html\">Listing image set versions</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/healthimaging/latest/APIReference/API_UpdateImageSetMetadata.html\">UpdateImageSetMetadata</a> – See <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/update-image-set-metadata.html\">Updating image set metadata</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/healthimaging/latest/APIReference/API_CopyImageSet.html\">CopyImageSet</a> – See <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/copy-image-set.html\">Copying an image set</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/healthimaging/latest/APIReference/API_DeleteImageSet.html\">DeleteImageSet</a> – See <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/delete-image-set.html\">Deleting an image set</a>.</p> </li> </ul> <p class=\"title\"> <b>Tagging actions</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/healthimaging/latest/APIReference/API_TagResource.html\">TagResource</a> – See <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/tag-resource.html\">Tagging a resource</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/healthimaging/latest/APIReference/API_ListTagsForResource.html\">ListTagsForResource</a> – See <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/list-tag-resource.html\">Listing tags for a resource</a>.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/healthimaging/latest/APIReference/API_UntagResource.html\">UntagResource</a> – See <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/untag-resource.html\">Untagging a resource</a>.</p> </li> </ul>"
+  "documentation":"<p>This is the <i>AWS HealthImaging API Reference</i>. For an introduction to the service, see <a href=\"https://docs.aws.amazon.com/healthimaging/latest/devguide/what-is.html\">What is AWS HealthImaging?</a> in the <i>AWS HealthImaging Developer Guide</i>.</p>"
 }

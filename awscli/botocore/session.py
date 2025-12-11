@@ -58,7 +58,7 @@ from botocore.loaders import create_loader
 from botocore.model import ServiceModel
 from botocore.parsers import ResponseParserFactory
 from botocore.regions import EndpointResolver
-from botocore.useragent import UserAgentString
+from botocore.useragent import UserAgentString, register_feature_id
 
 logger = logging.getLogger(__name__)
 
@@ -477,7 +477,7 @@ class Session:
             ).load_credentials()
         return self._credentials
 
-    def get_auth_token(self):
+    def get_auth_token(self, **kwargs):
         """
         Return the :class:`botocore.tokens.AuthToken` object associated with
         this session. If the authorization token has not yet been loaded, this
@@ -485,8 +485,15 @@ class Session:
         return the cached authorization token.
 
         """
+        provider = self._components.get_component('token_provider')
+
+        signing_name = kwargs.get('signing_name')
+        if signing_name is not None:
+            auth_token = provider.load_token(signing_name=signing_name)
+            if auth_token is not None:
+                return auth_token
+
         if self._auth_token is None:
-            provider = self._components.get_component('token_provider')
             self._auth_token = provider.load_token()
         return self._auth_token
 
@@ -906,6 +913,8 @@ class Session:
                     f"an access key id and secret key on the session or client: {ignored_credentials}"
                 )
             credentials = self.get_credentials()
+        if getattr(credentials, 'method', None) == 'explicit':
+            register_feature_id('CREDENTIALS_CODE')
         auth_token = self.get_auth_token()
         endpoint_resolver = self._get_internal_component('endpoint_resolver')
         exceptions_factory = self._get_internal_component('exceptions_factory')
@@ -935,6 +944,7 @@ class Session:
             exceptions_factory,
             config_store,
             user_agent_creator=user_agent_creator,
+            auth_token_resolver=self.get_auth_token,
         )
         client = client_creator.create_client(
             service_name=service_name,

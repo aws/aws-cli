@@ -1962,8 +1962,7 @@
   "shapes":{
     "AccessDeniedException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You don't have the permissions needed to run this action.</p>",
       "error":{"httpStatusCode":403},
       "exception":true
@@ -2114,8 +2113,7 @@
     },
     "BadRequestException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The input parameters don't match the service's restrictions.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
@@ -2263,8 +2261,7 @@
     },
     "ConflictException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Multiple instances of the same request were made simultaneously.</p>",
       "error":{"httpStatusCode":409},
       "exception":true
@@ -2543,6 +2540,10 @@
         "IntegrationType":{
           "shape":"VoiceConnectorIntegrationType",
           "documentation":"<p>The connectors for use with Amazon Connect.</p> <p>The following options are available:</p> <ul> <li> <p> <code>CONNECT_CALL_TRANSFER_CONNECTOR</code> - Enables enterprises to integrate Amazon Connect with other voice systems to directly transfer voice calls and metadata without using the public telephone network. They can use Amazon Connect telephony and Interactive Voice Response (IVR) with their existing voice systems to modernize the IVR experience of their existing contact center and their enterprise and branch voice systems. Additionally, enterprises migrating their contact center to Amazon Connect can start with Connect telephony and IVR for immediate modernization ahead of agent migration.</p> </li> <li> <p> <code>CONNECT_ANALYTICS_CONNECTOR</code> - Enables enterprises to integrate Amazon Connect with other voice systems for real-time and post-call analytics. They can use Amazon Connect Contact Lens with their existing voice systems to provides call recordings, conversational analytics (including contact transcript, sensitive data redaction, content categorization, theme detection, sentiment analysis, real-time alerts, and post-contact summary), and agent performance evaluations (including evaluation forms, automated evaluation, supervisor review) with a rich user experience to display, search and filter customer interactions, and programmatic access to data streams and the data lake. Additionally, enterprises migrating their contact center to Amazon Connect can start with Contact Lens analytics and performance insights ahead of agent migration.</p> </li> </ul>"
+        },
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>The type of network for the Voice Connector. Either IPv4 only or dual-stack (IPv4 and IPv6).</p>"
         }
       }
     },
@@ -2968,8 +2969,7 @@
     },
     "ForbiddenException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The client is permanently forbidden from making the request.</p>",
       "error":{"httpStatusCode":403},
       "exception":true
@@ -3504,8 +3504,7 @@
     },
     "GoneException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Access to the target resource is no longer available at the origin server. This condition is likely to be permanent.</p>",
       "error":{"httpStatusCode":410},
       "exception":true
@@ -3943,6 +3942,13 @@
       },
       "documentation":"<p>The configuration for a call analytics task.</p>"
     },
+    "NetworkType":{
+      "type":"string",
+      "enum":[
+        "IPV4_ONLY",
+        "DUAL_STACK"
+      ]
+    },
     "NextTokenString":{
       "type":"string",
       "max":65535
@@ -3970,8 +3976,7 @@
     },
     "NotFoundException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The requested resource couldn't be found.</p>",
       "error":{"httpStatusCode":404},
       "exception":true
@@ -4768,8 +4773,7 @@
     },
     "ResourceLimitExceededException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The request exceeds the resource limit.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
@@ -4906,8 +4910,7 @@
     },
     "ServiceFailureException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The service encountered an unexpected error.</p>",
       "error":{"httpStatusCode":500},
       "exception":true,
@@ -4915,8 +4918,7 @@
     },
     "ServiceUnavailableException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The service is currently unavailable.</p>",
       "error":{"httpStatusCode":503},
       "exception":true,
@@ -5466,8 +5468,7 @@
     },
     "ThrottledClientException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The number of customer requests exceeds the request rate limit.</p>",
       "error":{"httpStatusCode":429},
       "exception":true
@@ -5480,16 +5481,14 @@
     },
     "UnauthorizedClientException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The client isn't authorized to request a resource.</p>",
       "error":{"httpStatusCode":401},
       "exception":true
     },
     "UnprocessableEntityException":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A well-formed request couldn't be followed due to semantic errors.</p>",
       "error":{"httpStatusCode":422},
       "exception":true
@@ -5958,6 +5957,10 @@
         "IntegrationType":{
           "shape":"VoiceConnectorIntegrationType",
           "documentation":"<p>The connectors for use with Amazon Connect.</p>"
+        },
+        "NetworkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>The type of network of the Voice Connector. Either IPv4 only or dual-stack (IPv4 and IPv6).</p>"
         }
       },
       "documentation":"<p>The Amazon Chime SDK Voice Connector configuration, including outbound host name and encryption settings.</p>"

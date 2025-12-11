@@ -68,13 +68,17 @@ def test_find_spec(fullname, provided_path, expected_path):
 def test_add_alias_finder_wraps_builtin_finder(fake_builtin_path_finder):
     sys_meta = [fake_builtin_path_finder]
     TopLevelImportAliasFinder.add_alias_finder(sys_meta)
-    _assert_classes(sys_meta, [TopLevelImportAliasFinder])
+    _assert_classes(
+        sys_meta, [TopLevelImportAliasFinder, type(fake_builtin_path_finder)]
+    )
 
 
 def test_add_alias_finder_wraps_pyinstaller_finder(fake_pyinstaller_finder):
     sys_meta = [fake_pyinstaller_finder]
     TopLevelImportAliasFinder.add_alias_finder(sys_meta)
-    _assert_classes(sys_meta, [TopLevelImportAliasFinder])
+    _assert_classes(
+        sys_meta, [TopLevelImportAliasFinder, type(fake_pyinstaller_finder)]
+    )
 
 
 def test_add_alias_finder_does_not_wrap_other_finders():
@@ -98,6 +102,7 @@ def test_add_alias_finder_wraps_only_first_matching_finder(
         [
             RecordingMetaPathFinder,
             TopLevelImportAliasFinder,
+            fake_pyinstaller_finder.__class__,
             fake_pyinstaller_finder.__class__,
         ],
     )

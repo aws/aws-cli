@@ -526,6 +526,28 @@ NO_PROGRESS = {
     ),
 }
 
+PROGRESS_FREQUENCY = {
+    'name': 'progress-frequency',
+    'dest': 'progress_frequency',
+    'cli_type_name': 'integer',
+    'default': 0,
+    'help_text': (
+        'Number of seconds to wait before updating file '
+        'transfer progress. This flag is only applied when '
+        'the quiet and only-show-errors flags are not '
+        'provided.'
+    ),
+}
+
+PROGRESS_MULTILINE = {
+    'name': 'progress-multiline',
+    'dest': 'progress_multiline',
+    'action': 'store_true',
+    'help_text': (
+        'Show progress on multiple lines.'
+    ),
+}
+
 
 EXPECTED_SIZE = {
     'name': 'expected-size',
@@ -678,6 +700,8 @@ TRANSFER_ARGS = [
     SOURCE_REGION,
     ONLY_SHOW_ERRORS,
     NO_PROGRESS,
+    PROGRESS_FREQUENCY,
+    PROGRESS_MULTILINE,
     PAGE_SIZE,
     IGNORE_GLACIER_WARNINGS,
     FORCE_GLACIER_TRANSFER,

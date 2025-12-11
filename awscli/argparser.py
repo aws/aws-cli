@@ -24,7 +24,7 @@ HELP_BLURB = (
 )
 USAGE = (
     "aws [options] <command> <subcommand> [<subcommand> ...] [parameters]\n"
-    "%s" % HELP_BLURB
+    f"{HELP_BLURB}"
 )
 
 
@@ -42,9 +42,7 @@ class CommandAction(argparse.Action):
 
     def __init__(self, option_strings, dest, command_table, **kwargs):
         self.command_table = command_table
-        super(CommandAction, self).__init__(
-            option_strings, dest, choices=self.choices, **kwargs
-        )
+        super().__init__(option_strings, dest, choices=self.choices, **kwargs)
 
     def __call__(self, parser, namespace, values, option_string=None):
         setattr(namespace, self.dest, values)
@@ -65,10 +63,6 @@ class CommandAction(argparse.Action):
 class CLIArgParser(argparse.ArgumentParser):
     Formatter = argparse.RawTextHelpFormatter
 
-    # When displaying invalid choice error messages,
-    # this controls how many options to show per line.
-    ChoicesPerLine = 2
-
     def _check_value(self, action, value):
         """
         It's probably not a great idea to override a "hidden" method
@@ -77,24 +71,17 @@ class CLIArgParser(argparse.ArgumentParser):
         """
         # converted value must be one of the choices (if specified)
         if action.choices is not None and value not in action.choices:
-            msg = ['Invalid choice, valid choices are:\n']
-            for i in range(len(action.choices))[:: self.ChoicesPerLine]:
-                current = []
-                for choice in action.choices[i : i + self.ChoicesPerLine]:
-                    current.append('%-40s' % choice)
-                msg.append(' | '.join(current))
+            msg = [f"Found invalid choice '{value}'\n"]
             possible = get_close_matches(value, action.choices, cutoff=0.8)
             if possible:
-                extra = ['\n\nInvalid choice: %r, maybe you meant:\n' % value]
+                extra = ['Maybe you meant:\n']
                 for word in possible:
-                    extra.append('  * %s' % word)
+                    extra.append(f'  * {word}')
                 msg.extend(extra)
             raise argparse.ArgumentError(action, '\n'.join(msg))
 
     def parse_known_args(self, args, namespace=None):
-        parsed, remaining = super(CLIArgParser, self).parse_known_args(
-            args, namespace
-        )
+        parsed, remaining = super().parse_known_args(args, namespace)
         terminal_encoding = getattr(sys.stdin, 'encoding', 'utf-8')
         if terminal_encoding is None:
             # In some cases, sys.stdin won't have an encoding set,
@@ -126,8 +113,8 @@ class CLIArgParser(argparse.ArgumentParser):
         should raise an exception.
         """
         usage_message = self.format_usage()
-        error_message = f'{self.prog}: error: {message}\n'
-        raise ArgParseException(f'{usage_message}\n{error_message}')
+        error_message = f'{self.prog}: [ERROR]: {message}'
+        raise ArgParseException(f'{error_message}\n\n{usage_message}')
 
 
 class MainArgParser(CLIArgParser):
@@ -141,7 +128,7 @@ class MainArgParser(CLIArgParser):
         argument_table,
         prog=None,
     ):
-        super(MainArgParser, self).__init__(
+        super().__init__(
             formatter_class=self.Formatter,
             add_help=False,
             conflict_handler='resolve',
@@ -154,7 +141,7 @@ class MainArgParser(CLIArgParser):
     def _create_choice_help(self, choices):
         help_str = ''
         for choice in sorted(choices):
-            help_str += '* %s\n' % choice
+            help_str += f'* {choice}\n'
         return help_str
 
     def _build(self, command_table, version_string, argument_table):
@@ -174,7 +161,7 @@ class MainArgParser(CLIArgParser):
 
 class ServiceArgParser(CLIArgParser):
     def __init__(self, operations_table, service_name):
-        super(ServiceArgParser, self).__init__(
+        super().__init__(
             formatter_class=argparse.RawTextHelpFormatter,
             add_help=False,
             conflict_handler='resolve',
@@ -196,7 +183,7 @@ class ArgTableArgParser(CLIArgParser):
         # command_table is an optional subcommand_table.  If it's passed
         # in, then we'll update the argparse to parse a 'subcommand' argument
         # and populate the choices field with the command table keys.
-        super(ArgTableArgParser, self).__init__(
+        super().__init__(
             formatter_class=self.Formatter,
             add_help=False,
             usage=USAGE,
@@ -224,9 +211,7 @@ class ArgTableArgParser(CLIArgParser):
             namespace.help = 'help'
             return namespace, []
         else:
-            return super(ArgTableArgParser, self).parse_known_args(
-                args, namespace
-            )
+            return super().parse_known_args(args, namespace)
 
 
 class SubCommandArgParser(ArgTableArgParser):
@@ -239,9 +224,7 @@ class SubCommandArgParser(ArgTableArgParser):
     """
 
     def parse_known_args(self, args, namespace=None):
-        parsed_args, remaining = super(
-            SubCommandArgParser, self
-        ).parse_known_args(args, namespace)
+        parsed_args, remaining = super().parse_known_args(args, namespace)
         if getattr(parsed_args, 'subcommand', None) is not None:
             new_args = self._remove_subcommand(args, parsed_args)
             return new_args, parsed_args.subcommand

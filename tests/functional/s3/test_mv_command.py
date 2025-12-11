@@ -81,7 +81,11 @@ class TestMvCommand(BaseS3TransferCommandTest):
 
     def test_metadata_directive_copy(self):
         self.parsed_responses = [
-            {"ContentLength": "100", "LastModified": "00:00:00Z"},
+            {
+                "ContentLength": "100",
+                "LastModified": "00:00:00Z",
+                'ETag': '"foo"',
+            },
             {'ETag': '"foo-1"'},
             {'ETag': '"foo-2"'},
         ]
@@ -227,6 +231,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
                     upload_id,
                     CopySourceRange=mock.ANY,
                     PartNumber=1,
+                    CopySourceIfMatch='"foo-1"',
                 ),
                 self.complete_mpu_request('bucket', 'key', upload_id, 1),
                 self.put_object_tagging_request(
@@ -280,6 +285,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
                     upload_id,
                     CopySourceRange=mock.ANY,
                     PartNumber=1,
+                    CopySourceIfMatch='"foo-1"',
                 ),
                 self.complete_mpu_request('bucket', 'key', upload_id, 1),
                 self.put_object_tagging_request(

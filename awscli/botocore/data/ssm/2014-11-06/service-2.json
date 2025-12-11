@@ -157,7 +157,9 @@
         {"shape":"InternalServerError"},
         {"shape":"InvalidDocumentContent"},
         {"shape":"DocumentLimitExceeded"},
-        {"shape":"InvalidDocumentSchemaVersion"}
+        {"shape":"InvalidDocumentSchemaVersion"},
+        {"shape":"TooManyUpdates"},
+        {"shape":"NoLongerSupportedException"}
       ],
       "documentation":"<p>Creates a Amazon Web Services Systems Manager (SSM document). An SSM document defines the actions that Systems Manager performs on your managed nodes. For more information about SSM documents, including information about supported schemas, features, and syntax, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/documents.html\">Amazon Web Services Systems Manager Documents</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p>"
     },
@@ -286,7 +288,8 @@
         {"shape":"InternalServerError"},
         {"shape":"InvalidDocument"},
         {"shape":"InvalidDocumentOperation"},
-        {"shape":"AssociatedInstances"}
+        {"shape":"AssociatedInstances"},
+        {"shape":"TooManyUpdates"}
       ],
       "documentation":"<p>Deletes the Amazon Web Services Systems Manager document (SSM document) and all managed node associations to the document.</p> <p>Before you delete the document, we recommend that you use <a>DeleteAssociation</a> to disassociate all managed nodes that are associated with the document.</p>"
     },
@@ -900,7 +903,7 @@
         {"shape":"InvalidFilterValue"},
         {"shape":"InvalidNextToken"}
       ],
-      "documentation":"<p>Lists the parameters in your Amazon Web Services account or the parameters shared with you when you enable the <a href=\"https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_DescribeParameters.html#systemsmanager-DescribeParameters-request-Shared\">Shared</a> option.</p> <p>Request results are returned on a best-effort basis. If you specify <code>MaxResults</code> in the request, the response includes information up to the limit specified. The number of items returned, however, can be between zero and the value of <code>MaxResults</code>. If the service reaches an internal limit while processing the results, it stops the operation and returns the matching values up to that point and a <code>NextToken</code>. You can specify the <code>NextToken</code> in a subsequent call to get the next set of results.</p> <important> <p>If you change the KMS key alias for the KMS key used to encrypt a parameter, then you must also update the key alias the parameter uses to reference KMS. Otherwise, <code>DescribeParameters</code> retrieves whatever the original key alias was referencing.</p> </important>"
+      "documentation":"<p>Lists the parameters in your Amazon Web Services account or the parameters shared with you when you enable the <a href=\"https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_DescribeParameters.html#systemsmanager-DescribeParameters-request-Shared\">Shared</a> option.</p> <p>Request results are returned on a best-effort basis. If you specify <code>MaxResults</code> in the request, the response includes information up to the limit specified. The number of items returned, however, can be between zero and the value of <code>MaxResults</code>. If the service reaches an internal limit while processing the results, it stops the operation and returns the matching values up to that point and a <code>NextToken</code>. You can specify the <code>NextToken</code> in a subsequent call to get the next set of results.</p> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p> <important> <p>If you change the KMS key alias for the KMS key used to encrypt a parameter, then you must also update the key alias the parameter uses to reference KMS. Otherwise, <code>DescribeParameters</code> retrieves whatever the original key alias was referencing.</p> </important>"
     },
     "DescribePatchBaselines":{
       "name":"DescribePatchBaselines",
@@ -1287,7 +1290,7 @@
         {"shape":"ParameterNotFound"},
         {"shape":"ParameterVersionNotFound"}
       ],
-      "documentation":"<p>Get information about a single parameter by specifying the parameter name.</p> <note> <p>To get information about more than one parameter at a time, use the <a>GetParameters</a> operation.</p> </note>"
+      "documentation":"<p>Get information about a single parameter by specifying the parameter name.</p> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p> <note> <p>To get information about more than one parameter at a time, use the <a>GetParameters</a> operation.</p> </note>"
     },
     "GetParameterHistory":{
       "name":"GetParameterHistory",
@@ -1303,7 +1306,7 @@
         {"shape":"InvalidNextToken"},
         {"shape":"InvalidKeyId"}
       ],
-      "documentation":"<p>Retrieves the history of all changes to a parameter.</p> <important> <p>If you change the KMS key alias for the KMS key used to encrypt a parameter, then you must also update the key alias the parameter uses to reference KMS. Otherwise, <code>GetParameterHistory</code> retrieves whatever the original key alias was referencing.</p> </important>"
+      "documentation":"<p>Retrieves the history of all changes to a parameter.</p> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p> <important> <p>If you change the KMS key alias for the KMS key used to encrypt a parameter, then you must also update the key alias the parameter uses to reference KMS. Otherwise, <code>GetParameterHistory</code> retrieves whatever the original key alias was referencing.</p> </important>"
     },
     "GetParameters":{
       "name":"GetParameters",
@@ -1317,7 +1320,7 @@
         {"shape":"InvalidKeyId"},
         {"shape":"InternalServerError"}
       ],
-      "documentation":"<p>Get information about one or more parameters by specifying multiple parameter names.</p> <note> <p>To get information about a single parameter, you can use the <a>GetParameter</a> operation instead.</p> </note>"
+      "documentation":"<p>Get information about one or more parameters by specifying multiple parameter names.</p> <note> <p>To get information about a single parameter, you can use the <a>GetParameter</a> operation instead.</p> </note> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p>"
     },
     "GetParametersByPath":{
       "name":"GetParametersByPath",
@@ -1335,7 +1338,7 @@
         {"shape":"InvalidKeyId"},
         {"shape":"InvalidNextToken"}
       ],
-      "documentation":"<p>Retrieve information about one or more parameters under a specified level in a hierarchy. </p> <p>Request results are returned on a best-effort basis. If you specify <code>MaxResults</code> in the request, the response includes information up to the limit specified. The number of items returned, however, can be between zero and the value of <code>MaxResults</code>. If the service reaches an internal limit while processing the results, it stops the operation and returns the matching values up to that point and a <code>NextToken</code>. You can specify the <code>NextToken</code> in a subsequent call to get the next set of results.</p>"
+      "documentation":"<p>Retrieve information about one or more parameters under a specified level in a hierarchy. </p> <p>Request results are returned on a best-effort basis. If you specify <code>MaxResults</code> in the request, the response includes information up to the limit specified. The number of items returned, however, can be between zero and the value of <code>MaxResults</code>. If the service reaches an internal limit while processing the results, it stops the operation and returns the matching values up to that point and a <code>NextToken</code>. You can specify the <code>NextToken</code> in a subsequent call to get the next set of results.</p> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p>"
     },
     "GetPatchBaseline":{
       "name":"GetPatchBaseline",
@@ -1409,7 +1412,7 @@
         {"shape":"ParameterVersionNotFound"},
         {"shape":"ParameterVersionLabelLimitExceeded"}
       ],
-      "documentation":"<p>A parameter label is a user-defined alias to help you manage different versions of a parameter. When you modify a parameter, Amazon Web Services Systems Manager automatically saves a new version and increments the version number by one. A label can help you remember the purpose of a parameter when there are multiple versions. </p> <p>Parameter labels have the following requirements and restrictions.</p> <ul> <li> <p>A version of a parameter can have a maximum of 10 labels.</p> </li> <li> <p>You can't attach the same label to different versions of the same parameter. For example, if version 1 has the label Production, then you can't attach Production to version 2.</p> </li> <li> <p>You can move a label from one version of a parameter to another.</p> </li> <li> <p>You can't create a label when you create a new parameter. You must attach a label to a specific version of a parameter.</p> </li> <li> <p>If you no longer want to use a parameter label, then you can either delete it or move it to a different version of a parameter.</p> </li> <li> <p>A label can have a maximum of 100 characters.</p> </li> <li> <p>Labels can contain letters (case sensitive), numbers, periods (.), hyphens (-), or underscores (_).</p> </li> <li> <p>Labels can't begin with a number, \"<code>aws</code>\" or \"<code>ssm</code>\" (not case sensitive). If a label fails to meet these requirements, then the label isn't associated with a parameter and the system displays it in the list of InvalidLabels.</p> </li> </ul>"
+      "documentation":"<p>A parameter label is a user-defined alias to help you manage different versions of a parameter. When you modify a parameter, Amazon Web Services Systems Manager automatically saves a new version and increments the version number by one. A label can help you remember the purpose of a parameter when there are multiple versions. </p> <p>Parameter labels have the following requirements and restrictions.</p> <ul> <li> <p>A version of a parameter can have a maximum of 10 labels.</p> </li> <li> <p>You can't attach the same label to different versions of the same parameter. For example, if version 1 has the label Production, then you can't attach Production to version 2.</p> </li> <li> <p>You can move a label from one version of a parameter to another.</p> </li> <li> <p>You can't create a label when you create a new parameter. You must attach a label to a specific version of a parameter.</p> </li> <li> <p>If you no longer want to use a parameter label, then you can either delete it or move it to a different version of a parameter.</p> </li> <li> <p>A label can have a maximum of 100 characters.</p> </li> <li> <p>Labels can contain letters (case sensitive), numbers, periods (.), hyphens (-), or underscores (_).</p> </li> <li> <p>Labels can't begin with a number, \"<code>aws</code>\" or \"<code>ssm</code>\" (not case sensitive). If a label fails to meet these requirements, then the label isn't associated with a parameter and the system displays it in the list of InvalidLabels.</p> </li> <li> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p> </li> </ul>"
     },
     "ListAssociationVersions":{
       "name":"ListAssociationVersions",
@@ -1520,7 +1523,7 @@
         {"shape":"InvalidDocumentVersion"},
         {"shape":"InvalidNextToken"}
       ],
-      "documentation":"<p>Information about approval reviews for a version of a change template in Change Manager.</p>"
+      "documentation":"<important> <p>Amazon Web Services Systems Manager Change Manager will no longer be open to new customers starting November 7, 2025. If you would like to use Change Manager, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/change-manager-availability-change.html\">Amazon Web Services Systems Manager Change Manager availability change</a>.</p> </important> <p>Information about approval reviews for a version of a change template in Change Manager.</p>"
     },
     "ListDocumentVersions":{
       "name":"ListDocumentVersions",
@@ -1727,7 +1730,7 @@
         {"shape":"InvalidResourceType"},
         {"shape":"InvalidResourceId"}
       ],
-      "documentation":"<p>Registers a compliance type and other compliance details on a designated resource. This operation lets you register custom compliance details with a resource. This call overwrites existing compliance information on the resource, so you must provide a full list of compliance items each time that you send the request.</p> <p>ComplianceType can be one of the following:</p> <ul> <li> <p>ExecutionId: The execution ID when the patch, association, or custom compliance item was applied.</p> </li> <li> <p>ExecutionType: Specify patch, association, or Custom:<code>string</code>.</p> </li> <li> <p>ExecutionTime. The time the patch, association, or custom compliance item was applied to the managed node.</p> </li> <li> <p>Id: The patch, association, or custom compliance ID.</p> </li> <li> <p>Title: A title.</p> </li> <li> <p>Status: The status of the compliance item. For example, <code>approved</code> for patches, or <code>Failed</code> for associations.</p> </li> <li> <p>Severity: A patch severity. For example, <code>Critical</code>.</p> </li> <li> <p>DocumentName: An SSM document name. For example, <code>AWS-RunPatchBaseline</code>.</p> </li> <li> <p>DocumentVersion: An SSM document version number. For example, 4.</p> </li> <li> <p>Classification: A patch classification. For example, <code>security updates</code>.</p> </li> <li> <p>PatchBaselineId: A patch baseline ID.</p> </li> <li> <p>PatchSeverity: A patch severity. For example, <code>Critical</code>.</p> </li> <li> <p>PatchState: A patch state. For example, <code>InstancesWithFailedPatches</code>.</p> </li> <li> <p>PatchGroup: The name of a patch group.</p> </li> <li> <p>InstalledTime: The time the association, patch, or custom compliance item was applied to the resource. Specify the time by using the following format: <code>yyyy-MM-dd'T'HH:mm:ss'Z'</code> </p> </li> </ul>"
+      "documentation":"<p>Registers a compliance type and other compliance details on a designated resource. This operation lets you register custom compliance details with a resource. This call overwrites existing compliance information on the resource, so you must provide a full list of compliance items each time that you send the request.</p> <p>ComplianceType can be one of the following:</p> <ul> <li> <p>ExecutionId: The execution ID when the patch, association, or custom compliance item was applied.</p> </li> <li> <p>ExecutionType: Specify patch, association, or Custom:<code>string</code>.</p> </li> <li> <p>ExecutionTime. The time the patch, association, or custom compliance item was applied to the managed node.</p> <important> <p>For State Manager associations, this represents the time when compliance status was captured by the Systems Manager service during its internal compliance aggregation workflow, not necessarily when the association was executed on the managed node. State Manager updates compliance information for all associations on an instance whenever any association executes, which may result in multiple associations showing the same execution time.</p> </important> </li> <li> <p>Id: The patch, association, or custom compliance ID.</p> </li> <li> <p>Title: A title.</p> </li> <li> <p>Status: The status of the compliance item. For example, <code>approved</code> for patches, or <code>Failed</code> for associations.</p> </li> <li> <p>Severity: A patch severity. For example, <code>Critical</code>.</p> </li> <li> <p>DocumentName: An SSM document name. For example, <code>AWS-RunPatchBaseline</code>.</p> </li> <li> <p>DocumentVersion: An SSM document version number. For example, 4.</p> </li> <li> <p>Classification: A patch classification. For example, <code>security updates</code>.</p> </li> <li> <p>PatchBaselineId: A patch baseline ID.</p> </li> <li> <p>PatchSeverity: A patch severity. For example, <code>Critical</code>.</p> </li> <li> <p>PatchState: A patch state. For example, <code>InstancesWithFailedPatches</code>.</p> </li> <li> <p>PatchGroup: The name of a patch group.</p> </li> <li> <p>InstalledTime: The time the association, patch, or custom compliance item was applied to the resource. Specify the time by using the following format: <code>yyyy-MM-dd'T'HH:mm:ss'Z'</code> </p> </li> </ul>"
     },
     "PutInventory":{
       "name":"PutInventory",
@@ -2014,9 +2017,10 @@
         {"shape":"AutomationDefinitionVersionNotFoundException"},
         {"shape":"IdempotentParameterMismatch"},
         {"shape":"InternalServerError"},
-        {"shape":"AutomationDefinitionNotApprovedException"}
+        {"shape":"AutomationDefinitionNotApprovedException"},
+        {"shape":"NoLongerSupportedException"}
       ],
-      "documentation":"<p>Creates a change request for Change Manager. The Automation runbooks specified in the change request run only after all required approvals for the change request have been received.</p>"
+      "documentation":"<important> <p>Amazon Web Services Systems Manager Change Manager will no longer be open to new customers starting November 7, 2025. If you would like to use Change Manager, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/change-manager-availability-change.html\">Amazon Web Services Systems Manager Change Manager availability change</a>.</p> </important> <p>Creates a change request for Change Manager. The Automation runbooks specified in the change request run only after all required approvals for the change request have been received.</p>"
     },
     "StartExecutionPreview":{
       "name":"StartExecutionPreview",
@@ -2089,7 +2093,7 @@
         {"shape":"ParameterNotFound"},
         {"shape":"ParameterVersionNotFound"}
       ],
-      "documentation":"<p>Remove a label or labels from a parameter.</p>"
+      "documentation":"<p>Remove a label or labels from a parameter.</p> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p>"
     },
     "UpdateAssociation":{
       "name":"UpdateAssociation",
@@ -2184,9 +2188,10 @@
         {"shape":"InternalServerError"},
         {"shape":"InvalidDocument"},
         {"shape":"InvalidDocumentOperation"},
-        {"shape":"InvalidDocumentVersion"}
+        {"shape":"InvalidDocumentVersion"},
+        {"shape":"TooManyUpdates"}
       ],
-      "documentation":"<p>Updates information related to approval reviews for a specific version of a change template in Change Manager.</p>"
+      "documentation":"<important> <p>Amazon Web Services Systems Manager Change Manager will no longer be open to new customers starting November 7, 2025. If you would like to use Change Manager, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/change-manager-availability-change.html\">Amazon Web Services Systems Manager Change Manager availability change</a>.</p> </important> <p>Updates information related to approval reviews for a specific version of a change template in Change Manager.</p>"
     },
     "UpdateMaintenanceWindow":{
       "name":"UpdateMaintenanceWindow",
@@ -2358,6 +2363,13 @@
         "Pending"
       ]
     },
+    "AccessType":{
+      "type":"string",
+      "enum":[
+        "Standard",
+        "JustInTime"
+      ]
+    },
     "Account":{"type":"string"},
     "AccountId":{
       "type":"string",
@@ -2481,8 +2493,7 @@
     },
     "AddTagsToResourceResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AgentErrorCode":{
       "type":"string",
@@ -2621,8 +2632,7 @@
     },
     "AssociatedInstances":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You must disassociate a document from all managed nodes before you can delete it.</p>",
       "exception":true
     },
@@ -2689,8 +2699,7 @@
     },
     "AssociationAlreadyExists":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified association already exists.</p>",
       "exception":true
     },
@@ -3078,8 +3087,7 @@
     },
     "AssociationLimitExceeded":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You can have at most 2,000 active associations.</p>",
       "exception":true
     },
@@ -3982,8 +3990,7 @@
     },
     "CancelCommandResult":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Whether or not the command was successfully canceled. There is no guarantee that a request can be canceled.</p>"
     },
     "CancelMaintenanceWindowExecutionRequest":{
@@ -4410,7 +4417,7 @@
       "members":{
         "ExecutionTime":{
           "shape":"DateTime",
-          "documentation":"<p>The time the execution ran as a datetime object that is saved in the following format: <code>yyyy-MM-dd'T'HH:mm:ss'Z'</code> </p>"
+          "documentation":"<p>The time the execution ran as a datetime object that is saved in the following format: <code>yyyy-MM-dd'T'HH:mm:ss'Z'</code> </p> <important> <p>For State Manager associations, this timestamp represents when the compliance status was captured and reported by the Systems Manager service, not when the underlying association was actually executed on the managed node. To track actual association execution times, use the <a>DescribeAssociationExecutionTargets</a> command or check the association execution history in the Systems Manager console.</p> </important>"
         },
         "ExecutionId":{
           "shape":"ComplianceExecutionId",
@@ -4461,7 +4468,7 @@
         },
         "ExecutionSummary":{
           "shape":"ComplianceExecutionSummary",
-          "documentation":"<p>A summary for the compliance item. The summary includes an execution ID, the execution type (for example, command), and the execution time.</p>"
+          "documentation":"<p>A summary for the compliance item. The summary includes an execution ID, the execution type (for example, command), and the execution time.</p> <important> <p>For State Manager associations, the <code>ExecutionTime</code> value represents when the compliance status was captured and aggregated by the Systems Manager service, not necessarily when the underlying association was executed on the managed node. State Manager updates compliance status for all associations on an instance whenever any association executes, which means multiple associations may show the same execution time even if they were executed at different times.</p> </important>"
         },
         "Details":{
           "shape":"ComplianceItemDetails",
@@ -4905,7 +4912,7 @@
         },
         "TargetLocations":{
           "shape":"TargetLocations",
-          "documentation":"<p>A location is a combination of Amazon Web Services Regions and Amazon Web Services accounts where you want to run the association. Use this action to create an association in multiple Regions and multiple accounts.</p>"
+          "documentation":"<p>A location is a combination of Amazon Web Services Regions and Amazon Web Services accounts where you want to run the association. Use this action to create an association in multiple Regions and multiple accounts.</p> <note> <p>The <code>IncludeChildOrganizationUnits</code> parameter is not supported by State Manager.</p> </note>"
         },
         "ScheduleOffset":{
           "shape":"ScheduleOffset",
@@ -5082,7 +5089,7 @@
         },
         "OpsItemType":{
           "shape":"OpsItemType",
-          "documentation":"<p>The type of OpsItem to create. Systems Manager supports the following types of OpsItems:</p> <ul> <li> <p> <code>/aws/issue</code> </p> <p>This type of OpsItem is used for default OpsItems created by OpsCenter. </p> </li> <li> <p> <code>/aws/changerequest</code> </p> <p>This type of OpsItem is used by Change Manager for reviewing and approving or rejecting change requests. </p> </li> <li> <p> <code>/aws/insight</code> </p> <p>This type of OpsItem is used by OpsCenter for aggregating and reporting on duplicate OpsItems. </p> </li> </ul>"
+          "documentation":"<p>The type of OpsItem to create. Systems Manager supports the following types of OpsItems:</p> <ul> <li> <p> <code>/aws/issue</code> </p> <p>This type of OpsItem is used for default OpsItems created by OpsCenter. </p> </li> <li> <p> <code>/aws/insight</code> </p> <p>This type of OpsItem is used by OpsCenter for aggregating and reporting on duplicate OpsItems. </p> </li> <li> <p> <code>/aws/changerequest</code> </p> <p>This type of OpsItem is used by Change Manager for reviewing and approving or rejecting change requests. </p> <important> <p>Amazon Web Services Systems Manager Change Manager will no longer be open to new customers starting November 7, 2025. If you would like to use Change Manager, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/change-manager-availability-change.html\">Amazon Web Services Systems Manager Change Manager availability change</a>.</p> </important> </li> </ul>"
         },
         "OperationalData":{
           "shape":"OpsItemOperationalData",
@@ -5221,7 +5228,7 @@
         },
         "RejectedPatchesAction":{
           "shape":"PatchAction",
-          "documentation":"<p>The action for Patch Manager to take on patches included in the <code>RejectedPackages</code> list.</p> <dl> <dt>ALLOW_AS_DEPENDENCY</dt> <dd> <p> <b>Linux and macOS</b>: A package in the rejected patches list is installed only if it is a dependency of another package. It is considered compliant with the patch baseline, and its status is reported as <code>INSTALLED_OTHER</code>. This is the default action if no option is specified.</p> <p> <b>Windows Server</b>: Windows Server doesn't support the concept of package dependencies. If a package in the rejected patches list and already installed on the node, its status is reported as <code>INSTALLED_OTHER</code>. Any package not already installed on the node is skipped. This is the default action if no option is specified.</p> </dd> <dt>BLOCK</dt> <dd> <p> <b>All OSs</b>: Packages in the rejected patches list, and packages that include them as dependencies, aren't installed by Patch Manager under any circumstances. If a package was installed before it was added to the rejected patches list, or is installed outside of Patch Manager afterward, it's considered noncompliant with the patch baseline and its status is reported as <code>INSTALLED_REJECTED</code>.</p> </dd> </dl>"
+          "documentation":"<p>The action for Patch Manager to take on patches included in the <code>RejectedPackages</code> list.</p> <dl> <dt>ALLOW_AS_DEPENDENCY</dt> <dd> <p> <b>Linux and macOS</b>: A package in the rejected patches list is installed only if it is a dependency of another package. It is considered compliant with the patch baseline, and its status is reported as <code>INSTALLED_OTHER</code>. This is the default action if no option is specified.</p> <p> <b>Windows Server</b>: Windows Server doesn't support the concept of package dependencies. If a package in the rejected patches list and already installed on the node, its status is reported as <code>INSTALLED_OTHER</code>. Any package not already installed on the node is skipped. This is the default action if no option is specified.</p> </dd> <dt>BLOCK</dt> <dd> <p> <b>All OSs</b>: Packages in the rejected patches list, and packages that include them as dependencies, aren't installed by Patch Manager under any circumstances. </p> <p>State value assignment for patch compliance:</p> <ul> <li> <p>If a package was installed before it was added to the rejected patches list, or is installed outside of Patch Manager afterward, it's considered noncompliant with the patch baseline and its status is reported as <code>INSTALLED_REJECTED</code>.</p> </li> <li> <p>If an update attempts to install a dependency package that is now rejected by the baseline, when previous versions of the package were not rejected, the package being updated is reported as <code>MISSING</code> for <code>SCAN</code> operations and as <code>FAILED</code> for <code>INSTALL</code> operations.</p> </li> </ul> </dd> </dl>"
         },
         "Description":{
           "shape":"BaselineDescription",
@@ -5279,8 +5286,7 @@
     },
     "CreateResourceDataSyncResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CreatedDate":{"type":"timestamp"},
     "Credentials":{
@@ -5339,8 +5345,7 @@
     },
     "DeleteActivationResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteAssociationRequest":{
       "type":"structure",
@@ -5361,8 +5366,7 @@
     },
     "DeleteAssociationResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteDocumentRequest":{
       "type":"structure",
@@ -5388,8 +5392,7 @@
     },
     "DeleteDocumentResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteInventoryRequest":{
       "type":"structure",
@@ -5462,8 +5465,7 @@
     },
     "DeleteOpsItemResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteOpsMetadataRequest":{
       "type":"structure",
@@ -5477,8 +5479,7 @@
     },
     "DeleteOpsMetadataResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteParameterRequest":{
       "type":"structure",
@@ -5492,8 +5493,7 @@
     },
     "DeleteParameterResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteParametersRequest":{
       "type":"structure",
@@ -5553,8 +5553,7 @@
     },
     "DeleteResourceDataSyncResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteResourcePolicyRequest":{
       "type":"structure",
@@ -5580,8 +5579,7 @@
     },
     "DeleteResourcePolicyResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeliveryTimedOutCount":{"type":"integer"},
     "DeregisterManagedInstanceRequest":{
@@ -5596,8 +5594,7 @@
     },
     "DeregisterManagedInstanceResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeregisterPatchBaselineForPatchGroupRequest":{
       "type":"structure",
@@ -5972,7 +5969,7 @@
       "members":{
         "Name":{
           "shape":"DocumentName",
-          "documentation":"<p>The name of the document for which you are the owner.</p>"
+          "documentation":"<p>The name of the document for which you are the owner. </p>"
         },
         "PermissionType":{
           "shape":"DocumentPermissionType",
@@ -5994,7 +5991,7 @@
       "members":{
         "AccountIds":{
           "shape":"AccountIdList",
-          "documentation":"<p>The account IDs that have permission to use this document. The ID can be either an Amazon Web Services account or <i>All</i>.</p>"
+          "documentation":"<p>The account IDs that have permission to use this document. The ID can be either an Amazon Web Services account number or <code>all</code>.</p>"
         },
         "AccountSharingInfoList":{
           "shape":"AccountSharingInfoList",
@@ -6012,7 +6009,7 @@
       "members":{
         "Name":{
           "shape":"DocumentARN",
-          "documentation":"<p>The name of the SSM document.</p>"
+          "documentation":"<p>The name of the SSM document.</p> <note> <p>If you're calling a shared SSM document from a different Amazon Web Services account, <code>Name</code> is the full Amazon Resource Name (ARN) of the document.</p> </note>"
         },
         "DocumentVersion":{
           "shape":"DocumentVersion",
@@ -6945,8 +6942,7 @@
     },
     "DisassociateOpsItemRelatedItemResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DocumentARN":{
       "type":"string",
@@ -7602,8 +7598,7 @@
     },
     "DuplicateInstanceId":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>You can't specify a managed node ID in more than one association.</p>",
       "exception":true
     },
@@ -7993,6 +7988,10 @@
         "BaselineOverride":{
           "shape":"BaselineOverride",
           "documentation":"<p>Defines the basic information about a patch baseline override.</p>"
+        },
+        "UseS3DualStackEndpoint":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to use S3 dualstack endpoints for the patch snapshot download URL. Set to <code>true</code> to receive a presigned URL that supports both IPv4 and IPv6 connectivity. Set to <code>false</code> to use standard IPv4-only endpoints. Default is <code>false</code>. This parameter is required for managed nodes in IPv6-only environments. </p>"
         }
       }
     },
@@ -9409,7 +9408,7 @@
       "members":{
         "Key":{
           "shape":"InstanceInformationStringFilterKey",
-          "documentation":"<p>The filter key name to describe your managed nodes.</p> <p>Valid filter key values: ActivationIds | AgentVersion | AssociationStatus | IamRole | InstanceIds | PingStatus | PlatformTypes | ResourceType | SourceIds | SourceTypes | \"tag-key\" | \"tag:<code>{keyname}</code> </p> <ul> <li> <p>Valid values for the <code>AssociationStatus</code> filter key: Success | Pending | Failed</p> </li> <li> <p>Valid values for the <code>PingStatus</code> filter key: Online | ConnectionLost | Inactive (deprecated)</p> </li> <li> <p>Valid values for the <code>PlatformType</code> filter key: Windows | Linux | MacOS</p> </li> <li> <p>Valid values for the <code>ResourceType</code> filter key: EC2Instance | ManagedInstance</p> </li> <li> <p>Valid values for the <code>SourceType</code> filter key: AWS::EC2::Instance | AWS::SSM::ManagedInstance | AWS::IoT::Thing</p> </li> <li> <p>Valid tag examples: <code>Key=tag-key,Values=Purpose</code> | <code>Key=tag:Purpose,Values=Test</code>.</p> </li> </ul>"
+          "documentation":"<p>The filter key name to describe your managed nodes.</p> <p>Valid filter key values: ActivationIds | AgentVersion | AssociationStatus | IamRole | InstanceIds | PingStatus | PlatformType | ResourceType | SourceIds | SourceTypes | \"tag-key\" | \"tag:<code>{keyname}</code> </p> <ul> <li> <p>Valid values for the <code>AssociationStatus</code> filter key: Success | Pending | Failed</p> </li> <li> <p>Valid values for the <code>PingStatus</code> filter key: Online | ConnectionLost | Inactive (deprecated)</p> </li> <li> <p>Valid values for the <code>PlatformType</code> filter key: Windows | Linux | MacOS</p> </li> <li> <p>Valid values for the <code>ResourceType</code> filter key: EC2Instance | ManagedInstance</p> </li> <li> <p>Valid values for the <code>SourceType</code> filter key: AWS::EC2::Instance | AWS::SSM::ManagedInstance | AWS::IoT::Thing</p> </li> <li> <p>Valid tag examples: <code>Key=tag-key,Values=Purpose</code> | <code>Key=tag:Purpose,Values=Test</code>.</p> </li> </ul>"
         },
         "Values":{
           "shape":"InstanceInformationFilterValueSet",
@@ -9918,8 +9917,7 @@
     },
     "InvalidCommandId":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified command ID isn't valid. Verify the ID and try again.</p>",
       "exception":true
     },
@@ -10003,8 +10001,7 @@
     },
     "InvalidFilterKey":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The specified key isn't valid.</p>",
       "exception":true
     },
@@ -10118,15 +10115,13 @@
     },
     "InvalidOutputFolder":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The S3 bucket doesn't exist.</p>",
       "exception":true
     },
     "InvalidOutputLocation":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The output location isn't valid or doesn't exist.</p>",
       "exception":true
     },
@@ -10148,8 +10143,7 @@
     },
     "InvalidPluginName":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The plugin name isn't valid.</p>",
       "exception":true
     },
@@ -10171,15 +10165,13 @@
     },
     "InvalidResourceId":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The resource ID isn't valid. Verify that you entered the correct ID and try again.</p>",
       "exception":true
     },
     "InvalidResourceType":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The resource type isn't valid. For example, if you are attempting to tag an EC2 instance, the instance must be a registered managed node.</p>",
       "exception":true
     },
@@ -10384,14 +10376,14 @@
         },
         "Values":{
           "shape":"InventoryFilterValueList",
-          "documentation":"<p>Inventory filter values. Example: inventory filter where managed node IDs are specified as values <code>Key=AWS:InstanceInformation.InstanceId,Values= i-a12b3c4d5e6g, i-1a2b3c4d5e6,Type=Equal</code>. </p>"
+          "documentation":"<p>Inventory filter values.</p>"
         },
         "Type":{
           "shape":"InventoryQueryOperatorType",
           "documentation":"<p>The type of filter.</p> <note> <p>The <code>Exists</code> filter must be used with aggregators. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/inventory-aggregate.html\">Aggregating inventory data</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </note>"
         }
       },
-      "documentation":"<p>One or more filters. Use a filter to return a more specific list of results.</p>"
+      "documentation":"<p>One or more filters. Use a filter to return a more specific list of results.</p> <p> <b>Example formats for the <code>aws ssm get-inventory</code> command:</b> </p> <p> <code>--filters Key=AWS:InstanceInformation.AgentType,Values=amazon-ssm-agent,Type=Equal</code> </p> <p> <code>--filters Key=AWS:InstanceInformation.AgentVersion,Values=3.3.2299.0,Type=Equal</code> </p> <p> <code>--filters Key=AWS:InstanceInformation.ComputerName,Values=ip-192.0.2.0.us-east-2.compute.internal,Type=Equal</code> </p> <p> <code>--filters Key=AWS:InstanceInformation.InstanceId,Values=i-0a4cd6ceffEXAMPLE,i-1a2b3c4d5e6EXAMPLE,Type=Equal</code> </p> <p> <code>--filters Key=AWS:InstanceInformation.InstanceStatus,Values=Active,Type=Equal</code> </p> <p> <code>--filters Key=AWS:InstanceInformation.IpAddress,Values=198.51.100.0,Type=Equal</code> </p> <p> <code>--filters Key=AWS:InstanceInformation.PlatformName,Values=\"Amazon Linux\",Type=Equal</code> </p> <p> <code>--filters Key=AWS:InstanceInformation.PlatformType,Values=Linux,Type=Equal</code> </p> <p> <code>--filters Key=AWS:InstanceInformation.PlatformVersion,Values=2023,Type=BeginWith</code> </p> <p> <code>--filters Key=AWS:InstanceInformation.ResourceType,Values=EC2Instance,Type=Equal</code> </p>"
     },
     "InventoryFilterKey":{
       "type":"string",
@@ -10656,8 +10648,7 @@
     "InventoryTypeDisplayName":{"type":"string"},
     "InvocationDoesNotExist":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The command ID and managed node ID you specified didn't match any invocations. Verify the command ID and the managed node ID and try again. </p>",
       "exception":true
     },
@@ -12234,10 +12225,17 @@
     },
     "ModifyDocumentPermissionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "NextToken":{"type":"string"},
+    "NoLongerSupportedException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"String"}
+      },
+      "documentation":"<p>The requested operation is no longer supported by Systems Manager.</p>",
+      "exception":true
+    },
     "Node":{
       "type":"structure",
       "members":{
@@ -14448,12 +14446,12 @@
         },
         "ApproveAfterDays":{
           "shape":"ApproveAfterDays",
-          "documentation":"<p>The number of days after the release date of each patch matched by the rule that the patch is marked as approved in the patch baseline. For example, a value of <code>7</code> means that patches are approved seven days after they are released.</p> <p>This parameter is marked as <code>Required: No</code>, but your request must include a value for either <code>ApproveAfterDays</code> or <code>ApproveUntilDate</code>.</p> <p>Not supported for Debian Server or Ubuntu Server.</p> <important> <p>Use caution when setting this value for Windows Server patch baselines. Because patch updates that are replaced by later updates are removed, setting too broad a value for this parameter can result in crucial patches not being installed. For more information, see the <b>Windows Server</b> tab in the topic <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-selecting-patches.html\">How security patches are selected</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </important>",
+          "documentation":"<p>The number of days after the release date of each patch matched by the rule that the patch is marked as approved in the patch baseline. For example, a value of <code>7</code> means that patches are approved seven days after they are released.</p> <p>Patch Manager evaluates patch release dates using Coordinated Universal Time (UTC). If the day represented by <code>7</code> is <code>2025-11-16</code>, patches released between <code>2025-11-16T00:00:00Z</code> and <code>2025-11-16T23:59:59Z</code> will be included in the approval.</p> <p>This parameter is marked as <code>Required: No</code>, but your request must include a value for either <code>ApproveAfterDays</code> or <code>ApproveUntilDate</code>.</p> <p>Not supported for Debian Server or Ubuntu Server.</p> <important> <p>Use caution when setting this value for Windows Server patch baselines. Because patch updates that are replaced by later updates are removed, setting too broad a value for this parameter can result in crucial patches not being installed. For more information, see the <b>Windows Server</b> tab in the topic <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-selecting-patches.html\">How security patches are selected</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </important>",
           "box":true
         },
         "ApproveUntilDate":{
           "shape":"PatchStringDateTime",
-          "documentation":"<p>The cutoff date for auto approval of released patches. Any patches released on or before this date are installed automatically.</p> <p>Enter dates in the format <code>YYYY-MM-DD</code>. For example, <code>2024-12-31</code>.</p> <p>This parameter is marked as <code>Required: No</code>, but your request must include a value for either <code>ApproveUntilDate</code> or <code>ApproveAfterDays</code>.</p> <p>Not supported for Debian Server or Ubuntu Server.</p> <important> <p>Use caution when setting this value for Windows Server patch baselines. Because patch updates that are replaced by later updates are removed, setting too broad a value for this parameter can result in crucial patches not being installed. For more information, see the <b>Windows Server</b> tab in the topic <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-selecting-patches.html\">How security patches are selected</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </important>",
+          "documentation":"<p>The cutoff date for auto approval of released patches. Any patches released on or before this date are installed automatically.</p> <p>Enter dates in the format <code>YYYY-MM-DD</code>. For example, <code>2025-11-16</code>.</p> <p>Patch Manager evaluates patch release dates using Coordinated Universal Time (UTC). If you enter the date <code>2025-11-16</code>, patches released between <code>2025-11-16T00:00:00Z</code> and <code>2025-11-16T23:59:59Z</code> will be included in the approval.</p> <p>This parameter is marked as <code>Required: No</code>, but your request must include a value for either <code>ApproveUntilDate</code> or <code>ApproveAfterDays</code>.</p> <p>Not supported for Debian Server or Ubuntu Server.</p> <important> <p>Use caution when setting this value for Windows Server patch baselines. Because patch updates that are replaced by later updates are removed, setting too broad a value for this parameter can result in crucial patches not being installed. For more information, see the <b>Windows Server</b> tab in the topic <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/patch-manager-selecting-patches.html\">How security patches are selected</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </important>",
           "box":true
         },
         "EnableNonSecurity":{
@@ -14508,7 +14506,7 @@
         },
         "Configuration":{
           "shape":"PatchSourceConfiguration",
-          "documentation":"<p>The value of the yum repo configuration. For example:</p> <p> <code>[main]</code> </p> <p> <code>name=MyCustomRepository</code> </p> <p> <code>baseurl=https://my-custom-repository</code> </p> <p> <code>enabled=1</code> </p> <note> <p>For information about other options available for your yum repository configuration, see <a href=\"https://man7.org/linux/man-pages/man5/dnf.conf.5.html\">dnf.conf(5)</a>.</p> </note>"
+          "documentation":"<p>The value of the repo configuration.</p> <p> <b>Example for yum repositories</b> </p> <p> <code>[main]</code> </p> <p> <code>name=MyCustomRepository</code> </p> <p> <code>baseurl=https://my-custom-repository</code> </p> <p> <code>enabled=1</code> </p> <p>For information about other options available for your yum repository configuration, see <a href=\"https://man7.org/linux/man-pages/man5/dnf.conf.5.html\">dnf.conf(5)</a> on the <i>man7.org</i> website.</p> <p> <b>Examples for Ubuntu Server and Debian Server</b> </p> <p> <code>deb http://security.ubuntu.com/ubuntu jammy main</code> </p> <p> <code>deb https://site.example.com/debian distribution component1 component2 component3</code> </p> <p>Repo information for Ubuntu Server repositories must be specifed in a single line. For more examples and information, see <a href=\"https://manpages.ubuntu.com/manpages/jammy/man5/sources.list.5.html\">jammy (5) sources.list.5.gz</a> on the <i>Ubuntu Server Manuals</i> website and <a href=\"https://wiki.debian.org/SourcesList#sources.list_format\">sources.list format</a> on the <i>Debian Wiki</i>.</p>"
         }
       },
       "documentation":"<p>Information about the patches to use to update the managed nodes, including target operating systems and source repository. Applies to Linux managed nodes only.</p>"
@@ -14679,8 +14677,7 @@
     },
     "PutComplianceItemsResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "PutInventoryMessage":{"type":"string"},
     "PutInventoryRequest":{
@@ -14718,7 +14715,7 @@
       "members":{
         "Name":{
           "shape":"PSParameterName",
-          "documentation":"<p>The fully qualified name of the parameter that you want to create or update.</p> <note> <p>You can't enter the Amazon Resource Name (ARN) for a parameter, only the parameter name itself.</p> </note> <p>The fully qualified name includes the complete hierarchy of the parameter path and name. For parameters in a hierarchy, you must include a leading forward slash character (/) when you create or reference a parameter. For example: <code>/Dev/DBServer/MySQL/db-string13</code> </p> <p>Naming Constraints:</p> <ul> <li> <p>Parameter names are case sensitive.</p> </li> <li> <p>A parameter name must be unique within an Amazon Web Services Region</p> </li> <li> <p>A parameter name can't be prefixed with \"<code>aws</code>\" or \"<code>ssm</code>\" (case-insensitive).</p> </li> <li> <p>Parameter names can include only the following symbols and letters: <code>a-zA-Z0-9_.-</code> </p> <p>In addition, the slash character ( / ) is used to delineate hierarchies in parameter names. For example: <code>/Dev/Production/East/Project-ABC/MyParameter</code> </p> </li> <li> <p>A parameter name can't include spaces.</p> </li> <li> <p>Parameter hierarchies are limited to a maximum depth of fifteen levels.</p> </li> </ul> <p>For additional information about valid values for parameter names, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-su-create.html\">Creating Systems Manager parameters</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <note> <p>The reported maximum length of 2048 characters for a parameter name includes 1037 characters that are reserved for internal use by Systems Manager. The maximum length for a parameter name that you specify is 1011 characters.</p> <p>This count of 1011 characters includes the characters in the ARN that precede the name you specify. This ARN length will vary depending on your partition and Region. For example, the following 45 characters count toward the 1011 character maximum for a parameter created in the US East (Ohio) Region: <code>arn:aws:ssm:us-east-2:111122223333:parameter/</code>.</p> </note>"
+          "documentation":"<p>The fully qualified name of the parameter that you want to create or update.</p> <note> <p>You can't enter the Amazon Resource Name (ARN) for a parameter, only the parameter name itself.</p> </note> <p>The fully qualified name includes the complete hierarchy of the parameter path and name. For parameters in a hierarchy, you must include a leading forward slash character (/) when you create or reference a parameter. For example: <code>/Dev/DBServer/MySQL/db-string13</code> </p> <p>Naming Constraints:</p> <ul> <li> <p>Parameter names are case sensitive.</p> </li> <li> <p>A parameter name must be unique within an Amazon Web Services Region</p> </li> <li> <p>A parameter name can't be prefixed with \"<code>aws</code>\" or \"<code>ssm</code>\" (case-insensitive).</p> </li> <li> <p>Parameter names can include only the following symbols and letters: <code>a-zA-Z0-9_.-</code> </p> <p>In addition, the slash character ( / ) is used to delineate hierarchies in parameter names. For example: <code>/Dev/Production/East/Project-ABC/MyParameter</code> </p> </li> <li> <p>Parameter names can't contain spaces. The service removes any spaces specified for the beginning or end of a parameter name. If the specified name for a parameter contains spaces between characters, the request fails with a <code>ValidationException</code> error.</p> </li> <li> <p>Parameter hierarchies are limited to a maximum depth of fifteen levels.</p> </li> </ul> <p>For additional information about valid values for parameter names, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/sysman-paramstore-su-create.html\">Creating Systems Manager parameters</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> <note> <p>The reported maximum length of 2048 characters for a parameter name includes 1037 characters that are reserved for internal use by Systems Manager. The maximum length for a parameter name that you specify is 1011 characters.</p> <p>This count of 1011 characters includes the characters in the ARN that precede the name you specify. This ARN length will vary depending on your partition and Region. For example, the following 45 characters count toward the 1011 character maximum for a parameter created in the US East (Ohio) Region: <code>arn:aws:ssm:us-east-2:111122223333:parameter/</code>.</p> </note>"
         },
         "Description":{
           "shape":"ParameterDescription",
@@ -15104,8 +15101,7 @@
     },
     "RemoveTagsFromResourceResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "RequireType":{
       "type":"string",
@@ -15818,8 +15814,7 @@
     },
     "SendAutomationSignalResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "SendCommandRequest":{
       "type":"structure",
@@ -16033,6 +16028,10 @@
         "MaxSessionDuration":{
           "shape":"MaxSessionDuration",
           "documentation":"<p>The maximum duration of a session before it terminates.</p>"
+        },
+        "AccessType":{
+          "shape":"AccessType",
+          "documentation":"<p> <code>Standard</code> access type is the default for Session Manager sessions. <code>JustInTime</code> is the access type for <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-just-in-time-node-access.html\">Just-in-time node access</a>.</p>"
         }
       },
       "documentation":"<p>Information about a Session Manager connection to a managed node.</p>"
@@ -16068,7 +16067,8 @@
         "Target",
         "Owner",
         "Status",
-        "SessionId"
+        "SessionId",
+        "AccessType"
       ]
     },
     "SessionFilterList":{
@@ -16295,8 +16295,7 @@
     },
     "StartAssociationsOnceResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "StartAutomationExecutionRequest":{
       "type":"structure",
@@ -16517,8 +16516,7 @@
     "StatusName":{"type":"string"},
     "StatusUnchanged":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The updated status is the same as the current status.</p>",
       "exception":true
     },
@@ -16705,8 +16703,7 @@
     },
     "StopAutomationExecutionResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "StopType":{
       "type":"string",
@@ -16815,12 +16812,12 @@
         },
         "TargetLocationMaxConcurrency":{
           "shape":"MaxConcurrency",
-          "documentation":"<p>The maximum number of Amazon Web Services Regions and Amazon Web Services accounts allowed to run the Automation concurrently.</p>",
+          "documentation":"<p>The maximum number of Amazon Web Services Regions and Amazon Web Services accounts allowed to run the Automation concurrently. <code>TargetLocationMaxConcurrency</code> has a default value of 1.</p>",
           "box":true
         },
         "TargetLocationMaxErrors":{
           "shape":"MaxErrors",
-          "documentation":"<p>The maximum number of errors allowed before the system stops queueing additional Automation executions for the currently running Automation.</p>",
+          "documentation":"<p>The maximum number of errors allowed before the system stops queueing additional Automation executions for the currently running Automation. <code>TargetLocationMaxErrors</code> has a default value of 0.</p>",
           "box":true
         },
         "ExecutionRoleName":{
@@ -16834,7 +16831,7 @@
         },
         "IncludeChildOrganizationUnits":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether to include child organizational units (OUs) that are children of the targeted OUs. The default is <code>false</code>.</p>"
+          "documentation":"<p>Indicates whether to include child organizational units (OUs) that are children of the targeted OUs. The default is <code>false</code>.</p> <note> <p>This parameter is not supported by State Manager.</p> </note>"
         },
         "ExcludeAccounts":{
           "shape":"ExcludeAccounts",
@@ -16992,8 +16989,7 @@
     },
     "TooManyTagsError":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The <code>Targets</code> parameter includes too many tags. Remove one or more tags and try the command again.</p>",
       "exception":true
     },
@@ -17189,7 +17185,7 @@
         },
         "TargetLocations":{
           "shape":"TargetLocations",
-          "documentation":"<p>A location is a combination of Amazon Web Services Regions and Amazon Web Services accounts where you want to run the association. Use this action to update an association in multiple Regions and multiple accounts.</p>"
+          "documentation":"<p>A location is a combination of Amazon Web Services Regions and Amazon Web Services accounts where you want to run the association. Use this action to update an association in multiple Regions and multiple accounts.</p> <note> <p>The <code>IncludeChildOrganizationUnits</code> parameter is not supported by State Manager.</p> </note>"
         },
         "ScheduleOffset":{
           "shape":"ScheduleOffset",
@@ -17298,8 +17294,7 @@
     },
     "UpdateDocumentMetadataResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateDocumentRequest":{
       "type":"structure",
@@ -17697,8 +17692,7 @@
     },
     "UpdateManagedInstanceRoleResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateOpsItemRequest":{
       "type":"structure",
@@ -17772,8 +17766,7 @@
     },
     "UpdateOpsItemResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateOpsMetadataRequest":{
       "type":"structure",
@@ -17841,7 +17834,7 @@
         },
         "RejectedPatchesAction":{
           "shape":"PatchAction",
-          "documentation":"<p>The action for Patch Manager to take on patches included in the <code>RejectedPackages</code> list.</p> <dl> <dt>ALLOW_AS_DEPENDENCY</dt> <dd> <p> <b>Linux and macOS</b>: A package in the rejected patches list is installed only if it is a dependency of another package. It is considered compliant with the patch baseline, and its status is reported as <code>INSTALLED_OTHER</code>. This is the default action if no option is specified.</p> <p> <b>Windows Server</b>: Windows Server doesn't support the concept of package dependencies. If a package in the rejected patches list and already installed on the node, its status is reported as <code>INSTALLED_OTHER</code>. Any package not already installed on the node is skipped. This is the default action if no option is specified.</p> </dd> <dt>BLOCK</dt> <dd> <p> <b>All OSs</b>: Packages in the rejected patches list, and packages that include them as dependencies, aren't installed by Patch Manager under any circumstances. If a package was installed before it was added to the rejected patches list, or is installed outside of Patch Manager afterward, it's considered noncompliant with the patch baseline and its status is reported as <code>INSTALLED_REJECTED</code>.</p> </dd> </dl>"
+          "documentation":"<p>The action for Patch Manager to take on patches included in the <code>RejectedPackages</code> list.</p> <dl> <dt>ALLOW_AS_DEPENDENCY</dt> <dd> <p> <b>Linux and macOS</b>: A package in the rejected patches list is installed only if it is a dependency of another package. It is considered compliant with the patch baseline, and its status is reported as <code>INSTALLED_OTHER</code>. This is the default action if no option is specified.</p> <p> <b>Windows Server</b>: Windows Server doesn't support the concept of package dependencies. If a package in the rejected patches list and already installed on the node, its status is reported as <code>INSTALLED_OTHER</code>. Any package not already installed on the node is skipped. This is the default action if no option is specified.</p> </dd> <dt>BLOCK</dt> <dd> <p> <b>All OSs</b>: Packages in the rejected patches list, and packages that include them as dependencies, aren't installed by Patch Manager under any circumstances. </p> <p>State value assignment for patch compliance:</p> <ul> <li> <p>If a package was installed before it was added to the rejected patches list, or is installed outside of Patch Manager afterward, it's considered noncompliant with the patch baseline and its status is reported as <code>INSTALLED_REJECTED</code>.</p> </li> <li> <p>If an update attempts to install a dependency package that is now rejected by the baseline, when previous versions of the package were not rejected, the package being updated is reported as <code>MISSING</code> for <code>SCAN</code> operations and as <code>FAILED</code> for <code>INSTALL</code> operations.</p> </li> </ul> </dd> </dl>"
         },
         "Description":{
           "shape":"BaselineDescription",
@@ -17952,8 +17945,7 @@
     },
     "UpdateResourceDataSyncResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateServiceSettingRequest":{
       "type":"structure",
@@ -17975,8 +17967,7 @@
     },
     "UpdateServiceSettingResult":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>The result body of the UpdateServiceSetting API operation.</p>"
     },
     "Url":{"type":"string"},
@@ -18006,5 +17997,5 @@
       "pattern":"^[0-9]{1,6}(\\.[0-9]{1,6}){2,3}$"
     }
   },
-  "documentation":"<p>Amazon Web Services Systems Manager is the operations hub for your Amazon Web Services applications and resources and a secure end-to-end management solution for hybrid cloud environments that enables safe and secure operations at scale.</p> <p>This reference is intended to be used with the <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/\">Amazon Web Services Systems Manager User Guide</a>. To get started, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-setting-up.html\">Setting up Amazon Web Services Systems Manager</a>.</p> <p class=\"title\"> <b>Related resources</b> </p> <ul> <li> <p>For information about each of the tools that comprise Systems Manager, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-tools.html\">Using Systems Manager tools</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </li> <li> <p>For details about predefined runbooks for Automation, a tool in Amazon Web Services Systems Manager, see the <i> <a href=\"https://docs.aws.amazon.com/systems-manager-automation-runbooks/latest/userguide/automation-runbook-reference.html\">Systems Manager Automation runbook reference</a> </i>.</p> </li> <li> <p>For information about AppConfig, a tool in Systems Manager, see the <i> <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/\">AppConfig User Guide</a> </i> and the <i> <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/\">AppConfig API Reference</a> </i>.</p> </li> <li> <p>For information about Incident Manager, a tool in Systems Manager, see the <i> <a href=\"https://docs.aws.amazon.com/incident-manager/latest/userguide/\">Systems Manager Incident Manager User Guide</a> </i> and the <i> <a href=\"https://docs.aws.amazon.com/incident-manager/latest/APIReference/\">Systems Manager Incident Manager API Reference</a> </i>.</p> </li> </ul>"
+  "documentation":"<p>Amazon Web Services Systems Manager is the operations hub for your Amazon Web Services applications and resources and a secure end-to-end management solution for hybrid cloud environments that enables safe and secure operations at scale.</p> <p>This reference is intended to be used with the <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/\">Amazon Web Services Systems Manager User Guide</a>. To get started, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-setting-up-console.html\">Setting up Amazon Web Services Systems Manager</a>.</p> <p class=\"title\"> <b>Related resources</b> </p> <ul> <li> <p>For information about each of the tools that comprise Systems Manager, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-tools.html\">Using Systems Manager tools</a> in the <i>Amazon Web Services Systems Manager User Guide</i>.</p> </li> <li> <p>For details about predefined runbooks for Automation, a tool in Amazon Web Services Systems Manager, see the <i> <a href=\"https://docs.aws.amazon.com/systems-manager-automation-runbooks/latest/userguide/automation-runbook-reference.html\">Systems Manager Automation Runbook Reference</a> </i>.</p> </li> <li> <p>For information about AppConfig, a tool in Systems Manager, see the <i> <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/\">AppConfig User Guide</a> </i> and the <i> <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/\">AppConfig API Reference</a> </i>.</p> </li> <li> <p>For information about Incident Manager, a tool in Systems Manager, see the <i> <a href=\"https://docs.aws.amazon.com/incident-manager/latest/userguide/\">Systems Manager Incident Manager User Guide</a> </i> and the <i> <a href=\"https://docs.aws.amazon.com/incident-manager/latest/APIReference/\">Systems Manager Incident Manager API Reference</a> </i>.</p> </li> </ul>"
 }

@@ -13,6 +13,7 @@
 
 
 DOC_EVENTS = {
+    'doc-meta-description': '.%s',
     'doc-breadcrumbs': '.%s',
     'doc-title': '.%s',
     'doc-description': '.%s',
@@ -40,6 +41,10 @@ def generate_events(session, help_command):
     session.emit(
         'doc-breadcrumbs.%s' % help_command.event_class,
         help_command=help_command,
+    )
+    session.emit(
+        'doc-meta-description.%s' % help_command.event_class,
+        help_command=help_command
     )
     session.emit(
         'doc-title.%s' % help_command.event_class, help_command=help_command

@@ -218,7 +218,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"ServiceAccountException"}
       ],
-      "documentation":"<p>Deletes an AWS Device Farm project, given the project ARN.</p> <p> Deleting this resource does not stop an in-progress run.</p>"
+      "documentation":"<p>Deletes an AWS Device Farm project, given the project ARN. You cannot delete a project if it has an active run or session.</p> <important> <p>You cannot undo this operation.</p> </important>"
     },
     "DeleteRemoteAccessSession":{
       "name":"DeleteRemoteAccessSession",
@@ -234,7 +234,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"ServiceAccountException"}
       ],
-      "documentation":"<p>Deletes a completed remote access session and its results.</p>"
+      "documentation":"<p>Deletes a completed remote access session and its results. You cannot delete a remote access session if it is still active.</p> <important> <p>You cannot undo this operation.</p> </important>"
     },
     "DeleteRun":{
       "name":"DeleteRun",
@@ -250,7 +250,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"ServiceAccountException"}
       ],
-      "documentation":"<p>Deletes the run, given the run ARN.</p> <p> Deleting this resource does not stop an in-progress run.</p>"
+      "documentation":"<p>Deletes the run, given the run ARN. You cannot delete a run if it is still active.</p> <important> <p>You cannot undo this operation.</p> </important>"
     },
     "DeleteTestGridProject":{
       "name":"DeleteTestGridProject",
@@ -266,7 +266,7 @@
         {"shape":"CannotDeleteException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p> Deletes a Selenium testing project and all content generated under it. </p> <important> <p>You cannot undo this operation.</p> </important> <note> <p>You cannot delete a project if it has active sessions.</p> </note>"
+      "documentation":"<p> Deletes a Selenium testing project and all content generated under it. You cannot delete a project if it has active sessions.</p> <important> <p>You cannot undo this operation.</p> </important>"
     },
     "DeleteUpload":{
       "name":"DeleteUpload",
@@ -1296,6 +1296,12 @@
       "type":"list",
       "member":{"shape":"AmazonResourceName"}
     },
+    "AmazonRoleResourceName":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws:iam::[0-9]{12}:role/.+"
+    },
     "AndroidPaths":{
       "type":"list",
       "member":{"shape":"String"}
@@ -1383,6 +1389,12 @@
       "type":"list",
       "member":{"shape":"Artifact"}
     },
+    "AuxiliaryAppArnList":{
+      "type":"list",
+      "member":{"shape":"AmazonResourceName"},
+      "max":3,
+      "min":0
+    },
     "BillingMethod":{
       "type":"string",
       "enum":[
@@ -1416,11 +1428,6 @@
       },
       "documentation":"<p>The requested object could not be deleted.</p>",
       "exception":true
-    },
-    "ClientId":{
-      "type":"string",
-      "max":64,
-      "min":0
     },
     "ContentType":{
       "type":"string",
@@ -1618,6 +1625,14 @@
         "vpcConfig":{
           "shape":"VpcConfig",
           "documentation":"<p>The VPC security groups and subnets that are attached to a project.</p>"
+        },
+        "environmentVariables":{
+          "shape":"EnvironmentVariables",
+          "documentation":"<p> A set of environment variables which are used by default for all runs in the project. These environment variables are applied to the test run during the execution of a test spec file. </p> <p> For more information about using test spec files, please see <a href=\"https://docs.aws.amazon.com/devicefarm/latest/developerguide/custom-test-environments.html\">Custom test environments </a> in <i>AWS Device Farm.</i> </p>"
+        },
+        "executionRoleArn":{
+          "shape":"AmazonRoleResourceName",
+          "documentation":"<p>An IAM role to be assumed by the test host for all runs in the project.</p>"
         }
       },
       "documentation":"<p>Represents a request to the create project operation.</p>"
@@ -1635,6 +1650,10 @@
     "CreateRemoteAccessSessionConfiguration":{
       "type":"structure",
       "members":{
+        "auxiliaryApps":{
+          "shape":"AuxiliaryAppArnList",
+          "documentation":"<p>A list of upload ARNs for app packages to be installed onto your device. (Maximum 3)</p>"
+        },
         "billingMethod":{
           "shape":"BillingMethod",
           "documentation":"<p>The billing method for the remote access session.</p>"
@@ -1665,33 +1684,17 @@
           "shape":"AmazonResourceName",
           "documentation":"<p>The ARN of the device for which you want to create a remote access session.</p>"
         },
+        "appArn":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the app to create the remote access session.</p>"
+        },
         "instanceArn":{
           "shape":"AmazonResourceName",
           "documentation":"<p>The Amazon Resource Name (ARN) of the device instance for which you want to create a remote access session.</p>"
         },
-        "sshPublicKey":{
-          "shape":"SshPublicKey",
-          "documentation":"<p>Ignored. The public key of the <code>ssh</code> key pair you want to use for connecting to remote devices in your remote debugging session. This key is required only if <code>remoteDebugEnabled</code> is set to <code>true</code>.</p> <p>Remote debugging is <a href=\"https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html\">no longer supported</a>.</p>"
-        },
-        "remoteDebugEnabled":{
-          "shape":"Boolean",
-          "documentation":"<p>Set to <code>true</code> if you want to access devices remotely for debugging in your remote access session.</p> <p>Remote debugging is <a href=\"https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html\">no longer supported</a>.</p>"
-        },
-        "remoteRecordEnabled":{
-          "shape":"Boolean",
-          "documentation":"<p>Set to <code>true</code> to enable remote recording for the remote access session.</p>"
-        },
-        "remoteRecordAppArn":{
-          "shape":"AmazonResourceName",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the app to be recorded in the remote access session.</p>"
-        },
         "name":{
           "shape":"Name",
           "documentation":"<p>The name of the remote access session to create.</p>"
-        },
-        "clientId":{
-          "shape":"ClientId",
-          "documentation":"<p>Unique identifier for the client. If you want access to multiple devices on the same client, you should pass the same <code>clientId</code> value in each call to <code>CreateRemoteAccessSession</code>. This identifier is required only if <code>remoteDebugEnabled</code> is set to <code>true</code>.</p> <p>Remote debugging is <a href=\"https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html\">no longer supported</a>.</p>"
         },
         "configuration":{
           "shape":"CreateRemoteAccessSessionConfiguration",
@@ -1699,7 +1702,10 @@
         },
         "interactionMode":{
           "shape":"InteractionMode",
-          "documentation":"<p>The interaction mode of the remote access session. Valid values are:</p> <ul> <li> <p>INTERACTIVE: You can interact with the iOS device by viewing, touching, and rotating the screen. You cannot run XCUITest framework-based tests in this mode.</p> </li> <li> <p>NO_VIDEO: You are connected to the device, but cannot interact with it or view the screen. This mode has the fastest test execution speed. You can run XCUITest framework-based tests in this mode.</p> </li> <li> <p>VIDEO_ONLY: You can view the screen, but cannot touch or rotate it. You can run XCUITest framework-based tests and watch the screen in this mode.</p> </li> </ul>"
+          "documentation":"<p>The interaction mode of the remote access session. Changing the interactive mode of remote access sessions is no longer available.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Changing the interactive mode of Remote Access sessions is no longer available.",
+          "deprecatedSince":"2019-09-09"
         },
         "skipAppResign":{
           "shape":"Boolean",
@@ -2075,7 +2081,10 @@
         },
         "remoteDebugEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>This flag is set to <code>true</code> if remote debugging is enabled for the device.</p> <p>Remote debugging is <a href=\"https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html\">no longer supported</a>.</p>"
+          "documentation":"<p>This flag is set to <code>true</code> if remote debugging is enabled for the device.</p> <p>Remote debugging is <a href=\"https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html\">no longer supported</a>.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Direct Device Access is no longer available.",
+          "deprecatedSince":"2019-09-09"
         },
         "fleetType":{
           "shape":"String",
@@ -2381,6 +2390,41 @@
       "member":{"shape":"Device"}
     },
     "Double":{"type":"double"},
+    "EnvironmentVariable":{
+      "type":"structure",
+      "required":[
+        "name",
+        "value"
+      ],
+      "members":{
+        "name":{
+          "shape":"EnvironmentVariableName",
+          "documentation":"<p>The name of the environment variable.</p>"
+        },
+        "value":{
+          "shape":"EnvironmentVariableValue",
+          "documentation":"<p>The value of the environment variable.</p>"
+        }
+      },
+      "documentation":"<p>Information about an environment variable for a project or a run.</p>"
+    },
+    "EnvironmentVariableName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z_][a-zA-Z_0-9]*"
+    },
+    "EnvironmentVariableValue":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "EnvironmentVariables":{
+      "type":"list",
+      "member":{"shape":"EnvironmentVariable"},
+      "max":32,
+      "min":1
+    },
     "ExceptionMessage":{"type":"string"},
     "ExecutionConfiguration":{
       "type":"structure",
@@ -2843,10 +2887,6 @@
           "documentation":"<p>An object that contains information about your VPC endpoint configuration.</p>"
         }
       }
-    },
-    "HostAddress":{
-      "type":"string",
-      "max":1024
     },
     "IdempotencyException":{
       "type":"structure",
@@ -3499,7 +3539,7 @@
       "members":{
         "ResourceARN":{
           "shape":"DeviceFarmArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource or resources for which to list tags. You can associate tags with the following Device Farm resources: <code>PROJECT</code>, <code>RUN</code>, <code>NETWORK_PROFILE</code>, <code>INSTANCE_PROFILE</code>, <code>DEVICE_INSTANCE</code>, <code>SESSION</code>, <code>DEVICE_POOL</code>, <code>DEVICE</code>, and <code>VPCE_CONFIGURATION</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource or resources for which to list tags. You can associate tags with the following Device Farm resources: <code>PROJECT</code>, <code>TESTGRID_PROJECT</code>, <code>RUN</code>, <code>NETWORK_PROFILE</code>, <code>INSTANCE_PROFILE</code>, <code>DEVICE_INSTANCE</code>, <code>SESSION</code>, <code>DEVICE_POOL</code>, <code>DEVICE</code>, and <code>VPCE_CONFIGURATION</code>.</p>"
         }
       }
     },
@@ -4136,6 +4176,14 @@
         "vpcConfig":{
           "shape":"VpcConfig",
           "documentation":"<p>The VPC security groups and subnets that are attached to a project.</p>"
+        },
+        "environmentVariables":{
+          "shape":"EnvironmentVariables",
+          "documentation":"<p>Environment variables associated with the project.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"AmazonRoleResourceName",
+          "documentation":"<p>The IAM execution role associated with the project.</p>"
         }
       },
       "documentation":"<p>Represents an operating-system neutral workspace for running and managing tests.</p>"
@@ -4225,6 +4273,20 @@
       "type":"list",
       "member":{"shape":"RecurringCharge"}
     },
+    "RemoteAccessEndpoints":{
+      "type":"structure",
+      "members":{
+        "remoteDriverEndpoint":{
+          "shape":"SensitiveURL",
+          "documentation":"<p>URL for controlling the device using WebDriver-compliant clients, like Appium, during the remote access session.</p>"
+        },
+        "interactiveEndpoint":{
+          "shape":"SensitiveURL",
+          "documentation":"<p>URL for viewing and interacting with the device during the remote access session.</p>"
+        }
+      },
+      "documentation":"<p>Represents the remote endpoints for viewing and controlling a device during a remote access session.</p>"
+    },
     "RemoteAccessSession":{
       "type":"structure",
       "members":{
@@ -4268,26 +4330,6 @@
           "shape":"AmazonResourceName",
           "documentation":"<p>The ARN of the instance.</p>"
         },
-        "remoteDebugEnabled":{
-          "shape":"Boolean",
-          "documentation":"<p>This flag is set to <code>true</code> if remote debugging is enabled for the remote access session.</p> <p>Remote debugging is <a href=\"https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html\">no longer supported</a>.</p>"
-        },
-        "remoteRecordEnabled":{
-          "shape":"Boolean",
-          "documentation":"<p>This flag is set to <code>true</code> if remote recording is enabled for the remote access session.</p>"
-        },
-        "remoteRecordAppArn":{
-          "shape":"AmazonResourceName",
-          "documentation":"<p>The ARN for the app to be recorded in the remote access session.</p>"
-        },
-        "hostAddress":{
-          "shape":"HostAddress",
-          "documentation":"<p>IP address of the EC2 host where you need to connect to remotely debug devices. Only returned if remote debugging is enabled for the remote access session.</p> <p>Remote debugging is <a href=\"https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html\">no longer supported</a>.</p>"
-        },
-        "clientId":{
-          "shape":"ClientId",
-          "documentation":"<p>Unique identifier of your client for the remote access session. Only returned if remote debugging is enabled for the remote access session.</p> <p>Remote debugging is <a href=\"https://docs.aws.amazon.com/devicefarm/latest/developerguide/history.html\">no longer supported</a>.</p>"
-        },
         "billingMethod":{
           "shape":"BillingMethod",
           "documentation":"<p>The billing method of the remote access session. Possible values include <code>METERED</code> or <code>UNMETERED</code>. For more information about metered devices, see <a href=\"https://docs.aws.amazon.com/devicefarm/latest/developerguide/welcome.html#welcome-terminology\">AWS Device Farm terminology</a>.</p>"
@@ -4298,7 +4340,10 @@
         },
         "endpoint":{
           "shape":"String",
-          "documentation":"<p>The endpoint for the remote access sesssion.</p>"
+          "documentation":"<p>The endpoint for the remote access session. This field is deprecated, and is replaced by the new <code>endpoints.interactiveEndpoint</code> field.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"This field is deprecated, and is replaced by the new endpoints.interactiveEndpoint field.",
+          "deprecatedSince":"2025-11-17"
         },
         "deviceUdid":{
           "shape":"String",
@@ -4306,7 +4351,10 @@
         },
         "interactionMode":{
           "shape":"InteractionMode",
-          "documentation":"<p>The interaction mode of the remote access session. Valid values are:</p> <ul> <li> <p>INTERACTIVE: You can interact with the iOS device by viewing, touching, and rotating the screen. You cannot run XCUITest framework-based tests in this mode.</p> </li> <li> <p>NO_VIDEO: You are connected to the device, but cannot interact with it or view the screen. This mode has the fastest test execution speed. You can run XCUITest framework-based tests in this mode.</p> </li> <li> <p>VIDEO_ONLY: You can view the screen, but cannot touch or rotate it. You can run XCUITest framework-based tests and watch the screen in this mode.</p> </li> </ul>"
+          "documentation":"<p>The interaction mode of the remote access session. Changing the interactive mode of remote access sessions is no longer available.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"Changing the interactive mode of Remote Access sessions is no longer available.",
+          "deprecatedSince":"2019-09-09"
         },
         "skipAppResign":{
           "shape":"SkipAppResign",
@@ -4319,7 +4367,12 @@
         "deviceProxy":{
           "shape":"DeviceProxy",
           "documentation":"<p>The device proxy configured for the remote access session.</p>"
-        }
+        },
+        "appUpload":{
+          "shape":"AmazonResourceName",
+          "documentation":"<p>The ARN for the app to be installed onto your device.</p>"
+        },
+        "endpoints":{"shape":"RemoteAccessEndpoints"}
       },
       "documentation":"<p>Represents information about the remote access session.</p>"
     },
@@ -4556,6 +4609,14 @@
         "vpcConfig":{
           "shape":"VpcConfig",
           "documentation":"<p>The VPC security groups and subnets that are attached to a project.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"AmazonRoleResourceName",
+          "documentation":"<p>The IAM role associated with the run.</p>"
+        },
+        "environmentVariables":{
+          "shape":"EnvironmentVariables",
+          "documentation":"<p>Environment variables associated with the run.</p>"
         }
       },
       "documentation":"<p>Represents a test run on a set of devices with a given app package, test parameters, and so on.</p>"
@@ -4650,6 +4711,14 @@
         "billingMethod":{
           "shape":"BillingMethod",
           "documentation":"<p>Specifies the billing method for a test run: <code>metered</code> or <code>unmetered</code>. If the parameter is not specified, the default value is <code>metered</code>.</p> <note> <p>If you have purchased unmetered device slots, you must set this parameter to <code>unmetered</code> to make use of them. Otherwise, your run counts against your metered time.</p> </note>"
+        },
+        "environmentVariables":{
+          "shape":"EnvironmentVariables",
+          "documentation":"<p>Environment variables associated with the run.</p>"
+        },
+        "executionRoleArn":{
+          "shape":"AmazonRoleResourceName",
+          "documentation":"<p>An IAM role to be assumed by the test host for the run.</p>"
         }
       },
       "documentation":"<p>Represents the settings for a run. Includes things like location, radio states, auxiliary apps, and network profiles.</p>"
@@ -4751,7 +4820,7 @@
     },
     "SensitiveURL":{
       "type":"string",
-      "max":2048,
+      "max":4096,
       "min":0,
       "sensitive":true
     },
@@ -4772,11 +4841,6 @@
       "min":0
     },
     "SkipAppResign":{"type":"boolean"},
-    "SshPublicKey":{
-      "type":"string",
-      "max":8192,
-      "min":0
-    },
     "StopJobRequest":{
       "type":"structure",
       "required":["arn"],
@@ -4965,7 +5029,7 @@
       "members":{
         "ResourceARN":{
           "shape":"DeviceFarmArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource or resources to which to add tags. You can associate tags with the following Device Farm resources: <code>PROJECT</code>, <code>RUN</code>, <code>NETWORK_PROFILE</code>, <code>INSTANCE_PROFILE</code>, <code>DEVICE_INSTANCE</code>, <code>SESSION</code>, <code>DEVICE_POOL</code>, <code>DEVICE</code>, and <code>VPCE_CONFIGURATION</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource or resources to which to add tags. You can associate tags with the following Device Farm resources: <code>PROJECT</code>, <code>TESTGRID_PROJECT</code>, <code>RUN</code>, <code>NETWORK_PROFILE</code>, <code>INSTANCE_PROFILE</code>, <code>DEVICE_INSTANCE</code>, <code>SESSION</code>, <code>DEVICE_POOL</code>, <code>DEVICE</code>, and <code>VPCE_CONFIGURATION</code>.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -5291,7 +5355,7 @@
       "members":{
         "ResourceARN":{
           "shape":"DeviceFarmArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource or resources from which to delete tags. You can associate tags with the following Device Farm resources: <code>PROJECT</code>, <code>RUN</code>, <code>NETWORK_PROFILE</code>, <code>INSTANCE_PROFILE</code>, <code>DEVICE_INSTANCE</code>, <code>SESSION</code>, <code>DEVICE_POOL</code>, <code>DEVICE</code>, and <code>VPCE_CONFIGURATION</code>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource or resources from which to delete tags. You can associate tags with the following Device Farm resources: <code>PROJECT</code>, <code>TESTGRID_PROJECT</code>, <code>RUN</code>, <code>NETWORK_PROFILE</code>, <code>INSTANCE_PROFILE</code>, <code>DEVICE_INSTANCE</code>, <code>SESSION</code>, <code>DEVICE_POOL</code>, <code>DEVICE</code>, and <code>VPCE_CONFIGURATION</code>.</p>"
         },
         "TagKeys":{
           "shape":"TagKeyList",
@@ -5492,6 +5556,14 @@
         "vpcConfig":{
           "shape":"VpcConfig",
           "documentation":"<p>The VPC security groups and subnets that are attached to a project.</p>"
+        },
+        "environmentVariables":{
+          "shape":"EnvironmentVariables",
+          "documentation":"<p> A set of environment variables which are used by default for all runs in the project. These environment variables are applied to the test run during the execution of a test spec file. </p> <p> For more information about using test spec files, please see <a href=\"https://docs.aws.amazon.com/devicefarm/latest/developerguide/custom-test-environments.html\">Custom test environments </a> in <i>AWS Device Farm.</i> </p>"
+        },
+        "executionRoleArn":{
+          "shape":"AmazonRoleResourceName",
+          "documentation":"<p>An IAM role to be assumed by the test host for all runs in the project.</p>"
         }
       },
       "documentation":"<p>Represents a request to the update project operation.</p>"

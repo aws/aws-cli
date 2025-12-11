@@ -5,11 +5,13 @@
     "endpointPrefix":"codestar-notifications",
     "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceFullName":"AWS CodeStar Notifications",
     "serviceId":"codestar notifications",
     "signatureVersion":"v4",
     "signingName":"codestar-notifications",
-    "uid":"codestar-notifications-2019-10-15"
+    "uid":"codestar-notifications-2019-10-15",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateNotificationRule":{
@@ -28,7 +30,7 @@
         {"shape":"ConcurrentModificationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Creates a notification rule for a resource. The rule specifies the events you want notifications about and the targets (such as Chatbot topics or Chatbot clients configured for Slack) where you want to receive them.</p>"
+      "documentation":"<p>Creates a notification rule for a resource. The rule specifies the events you want notifications about and the targets (such as Amazon Q Developer in chat applications topics or Amazon Q Developer in chat applications clients configured for Slack) where you want to receive them.</p>"
     },
     "DeleteNotificationRule":{
       "name":"DeleteNotificationRule",
@@ -141,7 +143,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConfigurationException"}
       ],
-      "documentation":"<p>Creates an association between a notification rule and an Chatbot topic or Chatbot client so that the associated target can receive notifications when the events described in the rule are triggered.</p>"
+      "documentation":"<p>Creates an association between a notification rule and an Amazon Q Developer in chat applications topic or Amazon Q Developer in chat applications client so that the associated target can receive notifications when the events described in the rule are triggered.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -170,7 +172,7 @@
       "errors":[
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Removes an association between a notification rule and an Chatbot topic so that subscribers to that topic stop receiving notifications when the events described in the rule are triggered.</p>"
+      "documentation":"<p>Removes an association between a notification rule and an Amazon Q Developer in chat applications topic so that subscribers to that topic stop receiving notifications when the events described in the rule are triggered.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -210,7 +212,7 @@
       "members":{
         "Message":{"shape":"Message"}
       },
-      "documentation":"<p>AWS CodeStar Notifications can't create the notification rule because you do not have sufficient permissions.</p>",
+      "documentation":"<p>CodeStar Notifications can't create the notification rule because you do not have sufficient permissions.</p>",
       "error":{"httpStatusCode":403},
       "exception":true
     },
@@ -225,7 +227,7 @@
       "members":{
         "Message":{"shape":"Message"}
       },
-      "documentation":"<p>AWS CodeStar Notifications can't complete the request because the resource is being modified by another process. Wait a few minutes and try again.</p>",
+      "documentation":"<p>CodeStar Notifications can't complete the request because the resource is being modified by another process. Wait a few minutes and try again.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -262,11 +264,11 @@
         },
         "Targets":{
           "shape":"Targets",
-          "documentation":"<p>A list of Amazon Resource Names (ARNs) of Amazon Simple Notification Service topics and Chatbot clients to associate with the notification rule.</p>"
+          "documentation":"<p>A list of Amazon Resource Names (ARNs) of Amazon Simple Notification Service topics and Amazon Q Developer in chat applications clients to associate with the notification rule.</p>"
         },
         "DetailType":{
           "shape":"DetailType",
-          "documentation":"<p>The level of detail to include in the notifications for this resource. <code>BASIC</code> will include only the contents of the event as it would appear in Amazon CloudWatch. <code>FULL</code> will include any supplemental information provided by AWS CodeStar Notifications and/or the service for the resource for which the notification is created.</p>"
+          "documentation":"<p>The level of detail to include in the notifications for this resource. <code>BASIC</code> will include only the contents of the event as it would appear in Amazon CloudWatch. <code>FULL</code> will include any supplemental information provided by CodeStar Notifications and/or the service for the resource for which the notification is created.</p>"
         },
         "ClientRequestToken":{
           "shape":"ClientRequestToken",
@@ -318,18 +320,17 @@
       "members":{
         "TargetAddress":{
           "shape":"TargetAddress",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Chatbot topic or Chatbot client to delete.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q Developer in chat applications topic or Amazon Q Developer in chat applications client to delete.</p>"
         },
         "ForceUnsubscribeAll":{
           "shape":"ForceUnsubscribeAll",
-          "documentation":"<p>A Boolean value that can be used to delete all associations with this Chatbot topic. The default value is FALSE. If set to TRUE, all associations between that target and every notification rule in your Amazon Web Services account are deleted.</p>"
+          "documentation":"<p>A Boolean value that can be used to delete all associations with this Amazon Q Developer in chat applications topic. The default value is FALSE. If set to TRUE, all associations between that target and every notification rule in your Amazon Web Services account are deleted.</p>"
         }
       }
     },
     "DeleteTargetResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescribeNotificationRuleRequest":{
       "type":"structure",
@@ -363,11 +364,11 @@
         },
         "Targets":{
           "shape":"TargetsBatch",
-          "documentation":"<p>A list of the Chatbot topics and Chatbot clients associated with the notification rule.</p>"
+          "documentation":"<p>A list of the Amazon Q Developer in chat applications topics and Amazon Q Developer in chat applications clients associated with the notification rule.</p>"
         },
         "DetailType":{
           "shape":"DetailType",
-          "documentation":"<p>The level of detail included in the notifications for this resource. BASIC will include only the contents of the event as it would appear in Amazon CloudWatch. FULL will include any supplemental information provided by AWS CodeStar Notifications and/or the service for the resource for which the notification is created.</p>"
+          "documentation":"<p>The level of detail included in the notifications for this resource. BASIC will include only the contents of the event as it would appear in Amazon CloudWatch. FULL will include any supplemental information provided by CodeStar Notifications and/or the service for the resource for which the notification is created.</p>"
         },
         "CreatedBy":{
           "shape":"NotificationRuleCreatedBy",
@@ -450,7 +451,7 @@
       "members":{
         "Message":{"shape":"Message"}
       },
-      "documentation":"<p>One of the AWS CodeStar Notifications limits has been exceeded. Limits apply to accounts, notification rules, notifications, resources, and targets. For more information, see Limits.</p>",
+      "documentation":"<p>One of the CodeStar Notifications limits has been exceeded. Limits apply to accounts, notification rules, notifications, resources, and targets. For more information, see Limits.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -616,7 +617,7 @@
           "documentation":"<p>The value of the attribute you want to use to filter the returned targets. For example, if you specify <code>SNS</code> for the Target type, you could specify an Amazon Resource Name (ARN) for a topic as the value.</p>"
         }
       },
-      "documentation":"<p>Information about a filter to apply to the list of returned targets. You can filter by target type, address, or status. For example, to filter results to notification rules that have active Chatbot topics as targets, you could specify a ListTargetsFilter Name as <code>TargetType</code> and a Value of <code>SNS</code>, and a Name of <code>TARGET_STATUS</code> and a Value of <code>ACTIVE</code>.</p>"
+      "documentation":"<p>Information about a filter to apply to the list of returned targets. You can filter by target type, address, or status. For example, to filter results to notification rules that have active Amazon Q Developer in chat applications topics as targets, you could specify a ListTargetsFilter Name as <code>TargetType</code> and a Value of <code>SNS</code>, and a Name of <code>TARGET_STATUS</code> and a Value of <code>ACTIVE</code>.</p>"
     },
     "ListTargetsFilterName":{
       "type":"string",
@@ -741,7 +742,7 @@
       "members":{
         "Message":{"shape":"Message"}
       },
-      "documentation":"<p>AWS CodeStar Notifications can't find a resource that matches the provided ARN. </p>",
+      "documentation":"<p>CodeStar Notifications can't find a resource that matches the provided ARN. </p>",
       "error":{"httpStatusCode":404},
       "exception":true
     },
@@ -829,14 +830,14 @@
       "members":{
         "TargetType":{
           "shape":"TargetType",
-          "documentation":"<p>The target type. Can be an Chatbot topic or Chatbot client.</p> <ul> <li> <p>Chatbot topics are specified as <code>SNS</code>.</p> </li> <li> <p>Chatbot clients are specified as <code>AWSChatbotSlack</code>.</p> </li> </ul>"
+          "documentation":"<p>The target type. Can be an Amazon Q Developer in chat applications topic or Amazon Q Developer in chat applications client.</p> <ul> <li> <p>Amazon Q Developer in chat applications topics are specified as <code>SNS</code>.</p> </li> <li> <p>Amazon Q Developer in chat applications clients are specified as <code>AWSChatbotSlack</code>.</p> </li> </ul>"
         },
         "TargetAddress":{
           "shape":"TargetAddress",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Chatbot topic or Chatbot client.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q Developer in chat applications topic or Amazon Q Developer in chat applications client.</p>"
         }
       },
-      "documentation":"<p>Information about the Chatbot topics or Chatbot clients associated with a notification rule.</p>"
+      "documentation":"<p>Information about the Amazon Q Developer in chat applications topics or Amazon Q Developer in chat applications clients associated with a notification rule.</p>"
     },
     "TargetAddress":{
       "type":"string",
@@ -859,11 +860,11 @@
       "members":{
         "TargetAddress":{
           "shape":"TargetAddress",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the Chatbot topic or Chatbot client.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Q Developer in chat applications topic or Amazon Q Developer in chat applications client.</p>"
         },
         "TargetType":{
           "shape":"TargetType",
-          "documentation":"<p>The type of the target (for example, <code>SNS</code>).</p> <ul> <li> <p>Chatbot topics are specified as <code>SNS</code>.</p> </li> <li> <p>Chatbot clients are specified as <code>AWSChatbotSlack</code>.</p> </li> </ul>"
+          "documentation":"<p>The type of the target (for example, <code>SNS</code>).</p> <ul> <li> <p>Amazon Q Developer in chat applications topics are specified as <code>SNS</code>.</p> </li> <li> <p>Amazon Q Developer in chat applications clients are specified as <code>AWSChatbotSlack</code>.</p> </li> </ul>"
         },
         "TargetStatus":{
           "shape":"TargetStatus",
@@ -898,7 +899,7 @@
         },
         "TargetAddress":{
           "shape":"TargetAddress",
-          "documentation":"<p>The ARN of the Chatbot topic to unsubscribe from the notification rule.</p>"
+          "documentation":"<p>The ARN of the Amazon Q Developer in chat applications topic to unsubscribe from the notification rule.</p>"
         }
       }
     },
@@ -935,8 +936,7 @@
     },
     "UntagResourceResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateNotificationRuleRequest":{
       "type":"structure",
@@ -964,14 +964,13 @@
         },
         "DetailType":{
           "shape":"DetailType",
-          "documentation":"<p>The level of detail to include in the notifications for this resource. BASIC will include only the contents of the event as it would appear in Amazon CloudWatch. FULL will include any supplemental information provided by AWS CodeStar Notifications and/or the service for the resource for which the notification is created.</p>"
+          "documentation":"<p>The level of detail to include in the notifications for this resource. BASIC will include only the contents of the event as it would appear in Amazon CloudWatch. FULL will include any supplemental information provided by CodeStar Notifications and/or the service for the resource for which the notification is created.</p>"
         }
       }
     },
     "UpdateNotificationRuleResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "ValidationException":{
       "type":"structure",
@@ -983,5 +982,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>This AWS CodeStar Notifications API Reference provides descriptions and usage examples of the operations and data types for the AWS CodeStar Notifications API. You can use the AWS CodeStar Notifications API to work with the following objects:</p> <p>Notification rules, by calling the following: </p> <ul> <li> <p> <a>CreateNotificationRule</a>, which creates a notification rule for a resource in your account. </p> </li> <li> <p> <a>DeleteNotificationRule</a>, which deletes a notification rule. </p> </li> <li> <p> <a>DescribeNotificationRule</a>, which provides information about a notification rule. </p> </li> <li> <p> <a>ListNotificationRules</a>, which lists the notification rules associated with your account. </p> </li> <li> <p> <a>UpdateNotificationRule</a>, which changes the name, events, or targets associated with a notification rule. </p> </li> <li> <p> <a>Subscribe</a>, which subscribes a target to a notification rule. </p> </li> <li> <p> <a>Unsubscribe</a>, which removes a target from a notification rule. </p> </li> </ul> <p>Targets, by calling the following: </p> <ul> <li> <p> <a>DeleteTarget</a>, which removes a notification rule target from a notification rule. </p> </li> <li> <p> <a>ListTargets</a>, which lists the targets associated with a notification rule. </p> </li> </ul> <p>Events, by calling the following: </p> <ul> <li> <p> <a>ListEventTypes</a>, which lists the event types you can include in a notification rule. </p> </li> </ul> <p>Tags, by calling the following: </p> <ul> <li> <p> <a>ListTagsForResource</a>, which lists the tags already associated with a notification rule in your account. </p> </li> <li> <p> <a>TagResource</a>, which associates a tag you provide with a notification rule in your account. </p> </li> <li> <p> <a>UntagResource</a>, which removes a tag from a notification rule in your account. </p> </li> </ul> <p> For information about how to use AWS CodeStar Notifications, see the <a href=\"https://docs.aws.amazon.com/dtconsole/latest/userguide/what-is-dtconsole.html\">Amazon Web Services Developer Tools Console User Guide</a>. </p>"
+  "documentation":"<p>This CodeStar Notifications API Reference provides descriptions and usage examples of the operations and data types for the CodeStar Notifications API. You can use the CodeStar Notifications API to work with the following objects:</p> <p>Notification rules, by calling the following: </p> <ul> <li> <p> <a>CreateNotificationRule</a>, which creates a notification rule for a resource in your account. </p> </li> <li> <p> <a>DeleteNotificationRule</a>, which deletes a notification rule. </p> </li> <li> <p> <a>DescribeNotificationRule</a>, which provides information about a notification rule. </p> </li> <li> <p> <a>ListNotificationRules</a>, which lists the notification rules associated with your account. </p> </li> <li> <p> <a>UpdateNotificationRule</a>, which changes the name, events, or targets associated with a notification rule. </p> </li> <li> <p> <a>Subscribe</a>, which subscribes a target to a notification rule. </p> </li> <li> <p> <a>Unsubscribe</a>, which removes a target from a notification rule. </p> </li> </ul> <p>Targets, by calling the following: </p> <ul> <li> <p> <a>DeleteTarget</a>, which removes a notification rule target from a notification rule. </p> </li> <li> <p> <a>ListTargets</a>, which lists the targets associated with a notification rule. </p> </li> </ul> <p>Events, by calling the following: </p> <ul> <li> <p> <a>ListEventTypes</a>, which lists the event types you can include in a notification rule. </p> </li> </ul> <p>Tags, by calling the following: </p> <ul> <li> <p> <a>ListTagsForResource</a>, which lists the tags already associated with a notification rule in your account. </p> </li> <li> <p> <a>TagResource</a>, which associates a tag you provide with a notification rule in your account. </p> </li> <li> <p> <a>UntagResource</a>, which removes a tag from a notification rule in your account. </p> </li> </ul> <p> For information about how to use CodeStar Notifications, see the <a href=\"https://docs.aws.amazon.com/dtconsole/latest/userguide/what-is-dtconsole.html\">Amazon Web Services Developer Tools Console User Guide</a>. </p>"
 }

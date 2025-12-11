@@ -30,6 +30,8 @@ command set:
   size that the CLI uses for multipart transfers of individual files.
 * ``max_bandwidth`` - The maximum bandwidth that will be consumed for uploading
   and downloading data to and from Amazon S3.
+* ``io_chunksize`` - The maximum size of read parts that can be queued in-memory
+  to be written for a download.
 
 For experimental ``s3`` configuration values, see the the
 `Experimental Configuration Values <#experimental-configuration-values>`__
@@ -208,6 +210,26 @@ threads having to wait unnecessarily which can lead to excess resource
 consumption and connection timeouts.
 
 
+io_chunksize
+------------
+
+**Default** - ``256KB``
+
+When a GET request is called for downloads, the response contains a file-like
+object that streams data fetched from S3. Chunks are read from the stream and
+queued in-memory for writes. ``io_chunksize`` configures the maximum size of
+elements in the IO queue. This value can be specified using the same semantics
+as ``multipart_threshold``, that is either as the number of bytes as an
+integer, or using a size suffix.
+
+Increasing this value may result in higher overall throughput by preventing
+blocking in cases where large objects are downloaded in environments where
+network speed exceeds disk write speed. It is recommended to only configure
+``io_chunksize`` if overall download throughput is constrained by writes.
+In cases where network IO is the bottleneck, it is recommended to configure
+``max_concurrent_requests`` instead.
+
+
 use_accelerate_endpoint
 -----------------------
 
@@ -359,6 +381,50 @@ increase throughput. The ``target_bandwidth`` configuration may make
 adjustments mid-transfer command in order to increase throughput and reach the
 requested bandwidth.
 
+
+should_stream
+-------------
+.. note::
+   This configuration option is only supported when the ``preferred_transfer_client``
+   configuration value is set to or resolves to ``crt``. The ``classic`` transfer
+   client does not support this configuration option.
+
+**Default** - ``false``
+
+If set to ``true``, the CRT client will skip buffering parts in-memory before
+sending PUT requests.
+
+
+disk_throughput
+---------------
+.. note::
+   This configuration option is only supported when the ``preferred_transfer_client``
+   configuration value is set to or resolves to ``crt``. The ``classic`` transfer
+   client does not support this configuration option.
+
+**Default** - ``10.0``
+
+The estimated target disk throughput. This value is only applied if
+``should_stream`` is set to ``true``. This value can be specified using
+the same semantics as ``target_throughput``, that is either as the
+number of bytes per second as an integer, or using a rate suffix.
+
+
+direct_io
+---------
+.. note::
+   This configuration option is only supported when the ``preferred_transfer_client``
+   configuration value is set to or resolves to ``crt``. The ``classic`` transfer
+   client does not support this configuration option.
+
+.. note::
+   This configuration option is only supported on Linux.
+
+**Default** - ``false``
+
+If set to ``true``, the CRT client will enable direct IO to bypass the OS
+cache when sending PUT requests. Enabling direct IO may be useful in cases
+where the disk IO outperforms the kernel cache.
 
 Experimental Configuration Values
 =================================

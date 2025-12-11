@@ -4,11 +4,13 @@
     "apiVersion":"2017-09-30",
     "endpointPrefix":"kinesisvideo",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"Kinesis Video",
     "serviceFullName":"Amazon Kinesis Video Streams",
     "serviceId":"Kinesis Video",
     "signatureVersion":"v4",
-    "uid":"kinesisvideo-2017-09-30"
+    "uid":"kinesisvideo-2017-09-30",
+    "auth":["aws.auth#sigv4"]
   },
   "operations":{
     "CreateSignalingChannel":{
@@ -214,6 +216,22 @@
       ],
       "documentation":"<p>Returns the most current information about the specified stream. You must specify either the <code>StreamName</code> or the <code>StreamARN</code>. </p>"
     },
+    "DescribeStreamStorageConfiguration":{
+      "name":"DescribeStreamStorageConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/describeStreamStorageConfiguration"
+      },
+      "input":{"shape":"DescribeStreamStorageConfigurationInput"},
+      "output":{"shape":"DescribeStreamStorageConfigurationOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ClientLimitExceededException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves the current storage configuration for the specified Kinesis video stream.</p> <p>In the request, you must specify either the <code>StreamName</code> or the <code>StreamARN</code>.</p> <p>You must have permissions for the <code>KinesisVideo:DescribeStreamStorageConfiguration</code> action.</p>"
+    },
     "GetDataEndpoint":{
       "name":"GetDataEndpoint",
       "http":{
@@ -245,7 +263,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Provides an endpoint for the specified signaling channel to send and receive messages. This API uses the <code>SingleMasterChannelEndpointConfiguration</code> input parameter, which consists of the <code>Protocols</code> and <code>Role</code> properties.</p> <p> <code>Protocols</code> is used to determine the communication mechanism. For example, if you specify <code>WSS</code> as the protocol, this API produces a secure websocket endpoint. If you specify <code>HTTPS</code> as the protocol, this API generates an HTTPS endpoint. </p> <p> <code>Role</code> determines the messaging permissions. A <code>MASTER</code> role results in this API generating an endpoint that a client can use to communicate with any of the viewers on the channel. A <code>VIEWER</code> role results in this API generating an endpoint that a client can use to communicate only with a <code>MASTER</code>. </p>"
+      "documentation":"<p>Provides an endpoint for the specified signaling channel to send and receive messages. This API uses the <code>SingleMasterChannelEndpointConfiguration</code> input parameter, which consists of the <code>Protocols</code> and <code>Role</code> properties.</p> <p> <code>Protocols</code> is used to determine the communication mechanism. For example, if you specify <code>WSS</code> as the protocol, this API produces a secure websocket endpoint. If you specify <code>HTTPS</code> as the protocol, this API generates an HTTPS endpoint. If you specify <code>WEBRTC</code> as the protocol, but the signaling channel isn't configured for ingestion, you will receive the error <code>InvalidArgumentException</code>.</p> <p> <code>Role</code> determines the messaging permissions. A <code>MASTER</code> role results in this API generating an endpoint that a client can use to communicate with any of the viewers on the channel. A <code>VIEWER</code> role results in this API generating an endpoint that a client can use to communicate only with a <code>MASTER</code>. </p>"
     },
     "ListEdgeAgentConfigurations":{
       "name":"ListEdgeAgentConfigurations",
@@ -517,6 +535,24 @@
         {"shape":"VersionMismatchException"}
       ],
       "documentation":"<p>Updates stream metadata, such as the device name and media type.</p> <p>You must provide the stream name or the Amazon Resource Name (ARN) of the stream.</p> <p>To make sure that you have the latest version of the stream before updating it, you can specify the stream version. Kinesis Video Streams assigns a version to each stream. When you update a stream, Kinesis Video Streams assigns a new version number. To get the latest stream version, use the <code>DescribeStream</code> API. </p> <p> <code>UpdateStream</code> is an asynchronous operation, and takes time to complete.</p>"
+    },
+    "UpdateStreamStorageConfiguration":{
+      "name":"UpdateStreamStorageConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/updateStreamStorageConfiguration"
+      },
+      "input":{"shape":"UpdateStreamStorageConfigurationInput"},
+      "output":{"shape":"UpdateStreamStorageConfigurationOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ClientLimitExceededException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"VersionMismatchException"}
+      ],
+      "documentation":"<p>Updates the storage configuration for an existing Kinesis video stream.</p> <p>This operation allows you to modify the storage tier settings for a stream, enabling you to optimize storage costs and performance based on your access patterns.</p> <p> <code>UpdateStreamStorageConfiguration</code> is an asynchronous operation.</p> <p>You must have permissions for the <code>KinesisVideo:UpdateStreamStorageConfiguration</code> action.</p>"
     }
   },
   "shapes":{
@@ -674,7 +710,7 @@
         },
         "SingleMasterConfiguration":{
           "shape":"SingleMasterConfiguration",
-          "documentation":"<p>A structure containing the configuration for the <code>SINGLE_MASTER</code> channel type. </p>"
+          "documentation":"<p>A structure containing the configuration for the <code>SINGLE_MASTER</code> channel type. The default configuration for the channel message's time to live is 60 seconds (1 minute).</p>"
         },
         "Tags":{
           "shape":"TagOnCreateList",
@@ -697,7 +733,7 @@
       "members":{
         "DeviceName":{
           "shape":"DeviceName",
-          "documentation":"<p>The name of the device that is writing to the stream. </p> <note> <p>In the current implementation, Kinesis Video Streams does not use this name.</p> </note>"
+          "documentation":"<p>The name of the device that is writing to the stream. </p> <note> <p>In the current implementation, Kinesis Video Streams doesn't use this name.</p> </note>"
         },
         "StreamName":{
           "shape":"StreamName",
@@ -709,15 +745,19 @@
         },
         "KmsKeyId":{
           "shape":"KmsKeyId",
-          "documentation":"<p>The ID of the Key Management Service (KMS) key that you want Kinesis Video Streams to use to encrypt stream data.</p> <p>If no key ID is specified, the default, Kinesis Video-managed key (<code>Amazon Web Services/kinesisvideo</code>) is used.</p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters\">DescribeKey</a>. </p>"
+          "documentation":"<p>The ID of the Key Management Service (KMS) key that you want Kinesis Video Streams to use to encrypt stream data.</p> <p>If no key ID is specified, the default, Kinesis Video-managed key (<code>aws/kinesisvideo</code>) is used.</p> <p> For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/APIReference/API_DescribeKey.html#API_DescribeKey_RequestParameters\">DescribeKey</a>. </p>"
         },
         "DataRetentionInHours":{
           "shape":"DataRetentionInHours",
-          "documentation":"<p>The number of hours that you want to retain the data in the stream. Kinesis Video Streams retains the data in a data store that is associated with the stream.</p> <p>The default value is 0, indicating that the stream does not persist data.</p> <p>When the <code>DataRetentionInHours</code> value is 0, consumers can still consume the fragments that remain in the service host buffer, which has a retention time limit of 5 minutes and a retention memory limit of 200 MB. Fragments are removed from the buffer when either limit is reached.</p>"
+          "documentation":"<p>The number of hours that you want to retain the data in the stream. Kinesis Video Streams retains the data in a data store that is associated with the stream.</p> <p>The default value is 0, indicating that the stream does not persist data. The minimum is 1 hour.</p> <p>When the <code>DataRetentionInHours</code> value is 0, consumers can still consume the fragments that remain in the service host buffer, which has a retention time limit of 5 minutes and a retention memory limit of 200 MB. Fragments are removed from the buffer when either limit is reached.</p>"
         },
         "Tags":{
           "shape":"ResourceTags",
           "documentation":"<p>A list of tags to associate with the specified stream. Each tag is a key-value pair (the value is optional).</p>"
+        },
+        "StreamStorageConfiguration":{
+          "shape":"StreamStorageConfiguration",
+          "documentation":"<p>The configuration for the stream's storage, including the default storage tier for stream data. This configuration determines how stream data is stored and accessed, with different tiers offering varying levels of performance and cost optimization.</p> <p>If not specified, the stream will use the default storage configuration with HOT tier for optimal performance.</p>"
         }
       }
     },
@@ -739,6 +779,13 @@
       "type":"integer",
       "min":0
     },
+    "DefaultStorageTier":{
+      "type":"string",
+      "enum":[
+        "HOT",
+        "WARM"
+      ]
+    },
     "DeleteAfterUpload":{"type":"boolean"},
     "DeleteEdgeConfigurationInput":{
       "type":"structure",
@@ -755,8 +802,7 @@
     },
     "DeleteEdgeConfigurationOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteSignalingChannelInput":{
       "type":"structure",
@@ -774,8 +820,7 @@
     },
     "DeleteSignalingChannelOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteStreamInput":{
       "type":"structure",
@@ -793,8 +838,7 @@
     },
     "DeleteStreamOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeletionConfig":{
       "type":"structure",
@@ -1005,6 +1049,36 @@
         "StreamInfo":{
           "shape":"StreamInfo",
           "documentation":"<p>An object that describes the stream.</p>"
+        }
+      }
+    },
+    "DescribeStreamStorageConfigurationInput":{
+      "type":"structure",
+      "members":{
+        "StreamName":{
+          "shape":"StreamName",
+          "documentation":"<p>The name of the stream for which you want to retrieve the storage configuration.</p>"
+        },
+        "StreamARN":{
+          "shape":"ResourceARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the stream for which you want to retrieve the storage configuration.</p>"
+        }
+      }
+    },
+    "DescribeStreamStorageConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "StreamName":{
+          "shape":"StreamName",
+          "documentation":"<p>The name of the stream.</p>"
+        },
+        "StreamARN":{
+          "shape":"ResourceARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the stream.</p>"
+        },
+        "StreamStorageConfiguration":{
+          "shape":"StreamStorageConfiguration",
+          "documentation":"<p>The current storage configuration for the stream, including the default storage tier and other storage-related settings.</p>"
         }
       }
     },
@@ -1668,7 +1742,7 @@
           "documentation":"<p>The destination information required to deliver a notification to a customer.</p>"
         }
       },
-      "documentation":"<p>The structure that contains the notification information for the KVS images delivery. If this parameter is null, the configuration will be deleted from the stream.</p>"
+      "documentation":"<p>Use this API to configure Amazon Simple Notification Service (Amazon SNS) notifications for when fragments become available in a stream. If this parameter is null, the configuration will be deleted from the stream.</p> <p>See <a href=\"https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/notifications.html\">Notifications in Kinesis Video Streams</a> for more information.</p>"
     },
     "NotificationDestinationConfig":{
       "type":"structure",
@@ -1694,7 +1768,7 @@
           "documentation":"<p>The configuration that consists of the <code>ScheduleExpression</code> and the <code>DurationInMinutes</code> details that specify the scheduling to record from a camera, or local media file, onto the Edge Agent. If the <code>ScheduleExpression</code> attribute is not provided, then the Edge Agent will always be set to recording mode.</p>"
         }
       },
-      "documentation":"<p>The recorder configuration consists of the local <code>MediaSourceConfig</code> details that are used as credentials to accesss the local media files streamed on the camera. </p>"
+      "documentation":"<p>The recorder configuration consists of the local <code>MediaSourceConfig</code> details that are used as credentials to access the local media files streamed on the camera. </p>"
     },
     "RecorderStatus":{
       "type":"string",
@@ -1764,7 +1838,7 @@
       "members":{
         "ScheduleExpression":{
           "shape":"ScheduleExpression",
-          "documentation":"<p>The Quartz cron expression that takes care of scheduling jobs to record from the camera, or local media file, onto the Edge Agent. If the <code>ScheduleExpression</code> is not provided for the <code>RecorderConfig</code>, then the Edge Agent will always be set to recording mode.</p> <p>For more information about Quartz, refer to the <a href=\"http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\"> <i>Cron Trigger Tutorial</i> </a> page to understand the valid expressions and its use.</p>"
+          "documentation":"<p>The Quartz cron expression that takes care of scheduling jobs to record from the camera, or local media file, onto the Edge Agent. If the <code>ScheduleExpression</code> is not provided for the <code>RecorderConfig</code>, then the Edge Agent will always be set to recording mode.</p> <p>For more information about Quartz, refer to the <a href=\"https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\"> <i>Cron Trigger Tutorial</i> </a> page to understand the valid expressions and its use.</p>"
         },
         "DurationInSeconds":{
           "shape":"DurationInSeconds",
@@ -1798,7 +1872,7 @@
       "members":{
         "MessageTtlSeconds":{
           "shape":"MessageTtlSeconds",
-          "documentation":"<p>The period of time a signaling channel retains undelivered messages before they are discarded.</p>"
+          "documentation":"<p>The period of time (in seconds) a signaling channel retains undelivered messages before they are discarded. Use to update this value.</p>"
         }
       },
       "documentation":"<p>A structure that contains the configuration for the <code>SINGLE_MASTER</code> channel type.</p>"
@@ -1945,6 +2019,17 @@
       },
       "documentation":"<p>Specifies the condition that streams must satisfy to be returned when you list streams (see the <code>ListStreams</code> API). A condition has a comparison operation and a value. Currently, you can specify only the <code>BEGINS_WITH</code> operator, which finds streams whose names start with a given prefix. </p>"
     },
+    "StreamStorageConfiguration":{
+      "type":"structure",
+      "required":["DefaultStorageTier"],
+      "members":{
+        "DefaultStorageTier":{
+          "shape":"DefaultStorageTier",
+          "documentation":"<p>The default storage tier for the stream data. This setting determines the storage class used for stream data, affecting both performance characteristics and storage costs.</p> <p>Available storage tiers:</p> <ul> <li> <p> <code>HOT</code> - Optimized for frequent access with the lowest latency and highest performance. Ideal for real-time applications and frequently accessed data.</p> </li> <li> <p> <code>WARM</code> - Balanced performance and cost for moderately accessed data. Suitable for data that is accessed regularly but not continuously.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The configuration for stream storage, including the default storage tier for stream data. This configuration determines how stream data is stored and accessed, with different tiers offering varying levels of performance and cost optimization.</p>"
+    },
     "SyncStatus":{
       "type":"string",
       "enum":[
@@ -2018,8 +2103,7 @@
     },
     "TagResourceOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagStreamInput":{
       "type":"structure",
@@ -2041,8 +2125,7 @@
     },
     "TagStreamOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -2080,8 +2163,7 @@
     },
     "UntagResourceOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UntagStreamInput":{
       "type":"structure",
@@ -2103,8 +2185,7 @@
     },
     "UntagStreamOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateDataRetentionInput":{
       "type":"structure",
@@ -2145,8 +2226,7 @@
     },
     "UpdateDataRetentionOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateImageGenerationConfigurationInput":{
       "type":"structure",
@@ -2167,8 +2247,7 @@
     },
     "UpdateImageGenerationConfigurationOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateMediaStorageConfigurationInput":{
       "type":"structure",
@@ -2189,8 +2268,7 @@
     },
     "UpdateMediaStorageConfigurationOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateNotificationConfigurationInput":{
       "type":"structure",
@@ -2211,8 +2289,7 @@
     },
     "UpdateNotificationConfigurationOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateSignalingChannelInput":{
       "type":"structure",
@@ -2231,14 +2308,13 @@
         },
         "SingleMasterConfiguration":{
           "shape":"SingleMasterConfiguration",
-          "documentation":"<p>The structure containing the configuration for the <code>SINGLE_MASTER</code> type of the signaling channel that you want to update. </p>"
+          "documentation":"<p>The structure containing the configuration for the <code>SINGLE_MASTER</code> type of the signaling channel that you want to update. This parameter and the channel message's time-to-live are required for channels with the <code>SINGLE_MASTER</code> channel type.</p>"
         }
       }
     },
     "UpdateSignalingChannelOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateStreamInput":{
       "type":"structure",
@@ -2268,8 +2344,36 @@
     },
     "UpdateStreamOutput":{
       "type":"structure",
+      "members":{}
+    },
+    "UpdateStreamStorageConfigurationInput":{
+      "type":"structure",
+      "required":[
+        "CurrentVersion",
+        "StreamStorageConfiguration"
+      ],
       "members":{
+        "StreamName":{
+          "shape":"StreamName",
+          "documentation":"<p>The name of the stream for which you want to update the storage configuration.</p>"
+        },
+        "StreamARN":{
+          "shape":"ResourceARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the stream for which you want to update the storage configuration.</p>"
+        },
+        "CurrentVersion":{
+          "shape":"Version",
+          "documentation":"<p>The version of the stream whose storage configuration you want to change. To get the version, call either the <code>DescribeStream</code> or the <code>ListStreams</code> API.</p>"
+        },
+        "StreamStorageConfiguration":{
+          "shape":"StreamStorageConfiguration",
+          "documentation":"<p>The new storage configuration for the stream. This includes the default storage tier that determines how stream data is stored and accessed.</p> <p>Different storage tiers offer varying levels of performance and cost optimization to match your specific use case requirements.</p>"
+        }
       }
+    },
+    "UpdateStreamStorageConfigurationOutput":{
+      "type":"structure",
+      "members":{}
     },
     "UploaderConfig":{
       "type":"structure",

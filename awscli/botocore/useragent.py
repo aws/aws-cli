@@ -62,12 +62,49 @@ _USERAGENT_FEATURE_MAPPINGS = {
     'PROTOCOL_RPC_V2_CBOR': 'M',
     'GZIP_REQUEST_COMPRESSION': 'L',
     'ENDPOINT_OVERRIDE': 'N',
+    'ACCOUNT_ID_MODE_PREFERRED': 'P',
+    'ACCOUNT_ID_MODE_DISABLED': 'Q',
+    'ACCOUNT_ID_MODE_REQUIRED': 'R',
     'SIGV4A_SIGNING': 'S',
+    'RESOLVED_ACCOUNT_ID': 'T',
+    'FLEXIBLE_CHECKSUMS_REQ_CRC32': 'U',
+    'FLEXIBLE_CHECKSUMS_REQ_CRC32C': 'V',
+    'FLEXIBLE_CHECKSUMS_REQ_CRC64': 'W',
+    'FLEXIBLE_CHECKSUMS_REQ_SHA1': 'X',
+    'FLEXIBLE_CHECKSUMS_REQ_SHA256': 'Y',
+    'FLEXIBLE_CHECKSUMS_REQ_WHEN_SUPPORTED': 'Z',
+    'FLEXIBLE_CHECKSUMS_REQ_WHEN_REQUIRED': 'a',
+    'FLEXIBLE_CHECKSUMS_RES_WHEN_SUPPORTED': 'b',
+    'FLEXIBLE_CHECKSUMS_RES_WHEN_REQUIRED': 'c',
+    'CREDENTIALS_CODE': 'e',
+    'CREDENTIALS_ENV_VARS': 'g',
+    'CREDENTIALS_PROFILE_PROCESS': 'v',
+    'CREDENTIALS_PROCESS': 'w',
+    'CREDENTIALS_ENV_VARS_STS_WEB_ID_TOKEN': 'h',
+    'CREDENTIALS_STS_ASSUME_ROLE': 'i',
+    'CREDENTIALS_STS_ASSUME_ROLE_WEB_ID': 'k',
+    'CREDENTIALS_PROFILE': 'n',
+    'CREDENTIALS_PROFILE_SOURCE_PROFILE': 'o',
+    'CREDENTIALS_PROFILE_NAMED_PROVIDER': 'p',
+    'CREDENTIALS_PROFILE_STS_WEB_ID_TOKEN': 'q',
+    'CREDENTIALS_PROFILE_SSO': 'r',
+    'CREDENTIALS_SSO': 's',
+    'CREDENTIALS_PROFILE_SSO_LEGACY': 't',
+    'CREDENTIALS_SSO_LEGACY': 'u',
+    'CREDENTIALS_BOTO2_CONFIG_FILE': 'x',
+    'CREDENTIALS_HTTP': 'z',
+    'CREDENTIALS_IMDS': '0',
+    'BEARER_SERVICE_ENV_VARS': '3',
+    'LOGIN_SAME_DEVICE': 'AA',
+    'LOGIN_CROSS_DEVICE': 'AB',
+    'CREDENTIALS_PROFILE_LOGIN': 'AC',
+    'CREDENTIALS_LOGIN': 'AD',
 }
 
 
 def register_feature_id(feature_id):
     """Adds metric value to the current context object's ``features`` set.
+
     :type feature_id: str
     :param feature_id: The name of the feature to register. Value must be a key
         in the ``_USERAGENT_FEATURE_MAPPINGS`` dict.
@@ -82,6 +119,16 @@ def register_feature_id(feature_id):
         return
     if val := _USERAGENT_FEATURE_MAPPINGS.get(feature_id):
         ctx.features.add(val)
+
+
+def register_feature_ids(feature_ids):
+    """Adds multiple feature IDs to the current context object's ``features`` set.
+    :type feature_ids: iterable of str
+    :param feature_ids: An iterable of feature ID strings to register. Each
+        value must be a key in the ``_USERAGENT_FEATURE_MAPPINGS`` dict.
+    """
+    for feature_id in feature_ids:
+        register_feature_id(feature_id)
 
 
 def sanitize_user_agent_string_component(raw_str, allow_hash):

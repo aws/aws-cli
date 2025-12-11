@@ -28,6 +28,7 @@ from awscli.clidocs import (
     CLIDocumentEventHandler,
     GlobalOptionsDocumenter,
     OperationDocumentEventHandler,
+    ServiceDocumentEventHandler,
     TopicDocumentEventHandler,
     TopicListerDocumentEventHandler,
 )
@@ -220,7 +221,7 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         doc_handler = CLIDocumentEventHandler(help_cmd)
         doc_handler.doc_breadcrumbs(help_cmd)
         self.assertEqual(
-            help_cmd.doc.getvalue().decode('utf-8'), '[ :ref:`aws <cli:aws>` ]'
+            help_cmd.doc.getvalue().decode('utf-8'), '[ :ref:`aws <cli:aws>` ]\n\n'
         )
 
     def test_breadcrumbs_service_command_html(self):
@@ -236,7 +237,7 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         doc_handler = CLIDocumentEventHandler(help_cmd)
         doc_handler.doc_breadcrumbs(help_cmd)
         self.assertEqual(
-            help_cmd.doc.getvalue().decode('utf-8'), '[ :ref:`aws <cli:aws>` ]'
+            help_cmd.doc.getvalue().decode('utf-8'), '[ :ref:`aws <cli:aws>` ]\n\n'
         )
 
     def test_breadcrumbs_operation_command_html(self):
@@ -253,7 +254,7 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         doc_handler.doc_breadcrumbs(help_cmd)
         self.assertEqual(
             help_cmd.doc.getvalue().decode('utf-8'),
-            '[ :ref:`aws <cli:aws>` . :ref:`ec2 <cli:aws ec2>` ]',
+            '[ :ref:`aws <cli:aws>` . :ref:`ec2 <cli:aws ec2>` ]\n\n'
         )
 
     def test_breadcrumbs_wait_command_html(self):
@@ -272,8 +273,8 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
             help_cmd.doc.getvalue().decode('utf-8'),
             (
                 '[ :ref:`aws <cli:aws>` . :ref:`s3api <cli:aws s3api>`'
-                ' . :ref:`wait <cli:aws s3api wait>` ]'
-            ),
+                ' . :ref:`wait <cli:aws s3api wait>` ]\n\n'
+            )
         )
 
     def test_documents_json_header_shape(self):
@@ -499,6 +500,76 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         rendered = help_command.doc.getvalue().decode('utf-8')
         self.assertRegex(rendered, r'FooBar[\s\S]*Tagged Union')
 
+    def test_documents_required_parameters(self):
+        """Tests that required parameters are correctly documented."""
+        shape_map = {
+            'ParentStructure': {
+                'type': 'structure',
+                'required': ['RequiredParameter'],
+                'members': {
+                    'RequiredParameter': {'shape': 'StringMember'},
+                    'OptionalParameter': {'shape': 'StringMember'},
+                },
+            },
+            'StringMember': {'type': 'string'},
+        }
+
+        resolver = ShapeResolver(shape_map)
+        parent_shape = StructureShape(
+            'ParentStructure', shape_map['ParentStructure'], resolver
+        )
+
+        rendered = self.get_help_docs_for_argument(parent_shape)
+
+        required_index = rendered.find('RequiredParameter -> (string)')
+        optional_index = rendered.find('OptionalParameter -> (string)')
+
+        self.assertIn('[required]', rendered[required_index:optional_index])
+        optional_text = rendered[optional_index:]
+        self.assertNotIn('[required]', optional_text)
+
+    def test_documents_constraints(self):
+        shape = {'type': 'string', 'min': 0, 'max': 10, 'pattern': '.*'}
+        shape = StringShape('ConstrainedArg', shape)
+        arg = CustomArgument('ConstrainedArg', argument_model=shape)
+        help_command = self.create_help_command()
+        help_command.arg_table = {'ConstrainedArg': arg}
+        operation_handler = OperationDocumentEventHandler(help_command)
+        operation_handler.doc_option(
+            arg_name='ConstrainedArg', help_command=help_command
+        )
+        rendered = help_command.doc.getvalue().decode('utf-8')
+        self.assertIn('Constraints', rendered)
+        self.assertIn('min: ``0``', rendered)
+        self.assertIn('max: ``10``', rendered)
+        self.assertIn('pattern: ``.*``', rendered)
+
+    def test_meta_description_operation_command_html(self):
+        help_cmd = ServiceHelpCommand(
+            self.session, self.obj, self.command_table, self.arg_table,
+            self.name, 'ec2.run-instances'
+        )
+        help_cmd.doc.target = 'html'
+        doc_handler = OperationDocumentEventHandler(help_cmd)
+        doc_handler.doc_meta_description(help_cmd)
+
+        meta_description = help_cmd.doc.getvalue().decode('utf-8')
+        self.assertIn(".. meta::\n   :description: ", meta_description)
+        self.assertIn('to run the ec2 run-instances command', meta_description)
+
+    def test_meta_description_service_html(self):
+        help_cmd = ServiceHelpCommand(
+            self.session, self.obj, self.command_table, self.arg_table,
+            self.name, 'ec2'
+        )
+        help_cmd.doc.target = 'html'
+        doc_handler = ServiceDocumentEventHandler(help_cmd)
+        doc_handler.doc_meta_description(help_cmd)
+
+        meta_description = help_cmd.doc.getvalue().decode('utf-8')
+        self.assertIn(".. meta::\n   :description: Learn about the AWS CLI ", meta_description)
+        self.assertIn(' ec2 commands', meta_description)
+
 
 class TestTopicDocumentEventHandlerBase(unittest.TestCase):
     def setUp(self):
@@ -529,7 +600,7 @@ class TestTopicDocumentEventHandlerBase(unittest.TestCase):
 
 class TestTopicListerDocumentEventHandler(TestTopicDocumentEventHandlerBase):
     def setUp(self):
-        super(TestTopicListerDocumentEventHandler, self).setUp()
+        super().setUp()
         self.descriptions = [
             'This describes the first topic',
             'This describes the second topic',
@@ -571,7 +642,7 @@ class TestTopicListerDocumentEventHandler(TestTopicDocumentEventHandlerBase):
     def test_title(self):
         self.doc_handler.doc_title(self.cmd)
         title_contents = self.cmd.doc.getvalue().decode('utf-8')
-        self.assertIn('.. _cli:aws help %s:' % self.cmd.name, title_contents)
+        self.assertIn(f'.. _cli:aws help {self.cmd.name}:', title_contents)
         self.assertIn('AWS CLI Topic Guide', title_contents)
 
     def test_description(self):
@@ -585,12 +656,11 @@ class TestTopicListerDocumentEventHandler(TestTopicDocumentEventHandlerBase):
         ref_output = [
             '-------\nGeneral\n-------',
             (
-                '* topic-name-1: %s\n'
-                '* topic-name-3: %s\n'
-                % (self.descriptions[0], self.descriptions[2])
+                f'* topic-name-1: {self.descriptions[0]}\n'
+                f'* topic-name-3: {self.descriptions[2]}\n'
             ),
             '--\nS3\n--',
-            '* topic-name-2: %s\n' % self.descriptions[1],
+            f'* topic-name-2: {self.descriptions[1]}\n',
         ]
 
         self.doc_handler.doc_subitems_start(self.cmd)
@@ -606,14 +676,12 @@ class TestTopicListerDocumentEventHandler(TestTopicDocumentEventHandlerBase):
         ref_output = [
             '-------\nGeneral\n-------',
             (
-                '* :ref:`topic-name-1 <cli:aws help topic-name-1>`: %s\n'
-                '* :ref:`topic-name-3 <cli:aws help topic-name-3>`: %s\n'
-                % (self.descriptions[0], self.descriptions[2])
+                f'* :ref:`topic-name-1 <cli:aws help topic-name-1>`: {self.descriptions[0]}\n'
+                f'* :ref:`topic-name-3 <cli:aws help topic-name-3>`: {self.descriptions[2]}\n'
             ),
             '--\nS3\n--',
             (
-                '* :ref:`topic-name-2 <cli:aws help topic-name-2>`: %s\n'
-                % self.descriptions[1]
+                f'* :ref:`topic-name-2 <cli:aws help topic-name-2>`: {self.descriptions[1]}\n'
             ),
         ]
 
@@ -629,7 +697,7 @@ class TestTopicListerDocumentEventHandler(TestTopicDocumentEventHandlerBase):
 
 class TestTopicDocumentEventHandler(TestTopicDocumentEventHandlerBase):
     def setUp(self):
-        super(TestTopicDocumentEventHandler, self).setUp()
+        super().setUp()
         self.name = 'topic-name-1'
         self.title = 'The first topic title'
         self.description = 'This is about the first topic'
@@ -666,7 +734,7 @@ class TestTopicDocumentEventHandler(TestTopicDocumentEventHandlerBase):
     def test_title(self):
         self.doc_handler.doc_title(self.cmd)
         title_contents = self.cmd.doc.getvalue().decode('utf-8')
-        self.assertIn('.. _cli:aws help %s:' % self.name, title_contents)
+        self.assertIn(f'.. _cli:aws help {self.name}:', title_contents)
         self.assertIn(self.title, title_contents)
 
     def test_description(self):

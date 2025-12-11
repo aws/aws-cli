@@ -6,7 +6,7 @@ import pytest
 from build_system.install import Installer, Uninstaller
 
 from backends.build_system.utils import Utils
-from tests.backends.build_system.markers import if_windows, skip_if_windows
+from tests.markers import if_windows, skip_if_windows
 
 
 class FakeUtils(Utils):

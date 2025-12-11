@@ -126,10 +126,6 @@
       "type":"list",
       "member":{"shape":"WaypointIndex"}
     },
-    "Boolean":{
-      "type":"boolean",
-      "box":true
-    },
     "BoundingBox":{
       "type":"list",
       "member":{"shape":"Double"},
@@ -154,7 +150,7 @@
           "documentation":"<p>Features that are avoided while calculating a route. Avoidance is on a best-case basis. If an avoidance can't be satisfied for a particular case, it violates the avoidance and the returned response produces a notice for the violation.</p>"
         },
         "DepartNow":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Uses the current time as the time of departure.</p>"
         },
         "DepartureTime":{
@@ -274,7 +270,7 @@
           "documentation":"<p>Features that are avoided while calculating a route. Avoidance is on a best-case basis. If an avoidance can't be satisfied for a particular case, it violates the avoidance and the returned response produces a notice for the violation.</p>"
         },
         "DepartNow":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Uses the current time as the time of departure.</p>"
         },
         "DepartureTime":{
@@ -385,7 +381,7 @@
           "documentation":"<p>Features that are avoided while calculating a route. Avoidance is on a best-case basis. If an avoidance can't be satisfied for a particular case, it violates the avoidance and the returned response produces a notice for the violation.</p>"
         },
         "DepartNow":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Uses the current time as the time of departure.</p>"
         },
         "DepartureTime":{
@@ -529,7 +525,7 @@
           "documentation":"<p>Center of the Circle defined in longitude and latitude coordinates.</p> <p>Example: <code>[-123.1174, 49.2847]</code> represents the position with longitude <code>-123.1174</code> and latitude <code>49.2847</code>. </p>"
         },
         "Radius":{
-          "shape":"Double",
+          "shape":"SensitiveDouble",
           "documentation":"<p>Radius of the Circle.</p> <p> <b>Unit</b>: <code>meters</code> </p>"
         }
       },
@@ -564,13 +560,15 @@
       "type":"string",
       "max":3,
       "min":2,
-      "pattern":"([A-Z]{2}|[A-Z]{3})"
+      "pattern":"([A-Z]{2}|[A-Z]{3})",
+      "sensitive":true
     },
     "CountryCode3":{
       "type":"string",
       "max":3,
       "min":3,
-      "pattern":"[A-Z]{3}"
+      "pattern":"[A-Z]{3}",
+      "sensitive":true
     },
     "CountryCodeList":{
       "type":"list",
@@ -594,17 +592,20 @@
         "Friday",
         "Saturday",
         "Sunday"
-      ]
+      ],
+      "sensitive":true
     },
     "DimensionCentimeters":{
       "type":"long",
       "max":4294967295,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "DistanceMeters":{
       "type":"long",
       "max":4294967295,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "DistanceThresholdList":{
       "type":"list",
@@ -615,7 +616,8 @@
     "DistanceThresholdListMemberLong":{
       "type":"long",
       "max":300000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "Double":{
       "type":"double",
@@ -624,7 +626,8 @@
     "DurationSeconds":{
       "type":"long",
       "max":4294967295,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "GeometryFormat":{
       "type":"string",
@@ -636,7 +639,8 @@
     "Heading":{
       "type":"double",
       "max":360.0,
-      "min":0.0
+      "min":0.0,
+      "sensitive":true
     },
     "IndexList":{
       "type":"list",
@@ -691,11 +695,11 @@
       "type":"structure",
       "members":{
         "Hot":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Allow Hot (High Occupancy Toll) lanes while calculating an isoline.</p> <p>Default value: <code>false</code> </p>"
         },
         "Hov":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Allow Hov (High Occupancy vehicle) lanes while calculating an isoline.</p> <p>Default value: <code>false</code> </p>"
         }
       },
@@ -770,31 +774,31 @@
           "documentation":"<p>Areas to be avoided.</p>"
         },
         "CarShuttleTrains":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid car-shuttle-trains while calculating an isoline.</p>"
         },
         "ControlledAccessHighways":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid controlled access highways while calculating an isoline.</p>"
         },
         "DirtRoads":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid dirt roads while calculating an isoline.</p>"
         },
         "Ferries":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid ferries while calculating an isoline.</p>"
         },
         "SeasonalClosure":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid roads that have seasonal closure while calculating an isoline.</p>"
         },
         "TollRoads":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoids roads where the specified toll transponders are the only mode of payment.</p>"
         },
         "TollTransponders":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoids roads where the specified toll transponders are the only mode of payment.</p>"
         },
         "TruckRoadTypes":{
@@ -802,11 +806,11 @@
           "documentation":"<p>Truck road type identifiers. <code>BK1</code> through <code>BK4</code> apply only to Sweden. <code>A2,A4,B2,B4,C,D,ET2,ET4</code> apply only to Mexico.</p> <note> <p>There are currently no other supported values as of 26th April 2024.</p> </note>"
         },
         "Tunnels":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid tunnels while calculating an isoline.</p>"
         },
         "UTurns":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid U-turns for calculation on highways and motorways.</p>"
         },
         "ZoneCategories":{
@@ -858,12 +862,14 @@
     "IsolineCarOptionsMaxSpeedDouble":{
       "type":"double",
       "max":252.0,
-      "min":3.6
+      "min":3.6,
+      "sensitive":true
     },
     "IsolineCarOptionsOccupancyInteger":{
       "type":"integer",
       "box":true,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "IsolineConnection":{
       "type":"structure",
@@ -944,7 +950,8 @@
         "Electric",
         "InternalCombustion",
         "PluginHybrid"
-      ]
+      ],
+      "sensitive":true
     },
     "IsolineGranularityOptions":{
       "type":"structure",
@@ -979,7 +986,8 @@
         "Poison",
         "PoisonousInhalation",
         "Radioactive"
-      ]
+      ],
+      "sensitive":true
     },
     "IsolineHazardousCargoTypeList":{
       "type":"list",
@@ -1071,12 +1079,14 @@
     "IsolineScooterOptionsMaxSpeedDouble":{
       "type":"double",
       "max":252.0,
-      "min":3.6
+      "min":3.6,
+      "sensitive":true
     },
     "IsolineScooterOptionsOccupancyInteger":{
       "type":"integer",
       "box":true,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "IsolineShapeGeometry":{
       "type":"structure",
@@ -1156,13 +1166,15 @@
     "IsolineTrailerOptionsAxleCountInteger":{
       "type":"integer",
       "box":true,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "IsolineTrailerOptionsTrailerCountInteger":{
       "type":"integer",
       "box":true,
       "max":255,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "IsolineTravelMode":{
       "type":"string",
@@ -1278,43 +1290,51 @@
       "type":"integer",
       "box":true,
       "max":255,
-      "min":2
+      "min":2,
+      "sensitive":true
     },
     "IsolineTruckOptionsHeightAboveFirstAxleLong":{
       "type":"long",
       "max":5000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "IsolineTruckOptionsHeightLong":{
       "type":"long",
       "max":5000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "IsolineTruckOptionsLengthLong":{
       "type":"long",
       "max":30000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "IsolineTruckOptionsMaxSpeedDouble":{
       "type":"double",
       "max":252.0,
-      "min":3.6
+      "min":3.6,
+      "sensitive":true
     },
     "IsolineTruckOptionsOccupancyInteger":{
       "type":"integer",
       "box":true,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "IsolineTruckOptionsTireCountInteger":{
       "type":"integer",
       "box":true,
       "max":255,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "IsolineTruckOptionsWidthLong":{
       "type":"long",
       "max":5000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "IsolineTruckType":{
       "type":"string",
@@ -1332,7 +1352,8 @@
           "documentation":"<p>The last character of the License Plate.</p>"
         }
       },
-      "documentation":"<p>The vehicle license plate.</p>"
+      "documentation":"<p>The vehicle license plate.</p>",
+      "sensitive":true
     },
     "IsolineVehicleLicensePlateLastCharacterString":{
       "type":"string",
@@ -1376,7 +1397,7 @@
           "documentation":"<p>A list of BCP 47 compliant language codes for the results to be rendered in. The request uses the regional default as the fallback if the requested language can't be provided.</p>"
         },
         "Value":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The value of the localized string.</p>"
         }
       },
@@ -1574,7 +1595,8 @@
         "Poison",
         "PoisonousInhalation",
         "Radioactive"
-      ]
+      ],
+      "sensitive":true
     },
     "RoadSnapHazardousCargoTypeList":{
       "type":"list",
@@ -1595,7 +1617,7 @@
           "documentation":"<p>Code corresponding to the issue.</p>"
         },
         "Title":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The notice title.</p>"
         },
         "TracePointIndexes":{
@@ -1615,7 +1637,8 @@
         "TracePointsOutOfSequence",
         "TracePointsSpeedEstimated",
         "TracePointsSpeedIgnored"
-      ]
+      ],
+      "sensitive":true
     },
     "RoadSnapNoticeList":{
       "type":"list",
@@ -1662,7 +1685,8 @@
       "type":"double",
       "box":true,
       "max":1,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RoadSnapSnappedTracePointList":{
       "type":"list",
@@ -1695,7 +1719,8 @@
       "type":"list",
       "member":{"shape":"Integer"},
       "max":1000,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "RoadSnapTrailerOptions":{
       "type":"structure",
@@ -1711,7 +1736,8 @@
       "type":"integer",
       "box":true,
       "max":255,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RoadSnapTravelMode":{
       "type":"string",
@@ -1769,17 +1795,20 @@
     "RoadSnapTruckOptionsHeightLong":{
       "type":"long",
       "max":5000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RoadSnapTruckOptionsLengthLong":{
       "type":"long",
       "max":30000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RoadSnapTruckOptionsWidthLong":{
       "type":"long",
       "max":5000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RoundaboutAngle":{
       "type":"double",
@@ -1812,11 +1841,11 @@
       "type":"structure",
       "members":{
         "Hot":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Allow Hot (High Occupancy Toll) lanes while calculating the route.</p> <p>Default value: <code>false</code> </p>"
         },
         "Hov":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Allow Hov (High Occupancy vehicle) lanes while calculating the route.</p> <p>Default value: <code>false</code> </p>"
         }
       },
@@ -1888,31 +1917,31 @@
           "documentation":"<p>Areas to be avoided.</p>"
         },
         "CarShuttleTrains":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid car-shuttle-trains while calculating the route.</p>"
         },
         "ControlledAccessHighways":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid controlled access highways while calculating the route.</p>"
         },
         "DirtRoads":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid dirt roads while calculating the route.</p>"
         },
         "Ferries":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid ferries while calculating the route.</p>"
         },
         "SeasonalClosure":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid roads that have seasonal closure while calculating the route.</p>"
         },
         "TollRoads":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoids roads where the specified toll transponders are the only mode of payment.</p>"
         },
         "TollTransponders":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoids roads where the specified toll transponders are the only mode of payment.</p>"
         },
         "TruckRoadTypes":{
@@ -1920,11 +1949,11 @@
           "documentation":"<p>Truck road type identifiers. <code>BK1</code> through <code>BK4</code> apply only to Sweden. <code>A2,A4,B2,B4,C,D,ET2,ET4</code> apply only to Mexico.</p> <note> <p>There are currently no other supported values as of 26th April 2024.</p> </note>"
         },
         "Tunnels":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid tunnels while calculating the route.</p>"
         },
         "UTurns":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid U-turns for calculation on highways and motorways.</p>"
         },
         "ZoneCategories":{
@@ -1977,12 +2006,14 @@
     "RouteCarOptionsMaxSpeedDouble":{
       "type":"double",
       "max":252.0,
-      "min":3.6
+      "min":3.6,
+      "sensitive":true
     },
     "RouteCarOptionsOccupancyInteger":{
       "type":"integer",
       "box":true,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "RouteContinueHighwayStepDetails":{
       "type":"structure",
@@ -2026,7 +2057,7 @@
           "documentation":"<p>Avoids actions for the provided distance. This is typically to consider for users in moving vehicles who may not have sufficient time to make an action at an origin or a destination.</p>"
         },
         "AvoidUTurns":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid U-turns for calculation on highways and motorways.</p>"
         },
         "Heading":{
@@ -2050,7 +2081,8 @@
     },
     "RouteDestinationOptionsAvoidActionsForDistanceLong":{
       "type":"long",
-      "max":2000
+      "max":2000,
+      "sensitive":true
     },
     "RouteDirection":{
       "type":"string",
@@ -2059,7 +2091,8 @@
         "North",
         "South",
         "West"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteDriverOptions":{
       "type":"structure",
@@ -2098,11 +2131,11 @@
       "required":["Type"],
       "members":{
         "Co2EmissionClass":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The CO 2 emission classes.</p>"
         },
         "Type":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>Type of the emission.</p> <p> <b>Valid values</b>: <code>Euro1, Euro2, Euro3, Euro4, Euro5, Euro6, EuroEev</code> </p>"
         }
       },
@@ -2114,7 +2147,8 @@
         "Electric",
         "InternalCombustion",
         "PluginHybrid"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteEnterHighwayStepDetails":{
       "type":"structure",
@@ -2181,7 +2215,8 @@
       "type":"integer",
       "box":true,
       "max":12,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "RouteFerryAfterTravelStep":{
       "type":"structure",
@@ -2195,7 +2230,7 @@
           "documentation":"<p>Duration of the step.</p> <p> <b>Unit</b>: <code>seconds</code> </p>"
         },
         "Instruction":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>Brief description of the step in the requested language.</p> <note> <p>Only available when the TravelStepType is Default.</p> </note>"
         },
         "Type":{
@@ -2211,7 +2246,8 @@
     },
     "RouteFerryAfterTravelStepType":{
       "type":"string",
-      "enum":["Deboard"]
+      "enum":["Deboard"],
+      "sensitive":true
     },
     "RouteFerryArrival":{
       "type":"structure",
@@ -2240,7 +2276,7 @@
           "documentation":"<p>Duration of the step.</p> <p> <b>Unit</b>: <code>seconds</code> </p>"
         },
         "Instruction":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>Brief description of the step in the requested language.</p> <note> <p>Only available when the TravelStepType is Default.</p> </note>"
         },
         "Type":{
@@ -2256,7 +2292,8 @@
     },
     "RouteFerryBeforeTravelStepType":{
       "type":"string",
-      "enum":["Board"]
+      "enum":["Board"],
+      "sensitive":true
     },
     "RouteFerryDeparture":{
       "type":"structure",
@@ -2311,7 +2348,7 @@
           "documentation":"<p>Waypoints that were passed through during the leg. This includes the waypoints that were configured with the PassThrough option.</p>"
         },
         "RouteName":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>Route name of the ferry line.</p>"
         },
         "Spans":{
@@ -2352,7 +2389,8 @@
         "Other",
         "ViolatedAvoidFerry",
         "ViolatedAvoidRailFerry",
-        "SeasonalClosure"
+        "SeasonalClosure",
+        "PotentialViolatedVehicleRestrictionUsage"
       ]
     },
     "RouteFerryNoticeList":{
@@ -2382,7 +2420,7 @@
       "required":["Position"],
       "members":{
         "Name":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The name of the place.</p>"
         },
         "OriginalPosition":{
@@ -2403,7 +2441,8 @@
     "RouteFerryPlaceWaypointIndexInteger":{
       "type":"integer",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteFerrySpan":{
       "type":"structure",
@@ -2447,7 +2486,8 @@
     "RouteFerrySpanRegionString":{
       "type":"string",
       "max":3,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteFerrySummary":{
       "type":"structure",
@@ -2494,7 +2534,7 @@
           "documentation":"<p>Offset in the leg geometry corresponding to the start of this step.</p>"
         },
         "Instruction":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>Brief description of the step in the requested language.</p> <note> <p>Only available when the TravelStepType is Default.</p> </note>"
         },
         "Type":{
@@ -2519,7 +2559,8 @@
         "Depart",
         "Continue",
         "Arrive"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteHazardousCargoType":{
       "type":"string",
@@ -2535,7 +2576,8 @@
         "Poison",
         "PoisonousInhalation",
         "Radioactive"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteHazardousCargoTypeList":{
       "type":"list",
@@ -2617,7 +2659,8 @@
         "TruckRoadTypes",
         "TypicalDuration",
         "Zones"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteLegAdditionalFeatureList":{
       "type":"list",
@@ -2652,7 +2695,8 @@
         "Scooter",
         "Truck",
         "CarShuttleTrain"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteLegType":{
       "type":"string",
@@ -2660,7 +2704,8 @@
         "Ferry",
         "Pedestrian",
         "Vehicle"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteList":{
       "type":"list",
@@ -2722,15 +2767,16 @@
       "type":"structure",
       "members":{
         "Hot":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Allow Hot (High Occupancy Toll) lanes while calculating the route.</p> <p>Default value: <code>false</code> </p>"
         },
         "Hov":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Allow Hov (High Occupancy vehicle) lanes while calculating the route.</p> <p>Default value: <code>false</code> </p>"
         }
       },
-      "documentation":"<p>Allow Options related to the route matrix.</p>"
+      "documentation":"<p>Allow Options related to the route matrix.</p>",
+      "sensitive":true
     },
     "RouteMatrixAutoCircle":{
       "type":"structure",
@@ -2749,12 +2795,14 @@
     "RouteMatrixAutoCircleMarginLong":{
       "type":"long",
       "max":200000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteMatrixAutoCircleMaxRadiusLong":{
       "type":"long",
       "max":200000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteMatrixAvoidanceArea":{
       "type":"structure",
@@ -2805,27 +2853,27 @@
           "documentation":"<p>Areas to be avoided.</p>"
         },
         "CarShuttleTrains":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid car-shuttle-trains while calculating the route.</p>"
         },
         "ControlledAccessHighways":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid controlled access highways while calculating the route.</p>"
         },
         "DirtRoads":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid dirt roads while calculating the route.</p>"
         },
         "Ferries":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid ferries while calculating the route.</p>"
         },
         "TollRoads":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoids roads where the specified toll transponders are the only mode of payment.</p>"
         },
         "TollTransponders":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoids roads where the specified toll transponders are the only mode of payment.</p>"
         },
         "TruckRoadTypes":{
@@ -2833,11 +2881,11 @@
           "documentation":"<p>Truck road type identifiers. <code>BK1</code> through <code>BK4</code> apply only to Sweden. <code>A2,A4,B2,B4,C,D,ET2,ET4</code> apply only to Mexico.</p> <note> <p>There are currently no other supported values as of 26th April 2024.</p> </note>"
         },
         "Tunnels":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid tunnels while calculating the route.</p>"
         },
         "UTurns":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid U-turns for calculation on highways and motorways.</p>"
         },
         "ZoneCategories":{
@@ -2877,7 +2925,7 @@
           "documentation":"<p>Geometry of the area to be avoided.</p>"
         },
         "Unbounded":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>No restrictions in terms of a routing boundary, and is typically used for longer routes.</p>"
         }
       },
@@ -2933,12 +2981,14 @@
     "RouteMatrixCarOptionsMaxSpeedDouble":{
       "type":"double",
       "max":252.0,
-      "min":3.6
+      "min":3.6,
+      "sensitive":true
     },
     "RouteMatrixCarOptionsOccupancyInteger":{
       "type":"integer",
       "box":true,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "RouteMatrixDestination":{
       "type":"structure",
@@ -2979,7 +3029,8 @@
     },
     "RouteMatrixDestinationOptionsAvoidActionsForDistanceLong":{
       "type":"long",
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteMatrixEntry":{
       "type":"structure",
@@ -3042,7 +3093,8 @@
         "Poison",
         "PoisonousInhalation",
         "Radioactive"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteMatrixHazardousCargoTypeList":{
       "type":"list",
@@ -3074,7 +3126,8 @@
     },
     "RouteMatrixMatchingOptionsOnRoadThresholdLong":{
       "type":"long",
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteMatrixOrigin":{
       "type":"structure",
@@ -3115,7 +3168,8 @@
     },
     "RouteMatrixOriginOptionsAvoidActionsForDistanceLong":{
       "type":"long",
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteMatrixRow":{
       "type":"list",
@@ -3143,12 +3197,14 @@
     "RouteMatrixScooterOptionsMaxSpeedDouble":{
       "type":"double",
       "max":252.0,
-      "min":3.6
+      "min":3.6,
+      "sensitive":true
     },
     "RouteMatrixScooterOptionsOccupancyInteger":{
       "type":"integer",
       "box":true,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "RouteMatrixSideOfStreetOptions":{
       "type":"structure",
@@ -3193,7 +3249,8 @@
       "type":"integer",
       "box":true,
       "max":255,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteMatrixTravelMode":{
       "type":"string",
@@ -3297,32 +3354,38 @@
       "type":"integer",
       "box":true,
       "max":255,
-      "min":2
+      "min":2,
+      "sensitive":true
     },
     "RouteMatrixTruckOptionsHeightLong":{
       "type":"long",
       "max":5000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteMatrixTruckOptionsLengthLong":{
       "type":"long",
       "max":30000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteMatrixTruckOptionsMaxSpeedDouble":{
       "type":"double",
       "max":252.0,
-      "min":3.6
+      "min":3.6,
+      "sensitive":true
     },
     "RouteMatrixTruckOptionsOccupancyInteger":{
       "type":"integer",
       "box":true,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "RouteMatrixTruckOptionsWidthLong":{
       "type":"long",
       "max":5000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteMatrixTruckType":{
       "type":"string",
@@ -3330,7 +3393,8 @@
         "LightTruck",
         "StraightTruck",
         "Tractor"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteMatrixVehicleLicensePlate":{
       "type":"structure",
@@ -3340,7 +3404,8 @@
           "documentation":"<p>The last character of the License Plate.</p>"
         }
       },
-      "documentation":"<p>The vehicle License Plate.</p>"
+      "documentation":"<p>The vehicle License Plate.</p>",
+      "sensitive":true
     },
     "RouteMatrixVehicleLicensePlateLastCharacterString":{
       "type":"string",
@@ -3353,7 +3418,8 @@
         "CongestionPricing",
         "Environmental",
         "Vignette"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteNoticeDetailRange":{
       "type":"structure",
@@ -3399,7 +3465,7 @@
           "documentation":"<p>List of languages for instructions corresponding to the route number.</p>"
         },
         "Value":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The route number.</p>"
         }
       },
@@ -3417,7 +3483,7 @@
           "documentation":"<p>Avoids actions for the provided distance. This is typically to consider for users in moving vehicles who may not have sufficient time to make an action at an origin or a destination.</p>"
         },
         "AvoidUTurns":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid U-turns for calculation on highways and motorways.</p>"
         },
         "Heading":{
@@ -3437,7 +3503,8 @@
     },
     "RouteOriginOptionsAvoidActionsForDistanceLong":{
       "type":"long",
-      "max":2000
+      "max":2000,
+      "sensitive":true
     },
     "RoutePassThroughPlace":{
       "type":"structure",
@@ -3461,7 +3528,8 @@
     "RoutePassThroughPlaceWaypointIndexInteger":{
       "type":"integer",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RoutePassThroughWaypoint":{
       "type":"structure",
@@ -3602,7 +3670,8 @@
     "RoutePedestrianOptionsSpeedDouble":{
       "type":"double",
       "max":7.2,
-      "min":1.8
+      "min":1.8,
+      "sensitive":true
     },
     "RoutePedestrianOverviewSummary":{
       "type":"structure",
@@ -3627,7 +3696,7 @@
       "required":["Position"],
       "members":{
         "Name":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The name of the place.</p>"
         },
         "OriginalPosition":{
@@ -3652,7 +3721,8 @@
     "RoutePedestrianPlaceWaypointIndexInteger":{
       "type":"integer",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RoutePedestrianSpan":{
       "type":"structure",
@@ -3724,7 +3794,8 @@
       "type":"integer",
       "box":true,
       "max":5,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "RoutePedestrianSpanGeometryOffsetInteger":{
       "type":"integer",
@@ -3738,7 +3809,8 @@
     "RoutePedestrianSpanRegionString":{
       "type":"string",
       "max":3,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RoutePedestrianSummary":{
       "type":"structure",
@@ -3797,7 +3869,7 @@
           "documentation":"<p>Offset in the leg geometry corresponding to the start of this step.</p>"
         },
         "Instruction":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>Brief description of the step in the requested language.</p> <note> <p>Only available when the TravelStepType is Default.</p> </note>"
         },
         "KeepStepDetails":{
@@ -3858,7 +3930,8 @@
         "Exit",
         "Ramp",
         "UTurn"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteRampStepDetails":{
       "type":"structure",
@@ -3943,7 +4016,8 @@
         "Highway",
         "Rural",
         "Urban"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteRoundaboutEnterStepDetails":{
       "type":"structure",
@@ -3995,7 +4069,8 @@
       "type":"integer",
       "box":true,
       "max":12,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "RouteRoundaboutPassStepDetails":{
       "type":"structure",
@@ -4046,19 +4121,22 @@
     "RouteScooterOptionsMaxSpeedDouble":{
       "type":"double",
       "max":252.0,
-      "min":3.6
+      "min":3.6,
+      "sensitive":true
     },
     "RouteScooterOptionsOccupancyInteger":{
       "type":"integer",
       "box":true,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "RouteSideOfStreet":{
       "type":"string",
       "enum":[
         "Left",
         "Right"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteSideOfStreetOptions":{
       "type":"structure",
@@ -4145,7 +4223,8 @@
         "Allowed",
         "NoThroughTraffic",
         "TollRoad"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteSpanCarAccessAttributeList":{
       "type":"list",
@@ -4177,7 +4256,8 @@
         "Emergency",
         "KeyAccess",
         "PermissionRequired"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteSpanPedestrianAccessAttribute":{
       "type":"string",
@@ -4188,7 +4268,8 @@
         "Park",
         "Stairs",
         "TollRoad"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteSpanPedestrianAccessAttributeList":{
       "type":"list",
@@ -4201,7 +4282,8 @@
       "enum":[
         "Protected",
         "Unprotected"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteSpanRoadAttribute":{
       "type":"string",
@@ -4218,7 +4300,8 @@
         "Roundabout",
         "Tunnel",
         "UnderConstruction"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteSpanRoadAttributeList":{
       "type":"list",
@@ -4232,7 +4315,8 @@
         "Allowed",
         "NoThroughTraffic",
         "TollRoad"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteSpanScooterAccessAttributeList":{
       "type":"list",
@@ -4248,7 +4332,7 @@
           "documentation":"<p>Maximum speed.</p> <p> <b>Unit</b>: <code>KilometersPerHour</code> </p>"
         },
         "Unlimited":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>If the span doesn't have a speed limit like the Autobahn.</p>"
         }
       },
@@ -4260,7 +4344,8 @@
         "Allowed",
         "NoThroughTraffic",
         "TollRoad"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteSpanTruckAccessAttributeList":{
       "type":"list",
@@ -4274,7 +4359,8 @@
         "Left",
         "Right",
         "Straight"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteSummary":{
       "type":"structure",
@@ -4329,11 +4415,11 @@
       "type":"structure",
       "members":{
         "AllTransponders":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Specifies if the user has valid transponder with access to all toll systems. This impacts toll calculation, and if true the price with transponders is used.</p>"
         },
         "AllVignettes":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Specifies if the user has valid vignettes with access for all toll roads. If a user has a vignette for a toll road, then toll cost for that road is omitted since no further payment is necessary.</p>"
         },
         "Currency":{
@@ -4355,11 +4441,11 @@
       "type":"structure",
       "members":{
         "IncludesReturnTrip":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>If the pass includes the rate for the return leg of the trip.</p>"
         },
         "SeniorPass":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>If the pass is only valid for senior persons.</p>"
         },
         "TransferCount":{
@@ -4380,12 +4466,14 @@
     "RouteTollPassTransferCountInteger":{
       "type":"integer",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteTollPassTripCountInteger":{
       "type":"integer",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteTollPassValidityPeriod":{
       "type":"structure",
@@ -4405,7 +4493,8 @@
     "RouteTollPassValidityPeriodPeriodCountInteger":{
       "type":"integer",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteTollPassValidityPeriodType":{
       "type":"string",
@@ -4415,7 +4504,8 @@
         "ExtendedAnnual",
         "Minutes",
         "Months"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteTollPaymentMethod":{
       "type":"string",
@@ -4428,7 +4518,8 @@
         "TravelCard",
         "Transponder",
         "VideoToll"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteTollPaymentMethodList":{
       "type":"list",
@@ -4469,7 +4560,7 @@
           "documentation":"<p>Currency code corresponding to the price. This is the same as Currency specified in the request.</p>"
         },
         "Estimate":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>If the price is an estimate or an exact value. </p>"
         },
         "PerDuration":{
@@ -4477,7 +4568,7 @@
           "documentation":"<p>Duration for which the price corresponds to.</p> <p> <b>Unit</b>: <code>seconds</code> </p>"
         },
         "Range":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>If the price is a range or an exact value. If any of the toll fares making up the route is a range, the overall price is also a range.</p>"
         },
         "RangeValue":{
@@ -4505,11 +4596,11 @@
           "documentation":"<p>Currency code corresponding to the price. This is the same as Currency specified in the request.</p>"
         },
         "Estimate":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>If the price is an estimate or an exact value. </p>"
         },
         "Range":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>If the price is a range or an exact value. If any of the toll fares making up the route is a range, the overall price is also a range.</p>"
         },
         "RangeValue":{
@@ -4526,12 +4617,14 @@
     "RouteTollPriceSummaryValueDouble":{
       "type":"double",
       "box":true,
-      "min":0.0
+      "min":0.0,
+      "sensitive":true
     },
     "RouteTollPriceValueDouble":{
       "type":"double",
       "box":true,
-      "min":0.0
+      "min":0.0,
+      "sensitive":true
     },
     "RouteTollPriceValueRange":{
       "type":"structure",
@@ -4554,12 +4647,14 @@
     "RouteTollPriceValueRangeMaxDouble":{
       "type":"double",
       "box":true,
-      "min":0.0
+      "min":0.0,
+      "sensitive":true
     },
     "RouteTollPriceValueRangeMinDouble":{
       "type":"double",
       "box":true,
-      "min":0.0
+      "min":0.0,
+      "sensitive":true
     },
     "RouteTollRate":{
       "type":"structure",
@@ -4572,7 +4667,7 @@
       ],
       "members":{
         "ApplicableTimes":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>Time when the rate is valid.</p>"
         },
         "ConvertedPrice":{
@@ -4580,7 +4675,7 @@
           "documentation":"<p>Price in the converted currency as specified in the request.</p>"
         },
         "Id":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The Toll rate Id.</p>"
         },
         "LocalPrice":{
@@ -4588,7 +4683,7 @@
           "documentation":"<p>Price in the local regional currency.</p>"
         },
         "Name":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The name of the toll.</p>"
         },
         "Pass":{
@@ -4624,7 +4719,7 @@
       "type":"structure",
       "members":{
         "Name":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The toll system name.</p>"
         }
       },
@@ -4636,7 +4731,8 @@
     },
     "RouteTollVehicleCategory":{
       "type":"string",
-      "enum":["Minibus"]
+      "enum":["Minibus"],
+      "sensitive":true
     },
     "RouteTrafficOptions":{
       "type":"structure",
@@ -4669,19 +4765,21 @@
     "RouteTrailerOptionsAxleCountInteger":{
       "type":"integer",
       "box":true,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "RouteTrailerOptionsTrailerCountInteger":{
       "type":"integer",
       "box":true,
       "max":255,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "RouteTransponder":{
       "type":"structure",
       "members":{
         "SystemName":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>Names of the toll system collecting the toll.</p>"
         }
       },
@@ -4816,48 +4914,57 @@
       "type":"integer",
       "box":true,
       "max":255,
-      "min":2
+      "min":2,
+      "sensitive":true
     },
     "RouteTruckOptionsHeightAboveFirstAxleLong":{
       "type":"long",
       "max":5000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteTruckOptionsHeightLong":{
       "type":"long",
       "max":5000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteTruckOptionsLengthLong":{
       "type":"long",
       "max":30000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteTruckOptionsMaxSpeedDouble":{
       "type":"double",
       "max":252.0,
-      "min":3.6
+      "min":3.6,
+      "sensitive":true
     },
     "RouteTruckOptionsOccupancyInteger":{
       "type":"integer",
       "box":true,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "RouteTruckOptionsTireCountInteger":{
       "type":"integer",
       "box":true,
       "max":255,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "RouteTruckOptionsTunnelRestrictionCodeString":{
       "type":"string",
       "max":20,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteTruckOptionsWidthLong":{
       "type":"long",
       "max":5000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteTruckType":{
       "type":"string",
@@ -4865,7 +4972,8 @@
         "LightTruck",
         "StraightTruck",
         "Tractor"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteTurnIntensity":{
       "type":"string",
@@ -4873,7 +4981,8 @@
         "Sharp",
         "Slight",
         "Typical"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteTurnStepDetails":{
       "type":"structure",
@@ -4955,7 +5064,7 @@
       "type":"structure",
       "members":{
         "Description":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>Brief readable description of the incident.</p>"
         },
         "EndTime":{
@@ -4988,7 +5097,8 @@
         "High",
         "Medium",
         "Low"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteVehicleIncidentType":{
       "type":"string",
@@ -5004,7 +5114,8 @@
         "RoadClosure",
         "RoadHazard",
         "Weather"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteVehicleLegDetails":{
       "type":"structure",
@@ -5086,7 +5197,8 @@
     "RouteVehicleLicensePlateLastCharacterString":{
       "type":"string",
       "max":1,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "RouteVehicleNotice":{
       "type":"structure",
@@ -5146,7 +5258,7 @@
       "type":"structure",
       "members":{
         "Title":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The notice title.</p>"
         },
         "ViolatedConstraints":{
@@ -5195,7 +5307,7 @@
       "required":["Position"],
       "members":{
         "Name":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The name of the place.</p>"
         },
         "OriginalPosition":{
@@ -5220,7 +5332,8 @@
     "RouteVehiclePlaceWaypointIndexInteger":{
       "type":"integer",
       "box":true,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteVehicleSpan":{
       "type":"structure",
@@ -5324,7 +5437,8 @@
       "type":"integer",
       "box":true,
       "max":5,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "RouteVehicleSpanGeometryOffsetInteger":{
       "type":"integer",
@@ -5338,7 +5452,8 @@
     "RouteVehicleSpanRegionString":{
       "type":"string",
       "max":3,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "RouteVehicleSummary":{
       "type":"structure",
@@ -5417,7 +5532,7 @@
           "documentation":"<p>Offset in the leg geometry corresponding to the start of this step.</p>"
         },
         "Instruction":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>Brief description of the step in the requested language.</p> <note> <p>Only available when the TravelStepType is Default.</p> </note>"
         },
         "KeepStepDetails":{
@@ -5488,14 +5603,15 @@
         "RoundaboutPass",
         "Turn",
         "UTurn"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteViolatedConstraints":{
       "type":"structure",
       "required":["HazardousCargos"],
       "members":{
         "AllHazardsRestricted":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>This restriction applies to truck cargo, where the resulting route excludes roads on which hazardous materials are prohibited from being transported.</p>"
         },
         "AxleCount":{
@@ -5547,7 +5663,7 @@
           "documentation":"<p>Access radius restrictions based on time.</p>"
         },
         "TimeDependent":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>The time dependent constraint.</p>"
         },
         "TrailerCount":{
@@ -5555,7 +5671,7 @@
           "documentation":"<p>Number of trailers attached to the vehicle.</p> <p>Default Value: <code>0</code> </p>"
         },
         "TravelMode":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Travel mode corresponding to the leg.</p>"
         },
         "TruckRoadType":{
@@ -5582,7 +5698,7 @@
           "documentation":"<p>Avoids actions for the provided distance. This is typically to consider for users in moving vehicles who may not have sufficient time to make an action at an origin or a destination.</p>"
         },
         "AvoidUTurns":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid U-turns for calculation on highways and motorways.</p>"
         },
         "Heading":{
@@ -5594,7 +5710,7 @@
           "documentation":"<p>Options to configure matching the provided position to the road network.</p>"
         },
         "PassThrough":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>If the waypoint should not be treated as a stop. If yes, the waypoint is passed through and doesn't split the route into different legs.</p>"
         },
         "Position":{
@@ -5614,7 +5730,8 @@
     },
     "RouteWaypointAvoidActionsForDistanceLong":{
       "type":"long",
-      "max":2000
+      "max":2000,
+      "sensitive":true
     },
     "RouteWaypointList":{
       "type":"list",
@@ -5654,7 +5771,7 @@
           "documentation":"<p>The zone category.</p>"
         },
         "Name":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>The name of the zone.</p>"
         }
       },
@@ -5666,7 +5783,8 @@
         "CongestionPricing",
         "Environmental",
         "Vignette"
-      ]
+      ],
+      "sensitive":true
     },
     "RouteZoneList":{
       "type":"list",
@@ -5678,6 +5796,16 @@
         "FastestRoute",
         "ShortestRoute"
       ]
+    },
+    "SensitiveBoolean":{
+      "type":"boolean",
+      "box":true,
+      "sensitive":true
+    },
+    "SensitiveDouble":{
+      "type":"double",
+      "box":true,
+      "sensitive":true
     },
     "SensitiveString":{
       "type":"string",
@@ -5725,7 +5853,8 @@
     "SnapToRoadsRequestSnapRadiusLong":{
       "type":"long",
       "max":10000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "SnapToRoadsRequestTracePointsList":{
       "type":"list",
@@ -5768,7 +5897,8 @@
     },
     "SpeedKilometersPerHour":{
       "type":"double",
-      "min":0.0
+      "min":0.0,
+      "sensitive":true
     },
     "String":{"type":"string"},
     "ThrottlingException":{
@@ -5790,7 +5920,8 @@
     },
     "TimeOfDay":{
       "type":"string",
-      "pattern":"([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](Z|[+-]([0-1]?[0-9]|2[0-3]):[0-5][0-9])"
+      "pattern":"([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](Z|[+-]([0-1]?[0-9]|2[0-3]):[0-5][0-9])",
+      "sensitive":true
     },
     "TimeThresholdList":{
       "type":"list",
@@ -5801,11 +5932,13 @@
     "TimeThresholdListMemberLong":{
       "type":"long",
       "max":10800,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "TimestampWithTimezoneOffset":{
       "type":"string",
-      "pattern":"([1-2][0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]|60)(\\.[0-9]{0,9})?(Z|[+-]([01][0-9]|2[0-3]):[0-5][0-9])"
+      "pattern":"([1-2][0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]|60)(\\.[0-9]{0,9})?(Z|[+-]([01][0-9]|2[0-3]):[0-5][0-9])",
+      "sensitive":true
     },
     "TrafficUsage":{
       "type":"string",
@@ -5817,7 +5950,8 @@
     "TruckRoadType":{
       "type":"string",
       "max":3,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "TruckRoadTypeList":{
       "type":"list",
@@ -5828,7 +5962,8 @@
     "TunnelRestrictionCode":{
       "type":"string",
       "max":1,
-      "min":1
+      "min":1,
+      "sensitive":true
     },
     "TurnAngle":{
       "type":"double",
@@ -5971,31 +6106,31 @@
           "documentation":"<p>Areas to be avoided.</p>"
         },
         "CarShuttleTrains":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoidance options for cars-shuttles-trains.</p>"
         },
         "ControlledAccessHighways":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid controlled access highways while calculating the route.</p>"
         },
         "DirtRoads":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid dirt roads while calculating the route.</p>"
         },
         "Ferries":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoidance options for ferries.</p>"
         },
         "TollRoads":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoids roads where the specified toll transponders are the only mode of payment.</p>"
         },
         "Tunnels":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid tunnels while calculating the route.</p>"
         },
         "UTurns":{
-          "shape":"Boolean",
+          "shape":"SensitiveBoolean",
           "documentation":"<p>Avoid U-turns for calculation on highways and motorways.</p>"
         }
       },
@@ -6012,7 +6147,8 @@
       "enum":[
         "DrivingDistance",
         "TopologySegment"
-      ]
+      ],
+      "sensitive":true
     },
     "WaypointOptimizationClusteringOptions":{
       "type":"structure",
@@ -6080,7 +6216,8 @@
         "Heading",
         "ServiceDuration",
         "SideOfStreet"
-      ]
+      ],
+      "sensitive":true
     },
     "WaypointOptimizationDestinationOptions":{
       "type":"structure",
@@ -6160,7 +6297,7 @@
           "documentation":"<p>The failed constraint.</p>"
         },
         "Reason":{
-          "shape":"String",
+          "shape":"SensitiveString",
           "documentation":"<p>Reason for the failed constraint.</p>"
         }
       },
@@ -6184,7 +6321,8 @@
         "Poison",
         "PoisonousInhalation",
         "Radioactive"
-      ]
+      ],
+      "sensitive":true
     },
     "WaypointOptimizationHazardousCargoTypeList":{
       "type":"list",
@@ -6276,7 +6414,8 @@
     "WaypointOptimizationPedestrianOptionsSpeedDouble":{
       "type":"double",
       "max":7.2,
-      "min":1.8
+      "min":1.8,
+      "sensitive":true
     },
     "WaypointOptimizationRestCycleDurations":{
       "type":"structure",
@@ -6328,7 +6467,8 @@
     "WaypointOptimizationRestProfileProfileString":{
       "type":"string",
       "max":2,
-      "min":2
+      "min":2,
+      "sensitive":true
     },
     "WaypointOptimizationSequencingObjective":{
       "type":"string",
@@ -6342,7 +6482,8 @@
       "enum":[
         "Rest",
         "Work"
-      ]
+      ],
+      "sensitive":true
     },
     "WaypointOptimizationSideOfStreetOptions":{
       "type":"structure",
@@ -6411,7 +6552,8 @@
       "type":"integer",
       "box":true,
       "max":255,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "WaypointOptimizationTravelMode":{
       "type":"string",
@@ -6481,24 +6623,28 @@
     "WaypointOptimizationTruckOptionsHeightLong":{
       "type":"long",
       "max":5000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "WaypointOptimizationTruckOptionsLengthLong":{
       "type":"long",
       "max":30000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "WaypointOptimizationTruckOptionsWidthLong":{
       "type":"long",
       "max":5000,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "WaypointOptimizationTruckType":{
       "type":"string",
       "enum":[
         "StraightTruck",
         "Tractor"
-      ]
+      ],
+      "sensitive":true
     },
     "WaypointOptimizationWaypoint":{
       "type":"structure",
@@ -6546,7 +6692,8 @@
     "WeightKilograms":{
       "type":"long",
       "max":4294967295,
-      "min":0
+      "min":0,
+      "sensitive":true
     },
     "WeightPerAxleGroup":{
       "type":"structure",

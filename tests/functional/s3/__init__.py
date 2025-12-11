@@ -315,6 +315,7 @@ class BaseS3CLIRunnerTest(unittest.TestCase):
                 headers={
                     'Content-Length': str(size),
                     'Last-Modified': 'Thu, 11 Feb 2021 04:24:23 GMT',
+                    'ETag': 'foobar',
                 }
             )
         )
@@ -332,6 +333,7 @@ class BaseS3CLIRunnerTest(unittest.TestCase):
                 '<LastModified>2015-12-08T18:26:43.000Z</LastModified>'
                 f'<Key>{key}</Key>'
                 f'<Size>{size}</Size>'
+                f'<ETag>foobar</ETag>'
                 '</Contents>'
             )
         xml_body += '</ListBucketResult>'

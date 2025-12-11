@@ -84,6 +84,23 @@
       ],
       "documentation":"<p>Associates the specified fleet with the specified stack.</p>"
     },
+    "AssociateSoftwareToImageBuilder":{
+      "name":"AssociateSoftwareToImageBuilder",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateSoftwareToImageBuilderRequest"},
+      "output":{"shape":"AssociateSoftwareToImageBuilderResult"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"IncompatibleImageException"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Associates license included application(s) with an existing image builder instance.</p>"
+    },
     "BatchAssociateUserStack":{
       "name":"BatchAssociateUserStack",
       "http":{
@@ -144,7 +161,7 @@
         {"shape":"OperationNotPermittedException"},
         {"shape":"ResourceAlreadyExistsException"}
       ],
-      "documentation":"<p>Creates an app block.</p> <p>App blocks are an Amazon AppStream 2.0 resource that stores the details about the virtual hard disk in an S3 bucket. It also stores the setup script with details about how to mount the virtual hard disk. The virtual hard disk includes the application binaries and other files necessary to launch your applications. Multiple applications can be assigned to a single app block.</p> <p>This is only supported for Elastic fleets.</p>"
+      "documentation":"<p>Creates an app block.</p> <p>App blocks are a WorkSpaces Applications resource that stores the details about the virtual hard disk in an S3 bucket. It also stores the setup script with details about how to mount the virtual hard disk. The virtual hard disk includes the application binaries and other files necessary to launch your applications. Multiple applications can be assigned to a single app block.</p> <p>This is only supported for Elastic fleets.</p>"
     },
     "CreateAppBlockBuilder":{
       "name":"CreateAppBlockBuilder",
@@ -197,7 +214,7 @@
         {"shape":"ConcurrentModificationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Creates an application.</p> <p>Applications are an Amazon AppStream 2.0 resource that stores the details about how to launch applications on Elastic fleet streaming instances. An application consists of the launch details, icon, and display name. Applications are associated with an app block that contains the application binaries and other files. The applications assigned to an Elastic fleet are the applications users can launch. </p> <p>This is only supported for Elastic fleets.</p>"
+      "documentation":"<p>Creates an application.</p> <p>Applications are a WorkSpaces Applications resource that stores the details about how to launch applications on Elastic fleet streaming instances. An application consists of the launch details, icon, and display name. Applications are associated with an app block that contains the application binaries and other files. The applications assigned to an Elastic fleet are the applications users can launch. </p> <p>This is only supported for Elastic fleets.</p>"
     },
     "CreateDirectoryConfig":{
       "name":"CreateDirectoryConfig",
@@ -215,7 +232,7 @@
         {"shape":"OperationNotPermittedException"},
         {"shape":"InvalidRoleException"}
       ],
-      "documentation":"<p>Creates a Directory Config object in AppStream 2.0. This object includes the configuration information required to join fleets and image builders to Microsoft Active Directory domains.</p>"
+      "documentation":"<p>Creates a Directory Config object in WorkSpaces Applications. This object includes the configuration information required to join fleets and image builders to Microsoft Active Directory domains.</p>"
     },
     "CreateEntitlement":{
       "name":"CreateEntitlement",
@@ -231,7 +248,26 @@
         {"shape":"LimitExceededException"},
         {"shape":"EntitlementAlreadyExistsException"}
       ],
-      "documentation":"<p>Creates a new entitlement. Entitlements control access to specific applications within a stack, based on user attributes. Entitlements apply to SAML 2.0 federated user identities. Amazon AppStream 2.0 user pool and streaming URL users are entitled to all applications in a stack. Entitlements don't apply to the desktop stream view application, or to applications managed by a dynamic app provider using the Dynamic Application Framework.</p>"
+      "documentation":"<p>Creates a new entitlement. Entitlements control access to specific applications within a stack, based on user attributes. Entitlements apply to SAML 2.0 federated user identities. WorkSpaces Applications user pool and streaming URL users are entitled to all applications in a stack. Entitlements don't apply to the desktop stream view application, or to applications managed by a dynamic app provider using the Dynamic Application Framework.</p>"
+    },
+    "CreateExportImageTask":{
+      "name":"CreateExportImageTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateExportImageTaskRequest"},
+      "output":{"shape":"CreateExportImageTaskResult"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidRoleException"},
+        {"shape":"InvalidAccountStatusException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"ResourceNotAvailableException"}
+      ],
+      "documentation":"<p>Creates a task to export a WorkSpaces Applications image to an EC2 AMI. This allows you to use your customized WorkSpaces Applications images with other AWS services or for backup purposes.</p>"
     },
     "CreateFleet":{
       "name":"CreateFleet",
@@ -293,6 +329,26 @@
       ],
       "documentation":"<p>Creates a URL to start an image builder streaming session.</p>"
     },
+    "CreateImportedImage":{
+      "name":"CreateImportedImage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateImportedImageRequest"},
+      "output":{"shape":"CreateImportedImageResult"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidAccountStatusException"},
+        {"shape":"InvalidRoleException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceAlreadyExistsException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"IncompatibleImageException"},
+        {"shape":"DryRunOperationException"}
+      ],
+      "documentation":"<p>Creates a custom WorkSpaces Applications image by importing an EC2 AMI. This allows you to use your own customized AMI to create WorkSpaces Applications images that support additional instance types beyond the standard stream.* instances.</p>"
+    },
     "CreateStack":{
       "name":"CreateStack",
       "http":{
@@ -327,7 +383,7 @@
         {"shape":"OperationNotPermittedException"},
         {"shape":"InvalidParameterCombinationException"}
       ],
-      "documentation":"<p>Creates a temporary URL to start an AppStream 2.0 streaming session for the specified user. A streaming URL enables application streaming to be tested without user setup. </p>"
+      "documentation":"<p>Creates a temporary URL to start an WorkSpaces Applications streaming session for the specified user. A streaming URL enables application streaming to be tested without user setup. </p>"
     },
     "CreateThemeForStack":{
       "name":"CreateThemeForStack",
@@ -364,7 +420,7 @@
         {"shape":"ConcurrentModificationException"},
         {"shape":"IncompatibleImageException"}
       ],
-      "documentation":"<p>Creates a new image with the latest Windows operating system updates, driver updates, and AppStream 2.0 agent software.</p> <p>For more information, see the \"Update an Image by Using Managed AppStream 2.0 Image Updates\" section in <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/administer-images.html\">Administer Your AppStream 2.0 Images</a>, in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+      "documentation":"<p>Creates a new image with the latest Windows operating system updates, driver updates, and WorkSpaces Applications agent software.</p> <p>For more information, see the \"Update an Image by Using Managed WorkSpaces Applications Image Updates\" section in <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/administer-images.html\">Administer Your WorkSpaces Applications Images</a>, in the <i>Amazon WorkSpaces Applications Administration Guide</i>.</p>"
     },
     "CreateUsageReportSubscription":{
       "name":"CreateUsageReportSubscription",
@@ -457,7 +513,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Deletes the specified Directory Config object from AppStream 2.0. This object includes the information required to join streaming instances to an Active Directory domain.</p>"
+      "documentation":"<p>Deletes the specified Directory Config object from WorkSpaces Applications. This object includes the information required to join streaming instances to an Active Directory domain.</p>"
     },
     "DeleteEntitlement":{
       "name":"DeleteEntitlement",
@@ -636,6 +692,21 @@
       ],
       "documentation":"<p>Retrieves a list that describes one or more app blocks.</p>"
     },
+    "DescribeAppLicenseUsage":{
+      "name":"DescribeAppLicenseUsage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeAppLicenseUsageRequest"},
+      "output":{"shape":"DescribeAppLicenseUsageResult"},
+      "errors":[
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves license included application usage information.</p>"
+    },
     "DescribeApplicationFleetAssociations":{
       "name":"DescribeApplicationFleetAssociations",
       "http":{
@@ -675,7 +746,7 @@
       "errors":[
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves a list that describes one or more specified Directory Config objects for AppStream 2.0, if the names for these objects are provided. Otherwise, all Directory Config objects in the account are described. These objects include the configuration information required to join fleets and image builders to Microsoft Active Directory domains. </p> <p>Although the response syntax in this topic includes the account password, this password is not returned in the actual response.</p>"
+      "documentation":"<p>Retrieves a list that describes one or more specified Directory Config objects for WorkSpaces Applications, if the names for these objects are provided. Otherwise, all Directory Config objects in the account are described. These objects include the configuration information required to join fleets and image builders to Microsoft Active Directory domains. </p> <p>Although the response syntax in this topic includes the account password, this password is not returned in the actual response.</p>"
     },
     "DescribeEntitlements":{
       "name":"DescribeEntitlements",
@@ -758,6 +829,20 @@
       ],
       "documentation":"<p>Retrieves a list that describes the streaming sessions for a specified stack and fleet. If a UserId is provided for the stack and fleet, only streaming sessions for that user are described. If an authentication type is not provided, the default is to authenticate users using a streaming URL.</p>"
     },
+    "DescribeSoftwareAssociations":{
+      "name":"DescribeSoftwareAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeSoftwareAssociationsRequest"},
+      "output":{"shape":"DescribeSoftwareAssociationsResult"},
+      "errors":[
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves license included application associations for a specified resource.</p>"
+    },
     "DescribeStacks":{
       "name":"DescribeStacks",
       "http":{
@@ -839,7 +924,7 @@
       "errors":[
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Disables the specified user in the user pool. Users can't sign in to AppStream 2.0 until they are re-enabled. This action does not delete the user. </p>"
+      "documentation":"<p>Disables the specified user in the user pool. Users can't sign in to WorkSpaces Applications until they are re-enabled. This action does not delete the user. </p>"
     },
     "DisassociateAppBlockBuilderAppBlock":{
       "name":"DisassociateAppBlockBuilderAppBlock",
@@ -904,6 +989,22 @@
       ],
       "documentation":"<p>Disassociates the specified fleet from the specified stack.</p>"
     },
+    "DisassociateSoftwareFromImageBuilder":{
+      "name":"DisassociateSoftwareFromImageBuilder",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateSoftwareFromImageBuilderRequest"},
+      "output":{"shape":"DisassociateSoftwareFromImageBuilderResult"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"InvalidParameterCombinationException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Removes license included application(s) association(s) from an image builder instance.</p>"
+    },
     "EnableUser":{
       "name":"EnableUser",
       "http":{
@@ -916,7 +1017,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidAccountStatusException"}
       ],
-      "documentation":"<p>Enables a user in the user pool. After being enabled, users can sign in to AppStream 2.0 and open applications from the stacks to which they are assigned.</p>"
+      "documentation":"<p>Enables a user in the user pool. After being enabled, users can sign in to WorkSpaces Applications and open applications from the stacks to which they are assigned.</p>"
     },
     "ExpireSession":{
       "name":"ExpireSession",
@@ -927,6 +1028,20 @@
       "input":{"shape":"ExpireSessionRequest"},
       "output":{"shape":"ExpireSessionResult"},
       "documentation":"<p>Immediately stops the specified streaming session.</p>"
+    },
+    "GetExportImageTask":{
+      "name":"GetExportImageTask",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetExportImageTaskRequest"},
+      "output":{"shape":"GetExportImageTaskResult"},
+      "errors":[
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves information about an export image task, including its current state, progress, and any error details.</p>"
     },
     "ListAssociatedFleets":{
       "name":"ListAssociatedFleets",
@@ -963,6 +1078,19 @@
       ],
       "documentation":"<p>Retrieves a list of entitled applications.</p>"
     },
+    "ListExportImageTasks":{
+      "name":"ListExportImageTasks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListExportImageTasksRequest"},
+      "output":{"shape":"ListExportImageTasksResult"},
+      "errors":[
+        {"shape":"OperationNotPermittedException"}
+      ],
+      "documentation":"<p>Lists export image tasks, with optional filtering and pagination. Use this operation to monitor the status of multiple export operations.</p>"
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -974,7 +1102,7 @@
       "errors":[
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves a list of all tags for the specified AppStream 2.0 resource. You can tag AppStream 2.0 image builders, images, fleets, and stacks.</p> <p>For more information about tags, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+      "documentation":"<p>Retrieves a list of all tags for the specified WorkSpaces Applications resource. You can tag WorkSpaces Applications image builders, images, fleets, and stacks.</p> <p>For more information about tags, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon WorkSpaces Applications Administration Guide</i>.</p>"
     },
     "StartAppBlockBuilder":{
       "name":"StartAppBlockBuilder",
@@ -1031,6 +1159,21 @@
         {"shape":"IncompatibleImageException"}
       ],
       "documentation":"<p>Starts the specified image builder.</p>"
+    },
+    "StartSoftwareDeploymentToImageBuilder":{
+      "name":"StartSoftwareDeploymentToImageBuilder",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartSoftwareDeploymentToImageBuilderRequest"},
+      "output":{"shape":"StartSoftwareDeploymentToImageBuilderResult"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"OperationNotPermittedException"},
+        {"shape":"ConcurrentModificationException"}
+      ],
+      "documentation":"<p>Initiates license included applications deployment to an image builder instance.</p>"
     },
     "StopAppBlockBuilder":{
       "name":"StopAppBlockBuilder",
@@ -1089,7 +1232,7 @@
         {"shape":"InvalidAccountStatusException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Adds or overwrites one or more tags for the specified AppStream 2.0 resource. You can tag AppStream 2.0 image builders, images, fleets, and stacks.</p> <p>Each tag consists of a key and an optional value. If a resource already has a tag with the same key, this operation updates its value.</p> <p>To list the current tags for your resources, use <a>ListTagsForResource</a>. To disassociate tags from your resources, use <a>UntagResource</a>.</p> <p>For more information about tags, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+      "documentation":"<p>Adds or overwrites one or more tags for the specified WorkSpaces Applications resource. You can tag WorkSpaces Applications image builders, images, fleets, and stacks.</p> <p>Each tag consists of a key and an optional value. If a resource already has a tag with the same key, this operation updates its value.</p> <p>To list the current tags for your resources, use <a>ListTagsForResource</a>. To disassociate tags from your resources, use <a>UntagResource</a>.</p> <p>For more information about tags, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon WorkSpaces Applications Administration Guide</i>.</p>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -1102,7 +1245,7 @@
       "errors":[
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Disassociates one or more specified tags from the specified AppStream 2.0 resource.</p> <p>To list the current tags for your resources, use <a>ListTagsForResource</a>.</p> <p>For more information about tags, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+      "documentation":"<p>Disassociates one or more specified tags from the specified WorkSpaces Applications resource.</p> <p>To list the current tags for your resources, use <a>ListTagsForResource</a>.</p> <p>For more information about tags, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon WorkSpaces Applications Administration Guide</i>.</p>"
     },
     "UpdateAppBlockBuilder":{
       "name":"UpdateAppBlockBuilder",
@@ -1157,7 +1300,7 @@
         {"shape":"InvalidRoleException"},
         {"shape":"IncompatibleImageException"}
       ],
-      "documentation":"<p>Updates the specified Directory Config object in AppStream 2.0. This object includes the configuration information required to join fleets and image builders to Microsoft Active Directory domains.</p>"
+      "documentation":"<p>Updates the specified Directory Config object in WorkSpaces Applications. This object includes the configuration information required to join fleets and image builders to Microsoft Active Directory domains.</p>"
     },
     "UpdateEntitlement":{
       "name":"UpdateEntitlement",
@@ -1267,7 +1410,7 @@
           "documentation":"<p>The identifier (ID) of the VPC in which the interface endpoint is used.</p>"
         }
       },
-      "documentation":"<p>Describes an interface VPC endpoint (interface endpoint) that lets you create a private connection between the virtual private cloud (VPC) that you specify and AppStream 2.0. When you specify an interface endpoint for a stack, users of the stack can connect to AppStream 2.0 only through that endpoint. When you specify an interface endpoint for an image builder, administrators can connect to the image builder only through that endpoint.</p>"
+      "documentation":"<p>Describes an interface VPC endpoint (interface endpoint) that lets you create a private connection between the virtual private cloud (VPC) that you specify and WorkSpaces Applications. When you specify an interface endpoint for a stack, users of the stack can connect to WorkSpaces Applications only through that endpoint. When you specify an interface endpoint for an image builder, administrators can connect to the image builder only through that endpoint.</p>"
     },
     "AccessEndpointList":{
       "type":"list",
@@ -1302,6 +1445,65 @@
         "DOMAIN_SMART_CARD_SIGNIN",
         "AUTO_TIME_ZONE_REDIRECTION"
       ]
+    },
+    "AdminAppLicenseUsageList":{
+      "type":"list",
+      "member":{"shape":"AdminAppLicenseUsageRecord"}
+    },
+    "AdminAppLicenseUsageRecord":{
+      "type":"structure",
+      "required":[
+        "UserArn",
+        "BillingPeriod",
+        "OwnerAWSAccountId",
+        "SubscriptionFirstUsedDate",
+        "SubscriptionLastUsedDate",
+        "LicenseType",
+        "UserId"
+      ],
+      "members":{
+        "UserArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the user who used the license-included application.</p>"
+        },
+        "BillingPeriod":{
+          "shape":"String",
+          "documentation":"<p>The billing period for the license usage record.</p>"
+        },
+        "OwnerAWSAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The account ID of the owner of the license.</p>"
+        },
+        "SubscriptionFirstUsedDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the license was first used.</p>"
+        },
+        "SubscriptionLastUsedDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the license was last used.</p>"
+        },
+        "LicenseType":{
+          "shape":"String",
+          "documentation":"<p>The type of license (for example, Microsoft Office).</p>"
+        },
+        "UserId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the user who used the license-included application.</p>"
+        }
+      },
+      "documentation":"<p>The collection of license usage records.</p>"
+    },
+    "AgentSoftwareVersion":{
+      "type":"string",
+      "documentation":"The image type is the type of AppStream image resource.",
+      "enum":[
+        "CURRENT_LATEST",
+        "ALWAYS_LATEST"
+      ]
+    },
+    "AmiName":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9().\\-/_]{3,128}$"
     },
     "AppBlock":{
       "type":"structure",
@@ -1348,14 +1550,14 @@
         },
         "State":{
           "shape":"AppBlockState",
-          "documentation":"<p>The state of the app block.</p> <p>An app block with AppStream 2.0 packaging will be in the <code>INACTIVE</code> state if no application package (VHD) is assigned to it. After an application package (VHD) is created by an app block builder for an app block, it becomes <code>ACTIVE</code>. </p> <p>Custom app blocks are always in the <code>ACTIVE</code> state and no action is required to use them.</p>"
+          "documentation":"<p>The state of the app block.</p> <p>An app block with WorkSpaces Applications packaging will be in the <code>INACTIVE</code> state if no application package (VHD) is assigned to it. After an application package (VHD) is created by an app block builder for an app block, it becomes <code>ACTIVE</code>. </p> <p>Custom app blocks are always in the <code>ACTIVE</code> state and no action is required to use them.</p>"
         },
         "AppBlockErrors":{
           "shape":"ErrorDetailsList",
           "documentation":"<p>The errors of the app block.</p>"
         }
       },
-      "documentation":"<p>Describes an app block.</p> <p>App blocks are an Amazon AppStream 2.0 resource that stores the details about the virtual hard disk in an S3 bucket. It also stores the setup script with details about how to mount the virtual hard disk. The virtual hard disk includes the application binaries and other files necessary to launch your applications. Multiple applications can be assigned to a single app block.</p> <p>This is only supported for Elastic fleets.</p>"
+      "documentation":"<p>Describes an app block.</p> <p>App blocks are a WorkSpaces Applications resource that stores the details about the virtual hard disk in an S3 bucket. It also stores the setup script with details about how to mount the virtual hard disk. The virtual hard disk includes the application binaries and other files necessary to launch your applications. Multiple applications can be assigned to a single app block.</p> <p>This is only supported for Elastic fleets.</p>"
     },
     "AppBlockBuilder":{
       "type":"structure",
@@ -1509,6 +1711,21 @@
       "type":"list",
       "member":{"shape":"AppBlock"}
     },
+    "AppCatalogConfig":{
+      "type":"list",
+      "member":{"shape":"ApplicationConfig"},
+      "max":50
+    },
+    "AppDisplayName":{
+      "type":"string",
+      "max":100,
+      "pattern":"^[a-zA-Z0-9][a-zA-Z0-9_. -]{0,99}$"
+    },
+    "AppName":{
+      "type":"string",
+      "max":100,
+      "pattern":"^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,99}$"
+    },
     "AppVisibility":{
       "type":"string",
       "enum":[
@@ -1593,6 +1810,45 @@
       "type":"list",
       "member":{"shape":"ApplicationAttribute"},
       "max":2
+    },
+    "ApplicationConfig":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "AbsoluteAppPath"
+      ],
+      "members":{
+        "Name":{
+          "shape":"AppName",
+          "documentation":"<p>The name of the application. This is a required field that must be unique within the application catalog and between 1-100 characters, matching the pattern ^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,99}$.</p>"
+        },
+        "DisplayName":{
+          "shape":"AppDisplayName",
+          "documentation":"<p>The display name shown to users for this application. This field is optional and can be 0-100 characters, matching the pattern ^[a-zA-Z0-9][a-zA-Z0-9_. -]{0,99}$.</p>"
+        },
+        "AbsoluteAppPath":{
+          "shape":"FilePath",
+          "documentation":"<p>The absolute path to the executable file that launches the application. This is a required field that can be 1-32767 characters to support Windows extended file paths. Use escaped file path strings like \"C:\\\\\\\\Windows\\\\\\\\System32\\\\\\\\notepad.exe\".</p>"
+        },
+        "AbsoluteIconPath":{
+          "shape":"FilePath",
+          "documentation":"<p>The absolute path to the icon file for the application. This field is optional and can be 1-32767 characters. If not provided, the icon is derived from the executable. Use PNG images with proper transparency for the best user experience.</p>"
+        },
+        "AbsoluteManifestPath":{
+          "shape":"FilePath",
+          "documentation":"<p>The absolute path to the prewarm manifest file for this application. This field is optional and only applicable when using application-specific manifests. The path can be 1-32767 characters and should point to a text file containing file paths to prewarm.</p>"
+        },
+        "WorkingDirectory":{
+          "shape":"FilePath",
+          "documentation":"<p>The working directory to use when launching the application. This field is optional and can be 0-32767 characters. Use escaped file path strings like \"C:\\\\\\\\Path\\\\\\\\To\\\\\\\\Working\\\\\\\\Directory\".</p>"
+        },
+        "LaunchParameters":{
+          "shape":"LaunchParameters",
+          "documentation":"<p>The launch parameters to pass to the application executable. This field is optional and can be 0-1024 characters. Use escaped strings with the full list of required parameters, such as PowerShell script paths or command-line arguments.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for an application in the imported image's application catalog. This structure defines how applications appear and launch for users.</p>",
+      "sensitive":true
     },
     "ApplicationFleetAssociation":{
       "type":"structure",
@@ -1744,8 +2000,7 @@
     },
     "AssociateApplicationToEntitlementResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AssociateFleetRequest":{
       "type":"structure",
@@ -1766,8 +2021,28 @@
     },
     "AssociateFleetResult":{
       "type":"structure",
+      "members":{}
+    },
+    "AssociateSoftwareToImageBuilderRequest":{
+      "type":"structure",
+      "required":[
+        "ImageBuilderName",
+        "SoftwareNames"
+      ],
       "members":{
+        "ImageBuilderName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the target image builder instance.</p>"
+        },
+        "SoftwareNames":{
+          "shape":"StringList",
+          "documentation":"<p>The list of license included applications to associate with the image builder.</p> <p>Possible values include the following:</p> <ul> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_64Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_64Bit</p> </li> </ul>"
+        }
       }
+    },
+    "AssociateSoftwareToImageBuilderResult":{
+      "type":"structure",
+      "members":{}
     },
     "AuthenticationType":{
       "type":"string",
@@ -1969,7 +2244,7 @@
         },
         "Tags":{
           "shape":"Tags",
-          "documentation":"<p>The tags to associate with the app block builder. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+          "documentation":"<p>The tags to associate with the app block builder. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon WorkSpaces Applications Administration Guide</i>.</p>"
         },
         "Platform":{
           "shape":"AppBlockBuilderPlatformType",
@@ -1989,7 +2264,7 @@
         },
         "IamRoleArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to apply to the app block builder. To assume a role, the app block builder calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. AppStream 2.0 retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html\">Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to apply to the app block builder. To assume a role, the app block builder calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. WorkSpaces Applications retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html\">Using an IAM Role to Grant Permissions to Applications and Scripts Running on WorkSpaces Applications Streaming Instances</a> in the <i>Amazon WorkSpaces Applications Administration Guide</i>.</p>"
         },
         "AccessEndpoints":{
           "shape":"AccessEndpointList",
@@ -2217,6 +2492,45 @@
         }
       }
     },
+    "CreateExportImageTaskRequest":{
+      "type":"structure",
+      "required":[
+        "ImageName",
+        "AmiName",
+        "IamRoleArn"
+      ],
+      "members":{
+        "ImageName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the WorkSpaces Applications image to export. The image must be in an available state and owned by your account.</p>"
+        },
+        "AmiName":{
+          "shape":"AmiName",
+          "documentation":"<p>The name for the exported EC2 AMI. This is a required field that must be unique within your account and region.</p>"
+        },
+        "IamRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the IAM role that allows WorkSpaces Applications to create the AMI. The role must have permissions to copy images, describe images, and create tags, with a trust relationship allowing appstream.amazonaws.com to assume the role.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"Tags",
+          "documentation":"<p>The tags to apply to the exported AMI. These tags help you organize and manage your EC2 AMIs.</p>"
+        },
+        "AmiDescription":{
+          "shape":"Description",
+          "documentation":"<p>An optional description for the exported AMI. This description will be applied to the resulting EC2 AMI.</p>"
+        }
+      }
+    },
+    "CreateExportImageTaskResult":{
+      "type":"structure",
+      "members":{
+        "ExportImageTask":{
+          "shape":"ExportImageTask",
+          "documentation":"<p>Information about the export image task that was created, including the task ID and initial state.</p>"
+        }
+      }
+    },
     "CreateFleetRequest":{
       "type":"structure",
       "required":[
@@ -2238,7 +2552,7 @@
         },
         "InstanceType":{
           "shape":"String",
-          "documentation":"<p>The instance type to use when launching fleet instances. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics.g5.xlarge</p> </li> <li> <p>stream.graphics.g5.2xlarge</p> </li> <li> <p>stream.graphics.g5.4xlarge</p> </li> <li> <p>stream.graphics.g5.8xlarge</p> </li> <li> <p>stream.graphics.g5.12xlarge</p> </li> <li> <p>stream.graphics.g5.16xlarge</p> </li> <li> <p>stream.graphics.g5.24xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul> <p>The following instance types are available for Elastic fleets:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> </ul>"
+          "documentation":"<p>The instance type to use when launching fleet instances. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics.g5.xlarge</p> </li> <li> <p>stream.graphics.g5.2xlarge</p> </li> <li> <p>stream.graphics.g5.4xlarge</p> </li> <li> <p>stream.graphics.g5.8xlarge</p> </li> <li> <p>stream.graphics.g5.12xlarge</p> </li> <li> <p>stream.graphics.g5.16xlarge</p> </li> <li> <p>stream.graphics.g5.24xlarge</p> </li> <li> <p>stream.graphics.g6.xlarge</p> </li> <li> <p>stream.graphics.g6.2xlarge</p> </li> <li> <p>stream.graphics.g6.4xlarge</p> </li> <li> <p>stream.graphics.g6.8xlarge</p> </li> <li> <p>stream.graphics.g6.16xlarge</p> </li> <li> <p>stream.graphics.g6.12xlarge</p> </li> <li> <p>stream.graphics.g6.24xlarge</p> </li> <li> <p>stream.graphics.gr6.4xlarge</p> </li> <li> <p>stream.graphics.gr6.8xlarge</p> </li> <li> <p>stream.graphics.g6f.large</p> </li> <li> <p>stream.graphics.g6f.xlarge</p> </li> <li> <p>stream.graphics.g6f.2xlarge</p> </li> <li> <p>stream.graphics.g6f.4xlarge</p> </li> <li> <p>stream.graphics.gr6f.4xlarge</p> </li> </ul> <p>The following instance types are available for Elastic fleets:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> </ul>"
         },
         "FleetType":{
           "shape":"FleetType",
@@ -2278,7 +2592,7 @@
         },
         "Tags":{
           "shape":"Tags",
-          "documentation":"<p>The tags to associate with the fleet. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+          "documentation":"<p>The tags to associate with the fleet. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon WorkSpaces Applications Administration Guide</i>.</p>"
         },
         "IdleDisconnectTimeoutInSeconds":{
           "shape":"Integer",
@@ -2286,11 +2600,11 @@
         },
         "IamRoleArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to apply to the fleet. To assume a role, a fleet instance calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. AppStream 2.0 retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html\">Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to apply to the fleet. To assume a role, a fleet instance calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. WorkSpaces Applications retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html\">Using an IAM Role to Grant Permissions to Applications and Scripts Running on WorkSpaces Applications Streaming Instances</a> in the <i>Amazon WorkSpaces Applications Administration Guide</i>.</p>"
         },
         "StreamView":{
           "shape":"StreamView",
-          "documentation":"<p>The AppStream 2.0 view that is displayed to your users when they stream from the fleet. When <code>APP</code> is specified, only the windows of applications opened by users display. When <code>DESKTOP</code> is specified, the standard desktop that is provided by the operating system displays.</p> <p>The default value is <code>APP</code>.</p>"
+          "documentation":"<p>The WorkSpaces Applications view that is displayed to your users when they stream from the fleet. When <code>APP</code> is specified, only the windows of applications opened by users display. When <code>DESKTOP</code> is specified, the standard desktop that is provided by the operating system displays.</p> <p>The default value is <code>APP</code>.</p>"
         },
         "Platform":{
           "shape":"PlatformType",
@@ -2311,6 +2625,10 @@
         "MaxSessionsPerInstance":{
           "shape":"Integer",
           "documentation":"<p>The maximum number of user sessions on an instance. This only applies to multi-session fleets.</p>"
+        },
+        "RootVolumeConfig":{
+          "shape":"VolumeConfig",
+          "documentation":"<p>The configuration for the root volume of fleet instances. Use this to customize storage capacity from 200 GB up to 500 GB based on your application requirements.</p>"
         }
       }
     },
@@ -2344,7 +2662,7 @@
         },
         "InstanceType":{
           "shape":"String",
-          "documentation":"<p>The instance type to use when launching the image builder. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul>"
+          "documentation":"<p>The instance type to use when launching the image builder. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics.g5.xlarge</p> </li> <li> <p>stream.graphics.g5.2xlarge</p> </li> <li> <p>stream.graphics.g5.4xlarge</p> </li> <li> <p>stream.graphics.g5.8xlarge</p> </li> <li> <p>stream.graphics.g5.16xlarge</p> </li> <li> <p>stream.graphics.g5.12xlarge</p> </li> <li> <p>stream.graphics.g5.24xlarge</p> </li> <li> <p>stream.graphics.g6.xlarge</p> </li> <li> <p>stream.graphics.g6.2xlarge</p> </li> <li> <p>stream.graphics.g6.4xlarge</p> </li> <li> <p>stream.graphics.g6.8xlarge</p> </li> <li> <p>stream.graphics.g6.16xlarge</p> </li> <li> <p>stream.graphics.g6.12xlarge</p> </li> <li> <p>stream.graphics.g6.24xlarge</p> </li> <li> <p>stream.graphics.gr6.4xlarge</p> </li> <li> <p>stream.graphics.gr6.8xlarge</p> </li> <li> <p>stream.graphics.g6f.large</p> </li> <li> <p>stream.graphics.g6f.xlarge</p> </li> <li> <p>stream.graphics.g6f.2xlarge</p> </li> <li> <p>stream.graphics.g6f.4xlarge</p> </li> <li> <p>stream.graphics.gr6f.4xlarge</p> </li> </ul>"
         },
         "Description":{
           "shape":"Description",
@@ -2360,7 +2678,7 @@
         },
         "IamRoleArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to apply to the image builder. To assume a role, the image builder calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. AppStream 2.0 retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html\">Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to apply to the image builder. To assume a role, the image builder calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. WorkSpaces Applications retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html\">Using an IAM Role to Grant Permissions to Applications and Scripts Running on WorkSpaces Applications Streaming Instances</a> in the <i>Amazon WorkSpaces Applications Administration Guide</i>.</p>"
         },
         "EnableDefaultInternetAccess":{
           "shape":"BooleanObject",
@@ -2372,15 +2690,27 @@
         },
         "AppstreamAgentVersion":{
           "shape":"AppstreamAgentVersion",
-          "documentation":"<p>The version of the AppStream 2.0 agent to use for this image builder. To use the latest version of the AppStream 2.0 agent, specify [LATEST]. </p>"
+          "documentation":"<p>The version of the WorkSpaces Applications agent to use for this image builder. To use the latest version of the WorkSpaces Applications agent, specify [LATEST]. </p>"
         },
         "Tags":{
           "shape":"Tags",
-          "documentation":"<p>The tags to associate with the image builder. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>For more information about tags, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+          "documentation":"<p>The tags to associate with the image builder. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>For more information about tags, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon WorkSpaces Applications Administration Guide</i>.</p>"
         },
         "AccessEndpoints":{
           "shape":"AccessEndpointList",
           "documentation":"<p>The list of interface VPC endpoint (interface endpoint) objects. Administrators can connect to the image builder only through the specified endpoints.</p>"
+        },
+        "RootVolumeConfig":{
+          "shape":"VolumeConfig",
+          "documentation":"<p>The configuration for the root volume of the image builder. Use this to customize storage capacity from 200 GB up to 500 GB based on your application installation requirements.</p>"
+        },
+        "SoftwaresToInstall":{
+          "shape":"StringList",
+          "documentation":"<p>The list of license included applications to install on the image builder during creation.</p> <p>Possible values include the following:</p> <ul> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_64Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_64Bit</p> </li> </ul>"
+        },
+        "SoftwaresToUninstall":{
+          "shape":"StringList",
+          "documentation":"<p>The list of license included applications to uninstall from the image builder during creation.</p> <p>Possible values include the following:</p> <ul> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_64Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_64Bit</p> </li> </ul>"
         }
       }
     },
@@ -2412,12 +2742,68 @@
       "members":{
         "StreamingURL":{
           "shape":"String",
-          "documentation":"<p>The URL to start the AppStream 2.0 streaming session.</p>"
+          "documentation":"<p>The URL to start the WorkSpaces Applications streaming session.</p>"
         },
         "Expires":{
           "shape":"Timestamp",
           "documentation":"<p>The elapsed time, in seconds after the Unix epoch, when this URL expires.</p>"
         }
+      }
+    },
+    "CreateImportedImageRequest":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "SourceAmiId",
+        "IamRoleArn"
+      ],
+      "members":{
+        "Name":{
+          "shape":"Name",
+          "documentation":"<p>A unique name for the imported image. The name must be between 1 and 100 characters and can contain letters, numbers, underscores, periods, and hyphens.</p>"
+        },
+        "SourceAmiId":{
+          "shape":"PhotonAmiId",
+          "documentation":"<p>The ID of the EC2 AMI to import. The AMI must meet specific requirements including Windows Server 2022 Full Base, UEFI boot mode, TPM 2.0 support, and proper drivers.</p>"
+        },
+        "IamRoleArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the IAM role that allows WorkSpaces Applications to access your AMI. The role must have permissions to modify image attributes and describe images, with a trust relationship allowing appstream.amazonaws.com to assume the role.</p>"
+        },
+        "Description":{
+          "shape":"ImageImportDescription",
+          "documentation":"<p>An optional description for the imported image. The description must match approved regex patterns and can be up to 256 characters.</p>"
+        },
+        "DisplayName":{
+          "shape":"ImageImportDisplayName",
+          "documentation":"<p>An optional display name for the imported image. The display name must match approved regex patterns and can be up to 100 characters.</p>"
+        },
+        "Tags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags to apply to the imported image. Tags help you organize and manage your WorkSpaces Applications resources.</p>"
+        },
+        "RuntimeValidationConfig":{
+          "shape":"RuntimeValidationConfig",
+          "documentation":"<p>Configuration for runtime validation of the imported image. When specified, WorkSpaces Applications provisions an instance to test streaming functionality, which helps ensure the image is suitable for use.</p>"
+        },
+        "AgentSoftwareVersion":{
+          "shape":"AgentSoftwareVersion",
+          "documentation":"<p>The version of the WorkSpaces Applications agent to use for the imported image. Choose CURRENT_LATEST to use the agent version available at the time of import, or ALWAYS_LATEST to automatically update to the latest agent version when new versions are released.</p>"
+        },
+        "AppCatalogConfig":{
+          "shape":"AppCatalogConfig",
+          "documentation":"<p>Configuration for the application catalog of the imported image. This allows you to specify applications available for streaming, including their paths, icons, and launch parameters. This field contains sensitive data.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>When set to true, performs validation checks without actually creating the imported image. Use this to verify your configuration before executing the actual import operation.</p>"
+        }
+      }
+    },
+    "CreateImportedImageResult":{
+      "type":"structure",
+      "members":{
+        "Image":{"shape":"Image"}
       }
     },
     "CreateStackRequest":{
@@ -2458,15 +2844,15 @@
         },
         "Tags":{
           "shape":"Tags",
-          "documentation":"<p>The tags to associate with the stack. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p> <p>For more information about tags, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+          "documentation":"<p>The tags to associate with the stack. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p> <p>For more information about tags, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon WorkSpaces Applications Administration Guide</i>.</p>"
         },
         "AccessEndpoints":{
           "shape":"AccessEndpointList",
-          "documentation":"<p>The list of interface VPC endpoint (interface endpoint) objects. Users of the stack can connect to AppStream 2.0 only through the specified endpoints.</p>"
+          "documentation":"<p>The list of interface VPC endpoint (interface endpoint) objects. Users of the stack can connect to WorkSpaces Applications only through the specified endpoints.</p>"
         },
         "EmbedHostDomains":{
           "shape":"EmbedHostDomains",
-          "documentation":"<p>The domains where AppStream 2.0 streaming sessions can be embedded in an iframe. You must approve the domains that you want to host embedded AppStream 2.0 streaming sessions. </p>"
+          "documentation":"<p>The domains where WorkSpaces Applications streaming sessions can be embedded in an iframe. You must approve the domains that you want to host embedded WorkSpaces Applications streaming sessions. </p>"
         },
         "StreamingExperienceSettings":{
           "shape":"StreamingExperienceSettings",
@@ -2513,7 +2899,7 @@
         },
         "SessionContext":{
           "shape":"String",
-          "documentation":"<p>The session context. For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/managing-stacks-fleets.html#managing-stacks-fleets-parameters\">Session Context</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+          "documentation":"<p>The session context. For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/managing-stacks-fleets.html#managing-stacks-fleets-parameters\">Session Context</a> in the <i>Amazon WorkSpaces Applications Administration Guide</i>.</p>"
         }
       }
     },
@@ -2522,7 +2908,7 @@
       "members":{
         "StreamingURL":{
           "shape":"String",
-          "documentation":"<p>The URL to start the AppStream 2.0 streaming session.</p>"
+          "documentation":"<p>The URL to start the WorkSpaces Applications streaming session.</p>"
         },
         "Expires":{
           "shape":"Timestamp",
@@ -2600,11 +2986,11 @@
         },
         "newImageTags":{
           "shape":"Tags",
-          "documentation":"<p>The tags to associate with the new image. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>For more information about tags, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+          "documentation":"<p>The tags to associate with the new image. A tag is a key-value pair, and the value is optional. For example, Environment=Test. If you do not specify a value, Environment=. </p> <p>Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following special characters: </p> <p>_ . : / = + \\ - @</p> <p>If you do not specify a value, the value is set to an empty string.</p> <p>For more information about tags, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html\">Tagging Your Resources</a> in the <i>Amazon WorkSpaces Applications Administration Guide</i>.</p>"
         },
         "dryRun":{
           "shape":"Boolean",
-          "documentation":"<p>Indicates whether to display the status of image update availability before AppStream 2.0 initiates the process of creating a new updated image. If this value is set to <code>true</code>, AppStream 2.0 displays whether image updates are available. If this value is set to <code>false</code>, AppStream 2.0 initiates the process of creating a new updated image without displaying whether image updates are available.</p>"
+          "documentation":"<p>Indicates whether to display the status of image update availability before WorkSpaces Applications initiates the process of creating a new updated image. If this value is set to <code>true</code>, WorkSpaces Applications displays whether image updates are available. If this value is set to <code>false</code>, WorkSpaces Applications initiates the process of creating a new updated image without displaying whether image updates are available.</p>"
         }
       }
     },
@@ -2620,15 +3006,14 @@
     },
     "CreateUsageReportSubscriptionRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CreateUsageReportSubscriptionResult":{
       "type":"structure",
       "members":{
         "S3BucketName":{
           "shape":"String",
-          "documentation":"<p>The Amazon S3 bucket where generated reports are stored.</p> <p>If you enabled on-instance session scripts and Amazon S3 logging for your session script configuration, AppStream 2.0 created an S3 bucket to store the script output. The bucket is unique to your account and Region. When you enable usage reporting in this case, AppStream 2.0 uses the same bucket to store your usage reports. If you haven't already enabled on-instance session scripts, when you enable usage reports, AppStream 2.0 creates a new S3 bucket.</p>"
+          "documentation":"<p>The Amazon S3 bucket where generated reports are stored.</p> <p>If you enabled on-instance session scripts and Amazon S3 logging for your session script configuration, WorkSpaces Applications created an S3 bucket to store the script output. The bucket is unique to your account and Region. When you enable usage reporting in this case, WorkSpaces Applications uses the same bucket to store your usage reports. If you haven't already enabled on-instance session scripts, when you enable usage reports, WorkSpaces Applications creates a new S3 bucket.</p>"
         },
         "Schedule":{
           "shape":"UsageReportSchedule",
@@ -2667,8 +3052,7 @@
     },
     "CreateUserResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteAppBlockBuilderRequest":{
       "type":"structure",
@@ -2682,8 +3066,7 @@
     },
     "DeleteAppBlockBuilderResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteAppBlockRequest":{
       "type":"structure",
@@ -2697,8 +3080,7 @@
     },
     "DeleteAppBlockResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteApplicationRequest":{
       "type":"structure",
@@ -2712,8 +3094,7 @@
     },
     "DeleteApplicationResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteDirectoryConfigRequest":{
       "type":"structure",
@@ -2727,8 +3108,7 @@
     },
     "DeleteDirectoryConfigResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteEntitlementRequest":{
       "type":"structure",
@@ -2749,8 +3129,7 @@
     },
     "DeleteEntitlementResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteFleetRequest":{
       "type":"structure",
@@ -2764,8 +3143,7 @@
     },
     "DeleteFleetResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteImageBuilderRequest":{
       "type":"structure",
@@ -2805,8 +3183,7 @@
     },
     "DeleteImagePermissionsResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteImageRequest":{
       "type":"structure",
@@ -2839,8 +3216,7 @@
     },
     "DeleteStackResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteThemeForStackRequest":{
       "type":"structure",
@@ -2854,18 +3230,15 @@
     },
     "DeleteThemeForStackResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteUsageReportSubscriptionRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteUsageReportSubscriptionResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteUserRequest":{
       "type":"structure",
@@ -2886,8 +3259,7 @@
     },
     "DeleteUserResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescribeAppBlockBuilderAppBlockAssociationsRequest":{
       "type":"structure",
@@ -2980,6 +3352,37 @@
         "NextToken":{
           "shape":"String",
           "documentation":"<p>The pagination token used to retrieve the next page of results for this operation.</p>"
+        }
+      }
+    },
+    "DescribeAppLicenseUsageRequest":{
+      "type":"structure",
+      "required":["BillingPeriod"],
+      "members":{
+        "BillingPeriod":{
+          "shape":"String",
+          "documentation":"<p>Billing period for the usage record.</p> <p>Specify the value in <i>yyyy-mm</i> format. For example, for August 2025, use <i>2025-08</i>.</p>"
+        },
+        "MaxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to return.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Token for pagination of results.</p>"
+        }
+      }
+    },
+    "DescribeAppLicenseUsageResult":{
+      "type":"structure",
+      "members":{
+        "AppLicenseUsages":{
+          "shape":"AdminAppLicenseUsageList",
+          "documentation":"<p>Collection of license usage records.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>Token for pagination of results.</p>"
         }
       }
     },
@@ -3301,6 +3704,41 @@
         }
       }
     },
+    "DescribeSoftwareAssociationsRequest":{
+      "type":"structure",
+      "required":["AssociatedResource"],
+      "members":{
+        "AssociatedResource":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the resource to describe software associations. Possible resources are Image and ImageBuilder.</p>"
+        },
+        "MaxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to return.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token to use to retrieve the next page of results for this operation.</p>"
+        }
+      }
+    },
+    "DescribeSoftwareAssociationsResult":{
+      "type":"structure",
+      "members":{
+        "AssociatedResource":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the resource to describe software associations.</p>"
+        },
+        "SoftwareAssociations":{
+          "shape":"SoftwareAssociationsList",
+          "documentation":"<p>Collection of license included applications association details including:</p> <ul> <li> <p>License included application name and version information</p> </li> <li> <p>Deployment status (SoftwareDeploymentStatus enum)</p> </li> <li> <p>Error details for failed deployments</p> </li> <li> <p>Association timestamps</p> </li> </ul>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token to use to retrieve the next page of results for this operation.</p>"
+        }
+      }
+    },
     "DescribeStacksRequest":{
       "type":"structure",
       "members":{
@@ -3500,8 +3938,7 @@
     },
     "DisableUserResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisassociateAppBlockBuilderAppBlockRequest":{
       "type":"structure",
@@ -3522,8 +3959,7 @@
     },
     "DisassociateAppBlockBuilderAppBlockResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisassociateApplicationFleetRequest":{
       "type":"structure",
@@ -3544,8 +3980,7 @@
     },
     "DisassociateApplicationFleetResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisassociateApplicationFromEntitlementRequest":{
       "type":"structure",
@@ -3571,8 +4006,7 @@
     },
     "DisassociateApplicationFromEntitlementResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisassociateFleetRequest":{
       "type":"structure",
@@ -3593,8 +4027,28 @@
     },
     "DisassociateFleetResult":{
       "type":"structure",
+      "members":{}
+    },
+    "DisassociateSoftwareFromImageBuilderRequest":{
+      "type":"structure",
+      "required":[
+        "ImageBuilderName",
+        "SoftwareNames"
+      ],
       "members":{
+        "ImageBuilderName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the target image builder instance.</p>"
+        },
+        "SoftwareNames":{
+          "shape":"StringList",
+          "documentation":"<p>The list of license included applications to disassociate from the image builder.</p> <p>Possible values include the following:</p> <ul> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_64Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_64Bit</p> </li> </ul>"
+        }
       }
+    },
+    "DisassociateSoftwareFromImageBuilderResult":{
+      "type":"structure",
+      "members":{}
     },
     "DisplayName":{
       "type":"string",
@@ -3624,6 +4078,14 @@
       "type":"list",
       "member":{"shape":"Domain"},
       "max":50
+    },
+    "DryRunOperationException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The exception that is thrown when a dry run operation is requested. This indicates that the validation checks have been performed successfully, but no actual resources were created or modified.</p>",
+      "exception":true
     },
     "DynamicAppProvidersEnabled":{
       "type":"string",
@@ -3663,8 +4125,7 @@
     },
     "EnableUserResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "EntitledApplication":{
       "type":"structure",
@@ -3719,7 +4180,7 @@
           "documentation":"<p>The time when the entitlement was last modified.</p>"
         }
       },
-      "documentation":"<p>Specifies an entitlement. Entitlements control access to specific applications within a stack, based on user attributes. Entitlements apply to SAML 2.0 federated user identities. Amazon AppStream 2.0 user pool and streaming URL users are entitled to all applications in a stack. Entitlements don't apply to the desktop stream view application, or to applications managed by a dynamic app provider using the Dynamic Application Framework.</p>"
+      "documentation":"<p>Specifies an entitlement. Entitlements control access to specific applications within a stack, based on user attributes. Entitlements apply to SAML 2.0 federated user identities. WorkSpaces Applications user pool and streaming URL users are entitled to all applications in a stack. Entitlements don't apply to the desktop stream view application, or to applications managed by a dynamic app provider using the Dynamic Application Framework.</p>"
     },
     "EntitlementAlreadyExistsException":{
       "type":"structure",
@@ -3738,14 +4199,14 @@
       "members":{
         "Name":{
           "shape":"String",
-          "documentation":"<p>A supported AWS IAM SAML <code>PrincipalTag</code> attribute that is matched to the associated value when a user identity federates into an Amazon AppStream 2.0 SAML application.</p> <p>The following are valid values:</p> <ul> <li> <p>roles</p> </li> <li> <p>department </p> </li> <li> <p>organization </p> </li> <li> <p>groups </p> </li> <li> <p>title </p> </li> <li> <p>costCenter </p> </li> <li> <p>userType</p> </li> </ul> <p> </p>"
+          "documentation":"<p>A supported AWS IAM SAML <code>PrincipalTag</code> attribute that is matched to the associated value when a user identity federates into a WorkSpaces Applications SAML application.</p> <p>The following are valid values:</p> <ul> <li> <p>roles</p> </li> <li> <p>department </p> </li> <li> <p>organization </p> </li> <li> <p>groups </p> </li> <li> <p>title </p> </li> <li> <p>costCenter </p> </li> <li> <p>userType</p> </li> </ul> <p> </p>"
         },
         "Value":{
           "shape":"String",
-          "documentation":"<p>A value that is matched to a supported SAML attribute name when a user identity federates into an Amazon AppStream 2.0 SAML application. </p>"
+          "documentation":"<p>A value that is matched to a supported SAML attribute name when a user identity federates into a WorkSpaces Applications SAML application. </p>"
         }
       },
-      "documentation":"<p>An attribute associated with an entitlement. Application entitlements work by matching a supported SAML 2.0 attribute name to a value when a user identity federates to an Amazon AppStream 2.0 SAML application.</p>"
+      "documentation":"<p>An attribute associated with an entitlement. Application entitlements work by matching a supported SAML 2.0 attribute name to a value when a user identity federates to a WorkSpaces Applications SAML application.</p>"
     },
     "EntitlementAttributeList":{
       "type":"list",
@@ -3798,12 +4259,110 @@
     },
     "ExpireSessionResult":{
       "type":"structure",
+      "members":{}
+    },
+    "ExportImageTask":{
+      "type":"structure",
+      "required":[
+        "TaskId",
+        "ImageArn",
+        "AmiName",
+        "CreatedDate"
+      ],
       "members":{
-      }
+        "TaskId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier for the export image task. Use this ID to track the task's progress and retrieve its details.</p>"
+        },
+        "ImageArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the WorkSpaces Applications image being exported.</p>"
+        },
+        "AmiName":{
+          "shape":"AmiName",
+          "documentation":"<p>The name of the EC2 AMI that will be created by this export task.</p>"
+        },
+        "CreatedDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the export image task was created.</p>"
+        },
+        "AmiDescription":{
+          "shape":"Description",
+          "documentation":"<p>The description that will be applied to the exported EC2 AMI.</p>"
+        },
+        "State":{
+          "shape":"ExportImageTaskState",
+          "documentation":"<p>The current state of the export image task, such as PENDING, RUNNING, COMPLETED, or FAILED.</p>"
+        },
+        "AmiId":{
+          "shape":"PhotonAmiId",
+          "documentation":"<p>The ID of the EC2 AMI that was created by this export task. This field is only populated when the task completes successfully.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"Tags",
+          "documentation":"<p>The tags that will be applied to the exported EC2 AMI.</p>"
+        },
+        "ErrorDetails":{
+          "shape":"ErrorDetailsList",
+          "documentation":"<p>Details about any errors that occurred during the export process. This field is only populated when the task fails.</p>"
+        }
+      },
+      "documentation":"<p>Information about an export image task, including its current state, timestamps, and any error details.</p>"
+    },
+    "ExportImageTaskState":{
+      "type":"string",
+      "enum":[
+        "EXPORTING",
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
+    "ExportImageTasks":{
+      "type":"list",
+      "member":{"shape":"ExportImageTask"}
     },
     "FeedbackURL":{
       "type":"string",
       "max":1000
+    },
+    "FilePath":{
+      "type":"string",
+      "max":32767,
+      "sensitive":true
+    },
+    "Filter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"FilterName",
+          "documentation":"<p>The name of the filter. Valid filter names depend on the operation being performed.</p>"
+        },
+        "Values":{
+          "shape":"FilterValues",
+          "documentation":"<p>The values for the filter. Multiple values can be specified for a single filter name.</p>"
+        }
+      },
+      "documentation":"<p>A filter for narrowing down the results when listing export image tasks. Filters allow you to specify criteria such as task state or creation date.</p>"
+    },
+    "FilterName":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,100}$"
+    },
+    "FilterValue":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9][a-zA-Z0-9_:/.-]{0,200}$"
+    },
+    "FilterValues":{
+      "type":"list",
+      "member":{"shape":"FilterValue"}
+    },
+    "Filters":{
+      "type":"list",
+      "member":{"shape":"Filter"}
     },
     "Fleet":{
       "type":"structure",
@@ -3841,7 +4400,7 @@
         },
         "InstanceType":{
           "shape":"String",
-          "documentation":"<p>The instance type to use when launching fleet instances. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul>"
+          "documentation":"<p>The instance type to use when launching fleet instances. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics.g5.xlarge</p> </li> <li> <p>stream.graphics.g5.2xlarge</p> </li> <li> <p>stream.graphics.g5.4xlarge</p> </li> <li> <p>stream.graphics.g5.8xlarge</p> </li> <li> <p>stream.graphics.g5.16xlarge</p> </li> <li> <p>stream.graphics.g5.12xlarge</p> </li> <li> <p>stream.graphics.g5.24xlarge</p> </li> <li> <p>stream.graphics.g6.xlarge</p> </li> <li> <p>stream.graphics.g6.2xlarge</p> </li> <li> <p>stream.graphics.g6.4xlarge</p> </li> <li> <p>stream.graphics.g6.8xlarge</p> </li> <li> <p>stream.graphics.g6.16xlarge</p> </li> <li> <p>stream.graphics.g6.12xlarge</p> </li> <li> <p>stream.graphics.g6.24xlarge</p> </li> <li> <p>stream.graphics.gr6.4xlarge</p> </li> <li> <p>stream.graphics.gr6.8xlarge</p> </li> <li> <p>stream.graphics.g6f.large</p> </li> <li> <p>stream.graphics.g6f.xlarge</p> </li> <li> <p>stream.graphics.g6f.2xlarge</p> </li> <li> <p>stream.graphics.g6f.4xlarge</p> </li> <li> <p>stream.graphics.gr6f.4xlarge</p> </li> </ul>"
         },
         "FleetType":{
           "shape":"FleetType",
@@ -3889,11 +4448,11 @@
         },
         "IamRoleArn":{
           "shape":"Arn",
-          "documentation":"<p>The ARN of the IAM role that is applied to the fleet. To assume a role, the fleet instance calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. AppStream 2.0 retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html\">Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+          "documentation":"<p>The ARN of the IAM role that is applied to the fleet. To assume a role, the fleet instance calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. WorkSpaces Applications retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html\">Using an IAM Role to Grant Permissions to Applications and Scripts Running on WorkSpaces Applications Streaming Instances</a> in the <i>Amazon WorkSpaces Applications Administration Guide</i>.</p>"
         },
         "StreamView":{
           "shape":"StreamView",
-          "documentation":"<p>The AppStream 2.0 view that is displayed to your users when they stream from the fleet. When <code>APP</code> is specified, only the windows of applications opened by users display. When <code>DESKTOP</code> is specified, the standard desktop that is provided by the operating system displays.</p> <p>The default value is <code>APP</code>.</p>"
+          "documentation":"<p>The WorkSpaces Applications view that is displayed to your users when they stream from the fleet. When <code>APP</code> is specified, only the windows of applications opened by users display. When <code>DESKTOP</code> is specified, the standard desktop that is provided by the operating system displays.</p> <p>The default value is <code>APP</code>.</p>"
         },
         "Platform":{
           "shape":"PlatformType",
@@ -3914,6 +4473,10 @@
         "MaxSessionsPerInstance":{
           "shape":"Integer",
           "documentation":"<p>The maximum number of user sessions on an instance. This only applies to multi-session fleets.</p>"
+        },
+        "RootVolumeConfig":{
+          "shape":"VolumeConfig",
+          "documentation":"<p>The current configuration of the root volume for fleet instances, including the storage size in GB.</p>"
         }
       },
       "documentation":"<p>Describes a fleet.</p>"
@@ -3928,7 +4491,8 @@
         "IAM_ROLE_ARN",
         "USB_DEVICE_FILTER_STRINGS",
         "SESSION_SCRIPT_S3_LOCATION",
-        "MAX_SESSIONS_PER_INSTANCE"
+        "MAX_SESSIONS_PER_INSTANCE",
+        "VOLUME_CONFIGURATION"
       ]
     },
     "FleetAttributes":{
@@ -3982,7 +4546,8 @@
         "DOMAIN_JOIN_NERR_WORKSTATION_NOT_STARTED",
         "DOMAIN_JOIN_ERROR_DS_MACHINE_ACCOUNT_QUOTA_EXCEEDED",
         "DOMAIN_JOIN_NERR_PASSWORD_EXPIRED",
-        "DOMAIN_JOIN_INTERNAL_SERVICE_ERROR"
+        "DOMAIN_JOIN_INTERNAL_SERVICE_ERROR",
+        "VALIDATION_ERROR"
       ]
     },
     "FleetErrors":{
@@ -4010,6 +4575,24 @@
         "ON_DEMAND",
         "ELASTIC"
       ]
+    },
+    "GetExportImageTaskRequest":{
+      "type":"structure",
+      "members":{
+        "TaskId":{
+          "shape":"UUID",
+          "documentation":"<p>The unique identifier of the export image task to retrieve information about.</p>"
+        }
+      }
+    },
+    "GetExportImageTaskResult":{
+      "type":"structure",
+      "members":{
+        "ExportImageTask":{
+          "shape":"ExportImageTask",
+          "documentation":"<p>Information about the export image task, including its current state, created date, and any error details.</p>"
+        }
+      }
     },
     "Image":{
       "type":"structure",
@@ -4045,7 +4628,7 @@
         },
         "ImageBuilderName":{
           "shape":"String",
-          "documentation":"<p>The name of the image builder that was used to create the private image. If the image is shared, this value is null.</p>"
+          "documentation":"<p>The name of the image builder that was used to create the private image. If the image is shared, copied, or updated by using Managed Image Updates, this value is null.</p>"
         },
         "Platform":{
           "shape":"PlatformType",
@@ -4073,7 +4656,7 @@
         },
         "AppstreamAgentVersion":{
           "shape":"AppstreamAgentVersion",
-          "documentation":"<p>The version of the AppStream 2.0 agent to use for instances that are launched from this image. </p>"
+          "documentation":"<p>The version of the WorkSpaces Applications agent to use for instances that are launched from this image. </p>"
         },
         "ImagePermissions":{
           "shape":"ImagePermissions",
@@ -4085,7 +4668,7 @@
         },
         "LatestAppstreamAgentVersion":{
           "shape":"LatestAppstreamAgentVersion",
-          "documentation":"<p>Indicates whether the image is using the latest AppStream 2.0 agent version or not.</p>"
+          "documentation":"<p>Indicates whether the image is using the latest WorkSpaces Applications agent version or not.</p>"
         },
         "SupportedInstanceFamilies":{
           "shape":"StringList",
@@ -4093,11 +4676,19 @@
         },
         "DynamicAppProvidersEnabled":{
           "shape":"DynamicAppProvidersEnabled",
-          "documentation":"<p>Indicates whether dynamic app providers are enabled within an AppStream 2.0 image or not.</p>"
+          "documentation":"<p>Indicates whether dynamic app providers are enabled within an WorkSpaces Applications image or not.</p>"
         },
         "ImageSharedWithOthers":{
           "shape":"ImageSharedWithOthers",
           "documentation":"<p>Indicates whether the image is shared with another account ID.</p>"
+        },
+        "ManagedSoftwareIncluded":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the image includes license-included applications.</p>"
+        },
+        "ImageType":{
+          "shape":"ImageType",
+          "documentation":"<p>The type of the image. Images created through AMI import have type \"custom\", while WorkSpaces Applications provided images have type \"native\". Custom images support additional instance types including GeneralPurpose, MemoryOptimized, ComputeOptimized, and Accelerated instance families.</p>"
         }
       },
       "documentation":"<p>Describes an image.</p>"
@@ -4132,7 +4723,7 @@
         },
         "InstanceType":{
           "shape":"String",
-          "documentation":"<p>The instance type for the image builder. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul>"
+          "documentation":"<p>The instance type for the image builder. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics.g5.xlarge</p> </li> <li> <p>stream.graphics.g5.2xlarge</p> </li> <li> <p>stream.graphics.g5.4xlarge</p> </li> <li> <p>stream.graphics.g5.8xlarge</p> </li> <li> <p>stream.graphics.g5.16xlarge</p> </li> <li> <p>stream.graphics.g5.12xlarge</p> </li> <li> <p>stream.graphics.g5.24xlarge</p> </li> <li> <p>stream.graphics.g6.xlarge</p> </li> <li> <p>stream.graphics.g6.2xlarge</p> </li> <li> <p>stream.graphics.g6.4xlarge</p> </li> <li> <p>stream.graphics.g6.8xlarge</p> </li> <li> <p>stream.graphics.g6.16xlarge</p> </li> <li> <p>stream.graphics.g6.12xlarge</p> </li> <li> <p>stream.graphics.g6.24xlarge</p> </li> <li> <p>stream.graphics.gr6.4xlarge</p> </li> <li> <p>stream.graphics.gr6.8xlarge</p> </li> <li> <p>stream.graphics.g6f.large</p> </li> <li> <p>stream.graphics.g6f.xlarge</p> </li> <li> <p>stream.graphics.g6f.2xlarge</p> </li> <li> <p>stream.graphics.g6f.4xlarge</p> </li> <li> <p>stream.graphics.gr6f.4xlarge</p> </li> </ul>"
         },
         "Platform":{
           "shape":"PlatformType",
@@ -4140,7 +4731,7 @@
         },
         "IamRoleArn":{
           "shape":"Arn",
-          "documentation":"<p>The ARN of the IAM role that is applied to the image builder. To assume a role, the image builder calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. AppStream 2.0 retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html\">Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+          "documentation":"<p>The ARN of the IAM role that is applied to the image builder. To assume a role, the image builder calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. WorkSpaces Applications retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html\">Using an IAM Role to Grant Permissions to Applications and Scripts Running on WorkSpaces Applications Streaming Instances</a> in the <i>Amazon WorkSpaces Applications Administration Guide</i>.</p>"
         },
         "State":{
           "shape":"ImageBuilderState",
@@ -4169,15 +4760,19 @@
         },
         "AppstreamAgentVersion":{
           "shape":"AppstreamAgentVersion",
-          "documentation":"<p>The version of the AppStream 2.0 agent that is currently being used by the image builder. </p>"
+          "documentation":"<p>The version of the WorkSpaces Applications agent that is currently being used by the image builder. </p>"
         },
         "AccessEndpoints":{
           "shape":"AccessEndpointList",
           "documentation":"<p>The list of virtual private cloud (VPC) interface endpoint objects. Administrators can connect to the image builder only through the specified endpoints.</p>"
         },
+        "RootVolumeConfig":{
+          "shape":"VolumeConfig",
+          "documentation":"<p>The current configuration of the root volume for the image builder, including the storage size in GB.</p>"
+        },
         "LatestAppstreamAgentVersion":{
           "shape":"LatestAppstreamAgentVersion",
-          "documentation":"<p>Indicates whether the image builder is using the latest AppStream 2.0 agent version or not.</p>"
+          "documentation":"<p>Indicates whether the image builder is using the latest WorkSpaces Applications agent version or not.</p>"
         }
       },
       "documentation":"<p>Describes a virtual machine that is used to create an image. </p>"
@@ -4199,7 +4794,10 @@
         "DELETING",
         "FAILED",
         "UPDATING",
-        "PENDING_QUALIFICATION"
+        "PENDING_QUALIFICATION",
+        "PENDING_SYNCING_APPS",
+        "SYNCING_APPS",
+        "PENDING_IMAGE_IMPORT"
       ]
     },
     "ImageBuilderStateChangeReason":{
@@ -4222,6 +4820,16 @@
         "INTERNAL_ERROR",
         "IMAGE_UNAVAILABLE"
       ]
+    },
+    "ImageImportDescription":{
+      "type":"string",
+      "max":256,
+      "pattern":"^[a-zA-Z0-9_.() -]+$"
+    },
+    "ImageImportDisplayName":{
+      "type":"string",
+      "max":100,
+      "pattern":"^[a-zA-Z0-9_.() -]+$"
     },
     "ImageList":{
       "type":"list",
@@ -4257,7 +4865,8 @@
         "COPYING",
         "DELETING",
         "CREATING",
-        "IMPORTING"
+        "IMPORTING",
+        "VALIDATING"
       ]
     },
     "ImageStateChangeReason":{
@@ -4279,7 +4888,17 @@
       "enum":[
         "INTERNAL_ERROR",
         "IMAGE_BUILDER_NOT_AVAILABLE",
-        "IMAGE_COPY_FAILURE"
+        "IMAGE_COPY_FAILURE",
+        "IMAGE_UPDATE_FAILURE",
+        "IMAGE_IMPORT_FAILURE"
+      ]
+    },
+    "ImageType":{
+      "type":"string",
+      "documentation":"The image type is the type of AppStream image resource.",
+      "enum":[
+        "CUSTOM",
+        "NATIVE"
       ]
     },
     "IncompatibleImageException":{
@@ -4289,6 +4908,10 @@
       },
       "documentation":"<p>The image can't be updated because it's not compatible for updates.</p>",
       "exception":true
+    },
+    "InstanceType":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9-]+(\\.[a-z0-9-]+)+\\.(small|medium|large|xlarge|\\d+xlarge|metal)$"
     },
     "Integer":{"type":"integer"},
     "InvalidAccountStatusException":{
@@ -4339,6 +4962,12 @@
         "TRUE",
         "FALSE"
       ]
+    },
+    "LaunchParameters":{
+      "type":"string",
+      "max":1024,
+      "pattern":"[^\\x00]+",
+      "sensitive":true
     },
     "LimitExceededException":{
       "type":"structure",
@@ -4440,6 +5069,36 @@
         }
       }
     },
+    "ListExportImageTasksRequest":{
+      "type":"structure",
+      "members":{
+        "Filters":{
+          "shape":"Filters",
+          "documentation":"<p>Optional filters to apply when listing export image tasks. Filters help you narrow down the results based on specific criteria.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of export image tasks to return in a single request. The valid range is 1-500, with a default of 50.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token from a previous request. Use this to retrieve the next page of results when there are more tasks than the MaxResults limit.</p>"
+        }
+      }
+    },
+    "ListExportImageTasksResult":{
+      "type":"structure",
+      "members":{
+        "ExportImageTasks":{
+          "shape":"ExportImageTasks",
+          "documentation":"<p>The list of export image tasks that match the specified criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token to use for retrieving the next page of results. This field is only present when there are more results available.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -4489,6 +5148,10 @@
           "shape":"String",
           "documentation":"<p>The private IP address of the elastic network interface that is attached to instances in your VPC.</p>"
         },
+        "EniIpv6Addresses":{
+          "shape":"StringList",
+          "documentation":"<p>The IPv6 addresses assigned to the elastic network interface. This field supports IPv6 connectivity for WorkSpaces Applications instances.</p>"
+        },
         "EniId":{
           "shape":"String",
           "documentation":"<p>The resource identifier of the elastic network interface that is attached to instances in your VPC. All network interfaces have the eni-xxxxxxxx resource identifier.</p>"
@@ -4525,6 +5188,10 @@
         "ENABLED",
         "DISABLED"
       ]
+    },
+    "PhotonAmiId":{
+      "type":"string",
+      "pattern":"^ami-[a-z0-9]{8,17}$"
     },
     "PlatformType":{
       "type":"string",
@@ -4564,7 +5231,7 @@
       "members":{
         "Message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>AppStream 2.0 can’t process the request right now because the Describe calls from your AWS account are being throttled by Amazon EC2. Try again later.</p>",
+      "documentation":"<p>WorkSpaces Applications can’t process the request right now because the Describe calls from your AWS account are being throttled by Amazon EC2. Try again later.</p>",
       "exception":true
     },
     "ResourceAlreadyExistsException":{
@@ -4626,6 +5293,16 @@
       },
       "documentation":"<p>The specified resource was not found.</p>",
       "exception":true
+    },
+    "RuntimeValidationConfig":{
+      "type":"structure",
+      "members":{
+        "IntendedInstanceType":{
+          "shape":"InstanceType",
+          "documentation":"<p>The instance type to use for runtime validation testing. It's recommended to use the same instance type you plan to use for your fleet to ensure accurate validation results.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for runtime validation of imported images. This structure specifies the instance type to use for testing the imported image's streaming capabilities.</p>"
     },
     "S3Bucket":{
       "type":"string",
@@ -4808,6 +5485,40 @@
       "type":"list",
       "member":{"shape":"SharedImagePermissions"}
     },
+    "SoftwareAssociations":{
+      "type":"structure",
+      "members":{
+        "SoftwareName":{
+          "shape":"String",
+          "documentation":"<p>The name of the license-included application.</p> <p>Possible values include the following:</p> <ul> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Professional_Plus_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Professional_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Professional_64Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Office_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2021_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_32Bit</p> </li> <li> <p>Microsoft_Visio_2024_LTSC_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2021_Standard_64Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_32Bit</p> </li> <li> <p>Microsoft_Project_2024_Standard_64Bit</p> </li> </ul>"
+        },
+        "Status":{
+          "shape":"SoftwareDeploymentStatus",
+          "documentation":"<p>The deployment status of the license-included application.</p>"
+        },
+        "DeploymentError":{
+          "shape":"ErrorDetailsList",
+          "documentation":"<p>The error details for failed deployments of the license-included application.</p>"
+        }
+      },
+      "documentation":"<p>The association between a license-included application and a resource.</p>"
+    },
+    "SoftwareAssociationsList":{
+      "type":"list",
+      "member":{"shape":"SoftwareAssociations"}
+    },
+    "SoftwareDeploymentStatus":{
+      "type":"string",
+      "enum":[
+        "STAGED_FOR_INSTALLATION",
+        "PENDING_INSTALLATION",
+        "INSTALLED",
+        "STAGED_FOR_UNINSTALLATION",
+        "PENDING_UNINSTALLATION",
+        "FAILED_TO_INSTALL",
+        "FAILED_TO_UNINSTALL"
+      ]
+    },
     "Stack":{
       "type":"structure",
       "required":["Name"],
@@ -4858,11 +5569,11 @@
         },
         "AccessEndpoints":{
           "shape":"AccessEndpointList",
-          "documentation":"<p>The list of virtual private cloud (VPC) interface endpoint objects. Users of the stack can connect to AppStream 2.0 only through the specified endpoints. </p>"
+          "documentation":"<p>The list of virtual private cloud (VPC) interface endpoint objects. Users of the stack can connect to WorkSpaces Applications only through the specified endpoints. </p>"
         },
         "EmbedHostDomains":{
           "shape":"EmbedHostDomains",
-          "documentation":"<p>The domains where AppStream 2.0 streaming sessions can be embedded in an iframe. You must approve the domains that you want to host embedded AppStream 2.0 streaming sessions.</p>"
+          "documentation":"<p>The domains where WorkSpaces Applications streaming sessions can be embedded in an iframe. You must approve the domains that you want to host embedded WorkSpaces Applications streaming sessions.</p>"
         },
         "StreamingExperienceSettings":{
           "shape":"StreamingExperienceSettings",
@@ -4951,8 +5662,7 @@
     },
     "StartFleetResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "StartImageBuilderRequest":{
       "type":"structure",
@@ -4964,7 +5674,7 @@
         },
         "AppstreamAgentVersion":{
           "shape":"AppstreamAgentVersion",
-          "documentation":"<p>The version of the AppStream 2.0 agent to use for this image builder. To use the latest version of the AppStream 2.0 agent, specify [LATEST]. </p>"
+          "documentation":"<p>The version of the WorkSpaces Applications agent to use for this image builder. To use the latest version of the WorkSpaces Applications agent, specify [LATEST]. </p>"
         }
       }
     },
@@ -4976,6 +5686,24 @@
           "documentation":"<p>Information about the image builder.</p>"
         }
       }
+    },
+    "StartSoftwareDeploymentToImageBuilderRequest":{
+      "type":"structure",
+      "required":["ImageBuilderName"],
+      "members":{
+        "ImageBuilderName":{
+          "shape":"Name",
+          "documentation":"<p>The name of the target image builder instance.</p>"
+        },
+        "RetryFailedDeployments":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to retry previously failed license included application deployments.</p>"
+        }
+      }
+    },
+    "StartSoftwareDeploymentToImageBuilderResult":{
+      "type":"structure",
+      "members":{}
     },
     "StopAppBlockBuilderRequest":{
       "type":"structure",
@@ -5005,8 +5733,7 @@
     },
     "StopFleetResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "StopImageBuilderRequest":{
       "type":"structure",
@@ -5045,7 +5772,7 @@
         },
         "DomainsRequireAdminConsent":{
           "shape":"DomainList",
-          "documentation":"<p>The OneDrive for Business domains where you require admin consent when users try to link their OneDrive account to AppStream 2.0. The attribute can only be specified when ConnectorType=ONE_DRIVE.</p>"
+          "documentation":"<p>The OneDrive for Business domains where you require admin consent when users try to link their OneDrive account to WorkSpaces Applications. The attribute can only be specified when ConnectorType=ONE_DRIVE.</p>"
         }
       },
       "documentation":"<p>Describes a connector that enables persistent storage for users.</p>"
@@ -5131,8 +5858,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -5245,6 +5971,10 @@
       "pattern":"^[-@./#&+\\w\\s]*$"
     },
     "Timestamp":{"type":"timestamp"},
+    "UUID":{
+      "type":"string",
+      "pattern":"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -5264,8 +5994,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateAppBlockBuilderRequest":{
       "type":"structure",
@@ -5301,7 +6030,7 @@
         },
         "IamRoleArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to apply to the app block builder. To assume a role, the app block builder calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. AppStream 2.0 retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html\">Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to apply to the app block builder. To assume a role, the app block builder calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. WorkSpaces Applications retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html\">Using an IAM Role to Grant Permissions to Applications and Scripts Running on WorkSpaces Applications Streaming Instances</a> in the <i>Amazon WorkSpaces Applications Administration Guide</i>.</p>"
         },
         "AccessEndpoints":{
           "shape":"AccessEndpointList",
@@ -5453,7 +6182,7 @@
         },
         "InstanceType":{
           "shape":"String",
-          "documentation":"<p>The instance type to use when launching fleet instances. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics-desktop.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics-pro.4xlarge</p> </li> <li> <p>stream.graphics-pro.8xlarge</p> </li> <li> <p>stream.graphics-pro.16xlarge</p> </li> </ul> <p>The following instance types are available for Elastic fleets:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> </ul>"
+          "documentation":"<p>The instance type to use when launching fleet instances. The following instance types are available:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> <li> <p>stream.compute.large</p> </li> <li> <p>stream.compute.xlarge</p> </li> <li> <p>stream.compute.2xlarge</p> </li> <li> <p>stream.compute.4xlarge</p> </li> <li> <p>stream.compute.8xlarge</p> </li> <li> <p>stream.memory.large</p> </li> <li> <p>stream.memory.xlarge</p> </li> <li> <p>stream.memory.2xlarge</p> </li> <li> <p>stream.memory.4xlarge</p> </li> <li> <p>stream.memory.8xlarge</p> </li> <li> <p>stream.memory.z1d.large</p> </li> <li> <p>stream.memory.z1d.xlarge</p> </li> <li> <p>stream.memory.z1d.2xlarge</p> </li> <li> <p>stream.memory.z1d.3xlarge</p> </li> <li> <p>stream.memory.z1d.6xlarge</p> </li> <li> <p>stream.memory.z1d.12xlarge</p> </li> <li> <p>stream.graphics-design.large</p> </li> <li> <p>stream.graphics-design.xlarge</p> </li> <li> <p>stream.graphics-design.2xlarge</p> </li> <li> <p>stream.graphics-design.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.xlarge</p> </li> <li> <p>stream.graphics.g4dn.2xlarge</p> </li> <li> <p>stream.graphics.g4dn.4xlarge</p> </li> <li> <p>stream.graphics.g4dn.8xlarge</p> </li> <li> <p>stream.graphics.g4dn.12xlarge</p> </li> <li> <p>stream.graphics.g4dn.16xlarge</p> </li> <li> <p>stream.graphics.g5.xlarge</p> </li> <li> <p>stream.graphics.g5.2xlarge</p> </li> <li> <p>stream.graphics.g5.4xlarge</p> </li> <li> <p>stream.graphics.g5.8xlarge</p> </li> <li> <p>stream.graphics.g5.16xlarge</p> </li> <li> <p>stream.graphics.g5.12xlarge</p> </li> <li> <p>stream.graphics.g5.24xlarge</p> </li> <li> <p>stream.graphics.g6.xlarge</p> </li> <li> <p>stream.graphics.g6.2xlarge</p> </li> <li> <p>stream.graphics.g6.4xlarge</p> </li> <li> <p>stream.graphics.g6.8xlarge</p> </li> <li> <p>stream.graphics.g6.16xlarge</p> </li> <li> <p>stream.graphics.g6.12xlarge</p> </li> <li> <p>stream.graphics.g6.24xlarge</p> </li> <li> <p>stream.graphics.gr6.4xlarge</p> </li> <li> <p>stream.graphics.gr6.8xlarge</p> </li> <li> <p>stream.graphics.g6f.large</p> </li> <li> <p>stream.graphics.g6f.xlarge</p> </li> <li> <p>stream.graphics.g6f.2xlarge</p> </li> <li> <p>stream.graphics.g6f.4xlarge</p> </li> <li> <p>stream.graphics.gr6f.4xlarge</p> </li> </ul> <p>The following instance types are available for Elastic fleets:</p> <ul> <li> <p>stream.standard.small</p> </li> <li> <p>stream.standard.medium</p> </li> <li> <p>stream.standard.large</p> </li> <li> <p>stream.standard.xlarge</p> </li> <li> <p>stream.standard.2xlarge</p> </li> </ul>"
         },
         "ComputeCapacity":{
           "shape":"ComputeCapacity",
@@ -5502,11 +6231,11 @@
         },
         "IamRoleArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to apply to the fleet. To assume a role, a fleet instance calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. AppStream 2.0 retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html\">Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role to apply to the fleet. To assume a role, a fleet instance calls the AWS Security Token Service (STS) <code>AssumeRole</code> API operation and passes the ARN of the role to use. The operation creates a new session with temporary credentials. WorkSpaces Applications retrieves the temporary credentials and creates the <b>appstream_machine_role</b> credential profile on the instance.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html\">Using an IAM Role to Grant Permissions to Applications and Scripts Running on WorkSpaces Applications Streaming Instances</a> in the <i>Amazon WorkSpaces Applications Administration Guide</i>.</p>"
         },
         "StreamView":{
           "shape":"StreamView",
-          "documentation":"<p>The AppStream 2.0 view that is displayed to your users when they stream from the fleet. When <code>APP</code> is specified, only the windows of applications opened by users display. When <code>DESKTOP</code> is specified, the standard desktop that is provided by the operating system displays.</p> <p>The default value is <code>APP</code>.</p>"
+          "documentation":"<p>The WorkSpaces Applications view that is displayed to your users when they stream from the fleet. When <code>APP</code> is specified, only the windows of applications opened by users display. When <code>DESKTOP</code> is specified, the standard desktop that is provided by the operating system displays.</p> <p>The default value is <code>APP</code>.</p>"
         },
         "Platform":{
           "shape":"PlatformType",
@@ -5527,6 +6256,10 @@
         "MaxSessionsPerInstance":{
           "shape":"Integer",
           "documentation":"<p>The maximum number of user sessions on an instance. This only applies to multi-session fleets.</p>"
+        },
+        "RootVolumeConfig":{
+          "shape":"VolumeConfig",
+          "documentation":"<p>The updated configuration for the root volume of fleet instances. Note that volume size cannot be decreased below the image volume size.</p>"
         }
       }
     },
@@ -5563,8 +6296,7 @@
     },
     "UpdateImagePermissionsResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateStackRequest":{
       "type":"structure",
@@ -5613,11 +6345,11 @@
         },
         "AccessEndpoints":{
           "shape":"AccessEndpointList",
-          "documentation":"<p>The list of interface VPC endpoint (interface endpoint) objects. Users of the stack can connect to AppStream 2.0 only through the specified endpoints.</p>"
+          "documentation":"<p>The list of interface VPC endpoint (interface endpoint) objects. Users of the stack can connect to WorkSpaces Applications only through the specified endpoints.</p>"
         },
         "EmbedHostDomains":{
           "shape":"EmbedHostDomains",
-          "documentation":"<p>The domains where AppStream 2.0 streaming sessions can be embedded in an iframe. You must approve the domains that you want to host embedded AppStream 2.0 streaming sessions. </p>"
+          "documentation":"<p>The domains where WorkSpaces Applications streaming sessions can be embedded in an iframe. You must approve the domains that you want to host embedded WorkSpaces Applications streaming sessions. </p>"
         },
         "StreamingExperienceSettings":{
           "shape":"StreamingExperienceSettings",
@@ -5698,7 +6430,7 @@
       "members":{
         "S3BucketName":{
           "shape":"String",
-          "documentation":"<p>The Amazon S3 bucket where generated reports are stored.</p> <p>If you enabled on-instance session scripts and Amazon S3 logging for your session script configuration, AppStream 2.0 created an S3 bucket to store the script output. The bucket is unique to your account and Region. When you enable usage reporting in this case, AppStream 2.0 uses the same bucket to store your usage reports. If you haven't already enabled on-instance session scripts, when you enable usage reports, AppStream 2.0 creates a new S3 bucket.</p>"
+          "documentation":"<p>The Amazon S3 bucket where generated reports are stored.</p> <p>If you enabled on-instance session scripts and Amazon S3 logging for your session script configuration, WorkSpaces Applications created an S3 bucket to store the script output. The bucket is unique to your account and Region. When you enable usage reporting in this case, WorkSpaces Applications uses the same bucket to store your usage reports. If you haven't already enabled on-instance session scripts, when you enable usage reports, WorkSpaces Applications creates a new S3 bucket.</p>"
         },
         "Schedule":{
           "shape":"UsageReportSchedule",
@@ -5889,6 +6621,16 @@
         "SHARED"
       ]
     },
+    "VolumeConfig":{
+      "type":"structure",
+      "members":{
+        "VolumeSizeInGb":{
+          "shape":"Integer",
+          "documentation":"<p>The size of the root volume in GB. Valid range is 200-500 GB. The default is 200 GB, which is included in the hourly instance rate. Additional storage beyond 200 GB incurs extra charges and applies to instances regardless of their running state.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for the root volume of fleet instances and image builders. This allows you to customize the storage capacity beyond the default 200 GB.</p>"
+    },
     "VpcConfig":{
       "type":"structure",
       "members":{
@@ -5904,5 +6646,5 @@
       "documentation":"<p>Describes VPC configuration information for fleets and image builders.</p>"
     }
   },
-  "documentation":"<fullname>Amazon AppStream 2.0</fullname> <p>This is the <i>Amazon AppStream 2.0 API Reference</i>. This documentation provides descriptions and syntax for each of the actions and data types in AppStream 2.0. AppStream 2.0 is a fully managed, secure application streaming service that lets you stream desktop applications to users without rewriting applications. AppStream 2.0 manages the AWS resources that are required to host and run your applications, scales automatically, and provides access to your users on demand. </p> <note> <p>You can call the AppStream 2.0 API operations by using an interface VPC endpoint (interface endpoint). For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/access-api-cli-through-interface-vpc-endpoint.html\">Access AppStream 2.0 API Operations and CLI Commands Through an Interface VPC Endpoint</a> in the <i>Amazon AppStream 2.0 Administration Guide</i>.</p> </note> <p>To learn more about AppStream 2.0, see the following resources:</p> <ul> <li> <p> <a href=\"http://aws.amazon.com/appstream2\">Amazon AppStream 2.0 product page</a> </p> </li> <li> <p> <a href=\"http://aws.amazon.com/documentation/appstream2\">Amazon AppStream 2.0 documentation</a> </p> </li> </ul>"
+  "documentation":"<fullname>Amazon WorkSpaces Applications</fullname> <p>This is the <i>Amazon WorkSpaces Applications API Reference</i>. This documentation provides descriptions and syntax for each of the actions and data types in WorkSpaces Applications. WorkSpaces Applications is a fully managed, secure application streaming service that lets you stream desktop applications to users without rewriting applications. WorkSpaces Applications manages the AWS resources that are required to host and run your applications, scales automatically, and provides access to your users on demand. </p> <note> <p>You can call the WorkSpaces Applications API operations by using an interface VPC endpoint (interface endpoint). For more information, see <a href=\"https://docs.aws.amazon.com/appstream2/latest/developerguide/access-api-cli-through-interface-vpc-endpoint.html\">Access WorkSpaces Applications API Operations and CLI Commands Through an Interface VPC Endpoint</a> in the <i>Amazon WorkSpaces Applications Administration Guide</i>.</p> </note> <p>To learn more about WorkSpaces Applications, see the following resources:</p> <ul> <li> <p> <a href=\"http://aws.amazon.com/appstream2\">Amazon WorkSpaces Applications product page</a> </p> </li> <li> <p> <a href=\"http://aws.amazon.com/documentation/appstream2\">Amazon WorkSpaces Applications documentation</a> </p> </li> </ul>"
 }

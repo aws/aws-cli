@@ -235,6 +235,25 @@
       "documentation":"<p>This request can be sent after CreateRestoreTestingPlan request returns successfully. This is the second part of creating a resource testing plan, and it must be completed sequentially.</p> <p>This consists of <code>RestoreTestingSelectionName</code>, <code>ProtectedResourceType</code>, and one of the following:</p> <ul> <li> <p> <code>ProtectedResourceArns</code> </p> </li> <li> <p> <code>ProtectedResourceConditions</code> </p> </li> </ul> <p>Each protected resource type can have one single value.</p> <p>A restore testing selection can include a wildcard value (\"*\") for <code>ProtectedResourceArns</code> along with <code>ProtectedResourceConditions</code>. Alternatively, you can include up to 30 specific protected resource ARNs in <code>ProtectedResourceArns</code>.</p> <p>Cannot select by both protected resource types AND specific ARNs. Request will fail if both are included.</p>",
       "idempotent":true
     },
+    "CreateTieringConfiguration":{
+      "name":"CreateTieringConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/tiering-configurations"
+      },
+      "input":{"shape":"CreateTieringConfigurationInput"},
+      "output":{"shape":"CreateTieringConfigurationOutput"},
+      "errors":[
+        {"shape":"AlreadyExistsException"},
+        {"shape":"ConflictException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Creates a tiering configuration.</p> <p>A tiering configuration enables automatic movement of backup data to a lower-cost storage tier based on the age of backed-up objects in the backup vault.</p> <p>Each vault can only have one vault-specific tiering configuration, in addition to any global configuration that applies to all vaults.</p>",
+      "idempotent":true
+    },
     "DeleteBackupPlan":{
       "name":"DeleteBackupPlan",
       "http":{
@@ -414,6 +433,23 @@
       "documentation":"<p>Input the Restore Testing Plan name and Restore Testing Selection name.</p> <p>All testing selections associated with a restore testing plan must be deleted before the restore testing plan can be deleted.</p>",
       "idempotent":true
     },
+    "DeleteTieringConfiguration":{
+      "name":"DeleteTieringConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tiering-configurations/{tieringConfigurationName}"
+      },
+      "input":{"shape":"DeleteTieringConfigurationInput"},
+      "output":{"shape":"DeleteTieringConfigurationOutput"},
+      "errors":[
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Deletes the tiering configuration specified by a tiering configuration name.</p>",
+      "idempotent":true
+    },
     "DescribeBackupJob":{
       "name":"DescribeBackupJob",
       "http":{
@@ -590,6 +626,24 @@
         {"shape":"DependencyFailureException"}
       ],
       "documentation":"<p>Returns metadata associated with a restore job that is specified by a job ID.</p>",
+      "idempotent":true
+    },
+    "DescribeScanJob":{
+      "name":"DescribeScanJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/scan/jobs/{ScanJobId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeScanJobInput"},
+      "output":{"shape":"DescribeScanJobOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns scan job details for the specified ScanJobID.</p>",
       "idempotent":true
     },
     "DisassociateBackupVaultMpaApprovalTeam":{
@@ -885,6 +939,23 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Returns the Amazon Web Services resource types supported by Backup.</p>"
+    },
+    "GetTieringConfiguration":{
+      "name":"GetTieringConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tiering-configurations/{tieringConfigurationName}"
+      },
+      "input":{"shape":"GetTieringConfigurationInput"},
+      "output":{"shape":"GetTieringConfigurationOutput"},
+      "errors":[
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns <code>TieringConfiguration</code> details for the specified <code>TieringConfigurationName</code>. The details are the body of a tiering configuration in JSON format, in addition to configuration metadata.</p>",
+      "idempotent":true
     },
     "ListBackupJobSummaries":{
       "name":"ListBackupJobSummaries",
@@ -1275,6 +1346,36 @@
       ],
       "documentation":"<p>Returns a list of restore testing selections. Can be filtered by <code>MaxResults</code> and <code>RestoreTestingPlanName</code>.</p>"
     },
+    "ListScanJobSummaries":{
+      "name":"ListScanJobSummaries",
+      "http":{
+        "method":"GET",
+        "requestUri":"/audit/scan-job-summaries"
+      },
+      "input":{"shape":"ListScanJobSummariesInput"},
+      "output":{"shape":"ListScanJobSummariesOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This is a request for a summary of scan jobs created or running within the most recent 30 days.</p>"
+    },
+    "ListScanJobs":{
+      "name":"ListScanJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/scan/jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListScanJobsInput"},
+      "output":{"shape":"ListScanJobsOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns a list of existing scan jobs for an authenticated account for the last 30 days.</p>",
+      "idempotent":true
+    },
     "ListTags":{
       "name":"ListTags",
       "http":{
@@ -1290,6 +1391,21 @@
         {"shape":"ServiceUnavailableException"}
       ],
       "documentation":"<p>Returns the tags assigned to the resource, such as a target recovery point, backup plan, or backup vault.</p> <p>This operation returns results depending on the resource type used in the value for <code>resourceArn</code>. For example, recovery points of Amazon DynamoDB with Advanced Settings have an ARN (Amazon Resource Name) that begins with <code>arn:aws:backup</code>. Recovery points (backups) of DynamoDB without Advanced Settings enabled have an ARN that begins with <code>arn:aws:dynamodb</code>.</p> <p>When this operation is called and when you include values of <code>resourceArn</code> that have an ARN other than <code>arn:aws:backup</code>, it may return one of the exceptions listed below. To prevent this exception, include only values representing resource types that are fully managed by Backup. These have an ARN that begins <code>arn:aws:backup</code> and they are noted in the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource\">Feature availability by resource</a> table.</p>",
+      "idempotent":true
+    },
+    "ListTieringConfigurations":{
+      "name":"ListTieringConfigurations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tiering-configurations/"
+      },
+      "input":{"shape":"ListTieringConfigurationsInput"},
+      "output":{"shape":"ListTieringConfigurationsOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns a list of tiering configurations.</p>",
       "idempotent":true
     },
     "PutBackupVaultAccessPolicy":{
@@ -1410,7 +1526,7 @@
         {"shape":"LimitExceededException"},
         {"shape":"InvalidRequestException"}
       ],
-      "documentation":"<p>Starts a job to create a one-time copy of the specified resource.</p> <p>Does not support continuous backups.</p>",
+      "documentation":"<p>Starts a job to create a one-time copy of the specified resource.</p> <p>Does not support continuous backups.</p> <p>See <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/recov-point-create-a-copy.html#backup-copy-retry\">Copy job retry</a> for information on how Backup retries copy job operations.</p>",
       "idempotent":true
     },
     "StartReportJob":{
@@ -1446,6 +1562,26 @@
         {"shape":"InvalidRequestException"}
       ],
       "documentation":"<p>Recovers the saved resource identified by an Amazon Resource Name (ARN).</p>",
+      "idempotent":true
+    },
+    "StartScanJob":{
+      "name":"StartScanJob",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/scan/job",
+        "responseCode":201
+      },
+      "input":{"shape":"StartScanJobInput"},
+      "output":{"shape":"StartScanJobOutput"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Starts scanning jobs for specific resources.</p>",
       "idempotent":true
     },
     "StopBackupJob":{
@@ -1654,6 +1790,26 @@
       ],
       "documentation":"<p>Updates the specified restore testing selection.</p> <p>Most elements except the <code>RestoreTestingSelectionName</code> can be updated with this request.</p> <p>You can use either protected resource ARNs or conditions, but not both.</p>",
       "idempotent":true
+    },
+    "UpdateTieringConfiguration":{
+      "name":"UpdateTieringConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/tiering-configurations/{tieringConfigurationName}"
+      },
+      "input":{"shape":"UpdateTieringConfigurationInput"},
+      "output":{"shape":"UpdateTieringConfigurationOutput"},
+      "errors":[
+        {"shape":"AlreadyExistsException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"MissingParameterValueException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>This request will send changes to your specified tiering configuration. <code>TieringConfigurationName</code> cannot be updated after it is created.</p> <p> <code>ResourceSelection</code> can contain:</p> <ul> <li> <p> <code>Resources</code> </p> </li> <li> <p> <code>TieringDownSettingsInDays</code> </p> </li> <li> <p> <code>ResourceType</code> </p> </li> </ul>",
+      "idempotent":true
     }
   },
   "shapes":{
@@ -1671,7 +1827,7 @@
         },
         "BackupOptions":{
           "shape":"BackupOptions",
-          "documentation":"<p>Specifies the backup option for a selected resource. This option is only available for Windows VSS backup jobs.</p> <p>Valid values: </p> <p>Set to <code>\"WindowsVSS\":\"enabled\"</code> to enable the <code>WindowsVSS</code> backup option and create a Windows VSS backup. </p> <p>Set to <code>\"WindowsVSS\":\"disabled\"</code> to create a regular backup. The <code>WindowsVSS</code> option is not enabled by default.</p> <p>If you specify an invalid option, you get an <code>InvalidParameterValueException</code> exception.</p> <p>For more information about Windows VSS backups, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/windows-backups.html\">Creating a VSS-Enabled Windows Backup</a>.</p>"
+          "documentation":"<p>Specifies the backup option for a selected resource. This option is available for Windows VSS backup jobs and S3 backups.</p> <p>Valid values: </p> <p>Set to <code>\"WindowsVSS\":\"enabled\"</code> to enable the <code>WindowsVSS</code> backup option and create a Windows VSS backup. </p> <p>Set to <code>\"WindowsVSS\":\"disabled\"</code> to create a regular backup. The <code>WindowsVSS</code> option is not enabled by default.</p> <p>For S3 backups, set to <code>\"S3BackupACLs\":\"disabled\"</code> to exclude ACLs from the backup, or <code>\"S3BackupObjectTags\":\"disabled\"</code> to exclude object tags from the backup. By default, both ACLs and object tags are included in S3 backups.</p> <p>If you specify an invalid option, you get an <code>InvalidParameterValueException</code> exception.</p> <p>For more information about Windows VSS backups, see <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/windows-backups.html\">Creating a VSS-Enabled Windows Backup</a>.</p>"
         }
       },
       "documentation":"<p>The backup options for each resource type.</p>"
@@ -1679,6 +1835,24 @@
     "AdvancedBackupSettings":{
       "type":"list",
       "member":{"shape":"AdvancedBackupSetting"}
+    },
+    "AggregatedScanResult":{
+      "type":"structure",
+      "members":{
+        "FailedScan":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value indicating whether any of the aggregated scans failed.</p>"
+        },
+        "Findings":{
+          "shape":"ScanFindings",
+          "documentation":"<p>An array of findings discovered across all aggregated scans.</p>"
+        },
+        "LastComputed":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the aggregated scan result was last computed, in Unix format and Coordinated Universal Time (UTC).</p>"
+        }
+      },
+      "documentation":"<p>Contains aggregated scan results across multiple scan operations, providing a summary of scan status and findings.</p>"
     },
     "AggregationPeriod":{
       "type":"string",
@@ -1755,9 +1929,26 @@
           "shape":"ARN",
           "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
         },
+        "VaultType":{
+          "shape":"string",
+          "documentation":"<p>The type of backup vault where the recovery point is stored. Valid values are <code>BACKUP_VAULT</code> for standard backup vaults and <code>LOGICALLY_AIR_GAPPED_BACKUP_VAULT</code> for logically air-gapped vaults.</p>"
+        },
+        "VaultLockState":{
+          "shape":"string",
+          "documentation":"<p>The lock state of the backup vault. For logically air-gapped vaults, this indicates whether the vault is locked in compliance mode. Valid values include <code>LOCKED</code> and <code>UNLOCKED</code>.</p>"
+        },
         "RecoveryPointArn":{
           "shape":"ARN",
           "documentation":"<p>An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
+        },
+        "RecoveryPointLifecycle":{"shape":"Lifecycle"},
+        "EncryptionKeyArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the backup. This can be a customer-managed key or an Amazon Web Services managed key, depending on the vault configuration.</p>"
+        },
+        "IsEncrypted":{
+          "shape":"boolean",
+          "documentation":"<p>A boolean value indicating whether the backup is encrypted. All backups in Backup are encrypted, but this field indicates the encryption status for transparency.</p>"
         },
         "ResourceArn":{
           "shape":"ARN",
@@ -1954,6 +2145,10 @@
         "AdvancedBackupSettings":{
           "shape":"AdvancedBackupSettings",
           "documentation":"<p>Contains a list of <code>BackupOptions</code> for each resource type.</p>"
+        },
+        "ScanSettings":{
+          "shape":"ScanSettings",
+          "documentation":"<p>Contains your scanning configuration for the backup plan and includes the Malware scanner, your selected resources, and scanner role.</p>"
         }
       },
       "documentation":"<p>Contains an optional backup plan display name and an array of <code>BackupRule</code> objects, each of which specifies a backup rule. Each rule in a backup plan is a separate scheduled task and can back up a different selection of Amazon Web Services resources.</p>"
@@ -1976,6 +2171,10 @@
         "AdvancedBackupSettings":{
           "shape":"AdvancedBackupSettings",
           "documentation":"<p>Specifies a list of <code>BackupOptions</code> for each resource type. These settings are only available for Windows Volume Shadow Copy Service (VSS) backup jobs.</p>"
+        },
+        "ScanSettings":{
+          "shape":"ScanSettings",
+          "documentation":"<p>Contains your scanning configuration for the backup rule and includes the malware scanner, and scan mode of either full or incremental.</p>"
         }
       },
       "documentation":"<p>Contains an optional backup plan display name and an array of <code>BackupRule</code> objects, each of which specifies a backup rule. Each rule in a backup plan is a separate scheduled task. </p>"
@@ -2064,6 +2263,10 @@
           "shape":"BackupVaultName",
           "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>"
         },
+        "TargetLogicallyAirGappedBackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of a logically air-gapped vault. ARN must be in the same account and Region. If provided, supported fully managed resources back up directly to logically air-gapped vault, while other supported resources create a temporary (billable) snapshot in backup vault, then copy it to logically air-gapped vault. Unsupported resources only back up to the specified backup vault.</p>"
+        },
         "ScheduleExpression":{
           "shape":"CronExpression",
           "documentation":"<p>A cron expression in UTC specifying when Backup initiates a backup job. When no CRON expression is provided, Backup will use the default expression <code>cron(0 5 ? * * *)</code>.</p> <p>For more information about Amazon Web Services cron expressions, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html\">Schedule Expressions for Rules</a> in the <i>Amazon CloudWatch Events User Guide</i>.</p> <p>Two examples of Amazon Web Services cron expressions are <code> 15 * ? * * *</code> (take a backup every hour at 15 minutes past the hour) and <code>0 12 * * ? *</code> (take a backup every day at 12 noon UTC).</p> <p>For a table of examples, click the preceding link and scroll down the page.</p>"
@@ -2103,6 +2306,10 @@
         "IndexActions":{
           "shape":"IndexActions",
           "documentation":"<p>IndexActions is an array you use to specify how backup data should be indexed.</p> <p>eEach BackupRule can have 0 or 1 IndexAction, as each backup can have up to one index associated with it.</p> <p>Within the array is ResourceType. Only one will be accepted for each BackupRule.</p>"
+        },
+        "ScanActions":{
+          "shape":"ScanActions",
+          "documentation":"<p>Contains your scanning configuration for the backup rule and includes the malware scanner, and scan mode of either full or incremental.</p>"
         }
       },
       "documentation":"<p>Specifies a scheduled task used to back up a selection of resources.</p>"
@@ -2121,6 +2328,10 @@
         "TargetBackupVaultName":{
           "shape":"BackupVaultName",
           "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>"
+        },
+        "TargetLogicallyAirGappedBackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of a logically air-gapped vault. ARN must be in the same account and Region. If provided, supported fully managed resources back up directly to logically air-gapped vault, while other supported resources create a temporary (billable) snapshot in backup vault, then copy it to logically air-gapped vault. Unsupported resources only back up to the specified backup vault.</p>"
         },
         "ScheduleExpression":{
           "shape":"CronExpression",
@@ -2157,6 +2368,10 @@
         "IndexActions":{
           "shape":"IndexActions",
           "documentation":"<p>There can up to one IndexAction in each BackupRule, as each backup can have 0 or 1 backup index associated with it.</p> <p>Within the array is ResourceTypes. Only 1 resource type will be accepted for each BackupRule. Valid values:</p> <ul> <li> <p> <code>EBS</code> for Amazon Elastic Block Store</p> </li> <li> <p> <code>S3</code> for Amazon Simple Storage Service (Amazon S3)</p> </li> </ul>"
+        },
+        "ScanActions":{
+          "shape":"ScanActions",
+          "documentation":"<p>Contains your scanning configuration for the backup rule and includes the malware scanner, and scan mode of either full or incremental.</p>"
         }
       },
       "documentation":"<p>Specifies a scheduled task used to back up a selection of resources.</p>"
@@ -2329,6 +2544,10 @@
         "LockDate":{
           "shape":"timestamp",
           "documentation":"<p>The date and time when Backup Vault Lock configuration becomes immutable, meaning it cannot be changed or deleted.</p> <p>If you applied Vault Lock to your vault without specifying a lock date, you can change your Vault Lock settings, or delete Vault Lock from the vault entirely, at any time.</p> <p>This value is in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "EncryptionKeyType":{
+          "shape":"EncryptionKeyType",
+          "documentation":"<p>The type of encryption key used for the backup vault. Valid values are CUSTOMER_MANAGED_KMS_KEY for customer-managed keys or Amazon Web Services_OWNED_KMS_KEY for Amazon Web Services-owned keys.</p>"
         }
       },
       "documentation":"<p>Contains metadata about a backup vault.</p>"
@@ -2336,6 +2555,10 @@
     "BackupVaultName":{
       "type":"string",
       "pattern":"^[a-zA-Z0-9\\-\\_]{2,50}$"
+    },
+    "BackupVaultNameOrWildcard":{
+      "type":"string",
+      "pattern":"^(\\*|[a-zA-Z0-9\\-\\_]{2,50})$"
     },
     "Boolean":{"type":"boolean"},
     "CalculatedLifecycle":{
@@ -2551,10 +2774,23 @@
           "shape":"ARN",
           "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a destination copy vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
         },
+        "DestinationVaultType":{
+          "shape":"string",
+          "documentation":"<p>The type of destination backup vault where the copied recovery point is stored. Valid values are <code>BACKUP_VAULT</code> for standard backup vaults and <code>LOGICALLY_AIR_GAPPED_BACKUP_VAULT</code> for logically air-gapped vaults.</p>"
+        },
+        "DestinationVaultLockState":{
+          "shape":"string",
+          "documentation":"<p>The lock state of the destination backup vault. For logically air-gapped vaults, this indicates whether the vault is locked in compliance mode. Valid values include <code>LOCKED</code> and <code>UNLOCKED</code>.</p>"
+        },
         "DestinationRecoveryPointArn":{
           "shape":"ARN",
           "documentation":"<p>An ARN that uniquely identifies a destination recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
         },
+        "DestinationEncryptionKeyArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the copied backup in the destination vault. This can be a customer-managed key or an Amazon Web Services managed key.</p>"
+        },
+        "DestinationRecoveryPointLifecycle":{"shape":"Lifecycle"},
         "ResourceArn":{
           "shape":"ARN",
           "documentation":"<p>The Amazon Web Services resource to be copied; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database.</p>"
@@ -2584,6 +2820,10 @@
           "documentation":"<p>Specifies the IAM role ARN used to copy the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.</p>"
         },
         "CreatedBy":{"shape":"RecoveryPointCreator"},
+        "CreatedByBackupJobId":{
+          "shape":"string",
+          "documentation":"<p>The backup job ID that initiated this copy job. Only applicable to scheduled copy jobs and automatic copy jobs to logically air-gapped vault.</p>"
+        },
         "ResourceType":{
           "shape":"ResourceType",
           "documentation":"<p>The type of Amazon Web Services resource to be copied; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database.</p>"
@@ -2959,6 +3199,10 @@
         "MaxRetentionDays":{
           "shape":"Long",
           "documentation":"<p>The maximum retention period that the vault retains its recovery points.</p>"
+        },
+        "EncryptionKeyArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of the customer-managed KMS key to use for encrypting the logically air-gapped backup vault. If not specified, the vault will be encrypted with an Amazon Web Services-owned key managed by Amazon Web Services Backup.</p>"
         }
       }
     },
@@ -3005,7 +3249,7 @@
         },
         "ReportSetting":{
           "shape":"ReportSetting",
-          "documentation":"<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p> <p>If the report template is <code>RESOURCE_COMPLIANCE_REPORT</code> or <code>CONTROL_COMPLIANCE_REPORT</code>, this API resource also describes the report coverage by Amazon Web Services Regions and frameworks.</p>"
+          "documentation":"<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT | SCAN_JOB_REPORT </code> </p> <p>If the report template is <code>RESOURCE_COMPLIANCE_REPORT</code> or <code>CONTROL_COMPLIANCE_REPORT</code>, this API resource also describes the report coverage by Amazon Web Services Regions and frameworks.</p>"
         },
         "ReportPlanTags":{
           "shape":"stringMap",
@@ -3169,10 +3413,47 @@
         },
         "RestoreTestingSelectionName":{
           "shape":"String",
-          "documentation":"<p>The name of the restore testing selection for the related restore testing plan.</p>"
+          "documentation":"<p>The name of the restore testing selection for the related restore testing plan.</p> <p>The name cannot be changed after creation. The name consists of only alphanumeric characters and underscores. Maximum length is 50.</p>"
         }
       }
     },
+    "CreateTieringConfigurationInput":{
+      "type":"structure",
+      "required":["TieringConfiguration"],
+      "members":{
+        "TieringConfiguration":{
+          "shape":"TieringConfigurationInputForCreate",
+          "documentation":"<p>A tiering configuration must contain a unique <code>TieringConfigurationName</code> string you create and must contain a <code>BackupVaultName</code> and <code>ResourceSelection</code>. You may optionally include a <code>CreatorRequestId</code> string.</p> <p>The <code>TieringConfigurationName</code> is a unique string that is the name of the tiering configuration. This cannot be changed after creation, and it must consist of only alphanumeric characters and underscores.</p>"
+        },
+        "TieringConfigurationTags":{
+          "shape":"Tags",
+          "documentation":"<p>The tags to assign to the tiering configuration.</p>"
+        },
+        "CreatorRequestId":{
+          "shape":"CreatorRequestId",
+          "documentation":"<p>This is a unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice. This parameter is optional. If used, this parameter must contain 1 to 50 alphanumeric or '-_.' characters.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateTieringConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "TieringConfigurationArn":{
+          "shape":"ARN",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the created tiering configuration.</p>"
+        },
+        "TieringConfigurationName":{
+          "shape":"string",
+          "documentation":"<p>This unique string is the name of the tiering configuration.</p> <p>The name cannot be changed after creation. The name consists of only alphanumeric characters and underscores. Maximum length is 200.</p>"
+        },
+        "CreationTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time a tiering configuration was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087AM.</p>"
+        }
+      }
+    },
+    "CreatorRequestId":{"type":"string"},
     "CronExpression":{"type":"string"},
     "DateRange":{
       "type":"structure",
@@ -3372,6 +3653,22 @@
         }
       }
     },
+    "DeleteTieringConfigurationInput":{
+      "type":"structure",
+      "required":["TieringConfigurationName"],
+      "members":{
+        "TieringConfigurationName":{
+          "shape":"TieringConfigurationName",
+          "documentation":"<p>The unique name of a tiering configuration.</p>",
+          "location":"uri",
+          "locationName":"tieringConfigurationName"
+        }
+      }
+    },
+    "DeleteTieringConfigurationOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "DependencyFailureException":{
       "type":"structure",
       "members":{
@@ -3417,13 +3714,30 @@
           "shape":"BackupVaultName",
           "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>"
         },
+        "RecoveryPointLifecycle":{"shape":"Lifecycle"},
         "BackupVaultArn":{
           "shape":"ARN",
           "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
         },
+        "VaultType":{
+          "shape":"string",
+          "documentation":"<p>The type of backup vault where the recovery point is stored. Valid values are <code>BACKUP_VAULT</code> for standard backup vaults and <code>LOGICALLY_AIR_GAPPED_BACKUP_VAULT</code> for logically air-gapped vaults.</p>"
+        },
+        "VaultLockState":{
+          "shape":"string",
+          "documentation":"<p>The lock state of the backup vault. For logically air-gapped vaults, this indicates whether the vault is locked in compliance mode. Valid values include <code>LOCKED</code> and <code>UNLOCKED</code>.</p>"
+        },
         "RecoveryPointArn":{
           "shape":"ARN",
           "documentation":"<p>An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
+        },
+        "EncryptionKeyArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the backup. This can be a customer-managed key or an Amazon Web Services managed key, depending on the vault configuration.</p>"
+        },
+        "IsEncrypted":{
+          "shape":"boolean",
+          "documentation":"<p>A boolean value indicating whether the backup is encrypted. All backups in Backup are encrypted, but this field indicates the encryption status for transparency.</p>"
         },
         "ResourceArn":{
           "shape":"ARN",
@@ -3599,6 +3913,10 @@
         "LatestMpaApprovalTeamUpdate":{
           "shape":"LatestMpaApprovalTeamUpdate",
           "documentation":"<p>Information about the latest update to the MPA approval team association for this backup vault.</p>"
+        },
+        "EncryptionKeyType":{
+          "shape":"EncryptionKeyType",
+          "documentation":"<p>The type of encryption key used for the backup vault. Valid values are CUSTOMER_MANAGED_KMS_KEY for customer-managed keys or Amazon Web Services_OWNED_KMS_KEY for Amazon Web Services-owned keys.</p>"
         }
       }
     },
@@ -3681,7 +3999,7 @@
       "members":{
         "GlobalSettings":{
           "shape":"GlobalSettings",
-          "documentation":"<p>The status of the flag <code>isCrossAccountBackupEnabled</code>.</p>"
+          "documentation":"<p>The status of the flags <code>isCrossAccountBackupEnabled</code>, <code>isMpaEnabled</code> ('Mpa' refers to multi-party approval), and <code>isDelegatedAdministratorEnabled</code>.</p>"
         },
         "LastUpdateTime":{
           "shape":"timestamp",
@@ -3879,6 +4197,14 @@
         "IndexStatusMessage":{
           "shape":"string",
           "documentation":"<p>A string in the form of a detailed message explaining the status of a backup index associated with the recovery point.</p>"
+        },
+        "EncryptionKeyType":{
+          "shape":"EncryptionKeyType",
+          "documentation":"<p>The type of encryption key used for the recovery point. Valid values are CUSTOMER_MANAGED_KMS_KEY for customer-managed keys or Amazon Web Services_OWNED_KMS_KEY for Amazon Web Services-owned keys.</p>"
+        },
+        "ScanResults":{
+          "shape":"ScanResults",
+          "documentation":"<p>Contains the latest scanning results against the recovery point and currently include <code>MalwareScanner</code>, <code>ScanJobState</code>, <code>Findings</code>, and <code>LastScanTimestamp</code> </p>"
         }
       }
     },
@@ -3968,6 +4294,14 @@
           "shape":"ARN",
           "documentation":"<p>An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
         },
+        "SourceResourceArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the original resource that was backed up. This provides context about what resource is being restored.</p>"
+        },
+        "BackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the backup vault containing the recovery point being restored. This helps identify vault access policies and permissions.</p>"
+        },
         "CreationDate":{
           "shape":"timestamp",
           "documentation":"<p>The date and time that a restore job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
@@ -4031,6 +4365,125 @@
         "DeletionStatusMessage":{
           "shape":"string",
           "documentation":"<p>This describes the restore job deletion status.</p>"
+        },
+        "IsParent":{
+          "shape":"boolean",
+          "documentation":"<p>This is a boolean value indicating whether the restore job is a parent (composite) restore job.</p>"
+        },
+        "ParentJobId":{
+          "shape":"string",
+          "documentation":"<p>This is the unique identifier of the parent restore job for the selected restore job.</p>"
+        }
+      }
+    },
+    "DescribeScanJobInput":{
+      "type":"structure",
+      "required":["ScanJobId"],
+      "members":{
+        "ScanJobId":{
+          "shape":"String",
+          "documentation":"<p>Uniquely identifies a request to Backup to scan a resource.</p>",
+          "location":"uri",
+          "locationName":"ScanJobId"
+        }
+      }
+    },
+    "DescribeScanJobOutput":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "BackupVaultArn",
+        "BackupVaultName",
+        "CreatedBy",
+        "CreationDate",
+        "IamRoleArn",
+        "MalwareScanner",
+        "RecoveryPointArn",
+        "ResourceArn",
+        "ResourceName",
+        "ResourceType",
+        "ScanJobId",
+        "ScanMode",
+        "ScannerRoleArn",
+        "State"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"String",
+          "documentation":"<p>Returns the account ID that owns the scan job.</p> <p>Pattern: <code>^[0-9]{12}$</code> </p>"
+        },
+        "BackupVaultArn":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code> </p>"
+        },
+        "BackupVaultName":{
+          "shape":"String",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p> <p>Pattern: <code>^[a-zA-Z0-9\\-\\_\\.]{2,50}$</code> </p>"
+        },
+        "CompletionDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that a backup index finished creation, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "CreatedBy":{"shape":"ScanJobCreator"},
+        "CreationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that a backup index finished creation, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "IamRoleArn":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.</p>"
+        },
+        "MalwareScanner":{
+          "shape":"MalwareScanner",
+          "documentation":"<p>The scanning engine used for the corresponding scan job. Currently only <code>GUARDUTY</code> is supported.</p>"
+        },
+        "RecoveryPointArn":{
+          "shape":"String",
+          "documentation":"<p>An ARN that uniquely identifies the target recovery point for scanning.; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
+        },
+        "ResourceArn":{
+          "shape":"String",
+          "documentation":"<p>An ARN that uniquely identifies the source resource of the corresponding recovery point ARN.</p>"
+        },
+        "ResourceName":{
+          "shape":"String",
+          "documentation":"<p>The non-unique name of the resource that belongs to the specified backup.</p>"
+        },
+        "ResourceType":{
+          "shape":"ScanResourceType",
+          "documentation":"<p>The type of Amazon Web Services Resource to be backed up; for example, an Amazon Elastic Block Store (Amazon EBS) volume.</p> <p>Pattern: <code>^[a-zA-Z0-9\\-\\_\\.]{1,50}$</code> </p>"
+        },
+        "ScanBaseRecoveryPointArn":{
+          "shape":"String",
+          "documentation":"<p>An ARN that uniquely identifies the base recovery point for scanning. This field will only be populated when an incremental scan job has taken place.</p>"
+        },
+        "ScanId":{
+          "shape":"String",
+          "documentation":"<p>The scan ID generated by Amazon GuardDuty for the corresponding Scan Job ID request from Backup.</p>"
+        },
+        "ScanJobId":{
+          "shape":"String",
+          "documentation":"<p>The scan job ID that uniquely identified the request to Backup.</p>"
+        },
+        "ScanMode":{
+          "shape":"ScanMode",
+          "documentation":"<p>Specifies the scan type used for the scan job.</p>"
+        },
+        "ScanResult":{
+          "shape":"ScanResultInfo",
+          "documentation":"<p> Contains the <code>ScanResultsStatus</code> for the scanning job and returns <code>THREATS_FOUND</code> or <code>NO_THREATS_FOUND</code> for completed jobs.</p>"
+        },
+        "ScannerRoleArn":{
+          "shape":"String",
+          "documentation":"<p>Specifies the scanner IAM role ARN used to for the scan job.</p>"
+        },
+        "State":{
+          "shape":"ScanState",
+          "documentation":"<p>The current state of a scan job.</p>"
+        },
+        "StatusMessage":{
+          "shape":"String",
+          "documentation":"<p>A detailed message explaining the status of the job to back up a resource.</p>"
         }
       }
     },
@@ -4091,6 +4544,13 @@
           "locationName":"recoveryPointArn"
         }
       }
+    },
+    "EncryptionKeyType":{
+      "type":"string",
+      "enum":[
+        "AWS_OWNED_KMS_KEY",
+        "CUSTOMER_MANAGED_KMS_KEY"
+      ]
     },
     "ExportBackupPlanTemplateInput":{
       "type":"structure",
@@ -4241,6 +4701,12 @@
           "documentation":"<p>Unique, randomly generated, Unicode, UTF-8 encoded strings that are at most 1,024 bytes long. Version IDs cannot be edited.</p>",
           "location":"querystring",
           "locationName":"versionId"
+        },
+        "MaxScheduledRunsPreview":{
+          "shape":"MaxScheduledRunsPreview",
+          "documentation":"<p>Number of future scheduled backup runs to preview. When set to 0 (default), no scheduled runs preview is included in the response. Valid range is 0-10.</p>",
+          "location":"querystring",
+          "locationName":"MaxScheduledRunsPreview"
         }
       }
     },
@@ -4282,6 +4748,10 @@
         "AdvancedBackupSettings":{
           "shape":"AdvancedBackupSettings",
           "documentation":"<p>Contains a list of <code>BackupOptions</code> for each resource type. The list is populated only if the advanced option is set for the backup plan.</p>"
+        },
+        "ScheduledRunsPreview":{
+          "shape":"ScheduledRunsPreview",
+          "documentation":"<p>List of upcoming scheduled backup runs. Only included when <code>MaxScheduledRunsPreview</code> parameter is greater than 0. Contains up to 10 future backup executions with their scheduled times, execution types, and associated rule IDs.</p>"
         }
       }
     },
@@ -4684,6 +5154,27 @@
         }
       }
     },
+    "GetTieringConfigurationInput":{
+      "type":"structure",
+      "required":["TieringConfigurationName"],
+      "members":{
+        "TieringConfigurationName":{
+          "shape":"TieringConfigurationName",
+          "documentation":"<p>The unique name of a tiering configuration.</p>",
+          "location":"uri",
+          "locationName":"tieringConfigurationName"
+        }
+      }
+    },
+    "GetTieringConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "TieringConfiguration":{
+          "shape":"TieringConfiguration",
+          "documentation":"<p>Specifies the body of a tiering configuration. Includes <code>TieringConfigurationName</code>.</p>"
+        }
+      }
+    },
     "GlobalSettings":{
       "type":"map",
       "key":{"shape":"GlobalSettingsName"},
@@ -4956,9 +5447,17 @@
         "OptInToArchiveForSupportedResources":{
           "shape":"Boolean",
           "documentation":"<p>If the value is true, your backup plan transitions supported resources to archive (cold) storage tier in accordance with your lifecycle settings.</p>"
+        },
+        "DeleteAfterEvent":{
+          "shape":"LifecycleDeleteAfterEvent",
+          "documentation":"<p>The event after which a recovery point is deleted. A recovery point with both <code>DeleteAfterDays</code> and <code>DeleteAfterEvent</code> will delete after whichever condition is satisfied first. Not valid as an input.</p>"
         }
       },
       "documentation":"<p>Specifies the time period, in days, before a recovery point transitions to cold storage or is deleted.</p> <p>Backups transitioned to cold storage must be stored in cold storage for a minimum of 90 days. Therefore, on the console, the retention setting must be 90 days greater than the transition to cold after days setting. The transition to cold after days setting can't be changed after a backup has been transitioned to cold.</p> <p>Resource types that can transition to cold storage are listed in the <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource\">Feature availability by resource</a> table. Backup ignores this expression for other resource types.</p> <p>To remove the existing lifecycle and retention periods and keep your recovery points indefinitely, specify -1 for <code>MoveToColdStorageAfterDays</code> and <code>DeleteAfterDays</code>.</p>"
+    },
+    "LifecycleDeleteAfterEvent":{
+      "type":"string",
+      "enum":["DELETE_AFTER_COPY"]
     },
     "LimitExceededException":{
       "type":"structure",
@@ -5463,6 +5962,12 @@
           "documentation":"<p>This is an optional parameter that can be used to filter out jobs with a MessageCategory which matches the value you input.</p> <p>Example strings may include <code>AccessDenied</code>, <code>SUCCESS</code>, <code>AGGREGATE_ALL</code>, and <code>INVALIDPARAMETERS</code>.</p> <p>View <a href=\"https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html\">Monitoring</a> for a list of accepted strings.</p> <p>The the value ANY returns count of all message categories.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all message categories and returns the sum.</p>",
           "location":"querystring",
           "locationName":"messageCategory"
+        },
+        "BySourceRecoveryPointArn":{
+          "shape":"string",
+          "documentation":"<p>Filters copy jobs by the specified source recovery point ARN.</p>",
+          "location":"querystring",
+          "locationName":"sourceRecoveryPointArn"
         }
       }
     },
@@ -5858,7 +6363,7 @@
         },
         "ByStatus":{
           "shape":"string",
-          "documentation":"<p>Returns only report jobs that are in the specified status. The statuses are:</p> <p> <code>CREATED | RUNNING | COMPLETED | FAILED</code> </p>",
+          "documentation":"<p>Returns only report jobs that are in the specified status. The statuses are:</p> <p> <code>CREATED | RUNNING | COMPLETED | FAILED | COMPLETED_WITH_ISSUES</code> </p> <p> Please note that only scanning jobs finish with state completed with issues. For backup jobs this is a console interpretation of a job that finishes in completed state and has a status message.</p>",
           "location":"querystring",
           "locationName":"Status"
         },
@@ -6131,6 +6636,12 @@
           "documentation":"<p>This returns only restore testing jobs that match the specified resource Amazon Resource Name (ARN).</p>",
           "location":"querystring",
           "locationName":"restoreTestingPlanArn"
+        },
+        "ByParentJobId":{
+          "shape":"string",
+          "documentation":"<p>This is a filter to list child (nested) restore jobs based on parent restore job ID.</p>",
+          "location":"querystring",
+          "locationName":"parentJobId"
         }
       }
     },
@@ -6228,6 +6739,173 @@
         }
       }
     },
+    "ListScanJobSummariesInput":{
+      "type":"structure",
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>Returns the job count for the specified account.</p> <p>If the request is sent from a member account or an account not part of Amazon Web Services Organizations, jobs within requestor's account will be returned.</p> <p>Root, admin, and delegated administrator accounts can use the value <code>ANY</code> to return job counts from every account in the organization.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts from all accounts within the authenticated organization, then returns the sum.</p>",
+          "location":"querystring",
+          "locationName":"AccountId"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>Returns the job count for the specified resource type. Use request <code>GetSupportedResourceTypes</code> to obtain strings for supported resource types.</p> <p>The the value <code>ANY</code> returns count of all resource types.</p> <p> <code>AGGREGATE_ALL</code> aggregates job counts for all resource types and returns the sum.</p>",
+          "location":"querystring",
+          "locationName":"ResourceType"
+        },
+        "MalwareScanner":{
+          "shape":"MalwareScanner",
+          "documentation":"<p>Returns only the scan jobs for the specified malware scanner. Currently the only MalwareScanner is <code>GUARDDUTY</code>. But the field also supports <code>ANY</code>, and <code>AGGREGATE_ALL</code>.</p>",
+          "location":"querystring",
+          "locationName":"MalwareScanner"
+        },
+        "ScanResultStatus":{
+          "shape":"ScanResultStatus",
+          "documentation":"<p>Returns only the scan jobs for the specified scan results.</p>",
+          "location":"querystring",
+          "locationName":"ScanResultStatus"
+        },
+        "State":{
+          "shape":"ScanJobStatus",
+          "documentation":"<p>Returns only the scan jobs for the specified scanning job state.</p>",
+          "location":"querystring",
+          "locationName":"State"
+        },
+        "AggregationPeriod":{
+          "shape":"AggregationPeriod",
+          "documentation":"<p>The period for the returned results.</p> <ul> <li> <p> <code>ONE_DAY</code>The daily job count for the prior 1 day.</p> </li> <li> <p> <code>SEVEN_DAYS</code>The daily job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code>The daily job count for the prior 14 days.</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"AggregationPeriod"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to be returned.</p> <p>The value is an integer. Range of accepted values is from 1 to 500.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListScanJobSummariesOutput":{
+      "type":"structure",
+      "members":{
+        "ScanJobSummaries":{
+          "shape":"ScanJobSummaryList",
+          "documentation":"<p>The summary information.</p>"
+        },
+        "AggregationPeriod":{
+          "shape":"string",
+          "documentation":"<p>The period for the returned results.</p> <ul> <li> <p> <code>ONE_DAY</code>The daily job count for the prior 1 day.</p> </li> <li> <p> <code>SEVEN_DAYS</code>The daily job count for the prior 7 days.</p> </li> <li> <p> <code>FOURTEEN_DAYS</code>The daily job count for the prior 14 days.</p> </li> </ul> <p>Valid Values: <code>'ONE_DAY'</code> | <code>'SEVEN_DAYS'</code> | <code>'FOURTEEN_DAYS'</code> </p>"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        }
+      }
+    },
+    "ListScanJobsInput":{
+      "type":"structure",
+      "members":{
+        "ByAccountId":{
+          "shape":"String",
+          "documentation":"<p>The account ID to list the jobs from. Returns only backup jobs associated with the specified account ID.</p> <p>If used from an Amazon Web Services Organizations management account, passing <code>*</code> returns all jobs across the organization.</p> <p>Pattern: <code>^[0-9]{12}$</code> </p>",
+          "location":"querystring",
+          "locationName":"ByAccountId"
+        },
+        "ByBackupVaultName":{
+          "shape":"String",
+          "documentation":"<p>Returns only scan jobs that will be stored in the specified backup vault. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p> <p>Pattern: <code>^[a-zA-Z0-9\\-\\_\\.]{2,50}$</code> </p>",
+          "location":"querystring",
+          "locationName":"ByBackupVaultName"
+        },
+        "ByCompleteAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Returns only scan jobs completed after a date expressed in Unix format and Coordinated Universal Time (UTC).</p>",
+          "location":"querystring",
+          "locationName":"ByCompleteAfter"
+        },
+        "ByCompleteBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Returns only backup jobs completed before a date expressed in Unix format and Coordinated Universal Time (UTC).</p>",
+          "location":"querystring",
+          "locationName":"ByCompleteBefore"
+        },
+        "ByMalwareScanner":{
+          "shape":"MalwareScanner",
+          "documentation":"<p>Returns only the scan jobs for the specified malware scanner. Currently only supports <code>GUARDDUTY</code>.</p>",
+          "location":"querystring",
+          "locationName":"ByMalwareScanner"
+        },
+        "ByRecoveryPointArn":{
+          "shape":"String",
+          "documentation":"<p>Returns only the scan jobs that are ran against the specified recovery point.</p>",
+          "location":"querystring",
+          "locationName":"ByRecoveryPointArn"
+        },
+        "ByResourceArn":{
+          "shape":"String",
+          "documentation":"<p>Returns only scan jobs that match the specified resource Amazon Resource Name (ARN).</p>",
+          "location":"querystring",
+          "locationName":"ByResourceArn"
+        },
+        "ByResourceType":{
+          "shape":"ScanResourceType",
+          "documentation":"<p>Returns restore testing selections by the specified restore testing plan name.</p> <ul> <li> <p> <code>EBS</code>for Amazon Elastic Block Store</p> </li> <li> <p> <code>EC2</code>for Amazon Elastic Compute Cloud</p> </li> <li> <p> <code>S3</code>for Amazon Simple Storage Service (Amazon S3)</p> </li> </ul> <p>Pattern: <code>^[a-zA-Z0-9\\-\\_\\.]{1,50}$</code> </p>",
+          "location":"querystring",
+          "locationName":"ByResourceType"
+        },
+        "ByScanResultStatus":{
+          "shape":"ScanResultStatus",
+          "documentation":"<p>Returns only the scan jobs for the specified scan results:</p> <ul> <li> <p> <code>THREATS_FOUND</code> </p> </li> <li> <p> <code>NO_THREATS_FOUND</code> </p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"ByScanResultStatus"
+        },
+        "ByState":{
+          "shape":"ScanState",
+          "documentation":"<p>Returns only the scan jobs for the specified scanning job state.</p>",
+          "location":"querystring",
+          "locationName":"ByState"
+        },
+        "MaxResults":{
+          "shape":"ListScanJobsInputMaxResultsInteger",
+          "documentation":"<p>The maximum number of items to be returned.</p> <p>Valid Range: Minimum value of 1. Maximum value of 1000.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListScanJobsInputMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListScanJobsOutput":{
+      "type":"structure",
+      "required":["ScanJobs"],
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        },
+        "ScanJobs":{
+          "shape":"ScanJobs",
+          "documentation":"<p>An array of structures containing metadata about your scan jobs returned in JSON format.</p>"
+        }
+      }
+    },
     "ListTagsInput":{
       "type":"structure",
       "required":["ResourceArn"],
@@ -6265,7 +6943,41 @@
         }
       }
     },
+    "ListTieringConfigurationsInput":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of items to be returned.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListTieringConfigurationsOutput":{
+      "type":"structure",
+      "members":{
+        "TieringConfigurations":{
+          "shape":"TieringConfigurationsList",
+          "documentation":"<p>An array of tiering configurations returned by the <code>ListTieringConfigurations</code> call.</p>"
+        },
+        "NextToken":{
+          "shape":"string",
+          "documentation":"<p>The next item following a partial list of returned items. For example, if a request is made to return <code>MaxResults</code> number of items, <code>NextToken</code> allows you to return more items in your list starting at the location pointed to by the next token.</p>"
+        }
+      }
+    },
     "Long":{"type":"long"},
+    "MalwareScanner":{
+      "type":"string",
+      "enum":["GUARDDUTY"]
+    },
     "MaxFrameworkInputs":{
       "type":"integer",
       "max":1000,
@@ -6275,6 +6987,11 @@
       "type":"integer",
       "max":1000,
       "min":1
+    },
+    "MaxScheduledRunsPreview":{
+      "type":"integer",
+      "max":10,
+      "min":0
     },
     "MessageCategory":{"type":"string"},
     "Metadata":{
@@ -6560,6 +7277,14 @@
         "IndexStatusMessage":{
           "shape":"string",
           "documentation":"<p>A string in the form of a detailed message explaining the status of a backup index associated with the recovery point.</p>"
+        },
+        "EncryptionKeyType":{
+          "shape":"EncryptionKeyType",
+          "documentation":"<p>The type of encryption key used for the recovery point. Valid values are CUSTOMER_MANAGED_KMS_KEY for customer-managed keys or Amazon Web Services_OWNED_KMS_KEY for Amazon Web Services-owned keys.</p>"
+        },
+        "AggregatedScanResult":{
+          "shape":"AggregatedScanResult",
+          "documentation":"<p>Contains the latest scanning results against the recovery point and currently include <code>FailedScan</code>, <code>Findings</code>, <code>LastComputed</code>.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about the recovery points stored in a backup vault.</p>"
@@ -6622,6 +7347,14 @@
         "IndexStatusMessage":{
           "shape":"string",
           "documentation":"<p>A string in the form of a detailed message explaining the status of a backup index associated with the recovery point.</p>"
+        },
+        "EncryptionKeyType":{
+          "shape":"EncryptionKeyType",
+          "documentation":"<p>The type of encryption key used for the recovery point. Valid values are CUSTOMER_MANAGED_KMS_KEY for customer-managed keys or Amazon Web Services_OWNED_KMS_KEY for Amazon Web Services-owned keys.</p>"
+        },
+        "AggregatedScanResult":{
+          "shape":"AggregatedScanResult",
+          "documentation":"<p>Contains the latest scanning results against the recovery point and currently include <code>FailedScan</code>, <code>Findings</code>, <code>LastComputed</code>.</p>"
         }
       },
       "documentation":"<p>Contains detailed information about a saved recovery point.</p>"
@@ -6641,6 +7374,10 @@
           "shape":"ARN",
           "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, <code>arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50</code>.</p>"
         },
+        "BackupPlanName":{
+          "shape":"string",
+          "documentation":"<p>The name of the backup plan that created this recovery point. This provides human-readable context about which backup plan was responsible for the backup job.</p>"
+        },
         "BackupPlanVersion":{
           "shape":"string",
           "documentation":"<p>Version IDs are unique, randomly generated, Unicode, UTF-8 encoded strings that are at most 1,024 bytes long. They cannot be edited.</p>"
@@ -6648,6 +7385,18 @@
         "BackupRuleId":{
           "shape":"string",
           "documentation":"<p>Uniquely identifies a rule used to schedule the backup of a selection of resources.</p>"
+        },
+        "BackupRuleName":{
+          "shape":"string",
+          "documentation":"<p>The name of the backup rule within the backup plan that created this recovery point. This helps identify which specific rule triggered the backup job.</p>"
+        },
+        "BackupRuleCron":{
+          "shape":"string",
+          "documentation":"<p>The cron expression that defines the schedule for the backup rule. This shows the frequency and timing of when backups are automatically triggered.</p>"
+        },
+        "BackupRuleTimezone":{
+          "shape":"string",
+          "documentation":"<p>The timezone used for the backup rule schedule. This provides context for when backups are scheduled to run in the specified timezone.</p>"
         }
       },
       "documentation":"<p>Contains information about the backup plan and rule that Backup used to initiate the recovery point backup.</p>"
@@ -6846,7 +7595,7 @@
       "members":{
         "ReportTemplate":{
           "shape":"string",
-          "documentation":"<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT</code> </p>"
+          "documentation":"<p>Identifies the report template for the report. Reports are built using a report template. The report templates are:</p> <p> <code>RESOURCE_COMPLIANCE_REPORT | CONTROL_COMPLIANCE_REPORT | BACKUP_JOB_REPORT | COPY_JOB_REPORT | RESTORE_JOB_REPORT | SCAN_JOB_REPORT</code> </p>"
         },
         "FrameworkArns":{
           "shape":"stringList",
@@ -6899,6 +7648,33 @@
       },
       "documentation":"<p>A resource that is required for the action doesn't exist.</p>",
       "exception":true
+    },
+    "ResourceSelection":{
+      "type":"structure",
+      "required":[
+        "Resources",
+        "TieringDownSettingsInDays",
+        "ResourceType"
+      ],
+      "members":{
+        "Resources":{
+          "shape":"ResourceArns",
+          "documentation":"<p>An array of strings that either contains ARNs of the associated resources or contains a wildcard <code>*</code> to specify all resources. You can specify up to 100 specific resources per tiering configuration.</p>"
+        },
+        "TieringDownSettingsInDays":{
+          "shape":"TieringDownSettingsInDays",
+          "documentation":"<p>The number of days after creation within a backup vault that an object can transition to the low cost warm storage tier. Must be a positive integer between 60 and 36500 days.</p>"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of Amazon Web Services resource; for example, <code>S3</code> for Amazon S3. For tiering configurations, this is currently limited to <code>S3</code>.</p>"
+        }
+      },
+      "documentation":"<p>This contains metadata about resource selection for tiering configurations.</p> <p>You can specify up to 5 different resource selections per tiering configuration. Data moved to lower-cost tier remains there until deletion (one-way transition).</p>"
+    },
+    "ResourceSelections":{
+      "type":"list",
+      "member":{"shape":"ResourceSelection"}
     },
     "ResourceType":{
       "type":"string",
@@ -7051,6 +7827,14 @@
           "shape":"ARN",
           "documentation":"<p>An ARN that uniquely identifies a recovery point; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
         },
+        "SourceResourceArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the original resource that was backed up. This provides context about what resource is being restored.</p>"
+        },
+        "BackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the backup vault containing the recovery point being restored. This helps identify vault access policies and permissions.</p>"
+        },
         "CreationDate":{
           "shape":"timestamp",
           "documentation":"<p>The date and time a restore job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
@@ -7094,6 +7878,14 @@
         "RecoveryPointCreationDate":{
           "shape":"timestamp",
           "documentation":"<p>The date on which a recovery point was created.</p>"
+        },
+        "IsParent":{
+          "shape":"boolean",
+          "documentation":"<p>This is a boolean value indicating whether the restore job is a parent (composite) restore job.</p>"
+        },
+        "ParentJobId":{
+          "shape":"string",
+          "documentation":"<p>This is the unique identifier of the parent restore job for the selected restore job.</p>"
         },
         "CreatedBy":{
           "shape":"RestoreJobCreator",
@@ -7346,7 +8138,7 @@
         },
         "RestoreTestingSelectionName":{
           "shape":"String",
-          "documentation":"<p>The unique name of the restore testing selection that belongs to the related restore testing plan.</p>"
+          "documentation":"<p>The unique name of the restore testing selection that belongs to the related restore testing plan.</p> <p>The name consists of only alphanumeric characters and underscores. Maximum length is 50.</p>"
         },
         "ValidationWindowHours":{
           "shape":"integer",
@@ -7399,7 +8191,7 @@
         },
         "RestoreTestingSelectionName":{
           "shape":"String",
-          "documentation":"<p>The unique name of the restore testing selection that belongs to the related restore testing plan.</p>"
+          "documentation":"<p>The unique name of the restore testing selection that belongs to the related restore testing plan.</p> <p>The name consists of only alphanumeric characters and underscores. Maximum length is 50.</p>"
         },
         "ValidationWindowHours":{
           "shape":"integer",
@@ -7436,7 +8228,7 @@
         },
         "RestoreTestingSelectionName":{
           "shape":"String",
-          "documentation":"<p>Unique name of a restore testing selection.</p>"
+          "documentation":"<p>Unique name of a restore testing selection.</p> <p>The name consists of only alphanumeric characters and underscores. Maximum length is 50.</p>"
         },
         "ValidationWindowHours":{
           "shape":"integer",
@@ -7511,6 +8303,358 @@
         }
       }
     },
+    "RuleExecutionType":{
+      "type":"string",
+      "enum":[
+        "CONTINUOUS",
+        "SNAPSHOTS",
+        "CONTINUOUS_AND_SNAPSHOTS"
+      ]
+    },
+    "ScanAction":{
+      "type":"structure",
+      "members":{
+        "MalwareScanner":{
+          "shape":"MalwareScanner",
+          "documentation":"<p>The malware scanner to use for the scan action. Currently only <code>GUARDDUTY</code> is supported.</p>"
+        },
+        "ScanMode":{
+          "shape":"ScanMode",
+          "documentation":"<p>The scanning mode to use for the scan action.</p> <p>Valid values: <code>FULL_SCAN</code> | <code>INCREMENTAL_SCAN</code>.</p>"
+        }
+      },
+      "documentation":"<p>Defines a scanning action that specifies the malware scanner and scan mode to use.</p>"
+    },
+    "ScanActions":{
+      "type":"list",
+      "member":{"shape":"ScanAction"}
+    },
+    "ScanFinding":{
+      "type":"string",
+      "enum":["MALWARE"]
+    },
+    "ScanFindings":{
+      "type":"list",
+      "member":{"shape":"ScanFinding"}
+    },
+    "ScanJob":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "BackupVaultArn",
+        "BackupVaultName",
+        "CreatedBy",
+        "CreationDate",
+        "IamRoleArn",
+        "MalwareScanner",
+        "RecoveryPointArn",
+        "ResourceArn",
+        "ResourceName",
+        "ResourceType",
+        "ScanJobId",
+        "ScanMode",
+        "ScannerRoleArn"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"String",
+          "documentation":"<p>The account ID that owns the scan job.</p>"
+        },
+        "BackupVaultArn":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup vault; for example, <code>arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault</code>.</p>"
+        },
+        "BackupVaultName":{
+          "shape":"String",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>"
+        },
+        "CompletionDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that a scan job is completed, in Unix format and Coordinated Universal Time (UTC). The value of <code>CompletionDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "CreatedBy":{
+          "shape":"ScanJobCreator",
+          "documentation":"<p>Contains identifying information about the creation of a scan job.</p>"
+        },
+        "CreationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that a scan job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "IamRoleArn":{
+          "shape":"String",
+          "documentation":"<p>Specifies the IAM role ARN used to create the scan job; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.</p>"
+        },
+        "MalwareScanner":{
+          "shape":"MalwareScanner",
+          "documentation":"<p>The scanning engine used for the scan job. Currently only <code>GUARDDUTY</code> is supported.</p>"
+        },
+        "RecoveryPointArn":{
+          "shape":"String",
+          "documentation":"<p>An ARN that uniquely identifies the recovery point being scanned; for example, <code>arn:aws:backup:us-east-1:123456789012:recovery-point:1EB3B5E7-9EB0-435A-A80B-108B488B0D45</code>.</p>"
+        },
+        "ResourceArn":{
+          "shape":"String",
+          "documentation":"<p>An ARN that uniquely identifies the source resource of the recovery point being scanned.</p>"
+        },
+        "ResourceName":{
+          "shape":"String",
+          "documentation":"<p>The non-unique name of the resource that belongs to the specified backup.</p>"
+        },
+        "ResourceType":{
+          "shape":"ScanResourceType",
+          "documentation":"<p>The type of Amazon Web Services resource being scanned; for example, an Amazon Elastic Block Store (Amazon EBS) volume or an Amazon Relational Database Service (Amazon RDS) database.</p>"
+        },
+        "ScanBaseRecoveryPointArn":{
+          "shape":"String",
+          "documentation":"<p>An ARN that uniquely identifies the base recovery point for scanning. This field is populated when an incremental scan job has taken place.</p>"
+        },
+        "ScanId":{
+          "shape":"String",
+          "documentation":"<p>The scan ID generated by the malware scanner for the corresponding scan job.</p>"
+        },
+        "ScanJobId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier that identifies the scan job request to Backup.</p>"
+        },
+        "ScanMode":{
+          "shape":"ScanMode",
+          "documentation":"<p>Specifies the scan type use for the scan job.</p> <p>Includes:</p> <p> <code>FULL_SCAN</code> will scan the entire data lineage within the backup.</p> <p> <code>INCREMENTAL_SCAN</code> will scan the data difference between the target recovery point and base recovery point ARN.</p>"
+        },
+        "ScanResult":{
+          "shape":"ScanResultInfo",
+          "documentation":"<p>Contains the scan results information, including the status of threats found during scanning.</p>"
+        },
+        "ScannerRoleArn":{
+          "shape":"String",
+          "documentation":"<p>Specifies the scanner IAM role ARN used for the scan job.</p>"
+        },
+        "State":{
+          "shape":"ScanState",
+          "documentation":"<p>The current state of the scan job.</p> <p>Valid values: <code>CREATED</code> | <code>RUNNING</code> | <code>COMPLETED</code> | <code>COMPLETED_WITH_ISSUES</code> | <code>FAILED</code> | <code>CANCELED</code>.</p>"
+        },
+        "StatusMessage":{
+          "shape":"String",
+          "documentation":"<p>A detailed message explaining the status of the scan job.</p>"
+        }
+      },
+      "documentation":"<p>Contains metadata about a scan job, including information about the scanning process, results, and associated resources.</p>"
+    },
+    "ScanJobCreator":{
+      "type":"structure",
+      "required":[
+        "BackupPlanArn",
+        "BackupPlanId",
+        "BackupPlanVersion",
+        "BackupRuleId"
+      ],
+      "members":{
+        "BackupPlanArn":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a backup plan; for example, <code>arn:aws:backup:us-east-1:123456789012:plan:8F81F553-3A74-4A3F-B93D-B3360DC80C50</code>.</p>"
+        },
+        "BackupPlanId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the backup plan.</p>"
+        },
+        "BackupPlanVersion":{
+          "shape":"String",
+          "documentation":"<p>Unique, randomly generated, Unicode, UTF-8 encoded strings that are at most 1,024 bytes long. Version IDs cannot be edited.</p>"
+        },
+        "BackupRuleId":{
+          "shape":"String",
+          "documentation":"<p>Uniquely identifies the backup rule that initiated the scan job.</p>"
+        }
+      },
+      "documentation":"<p>Contains identifying information about the creation of a scan job, including the backup plan and rule that initiated the scan.</p>"
+    },
+    "ScanJobState":{
+      "type":"string",
+      "enum":[
+        "COMPLETED",
+        "COMPLETED_WITH_ISSUES",
+        "FAILED",
+        "CANCELED"
+      ]
+    },
+    "ScanJobStatus":{
+      "type":"string",
+      "enum":[
+        "CREATED",
+        "COMPLETED",
+        "COMPLETED_WITH_ISSUES",
+        "RUNNING",
+        "FAILED",
+        "CANCELED",
+        "AGGREGATE_ALL",
+        "ANY"
+      ]
+    },
+    "ScanJobSummary":{
+      "type":"structure",
+      "members":{
+        "Region":{
+          "shape":"Region",
+          "documentation":"<p>The Amazon Web Services Region where the scan jobs were executed.</p>"
+        },
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The account ID that owns the scan jobs included in this summary.</p>"
+        },
+        "State":{
+          "shape":"ScanJobStatus",
+          "documentation":"<p>The state of the scan jobs included in this summary.</p> <p>Valid values: <code>CREATED</code> | <code>RUNNING</code> | <code>COMPLETED</code> | <code>COMPLETED_WITH_ISSUES</code> | <code>FAILED</code> | <code>CANCELED</code>.</p>"
+        },
+        "ResourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of Amazon Web Services resource for the scan jobs included in this summary.</p>"
+        },
+        "Count":{
+          "shape":"integer",
+          "documentation":"<p>The number of scan jobs that match the specified criteria.</p>"
+        },
+        "StartTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The value of time in number format of a job start time.</p> <p>This value is the time in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "EndTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The value of time in number format of a job end time.</p> <p>This value is the time in Unix format, Coordinated Universal Time (UTC), and accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "MalwareScanner":{
+          "shape":"MalwareScanner",
+          "documentation":"<p>Specifies the malware scanner used during the scan job. Currently only supports <code>GUARDDUTY</code>.</p>"
+        },
+        "ScanResultStatus":{
+          "shape":"ScanResultStatus",
+          "documentation":"<p>The scan result status for the scan jobs included in this summary.</p> <p>Valid values: <code>THREATS_FOUND</code> | <code>NO_THREATS_FOUND</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about scan jobs, including counts and metadata for a specific time period and criteria.</p>"
+    },
+    "ScanJobSummaryList":{
+      "type":"list",
+      "member":{"shape":"ScanJobSummary"}
+    },
+    "ScanJobs":{
+      "type":"list",
+      "member":{"shape":"ScanJob"}
+    },
+    "ScanMode":{
+      "type":"string",
+      "enum":[
+        "FULL_SCAN",
+        "INCREMENTAL_SCAN"
+      ]
+    },
+    "ScanResourceType":{
+      "type":"string",
+      "enum":[
+        "EBS",
+        "EC2",
+        "S3"
+      ]
+    },
+    "ScanResult":{
+      "type":"structure",
+      "members":{
+        "MalwareScanner":{
+          "shape":"MalwareScanner",
+          "documentation":"<p>The malware scanner used to perform the scan. Currently only <code>GUARDDUTY</code> is supported.</p>"
+        },
+        "ScanJobState":{
+          "shape":"ScanJobState",
+          "documentation":"<p>The final state of the scan job.</p> <p>Valid values: <code>COMPLETED</code> | <code>FAILED</code> | <code>CANCELED</code>.</p>"
+        },
+        "LastScanTimestamp":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp of when the last scan was performed, in Unix format and Coordinated Universal Time (UTC).</p>"
+        },
+        "Findings":{
+          "shape":"ScanFindings",
+          "documentation":"<p>An array of findings discovered during the scan.</p>"
+        }
+      },
+      "documentation":"<p>Contains the results of a security scan, including scanner information, scan state, and any findings discovered.</p>"
+    },
+    "ScanResultInfo":{
+      "type":"structure",
+      "required":["ScanResultStatus"],
+      "members":{
+        "ScanResultStatus":{
+          "shape":"ScanResultStatus",
+          "documentation":"<p>The status of the scan results.</p> <p>Valid values: <code>THREATS_FOUND</code> | <code>NO_THREATS_FOUND</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about the results of a scan job.</p>"
+    },
+    "ScanResultStatus":{
+      "type":"string",
+      "enum":[
+        "NO_THREATS_FOUND",
+        "THREATS_FOUND"
+      ]
+    },
+    "ScanResults":{
+      "type":"list",
+      "member":{"shape":"ScanResult"},
+      "max":5,
+      "min":0
+    },
+    "ScanSetting":{
+      "type":"structure",
+      "members":{
+        "MalwareScanner":{
+          "shape":"MalwareScanner",
+          "documentation":"<p>The malware scanner to use for scanning. Currently only <code>GUARDDUTY</code> is supported.</p>"
+        },
+        "ResourceTypes":{
+          "shape":"ResourceTypes",
+          "documentation":"<p>An array of resource types to be scanned for malware.</p>"
+        },
+        "ScannerRoleArn":{
+          "shape":"IAMRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that the scanner uses to access resources; for example, <code>arn:aws:iam::123456789012:role/ScannerRole</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration settings for malware scanning, including the scanner type, target resource types, and scanner role.</p>"
+    },
+    "ScanSettings":{
+      "type":"list",
+      "member":{"shape":"ScanSetting"}
+    },
+    "ScanState":{
+      "type":"string",
+      "enum":[
+        "CANCELED",
+        "COMPLETED",
+        "COMPLETED_WITH_ISSUES",
+        "CREATED",
+        "FAILED",
+        "RUNNING"
+      ]
+    },
+    "ScheduledPlanExecutionMember":{
+      "type":"structure",
+      "members":{
+        "ExecutionTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The timestamp when the backup is scheduled to run, in Unix format and Coordinated Universal Time (UTC). The value is accurate to milliseconds.</p>"
+        },
+        "RuleId":{
+          "shape":"string",
+          "documentation":"<p>The unique identifier of the backup rule that will execute at the scheduled time.</p>"
+        },
+        "RuleExecutionType":{
+          "shape":"RuleExecutionType",
+          "documentation":"<p>The type of backup rule execution. Valid values are <code>CONTINUOUS</code> (point-in-time recovery), <code>SNAPSHOTS</code> (snapshot backups), or <code>CONTINUOUS_AND_SNAPSHOTS</code> (both types combined).</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a scheduled backup plan execution, including the execution time, rule type, and associated rule identifier.</p>"
+    },
+    "ScheduledRunsPreview":{
+      "type":"list",
+      "member":{"shape":"ScheduledPlanExecutionMember"}
+    },
     "SensitiveStringMap":{
       "type":"map",
       "key":{"shape":"String"},
@@ -7546,6 +8690,10 @@
         "BackupVaultName":{
           "shape":"BackupVaultName",
           "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p>"
+        },
+        "LogicallyAirGappedBackupVaultArn":{
+          "shape":"ARN",
+          "documentation":"<p>The ARN of a logically air-gapped vault. ARN must be in the same account and Region. If provided, supported fully managed resources back up directly to logically air-gapped vault, while other supported resources create a temporary (billable) snapshot in backup vault, then copy it to logically air-gapped vault. Unsupported resources only back up to the specified backup vault.</p>"
         },
         "ResourceArn":{
           "shape":"ARN",
@@ -7726,6 +8874,68 @@
         }
       }
     },
+    "StartScanJobInput":{
+      "type":"structure",
+      "required":[
+        "BackupVaultName",
+        "IamRoleArn",
+        "MalwareScanner",
+        "RecoveryPointArn",
+        "ScanMode",
+        "ScannerRoleArn"
+      ],
+      "members":{
+        "BackupVaultName":{
+          "shape":"String",
+          "documentation":"<p>The name of a logical container where backups are stored. Backup vaults are identified by names that are unique to the account used to create them and the Amazon Web Services Region where they are created.</p> <p>Pattern: <code>^[a-zA-Z0-9\\-\\_]{2,50}$</code> </p>"
+        },
+        "IamRoleArn":{
+          "shape":"String",
+          "documentation":"<p>Specifies the IAM role ARN used to create the target recovery point; for example, <code>arn:aws:iam::123456789012:role/S3Access</code>.</p>"
+        },
+        "IdempotencyToken":{
+          "shape":"String",
+          "documentation":"<p>A customer-chosen string that you can use to distinguish between otherwise identical calls to <code>StartScanJob</code>. Retrying a successful request with the same idempotency token results in a success message with no action taken.</p>"
+        },
+        "MalwareScanner":{
+          "shape":"MalwareScanner",
+          "documentation":"<p>Specifies the malware scanner used during the scan job. Currently only supports <code>GUARDDUTY</code>.</p>"
+        },
+        "RecoveryPointArn":{
+          "shape":"String",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies a recovery point. This is your target recovery point for a full scan. If you are running an incremental scan, this will be your a recovery point which has been created after your base recovery point selection.</p>"
+        },
+        "ScanBaseRecoveryPointArn":{
+          "shape":"String",
+          "documentation":"<p>An ARN that uniquely identifies the base recovery point to be used for incremental scanning.</p>"
+        },
+        "ScanMode":{
+          "shape":"ScanMode",
+          "documentation":"<p>Specifies the scan type use for the scan job.</p> <p>Includes:</p> <ul> <li> <p> <code>FULL_SCAN</code> will scan the entire data lineage within the backup.</p> </li> <li> <p> <code>INCREMENTAL_SCAN</code> will scan the data difference between the target recovery point and base recovery point ARN.</p> </li> </ul>"
+        },
+        "ScannerRoleArn":{
+          "shape":"String",
+          "documentation":"<p>Specified the IAM scanner role ARN.</p>"
+        }
+      }
+    },
+    "StartScanJobOutput":{
+      "type":"structure",
+      "required":[
+        "CreationDate",
+        "ScanJobId"
+      ],
+      "members":{
+        "CreationDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that a backup job is created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationDate</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087 AM.</p>"
+        },
+        "ScanJobId":{
+          "shape":"String",
+          "documentation":"<p>Uniquely identifies a request to Backup to back up a resource.</p>"
+        }
+      }
+    },
     "StopBackupJobInput":{
       "type":"structure",
       "required":["BackupJobId"],
@@ -7778,6 +8988,126 @@
       "key":{"shape":"TagKey"},
       "value":{"shape":"TagValue"},
       "sensitive":true
+    },
+    "TieringConfiguration":{
+      "type":"structure",
+      "required":[
+        "TieringConfigurationName",
+        "BackupVaultName",
+        "ResourceSelection"
+      ],
+      "members":{
+        "TieringConfigurationName":{
+          "shape":"TieringConfigurationName",
+          "documentation":"<p>The unique name of the tiering configuration. This cannot be changed after creation, and it must consist of only alphanumeric characters and underscores.</p>"
+        },
+        "TieringConfigurationArn":{
+          "shape":"ARN",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the tiering configuration.</p>"
+        },
+        "BackupVaultName":{
+          "shape":"BackupVaultNameOrWildcard",
+          "documentation":"<p>The name of the backup vault where the tiering configuration applies. Use <code>*</code> to apply to all backup vaults.</p>"
+        },
+        "ResourceSelection":{
+          "shape":"ResourceSelections",
+          "documentation":"<p>An array of resource selection objects that specify which resources are included in the tiering configuration and their tiering settings.</p>"
+        },
+        "CreatorRequestId":{
+          "shape":"CreatorRequestId",
+          "documentation":"<p>This is a unique string that identifies the request and allows failed requests to be retried without the risk of running the operation twice.</p>"
+        },
+        "CreationTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time a tiering configuration was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087AM.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time a tiering configuration was updated, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastUpdatedTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087AM.</p>"
+        }
+      },
+      "documentation":"<p>This contains metadata about a tiering configuration.</p>"
+    },
+    "TieringConfigurationInputForCreate":{
+      "type":"structure",
+      "required":[
+        "TieringConfigurationName",
+        "BackupVaultName",
+        "ResourceSelection"
+      ],
+      "members":{
+        "TieringConfigurationName":{
+          "shape":"TieringConfigurationName",
+          "documentation":"<p>The unique name of the tiering configuration. This cannot be changed after creation, and it must consist of only alphanumeric characters and underscores.</p>"
+        },
+        "BackupVaultName":{
+          "shape":"BackupVaultNameOrWildcard",
+          "documentation":"<p>The name of the backup vault where the tiering configuration applies. Use <code>*</code> to apply to all backup vaults.</p>"
+        },
+        "ResourceSelection":{
+          "shape":"ResourceSelections",
+          "documentation":"<p>An array of resource selection objects that specify which resources are included in the tiering configuration and their tiering settings.</p>"
+        }
+      },
+      "documentation":"<p>This contains metadata about a tiering configuration for create operations.</p>"
+    },
+    "TieringConfigurationInputForUpdate":{
+      "type":"structure",
+      "required":[
+        "ResourceSelection",
+        "BackupVaultName"
+      ],
+      "members":{
+        "ResourceSelection":{
+          "shape":"ResourceSelections",
+          "documentation":"<p>An array of resource selection objects that specify which resources are included in the tiering configuration and their tiering settings.</p>"
+        },
+        "BackupVaultName":{
+          "shape":"BackupVaultNameOrWildcard",
+          "documentation":"<p>The name of the backup vault where the tiering configuration applies. Use <code>*</code> to apply to all backup vaults.</p>"
+        }
+      },
+      "documentation":"<p>This contains metadata about a tiering configuration for update operations.</p>"
+    },
+    "TieringConfigurationName":{
+      "type":"string",
+      "pattern":"^[a-zA-Z0-9_]{1,200}$"
+    },
+    "TieringConfigurationsList":{
+      "type":"list",
+      "member":{"shape":"TieringConfigurationsListMember"},
+      "documentation":"<p>A list of tiering configurations.</p>"
+    },
+    "TieringConfigurationsListMember":{
+      "type":"structure",
+      "members":{
+        "TieringConfigurationArn":{
+          "shape":"ARN",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the tiering configuration.</p>"
+        },
+        "TieringConfigurationName":{
+          "shape":"TieringConfigurationName",
+          "documentation":"<p>The unique name of the tiering configuration.</p>"
+        },
+        "BackupVaultName":{
+          "shape":"BackupVaultNameOrWildcard",
+          "documentation":"<p>The name of the backup vault where the tiering configuration applies. Use <code>*</code> to apply to all backup vaults.</p>"
+        },
+        "CreationTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time a tiering configuration was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087AM.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time a tiering configuration was updated, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastUpdatedTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087AM.</p>"
+        }
+      },
+      "documentation":"<p>This contains metadata about a tiering configuration returned in a list.</p>"
+    },
+    "TieringDownSettingsInDays":{
+      "type":"integer",
+      "max":36500,
+      "min":60
     },
     "Timestamp":{"type":"timestamp"},
     "Timezone":{"type":"string"},
@@ -7841,6 +9171,10 @@
         "AdvancedBackupSettings":{
           "shape":"AdvancedBackupSettings",
           "documentation":"<p>Contains a list of <code>BackupOptions</code> for each resource type.</p>"
+        },
+        "ScanSettings":{
+          "shape":"ScanSettings",
+          "documentation":"<p>Contains your scanning configuration for the backup plan and includes the Malware scanner, your selected resources, and scanner role.</p>"
         }
       }
     },
@@ -7891,7 +9225,7 @@
       "members":{
         "GlobalSettings":{
           "shape":"GlobalSettings",
-          "documentation":"<p>A value for <code>isCrossAccountBackupEnabled</code> and a Region. Example: <code>update-global-settings --global-settings isCrossAccountBackupEnabled=false --region us-west-2</code>.</p>"
+          "documentation":"<p>Inputs can include:</p> <p>A value for <code>isCrossAccountBackupEnabled</code> and a Region. Example: <code>update-global-settings --global-settings isCrossAccountBackupEnabled=false --region us-west-2</code>.</p> <p>A value for Multi-party approval, styled as \"Mpa\": <code>isMpaEnabled</code>. Values can be true or false. Example: <code>update-global-settings --global-settings isMpaEnabled=false --region us-west-2</code>.</p> <p>A value for Backup Service-Linked Role creation, styled as<code>isDelegatedAdministratorEnabled</code>. Values can be true or false. Example: <code>update-global-settings --global-settings isDelegatedAdministratorEnabled=false --region us-west-2</code>.</p>"
         }
       }
     },
@@ -8152,6 +9486,46 @@
         "UpdateTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the update completed for the restore testing selection.</p>"
+        }
+      }
+    },
+    "UpdateTieringConfigurationInput":{
+      "type":"structure",
+      "required":[
+        "TieringConfigurationName",
+        "TieringConfiguration"
+      ],
+      "members":{
+        "TieringConfigurationName":{
+          "shape":"TieringConfigurationName",
+          "documentation":"<p>The name of a tiering configuration to update.</p>",
+          "location":"uri",
+          "locationName":"tieringConfigurationName"
+        },
+        "TieringConfiguration":{
+          "shape":"TieringConfigurationInputForUpdate",
+          "documentation":"<p>Specifies the body of a tiering configuration.</p>"
+        }
+      }
+    },
+    "UpdateTieringConfigurationOutput":{
+      "type":"structure",
+      "members":{
+        "TieringConfigurationArn":{
+          "shape":"ARN",
+          "documentation":"<p>An Amazon Resource Name (ARN) that uniquely identifies the updated tiering configuration.</p>"
+        },
+        "TieringConfigurationName":{
+          "shape":"TieringConfigurationName",
+          "documentation":"<p>This unique string is the name of the tiering configuration.</p>"
+        },
+        "CreationTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time a tiering configuration was created, in Unix format and Coordinated Universal Time (UTC). The value of <code>CreationTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087AM.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"timestamp",
+          "documentation":"<p>The date and time a tiering configuration was updated, in Unix format and Coordinated Universal Time (UTC). The value of <code>LastUpdatedTime</code> is accurate to milliseconds. For example, the value 1516925490.087 represents Friday, January 26, 2018 12:11:30.087AM.</p>"
         }
       }
     },

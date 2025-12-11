@@ -163,6 +163,7 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Gets information about the specified catalog item.</p>"
@@ -213,6 +214,21 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Gets information about the specified Outpost.</p>"
+    },
+    "GetOutpostBillingInformation":{
+      "name":"GetOutpostBillingInformation",
+      "http":{
+        "method":"GET",
+        "requestUri":"/outpost/{OutpostIdentifier}/billing-information"
+      },
+      "input":{"shape":"GetOutpostBillingInformationInput"},
+      "output":{"shape":"GetOutpostBillingInformationOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"NotFoundException"}
+      ],
+      "documentation":"<p>Gets current and historical billing information about the specified Outpost.</p>"
     },
     "GetOutpostInstanceTypes":{
       "name":"GetOutpostInstanceTypes",
@@ -353,6 +369,7 @@
       "errors":[
         {"shape":"ValidationException"},
         {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists the items in the catalog.</p> <p>Use filters to return specific results. If you specify multiple filters, the results include only the resources that match all of the specified filters. For a filter where you can specify multiple values, the results include items that match any of the values that you specify for the filter.</p>"
@@ -450,6 +467,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<note> <p> Amazon Web Services uses this action to install Outpost servers.</p> </note> <p> Starts the connection required for Outpost server installation. </p> <p> Use CloudTrail to monitor this action or Amazon Web Services managed policy for Amazon Web Services Outposts to secure it. For more information, see <a href=\"https://docs.aws.amazon.com/outposts/latest/userguide/security-iam-awsmanpol.html\"> Amazon Web Services managed policies for Amazon Web Services Outposts</a> and <a href=\"https://docs.aws.amazon.com/outposts/latest/userguide/logging-using-cloudtrail.html\"> Logging Amazon Web Services Outposts API calls with Amazon Web Services CloudTrail</a> in the <i>Amazon Web Services Outposts User Guide</i>. </p>"
+    },
+    "StartOutpostDecommission":{
+      "name":"StartOutpostDecommission",
+      "http":{
+        "method":"POST",
+        "requestUri":"/outposts/{OutpostId}/decommission"
+      },
+      "input":{"shape":"StartOutpostDecommissionInput"},
+      "output":{"shape":"StartOutpostDecommissionOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Starts the decommission process to return the Outposts racks or servers.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -589,6 +623,8 @@
     "Address":{
       "type":"structure",
       "required":[
+        "ContactName",
+        "ContactPhoneNumber",
         "AddressLine1",
         "City",
         "StateOrRegion",
@@ -835,6 +871,22 @@
       "type":"list",
       "member":{"shape":"BlockingInstance"}
     },
+    "BlockingResourceType":{
+      "type":"string",
+      "enum":[
+        "EC2_INSTANCE",
+        "OUTPOST_RAM_SHARE",
+        "LGW_ROUTING_DOMAIN",
+        "LGW_ROUTE_TABLE",
+        "LGW_VIRTUAL_INTERFACE_GROUP",
+        "OUTPOST_ORDER_CANCELLABLE",
+        "OUTPOST_ORDER_INTERVENTION_REQUIRED"
+      ]
+    },
+    "BlockingResourceTypeList":{
+      "type":"list",
+      "member":{"shape":"BlockingResourceType"}
+    },
     "CIDR":{
       "type":"string",
       "max":18,
@@ -868,8 +920,7 @@
     },
     "CancelCapacityTaskOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CancelOrderInput":{
       "type":"structure",
@@ -885,8 +936,7 @@
     },
     "CancelOrderOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CapacityTaskFailure":{
       "type":"structure",
@@ -1168,7 +1218,6 @@
       "type":"structure",
       "required":[
         "OutpostIdentifier",
-        "LineItems",
         "PaymentOption"
       ],
       "members":{
@@ -1264,6 +1313,14 @@
         "Site":{"shape":"Site"}
       }
     },
+    "DecommissionRequestStatus":{
+      "type":"string",
+      "enum":[
+        "SKIPPED",
+        "BLOCKED",
+        "REQUESTED"
+      ]
+    },
     "DeleteOutpostInput":{
       "type":"structure",
       "required":["OutpostId"],
@@ -1278,8 +1335,7 @@
     },
     "DeleteOutpostOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteSiteInput":{
       "type":"structure",
@@ -1295,8 +1351,7 @@
     },
     "DeleteSiteOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeviceSerialNumber":{
       "type":"string",
@@ -1498,13 +1553,49 @@
         "Order":{"shape":"Order"}
       }
     },
+    "GetOutpostBillingInformationInput":{
+      "type":"structure",
+      "required":["OutpostIdentifier"],
+      "members":{
+        "NextToken":{
+          "shape":"Token",
+          "location":"querystring",
+          "locationName":"NextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults1000",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "OutpostIdentifier":{
+          "shape":"OutpostIdentifier",
+          "documentation":"<p>The ID or ARN of the Outpost.</p>",
+          "location":"uri",
+          "locationName":"OutpostIdentifier"
+        }
+      }
+    },
+    "GetOutpostBillingInformationOutput":{
+      "type":"structure",
+      "members":{
+        "NextToken":{"shape":"Token"},
+        "Subscriptions":{
+          "shape":"SubscriptionList",
+          "documentation":"<p>The subscription details for the specified Outpost.</p>"
+        },
+        "ContractEndDate":{
+          "shape":"String",
+          "documentation":"<p>The date the current contract term ends for the specified Outpost. You must start the renewal or decommission process at least 5 business days before the current term for your Amazon Web Services Outposts ends. Failing to complete these steps at least 5 business days before the current term ends might result in unanticipated charges.</p>"
+        }
+      }
+    },
     "GetOutpostInput":{
       "type":"structure",
       "required":["OutpostId"],
       "members":{
         "OutpostId":{
           "shape":"OutpostId",
-          "documentation":"<p> The ID or ARN of the Outpost. </p>",
+          "documentation":"<p>The ID or ARN of the Outpost.</p>",
           "location":"uri",
           "locationName":"OutpostId"
         }
@@ -2272,6 +2363,7 @@
       "error":{"httpStatusCode":404},
       "exception":true
     },
+    "NullableDouble":{"type":"double"},
     "OpticalStandard":{
       "type":"string",
       "enum":[
@@ -2337,6 +2429,10 @@
       "max":20,
       "min":1,
       "pattern":"oo-[a-f0-9]{17}$"
+    },
+    "OrderIdList":{
+      "type":"list",
+      "member":{"shape":"String"}
     },
     "OrderStatus":{
       "type":"string",
@@ -2852,6 +2948,35 @@
         }
       }
     },
+    "StartOutpostDecommissionInput":{
+      "type":"structure",
+      "required":["OutpostIdentifier"],
+      "members":{
+        "OutpostIdentifier":{
+          "shape":"OutpostIdentifier",
+          "documentation":"<p>The ID or ARN of the Outpost that you want to decommission.</p>",
+          "location":"uri",
+          "locationName":"OutpostId"
+        },
+        "ValidateOnly":{
+          "shape":"ValidateOnly",
+          "documentation":"<p>Validates the request without starting the decommission process.</p>"
+        }
+      }
+    },
+    "StartOutpostDecommissionOutput":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"DecommissionRequestStatus",
+          "documentation":"<p>The status of the decommission request.</p>"
+        },
+        "BlockingResourceTypes":{
+          "shape":"BlockingResourceTypeList",
+          "documentation":"<p>The resources still associated with the Outpost that you are decommissioning.</p>"
+        }
+      }
+    },
     "StateOrRegion":{
       "type":"string",
       "max":50,
@@ -2873,6 +2998,64 @@
       "max":1000,
       "min":1,
       "pattern":"^[\\S \\n]+$"
+    },
+    "Subscription":{
+      "type":"structure",
+      "members":{
+        "SubscriptionId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the subscription that appears on the Amazon Web Services Billing Center console.</p>"
+        },
+        "SubscriptionType":{
+          "shape":"SubscriptionType",
+          "documentation":"<p>The type of subscription which can be one of the following:</p> <ul> <li> <p> <b>ORIGINAL</b> - The first order on the Amazon Web Services Outposts.</p> </li> <li> <p> <b>RENEWAL</b> - Renewal requests, both month to month and longer term.</p> </li> <li> <p> <b>CAPACITY_INCREASE</b> - Capacity scaling orders.</p> </li> </ul>"
+        },
+        "SubscriptionStatus":{
+          "shape":"SubscriptionStatus",
+          "documentation":"<p>The status of subscription which can be one of the following:</p> <ul> <li> <p> <b>INACTIVE</b> - Subscription requests that are inactive.</p> </li> <li> <p> <b>ACTIVE</b> - Subscription requests that are in progress and have an end date in the future.</p> </li> <li> <p> <b>CANCELLED</b> - Subscription requests that are cancelled.</p> </li> </ul>"
+        },
+        "OrderIds":{
+          "shape":"OrderIdList",
+          "documentation":"<p>The order ID for your subscription.</p>"
+        },
+        "BeginDate":{
+          "shape":"ISO8601Timestamp",
+          "documentation":"<p>The date your subscription starts.</p>"
+        },
+        "EndDate":{
+          "shape":"ISO8601Timestamp",
+          "documentation":"<p>The date your subscription ends.</p>"
+        },
+        "MonthlyRecurringPrice":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The amount you are billed each month in the subscription period.</p>"
+        },
+        "UpfrontPrice":{
+          "shape":"NullableDouble",
+          "documentation":"<p>The amount billed when the subscription is created. This is a one-time charge.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about your Amazon Web Services Outposts subscriptions.</p>"
+    },
+    "SubscriptionList":{
+      "type":"list",
+      "member":{"shape":"Subscription"}
+    },
+    "SubscriptionStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "INACTIVE",
+        "CANCELLED"
+      ]
+    },
+    "SubscriptionType":{
+      "type":"string",
+      "enum":[
+        "ORIGINAL",
+        "RENEWAL",
+        "CAPACITY_INCREASE"
+      ]
     },
     "SupportedHardwareType":{
       "type":"string",
@@ -2937,8 +3120,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -2994,8 +3176,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateOutpostInput":{
       "type":"structure",
@@ -3164,6 +3345,7 @@
       "type":"integer",
       "box":true
     },
+    "ValidateOnly":{"type":"boolean"},
     "ValidationException":{
       "type":"structure",
       "members":{

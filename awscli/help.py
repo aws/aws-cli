@@ -15,11 +15,20 @@ import os
 import platform
 import shlex
 import sys
+import tempfile
+import webbrowser
 from subprocess import PIPE, Popen
 
+from botocore.exceptions import ProfileNotFound
 from docutils.core import publish_string
-from docutils.writers import manpage
+from docutils.writers import (
+    html4css1,
+    manpage,
+)
 
+from awscli import (
+    _DEFAULT_BASE_REMOTE_URL,
+)
 from awscli.argparser import ArgTableArgParser
 from awscli.argprocess import ParamShorthandParser
 from awscli.bcdoc import docevents
@@ -37,26 +46,39 @@ from awscli.utils import ignore_ctrl_c
 
 LOG = logging.getLogger('awscli.help')
 
+REF_PATH = 'reference'
+TUT_PATH = 'tutorial'
+TOPIC_PATH = 'topic'
+
 
 class ExecutableNotFoundError(Exception):
     def __init__(self, executable_name):
-        super(ExecutableNotFoundError, self).__init__(
-            'Could not find executable named "%s"' % executable_name
+        super().__init__(
+            f'Could not find executable named "{executable_name}"'
         )
 
 
-def get_renderer():
+def get_renderer(help_output):
     """
     Return the appropriate HelpRenderer implementation for the
     current platform.
     """
+
     if platform.system() == 'Windows':
+        if help_output == "browser":
+            return WindowsBrowserHelpRenderer()
+        elif help_output == "url":
+            return WindowsPagingHelpRenderer()
         return WindowsHelpRenderer()
     else:
+        if help_output == "browser":
+            return PosixBrowserHelpRenderer()
+        elif help_output == "url":
+            return PosixPagingHelpRenderer()
         return PosixHelpRenderer()
 
 
-class PagingHelpRenderer:
+class HelpRenderer:
     """
     Interface for a help renderer.
 
@@ -67,6 +89,34 @@ class PagingHelpRenderer:
 
     def __init__(self, output_stream=sys.stdout):
         self.output_stream = output_stream
+
+    def render(self, contents):
+        """
+        Each implementation of HelpRenderer must implement this
+        render method.
+        """
+        converted_content = self._convert_doc_content(contents)
+        self._send_output_to_destination(converted_content)
+
+    def _send_output_to_destination(self, output):
+        """
+        Each implementation of HelpRenderer must implement this
+        method.
+        """
+        raise NotImplementedError
+
+    def _popen(self, *args, **kwargs):
+        return Popen(*args, **kwargs)
+
+    def _convert_doc_content(self, contents):
+        return contents
+
+
+class PagingHelpRenderer(HelpRenderer):
+    """Interface for a help renderer.
+
+    This sends output to the pager.
+    """
 
     PAGER = None
     _DEFAULT_DOCUTILS_SETTINGS_OVERRIDES = {
@@ -88,13 +138,8 @@ class PagingHelpRenderer:
             pager = os.environ['PAGER']
         return shlex.split(pager)
 
-    def render(self, contents):
-        """
-        Each implementation of HelpRenderer must implement this
-        render method.
-        """
-        converted_content = self._convert_doc_content(contents)
-        self._send_output_to_pager(converted_content)
+    def _send_output_to_destination(self, output):
+        self._send_output_to_pager(output)
 
     def _send_output_to_pager(self, output):
         cmdline = self.get_pager_cmdline()
@@ -102,14 +147,48 @@ class PagingHelpRenderer:
         p = self._popen(cmdline, stdin=PIPE)
         p.communicate(input=output)
 
-    def _popen(self, *args, **kwargs):
-        return Popen(*args, **kwargs)
 
-    def _convert_doc_content(self, contents):
-        return contents
+class BrowserHelpRenderer(HelpRenderer):
+    """
+    Interface for a help renderer to a web browser.
+
+    The renderer is responsible for displaying the help content on
+    a particular platform.
+
+    """
+
+    def __init__(self, output_stream=sys.stdout):
+        self.output_stream = output_stream
+
+    _DEFAULT_DOCUTILS_SETTINGS_OVERRIDES = {
+        # The default for line length limit in docutils is 10,000. However,
+        # currently in the documentation, it inlines all possible enums in
+        # the JSON syntax which exceeds this limit for some EC2 commands
+        # and prevents the manpages from being generated.
+        # This is a temporary fix to allow the manpages for these commands
+        # to be rendered. Long term, we should avoid enumerating over all
+        # enums inline for the JSON syntax snippets.
+        'line_length_limit': 50_000
+    }
+
+    def _send_output_to_destination(self, output):
+        self._send_output_to_browser(output)
+
+    def _send_output_to_browser(self, output):
+        html_file = tempfile.NamedTemporaryFile(
+            "wb", suffix=".html", delete=False
+        )
+        html_file.write(output)
+        html_file.close()
+
+        try:
+            print("Opening help file in the default browser.")
+            return webbrowser.open_new_tab(f'file://{html_file.name}')
+        except webbrowser.Error:
+            print('Failed to open browser:', file=sys.stderr)
 
 
-class PosixHelpRenderer(PagingHelpRenderer):
+class PosixPagingHelpRenderer(PagingHelpRenderer):
     """
     Render help content on a Posix-like system.  This includes
     Linux and MacOS X.
@@ -117,30 +196,11 @@ class PosixHelpRenderer(PagingHelpRenderer):
 
     PAGER = 'less -R'
 
-    def _convert_doc_content(self, contents):
-        settings_overrides = self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES.copy()
-        settings_overrides["report_level"] = 3
-        man_contents = publish_string(
-            contents,
-            writer=manpage.Writer(),
-            settings_overrides=self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES,
-        )
-        if self._exists_on_path('groff'):
-            cmdline = ['groff', '-m', 'man', '-T', 'ascii']
-        elif self._exists_on_path('mandoc'):
-            cmdline = ['mandoc', '-T', 'ascii']
-        else:
-            raise ExecutableNotFoundError('groff or mandoc')
-        LOG.debug("Running command: %s", cmdline)
-        p3 = self._popen(cmdline, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        output = p3.communicate(input=man_contents)[0]
-        return output
-
     def _send_output_to_pager(self, output):
         cmdline = self.get_pager_cmdline()
         if not self._exists_on_path(cmdline[0]):
             LOG.debug(
-                "Pager '%s' not found in PATH, printing raw help." % cmdline[0]
+                f"Pager '{cmdline[0]}' not found in PATH, printing raw help."
             )
             self.output_stream.write(output.decode('utf-8') + "\n")
             self.output_stream.flush()
@@ -172,10 +232,82 @@ class PosixHelpRenderer(PagingHelpRenderer):
         )
 
 
-class WindowsHelpRenderer(PagingHelpRenderer):
+class PosixHelpRenderer(PosixPagingHelpRenderer):
+    """
+    Render help content on a Posix-like system.  This includes
+    Linux and MacOS X.
+    """
+
+    def _convert_doc_content(self, contents):
+        settings_overrides = self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES.copy()
+        settings_overrides["report_level"] = 3
+        man_contents = publish_string(
+            contents,
+            writer=manpage.Writer(),
+            settings_overrides=self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES,
+        )
+        if self._exists_on_path('groff'):
+            cmdline = ['groff', '-m', 'man', '-T', 'ascii']
+        elif self._exists_on_path('mandoc'):
+            cmdline = ['mandoc', '-T', 'ascii']
+        else:
+            raise ExecutableNotFoundError('groff or mandoc')
+        LOG.debug("Running command: %s", cmdline)
+        p3 = self._popen(cmdline, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        output = p3.communicate(input=man_contents)[0]
+        return output
+
+
+class PosixBrowserHelpRenderer(BrowserHelpRenderer):
+    """
+    Render help content in a browser on a Posix-like system.  This includes
+    Linux and MacOS X.
+    """
+
+    def _convert_doc_content(self, contents):
+        settings_overrides = self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES.copy()
+        settings_overrides["report_level"] = 3
+        man_contents = publish_string(
+            contents,
+            writer=manpage.Writer(),
+            settings_overrides=self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES,
+        )
+        if self._exists_on_path('groff'):
+            cmdline = ['groff', '-m', 'man', '-T', 'html']
+        elif self._exists_on_path('mandoc'):
+            cmdline = ['mandoc', '-T', 'html']
+        else:
+            raise ExecutableNotFoundError('groff or mandoc')
+        LOG.debug("Running command: %s", cmdline)
+        p3 = self._popen(cmdline, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        output = p3.communicate(input=man_contents)[0]
+        return output
+
+    def _exists_on_path(self, name):
+        # Since we're only dealing with POSIX systems, we can
+        # ignore things like PATHEXT.
+        return any(
+            [
+                os.path.exists(os.path.join(p, name))
+                for p in os.environ.get('PATH', '').split(os.pathsep)
+            ]
+        )
+
+
+class WindowsPagingHelpRenderer(PagingHelpRenderer):
     """Render help content on a Windows platform."""
 
     PAGER = 'more'
+
+    def _popen(self, *args, **kwargs):
+        # Also set the shell value to True.  To get any of the
+        # piping to a pager to work, we need to use shell=True.
+        kwargs['shell'] = True
+        return Popen(*args, **kwargs)
+
+
+class WindowsHelpRenderer(WindowsPagingHelpRenderer):
+    """Render help content on a Windows platform."""
 
     def _convert_doc_content(self, contents):
         text_output = publish_string(
@@ -185,11 +317,17 @@ class WindowsHelpRenderer(PagingHelpRenderer):
         )
         return text_output
 
-    def _popen(self, *args, **kwargs):
-        # Also set the shell value to True.  To get any of the
-        # piping to a pager to work, we need to use shell=True.
-        kwargs['shell'] = True
-        return Popen(*args, **kwargs)
+
+class WindowsBrowserHelpRenderer(BrowserHelpRenderer):
+    """Render help content in the browser on a Windows platform."""
+
+    def _convert_doc_content(self, contents):
+        text_output = publish_string(
+            contents,
+            writer=html4css1.Writer(),
+            settings_overrides=self._DEFAULT_DOCUTILS_SETTINGS_OVERRIDES,
+        )
+        return text_output
 
 
 class HelpCommand:
@@ -247,8 +385,17 @@ class HelpCommand:
         self.arg_table = arg_table
         self._subcommand_table = {}
         self._related_items = []
-        self.renderer = get_renderer()
         self.doc = ReSTDocument(target='man')
+        self._base_remote_url = _DEFAULT_BASE_REMOTE_URL
+
+        try:
+            self._help_output_format = self.session.get_config_variable(
+                "cli_help_output"
+            )
+        except ProfileNotFound:
+            self._help_output_format = None
+
+        self.renderer = get_renderer(self._help_output_format)
 
     @property
     def event_class(self):
@@ -300,7 +447,10 @@ class HelpCommand:
         # We pass ourselves along so that we can, in turn, get passed
         # to all event handlers.
         docevents.generate_events(self.session, self)
-        self.renderer.render(self.doc.getvalue())
+        if self._help_output_format == 'url':
+            self.renderer.render(self.url.encode())
+        else:
+            self.renderer.render(self.doc.getvalue())
         instance.unregister()
 
 
@@ -314,7 +464,13 @@ class ProviderHelpCommand(HelpCommand):
     EventHandlerClass = ProviderDocumentEventHandler
 
     def __init__(
-        self, session, command_table, arg_table, description, synopsis, usage
+        self,
+        session,
+        command_table,
+        arg_table,
+        description,
+        synopsis,
+        usage,
     ):
         HelpCommand.__init__(self, session, None, command_table, arg_table)
         self.description = description
@@ -331,6 +487,10 @@ class ProviderHelpCommand(HelpCommand):
     @property
     def name(self):
         return 'aws'
+
+    @property
+    def url(self):
+        return f"{self._base_remote_url}/index.html"
 
     @property
     def subcommand_table(self):
@@ -368,9 +528,7 @@ class ServiceHelpCommand(HelpCommand):
     def __init__(
         self, session, obj, command_table, arg_table, name, event_class
     ):
-        super(ServiceHelpCommand, self).__init__(
-            session, obj, command_table, arg_table
-        )
+        super().__init__(session, obj, command_table, arg_table)
         self._name = name
         self._event_class = event_class
 
@@ -381,6 +539,10 @@ class ServiceHelpCommand(HelpCommand):
     @property
     def name(self):
         return self._name
+
+    @property
+    def url(self):
+        return f"{self._base_remote_url}/{REF_PATH}/{self.name}/index.html"
 
 
 class OperationHelpCommand(HelpCommand):
@@ -407,12 +569,16 @@ class OperationHelpCommand(HelpCommand):
     def name(self):
         return self._name
 
+    @property
+    def url(self):
+        return f"{self._base_remote_url}/reference/{self.event_class.replace('.', '/')}.html"
+
 
 class TopicListerCommand(HelpCommand):
     EventHandlerClass = TopicListerDocumentEventHandler
 
     def __init__(self, session):
-        super(TopicListerCommand, self).__init__(session, None, {}, {})
+        super().__init__(session, None, {}, {})
 
     @property
     def event_class(self):
@@ -422,12 +588,16 @@ class TopicListerCommand(HelpCommand):
     def name(self):
         return 'topics'
 
+    @property
+    def url(self):
+        return f"{self._base_remote_url}/{TOPIC_PATH}/index.html"
+
 
 class TopicHelpCommand(HelpCommand):
     EventHandlerClass = TopicDocumentEventHandler
 
     def __init__(self, session, topic_name):
-        super(TopicHelpCommand, self).__init__(session, None, {}, {})
+        super().__init__(session, None, {}, {})
         self._topic_name = topic_name
 
     @property
@@ -437,3 +607,7 @@ class TopicHelpCommand(HelpCommand):
     @property
     def name(self):
         return self._topic_name
+
+    @property
+    def url(self):
+        return f"{self._base_remote_url}/{TOPIC_PATH}/{self.name}.html"

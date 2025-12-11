@@ -30,6 +30,7 @@ import uuid
 import warnings
 import weakref
 from datetime import datetime as _DatetimeClass
+from functools import partial
 from ipaddress import ip_address
 from pathlib import Path
 from urllib.request import getproxies, proxy_bypass
@@ -38,6 +39,7 @@ import botocore
 import botocore.awsrequest
 import botocore.httpsession
 import dateutil.parser
+from awscrt.crypto import EC
 from botocore.compat import (
     MD5_AVAILABLE,
     get_md5,
@@ -396,9 +398,15 @@ class IMDSFetcher:
 
         return chosen_base_url
 
+    def _construct_url(self, path):
+        sep = ''
+        if self._base_url and not self._base_url.endswith('/'):
+            sep = '/'
+        return f'{self._base_url}{sep}{path}'
+
     def _fetch_metadata_token(self):
         self._assert_enabled()
-        url = self._base_url + self._TOKEN_PATH
+        url = self._construct_url(self._TOKEN_PATH)
         headers = {
             'x-aws-ec2-metadata-token-ttl-seconds': self._TOKEN_TTL,
         }
@@ -453,7 +461,7 @@ class IMDSFetcher:
             self._assert_v1_enabled()
         if retry_func is None:
             retry_func = self._default_retry
-        url = self._base_url + url_path
+        url = self._construct_url(url_path)
         headers = {}
         if token is not None:
             headers['x-aws-ec2-metadata-token'] = token
@@ -3950,6 +3958,41 @@ class JSONFileCache:
         return value
 
 
+def _extract_resolved_endpoint(params, result=None, **kwargs):
+    """Event handler for before-call that will extract the resolved endpoint
+    for a given request without actually running it
+    """
+    # This will contain any path and query params specific to
+    # the operation/input, so extract just the scheme and hostname
+    if result is None:
+        result = {}
+    if params['url']:
+        parsed = urlparse(params['url'])
+        result['uri'] = f'{parsed.scheme}://{parsed.netloc}'
+
+    return botocore.awsrequest.AWSResponse(None, 200, {}, None), {}
+
+
+def get_base_sign_in_uri(client):
+    """Simulates a Sign-In request so that we can extract the "base"
+    endpoint for the current client
+    """
+    result = {}
+    handler = partial(_extract_resolved_endpoint, result=result)
+
+    client.meta.events.register('before-call', handler)
+    client.create_o_auth2_token(
+        tokenInput={'clientId': ' ', 'grantType': ' '},
+    )
+    client.meta.events.unregister('before-call', handler)
+
+    return result['uri']
+
+
+def generate_login_cache_key(sign_in_session_name):
+    return hashlib.sha256(sign_in_session_name.encode('utf-8')).hexdigest()
+
+
 def is_s3_accelerate_url(url):
     """Does the URL match the S3 Accelerate endpoint scheme?
 
@@ -3987,6 +4030,21 @@ def is_s3express_bucket(bucket):
     if bucket is None:
         return False
     return bucket.endswith('--x-s3')
+
+
+def get_token_from_environment(signing_name, environ=None):
+    if not isinstance(signing_name, str) or not signing_name.strip():
+        return None
+
+    if environ is None:
+        environ = os.environ
+    env_var = _get_bearer_env_var_name(signing_name)
+    return environ.get(env_var)
+
+
+def _get_bearer_env_var_name(signing_name):
+    bearer_name = signing_name.replace('-', '_').replace(' ', '_').upper()
+    return f"AWS_BEARER_TOKEN_{bearer_name}"
 
 
 # This parameter is not part of the public interface and is subject to abrupt
@@ -4060,3 +4118,82 @@ CLIENT_NAME_TO_HYPHENIZED_SERVICE_ID_OVERRIDES = {
     'stepfunctions': 'sfn',
     'storagegateway': 'storage-gateway',
 }
+
+
+def get_login_token_cache_directory():
+    """Returns which directory contains the login_session token files"""
+    if 'AWS_LOGIN_CACHE_DIRECTORY' in os.environ:
+        path = os.path.expandvars(os.environ['AWS_LOGIN_CACHE_DIRECTORY'])
+        path = os.path.expanduser(path)
+        return path
+    else:
+        return os.path.expanduser(os.path.join('~', '.aws', 'login', 'cache'))
+
+
+class LoginCredentialsLoader:
+    """Loads and saves login access tokens to disk"""
+
+    def __init__(self, cache=None):
+        if cache is None:
+            cache = {}
+        self._cache = cache
+
+    def save_token(self, session_name, token):
+        cache_key = generate_login_cache_key(session_name)
+        self._cache[cache_key] = token
+
+    def load_token(self, session_name):
+        cache_key = generate_login_cache_key(session_name)
+        if cache_key not in self._cache:
+            return None
+        return self._cache[cache_key]
+
+
+def base64_url_encode_no_padding(data):
+    return base64.urlsafe_b64encode(data).rstrip(b'=').decode('ascii')
+
+
+def build_dpop_header(private_key, uri, uid=None, ts=None):
+    x, y = private_key.get_public_coords()
+    jwk = {
+        "kty": "EC",
+        "x": base64_url_encode_no_padding(x),
+        "y": base64_url_encode_no_padding(y),
+        "crv": "P-256",
+    }
+
+    header = {
+        "typ": "dpop+jwt",
+        "alg": "ES256",
+        "jwk": jwk,
+    }
+
+    payload = {
+        "htm": "POST",
+        "htu": uri,
+        "iat": ts or int(time.time()),
+        "jti": uid or str(uuid.uuid4()),
+    }
+    header_b64 = base64_url_encode_no_padding(
+        json.dumps(header, separators=(',', ':')).encode()
+    )
+    payload_b64 = base64_url_encode_no_padding(
+        json.dumps(payload, separators=(',', ':')).encode()
+    )
+    signing_input = f"{header_b64}.{payload_b64}".encode()
+    signature = private_key.sign(hashlib.sha256(signing_input).digest())
+    signature_bytes = EC.decode_der_signature_to_padded_pair(signature, pad_to=32)
+    signature_b64 = base64_url_encode_no_padding(signature_bytes)
+
+    return f"{header_b64}.{payload_b64}.{signature_b64}"
+
+
+def build_add_dpop_header_handler(private_key):
+    """Builds a before-call handler for calculating and setting the DPoP header"""
+
+    def _add_dpop_header_handler(**kwargs):
+        kwargs['params']['headers']['DPoP'] = build_dpop_header(
+            private_key, kwargs['params']['url']
+        )
+
+    return _add_dpop_header_handler

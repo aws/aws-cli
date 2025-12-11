@@ -32,7 +32,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Creates an <i>investigation group</i> in your account. Creating an investigation group is a one-time setup task for each Region in your account. It is a necessary task to be able to perform investigations.</p> <p>Settings in the investigation group help you centrally manage the common properties of your investigations, such as the following:</p> <ul> <li> <p>Who can access the investigations</p> </li> <li> <p>Whether investigation data is encrypted with a customer managed Key Management Service key.</p> </li> <li> <p>How long investigations and their data are retained by default.</p> </li> </ul> <p>Currently, you can have one investigation group in each Region in your account. Each investigation in a Region is a part of the investigation group in that Region</p> <p>To create an investigation group and set up CloudWatch investigations, you must be signed in to an IAM principal that has the either the <code>AIOpsConsoleAdminPolicy</code> or the <code>AdministratorAccess</code> IAM policy attached, or to an account that has similar permissions.</p> <important> <p>You can configure CloudWatch alarms to start investigations and add events to investigations. If you create your investigation group with <code>CreateInvestigationGroup</code> and you want to enable alarms to do this, you must use <a href=\"https://docs.aws.amazon.com/operationalinvestigations/latest/AmazonQDeveloperOperationalInvestigationsAPIReference/API_PutInvestigationGroupPolicy.html\">PutInvestigationGroupPolicy</a> to create a resource policy that grants this permission to CloudWatch alarms. </p> <p>For more information about configuring CloudWatch alarms to work with CloudWatch investigations, see </p> </important>",
+      "documentation":"<p>Creates an <i>investigation group</i> in your account. Creating an investigation group is a one-time setup task for each Region in your account. It is a necessary task to be able to perform investigations.</p> <p>Settings in the investigation group help you centrally manage the common properties of your investigations, such as the following:</p> <ul> <li> <p>Who can access the investigations</p> </li> <li> <p>Whether investigation data is encrypted with a customer managed Key Management Service key.</p> </li> <li> <p>How long investigations and their data are retained by default.</p> </li> </ul> <p>Currently, you can have one investigation group in each Region in your account. Each investigation in a Region is a part of the investigation group in that Region</p> <p>To create an investigation group and set up CloudWatch investigations, you must be signed in to an IAM principal that has either the <code>AIOpsConsoleAdminPolicy</code> or the <code>AdministratorAccess</code> IAM policy attached, or to an account that has similar permissions.</p> <important> <p>You can configure CloudWatch alarms to start investigations and add events to investigations. If you create your investigation group with <code>CreateInvestigationGroup</code> and you want to enable alarms to do this, you must use <code>PutInvestigationGroupPolicy</code> to create a resource policy that grants this permission to CloudWatch alarms. </p> <p>For more information about configuring CloudWatch alarms, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html\">Using Amazon CloudWatch alarms</a> </p> </important>",
       "idempotent":true
     },
     "DeleteInvestigationGroup":{
@@ -114,7 +114,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Returns the IAM resource policy that is associated with the specified investigation group.</p>"
+      "documentation":"<p>Returns the JSON of the IAM resource policy associated with the specified investigation group in a string. For example, <code>{\\\"Version\\\":\\\"2012-10-17\\\",\\\"Statement\\\":[{\\\"Effect\\\":\\\"Allow\\\",\\\"Principal\\\":{\\\"Service\\\":\\\"aiops.alarms.cloudwatch.amazonaws.com\\\"},\\\"Action\\\":[\\\"aiops:CreateInvestigation\\\",\\\"aiops:CreateInvestigationEvent\\\"],\\\"Resource\\\":\\\"*\\\",\\\"Condition\\\":{\\\"StringEquals\\\":{\\\"aws:SourceAccount\\\":\\\"111122223333\\\"},\\\"ArnLike\\\":{\\\"aws:SourceArn\\\":\\\"arn:aws:cloudwatch:us-east-1:111122223333:alarm:*\\\"}}}]}</code>.</p>"
     },
     "ListInvestigationGroups":{
       "name":"ListInvestigationGroups",
@@ -174,7 +174,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Creates an IAM resource policy and assigns it to the specified investigation group.</p> <p>If you create your investigation group with <code>CreateInvestigationGroup</code> and you want to enable CloudWatch alarms to create investigations and add events to investigations, you must use this operation to create a policy similar to this example.</p> <p> <code>{ \"Version\": \"2008-10-17\", \"Statement\": [{ \"Effect\": \"Allow\", \"Principal\": { \"Service\": \"aiops.alarms.cloudwatch.amazonaws.com\" }, \"Action\": [\"aiops:CreateInvestigation\", \"aiops:CreateInvestigationEvent\"], \"Resource\": \"*\", \"Condition\": { \"StringEquals\": { \"aws:SourceAccount\": \"<i>account-id</i>\" }, \"ArnLike\": { \"aws:SourceArn\": \"arn:aws:cloudwatch:<i>region</i>:<i>account-id</i>:alarm:*\" } } }] }</code> </p>",
+      "documentation":"<p>Creates an IAM resource policy and assigns it to the specified investigation group.</p> <p>If you create your investigation group with <code>CreateInvestigationGroup</code> and you want to enable CloudWatch alarms to create investigations and add events to investigations, you must use this operation to create a policy similar to this example.</p> <p> <code> { \"Version\": \"2008-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"Principal\": { \"Service\": \"aiops.alarms.cloudwatch.amazonaws.com\" }, \"Action\": [ \"aiops:CreateInvestigation\", \"aiops:CreateInvestigationEvent\" ], \"Resource\": \"*\", \"Condition\": { \"StringEquals\": { \"aws:SourceAccount\": \"account-id\" }, \"ArnLike\": { \"aws:SourceArn\": \"arn:aws:cloudwatch:region:account-id:alarm:*\" } } } ] } </code> </p>",
       "idempotent":true
     },
     "TagResource":{
@@ -300,7 +300,7 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>Specify the ARN of the IAM role that CloudWatch investigations will use when it gathers investigation data. The permissions in this role determine which of your resources that CloudWatch investigations will have access to during investigations.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Investigations-Security.html#Investigations-Security-Data\">How to control what data Amazon Q has access to during investigations</a>.</p>"
+          "documentation":"<p>Specify the ARN of the IAM role that CloudWatch investigations will use when it gathers investigation data. The permissions in this role determine which of your resources that CloudWatch investigations will have access to during investigations.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Investigations-Security.html#Investigations-Security-Data\">How to control what data CloudWatch investigations has access to during investigations</a>.</p>"
         },
         "encryptionConfiguration":{
           "shape":"EncryptionConfiguration",
@@ -316,11 +316,11 @@
         },
         "tagKeyBoundaries":{
           "shape":"TagKeyBoundaries",
-          "documentation":"<p>Enter the existing custom tag keys for custom applications in your system. Resource tags help Amazon Q narrow the search space when it is unable to discover definite relationships between resources. For example, to discover that an Amazon ECS service depends on an Amazon RDS database, Amazon Q can discover this relationship using data sources such as X-Ray and CloudWatch Application Signals. However, if you haven't deployed these features, Amazon Q will attempt to identify possible relationships. Tag boundaries can be used to narrow the resources that will be discovered by Amazon Q in these cases.</p> <p>You don't need to enter tags created by myApplications or CloudFormation, because Amazon Q can automatically detect those tags.</p>"
+          "documentation":"<p>Enter the existing custom tag keys for custom applications in your system. Resource tags help CloudWatch investigations narrow the search space when it is unable to discover definite relationships between resources. For example, to discover that an Amazon ECS service depends on an Amazon RDS database, CloudWatch investigations can discover this relationship using data sources such as X-Ray and CloudWatch Application Signals. However, if you haven't deployed these features, CloudWatch investigations will attempt to identify possible relationships. Tag boundaries can be used to narrow the resources that will be discovered by CloudWatch investigations in these cases.</p> <p>You don't need to enter tags created by myApplications or CloudFormation, because CloudWatch investigations can automatically detect those tags.</p>"
         },
         "chatbotNotificationChannel":{
           "shape":"ChatbotNotificationChannel",
-          "documentation":"<p>Use this structure to integrate CloudWatch investigations with Amazon Q in chat applications. This structure is a string array. For the first string, specify the ARN of an Amazon SNS topic. For the array of strings, specify the ARNs of one or more Amazon Q in chat applications configurations that you want to associate with that topic. For more information about these configuration ARNs, see <a href=\"https://docs.aws.amazon.com/chatbot/latest/adminguide/getting-started.html\">Getting started with Amazon Q in chat applications</a> and <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awschatbot.html#awschatbot-resources-for-iam-policies\">Resource type defined by Amazon Web Services Chatbot</a>.</p>"
+          "documentation":"<p>Use this structure to integrate CloudWatch investigations with chat applications. This structure is a string array. For the first string, specify the ARN of an Amazon SNS topic. For the array of strings, specify the ARNs of one or more chat applications configurations that you want to associate with that topic. For more information about these configuration ARNs, see <a href=\"https://docs.aws.amazon.com/chatbot/latest/adminguide/getting-started.html\">Getting started with Amazon Q in chat applications</a> and <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awschatbot.html#awschatbot-resources-for-iam-policies\">Resource type defined by Amazon Web Services Chatbot</a>.</p>"
         },
         "isCloudTrailEventHistoryEnabled":{
           "shape":"Boolean",
@@ -328,7 +328,7 @@
         },
         "crossAccountConfigurations":{
           "shape":"CrossAccountConfigurations",
-          "documentation":"<p>Number of <code>sourceAccountId</code> values that have been configured for cross-account access.</p>"
+          "documentation":"<p>List of <code>sourceRoleArn</code> values that have been configured for cross-account access.</p>"
         }
       }
     },
@@ -359,8 +359,7 @@
     },
     "DeleteInvestigationGroupPolicyOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteInvestigationGroupPolicyRequest":{
       "type":"structure",
@@ -391,7 +390,7 @@
       "members":{
         "type":{
           "shape":"EncryptionConfigurationType",
-          "documentation":"<p>Displays whether investigation data is encrypted by a customer managed key or an Amazon Web Services owned kay.</p>"
+          "documentation":"<p>Displays whether investigation data is encrypted by a customer managed key or an Amazon Web Services owned key.</p>"
         },
         "kmsKeyId":{
           "shape":"KmsKeyId",
@@ -450,7 +449,7 @@
       "members":{
         "identifier":{
           "shape":"InvestigationGroupIdentifier",
-          "documentation":"<p>Specify either the name or the ARN of the investigation group that you want to view.</p>",
+          "documentation":"<p>Specify either the name or the ARN of the investigation group that you want to view. This is used to set the name of the investigation group.</p>",
           "location":"uri",
           "locationName":"identifier"
         }
@@ -464,7 +463,7 @@
           "documentation":"<p>The name of the user who created the investigation group.</p>"
         },
         "createdAt":{
-          "shape":"Timestamp",
+          "shape":"Long",
           "documentation":"<p>The date and time that the investigation group was created.</p>"
         },
         "lastModifiedBy":{
@@ -472,7 +471,7 @@
           "documentation":"<p>The name of the user who created the investigation group.</p>"
         },
         "lastModifiedAt":{
-          "shape":"Timestamp",
+          "shape":"Long",
           "documentation":"<p>The date and time that the investigation group was most recently modified.</p>"
         },
         "name":{
@@ -497,11 +496,11 @@
         },
         "chatbotNotificationChannel":{
           "shape":"ChatbotNotificationChannel",
-          "documentation":"<p>This structure is a string array. The first string is the ARN of a Amazon SNS topic. The array of strings display the ARNs of Amazon Q in chat applications configurations that are associated with that topic. For more information about these configuration ARNs, see <a href=\"https://docs.aws.amazon.com/chatbot/latest/adminguide/getting-started.html\">Getting started with Amazon Q in chat applications</a> and <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awschatbot.html#awschatbot-resources-for-iam-policies\">Resource type defined by Amazon Web Services Chatbot</a>.</p>"
+          "documentation":"<p>This structure is a string array. The first string is the ARN of a Amazon SNS topic. The array of strings display the ARNs of chat applications configurations that are associated with that topic. For more information about these configuration ARNs, see <a href=\"https://docs.aws.amazon.com/chatbot/latest/adminguide/getting-started.html\">Getting started with Amazon Q in chat applications</a> and <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awschatbot.html#awschatbot-resources-for-iam-policies\">Resource type defined by Amazon Web Services Chatbot</a>.</p>"
         },
         "tagKeyBoundaries":{
           "shape":"TagKeyBoundaries",
-          "documentation":"<p>Displays the custom tag keys for custom applications in your system that you have specified in the investigation group. Resource tags help Amazon Q narrow the search space when it is unable to discover definite relationships between resources. </p>"
+          "documentation":"<p>Displays the custom tag keys for custom applications in your system that you have specified in the investigation group. Resource tags help CloudWatch investigations narrow the search space when it is unable to discover definite relationships between resources. </p>"
         },
         "isCloudTrailEventHistoryEnabled":{
           "shape":"Boolean",
@@ -618,11 +617,15 @@
       "members":{
         "resourceArn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the CloudWatch investigations resource that you want to view tags for. You can use the <a href=\"https://docs.aws.amazon.com/operationalinvestigations/latest/AmazonQDeveloperOperationalInvestigationsAPIReference/API_ListInvestigationGroups.html\">ListInvestigationGroups</a> operation to find the ARNs of investigation groups.</p> <p>The ARN format for an investigation group is <code>arn:aws:aiops:<i>Region</i>:<i>account-id</i>:investigation-group:<i>investigation-group-id</i> </code>.</p>",
+          "documentation":"<p>The ARN of the CloudWatch investigations resource that you want to view tags for. You can use the <code>ListInvestigationGroups</code> operation to find the ARNs of investigation groups.</p> <p>The ARN format for an investigation group is <code>arn:aws:aiops:<i>Region</i>:<i>account-id</i>:investigation-group:<i>investigation-group-id</i> </code>.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         }
       }
+    },
+    "Long":{
+      "type":"long",
+      "box":true
     },
     "PutInvestigationGroupPolicyRequest":{
       "type":"structure",
@@ -748,7 +751,7 @@
       "members":{
         "resourceArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that you want to apply the tags to. You can use the <a href=\"https://docs.aws.amazon.com/operationalinvestigations/latest/AmazonQDeveloperOperationalInvestigationsAPIReference/API_ListInvestigationGroups.html\">ListInvestigationGroups</a> operation to find the ARNs of investigation groups.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that you want to apply the tags to. You can use the <code>ListInvestigationGroups</code> operation to find the ARNs of investigation groups.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
@@ -760,8 +763,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -786,7 +788,6 @@
       },
       "exception":true
     },
-    "Timestamp":{"type":"timestamp"},
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -796,7 +797,7 @@
       "members":{
         "resourceArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that you want to remove the tags from. You can use the <a href=\"https://docs.aws.amazon.com/operationalinvestigations/latest/AmazonQDeveloperOperationalInvestigationsAPIReference/API_ListInvestigationGroups.html\">ListInvestigationGroups</a> operation to find the ARNs of investigation groups.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that you want to remove the tags from. You can use the<code>ListInvestigationGroups</code> operation to find the ARNs of investigation groups.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         },
@@ -810,13 +811,11 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateInvestigationGroupOutput":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateInvestigationGroupRequest":{
       "type":"structure",
@@ -830,7 +829,7 @@
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>Specify this field if you want to change the IAM role that CloudWatch investigations will use when it gathers investigation data. To do so, specify the ARN of the new role.</p> <p>The permissions in this role determine which of your resources that CloudWatch investigations will have access to during investigations.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Investigations-Security.html#Investigations-Security-Data\">EHow to control what data Amazon Q has access to during investigations</a>.</p>"
+          "documentation":"<p>Specify this field if you want to change the IAM role that CloudWatch investigations will use when it gathers investigation data. To do so, specify the ARN of the new role.</p> <p>The permissions in this role determine which of your resources that CloudWatch investigations will have access to during investigations.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Investigations-Security.html#Investigations-Security-Data\">How to control what data CloudWatch investigations has access to during investigations</a>.</p>"
         },
         "encryptionConfiguration":{
           "shape":"EncryptionConfiguration",
@@ -838,11 +837,11 @@
         },
         "tagKeyBoundaries":{
           "shape":"TagKeyBoundaries",
-          "documentation":"<p>Enter the existing custom tag keys for custom applications in your system. Resource tags help Amazon Q narrow the search space when it is unable to discover definite relationships between resources. For example, to discover that an Amazon ECS service depends on an Amazon RDS database, Amazon Q can discover this relationship using data sources such as X-Ray and CloudWatch Application Signals. However, if you haven't deployed these features, Amazon Q will attempt to identify possible relationships. Tag boundaries can be used to narrow the resources that will be discovered by Amazon Q in these cases.</p> <p>You don't need to enter tags created by myApplications or CloudFormation, because Amazon Q can automatically detect those tags.</p>"
+          "documentation":"<p>Enter the existing custom tag keys for custom applications in your system. Resource tags help CloudWatch investigations narrow the search space when it is unable to discover definite relationships between resources. For example, to discover that an Amazon ECS service depends on an Amazon RDS database, CloudWatch investigations can discover this relationship using data sources such as X-Ray and CloudWatch Application Signals. However, if you haven't deployed these features, CloudWatch investigations will attempt to identify possible relationships. Tag boundaries can be used to narrow the resources that will be discovered by CloudWatch investigations in these cases.</p> <p>You don't need to enter tags created by myApplications or CloudFormation, because CloudWatch investigations can automatically detect those tags.</p>"
         },
         "chatbotNotificationChannel":{
           "shape":"ChatbotNotificationChannel",
-          "documentation":"<p>Use this structure to integrate CloudWatch investigations with Amazon Q in chat applications. This structure is a string array. For the first string, specify the ARN of an Amazon SNS topic. For the array of strings, specify the ARNs of one or more Amazon Q in chat applications configurations that you want to associate with that topic. For more information about these configuration ARNs, see <a href=\"https://docs.aws.amazon.com/chatbot/latest/adminguide/getting-started.html\">Getting started with Amazon Q in chat applications</a> and <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awschatbot.html#awschatbot-resources-for-iam-policies\">Resource type defined by Amazon Web Services Chatbot</a>.</p>"
+          "documentation":"<p>Use this structure to integrate CloudWatch investigations with chat applications. This structure is a string array. For the first string, specify the ARN of an Amazon SNS topic. For the array of strings, specify the ARNs of one or more chat applications configurations that you want to associate with that topic. For more information about these configuration ARNs, see <a href=\"https://docs.aws.amazon.com/chatbot/latest/adminguide/getting-started.html\">Getting started with Amazon Q in chat applications</a> and <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awschatbot.html#awschatbot-resources-for-iam-policies\">Resource type defined by Amazon Web Services Chatbot</a>.</p>"
         },
         "isCloudTrailEventHistoryEnabled":{
           "shape":"Boolean",

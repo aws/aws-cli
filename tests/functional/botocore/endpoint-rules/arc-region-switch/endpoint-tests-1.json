@@ -1,0 +1,336 @@
+{
+    "testCases": [
+        {
+            "documentation": "For custom endpoint with region not set and fips disabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://example.com"
+                }
+            },
+            "params": {
+                "Endpoint": "https://example.com",
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "For custom endpoint with fips enabled",
+            "expect": {
+                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
+            },
+            "params": {
+                "Endpoint": "https://example.com",
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "For region us-east-1 with FIPS enabled and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://arc-region-switch-fips.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "For region us-east-1 with FIPS disabled and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://arc-region-switch.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "For region cn-northwest-1 with FIPS enabled and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://arc-region-switch-fips.cn-northwest-1.api.amazonwebservices.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-northwest-1",
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "For region cn-northwest-1 with FIPS disabled and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://arc-region-switch.cn-northwest-1.api.amazonwebservices.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-northwest-1",
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "For region us-gov-west-1 with FIPS enabled and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://arc-region-switch-fips.us-gov-west-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-gov-west-1",
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "For region us-gov-west-1 with FIPS disabled and DualStack enabled",
+            "expect": {
+                "endpoint": {
+                    "url": "https://arc-region-switch.us-gov-west-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-gov-west-1",
+                "UseFIPS": false
+            }
+        },
+        {
+            "documentation": "Missing region",
+            "expect": {
+                "error": "Invalid Configuration: Missing Region"
+            }
+        },
+        {
+            "documentation": "Control plane operation with DualStack in us-west-2 routes to us-east-1 DualStack endpoint",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-east-1",
+                                "signingName": "arc-region-switch"
+                            }
+                        ]
+                    },
+                    "url": "https://arc-region-switch-control-plane.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseControlPlaneEndpoint": true
+            }
+        },
+        {
+            "documentation": "Control plane operation with endpoint set in us-east-1 routes to provided endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseControlPlaneEndpoint": true,
+                "Endpoint": "https://amazonaws.com"
+            }
+        },
+        {
+            "documentation": "Control plane operation with endpoint set in us-west-2 routes to provided endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseControlPlaneEndpoint": true,
+                "Endpoint": "https://amazonaws.com"
+            }
+        },
+        {
+            "documentation": "Control plane operation in us-west-2 (standard partition) routes to us-east-1",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-east-1",
+                                "signingName": "arc-region-switch"
+                            }
+                        ]
+                    },
+                    "url": "https://arc-region-switch-control-plane.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseControlPlaneEndpoint": true
+            }
+        },
+        {
+            "documentation": "Control plane operation in cn-north-1 (China partition) routes to cn-north-1 with China DNS suffix",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "cn-north-1",
+                                "signingName": "arc-region-switch"
+                            }
+                        ]
+                    },
+                    "url": "https://arc-region-switch-control-plane.cn-north-1.api.amazonwebservices.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-north-1",
+                "UseControlPlaneEndpoint": true
+            }
+        },
+        {
+            "documentation": "Control plane operation in cn-northwest-1 (China partition) routes to cn-north-1 with China DNS suffix",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "cn-north-1",
+                                "signingName": "arc-region-switch"
+                            }
+                        ]
+                    },
+                    "url": "https://arc-region-switch-control-plane.cn-north-1.api.amazonwebservices.com.cn"
+                }
+            },
+            "params": {
+                "Region": "cn-northwest-1",
+                "UseControlPlaneEndpoint": true
+            }
+        },
+        {
+            "documentation": "Control plane operation in us-gov-west-1 (GovCloud partition) routes to us-gov-west-1 with GovCloud DNS suffix",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-gov-west-1",
+                                "signingName": "arc-region-switch"
+                            }
+                        ]
+                    },
+                    "url": "https://arc-region-switch-control-plane.us-gov-west-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-gov-west-1",
+                "UseControlPlaneEndpoint": true
+            }
+        },
+        {
+            "documentation": "Control plane operation in us-gov-east-1 (GovCloud partition) routes to us-gov-west-1 with GovCloud DNS suffix",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-gov-west-1",
+                                "signingName": "arc-region-switch"
+                            }
+                        ]
+                    },
+                    "url": "https://arc-region-switch-control-plane.us-gov-west-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-gov-east-1",
+                "UseControlPlaneEndpoint": true
+            }
+        },
+        {
+            "documentation": "Control plane operation with FIPS in us-west-2 routes to us-east-1 FIPS endpoint",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-east-1",
+                                "signingName": "arc-region-switch"
+                            }
+                        ]
+                    },
+                    "url": "https://arc-region-switch-control-plane-fips.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseControlPlaneEndpoint": true,
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "Control plane operation with FIPS in us-east-1 routes to us-east-1 FIPS endpoint",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingRegion": "us-east-1",
+                                "signingName": "arc-region-switch"
+                            }
+                        ]
+                    },
+                    "url": "https://arc-region-switch-control-plane-fips.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseControlPlaneEndpoint": true,
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "Control plane operation with FIPS in CN returns an error",
+            "expect": {
+                "error": "Invalid Configuration: FIPS is not supported in this partition"
+            },
+            "params": {
+                "Region": "cn-north-1",
+                "UseControlPlaneEndpoint": true,
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "Control plane operation with endpoint set using FIPS in us-east-1 errors",
+            "expect": {
+                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseControlPlaneEndpoint": true,
+                "UseFIPS": true,
+                "Endpoint": "https://amazonaws.com"
+            }
+        },
+        {
+            "documentation": "Control plane operation with endpoint set using FIPS in us-west-2 routes to provided endpoint",
+            "expect": {
+                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseControlPlaneEndpoint": true,
+                "UseFIPS": true,
+                "Endpoint": "https://amazonaws.com"
+            }
+        }
+    ],
+    "version": "1.0"
+}

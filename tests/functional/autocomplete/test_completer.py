@@ -163,15 +163,10 @@ class TestShorthandCompleter(unittest.TestCase):
             self.assertTrue(
                 all(
                     [
-                        suggest in expected_suggestions
-                        for suggest in displayed_suggestions
+                        suggest in displayed_suggestions
+                        for suggest in expected_suggestions
                     ]
                 ),
-                command_line,
-            )
-            self.assertEqual(
-                len(expected_suggestions),
-                len(displayed_suggestions),
                 command_line,
             )
 

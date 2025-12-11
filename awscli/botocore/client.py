@@ -79,6 +79,7 @@ class ClientCreator:
         exceptions_factory=None,
         config_store=None,
         user_agent_creator=None,
+        auth_token_resolver=None,
     ):
         self._loader = loader
         self._endpoint_resolver = endpoint_resolver
@@ -92,6 +93,7 @@ class ClientCreator:
         # future).
         self._config_store = config_store
         self._user_agent_creator = user_agent_creator
+        self._auth_token_resolver = auth_token_resolver
 
     def create_client(
         self,
@@ -143,6 +145,10 @@ class ClientCreator:
             config_store=self._config_store,
             service_signature_version=service_signature_version,
         )
+        if token := self._evaluate_client_specific_token(
+            service_model.signing_name
+        ):
+            auth_token = token
         client_args = self._get_client_args(
             service_model,
             region_name,
@@ -445,6 +451,15 @@ class ClientCreator:
         )
         _api_call.__doc__ = docstring
         return _api_call
+
+    def _evaluate_client_specific_token(self, signing_name):
+        # Resolves an auth_token for the given signing_name.
+        # Returns None if no resolver is set or if resolution fails.
+        resolver = self._auth_token_resolver
+        if not resolver or not signing_name:
+            return None
+
+        return resolver(signing_name=signing_name)
 
 
 class ClientEndpointBridge:
@@ -829,6 +844,7 @@ class BaseClient:
             'has_streaming_input': operation_model.has_streaming_input,
             'auth_type': operation_model.resolved_auth_type,
             'unsigned_payload': operation_model.unsigned_payload,
+            'auth_options': self._service_model.metadata.get('auth'),
         }
 
         api_params = self._emit_api_params(

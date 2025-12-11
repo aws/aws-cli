@@ -274,10 +274,17 @@ class FakeCommandVerify(FakeCommand):
         return 0
 
 
+class FakeCLISessionOrchestrator:
+    @property
+    def session_id(self):
+        return 'mysessionid'
+
+
 class TestCliDriver:
     def setup_method(self):
         self.session = FakeSession()
         self.session.set_config_variable('cli_auto_prompt', 'off')
+        self.session.set_config_variable('cli_help_output', None)
         self.driver = CLIDriver(session=self.session)
 
     def test_session_can_be_passed_in(self):
@@ -389,21 +396,21 @@ class TestCliDriver:
         assert rc == 252
         assert 1 == fake_stderr.getvalue().count('CLI version:')
 
-    @mock.patch('awscrt.io.init_logging')
+    @mock.patch('awscrt.io.set_log_level')
     def test_debug_enables_crt_logging(self, mock_init_logging):
         with contextlib.redirect_stderr(io.StringIO()):
             self.driver.main(
                 ['s3', 'list-objects', '--bucket', 'foo', '--debug']
             )
         mock_init_logging.assert_called_with(
-            awscrt.io.LogLevel.Debug, 'stderr'
+            awscrt.io.LogLevel.Debug,
         )
 
-    @mock.patch('awscrt.io.init_logging')
+    @mock.patch('awscrt.io.set_log_level')
     def test_no_debug_disables_crt_logging(self, mock_init_logging):
         self.driver.main(['s3', 'list-objects', '--bucket', 'foo'])
         mock_init_logging.assert_called_with(
-            awscrt.io.LogLevel.NoLogs, 'stderr'
+            awscrt.io.LogLevel.NoLogs,
         )
 
 
@@ -412,6 +419,7 @@ class TestCliDriverHooks(unittest.TestCase):
     def setUp(self):
         self.session = FakeSession()
         self.session.set_config_variable('cli_auto_prompt', 'off')
+        self.session.set_config_variable('cli_help_output', None)
         self.emitter = mock.Mock()
         self.emitter.emit.return_value = []
         self.stdout = StringIO()
@@ -493,10 +501,12 @@ class TestCliDriverHooks(unittest.TestCase):
         )
         self.assertEqual(rc, 252)
         # Tell the user what went wrong.
-        self.assertIn("Invalid choice: 'list-objecst'", self.stderr.getvalue())
+        self.assertIn(
+            "Found invalid choice 'list-objecst'", self.stderr.getvalue()
+        )
         # Offer the user a suggestion.
         self.assertIn(
-            "maybe you meant:\n\n  * list-objects", self.stderr.getvalue()
+            "Maybe you meant:\n\n  * list-objects", self.stderr.getvalue()
         )
 
 
@@ -515,13 +525,13 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
     # These tests will simulate running actual aws commands
     # but with the http part mocked out.
     def setUp(self):
-        super(TestAWSCommand, self).setUp()
+        super().setUp()
         self.stderr = StringIO()
         self.stderr_patch = mock.patch('sys.stderr', self.stderr)
         self.stderr_patch.start()
 
     def tearDown(self):
-        super(TestAWSCommand, self).tearDown()
+        super().tearDown()
         self.stderr_patch.stop()
 
     def inject_new_param(self, argument_table, **kwargs):
@@ -716,7 +726,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(
             f.write.call_args_list[1][0][0],
             'Unable to locate credentials. '
-            'You can configure credentials by running "aws configure".',
+            'You can configure credentials by running "aws login".',
         )
 
     def test_override_calling_command(self):
@@ -774,13 +784,19 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
         self.assertEqual(rc, 252)
         self.assertNotIn('--idempotency-token', self.stderr.getvalue())
 
+    @mock.patch(
+        'awscli.telemetry._get_cli_session_orchestrator',
+        return_value=FakeCLISessionOrchestrator(),
+    )
     @mock.patch('awscli.clidriver.platform.system', return_value='Linux')
     @mock.patch('awscli.clidriver.platform.machine', return_value='x86_64')
     @mock.patch('awscli.clidriver.distro.id', return_value='amzn')
     @mock.patch('awscli.clidriver.distro.major_version', return_value='1')
     def test_user_agent_for_linux(self, *args):
         driver = create_clidriver()
-        expected_user_agent = 'md/installer#source md/distrib#amzn.1'
+        expected_user_agent = (
+            'md/installer#source md/distrib#amzn.1 sid/mysessionid'
+        )
         self.assertEqual(expected_user_agent, driver.session.user_agent_extra)
 
     def test_user_agent(self, *args):
@@ -801,7 +817,7 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
 
 class TestHowClientIsCreated(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestHowClientIsCreated, self).setUp()
+        super().setUp()
         self.endpoint_creator_patch = mock.patch(
             'botocore.args.EndpointCreator'
         )
@@ -816,7 +832,7 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
         self.endpoint.make_request.return_value = (http_response, {})
 
     def tearDown(self):
-        super(TestHowClientIsCreated, self).tearDown()
+        super().tearDown()
         self.endpoint_creator_patch.stop()
 
     def test_aws_with_endpoint_url(self):
@@ -909,7 +925,7 @@ class TestHowClientIsCreated(BaseAWSCommandParamsTest):
 
 class TestVerifyArgument(BaseAWSCommandParamsTest):
     def setUp(self):
-        super(TestVerifyArgument, self).setUp()
+        super().setUp()
         self.driver.session.register('top-level-args-parsed', self.record_args)
         self.recorded_args = None
 
@@ -958,6 +974,7 @@ class TestServiceCommand(unittest.TestCase):
     def setUp(self):
         self.name = 'foo'
         self.session = FakeSession()
+        self.session.set_config_variable('cli_help_output', None)
         self.cmd = ServiceCommand(self.name, self.session)
 
     def test_can_access_subcommand_table(self):
@@ -1158,13 +1175,13 @@ class TextCreateCLIDriver(unittest.TestCase):
     def test_create_cli_driver_parse_args(self):
         stderr = io.StringIO()
         with contextlib.redirect_stderr(stderr):
-            driver = create_clidriver(['--debug'])
+            create_clidriver(['--debug'])
         self.assertIn('CLI version', stderr.getvalue())
 
     def test_create_cli_driver_wo_args(self):
         stderr = io.StringIO()
         with contextlib.redirect_stderr(stderr):
-            driver = create_clidriver()
+            create_clidriver()
         self.assertIn('', stderr.getvalue())
 
 

@@ -29,6 +29,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Allocates a static IP address.</p>"
@@ -66,6 +67,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Attaches a block storage disk to a running or stopped Lightsail instance and exposes it to the instance with the specified disk name.</p> <p>The <code>attach disk</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>disk name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -85,6 +87,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Attaches one or more Lightsail instances to a load balancer.</p> <p>After some time, the instances are attached to the load balancer and the health check status is available.</p> <p>The <code>attach instances to load balancer</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>load balancer name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Lightsail Developer Guide</a>.</p>"
@@ -104,6 +107,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Attaches a Transport Layer Security (TLS) certificate to your load balancer. TLS is just an updated, more secure version of Secure Socket Layer (SSL).</p> <p>Once you create and validate your certificate, you can attach it to your load balancer. You can also use this API to rotate the certificates on your account. Use the <code>AttachLoadBalancerTlsCertificate</code> action with the non-attached certificate, and it will replace the existing one and become the attached certificate.</p> <p>The <code>AttachLoadBalancerTlsCertificate</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>load balancer name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -123,6 +127,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Attaches a static IP address to a specific Amazon Lightsail instance.</p>"
@@ -142,6 +147,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Closes ports for a specific Amazon Lightsail instance.</p> <p>The <code>CloseInstancePublicPorts</code> action supports tag-based access control via resource tags applied to the resource identified by <code>instanceName</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -161,6 +167,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Copies a manual snapshot of an instance or disk as another manual snapshot, or copies an automatic snapshot of an instance or disk as a manual snapshot. This operation can also be used to copy a manual or automatic snapshot of an instance or a disk from one Amazon Web Services Region to another in Amazon Lightsail.</p> <p>When copying a <i>manual snapshot</i>, be sure to define the <code>source region</code>, <code>source snapshot name</code>, and <code>target snapshot name</code> parameters.</p> <p>When copying an <i>automatic snapshot</i>, be sure to define the <code>source region</code>, <code>source resource name</code>, <code>target snapshot name</code>, and either the <code>restore date</code> or the <code>use latest restorable auto snapshot</code> parameters.</p>"
@@ -177,7 +184,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InvalidInputException"},
         {"shape":"ServiceException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Creates an Amazon Lightsail bucket.</p> <p>A bucket is a cloud storage resource available in the Lightsail object storage service. Use buckets to store objects such as data and its descriptive metadata. For more information about buckets, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/buckets-in-amazon-lightsail\">Buckets in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>"
     },
@@ -194,7 +202,8 @@
         {"shape":"NotFoundException"},
         {"shape":"InvalidInputException"},
         {"shape":"ServiceException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Creates a new access key for the specified Amazon Lightsail bucket. Access keys consist of an access key ID and corresponding secret access key.</p> <p>Access keys grant full programmatic access to the specified bucket and its objects. You can have a maximum of two access keys per bucket. Use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetBucketAccessKeys.html\">GetBucketAccessKeys</a> action to get a list of current access keys for a specific bucket. For more information about access keys, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-creating-bucket-access-keys\">Creating access keys for a bucket in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p> <important> <p>The <code>secretAccessKey</code> value is returned only in response to the <code>CreateBucketAccessKey</code> action. You can get a secret access key only when you first create an access key; you cannot get the secret access key later. If you lose the secret access key, you must create a new access key.</p> </important>"
     },
@@ -211,7 +220,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Creates an SSL/TLS certificate for an Amazon Lightsail content delivery network (CDN) distribution and a container service.</p> <p>After the certificate is valid, use the <code>AttachCertificateToDistribution</code> action to use the certificate and its domains with your distribution. Or use the <code>UpdateContainerService</code> action to use the certificate and its domains with your container service.</p> <important> <p>Only certificates created in the <code>us-east-1</code> Amazon Web Services Region can be attached to Lightsail distributions. Lightsail distributions are global resources that can reference an origin in any Amazon Web Services Region, and distribute its content globally. However, all distributions are located in the <code>us-east-1</code> Region.</p> </important>"
     },
@@ -230,6 +240,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Creates an AWS CloudFormation stack, which creates a new Amazon EC2 instance from an exported Amazon Lightsail snapshot. This operation results in a CloudFormation stack record that can be used to track the AWS CloudFormation stack created. Use the <code>get cloud formation stack records</code> operation to get a list of the CloudFormation stacks created.</p> <important> <p>Wait until after your new Amazon EC2 instance is created before running the <code>create cloud formation stack</code> operation again with the same export snapshot record.</p> </important>"
@@ -248,7 +259,8 @@
         {"shape":"NotFoundException"},
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Creates an email or SMS text message contact method.</p> <p>A contact method is used to send you notifications about your Amazon Lightsail resources. You can add one email address and one mobile phone number contact method in each Amazon Web Services Region. However, SMS text messaging is not supported in some Amazon Web Services Regions, and SMS text messages cannot be sent to some countries/regions. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-notifications\">Notifications in Amazon Lightsail</a>.</p>"
     },
@@ -265,7 +277,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Creates an Amazon Lightsail container service.</p> <p>A Lightsail container service is a compute resource to which you can deploy containers. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-container-services\">Container services in Amazon Lightsail</a> in the <i>Lightsail Dev Guide</i>.</p>"
     },
@@ -282,7 +295,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Creates a deployment for your Amazon Lightsail container service.</p> <p>A deployment specifies the containers that will be launched on the container service and their settings, such as the ports to open, the environment variables to apply, and the launch command to run. It also specifies the container that will serve as the public endpoint of the deployment and its settings, such as the HTTP or HTTPS port to use, and the health check configuration.</p> <p>You can deploy containers to your container service using container images from a public registry such as Amazon ECR Public, or from your local machine. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-creating-container-images\">Creating container images for your Amazon Lightsail container services</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>"
     },
@@ -299,7 +313,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Creates a temporary set of log in credentials that you can use to log in to the Docker process on your local machine. After you're logged in, you can use the native Docker commands to push your local container images to the container image registry of your Amazon Lightsail account so that you can use them with your Lightsail container service. The log in credentials expire 12 hours after they are created, at which point you will need to create a new set of log in credentials.</p> <note> <p>You can only push container images to the container service registry of your Lightsail account. You cannot pull container images or perform any other container image management actions on the container service registry.</p> </note> <p>After you push your container images to the container image registry of your Lightsail account, use the <code>RegisterContainerImage</code> action to register the pushed images to a specific Lightsail container service.</p> <note> <p>This action is not required if you install and use the Lightsail Control (lightsailctl) plugin to push container images to your Lightsail container service. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-pushing-container-images\">Pushing and managing container images on your Amazon Lightsail container services</a> in the <i>Amazon Lightsail Developer Guide</i>.</p> </note>"
     },
@@ -318,6 +333,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Creates a block storage disk that can be attached to an Amazon Lightsail instance in the same Availability Zone (<code>us-east-2a</code>).</p> <p>The <code>create disk</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -337,6 +353,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Creates a block storage disk from a manual or automatic snapshot of a disk. The resulting disk can be attached to an Amazon Lightsail instance in the same Availability Zone (<code>us-east-2a</code>).</p> <p>The <code>create disk from snapshot</code> operation supports tag-based access control via request tags and resource tags applied to the resource identified by <code>disk snapshot name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -356,6 +373,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Creates a snapshot of a block storage disk. You can use snapshots for backups, to make copies of disks, and to save data before shutting down a Lightsail instance.</p> <p>You can take a snapshot of an attached disk that is in use; however, snapshots only capture data that has been written to your disk at the time the snapshot command is issued. This may exclude any data that has been cached by any applications or the operating system. If you can pause any file systems on the disk long enough to take a snapshot, your snapshot should be complete. Nevertheless, if you cannot pause all file writes to the disk, you should unmount the disk from within the Lightsail instance, issue the create disk snapshot command, and then remount the disk to ensure a consistent and complete snapshot. You may remount and use your disk while the snapshot status is pending.</p> <p>You can also use this operation to create a snapshot of an instance's system volume. You might want to do this, for example, to recover data from the system volume of a botched instance or to create a backup of the system volume like you would for a block storage disk. To create a snapshot of a system volume, just define the <code>instance name</code> parameter when issuing the snapshot command, and a snapshot of the defined instance's system volume will be created. After the snapshot is available, you can create a block storage disk from the snapshot and attach it to a running instance to access the data on the disk.</p> <p>The <code>create disk snapshot</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -393,6 +411,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Creates a domain resource for the specified domain (example.com).</p> <p>The <code>create domain</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -412,6 +431,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Creates one of the following domain name system (DNS) records in a domain DNS zone: Address (A), canonical name (CNAME), mail exchanger (MX), name server (NS), start of authority (SOA), service locator (SRV), or text (TXT).</p> <p>The <code>create domain entry</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>domain name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -429,7 +449,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"ServiceException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Creates two URLs that are used to access a virtual computer’s graphical user interface (GUI) session. The primary URL initiates a web-based Amazon DCV session to the virtual computer's application. The secondary URL initiates a web-based Amazon DCV session to the virtual computer's operating session. </p> <p>Use <code>StartGUISession</code> to open the session.</p>"
     },
@@ -448,6 +469,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Creates a snapshot of a specific virtual private server, or <i>instance</i>. You can use a snapshot to create a new instance that is based on that snapshot.</p> <p>The <code>create instance snapshot</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -467,6 +489,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Creates one or more Amazon Lightsail instances.</p> <p>The <code>create instances</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Lightsail Developer Guide</a>.</p>"
@@ -486,6 +509,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Creates one or more new instances from a manual or automatic snapshot of an instance.</p> <p>The <code>create instances from snapshot</code> operation supports tag-based access control via request tags and resource tags applied to the resource identified by <code>instance snapshot name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -505,6 +529,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Creates a custom SSH key pair that you can use with an Amazon Lightsail instance.</p> <note> <p>Use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_DownloadDefaultKeyPair.html\">DownloadDefaultKeyPair</a> action to create a Lightsail default key pair in an Amazon Web Services Region where a default key pair does not currently exist.</p> </note> <p>The <code>create key pair</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -524,9 +549,10 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
-      "documentation":"<p>Creates a Lightsail load balancer. To learn more about deciding whether to load balance your application, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/configure-lightsail-instances-for-load-balancing\">Configure your Lightsail instances for load balancing</a>. You can create up to 5 load balancers per AWS Region in your account.</p> <p>When you create a load balancer, you can specify a unique name and port settings. To change additional load balancer settings, use the <code>UpdateLoadBalancerAttribute</code> operation.</p> <p>The <code>create load balancer</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
+      "documentation":"<p>Creates a Lightsail load balancer. To learn more about deciding whether to load balance your application, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/configure-lightsail-instances-for-load-balancing\">Configure your Lightsail instances for load balancing</a>. You can create up to 10 load balancers per AWS Region in your account.</p> <p>When you create a load balancer, you can specify a unique name and port settings. To change additional load balancer settings, use the <code>UpdateLoadBalancerAttribute</code> operation.</p> <p>The <code>create load balancer</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
     },
     "CreateLoadBalancerTlsCertificate":{
       "name":"CreateLoadBalancerTlsCertificate",
@@ -543,6 +569,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Creates an SSL/TLS certificate for an Amazon Lightsail load balancer.</p> <p>TLS is just an updated, more secure version of Secure Socket Layer (SSL).</p> <p>The <code>CreateLoadBalancerTlsCertificate</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>load balancer name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -562,6 +589,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Creates a new database in Amazon Lightsail.</p> <p>The <code>create relational database</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -581,6 +609,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Creates a new database from an existing database snapshot in Amazon Lightsail.</p> <p>You can create a new database from a snapshot in if something goes wrong with your original database, or to change it to a different plan, such as a high availability or standard plan.</p> <p>The <code>create relational database from snapshot</code> operation supports tag-based access control via request tags and resource tags applied to the resource identified by relationalDatabaseSnapshotName. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -600,6 +629,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Creates a snapshot of your database in Amazon Lightsail. You can use snapshots for backups, to make copies of a database, and to save data before deleting a database.</p> <p>The <code>create relational database snapshot</code> operation supports tag-based access control via request tags. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -618,7 +648,8 @@
         {"shape":"OperationFailureException"},
         {"shape":"UnauthenticatedException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"NotFoundException"}
+        {"shape":"NotFoundException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Deletes an alarm.</p> <p>An alarm is used to monitor a single metric for one of your resources. When a metric condition is met, the alarm can notify you by email, SMS text message, and a banner displayed on the Amazon Lightsail console. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-alarms\">Alarms in Amazon Lightsail</a>.</p>"
     },
@@ -636,7 +667,8 @@
         {"shape":"NotFoundException"},
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Deletes an automatic snapshot of an instance or disk. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-configuring-automatic-snapshots\">Amazon Lightsail Developer Guide</a>.</p>"
     },
@@ -653,7 +685,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"ServiceException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Deletes a Amazon Lightsail bucket.</p> <note> <p>When you delete your bucket, the bucket name is released and can be reused for a new bucket in your account or another Amazon Web Services account.</p> </note>"
     },
@@ -670,7 +703,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"ServiceException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Deletes an access key for the specified Amazon Lightsail bucket.</p> <p>We recommend that you delete an access key if the secret access key is compromised.</p> <p>For more information about access keys, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-creating-bucket-access-keys\">Creating access keys for a bucket in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>"
     },
@@ -687,7 +721,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"AccessDeniedException"},
         {"shape":"NotFoundException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Deletes an SSL/TLS certificate for your Amazon Lightsail content delivery network (CDN) distribution.</p> <p>Certificates that are currently attached to a distribution cannot be deleted. Use the <code>DetachCertificateFromDistribution</code> action to detach a certificate from a distribution.</p>"
     },
@@ -705,7 +740,8 @@
         {"shape":"OperationFailureException"},
         {"shape":"UnauthenticatedException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"NotFoundException"}
+        {"shape":"NotFoundException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Deletes a contact method.</p> <p>A contact method is used to send you notifications about your Amazon Lightsail resources. You can add one email address and one mobile phone number contact method in each Amazon Web Services Region. However, SMS text messaging is not supported in some Amazon Web Services Regions, and SMS text messages cannot be sent to some countries/regions. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-notifications\">Notifications in Amazon Lightsail</a>.</p>"
     },
@@ -722,7 +758,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Deletes a container image that is registered to your Amazon Lightsail container service.</p>"
     },
@@ -739,7 +776,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Deletes your Amazon Lightsail container service.</p>"
     },
@@ -758,6 +796,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Deletes the specified block storage disk. The disk must be in the <code>available</code> state (not attached to a Lightsail instance).</p> <note> <p>The disk may remain in the <code>deleting</code> state for several minutes.</p> </note> <p>The <code>delete disk</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>disk name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -777,6 +816,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Deletes the specified disk snapshot.</p> <p>When you make periodic snapshots of a disk, the snapshots are incremental, and only the blocks on the device that have changed since your last snapshot are saved in the new snapshot. When you delete a snapshot, only the data not needed for any other snapshot is removed. So regardless of which prior snapshots have been deleted, all active snapshots will have access to all the information needed to restore the disk.</p> <p>The <code>delete disk snapshot</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>disk snapshot name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -814,6 +854,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Deletes the specified domain recordset and all of its domain records.</p> <p>The <code>delete domain</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>domain name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -833,6 +874,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Deletes a specific domain entry.</p> <p>The <code>delete domain entry</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>domain name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -852,6 +894,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Deletes an Amazon Lightsail instance.</p> <p>The <code>delete instance</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>instance name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -871,6 +914,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Deletes a specific snapshot of a virtual private server (or <i>instance</i>).</p> <p>The <code>delete instance snapshot</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>instance snapshot name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -890,6 +934,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Deletes the specified key pair by removing the public key from Amazon Lightsail.</p> <p>You can delete key pairs that were created using the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_ImportKeyPair.html\">ImportKeyPair</a> and <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_CreateKeyPair.html\">CreateKeyPair</a> actions, as well as the Lightsail default key pair. A new default key pair will not be created unless you launch an instance without specifying a custom key pair, or you call the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_DownloadDefaultKeyPair.html\">DownloadDefaultKeyPair</a> API. </p> <p>The <code>delete key pair</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>key pair name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -909,6 +954,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Deletes the known host key or certificate used by the Amazon Lightsail browser-based SSH or RDP clients to authenticate an instance. This operation enables the Lightsail browser-based SSH or RDP clients to connect to the instance after a host key mismatch.</p> <important> <p>Perform this operation only if you were expecting the host key or certificate mismatch or if you are familiar with the new host key or certificate on the instance. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-troubleshooting-browser-based-ssh-rdp-client-connection\">Troubleshooting connection issues when using the Amazon Lightsail browser-based SSH or RDP client</a>.</p> </important>"
@@ -928,6 +974,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Deletes a Lightsail load balancer and all its associated SSL/TLS certificates. Once the load balancer is deleted, you will need to create a new load balancer, create a new certificate, and verify domain ownership again.</p> <p>The <code>delete load balancer</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>load balancer name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -947,6 +994,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Deletes an SSL/TLS certificate associated with a Lightsail load balancer.</p> <p>The <code>DeleteLoadBalancerTlsCertificate</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>load balancer name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -966,6 +1014,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Deletes a database in Amazon Lightsail.</p> <p>The <code>delete relational database</code> operation supports tag-based access control via resource tags applied to the resource identified by relationalDatabaseName. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -985,6 +1034,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Deletes a database snapshot in Amazon Lightsail.</p> <p>The <code>delete relational database snapshot</code> operation supports tag-based access control via resource tags applied to the resource identified by relationalDatabaseName. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -1022,6 +1072,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Detaches a stopped block storage disk from a Lightsail instance. Make sure to unmount any file systems on the device within your operating system before stopping the instance and detaching the disk.</p> <p>The <code>detach disk</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>disk name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -1041,6 +1092,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Detaches the specified instances from a Lightsail load balancer.</p> <p>This operation waits until the instances are no longer needed before they are detached from the load balancer.</p> <p>The <code>detach instances from load balancer</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>load balancer name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -1060,6 +1112,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Detaches a static IP from the Amazon Lightsail instance to which it is attached.</p>"
@@ -1078,7 +1131,8 @@
         {"shape":"NotFoundException"},
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Disables an add-on for an Amazon Lightsail resource. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-configuring-automatic-snapshots\">Amazon Lightsail Developer Guide</a>.</p>"
     },
@@ -1097,6 +1151,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Downloads the regional Amazon Lightsail default key pair.</p> <p>This action also creates a Lightsail default key pair if a default key pair does not currently exist in the Amazon Web Services Region.</p>"
@@ -1115,7 +1170,8 @@
         {"shape":"NotFoundException"},
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Enables or modifies an add-on for an Amazon Lightsail resource. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-configuring-automatic-snapshots\">Amazon Lightsail Developer Guide</a>.</p>"
     },
@@ -1134,6 +1190,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Exports an Amazon Lightsail instance or block storage disk snapshot to Amazon Elastic Compute Cloud (Amazon EC2). This operation results in an export snapshot record that can be used with the <code>create cloud formation stack</code> operation to create new Amazon EC2 instances.</p> <p>Exported instance snapshots appear in Amazon EC2 as Amazon Machine Images (AMIs), and the instance system disk appears as an Amazon Elastic Block Store (Amazon EBS) volume. Exported disk snapshots appear in Amazon EC2 as Amazon EBS volumes. Snapshots are exported to the same Amazon Web Services Region in Amazon EC2 as the source Lightsail snapshot.</p> <p/> <p>The <code>export snapshot</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>source snapshot name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p> <note> <p>Use the <code>get instance snapshots</code> or <code>get disk snapshots</code> operations to get a list of snapshots that you can export to Amazon EC2.</p> </note>"
@@ -1153,6 +1210,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns the names of all active (not deleted) resources.</p>"
@@ -1171,7 +1229,8 @@
         {"shape":"OperationFailureException"},
         {"shape":"UnauthenticatedException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"NotFoundException"}
+        {"shape":"NotFoundException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Returns information about the configured alarms. Specify an alarm name in your request to return information about a specific alarm, or specify a monitored resource name to return information about all alarms for a specific resource.</p> <p>An alarm is used to monitor a single metric for one of your resources. When a metric condition is met, the alarm can notify you by email, SMS text message, and a banner displayed on the Amazon Lightsail console. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-alarms\">Alarms in Amazon Lightsail</a>.</p>"
     },
@@ -1189,7 +1248,8 @@
         {"shape":"NotFoundException"},
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Returns the available automatic snapshots for an instance or disk. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-configuring-automatic-snapshots\">Amazon Lightsail Developer Guide</a>.</p>"
     },
@@ -1208,6 +1268,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns the list of available instance images, or <i>blueprints</i>. You can use a blueprint to create a new instance already running a specific operating system, as well as a preinstalled app or development stack. The software each instance is running depends on the blueprint image you choose.</p> <note> <p>Use active blueprints when creating new instances. Inactive blueprints are listed to support customers with existing instances and are not necessarily available to create new instances. Blueprints are marked inactive when they become outdated due to operating system updates or new application releases.</p> </note>"
@@ -1225,7 +1286,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"ServiceException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Returns the existing access key IDs for the specified Amazon Lightsail bucket.</p> <important> <p>This action does not return the secret access key value of an access key. You can get a secret access key only when you create it from the response of the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_CreateBucketAccessKey.html\">CreateBucketAccessKey</a> action. If you lose the secret access key, you must create a new access key.</p> </important>"
     },
@@ -1241,7 +1303,8 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InvalidInputException"},
         {"shape":"ServiceException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Returns the bundles that you can apply to a Amazon Lightsail bucket.</p> <p>The bucket bundle specifies the monthly cost, storage quota, and data transfer quota for a bucket.</p> <p>Use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_UpdateBucketBundle.html\">UpdateBucketBundle</a> action to update the bundle for a bucket.</p>"
     },
@@ -1258,7 +1321,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"ServiceException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Returns the data points of a specific metric for an Amazon Lightsail bucket.</p> <p>Metrics report the utilization of a bucket. View and collect metric data regularly to monitor the number of objects stored in a bucket (including object versions) and the storage space used by those objects.</p>"
     },
@@ -1275,7 +1339,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"ServiceException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Returns information about one or more Amazon Lightsail buckets. The information returned includes the synchronization status of the Amazon Simple Storage Service (Amazon S3) account-level block public access feature for your Lightsail buckets.</p> <p>For more information about buckets, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/buckets-in-amazon-lightsail\">Buckets in Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>"
     },
@@ -1294,6 +1359,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns the bundles that you can apply to an Amazon Lightsail instance when you create it.</p> <p>A bundle describes the specifications of an instance, such as the monthly cost, amount of memory, the number of vCPUs, amount of storage space, and monthly network data transfer quota.</p> <note> <p>Bundles are referred to as <i>instance plans</i> in the Lightsail console.</p> </note>"
@@ -1311,7 +1377,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Returns information about one or more Amazon Lightsail SSL/TLS certificates.</p> <note> <p>To get a summary of a certificate, omit <code>includeCertificateDetails</code> from your request. The response will include only the certificate Amazon Resource Name (ARN), certificate name, domain name, and tags.</p> </note>"
     },
@@ -1330,6 +1397,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns the CloudFormation stack record created as a result of the <code>create cloud formation stack</code> operation.</p> <p>An AWS CloudFormation stack is used to create a new Amazon EC2 instance from an exported Lightsail snapshot.</p>"
@@ -1348,7 +1416,8 @@
         {"shape":"NotFoundException"},
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Returns information about the configured contact methods. Specify a protocol in your request to return information about a specific contact method.</p> <p>A contact method is used to send you notifications about your Amazon Lightsail resources. You can add one email address and one mobile phone number contact method in each Amazon Web Services Region. However, SMS text messaging is not supported in some Amazon Web Services Regions, and SMS text messages cannot be sent to some countries/regions. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-notifications\">Notifications in Amazon Lightsail</a>.</p>"
     },
@@ -1363,7 +1432,8 @@
       "errors":[
         {"shape":"ServiceException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Returns information about Amazon Lightsail containers, such as the current version of the Lightsail Control (lightsailctl) plugin.</p>"
     },
@@ -1380,7 +1450,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Returns the container images that are registered to your Amazon Lightsail container service.</p> <note> <p>If you created a deployment on your Lightsail container service that uses container images from a public registry like Docker Hub, those images are not returned as part of this action. Those images are not registered to your Lightsail container service.</p> </note>"
     },
@@ -1397,7 +1468,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Returns the log events of a container of your Amazon Lightsail container service.</p> <p>If your container service has more than one node (i.e., a scale greater than 1), then the log events that are returned for the specified container are merged from all nodes on your container service.</p> <note> <p>Container logs are retained for a certain amount of time. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/lightsail.html\">Amazon Lightsail endpoints and quotas</a> in the <i>Amazon Web Services General Reference</i>.</p> </note>"
     },
@@ -1414,7 +1486,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Returns the deployments for your Amazon Lightsail container service</p> <p>A deployment specifies the settings, such as the ports and launch command, of containers that are deployed to your container service.</p> <p>The deployments are ordered by version in ascending order. The newest version is listed at the top of the response.</p> <note> <p>A set number of deployments are kept before the oldest one is replaced with the newest one. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/lightsail.html\">Amazon Lightsail endpoints and quotas</a> in the <i>Amazon Web Services General Reference</i>.</p> </note>"
     },
@@ -1431,7 +1504,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Returns the data points of a specific metric of your Amazon Lightsail container service.</p> <p>Metrics report the utilization of your resources. Monitor and collect metric data regularly to maintain the reliability, availability, and performance of your resources.</p>"
     },
@@ -1448,7 +1522,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Returns the list of powers that can be specified for your Amazon Lightsail container services.</p> <p>The power specifies the amount of memory, the number of vCPUs, and the base price of the container service.</p>"
     },
@@ -1465,7 +1540,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Returns information about one or more of your Amazon Lightsail container services.</p>"
     },
@@ -1482,7 +1558,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"ServiceException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Retrieves information about the cost estimate for a specified resource. A cost estimate will not generate for a resource that has been deleted.</p>"
     },
@@ -1501,6 +1578,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about a specific block storage disk.</p>"
@@ -1520,6 +1598,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about a specific block storage disk snapshot.</p>"
@@ -1539,6 +1618,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about all block storage disk snapshots in your AWS account and region.</p>"
@@ -1558,6 +1638,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about all block storage disks in your AWS account and region.</p>"
@@ -1649,6 +1730,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about a specific domain recordset.</p>"
@@ -1668,6 +1750,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns a list of all domains in the user's account.</p>"
@@ -1687,6 +1770,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns all export snapshot records created as a result of the <code>export snapshot</code> operation.</p> <p>An export snapshot record can be used to create a new Amazon EC2 instance and its related resources with the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_CreateCloudFormationStack.html\">CreateCloudFormationStack</a> action.</p>"
@@ -1706,6 +1790,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about a specific Amazon Lightsail instance, which is a virtual private server.</p>"
@@ -1725,6 +1810,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns temporary SSH keys you can use to connect to a specific virtual private server, or <i>instance</i>.</p> <p>The <code>get instance access details</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>instance name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -1744,6 +1830,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns the data points for the specified Amazon Lightsail instance metric, given an instance name.</p> <p>Metrics report the utilization of your resources, and the error counts generated by them. Monitor and collect metric data regularly to maintain the reliability, availability, and performance of your resources.</p>"
@@ -1763,6 +1850,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns the firewall port states for a specific Amazon Lightsail instance, the IP addresses allowed to connect to the instance through the ports, and the protocol.</p>"
@@ -1782,6 +1870,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about a specific instance snapshot.</p>"
@@ -1801,6 +1890,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns all instance snapshots for the user's account.</p>"
@@ -1820,6 +1910,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns the state of a specific instance. Works on one instance at a time.</p>"
@@ -1839,6 +1930,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about all Amazon Lightsail virtual private servers, or <i>instances</i>.</p>"
@@ -1858,6 +1950,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about a specific key pair.</p>"
@@ -1877,6 +1970,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about all key pairs in the user's account.</p>"
@@ -1896,6 +1990,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about the specified Lightsail load balancer.</p>"
@@ -1915,6 +2010,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about health metrics for your Lightsail load balancer.</p> <p>Metrics report the utilization of your resources, and the error counts generated by them. Monitor and collect metric data regularly to maintain the reliability, availability, and performance of your resources.</p>"
@@ -1934,6 +2030,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about the TLS certificates that are associated with the specified Lightsail load balancer.</p> <p>TLS is just an updated, more secure version of Secure Socket Layer (SSL).</p> <p>You can have a maximum of 2 certificates associated with a Lightsail load balancer. One is active and the other is inactive.</p>"
@@ -1950,6 +2047,7 @@
         {"shape":"ServiceException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"},
         {"shape":"InvalidInputException"}
       ],
@@ -1970,6 +2068,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about all load balancers in an account.</p>"
@@ -1989,6 +2088,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about a specific operation. Operations include events such as when you create an instance, allocate a static IP, attach a static IP, and so on.</p>"
@@ -2008,6 +2108,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about all operations.</p> <p>Results are returned from oldest to newest, up to a maximum of 200. Results can be paged by making each subsequent call to <code>GetOperations</code> use the maximum (last) <code>statusChangedAt</code> value from the previous request.</p>"
@@ -2027,6 +2128,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Gets operations for a specific resource (an instance or a static IP).</p>"
@@ -2046,6 +2148,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns a list of all valid regions for Amazon Lightsail. Use the <code>include availability zones</code> parameter to also return the Availability Zones in a region.</p>"
@@ -2065,6 +2168,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about a specific database in Amazon Lightsail.</p>"
@@ -2084,6 +2188,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns a list of available database blueprints in Amazon Lightsail. A blueprint describes the major engine version of a database.</p> <p>You can use a blueprint ID to create a new database that runs a specific database engine.</p>"
@@ -2103,6 +2208,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns the list of bundles that are available in Amazon Lightsail. A bundle describes the performance specifications for a database.</p> <p>You can use a bundle ID to create a new database with explicit performance specifications.</p>"
@@ -2122,6 +2228,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns a list of events for a specific database in Amazon Lightsail.</p>"
@@ -2141,6 +2248,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns a list of log events for a database in Amazon Lightsail.</p>"
@@ -2160,6 +2268,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns a list of available log streams for a specific database in Amazon Lightsail.</p>"
@@ -2179,6 +2288,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns the current, previous, or pending versions of the master user password for a Lightsail database.</p> <p>The <code>GetRelationalDatabaseMasterUserPassword</code> operation supports tag-based access control via resource tags applied to the resource identified by relationalDatabaseName.</p>"
@@ -2198,6 +2308,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns the data points of the specified metric for a database in Amazon Lightsail.</p> <p>Metrics report the utilization of your resources, and the error counts generated by them. Monitor and collect metric data regularly to maintain the reliability, availability, and performance of your resources.</p>"
@@ -2217,6 +2328,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns all of the runtime parameters offered by the underlying database software, or engine, for a specific database in Amazon Lightsail.</p> <p>In addition to the parameter names and values, this operation returns other information about each parameter. This information includes whether changes require a reboot, whether the parameter is modifiable, the allowed values, and the data types.</p>"
@@ -2236,6 +2348,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about a specific database snapshot in Amazon Lightsail.</p>"
@@ -2255,6 +2368,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about all of your database snapshots in Amazon Lightsail.</p>"
@@ -2274,6 +2388,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about all of your databases in Amazon Lightsail.</p>"
@@ -2291,7 +2406,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"ServiceException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Returns detailed information for five of the most recent <code>SetupInstanceHttps</code> requests that were ran on the target instance.</p>"
     },
@@ -2310,6 +2426,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about an Amazon Lightsail static IP.</p>"
@@ -2329,6 +2446,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns information about all static IPs in the user's account.</p>"
@@ -2348,6 +2466,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Imports a public SSH key from a specific key pair.</p>"
@@ -2367,6 +2486,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Returns a Boolean value indicating whether your Lightsail VPC is peered.</p>"
@@ -2386,6 +2506,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Opens ports for a specific Amazon Lightsail instance, and specifies the IP addresses allowed to connect to the instance through the ports, and the protocol.</p> <p>The <code>OpenInstancePublicPorts</code> action supports tag-based access control via resource tags applied to the resource identified by <code>instanceName</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -2405,6 +2526,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Peers the Lightsail VPC with the user's default VPC.</p>"
@@ -2423,7 +2545,8 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"UnauthenticatedException"},
-        {"shape":"NotFoundException"}
+        {"shape":"NotFoundException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Creates or updates an alarm, and associates it with the specified metric.</p> <p>An alarm is used to monitor a single metric for one of your resources. When a metric condition is met, the alarm can notify you by email, SMS text message, and a banner displayed on the Amazon Lightsail console. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-alarms\">Alarms in Amazon Lightsail</a>.</p> <p>When this action creates an alarm, the alarm state is immediately set to <code>INSUFFICIENT_DATA</code>. The alarm is then evaluated and its state is set appropriately. Any actions associated with the new state are then executed.</p> <p>When you update an existing alarm, its state is left unchanged, but the update completely overwrites the previous configuration of the alarm. The alarm is then evaluated with the updated configuration.</p>"
     },
@@ -2442,6 +2565,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Opens ports for a specific Amazon Lightsail instance, and specifies the IP addresses allowed to connect to the instance through the ports, and the protocol. This action also closes all currently open ports that are not included in the request. Include all of the ports and the protocols you want to open in your <code>PutInstancePublicPorts</code>request. Or use the <code>OpenInstancePublicPorts</code> action to open ports without closing currently open ports.</p> <p>The <code>PutInstancePublicPorts</code> action supports tag-based access control via resource tags applied to the resource identified by <code>instanceName</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -2461,6 +2585,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Restarts a specific instance.</p> <p>The <code>reboot instance</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>instance name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -2480,6 +2605,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Restarts a specific database in Amazon Lightsail.</p> <p>The <code>reboot relational database</code> operation supports tag-based access control via resource tags applied to the resource identified by relationalDatabaseName. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -2497,7 +2623,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Registers a container image to your Amazon Lightsail container service.</p> <note> <p>This action is not required if you install and use the Lightsail Control (lightsailctl) plugin to push container images to your Lightsail container service. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-pushing-container-images\">Pushing and managing container images on your Amazon Lightsail container services</a> in the <i>Amazon Lightsail Developer Guide</i>.</p> </note>"
     },
@@ -2516,6 +2643,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Deletes a specific static IP from your account.</p>"
@@ -2552,7 +2680,8 @@
         {"shape":"OperationFailureException"},
         {"shape":"UnauthenticatedException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"NotFoundException"}
+        {"shape":"NotFoundException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Sends a verification request to an email contact method to ensure it's owned by the requester. SMS contact methods don't need to be verified.</p> <p>A contact method is used to send you notifications about your Amazon Lightsail resources. You can add one email address and one mobile phone number contact method in each Amazon Web Services Region. However, SMS text messaging is not supported in some Amazon Web Services Regions, and SMS text messages cannot be sent to some countries/regions. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-notifications\">Notifications in Amazon Lightsail</a>.</p> <p>A verification request is sent to the contact method when you initially create it. Use this action to send another verification request if a previous verification request was deleted, or has expired.</p> <important> <p>Notifications are not sent to an email contact method until after it is verified, and confirmed as valid.</p> </important>"
     },
@@ -2571,6 +2700,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Sets the IP address type for an Amazon Lightsail resource.</p> <p>Use this action to enable dual-stack for a resource, which enables IPv4 and IPv6 for the specified resource. Alternately, you can use this action to disable dual-stack, and enable IPv4 only.</p>"
@@ -2588,7 +2718,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"ServiceException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Sets the Amazon Lightsail resources that can access the specified Lightsail bucket.</p> <p>Lightsail buckets currently support setting access for Lightsail instances in the same Amazon Web Services Region.</p>"
     },
@@ -2605,7 +2736,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"ServiceException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Creates an SSL/TLS certificate that secures traffic for your website. After the certificate is created, it is installed on the specified Lightsail instance.</p> <p>If you provide more than one domain name in the request, at least one name must be less than or equal to 63 characters in length.</p>"
     },
@@ -2622,7 +2754,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"ServiceException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Initiates a graphical user interface (GUI) session that’s used to access a virtual computer’s operating system and application. The session will be active for 1 hour. Use this action to resume the session after it expires. </p>"
     },
@@ -2641,6 +2774,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Starts a specific Amazon Lightsail instance from a stopped state. To restart an instance, use the <code>reboot instance</code> operation.</p> <note> <p>When you start a stopped instance, Lightsail assigns a new public IP address to the instance. To use the same IP address after stopping and starting an instance, create a static IP address and attach it to the instance. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/lightsail-create-static-ip\">Amazon Lightsail Developer Guide</a>.</p> </note> <p>The <code>start instance</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>instance name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -2660,6 +2794,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Starts a specific database from a stopped state in Amazon Lightsail. To restart a database, use the <code>reboot relational database</code> operation.</p> <p>The <code>start relational database</code> operation supports tag-based access control via resource tags applied to the resource identified by relationalDatabaseName. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -2677,7 +2812,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"ServiceException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Terminates a web-based Amazon DCV session that’s used to access a virtual computer’s operating system or application. The session will close and any unsaved data will be lost.</p>"
     },
@@ -2696,6 +2832,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Stops a specific Amazon Lightsail instance that is currently running.</p> <note> <p>When you start a stopped instance, Lightsail assigns a new public IP address to the instance. To use the same IP address after stopping and starting an instance, create a static IP address and attach it to the instance. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/lightsail-create-static-ip\">Amazon Lightsail Developer Guide</a>.</p> </note> <p>The <code>stop instance</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>instance name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -2715,6 +2852,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Stops a specific database that is currently running in Amazon Lightsail.</p> <note> <p>If you don't manually start your database instance after it has been stopped for seven consecutive days, Amazon Lightsail automatically starts it for you. This action helps ensure that your database instance doesn't fall behind on any required maintenance updates.</p> </note> <p>The <code>stop relational database</code> operation supports tag-based access control via resource tags applied to the resource identified by relationalDatabaseName. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -2734,6 +2872,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Adds one or more tags to the specified Amazon Lightsail resource. Each resource can have a maximum of 50 tags. Each tag consists of a key and an optional value. Tag keys must be unique per resource. For more information about tags, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-tags\">Amazon Lightsail Developer Guide</a>.</p> <p>The <code>tag resource</code> operation supports tag-based access control via request tags and resource tags applied to the resource identified by <code>resource name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -2752,7 +2891,8 @@
         {"shape":"OperationFailureException"},
         {"shape":"UnauthenticatedException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"NotFoundException"}
+        {"shape":"NotFoundException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Tests an alarm by displaying a banner on the Amazon Lightsail console. If a notification trigger is configured for the specified alarm, the test also sends a notification to the notification protocol (<code>Email</code> and/or <code>SMS</code>) configured for the alarm.</p> <p>An alarm is used to monitor a single metric for one of your resources. When a metric condition is met, the alarm can notify you by email, SMS text message, and a banner displayed on the Amazon Lightsail console. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-alarms\">Alarms in Amazon Lightsail</a>.</p>"
     },
@@ -2771,6 +2911,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Unpeers the Lightsail VPC from the user's default VPC.</p>"
@@ -2790,6 +2931,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Deletes the specified set of tag keys and their values from the specified Amazon Lightsail resource.</p> <p>The <code>untag resource</code> operation supports tag-based access control via request tags and resource tags applied to the resource identified by <code>resource name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -2807,7 +2949,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"ServiceException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Updates an existing Amazon Lightsail bucket.</p> <p>Use this action to update the configuration of an existing bucket, such as versioning, public accessibility, and the Amazon Web Services accounts that can access the bucket.</p>"
     },
@@ -2824,7 +2967,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"ServiceException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Updates the bundle, or storage plan, of an existing Amazon Lightsail bucket.</p> <p>A bucket bundle specifies the monthly cost, storage space, and data transfer quota for a bucket. You can update a bucket's bundle only one time within a monthly Amazon Web Services billing cycle. To determine if you can update a bucket's bundle, use the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetBuckets.html\">GetBuckets</a> action. The <code>ableToUpdateBundle</code> parameter in the response will indicate whether you can currently update a bucket's bundle.</p> <p>Update a bucket's bundle if it's consistently going over its storage space or data transfer quota, or if a bucket's usage is consistently in the lower range of its storage space or data transfer quota. Due to the unpredictable usage fluctuations that a bucket might experience, we strongly recommend that you update a bucket's bundle only as a long-term strategy, instead of as a short-term, monthly cost-cutting measure. Choose a bucket bundle that will provide the bucket with ample storage space and data transfer for a long time to come.</p>"
     },
@@ -2841,7 +2985,8 @@
         {"shape":"InvalidInputException"},
         {"shape":"NotFoundException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"UnauthenticatedException"}
+        {"shape":"UnauthenticatedException"},
+        {"shape":"RegionSetupInProgressException"}
       ],
       "documentation":"<p>Updates the configuration of your Amazon Lightsail container service, such as its power, scale, and public domain names.</p>"
     },
@@ -2896,6 +3041,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Updates a domain recordset after it is created.</p> <p>The <code>update domain entry</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>domain name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -2915,6 +3061,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Modifies the Amazon Lightsail instance metadata parameters on a running or stopped instance. When you modify the parameters on a running instance, the <code>GetInstance</code> or <code>GetInstances</code> API operation initially responds with a state of <code>pending</code>. After the parameter modifications are successfully applied, the state changes to <code>applied</code> in subsequent <code>GetInstance</code> or <code>GetInstances</code> API calls. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-configuring-instance-metadata-service\">Use IMDSv2 with an Amazon Lightsail instance</a> in the <i>Amazon Lightsail Developer Guide</i>.</p>"
@@ -2934,6 +3081,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Updates the specified attribute for a load balancer. You can only update one attribute at a time.</p> <p>The <code>update load balancer attribute</code> operation supports tag-based access control via resource tags applied to the resource identified by <code>load balancer name</code>. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -2953,6 +3101,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Allows the update of one or more attributes of a database in Amazon Lightsail.</p> <p>Updates are applied immediately, or in cases where the updates could result in an outage, are applied during the database's predefined maintenance window.</p> <p>The <code>update relational database</code> operation supports tag-based access control via resource tags applied to the resource identified by relationalDatabaseName. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -2972,6 +3121,7 @@
         {"shape":"OperationFailureException"},
         {"shape":"AccessDeniedException"},
         {"shape":"AccountSetupInProgressException"},
+        {"shape":"RegionSetupInProgressException"},
         {"shape":"UnauthenticatedException"}
       ],
       "documentation":"<p>Allows the update of one or more parameters of a database in Amazon Lightsail.</p> <p>Parameter updates don't cause outages; therefore, their application is not subject to the preferred maintenance window. However, there are two ways in which parameter updates are applied: <code>dynamic</code> or <code>pending-reboot</code>. Parameters marked with a <code>dynamic</code> apply type are applied immediately. Parameters marked with a <code>pending-reboot</code> apply type are applied only after the database is rebooted using the <code>reboot relational database</code> operation.</p> <p>The <code>update relational database parameters</code> operation supports tag-based access control via resource tags applied to the resource identified by relationalDatabaseName. For more information, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-controlling-access-using-tags\">Amazon Lightsail Developer Guide</a>.</p>"
@@ -3082,7 +3232,7 @@
         },
         "message":{
           "shape":"BPAStatusMessage",
-          "documentation":"<p>A message that provides a reason for a <code>Failed</code> or <code>Defaulted</code> synchronization status.</p> <p>The following messages are possible:</p> <ul> <li> <p> <code>SYNC_ON_HOLD</code> - The synchronization has not yet happened. This status message occurs immediately after you create your first Lightsail bucket. This status message should change after the first synchronization happens, approximately 1 hour after the first bucket is created.</p> </li> <li> <p> <code>DEFAULTED_FOR_SLR_MISSING</code> - The synchronization failed because the required service-linked role is missing from your Amazon Web Services account. The account-level BPA configuration for your Lightsail buckets is defaulted to <i>active</i> until the synchronization can occur. This means that all your buckets are private and not publicly accessible. For more information about how to create the required service-linked role to allow synchronization, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-using-service-linked-roles\">Using Service-Linked Roles for Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p> </li> <li> <p> <code>DEFAULTED_FOR_SLR_MISSING_ON_HOLD</code> - The synchronization failed because the required service-linked role is missing from your Amazon Web Services account. Account-level BPA is not yet configured for your Lightsail buckets. Therefore, only the bucket access permissions and individual object access permissions apply to your Lightsail buckets. For more information about how to create the required service-linked role to allow synchronization, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-using-service-linked-roles\">Using Service-Linked Roles for Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p> </li> <li> <p> <code>Unknown</code> - The reason that synchronization failed is unknown. Contact Amazon Web ServicesSupport for more information.</p> </li> </ul>"
+          "documentation":"<p>A message that provides a reason for a <code>Failed</code> or <code>Defaulted</code> synchronization status.</p> <p>The following messages are possible:</p> <ul> <li> <p> <code>SYNC_ON_HOLD</code> - The synchronization has not yet happened. This status message occurs immediately after you create your first Lightsail bucket. This status message should change after the first synchronization happens, approximately 1 hour after the first bucket is created.</p> </li> <li> <p> <code>DEFAULTED_FOR_SLR_MISSING</code> - The synchronization failed because the required service-linked role is missing from your Amazon Web Services account. The account-level BPA configuration for your Lightsail buckets is defaulted to <i>active</i> until the synchronization can occur. This means that all your buckets are private and not publicly accessible. For more information about how to create the required service-linked role to allow synchronization, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-using-service-linked-roles\">Using Service-Linked Roles for Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p> </li> <li> <p> <code>DEFAULTED_FOR_SLR_MISSING_ON_HOLD</code> - The synchronization failed because the required service-linked role is missing from your Amazon Web Services account. Account-level BPA is not yet configured for your Lightsail buckets. Therefore, only the bucket access permissions and individual object access permissions apply to your Lightsail buckets. For more information about how to create the required service-linked role to allow synchronization, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/amazon-lightsail-using-service-linked-roles\">Using Service-Linked Roles for Amazon Lightsail</a> in the <i>Amazon Lightsail Developer Guide</i>.</p> </li> <li> <p> <code>Unknown</code> - The reason that synchronization failed is unknown. Contact Amazon Web Services Support for more information.</p> </li> </ul>"
         },
         "bpaImpactsLightsail":{
           "shape":"boolean",
@@ -3690,6 +3840,10 @@
         "accessLogConfig":{
           "shape":"BucketAccessLogConfig",
           "documentation":"<p>An object that describes the access log configuration for the bucket.</p>"
+        },
+        "cors":{
+          "shape":"BucketCorsConfig",
+          "documentation":"<p>An array of cross-origin resource sharing (CORS) rules that identify origins and the HTTP methods that can be executed on your bucket. This field is only included in the response when CORS configuration is requested or when updating CORS configuration. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/configure-cors.html\">Configuring cross-origin resource sharing (CORS)</a>.</p>"
         }
       },
       "documentation":"<p>Describes an Amazon Lightsail bucket.</p>"
@@ -3752,6 +3906,79 @@
     "BucketBundleList":{
       "type":"list",
       "member":{"shape":"BucketBundle"}
+    },
+    "BucketCorsAllowedHeaders":{
+      "type":"list",
+      "member":{"shape":"string"}
+    },
+    "BucketCorsAllowedMethod":{
+      "type":"string",
+      "pattern":"^(DELETE|GET|HEAD|POST|PUT)$"
+    },
+    "BucketCorsAllowedMethods":{
+      "type":"list",
+      "member":{"shape":"BucketCorsAllowedMethod"}
+    },
+    "BucketCorsAllowedOrigins":{
+      "type":"list",
+      "member":{"shape":"string"}
+    },
+    "BucketCorsConfig":{
+      "type":"structure",
+      "members":{
+        "rules":{
+          "shape":"BucketCorsRules",
+          "documentation":"<p>A set of origins and methods (cross-origin access that you want to allow). You can add up to 20 rules to the configuration. The total size is limited to 64 KB.</p>"
+        }
+      },
+      "documentation":"<p>Describes the cross-origin resource sharing (CORS) configuration for a Lightsail bucket. CORS defines a way for client web applications that are loaded in one domain to interact with resources in a different domain. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/configure-cors.html\">Configuring cross-origin resource sharing (CORS)</a>.</p>"
+    },
+    "BucketCorsExposeHeaders":{
+      "type":"list",
+      "member":{"shape":"string"}
+    },
+    "BucketCorsRule":{
+      "type":"structure",
+      "required":[
+        "allowedMethods",
+        "allowedOrigins"
+      ],
+      "members":{
+        "id":{
+          "shape":"BucketCorsRuleId",
+          "documentation":"<p>A unique identifier for the CORS rule. The ID value can be up to 255 characters long. The IDs help you find a rule in the configuration.</p>"
+        },
+        "allowedMethods":{
+          "shape":"BucketCorsAllowedMethods",
+          "documentation":"<p>The HTTP methods that are allowed when accessing the bucket from the specified origin. Each CORS rule must identify at least one origin and one method.</p> <p>You can use the following HTTP methods:</p> <ul> <li> <p> <code>GET</code> - Retrieves data from the server, such as downloading files or viewing content.</p> </li> <li> <p> <code>PUT</code> - Uploads or replaces data on the server, such as uploading new files.</p> </li> <li> <p> <code>POST</code> - Sends data to the server for processing, such as submitting forms or creating new resources.</p> </li> <li> <p> <code>DELETE</code> - Removes data from the server, such as deleting files or resources.</p> </li> <li> <p> <code>HEAD</code> - Retrieves only the headers from the server without the actual content, useful for checking if a resource exists.</p> </li> </ul>"
+        },
+        "allowedOrigins":{
+          "shape":"BucketCorsAllowedOrigins",
+          "documentation":"<p>One or more origins you want customers to be able to access the bucket from. Each CORS rule must identify at least one origin and one method.</p>"
+        },
+        "allowedHeaders":{
+          "shape":"BucketCorsAllowedHeaders",
+          "documentation":"<p>Headers that are specified in the <code>Access-Control-Request-Headers</code> header. These headers are allowed in a preflight <code>OPTIONS</code> request. In response to any preflight <code>OPTIONS</code> request, Amazon S3 returns any requested headers that are allowed.</p>"
+        },
+        "exposeHeaders":{
+          "shape":"BucketCorsExposeHeaders",
+          "documentation":"<p>One or more headers in the response that you want customers to be able to access from their applications (for example, from a JavaScript <code>XMLHttpRequest</code> object).</p>"
+        },
+        "maxAgeSeconds":{
+          "shape":"integer",
+          "documentation":"<p>The time in seconds that your browser is to cache the preflight response for the specified resource. A CORS rule can have only one <code>maxAgeSeconds</code> element.</p>"
+        }
+      },
+      "documentation":"<p>Describes a cross-origin resource sharing (CORS) rule for a Lightsail bucket. CORS rules specify which origins are allowed to access the bucket, which HTTP methods are allowed, and other access control information. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/configure-cors.html\">Configuring cross-origin resource sharing (CORS)</a>.</p>"
+    },
+    "BucketCorsRuleId":{
+      "type":"string",
+      "max":255
+    },
+    "BucketCorsRules":{
+      "type":"list",
+      "member":{"shape":"BucketCorsRule"},
+      "max":20
     },
     "BucketList":{
       "type":"list",
@@ -4931,8 +5158,7 @@
     },
     "CreateContainerServiceRegistryLoginRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "CreateContainerServiceRegistryLoginResult":{
       "type":"structure",
@@ -5854,8 +6080,7 @@
     },
     "DeleteContainerImageResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteContainerServiceRequest":{
       "type":"structure",
@@ -5869,8 +6094,7 @@
     },
     "DeleteContainerServiceResult":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteDiskRequest":{
       "type":"structure",
@@ -6694,8 +6918,7 @@
     },
     "DownloadDefaultKeyPairRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DownloadDefaultKeyPairResult":{
       "type":"structure",
@@ -7134,6 +7357,10 @@
         "includeConnectedResources":{
           "shape":"boolean",
           "documentation":"<p>A Boolean value that indicates whether to include Lightsail instances that were given access to the bucket using the <a href=\"https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_SetResourceAccessForBucket.html\">SetResourceAccessForBucket</a> action.</p>"
+        },
+        "includeCors":{
+          "shape":"boolean",
+          "documentation":"<p>A Boolean value that indicates whether to include Lightsail bucket CORS configuration in the response. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/configure-cors.html\">Configuring cross-origin resource sharing (CORS)</a>.</p> <note> <p>This parameter is only supported when getting a single bucket with <code>bucketName</code> specified. The default value for this parameter is <code>False</code>.</p> </note>"
         }
       }
     },
@@ -7260,8 +7487,7 @@
     },
     "GetContainerAPIMetadataRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "GetContainerAPIMetadataResult":{
       "type":"structure",
@@ -7408,8 +7634,7 @@
     },
     "GetContainerServicePowersRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "GetContainerServicePowersResult":{
       "type":"structure",
@@ -7544,8 +7769,7 @@
     },
     "GetDistributionBundlesRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "GetDistributionBundlesResult":{
       "type":"structure",
@@ -9323,8 +9547,7 @@
     },
     "IsVpcPeeredRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "IsVpcPeeredResult":{
       "type":"structure",
@@ -10370,8 +10593,7 @@
     },
     "PeerVpcRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "PeerVpcResult":{
       "type":"structure",
@@ -10749,8 +10971,26 @@
         "ap-southeast-2",
         "ap-northeast-1",
         "ap-northeast-2",
-        "eu-north-1"
+        "eu-north-1",
+        "ap-southeast-3"
       ]
+    },
+    "RegionSetupInProgressException":{
+      "type":"structure",
+      "members":{
+        "code":{"shape":"string"},
+        "docs":{
+          "shape":"string",
+          "documentation":"<p> <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/understanding-regions-and-availability-zones-in-amazon-lightsail.html\">Regions and Availability Zones for Lightsail</a> </p>"
+        },
+        "message":{"shape":"string"},
+        "tip":{
+          "shape":"string",
+          "documentation":"<p>Opt-in Regions typically take a few minutes to finish setting up before you can work with them. Wait a few minutes and try again.</p>"
+        }
+      },
+      "documentation":"<p>Lightsail throws this exception when an operation is performed on resources in an opt-in Region that is currently being set up.</p>",
+      "exception":true
     },
     "RegisterContainerImageRequest":{
       "type":"structure",
@@ -12016,8 +12256,7 @@
     },
     "UnpeerVpcRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UnpeerVpcResult":{
       "type":"structure",
@@ -12107,6 +12346,10 @@
         "accessLogConfig":{
           "shape":"BucketAccessLogConfig",
           "documentation":"<p>An object that describes the access log configuration for the bucket.</p>"
+        },
+        "cors":{
+          "shape":"BucketCorsConfig",
+          "documentation":"<p>Sets the cross-origin resource sharing (CORS) configuration for your bucket. If a CORS configuration exists, it is replaced with the specified configuration. For AWS CLI operations, this parameter can also be passed as a file. For more information, see <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/configure-cors.html\">Configuring cross-origin resource sharing (CORS)</a>.</p> <note> <p>CORS information is only returned in a response when you update the CORS policy.</p> </note>"
         }
       }
     },
@@ -12433,5 +12676,5 @@
     "string":{"type":"string"},
     "timestamp":{"type":"timestamp"}
   },
-  "documentation":"<p>Amazon Lightsail is the easiest way to get started with Amazon Web Services (Amazon Web Services) for developers who need to build websites or web applications. It includes everything you need to launch your project quickly - instances (virtual private servers), container services, storage buckets, managed databases, SSD-based block storage, static IP addresses, load balancers, content delivery network (CDN) distributions, DNS management of registered domains, and resource snapshots (backups) - for a low, predictable monthly price.</p> <p>You can manage your Lightsail resources using the Lightsail console, Lightsail API, Command Line Interface (CLI), or SDKs. For more information about Lightsail concepts and tasks, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/lightsail-how-to-set-up-access-keys-to-use-sdk-api-cli\">Amazon Lightsail Developer Guide</a>.</p> <p>This API Reference provides detailed information about the actions, data types, parameters, and errors of the Lightsail service. For more information about the supported Amazon Web Services Regions, endpoints, and service quotas of the Lightsail service, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/lightsail.html\">Amazon Lightsail Endpoints and Quotas</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+  "documentation":"<p>Amazon Lightsail is the easiest way to get started with Amazon Web Services (Amazon Web Services) for developers who need to build websites or web applications. It includes everything you need to launch your project quickly - instances (virtual private servers), container services, storage buckets, managed databases, SSD-based block storage, static IP addresses, load balancers, content delivery network (CDN) distributions, DNS management of registered domains, and resource snapshots (backups) - for a low, predictable monthly price.</p> <p>You can manage your Lightsail resources using the Lightsail console, Lightsail API, Command Line Interface (CLI), or SDKs. For more information about Lightsail concepts and tasks, see the <a href=\"https://docs.aws.amazon.com/lightsail/latest/userguide/lightsail-how-to-set-up-and-configure-aws-cli\">Amazon Lightsail Developer Guide</a>.</p> <p>This API Reference provides detailed information about the actions, data types, parameters, and errors of the Lightsail service. For more information about the supported Amazon Web Services Regions, endpoints, and service quotas of the Lightsail service, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/lightsail.html\">Amazon Lightsail Endpoints and Quotas</a> in the <i>Amazon Web Services General Reference</i>.</p>"
 }

@@ -13,6 +13,22 @@
     "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "DeleteConnection":{
+      "name":"DeleteConnection",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/connections/{clientId}"
+      },
+      "input":{"shape":"DeleteConnectionRequest"},
+      "errors":[
+        {"shape":"ForbiddenException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Disconnects a connected MQTT client from Amazon Web Services IoT Core. When you disconnect a client, Amazon Web Services IoT Core closes the client's network connection and optionally cleans the session state.</p>"
+    },
     "DeleteThingShadow":{
       "name":"DeleteThingShadow",
       "http":{
@@ -50,7 +66,7 @@
         {"shape":"InternalFailureException"},
         {"shape":"MethodNotAllowedException"}
       ],
-      "documentation":"<p>Gets the details of a single retained message for the specified topic.</p> <p>This action returns the message payload of the retained message, which can incur messaging costs. To list only the topic names of the retained messages, call <a href=\"https://docs.aws.amazon.com/iot/latest/apireference/API_iotdata_ListRetainedMessages.html\">ListRetainedMessages</a>.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiotfleethubfordevicemanagement.html#awsiotfleethubfordevicemanagement-actions-as-permissions\">GetRetainedMessage</a> action.</p> <p>For more information about messaging costs, see <a href=\"http://aws.amazon.com/iot-core/pricing/#Messaging\">Amazon Web Services IoT Core pricing - Messaging</a>.</p>"
+      "documentation":"<p>Gets the details of a single retained message for the specified topic.</p> <p>This action returns the message payload of the retained message, which can incur messaging costs. To list only the topic names of the retained messages, call <a href=\"https://docs.aws.amazon.com/iot/latest/apireference/API_iotdata_ListRetainedMessages.html\">ListRetainedMessages</a>.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html\">GetRetainedMessage</a> action.</p> <p>For more information about messaging costs, see <a href=\"http://aws.amazon.com/iot-core/pricing/#Messaging\">Amazon Web Services IoT Core pricing - Messaging</a>.</p>"
     },
     "GetThingShadow":{
       "name":"GetThingShadow",
@@ -107,7 +123,7 @@
         {"shape":"InternalFailureException"},
         {"shape":"MethodNotAllowedException"}
       ],
-      "documentation":"<p>Lists summary information about the retained messages stored for the account.</p> <p>This action returns only the topic names of the retained messages. It doesn't return any message payloads. Although this action doesn't return a message payload, it can still incur messaging costs.</p> <p>To get the message payload of a retained message, call <a href=\"https://docs.aws.amazon.com/iot/latest/apireference/API_iotdata_GetRetainedMessage.html\">GetRetainedMessage</a> with the topic name of the retained message.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiotfleethubfordevicemanagement.html#awsiotfleethubfordevicemanagement-actions-as-permissions\">ListRetainedMessages</a> action.</p> <p>For more information about messaging costs, see <a href=\"http://aws.amazon.com/iot-core/pricing/#Messaging\">Amazon Web Services IoT Core pricing - Messaging</a>.</p>"
+      "documentation":"<p>Lists summary information about the retained messages stored for the account.</p> <p>This action returns only the topic names of the retained messages. It doesn't return any message payloads. Although this action doesn't return a message payload, it can still incur messaging costs.</p> <p>To get the message payload of a retained message, call <a href=\"https://docs.aws.amazon.com/iot/latest/apireference/API_iotdata_GetRetainedMessage.html\">GetRetainedMessage</a> with the topic name of the retained message.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html\">ListRetainedMessages</a> action.</p> <p>For more information about messaging costs, see <a href=\"http://aws.amazon.com/iot-core/pricing/#Messaging\">Amazon Web Services IoT Core pricing - Messaging</a>.</p>"
     },
     "Publish":{
       "name":"Publish",
@@ -148,6 +164,13 @@
     }
   },
   "shapes":{
+    "CleanSession":{"type":"boolean"},
+    "ClientId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[^$].*"
+    },
     "ConflictException":{
       "type":"structure",
       "members":{
@@ -162,6 +185,30 @@
     },
     "ContentType":{"type":"string"},
     "CorrelationData":{"type":"string"},
+    "DeleteConnectionRequest":{
+      "type":"structure",
+      "required":["clientId"],
+      "members":{
+        "clientId":{
+          "shape":"ClientId",
+          "documentation":"<p>The unique identifier of the MQTT client to disconnect. The client ID can't start with a dollar sign ($).</p>",
+          "location":"uri",
+          "locationName":"clientId"
+        },
+        "cleanSession":{
+          "shape":"CleanSession",
+          "documentation":"<p>Specifies whether to remove the client's session state when disconnecting. Set to <code>TRUE</code> to delete all session information, including subscriptions and queued messages. Set to <code>FALSE</code> to preserve the session state. By default, this is set to <code>FALSE</code> (preserves the session state).</p>",
+          "location":"querystring",
+          "locationName":"cleanSession"
+        },
+        "preventWillMessage":{
+          "shape":"PreventWillMessage",
+          "documentation":"<p>Controls if Amazon Web Services IoT Core publishes the client's Last Will and Testament (LWT) message upon disconnection. Set to <code>TRUE</code> to prevent publishing the LWT message. Set to <code>FALSE</code> to allow publishing. By default, this is set to <code>FALSE</code> (allows publishing the LWT message).</p>",
+          "location":"querystring",
+          "locationName":"preventWillMessage"
+        }
+      }
+    },
     "DeleteThingShadowRequest":{
       "type":"structure",
       "required":["thingName"],
@@ -192,6 +239,15 @@
       },
       "documentation":"<p>The output from the DeleteThingShadow operation.</p>",
       "payload":"payload"
+    },
+    "ForbiddenException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>The caller isn't authorized to make the request.</p>",
+      "error":{"httpStatusCode":403},
+      "exception":true
     },
     "GetRetainedMessageRequest":{
       "type":"structure",
@@ -396,6 +452,7 @@
       ]
     },
     "PayloadSize":{"type":"long"},
+    "PreventWillMessage":{"type":"boolean"},
     "PublishRequest":{
       "type":"structure",
       "required":["topic"],

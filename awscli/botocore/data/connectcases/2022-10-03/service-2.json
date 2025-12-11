@@ -2,8 +2,8 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2022-10-03",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"cases",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
     "protocols":["rest-json"],
     "serviceAbbreviation":"ConnectCases",
@@ -11,8 +11,7 @@
     "serviceId":"ConnectCases",
     "signatureVersion":"v4",
     "signingName":"cases",
-    "uid":"connectcases-2022-10-03",
-    "auth":["aws.auth#sigv4"]
+    "uid":"connectcases-2022-10-03"
   },
   "operations":{
     "BatchGetCaseRule":{
@@ -31,7 +30,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Gets a batch of case rules. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
+      "documentation":"<p>Gets a batch of case rules. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
+      "readonly":true
     },
     "BatchGetField":{
       "name":"BatchGetField",
@@ -49,7 +49,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Returns the description for the list of fields in the request parameters. </p>"
+      "documentation":"<p>Returns the description for the list of fields in the request parameters. </p>",
+      "readonly":true
     },
     "BatchPutFieldOptions":{
       "name":"BatchPutFieldOptions",
@@ -88,7 +89,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <p>Creates a case in the specified Cases domain. Case system and custom fields are taken as an array id/value pairs with a declared data types.</p> <p>The following fields are required when creating a case:</p> <ul> <li> <p> <code>customer_id</code> - You must provide the full customer profile ARN in this format: <code>arn:aws:profile:your_AWS_Region:your_AWS_account ID:domains/your_profiles_domain_name/profiles/profile_ID</code> </p> </li> <li> <p> <code>title</code> </p> </li> </ul>",
+      "documentation":"<p><note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <p>Creates a case in the specified Cases domain. Case system and custom fields are taken as an array id/value pairs with a declared data types.</p> <p>The following fields are required when creating a case:</p> <ul> <li> <p> <code>customer_id</code> - You must provide the full customer profile ARN in this format: <code>arn:aws:profile:your_AWS_Region:your_AWS_account ID:domains/your_profiles_domain_name/profiles/profile_ID</code> </p> </li> <li> <p> <code>title</code> </p> </li> </ul></p>",
       "idempotent":true
     },
     "CreateCaseRule":{
@@ -190,7 +191,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a related item (comments, tasks, and contacts) and associates it with a case.</p> <note> <ul> <li> <p>A Related Item is a resource that is associated with a case. It may or may not have an external identifier linking it to an external resource (for example, a <code>contactArn</code>). All Related Items have their own internal identifier, the <code>relatedItemArn</code>. Examples of related items include <code>comments</code> and <code>contacts</code>.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> <li> <p>The <code>type</code> field is reserved for internal use only.</p> </li> </ul> </note>",
+      "documentation":"<p>Creates a related item (comments, tasks, and contacts) and associates it with a case.</p> <p>There's a quota for the number of fields allowed in a Custom type related item. See <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#cases-quotas\">Amazon Connect Cases quotas</a>.</p> <p> <b>Use cases</b> </p> <p>Following are examples of related items that you may want to associate with a case:</p> <ul> <li> <p>Related contacts, such as calls, chats, emails tasks</p> </li> <li> <p>Comments, for agent notes</p> </li> <li> <p>SLAs, to capture target resolution goals</p> </li> <li> <p>Cases, to capture related Amazon Connect Cases</p> </li> <li> <p>Files, such as policy documentation or customer-provided attachments</p> </li> <li> <p>Custom related items, which provide flexibility for you to define related items that such as bookings, orders, products, notices, and more</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>If you are associating a contact to a case by passing in <code>Contact</code> for a <code>type</code>, you must have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeContact.html\">DescribeContact</a> permission on the ARN of the contact that you provide in <code>content.contact.contactArn</code>.</p> </li> <li> <p>A Related Item is a resource that is associated with a case. It may or may not have an external identifier linking it to an external resource (for example, a <code>contactArn</code>). All Related Items have their own internal identifier, the <code>relatedItemArn</code>. Examples of related items include <code>comments</code> and <code>contacts</code>.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> <li> <p>The <code>type</code> field is reserved for internal use only.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect endpoints and quotas</a>.</p>",
       "idempotent":true
     },
     "CreateTemplate":{
@@ -212,6 +213,25 @@
         {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Creates a template in the Cases domain. This template is used to define the case object model (that is, to define what data can be captured on cases) in a Cases domain. A template must have a unique name within a domain, and it must reference existing field IDs and layout IDs. Additionally, multiple fields with same IDs are not allowed within the same Template. A template can be either Active or Inactive, as indicated by its status. Inactive templates cannot be used to create cases.</p> <p> Other template APIs are: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_DeleteTemplate.html\">DeleteTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_GetTemplate.html\">GetTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_ListTemplates.html\">ListTemplates</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_UpdateTemplate.html\">UpdateTemplate</a> </p> </li> </ul>",
+      "idempotent":true
+    },
+    "DeleteCase":{
+      "name":"DeleteCase",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{domainId}/cases/{caseId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteCaseRequest"},
+      "output":{"shape":"DeleteCaseResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p> The DeleteCase API permanently deletes a case and all its associated resources from the cases data store. After a successful deletion, you cannot:</p> <ul> <li> <p>Retrieve related items</p> </li> <li> <p>Access audit history</p> </li> <li> <p>Perform any operations that require the CaseID</p> </li> </ul> <important> <p>This action is irreversible. After you delete a case, you cannot recover its data.</p> </important>",
       "idempotent":true
     },
     "DeleteCaseRule":{
@@ -271,7 +291,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Deletes a field from a cases template. You can delete up to 100 fields per domain.</p> <p>After a field is deleted:</p> <ul> <li> <p>You can still retrieve the field by calling <code>BatchGetField</code>.</p> </li> <li> <p>You cannot update a deleted field by calling <code>UpdateField</code>; it throws a <code>ValidationException</code>.</p> </li> <li> <p>Deleted fields are not included in the <code>ListFields</code> response.</p> </li> <li> <p>Calling <code>CreateCase</code> with a deleted field throws a <code>ValidationException</code> denoting which field IDs in the request have been deleted.</p> </li> <li> <p>Calling <code>GetCase</code> with a deleted field ID returns the deleted field's value if one exists.</p> </li> <li> <p>Calling <code>UpdateCase</code> with a deleted field ID throws a <code>ValidationException</code> if the case does not already contain a value for the deleted field. Otherwise it succeeds, allowing you to update or remove (using <code>emptyValue: {}</code>) the field's value from the case.</p> </li> <li> <p> <code>GetTemplate</code> does not return field IDs for deleted fields.</p> </li> <li> <p> <code>GetLayout</code> does not return field IDs for deleted fields.</p> </li> <li> <p>Calling <code>SearchCases</code> with the deleted field ID as a filter returns any cases that have a value for the deleted field that matches the filter criteria.</p> </li> <li> <p>Calling <code>SearchCases</code> with a <code>searchTerm</code> value that matches a deleted field's value on a case returns the case in the response.</p> </li> <li> <p>Calling <code>BatchPutFieldOptions</code> with a deleted field ID throw a <code>ValidationException</code>.</p> </li> <li> <p>Calling <code>GetCaseEventConfiguration</code> does not return field IDs for deleted fields.</p> </li> </ul>",
+      "documentation":"<p>Deletes a field from a cases template. You can delete up to 100 fields per domain.</p> <p>After a field is deleted:</p> <ul> <li> <p>You can still retrieve the field by calling <code>BatchGetField</code>.</p> </li> <li> <p>You cannot update a deleted field by calling <code>UpdateField</code>; it throws a <code>ValidationException</code>.</p> </li> <li> <p>Deleted fields are not included in the <code>ListFields</code> response.</p> </li> <li> <p>Calling <code>CreateCase</code> with a deleted field throws a <code>ValidationException</code> denoting which field identifiers in the request have been deleted.</p> </li> <li> <p>Calling <code>GetCase</code> with a deleted field identifier returns the deleted field's value if one exists.</p> </li> <li> <p>Calling <code>UpdateCase</code> with a deleted field ID throws a <code>ValidationException</code> if the case does not already contain a value for the deleted field. Otherwise it succeeds, allowing you to update or remove (using <code>emptyValue: {}</code>) the field's value from the case.</p> </li> <li> <p> <code>GetTemplate</code> does not return field IDs for deleted fields.</p> </li> <li> <p> <code>GetLayout</code> does not return field IDs for deleted fields.</p> </li> <li> <p>Calling <code>SearchCases</code> with the deleted field ID as a filter returns any cases that have a value for the deleted field that matches the filter criteria.</p> </li> <li> <p>Calling <code>SearchCases</code> with a <code>searchTerm</code> value that matches a deleted field's value on a case returns the case in the response.</p> </li> <li> <p>Calling <code>BatchPutFieldOptions</code> with a deleted field ID throw a <code>ValidationException</code>.</p> </li> <li> <p>Calling <code>GetCaseEventConfiguration</code> does not return field IDs for deleted fields.</p> </li> </ul>",
       "idempotent":true
     },
     "DeleteLayout":{
@@ -292,6 +312,25 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Deletes a layout from a cases template. You can delete up to 100 layouts per domain.</p> <p>After a layout is deleted:</p> <ul> <li> <p>You can still retrieve the layout by calling <code>GetLayout</code>.</p> </li> <li> <p>You cannot update a deleted layout by calling <code>UpdateLayout</code>; it throws a <code>ValidationException</code>.</p> </li> <li> <p>Deleted layouts are not included in the <code>ListLayouts</code> response.</p> </li> </ul>",
+      "idempotent":true
+    },
+    "DeleteRelatedItem":{
+      "name":"DeleteRelatedItem",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/domains/{domainId}/cases/{caseId}/related-items/{relatedItemId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteRelatedItemRequest"},
+      "output":{"shape":"DeleteRelatedItemResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes the related item resource under a case.</p> <note> <p>This API cannot be used on a FILE type related attachment. To delete this type of file, use the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteAttachedFile.html\">DeleteAttachedFile</a> API</p> </note>",
       "idempotent":true
     },
     "DeleteTemplate":{
@@ -330,7 +369,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Returns information about a specific case if it exists. </p>"
+      "documentation":"<p>Returns information about a specific case if it exists. </p>",
+      "readonly":true
     },
     "GetCaseAuditEvents":{
       "name":"GetCaseAuditEvents",
@@ -348,7 +388,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Returns the audit history about a specific case if it exists.</p>"
+      "documentation":"<p>Returns the audit history about a specific case if it exists.</p>",
+      "readonly":true
     },
     "GetCaseEventConfiguration":{
       "name":"GetCaseEventConfiguration",
@@ -366,7 +407,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Returns the case event publishing configuration.</p>"
+      "documentation":"<p>Returns the case event publishing configuration.</p>",
+      "readonly":true
     },
     "GetDomain":{
       "name":"GetDomain",
@@ -384,7 +426,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Returns information about a specific domain if it exists. </p>"
+      "documentation":"<p>Returns information about a specific domain if it exists. </p>",
+      "readonly":true
     },
     "GetLayout":{
       "name":"GetLayout",
@@ -402,7 +445,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Returns the details for the requested layout.</p>"
+      "documentation":"<p>Returns the details for the requested layout.</p>",
+      "readonly":true
     },
     "GetTemplate":{
       "name":"GetTemplate",
@@ -420,7 +464,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Returns the details for the requested template. Other template APIs are: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateTemplate.html\">CreateTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_DeleteTemplate.html\">DeleteTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_ListTemplates.html\">ListTemplates</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_UpdateTemplate.html\">UpdateTemplate</a> </p> </li> </ul>"
+      "documentation":"<p>Returns the details for the requested template. Other template APIs are: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateTemplate.html\">CreateTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_DeleteTemplate.html\">DeleteTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_ListTemplates.html\">ListTemplates</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_UpdateTemplate.html\">UpdateTemplate</a> </p> </li> </ul>",
+      "readonly":true
     },
     "ListCaseRules":{
       "name":"ListCaseRules",
@@ -438,7 +483,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all case rules in a Cases domain. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
+      "documentation":"<p>Lists all case rules in a Cases domain. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
+      "readonly":true
     },
     "ListCasesForContact":{
       "name":"ListCasesForContact",
@@ -456,7 +502,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists cases for a given contact.</p>"
+      "documentation":"<p>Lists cases for a given contact.</p>",
+      "readonly":true
     },
     "ListDomains":{
       "name":"ListDomains",
@@ -473,7 +520,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all cases domains in the Amazon Web Services account. Each list item is a condensed summary object of the domain.</p>"
+      "documentation":"<p>Lists all cases domains in the Amazon Web Services account. Each list item is a condensed summary object of the domain.</p>",
+      "readonly":true
     },
     "ListFieldOptions":{
       "name":"ListFieldOptions",
@@ -491,7 +539,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all of the field options for a field identifier in the domain. </p>"
+      "documentation":"<p>Lists all of the field options for a field identifier in the domain. </p>",
+      "readonly":true
     },
     "ListFields":{
       "name":"ListFields",
@@ -509,7 +558,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all fields in a Cases domain.</p>"
+      "documentation":"<p>Lists all fields in a Cases domain.</p>",
+      "readonly":true
     },
     "ListLayouts":{
       "name":"ListLayouts",
@@ -527,7 +577,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all layouts in the given cases domain. Each list item is a condensed summary object of the layout.</p>"
+      "documentation":"<p>Lists all layouts in the given cases domain. Each list item is a condensed summary object of the layout.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -564,7 +615,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all of the templates in a Cases domain. Each list item is a condensed summary object of the template. </p> <p> Other template APIs are: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateTemplate.html\">CreateTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_DeleteTemplate.html\">DeleteTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_GetTemplate.html\">GetTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_UpdateTemplate.html\">UpdateTemplate</a> </p> </li> </ul>"
+      "documentation":"<p>Lists all of the templates in a Cases domain. Each list item is a condensed summary object of the template. </p> <p> Other template APIs are: </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateTemplate.html\">CreateTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_DeleteTemplate.html\">DeleteTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_GetTemplate.html\">GetTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_UpdateTemplate.html\">UpdateTemplate</a> </p> </li> </ul>",
+      "readonly":true
     },
     "PutCaseEventConfiguration":{
       "name":"PutCaseEventConfiguration",
@@ -585,6 +637,25 @@
       ],
       "documentation":"<p>Adds case event publishing configuration. For a complete list of fields you can add to the event message, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-fields.html\">Create case fields</a> in the <i>Amazon Connect Administrator Guide</i> </p>"
     },
+    "SearchAllRelatedItems":{
+      "name":"SearchAllRelatedItems",
+      "http":{
+        "method":"POST",
+        "requestUri":"/domains/{domainId}/related-items-search",
+        "responseCode":200
+      },
+      "input":{"shape":"SearchAllRelatedItemsRequest"},
+      "output":{"shape":"SearchAllRelatedItemsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Searches for related items across all cases within a domain. This is a global search operation that returns related items from multiple cases, unlike the case-specific <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_SearchRelatedItems.html\">SearchRelatedItems</a> API.</p> <p> <b>Use cases</b> </p> <p>Following are common uses cases for this API:</p> <ul> <li> <p>Find cases with similar issues across the domain. For example, search for all cases containing comments about \"product defect\" to identify patterns and existing solutions.</p> </li> <li> <p>Locate all cases associated with specific contacts or orders. For example, find all cases linked to a contactArn to understand the complete customer journey. </p> </li> <li> <p>Monitor SLA compliance across cases. For example, search for all cases with \"Active\" SLA status to prioritize remediation efforts.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>This API returns case identifiers, not complete case objects. To retrieve full case details, you must make additional calls to the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_GetCase.html\">GetCase</a> API for each returned case ID. </p> </li> <li> <p>This API searches across related items content, not case fields. Use the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_SearchCases.html\">SearchCases</a> API to search within case field values.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect endpoints and quotas</a>.</p>",
+      "readonly":true
+    },
     "SearchCases":{
       "name":"SearchCases",
       "http":{
@@ -601,7 +672,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Searches for cases within their associated Cases domain. Search results are returned as a paginated list of abridged case documents.</p> <note> <p>For <code>customer_id</code> you must provide the full customer profile ARN in this format: <code> arn:aws:profile:your AWS Region:your AWS account ID:domains/profiles domain name/profiles/profile ID</code>. </p> </note>"
+      "documentation":"<p>Searches for cases within their associated Cases domain. Search results are returned as a paginated list of abridged case documents.</p> <note> <p>For <code>customer_id</code> you must provide the full customer profile ARN in this format: <code> arn:aws:profile:your AWS Region:your AWS account ID:domains/profiles domain name/profiles/profile ID</code>. </p> </note>",
+      "readonly":true
     },
     "SearchRelatedItems":{
       "name":"SearchRelatedItems",
@@ -619,7 +691,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Searches for related items that are associated with a case.</p> <note> <p>If no filters are provided, this returns all related items associated with a case.</p> </note>"
+      "documentation":"<p>Searches for related items that are associated with a case.</p> <note> <p>If no filters are provided, this returns all related items associated with a case.</p> </note>",
+      "readonly":true
     },
     "TagResource":{
       "name":"TagResource",
@@ -673,7 +746,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <p>Updates the values of fields on a case. Fields to be updated are received as an array of id/value pairs identical to the <code>CreateCase</code> input .</p> <p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p>"
+      "documentation":"<p><note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <p>Updates the values of fields on a case. Fields to be updated are received as an array of id/value pairs identical to the <code>CreateCase</code> input .</p> <p>If the action is successful, the service sends back an HTTP 200 response with an empty HTTP body.</p></p>"
     },
     "UpdateCaseRule":{
       "name":"UpdateCaseRule",
@@ -690,7 +763,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ConflictException"}
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Updates a case rule. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
       "idempotent":true
@@ -751,7 +825,8 @@
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ConflictException"}
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Updates the attributes of an existing template. The template attributes that can be modified include <code>name</code>, <code>description</code>, <code>layoutConfiguration</code>, <code>requiredFields</code>, and <code>status</code>. At least one of these attributes must not be null. If a null value is provided for a given attribute, that attribute is ignored and its current value is preserved.</p> <p>Other template APIs are:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateTemplate.html\">CreateTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_DeleteTemplate.html\">DeleteTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_GetTemplate.html\">GetTemplate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_ListTemplates.html\">ListTemplates</a> </p> </li> </ul>",
       "idempotent":true
@@ -784,14 +859,26 @@
       "type":"structure",
       "required":[
         "eventId",
-        "fields",
+        "type",
         "performedTime",
-        "type"
+        "fields"
       ],
       "members":{
         "eventId":{
           "shape":"AuditEventId",
           "documentation":"<p>Unique identifier of a case audit history event.</p>"
+        },
+        "type":{
+          "shape":"AuditEventType",
+          "documentation":"<p>The Type of an audit history event.</p>"
+        },
+        "relatedItemType":{
+          "shape":"RelatedItemType",
+          "documentation":"<p>The Type of the related item.</p>"
+        },
+        "performedTime":{
+          "shape":"AuditEventDateTime",
+          "documentation":"<p>Time at which an Audit History event took place.</p>"
         },
         "fields":{
           "shape":"AuditEventFieldList",
@@ -800,18 +887,6 @@
         "performedBy":{
           "shape":"AuditEventPerformedBy",
           "documentation":"<p>Information of the user which performed the audit.</p>"
-        },
-        "performedTime":{
-          "shape":"AuditEventDateTime",
-          "documentation":"<p>Time at which an Audit History event took place.</p>"
-        },
-        "relatedItemType":{
-          "shape":"RelatedItemType",
-          "documentation":"<p>The Type of the related item.</p>"
-        },
-        "type":{
-          "shape":"AuditEventType",
-          "documentation":"<p>The Type of an audit history event.</p>"
         }
       },
       "documentation":"<p>Represents the content of a particular audit event.</p>"
@@ -831,11 +906,11 @@
           "shape":"AuditEventFieldId",
           "documentation":"<p>Unique identifier of field in an Audit History entry.</p>"
         },
-        "newValue":{
+        "oldValue":{
           "shape":"AuditEventFieldValueUnion",
           "documentation":"<p>Union of potential field value types.</p>"
         },
-        "oldValue":{
+        "newValue":{
           "shape":"AuditEventFieldValueUnion",
           "documentation":"<p>Union of potential field value types.</p>"
         }
@@ -854,19 +929,19 @@
     "AuditEventFieldValueUnion":{
       "type":"structure",
       "members":{
-        "booleanValue":{
-          "shape":"Boolean",
-          "documentation":"<p>Can be either null, or have a Boolean value type. Only one value can be provided.</p>"
+        "stringValue":{
+          "shape":"AuditEventFieldValueUnionStringValueString",
+          "documentation":"<p>Can be either null, or have a String value type. Only one value can be provided.</p>"
         },
         "doubleValue":{
           "shape":"Double",
           "documentation":"<p>Can be either null, or have a Double value type. Only one value can be provided.</p>"
         },
-        "emptyValue":{"shape":"EmptyFieldValue"},
-        "stringValue":{
-          "shape":"AuditEventFieldValueUnionStringValueString",
-          "documentation":"<p>Can be either null, or have a String value type. Only one value can be provided.</p>"
+        "booleanValue":{
+          "shape":"Boolean",
+          "documentation":"<p>Can be either null, or have a Boolean value type. Only one value can be provided.</p>"
         },
+        "emptyValue":{"shape":"EmptyFieldValue"},
         "userArnValue":{
           "shape":"String",
           "documentation":"<p>Can be either null, or have a String value type formatted as an ARN. Only one value can be provided.</p>"
@@ -889,11 +964,11 @@
       "type":"structure",
       "required":["iamPrincipalArn"],
       "members":{
+        "user":{"shape":"UserUnion"},
         "iamPrincipalArn":{
           "shape":"IamPrincipalArn",
           "documentation":"<p>Unique identifier of an IAM role.</p>"
-        },
-        "user":{"shape":"UserUnion"}
+        }
       },
       "documentation":"<p>Information of the user which performed the audit.</p>"
     },
@@ -908,13 +983,13 @@
     "BasicLayout":{
       "type":"structure",
       "members":{
-        "moreInfo":{
-          "shape":"LayoutSections",
-          "documentation":"<p>This represents sections in a tab of the page layout.</p>"
-        },
         "topPanel":{
           "shape":"LayoutSections",
           "documentation":"<p>This represents sections in a panel of the page layout.</p>"
+        },
+        "moreInfo":{
+          "shape":"LayoutSections",
+          "documentation":"<p>This represents sections in a tab of the page layout.</p>"
         }
       },
       "documentation":"<p>Content specific to <code>BasicLayout</code> type. It configures fields in the top panel and More Info tab of agent application. </p>"
@@ -922,19 +997,19 @@
     "BatchGetCaseRuleRequest":{
       "type":"structure",
       "required":[
-        "caseRules",
-        "domainId"
+        "domainId",
+        "caseRules"
       ],
       "members":{
-        "caseRules":{
-          "shape":"CaseRuleIdentifierList",
-          "documentation":"<p>List of case rule identifiers.</p>"
-        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>Unique identifier of a Cases domain.</p>",
           "location":"uri",
           "locationName":"domainId"
+        },
+        "caseRules":{
+          "shape":"CaseRuleIdentifierList",
+          "documentation":"<p>A list of case rule identifiers.</p>"
         }
       }
     },
@@ -947,11 +1022,15 @@
       "members":{
         "caseRules":{
           "shape":"BatchGetCaseRuleResponseCaseRulesList",
-          "documentation":"<p>List of detailed case rule information.</p>"
+          "documentation":"<p>A list of detailed case rule information.</p>"
         },
         "errors":{
           "shape":"BatchGetCaseRuleResponseErrorsList",
-          "documentation":"<p>List of case rule errors.</p>"
+          "documentation":"<p>A list of case rule errors.</p>"
+        },
+        "unprocessedCaseRules":{
+          "shape":"BatchGetCaseRuleResponseUnprocessedCaseRulesList",
+          "documentation":"<p>A list of unprocessed case rule identifiers.</p>"
         }
       }
     },
@@ -964,6 +1043,12 @@
     "BatchGetCaseRuleResponseErrorsList":{
       "type":"list",
       "member":{"shape":"CaseRuleError"},
+      "max":50,
+      "min":0
+    },
+    "BatchGetCaseRuleResponseUnprocessedCaseRulesList":{
+      "type":"list",
+      "member":{"shape":"CaseRuleId"},
       "max":50,
       "min":0
     },
@@ -995,17 +1080,17 @@
     "BatchGetFieldResponse":{
       "type":"structure",
       "required":[
-        "errors",
-        "fields"
+        "fields",
+        "errors"
       ],
       "members":{
-        "errors":{
-          "shape":"BatchGetFieldResponseErrorsList",
-          "documentation":"<p>A list of field errors. </p>"
-        },
         "fields":{
           "shape":"BatchGetFieldResponseFieldsList",
           "documentation":"<p>A list of detailed field information. </p>"
+        },
+        "errors":{
+          "shape":"BatchGetFieldResponseErrorsList",
+          "documentation":"<p>A list of field errors. </p>"
         }
       }
     },
@@ -1141,15 +1226,15 @@
     "CaseFilter":{
       "type":"structure",
       "members":{
-        "andAll":{
-          "shape":"CaseFilterAndAllList",
-          "documentation":"<p>Provides \"and all\" filtering.</p>"
-        },
         "field":{
           "shape":"FieldFilter",
           "documentation":"<p>A list of fields to filter on.</p>"
         },
         "not":{"shape":"CaseFilter"},
+        "andAll":{
+          "shape":"CaseFilterAndAllList",
+          "documentation":"<p>Provides \"and all\" filtering.</p>"
+        },
         "orAll":{
           "shape":"CaseFilterOrAllList",
           "documentation":"<p>Provides \"or all\" filtering.</p>"
@@ -1191,6 +1276,14 @@
         "required":{
           "shape":"RequiredCaseRule",
           "documentation":"<p>Required rule type, used to indicate whether a field is required.</p>"
+        },
+        "fieldOptions":{
+          "shape":"FieldOptionsCaseRule",
+          "documentation":"<p>Which options are available in a child field based on the selected value in a parent field.</p>"
+        },
+        "hidden":{
+          "shape":"HiddenCaseRule",
+          "documentation":"<p>Whether a field is visible, based on values in other fields.</p>"
         }
       },
       "documentation":"<p>Represents what rule type should take place, under what conditions. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
@@ -1199,17 +1292,17 @@
     "CaseRuleError":{
       "type":"structure",
       "required":[
-        "errorCode",
-        "id"
+        "id",
+        "errorCode"
       ],
       "members":{
-        "errorCode":{
-          "shape":"String",
-          "documentation":"<p>Error code from getting a case rule.</p>"
-        },
         "id":{
           "shape":"CaseRuleId",
           "documentation":"<p>The case rule identifier that caused the error.</p>"
+        },
+        "errorCode":{
+          "shape":"String",
+          "documentation":"<p>Error code from getting a case rule.</p>"
         },
         "message":{
           "shape":"String",
@@ -1244,36 +1337,36 @@
       "type":"string",
       "max":100,
       "min":1,
-      "pattern":"^.*[\\S]$"
+      "pattern":".*[\\S]"
     },
     "CaseRuleSummary":{
       "type":"structure",
       "required":[
-        "caseRuleArn",
         "caseRuleId",
         "name",
+        "caseRuleArn",
         "ruleType"
       ],
       "members":{
-        "caseRuleArn":{
-          "shape":"CaseRuleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the case rule. </p>"
-        },
         "caseRuleId":{
           "shape":"CaseRuleId",
           "documentation":"<p>Unique identifier of a case rule.</p>"
-        },
-        "description":{
-          "shape":"CaseRuleDescription",
-          "documentation":"<p>Description of a case rule.</p>"
         },
         "name":{
           "shape":"CaseRuleName",
           "documentation":"<p>Name of the case rule.</p>"
         },
+        "caseRuleArn":{
+          "shape":"CaseRuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the case rule. </p>"
+        },
         "ruleType":{
           "shape":"RuleType",
           "documentation":"<p>Possible types for a rule.</p>"
+        },
+        "description":{
+          "shape":"CaseRuleDescription",
+          "documentation":"<p>Description of a case rule.</p>"
         }
       },
       "documentation":"<p>Summary information of this case rule. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
@@ -1330,8 +1423,7 @@
     },
     "CommentFilter":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>A filter for related items of type <code>Comment</code>.</p>"
     },
     "ConflictException":{
@@ -1346,6 +1438,38 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "ConnectCaseContent":{
+      "type":"structure",
+      "required":["caseId"],
+      "members":{
+        "caseId":{
+          "shape":"CaseId",
+          "documentation":"<p>A unique identifier of the case.</p>"
+        }
+      },
+      "documentation":"<p>Represents the content of a <code>ConnectCase</code> type related item.</p>"
+    },
+    "ConnectCaseFilter":{
+      "type":"structure",
+      "members":{
+        "caseId":{
+          "shape":"CaseId",
+          "documentation":"<p>A unique identifier of the case.</p>"
+        }
+      },
+      "documentation":"<p>A filter for related items of type <code>ConnectCase</code>.</p>"
+    },
+    "ConnectCaseInputContent":{
+      "type":"structure",
+      "required":["caseId"],
+      "members":{
+        "caseId":{
+          "shape":"CaseId",
+          "documentation":"<p>A unique identifier of the case.</p>"
+        }
+      },
+      "documentation":"<p>Represents the content of a <code>ConnectCase</code> related item.</p>"
     },
     "ConnectedToSystemTime":{
       "type":"timestamp",
@@ -1370,11 +1494,15 @@
     "ContactContent":{
       "type":"structure",
       "required":[
+        "contactArn",
         "channel",
-        "connectedToSystemTime",
-        "contactArn"
+        "connectedToSystemTime"
       ],
       "members":{
+        "contactArn":{
+          "shape":"ContactArn",
+          "documentation":"<p>A unique identifier of a contact in Amazon Connect.</p>"
+        },
         "channel":{
           "shape":"Channel",
           "documentation":"<p>A list of channels to filter on for related items of type <code>Contact</code>.</p>"
@@ -1382,10 +1510,6 @@
         "connectedToSystemTime":{
           "shape":"ConnectedToSystemTime",
           "documentation":"<p>The difference between the <code>InitiationTimestamp</code> and the <code>DisconnectTimestamp</code> of the contact.</p>"
-        },
-        "contactArn":{
-          "shape":"ContactArn",
-          "documentation":"<p>A unique identifier of a contact in Amazon Connect.</p>"
         }
       },
       "documentation":"<p>An object that represents a content of an Amazon Connect contact object.</p>"
@@ -1414,30 +1538,30 @@
       "type":"structure",
       "required":[
         "domainId",
-        "fields",
-        "templateId"
+        "templateId",
+        "fields"
       ],
       "members":{
-        "clientToken":{
-          "shape":"CreateCaseRequestClientTokenString",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
-          "idempotencyToken":true
-        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The unique identifier of the Cases domain. </p>",
           "location":"uri",
           "locationName":"domainId"
         },
+        "templateId":{
+          "shape":"TemplateId",
+          "documentation":"<p>A unique identifier of a template.</p>"
+        },
         "fields":{
           "shape":"CreateCaseRequestFieldsList",
           "documentation":"<p>An array of objects with field ID (matching ListFields/DescribeField) and value union data.</p>"
         },
-        "performedBy":{"shape":"UserUnion"},
-        "templateId":{
-          "shape":"TemplateId",
-          "documentation":"<p>A unique identifier of a template.</p>"
-        }
+        "clientToken":{
+          "shape":"CreateCaseRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        },
+        "performedBy":{"shape":"UserUnion"}
       }
     },
     "CreateCaseRequestClientTokenString":{
@@ -1454,17 +1578,17 @@
     "CreateCaseResponse":{
       "type":"structure",
       "required":[
-        "caseArn",
-        "caseId"
+        "caseId",
+        "caseArn"
       ],
       "members":{
-        "caseArn":{
-          "shape":"CaseArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the case.</p>"
-        },
         "caseId":{
           "shape":"CaseId",
           "documentation":"<p>A unique identifier of the case.</p>"
+        },
+        "caseArn":{
+          "shape":"CaseArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the case.</p>"
         }
       }
     },
@@ -1476,10 +1600,6 @@
         "rule"
       ],
       "members":{
-        "description":{
-          "shape":"CaseRuleDescription",
-          "documentation":"<p>The description of a case rule.</p>"
-        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>Unique identifier of a Cases domain.</p>",
@@ -1490,6 +1610,10 @@
           "shape":"CaseRuleName",
           "documentation":"<p>Name of the case rule.</p>"
         },
+        "description":{
+          "shape":"CaseRuleDescription",
+          "documentation":"<p>The description of a case rule.</p>"
+        },
         "rule":{
           "shape":"CaseRuleDetails",
           "documentation":"<p>Represents what rule type should take place, under what conditions.</p>"
@@ -1499,17 +1623,17 @@
     "CreateCaseRuleResponse":{
       "type":"structure",
       "required":[
-        "caseRuleArn",
-        "caseRuleId"
+        "caseRuleId",
+        "caseRuleArn"
       ],
       "members":{
-        "caseRuleArn":{
-          "shape":"CaseRuleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of a case rule.</p>"
-        },
         "caseRuleId":{
           "shape":"CaseRuleId",
           "documentation":"<p>Unique identifier of a case rule.</p>"
+        },
+        "caseRuleArn":{
+          "shape":"CaseRuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a case rule.</p>"
         }
       }
     },
@@ -1526,18 +1650,18 @@
     "CreateDomainResponse":{
       "type":"structure",
       "required":[
-        "domainArn",
         "domainId",
+        "domainArn",
         "domainStatus"
       ],
       "members":{
-        "domainArn":{
-          "shape":"DomainArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) for the Cases domain.</p>"
-        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The unique identifier of the Cases domain. </p>"
+        },
+        "domainArn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) for the Cases domain.</p>"
         },
         "domainStatus":{
           "shape":"DomainStatus",
@@ -1553,10 +1677,6 @@
         "type"
       ],
       "members":{
-        "description":{
-          "shape":"FieldDescription",
-          "documentation":"<p>The description of the field.</p>"
-        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The unique identifier of the Cases domain. </p>",
@@ -1570,38 +1690,38 @@
         "type":{
           "shape":"FieldType",
           "documentation":"<p>Defines the data type, some system constraints, and default display of the field.</p>"
+        },
+        "description":{
+          "shape":"FieldDescription",
+          "documentation":"<p>The description of the field.</p>"
         }
       }
     },
     "CreateFieldResponse":{
       "type":"structure",
       "required":[
-        "fieldArn",
-        "fieldId"
+        "fieldId",
+        "fieldArn"
       ],
       "members":{
-        "fieldArn":{
-          "shape":"FieldArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the field.</p>"
-        },
         "fieldId":{
           "shape":"FieldId",
           "documentation":"<p>The unique identifier of a field.</p>"
+        },
+        "fieldArn":{
+          "shape":"FieldArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the field.</p>"
         }
       }
     },
     "CreateLayoutRequest":{
       "type":"structure",
       "required":[
-        "content",
         "domainId",
-        "name"
+        "name",
+        "content"
       ],
       "members":{
-        "content":{
-          "shape":"LayoutContent",
-          "documentation":"<p>Information about which fields will be present in the layout, and information about the order of the fields.</p>"
-        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The unique identifier of the Cases domain. </p>",
@@ -1611,75 +1731,79 @@
         "name":{
           "shape":"LayoutName",
           "documentation":"<p>The name of the layout. It must be unique for the Cases domain.</p>"
+        },
+        "content":{
+          "shape":"LayoutContent",
+          "documentation":"<p>Information about which fields will be present in the layout, and information about the order of the fields.</p>"
         }
       }
     },
     "CreateLayoutResponse":{
       "type":"structure",
       "required":[
-        "layoutArn",
-        "layoutId"
+        "layoutId",
+        "layoutArn"
       ],
       "members":{
-        "layoutArn":{
-          "shape":"LayoutArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the newly created layout.</p>"
-        },
         "layoutId":{
           "shape":"LayoutId",
           "documentation":"<p>The unique identifier of the layout.</p>"
+        },
+        "layoutArn":{
+          "shape":"LayoutArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the newly created layout.</p>"
         }
       }
     },
     "CreateRelatedItemRequest":{
       "type":"structure",
       "required":[
-        "caseId",
-        "content",
         "domainId",
-        "type"
+        "caseId",
+        "type",
+        "content"
       ],
       "members":{
-        "caseId":{
-          "shape":"CaseId",
-          "documentation":"<p>A unique identifier of the case.</p>",
-          "location":"uri",
-          "locationName":"caseId"
-        },
-        "content":{
-          "shape":"RelatedItemInputContent",
-          "documentation":"<p>The content of a related item to be created.</p>"
-        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The unique identifier of the Cases domain. </p>",
           "location":"uri",
           "locationName":"domainId"
         },
-        "performedBy":{
-          "shape":"UserUnion",
-          "documentation":"<p>Represents the creator of the related item.</p>"
+        "caseId":{
+          "shape":"CaseId",
+          "documentation":"<p>A unique identifier of the case.</p>",
+          "location":"uri",
+          "locationName":"caseId"
         },
         "type":{
           "shape":"RelatedItemType",
           "documentation":"<p>The type of a related item.</p>"
+        },
+        "content":{
+          "shape":"RelatedItemInputContent",
+          "documentation":"<p>The content of a related item to be created.</p>"
+        },
+        "performedBy":{
+          "shape":"UserUnion",
+          "documentation":"<p>Represents the creator of the related item.</p>"
         }
       }
     },
     "CreateRelatedItemResponse":{
       "type":"structure",
       "required":[
-        "relatedItemArn",
-        "relatedItemId"
+        "relatedItemId",
+        "relatedItemArn"
       ],
       "members":{
-        "relatedItemArn":{
-          "shape":"RelatedItemArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the related item.</p>"
-        },
         "relatedItemId":{
           "shape":"RelatedItemId",
           "documentation":"<p>The unique identifier of the related item.</p>"
+        },
+        "relatedItemArn":{
+          "shape":"RelatedItemArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the related item.</p>"
         }
       }
     },
@@ -1690,52 +1814,52 @@
         "name"
       ],
       "members":{
-        "description":{
-          "shape":"TemplateDescription",
-          "documentation":"<p>A brief description of the template.</p>"
-        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The unique identifier of the Cases domain. </p>",
           "location":"uri",
           "locationName":"domainId"
         },
-        "layoutConfiguration":{
-          "shape":"LayoutConfiguration",
-          "documentation":"<p>Configuration of layouts associated to the template.</p>"
-        },
         "name":{
           "shape":"TemplateName",
           "documentation":"<p>A name for the template. It must be unique per domain.</p>"
+        },
+        "description":{
+          "shape":"TemplateDescription",
+          "documentation":"<p>A brief description of the template.</p>"
+        },
+        "layoutConfiguration":{
+          "shape":"LayoutConfiguration",
+          "documentation":"<p>Configuration of layouts associated to the template.</p>"
         },
         "requiredFields":{
           "shape":"RequiredFieldList",
           "documentation":"<p>A list of fields that must contain a value for a case to be successfully created with this template.</p>"
         },
-        "rules":{
-          "shape":"TemplateCaseRuleList",
-          "documentation":"<p>A list of case rules (also known as <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">case field conditions</a>) on a template. </p>"
-        },
         "status":{
           "shape":"TemplateStatus",
           "documentation":"<p>The status of the template.</p>"
+        },
+        "rules":{
+          "shape":"TemplateCaseRuleList",
+          "documentation":"<p>A list of case rules (also known as <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">case field conditions</a>) on a template. </p>"
         }
       }
     },
     "CreateTemplateResponse":{
       "type":"structure",
       "required":[
-        "templateArn",
-        "templateId"
+        "templateId",
+        "templateArn"
       ],
       "members":{
-        "templateArn":{
-          "shape":"TemplateArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the newly created template.</p>"
-        },
         "templateId":{
           "shape":"TemplateId",
           "documentation":"<p>A unique identifier of a template.</p>"
+        },
+        "templateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the newly created template.</p>"
         }
       }
     },
@@ -1743,38 +1867,132 @@
       "type":"timestamp",
       "timestampFormat":"iso8601"
     },
+    "CustomContent":{
+      "type":"structure",
+      "required":["fields"],
+      "members":{
+        "fields":{
+          "shape":"FieldValueList",
+          "documentation":"<p>List of field values for the <code>Custom</code> related item.</p>"
+        }
+      },
+      "documentation":"<p>Represents the content of a <code>Custom</code> type related item.</p>"
+    },
     "CustomEntity":{
       "type":"string",
       "max":500,
       "min":1,
-      "pattern":"^[a-zA-Z0-9_\\-\\.@:/ ]*[a-zA-Z0-9_\\-\\.@:/]$",
+      "pattern":"[a-zA-Z0-9_\\-\\.@:/ ]*[a-zA-Z0-9_\\-\\.@:/]",
       "sensitive":true
+    },
+    "CustomFieldsFilter":{
+      "type":"structure",
+      "members":{
+        "field":{"shape":"FieldFilter"},
+        "not":{
+          "shape":"CustomFieldsFilter",
+          "documentation":"<p>Excludes items matching the filter.</p>"
+        },
+        "andAll":{
+          "shape":"CustomFieldsFilterAndAllList",
+          "documentation":"<p>Provides \"and all\" filtering.</p>"
+        },
+        "orAll":{
+          "shape":"CustomFieldsFilterOrAllList",
+          "documentation":"<p>Provides \"or all\" filtering.</p>"
+        }
+      },
+      "documentation":"<p>A filter for fields in <code>Custom</code> type related items. Only one value can be provided.</p>",
+      "union":true
+    },
+    "CustomFieldsFilterAndAllList":{
+      "type":"list",
+      "member":{"shape":"CustomFieldsFilter"},
+      "max":10,
+      "min":0
+    },
+    "CustomFieldsFilterOrAllList":{
+      "type":"list",
+      "member":{"shape":"CustomFieldsFilter"},
+      "max":10,
+      "min":0
+    },
+    "CustomFilter":{
+      "type":"structure",
+      "members":{
+        "fields":{
+          "shape":"CustomFieldsFilter",
+          "documentation":"<p>Filter conditions for custom fields.</p>"
+        }
+      },
+      "documentation":"<p>A filter for related items of type <code>Custom</code>.</p>"
+    },
+    "CustomInputContent":{
+      "type":"structure",
+      "required":["fields"],
+      "members":{
+        "fields":{
+          "shape":"CustomInputContentFieldsList",
+          "documentation":"<p>List of field values for the <code>Custom</code> related item.</p>"
+        }
+      },
+      "documentation":"<p>Represents the content of a <code>Custom</code> related item.</p>"
+    },
+    "CustomInputContentFieldsList":{
+      "type":"list",
+      "member":{"shape":"FieldValue"},
+      "max":50,
+      "min":1
+    },
+    "DeleteCaseRequest":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "caseId"
+      ],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>A unique identifier of the Cases domain.</p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "caseId":{
+          "shape":"CaseId",
+          "documentation":"<p>A unique identifier of the case.</p>",
+          "location":"uri",
+          "locationName":"caseId"
+        }
+      }
+    },
+    "DeleteCaseResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DeleteCaseRuleRequest":{
       "type":"structure",
       "required":[
-        "caseRuleId",
-        "domainId"
+        "domainId",
+        "caseRuleId"
       ],
       "members":{
-        "caseRuleId":{
-          "shape":"CaseRuleId",
-          "documentation":"<p>Unique identifier of a case rule.</p>",
-          "location":"uri",
-          "locationName":"caseRuleId"
-        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>Unique identifier of a Cases domain.</p>",
           "location":"uri",
           "locationName":"domainId"
+        },
+        "caseRuleId":{
+          "shape":"CaseRuleId",
+          "documentation":"<p>Unique identifier of a case rule.</p>",
+          "location":"uri",
+          "locationName":"caseRuleId"
         }
       }
     },
     "DeleteCaseRuleResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteDomainRequest":{
       "type":"structure",
@@ -1790,8 +2008,7 @@
     },
     "DeleteDomainResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteFieldRequest":{
       "type":"structure",
@@ -1816,8 +2033,7 @@
     },
     "DeleteFieldResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteLayoutRequest":{
       "type":"structure",
@@ -1842,8 +2058,39 @@
     },
     "DeleteLayoutResponse":{
       "type":"structure",
+      "members":{}
+    },
+    "DeleteRelatedItemRequest":{
+      "type":"structure",
+      "required":[
+        "domainId",
+        "caseId",
+        "relatedItemId"
+      ],
       "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>A unique identifier of the Cases domain.</p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "caseId":{
+          "shape":"CaseId",
+          "documentation":"<p>A unique identifier of the case.</p>",
+          "location":"uri",
+          "locationName":"caseId"
+        },
+        "relatedItemId":{
+          "shape":"RelatedItemId",
+          "documentation":"<p>A unique identifier of a related item.</p>",
+          "location":"uri",
+          "locationName":"relatedItemId"
+        }
       }
+    },
+    "DeleteRelatedItemResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DeleteTemplateRequest":{
       "type":"structure",
@@ -1868,8 +2115,7 @@
     },
     "DeleteTemplateResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "Deleted":{"type":"boolean"},
     "DomainArn":{
@@ -1886,7 +2132,7 @@
       "type":"string",
       "max":100,
       "min":1,
-      "pattern":"^.*[\\S]$"
+      "pattern":".*[\\S]"
     },
     "DomainStatus":{
       "type":"string",
@@ -1899,18 +2145,18 @@
     "DomainSummary":{
       "type":"structure",
       "required":[
-        "domainArn",
         "domainId",
+        "domainArn",
         "name"
       ],
       "members":{
-        "domainArn":{
-          "shape":"DomainArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the domain.</p>"
-        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The unique identifier of the domain.</p>"
+        },
+        "domainArn":{
+          "shape":"DomainArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the domain.</p>"
         },
         "name":{
           "shape":"DomainName",
@@ -1929,14 +2175,12 @@
     },
     "EmptyFieldValue":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>An empty value. You cannot set <code>EmptyFieldValue</code> on a field that is required on a case template.</p> <p>This structure will never have any data members. It signifies an empty value on a case field.</p>"
     },
     "EmptyOperandValue":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Represents an empty operand value. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
     },
     "EventBridgeConfiguration":{
@@ -1981,17 +2225,17 @@
     "FieldError":{
       "type":"structure",
       "required":[
-        "errorCode",
-        "id"
+        "id",
+        "errorCode"
       ],
       "members":{
-        "errorCode":{
-          "shape":"String",
-          "documentation":"<p>The error code from getting a field.</p>"
-        },
         "id":{
           "shape":"FieldId",
           "documentation":"<p>The field identifier that caused the error.</p>"
+        },
+        "errorCode":{
+          "shape":"String",
+          "documentation":"<p>The error code from getting a field.</p>"
         },
         "message":{
           "shape":"String",
@@ -2003,11 +2247,11 @@
     "FieldFilter":{
       "type":"structure",
       "members":{
-        "contains":{
+        "equalTo":{
           "shape":"FieldValue",
           "documentation":"<p>Object containing field identifier and value information.</p>"
         },
-        "equalTo":{
+        "contains":{
           "shape":"FieldValue",
           "documentation":"<p>Object containing field identifier and value information.</p>"
         },
@@ -2035,13 +2279,13 @@
       "type":"structure",
       "required":["fields"],
       "members":{
-        "fields":{
-          "shape":"FieldGroupFieldsList",
-          "documentation":"<p>Represents an ordered list containing field related information.</p>"
-        },
         "name":{
           "shape":"FieldGroupNameString",
           "documentation":"<p>Name of the field group.</p>"
+        },
+        "fields":{
+          "shape":"FieldGroupFieldsList",
+          "documentation":"<p>Represents an ordered list containing field related information.</p>"
         }
       },
       "documentation":"<p>Object for a group of fields and associated properties.</p>"
@@ -2088,7 +2332,7 @@
       "type":"string",
       "max":100,
       "min":1,
-      "pattern":"^.*[\\S]$"
+      "pattern":".*[\\S]"
     },
     "FieldNamespace":{
       "type":"string",
@@ -2100,15 +2344,11 @@
     "FieldOption":{
       "type":"structure",
       "required":[
-        "active",
         "name",
-        "value"
+        "value",
+        "active"
       ],
       "members":{
-        "active":{
-          "shape":"Boolean",
-          "documentation":"<p>Describes whether the <code>FieldOption</code> is active (displayed) or inactive.</p>"
-        },
         "name":{
           "shape":"FieldOptionName",
           "documentation":"<p> <code>FieldOptionName</code> has max length 100 and disallows trailing spaces.</p>"
@@ -2116,6 +2356,10 @@
         "value":{
           "shape":"FieldOptionValue",
           "documentation":"<p> <code>FieldOptionValue</code> has max length 100 and must be alphanumeric with hyphens and underscores.</p>"
+        },
+        "active":{
+          "shape":"Boolean",
+          "documentation":"<p>Describes whether the <code>FieldOption</code> is active (displayed) or inactive.</p>"
         }
       },
       "documentation":"<p>Object for field Options information.</p>"
@@ -2123,18 +2367,18 @@
     "FieldOptionError":{
       "type":"structure",
       "required":[
-        "errorCode",
         "message",
+        "errorCode",
         "value"
       ],
       "members":{
-        "errorCode":{
-          "shape":"String",
-          "documentation":"<p>Error code from creating or updating field option.</p>"
-        },
         "message":{
           "shape":"String",
           "documentation":"<p>Error message from creating or updating field option.</p>"
+        },
+        "errorCode":{
+          "shape":"String",
+          "documentation":"<p>Error code from creating or updating field option.</p>"
         },
         "value":{
           "shape":"FieldOptionValue",
@@ -2147,13 +2391,32 @@
       "type":"string",
       "max":100,
       "min":1,
-      "pattern":"^.*[\\S]$"
+      "pattern":".*[\\S]"
     },
     "FieldOptionValue":{
       "type":"string",
       "max":100,
       "min":1,
-      "pattern":"^.*[\\S]$"
+      "pattern":".*[\\S]"
+    },
+    "FieldOptionsCaseRule":{
+      "type":"structure",
+      "required":["parentChildFieldOptionsMappings"],
+      "members":{
+        "parentFieldId":{
+          "shape":"FieldId",
+          "documentation":"<p>The identifier of the parent field that controls options.</p>"
+        },
+        "childFieldId":{
+          "shape":"FieldId",
+          "documentation":"<p>The identifier of the child field whose options are controlled.</p>"
+        },
+        "parentChildFieldOptionsMappings":{
+          "shape":"ParentChildFieldOptionsMappingList",
+          "documentation":"<p>A mapping between a parent field option value and child field option values.</p>"
+        }
+      },
+      "documentation":"<p>Rules that control which options are available in a child field based on the selected value in a parent field.</p>"
     },
     "FieldOptionsList":{
       "type":"list",
@@ -2162,32 +2425,32 @@
     "FieldSummary":{
       "type":"structure",
       "required":[
-        "fieldArn",
         "fieldId",
+        "fieldArn",
         "name",
-        "namespace",
-        "type"
+        "type",
+        "namespace"
       ],
       "members":{
-        "fieldArn":{
-          "shape":"FieldArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the field.</p>"
-        },
         "fieldId":{
           "shape":"FieldId",
           "documentation":"<p>The unique identifier of a field.</p>"
+        },
+        "fieldArn":{
+          "shape":"FieldArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the field.</p>"
         },
         "name":{
           "shape":"FieldName",
           "documentation":"<p>Name of the field.</p>"
         },
-        "namespace":{
-          "shape":"FieldNamespace",
-          "documentation":"<p>The namespace of a field.</p>"
-        },
         "type":{
           "shape":"FieldType",
           "documentation":"<p>The type of a field.</p>"
+        },
+        "namespace":{
+          "shape":"FieldNamespace",
+          "documentation":"<p>The namespace of a field.</p>"
         }
       },
       "documentation":"<p>Object for the summarized details of the field.</p>"
@@ -2222,24 +2485,28 @@
       },
       "documentation":"<p>Object for case field values.</p>"
     },
+    "FieldValueList":{
+      "type":"list",
+      "member":{"shape":"FieldValue"}
+    },
     "FieldValueUnion":{
       "type":"structure",
       "members":{
-        "booleanValue":{
-          "shape":"Boolean",
-          "documentation":"<p>Can be either null, or have a Boolean value type. Only one value can be provided.</p>"
+        "stringValue":{
+          "shape":"FieldValueUnionStringValueString",
+          "documentation":"<p>String value type.</p>"
         },
         "doubleValue":{
           "shape":"Double",
           "documentation":"<p>Can be either null, or have a Double number value type. Only one value can be provided.</p>"
         },
+        "booleanValue":{
+          "shape":"Boolean",
+          "documentation":"<p>Can be either null, or have a Boolean value type. Only one value can be provided.</p>"
+        },
         "emptyValue":{
           "shape":"EmptyFieldValue",
           "documentation":"<p>An empty value.</p>"
-        },
-        "stringValue":{
-          "shape":"FieldValueUnionStringValueString",
-          "documentation":"<p>String value type.</p>"
         },
         "userArnValue":{
           "shape":"String",
@@ -2301,7 +2568,7 @@
         },
         "maxResults":{
           "shape":"GetCaseAuditEventsRequestMaxResultsInteger",
-          "documentation":"<p>The maximum number of audit events to return. The current maximum supported value is 25. This is also the default when no other value is provided.</p>"
+          "documentation":"<p>The maximum number of audit events to return. When no value is provided, 25 is the default.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -2319,13 +2586,13 @@
       "type":"structure",
       "required":["auditEvents"],
       "members":{
-        "auditEvents":{
-          "shape":"GetCaseAuditEventsResponseAuditEventsList",
-          "documentation":"<p>A list of case audits where each represents a particular edit of the case.</p>"
-        },
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token for the next set of results. This is null if there are no more results to return.</p>"
+        },
+        "auditEvents":{
+          "shape":"GetCaseAuditEventsResponseAuditEventsList",
+          "documentation":"<p>A list of case audits where each represents a particular edit of the case.</p>"
         }
       }
     },
@@ -2404,6 +2671,10 @@
           "shape":"GetCaseResponseFieldsList",
           "documentation":"<p>A list of detailed field information. </p>"
         },
+        "templateId":{
+          "shape":"TemplateId",
+          "documentation":"<p>A unique identifier of a template.</p>"
+        },
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token for the next set of results. This is null if there are no more results to return.</p>"
@@ -2411,10 +2682,6 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
-        },
-        "templateId":{
-          "shape":"TemplateId",
-          "documentation":"<p>A unique identifier of a template.</p>"
         }
       }
     },
@@ -2427,43 +2694,43 @@
     "GetCaseRuleResponse":{
       "type":"structure",
       "required":[
-        "caseRuleArn",
         "caseRuleId",
         "name",
+        "caseRuleArn",
         "rule"
       ],
       "members":{
-        "caseRuleArn":{
-          "shape":"CaseRuleArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the case rule.</p>"
-        },
         "caseRuleId":{
           "shape":"CaseRuleId",
           "documentation":"<p>Unique identifier of a case rule.</p>"
-        },
-        "createdTime":{
-          "shape":"CreatedTime",
-          "documentation":"<p>Timestamp when the resource was created.</p>"
-        },
-        "deleted":{
-          "shape":"Deleted",
-          "documentation":"<p>Indicates whether the resource has been deleted.</p>"
-        },
-        "description":{
-          "shape":"CaseRuleDescription",
-          "documentation":"<p>Description of a case rule.</p>"
-        },
-        "lastModifiedTime":{
-          "shape":"LastModifiedTime",
-          "documentation":"<p>Timestamp when the resource was created or last modified.</p>"
         },
         "name":{
           "shape":"CaseRuleName",
           "documentation":"<p>Name of the case rule.</p>"
         },
+        "caseRuleArn":{
+          "shape":"CaseRuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the case rule.</p>"
+        },
         "rule":{
           "shape":"CaseRuleDetails",
           "documentation":"<p>Represents what rule type should take place, under what conditions.</p>"
+        },
+        "description":{
+          "shape":"CaseRuleDescription",
+          "documentation":"<p>Description of a case rule.</p>"
+        },
+        "deleted":{
+          "shape":"Deleted",
+          "documentation":"<p>Indicates whether the resource has been deleted.</p>"
+        },
+        "createdTime":{
+          "shape":"CreatedTime",
+          "documentation":"<p>Timestamp when the resource was created.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>Timestamp when the resource was created or last modified.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -2487,32 +2754,32 @@
     "GetDomainResponse":{
       "type":"structure",
       "required":[
-        "createdTime",
-        "domainArn",
         "domainId",
-        "domainStatus",
-        "name"
+        "domainArn",
+        "name",
+        "createdTime",
+        "domainStatus"
       ],
       "members":{
-        "createdTime":{
-          "shape":"CreatedTime",
-          "documentation":"<p>The timestamp when the Cases domain was created.</p>"
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The unique identifier of the Cases domain. </p>"
         },
         "domainArn":{
           "shape":"DomainArn",
           "documentation":"<p>The Amazon Resource Name (ARN) for the Cases domain.</p>"
         },
-        "domainId":{
-          "shape":"DomainId",
-          "documentation":"<p>The unique identifier of the Cases domain. </p>"
+        "name":{
+          "shape":"DomainName",
+          "documentation":"<p>The name of the Cases domain.</p>"
+        },
+        "createdTime":{
+          "shape":"CreatedTime",
+          "documentation":"<p>The timestamp when the Cases domain was created.</p>"
         },
         "domainStatus":{
           "shape":"DomainStatus",
           "documentation":"<p>The status of the Cases domain.</p>"
-        },
-        "name":{
-          "shape":"DomainName",
-          "documentation":"<p>The name of the Cases domain.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -2523,40 +2790,32 @@
     "GetFieldResponse":{
       "type":"structure",
       "required":[
-        "fieldArn",
         "fieldId",
         "name",
-        "namespace",
-        "type"
+        "fieldArn",
+        "type",
+        "namespace"
       ],
       "members":{
-        "createdTime":{
-          "shape":"CreatedTime",
-          "documentation":"<p>Timestamp at which the resource was created.</p>"
+        "fieldId":{
+          "shape":"FieldId",
+          "documentation":"<p>Unique identifier of the field.</p>"
         },
-        "deleted":{
-          "shape":"Deleted",
-          "documentation":"<p>Denotes whether or not the resource has been deleted.</p>"
-        },
-        "description":{
-          "shape":"FieldDescription",
-          "documentation":"<p>Description of the field.</p>"
+        "name":{
+          "shape":"FieldName",
+          "documentation":"<p>Name of the field.</p>"
         },
         "fieldArn":{
           "shape":"FieldArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the field.</p>"
         },
-        "fieldId":{
-          "shape":"FieldId",
-          "documentation":"<p>Unique identifier of the field.</p>"
+        "description":{
+          "shape":"FieldDescription",
+          "documentation":"<p>Description of the field.</p>"
         },
-        "lastModifiedTime":{
-          "shape":"LastModifiedTime",
-          "documentation":"<p>Timestamp at which the resource was created or last modified.</p>"
-        },
-        "name":{
-          "shape":"FieldName",
-          "documentation":"<p>Name of the field.</p>"
+        "type":{
+          "shape":"FieldType",
+          "documentation":"<p>Type of the field.</p>"
         },
         "namespace":{
           "shape":"FieldNamespace",
@@ -2566,9 +2825,17 @@
           "shape":"Tags",
           "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
         },
-        "type":{
-          "shape":"FieldType",
-          "documentation":"<p>Type of the field.</p>"
+        "deleted":{
+          "shape":"Deleted",
+          "documentation":"<p>Denotes whether or not the resource has been deleted.</p>"
+        },
+        "createdTime":{
+          "shape":"CreatedTime",
+          "documentation":"<p>Timestamp at which the resource was created.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>Timestamp at which the resource was created or last modified.</p>"
         }
       },
       "documentation":"<p>Object to store detailed field information.</p>"
@@ -2597,43 +2864,43 @@
     "GetLayoutResponse":{
       "type":"structure",
       "required":[
-        "content",
-        "layoutArn",
         "layoutId",
-        "name"
+        "layoutArn",
+        "name",
+        "content"
       ],
       "members":{
-        "content":{
-          "shape":"LayoutContent",
-          "documentation":"<p>Information about which fields will be present in the layout, the order of the fields, and read-only attribute of the field. </p>"
-        },
-        "createdTime":{
-          "shape":"CreatedTime",
-          "documentation":"<p>Timestamp at which the resource was created.</p>"
-        },
-        "deleted":{
-          "shape":"Deleted",
-          "documentation":"<p>Denotes whether or not the resource has been deleted.</p>"
-        },
-        "lastModifiedTime":{
-          "shape":"LastModifiedTime",
-          "documentation":"<p>Timestamp at which the resource was created or last modified.</p>"
+        "layoutId":{
+          "shape":"LayoutId",
+          "documentation":"<p>The unique identifier of the layout.</p>"
         },
         "layoutArn":{
           "shape":"LayoutArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the newly created layout.</p>"
         },
-        "layoutId":{
-          "shape":"LayoutId",
-          "documentation":"<p>The unique identifier of the layout.</p>"
-        },
         "name":{
           "shape":"LayoutName",
           "documentation":"<p>The name of the layout. It must be unique.</p>"
         },
+        "content":{
+          "shape":"LayoutContent",
+          "documentation":"<p>Information about which fields will be present in the layout, the order of the fields, and read-only attribute of the field. </p>"
+        },
         "tags":{
           "shape":"Tags",
           "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+        },
+        "deleted":{
+          "shape":"Deleted",
+          "documentation":"<p>Denotes whether or not the resource has been deleted.</p>"
+        },
+        "createdTime":{
+          "shape":"CreatedTime",
+          "documentation":"<p>Timestamp at which the resource was created.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>Timestamp at which the resource was created or last modified.</p>"
         }
       }
     },
@@ -2661,61 +2928,79 @@
     "GetTemplateResponse":{
       "type":"structure",
       "required":[
-        "name",
-        "status",
+        "templateId",
         "templateArn",
-        "templateId"
+        "name",
+        "status"
       ],
       "members":{
-        "createdTime":{
-          "shape":"CreatedTime",
-          "documentation":"<p>Timestamp at which the resource was created.</p>"
-        },
-        "deleted":{
-          "shape":"Deleted",
-          "documentation":"<p>Denotes whether or not the resource has been deleted.</p>"
-        },
-        "description":{
-          "shape":"TemplateDescription",
-          "documentation":"<p>A brief description of the template.</p>"
-        },
-        "lastModifiedTime":{
-          "shape":"LastModifiedTime",
-          "documentation":"<p>Timestamp at which the resource was created or last modified.</p>"
-        },
-        "layoutConfiguration":{
-          "shape":"LayoutConfiguration",
-          "documentation":"<p>Configuration of layouts associated to the template.</p>"
-        },
-        "name":{
-          "shape":"TemplateName",
-          "documentation":"<p>The name of the template.</p>"
-        },
-        "requiredFields":{
-          "shape":"RequiredFieldList",
-          "documentation":"<p>A list of fields that must contain a value for a case to be successfully created with this template.</p>"
-        },
-        "rules":{
-          "shape":"TemplateCaseRuleList",
-          "documentation":"<p>A list of case rules (also known as <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">case field conditions</a>) on a template. </p>"
-        },
-        "status":{
-          "shape":"TemplateStatus",
-          "documentation":"<p>The status of the template.</p>"
-        },
-        "tags":{
-          "shape":"Tags",
-          "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+        "templateId":{
+          "shape":"TemplateId",
+          "documentation":"<p>A unique identifier of a template.</p>"
         },
         "templateArn":{
           "shape":"TemplateArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the template.</p>"
         },
-        "templateId":{
-          "shape":"TemplateId",
-          "documentation":"<p>A unique identifier of a template.</p>"
+        "name":{
+          "shape":"TemplateName",
+          "documentation":"<p>The name of the template.</p>"
+        },
+        "description":{
+          "shape":"TemplateDescription",
+          "documentation":"<p>A brief description of the template.</p>"
+        },
+        "layoutConfiguration":{
+          "shape":"LayoutConfiguration",
+          "documentation":"<p>Configuration of layouts associated to the template.</p>"
+        },
+        "requiredFields":{
+          "shape":"RequiredFieldList",
+          "documentation":"<p>A list of fields that must contain a value for a case to be successfully created with this template.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+        },
+        "status":{
+          "shape":"TemplateStatus",
+          "documentation":"<p>The status of the template.</p>"
+        },
+        "deleted":{
+          "shape":"Deleted",
+          "documentation":"<p>Denotes whether or not the resource has been deleted.</p>"
+        },
+        "createdTime":{
+          "shape":"CreatedTime",
+          "documentation":"<p>Timestamp at which the resource was created.</p>"
+        },
+        "lastModifiedTime":{
+          "shape":"LastModifiedTime",
+          "documentation":"<p>Timestamp at which the resource was created or last modified.</p>"
+        },
+        "rules":{
+          "shape":"TemplateCaseRuleList",
+          "documentation":"<p>A list of case rules (also known as <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">case field conditions</a>) on a template. </p>"
         }
       }
+    },
+    "HiddenCaseRule":{
+      "type":"structure",
+      "required":[
+        "defaultValue",
+        "conditions"
+      ],
+      "members":{
+        "defaultValue":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the field is hidden when no conditions match.</p>"
+        },
+        "conditions":{
+          "shape":"BooleanConditionList",
+          "documentation":"<p>A list of conditions that determine field visibility.</p>"
+        }
+      },
+      "documentation":"<p>A rule that controls field visibility based on conditions. Fields can be shown or hidden dynamically based on values in other fields.</p>"
     },
     "IamPrincipalArn":{
       "type":"string",
@@ -2783,7 +3068,7 @@
       "type":"string",
       "max":100,
       "min":1,
-      "pattern":"^.*[\\S]$"
+      "pattern":".*[\\S]"
     },
     "LayoutSections":{
       "type":"structure",
@@ -2795,18 +3080,18 @@
     "LayoutSummary":{
       "type":"structure",
       "required":[
-        "layoutArn",
         "layoutId",
+        "layoutArn",
         "name"
       ],
       "members":{
-        "layoutArn":{
-          "shape":"LayoutArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the layout.</p>"
-        },
         "layoutId":{
           "shape":"LayoutId",
           "documentation":"<p>The unique identifier for of the layout.</p>"
+        },
+        "layoutArn":{
+          "shape":"LayoutArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the layout.</p>"
         },
         "name":{
           "shape":"LayoutName",
@@ -2866,19 +3151,19 @@
     "ListCasesForContactRequest":{
       "type":"structure",
       "required":[
-        "contactArn",
-        "domainId"
+        "domainId",
+        "contactArn"
       ],
       "members":{
-        "contactArn":{
-          "shape":"ContactArn",
-          "documentation":"<p>A unique identifier of a contact in Amazon Connect.</p>"
-        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The unique identifier of the Cases domain. </p>",
           "location":"uri",
           "locationName":"domainId"
+        },
+        "contactArn":{
+          "shape":"ContactArn",
+          "documentation":"<p>A unique identifier of a contact in Amazon Connect.</p>"
         },
         "maxResults":{
           "shape":"ListCasesForContactRequestMaxResultsInteger",
@@ -2996,13 +3281,13 @@
       "type":"structure",
       "required":["options"],
       "members":{
-        "nextToken":{
-          "shape":"NextToken",
-          "documentation":"<p>The token for the next set of results. This is null if there are no more results to return.</p>"
-        },
         "options":{
           "shape":"FieldOptionsList",
           "documentation":"<p>A list of <code>FieldOption</code> objects.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. This is null if there are no more results to return.</p>"
         }
       }
     },
@@ -3143,13 +3428,13 @@
       "type":"structure",
       "required":["templates"],
       "members":{
-        "nextToken":{
-          "shape":"NextToken",
-          "documentation":"<p>The token for the next set of results. This is null if there are no more results to return.</p>"
-        },
         "templates":{
           "shape":"ListTemplatesResponseTemplatesList",
           "documentation":"<p>List of template summary objects.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. This is null if there are no more results to return.</p>"
         }
       }
     },
@@ -3184,6 +3469,10 @@
     "OperandTwo":{
       "type":"structure",
       "members":{
+        "stringValue":{
+          "shape":"OperandTwoStringValueString",
+          "documentation":"<p>String value type.</p>"
+        },
         "booleanValue":{
           "shape":"Boolean",
           "documentation":"<p>Boolean value type.</p>"
@@ -3195,10 +3484,6 @@
         "emptyValue":{
           "shape":"EmptyOperandValue",
           "documentation":"<p>Empty value type.</p>"
-        },
-        "stringValue":{
-          "shape":"OperandTwoStringValueString",
-          "documentation":"<p>String value type.</p>"
         }
       },
       "documentation":"<p>Represents the right hand operand in the condition. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>",
@@ -3215,6 +3500,42 @@
         "Asc",
         "Desc"
       ]
+    },
+    "ParentChildFieldOptionValue":{
+      "type":"string",
+      "max":100,
+      "min":0,
+      "pattern":"$|^.*[\\S]"
+    },
+    "ParentChildFieldOptionsMapping":{
+      "type":"structure",
+      "required":[
+        "parentFieldOptionValue",
+        "childFieldOptionValues"
+      ],
+      "members":{
+        "parentFieldOptionValue":{
+          "shape":"ParentChildFieldOptionValue",
+          "documentation":"<p>The value in the parent field.</p>"
+        },
+        "childFieldOptionValues":{
+          "shape":"ParentChildFieldOptionsMappingChildFieldOptionValuesList",
+          "documentation":"<p>A list of allowed values in the child field.</p>"
+        }
+      },
+      "documentation":"<p>A mapping between a parent field option value and child field option values.</p>"
+    },
+    "ParentChildFieldOptionsMappingChildFieldOptionValuesList":{
+      "type":"list",
+      "member":{"shape":"ParentChildFieldOptionValue"},
+      "max":1500,
+      "min":0
+    },
+    "ParentChildFieldOptionsMappingList":{
+      "type":"list",
+      "member":{"shape":"ParentChildFieldOptionsMapping"},
+      "max":200,
+      "min":1
     },
     "PutCaseEventConfigurationRequest":{
       "type":"structure",
@@ -3237,8 +3558,7 @@
     },
     "PutCaseEventConfigurationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "RelatedItemArn":{
       "type":"string",
@@ -3248,13 +3568,13 @@
     "RelatedItemContent":{
       "type":"structure",
       "members":{
-        "comment":{
-          "shape":"CommentContent",
-          "documentation":"<p>Represents the content of a comment to be returned to agents.</p>"
-        },
         "contact":{
           "shape":"ContactContent",
           "documentation":"<p>Represents the content of a contact to be returned to agents.</p>"
+        },
+        "comment":{
+          "shape":"CommentContent",
+          "documentation":"<p>Represents the content of a comment to be returned to agents.</p>"
         },
         "file":{
           "shape":"FileContent",
@@ -3263,6 +3583,14 @@
         "sla":{
           "shape":"SlaContent",
           "documentation":"<p>Represents the content of an SLA to be returned to agents.</p>"
+        },
+        "connectCase":{
+          "shape":"ConnectCaseContent",
+          "documentation":"<p>Represents the Amazon Connect case to be created as a related item.</p>"
+        },
+        "custom":{
+          "shape":"CustomContent",
+          "documentation":"<p>Represents the content of a <code>Custom</code> type related item.</p>"
         }
       },
       "documentation":"<p>Represents the content of a particular type of related item.</p>",
@@ -3287,13 +3615,13 @@
     "RelatedItemInputContent":{
       "type":"structure",
       "members":{
-        "comment":{
-          "shape":"CommentContent",
-          "documentation":"<p>Represents the content of a comment to be returned to agents.</p>"
-        },
         "contact":{
           "shape":"Contact",
           "documentation":"<p>Object representing a contact in Amazon Connect as an API request field.</p>"
+        },
+        "comment":{
+          "shape":"CommentContent",
+          "documentation":"<p>Represents the content of a comment to be returned to agents.</p>"
         },
         "file":{
           "shape":"FileContent",
@@ -3302,6 +3630,14 @@
         "sla":{
           "shape":"SlaInputContent",
           "documentation":"<p>Represents the content of an SLA to be created.</p>"
+        },
+        "connectCase":{
+          "shape":"ConnectCaseInputContent",
+          "documentation":"<p>Represents the Amazon Connect case to be created as a related item.</p>"
+        },
+        "custom":{
+          "shape":"CustomInputContent",
+          "documentation":"<p>Represents the content of a <code>Custom</code> type related item.</p>"
         }
       },
       "documentation":"<p>Represents the content of a related item to be created.</p>",
@@ -3313,19 +3649,21 @@
         "Contact",
         "Comment",
         "File",
-        "Sla"
+        "Sla",
+        "ConnectCase",
+        "Custom"
       ]
     },
     "RelatedItemTypeFilter":{
       "type":"structure",
       "members":{
-        "comment":{
-          "shape":"CommentFilter",
-          "documentation":"<p>A filter for related items of type <code>Comment</code>.</p>"
-        },
         "contact":{
           "shape":"ContactFilter",
           "documentation":"<p>A filter for related items of type <code>Contact</code>.</p>"
+        },
+        "comment":{
+          "shape":"CommentFilter",
+          "documentation":"<p>A filter for related items of type <code>Comment</code>.</p>"
         },
         "file":{
           "shape":"FileFilter",
@@ -3334,6 +3672,14 @@
         "sla":{
           "shape":"SlaFilter",
           "documentation":"<p> Filter for related items of type <code>SLA</code>.</p>"
+        },
+        "connectCase":{
+          "shape":"ConnectCaseFilter",
+          "documentation":"<p>Represents the Amazon Connect case to be created as a related item.</p>"
+        },
+        "custom":{
+          "shape":"CustomFilter",
+          "documentation":"<p>Represents the content of a <code>Custom</code> type related item.</p>"
         }
       },
       "documentation":"<p>The list of types of related items and their parameters to use for filtering.</p>",
@@ -3342,17 +3688,17 @@
     "RequiredCaseRule":{
       "type":"structure",
       "required":[
-        "conditions",
-        "defaultValue"
+        "defaultValue",
+        "conditions"
       ],
       "members":{
-        "conditions":{
-          "shape":"BooleanConditionList",
-          "documentation":"<p>List of conditions for the required rule; the first condition to evaluate to true dictates the value of the rule.</p>"
-        },
         "defaultValue":{
           "shape":"Boolean",
           "documentation":"<p>The value of the rule (that is, whether the field is required) should none of the conditions evaluate to true.</p>"
+        },
+        "conditions":{
+          "shape":"BooleanConditionList",
+          "documentation":"<p>List of conditions for the required rule; the first condition to evaluate to true dictates the value of the rule.</p>"
         }
       },
       "documentation":"<p>Required rule type, used to indicate whether a field is required. In the Amazon Connect admin website, case rules are known as <i>case field conditions</i>. For more information about case field conditions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">Add case field conditions to a case template</a>.</p>"
@@ -3401,7 +3747,137 @@
     },
     "RuleType":{
       "type":"string",
-      "enum":["Required"]
+      "enum":[
+        "Required",
+        "Hidden",
+        "FieldOptions"
+      ]
+    },
+    "SearchAllRelatedItemsRequest":{
+      "type":"structure",
+      "required":["domainId"],
+      "members":{
+        "domainId":{
+          "shape":"DomainId",
+          "documentation":"<p>The unique identifier of the Cases domain. </p>",
+          "location":"uri",
+          "locationName":"domainId"
+        },
+        "maxResults":{
+          "shape":"SearchAllRelatedItemsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return per page.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        },
+        "filters":{
+          "shape":"SearchAllRelatedItemsRequestFiltersList",
+          "documentation":"<p>The list of types of related items and their parameters to use for filtering. The filters work as an OR condition: caller gets back related items that match any of the specified filter types.</p>"
+        },
+        "sorts":{
+          "shape":"SearchAllRelatedItemsRequestSortsList",
+          "documentation":"<p>A structured set of sort terms to specify the order in which related items should be returned. Supports sorting by association time or case ID. The sorts work in the order specified: first sort term takes precedence over subsequent terms.</p>"
+        }
+      }
+    },
+    "SearchAllRelatedItemsRequestFiltersList":{
+      "type":"list",
+      "member":{"shape":"RelatedItemTypeFilter"},
+      "max":10,
+      "min":0
+    },
+    "SearchAllRelatedItemsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":25,
+      "min":1
+    },
+    "SearchAllRelatedItemsRequestSortsList":{
+      "type":"list",
+      "member":{"shape":"SearchAllRelatedItemsSort"},
+      "max":2,
+      "min":0
+    },
+    "SearchAllRelatedItemsResponse":{
+      "type":"structure",
+      "required":["relatedItems"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. This is null if there are no more results to return.</p>"
+        },
+        "relatedItems":{
+          "shape":"SearchAllRelatedItemsResponseRelatedItemsList",
+          "documentation":"<p>A list of items related to a case.</p>"
+        }
+      }
+    },
+    "SearchAllRelatedItemsResponseItem":{
+      "type":"structure",
+      "required":[
+        "relatedItemId",
+        "caseId",
+        "type",
+        "associationTime",
+        "content"
+      ],
+      "members":{
+        "relatedItemId":{
+          "shape":"RelatedItemId",
+          "documentation":"<p>Unique identifier of a related item.</p>"
+        },
+        "caseId":{
+          "shape":"CaseId",
+          "documentation":"<p>A unique identifier of the case.</p>"
+        },
+        "type":{
+          "shape":"RelatedItemType",
+          "documentation":"<p>Type of a related item.</p>"
+        },
+        "associationTime":{
+          "shape":"AssociationTime",
+          "documentation":"<p>Time at which a related item was associated with a case.</p>"
+        },
+        "content":{"shape":"RelatedItemContent"},
+        "performedBy":{"shape":"UserUnion"},
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+        }
+      },
+      "documentation":"<p>A list of items that represent RelatedItems. This data type is similar to <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_SearchRelatedItemsResponseItem.html\">SearchRelatedItemsResponseItem</a> except Search<b>All</b>RelatedItemsResponseItem has a caseId field.</p>"
+    },
+    "SearchAllRelatedItemsResponseRelatedItemsList":{
+      "type":"list",
+      "member":{"shape":"SearchAllRelatedItemsResponseItem"},
+      "max":25,
+      "min":0
+    },
+    "SearchAllRelatedItemsSort":{
+      "type":"structure",
+      "required":[
+        "sortProperty",
+        "sortOrder"
+      ],
+      "members":{
+        "sortProperty":{
+          "shape":"SearchAllRelatedItemsSortProperty",
+          "documentation":"<p>Whether related items should be sorted in ascending or descending order. </p>"
+        },
+        "sortOrder":{
+          "shape":"Order",
+          "documentation":"<p>Whether related items should be sorted by association time or case ID. </p>"
+        }
+      },
+      "documentation":"<p>The order in which all returned related items should be sorted.</p>"
+    },
+    "SearchAllRelatedItemsSortProperty":{
+      "type":"string",
+      "enum":[
+        "AssociationTime",
+        "CaseId"
+      ]
     },
     "SearchCasesRequest":{
       "type":"structure",
@@ -3413,17 +3889,9 @@
           "location":"uri",
           "locationName":"domainId"
         },
-        "fields":{
-          "shape":"SearchCasesRequestFieldsList",
-          "documentation":"<p>The list of field identifiers to be returned as part of the response.</p>"
-        },
-        "filter":{
-          "shape":"CaseFilter",
-          "documentation":"<p>A list of filter objects.</p>"
-        },
         "maxResults":{
           "shape":"SearchCasesRequestMaxResultsInteger",
-          "documentation":"<p>The maximum number of cases to return. The current maximum supported value is 25. This is also the default value when no other value is provided.</p>"
+          "documentation":"<p>The maximum number of cases to return. When no value is provided, 25 is the default.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -3433,9 +3901,17 @@
           "shape":"SearchCasesRequestSearchTermString",
           "documentation":"<p>A word or phrase used to perform a quick search.</p>"
         },
+        "filter":{
+          "shape":"CaseFilter",
+          "documentation":"<p>A list of filter objects.</p>"
+        },
         "sorts":{
           "shape":"SearchCasesRequestSortsList",
           "documentation":"<p>A list of sorts where each sort specifies a field and their sort order to be applied to the results. </p>"
+        },
+        "fields":{
+          "shape":"SearchCasesRequestFieldsList",
+          "documentation":"<p>The list of field identifiers to be returned as part of the response.</p>"
         }
       }
     },
@@ -3466,13 +3942,13 @@
       "type":"structure",
       "required":["cases"],
       "members":{
-        "cases":{
-          "shape":"SearchCasesResponseCasesList",
-          "documentation":"<p>A list of case documents where each case contains the properties <code>CaseId</code> and <code>Fields</code> where each field is a complex union structure. </p>"
-        },
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token for the next set of results. This is null if there are no more results to return.</p>"
+        },
+        "cases":{
+          "shape":"SearchCasesResponseCasesList",
+          "documentation":"<p>A list of case documents where each case contains the properties <code>CaseId</code> and <code>Fields</code> where each field is a complex union structure. </p>"
         }
       }
     },
@@ -3486,13 +3962,17 @@
       "type":"structure",
       "required":[
         "caseId",
-        "fields",
-        "templateId"
+        "templateId",
+        "fields"
       ],
       "members":{
         "caseId":{
           "shape":"CaseId",
           "documentation":"<p>A unique identifier of the case.</p>"
+        },
+        "templateId":{
+          "shape":"TemplateId",
+          "documentation":"<p>A unique identifier of a template.</p>"
         },
         "fields":{
           "shape":"SearchCasesResponseItemFieldsList",
@@ -3501,10 +3981,6 @@
         "tags":{
           "shape":"Tags",
           "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
-        },
-        "templateId":{
-          "shape":"TemplateId",
-          "documentation":"<p>A unique identifier of a template.</p>"
         }
       },
       "documentation":"<p>A list of items that represent cases.</p>"
@@ -3518,25 +3994,21 @@
     "SearchRelatedItemsRequest":{
       "type":"structure",
       "required":[
-        "caseId",
-        "domainId"
+        "domainId",
+        "caseId"
       ],
       "members":{
-        "caseId":{
-          "shape":"CaseId",
-          "documentation":"<p>A unique identifier of the case.</p>",
-          "location":"uri",
-          "locationName":"caseId"
-        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The unique identifier of the Cases domain. </p>",
           "location":"uri",
           "locationName":"domainId"
         },
-        "filters":{
-          "shape":"SearchRelatedItemsRequestFiltersList",
-          "documentation":"<p>The list of types of related items and their parameters to use for filtering.</p>"
+        "caseId":{
+          "shape":"CaseId",
+          "documentation":"<p>A unique identifier of the case.</p>",
+          "location":"uri",
+          "locationName":"caseId"
         },
         "maxResults":{
           "shape":"SearchRelatedItemsRequestMaxResultsInteger",
@@ -3545,6 +4017,10 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        },
+        "filters":{
+          "shape":"SearchRelatedItemsRequestFiltersList",
+          "documentation":"<p>The list of types of related items and their parameters to use for filtering.</p>"
         }
       }
     },
@@ -3577,12 +4053,20 @@
     "SearchRelatedItemsResponseItem":{
       "type":"structure",
       "required":[
-        "associationTime",
-        "content",
         "relatedItemId",
-        "type"
+        "type",
+        "associationTime",
+        "content"
       ],
       "members":{
+        "relatedItemId":{
+          "shape":"RelatedItemId",
+          "documentation":"<p>Unique identifier of a related item.</p>"
+        },
+        "type":{
+          "shape":"RelatedItemType",
+          "documentation":"<p>Type of a related item.</p>"
+        },
         "associationTime":{
           "shape":"AssociationTime",
           "documentation":"<p>Time at which a related item was associated with a case.</p>"
@@ -3591,21 +4075,13 @@
           "shape":"RelatedItemContent",
           "documentation":"<p>Represents the content of a particular type of related item.</p>"
         },
-        "performedBy":{
-          "shape":"UserUnion",
-          "documentation":"<p>Represents the creator of the related item.</p>"
-        },
-        "relatedItemId":{
-          "shape":"RelatedItemId",
-          "documentation":"<p>Unique identifier of a related item.</p>"
-        },
         "tags":{
           "shape":"Tags",
           "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
         },
-        "type":{
-          "shape":"RelatedItemType",
-          "documentation":"<p>Type of a related item.</p>"
+        "performedBy":{
+          "shape":"UserUnion",
+          "documentation":"<p>Represents the creator of the related item.</p>"
         }
       },
       "documentation":"<p>A list of items that represent RelatedItems.</p>"
@@ -3655,26 +4131,26 @@
       "type":"structure",
       "required":[
         "name",
+        "type",
         "status",
-        "targetTime",
-        "type"
+        "targetTime"
       ],
       "members":{
-        "completionTime":{
-          "shape":"SlaCompletionTime",
-          "documentation":"<p>Time at which an SLA was completed.</p>"
-        },
-        "fieldId":{
-          "shape":"FieldId",
-          "documentation":"<p>Unique identifier of a field.</p>"
-        },
         "name":{
           "shape":"SlaName",
           "documentation":"<p>Name of an SLA.</p>"
         },
+        "type":{
+          "shape":"SlaType",
+          "documentation":"<p>Type of SLA.</p>"
+        },
         "status":{
           "shape":"SlaStatus",
           "documentation":"<p>Status of an SLA.</p>"
+        },
+        "fieldId":{
+          "shape":"FieldId",
+          "documentation":"<p>Unique identifier of a field.</p>"
         },
         "targetFieldValues":{
           "shape":"SlaFieldValueUnionList",
@@ -3684,9 +4160,9 @@
           "shape":"SlaTargetTime",
           "documentation":"<p>Target time by which an SLA should be completed.</p>"
         },
-        "type":{
-          "shape":"SlaType",
-          "documentation":"<p>Type of SLA.</p>"
+        "completionTime":{
+          "shape":"SlaCompletionTime",
+          "documentation":"<p>Time at which an SLA was completed.</p>"
         }
       },
       "documentation":"<p>Represents an SLA configuration.</p>"
@@ -3726,17 +4202,21 @@
       "type":"structure",
       "required":[
         "name",
-        "targetSlaMinutes",
-        "type"
+        "type",
+        "targetSlaMinutes"
       ],
       "members":{
-        "fieldId":{
-          "shape":"FieldId",
-          "documentation":"<p>Unique identifier of a field.</p>"
-        },
         "name":{
           "shape":"SlaName",
           "documentation":"<p>Name of an SLA.</p>"
+        },
+        "type":{
+          "shape":"SlaType",
+          "documentation":"<p>Type of SLA.</p>"
+        },
+        "fieldId":{
+          "shape":"FieldId",
+          "documentation":"<p>Unique identifier of a field.</p>"
         },
         "targetFieldValues":{
           "shape":"SlaFieldValueUnionList",
@@ -3745,10 +4225,6 @@
         "targetSlaMinutes":{
           "shape":"TargetSlaMinutes",
           "documentation":"<p>Target duration in minutes within which an SLA should be completed.</p>"
-        },
-        "type":{
-          "shape":"SlaType",
-          "documentation":"<p>Type of SLA.</p>"
         }
       },
       "documentation":"<p>Represents the input configuration of an SLA being created.</p>"
@@ -3768,7 +4244,7 @@
       "type":"string",
       "max":500,
       "min":1,
-      "pattern":"^.*[\\S]$",
+      "pattern":".*[\\S]",
       "sensitive":true
     },
     "SlaStatus":{
@@ -3811,7 +4287,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^(?!aws:)[a-zA-Z+-=._:/]+$"
+      "pattern":"(?!aws:)[a-zA-Z+-=._:/]+"
     },
     "TagKeyList":{
       "type":"list",
@@ -3874,14 +4350,11 @@
       "type":"string",
       "max":100,
       "min":1,
-      "pattern":"^.*[\\S]$"
+      "pattern":".*[\\S]"
     },
     "TemplateRule":{
       "type":"structure",
-      "required":[
-        "caseRuleId",
-        "fieldId"
-      ],
+      "required":["caseRuleId"],
       "members":{
         "caseRuleId":{
           "shape":"CaseRuleId",
@@ -3910,12 +4383,20 @@
     "TemplateSummary":{
       "type":"structure",
       "required":[
-        "name",
-        "status",
+        "templateId",
         "templateArn",
-        "templateId"
+        "name",
+        "status"
       ],
       "members":{
+        "templateId":{
+          "shape":"TemplateId",
+          "documentation":"<p>The unique identifier for the template.</p>"
+        },
+        "templateArn":{
+          "shape":"TemplateArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the template.</p>"
+        },
         "name":{
           "shape":"TemplateName",
           "documentation":"<p>The template name.</p>"
@@ -3923,14 +4404,6 @@
         "status":{
           "shape":"TemplateStatus",
           "documentation":"<p>The status of the template.</p>"
-        },
-        "templateArn":{
-          "shape":"TemplateArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the template.</p>"
-        },
-        "templateId":{
-          "shape":"TemplateId",
-          "documentation":"<p>The unique identifier for the template.</p>"
         }
       },
       "documentation":"<p>Template summary information.</p>"
@@ -3973,22 +4446,22 @@
     "UpdateCaseRequest":{
       "type":"structure",
       "required":[
-        "caseId",
         "domainId",
+        "caseId",
         "fields"
       ],
       "members":{
-        "caseId":{
-          "shape":"CaseId",
-          "documentation":"<p>A unique identifier of the case.</p>",
-          "location":"uri",
-          "locationName":"caseId"
-        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The unique identifier of the Cases domain. </p>",
           "location":"uri",
           "locationName":"domainId"
+        },
+        "caseId":{
+          "shape":"CaseId",
+          "documentation":"<p>A unique identifier of the case.</p>",
+          "location":"uri",
+          "locationName":"caseId"
         },
         "fields":{
           "shape":"UpdateCaseRequestFieldsList",
@@ -4005,35 +4478,34 @@
     },
     "UpdateCaseResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateCaseRuleRequest":{
       "type":"structure",
       "required":[
-        "caseRuleId",
-        "domainId"
+        "domainId",
+        "caseRuleId"
       ],
       "members":{
-        "caseRuleId":{
-          "shape":"CaseRuleId",
-          "documentation":"<p>Unique identifier of a case rule.</p>",
-          "location":"uri",
-          "locationName":"caseRuleId"
-        },
-        "description":{
-          "shape":"CaseRuleDescription",
-          "documentation":"<p>Description of a case rule.</p>"
-        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>Unique identifier of a Cases domain.</p>",
           "location":"uri",
           "locationName":"domainId"
         },
+        "caseRuleId":{
+          "shape":"CaseRuleId",
+          "documentation":"<p>Unique identifier of a case rule.</p>",
+          "location":"uri",
+          "locationName":"caseRuleId"
+        },
         "name":{
           "shape":"CaseRuleName",
           "documentation":"<p>Name of the case rule.</p>"
+        },
+        "description":{
+          "shape":"CaseRuleDescription",
+          "documentation":"<p>Description of a case rule.</p>"
         },
         "rule":{
           "shape":"CaseRuleDetails",
@@ -4043,8 +4515,7 @@
     },
     "UpdateCaseRuleResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateFieldRequest":{
       "type":"structure",
@@ -4053,10 +4524,6 @@
         "fieldId"
       ],
       "members":{
-        "description":{
-          "shape":"FieldDescription",
-          "documentation":"<p>The description of a field.</p>"
-        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The unique identifier of the Cases domain. </p>",
@@ -4072,13 +4539,16 @@
         "name":{
           "shape":"FieldName",
           "documentation":"<p>The name of the field.</p>"
+        },
+        "description":{
+          "shape":"FieldDescription",
+          "documentation":"<p>The description of a field.</p>"
         }
       }
     },
     "UpdateFieldResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateLayoutRequest":{
       "type":"structure",
@@ -4087,10 +4557,6 @@
         "layoutId"
       ],
       "members":{
-        "content":{
-          "shape":"LayoutContent",
-          "documentation":"<p>Information about which fields will be present in the layout, the order of the fields.</p>"
-        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The unique identifier of the Cases domain. </p>",
@@ -4106,13 +4572,16 @@
         "name":{
           "shape":"LayoutName",
           "documentation":"<p>The name of the layout. It must be unique per domain.</p>"
+        },
+        "content":{
+          "shape":"LayoutContent",
+          "documentation":"<p>Information about which fields will be present in the layout, the order of the fields.</p>"
         }
       }
     },
     "UpdateLayoutResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateTemplateRequest":{
       "type":"structure",
@@ -4121,48 +4590,47 @@
         "templateId"
       ],
       "members":{
-        "description":{
-          "shape":"TemplateDescription",
-          "documentation":"<p>A brief description of the template.</p>"
-        },
         "domainId":{
           "shape":"DomainId",
           "documentation":"<p>The unique identifier of the Cases domain. </p>",
           "location":"uri",
           "locationName":"domainId"
         },
-        "layoutConfiguration":{
-          "shape":"LayoutConfiguration",
-          "documentation":"<p>Configuration of layouts associated to the template.</p>"
-        },
-        "name":{
-          "shape":"TemplateName",
-          "documentation":"<p>The name of the template. It must be unique per domain.</p>"
-        },
-        "requiredFields":{
-          "shape":"RequiredFieldList",
-          "documentation":"<p>A list of fields that must contain a value for a case to be successfully created with this template.</p>"
-        },
-        "rules":{
-          "shape":"TemplateCaseRuleList",
-          "documentation":"<p>A list of case rules (also known as <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">case field conditions</a>) on a template.</p>"
-        },
-        "status":{
-          "shape":"TemplateStatus",
-          "documentation":"<p>The status of the template.</p>"
-        },
         "templateId":{
           "shape":"TemplateId",
           "documentation":"<p>A unique identifier for the template.</p>",
           "location":"uri",
           "locationName":"templateId"
+        },
+        "name":{
+          "shape":"TemplateName",
+          "documentation":"<p>The name of the template. It must be unique per domain.</p>"
+        },
+        "description":{
+          "shape":"TemplateDescription",
+          "documentation":"<p>A brief description of the template.</p>"
+        },
+        "layoutConfiguration":{
+          "shape":"LayoutConfiguration",
+          "documentation":"<p>Configuration of layouts associated to the template.</p>"
+        },
+        "requiredFields":{
+          "shape":"RequiredFieldList",
+          "documentation":"<p>A list of fields that must contain a value for a case to be successfully created with this template.</p>"
+        },
+        "status":{
+          "shape":"TemplateStatus",
+          "documentation":"<p>The status of the template.</p>"
+        },
+        "rules":{
+          "shape":"TemplateCaseRuleList",
+          "documentation":"<p>A list of case rules (also known as <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">case field conditions</a>) on a template.</p>"
         }
       }
     },
     "UpdateTemplateResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UserArn":{
       "type":"string",
@@ -4172,13 +4640,13 @@
     "UserUnion":{
       "type":"structure",
       "members":{
-        "customEntity":{
-          "shape":"CustomEntity",
-          "documentation":"<p>Any provided entity.</p>"
-        },
         "userArn":{
           "shape":"UserArn",
           "documentation":"<p>Represents the Amazon Connect ARN of the user.</p>"
+        },
+        "customEntity":{
+          "shape":"CustomEntity",
+          "documentation":"<p>Any provided entity.</p>"
         }
       },
       "documentation":"<p>Represents the entity that performed the action.</p>",

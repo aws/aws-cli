@@ -1,0 +1,2714 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2025-09-22",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"aco-automation",
+    "jsonVersion":"1.0",
+    "protocol":"json",
+    "protocols":["json"],
+    "serviceFullName":"Compute Optimizer Automation",
+    "serviceId":"Compute Optimizer Automation",
+    "signatureVersion":"v4",
+    "signingName":"aco-automation",
+    "targetPrefix":"ComputeOptimizerAutomationService",
+    "uid":"compute-optimizer-automation-2025-09-22"
+  },
+  "operations":{
+    "AssociateAccounts":{
+      "name":"AssociateAccounts",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AssociateAccountsRequest"},
+      "output":{"shape":"AssociateAccountsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"NotManagementAccountException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"IdempotencyTokenInUseException"}
+      ],
+      "documentation":"<p>Associates one or more member accounts with your organization's management account, enabling centralized implementation of optimization actions across those accounts. Once associated, the management account (or a delegated administrator) can apply recommended actions to the member account. When you associate a member account, its organization rule mode is automatically set to \"Any allowed,\" which permits the management account to create Automation rules that automatically apply actions to that account. If the member account has not previously enabled the Automation feature, the association process automatically enables it.</p> <note> <p>Only the management account or a delegated administrator can perform this action.</p> </note>",
+      "idempotent":true
+    },
+    "CreateAutomationRule":{
+      "name":"CreateAutomationRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateAutomationRuleRequest"},
+      "output":{"shape":"CreateAutomationRuleResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"IdempotencyTokenInUseException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p> Creates a new automation rule to apply recommended actions to resources based on specified criteria. </p>",
+      "idempotent":true
+    },
+    "DeleteAutomationRule":{
+      "name":"DeleteAutomationRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteAutomationRuleRequest"},
+      "output":{"shape":"DeleteAutomationRuleResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"IdempotencyTokenInUseException"}
+      ],
+      "documentation":"<p> Deletes an existing automation rule. </p>",
+      "idempotent":true
+    },
+    "DisassociateAccounts":{
+      "name":"DisassociateAccounts",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DisassociateAccountsRequest"},
+      "output":{"shape":"DisassociateAccountsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"NotManagementAccountException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"IdempotencyTokenInUseException"}
+      ],
+      "documentation":"<p> Disassociates member accounts from your organization's management account, removing centralized automation capabilities. Once disassociated, organization rules no longer apply to the member account, and the management account (or delegated administrator) cannot create Automation rules for that account. </p> <note> <p>Only the management account or a delegated administrator can perform this action.</p> </note>",
+      "idempotent":true
+    },
+    "GetAutomationEvent":{
+      "name":"GetAutomationEvent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAutomationEventRequest"},
+      "output":{"shape":"GetAutomationEventResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p> Retrieves details about a specific automation event. </p>"
+    },
+    "GetAutomationRule":{
+      "name":"GetAutomationRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAutomationRuleRequest"},
+      "output":{"shape":"GetAutomationRuleResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p> Retrieves details about a specific automation rule. </p>"
+    },
+    "GetEnrollmentConfiguration":{
+      "name":"GetEnrollmentConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetEnrollmentConfigurationRequest"},
+      "output":{"shape":"GetEnrollmentConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p> Retrieves the current enrollment configuration for Compute Optimizer Automation. </p>",
+      "readonly":true
+    },
+    "ListAccounts":{
+      "name":"ListAccounts",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAccountsRequest"},
+      "output":{"shape":"ListAccountsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"NotManagementAccountException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p> Lists the accounts in your organization that are enrolled in Compute Optimizer and whether they have enabled Automation. </p> <note> <p>Only the management account or a delegated administrator can perform this action.</p> </note>",
+      "readonly":true
+    },
+    "ListAutomationEventSteps":{
+      "name":"ListAutomationEventSteps",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAutomationEventStepsRequest"},
+      "output":{"shape":"ListAutomationEventStepsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Lists the steps for a specific automation event. You can only list steps for events created within the past year. </p>"
+    },
+    "ListAutomationEventSummaries":{
+      "name":"ListAutomationEventSummaries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAutomationEventSummariesRequest"},
+      "output":{"shape":"ListAutomationEventSummariesResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Provides a summary of automation events based on specified filters. Only events created within the past year will be included in the summary. </p>"
+    },
+    "ListAutomationEvents":{
+      "name":"ListAutomationEvents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAutomationEventsRequest"},
+      "output":{"shape":"ListAutomationEventsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Lists automation events based on specified filters. You can retrieve events that were created within the past year. </p>"
+    },
+    "ListAutomationRulePreview":{
+      "name":"ListAutomationRulePreview",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAutomationRulePreviewRequest"},
+      "output":{"shape":"ListAutomationRulePreviewResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns a preview of the recommended actions that match your Automation rule's configuration and criteria. </p>",
+      "readonly":true
+    },
+    "ListAutomationRulePreviewSummaries":{
+      "name":"ListAutomationRulePreviewSummaries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAutomationRulePreviewSummariesRequest"},
+      "output":{"shape":"ListAutomationRulePreviewSummariesResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Returns a summary of the recommended actions that match your rule preview configuration and criteria. </p>",
+      "readonly":true
+    },
+    "ListAutomationRules":{
+      "name":"ListAutomationRules",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAutomationRulesRequest"},
+      "output":{"shape":"ListAutomationRulesResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p> Lists the automation rules that match specified filters. </p>"
+    },
+    "ListRecommendedActionSummaries":{
+      "name":"ListRecommendedActionSummaries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListRecommendedActionSummariesRequest"},
+      "output":{"shape":"ListRecommendedActionSummariesResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p> Provides a summary of recommended actions based on specified filters. </p> <note> <p>Management accounts and delegated administrators can retrieve recommended actions that include associated member accounts. You can associate a member account using <code>AssociateAccounts</code>.</p> </note>"
+    },
+    "ListRecommendedActions":{
+      "name":"ListRecommendedActions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListRecommendedActionsRequest"},
+      "output":{"shape":"ListRecommendedActionsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p> Lists the recommended actions based that match specified filters. </p> <note> <p>Management accounts and delegated administrators can retrieve recommended actions that include associated member accounts. You can associate a member account using <code>AssociateAccounts</code>.</p> </note>"
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p> Lists the tags for a specified resource. </p>",
+      "readonly":true
+    },
+    "RollbackAutomationEvent":{
+      "name":"RollbackAutomationEvent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RollbackAutomationEventRequest"},
+      "output":{"shape":"RollbackAutomationEventResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"IdempotencyTokenInUseException"}
+      ],
+      "documentation":"<p> Initiates a rollback for a completed automation event. </p> <note> <p>Management accounts and delegated administrators can only initiate a rollback for events belonging to associated member accounts. You can associate a member account using <code>AssociateAccounts</code>.</p> </note>",
+      "idempotent":true
+    },
+    "StartAutomationEvent":{
+      "name":"StartAutomationEvent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartAutomationEventRequest"},
+      "output":{"shape":"StartAutomationEventResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"IdempotencyTokenInUseException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p> Initiates a one-time, on-demand automation for the specified recommended action. </p> <note> <p>Management accounts and delegated administrators can only initiate recommended actions for associated member accounts. You can associate a member account using <code>AssociateAccounts</code>.</p> </note>",
+      "idempotent":true
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"IdempotencyTokenInUseException"}
+      ],
+      "documentation":"<p> Adds tags to the specified resource. </p>",
+      "idempotent":true
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"IdempotencyTokenInUseException"}
+      ],
+      "documentation":"<p> Removes tags from the specified resource. </p>",
+      "idempotent":true
+    },
+    "UpdateAutomationRule":{
+      "name":"UpdateAutomationRule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateAutomationRuleRequest"},
+      "output":{"shape":"UpdateAutomationRuleResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"IdempotencyTokenInUseException"}
+      ],
+      "documentation":"<p> Updates an existing automation rule. </p>",
+      "idempotent":true
+    },
+    "UpdateEnrollmentConfiguration":{
+      "name":"UpdateEnrollmentConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateEnrollmentConfigurationRequest"},
+      "output":{"shape":"UpdateEnrollmentConfigurationResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"NotManagementAccountException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"IdempotencyTokenInUseException"}
+      ],
+      "documentation":"<p>Updates your account’s Compute Optimizer Automation enrollment configuration. </p>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p> You do not have sufficient permissions to perform this action. </p>",
+      "exception":true
+    },
+    "AccountId":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
+    },
+    "AccountIdList":{
+      "type":"list",
+      "member":{"shape":"AccountId"}
+    },
+    "AccountInfo":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "status",
+        "organizationRuleMode",
+        "lastUpdatedTimestamp"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The ID of the Amazon Web Services account. </p>"
+        },
+        "status":{
+          "shape":"EnrollmentStatus",
+          "documentation":"<p> The enrollment status of the account: Active, Inactive, Pending, or Failed. </p>"
+        },
+        "organizationRuleMode":{
+          "shape":"OrganizationRuleMode",
+          "documentation":"<p>Specifies whether the management account can create Automation rules that implement optimization actions for this account. </p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current Automation enrollment status. </p>"
+        },
+        "lastUpdatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the account's Automation enrollment status was last updated. </p>"
+        }
+      },
+      "documentation":"<p> Contains information about an Amazon Web Services account's enrollment and association status with Compute Optimizer Automation. </p>"
+    },
+    "AccountInfoList":{
+      "type":"list",
+      "member":{"shape":"AccountInfo"}
+    },
+    "AssociateAccountsRequest":{
+      "type":"structure",
+      "required":["accountIds"],
+      "members":{
+        "accountIds":{
+          "shape":"AccountIdList",
+          "documentation":"<p> The IDs of the member accounts to associate. You can specify up to 50 account IDs. </p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p> A unique identifier to ensure idempotency of the request. Valid for 24 hours after creation. </p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "AssociateAccountsResponse":{
+      "type":"structure",
+      "members":{
+        "accountIds":{
+          "shape":"AccountIdList",
+          "documentation":"<p> The IDs of the member accounts that were successfully associated. </p>"
+        },
+        "errors":{
+          "shape":"StringList",
+          "documentation":"<p> Any errors that occurred during the association process. </p>"
+        }
+      }
+    },
+    "AutomationEvent":{
+      "type":"structure",
+      "members":{
+        "eventId":{
+          "shape":"EventId",
+          "documentation":"<p> The unique identifier for the automation event. </p>"
+        },
+        "eventDescription":{
+          "shape":"String",
+          "documentation":"<p> A description of the automation event. </p>"
+        },
+        "eventType":{
+          "shape":"EventType",
+          "documentation":"<p> The type of automation event. </p>"
+        },
+        "eventStatus":{
+          "shape":"EventStatus",
+          "documentation":"<p> The current status of the automation event. </p>"
+        },
+        "eventStatusReason":{
+          "shape":"String",
+          "documentation":"<p> The reason for the current event status. </p>"
+        },
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the resource affected by the automation event. </p>"
+        },
+        "resourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p> The ID of the resource affected by the automation event. </p>"
+        },
+        "recommendedActionId":{
+          "shape":"RecommendedActionId",
+          "documentation":"<p> The ID of the recommended action associated with this automation event. </p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p> The Amazon Web Services account ID associated with the automation event. </p>"
+        },
+        "region":{
+          "shape":"String",
+          "documentation":"<p> The Amazon Web Services Region where the automation event occurred. </p>"
+        },
+        "ruleId":{
+          "shape":"RuleId",
+          "documentation":"<p> The ID of the automation rule that triggered this event. </p>"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p> The type of resource affected by the automation event. </p>"
+        },
+        "createdTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the automation event was created.</p>"
+        },
+        "completedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp when the automation event completed. </p>"
+        },
+        "estimatedMonthlySavings":{
+          "shape":"EstimatedMonthlySavings",
+          "documentation":"<p> The estimated monthly cost savings associated with this automation event. </p>"
+        }
+      },
+      "documentation":"<p> Contains information about an automation event. </p>"
+    },
+    "AutomationEventFilter":{
+      "type":"structure",
+      "required":[
+        "name",
+        "values"
+      ],
+      "members":{
+        "name":{
+          "shape":"AutomationEventFilterName",
+          "documentation":"<p> The name of the filter to apply. </p>"
+        },
+        "values":{
+          "shape":"FilterValues",
+          "documentation":"<p> The values to use for the specified filter. </p>"
+        }
+      },
+      "documentation":"<p> A filter to apply when listing automation events. </p>"
+    },
+    "AutomationEventFilterList":{
+      "type":"list",
+      "member":{"shape":"AutomationEventFilter"}
+    },
+    "AutomationEventFilterName":{
+      "type":"string",
+      "enum":[
+        "AccountId",
+        "ResourceType",
+        "EventType",
+        "EventStatus"
+      ]
+    },
+    "AutomationEventStep":{
+      "type":"structure",
+      "members":{
+        "eventId":{
+          "shape":"EventId",
+          "documentation":"<p> The ID of the automation event this step belongs to. </p>"
+        },
+        "stepId":{
+          "shape":"StepId",
+          "documentation":"<p> The unique identifier for this step. </p>"
+        },
+        "stepType":{
+          "shape":"StepType",
+          "documentation":"<p> The type of step. </p>"
+        },
+        "stepStatus":{
+          "shape":"StepStatus",
+          "documentation":"<p> The current status of the step. </p>"
+        },
+        "resourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the resource being acted upon in this step.</p>"
+        },
+        "startTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this automation event step started execution.</p>"
+        },
+        "completedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this automation event step completed execution.</p>"
+        },
+        "estimatedMonthlySavings":{"shape":"EstimatedMonthlySavings"}
+      },
+      "documentation":"<p> Contains information about a step in an automation event. </p>"
+    },
+    "AutomationEventSteps":{
+      "type":"list",
+      "member":{"shape":"AutomationEventStep"}
+    },
+    "AutomationEventSummary":{
+      "type":"structure",
+      "members":{
+        "key":{
+          "shape":"String",
+          "documentation":"<p>The key identifier for this summary grouping.</p>"
+        },
+        "dimensions":{
+          "shape":"SummaryDimensions",
+          "documentation":"<p>The dimensions used to group this summary, such as event status.</p>"
+        },
+        "timePeriod":{
+          "shape":"TimePeriod",
+          "documentation":"<p>The time period covered by this summary, with inclusive start time and exclusive end time.</p>"
+        },
+        "total":{
+          "shape":"SummaryTotals",
+          "documentation":"<p>The aggregated totals for this summary, including event count and estimated savings.</p>"
+        }
+      },
+      "documentation":"<p> A summary of automation events grouped by specified dimensions. </p>"
+    },
+    "AutomationEventSummaryList":{
+      "type":"list",
+      "member":{"shape":"AutomationEventSummary"}
+    },
+    "AutomationEvents":{
+      "type":"list",
+      "member":{"shape":"AutomationEvent"}
+    },
+    "AutomationRule":{
+      "type":"structure",
+      "members":{
+        "ruleArn":{
+          "shape":"RuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the automation rule.</p>"
+        },
+        "ruleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier of the automation rule.</p>"
+        },
+        "name":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the automation rule.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the automation rule.</p>"
+        },
+        "ruleType":{
+          "shape":"RuleType",
+          "documentation":"<p>The type of automation rule (OrganizationRule or AccountRule).</p>"
+        },
+        "ruleRevision":{
+          "shape":"Long",
+          "documentation":"<p>The revision number of the automation rule.</p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The 12-digit Amazon Web Services account ID that owns this automation rule.</p>"
+        },
+        "organizationConfiguration":{
+          "shape":"OrganizationConfiguration",
+          "documentation":"<p>Configuration settings for organization-wide rules.</p>"
+        },
+        "priority":{
+          "shape":"String",
+          "documentation":"<p>A string representation of a decimal number between 0 and 1 (having up to 30 digits after the decimal point) that determines the priority of the rule. When multiple rules match the same recommended action, Compute Optimizer assigns the action to the rule with the lowest priority value (highest priority), even if that rule is scheduled to run later than other matching rules.</p>"
+        },
+        "recommendedActionTypes":{
+          "shape":"RecommendedActionTypeList",
+          "documentation":"<p>List of recommended action types that this rule can execute.</p>"
+        },
+        "schedule":{
+          "shape":"Schedule",
+          "documentation":"<p>The schedule configuration for when the automation rule should execute.</p>"
+        },
+        "status":{
+          "shape":"RuleStatus",
+          "documentation":"<p>The current status of the automation rule (Active or Inactive).</p>"
+        },
+        "createdTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the automation rule was created.</p>"
+        },
+        "lastUpdatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the automation rule was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Represents a complete automation rule configuration including criteria, schedule, and execution settings.</p>"
+    },
+    "AutomationRuleFilterName":{
+      "type":"string",
+      "enum":[
+        "Name",
+        "RecommendedActionType",
+        "Status",
+        "RuleType",
+        "OrganizationConfigurationRuleApplyOrder",
+        "AccountId"
+      ]
+    },
+    "AutomationRules":{
+      "type":"list",
+      "member":{"shape":"AutomationRule"}
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "ClientToken":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9_-]{1,64}"
+    },
+    "ComparisonOperator":{
+      "type":"string",
+      "enum":[
+        "StringEquals",
+        "StringNotEquals",
+        "StringEqualsIgnoreCase",
+        "StringNotEqualsIgnoreCase",
+        "StringLike",
+        "StringNotLike",
+        "NumericEquals",
+        "NumericNotEquals",
+        "NumericLessThan",
+        "NumericLessThanEquals",
+        "NumericGreaterThan",
+        "NumericGreaterThanEquals"
+      ]
+    },
+    "CreateAutomationRuleRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "ruleType",
+        "recommendedActionTypes",
+        "schedule",
+        "status"
+      ],
+      "members":{
+        "name":{
+          "shape":"RuleName",
+          "documentation":"<p> The name of the automation rule. </p>"
+        },
+        "description":{
+          "shape":"RuleDescription",
+          "documentation":"<p> A description of the automation rule. </p>"
+        },
+        "ruleType":{
+          "shape":"RuleType",
+          "documentation":"<p> The type of rule. </p> <note> <p>Only the management account or a delegated administrator can set the ruleType to be OrganizationRule.</p> </note>"
+        },
+        "organizationConfiguration":{
+          "shape":"OrganizationConfiguration",
+          "documentation":"<p> Configuration for organization-level rules. Required for OrganizationRule type. </p>"
+        },
+        "priority":{
+          "shape":"String",
+          "documentation":"<p>A string representation of a decimal number between 0 and 1 (having up to 30 digits after the decimal point) that determines the priority of the rule. When multiple rules match the same recommended action, Compute Optimizer assigns the action to the rule with the lowest priority value (highest priority), even if that rule is scheduled to run later than other matching rules. </p>"
+        },
+        "recommendedActionTypes":{
+          "shape":"RecommendedActionTypeList",
+          "documentation":"<p> The types of recommended actions this rule will automate. </p>"
+        },
+        "criteria":{
+          "shape":"Criteria",
+          "documentation":"<p>A set of conditions that specify which recommended action qualify for implementation. When a rule is active and a recommended action matches these criteria, Compute Optimizer implements the action at the scheduled run time. </p>"
+        },
+        "schedule":{
+          "shape":"Schedule",
+          "documentation":"<p> The schedule for when the rule should run. </p>"
+        },
+        "status":{
+          "shape":"RuleStatus",
+          "documentation":"<p>The status of the rule </p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p> The tags to associate with the rule. </p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p> A unique identifier to ensure idempotency of the request. </p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateAutomationRuleResponse":{
+      "type":"structure",
+      "members":{
+        "ruleArn":{
+          "shape":"RuleArn",
+          "documentation":"<p> The Amazon Resource Name (ARN) of the created rule. </p>"
+        },
+        "ruleId":{
+          "shape":"RuleId",
+          "documentation":"<p> The unique identifier of the created rule. </p>"
+        },
+        "name":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the automation rule. Must be 1-128 characters long and contain only alphanumeric characters, underscores, and hyphens.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the automation rule. Can be up to 1024 characters long and contain alphanumeric characters, underscores, hyphens, spaces, and certain special characters.</p>"
+        },
+        "ruleType":{
+          "shape":"RuleType",
+          "documentation":"<p>The type of automation rule. Can be either OrganizationRule for organization-wide rules or AccountRule for account-specific rules.</p>"
+        },
+        "ruleRevision":{
+          "shape":"Long",
+          "documentation":"<p>The revision number of the automation rule. This is incremented each time the rule is updated.</p>"
+        },
+        "organizationConfiguration":{
+          "shape":"OrganizationConfiguration",
+          "documentation":"<p>Configuration settings for organization-wide rules, including rule application order and target account IDs.</p>"
+        },
+        "priority":{
+          "shape":"String",
+          "documentation":"<p>The priority level of the automation rule, used to determine execution order when multiple rules apply to the same resource.</p>"
+        },
+        "recommendedActionTypes":{
+          "shape":"RecommendedActionTypeList",
+          "documentation":"<p>List of recommended action types that this rule can execute, such as SnapshotAndDeleteUnattachedEbsVolume or UpgradeEbsVolumeType.</p>"
+        },
+        "criteria":{"shape":"Criteria"},
+        "schedule":{
+          "shape":"Schedule",
+          "documentation":"<p>The schedule configuration for when the automation rule should execute, including cron expression, timezone, and execution window.</p>"
+        },
+        "status":{
+          "shape":"RuleStatus",
+          "documentation":"<p>The current status of the automation rule. Can be Active or Inactive.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>A list of key-value pairs used to categorize and organize the automation rule. Maximum of 200 tags allowed.</p>"
+        },
+        "createdTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the automation rule was created.</p>"
+        }
+      }
+    },
+    "Criteria":{
+      "type":"structure",
+      "members":{
+        "region":{
+          "shape":"StringCriteriaConditionList",
+          "documentation":"<p>Filter criteria for Amazon Web Services regions where resources must be located.</p>"
+        },
+        "resourceArn":{
+          "shape":"StringCriteriaConditionList",
+          "documentation":"<p>Filter criteria for specific resource ARNs to include or exclude.</p>"
+        },
+        "ebsVolumeType":{
+          "shape":"StringCriteriaConditionList",
+          "documentation":"<p>Filter criteria for EBS volume types, such as gp2, gp3, io1, io2, st1, or sc1.</p>"
+        },
+        "ebsVolumeSizeInGib":{
+          "shape":"IntegerCriteriaConditionList",
+          "documentation":"<p>Filter criteria for EBS volume sizes in gibibytes (GiB).</p>"
+        },
+        "estimatedMonthlySavings":{
+          "shape":"DoubleCriteriaConditionList",
+          "documentation":"<p>Filter criteria for estimated monthly cost savings from the recommended action.</p>"
+        },
+        "resourceTag":{
+          "shape":"ResourceTagsCriteriaConditionList",
+          "documentation":"<p>Filter criteria for resource tags, allowing filtering by tag key and value combinations.</p>"
+        },
+        "lookBackPeriodInDays":{
+          "shape":"IntegerCriteriaConditionList",
+          "documentation":"<p>Filter criteria for the lookback period in days used to analyze resource utilization.</p>"
+        },
+        "restartNeeded":{
+          "shape":"StringCriteriaConditionList",
+          "documentation":"<p>Filter criteria indicating whether the recommended action requires a resource restart.</p>"
+        }
+      },
+      "documentation":"<p> A set of conditions that specify which recommended action qualify for implementation. When a rule is active and a recommended action matches these criteria, Compute Optimizer implements the action at the scheduled run time. You can specify up to 20 conditions per filter criteria and 20 values per condition. </p>"
+    },
+    "DeleteAutomationRuleRequest":{
+      "type":"structure",
+      "required":[
+        "ruleArn",
+        "ruleRevision"
+      ],
+      "members":{
+        "ruleArn":{
+          "shape":"RuleArn",
+          "documentation":"<p> The ARN of the rule to delete. </p>"
+        },
+        "ruleRevision":{
+          "shape":"Long",
+          "documentation":"<p> The revision number of the rule to delete. </p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p> A unique identifier to ensure idempotency of the request. </p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "DeleteAutomationRuleResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DisassociateAccountsRequest":{
+      "type":"structure",
+      "required":["accountIds"],
+      "members":{
+        "accountIds":{
+          "shape":"AccountIdList",
+          "documentation":"<p> The IDs of the member accounts to disassociate. </p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p> A unique identifier to ensure idempotency of the request. </p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "DisassociateAccountsResponse":{
+      "type":"structure",
+      "members":{
+        "accountIds":{
+          "shape":"AccountIdList",
+          "documentation":"<p> The IDs of the member accounts that were successfully disassociated. </p>"
+        },
+        "errors":{
+          "shape":"StringList",
+          "documentation":"<p> Any errors that occurred during the disassociation process. </p>"
+        }
+      }
+    },
+    "Double":{
+      "type":"double",
+      "box":true
+    },
+    "DoubleCriteriaCondition":{
+      "type":"structure",
+      "members":{
+        "comparison":{
+          "shape":"ComparisonOperator",
+          "documentation":"<p>The comparison operator to use, such as equals, greater than, less than, etc.</p>"
+        },
+        "values":{
+          "shape":"DoubleList",
+          "documentation":"<p>The list of double values to compare against using the specified comparison operator.</p>"
+        }
+      },
+      "documentation":"<p>Defines a condition for filtering based on double/floating-point numeric values with comparison operators.</p>"
+    },
+    "DoubleCriteriaConditionList":{
+      "type":"list",
+      "member":{"shape":"DoubleCriteriaCondition"}
+    },
+    "DoubleList":{
+      "type":"list",
+      "member":{"shape":"Double"}
+    },
+    "EbsVolume":{
+      "type":"structure",
+      "members":{
+        "configuration":{
+          "shape":"EbsVolumeConfiguration",
+          "documentation":"<p>The configuration details of the EBS volume, including type, size, IOPS, and throughput.</p>"
+        }
+      },
+      "documentation":"<p>Represents an Amazon EBS volume with its configuration and snapshot usage information.</p>"
+    },
+    "EbsVolumeConfiguration":{
+      "type":"structure",
+      "members":{
+        "type":{
+          "shape":"String",
+          "documentation":"<p>The EBS volume type, such as gp2, gp3, io1, io2, st1, or sc1.</p>"
+        },
+        "sizeInGib":{
+          "shape":"Integer",
+          "documentation":"<p>The size of the EBS volume in gibibytes (GiB).</p>"
+        },
+        "iops":{
+          "shape":"Integer",
+          "documentation":"<p>The number of I/O operations per second (IOPS) provisioned for the volume.</p>"
+        },
+        "throughput":{
+          "shape":"Integer",
+          "documentation":"<p>The throughput in MiB/s provisioned for the volume (applicable to gp3, io1, and io2bx volumes).</p>"
+        }
+      },
+      "documentation":"<p>Configuration details for an Amazon EBS volume.</p>"
+    },
+    "EnrollmentStatus":{
+      "type":"string",
+      "enum":[
+        "Active",
+        "Inactive",
+        "Pending",
+        "Failed"
+      ]
+    },
+    "EstimatedMonthlySavings":{
+      "type":"structure",
+      "required":[
+        "currency",
+        "beforeDiscountSavings",
+        "afterDiscountSavings",
+        "savingsEstimationMode"
+      ],
+      "members":{
+        "currency":{
+          "shape":"String",
+          "documentation":"<p> The currency of the estimated savings. </p>"
+        },
+        "beforeDiscountSavings":{
+          "shape":"Double",
+          "documentation":"<p> The estimated monthly savings before applying any discounts. </p>"
+        },
+        "afterDiscountSavings":{
+          "shape":"Double",
+          "documentation":"<p> The estimated monthly savings after applying any discounts. </p>"
+        },
+        "savingsEstimationMode":{
+          "shape":"SavingsEstimationMode",
+          "documentation":"<p>The mode used to calculate savings, either BeforeDiscount or AfterDiscount.</p>"
+        }
+      },
+      "documentation":"<p> Contains information about estimated monthly cost savings. </p>"
+    },
+    "EventId":{
+      "type":"string",
+      "pattern":"[0-9A-Za-z]{16}"
+    },
+    "EventStatus":{
+      "type":"string",
+      "enum":[
+        "Ready",
+        "InProgress",
+        "Complete",
+        "Failed",
+        "Cancelled",
+        "RollbackReady",
+        "RollbackInProgress",
+        "RollbackComplete",
+        "RollbackFailed"
+      ]
+    },
+    "EventType":{
+      "type":"string",
+      "documentation":"<p>Event type enumeration</p>",
+      "enum":[
+        "SnapshotAndDeleteUnattachedEbsVolume",
+        "UpgradeEbsVolumeType"
+      ]
+    },
+    "Filter":{
+      "type":"structure",
+      "required":[
+        "name",
+        "values"
+      ],
+      "members":{
+        "name":{
+          "shape":"AutomationRuleFilterName",
+          "documentation":"<p>The name of the filter field to apply.</p>"
+        },
+        "values":{
+          "shape":"FilterValues",
+          "documentation":"<p>The list of values to filter by for the specified filter field.</p>"
+        }
+      },
+      "documentation":"<p>A filter used to narrow down results based on specific criteria.</p>"
+    },
+    "FilterList":{
+      "type":"list",
+      "member":{"shape":"Filter"}
+    },
+    "FilterValue":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z0-9\\-_\\.\\*\\?\\s]+"
+    },
+    "FilterValues":{
+      "type":"list",
+      "member":{"shape":"FilterValue"}
+    },
+    "ForbiddenException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p> You are not authorized to perform this action. </p>",
+      "exception":true
+    },
+    "GetAutomationEventRequest":{
+      "type":"structure",
+      "required":["eventId"],
+      "members":{
+        "eventId":{
+          "shape":"EventId",
+          "documentation":"<p> The ID of the automation event to retrieve. </p>"
+        }
+      }
+    },
+    "GetAutomationEventResponse":{
+      "type":"structure",
+      "members":{
+        "eventId":{
+          "shape":"EventId",
+          "documentation":"<p>The ID of the automation event to retrieve.</p>"
+        },
+        "eventDescription":{
+          "shape":"String",
+          "documentation":"<p>A description of the automation event.</p>"
+        },
+        "eventType":{
+          "shape":"EventType",
+          "documentation":"<p>The type of automation event.</p>"
+        },
+        "eventStatus":{
+          "shape":"EventStatus",
+          "documentation":"<p>The current status of the automation event.</p>"
+        },
+        "eventStatusReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current event status.</p>"
+        },
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource affected by the automation event.</p>"
+        },
+        "resourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the resource affected by the automation event.</p>"
+        },
+        "recommendedActionId":{
+          "shape":"RecommendedActionId",
+          "documentation":"<p>The ID of the recommended action associated with this automation event.</p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the automation event.</p>"
+        },
+        "region":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region where the automation event occurred.</p>"
+        },
+        "ruleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The ID of the automation rule that triggered this event.</p>"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of resource affected by the automation event.</p>"
+        },
+        "createdTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the automation event was created.</p>"
+        },
+        "completedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the automation event completed.</p>"
+        },
+        "estimatedMonthlySavings":{"shape":"EstimatedMonthlySavings"}
+      }
+    },
+    "GetAutomationRuleRequest":{
+      "type":"structure",
+      "required":["ruleArn"],
+      "members":{
+        "ruleArn":{
+          "shape":"RuleArn",
+          "documentation":"<p> The ARN of the rule to retrieve. </p>"
+        }
+      }
+    },
+    "GetAutomationRuleResponse":{
+      "type":"structure",
+      "members":{
+        "ruleArn":{
+          "shape":"RuleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the automation rule.</p>"
+        },
+        "ruleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The unique identifier of the automation rule.</p>"
+        },
+        "name":{
+          "shape":"RuleName",
+          "documentation":"<p>The name of the automation rule.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>A description of the automation rule.</p>"
+        },
+        "ruleType":{
+          "shape":"RuleType",
+          "documentation":"<p>The type of automation rule.</p>"
+        },
+        "ruleRevision":{
+          "shape":"Long",
+          "documentation":"<p>The revision number of the automation rule.</p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The 12-digit Amazon Web Services account ID that owns this automation rule.</p>"
+        },
+        "organizationConfiguration":{"shape":"OrganizationConfiguration"},
+        "priority":{
+          "shape":"String",
+          "documentation":"<p>A string representation of a decimal number between 0 and 1 (having up to 30 digits after the decimal point) that determines the priority of the rule.</p>"
+        },
+        "recommendedActionTypes":{
+          "shape":"RecommendedActionTypeList",
+          "documentation":"<p>List of recommended action types that this rule can execute.</p>"
+        },
+        "criteria":{"shape":"Criteria"},
+        "schedule":{"shape":"Schedule"},
+        "status":{
+          "shape":"RuleStatus",
+          "documentation":"<p>The current status of the automation rule (Active or Inactive).</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the automation rule.</p>"
+        },
+        "createdTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the automation rule was created.</p>"
+        },
+        "lastUpdatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the automation rule was last updated.</p>"
+        }
+      }
+    },
+    "GetEnrollmentConfigurationRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetEnrollmentConfigurationResponse":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"EnrollmentStatus",
+          "documentation":"<p> The current enrollment status. </p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p> The reason for the current enrollment status. </p>"
+        },
+        "organizationRuleMode":{
+          "shape":"OrganizationRuleMode",
+          "documentation":"<p>Specifies whether the management account can create Automation rules that implement optimization actions for this account. </p>"
+        },
+        "lastUpdatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp of the last update to the enrollment configuration. </p>"
+        }
+      }
+    },
+    "IdempotencyTokenInUseException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p> The specified client token is already in use. </p>",
+      "exception":true
+    },
+    "IdempotentParameterMismatchException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>Exception thrown when the same client token is used with different parameters, indicating a mismatch in idempotent request parameters.</p>",
+      "exception":true
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "IntegerCriteriaCondition":{
+      "type":"structure",
+      "members":{
+        "comparison":{
+          "shape":"ComparisonOperator",
+          "documentation":"<p>The comparison operator to use, such as equals, greater than, less than, etc.</p>"
+        },
+        "values":{
+          "shape":"IntegerList",
+          "documentation":"<p>The list of integer values to compare against using the specified comparison operator.</p>"
+        }
+      },
+      "documentation":"<p>Defines a condition for filtering based on integer values with comparison operators.</p>"
+    },
+    "IntegerCriteriaConditionList":{
+      "type":"list",
+      "member":{"shape":"IntegerCriteriaCondition"}
+    },
+    "IntegerList":{
+      "type":"list",
+      "member":{"shape":"Integer"}
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p> An internal error occurred while processing the request. </p>",
+      "exception":true,
+      "fault":true
+    },
+    "InvalidParameterValueException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p> One or more parameter values are not valid. </p>",
+      "exception":true
+    },
+    "ListAccountsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"ListAccountsRequestMaxResultsInteger",
+          "documentation":"<p> The maximum number of results to return in a single call. </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token for the next page of results. </p>"
+        }
+      }
+    },
+    "ListAccountsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListAccountsResponse":{
+      "type":"structure",
+      "required":["accounts"],
+      "members":{
+        "accounts":{
+          "shape":"AccountInfoList",
+          "documentation":"<p> The list of accounts in your organization enrolled in Compute Optimizer </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token to use to retrieve the next page of results. </p>"
+        }
+      }
+    },
+    "ListAutomationEventStepsRequest":{
+      "type":"structure",
+      "required":["eventId"],
+      "members":{
+        "eventId":{
+          "shape":"EventId",
+          "documentation":"<p> The ID of the automation event. </p>"
+        },
+        "maxResults":{
+          "shape":"ListAutomationEventStepsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of automation event steps to return in a single response. Valid range is 1-1000.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination to retrieve the next set of results when the response is truncated.</p>"
+        }
+      }
+    },
+    "ListAutomationEventStepsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListAutomationEventStepsResponse":{
+      "type":"structure",
+      "members":{
+        "automationEventSteps":{
+          "shape":"AutomationEventSteps",
+          "documentation":"<p> The list of steps for the specified automation event. </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination. If present, indicates there are more results available and can be used in subsequent requests.</p>"
+        }
+      }
+    },
+    "ListAutomationEventSummariesRequest":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"AutomationEventFilterList",
+          "documentation":"<p> The filters to apply to the list of automation event summaries. </p>"
+        },
+        "startDateInclusive":{
+          "shape":"String",
+          "documentation":"<p>The start date for filtering automation event summaries, inclusive. Events created on or after this date will be included.</p>"
+        },
+        "endDateExclusive":{
+          "shape":"String",
+          "documentation":"<p>The end date for filtering automation event summaries, exclusive. Events created before this date will be included.</p>"
+        },
+        "maxResults":{
+          "shape":"ListAutomationEventSummariesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of automation event summaries to return in a single response. Valid range is 1-1000.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination to retrieve the next set of results when the response is truncated.</p>"
+        }
+      }
+    },
+    "ListAutomationEventSummariesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListAutomationEventSummariesResponse":{
+      "type":"structure",
+      "members":{
+        "automationEventSummaries":{
+          "shape":"AutomationEventSummaryList",
+          "documentation":"<p> The list of automation event summaries that match the specified criteria. </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination. If present, indicates there are more results available and can be used in subsequent requests.</p>"
+        }
+      }
+    },
+    "ListAutomationEventsRequest":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"AutomationEventFilterList",
+          "documentation":"<p> The filters to apply to the list of automation events. </p>"
+        },
+        "startTimeInclusive":{
+          "shape":"Timestamp",
+          "documentation":"<p> The start of the time range to query for events. </p>"
+        },
+        "endTimeExclusive":{
+          "shape":"Timestamp",
+          "documentation":"<p> The end of the time range to query for events. </p>"
+        },
+        "maxResults":{
+          "shape":"ListAutomationEventsRequestMaxResultsInteger",
+          "documentation":"<p> The maximum number of results to return in a single call. </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token for the next page of results. </p>"
+        }
+      }
+    },
+    "ListAutomationEventsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListAutomationEventsResponse":{
+      "type":"structure",
+      "members":{
+        "automationEvents":{
+          "shape":"AutomationEvents",
+          "documentation":"<p> The list of automation events that match the specified criteria. </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token to use to retrieve the next page of results. </p>"
+        }
+      }
+    },
+    "ListAutomationRulePreviewRequest":{
+      "type":"structure",
+      "required":[
+        "ruleType",
+        "recommendedActionTypes"
+      ],
+      "members":{
+        "ruleType":{
+          "shape":"RuleType",
+          "documentation":"<p> The type of rule. </p> <note> <p>Only the management account or a delegated administrator can set the ruleType to be OrganizationRule.</p> </note>"
+        },
+        "organizationScope":{
+          "shape":"OrganizationScope",
+          "documentation":"<p> The organizational scope for the rule preview. </p>"
+        },
+        "recommendedActionTypes":{
+          "shape":"RecommendedActionTypeList",
+          "documentation":"<p> The types of recommended actions to include in the preview. </p>"
+        },
+        "criteria":{
+          "shape":"Criteria",
+          "documentation":"<p>A set of conditions that specify which recommended action qualify for implementation. When a rule is active and a recommended action matches these criteria, Compute Optimizer implements the action at the scheduled run time. </p>"
+        },
+        "maxResults":{
+          "shape":"ListAutomationRulePreviewRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of automation rule preview results to return in a single response. Valid range is 1-1000.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination to retrieve the next set of results when the response is truncated.</p>"
+        }
+      }
+    },
+    "ListAutomationRulePreviewRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListAutomationRulePreviewResponse":{
+      "type":"structure",
+      "members":{
+        "previewResults":{
+          "shape":"PreviewResults",
+          "documentation":"<p> The list of actions that would be taken based on the specified criteria. </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination. If present, indicates there are more results available and can be used in subsequent requests.</p>"
+        }
+      }
+    },
+    "ListAutomationRulePreviewSummariesRequest":{
+      "type":"structure",
+      "required":[
+        "ruleType",
+        "recommendedActionTypes"
+      ],
+      "members":{
+        "ruleType":{
+          "shape":"RuleType",
+          "documentation":"<p>The type of rule.</p>"
+        },
+        "organizationScope":{
+          "shape":"OrganizationScope",
+          "documentation":"<p>The organizational scope for the rule preview.</p>"
+        },
+        "recommendedActionTypes":{
+          "shape":"RecommendedActionTypeList",
+          "documentation":"<p>The types of recommended actions to include in the preview.</p>"
+        },
+        "criteria":{"shape":"Criteria"},
+        "maxResults":{
+          "shape":"ListAutomationRulePreviewSummariesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of automation rule preview summaries to return in a single response. Valid range is 1-1000.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination to retrieve the next set of results when the response is truncated.</p>"
+        }
+      }
+    },
+    "ListAutomationRulePreviewSummariesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListAutomationRulePreviewSummariesResponse":{
+      "type":"structure",
+      "members":{
+        "previewResultSummaries":{
+          "shape":"PreviewResultSummaries",
+          "documentation":"<p>The list of automation rule preview summaries that match the specified criteria.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination. If present, indicates there are more results available and can be used in subsequent requests.</p>"
+        }
+      }
+    },
+    "ListAutomationRulesRequest":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"FilterList",
+          "documentation":"<p> The filters to apply to the list of automation rules. </p>"
+        },
+        "maxResults":{
+          "shape":"ListAutomationRulesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of automation rules to return in a single response. Valid range is 1-1000.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination to retrieve the next set of results when the response is truncated.</p>"
+        }
+      }
+    },
+    "ListAutomationRulesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListAutomationRulesResponse":{
+      "type":"structure",
+      "members":{
+        "automationRules":{
+          "shape":"AutomationRules",
+          "documentation":"<p> The list of automation rules that match the specified criteria. </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination. If present, indicates there are more results available and can be used in subsequent requests.</p>"
+        }
+      }
+    },
+    "ListRecommendedActionSummariesRequest":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"RecommendedActionFilterList",
+          "documentation":"<p>A list of filters to apply when retrieving recommended action summaries. Filters can be based on resource type, action type, account ID, and other criteria.</p>"
+        },
+        "maxResults":{
+          "shape":"ListRecommendedActionSummariesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of recommended action summaries to return in a single response. Valid range is 1-1000.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination to retrieve the next set of results when the response is truncated.</p>"
+        }
+      }
+    },
+    "ListRecommendedActionSummariesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListRecommendedActionSummariesResponse":{
+      "type":"structure",
+      "members":{
+        "recommendedActionSummaries":{
+          "shape":"RecommendedActionSummaries",
+          "documentation":"<p> The summary of recommended actions that match the specified criteria. </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination. If present, indicates there are more results available and can be used in subsequent requests.</p>"
+        }
+      }
+    },
+    "ListRecommendedActionsRequest":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"RecommendedActionFilterList",
+          "documentation":"<p> The filters to apply to the list of recommended actions. </p>"
+        },
+        "maxResults":{
+          "shape":"ListRecommendedActionsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of recommended actions to return in a single response. Valid range is 1-1000.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination to retrieve the next set of results when the response is truncated.</p>"
+        }
+      }
+    },
+    "ListRecommendedActionsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListRecommendedActionsResponse":{
+      "type":"structure",
+      "members":{
+        "recommendedActions":{
+          "shape":"RecommendedActions",
+          "documentation":"<p> The list of recommended actions that match the specified criteria. </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token used for pagination. If present, indicates there are more results available and can be used in subsequent requests.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"RuleArn",
+          "documentation":"<p> The ARN of the resource to list tags for. </p>"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p> The list of tags associated with the specified resource. </p>"
+        }
+      }
+    },
+    "Long":{
+      "type":"long",
+      "box":true
+    },
+    "NextToken":{
+      "type":"string",
+      "pattern":"[A-Za-z0-9+/=]+"
+    },
+    "NotManagementAccountException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p> The operation can only be performed by a management account. </p>",
+      "exception":true
+    },
+    "OptInRequiredException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p> The account must be opted in to Compute Optimizer Automation before performing this action. </p>",
+      "exception":true
+    },
+    "OrganizationConfiguration":{
+      "type":"structure",
+      "members":{
+        "ruleApplyOrder":{
+          "shape":"RuleApplyOrder",
+          "documentation":"<p>Specifies when organization rules should be applied relative to account rules.</p>"
+        },
+        "accountIds":{
+          "shape":"OrganizationConfigurationAccountIds",
+          "documentation":"<p>List of specific Amazon Web Services account IDs where the organization rule should be applied.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for organization-wide automation rules.</p>"
+    },
+    "OrganizationConfigurationAccountIds":{
+      "type":"list",
+      "member":{"shape":"AccountId"},
+      "max":50,
+      "min":1
+    },
+    "OrganizationRuleMode":{
+      "type":"string",
+      "enum":[
+        "AnyAllowed",
+        "NoneAllowed"
+      ]
+    },
+    "OrganizationScope":{
+      "type":"structure",
+      "members":{
+        "accountIds":{
+          "shape":"OrganizationConfigurationAccountIds",
+          "documentation":"<p>List of Amazon Web Services account IDs to include in the organization scope.</p>"
+        }
+      },
+      "documentation":"<p> Defines the scope for organization-level rules when previewing matching actions.</p>"
+    },
+    "PreviewResult":{
+      "type":"structure",
+      "members":{
+        "recommendedActionId":{
+          "shape":"RecommendedActionId",
+          "documentation":"<p>The ID of the recommended action being previewed.</p>"
+        },
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource affected by the recommended action.</p>"
+        },
+        "resourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the resource affected by the recommended action.</p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID associated with the resource.</p>"
+        },
+        "region":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region where the resource is located.</p>"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of resource being evaluated.</p>"
+        },
+        "lookBackPeriodInDays":{
+          "shape":"Integer",
+          "documentation":"<p>The number of days of historical data used to analyze the resource.</p>"
+        },
+        "recommendedActionType":{
+          "shape":"RecommendedActionType",
+          "documentation":"<p>The type of recommended action being previewed.</p>"
+        },
+        "currentResourceSummary":{
+          "shape":"String",
+          "documentation":"<p>A summary of the resource's current configuration.</p>"
+        },
+        "currentResourceDetails":{"shape":"ResourceDetails"},
+        "recommendedResourceSummary":{
+          "shape":"String",
+          "documentation":"<p>A summary of the resource's recommended configuration.</p>"
+        },
+        "recommendedResourceDetails":{"shape":"ResourceDetails"},
+        "restartNeeded":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether implementing the recommended action requires a resource restart.</p>"
+        },
+        "estimatedMonthlySavings":{"shape":"EstimatedMonthlySavings"},
+        "resourceTags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the resource.</p>"
+        }
+      },
+      "documentation":"<p>Contains the results of previewing an automation rule against available recommendations.</p>"
+    },
+    "PreviewResultSummaries":{
+      "type":"list",
+      "member":{"shape":"PreviewResultSummary"}
+    },
+    "PreviewResultSummary":{
+      "type":"structure",
+      "required":[
+        "key",
+        "total"
+      ],
+      "members":{
+        "key":{
+          "shape":"String",
+          "documentation":"<p>The key identifier for this preview result summary.</p>"
+        },
+        "total":{"shape":"RulePreviewTotal"}
+      },
+      "documentation":"<p>Contains a summary of preview results for an automation rule.</p>"
+    },
+    "PreviewResults":{
+      "type":"list",
+      "member":{"shape":"PreviewResult"}
+    },
+    "RecommendedAction":{
+      "type":"structure",
+      "members":{
+        "recommendedActionId":{
+          "shape":"RecommendedActionId",
+          "documentation":"<p>The unique identifier of the recommended action.</p>"
+        },
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource that the recommendation applies to.</p>"
+        },
+        "resourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the resource that the recommendation applies to.</p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID that owns the resource.</p>"
+        },
+        "region":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region where the resource is located.</p>"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of resource being evaluated.</p>"
+        },
+        "lookBackPeriodInDays":{
+          "shape":"Integer",
+          "documentation":"<p>The number of days of historical data used to generate the recommendation.</p>"
+        },
+        "recommendedActionType":{
+          "shape":"RecommendedActionType",
+          "documentation":"<p>The type of action being recommended.</p>"
+        },
+        "currentResourceSummary":{
+          "shape":"String",
+          "documentation":"<p>A summary of the resource's current configuration.</p>"
+        },
+        "currentResourceDetails":{"shape":"ResourceDetails"},
+        "recommendedResourceSummary":{
+          "shape":"String",
+          "documentation":"<p>A summary of the resource's recommended configuration.</p>"
+        },
+        "recommendedResourceDetails":{"shape":"ResourceDetails"},
+        "restartNeeded":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether implementing the recommended action requires a resource restart.</p>"
+        },
+        "estimatedMonthlySavings":{"shape":"EstimatedMonthlySavings"},
+        "resourceTags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags associated with the resource.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a recommended action that can be applied to optimize an Amazon Web Services resource.</p>"
+    },
+    "RecommendedActionFilter":{
+      "type":"structure",
+      "required":[
+        "name",
+        "values"
+      ],
+      "members":{
+        "name":{
+          "shape":"RecommendedActionFilterName",
+          "documentation":"<p>The name of the filter field to apply.</p>"
+        },
+        "values":{
+          "shape":"FilterValues",
+          "documentation":"<p>List of filter values to match against the specified filter name. Used to narrow down recommended actions based on specific criteria.</p>"
+        }
+      },
+      "documentation":"<p>A filter used to narrow down recommended action results based on specific criteria.</p>"
+    },
+    "RecommendedActionFilterList":{
+      "type":"list",
+      "member":{"shape":"RecommendedActionFilter"}
+    },
+    "RecommendedActionFilterName":{
+      "type":"string",
+      "enum":[
+        "ResourceType",
+        "RecommendedActionType",
+        "ResourceId",
+        "LookBackPeriodInDays",
+        "CurrentResourceDetailsEbsVolumeType",
+        "ResourceTagsKey",
+        "ResourceTagsValue",
+        "AccountId",
+        "RestartNeeded"
+      ]
+    },
+    "RecommendedActionId":{
+      "type":"string",
+      "pattern":"[0-9A-Za-z]{16}"
+    },
+    "RecommendedActionSummaries":{
+      "type":"list",
+      "member":{"shape":"RecommendedActionSummary"}
+    },
+    "RecommendedActionSummary":{
+      "type":"structure",
+      "required":[
+        "key",
+        "total"
+      ],
+      "members":{
+        "key":{
+          "shape":"String",
+          "documentation":"<p>The grouping key used to categorize the recommended actions in this summary.</p>"
+        },
+        "total":{
+          "shape":"RecommendedActionTotal",
+          "documentation":"<p>Aggregate totals for the recommended actions in this group, including count and estimated savings.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about recommended actions, grouped by specific criteria with totals and counts.</p>"
+    },
+    "RecommendedActionTotal":{
+      "type":"structure",
+      "required":[
+        "recommendedActionCount",
+        "estimatedMonthlySavings"
+      ],
+      "members":{
+        "recommendedActionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of recommended actions in this group.</p>"
+        },
+        "estimatedMonthlySavings":{"shape":"EstimatedMonthlySavings"}
+      },
+      "documentation":"<p>Aggregate totals for a group of recommended actions, including count and estimated monthly savings.</p>"
+    },
+    "RecommendedActionType":{
+      "type":"string",
+      "documentation":"<p>Recommended action type enumeration</p>",
+      "enum":[
+        "SnapshotAndDeleteUnattachedEbsVolume",
+        "UpgradeEbsVolumeType"
+      ]
+    },
+    "RecommendedActionTypeList":{
+      "type":"list",
+      "member":{"shape":"RecommendedActionType"}
+    },
+    "RecommendedActions":{
+      "type":"list",
+      "member":{"shape":"RecommendedAction"}
+    },
+    "ResourceArn":{
+      "type":"string",
+      "pattern":"arn:aws[a-z0-9-]*:[a-z0-9-]+:[a-z0-9-]*:[0-9]{0,12}:[a-zA-Z0-9/_.-]+"
+    },
+    "ResourceDetails":{
+      "type":"structure",
+      "members":{
+        "ebsVolume":{
+          "shape":"EbsVolume",
+          "documentation":"<p>Detailed configuration information specific to EBS volumes, including volume type, size, IOPS, and throughput settings.</p>"
+        }
+      },
+      "documentation":"<p>Detailed configuration information for a specific Amazon Web Services resource, with type-specific details.</p>",
+      "union":true
+    },
+    "ResourceId":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.-]+"
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p> The specified resource was not found. </p>",
+      "exception":true
+    },
+    "ResourceTagsCriteriaCondition":{
+      "type":"structure",
+      "members":{
+        "comparison":{
+          "shape":"ComparisonOperator",
+          "documentation":"<p>The comparison operator used to evaluate the tag criteria, such as equals, not equals, or contains.</p>"
+        },
+        "key":{
+          "shape":"StringCriteriaValue",
+          "documentation":"<p>The tag key to use for comparison when filtering resources.</p>"
+        },
+        "values":{
+          "shape":"StringCriteriaValues",
+          "documentation":"<p>List of tag values to compare against when filtering resources.</p>"
+        }
+      },
+      "documentation":"<p>Criteria condition for filtering resources based on their tags, including comparison operators and values.</p>"
+    },
+    "ResourceTagsCriteriaConditionList":{
+      "type":"list",
+      "member":{"shape":"ResourceTagsCriteriaCondition"}
+    },
+    "ResourceType":{
+      "type":"string",
+      "enum":["EbsVolume"]
+    },
+    "RollbackAutomationEventRequest":{
+      "type":"structure",
+      "required":["eventId"],
+      "members":{
+        "eventId":{
+          "shape":"EventId",
+          "documentation":"<p> The ID of the automation event to roll back. </p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Must be 1-64 characters long and contain only alphanumeric characters, underscores, and hyphens.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "RollbackAutomationEventResponse":{
+      "type":"structure",
+      "members":{
+        "eventId":{
+          "shape":"EventId",
+          "documentation":"<p> The ID of the automation event being rolled back. </p>"
+        },
+        "eventStatus":{
+          "shape":"EventStatus",
+          "documentation":"<p> The current status of the rollback operation. </p>"
+        }
+      }
+    },
+    "RuleApplyOrder":{
+      "type":"string",
+      "enum":[
+        "BeforeAccountRules",
+        "AfterAccountRules"
+      ]
+    },
+    "RuleArn":{
+      "type":"string",
+      "pattern":"arn:aws:compute-optimizer::[0-9]{12}:automation-rule/[a-zA-Z0-9_-]+"
+    },
+    "RuleDescription":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"[a-zA-Z0-9_\\-\\s@\\.]*"
+    },
+    "RuleId":{
+      "type":"string",
+      "pattern":"[0-9A-Za-z]{16}"
+    },
+    "RuleName":{
+      "type":"string",
+      "max":128,
+      "min":0,
+      "pattern":"[a-zA-Z0-9_-]*"
+    },
+    "RulePreviewTotal":{
+      "type":"structure",
+      "required":[
+        "recommendedActionCount",
+        "estimatedMonthlySavings"
+      ],
+      "members":{
+        "recommendedActionCount":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of recommended actions matching the rule preview configuration.</p>"
+        },
+        "estimatedMonthlySavings":{"shape":"EstimatedMonthlySavings"}
+      },
+      "documentation":"<p>Aggregate totals for automation rule preview results, including count and estimated savings.</p>"
+    },
+    "RuleStatus":{
+      "type":"string",
+      "enum":[
+        "Active",
+        "Inactive"
+      ]
+    },
+    "RuleType":{
+      "type":"string",
+      "enum":[
+        "OrganizationRule",
+        "AccountRule"
+      ]
+    },
+    "SavingsEstimationMode":{
+      "type":"string",
+      "enum":[
+        "BeforeDiscount",
+        "AfterDiscount"
+      ]
+    },
+    "Schedule":{
+      "type":"structure",
+      "members":{
+        "scheduleExpression":{
+          "shape":"String",
+          "documentation":"<p>The expression that defines when the schedule runs. <code>cron</code> expression is supported. A <code>cron</code> expression consists of six fields separated by white spaces: (<code>minutes</code> <code>hours</code> <code>day_of_month</code> <code>month</code> <code>day_of_week</code> <code>year</code>)</p> <note> <p>You can schedule rules to run at most once per day. Your cron expression must use specific values (not wildcards) for the minutes and hours fields. For example: (<code>30 12 * * *</code>) runs daily at 12:30 PM UTC.</p> </note>"
+        },
+        "scheduleExpressionTimezone":{
+          "shape":"String",
+          "documentation":"<p>The timezone to use when interpreting the schedule expression.</p>"
+        },
+        "executionWindowInMinutes":{
+          "shape":"ScheduleExecutionWindowInMinutesInteger",
+          "documentation":"<p>The time window in minutes during which the automation rule can start implementing recommended actions.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for scheduling when automation rules should execute, including timing and execution windows.</p>"
+    },
+    "ScheduleExecutionWindowInMinutesInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1440,
+      "min":60
+    },
+    "ServiceQuotaExceededException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p> The request would exceed service quotas. </p>",
+      "exception":true
+    },
+    "ServiceUnavailableException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p> The service is temporarily unavailable. </p>",
+      "exception":true,
+      "fault":true
+    },
+    "StartAutomationEventRequest":{
+      "type":"structure",
+      "required":["recommendedActionId"],
+      "members":{
+        "recommendedActionId":{
+          "shape":"RecommendedActionId",
+          "documentation":"<p> The ID of the recommended action to automate. </p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Must be 1-64 characters long and contain only alphanumeric characters, underscores, and hyphens.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartAutomationEventResponse":{
+      "type":"structure",
+      "members":{
+        "recommendedActionId":{
+          "shape":"RecommendedActionId",
+          "documentation":"<p>The ID of the recommended action being automated.</p>"
+        },
+        "eventId":{
+          "shape":"EventId",
+          "documentation":"<p>The ID of the automation event.</p>"
+        },
+        "eventStatus":{
+          "shape":"EventStatus",
+          "documentation":"<p>The current status of the automation event.</p>"
+        }
+      }
+    },
+    "StepId":{
+      "type":"string",
+      "pattern":"[0-9A-Za-z]{16}"
+    },
+    "StepStatus":{
+      "type":"string",
+      "enum":[
+        "Ready",
+        "InProgress",
+        "Complete",
+        "Failed"
+      ]
+    },
+    "StepType":{
+      "type":"string",
+      "enum":[
+        "CreateEbsSnapshot",
+        "DeleteEbsVolume",
+        "ModifyEbsVolume",
+        "CreateEbsVolume"
+      ]
+    },
+    "String":{"type":"string"},
+    "StringCriteriaCondition":{
+      "type":"structure",
+      "members":{
+        "comparison":{
+          "shape":"ComparisonOperator",
+          "documentation":"<p>The comparison operator used to evaluate the string criteria, such as equals, not equals, or contains.</p>"
+        },
+        "values":{
+          "shape":"StringCriteriaValues",
+          "documentation":"<p>List of string values to compare against when applying the criteria condition.</p>"
+        }
+      },
+      "documentation":"<p>Criteria condition for filtering based on string values, including comparison operators and target values.</p>"
+    },
+    "StringCriteriaConditionList":{
+      "type":"list",
+      "member":{"shape":"StringCriteriaCondition"}
+    },
+    "StringCriteriaValue":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"[\\w\\s\\.\\-\\:\\/\\=\\+\\@\\*\\?]+"
+    },
+    "StringCriteriaValues":{
+      "type":"list",
+      "member":{"shape":"StringCriteriaValue"}
+    },
+    "StringList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "SummaryDimension":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"SummaryDimensionKey",
+          "documentation":"<p>The dimension key used for categorizing summary data.</p>"
+        },
+        "value":{
+          "shape":"String",
+          "documentation":"<p>The specific value for this dimension key used in the summary grouping.</p>"
+        }
+      },
+      "documentation":"<p>A key-value pair used to categorize and group summary data for analysis and reporting.</p>"
+    },
+    "SummaryDimensionKey":{
+      "type":"string",
+      "enum":["EventStatus"]
+    },
+    "SummaryDimensions":{
+      "type":"list",
+      "member":{"shape":"SummaryDimension"}
+    },
+    "SummaryTotals":{
+      "type":"structure",
+      "members":{
+        "automationEventCount":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of automation events in this summary group.</p>"
+        },
+        "estimatedMonthlySavings":{"shape":"EstimatedMonthlySavings"}
+      },
+      "documentation":"<p>Aggregate totals for automation events, including counts and estimated savings.</p>"
+    },
+    "Tag":{
+      "type":"structure",
+      "required":[
+        "key",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"TagKey",
+          "documentation":"<p>The tag key, which can be up to 128 characters long.</p>"
+        },
+        "value":{
+          "shape":"TagValue",
+          "documentation":"<p>The tag value, which can be up to 256 characters long.</p>"
+        }
+      },
+      "documentation":"<p>A key-value pair used to categorize and organize Amazon Web Services resources and automation rules.</p>"
+    },
+    "TagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\w\\s\\.\\-\\:\\/\\=\\+\\@]+"
+    },
+    "TagKeyList":{
+      "type":"list",
+      "member":{"shape":"String"}
+    },
+    "TagList":{
+      "type":"list",
+      "member":{"shape":"Tag"},
+      "max":200,
+      "min":0
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "ruleRevision",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"RuleArn",
+          "documentation":"<p> The ARN of the resource to tag. </p>"
+        },
+        "ruleRevision":{
+          "shape":"Long",
+          "documentation":"<p>The revision number of the automation rule to tag. This ensures you're tagging the correct version of the rule.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p> The tags to add to the resource. </p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Must be 1-64 characters long and contain only alphanumeric characters, underscores, and hyphens.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "TagValue":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[\\w\\s\\.\\-\\:\\/\\=\\+\\@]*"
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p> The request was denied due to request throttling. </p>",
+      "exception":true
+    },
+    "TimePeriod":{
+      "type":"structure",
+      "members":{
+        "startTimeInclusive":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time of the period, inclusive. Events at or after this time are included.</p>"
+        },
+        "endTimeExclusive":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time of the period, exclusive. Events before this time are included.</p>"
+        }
+      },
+      "documentation":"<p>Defines a time range with inclusive start time and exclusive end time for filtering and analysis.</p>"
+    },
+    "Timestamp":{"type":"timestamp"},
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "ruleRevision",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"RuleArn",
+          "documentation":"<p> The ARN of the resource to untag. </p>"
+        },
+        "ruleRevision":{
+          "shape":"Long",
+          "documentation":"<p>The revision number of the automation rule to untag. This ensures you're untagging the correct version of the rule.</p>"
+        },
+        "tagKeys":{
+          "shape":"TagKeyList",
+          "documentation":"<p> The keys of the tags to remove from the resource. </p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Must be 1-64 characters long and contain only alphanumeric characters, underscores, and hyphens.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateAutomationRuleRequest":{
+      "type":"structure",
+      "required":[
+        "ruleArn",
+        "ruleRevision"
+      ],
+      "members":{
+        "ruleArn":{
+          "shape":"RuleArn",
+          "documentation":"<p> The ARN of the rule to update. </p>"
+        },
+        "ruleRevision":{
+          "shape":"Long",
+          "documentation":"<p> The revision number of the rule to update. </p>"
+        },
+        "name":{
+          "shape":"RuleName",
+          "documentation":"<p>The updated name of the automation rule. Must be 1-128 characters long and contain only alphanumeric characters, underscores, and hyphens.</p>"
+        },
+        "description":{
+          "shape":"RuleDescription",
+          "documentation":"<p>The updated description of the automation rule. Can be up to 1024 characters long and contain alphanumeric characters, underscores, hyphens, spaces, and certain special characters.</p>"
+        },
+        "ruleType":{
+          "shape":"RuleType",
+          "documentation":"<p>The updated type of automation rule. Can be either OrganizationRule for organization-wide rules or AccountRule for account-specific rules.</p>"
+        },
+        "organizationConfiguration":{
+          "shape":"OrganizationConfiguration",
+          "documentation":"<p>Updated configuration settings for organization-wide rules, including rule application order and target account IDs.</p>"
+        },
+        "priority":{
+          "shape":"String",
+          "documentation":"<p>The updated priority level of the automation rule, used to determine execution order when multiple rules apply to the same resource.</p>"
+        },
+        "recommendedActionTypes":{
+          "shape":"RecommendedActionTypeList",
+          "documentation":"<p>Updated list of recommended action types that this rule can execute, such as SnapshotAndDeleteUnattachedEbsVolume or UpgradeEbsVolumeType.</p>"
+        },
+        "criteria":{"shape":"Criteria"},
+        "schedule":{
+          "shape":"Schedule",
+          "documentation":"<p>The updated schedule configuration for when the automation rule should execute, including cron expression, timezone, and execution window.</p>"
+        },
+        "status":{
+          "shape":"RuleStatus",
+          "documentation":"<p>The updated status of the automation rule. Can be Active or Inactive.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Must be 1-64 characters long and contain only alphanumeric characters, underscores, and hyphens.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateAutomationRuleResponse":{
+      "type":"structure",
+      "members":{
+        "ruleArn":{
+          "shape":"RuleArn",
+          "documentation":"<p> The ARN of the updated rule. </p>"
+        },
+        "ruleRevision":{
+          "shape":"Long",
+          "documentation":"<p> The new revision number of the updated rule. </p>"
+        },
+        "name":{
+          "shape":"RuleName",
+          "documentation":"<p>The updated name of the automation rule.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The updated description of the automation rule.</p>"
+        },
+        "ruleType":{
+          "shape":"RuleType",
+          "documentation":"<p>The updated type of automation rule.</p>"
+        },
+        "organizationConfiguration":{
+          "shape":"OrganizationConfiguration",
+          "documentation":"<p>The updated organization configuration settings.</p>"
+        },
+        "priority":{
+          "shape":"String",
+          "documentation":"<p>The updated priority level of the automation rule.</p>"
+        },
+        "recommendedActionTypes":{
+          "shape":"RecommendedActionTypeList",
+          "documentation":"<p>The updated list of recommended action types.</p>"
+        },
+        "criteria":{"shape":"Criteria"},
+        "schedule":{
+          "shape":"Schedule",
+          "documentation":"<p>The updated schedule configuration.</p>"
+        },
+        "status":{
+          "shape":"RuleStatus",
+          "documentation":"<p>The updated status of the automation rule.</p>"
+        },
+        "createdTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the automation rule was originally created.</p>"
+        },
+        "lastUpdatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the automation rule was last updated.</p>"
+        }
+      }
+    },
+    "UpdateEnrollmentConfigurationRequest":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"EnrollmentStatus",
+          "documentation":"<p>The desired enrollment status. </p> <ul> <li> <p>Active - Enables the Automation feature for your account.</p> </li> <li> <p>Inactive - Disables the Automation feature for your account and stops all of your automation rules. If you opt in again later, all rules will be inactive, and you must enable the rules you want to run. You must wait at least 24 hours after opting out to opt in again.</p> </li> </ul> <note> <p>The <code>Pending</code> and <code>Failed</code> options cannot be used to update the enrollment status of an account. They are returned in the response of a request to update the enrollment status of an account.</p> <p>If you are a member account, your account must be disassociated from your organization’s management account before you can disable Automation. Contact your administrator to make this change.</p> </note>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. Must be 1-64 characters long and contain only alphanumeric characters, underscores, and hyphens.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateEnrollmentConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "status",
+        "lastUpdatedTimestamp"
+      ],
+      "members":{
+        "status":{
+          "shape":"EnrollmentStatus",
+          "documentation":"<p> The updated enrollment status. </p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p> The reason for the updated enrollment status. </p>"
+        },
+        "lastUpdatedTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p> The timestamp when the enrollment configuration was last updated. </p>"
+        }
+      }
+    }
+  },
+  "documentation":"<p> Automation is a feature within Amazon Web Services Compute Optimizer that enables you to apply optimization recommendations to your Amazon Web Services resources, reducing costs and improving performance. You can apply recommended actions directly or create automation rules that implement recommendations on a recurring schedule when they match your specified criteria. With automation rules, set criteria such as Amazon Web Services Region and Resource Tags to target specific geographies and workloads. Configure rules to run daily, weekly, or monthly, and Compute Optimizer continuously evaluates new recommendations against your criteria. Track automation events over time, examine detailed step history, estimate savings achieved, and reverse actions directly from Compute Optimizer when needed. </p>"
+}

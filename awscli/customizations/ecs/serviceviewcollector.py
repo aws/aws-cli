@@ -240,7 +240,7 @@ class ServiceViewCollector:
             if len(source_sr_resources) != len(
                 described_service_deployment.get("sourceServiceRevisions")
             ):
-                return (None, "Trying to describe service revisions)")
+                return (None, "Trying to describe service revisions")
             source_sr_resources_combined = reduce(
                 lambda x, y: x.combine(y), source_sr_resources
             )
@@ -248,7 +248,7 @@ class ServiceViewCollector:
             source_sr_resources_combined = ManagedResourceGroup()
 
         updating_resources, disassociating_resources = (
-            target_sr_resources.compare_resource_sets(
+            target_sr_resources.diff(
                 source_sr_resources_combined
             )
         )

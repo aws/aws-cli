@@ -433,6 +433,52 @@ class TestServiceViewCollector:
         # Should handle eventually consistent missing revision gracefully
         assert "Trying to describe service revisions" in output
 
+    def test_eventually_consistent_mixed_failures(self):
+        """Test eventually consistent behavior: filters MISSING but raises for other failures"""
+        collector = ServiceViewCollector(
+            self.mock_client, self.service_arn, "DEPLOYMENT"
+        )
+        self.mock_client.describe_express_gateway_service.return_value = {
+            "service": {
+                "serviceArn": self.service_arn,
+                "cluster": "my-cluster",
+                "activeConfigurations": [],
+            }
+        }
+        self.mock_client.list_service_deployments.return_value = {
+            "serviceDeployments": [
+                {"serviceDeploymentArn": "deploy-arn"}
+            ]
+        }
+        self.mock_client.describe_service_deployments.return_value = {
+            "serviceDeployments": [
+                {
+                    "serviceDeploymentArn": "deploy-arn",
+                    "status": "IN_PROGRESS",
+                    "targetServiceRevision": {"arn": "target-rev"},
+                }
+            ]
+        }
+        # Mixed failures: MISSING (should be filtered) and ServiceNotFound (should raise)
+        self.mock_client.describe_service_revisions.return_value = {
+            "serviceRevisions": [],
+            "failures": [
+                {"arn": "target-rev", "reason": "MISSING"},
+                {"arn": "other-rev", "reason": "ServiceNotFound"},
+            ],
+        }
+
+        # Should raise error for non-MISSING failure
+        with pytest.raises(MonitoringError) as exc_info:
+            collector.get_current_view("⠋")
+
+        error_message = str(exc_info.value)
+        # Should include non-MISSING failure
+        assert "other-rev" in error_message
+        assert "ServiceNotFound" in error_message
+        # Should NOT include MISSING failure
+        assert "target-rev" not in error_message
+
     def test_with_malformed_api_failures(self):
         """Test failure parsing: malformed failure responses"""
         collector = ServiceViewCollector(
@@ -614,18 +660,6 @@ class TestServiceViewCollector:
 
         assert "Waiting for a deployment to start" in output
 
-    def test_empty_describe_gateway_service_response(self):
-        """Test handling of empty describe_express_gateway_service response"""
-        collector = ServiceViewCollector(
-            self.mock_client, self.service_arn, "RESOURCE"
-        )
-
-        self.mock_client.describe_express_gateway_service.return_value = None
-
-        output = collector.get_current_view("⠋")
-
-        assert "Trying to describe gateway service" in output
-
     def test_missing_service_in_response(self):
         """Test handling when service field is missing"""
         collector = ServiceViewCollector(
@@ -652,96 +686,6 @@ class TestServiceViewCollector:
         output = collector.get_current_view("⠋")
 
         assert "Trying to describe gateway service" in output
-
-    def test_empty_response_error(self):
-        """Test _validate_and_parse_response with empty response"""
-        collector = ServiceViewCollector(
-            self.mock_client, self.service_arn, "RESOURCE"
-        )
-
-        with pytest.raises(MonitoringError) as exc_info:
-            collector._validate_and_parse_response(
-                None, "TestOperation", "expectedField"
-            )
-
-        assert "TestOperation response is empty" in str(exc_info.value)
-
-    def test_missing_expected_field_error(self):
-        """Test _validate_and_parse_response with missing expected field"""
-        collector = ServiceViewCollector(
-            self.mock_client, self.service_arn, "RESOURCE"
-        )
-
-        with pytest.raises(MonitoringError) as exc_info:
-            collector._validate_and_parse_response(
-                {"otherField": "value"}, "TestOperation", "expectedField"
-            )
-
-        error_message = str(exc_info.value)
-        assert "TestOperation" in error_message
-        assert "expectedField" in error_message
-
-    def test_parse_failures_filters_missing_reason(self):
-        """Test _parse_failures filters MISSING failures for eventually consistent"""
-        collector = ServiceViewCollector(
-            self.mock_client, self.service_arn, "RESOURCE"
-        )
-
-        response = {
-            "failures": [
-                {"arn": "arn1", "reason": "MISSING"},
-                {"arn": "arn2", "reason": "ServiceNotFound"},
-            ]
-        }
-
-        # Eventually consistent - should only raise for non-MISSING
-        with pytest.raises(MonitoringError) as exc_info:
-            collector._parse_failures(
-                response, "TestOp", eventually_consistent=True
-            )
-
-        error_message = str(exc_info.value)
-        assert "arn2" in error_message
-        assert "ServiceNotFound" in error_message
-        # Should NOT include arn1 (MISSING reason)
-        assert "arn1" not in error_message
-
-    def test_parse_failures_all_missing_no_error(self):
-        """Test _parse_failures doesn't raise when all failures are MISSING"""
-        collector = ServiceViewCollector(
-            self.mock_client, self.service_arn, "RESOURCE"
-        )
-
-        response = {
-            "failures": [
-                {"arn": "arn1", "reason": "MISSING"},
-                {"arn": "arn2", "reason": "MISSING"},
-            ]
-        }
-
-        # Should not raise when all failures are MISSING
-        collector._parse_failures(
-            response, "TestOp", eventually_consistent=True
-        )
-
-    def test_parse_failures_malformed(self):
-        """Test _parse_failures with malformed failure data"""
-        collector = ServiceViewCollector(
-            self.mock_client, self.service_arn, "RESOURCE"
-        )
-
-        response = {
-            "failures": [
-                {"reason": "ServiceNotFound"}  # Missing arn
-            ]
-        }
-
-        with pytest.raises(MonitoringError) as exc_info:
-            collector._parse_failures(
-                response, "TestOp", eventually_consistent=False
-            )
-
-        assert "Invalid failure response" in str(exc_info.value)
 
     def test_parse_all_resource_types(self):
         """Test parsing all supported resource types"""

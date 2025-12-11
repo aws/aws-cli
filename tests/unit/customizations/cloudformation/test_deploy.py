@@ -120,8 +120,7 @@ class TestDeployCommand(unittest.TestCase):
                     None,
                     fake_tags,
                     True,
-                    True,
-                    False
+                    True
                 )
 
                 self.deploy_command.parse_key_value_arg.assert_has_calls([
@@ -208,8 +207,7 @@ class TestDeployCommand(unittest.TestCase):
                 s3UploaderObject,
                 [{"Key": "tagkey1", "Value": "tagvalue1"}],
                 True,
-                True,
-                False
+                True
             )
 
             s3UploaderMock.assert_called_once_with(mock.ANY,

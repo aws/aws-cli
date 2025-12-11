@@ -154,8 +154,7 @@ class BasicCommand(CLICommand):
                 'custom',
                 self.name,
                 cli_argument,
-                value,
-                parsed_globals
+                value
             )
 
             # If this parameter has a schema defined, then allow plugins

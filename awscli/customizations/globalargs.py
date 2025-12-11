@@ -139,7 +139,6 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
                 == 'legacy'
             )
             and region in ('us-east-1', None)
-            and parsed_args.endpoint_url is None
     ):
         session.register(
             'request-created.s3.*',

@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.32.15
+=======
+
+* api-change:``lambda``: Add Dotnet 10 (dotnet10) support to AWS Lambda.
+* api-change:``secretsmanager``: Add SortBy parameter to ListSecrets
+* api-change:``sesv2``: Update GetEmailIdentity and CreateEmailIdentity response to include SigningHostedZone in DkimAttributes. Updated PutEmailIdentityDkimSigningAttributes Response to include SigningHostedZone.
+* api-change:``quicksight``: This release adds new GetIdentityContext API, Dashboard customization options for tables and pivot tables, Visual styling options- borders and decals, map GeocodingPreferences, KeyPairCredentials for DataSourceCredentials. Snapshot APIs now support registered users. Parameters limit increased to 400
+* enhancement:python: Upgrade bundled Python interpreter to version 3.13.11.
+* api-change:``organizations``: Add support for policy operations on the NETWORK SECURITY DIRECTOR POLICY policy type.
+
+
 2.32.14
 =======
 

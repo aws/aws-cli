@@ -133,12 +133,12 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
                 out_file=sys.stderr
             )
     if (
-        s3_config is None or (
-            s3_config is not None and s3_config.get(
-                'us_east_1_regional_endpoint',
-                'legacy'
-            ) == 'legacy' and region in ('us-east-1', None)
-        )
+            (
+                s3_config is None
+                or s3_config.get('us_east_1_regional_endpoint', 'legacy')
+                == 'legacy'
+            )
+            and region in ('us-east-1', None)
     ):
         session.register(
             'request-created.s3.*',
@@ -220,7 +220,8 @@ def warn_if_east_configured_global_endpoint(request, operation_name, **kwargs):
     # The regional us-east-1 endpoint is used in certain cases (e.g.
     # FIPS/Dual-Stack is enabled). Rather than duplicating this logic
     # from botocore, we check the endpoint URL directly.
-    if 's3.amazonaws.com' in request.url:
+    parsed_url = urlparse.urlparse(request.url)
+    if parsed_url.hostname.endswith('s3.amazonaws.com'):
         uni_print(
             '\nAWS CLI v2 UPGRADE WARNING: When you configure AWS CLI v2 to '
             'use the `us-east-1` region, it uses the true regional endpoint '

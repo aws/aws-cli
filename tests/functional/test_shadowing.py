@@ -69,7 +69,7 @@ def test_no_shadowed_builtins(
                     # Store the service and operation in
                     # PyTest custom properties
                     record_property(
-                        'aws_service', str(model.service_model.service_id)
+                        'aws_service', model.service_model.service_name
                     )
                     record_property('aws_operation', model.name)
                 # Then we are shadowing or prefixing a top level argument

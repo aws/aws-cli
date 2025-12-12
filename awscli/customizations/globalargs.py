@@ -98,7 +98,7 @@ def resolve_cli_connect_timeout(parsed_args, session, **kwargs):
     arg_name = 'connect_timeout'
     _resolve_timeout(session, parsed_args, arg_name)
 
-def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
+def detect_migration_breakage(parsed_args, session, remaining_args, **kwargs):
     if not resolve_v2_debug_mode(parsed_args):
         return
     region = parsed_args.region or session.get_config_variable('region')
@@ -174,7 +174,11 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
             '#cliv2-migration-profile-plugins.\n',
             out_file=sys.stderr
         )
-    if parsed_args.command == 'ecr' and remaining_args[0] == 'get-login':
+    if (
+            parsed_args.command == 'ecr' and
+            remaining_args is not None and
+            remaining_args[0] == 'get-login'
+    ):
         uni_print(
             '\nAWS CLI v2 UPGRADE WARNING: The `ecr get-login` command has '
             'been removed in AWS CLI v2. You must use `ecr get-login-password` '
@@ -189,6 +193,7 @@ def detect_migration_breakage(parsed_args, remaining_args, session, **kwargs):
         working_param = working_split[2]
         if (
                 parsed_args.command == working_service
+                and remaining_args is not None
                 and remaining_args[0] == working_cmd
                 and f"--{working_param}" in remaining_args
         ):

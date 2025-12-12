@@ -1,0 +1,54 @@
+name: Build SDK
+on:
+  pull_request_review:
+    types: [ opened, synchronize, ready_for_review ]
+
+concurrency:
+  group: start-pull-request-build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # constants
+  DOWNLOAD_FOLDER: '.build-scripts/'
+  SCRIPT_LOCATION: 'workflows/start-pull-request-build/pull-request-build-v1.sh'
+
+  # custom variables
+  IAM_ROLE_ARN: 'arn:aws:iam::807479859547:role/AwsCliGitHubRole'
+  ROLE_SESSION_DURATION_SECONDS: 7200
+
+jobs:
+  aws-sdk-pr-build:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      issues: write
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@main
+        with:
+          role-to-assume: '$IAM_ROLE_ARN'
+          role-session-name: PullRequestBuildGitHubAction
+          role-duration-seconds: '$ROLE_SESSION_DURATION_SECONDS'
+          aws-region: us-west-2
+      - name: Download Build Script
+        run: |
+          aws s3 cp s3://aws-sdk-builds-github-assets-prod-us-west-2/$SCRIPT_LOCATION ./$DOWNLOAD_FOLDER/$SCRIPT_LOCATION --no-progress
+          chmod +x ./$DOWNLOAD_FOLDER/$SCRIPT_LOCATION
+      - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          ./$DOWNLOAD_FOLDER/$SCRIPT_LOCATION \
+            --repo "$REPO" \
+            --branch "$HEAD_REF" \
+            --pr-number "$PR_NUMBER" \
+            --run-id "$RUN_ID"
+        timeout-minutes: 120
+

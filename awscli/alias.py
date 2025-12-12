@@ -12,8 +12,9 @@
 # language governing permissions and limitations under the License.
 import logging
 import os
-import shlex
+import re
 import subprocess
+from concurrent.futures import ThreadPoolExecutor
 
 from botocore.configloader import raw_config_parse
 
@@ -42,6 +43,7 @@ class AliasLoader:
         """
         self._filename = alias_filename
         self._aliases = None
+        self._last_modified = None
 
     def _build_aliases(self):
         self._aliases = self._load_aliases()
@@ -49,14 +51,16 @@ class AliasLoader:
 
     def _load_aliases(self):
         if os.path.exists(self._filename):
+            last_modified = os.path.getmtime(self._filename)
+            if self._last_modified == last_modified:
+                return self._aliases
+            self._last_modified = last_modified
             return raw_config_parse(self._filename, parse_subsections=False)
         return {'toplevel': {}}
 
     def _cleanup_alias_values(self, aliases):
-        for alias in aliases:
-            # Beginning and end line separators should not be included
-            # in the internal representation of the alias value.
-            aliases[alias] = aliases[alias].strip()
+        aliases.update({alias: value.strip() for alias, value in aliases.items()})
+        
 
     def get_aliases(self):
         if self._aliases is None:
@@ -78,29 +82,19 @@ class AliasCommandInjector:
         self._alias_loader = alias_loader
 
     def inject_aliases(self, command_table, parser):
-        for (
-            alias_name,
-            alias_value,
-        ) in self._alias_loader.get_aliases().items():
-            if alias_value.startswith('!'):
-                alias_cmd = ExternalAliasCommand(alias_name, alias_value)
-            else:
-                service_alias_cmd_args = [
-                    alias_name,
-                    alias_value,
-                    self._session,
-                    command_table,
-                    parser,
-                ]
-                # If the alias name matches something already in the
-                # command table provide the command it is about
-                # to clobber as a possible reference that it will
-                # need to proxy to.
-                if alias_name in command_table:
-                    service_alias_cmd_args.append(command_table[alias_name])
-                alias_cmd = ServiceAliasCommand(*service_alias_cmd_args)
-            command_table[alias_name] = alias_cmd
-
+        aliases = self._alias_loader.get_aliases()
+        if not aliases:
+            return
+        with ThreadPoolExecutor() as executor:
+            def add_alias(alias):
+                alias_name, alias_value = alias
+                if alias_value.startswith('!'):
+                    command_table[alias_name] = ExternalAliasCommand(alias_name, alias_value)
+                else:
+                    command_table[alias_name] = ServiceAliasCommand(
+                        alias_name, alias_value, self._session, command_table, parser
+                    )
+            executor.map(add_alias, aliases.items())
 
 class BaseAliasCommand(CLICommand):
     _UNDOCUMENTED = True
@@ -180,9 +174,7 @@ class ServiceAliasCommand(BaseAliasCommand):
 
     def __call__(self, args, parsed_globals):
         alias_args = self._get_alias_args()
-        parsed_alias_args, remaining = self._parser.parse_known_args(
-            alias_args
-        )
+        parsed_alias_args, remaining = self._parser.parse_known_args(alias_args)
         self._update_parsed_globals(parsed_alias_args, parsed_globals)
         # Take any of the remaining arguments that were not parsed out and
         # prepend them to the remaining args provided to the alias.
@@ -212,13 +204,12 @@ class ServiceAliasCommand(BaseAliasCommand):
 
     def _get_alias_args(self):
         try:
-            alias_args = shlex.split(self._alias_value)
+            alias_args = re.split(r'\s+', self._alias_value.strip())
         except ValueError as e:
             raise InvalidAliasException(
                 f'Value of alias "{self._alias_name}" could not be parsed. '
                 f'Received error: {e} when parsing:\n{self._alias_value}'
             )
-
         alias_args = [arg.strip(os.linesep) for arg in alias_args]
         LOG.debug(
             'Expanded subcommand alias %r with value: %r to: %r',
@@ -239,8 +230,7 @@ class ServiceAliasCommand(BaseAliasCommand):
         # and passing those onto subsequent commands.
         emit_top_level_args_parsed_event(self._session, parsed_alias_args)
         for param_name in global_params_to_update:
-            updated_param_value = getattr(parsed_alias_args, param_name)
-            setattr(parsed_globals, param_name, updated_param_value)
+            setattr(parsed_globals, param_name, getattr(parsed_alias_args, param_name))
 
     def _get_global_parameters_to_update(self, parsed_alias_args):
         # Retrieve a list of global parameters that the newly parsed args
@@ -260,8 +250,7 @@ class ServiceAliasCommand(BaseAliasCommand):
                         f'"{self._alias_name}" which is not supported in '
                         'subcommand aliases.'
                     )
-                else:
-                    global_params_to_update.append(parsed_param)
+                global_params_to_update.append(parsed_param)
         return global_params_to_update
 
 
@@ -283,18 +272,16 @@ class ExternalAliasCommand(BaseAliasCommand):
         :param invoker: Callable to run arguments of external alias. The
             signature should match that of ``subprocess.call``
         """
-        self._alias_name = alias_name
-        self._alias_value = alias_value
+        super().__init__(alias_name, alias_value)
         self._invoker = invoker
 
     def __call__(self, args, parsed_globals):
         command_components = [self._alias_value[1:]]
         command_components.extend(compat_shell_quote(a) for a in args)
-        command = ' '.join(command_components)
         LOG.debug(
             'Using external alias %r with value: %r to run: %r',
             self._alias_name,
             self._alias_value,
-            command,
+            command_components,
         )
-        return self._invoker(command, shell=True)
+        return self._invoker(command_components)

@@ -457,7 +457,7 @@ class TestMvCommand(BaseS3TransferCommandTest):
         self.assertEqual(
             self.operations_called[1][0].name, 'CopyObject'
         )
-        # Verify the IfNoneMatch condition was set in the CompleteMultipartUpload request
+        # Verify the IfNoneMatch condition was set in the CopyObject request
         self.assertEqual(self.operations_called[1][1]['IfNoneMatch'], '*')
 
     def test_mv_no_overwrite_flag_when_large_object_exists_on_target(self):

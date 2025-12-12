@@ -219,7 +219,11 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_metadata_copy(self):
         self.parsed_responses = [
-            {"ContentLength": "100", "LastModified": "00:00:00Z"},
+            {
+                "ContentLength": "100",
+                "LastModified": "00:00:00Z",
+                'ETag': '"foo-1"',
+            },
             {'ETag': '"foo-1"'},
         ]
         cmdline = ('%s s3://bucket/key.txt s3://bucket/key2.txt'
@@ -267,7 +271,11 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_metadata_directive_copy(self):
         self.parsed_responses = [
-            {"ContentLength": "100", "LastModified": "00:00:00Z"},
+            {
+                "ContentLength": "100",
+                "LastModified": "00:00:00Z",
+                "ETag": "'foo-1'",
+            },
             {'ETag': '"foo-1"'},
         ]
         cmdline = ('%s s3://bucket/key.txt s3://bucket/key2.txt'
@@ -610,7 +618,11 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_cp_copy_with_sse_kms_and_key_id(self):
         self.parsed_responses = [
-            {'ContentLength': 5, 'LastModified': '00:00:00Z'},  # HeadObject
+            {
+                'ContentLength': 5,
+                'LastModified': '00:00:00Z',
+                'ETag': '"foo"',
+            },  # HeadObject
             {}  # CopyObject
         ]
         cmdline = (
@@ -636,8 +648,11 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_cp_copy_large_file_with_sse_kms_and_key_id(self):
         self.parsed_responses = [
-            {'ContentLength': 10 * (1024 ** 2),
-             'LastModified': '00:00:00Z'},  # HeadObject
+            {
+                'ContentLength': 10 * (1024 ** 2),
+                'LastModified': '00:00:00Z',
+                'ETag': '"foo"',
+            },  # HeadObject
             {'UploadId': 'foo'},  # CreateMultipartUpload
             {'CopyPartResult': {'ETag': '"foo"'}},  # UploadPartCopy
             {'CopyPartResult': {'ETag': '"foo"'}},  # UploadPartCopy
@@ -669,8 +684,11 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_upload_unicode_path(self):
         self.parsed_responses = [
-            {'ContentLength': 10,
-             'LastModified': '00:00:00Z'},  # HeadObject
+            {
+                'ContentLength': 10,
+                'LastModified': '00:00:00Z',
+                'ETag': '"foo"',
+            },  # HeadObject
             {'ETag': '"foo"'}  # PutObject
         ]
         command = u's3 cp s3://bucket/\u2603 s3://bucket/\u2713'
@@ -1128,11 +1146,11 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
                 self.upload_part_copy_request(
                     'sourcebucket', 'sourcekey', 'mybucket', 'mykey',
                     upload_id, PartNumber=mock.ANY, RequestPayer='requester',
-                    CopySourceRange=mock.ANY),
+                    CopySourceRange=mock.ANY, CopySourceIfMatch='"foo-1"'),
                 self.upload_part_copy_request(
                     'sourcebucket', 'sourcekey', 'mybucket', 'mykey',
                     upload_id, PartNumber=mock.ANY, RequestPayer='requester',
-                    CopySourceRange=mock.ANY),
+                    CopySourceRange=mock.ANY, CopySourceIfMatch='"foo-1"'),
                 self.complete_mpu_request(
                     'mybucket', 'mykey', upload_id, num_parts=2,
                     RequestPayer='requester')

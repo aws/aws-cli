@@ -1828,6 +1828,39 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         }
         self.assert_params_for_cmd(cmd, result)
 
+    def test_create_cluster_with_monitoring_configuration(self):
+        cmd = (
+            self.prefix
+            + '--release-label emr-5.34.0 '
+            + '--monitoring-configuration '
+            + 'CloudWatchLogConfiguration={Enabled=true,LogGroupName=MyLogGroup,'
+            + 'LogStreamNamePrefix=MyPrefix,EncryptionKeyArn=arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012,'
+            + 'LogTypes={STEP_LOGS=[STDOUT,STDERR],SPARK_DRIVER=[STDOUT],SPARK_EXECUTOR=[STDERR]}} '
+            + '--instance-groups '
+            + DEFAULT_INSTANCE_GROUPS_ARG
+        )
+        result = {
+            'Name': DEFAULT_CLUSTER_NAME,
+            'Instances': DEFAULT_INSTANCES,
+            'ReleaseLabel': 'emr-5.34.0',
+            'VisibleToAllUsers': True,
+            'Tags': [],
+            'MonitoringConfiguration': {
+                'CloudWatchLogConfiguration': {
+                    'Enabled': True,
+                    'LogGroupName': 'MyLogGroup',
+                    'LogStreamNamePrefix': 'MyPrefix',
+                    'EncryptionKeyArn': 'arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012',
+                    'LogTypes': {
+                        'STEP_LOGS': ['STDOUT', 'STDERR'],
+                        'SPARK_DRIVER': ['STDOUT'],
+                        'SPARK_EXECUTOR': ['STDERR'],
+                    },
+                },
+            },
+        }
+        self.assert_params_for_cmd(cmd, result)
+
     def test_create_cluster_with_log_encryption_kms_key_id(self):
         test_log_uri = 's3://test/logs'
         test_log_encryption_kms_key_id = 'valid_kms_key'
@@ -1964,6 +1997,45 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             'VisibleToAllUsers': True,
             'Tags': [],
         }
+        self.assert_params_for_cmd(cmd, result)
+
+    def test_create_cluster_with_steps_with_step_monitoring_configuration(
+        self,
+    ):
+        # For ease of testing, we only test the handling of StepMonitoringConfig in create-cluster
+        # with a CUSTOM_JAR step. Under the hood, it uses the same handler as add-steps. The remaining
+        # step types are unit tested in test_add_steps.py.
+        cmd = (
+            DEFAULT_CMD
+            + '--steps '
+            + (
+                'Name=Custom,Type=Custom_JAR,'
+                'Jar=s3://mybucket/mytest.jar,'
+                'Args=arg1,arg2,MainClass=mymainclass,'
+                'ActionOnFailure=TERMINATE_CLUSTER,'
+                'LogUri=TestLogUri,'
+                'EncryptionKeyArn=TestEncryptionKeyArn'
+            )
+        )
+        expected_steps = [
+            {
+                'Name': 'Custom',
+                'ActionOnFailure': 'TERMINATE_CLUSTER',
+                'HadoopJarStep': {
+                    'Jar': 's3://mybucket/mytest.jar',
+                    'Args': ['arg1', 'arg2'],
+                    'MainClass': 'mymainclass',
+                },
+                'StepMonitoringConfiguration': {
+                    'S3MonitoringConfiguration': {
+                        'LogUri': 'TestLogUri',
+                        'EncryptionKeyArn': 'TestEncryptionKeyArn',
+                    }
+                },
+            }
+        ]
+        result = copy.deepcopy(DEFAULT_RESULT)
+        result['Steps'] = expected_steps
         self.assert_params_for_cmd(cmd, result)
 
 

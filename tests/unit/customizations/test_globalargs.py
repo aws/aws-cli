@@ -193,8 +193,8 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         session = get_session()
         globalargs.detect_migration_breakage(
             parsed_args,
+            session,
             [],
-            session
         )
         # Verify the correct feature ID is registered during the
         # provide-client-params event.
@@ -216,8 +216,8 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         with capture_output() as output:
             globalargs.detect_migration_breakage(
                 parsed_args,
+                session,
                 remaining_args,
-                session
             )
         # Verify the expected warning is printed
         self.assertIn(
@@ -235,8 +235,8 @@ class TestGlobalArgsCustomization(unittest.TestCase):
             with mock.patch('os.environ', env):
                 globalargs.detect_migration_breakage(
                     parsed_args,
+                    session,
                     remaining_args,
-                    session
                 )
         # Verify the expected warning is printed
         self.assertIn(
@@ -251,7 +251,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         environ = {'PYTHONUTF8': '1'}
         with mock.patch('os.environ', environ):
             with capture_output() as output:
-                globalargs.detect_migration_breakage(parsed_args, [], session)
+                globalargs.detect_migration_breakage(parsed_args, session, [])
                 self.assertIn(
                     'The AWS CLI v2 does not support The `PYTHONUTF8` and '
                     '`PYTHONIOENCODING` environment variables, and instead '
@@ -265,7 +265,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         environ = {'PYTHONUTF8': '1', 'AWS_CLI_FILE_ENCODING': 'UTF-8'}
         with mock.patch('os.environ', environ):
             with capture_output() as output:
-                globalargs.detect_migration_breakage(parsed_args, [], session)
+                globalargs.detect_migration_breakage(parsed_args, session, [])
                 self.assertNotIn(
                     'AWS CLI v2 UPGRADE WARNING: The PYTHONUTF8 and '
                     'PYTHONIOENCODING environment variables are unsupported '
@@ -279,7 +279,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
         environ = {'PYTHONIOENCODING': 'UTF8'}
         with mock.patch('os.environ', environ):
             with capture_output() as output:
-                globalargs.detect_migration_breakage(parsed_args, [], session)
+                globalargs.detect_migration_breakage(parsed_args, session, [])
                 self.assertIn(
                     'The AWS CLI v2 does not support The `PYTHONUTF8` and '
                     '`PYTHONIOENCODING` environment variables, and instead '
@@ -290,7 +290,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
     def test_v2_debug_s3_sigv2(self):
         parsed_args = FakeParsedArgs(v2_debug=True)
         session = get_session()
-        globalargs.detect_migration_breakage(parsed_args, [], session)
+        globalargs.detect_migration_breakage(parsed_args, session, [])
         with capture_output() as output:
             session.emit(
                 'choose-signer.s3.*',
@@ -308,7 +308,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
     def test_v2_debug_s3_us_east_1(self):
         parsed_args = FakeParsedArgs(v2_debug=True, region='us-east-1')
         session = get_session()
-        globalargs.detect_migration_breakage(parsed_args, [], session)
+        globalargs.detect_migration_breakage(parsed_args, session, [])
         def mock_get(key: str):
             if key == 'retries':
                 return {'invocation-id': '012345'}
@@ -335,7 +335,7 @@ class TestGlobalArgsCustomization(unittest.TestCase):
     def test_v2_debug_s3api_us_east_1(self):
         parsed_args = FakeParsedArgs(v2_debug=True, region='us-east-1')
         session = get_session()
-        globalargs.detect_migration_breakage(parsed_args, [], session)
+        globalargs.detect_migration_breakage(parsed_args, session, [])
 
         def mock_get(key: str):
             if key == 'retries':

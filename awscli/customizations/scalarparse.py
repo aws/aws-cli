@@ -49,7 +49,7 @@ def iso_format(value):
     return parse_timestamp(value).isoformat()
 
 
-def add_timestamp_parser(session, v2_debug):
+def add_timestamp_parser(session, v2_debug=False):
     factory = session.get_component('response_parser_factory')
     print_v2_debug_warnings = v2_debug
     try:
@@ -112,7 +112,7 @@ def add_timestamp_parser(session, v2_debug):
     factory.set_parser_defaults(timestamp_parser=timestamp_parser)
 
 
-def add_scalar_parsers(session, parsed_args, **kwargs):
+def add_scalar_parsers(session, parsed_args=None, **kwargs):
     factory = session.get_component('response_parser_factory')
     factory.set_parser_defaults(blob_parser=identity)
     add_timestamp_parser(session, resolve_v2_debug_mode(parsed_args))

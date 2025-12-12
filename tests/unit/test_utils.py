@@ -155,6 +155,9 @@ class TestV2DebugResolution(unittest.TestCase):
         with mock.patch.dict(os.environ, {'AWS_CLI_UPGRADE_DEBUG_MODE': 'false'}):
             self.assertFalse(resolve_v2_debug_mode(args))
 
+    def test_args_none(self):
+        self.assertFalse(resolve_v2_debug_mode(None))
+
 
 class MockProcess(object):
     @property

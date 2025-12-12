@@ -169,7 +169,7 @@ class URIArgumentHandler:
             prefixes.update(REMOTE_PREFIX_MAP)
         self._prefixes = prefixes
 
-    def __call__(self, event_name, param, value, parsed_globals, **kwargs):
+    def __call__(self, event_name, param, value, parsed_globals=None, **kwargs):
         """Handler that supports param values from URIs."""
         cli_argument = param
         qualified_param_name = '.'.join(event_name.split('.')[1:])

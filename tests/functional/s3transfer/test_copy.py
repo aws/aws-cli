@@ -255,6 +255,69 @@ class TestNonMultipartCopy(BaseCopyTest):
         future.result()
         self.stubber.assert_no_pending_responses()
 
+    def test_copy_with_ifnonematch_when_object_not_exists_at_target(self):
+        self.extra_args['IfNoneMatch'] = '*'
+
+        expected_head_params = {
+            'Bucket': 'mysourcebucket',
+            'Key': 'mysourcekey',
+        }
+
+        expected_copy_object = {
+            'Bucket': 'mybucket',
+            'Key': 'mykey',
+            'CopySource': {
+                'Bucket': 'mysourcebucket', 
+                'Key': 'mysourcekey',
+            },
+            "IfNoneMatch": "*"
+        }
+
+        self.add_head_object_response(expected_params=expected_head_params)
+        self.add_successful_copy_responses(
+            expected_copy_params=expected_copy_object
+        )
+
+        call_kwargs = self.create_call_kwargs()
+        call_kwargs['extra_args'] = self.extra_args
+        future = self.manager.copy(**call_kwargs)
+        future.result()
+        self.stubber.assert_no_pending_responses()
+
+    def test_copy_with_ifnonematch_when_object_exists_at_target(self):
+        self.extra_args['IfNoneMatch'] = '*'
+
+        expected_head_params = {
+            'Bucket': 'mysourcebucket',
+            'Key': 'mysourcekey',
+        }
+
+        self.add_head_object_response(expected_params=expected_head_params)
+
+        # Mock a PreconditionFailed error for copy_object
+        self.stubber.add_client_error(
+            method='copy_object',
+            service_error_code='PreconditionFailed',
+            service_message='The condition specified in the conditional header(s) was not met',
+            http_status_code=412,
+            expected_params={
+                'Bucket': self.bucket,
+                'Key': self.key,
+                'CopySource': self.copy_source,
+                'IfNoneMatch': '*',
+            },
+        )
+
+        call_kwargs = self.create_call_kwargs()
+        call_kwargs['extra_args'] = self.extra_args
+        future = self.manager.copy(**call_kwargs)
+        with self.assertRaises(ClientError) as context:
+            future.result()
+        self.assertEqual(
+            context.exception.response['Error']['Code'], 'PreconditionFailed'
+        )
+        self.stubber.assert_no_pending_responses()
+
     def test_copy_maps_extra_args_to_head_object(self):
         self.extra_args['CopySourceSSECustomerAlgorithm'] = 'AES256'
 
@@ -719,135 +782,6 @@ class TestMultipartCopy(BaseCopyTest):
         future.result()
         self.stubber.assert_no_pending_responses()
 
-    def test_copy_with_no_overwrite_flag_when_small_object_exists_at_target(
-        self,
-    ):
-        # Set up IfNoneMatch in extra_args
-        self.extra_args['IfNoneMatch'] = '*'
-        # Setting up the size of object
-        small_content_size = 5
-        self.content = b'0' * small_content_size
-        # Add head object response with small content size
-        head_response = self.create_stubbed_responses()[0]
-        head_response['service_response'] = {
-            'ContentLength': small_content_size
-        }
-        self.stubber.add_response(**head_response)
-        # Should use multipart upload
-        # Add create_multipart_upload response
-        self.stubber.add_response(
-            'create_multipart_upload',
-            service_response={'UploadId': self.multipart_id},
-            expected_params={
-                'Bucket': self.bucket,
-                'Key': self.key,
-            },
-        )
-        # Add upload_part_copy response
-        self.stubber.add_response(
-            'upload_part_copy',
-            {'CopyPartResult': {'ETag': 'etag-1'}},
-            {
-                'Bucket': self.bucket,
-                'Key': self.key,
-                'CopySource': self.copy_source,
-                'UploadId': self.multipart_id,
-                'PartNumber': 1,
-                'CopySourceRange': f'bytes=0-{small_content_size-1}',
-            },
-        )
-        # Mock a PreconditionFailed error for complete_multipart_upload
-        self.stubber.add_client_error(
-            method='complete_multipart_upload',
-            service_error_code='PreconditionFailed',
-            service_message='The condition specified in the conditional header(s) was not met',
-            http_status_code=412,
-            expected_params={
-                'Bucket': self.bucket,
-                'Key': self.key,
-                'UploadId': self.multipart_id,
-                'MultipartUpload': {
-                    'Parts': [{'ETag': 'etag-1', 'PartNumber': 1}]
-                },
-                'IfNoneMatch': '*',
-            },
-        )
-        # Add abort_multipart_upload response
-        self.stubber.add_response(
-            'abort_multipart_upload',
-            service_response={},
-            expected_params={
-                'Bucket': self.bucket,
-                'Key': self.key,
-                'UploadId': self.multipart_id,
-            },
-        )
-        call_kwargs = self.create_call_kwargs()
-        call_kwargs['extra_args'] = self.extra_args
-        future = self.manager.copy(**call_kwargs)
-        with self.assertRaises(ClientError) as context:
-            future.result()
-        self.assertEqual(
-            context.exception.response['Error']['Code'], 'PreconditionFailed'
-        )
-        self.stubber.assert_no_pending_responses()
-
-    def test_copy_with_no_overwrite_flag_when_small_object_not_exists_at_target(
-        self,
-    ):
-        # Set up IfNoneMatch in extra_args
-        self.extra_args['IfNoneMatch'] = '*'
-        # Setting up the size of object
-        small_content_size = 5
-        self.content = b'0' * small_content_size
-        # Add head object response with small content size
-        head_response = self.create_stubbed_responses()[0]
-        head_response['service_response'] = {
-            'ContentLength': small_content_size
-        }
-        self.stubber.add_response(**head_response)
-        # Should use multipart copy
-        # Add create_multipart_upload response
-        self.stubber.add_response(
-            'create_multipart_upload',
-            service_response={'UploadId': self.multipart_id},
-            expected_params={
-                'Bucket': self.bucket,
-                'Key': self.key,
-            },
-        )
-        # Add upload_part_copy response
-        self.stubber.add_response(
-            'upload_part_copy',
-            {'CopyPartResult': {'ETag': 'etag-1'}},
-            {
-                'Bucket': self.bucket,
-                'Key': self.key,
-                'CopySource': self.copy_source,
-                'UploadId': self.multipart_id,
-                'PartNumber': 1,
-                'CopySourceRange': f'bytes=0-{small_content_size-1}',
-            },
-        )
-        self.stubber.add_response(
-            'complete_multipart_upload',
-            service_response={},
-            expected_params={
-                'Bucket': self.bucket,
-                'Key': self.key,
-                'UploadId': self.multipart_id,
-                'MultipartUpload': {
-                    'Parts': [{'ETag': 'etag-1', 'PartNumber': 1}]
-                },
-                'IfNoneMatch': '*',
-            },
-        )
-        call_kwargs = self.create_call_kwargs()
-        call_kwargs['extra_args'] = self.extra_args
-        future = self.manager.copy(**call_kwargs)
-        future.result()
-        self.stubber.assert_no_pending_responses()
-
     def test_copy_with_no_overwrite_flag_when_large_object_exists_at_target(
         self,
     ):
@@ -931,6 +865,7 @@ class TestMultipartCopy(BaseCopyTest):
         future = self.manager.copy(**call_kwargs)
         future.result()
         self.stubber.assert_no_pending_responses()
+
     def test_copy_fails_if_etag_validation_fails(self):
         expected_params = {
             'Bucket': 'mybucket',

@@ -957,59 +957,6 @@ class TestCopyRequestSubmitter(BaseTransferRequestSubmitterTest):
         for i, actual_subscriber in enumerate(actual_subscribers):
             self.assertIsInstance(actual_subscriber, ref_subscribers[i])
 
-    def test_skip_copy_with_no_overwrite_and_zero_byte_file_exists(self):
-        self.cli_params['no_overwrite'] = True
-        fileinfo = FileInfo(
-            src=self.source_bucket + "/" + self.source_key,
-            dest=self.bucket + "/" + self.key,
-            operation_name='copy',
-            size=0,
-            source_client=mock.Mock(),
-        )
-        fileinfo.source_client.head_object.return_value = {}
-        future = self.transfer_request_submitter.submit(fileinfo)
-        # The transfer should be skipped, so future should be None
-        self.assertIsNone(future)
-        # Result Queue should be empty because it was specified to ignore no-overwrite warnings.
-        self.assertTrue(self.result_queue.empty())
-        self.assertEqual(len(self.transfer_manager.copy.call_args_list), 0)
-
-    def test_proceed_copy_with_no_overwrite_and_zero_byte_file_does_not_exist(
-        self,
-    ):
-        self.cli_params['no_overwrite'] = True
-        fileinfo = FileInfo(
-            src=self.source_bucket + "/" + self.source_key,
-            dest=self.bucket + "/" + self.key,
-            operation_name='copy',
-            size=0,
-            source_client=mock.Mock(),
-        )
-        fileinfo.source_client.head_object.side_effect = ClientError(
-            {'Error': {'Code': '404', 'Message': 'Not Found'}},
-            'HeadObject',
-        )
-        future = self.transfer_request_submitter.submit(fileinfo)
-        # The transfer should proceed, so future should be the transfer manager's return value
-        self.assertIs(self.transfer_manager.copy.return_value, future)
-        self.assertEqual(len(self.transfer_manager.copy.call_args_list), 1)
-
-    def test_proceed_copy_with_no_overwrite_for_non_zero_byte_file(self):
-        self.cli_params['no_overwrite'] = True
-        fileinfo = FileInfo(
-            src=self.source_bucket + "/" + self.source_key,
-            dest=self.bucket + "/" + self.key,
-            operation_name='copy',
-            size=100,
-            source_client=mock.Mock(),
-        )
-        future = self.transfer_request_submitter.submit(fileinfo)
-        # The transfer should proceed, so future should be the transfer manager's return value
-        self.assertIs(self.transfer_manager.copy.return_value, future)
-        self.assertEqual(len(self.transfer_manager.copy.call_args_list), 1)
-        # Head should not be called when no_overwrite is false
-        fileinfo.source_client.head_object.assert_not_called()
-
     def test_file_exists_without_no_overwrite(self):
         self.cli_params['no_overwrite'] = False
         fileinfo = FileInfo(

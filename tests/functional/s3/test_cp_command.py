@@ -387,90 +387,32 @@ class TestCPCommand(BaseCPCommandTest):
     def test_no_overwrite_flag_on_copy_when_small_object_does_not_exist_on_target(
         self,
     ):
-        cmdline = f'{self.prefix} s3://bucket1/key.txt s3://bucket/key1.txt --no-overwrite'
-        # Set up responses for multipart copy (since no-overwrite always uses multipart)
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = '%s %s s3://bucket/key.txt --no-overwrite' % (self.prefix, full_path)
         self.parsed_responses = [
-            self.head_object_response(),  # HeadObject to get source metadata
-            self.create_mpu_response('foo'),  # CreateMultipartUpload response
-            self.upload_part_copy_response(),  # UploadPartCopy response
-            {},  # CompleteMultipartUpload response
+            {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
         ]
         self.run_cmd(cmdline, expected_rc=0)
-        # Verify all multipart operations were called
-        self.assertEqual(len(self.operations_called), 4)
-        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        # The only operation we should have called is PutObject.
         self.assertEqual(
-            self.operations_called[1][0].name, 'CreateMultipartUpload'
+            len(self.operations_called), 1, self.operations_called
         )
-        self.assertEqual(self.operations_called[2][0].name, 'UploadPartCopy')
-        self.assertEqual(
-            self.operations_called[3][0].name, 'CompleteMultipartUpload'
-        )
-        # Verify the IfNoneMatch condition was set in the CompleteMultipartUpload request
-        self.assertEqual(self.operations_called[3][1]['IfNoneMatch'], '*')
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[0][1]['IfNoneMatch'], '*')
 
     def test_no_overwrite_flag_on_copy_when_small_object_exists_on_target(
         self,
     ):
         cmdline = f'{self.prefix} s3://bucket1/key.txt s3://bucket/key.txt --no-overwrite'
-        # Set up responses for multipart copy (since no-overwrite always uses multipart)
         self.parsed_responses = [
-            self.head_object_response(),  # HeadObject to get source metadata
-            self.create_mpu_response('foo'),  # CreateMultipartUpload response
-            self.upload_part_copy_response(),  # UploadPartCopy response
-            self.precondition_failed_error_response(),  # CompleteMultipartUpload
-            {},  # AbortMultipartUpload response
-        ]
-        self.run_cmd(cmdline, expected_rc=0)
-        # Verify all multipart operations were called
-        self.assertEqual(len(self.operations_called), 5)
-        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
-        self.assertEqual(
-            self.operations_called[1][0].name, 'CreateMultipartUpload'
-        )
-        self.assertEqual(self.operations_called[2][0].name, 'UploadPartCopy')
-        self.assertEqual(
-            self.operations_called[3][0].name, 'CompleteMultipartUpload'
-        )
-        self.assertEqual(
-            self.operations_called[4][0].name, 'AbortMultipartUpload'
-        )
-        # Verify the IfNoneMatch condition was set in the CompleteMultipartUpload request
-        self.assertEqual(self.operations_called[3][1]['IfNoneMatch'], '*')
-
-    def test_no_overwrite_flag_on_copy_when_zero_size_object_exists_at_destination(
-        self,
-    ):
-        cmdline = f'{self.prefix} s3://bucket1/file.txt s3://bucket2/file.txt --no-overwrite'
-        self.parsed_responses = [
-            self.head_object_response(
-                ContentLength=0
-            ),  # Source object (zero size)
-            self.head_object_response(),  # Checking the object at destination
+            self.head_object_response(ContentLength=5), 
+            self.precondition_failed_error_response(),
         ]
         self.run_cmd(cmdline, expected_rc=0)
         self.assertEqual(len(self.operations_called), 2)
         self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
-        self.assertEqual(self.operations_called[1][0].name, 'HeadObject')
-
-    def test_no_overwrite_flag_on_copy_when_zero_size_object_not_exists_at_destination(
-        self,
-    ):
-        cmdline = f'{self.prefix} s3://bucket1/file.txt s3://bucket2/file1.txt --no-overwrite'
-        self.parsed_responses = [
-            self.head_object_response(
-                ContentLength=0
-            ),  # Source object (zero size)
-            {
-                'Error': {'Code': '404', 'Message': 'Not Found'}
-            },  # At destination object does not exists
-            self.copy_object_response(),  # Copy Request when object does not exists
-        ]
-        self.run_cmd(cmdline, expected_rc=0)
-        self.assertEqual(len(self.operations_called), 3)
-        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
-        self.assertEqual(self.operations_called[1][0].name, 'HeadObject')
-        self.assertEqual(self.operations_called[2][0].name, 'CopyObject')
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+        self.assertEqual(self.operations_called[1][1]['IfNoneMatch'], '*')
 
     def test_no_overwrite_flag_on_copy_when_large_object_exists_on_target(
         self,

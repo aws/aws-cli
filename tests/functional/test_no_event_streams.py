@@ -41,7 +41,7 @@ def test_no_event_stream_unless_allowed(record_property):
                         # Store the service and operation in
                         # PyTest custom properties
                         record_property(
-                            'aws_service', model.service_model.service_id
+                            'aws_service', model.service_model.service_name
                         )
                         record_property('aws_operation', model.name)
                         supported_commands = '\n'.join(_ALLOWED_COMMANDS)

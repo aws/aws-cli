@@ -257,6 +257,16 @@ class BaseS3TransferCommandTest(BaseAWSCommandParamsTest):
             self.complete_mpu_response(),
         ]
 
+    def precondition_failed_error_response(self, condition='If-None-Match'):
+        return {
+            'Error': {
+                'Code': 'PreconditionFailed',
+                'Message': 'At least one of the pre-conditions you '
+                'specified did not hold',
+                'Condition': condition,
+            }
+        }
+
 
 class BaseS3CLIRunnerTest(unittest.TestCase):
     def setUp(self):

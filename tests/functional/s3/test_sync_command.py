@@ -542,6 +542,91 @@ class TestSyncCommand(BaseS3TransferCommandTest):
             ('ChecksumMode', 'ENABLED'), self.operations_called[1][1].items()
         )
 
+    def test_sync_upload_with_no_overwrite_when_file_does_not_exist_at_destination(
+        self,
+    ):
+        self.files.create_file("new_file.txt", "mycontent")
+        self.parsed_responses = [
+            self.list_objects_response(['file.txt']),
+            {'ETag': '"c8afdb36c52cf4727836669019e69222"'},
+        ]
+        cmdline = (
+            f'{self.prefix} {self.files.rootdir} s3://bucket --no-overwrite'
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 2)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[1][1]['Key'], 'new_file.txt')
+
+    def test_sync_upload_with_no_overwrite_when_file_exists_at_destination(
+        self,
+    ):
+        self.files.create_file("new_file.txt", "mycontent")
+        self.parsed_responses = [
+            self.list_objects_response(['new_file.txt']),
+        ]
+        cmdline = (
+            f'{self.prefix} {self.files.rootdir} s3://bucket --no-overwrite'
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+
+    def test_sync_download_with_no_overwrite_file_not_exists_at_destination(
+        self,
+    ):
+        self.parsed_responses = [
+            self.list_objects_response(['new_file.txt']),
+            self.get_object_response(),
+        ]
+        cmdline = (
+            f'{self.prefix} s3://bucket/ {self.files.rootdir} --no-overwrite'
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 2)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'GetObject')
+        local_file_path = os.path.join(self.files.rootdir, 'new_file.txt')
+        self.assertTrue(os.path.exists(local_file_path))
+
+    def test_sync_download_with_no_overwrite_file_exists_at_destination(self):
+        self.files.create_file('file.txt', 'My content')
+        self.parsed_responses = [
+            self.list_objects_response(['file.txt']),
+        ]
+        cmdline = (
+            f'{self.prefix} s3://bucket/ {self.files.rootdir} --no-overwrite'
+        )
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+
+    def test_sync_copy_with_no_overwrite_file_not_exists_at_destination(self):
+        self.parsed_responses = [
+            self.list_objects_response(['new_file.txt']),
+            self.list_objects_response(['file1.txt']),
+            self.copy_object_response(),
+        ]
+        cmdline = f'{self.prefix} s3://bucket/ s3://bucket2/ --no-overwrite'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 3)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[2][0].name, 'CopyObject')
+        self.assertEqual(self.operations_called[2][1]['Key'], 'new_file.txt')
+
+    def test_sync_copy_with_no_overwrite_file_exists_at_destination(self):
+        self.parsed_responses = [
+            self.list_objects_response(['new_file.txt']),
+            self.list_objects_response(['new_file.txt', 'file1.txt']),
+        ]
+        cmdline = f'{self.prefix} s3://bucket/ s3://bucket2/ --no-overwrite'
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 2)
+        self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+        self.assertEqual(self.operations_called[1][0].name, 'ListObjectsV2')
+
 
 class TestSyncSourceRegion(BaseS3CLIRunnerTest):
     def test_respects_source_region(self):

@@ -433,6 +433,7 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
         subscribers.append(ProvideSizeSubscriber(fileinfo.size))
+        subscribers.append(ProvideETagSubscriber(fileinfo.etag))
         if self._should_inject_content_type():
             subscribers.append(ProvideCopyContentTypeSubscriber())
         if self._cli_params.get('is_move', False):

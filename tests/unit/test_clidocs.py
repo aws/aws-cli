@@ -18,7 +18,8 @@ from botocore.model import ShapeResolver, StructureShape, StringShape, \
 from awscli.testutils import mock, unittest, FileCreator
 from awscli.clidocs import OperationDocumentEventHandler, \
     CLIDocumentEventHandler, TopicListerDocumentEventHandler, \
-    TopicDocumentEventHandler, GlobalOptionsDocumenter
+    TopicDocumentEventHandler, GlobalOptionsDocumenter, \
+    ServiceDocumentEventHandler
 from awscli.bcdoc.restdoc import ReSTDocument
 from awscli.help import ServiceHelpCommand, TopicListerCommand, \
     TopicHelpCommand, HelpCommand
@@ -195,7 +196,7 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         doc_handler.doc_breadcrumbs(help_cmd)
         self.assertEqual(
             help_cmd.doc.getvalue().decode('utf-8'),
-            '[ :ref:`aws <cli:aws>` ]'
+            '[ :ref:`aws <cli:aws>` ]\n\n'
         )
 
     def test_breadcrumbs_service_command_html(self):
@@ -208,7 +209,7 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         doc_handler.doc_breadcrumbs(help_cmd)
         self.assertEqual(
             help_cmd.doc.getvalue().decode('utf-8'),
-            '[ :ref:`aws <cli:aws>` ]'
+            '[ :ref:`aws <cli:aws>` ]\n\n'
         )
 
     def test_breadcrumbs_operation_command_html(self):
@@ -221,7 +222,7 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         doc_handler.doc_breadcrumbs(help_cmd)
         self.assertEqual(
             help_cmd.doc.getvalue().decode('utf-8'),
-            '[ :ref:`aws <cli:aws>` . :ref:`ec2 <cli:aws ec2>` ]'
+            '[ :ref:`aws <cli:aws>` . :ref:`ec2 <cli:aws ec2>` ]\n\n'
         )
 
     def test_breadcrumbs_wait_command_html(self):
@@ -235,7 +236,7 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
         self.assertEqual(
             help_cmd.doc.getvalue().decode('utf-8'),
             ('[ :ref:`aws <cli:aws>` . :ref:`s3api <cli:aws s3api>`'
-             ' . :ref:`wait <cli:aws s3api wait>` ]')
+             ' . :ref:`wait <cli:aws s3api wait>` ]\n\n')
         )
 
     def test_documents_json_header_shape(self):
@@ -443,6 +444,32 @@ class TestCLIDocumentEventHandler(unittest.TestCase):
                                      event_name='foobar')
         rendered = help_command.doc.getvalue().decode('utf-8')
         self.assertRegex(rendered, r'FooBar[\s\S]*Tagged Union')
+
+    def test_meta_description_operation_command_html(self):
+        help_cmd = ServiceHelpCommand(
+            self.session, self.obj, self.command_table, self.arg_table,
+            self.name, 'ec2.run-instances'
+        )
+        help_cmd.doc.target = 'html'
+        doc_handler = OperationDocumentEventHandler(help_cmd)
+        doc_handler.doc_meta_description(help_cmd)
+
+        meta_description = help_cmd.doc.getvalue().decode('utf-8')
+        self.assertIn(".. meta::\n   :description: ", meta_description)
+        self.assertIn('to run the ec2 run-instances command', meta_description)
+
+    def test_meta_description_service_html(self):
+        help_cmd = ServiceHelpCommand(
+            self.session, self.obj, self.command_table, self.arg_table,
+            self.name, 'ec2'
+        )
+        help_cmd.doc.target = 'html'
+        doc_handler = ServiceDocumentEventHandler(help_cmd)
+        doc_handler.doc_meta_description(help_cmd)
+
+        meta_description = help_cmd.doc.getvalue().decode('utf-8')
+        self.assertIn(".. meta::\n   :description: Learn about the AWS CLI ", meta_description)
+        self.assertIn(' ec2 commands', meta_description)
 
 
 class TestTopicDocumentEventHandlerBase(unittest.TestCase):

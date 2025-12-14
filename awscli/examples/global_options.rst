@@ -86,16 +86,6 @@
   *   raw-in-base64-out
   
   
-``--cli-error-format`` (string)
-  
-  The formatting style for AWS service errors. When set to STANDARD, AWS service errors containing modeled fields beyond Code and Message are written to stderr in the configured output format. When set to LEGACY, errors are written to stderr as unstructured text.
-  
-  
-  *   STANDARD
-  
-  *   LEGACY
-  
-  
 ``--no-cli-pager`` (boolean)
   
   Disable cli pager for output.

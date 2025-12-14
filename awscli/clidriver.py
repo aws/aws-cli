@@ -22,7 +22,6 @@ import botocore.session
 import distro
 from botocore import xform_name
 from botocore.compat import OrderedDict, copy_kwargs
-from botocore.exceptions import ClientError
 from botocore.configprovider import (
     ChainProvider,
     ConstantProvider,
@@ -31,6 +30,7 @@ from botocore.configprovider import (
     ScopedConfigProvider,
 )
 from botocore.context import start_as_current_context
+from botocore.exceptions import ClientError
 from botocore.history import get_global_history_recorder
 
 from awscli import __version__
@@ -77,7 +77,6 @@ from awscli.logger import (
 )
 from awscli.plugin import load_plugins
 from awscli.telemetry import add_session_id_component_to_user_agent_extra
-from awscli.structured_error import StructuredErrorHandler
 from awscli.utils import (
     IMDSRegionProvider,
     OutputStreamFactory,
@@ -121,7 +120,7 @@ def create_clidriver(args=None):
         session.full_config.get('plugins', {}),
         event_hooks=session.get_component('event_emitter'),
     )
-    error_handlers_chain = construct_cli_error_handlers_chain()
+    error_handlers_chain = construct_cli_error_handlers_chain(session)
     driver = CLIDriver(
         session=session, error_handler=error_handlers_chain, debug=debug
     )
@@ -248,7 +247,9 @@ class CLIDriver:
             self.session = session
         self._error_handler = error_handler
         if self._error_handler is None:
-            self._error_handler = construct_cli_error_handlers_chain()
+            self._error_handler = construct_cli_error_handlers_chain(
+                self.session
+            )
         if debug:
             self._set_logging(debug)
         self._update_config_chain()
@@ -1002,9 +1003,6 @@ class CLIOperationCaller:
     def __init__(self, session):
         self._session = session
         self._output_stream_factory = OutputStreamFactory(session)
-        self._structured_error_handler = StructuredErrorHandler(
-            session, self._output_stream_factory
-        )
 
     def invoke(self, service_name, operation_name, parameters, parsed_globals):
         """Invoke an operation and format the response.
@@ -1056,33 +1054,8 @@ class CLIOperationCaller:
             else:
                 response = getattr(client, py_operation_name)(**parameters)
             return response
-        except ClientError as e:
-            # Display structured error output before re-raising
-            self._display_structured_error_for_exception(
-                e, parsed_globals
-            )
+        except ClientError:
             raise
-
-    def _display_structured_error_for_exception(
-        self, exception, parsed_globals
-    ):
-        try:
-            error_response = (
-                self._structured_error_handler.extract_error_response(
-                    exception
-                )
-            )
-            if error_response:
-                self._structured_error_handler.handle_error(
-                    error_response, parsed_globals
-                )
-        except Exception as e:
-            # Don't let structured error display break error handling
-            LOG.debug(
-                'Failed to display structured error: %s',
-                e,
-                exc_info=True,
-            )
 
     def _display_response(self, command_name, response, parsed_globals):
         output = parsed_globals.output
@@ -1090,9 +1063,5 @@ class CLIOperationCaller:
             output = self._session.get_config_variable('output')
 
         formatter = get_formatter(output, parsed_globals)
-        try:
-            with self._output_stream_factory.get_output_stream() as stream:
-                formatter(command_name, response, stream)
-        except ClientError as e:
-            self._display_structured_error_for_exception(e, parsed_globals)
-            raise
+        with self._output_stream_factory.get_output_stream() as stream:
+            formatter(command_name, response, stream)

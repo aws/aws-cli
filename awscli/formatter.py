@@ -370,9 +370,9 @@ class TextFormatter(Formatter):
 
 class OffFormatter(Formatter):
     """Formatter that suppresses all output.
-        Only stdout is suppressed; stderr (error messages) remains visible.
+    Only stdout is suppressed; stderr (error messages) remains visible.
     """
-    
+
     def __call__(self, command_name, response, stream=None):
         # Suppress all output
         pass

@@ -15,20 +15,15 @@ from unittest import mock
 
 from botocore.exceptions import ClientError
 
-from awscli.structured_error import StructuredErrorHandler
-from tests.unit.test_clidriver import FakeSession
-from awscli.utils import OutputStreamFactory
 from awscli.clidriver import CLIOperationCaller
+from awscli.errorhandler import ClientErrorHandler
+from tests.unit.test_clidriver import FakeSession
 
 
-class TestStructuredErrorHandler:
+class TestClientErrorHandler:
     def setup_method(self):
         self.session = FakeSession()
-
-        self.output_stream_factory = OutputStreamFactory(self.session)
-        self.handler = StructuredErrorHandler(
-            self.session, self.output_stream_factory
-        )
+        self.handler = ClientErrorHandler(self.session)
 
     def test_extract_error_response_from_client_error(self):
         error_response = {
@@ -41,7 +36,7 @@ class TestStructuredErrorHandler:
         }
         client_error = ClientError(error_response, 'GetObject')
 
-        result = StructuredErrorHandler.extract_error_response(client_error)
+        result = ClientErrorHandler._extract_error_response(client_error)
 
         assert result is not None
         assert 'Error' in result
@@ -49,7 +44,7 @@ class TestStructuredErrorHandler:
         assert result['Error']['BucketName'] == 'my-bucket'
 
     def test_extract_error_response_from_non_client_error(self):
-        result = StructuredErrorHandler.extract_error_response(
+        result = ClientErrorHandler._extract_error_response(
             ValueError('Some error')
         )
         assert result is None
@@ -67,121 +62,73 @@ class TestStructuredErrorHandler:
         assert not self.handler._has_additional_error_members(None)
 
     def test_should_display_with_additional_members(self):
-        error_response = {
+        error_info = {
             'Code': 'NoSuchBucket',
             'Message': 'Error',
             'BucketName': 'my-bucket',
         }
-        parsed_globals = mock.Mock()
-        parsed_globals.output = 'json'
 
-        assert self.handler.should_display(error_response, parsed_globals)
+        assert self.handler._should_display_structured_error(error_info)
 
     def test_should_display_without_additional_members(self):
-        error_response = {'Code': 'AccessDenied', 'Message': 'Access Denied'}
-        parsed_globals = mock.Mock()
-        parsed_globals.output = 'json'
+        error_info = {'Code': 'AccessDenied', 'Message': 'Access Denied'}
 
-        assert not self.handler.should_display(error_response, parsed_globals)
+        assert not self.handler._should_display_structured_error(error_info)
 
     def test_should_display_respects_legacy_format(self):
-        error_response = {
+        error_info = {
             'Code': 'NoSuchBucket',
             'Message': 'Error',
             'BucketName': 'test',
         }
-        parsed_globals = mock.Mock()
-        parsed_globals.output = 'json'
 
         self.session.config_store.set_config_provider(
             'cli_error_format', mock.Mock(provide=lambda: 'LEGACY')
         )
 
-        assert not self.handler.should_display(error_response, parsed_globals)
+        assert not self.handler._should_display_structured_error(error_info)
 
-    def test_should_display_respects_output_off(self):
-        error_response = {
+    def test_should_display_validates_error_format(self):
+        error_info = {
             'Code': 'NoSuchBucket',
             'Message': 'Error',
             'BucketName': 'test',
         }
-        parsed_globals = mock.Mock()
-        parsed_globals.output = 'off'
 
-        assert not self.handler.should_display(error_response, parsed_globals)
-
-    def test_display_json_format(self):
-        error_response = {
-            'Code': 'NoSuchBucket',
-            'Message': 'The specified bucket does not exist',
-            'BucketName': 'my-bucket',
-        }
-        parsed_globals = mock.Mock()
-        parsed_globals.output = 'json'
-        parsed_globals.query = None
-
-        mock_stream = io.StringIO()
-        mock_context_manager = mock.MagicMock()
-        mock_context_manager.__enter__.return_value = mock_stream
-        mock_context_manager.__exit__.return_value = False
-
-        mock_stream_factory = mock.Mock()
-        mock_stream_factory.get_output_stream.return_value = (
-            mock_context_manager
+        self.session.config_store.set_config_provider(
+            'cli_error_format', mock.Mock(provide=lambda: 'INVALID')
         )
-        self.handler._output_stream_factory = mock_stream_factory
 
-        self.handler.display(error_response, parsed_globals)
+        try:
+            self.handler._should_display_structured_error(error_info)
+            assert False, "Expected ValueError to be raised"
+        except ValueError as e:
+            assert 'Invalid cli_error_format' in str(e)
+            assert 'INVALID' in str(e)
+            assert 'STANDARD' in str(e)
+            assert 'LEGACY' in str(e)
 
-        output = mock_stream.getvalue()
-        assert 'NoSuchBucket' in output
-        assert 'my-bucket' in output
+    def test_should_display_case_insensitive(self):
+        error_info = {
+            'Code': 'NoSuchBucket',
+            'Message': 'Error',
+            'BucketName': 'test',
+        }
 
-    def test_display_handles_exceptions_gracefully(self):
-        error_response = {'Code': 'SomeError', 'Message': 'An error occurred'}
-        parsed_globals = mock.Mock()
-        parsed_globals.output = 'json'
-
-        mock_context_manager = mock.MagicMock()
-        mock_context_manager.__enter__.side_effect = Exception('Stream error')
-
-        mock_stream_factory = mock.Mock()
-        mock_stream_factory.get_output_stream.return_value = (
-            mock_context_manager
+        self.session.config_store.set_config_provider(
+            'cli_error_format', mock.Mock(provide=lambda: 'standard')
         )
-        self.handler._output_stream_factory = mock_stream_factory
+        assert self.handler._should_display_structured_error(error_info)
 
-        self.handler.display(error_response, parsed_globals)
+        self.session.config_store.set_config_provider(
+            'cli_error_format', mock.Mock(provide=lambda: 'legacy')
+        )
+        assert not self.handler._should_display_structured_error(error_info)
 
-    def test_should_display_with_parsed_globals_output_none(self):
-        error_response = {
-            'Code': 'NoSuchBucket',
-            'Message': 'Error',
-            'BucketName': 'test',
-        }
-        parsed_globals = mock.Mock()
-        parsed_globals.output = None
-
-        with mock.patch.object(
-            self.session, 'get_config_variable', return_value='off'
-        ):
-            assert not self.handler.should_display(
-                error_response, parsed_globals
-            )
-
-    def test_should_display_with_parsed_globals_output_none_json(self):
-        error_response = {
-            'Code': 'NoSuchBucket',
-            'Message': 'Error',
-            'BucketName': 'test',
-        }
-        parsed_globals = mock.Mock()
-        parsed_globals.output = None
-
-        with mock.patch.object(
-            self.session, 'get_config_variable', return_value='json'
-        ):
-            assert self.handler.should_display(error_response, parsed_globals)
+        self.session.config_store.set_config_provider(
+            'cli_error_format', mock.Mock(provide=lambda: 'Standard')
+        )
+        assert self.handler._should_display_structured_error(error_info)
 
 
 class TestStructuredErrorWithPagination:
@@ -189,7 +136,8 @@ class TestStructuredErrorWithPagination:
         self.session = FakeSession()
         self.caller = CLIOperationCaller(self.session)
 
-    def test_formatter_error_displays_structured_error(self):
+    def test_formatter_error_propagates_to_error_handler(self):
+        """Test ClientError during formatting propagates to handler."""
         error_response = {
             'Error': {
                 'Code': 'AccessDenied',
@@ -208,27 +156,88 @@ class TestStructuredErrorWithPagination:
         mock_formatter = mock.Mock()
         mock_formatter.side_effect = client_error
 
-        mock_stream = io.StringIO()
-        mock_context_manager = mock.MagicMock()
-        mock_context_manager.__enter__.return_value = mock_stream
-        mock_context_manager.__exit__.return_value = False
-
         with mock.patch(
             'awscli.clidriver.get_formatter', return_value=mock_formatter
         ):
-            with mock.patch.object(
-                self.caller._output_stream_factory,
-                'get_output_stream',
-                return_value=mock_context_manager,
-            ):
-                try:
-                    self.caller._display_response(
-                        'list-objects', {}, parsed_globals
-                    )
-                    assert False, "Expected ClientError to be raised"
-                except ClientError:
-                    pass 
+            # The error should propagate without being caught
+            try:
+                self.caller._display_response(
+                    'list-objects', {}, parsed_globals
+                )
+                assert False, "Expected ClientError to be raised"
+            except ClientError as e:
+                # Verify the error propagated correctly
+                assert e.response['Error']['Code'] == 'AccessDenied'
+                assert e.response['Error']['BucketName'] == 'my-bucket'
 
-        output = mock_stream.getvalue()
-        assert 'AccessDenied' in output
-        assert 'my-bucket' in output
+
+class TestClientErrorHandlerWithStructuredErrors:
+    def setup_method(self):
+        self.session = FakeSession()
+
+    def test_client_error_handler_displays_structured_error(self):
+        from awscli.errorhandler import ClientErrorHandler
+
+        error_response = {
+            'Error': {
+                'Code': 'NoSuchBucket',
+                'Message': 'The specified bucket does not exist',
+                'BucketName': 'my-bucket',
+            },
+            'ResponseMetadata': {'RequestId': '123'},
+        }
+        client_error = ClientError(error_response, 'GetObject')
+
+        handler = ClientErrorHandler(self.session)
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+
+        rc = handler.handle_exception(client_error, stdout, stderr)
+
+        # Should return CLIENT_ERROR_RC
+        from awscli.constants import CLIENT_ERROR_RC
+
+        assert rc == CLIENT_ERROR_RC
+
+        stderr_output = stderr.getvalue()
+        assert 'NoSuchBucket' in stderr_output
+        assert 'my-bucket' in stderr_output
+        assert 'ClientError' in stderr_output or '"Code"' in stderr_output
+
+        stdout_output = stdout.getvalue()
+        assert stdout_output == ''
+
+    def test_client_error_handler_without_additional_fields(self):
+        from awscli.errorhandler import ClientErrorHandler
+
+        error_response = {
+            'Error': {
+                'Code': 'AccessDenied',
+                'Message': 'Access Denied',
+            },
+            'ResponseMetadata': {'RequestId': '123'},
+        }
+        client_error = ClientError(error_response, 'GetObject')
+
+        handler = ClientErrorHandler(self.session)
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+
+        rc = handler.handle_exception(client_error, stdout, stderr)
+
+        # Should return CLIENT_ERROR_RC
+        from awscli.constants import CLIENT_ERROR_RC
+
+        assert rc == CLIENT_ERROR_RC
+
+        stdout_output = stdout.getvalue()
+        assert stdout_output == ''
+
+        stderr_output = stderr.getvalue()
+        assert (
+            'ClientError' in stderr_output
+            or 'AccessDenied' in stderr_output
+        )
+        assert '"Code"' not in stderr_output

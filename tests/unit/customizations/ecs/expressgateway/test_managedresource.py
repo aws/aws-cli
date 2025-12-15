@@ -175,6 +175,125 @@ class TestManagedResource(unittest.TestCase):
         # Should contain ANSI color codes
         self.assertIn("\x1b[", status_string)
 
+    def test_get_stream_string_basic(self):
+        resource = ManagedResource(
+            "LoadBalancer", "lb-123", "ACTIVE", 1761230543.151
+        )
+        stream_string = resource.get_stream_string("2025-12-15 10:00:00")
+        self.assertIn("[2025-12-15 10:00:00]", stream_string)
+        self.assertIn("LoadBalancer", stream_string)
+        self.assertIn("lb-123", stream_string)
+        self.assertIn("ACTIVE", stream_string)
+
+    def test_get_stream_string_with_reason(self):
+        resource = ManagedResource(
+            "LoadBalancer",
+            "lb-123",
+            "PROVISIONING",
+            1761230543.151,
+            "Waiting for DNS propagation",
+        )
+        stream_string = resource.get_stream_string("2025-12-15 10:00:00")
+        self.assertIn("Reason: Waiting for DNS propagation", stream_string)
+
+    def test_get_stream_string_with_additional_info(self):
+        resource = ManagedResource(
+            "LoadBalancer",
+            "lb-123",
+            "ACTIVE",
+            1761230543.151,
+            additional_info="DNS: example.elb.amazonaws.com",
+        )
+        stream_string = resource.get_stream_string("2025-12-15 10:00:00")
+        self.assertIn("Info: DNS: example.elb.amazonaws.com", stream_string)
+
+    def test_get_stream_string_with_updated_at(self):
+        resource = ManagedResource(
+            "LoadBalancer", "lb-123", "ACTIVE", 1761230543.151
+        )
+        stream_string = resource.get_stream_string("2025-12-15 10:00:00")
+        self.assertIn("Last Updated At:", stream_string)
+        # Check timestamp format YYYY-MM-DD HH:MM:SS
+        self.assertRegex(stream_string, r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}")
+
+    def test_get_stream_string_all_fields(self):
+        resource = ManagedResource(
+            "TargetGroup",
+            "tg-456",
+            "PROVISIONING",
+            1761230543.151,
+            "Registering targets",
+            "Health check interval: 30s",
+        )
+        stream_string = resource.get_stream_string("2025-12-15 10:00:00")
+        self.assertIn("[2025-12-15 10:00:00]", stream_string)
+        self.assertIn("TargetGroup", stream_string)
+        self.assertIn("tg-456", stream_string)
+        self.assertIn("PROVISIONING", stream_string)
+        self.assertIn("Reason: Registering targets", stream_string)
+        self.assertIn("Last Updated At:", stream_string)
+        self.assertIn("Info: Health check interval: 30s", stream_string)
+
+    def test_get_stream_string_no_identifier(self):
+        resource = ManagedResource(
+            "LoadBalancer", None, "ACTIVE", 1761230543.151
+        )
+        stream_string = resource.get_stream_string("2025-12-15 10:00:00")
+        self.assertIn("[2025-12-15 10:00:00]", stream_string)
+        self.assertIn("LoadBalancer", stream_string)
+        self.assertIn("ACTIVE", stream_string)
+        self.assertNotIn("None", stream_string)
+
+    def test_get_stream_string_no_status(self):
+        resource = ManagedResource(
+            "LoadBalancer", "lb-123", None, 1761230543.151
+        )
+        stream_string = resource.get_stream_string("2025-12-15 10:00:00")
+        self.assertIn("LoadBalancer", stream_string)
+        self.assertIn("lb-123", stream_string)
+        # Should not have status brackets when status is None
+        self.assertNotIn("[None]", stream_string)
+
+    def test_get_stream_string_no_color(self):
+        resource = ManagedResource(
+            "LoadBalancer", "lb-123", "ACTIVE", 1761230543.151
+        )
+        stream_string = resource.get_stream_string(
+            "2025-12-15 10:00:00", use_color=False
+        )
+        self.assertIn("LoadBalancer", stream_string)
+        self.assertIn("lb-123", stream_string)
+        self.assertIn("ACTIVE", stream_string)
+        # Should not contain ANSI color codes
+        self.assertNotIn("\x1b[", stream_string)
+
+    def test_get_stream_string_with_color(self):
+        resource = ManagedResource(
+            "LoadBalancer", "lb-123", "ACTIVE", 1761230543.151
+        )
+        stream_string = resource.get_stream_string(
+            "2025-12-15 10:00:00", use_color=True
+        )
+        self.assertIn("LoadBalancer", stream_string)
+        self.assertIn("lb-123", stream_string)
+        self.assertIn("ACTIVE", stream_string)
+        # Should contain ANSI color codes
+        self.assertIn("\x1b[", stream_string)
+
+    def test_get_stream_string_failed_status(self):
+        resource = ManagedResource(
+            "LoadBalancer",
+            "lb-123",
+            "FAILED",
+            1761230543.151,
+            "Connection timeout",
+        )
+        stream_string = resource.get_stream_string("2025-12-15 10:00:00")
+        self.assertIn("FAILED", stream_string)
+        self.assertIn("Reason: Connection timeout", stream_string)
+        # Failed status should use color coding
+        self.assertIn("\x1b[", stream_string)
+
 
 class TestConstants(unittest.TestCase):
     def test_terminal_resource_statuses(self):

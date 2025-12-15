@@ -126,16 +126,22 @@ class ManagedResource:
         lines = []
         parts = [f"[{timestamp}]"]
 
-        if self.resource_type:
+        # If both resource_type and identifier are None, show a placeholder
+        if not self.resource_type and not self.identifier:
             parts.append(
-                self.color_utils.make_cyan(self.resource_type, use_color)
+                self.color_utils.make_cyan("Unknown Resource", use_color)
             )
+        else:
+            if self.resource_type:
+                parts.append(
+                    self.color_utils.make_cyan(self.resource_type, use_color)
+                )
 
-        if self.identifier:
-            colored_id = self.color_utils.color_by_status(
-                self.identifier, self.status, use_color
-            )
-            parts.append(colored_id)
+            if self.identifier:
+                colored_id = self.color_utils.color_by_status(
+                    self.identifier, self.status, use_color
+                )
+                parts.append(colored_id)
 
         if self.status:
             status_text = self.color_utils.color_by_status(

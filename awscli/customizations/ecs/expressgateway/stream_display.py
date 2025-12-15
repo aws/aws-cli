@@ -59,6 +59,7 @@ class StreamDisplay:
             ) = resource_group.get_changed_resources(
                 self.previous_resources_by_key
             )
+
             self.previous_resources_by_key = updated_dict
 
             if changed_resources:

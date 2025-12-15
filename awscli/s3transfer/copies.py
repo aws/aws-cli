@@ -138,11 +138,9 @@ class CopySubmissionTask(SubmissionTask):
             # during a multipart copy.
             transfer_future.meta.provide_object_etag(response.get('ETag'))
 
-        # If it is less than threshold and ifNoneMatch is not in parameters
-        # do a regular copy else do multipart copy.
-        if (
-            transfer_future.meta.size < config.multipart_threshold
-        ):
+        # If it is greater than threshold do a multipart copy, otherwise
+        # do a regular copy object.
+        if transfer_future.meta.size < config.multipart_threshold:
             self._submit_copy_request(
                 client, config, osutil, request_executor, transfer_future
             )

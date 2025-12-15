@@ -248,9 +248,7 @@ class ServiceViewCollector:
             source_sr_resources_combined = ManagedResourceGroup()
 
         updating_resources, disassociating_resources = (
-            target_sr_resources.diff(
-                source_sr_resources_combined
-            )
+            target_sr_resources.diff(source_sr_resources_combined)
         )
         updating_resources.resource_type = "Updating"
         disassociating_resources.resource_type = "Disassociating"

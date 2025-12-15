@@ -446,9 +446,7 @@ class TestServiceViewCollector:
             }
         }
         self.mock_client.list_service_deployments.return_value = {
-            "serviceDeployments": [
-                {"serviceDeploymentArn": "deploy-arn"}
-            ]
+            "serviceDeployments": [{"serviceDeploymentArn": "deploy-arn"}]
         }
         self.mock_client.describe_service_deployments.return_value = {
             "serviceDeployments": [

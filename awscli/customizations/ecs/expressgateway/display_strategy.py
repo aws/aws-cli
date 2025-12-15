@@ -18,6 +18,10 @@ import time
 
 from botocore.exceptions import ClientError
 
+from awscli.customizations.ecs.exceptions import MonitoringError
+from awscli.customizations.ecs.expressgateway.stream_display import (
+    StreamDisplay,
+)
 from awscli.customizations.utils import uni_print
 
 
@@ -80,7 +84,9 @@ class InteractiveDisplayStrategy(DisplayStrategy):
                 current_time = time.time()
                 if current_time - start_time > timeout_minutes * 60:
                     timed_out = True
-                    self.display.app.exit()
+                    # Only exit if app is running to avoid "Application is not running" error
+                    if self.display.app.is_running:
+                        self.display.app.exit()
                     break
 
                 try:
@@ -151,7 +157,9 @@ class InteractiveDisplayStrategy(DisplayStrategy):
 
         finally:
             # Ensure display app is properly shut down
-            self.display.app.exit()
+            # Only exit if app is running to avoid "Application is not running" error
+            if self.display.app.is_running:
+                self.display.app.exit()
             spinner_task.cancel()
             if display_task is not None and not display_task.done():
                 display_task.cancel()
@@ -163,3 +171,65 @@ class InteractiveDisplayStrategy(DisplayStrategy):
                     pass
 
         return current_output.replace("{SPINNER}", ""), timed_out
+
+
+class TextOnlyDisplayStrategy(DisplayStrategy):
+    """Text-only display strategy with diff detection and timestamped output.
+
+    Uses synchronous polling loop with change detection to output only
+    individual resource changes with timestamps.
+    """
+
+    def __init__(self, use_color):
+        self.stream_display = StreamDisplay(use_color)
+
+    def execute_monitoring(self, collector, start_time, timeout_minutes):
+        """Execute synchronous monitoring with text output."""
+        self.stream_display.show_startup_message()
+
+        try:
+            while True:
+                current_time = time.time()
+                if current_time - start_time > timeout_minutes * 60:
+                    self.stream_display.show_timeout_message()
+                    break
+
+                try:
+                    self.stream_display.show_polling_message()
+
+                    collector.get_current_view("")
+
+                    # Extract cached result for diff detection
+                    managed_resources, info = collector.cached_monitor_result
+
+                    self.stream_display.show_monitoring_data(
+                        managed_resources, info
+                    )
+
+                except ClientError as e:
+                    if (
+                        e.response.get('Error', {}).get('Code')
+                        == 'InvalidParameterException'
+                    ):
+                        error_message = e.response.get('Error', {}).get(
+                            'Message', ''
+                        )
+                        if (
+                            "Cannot call DescribeServiceRevisions for a service that is INACTIVE"
+                            in error_message
+                        ):
+                            self.stream_display.show_service_inactive_message()
+                            break
+                        else:
+                            raise
+                    else:
+                        raise
+
+                time.sleep(5.0)
+
+        except KeyboardInterrupt:
+            self.stream_display.show_user_stop_message()
+        except MonitoringError as e:
+            self.stream_display.show_error_message(e)
+        finally:
+            self.stream_display.show_completion_message()

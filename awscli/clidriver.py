@@ -103,6 +103,7 @@ METADATA_FILENAME = 'metadata.json'
 
 
 def main():
+    assert 1 == 2
     with start_as_current_context():
         return AWSCLIEntryPoint().main(sys.argv[1:])
 

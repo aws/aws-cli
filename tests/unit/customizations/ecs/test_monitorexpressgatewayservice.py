@@ -19,12 +19,6 @@ from awscli.customizations.ecs.monitorexpressgatewayservice import (
     ECSMonitorExpressGatewayService,
 )
 
-# Suppress thread exception warnings - tests use KeyboardInterrupt to exit monitoring loops,
-# which causes expected exceptions in background threads
-pytestmark = pytest.mark.filterwarnings(
-    "ignore::pytest.PytestUnhandledThreadExceptionWarning"
-)
-
 
 class TestECSMonitorExpressGatewayServiceCommand:
     """Test the command class through public interface"""

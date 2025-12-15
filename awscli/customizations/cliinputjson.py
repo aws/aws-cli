@@ -70,6 +70,10 @@ class CliInputJSONArgument(OverrideRequiredArgsArgument):
             try:
                 # Try to load the JSON string into a python dictionary
                 input_data = json.loads(retrieved_json)
+                self._session.register(
+                    f"get-cli-input-json-data",
+                    lambda **inner_kwargs: input_data
+                )
             except ValueError as e:
                 raise ParamError(
                     self.name, "Invalid JSON: %s\nJSON received: %s"

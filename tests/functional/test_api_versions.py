@@ -10,7 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awscli.testutils import create_clidriver
+from awscli.testutils import create_clidriver, capture_output
 from awscli.testutils import BaseAWSCommandParamsTest, FileCreator
 
 
@@ -49,3 +49,19 @@ class TestAPIVersions(BaseAWSCommandParamsTest):
         cmdline = 'ec2 describe-nat-gateways'
         _, stderr, _ = self.run_cmd(cmdline, expected_rc=2)
         self.assertIn("Invalid choice: 'describe-nat-gateways'", stderr)
+
+    def test_v2_debug_migration_warning(self):
+        cmdline = 'ec2 describe-instances --v2-debug'
+        _, stderr, _ = self.run_cmd(cmdline)
+        # Make sure that the correct api version is used for the client
+        # by checking the version that was sent in the request.
+        self.assertEqual(self.last_params['Version'], self.api_version)
+        # Make sure that the migration warning is printed since the user
+        # specified --v2-debug
+        self.assertIn(
+            'AWS CLI v2 UPGRADE WARNING: AWS CLI v2 UPGRADE WARNING: The AWS '
+            'CLI v2 does not support calling older versions of AWS service '
+            'APIs via the `api_versions` configuration file setting.',
+            stderr
+        )
+

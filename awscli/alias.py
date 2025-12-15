@@ -183,7 +183,7 @@ class ServiceAliasCommand(BaseAliasCommand):
         parsed_alias_args, remaining = self._parser.parse_known_args(
             alias_args
         )
-        self._update_parsed_globals(parsed_alias_args, parsed_globals)
+        self._update_parsed_globals(parsed_alias_args, parsed_globals, remaining)
         # Take any of the remaining arguments that were not parsed out and
         # prepend them to the remaining args provided to the alias.
         remaining.extend(args)
@@ -228,7 +228,7 @@ class ServiceAliasCommand(BaseAliasCommand):
         )
         return alias_args
 
-    def _update_parsed_globals(self, parsed_alias_args, parsed_globals):
+    def _update_parsed_globals(self, parsed_alias_args, parsed_globals, remaining):
         global_params_to_update = self._get_global_parameters_to_update(
             parsed_alias_args
         )
@@ -237,7 +237,7 @@ class ServiceAliasCommand(BaseAliasCommand):
         # global parameters provided in the alias before updating
         # the original provided global parameter values
         # and passing those onto subsequent commands.
-        emit_top_level_args_parsed_event(self._session, parsed_alias_args)
+        emit_top_level_args_parsed_event(self._session, parsed_alias_args, remaining)
         for param_name in global_params_to_update:
             updated_param_value = getattr(parsed_alias_args, param_name)
             setattr(parsed_globals, param_name, updated_param_value)

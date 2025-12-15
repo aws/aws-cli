@@ -396,7 +396,7 @@ class TestServiceAliasCommand(unittest.TestCase):
         alias_cmd([], FakeParsedArgs(command=self.alias_name))
         self.session.emit.assert_called_with(
             'top-level-args-parsed', parsed_args=mock.ANY,
-            session=self.session)
+            session=self.session, remaining_args=mock.ANY)
 
         command_table['myservice'].assert_called_with(
             ['myoperation'],

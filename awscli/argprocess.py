@@ -65,7 +65,7 @@ class TooComplexError(Exception):
 
 
 def unpack_argument(
-    session, service_name, operation_name, cli_argument, value
+    session, service_name, operation_name, cli_argument, value, parsed_globals
 ):
     """
     Unpack an argument's value from the commandline. This is part one of a two
@@ -83,6 +83,7 @@ def unpack_argument(
         value=value,
         service_name=service_name,
         operation_name=operation_name,
+        parsed_globals=parsed_globals,
     )
 
     if value_override is not None:

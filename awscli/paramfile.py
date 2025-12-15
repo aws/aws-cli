@@ -10,6 +10,8 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import sys
+
 import copy
 import logging
 import os
@@ -20,6 +22,7 @@ from botocore.httpsession import URLLib3Session
 
 from awscli import argprocess
 from awscli.compat import compat_open
+from awscli.utils import resolve_v2_debug_mode
 
 logger = logging.getLogger(__name__)
 
@@ -166,7 +169,7 @@ class URIArgumentHandler:
             prefixes.update(REMOTE_PREFIX_MAP)
         self._prefixes = prefixes
 
-    def __call__(self, event_name, param, value, **kwargs):
+    def __call__(self, event_name, param, value, parsed_globals=None, **kwargs):
         """Handler that supports param values from URIs."""
         cli_argument = param
         qualified_param_name = '.'.join(event_name.split('.')[1:])
@@ -175,13 +178,27 @@ class URIArgumentHandler:
         ):
             return
         else:
-            return self._check_for_uri_param(cli_argument, value)
+            return self._check_for_uri_param(cli_argument, value, parsed_globals)
 
-    def _check_for_uri_param(self, param, value):
+    def _check_for_uri_param(self, param, value, parsed_globals):
         if isinstance(value, list) and len(value) == 1:
             value = value[0]
         try:
-            return get_paramfile(value, self._prefixes)
+            param_file = get_paramfile(value, self._prefixes)
+            if param_file is not None and resolve_v2_debug_mode(parsed_globals):
+                print(
+                    '\nAWS CLI v2 UPGRADE WARNING: For input parameters that '
+                    'have a prefix of `http://` or `https://`, AWS CLI v2 '
+                    'will not automatically request the content of the URL '
+                    'for the parameter, and the `cli_follow_urlparam` option '
+                    'has been removed. For guidance on how to adapt this '
+                    'command to AWS CLI v2 usage, see '
+                    'https://docs.aws.amazon.com/cli/latest/userguide/'
+                    'cliv2-migration-changes.html'
+                    '#cliv2-migration-paramfile.\n',
+                    file=sys.stderr,
+                )
+            return param_file
         except ResourceLoadingError as e:
             raise argprocess.ParamError(param.cli_name, str(e))
 

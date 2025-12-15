@@ -24,7 +24,8 @@ from awscli.customizations.cloudformation.yamlhelper import yaml_parse
 
 from awscli.customizations.commands import BasicCommand
 from awscli.compat import get_stdout_text_writer
-from awscli.utils import create_nested_client, write_exception
+from awscli.customizations.utils import uni_print
+from awscli.utils import create_nested_client, write_exception, resolve_v2_debug_mode
 
 LOG = logging.getLogger(__name__)
 
@@ -316,18 +317,33 @@ class DeployCommand(BasicCommand):
             s3_uploader = None
 
         deployer = Deployer(cloudformation_client)
+        v2_debug = resolve_v2_debug_mode(parsed_globals)
         return self.deploy(deployer, stack_name, template_str,
                            parameters, parsed_args.capabilities,
                            parsed_args.execute_changeset, parsed_args.role_arn,
                            parsed_args.notification_arns, s3_uploader,
                            tags, parsed_args.fail_on_empty_changeset,
-                           parsed_args.disable_rollback)
+                           parsed_args.disable_rollback, v2_debug)
 
     def deploy(self, deployer, stack_name, template_str,
                parameters, capabilities, execute_changeset, role_arn,
                notification_arns, s3_uploader, tags,
-               fail_on_empty_changeset=True, disable_rollback=False):
+               fail_on_empty_changeset=True, disable_rollback=False,
+               v2_debug=False):
         try:
+            if v2_debug and fail_on_empty_changeset:
+                uni_print(
+                    '\nAWS CLI v2 UPGRADE WARNING: In AWS CLI v2, deploying '
+                    'an AWS CloudFormation Template that results in an empty '
+                    'changeset will NOT result in an error by default. This '
+                    'is different from v1 behavior, where empty changesets '
+                    'result in an error by default. To migrate to v2 behavior '
+                    'and resolve this warning, you can add the '
+                    '`--no-fail-on-empty-changeset` flag to the command. '
+                    'See https://docs.aws.amazon.com/cli/latest/userguide/'
+                    'cliv2-migration-changes.html#cliv2-migration-cfn.\n',
+                    out_file=sys.stderr
+                )
             result = deployer.create_and_wait_for_changeset(
                 stack_name=stack_name,
                 cfn_template=template_str,

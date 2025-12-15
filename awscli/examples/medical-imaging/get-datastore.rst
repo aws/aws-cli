@@ -1,6 +1,6 @@
 **To get a data store's properties**
 
-The following ``get-datastore`` code example gets a data store's properties. ::
+**Example 1:** The following ``get-datastore`` code example gets a data store's properties. ::
 
     aws medical-imaging get-datastore \
         --datastore-id 12345678901234567890123456789012
@@ -20,7 +20,7 @@ Output::
         }
     }
 
-The following ``get-datastore`` code example gets a data store's properties for a data store configured for JPEG 2000 Lossless storage format. ::
+**Example 2:** The following ``get-datastore`` code example gets a data store's properties for a data store configured for JPEG 2000 Lossless storage format. ::
 
     aws medical-imaging get-datastore \
         --datastore-id 12345678901234567890123456789012

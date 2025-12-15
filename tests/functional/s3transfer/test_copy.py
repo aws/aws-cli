@@ -346,13 +346,8 @@ class TestNonMultipartCopy(BaseCopyTest):
 
     def test_allowed_copy_params_are_valid(self):
         op_model = self.client.meta.service_model.operation_model('CopyObject')
-        allowed_copy_arg = [
-            arg
-            for arg in self._manager.ALLOWED_COPY_ARGS
-            if arg not in CopySubmissionTask.COPY_OBJECT_ARGS_BLOCKLIST
-        ]
-        for allowed_upload_arg in allowed_copy_arg:
-            self.assertIn(allowed_upload_arg, op_model.input_shape.members)
+        for allowed_copy_arg in self._manager.ALLOWED_COPY_ARGS:
+            self.assertIn(allowed_copy_arg, op_model.input_shape.members)
 
     def test_copy_with_tagging(self):
         extra_args = {'Tagging': 'tag1=val1', 'TaggingDirective': 'REPLACE'}

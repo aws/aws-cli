@@ -81,8 +81,6 @@ class CopySubmissionTask(SubmissionTask):
         'IfNoneMatch',
     ]
 
-    COPY_OBJECT_ARGS_BLOCKLIST = [
-    ]
 
     def _submit(
         self, client, config, osutil, request_executor, transfer_future

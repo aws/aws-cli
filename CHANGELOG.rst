@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+1.44.0
+======
+
+* api-change:``bedrock-agentcore-control``: This release updates broken links for AgentCore Policy APIs in the AWS CLI and SDK resources.
+* api-change:``connect``: Amazon Connect now supports outbound WhatsApp contacts via the Send message block or StartOutboundChatContact API. Send proactive messages for surveys, reminders, and updates. Offer customers the option to switch to WhatsApp while in queue, eliminating hold time.
+* api-change:``ec2``: EC2 Capacity Manager now supports SpotTotalCount, SpotTotalInterruptions and SpotInterruptionRate metrics for both vCPU and instance units.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``entityresolution``: Support Customer Profiles Integration for AWS Entity Resolution
+* api-change:``glacier``: Documentation updates for Amazon Glacier's maintenance mode
+* api-change:``health``: Updating Health API endpoint generation for dualstack only regions
+* api-change:``logs``: This release allows you to import your historical CloudTrail Lake data into CloudWatch with a few steps, enabling you to easily consolidate operational, security, and compliance data in one place.
+* api-change:``mediatailor``: Added support for Ad Decision Server Configuration enabling HTTP POST requests with custom bodies, headers, GZIP compression, and dynamic variables. No changes required for existing GET request configurations.
+* api-change:``route53resolver``: Adds support for enabling detailed metrics on Route 53 Resolver endpoints using RniEnhancedMetricsEnabled and TargetNameServerMetricsEnabled in the CreateResolverEndpoint and UpdateResolverEndpoint APIs, providing enhanced visibility into Resolver endpoint and target name server performance.
+* api-change:``s3``: This release adds support for the new optional field 'LifecycleExpirationDate' in S3 Inventory configurations.
+* api-change:``service-quotas``: Add support for SQ Dashboard Api
+* feature:Migration: Implement a ``--v2-debug`` flag and ``AWS_CLI_UPGRADE_DEBUG_MODE`` environment variable that detects breaking changes for AWS CLI v2 for entered commands.
+
+
 1.43.15
 =======
 

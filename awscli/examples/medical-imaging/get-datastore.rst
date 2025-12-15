@@ -20,7 +20,7 @@ Output::
         }
     }
 
-The following ``get-datastore`` code example gets a data store's properties with store configured for JPEG 2000 Lossless storage format. ::
+The following ``get-datastore`` code example gets a data store's properties for a data store configured for JPEG 2000 Lossless storage format. ::
 
     aws medical-imaging get-datastore \
         --datastore-id 12345678901234567890123456789012

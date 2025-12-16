@@ -81,9 +81,6 @@ class CopySubmissionTask(SubmissionTask):
         'IfNoneMatch',
     ]
 
-    COPY_OBJECT_ARGS_BLOCKLIST = [
-        'IfNoneMatch',
-    ]
 
     def _submit(
         self, client, config, osutil, request_executor, transfer_future
@@ -141,24 +138,9 @@ class CopySubmissionTask(SubmissionTask):
             # during a multipart copy.
             transfer_future.meta.provide_object_etag(response.get('ETag'))
 
-        # Check for ifNoneMatch is enabled and file has content
-        # Special handling for 0-byte files: Since multipart copy works with object size
-        # and divides the object into smaller chunks, there's an edge case when the object
-        # size is zero. This would result in 0 parts being calculated, and the
-        # CompleteMultipartUpload operation throws a MalformedXML error when transferring
-        # 0 parts because the XML does not validate against the published schema.
-        # Therefore, 0-byte files are always handled via single copy request regardless
-        # of the multipart threshold setting.
-        should_overwrite = (
-            call_args.extra_args.get("IfNoneMatch")
-            and transfer_future.meta.size != 0
-        )
-        # If it is less than threshold and ifNoneMatch is not in parameters
-        # do a regular copy else do multipart copy.
-        if (
-            transfer_future.meta.size < config.multipart_threshold
-            and not should_overwrite
-        ):
+        # If it is greater than threshold do a multipart copy, otherwise
+        # do a regular copy object.
+        if transfer_future.meta.size < config.multipart_threshold:
             self._submit_copy_request(
                 client, config, osutil, request_executor, transfer_future
             )
@@ -175,13 +157,6 @@ class CopySubmissionTask(SubmissionTask):
         # Get the needed progress callbacks for the task
         progress_callbacks = get_callbacks(transfer_future, 'progress')
 
-        # Submit the request of a single copy and make sure it
-        # does not include any blocked arguments.
-        copy_object_extra_args = {
-            param: val
-            for param, val in call_args.extra_args.items()
-            if param not in self.COPY_OBJECT_ARGS_BLOCKLIST
-        }
         self._transfer_coordinator.submit(
             request_executor,
             CopyObjectTask(
@@ -191,7 +166,7 @@ class CopySubmissionTask(SubmissionTask):
                     "copy_source": call_args.copy_source,
                     "bucket": call_args.bucket,
                     "key": call_args.key,
-                    "extra_args": copy_object_extra_args,
+                    "extra_args": call_args.extra_args,
                     "callbacks": progress_callbacks,
                     "size": transfer_future.meta.size,
                 },

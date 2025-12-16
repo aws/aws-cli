@@ -126,12 +126,26 @@ class InteractiveDisplayStrategy(DisplayStrategy):
             )
 
             if data_task in done:
+                # Await to retrieve result or re-raise any exception from the
+                # task. asyncio.wait() doesn't retrieve exceptions itself.
                 await data_task
+
+            # Cancel pending tasks
+            for task in pending:
+                task.cancel()
+                # Await cancelled task to ensure proper cleanup and prevent
+                # warnings about unawaited tasks
+                try:
+                    await task
+                except asyncio.CancelledError:
+                    pass
 
         finally:
             spinner_task.cancel()
             if display_task is not None and not display_task.done():
                 display_task.cancel()
+                # Await cancelled task to ensure proper cleanup and prevent
+                # warnings about unawaited tasks
                 try:
                     await display_task
                 except asyncio.CancelledError:

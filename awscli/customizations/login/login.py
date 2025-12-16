@@ -96,6 +96,11 @@ class LoginCommand(BasicCommand):
         if profile_name not in self._session.available_profiles:
             self._session._profile_map[profile_name] = {}
 
+        if not self.accept_existing_credentials_warning_if_needed(
+            profile_name
+        ):
+            return
+
         config = botocore.config.Config(
             region_name=region,
             signature_version=botocore.UNSIGNED,
@@ -168,6 +173,49 @@ class LoginCommand(BasicCommand):
                 f'\nProfile {profile_name} is already configured to use session '
                 f'{existing_session_id}. Do you want to overwrite it to use '
                 f'{new_session_id} instead? (y/n): '
+            )
+
+            if response.lower() in ('y', 'yes'):
+                return True
+            elif response.lower() in ('n', 'no'):
+                return False
+            else:
+                uni_print('Invalid response. Please enter "y" or "n"')
+
+    def accept_existing_credentials_warning_if_needed(self, profile_name):
+        """
+        Checks if the specified profile is already configured with a
+        different style of credentials. If so, warn the user and prompt them to
+        continue.
+        """
+        config = self._session.full_config['profiles'].get(profile_name, {})
+        existing_credentials_style = None
+
+        if 'web_identity_token_file' in config:
+            existing_credentials_style = 'Web Identity'
+        elif 'sso_role_name' in config or 'sso_account_id' in config:
+            existing_credentials_style = 'SSO'
+        elif 'aws_access_key_id' in config:
+            existing_credentials_style = 'Access Key'
+        elif 'role_arn' in config:
+            existing_credentials_style = 'Assume Role'
+        elif 'credential_process' in config:
+            existing_credentials_style = 'Credential Process'
+
+        if not existing_credentials_style:
+            return True
+
+        while True:
+            response = compat_input(
+                f'\nWarning: Profile \'{profile_name}\' is already configured '
+                f'with {existing_credentials_style} credentials. '
+                f'If you continue to log in, the CLI and other tools may '
+                f'continue to use the existing credentials instead.\n\n'
+                f'You may run \'aws login --profile new-profile-name\' to '
+                f'create a new profile, or else you may manually remove the '
+                f'existing credentials from \'{profile_name}\'.\n\n'
+                f'Do you want to continue adding login credentials '
+                f'to \'{profile_name}\'? (y/n): '
             )
 
             if response.lower() in ('y', 'yes'):

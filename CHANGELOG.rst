@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.44.1
+======
+
+* api-change:``iot``: Add support for dynamic payloads in IoT Device Management Commands
+* api-change:``timestream-influxdb``: This release adds support for rebooting InfluxDB DbInstances and DbClusters
+
+
 1.44.0
 ======
 

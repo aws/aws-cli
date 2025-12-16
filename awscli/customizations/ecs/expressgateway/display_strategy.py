@@ -126,9 +126,11 @@ class InteractiveDisplayStrategy(DisplayStrategy):
             )
 
             if data_task in done:
-                # Await to retrieve result or re-raise any exception from the
-                # task. asyncio.wait() doesn't retrieve exceptions itself.
-                await data_task
+                # Retrieve and re-raise any exception from the task.
+                # asyncio.wait() doesn't retrieve exceptions itself.
+                exc = data_task.exception()
+                if exc:
+                    raise exc
 
             # Cancel pending tasks
             for task in pending:

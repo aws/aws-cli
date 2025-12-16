@@ -7,6 +7,7 @@ from awscli.customizations.s3.syncstrategy.caseconflict import (
     CaseConflictException,
     CaseConflictSync,
 )
+from awscli.testutils import skip_if_case_sensitive
 
 
 @pytest.fixture
@@ -77,6 +78,7 @@ class TestCaseConflictSync:
         assert should_sync is True
         assert not captured.err
 
+    @skip_if_case_sensitive()
     def test_error_with_existing_file(self, lower_file_stat, upper_file_stat):
         case_conflict_sync = CaseConflictSync(on_case_conflict='error')
         with pytest.raises(CaseConflictException) as exc:
@@ -110,6 +112,7 @@ class TestCaseConflictSync:
         assert should_sync is True
         assert not captured.err
 
+    @skip_if_case_sensitive()
     def test_warn_with_existing_file(
         self, lower_file_stat, upper_file_stat, capsys
     ):
@@ -146,6 +149,7 @@ class TestCaseConflictSync:
         assert should_sync is True
         assert not captured.err
 
+    @skip_if_case_sensitive()
     def test_skip_with_existing_file(
         self, lower_file_stat, upper_file_stat, capsys
     ):

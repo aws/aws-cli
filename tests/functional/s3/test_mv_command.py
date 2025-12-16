@@ -13,6 +13,7 @@
 # language governing permissions and limitations under the License.
 from awscli.customizations.s3.utils import S3PathResolver
 from awscli.compat import BytesIO
+from awscli.testutils import skip_if_case_sensitive
 from tests.functional.s3 import BaseS3TransferCommandTest
 from tests.functional.s3.test_sync_command import TestSyncCaseConflict
 from tests import requires_crt
@@ -452,6 +453,7 @@ class TestMvCommandWithValidateSameS3Paths(BaseS3TransferCommandTest):
 class TestMvRecursiveCaseConflict(TestSyncCaseConflict):
     prefix = 's3 mv --recursive '
 
+    @skip_if_case_sensitive()
     def test_warn_with_existing_file(self):
         self.files.create_file(self.lower_key, 'mycontent')
         cmd = (

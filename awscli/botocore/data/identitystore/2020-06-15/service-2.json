@@ -490,7 +490,7 @@
         },
         "Reason":{
           "shape":"ConflictExceptionReason",
-          "documentation":"<p>This request cannot be completed for one of the following reasons:</p> <ul> <li> <p>Performing the requested operation would violate an existing uniqueness claim in the identity store. Resolve the conflict before retrying this request.</p> </li> <li> <p>The requested resource was being concurrently modified by another request.</p> </li> </ul>"
+          "documentation":"<p>Indicates the reason for a conflict error when the service is unable to access a Customer Managed KMS key. For non-KMS permission errors, this field is not included.</p>"
         }
       },
       "documentation":"<p>This request cannot be completed for one of the following reasons:</p> <ul> <li> <p>Performing the requested operation would violate an existing uniqueness claim in the identity store. Resolve the conflict before retrying this request.</p> </li> <li> <p>The requested resource was being concurrently modified by another request.</p> </li> </ul>",
@@ -648,6 +648,10 @@
         "Birthdate":{
           "shape":"SensitiveStringType",
           "documentation":"<p>The user's birthdate in YYYY-MM-DD format. This field supports standard date format for storing personal information.</p>"
+        },
+        "Extensions":{
+          "shape":"Extensions",
+          "documentation":"<p>A map with additional attribute extensions for the user. Each map key corresponds to an extension name, while map values represent extension data in <code>Document</code> type (not supported by Java V1, Go V1 and older versions of the CLI). <code>aws:identitystore:enterprise</code> is the only supported extension name.</p>"
         }
       }
     },
@@ -865,6 +869,10 @@
         "UserId":{
           "shape":"ResourceId",
           "documentation":"<p>The identifier for a user in the identity store.</p>"
+        },
+        "Extensions":{
+          "shape":"ExtensionNames",
+          "documentation":"<p>A collection of extension names indicating what extensions the service should retrieve alongside other user attributes. <code>aws:identitystore:enterprise</code> is the only supported extension name.</p>"
         }
       }
     },
@@ -970,6 +978,10 @@
         "UpdatedBy":{
           "shape":"StringType",
           "documentation":"<p>The identifier of the user or system that last updated the user.</p>"
+        },
+        "Extensions":{
+          "shape":"Extensions",
+          "documentation":"<p>A map of explicitly requested attribute extensions associated with the user. Not populated if the user has no requested extensions.</p>"
         }
       }
     },
@@ -998,6 +1010,25 @@
       "min":1
     },
     "ExceptionMessage":{"type":"string"},
+    "ExtensionName":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"aws:identitystore:[a-z]{1,20}"
+    },
+    "ExtensionNames":{
+      "type":"list",
+      "member":{"shape":"ExtensionName"},
+      "max":10,
+      "min":1
+    },
+    "Extensions":{
+      "type":"map",
+      "key":{"shape":"ExtensionName"},
+      "value":{"shape":"AttributeValue"},
+      "max":10,
+      "min":1
+    },
     "ExternalId":{
       "type":"structure",
       "required":[
@@ -1478,6 +1509,10 @@
           "shape":"IdentityStoreId",
           "documentation":"<p>The globally unique identifier for the identity store, such as <code>d-1234567890</code>. In this example, <code>d-</code> is a fixed prefix, and <code>1234567890</code> is a randomly generated string that contains numbers and lower case letters. This value is generated at the time that a new identity store is created.</p>"
         },
+        "Extensions":{
+          "shape":"ExtensionNames",
+          "documentation":"<p>A collection of extension names indicating what extensions the service should retrieve alongside other user attributes. <code>aws:identitystore:enterprise</code> is the only supported extension name.</p>"
+        },
         "MaxResults":{
           "shape":"MaxResults",
           "documentation":"<p>The maximum number of results to be returned per request. This parameter is used in the <code> ListUsers</code> and <code>ListGroups</code> requests to specify how many results to return in one page. The length limit is 50 characters.</p>",
@@ -1661,7 +1696,8 @@
         "GROUP",
         "USER",
         "IDENTITY_STORE",
-        "GROUP_MEMBERSHIP"
+        "GROUP_MEMBERSHIP",
+        "RESOURCE_POLICY"
       ]
     },
     "RetryAfterSeconds":{"type":"integer"},
@@ -1886,6 +1922,10 @@
         "UpdatedBy":{
           "shape":"StringType",
           "documentation":"<p>The identifier of the user or system that last updated the user.</p>"
+        },
+        "Extensions":{
+          "shape":"Extensions",
+          "documentation":"<p>A map of explicitly requested attribute extensions associated with the user. Not populated if the user has no requested extensions.</p>"
         }
       },
       "documentation":"<p>A user object that contains the metadata and attributes for a specified user.</p>"

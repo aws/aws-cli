@@ -149,6 +149,23 @@
       ],
       "documentation":"<p>Retrieves information about your <a href=\"https://docs.aws.amazon.com/servicequotas/latest/userguide/automatic-management.html\">Service Quotas Automatic Management</a> configuration. Automatic Management monitors your Service Quotas utilization and notifies you before you run out of your allocated quotas.</p>"
     },
+    "GetQuotaUtilizationReport":{
+      "name":"GetQuotaUtilizationReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetQuotaUtilizationReportRequest"},
+      "output":{"shape":"GetQuotaUtilizationReportResponse"},
+      "errors":[
+        {"shape":"TooManyRequestsException"},
+        {"shape":"NoSuchResourceException"},
+        {"shape":"IllegalArgumentException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceException"}
+      ],
+      "documentation":"<p>Retrieves the quota utilization report for your Amazon Web Services account. This operation returns paginated results showing your quota usage across all Amazon Web Services services, sorted by utilization percentage in descending order (highest utilization first).</p> <p>You must first initiate a report using the <code>StartQuotaUtilizationReport</code> operation. The report generation process is asynchronous and may take several seconds to complete. Poll this operation periodically to check the status and retrieve results when the report is ready.</p> <p>Each report contains up to 1,000 quota records per page. Use the <code>NextToken</code> parameter to retrieve additional pages of results. Reports are automatically deleted after 15 minutes.</p>"
+    },
     "GetRequestedServiceQuotaChange":{
       "name":"GetRequestedServiceQuotaChange",
       "http":{
@@ -390,6 +407,24 @@
       ],
       "documentation":"<p>Starts <a href=\"https://docs.aws.amazon.com/servicequotas/latest/userguide/automatic-management.html\">Service Quotas Automatic Management</a> for an Amazon Web Services account, including notification preferences and excluded quotas configurations. Automatic Management monitors your Service Quotas utilization and notifies you before you run out of your allocated quotas.</p>"
     },
+    "StartQuotaUtilizationReport":{
+      "name":"StartQuotaUtilizationReport",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartQuotaUtilizationReportRequest"},
+      "output":{"shape":"StartQuotaUtilizationReportResponse"},
+      "errors":[
+        {"shape":"TooManyRequestsException"},
+        {"shape":"NoSuchResourceException"},
+        {"shape":"IllegalArgumentException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ServiceException"},
+        {"shape":"InvalidPaginationTokenException"}
+      ],
+      "documentation":"<p>Initiates the generation of a quota utilization report for your Amazon Web Services account. This asynchronous operation analyzes your quota usage across all Amazon Web Services services and returns a unique report identifier that you can use to retrieve the results.</p> <p>The report generation process may take several seconds to complete, depending on the number of quotas in your account. Use the <code>GetQuotaUtilizationReport</code> operation to check the status and retrieve the results when the report is ready.</p>"
+    },
     "StopAutoManagement":{
       "name":"StopAutoManagement",
       "http":{
@@ -492,6 +527,11 @@
         "ALL"
       ]
     },
+    "AppliedValue":{
+      "type":"double",
+      "max":10000000000,
+      "min":0
+    },
     "AssociateServiceQuotaTemplateRequest":{
       "type":"structure",
       "members":{}
@@ -522,6 +562,11 @@
     },
     "CustomerServiceEngagementId":{"type":"string"},
     "DateTime":{"type":"timestamp"},
+    "DefaultValue":{
+      "type":"double",
+      "max":10000000000,
+      "min":0
+    },
     "DeleteServiceQuotaIncreaseRequestFromTemplateRequest":{
       "type":"structure",
       "required":[
@@ -680,6 +725,61 @@
         "ExclusionList":{
           "shape":"ExclusionQuotaList",
           "documentation":"<p>List of Amazon Web Services services excluded from Automatic Management. You won't be notified of Service Quotas utilization for Amazon Web Services services added to the Automatic Management exclusion list. </p>"
+        }
+      }
+    },
+    "GetQuotaUtilizationReportRequest":{
+      "type":"structure",
+      "required":["ReportId"],
+      "members":{
+        "ReportId":{
+          "shape":"ReportId",
+          "documentation":"<p>The unique identifier for the quota utilization report. This identifier is returned by the <code>StartQuotaUtilizationReport</code> operation.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that indicates the next page of results to retrieve. This token is returned in the response when there are more results available. Omit this parameter for the first request.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResultsUtilization",
+          "documentation":"<p>The maximum number of results to return per page. The default value is 1,000 and the maximum allowed value is 1,000.</p>"
+        }
+      }
+    },
+    "GetQuotaUtilizationReportResponse":{
+      "type":"structure",
+      "members":{
+        "ReportId":{
+          "shape":"ReportId",
+          "documentation":"<p>The unique identifier for the quota utilization report.</p>"
+        },
+        "Status":{
+          "shape":"ReportStatus",
+          "documentation":"<p>The current status of the report generation. Possible values are:</p> <ul> <li> <p> <code>PENDING</code> - The report generation is in progress. Retry this operation after a few seconds.</p> </li> <li> <p> <code>IN_PROGRESS</code> - The report is being processed. Continue polling until the status changes to <code>COMPLETED</code>.</p> </li> <li> <p> <code>COMPLETED</code> - The report is ready and quota utilization data is available in the response.</p> </li> <li> <p> <code>FAILED</code> - The report generation failed. Check the <code>ErrorCode</code> and <code>ErrorMessage</code> fields for details.</p> </li> </ul>"
+        },
+        "GeneratedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the report was generated, in ISO 8601 format.</p>"
+        },
+        "TotalCount":{
+          "shape":"TotalCount",
+          "documentation":"<p>The total number of quotas included in the report across all pages.</p>"
+        },
+        "Quotas":{
+          "shape":"QuotaUtilizationInfoList",
+          "documentation":"<p>A list of quota utilization records, sorted by utilization percentage in descending order. Each record includes the quota code, service code, service name, quota name, namespace, utilization percentage, default value, applied value, and whether the quota is adjustable. Up to 1,000 records are returned per page.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token that indicates more results are available. Include this token in the next request to retrieve the next page of results. If this field is not present, you have retrieved all available results.</p>"
+        },
+        "ErrorCode":{
+          "shape":"ReportErrorCode",
+          "documentation":"<p>An error code indicating the reason for failure when the report status is <code>FAILED</code>. This field is only present when the status is <code>FAILED</code>.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"ReportErrorMessage",
+          "documentation":"<p>A detailed error message describing the failure when the report status is <code>FAILED</code>. This field is only present when the status is <code>FAILED</code>.</p>"
         }
       }
     },
@@ -1035,6 +1135,11 @@
       "max":100,
       "min":1
     },
+    "MaxResultsUtilization":{
+      "type":"integer",
+      "max":1000,
+      "min":1
+    },
     "MetricDimensionName":{"type":"string"},
     "MetricDimensionValue":{"type":"string"},
     "MetricDimensionsMapDefinition":{
@@ -1251,10 +1356,90 @@
       "documentation":"<p>Information about the quota period.</p>"
     },
     "QuotaUnit":{"type":"string"},
+    "QuotaUtilizationInfo":{
+      "type":"structure",
+      "members":{
+        "QuotaCode":{
+          "shape":"QuotaCode",
+          "documentation":"<p>The quota identifier.</p>"
+        },
+        "ServiceCode":{
+          "shape":"ServiceCode",
+          "documentation":"<p>The service identifier.</p>"
+        },
+        "QuotaName":{
+          "shape":"QuotaName",
+          "documentation":"<p>The quota name.</p>"
+        },
+        "Namespace":{
+          "shape":"QuotaMetricNamespace",
+          "documentation":"<p>The namespace of the metric used to track quota usage.</p>"
+        },
+        "Utilization":{
+          "shape":"UtilizationPct",
+          "documentation":"<p>The utilization percentage of the quota, calculated as (current usage / applied value) × 100. Values range from 0.0 to 100.0 or higher if usage exceeds the quota limit.</p>"
+        },
+        "DefaultValue":{
+          "shape":"DefaultValue",
+          "documentation":"<p>The default value of the quota.</p>"
+        },
+        "AppliedValue":{
+          "shape":"AppliedValue",
+          "documentation":"<p>The applied value of the quota, which may be higher than the default value if a quota increase has been requested and approved.</p>"
+        },
+        "ServiceName":{
+          "shape":"ServiceName",
+          "documentation":"<p>The service name.</p>"
+        },
+        "Adjustable":{
+          "shape":"QuotaAdjustable",
+          "documentation":"<p>Indicates whether the quota value can be increased.</p>"
+        }
+      },
+      "documentation":"<p>Information about a quota's utilization, including the quota code, service information, current usage, and applied limits.</p>"
+    },
+    "QuotaUtilizationInfoList":{
+      "type":"list",
+      "member":{"shape":"QuotaUtilizationInfo"},
+      "max":1000
+    },
     "QuotaValue":{
       "type":"double",
       "max":10000000000,
       "min":0
+    },
+    "ReportErrorCode":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z][a-zA-Z0-9]*"
+    },
+    "ReportErrorMessage":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"^.*$"
+    },
+    "ReportId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[0-9a-zA-Z][a-zA-Z0-9-]{1,128}"
+    },
+    "ReportMessage":{
+      "type":"string",
+      "max":350,
+      "min":0,
+      "pattern":"^.{0,350}$"
+    },
+    "ReportStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "FAILED"
+      ]
     },
     "RequestId":{
       "type":"string",
@@ -1313,12 +1498,20 @@
         "INVALID_REQUEST"
       ]
     },
+    "RequestType":{
+      "type":"string",
+      "enum":["AutomaticManagement"]
+    },
     "RequestedServiceQuotaChange":{
       "type":"structure",
       "members":{
         "Id":{
           "shape":"RequestId",
           "documentation":"<p>The unique identifier.</p>"
+        },
+        "RequestType":{
+          "shape":"RequestType",
+          "documentation":"<p>The type of quota increase request. Possible values include:</p> <ul> <li> <p> <code>AutomaticManagement</code> - The request was automatically created by Service Quotas Automatic Management when quota utilization approached the limit.</p> </li> </ul> <p>If this field is not present, the request was manually created by a user.</p>"
         },
         "CaseId":{
           "shape":"CustomerServiceEngagementId",
@@ -1586,6 +1779,27 @@
       "type":"structure",
       "members":{}
     },
+    "StartQuotaUtilizationReportRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "StartQuotaUtilizationReportResponse":{
+      "type":"structure",
+      "members":{
+        "ReportId":{
+          "shape":"ReportId",
+          "documentation":"<p>A unique identifier for the quota utilization report. Use this identifier with the <code>GetQuotaUtilizationReport</code> operation to retrieve the report results.</p>"
+        },
+        "Status":{
+          "shape":"ReportStatus",
+          "documentation":"<p>The current status of the report generation. The status will be <code>PENDING</code> when the report is first initiated.</p>"
+        },
+        "Message":{
+          "shape":"ReportMessage",
+          "documentation":"<p>An optional message providing additional information about the report generation status. This field may contain details about the report initiation or indicate if an existing recent report is being reused.</p>"
+        }
+      }
+    },
     "Statistic":{
       "type":"string",
       "max":256,
@@ -1684,6 +1898,11 @@
       "documentation":"<p>You've exceeded the number of tags allowed for a resource. For more information, see <a href=\"https://docs.aws.amazon.com/servicequotas/latest/userguide/sq-tagging.html#sq-tagging-restrictions\">Tag restrictions</a> in the <i>Service Quotas User Guide</i>.</p>",
       "exception":true
     },
+    "TotalCount":{
+      "type":"integer",
+      "max":2147483647,
+      "min":0
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -1725,7 +1944,8 @@
     "UpdateAutoManagementResponse":{
       "type":"structure",
       "members":{}
-    }
+    },
+    "UtilizationPct":{"type":"double"}
   },
   "documentation":"<p>With Service Quotas, you can view and manage your quotas easily as your Amazon Web Services workloads grow. Quotas, also referred to as limits, are the maximum number of resources that you can create in your Amazon Web Services account. For more information, see the <a href=\"https://docs.aws.amazon.com/servicequotas/latest/userguide/\">Service Quotas User Guide</a>.</p> <p>You need Amazon Web Services CLI version 2.13.20 or higher to view and manage resource-level quotas such as <code>Instances per domain</code> for Amazon OpenSearch Service.</p>"
 }

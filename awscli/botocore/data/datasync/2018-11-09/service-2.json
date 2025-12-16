@@ -773,7 +773,7 @@
     "AgentArnList":{
       "type":"list",
       "member":{"shape":"AgentArn"},
-      "max":4,
+      "max":8,
       "min":1
     },
     "AgentList":{
@@ -900,7 +900,7 @@
           "documentation":"<p>Specifies the ARN for the customer-managed KMS key that DataSync uses to encrypt the DataSync-managed secret stored for <code>SecretArn</code>. DataSync provides this key to Secrets Manager.</p>"
         }
       },
-      "documentation":"<p>Specifies configuration information for a DataSync-managed secret, such as an authentication token or secret key that DataSync uses to access a specific storage location, with a customer-managed KMS key.</p> <note> <p>You can use either <code>CmkSecretConfig</code> or <code>CustomSecretConfig</code> to provide credentials for a <code>CreateLocation</code> request. Do not provide both parameters for the same request.</p> </note>"
+      "documentation":"<p>Specifies configuration information for a DataSync-managed secret, such as an authentication token, secret key, password, or Kerberos keytab that DataSync uses to access a specific storage location, with a customer-managed KMS key.</p> <note> <p>You can use either <code>CmkSecretConfig</code> or <code>CustomSecretConfig</code> to provide credentials for a <code>CreateLocation</code> request. Do not provide both parameters for the same request.</p> </note>"
     },
     "CreateAgentRequest":{
       "type":"structure",
@@ -984,11 +984,11 @@
         },
         "CmkSecretConfig":{
           "shape":"CmkSecretConfig",
-          "documentation":"<p>Specifies configuration information for a DataSync-managed secret, which includes the authentication token that DataSync uses to access a specific AzureBlob storage location, with a customer-managed KMS key.</p> <p>When you include this paramater as part of a <code>CreateLocationAzureBlob</code> request, you provide only the KMS key ARN. DataSync uses this KMS key together with the authentication token you specify for <code>SasConfiguration</code> to create a DataSync-managed secret to store the location access credentials.</p> <p>Make sure the DataSync has permission to access the KMS key that you specify.</p> <note> <p>You can use either <code>CmkSecretConfig</code> (with <code>SasConfiguration</code>) or <code>CustomSecretConfig</code> (without <code>SasConfiguration</code>) to provide credentials for a <code>CreateLocationAzureBlob</code> request. Do not provide both parameters for the same request.</p> </note>"
+          "documentation":"<p>Specifies configuration information for a DataSync-managed secret, which includes the authentication token that DataSync uses to access a specific AzureBlob storage location, with a customer-managed KMS key.</p> <p>When you include this parameter as part of a <code>CreateLocationAzureBlob</code> request, you provide only the KMS key ARN. DataSync uses this KMS key together with the authentication token you specify for <code>SasConfiguration</code> to create a DataSync-managed secret to store the location access credentials.</p> <p>Make sure that DataSync has permission to access the KMS key that you specify.</p> <note> <p>You can use either <code>CmkSecretConfig</code> (with <code>SasConfiguration</code>) or <code>CustomSecretConfig</code> (without <code>SasConfiguration</code>) to provide credentials for a <code>CreateLocationAzureBlob</code> request. Do not provide both parameters for the same request.</p> </note>"
         },
         "CustomSecretConfig":{
           "shape":"CustomSecretConfig",
-          "documentation":"<p>Specifies configuration information for a customer-managed Secrets Manager secret where the authentication token for an AzureBlob storage location is stored in plain text. This configuration includes the secret ARN, and the ARN for an IAM role that provides access to the secret.</p> <note> <p>You can use either <code>CmkSecretConfig</code> (with <code>SasConfiguration</code>) or <code>CustomSecretConfig</code> (without <code>SasConfiguration</code>) to provide credentials for a <code>CreateLocationAzureBlob</code> request. Do not provide both parameters for the same request.</p> </note>"
+          "documentation":"<p>Specifies configuration information for a customer-managed Secrets Manager secret where the authentication token for an AzureBlob storage location is stored in plain text, in Secrets Manager. This configuration includes the secret ARN, and the ARN for an IAM role that provides access to the secret.</p> <note> <p>You can use either <code>CmkSecretConfig</code> (with <code>SasConfiguration</code>) or <code>CustomSecretConfig</code> (without <code>SasConfiguration</code>) to provide credentials for a <code>CreateLocationAzureBlob</code> request. Do not provide both parameters for the same request.</p> </note>"
         }
       }
     },
@@ -1367,11 +1367,11 @@
         },
         "CmkSecretConfig":{
           "shape":"CmkSecretConfig",
-          "documentation":"<p>Specifies configuration information for a DataSync-managed secret, which includes the <code>SecretKey</code> that DataSync uses to access a specific object storage location, with a customer-managed KMS key.</p> <p>When you include this paramater as part of a <code>CreateLocationObjectStorage</code> request, you provide only the KMS key ARN. DataSync uses this KMS key together with the value you specify for the <code>SecretKey</code> parameter to create a DataSync-managed secret to store the location access credentials.</p> <p>Make sure the DataSync has permission to access the KMS key that you specify.</p> <note> <p>You can use either <code>CmkSecretConfig</code> (with <code>SecretKey</code>) or <code>CustomSecretConfig</code> (without <code>SecretKey</code>) to provide credentials for a <code>CreateLocationObjectStorage</code> request. Do not provide both parameters for the same request.</p> </note>"
+          "documentation":"<p>Specifies configuration information for a DataSync-managed secret, which includes the <code>SecretKey</code> that DataSync uses to access a specific object storage location, with a customer-managed KMS key.</p> <p>When you include this parameter as part of a <code>CreateLocationObjectStorage</code> request, you provide only the KMS key ARN. DataSync uses this KMS key together with the value you specify for the <code>SecretKey</code> parameter to create a DataSync-managed secret to store the location access credentials.</p> <p>Make sure that DataSync has permission to access the KMS key that you specify.</p> <note> <p>You can use either <code>CmkSecretConfig</code> (with <code>SecretKey</code>) or <code>CustomSecretConfig</code> (without <code>SecretKey</code>) to provide credentials for a <code>CreateLocationObjectStorage</code> request. Do not provide both parameters for the same request.</p> </note>"
         },
         "CustomSecretConfig":{
           "shape":"CustomSecretConfig",
-          "documentation":"<p>Specifies configuration information for a customer-managed Secrets Manager secret where the secret key for a specific object storage location is stored in plain text. This configuration includes the secret ARN, and the ARN for an IAM role that provides access to the secret.</p> <note> <p>You can use either <code>CmkSecretConfig</code> (with <code>SecretKey</code>) or <code>CustomSecretConfig</code> (without <code>SecretKey</code>) to provide credentials for a <code>CreateLocationObjectStorage</code> request. Do not provide both parameters for the same request.</p> </note>"
+          "documentation":"<p>Specifies configuration information for a customer-managed Secrets Manager secret where the secret key for a specific object storage location is stored in plain text, in Secrets Manager. This configuration includes the secret ARN, and the ARN for an IAM role that provides access to the secret.</p> <note> <p>You can use either <code>CmkSecretConfig</code> (with <code>SecretKey</code>) or <code>CustomSecretConfig</code> (without <code>SecretKey</code>) to provide credentials for a <code>CreateLocationObjectStorage</code> request. Do not provide both parameters for the same request.</p> </note>"
         }
       },
       "documentation":"<p>CreateLocationObjectStorageRequest</p>"
@@ -1454,6 +1454,14 @@
         "Password":{
           "shape":"SmbPassword",
           "documentation":"<p>Specifies the password of the user who can mount your SMB file server and has permission to access the files and folders involved in your transfer. This parameter applies only if <code>AuthenticationType</code> is set to <code>NTLM</code>.</p>"
+        },
+        "CmkSecretConfig":{
+          "shape":"CmkSecretConfig",
+          "documentation":"<p>Specifies configuration information for a DataSync-managed secret, either a <code>Password</code> or <code>KerberosKeytab</code> (for <code>NTLM</code> (default) and <code>KERBEROS</code> authentication types, respectively) that DataSync uses to access a specific SMB storage location, with a customer-managed KMS key.</p> <p>When you include this parameter as part of a <code>CreateLocationSmbRequest</code> request, you provide only the KMS key ARN. DataSync uses this KMS key together with either the <code>Password</code> or <code>KerberosKeytab</code> you specify to create a DataSync-managed secret to store the location access credentials.</p> <p>Make sure that DataSync has permission to access the KMS key that you specify.</p> <note> <p>You can use either <code>CmkSecretConfig</code> (with either <code>Password</code> or <code>KerberosKeytab</code>) or <code>CustomSecretConfig</code> (without any <code>Password</code> and <code>KerberosKeytab</code>) to provide credentials for a <code>CreateLocationSmbRequest</code> request. Do not provide both <code>CmkSecretConfig</code> and <code>CustomSecretConfig</code> parameters for the same request.</p> </note>"
+        },
+        "CustomSecretConfig":{
+          "shape":"CustomSecretConfig",
+          "documentation":"<p>Specifies configuration information for a customer-managed Secrets Manager secret where the SMB storage location credentials is stored in Secrets Manager as plain text (for <code>Password</code>) or binary (for <code>KerberosKeytab</code>). This configuration includes the secret ARN, and the ARN for an IAM role that provides access to the secret.</p> <note> <p>You can use either <code>CmkSecretConfig</code> (with <code>SasConfiguration</code>) or <code>CustomSecretConfig</code> (without <code>SasConfiguration</code>) to provide credentials for a <code>CreateLocationSmbRequest</code> request. Do not provide both parameters for the same request.</p> </note>"
         },
         "AgentArns":{
           "shape":"AgentArnList",
@@ -1580,7 +1588,7 @@
           "documentation":"<p>Specifies the ARN for the Identity and Access Management role that DataSync uses to access the secret specified for <code>SecretArn</code>.</p>"
         }
       },
-      "documentation":"<p>Specifies configuration information for a customer-managed Secrets Manager secret where a storage location authentication token or secret key is stored in plain text. This configuration includes the secret ARN, and the ARN for an IAM role that provides access to the secret.</p> <note> <p>You can use either <code>CmkSecretConfig</code> or <code>CustomSecretConfig</code> to provide credentials for a <code>CreateLocation</code> request. Do not provide both parameters for the same request.</p> </note>"
+      "documentation":"<p>Specifies configuration information for a customer-managed Secrets Manager secret where a storage location credentials is stored in Secrets Manager as plain text (for authentication token, secret key, or password) or as binary (for Kerberos keytab). This configuration includes the secret ARN, and the ARN for an IAM role that provides access to the secret.</p> <note> <p>You can use either <code>CmkSecretConfig</code> or <code>CustomSecretConfig</code> to provide credentials for a <code>CreateLocation</code> request. Do not provide both parameters for the same request.</p> </note>"
     },
     "DeleteAgentRequest":{
       "type":"structure",
@@ -2167,6 +2175,18 @@
         "AuthenticationType":{
           "shape":"SmbAuthenticationType",
           "documentation":"<p>The authentication protocol that DataSync uses to connect to your SMB file server.</p>"
+        },
+        "ManagedSecretConfig":{
+          "shape":"ManagedSecretConfig",
+          "documentation":"<p>Describes configuration information for a DataSync-managed secret, such as a <code>Password</code> or <code>KerberosKeytab</code> that DataSync uses to access a specific storage location. DataSync uses the default Amazon Web Services-managed KMS key to encrypt this secret in Secrets Manager.</p>"
+        },
+        "CmkSecretConfig":{
+          "shape":"CmkSecretConfig",
+          "documentation":"<p>Describes configuration information for a DataSync-managed secret, such as a <code>Password</code> or <code>KerberosKeytab</code> that DataSync uses to access a specific storage location, with a customer-managed KMS key.</p>"
+        },
+        "CustomSecretConfig":{
+          "shape":"CustomSecretConfig",
+          "documentation":"<p>Describes configuration information for a customer-managed secret, such as a <code>Password</code> or <code>KerberosKeytab</code> that DataSync uses to access a specific storage location, with a customer-managed KMS key.</p>"
         }
       },
       "documentation":"<p>DescribeLocationSmbResponse</p>"
@@ -2212,7 +2232,7 @@
         },
         "EstimatedFilesToTransfer":{
           "shape":"long",
-          "documentation":"<p>The number of files, objects, and directories that DataSync expects to transfer over the network. This value is calculated while DataSync <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#understand-task-execution-statuses\">prepares</a> the transfer.</p> <p>How this gets calculated depends primarily on your task’s <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-TransferMode\">transfer mode</a> configuration:</p> <ul> <li> <p>If <code>TranserMode</code> is set to <code>CHANGED</code> - The calculation is based on comparing the content of the source and destination locations and determining the difference that needs to be transferred. The difference can include:</p> <ul> <li> <p>Anything that's added or modified at the source location.</p> </li> <li> <p>Anything that's in both locations and modified at the destination after an initial transfer (unless <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-OverwriteMode\">OverwriteMode</a> is set to <code>NEVER</code>).</p> </li> <li> <p> <b>(Basic task mode only)</b> The number of items that DataSync expects to delete (if <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-PreserveDeletedFiles\">PreserveDeletedFiles</a> is set to <code>REMOVE</code>).</p> </li> </ul> </li> <li> <p>If <code>TranserMode</code> is set to <code>ALL</code> - The calculation is based only on the items that DataSync finds at the source location.</p> </li> </ul>"
+          "documentation":"<p>The number of files, objects, and directories that DataSync expects to transfer over the network. This value is calculated while DataSync <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#understand-task-execution-statuses\">prepares</a> the transfer.</p> <p>How this gets calculated depends primarily on your task’s <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-TransferMode\">transfer mode</a> configuration:</p> <ul> <li> <p>If <code>TranserMode</code> is set to <code>CHANGED</code> - The calculation is based on comparing the content of the source and destination locations and determining the difference that needs to be transferred. The difference can include:</p> <ul> <li> <p>Anything that's added or modified at the source location.</p> </li> <li> <p>Anything that's in both locations and modified at the destination after an initial transfer (unless <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-OverwriteMode\">OverwriteMode</a> is set to <code>NEVER</code>).</p> </li> <li> <p> <b>(Basic task mode only)</b> The number of items that DataSync expects to delete (if <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-PreserveDeletedFiles\">PreserveDeletedFiles</a> is set to <code>REMOVE</code>).</p> </li> </ul> </li> <li> <p>If <code>TranserMode</code> is set to <code>ALL</code> - The calculation is based only on the items that DataSync finds at the source location.</p> </li> </ul> <note> <p>For <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>, this counter only includes files or objects. Directories are counted in <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_DescribeTaskExecution.html#DataSync-DescribeTaskExecution-response-EstimatedFoldersToTransfer\">EstimatedFoldersToTransfer</a>. </p> </note>"
         },
         "EstimatedBytesToTransfer":{
           "shape":"long",
@@ -2220,7 +2240,7 @@
         },
         "FilesTransferred":{
           "shape":"long",
-          "documentation":"<p>The number of files, objects, and directories that DataSync actually transfers over the network. This value is updated periodically during your task execution when something is read from the source and sent over the network.</p> <p>If DataSync fails to transfer something, this value can be less than <code>EstimatedFilesToTransfer</code>. In some cases, this value can also be greater than <code>EstimatedFilesToTransfer</code>. This element is implementation-specific for some location types, so don't use it as an exact indication of what's transferring or to monitor your task execution.</p>"
+          "documentation":"<p>The number of files, objects, and directories that DataSync actually transfers over the network. This value is updated periodically during your task execution when something is read from the source and sent over the network.</p> <p>If DataSync fails to transfer something, this value can be less than <code>EstimatedFilesToTransfer</code>. In some cases, this value can also be greater than <code>EstimatedFilesToTransfer</code>. This element is implementation-specific for some location types, so don't use it as an exact indication of what's transferring or to monitor your task execution.</p> <note> <p>For <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>, this counter only includes files or objects. Directories are counted in <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_DescribeTaskExecution.html#DataSync-DescribeTaskExecution-response-FoldersTransferred\">FoldersTransferred</a>. </p> </note>"
         },
         "BytesWritten":{
           "shape":"long",
@@ -2244,15 +2264,15 @@
         },
         "FilesDeleted":{
           "shape":"long",
-          "documentation":"<p>The number of files, objects, and directories that DataSync actually deletes in your destination location. If you don't configure your task to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html\">delete data in the destination that isn't in the source</a>, the value is always <code>0</code>.</p>"
+          "documentation":"<p>The number of files, objects, and directories that DataSync actually deletes in your destination location. If you don't configure your task to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html\">delete data in the destination that isn't in the source</a>, the value is always <code>0</code>.</p> <note> <p>For <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>, this counter only includes files or objects. Directories are counted in <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_DescribeTaskExecution.html#DataSync-DescribeTaskExecution-response-FoldersDeleted\">FoldersDeleted</a>. </p> </note>"
         },
         "FilesSkipped":{
           "shape":"long",
-          "documentation":"<p>The number of files, objects, and directories that DataSync skips during your transfer.</p>"
+          "documentation":"<p>The number of files, objects, and directories that DataSync skips during your transfer.</p> <note> <p>For <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>, this counter only includes files or objects. Directories are counted in <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_DescribeTaskExecution.html#DataSync-DescribeTaskExecution-response-FoldersSkipped\">FoldersSkipped</a>. </p> </note>"
         },
         "FilesVerified":{
           "shape":"long",
-          "documentation":"<p>The number of files, objects, and directories that DataSync verifies during your transfer.</p> <note> <p>When you configure your task to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-data-verification-options.html\">verify only the data that's transferred</a>, DataSync doesn't verify directories in some situations or files that fail to transfer.</p> </note>"
+          "documentation":"<p>The number of files, objects, and directories that DataSync verifies during your transfer.</p> <note> <p>When you configure your task to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-data-verification-options.html\">verify only the data that's transferred</a>, DataSync doesn't verify directories in some situations or files that fail to transfer.</p> <p>For <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>, this counter only includes files or objects. Directories are counted in <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_DescribeTaskExecution.html#DataSync-DescribeTaskExecution-response-FoldersVerified\">FoldersVerified</a>. </p> </note>"
         },
         "ReportResult":{
           "shape":"ReportResult",
@@ -2260,7 +2280,7 @@
         },
         "EstimatedFilesToDelete":{
           "shape":"long",
-          "documentation":"<p>The number of files, objects, and directories that DataSync expects to delete in your destination location. If you don't configure your task to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html\">delete data in the destination that isn't in the source</a>, the value is always <code>0</code>.</p>"
+          "documentation":"<p>The number of files, objects, and directories that DataSync expects to delete in your destination location. If you don't configure your task to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html\">delete data in the destination that isn't in the source</a>, the value is always <code>0</code>.</p> <note> <p>For <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>, this counter only includes files or objects. Directories are counted in <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_DescribeTaskExecution.html#DataSync-DescribeTaskExecution-response-EstimatedFoldersToDelete\">EstimatedFoldersToDelete</a>. </p> </note>"
         },
         "TaskMode":{
           "shape":"TaskMode",
@@ -2268,15 +2288,51 @@
         },
         "FilesPrepared":{
           "shape":"long",
-          "documentation":"<p>The number of objects that DataSync will attempt to transfer after comparing your source and destination locations.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note> <p>This counter isn't applicable if you configure your task to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html#task-option-transfer-mode\">transfer all data</a>. In that scenario, DataSync copies everything from the source to the destination without comparing differences between the locations.</p>"
+          "documentation":"<p>The number of files or objects that DataSync will attempt to transfer after comparing your source and destination locations.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note> <p>This counter isn't applicable if you configure your task to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html#task-option-transfer-mode\">transfer all data</a>. In that scenario, DataSync copies everything from the source to the destination without comparing differences between the locations.</p>"
         },
         "FilesListed":{
           "shape":"TaskExecutionFilesListedDetail",
-          "documentation":"<p>The number of objects that DataSync finds at your locations.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
+          "documentation":"<p>The number of files or objects that DataSync finds at your locations.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
         },
         "FilesFailed":{
           "shape":"TaskExecutionFilesFailedDetail",
-          "documentation":"<p>The number of objects that DataSync fails to prepare, transfer, verify, and delete during your task execution.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
+          "documentation":"<p>The number of files or objects that DataSync fails to prepare, transfer, verify, and delete during your task execution.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
+        },
+        "EstimatedFoldersToDelete":{
+          "shape":"ItemCount",
+          "documentation":"<p>The number of directories that DataSync expects to delete in your destination location. If you don't configure your task to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html\">delete data in the destination that isn't in the source</a>, the value is always <code>0</code>.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
+        },
+        "EstimatedFoldersToTransfer":{
+          "shape":"ItemCount",
+          "documentation":"<p>The number of directories that DataSync expects to transfer over the network. This value is calculated as DataSync <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#understand-task-execution-statuses\">prepares</a> directories to transfer.</p> <p>How this gets calculated depends primarily on your task’s <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-TransferMode\">transfer mode</a> configuration:</p> <ul> <li> <p>If <code>TranserMode</code> is set to <code>CHANGED</code> - The calculation is based on comparing the content of the source and destination locations and determining the difference that needs to be transferred. The difference can include:</p> <ul> <li> <p>Anything that's added or modified at the source location.</p> </li> <li> <p>Anything that's in both locations and modified at the destination after an initial transfer (unless <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-OverwriteMode\">OverwriteMode</a> is set to <code>NEVER</code>).</p> </li> </ul> </li> <li> <p>If <code>TranserMode</code> is set to <code>ALL</code> - The calculation is based only on the items that DataSync finds at the source location.</p> </li> </ul> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
+        },
+        "FoldersSkipped":{
+          "shape":"ItemCount",
+          "documentation":"<p>The number of directories that DataSync skips during your transfer.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
+        },
+        "FoldersPrepared":{
+          "shape":"ItemCount",
+          "documentation":"<p>The number of directories that DataSync will attempt to transfer after comparing your source and destination locations.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note> <p>This counter isn't applicable if you configure your task to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html#task-option-transfer-mode\">transfer all data</a>. In that scenario, DataSync copies everything from the source to the destination without comparing differences between the locations.</p>"
+        },
+        "FoldersTransferred":{
+          "shape":"ItemCount",
+          "documentation":"<p>The number of directories that DataSync actually transfers over the network. This value is updated periodically during your task execution when something is read from the source and sent over the network.</p> <p>If DataSync fails to transfer something, this value can be less than <code>EstimatedFoldersToTransfer</code>. In some cases, this value can also be greater than <code>EstimatedFoldersToTransfer</code>. </p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
+        },
+        "FoldersVerified":{
+          "shape":"ItemCount",
+          "documentation":"<p>The number of directories that DataSync verifies during your transfer.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
+        },
+        "FoldersDeleted":{
+          "shape":"ItemCount",
+          "documentation":"<p>The number of directories that DataSync actually deletes in your destination location. If you don't configure your task to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html\">delete data in the destination that isn't in the source</a>, the value is always <code>0</code>.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
+        },
+        "FoldersListed":{
+          "shape":"TaskExecutionFoldersListedDetail",
+          "documentation":"<p>The number of directories that DataSync finds at your locations.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
+        },
+        "FoldersFailed":{
+          "shape":"TaskExecutionFoldersFailedDetail",
+          "documentation":"<p>The number of directories that DataSync fails to list, prepare, transfer, verify, and delete during your task execution.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
         },
         "LaunchTime":{
           "shape":"Time",
@@ -2738,6 +2794,10 @@
       "documentation":"<p>This exception is thrown when the client submits a malformed request.</p>",
       "exception":true
     },
+    "ItemCount":{
+      "type":"long",
+      "box":true
+    },
     "KerberosKeytabFile":{
       "type":"blob",
       "max":65536
@@ -3195,7 +3255,7 @@
         },
         "BytesPerSecond":{
           "shape":"BytesPerSecond",
-          "documentation":"<p>Limits the bandwidth used by a DataSync task. For example, if you want DataSync to use a maximum of 1 MB, set this value to <code>1048576</code> (<code>=1024*1024</code>).</p> <note> <p>Not applicable to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
+          "documentation":"<p>Limits the bandwidth used by a DataSync task. For example, if you want DataSync to use a maximum of 1 MB, set this value to <code>1048576</code> (<code>=1024*1024</code>).</p>"
         },
         "TaskQueueing":{
           "shape":"TaskQueueing",
@@ -3716,36 +3776,76 @@
       "members":{
         "Prepare":{
           "shape":"long",
-          "documentation":"<p>The number of objects that DataSync fails to prepare during your task execution.</p>"
+          "documentation":"<p>The number of files or objects that DataSync fails to prepare during your task execution.</p>"
         },
         "Transfer":{
           "shape":"long",
-          "documentation":"<p>The number of objects that DataSync fails to transfer during your task execution.</p>"
+          "documentation":"<p>The number of files or objects that DataSync fails to transfer during your task execution.</p>"
         },
         "Verify":{
           "shape":"long",
-          "documentation":"<p>The number of objects that DataSync fails to verify during your task execution.</p>"
+          "documentation":"<p>The number of files or objects that DataSync fails to verify during your task execution.</p>"
         },
         "Delete":{
           "shape":"long",
-          "documentation":"<p>The number of objects that DataSync fails to delete during your task execution.</p>"
+          "documentation":"<p>The number of files or objects that DataSync fails to delete during your task execution.</p>"
         }
       },
-      "documentation":"<p>The number of objects that DataSync fails to prepare, transfer, verify, and delete during your task execution.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
+      "documentation":"<p>The number of files or objects that DataSync fails to prepare, transfer, verify, and delete during your task execution.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
     },
     "TaskExecutionFilesListedDetail":{
       "type":"structure",
       "members":{
         "AtSource":{
           "shape":"long",
-          "documentation":"<p>The number of objects that DataSync finds at your source location.</p> <ul> <li> <p>With a <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/transferring-with-manifest.html\">manifest</a>, DataSync lists only what's in your manifest (and not everything at your source location).</p> </li> <li> <p>With an include <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html\">filter</a>, DataSync lists only what matches the filter at your source location.</p> </li> <li> <p>With an exclude filter, DataSync lists everything at your source location before applying the filter.</p> </li> </ul>"
+          "documentation":"<p>The number of files or objects that DataSync finds at your source location.</p> <ul> <li> <p>With a <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/transferring-with-manifest.html\">manifest</a>, DataSync lists only what's in your manifest (and not everything at your source location).</p> </li> <li> <p>With an include <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html\">filter</a>, DataSync lists only what matches the filter at your source location.</p> </li> <li> <p>With an exclude filter, DataSync lists everything at your source location before applying the filter.</p> </li> </ul>"
         },
         "AtDestinationForDelete":{
           "shape":"long",
-          "documentation":"<p>The number of objects that DataSync finds at your destination location. This counter is only applicable if you <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html#task-option-file-object-handling\">configure your task</a> to delete data in the destination that isn't in the source.</p>"
+          "documentation":"<p>The number of files or objects that DataSync finds at your destination location. This counter is only applicable if you <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html#task-option-file-object-handling\">configure your task</a> to delete data in the destination that isn't in the source.</p>"
         }
       },
-      "documentation":"<p>The number of objects that DataSync finds at your locations.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
+      "documentation":"<p>The number of files or objects that DataSync finds at your locations.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
+    },
+    "TaskExecutionFoldersFailedDetail":{
+      "type":"structure",
+      "members":{
+        "List":{
+          "shape":"long",
+          "documentation":"<p>The number of directories that DataSync fails to list during your task execution.</p>"
+        },
+        "Prepare":{
+          "shape":"long",
+          "documentation":"<p>The number of directories that DataSync fails to prepare during your task execution.</p>"
+        },
+        "Transfer":{
+          "shape":"long",
+          "documentation":"<p>The number of directories that DataSync fails to transfer during your task execution.</p>"
+        },
+        "Verify":{
+          "shape":"long",
+          "documentation":"<p>The number of directories that DataSync fails to verify during your task execution.</p>"
+        },
+        "Delete":{
+          "shape":"long",
+          "documentation":"<p>The number of directories that DataSync fails to delete during your task execution.</p>"
+        }
+      },
+      "documentation":"<p>The number of directories that DataSync fails to list, prepare, transfer, verify, and delete during your task execution.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
+    },
+    "TaskExecutionFoldersListedDetail":{
+      "type":"structure",
+      "members":{
+        "AtSource":{
+          "shape":"long",
+          "documentation":"<p>The number of directories that DataSync finds at your source location.</p> <ul> <li> <p>With a <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/transferring-with-manifest.html\">manifest</a>, DataSync lists only what's in your manifest (and not everything at your source location).</p> </li> <li> <p>With an include <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html\">filter</a>, DataSync lists only what matches the filter at your source location.</p> </li> <li> <p>With an exclude filter, DataSync lists everything at your source location before applying the filter.</p> </li> </ul>"
+        },
+        "AtDestinationForDelete":{
+          "shape":"long",
+          "documentation":"<p>The number of directories that DataSync finds at your destination location. This counter is only applicable if you <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html#task-option-file-object-handling\">configure your task</a> to delete data in the destination that isn't in the source.</p>"
+        }
+      },
+      "documentation":"<p>The number of directories that DataSync finds at your locations.</p> <note> <p>Applies only to <a href=\"https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html\">Enhanced mode tasks</a>.</p> </note>"
     },
     "TaskExecutionList":{
       "type":"list",
@@ -4380,6 +4480,14 @@
         "Password":{
           "shape":"SmbPassword",
           "documentation":"<p>Specifies the password of the user who can mount your SMB file server and has permission to access the files and folders involved in your transfer. This parameter applies only if <code>AuthenticationType</code> is set to <code>NTLM</code>.</p>"
+        },
+        "CmkSecretConfig":{
+          "shape":"CmkSecretConfig",
+          "documentation":"<p>Specifies configuration information for a DataSync-managed secret, such as a <code>Password</code> or <code>KerberosKeytab</code> or set of credentials that DataSync uses to access a specific transfer location, and a customer-managed KMS key.</p>"
+        },
+        "CustomSecretConfig":{
+          "shape":"CustomSecretConfig",
+          "documentation":"<p>Specifies configuration information for a customer-managed secret, such as a <code>Password</code> or <code>KerberosKeytab</code> or set of credentials that DataSync uses to access a specific transfer location, and a customer-managed KMS key.</p>"
         },
         "AgentArns":{
           "shape":"AgentArnList",

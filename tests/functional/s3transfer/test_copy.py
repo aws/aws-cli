@@ -777,7 +777,7 @@ class TestMultipartCopy(BaseCopyTest):
         future.result()
         self.stubber.assert_no_pending_responses()
 
-    def test_copy_with_no_overwrite_flag_when_large_object_exists_at_target(
+    def test_copy_with_ifnonematch_when_large_object_exists_at_target(
         self,
     ):
         # Set up IfNoneMatch in extra_args
@@ -827,7 +827,7 @@ class TestMultipartCopy(BaseCopyTest):
         )
         self.stubber.assert_no_pending_responses()
 
-    def test_copy_with_no_overwrite_flag_when_large_object_not_exists_at_target(
+    def test_copy_with_ifnonematch_when_large_object_not_exists_at_target(
         self,
     ):
         # Set up IfNoneMatch in extra_args

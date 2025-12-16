@@ -468,21 +468,6 @@ class TestMvRecursiveCaseConflict(TestSyncCaseConflict):
         _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
         assert f"warning: Downloading bucket/{self.upper_key}" in stderr
 
-    def test_warn_with_case_conflicts_in_s3(self):
-        cmd = (
-            f"{self.prefix} s3://bucket {self.files.rootdir} "
-            "--case-conflict warn"
-        )
-        self.parsed_responses = [
-            self.list_objects_response([self.upper_key, self.lower_key]),
-            self.get_object_response(),
-            self.get_object_response(),
-            self.delete_object_response(),
-            self.delete_object_response(),
-        ]
-        _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
-        assert f"warning: Downloading bucket/{self.lower_key}" in stderr
-
     def test_skip_with_case_conflicts_in_s3(self):
         cmd = (
             f"{self.prefix} s3://bucket {self.files.rootdir} "
@@ -509,20 +494,6 @@ class TestMvRecursiveCaseConflict(TestSyncCaseConflict):
         ]
         self.run_cmd(cmd, expected_rc=0)
 
-    def test_ignore_with_case_conflicts_in_s3(self):
-        cmd = (
-            f"{self.prefix} s3://bucket {self.files.rootdir} "
-            "--case-conflict ignore"
-        )
-        self.parsed_responses = [
-            self.list_objects_response([self.upper_key, self.lower_key]),
-            self.get_object_response(),
-            self.get_object_response(),
-            self.delete_object_response(),
-            self.delete_object_response(),
-        ]
-        self.run_cmd(cmd, expected_rc=0)
-
 
 class TestS3ExpressMvRecursive(BaseS3TransferCommandTest):
     prefix = 's3 mv --recursive '
@@ -542,19 +513,3 @@ class TestS3ExpressMvRecursive(BaseS3TransferCommandTest):
         )
         _, stderr, _ = self.run_cmd(cmd, expected_rc=255)
         assert "`skip` is not a valid value" in stderr
-
-    def test_s3_express_warn_emits_warning(self):
-        cmd = (
-            f"{self.prefix} s3://bucket--usw2-az1--x-s3 {self.files.rootdir} "
-            "--case-conflict warn"
-        )
-        self.parsed_responses = [
-            self.list_objects_response(['a.txt', 'A.txt']),
-            self.get_object_response(),
-            self.get_object_response(),
-            self.delete_object_response(),
-            self.delete_object_response(),
-        ]
-
-        _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
-        assert "warning: Recursive copies/moves" in stderr

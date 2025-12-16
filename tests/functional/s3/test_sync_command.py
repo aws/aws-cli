@@ -16,7 +16,7 @@ from awscrt.s3 import S3RequestType
 
 from awscli.compat import BytesIO
 from awscli.customizations.s3.utils import relative_path
-from awscli.testutils import cd, mock
+from awscli.testutils import cd, mock, skip_if_case_sensitive
 from tests.functional.s3 import (
     BaseCRTTransferClientTest,
     BaseS3CLIRunnerTest,
@@ -746,6 +746,7 @@ class TestSyncCaseConflict(BaseS3TransferCommandTest):
         self.lower_key = 'a.txt'
         self.upper_key = 'A.txt'
 
+    @skip_if_case_sensitive()
     def test_error_with_existing_file(self):
         self.files.create_file(self.lower_key, 'mycontent')
         cmd = (
@@ -767,6 +768,7 @@ class TestSyncCaseConflict(BaseS3TransferCommandTest):
         _, stderr, _ = self.run_cmd(cmd, expected_rc=1)
         assert f"Failed to download bucket/{self.lower_key}" in stderr
 
+    @skip_if_case_sensitive()
     def test_warn_with_existing_file(self):
         self.files.create_file(self.lower_key, 'mycontent')
         cmd = (
@@ -793,6 +795,7 @@ class TestSyncCaseConflict(BaseS3TransferCommandTest):
         _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
         assert f"warning: Downloading bucket/{self.lower_key}" in stderr
 
+    @skip_if_case_sensitive()
     def test_skip_with_existing_file(self):
         self.files.create_file(self.lower_key, 'mycontent')
         cmd = (

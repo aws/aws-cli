@@ -33,6 +33,8 @@ import sys
 import tempfile
 import time
 import unittest
+from functools import lru_cache
+from pathlib import Path
 from pprint import pformat
 from subprocess import PIPE, Popen
 from unittest import mock
@@ -85,6 +87,24 @@ def if_windows(reason):
 
     def decorator(func):
         return unittest.skipIf(platform.system() != 'Windows', reason)(func)
+
+    return decorator
+
+
+@lru_cache(maxsize=1)
+def filesystem_is_case_insensitive():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        f = Path(tmpdir) / 'a.txt'
+        f.touch()
+        return (Path(tmpdir) / 'A.txt').exists()
+
+
+def skip_if_case_sensitive():
+    def decorator(func):
+        return unittest.skipIf(
+            not filesystem_is_case_insensitive(),
+            "This test requires a case-insensitive filesystem.",
+        )(func)
 
     return decorator
 

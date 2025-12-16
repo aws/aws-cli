@@ -1788,7 +1788,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Retrieves the encryption configuration for resources and data of your Amazon Web Services account in Amazon Web Services IoT Core. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/key-management.html\">Key management in IoT</a> from the <i>Amazon Web Services IoT Core Developer Guide</i>.</p>"
+      "documentation":"<p>Retrieves the encryption configuration for resources and data of your Amazon Web Services account in Amazon Web Services IoT Core. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/encryption-at-rest.html\">Data encryption at rest</a> in the <i>Amazon Web Services IoT Core Developer Guide</i>.</p>"
     },
     "DescribeEndpoint":{
       "name":"DescribeEndpoint",
@@ -4097,7 +4097,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Transfers the specified certificate to the specified Amazon Web Services account.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">TransferCertificate</a> action.</p> <p>You can cancel the transfer until it is acknowledged by the recipient.</p> <p>No notification is sent to the transfer destination's account. It's up to the caller to notify the transfer target.</p> <p>The certificate being transferred must not be in the <code>ACTIVE</code> state. You can use the <a>UpdateCertificate</a> action to deactivate it.</p> <p>The certificate must not have any policies attached to it. You can use the <a>DetachPolicy</a> action to detach them.</p> <p> <b>Customer managed key behavior:</b> When you use a customer managed key to secure your data and then transfer the key to a customer in a different account using the <a>TransferCertificate</a> operation, the certificates will no longer be protected by their customer managed key configuration. During the transfer process, certificates are encrypted using IoT owned keys.</p> <p>While a certificate is in the <b>PENDING_TRANSFER</b> state, it's always protected by IoT owned keys, regardless of the customer managed key configuration of either the source or destination account. </p> <p>Once the transfer is completed through <a>AcceptCertificateTransfer</a>, <a>RejectCertificateTransfer</a>, or <a>CancelCertificateTransfer</a>, the certificate will be protected by the customer managed key configuration of the account that owns the certificate after the transfer operation:</p> <ul> <li> <p>If the transfer is accepted: The certificate is protected by the destination account's customer managed key configuration.</p> </li> <li> <p>If the transfer is rejected or cancelled: The certificate is protected by the source account's customer managed key configuration.</p> </li> </ul>"
+      "documentation":"<p>Transfers the specified certificate to the specified Amazon Web Services account.</p> <p>Requires permission to access the <a href=\"https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions\">TransferCertificate</a> action.</p> <p>You can cancel the transfer until it is accepted by the recipient.</p> <p>No notification is sent to the transfer destination's account. The caller is responsible for notifying the transfer target.</p> <p>The certificate being transferred must not be in the <code>ACTIVE</code> state. You can use the <a>UpdateCertificate</a> action to deactivate it.</p> <p>The certificate must not have any policies attached to it. You can use the <a>DetachPolicy</a> action to detach them.</p> <p> <b>Customer managed key behavior:</b> When you use a customer managed key to encrypt your data and then transfer the certificate to a customer in a different account using the <code>TransferCertificate</code> operation, the certificates will no longer be encrypted by their customer managed key configuration. During the transfer process, certificates are encrypted using Amazon Web Services IoT Core owned keys.</p> <p>While a certificate is in the <b>PENDING_TRANSFER</b> state, it's always protected by Amazon Web Services IoT Core owned keys, regardless of the customer managed key configuration of either the source or destination account. </p> <p>Once the transfer is completed through <a>AcceptCertificateTransfer</a>, <a>RejectCertificateTransfer</a>, or <a>CancelCertificateTransfer</a>, the certificate will be protected by the customer managed key configuration of the account that owns the certificate after the transfer operation:</p> <ul> <li> <p>If the transfer is accepted: The certificate is encrypted by the target account's customer managed key configuration.</p> </li> <li> <p>If the transfer is rejected or cancelled: The certificate is protected by the source account's customer managed key configuration.</p> </li> </ul>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -4336,7 +4336,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Updates the encryption configuration. By default, all Amazon Web Services IoT Core data at rest is encrypted using Amazon Web Services owned keys. Amazon Web Services IoT Core also supports symmetric customer managed keys from Amazon Web Services Key Management Service (KMS). With customer managed keys, you create, own, and manage the KMS keys in your Amazon Web Services account. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/data-encryption.html\">Data encryption</a> in the <i>Amazon Web Services IoT Core Developer Guide</i>.</p>"
+      "documentation":"<p>Updates the encryption configuration. By default, Amazon Web Services IoT Core encrypts your data at rest using Amazon Web Services owned keys. Amazon Web Services IoT Core also supports symmetric customer managed keys from Key Management Service (KMS). With customer managed keys, you create, own, and manage the KMS keys in your Amazon Web Services account. </p> <p>Before using this API, you must set up permissions for Amazon Web Services IoT Core to access KMS. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/encryption-at-rest.html\">Data encryption at rest</a> in the <i>Amazon Web Services IoT Core Developer Guide</i>.</p>"
     },
     "UpdateEventConfigurations":{
       "name":"UpdateEventConfigurations",
@@ -6096,6 +6096,17 @@
       "documentation":"<p>Specifies the amount of time each device has to finish its execution of the job. A timer is started when the job execution status is set to <code>IN_PROGRESS</code>. If the job execution status is not set to another terminal state before the timer expires, it will be automatically set to <code>TIMED_OUT</code>.</p>"
     },
     "AwsJobTimeoutInProgressTimeoutInMinutes":{"type":"long"},
+    "AwsJsonSubstitutionCommandPreprocessorConfig":{
+      "type":"structure",
+      "required":["outputFormat"],
+      "members":{
+        "outputFormat":{
+          "shape":"OutputFormat",
+          "documentation":"<p>Converts the command preprocessor result to the format defined by this parameter, before sending it to the device.</p>"
+        }
+      },
+      "documentation":"<p>Configures the command to treat the <code>payloadTemplate</code> as a JSON document for preprocessing. This preprocessor substitutes placeholders with parameter values to generate the command execution request payload. </p>"
+    },
     "BatchMode":{"type":"boolean"},
     "BeforeSubstitutionFlag":{"type":"boolean"},
     "Behavior":{
@@ -7089,13 +7100,21 @@
           "shape":"CommandParameterName",
           "documentation":"<p>The name of a specific parameter used in a command and command execution.</p>"
         },
+        "type":{
+          "shape":"CommandParameterType",
+          "documentation":"<p>The type of the command parameter.</p>"
+        },
         "value":{
           "shape":"CommandParameterValue",
-          "documentation":"<p>The value used to describe the command. When you assign a value to a parameter, it will override any default value that you had already specified.</p>"
+          "documentation":"<p>Parameter value that overrides the default value, if set.</p>"
         },
         "defaultValue":{
           "shape":"CommandParameterValue",
           "documentation":"<p>The default value used to describe the command. This is the value assumed by the parameter if no other value is assigned to it.</p>"
+        },
+        "valueConditions":{
+          "shape":"CommandParameterValueConditionList",
+          "documentation":"<p>The list of conditions that a command parameter value must satisfy to create a command execution.</p>"
         },
         "description":{
           "shape":"CommandParameterDescription",
@@ -7119,6 +7138,18 @@
       "max":192,
       "min":1,
       "pattern":"^[.$a-zA-Z0-9_-]+$"
+    },
+    "CommandParameterType":{
+      "type":"string",
+      "enum":[
+        "STRING",
+        "INTEGER",
+        "DOUBLE",
+        "LONG",
+        "UNSIGNEDLONG",
+        "BOOLEAN",
+        "BINARY"
+      ]
     },
     "CommandParameterValue":{
       "type":"structure",
@@ -7152,7 +7183,95 @@
           "documentation":"<p>An attribute of type unsigned long.</p>"
         }
       },
-      "documentation":"<p>The range of possible values that's used to describe a specific command parameter.</p> <note> <p>The <code>commandParameterValue</code> can only have one of the below fields listed.</p> </note>"
+      "documentation":"<p>The value of a command parameter used to create a command execution.</p> <note> <p>The <code>commandParameterValue</code> can only have one of the below fields listed.</p> </note>"
+    },
+    "CommandParameterValueComparisonOperand":{
+      "type":"structure",
+      "members":{
+        "number":{
+          "shape":"StringParameterValue",
+          "documentation":"<p>An operand of number value type, defined as a string.</p>"
+        },
+        "numbers":{
+          "shape":"CommandParameterValueStringList",
+          "documentation":"<p>A List of operands of numerical value type, defined as strings.</p>"
+        },
+        "string":{
+          "shape":"StringParameterValue",
+          "documentation":"<p>An operand of string value type.</p>"
+        },
+        "strings":{
+          "shape":"CommandParameterValueStringList",
+          "documentation":"<p>A List of operands of string value type.</p>"
+        },
+        "numberRange":{
+          "shape":"CommandParameterValueNumberRange",
+          "documentation":"<p>An operand of numerical range value type.</p>"
+        }
+      },
+      "documentation":"<p>The comparison operand used to compare the defined value against the value supplied in request.</p>"
+    },
+    "CommandParameterValueComparisonOperator":{
+      "type":"string",
+      "enum":[
+        "EQUALS",
+        "NOT_EQUALS",
+        "LESS_THAN",
+        "LESS_THAN_EQUALS",
+        "GREATER_THAN",
+        "GREATER_THAN_EQUALS",
+        "IN_SET",
+        "NOT_IN_SET",
+        "IN_RANGE",
+        "NOT_IN_RANGE"
+      ]
+    },
+    "CommandParameterValueCondition":{
+      "type":"structure",
+      "required":[
+        "comparisonOperator",
+        "operand"
+      ],
+      "members":{
+        "comparisonOperator":{
+          "shape":"CommandParameterValueComparisonOperator",
+          "documentation":"<p>The comparison operator for the command parameter.</p> <note> <p>IN_RANGE, and NOT_IN_RANGE operators include boundary values.</p> </note>"
+        },
+        "operand":{
+          "shape":"CommandParameterValueComparisonOperand",
+          "documentation":"<p>The comparison operand for the command parameter.</p>"
+        }
+      },
+      "documentation":"<p>A condition for the command parameter that must be evaluated to true for successful creation of a command execution.</p>"
+    },
+    "CommandParameterValueConditionList":{
+      "type":"list",
+      "member":{"shape":"CommandParameterValueCondition"},
+      "min":1
+    },
+    "CommandParameterValueNumberRange":{
+      "type":"structure",
+      "required":[
+        "min",
+        "max"
+      ],
+      "members":{
+        "min":{
+          "shape":"StringParameterValue",
+          "documentation":"<p>The minimum value of a numerical range of a command parameter value.</p>"
+        },
+        "max":{
+          "shape":"StringParameterValue",
+          "documentation":"<p>The maximum value of a numerical range of a command parameter value.</p>"
+        }
+      },
+      "documentation":"<p>The numerical range value type to compare a command parameter value against.</p>"
+    },
+    "CommandParameterValueStringList":{
+      "type":"list",
+      "member":{"shape":"StringParameterValue"},
+      "max":10,
+      "min":1
     },
     "CommandPayload":{
       "type":"structure",
@@ -7169,6 +7288,20 @@
       "documentation":"<p>The command payload object that contains the instructions for the device to process.</p>"
     },
     "CommandPayloadBlob":{"type":"blob"},
+    "CommandPayloadTemplateString":{
+      "type":"string",
+      "max":32768
+    },
+    "CommandPreprocessor":{
+      "type":"structure",
+      "members":{
+        "awsJsonSubstitution":{
+          "shape":"AwsJsonSubstitutionCommandPreprocessorConfig",
+          "documentation":"<p>Configuration for the JSON substitution preprocessor.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that determines how the <code>payloadTemplate</code> is processed by the service to generate the final payload sent to devices at <code>StartCommandExecution</code> API invocation.</p>"
+    },
     "CommandSummary":{
       "type":"structure",
       "members":{
@@ -7263,7 +7396,7 @@
       "members":{
         "configurationStatus":{
           "shape":"ConfigurationStatus",
-          "documentation":"<p>The health status of KMS key and KMS access role. If either KMS key or KMS access role is <code>UNHEALTHY</code>, the return value will be <code>UNHEALTHY</code>. To use a customer-managed KMS key, the value of <code>configurationStatus</code> must be <code>HEALTHY</code>. </p>"
+          "documentation":"<p>The health status of KMS key and KMS access role. If either KMS key or KMS access role is <code>UNHEALTHY</code>, the return value will be <code>UNHEALTHY</code>. To use a customer managed KMS key, the value of <code>configurationStatus</code> must be <code>HEALTHY</code>. </p>"
         },
         "errorCode":{
           "shape":"ErrorCode",
@@ -7274,7 +7407,7 @@
           "documentation":"<p>The detailed error message that corresponds to the <code>errorCode</code>.</p>"
         }
       },
-      "documentation":"<p>The encryption configuration details that include the status information of the Amazon Web Services Key Management Service (KMS) key and the KMS access role.</p>"
+      "documentation":"<p>The encryption configuration details that include the status information of the Key Management Service (KMS) key and the KMS access role.</p>"
     },
     "ConfigurationStatus":{
       "type":"string",
@@ -7594,15 +7727,23 @@
         },
         "payload":{
           "shape":"CommandPayload",
-          "documentation":"<p>The payload object for the command. You must specify this information when using the <code>AWS-IoT</code> namespace.</p> <p>You can upload a static payload file from your local storage that contains the instructions for the device to process. The payload file can use any format. To make sure that the device correctly interprets the payload, we recommend you to specify the payload content type.</p>"
+          "documentation":"<p>The payload object for the static command.</p> <p>You can upload a static payload file from your local storage that contains the instructions for the device to process. The payload file can use any format. To make sure that the device correctly interprets the payload, we recommend you to specify the payload content type.</p>"
+        },
+        "payloadTemplate":{
+          "shape":"CommandPayloadTemplateString",
+          "documentation":"<p>The payload template for the dynamic command.</p> <note> <p>This parameter is required for dynamic commands where the command execution placeholders are supplied either from <code>mandatoryParameters</code> or when <code>StartCommandExecution</code> is invoked.</p> </note>"
+        },
+        "preprocessor":{
+          "shape":"CommandPreprocessor",
+          "documentation":"<p>Configuration that determines how <code>payloadTemplate</code> is processed to generate command execution payload.</p> <note> <p>This parameter is required for dynamic commands, along with <code>payloadTemplate</code>, and <code>mandatoryParameters</code>.</p> </note>"
         },
         "mandatoryParameters":{
           "shape":"CommandParameterList",
-          "documentation":"<p>A list of parameters that are required by the <code>StartCommandExecution</code> API. These parameters need to be specified only when using the <code>AWS-IoT-FleetWise</code> namespace. You can either specify them here or when running the command using the <code>StartCommandExecution</code> API.</p>"
+          "documentation":"<p>A list of parameters that are used by <code>StartCommandExecution</code> API for execution payload generation.</p>"
         },
         "roleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The IAM role that you must provide when using the <code>AWS-IoT-FleetWise</code> namespace. The role grants IoT Device Management the permission to access IoT FleetWise resources for generating the payload for the command. This field is not required when you use the <code>AWS-IoT</code> namespace.</p>"
+          "documentation":"<p>The IAM role that you must provide when using the <code>AWS-IoT-FleetWise</code> namespace. The role grants IoT Device Management the permission to access IoT FleetWise resources for generating the payload for the command. This field is not supported when you use the <code>AWS-IoT</code> namespace.</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -10299,15 +10440,15 @@
       "members":{
         "encryptionType":{
           "shape":"EncryptionType",
-          "documentation":"<p>The type of the Amazon Web Services Key Management Service (KMS) key.</p>"
+          "documentation":"<p>The type of the KMS key.</p>"
         },
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role assumed by Amazon Web Services IoT Core to call KMS on behalf of the customer.</p>"
+          "documentation":"<p>The ARN of the customer managed KMS key.</p>"
         },
         "kmsAccessRoleArn":{
           "shape":"KmsAccessRoleArn",
-          "documentation":"<p>The ARN of the customer-managed KMS key.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role assumed by Amazon Web Services IoT Core to call KMS on behalf of the customer.</p>"
         },
         "configurationDetails":{
           "shape":"ConfigurationDetails",
@@ -12357,6 +12498,14 @@
         "payload":{
           "shape":"CommandPayload",
           "documentation":"<p>The payload object that you provided for the command.</p>"
+        },
+        "payloadTemplate":{
+          "shape":"CommandPayloadTemplateString",
+          "documentation":"<p>The payload template for the dynamic command.</p>"
+        },
+        "preprocessor":{
+          "shape":"CommandPreprocessor",
+          "documentation":"<p>Configuration that determines how <code>payloadTemplate</code> is processed to generate command execution payload.</p>"
         },
         "roleArn":{
           "shape":"RoleArn",
@@ -17531,6 +17680,13 @@
       "type":"list",
       "member":{"shape":"OutgoingCertificate"}
     },
+    "OutputFormat":{
+      "type":"string",
+      "enum":[
+        "JSON",
+        "CBOR"
+      ]
+    },
     "OverrideDynamicGroups":{"type":"boolean"},
     "PackageArn":{"type":"string"},
     "PackageCatalogMaxResults":{
@@ -20069,7 +20225,7 @@
       "members":{
         "principal":{
           "shape":"Principal",
-          "documentation":"<p>The principal. Valid principals are CertificateArn (arn:aws:iot:<i>region</i>:<i>accountId</i>:cert/<i>certificateId</i>), thingGroupArn (arn:aws:iot:<i>region</i>:<i>accountId</i>:thinggroup/<i>groupName</i>) and CognitoId (<i>region</i>:<i>id</i>).</p>"
+          "documentation":"<p>The principal. Valid principals are CertificateArn (arn:aws:iot:<i>region</i>:<i>accountId</i>:cert/<i>certificateId</i>) and CognitoId (<i>region</i>:<i>id</i>).</p>"
         },
         "cognitoIdentityPoolId":{
           "shape":"CognitoIdentityPoolId",
@@ -21533,11 +21689,11 @@
       "members":{
         "encryptionType":{
           "shape":"EncryptionType",
-          "documentation":"<p>The type of the Amazon Web Services Key Management Service (KMS) key.</p>"
+          "documentation":"<p>The type of the KMS key.</p>"
         },
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
-          "documentation":"<p>The ARN of the customer-managed KMS key.</p>"
+          "documentation":"<p>The ARN of the customer managedKMS key.</p>"
         },
         "kmsAccessRoleArn":{
           "shape":"KmsAccessRoleArn",

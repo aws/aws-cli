@@ -27,7 +27,9 @@ import json
 import logging
 import os
 import platform
+import random
 import shutil
+import string
 import sys
 import tempfile
 import time
@@ -51,10 +53,9 @@ INTEG_LOG = logging.getLogger('awscli.tests.integration')
 AWS_CMD = None
 
 with tempfile.TemporaryDirectory() as tmpdir:
-    tmpf = Path(tmpdir) / 'a.txt'
-    with open(tmpf, 'w') as f:
+    with open(Path(tmpdir) / 'aws-cli-tmp-file', 'w') as f:
         pass
-    CASE_INSENSITIVE = (Path(tmpdir) / 'A.txt').exists()
+    CASE_INSENSITIVE = (Path(tmpdir) / 'AWS-CLI-TMP-FILE').exists()
 
 
 def skip_if_windows(reason):

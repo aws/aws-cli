@@ -14,6 +14,7 @@
 from awscli.customizations.s3.utils import S3PathResolver
 from awscli.compat import BytesIO
 from tests.functional.s3 import BaseS3TransferCommandTest
+from tests.functional.s3.test_sync_command import TestSyncCaseConflict
 from tests import requires_crt
 
 
@@ -446,3 +447,112 @@ class TestMvCommandWithValidateSameS3Paths(BaseS3TransferCommandTest):
                    "myaccesspoint/key "
                    "s3://bucket/key")
         self.assert_raises_warning(cmdline)
+
+
+class TestMvRecursiveCaseConflict(TestSyncCaseConflict):
+    prefix = 's3 mv --recursive '
+
+    def test_warn_with_existing_file(self):
+        self.files.create_file(self.lower_key, 'mycontent')
+        cmd = (
+            f"{self.prefix} s3://bucket {self.files.rootdir} "
+            "--case-conflict warn"
+        )
+        self.parsed_responses = [
+            self.list_objects_response([self.upper_key]),
+            self.get_object_response(),
+            self.delete_object_response(),
+        ]
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
+        assert f"warning: Downloading bucket/{self.upper_key}" in stderr
+
+    def test_warn_with_case_conflicts_in_s3(self):
+        cmd = (
+            f"{self.prefix} s3://bucket {self.files.rootdir} "
+            "--case-conflict warn"
+        )
+        self.parsed_responses = [
+            self.list_objects_response([self.upper_key, self.lower_key]),
+            self.get_object_response(),
+            self.get_object_response(),
+            self.delete_object_response(),
+            self.delete_object_response(),
+        ]
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
+        assert f"warning: Downloading bucket/{self.lower_key}" in stderr
+
+    def test_skip_with_case_conflicts_in_s3(self):
+        cmd = (
+            f"{self.prefix} s3://bucket {self.files.rootdir} "
+            "--case-conflict skip"
+        )
+        self.parsed_responses = [
+            self.list_objects_response([self.upper_key, self.lower_key]),
+            self.get_object_response(),
+            self.delete_object_response(),
+        ]
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
+        assert f"warning: Skipping bucket/{self.lower_key}" in stderr
+
+    def test_ignore_with_existing_file(self):
+        self.files.create_file(self.lower_key, 'mycontent')
+        cmd = (
+            f"{self.prefix} s3://bucket {self.files.rootdir} "
+            "--case-conflict ignore"
+        )
+        self.parsed_responses = [
+            self.list_objects_response([self.upper_key]),
+            self.get_object_response(),
+            self.delete_object_response(),
+        ]
+        self.run_cmd(cmd, expected_rc=0)
+
+    def test_ignore_with_case_conflicts_in_s3(self):
+        cmd = (
+            f"{self.prefix} s3://bucket {self.files.rootdir} "
+            "--case-conflict ignore"
+        )
+        self.parsed_responses = [
+            self.list_objects_response([self.upper_key, self.lower_key]),
+            self.get_object_response(),
+            self.get_object_response(),
+            self.delete_object_response(),
+            self.delete_object_response(),
+        ]
+        self.run_cmd(cmd, expected_rc=0)
+
+
+class TestS3ExpressMvRecursive(BaseS3TransferCommandTest):
+    prefix = 's3 mv --recursive '
+
+    def test_s3_express_error_raises_exception(self):
+        cmd = (
+            f"{self.prefix} s3://bucket--usw2-az1--x-s3 {self.files.rootdir} "
+            "--case-conflict error"
+        )
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=255)
+        assert "`error` is not a valid value" in stderr
+
+    def test_s3_express_skip_raises_exception(self):
+        cmd = (
+            f"{self.prefix} s3://bucket--usw2-az1--x-s3 {self.files.rootdir} "
+            "--case-conflict skip"
+        )
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=255)
+        assert "`skip` is not a valid value" in stderr
+
+    def test_s3_express_warn_emits_warning(self):
+        cmd = (
+            f"{self.prefix} s3://bucket--usw2-az1--x-s3 {self.files.rootdir} "
+            "--case-conflict warn"
+        )
+        self.parsed_responses = [
+            self.list_objects_response(['a.txt', 'A.txt']),
+            self.get_object_response(),
+            self.get_object_response(),
+            self.delete_object_response(),
+            self.delete_object_response(),
+        ]
+
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
+        assert "warning: Recursive copies/moves" in stderr

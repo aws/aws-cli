@@ -23,6 +23,7 @@ from tests.functional.s3 import (
     BaseS3CLIRunnerTest,
     BaseS3TransferCommandTest,
 )
+from tests.functional.s3.test_sync_command import TestSyncCaseConflict
 
 MB = 1024**2
 
@@ -2698,3 +2699,41 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
         self.assertEqual(len(crt_requests), 1)
         tls_context_options = mock_client_tls_context_options.call_args[0][0]
         self.assertFalse(tls_context_options.verify_peer)
+
+
+class TestCpRecursiveCaseConflict(TestSyncCaseConflict):
+    prefix = 's3 cp --recursive '
+
+
+class TestS3ExpressCpRecursive(BaseCPCommandTest):
+    prefix = 's3 cp --recursive '
+
+    def test_s3_express_error_raises_exception(self):
+        cmd = (
+            f"{self.prefix} s3://bucket--usw2-az1--x-s3 {self.files.rootdir} "
+            "--case-conflict error"
+        )
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=252)
+        assert "`error` is not a valid value" in stderr
+
+    def test_s3_express_skip_raises_exception(self):
+        cmd = (
+            f"{self.prefix} s3://bucket--usw2-az1--x-s3 {self.files.rootdir} "
+            "--case-conflict skip"
+        )
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=252)
+        assert "`skip` is not a valid value" in stderr
+
+    def test_s3_express_warn_emits_warning(self):
+        cmd = (
+            f"{self.prefix} s3://bucket--usw2-az1--x-s3 {self.files.rootdir} "
+            "--case-conflict warn"
+        )
+        self.parsed_responses = [
+            self.list_objects_response(['a.txt', 'A.txt']),
+            self.get_object_response(),
+            self.get_object_response(),
+        ]
+
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
+        assert "warning: Recursive copies/moves" in stderr

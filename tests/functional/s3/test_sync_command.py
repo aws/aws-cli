@@ -736,3 +736,105 @@ class TestSyncCommandWithS3Express(BaseS3TransferCommandTest):
         # Just asserting that command validated and made an API call
         self.assertEqual(len(self.operations_called), 1)
         self.assertEqual(self.operations_called[0][0].name, 'ListObjectsV2')
+
+
+class TestSyncCaseConflict(BaseS3TransferCommandTest):
+    prefix = 's3 sync '
+
+    def setUp(self):
+        super().setUp()
+        self.lower_key = 'a.txt'
+        self.upper_key = 'A.txt'
+
+    def test_error_with_existing_file(self):
+        self.files.create_file(self.lower_key, 'mycontent')
+        cmd = (
+            f"{self.prefix} s3://bucket {self.files.rootdir} "
+            "--case-conflict error"
+        )
+        self.parsed_responses = [self.list_objects_response([self.upper_key])]
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=1)
+        assert f"Failed to download bucket/{self.upper_key}" in stderr
+
+    def test_error_with_case_conflicts_in_s3(self):
+        cmd = (
+            f"{self.prefix} s3://bucket {self.files.rootdir} "
+            "--case-conflict error"
+        )
+        self.parsed_responses = [
+            self.list_objects_response([self.upper_key, self.lower_key])
+        ]
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=1)
+        assert f"Failed to download bucket/{self.lower_key}" in stderr
+
+    def test_warn_with_existing_file(self):
+        self.files.create_file(self.lower_key, 'mycontent')
+        cmd = (
+            f"{self.prefix} s3://bucket {self.files.rootdir} "
+            "--case-conflict warn"
+        )
+        self.parsed_responses = [
+            self.list_objects_response([self.upper_key]),
+            self.get_object_response(),
+        ]
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
+        assert f"warning: Downloading bucket/{self.upper_key}" in stderr
+
+    def test_warn_with_case_conflicts_in_s3(self):
+        cmd = (
+            f"{self.prefix} s3://bucket {self.files.rootdir} "
+            "--case-conflict warn"
+        )
+        self.parsed_responses = [
+            self.list_objects_response([self.upper_key, self.lower_key]),
+            self.get_object_response(),
+            self.get_object_response(),
+        ]
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
+        assert f"warning: Downloading bucket/{self.lower_key}" in stderr
+
+    def test_skip_with_existing_file(self):
+        self.files.create_file(self.lower_key, 'mycontent')
+        cmd = (
+            f"{self.prefix} s3://bucket {self.files.rootdir} "
+            "--case-conflict skip"
+        )
+        self.parsed_responses = [self.list_objects_response([self.upper_key])]
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
+        assert f"warning: Skipping bucket/{self.upper_key}" in stderr
+
+    def test_skip_with_case_conflicts_in_s3(self):
+        cmd = (
+            f"{self.prefix} s3://bucket {self.files.rootdir} "
+            "--case-conflict skip"
+        )
+        self.parsed_responses = [
+            self.list_objects_response([self.upper_key, self.lower_key]),
+            self.get_object_response(),
+        ]
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
+        assert f"warning: Skipping bucket/{self.lower_key}" in stderr
+
+    def test_ignore_with_existing_file(self):
+        self.files.create_file(self.lower_key, 'mycontent')
+        cmd = (
+            f"{self.prefix} s3://bucket {self.files.rootdir} "
+            "--case-conflict ignore"
+        )
+        self.parsed_responses = [
+            self.list_objects_response([self.upper_key]),
+            self.get_object_response(),
+        ]
+        self.run_cmd(cmd, expected_rc=0)
+
+    def test_ignore_with_case_conflicts_in_s3(self):
+        cmd = (
+            f"{self.prefix} s3://bucket {self.files.rootdir} "
+            "--case-conflict ignore"
+        )
+        self.parsed_responses = [
+            self.list_objects_response([self.upper_key, self.lower_key]),
+            self.get_object_response(),
+            self.get_object_response(),
+        ]
+        self.run_cmd(cmd, expected_rc=0)

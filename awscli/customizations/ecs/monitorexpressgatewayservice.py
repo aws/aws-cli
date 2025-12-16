@@ -39,15 +39,16 @@ Usage:
     aws ecs monitor-express-gateway-service --service-arn <arn> [--resource-view RESOURCE|DEPLOYMENT]
 """
 
-import asyncio
 import sys
-import threading
 import time
 
 from botocore.exceptions import ClientError
 
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.ecs.exceptions import MonitoringError
+from awscli.customizations.ecs.expressgateway.display_strategy import (
+    InteractiveDisplayStrategy,
+)
 from awscli.customizations.ecs.prompt_toolkit_display import Display
 from awscli.customizations.ecs.serviceviewcollector import ServiceViewCollector
 from awscli.customizations.utils import uni_print
@@ -185,7 +186,7 @@ class ECSExpressGatewayServiceWatcher:
         service_arn,
         mode,
         timeout_minutes=30,
-        display=None,
+        display_strategy=None,
         use_color=True,
         collector=None,
     ):
@@ -195,7 +196,9 @@ class ECSExpressGatewayServiceWatcher:
         self.timeout_minutes = timeout_minutes
         self.start_time = time.time()
         self.use_color = use_color
-        self.display = display or Display()
+        self.display_strategy = display_strategy or InteractiveDisplayStrategy(
+            display=Display(), use_color=use_color
+        )
         self.collector = collector or ServiceViewCollector(
             client, service_arn, mode, use_color
         )
@@ -207,72 +210,6 @@ class ECSExpressGatewayServiceWatcher:
 
     def exec(self):
         """Start monitoring the express gateway service with progress display."""
-
-        def monitor_service(spinner_char):
-            return self.collector.get_current_view(spinner_char)
-
-        asyncio.run(self._execute_with_progress_async(monitor_service, 100))
-
-    async def _execute_with_progress_async(
-        self, execution, progress_refresh_millis, execution_refresh_millis=5000
-    ):
-        """Execute monitoring loop with animated progress display."""
-        spinner_chars = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
-        spinner_index = 0
-
-        current_output = "Waiting for initial data"
-
-        async def update_data():
-            nonlocal current_output
-            while True:
-                current_time = time.time()
-                if current_time - self.start_time > self.timeout_minutes * 60:
-                    break
-                try:
-                    loop = asyncio.get_event_loop()
-                    new_output = await loop.run_in_executor(
-                        None, execution, "{SPINNER}"
-                    )
-                    current_output = new_output
-                except ClientError as e:
-                    if (
-                        e.response.get('Error', {}).get('Code')
-                        == 'InvalidParameterException'
-                    ):
-                        error_message = e.response.get('Error', {}).get(
-                            'Message', ''
-                        )
-                        if (
-                            "Cannot call DescribeServiceRevisions for a service that is INACTIVE"
-                            in error_message
-                        ):
-                            current_output = "Service is inactive"
-                        else:
-                            raise
-                    else:
-                        raise
-                await asyncio.sleep(execution_refresh_millis / 1000.0)
-
-        async def update_spinner():
-            nonlocal spinner_index
-            while True:
-                spinner_char = spinner_chars[spinner_index]
-                display_output = current_output.replace(
-                    "{SPINNER}", spinner_char
-                )
-                status_text = f"Getting updates... {spinner_char} | up/down to scroll, q to quit"
-                self.display.display(display_output, status_text)
-                spinner_index = (spinner_index + 1) % len(spinner_chars)
-                await asyncio.sleep(progress_refresh_millis / 1000.0)
-
-        # Start both tasks
-        data_task = asyncio.create_task(update_data())
-        spinner_task = asyncio.create_task(update_spinner())
-
-        try:
-            await self.display.run()
-        finally:
-            data_task.cancel()
-            spinner_task.cancel()
-            final_output = current_output.replace("{SPINNER}", "")
-            uni_print(final_output + "\nMonitoring Complete!\n")
+        self.display_strategy.execute_monitoring(
+            self.collector, self.timeout_minutes, self.start_time
+        )

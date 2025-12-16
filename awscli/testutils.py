@@ -36,6 +36,8 @@ import uuid
 from pprint import pformat
 from subprocess import PIPE, Popen
 from unittest import mock
+from functools import lru_cache
+from pathlib import Path
 
 import botocore.loaders
 from botocore.awsrequest import AWSResponse
@@ -67,6 +69,20 @@ def skip_if_windows(reason):
         )(func)
 
     return decorator
+
+
+@lru_cache(maxsize=1)
+def filesystem_is_case_insensitive():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        f = Path(tmpdir) / 'a.txt'
+        f.touch()
+        return (Path(tmpdir) / 'A.txt').exists()
+
+
+if_case_insensitive = unittest.skipUnless(
+    filesystem_is_case_insensitive(),
+    "This test requires a case-insensitive filesystem.",
+)
 
 
 def create_clidriver():

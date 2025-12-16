@@ -79,10 +79,13 @@ def filesystem_is_case_insensitive():
         return (Path(tmpdir) / 'A.txt').exists()
 
 
-if_case_insensitive = unittest.skipUnless(
-    filesystem_is_case_insensitive(),
-    "This test requires a case-insensitive filesystem.",
-)
+def skip_if_case_sensitive():
+    def decorator(func):
+        return unittest.skipIf(
+            not filesystem_is_case_insensitive(),
+            "This test requires a case-insensitive filesystem."
+        )(func)
+    return decorator
 
 
 def create_clidriver():

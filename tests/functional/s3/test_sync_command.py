@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscli.testutils import cd, if_case_insensitive, mock
+from awscli.testutils import cd, mock, skip_if_case_sensitive
 from awscli.compat import BytesIO
 from tests.functional.s3 import BaseS3TransferCommandTest
 
@@ -487,7 +487,7 @@ class TestSyncCaseConflict(BaseS3TransferCommandTest):
         _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
         assert f"warning: Downloading bucket/{self.lower_key}" in stderr
 
-    @if_case_insensitive
+    @skip_if_case_sensitive()
     def test_skip_with_existing_file(self):
         self.files.create_file(self.lower_key, 'mycontent')
         cmd = (

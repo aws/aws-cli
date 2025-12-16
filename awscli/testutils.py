@@ -54,6 +54,12 @@ _LOADER = botocore.loaders.Loader()
 INTEG_LOG = logging.getLogger('awscli.tests.integration')
 AWS_CMD = None
 
+with tempfile.TemporaryDirectory() as tmpdir:
+    tmpf = Path(tmpdir) / 'a.txt'
+    with open(tmpf, 'w') as f:
+        pass
+    CASE_INSENSITIVE = (Path(tmpdir) / 'A.txt').exists()
+
 
 def skip_if_windows(reason):
     """Decorator to skip tests that should not be run on windows.
@@ -91,18 +97,10 @@ def if_windows(reason):
     return decorator
 
 
-@lru_cache(maxsize=1)
-def filesystem_is_case_insensitive():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        f = Path(tmpdir) / 'a.txt'
-        f.touch()
-        return (Path(tmpdir) / 'A.txt').exists()
-
-
 def skip_if_case_sensitive():
     def decorator(func):
         return unittest.skipIf(
-            not filesystem_is_case_insensitive(),
+            not CASE_INSENSITIVE,
             "This test requires a case-insensitive filesystem.",
         )(func)
 

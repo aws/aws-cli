@@ -387,18 +387,18 @@ class TestCPCommand(BaseCPCommandTest):
     def test_no_overwrite_flag_on_copy_when_small_object_does_not_exist_on_target(
         self,
     ):
-        full_path = self.files.create_file('foo.txt', 'mycontent')
-        cmdline = '%s %s s3://bucket/key.txt --no-overwrite' % (self.prefix, full_path)
+        cmdline = f'{self.prefix} s3://bucket1/key.txt s3://bucket/key.txt --no-overwrite'
         self.parsed_responses = [
-            {'ETag': '"c8afdb36c52cf4727836669019e69222"'}
+            self.head_object_response(ContentLength=5),
+            self.copy_object_response(),
         ]
         self.run_cmd(cmdline, expected_rc=0)
-        # The only operation we should have called is PutObject.
         self.assertEqual(
-            len(self.operations_called), 1, self.operations_called
+            len(self.operations_called), 2, self.operations_called
         )
-        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
-        self.assertEqual(self.operations_called[0][1]['IfNoneMatch'], '*')
+        self.assertEqual(self.operations_called[0][0].name, 'HeadObject')
+        self.assertEqual(self.operations_called[1][0].name, 'CopyObject')
+        self.assertEqual(self.operations_called[1][1]['IfNoneMatch'], '*')
 
     def test_no_overwrite_flag_on_copy_when_small_object_exists_on_target(
         self,

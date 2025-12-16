@@ -28,7 +28,7 @@ class TestDisplayStrategy:
         """Test base class raises NotImplementedError."""
         strategy = DisplayStrategy()
         with pytest.raises(NotImplementedError):
-            strategy.execute(None, None, None)
+            strategy.execute_monitoring(None, None, None)
 
 
 @pytest.fixture
@@ -71,7 +71,9 @@ class TestInteractiveDisplayStrategy:
         mock_sleep.side_effect = KeyboardInterrupt()
 
         start_time = time.time()
-        strategy.execute(mock_collector, start_time, timeout_minutes=1)
+        strategy.execute_monitoring(
+            mock_collector, start_time, timeout_minutes=1
+        )
 
         # Verify display was called
         assert mock_display.display.called
@@ -106,7 +108,9 @@ class TestInteractiveDisplayStrategy:
         mock_sleep.side_effect = KeyboardInterrupt()
 
         start_time = time.time()
-        strategy.execute(mock_collector, start_time, timeout_minutes=1)
+        strategy.execute_monitoring(
+            mock_collector, start_time, timeout_minutes=1
+        )
 
         captured = capsys.readouterr()
         assert "Monitoring Complete!" in captured.out
@@ -128,7 +132,9 @@ class TestInteractiveDisplayStrategy:
         mock_sleep.side_effect = KeyboardInterrupt()
 
         start_time = time.time()
-        strategy.execute(mock_collector, start_time, timeout_minutes=1)
+        strategy.execute_monitoring(
+            mock_collector, start_time, timeout_minutes=1
+        )
 
         captured = capsys.readouterr()
         assert unique_output in captured.out
@@ -157,7 +163,9 @@ class TestInteractiveDisplayStrategy:
         mock_sleep.side_effect = KeyboardInterrupt()
 
         start_time = time.time()
-        strategy.execute(mock_collector, start_time, timeout_minutes=1)
+        strategy.execute_monitoring(
+            mock_collector, start_time, timeout_minutes=1
+        )
 
         # Strategy should handle the error and set output to "Service is inactive"
         captured = capsys.readouterr()
@@ -190,8 +198,35 @@ class TestInteractiveDisplayStrategy:
 
         # Other client errors should propagate
         with pytest.raises(ClientError) as exc_info:
-            strategy.execute(mock_collector, start_time, timeout_minutes=1)
+            strategy.execute_monitoring(
+                mock_collector, start_time, timeout_minutes=1
+            )
 
         assert (
             exc_info.value.response['Error']['Code'] == 'AccessDeniedException'
         )
+
+    @patch('time.sleep')
+    def test_display_cleanup_on_exception(
+        self, mock_sleep, app_session, mock_display
+    ):
+        """Test display app is properly shut down when exception occurs."""
+        mock_collector = Mock()
+        error = ClientError(
+            error_response={'Error': {'Code': 'ThrottlingException'}},
+            operation_name='DescribeServiceRevisions',
+        )
+        mock_collector.get_current_view = Mock(side_effect=error)
+
+        strategy = InteractiveDisplayStrategy(
+            display=mock_display, use_color=True
+        )
+        mock_sleep.side_effect = KeyboardInterrupt()
+
+        with pytest.raises(ClientError):
+            strategy.execute_monitoring(
+                mock_collector, time.time(), timeout_minutes=1
+            )
+
+        # Verify app.exit() was called in finally block despite exception
+        mock_display.app.exit.assert_called()

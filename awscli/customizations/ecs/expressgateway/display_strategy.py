@@ -27,7 +27,7 @@ class DisplayStrategy:
     Each strategy controls its own execution model, timing, and output format.
     """
 
-    def execute(self, collector, start_time, timeout_minutes):
+    def execute_monitoring(self, collector, start_time, timeout_minutes):
         """Execute the monitoring loop.
 
         Args:
@@ -47,10 +47,17 @@ class InteractiveDisplayStrategy(DisplayStrategy):
     """
 
     def __init__(self, display, use_color):
+        """Initialize the interactive display strategy.
+
+        Args:
+            display: Display instance from prompt_toolkit_display module
+                providing the interactive terminal interface
+            use_color: Whether to use colored output
+        """
         self.display = display
         self.use_color = use_color
 
-    def execute(self, collector, start_time, timeout_minutes):
+    def execute_monitoring(self, collector, start_time, timeout_minutes):
         """Execute async monitoring with spinner and keyboard controls."""
         final_output, timed_out = asyncio.run(
             self._execute_async(collector, start_time, timeout_minutes)
@@ -143,6 +150,8 @@ class InteractiveDisplayStrategy(DisplayStrategy):
                     pass
 
         finally:
+            # Ensure display app is properly shut down
+            self.display.app.exit()
             spinner_task.cancel()
             if display_task is not None and not display_task.done():
                 display_task.cancel()

@@ -34,9 +34,11 @@ XFORM_OPERATIONS = _get_all_xform_operations()
 
 @pytest.mark.validates_models
 @pytest.mark.parametrize("operation, replacement", XFORM_OPERATIONS)
-def test_known_replacements(operation, replacement):
+def test_known_replacements(operation, replacement, record_property):
     # Validates that if a replacement shows up in the lowercased version of an
     # operation, we will keep all of those characters together in the final operation
     # name
+    record_property('aws_service', 'socialmessaging')
+    record_property('aws_operation', operation)
     assert replacement in xform_name(operation, '_')
     assert replacement in xform_name(operation, '-')

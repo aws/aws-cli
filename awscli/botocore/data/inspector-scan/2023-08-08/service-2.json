@@ -2,9 +2,10 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2023-08-08",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"inspector-scan",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"inspector-scan",
     "serviceFullName":"Inspector Scan",
     "serviceId":"Inspector Scan",
@@ -28,7 +29,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Scans a provided CycloneDX 1.5 SBOM and reports on any vulnerabilities discovered in that SBOM. You can generate compatible SBOMs for your resources using the <a href=\"\">Amazon Inspector SBOM generator</a>.</p>",
+      "documentation":"<p>Scans a provided CycloneDX 1.5 SBOM and reports on any vulnerabilities discovered in that SBOM. You can generate compatible SBOMs for your resources using the <a href=\"https://docs.aws.amazon.com/inspector/latest/user/sbom-generator.html\">Amazon Inspector SBOM generator</a>.</p> <note> <p> The output of this action reports NVD and CVSS scores when NVD and CVSS scores are available. Because the output reports both scores, you might notice a discrepency between them. However, you can triage the severity of either score depending on the vendor of your choosing. </p> </note>",
       "idempotent":true
     }
   },
@@ -86,13 +87,13 @@
       "type":"string",
       "enum":[
         "CYCLONE_DX_1_5",
-        "INSPECTOR"
+        "INSPECTOR",
+        "INSPECTOR_ALT"
       ]
     },
     "Sbom":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "document":true
     },
     "ScanSbomRequest":{
@@ -101,7 +102,7 @@
       "members":{
         "sbom":{
           "shape":"Sbom",
-          "documentation":"<p>The JSON file for the SBOM you want to scan. The SBOM must be in CycloneDX 1.5 format.</p>"
+          "documentation":"<p>The JSON file for the SBOM you want to scan. The SBOM must be in CycloneDX 1.5 format. This format limits you to passing 2000 components before throwing a <code>ValidException</code> error.</p>"
         },
         "outputFormat":{
           "shape":"OutputFormat",

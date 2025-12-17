@@ -49,8 +49,7 @@ MAX_INLINE_ITEMS = 5
 
 class EnhancedErrorFormatter:
     def format_error(self, error_info, formatted_message, stream):
-        stream.write(formatted_message)
-        stream.write('\n')
+        stream.write(f'{formatted_message}\n')
 
         additional_fields = self._get_additional_fields(error_info)
 
@@ -100,10 +99,12 @@ class EnhancedErrorFormatter:
 
     def _format_inline(self, value):
         if isinstance(value, list):
-            return '[' + ', '.join(str(item) for item in value) + ']'
+            items_str = ', '.join(str(item) for item in value)
+            return f'[{items_str}]'
         elif isinstance(value, dict):
             items = [f'{k}: {v}' for k, v in value.items()]
-            return '{' + ', '.join(items) + '}'
+            items_str = ', '.join(items)
+            return f'{{{items_str}}}'
         return str(value)
 
     def _get_additional_fields(self, error_info):

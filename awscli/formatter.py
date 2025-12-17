@@ -374,8 +374,11 @@ class OffFormatter(Formatter):
     """
 
     def __call__(self, command_name, response, stream=None):
-        # Suppress all output
-        pass
+        if is_response_paginated(response):
+            for page in response:
+                self._get_transformed_response_for_output(page)
+        else:
+            self._get_transformed_response_for_output(response)
 
 
 CLI_OUTPUT_FORMATS = {

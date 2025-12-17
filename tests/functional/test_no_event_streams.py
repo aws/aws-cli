@@ -22,7 +22,7 @@ _ALLOWED_COMMANDS = ['s3api select-object-content']
 def _generate_command_tests():
     driver = create_clidriver()
     help_command = driver.create_help_command()
-    for command_name, command_obj in list(help_command.command_table.items()):
+    for command_name, command_obj in help_command.command_table.items():
         sub_help = command_obj.create_help_command()
         if hasattr(sub_help, 'command_table'):
             for sub_name, sub_command in sub_help.command_table.items():

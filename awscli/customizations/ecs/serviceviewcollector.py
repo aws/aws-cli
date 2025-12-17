@@ -248,9 +248,7 @@ class ServiceViewCollector:
             source_sr_resources_combined = ManagedResourceGroup()
 
         updating_resources, disassociating_resources = (
-            target_sr_resources.diff(
-                source_sr_resources_combined
-            )
+            target_sr_resources.diff(source_sr_resources_combined)
         )
         updating_resources.resource_type = "Updating"
         disassociating_resources.resource_type = "Disassociating"
@@ -284,7 +282,10 @@ class ServiceViewCollector:
             self._describe_and_parse_service_revisions(service_revision_arns)
         )
 
-        if len(service_revision_resources) != len(service_revision_arns):
+        # If empty, we're still waiting for active configurations
+        if not service_revision_resources or len(
+            service_revision_resources
+        ) != len(service_revision_arns):
             return (None, "Trying to describe service revisions")
 
         service_resource = reduce(

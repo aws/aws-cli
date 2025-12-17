@@ -2,6 +2,76 @@
 CHANGELOG
 =========
 
+2.32.19
+=======
+
+* api-change:``payment-cryptography``: Support for AS2805 standard.  Modifications to import-key and export-key to support AS2805 variants.
+* api-change:``kafkaconnect``: Support dual-stack network connectivity for connectors via NetworkType field.
+* api-change:``inspector-scan``: Adds an additional OutputFormat
+* api-change:``mediaconvert``: Adds support for tile encoding in HEVC and audio for video overlays.
+* api-change:``sagemaker``: Adding the newly launched p6-b300.48xlarge ec2  instance support in Sagemaker(Hyperpod,Training and Sceptor)
+* api-change:``payment-cryptography-data``: Support for AS2805 standard.  New API GenerateAs2805KekValidation and changes to translate pin, GenerateMac and VerifyMac to support AS2805 key variants.
+* api-change:``mediapackagev2``: This release adds support for SPEKE V2 content key encryption in MediaPackage v2 Origin Endpoints.
+* api-change:``gameliftstreams``: Added new stream group operation parameters for scale-on-demand capacity with automatic prewarming. Added new Gen6 stream classes based on the EC2 G6 instance family. Added new StartStreamSession parameter for exposure of real-time performance stats to clients.
+* api-change:``guardduty``: Add support for dbiResourceId in finding.
+
+
+2.32.18
+=======
+
+* api-change:``iot``: Add support for dynamic payloads in IoT Device Management Commands
+* api-change:``timestream-influxdb``: This release adds support for rebooting InfluxDB DbInstances and DbClusters
+
+
+2.32.17
+=======
+
+* api-change:``bedrock-agentcore-control``: This release updates broken links for AgentCore Policy APIs in the AWS CLI and SDK resources.
+* api-change:``ec2``: EC2 Capacity Manager now supports SpotTotalCount, SpotTotalInterruptions and SpotInterruptionRate metrics for both vCPU and instance units.
+* api-change:``logs``: This release allows you to import your historical CloudTrail Lake data into CloudWatch with a few steps, enabling you to easily consolidate operational, security, and compliance data in one place.
+* api-change:``health``: Updating Health API endpoint generation for dualstack only regions
+* api-change:``route53resolver``: Adds support for enabling detailed metrics on Route 53 Resolver endpoints using RniEnhancedMetricsEnabled and TargetNameServerMetricsEnabled in the CreateResolverEndpoint and UpdateResolverEndpoint APIs, providing enhanced visibility into Resolver endpoint and target name server performance.
+* api-change:``connect``: Amazon Connect now supports outbound WhatsApp contacts via the Send message block or StartOutboundChatContact API. Send proactive messages for surveys, reminders, and updates. Offer customers the option to switch to WhatsApp while in queue, eliminating hold time.
+* api-change:``service-quotas``: Add support for SQ Dashboard Api
+* api-change:``mediatailor``: Added support for Ad Decision Server Configuration enabling HTTP POST requests with custom bodies, headers, GZIP compression, and dynamic variables. No changes required for existing GET request configurations.
+* api-change:``glacier``: Documentation updates for Amazon Glacier's maintenance mode
+* api-change:``entityresolution``: Support Customer Profiles Integration for AWS Entity Resolution
+* api-change:``s3``: This release adds support for the new optional field 'LifecycleExpirationDate' in S3 Inventory configurations.
+
+
+2.32.16
+=======
+
+* api-change:``connect``: Amazon Connect now offers automated post-chat surveys triggered when customers end conversations. This captures timely feedback while experience is fresh, using either a no-code form builder or Amazon Lex-powered interactive surveys.
+* api-change:``bcm-recommended-actions``: Added new freetier action types to RecommendedAction.type.
+* api-change:``datasync``: Adds Enhanced mode support for NFS and SMB locations. SMB credentials are now managed via Secrets Manager, and may be encrypted with service or customer managed keys. Increases AgentArns maximum count to 8 (max 4 per TaskMode). Adds folder counters to DescribeTaskExecution for Enhanced mode tasks.
+* api-change:``workspaces-web``: Adds support for portal branding customization, enabling administrators to personalize end-user portals with custom assets.
+
+
+2.32.15
+=======
+
+* api-change:``lambda``: Add Dotnet 10 (dotnet10) support to AWS Lambda.
+* api-change:``secretsmanager``: Add SortBy parameter to ListSecrets
+* api-change:``sesv2``: Update GetEmailIdentity and CreateEmailIdentity response to include SigningHostedZone in DkimAttributes. Updated PutEmailIdentityDkimSigningAttributes Response to include SigningHostedZone.
+* api-change:``quicksight``: This release adds new GetIdentityContext API, Dashboard customization options for tables and pivot tables, Visual styling options- borders and decals, map GeocodingPreferences, KeyPairCredentials for DataSourceCredentials. Snapshot APIs now support registered users. Parameters limit increased to 400
+* enhancement:python: Upgrade bundled Python interpreter to version 3.13.11.
+* api-change:``organizations``: Add support for policy operations on the NETWORK SECURITY DIRECTOR POLICY policy type.
+
+
+2.32.14
+=======
+
+* bugfix:Serializers: Adds support for host prefix to BaseRpcV2Serializer class
+* api-change:``billingconductor``: Launch itemized custom line item and service line item filter
+* api-change:``bedrock``: Automated Reasoning checks in Amazon Bedrock Guardrails is capable of generating policy scenarios to validate policies. The GetAutomatedReasoningPolicyBuildWorkflowResultAssets API now adds POLICY SCENARIO asset type, allowing customers to retrieve scenarios generated by the build workflow.
+* api-change:``signer``: Adds support for Signer GetRevocationStatus with updated endpoints
+* api-change:``cloudwatch``: This release introduces two additional protocols AWS JSON 1.1 and Smithy RPC v2 CBOR, replacing the currently utilized one, AWSQuery. AWS SDKs will prioritize the protocol that is the most performant for each language.
+* api-change:``partnercentral-selling``: Adds support for the new Project.AwsPartition field on Opportunity and AWS Opportunity Summary. Use this field to specify the AWS partition where the opportunity will be deployed.
+* api-change:``opensearch``: The CreateApplication API now supports an optional kms key arn parameter to allow customers to specify a CMK for application encryption.
+* api-change:``odb``: The following APIs now return CloudExadataInfrastructureArn and OdbNetworkArn fields for improved resource identification and AWS service integration - GetCloudVmCluster, ListCloudVmClusters, GetCloudAutonomousVmCluster, and ListCloudAutonomousVmClusters.
+
+
 2.32.13
 =======
 

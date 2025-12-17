@@ -19,8 +19,8 @@ _KNOWN_SERVICES = {
     'qbusiness': ['Chat'],
     'kinesis': ['SubscribeToShard'],
     'lexv2-runtime': ['StartConversation'],
-     # Added only to keep a record of this feature being incompatible
-     'bedrock-runtime': ['InvokeModelWithBidirectionalStream'],
+    # Added only to keep a record of this feature being incompatible
+    'bedrock-runtime': ['InvokeModelWithBidirectionalStream'],
 }
 
 
@@ -53,16 +53,21 @@ H2_SERVICES, H2_OPERATIONS = _all_test_cases()
 
 @pytest.mark.validates_models
 @pytest.mark.parametrize("h2_service", H2_SERVICES)
-def test_all_uses_of_h2_are_known(h2_service):
+def test_all_uses_of_h2_are_known(h2_service, record_property):
     # Validates that a service that requires HTTP 2 for all operations is known
     message = f'Found unknown HTTP 2 service: {h2_service}'
+    # Store the service name in a PyTest custom property
+    record_property('aws_service', h2_service)
     assert _KNOWN_SERVICES.get(h2_service) is _H2_REQUIRED, message
 
 
 @pytest.mark.validates_models
 @pytest.mark.parametrize("h2_service, operation", H2_OPERATIONS)
-def test_all_h2_operations_are_known(h2_service, operation):
+def test_all_h2_operations_are_known(h2_service, operation, record_property):
     # Validates that an operation that requires HTTP 2 is known
     known_operations = _KNOWN_SERVICES.get(h2_service, [])
     message = f'Found unknown HTTP 2 operation: {h2_service}.{operation}'
+    # Store the service name and operation in PyTest custom properties
+    record_property('aws_service', h2_service)
+    record_property('aws_operation', operation)
     assert operation in known_operations, message

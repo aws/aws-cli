@@ -614,3 +614,54 @@ class TestRestXMLUnicodeSerialization(unittest.TestCase):
             self.serialize_to_request(params)
         except UnicodeEncodeError:
             self.fail("RestXML serializer failed to serialize unicode text.")
+
+class TestRpcV2CBORHostPrefix(unittest.TestCase):
+    def setUp(self):
+        self.model = {
+            'metadata': {
+                'protocol': 'smithy-rpc-v2-cbor',
+                'apiVersion': '2014-01-01',
+                'serviceId': 'MyService',
+                'targetPrefix': 'sampleservice',
+                'documentation': '',
+            },
+            'operations': {
+                'TestHostPrefixOperation': {
+                    'name': 'TestHostPrefixOperation',
+                    'input': {'shape': 'InputShape'},
+                    'endpoint': {'hostPrefix': '{Foo}'},
+                },
+                'TestNoHostPrefixOperation': {
+                    'name': 'TestNoHostPrefixOperation',
+                    'input': {'shape': 'InputShape'},
+                },
+            },
+            'shapes': {
+                'InputShape': {
+                    'type': 'structure',
+                    'members': {
+                        'Foo': {'shape': 'StringType', 'hostLabel': True},
+                    },
+                },
+                'StringType': {'type': 'string'},
+            },
+        }
+        self.service_model = ServiceModel(self.model)
+
+    def test_host_prefix_added_to_serialized_request(self):
+        operation_model = self.service_model.operation_model('TestHostPrefixOperation')
+        serializer = serialize.create_serializer('smithy-rpc-v2-cbor')
+
+        params = {'Foo': 'bound'}
+        serialized = serializer.serialize_to_request(params, operation_model)
+
+        self.assertEqual(serialized['host_prefix'], 'bound')
+
+    def test_no_host_prefix_when_not_configured(self):
+        operation_model = self.service_model.operation_model('TestNoHostPrefixOperation')
+        serializer = serialize.create_serializer('smithy-rpc-v2-cbor')
+
+        params = {'Foo': 'bound'}
+        serialized = serializer.serialize_to_request(params, operation_model)
+
+        self.assertNotIn('host_prefix', serialized)

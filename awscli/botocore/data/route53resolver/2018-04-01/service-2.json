@@ -1362,7 +1362,7 @@
         },
         "Name":{
           "shape":"Name",
-          "documentation":"<p>A name for the association that you're creating between a Resolver rule and a VPC.</p>"
+          "documentation":"<p>A name for the association that you're creating between a Resolver rule and a VPC.</p> <p>The name can be up to 64 characters long and can contain letters (a-z, A-Z), numbers (0-9), hyphens (-), underscores (_), and spaces. The name cannot consist of only numbers.</p>"
         },
         "VPCId":{
           "shape":"ResourceId",
@@ -1678,6 +1678,16 @@
           "shape":"ProtocolList",
           "documentation":"<p> The protocols you want to use for the endpoint. DoH-FIPS is applicable for default inbound endpoints only. </p> <p>For a default inbound endpoint you can apply the protocols as follows:</p> <ul> <li> <p> Do53 and DoH in combination.</p> </li> <li> <p>Do53 and DoH-FIPS in combination.</p> </li> <li> <p>Do53 alone.</p> </li> <li> <p>DoH alone.</p> </li> <li> <p>DoH-FIPS alone.</p> </li> <li> <p>None, which is treated as Do53.</p> </li> </ul> <p>For a delegation inbound endpoint you can use Do53 only.</p> <p>For an outbound endpoint you can apply the protocols as follows:</p> <ul> <li> <p> Do53 and DoH in combination.</p> </li> <li> <p>Do53 alone.</p> </li> <li> <p>DoH alone.</p> </li> <li> <p>None, which is treated as Do53.</p> </li> </ul>",
           "box":true
+        },
+        "RniEnhancedMetricsEnabled":{
+          "shape":"RniEnhancedMetricsEnabled",
+          "documentation":"<p>Specifies whether RNI enhanced metrics are enabled for the Resolver endpoints. When set to true, one-minute granular metrics are published in CloudWatch for each RNI associated with this endpoint. When set to false, metrics are not published. Default is false.</p> <note> <p>Standard CloudWatch pricing and charges are applied for using the Route 53 Resolver endpoint RNI enhanced metrics. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/monitoring-resolver-with-cloudwatch.html\">Detailed metrics</a>.</p> </note>",
+          "box":true
+        },
+        "TargetNameServerMetricsEnabled":{
+          "shape":"TargetNameServerMetricsEnabled",
+          "documentation":"<p>Specifies whether target name server metrics are enabled for the outbound Resolver endpoints. When set to true, one-minute granular metrics are published in CloudWatch for each target name server associated with this endpoint. When set to false, metrics are not published. Default is false. This is not supported for inbound Resolver endpoints.</p> <note> <p>Standard CloudWatch pricing and charges are applied for using the Route 53 Resolver endpoint target name server metrics. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/monitoring-resolver-with-cloudwatch.html\">Detailed metrics</a>.</p> </note>",
+          "box":true
         }
       }
     },
@@ -1740,7 +1750,7 @@
         },
         "Name":{
           "shape":"Name",
-          "documentation":"<p>A friendly name that lets you easily find a rule in the Resolver dashboard in the Route 53 console.</p>"
+          "documentation":"<p>A friendly name that lets you easily find a rule in the Resolver dashboard in the Route 53 console.</p> <p>The name can be up to 64 characters long and can contain letters (a-z, A-Z), numbers (0-9), hyphens (-), underscores (_), and spaces. The name cannot consist of only numbers.</p>"
         },
         "RuleType":{
           "shape":"RuleTypeOption",
@@ -1753,7 +1763,7 @@
         },
         "TargetIps":{
           "shape":"TargetList",
-          "documentation":"<p>The IPs that you want Resolver to forward DNS queries to. You can specify either Ipv4 or Ipv6 addresses but not both in the same rule. Separate IP addresses with a space.</p> <p> <code>TargetIps</code> is available only when the value of <code>Rule type</code> is <code>FORWARD</code>.</p>",
+          "documentation":"<p>The IPs that you want Resolver to forward DNS queries to. You can specify either Ipv4 or Ipv6 addresses but not both in the same rule. Separate IP addresses with a space.</p> <p> <code>TargetIps</code> is available only when the value of <code>Rule type</code> is <code>FORWARD</code>. You should not provide TargetIps when the Rule type is <code>DELEGATE</code>.</p> <note> <p>when creating a DELEGATE rule, you must not provide the <code>TargetIps</code> parameter. If you provide the <code>TargetIps</code>, you may receive an ERROR message similar to \"Delegate resolver rules need to specify a nameserver name\". This error means you should not provide <code>TargetIps</code>.</p> </note>",
           "box":true
         },
         "ResolverEndpointId":{
@@ -3944,6 +3954,14 @@
         "Protocols":{
           "shape":"ProtocolList",
           "documentation":"<p> Protocols used for the endpoint. DoH-FIPS is applicable for a default inbound endpoints only. </p> <p>For an inbound endpoint you can apply the protocols as follows:</p> <ul> <li> <p> Do53 and DoH in combination.</p> </li> <li> <p>Do53 and DoH-FIPS in combination.</p> </li> <li> <p>Do53 alone.</p> </li> <li> <p>DoH alone.</p> </li> <li> <p>DoH-FIPS alone.</p> </li> <li> <p>None, which is treated as Do53.</p> </li> </ul> <p>For a delegation inbound endpoint you can use Do53 only.</p> <p>For an outbound endpoint you can apply the protocols as follows:</p> <ul> <li> <p> Do53 and DoH in combination.</p> </li> <li> <p>Do53 alone.</p> </li> <li> <p>DoH alone.</p> </li> <li> <p>None, which is treated as Do53.</p> </li> </ul>"
+        },
+        "RniEnhancedMetricsEnabled":{
+          "shape":"RniEnhancedMetricsEnabled",
+          "documentation":"<p>Indicates whether RNI enhanced metrics are enabled for the Resolver endpoint. When enabled, one-minute granular metrics are published in CloudWatch for each RNI associated with this endpoint. When disabled, these metrics are not published.</p>"
+        },
+        "TargetNameServerMetricsEnabled":{
+          "shape":"TargetNameServerMetricsEnabled",
+          "documentation":"<p>Indicates whether target name server metrics are enabled for the outbound Resolver endpoint. When enabled, one-minute granular metrics are published in CloudWatch for each target name server associated with this endpoint. When disabled, these metrics are not published. This feature is not supported for inbound Resolver endpoint.</p>"
         }
       },
       "documentation":"<p>In the response to a <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverEndpoint.html\">CreateResolverEndpoint</a>, <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_DeleteResolverEndpoint.html\">DeleteResolverEndpoint</a>, <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html\">GetResolverEndpoint</a>, Updates the name, or ResolverEndpointType for an endpoint, or <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_UpdateResolverEndpoint.html\">UpdateResolverEndpoint</a> request, a complex type that contains settings for an existing inbound or outbound Resolver endpoint.</p>"
@@ -4139,7 +4157,7 @@
         },
         "Name":{
           "shape":"Name",
-          "documentation":"<p>The name for the Resolver rule, which you specified when you created the Resolver rule.</p>"
+          "documentation":"<p>The name for the Resolver rule, which you specified when you created the Resolver rule.</p> <p>The name can be up to 64 characters long and can contain letters (a-z, A-Z), numbers (0-9), hyphens (-), underscores (_), and spaces. The name cannot consist of only numbers.</p>"
         },
         "TargetIps":{
           "shape":"TargetList",
@@ -4185,7 +4203,7 @@
         },
         "Name":{
           "shape":"Name",
-          "documentation":"<p>The name of an association between a Resolver rule and a VPC.</p>"
+          "documentation":"<p>The name of an association between a Resolver rule and a VPC.</p> <p>The name can be up to 64 characters long and can contain letters (a-z, A-Z), numbers (0-9), hyphens (-), underscores (_), and spaces. The name cannot consist of only numbers.</p>"
         },
         "VPCId":{
           "shape":"ResourceId",
@@ -4221,7 +4239,7 @@
       "members":{
         "Name":{
           "shape":"Name",
-          "documentation":"<p>The new name for the Resolver rule. The name that you specify appears in the Resolver dashboard in the Route 53 console. </p>"
+          "documentation":"<p>The new name for the Resolver rule. The name that you specify appears in the Resolver dashboard in the Route 53 console. </p> <p>The name can be up to 64 characters long and can contain letters (a-z, A-Z), numbers (0-9), hyphens (-), underscores (_), and spaces. The name cannot consist of only numbers.</p>"
         },
         "TargetIps":{
           "shape":"TargetList",
@@ -4309,6 +4327,7 @@
       "max":40,
       "min":20
     },
+    "RniEnhancedMetricsEnabled":{"type":"boolean"},
     "RuleTypeOption":{
       "type":"string",
       "enum":[
@@ -4465,6 +4484,7 @@
       "member":{"shape":"TargetAddress"},
       "min":1
     },
+    "TargetNameServerMetricsEnabled":{"type":"boolean"},
     "ThrottlingException":{
       "type":"structure",
       "members":{
@@ -4825,6 +4845,16 @@
         "Protocols":{
           "shape":"ProtocolList",
           "documentation":"<p> The protocols you want to use for the endpoint. DoH-FIPS is applicable for default inbound endpoints only. </p> <p>For a default inbound endpoint you can apply the protocols as follows:</p> <ul> <li> <p> Do53 and DoH in combination.</p> </li> <li> <p>Do53 and DoH-FIPS in combination.</p> </li> <li> <p>Do53 alone.</p> </li> <li> <p>DoH alone.</p> </li> <li> <p>DoH-FIPS alone.</p> </li> <li> <p>None, which is treated as Do53.</p> </li> </ul> <p>For a delegation inbound endpoint you can use Do53 only.</p> <p>For an outbound endpoint you can apply the protocols as follows:</p> <ul> <li> <p> Do53 and DoH in combination.</p> </li> <li> <p>Do53 alone.</p> </li> <li> <p>DoH alone.</p> </li> <li> <p>None, which is treated as Do53.</p> </li> </ul> <important> <p> You can't change the protocol of an inbound endpoint directly from only Do53 to only DoH, or DoH-FIPS. This is to prevent a sudden disruption to incoming traffic that relies on Do53. To change the protocol from Do53 to DoH, or DoH-FIPS, you must first enable both Do53 and DoH, or Do53 and DoH-FIPS, to make sure that all incoming traffic has transferred to using the DoH protocol, or DoH-FIPS, and then remove the Do53.</p> </important>",
+          "box":true
+        },
+        "RniEnhancedMetricsEnabled":{
+          "shape":"RniEnhancedMetricsEnabled",
+          "documentation":"<p>Updates whether RNI enhanced metrics are enabled for the Resolver endpoints. When set to true, one-minute granular metrics are published in CloudWatch for each RNI associated with this endpoint. When set to false, metrics are not published.</p> <note> <p>Standard CloudWatch pricing and charges are applied for using the Route 53 Resolver endpoint RNI enhanced metrics. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/monitoring-resolver-with-cloudwatch.html\">Detailed metrics</a>.</p> </note>",
+          "box":true
+        },
+        "TargetNameServerMetricsEnabled":{
+          "shape":"TargetNameServerMetricsEnabled",
+          "documentation":"<p>Updates whether target name server metrics are enabled for the outbound Resolver endpoints. When set to true, one-minute granular metrics are published in CloudWatch for each target name server associated with this endpoint. When set to false, metrics are not published. This setting is not supported for inbound Resolver endpoints.</p> <note> <p>Standard CloudWatch pricing and charges are applied for using the Route 53 Resolver endpoint target name server metrics. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/monitoring-resolver-with-cloudwatch.html\">Detailed metrics</a>.</p> </note>",
           "box":true
         }
       }

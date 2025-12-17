@@ -584,6 +584,15 @@
       "type":"list",
       "member":{"shape":"Alias"}
     },
+    "As2805KeyVariant":{
+      "type":"string",
+      "enum":[
+        "TERMINAL_MAJOR_KEY_VARIANT_00",
+        "PIN_ENCRYPTION_KEY_VARIANT_28",
+        "MESSAGE_AUTHENTICATION_KEY_VARIANT_24",
+        "DATA_ENCRYPTION_KEY_VARIANT_22"
+      ]
+    },
     "Boolean":{
       "type":"boolean",
       "box":true
@@ -617,7 +626,7 @@
         },
         "Country":{
           "shape":"CertificateSubjectTypeCountryString",
-          "documentation":"<p>The city you provide to create the certificate signing request.</p>"
+          "documentation":"<p>The country you provide to create the certificate signing request.</p>"
         },
         "StateOrProvince":{
           "shape":"CertificateSubjectTypeStateOrProvinceString",
@@ -883,6 +892,21 @@
       "min":16,
       "pattern":"(?:[0-9a-fA-F][0-9a-fA-F])+"
     },
+    "ExportAs2805KeyCryptogram":{
+      "type":"structure",
+      "required":[
+        "WrappingKeyIdentifier",
+        "As2805KeyVariant"
+      ],
+      "members":{
+        "WrappingKeyIdentifier":{"shape":"KeyArnOrKeyAliasType"},
+        "As2805KeyVariant":{
+          "shape":"As2805KeyVariant",
+          "documentation":"<p>The cryptographic usage of the key under export.</p>"
+        }
+      },
+      "documentation":"<p>Parameter information for key material export using AS2805 key cryptogram format.</p>"
+    },
     "ExportAttributes":{
       "type":"structure",
       "members":{
@@ -1013,6 +1037,10 @@
         "DiffieHellmanTr31KeyBlock":{
           "shape":"ExportDiffieHellmanTr31KeyBlock",
           "documentation":"<p>Key derivation parameter information for key material export using asymmetric ECDH key exchange method.</p>"
+        },
+        "As2805KeyCryptogram":{
+          "shape":"ExportAs2805KeyCryptogram",
+          "documentation":"<p>Parameter information for key material export using AS2805 key cryptogram format.</p>"
         }
       },
       "documentation":"<p>Parameter information for key material export from Amazon Web Services Payment Cryptography using TR-31 or TR-34 or RSA wrap and unwrap key exchange method.</p>",
@@ -1308,6 +1336,38 @@
       "min":20,
       "pattern":"[0-9A-F]{20}$|^[0-9A-F]{24}"
     },
+    "ImportAs2805KeyCryptogram":{
+      "type":"structure",
+      "required":[
+        "As2805KeyVariant",
+        "KeyModesOfUse",
+        "KeyAlgorithm",
+        "Exportable",
+        "WrappingKeyIdentifier",
+        "WrappedKeyCryptogram"
+      ],
+      "members":{
+        "As2805KeyVariant":{
+          "shape":"As2805KeyVariant",
+          "documentation":"<p>The cryptographic usage of the key under import.</p>"
+        },
+        "KeyModesOfUse":{"shape":"KeyModesOfUse"},
+        "KeyAlgorithm":{
+          "shape":"KeyAlgorithm",
+          "documentation":"<p>The key algorithm of the key under import.</p>"
+        },
+        "Exportable":{
+          "shape":"Boolean",
+          "documentation":"<p>Specified whether the key is exportable. This data is immutable after the key is imported.</p>"
+        },
+        "WrappingKeyIdentifier":{"shape":"KeyArnOrKeyAliasType"},
+        "WrappedKeyCryptogram":{
+          "shape":"WrappedKeyCryptogram",
+          "documentation":"<p>The wrapped key cryptogram under import.</p>"
+        }
+      },
+      "documentation":"<p>Parameter information for key material import using AS2805 key cryptogram format.</p>"
+    },
     "ImportDiffieHellmanTr31KeyBlock":{
       "type":"structure",
       "required":[
@@ -1434,6 +1494,10 @@
         "DiffieHellmanTr31KeyBlock":{
           "shape":"ImportDiffieHellmanTr31KeyBlock",
           "documentation":"<p>Key derivation parameter information for key material import using asymmetric ECDH key exchange method.</p>"
+        },
+        "As2805KeyCryptogram":{
+          "shape":"ImportAs2805KeyCryptogram",
+          "documentation":"<p>Parameter information for key material import using AS2805 key cryptogram format.</p>"
         }
       },
       "documentation":"<p>Parameter information for key material import into Amazon Web Services Payment Cryptography using TR-31 or TR-34 or RSA wrap and unwrap key exchange method.</p>",
@@ -1886,6 +1950,7 @@
         "TR31_K0_KEY_ENCRYPTION_KEY",
         "TR31_K1_KEY_BLOCK_PROTECTION_KEY",
         "TR31_K3_ASYMMETRIC_KEY_FOR_KEY_AGREEMENT",
+        "TR31_M0_ISO_16609_MAC_KEY",
         "TR31_M3_ISO_9797_3_MAC_KEY",
         "TR31_M1_ISO_9797_1_MAC_KEY",
         "TR31_M6_ISO_9797_5_CMAC_KEY",

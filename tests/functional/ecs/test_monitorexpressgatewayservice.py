@@ -40,12 +40,11 @@ def command(mock_session, mock_watcher_class):
 def mock_client(mock_session):
     """Fixture that provides a mock ECS client."""
     client = Mock()
-    mock_session.create_client.return_value = client
     return client
 
 
 class TestECSMonitorExpressGatewayService:
-    def test_init(self, command, mock_session, mock_watcher_class):
+    def test_init(self, command):
         assert command.name == 'monitor-express-gateway-service'
         assert command.DESCRIPTION.startswith('Monitors the progress')
 
@@ -70,6 +69,7 @@ class TestECSMonitorExpressGatewayService:
     def test_run_main_with_text_only_mode(
         self, mock_isatty, command, mock_watcher_class, mock_client
     ):
+        command._session.create_client.return_value = mock_client
         mock_watcher = Mock()
         mock_watcher_class.return_value = mock_watcher
 
@@ -105,6 +105,7 @@ class TestECSMonitorExpressGatewayService:
     def test_run_main_with_interactive_mode(
         self, mock_isatty, command, mock_watcher_class, mock_client
     ):
+        command._session.create_client.return_value = mock_client
         mock_watcher = Mock()
         mock_watcher_class.return_value = mock_watcher
 
@@ -137,6 +138,7 @@ class TestECSMonitorExpressGatewayService:
     def test_run_main_auto_mode_with_tty(
         self, mock_isatty, command, mock_watcher_class, mock_client
     ):
+        command._session.create_client.return_value = mock_client
         mock_watcher = Mock()
         mock_watcher_class.return_value = mock_watcher
 
@@ -163,6 +165,7 @@ class TestECSMonitorExpressGatewayService:
     def test_run_main_auto_mode_without_tty(
         self, mock_isatty, command, mock_watcher_class, mock_client
     ):
+        command._session.create_client.return_value = mock_client
         mock_watcher = Mock()
         mock_watcher_class.return_value = mock_watcher
 
@@ -189,6 +192,7 @@ class TestECSMonitorExpressGatewayService:
     def test_run_main_with_color_on(
         self, mock_isatty, command, mock_watcher_class, mock_client
     ):
+        command._session.create_client.return_value = mock_client
         mock_watcher = Mock()
         mock_watcher_class.return_value = mock_watcher
 
@@ -220,6 +224,7 @@ class TestECSMonitorExpressGatewayService:
         mock_watcher_class,
         mock_client,
     ):
+        command._session.create_client.return_value = mock_client
         mock_watcher = Mock()
         mock_watcher_class.return_value = mock_watcher
 
@@ -254,6 +259,7 @@ class TestECSMonitorExpressGatewayService:
     def test_run_main_with_default_resource_view(
         self, mock_isatty, command, mock_watcher_class, mock_client
     ):
+        command._session.create_client.return_value = mock_client
         mock_watcher = Mock()
         mock_watcher_class.return_value = mock_watcher
 

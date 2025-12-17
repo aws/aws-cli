@@ -17,6 +17,7 @@ import asyncio
 import time
 
 from botocore.exceptions import ClientError
+from colorama import Style
 
 from awscli.customizations.ecs.exceptions import MonitoringError
 from awscli.customizations.ecs.expressgateway.stream_display import (
@@ -63,13 +64,16 @@ class InteractiveDisplayStrategy(DisplayStrategy):
 
     def execute_monitoring(self, collector, start_time, timeout_minutes):
         """Execute async monitoring with spinner and keyboard controls."""
-        final_output, timed_out = asyncio.run(
-            self._execute_async(collector, start_time, timeout_minutes)
-        )
-        if timed_out:
-            uni_print(final_output + "\nMonitoring timed out!\n")
-        else:
-            uni_print(final_output + "\nMonitoring Complete!\n")
+        try:
+            final_output, timed_out = asyncio.run(
+                self._execute_async(collector, start_time, timeout_minutes)
+            )
+            if timed_out:
+                uni_print(final_output + "\nMonitoring timed out!\n")
+            else:
+                uni_print(final_output + "\nMonitoring Complete!\n")
+        finally:
+            uni_print(Style.RESET_ALL)
 
     async def _execute_async(self, collector, start_time, timeout_minutes):
         """Async execution with dual tasks for data and spinner."""
@@ -233,3 +237,4 @@ class TextOnlyDisplayStrategy(DisplayStrategy):
             self.stream_display.show_error_message(e)
         finally:
             self.stream_display.show_completion_message()
+            uni_print(Style.RESET_ALL)

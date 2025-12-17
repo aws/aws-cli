@@ -104,6 +104,7 @@ class TestECSMonitorExpressGatewayServiceCommand:
 
         captured = capsys.readouterr()
         assert "Interactive mode requires a TTY" in captured.err
+        assert "aws: [ERROR]:" in captured.err
         assert result == 1
 
     @patch('sys.stdout.isatty')

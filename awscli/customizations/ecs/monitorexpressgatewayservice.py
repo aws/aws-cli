@@ -57,7 +57,6 @@ from awscli.customizations.ecs.expressgateway.display_strategy import (
 from awscli.customizations.ecs.prompt_toolkit_display import Display
 from awscli.customizations.ecs.serviceviewcollector import ServiceViewCollector
 from awscli.customizations.utils import uni_print
-from awscli.utils import write_exception
 
 
 class ECSMonitorExpressGatewayService(BasicCommand):
@@ -79,7 +78,7 @@ class ECSMonitorExpressGatewayService(BasicCommand):
         "Choose ``--mode INTERACTIVE`` for real-time display with keyboard navigation (requires TTY), "
         "or ``--mode TEXT-ONLY`` for text output with timestamps (works without TTY). "
         "The monitoring session continues until manually stopped by the user or the specified timeout is reached. "
-        "In interactive mode, use keyboard shortcuts: up/down to scroll through resources, 'q' to quit. "
+        "In INTERACTIVE mode, use keyboard shortcuts: up/down to scroll through resources, 'q' to quit. "
         "In TEXT-ONLY mode, press Ctrl+C to stop monitoring."
     )
 
@@ -147,7 +146,7 @@ class ECSMonitorExpressGatewayService(BasicCommand):
         try:
             display_mode = self._determine_display_mode(parsed_args.mode)
         except ValueError as e:
-            write_exception(e, sys.stderr)
+            uni_print(f"aws: [ERROR]: {str(e)}", sys.stderr)
             return 1
 
         try:
@@ -194,7 +193,7 @@ class ECSMonitorExpressGatewayService(BasicCommand):
         if requested_mode == 'INTERACTIVE':
             if not sys.stdout.isatty():
                 raise ValueError(
-                    "Error: Interactive mode requires a TTY (terminal). "
+                    "Interactive mode requires a TTY (terminal). "
                     "Use --mode TEXT-ONLY for non-interactive environments."
                 )
             return 'INTERACTIVE'

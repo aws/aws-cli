@@ -2,6 +2,20 @@
 CHANGELOG
 =========
 
+2.32.19
+=======
+
+* api-change:``payment-cryptography``: Support for AS2805 standard.  Modifications to import-key and export-key to support AS2805 variants.
+* api-change:``kafkaconnect``: Support dual-stack network connectivity for connectors via NetworkType field.
+* api-change:``inspector-scan``: Adds an additional OutputFormat
+* api-change:``mediaconvert``: Adds support for tile encoding in HEVC and audio for video overlays.
+* api-change:``sagemaker``: Adding the newly launched p6-b300.48xlarge ec2  instance support in Sagemaker(Hyperpod,Training and Sceptor)
+* api-change:``payment-cryptography-data``: Support for AS2805 standard.  New API GenerateAs2805KekValidation and changes to translate pin, GenerateMac and VerifyMac to support AS2805 key variants.
+* api-change:``mediapackagev2``: This release adds support for SPEKE V2 content key encryption in MediaPackage v2 Origin Endpoints.
+* api-change:``gameliftstreams``: Added new stream group operation parameters for scale-on-demand capacity with automatic prewarming. Added new Gen6 stream classes based on the EC2 G6 instance family. Added new StartStreamSession parameter for exposure of real-time performance stats to clients.
+* api-change:``guardduty``: Add support for dbiResourceId in finding.
+
+
 2.32.18
 =======
 

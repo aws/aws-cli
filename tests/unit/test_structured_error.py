@@ -16,7 +16,6 @@ from unittest import mock
 
 from botocore.exceptions import ClientError
 
-from awscli.clidriver import CLIDriver
 from awscli.constants import CLIENT_ERROR_RC
 from awscli.errorhandler import (
     ClientErrorHandler,
@@ -48,6 +47,35 @@ class TestClientErrorHandler:
         assert 'Error' in result
         assert result['Error']['Code'] == 'NoSuchBucket'
         assert result['Error']['BucketName'] == 'my-bucket'
+
+    def test_extract_error_response_with_top_level_fields(self):
+        error_response = {
+            'Error': {
+                'Code': 'TransactionCanceledException',
+                'Message': 'Transaction cancelled',
+            },
+            'CancellationReasons': [
+                {
+                    'Code': 'ConditionalCheckFailed',
+                    'Message': 'The conditional request failed',
+                    'Item': {'id': {'S': '123'}},
+                }
+            ],
+            'ResponseMetadata': {'RequestId': '456'},
+        }
+        client_error = ClientError(error_response, 'TransactWriteItems')
+
+        result = ClientErrorHandler._extract_error_response(client_error)
+
+        assert result is not None
+        assert 'Error' in result
+        assert result['Error']['Code'] == 'TransactionCanceledException'
+        assert 'CancellationReasons' in result['Error']
+        assert len(result['Error']['CancellationReasons']) == 1
+        assert (
+            result['Error']['CancellationReasons'][0]['Code']
+            == 'ConditionalCheckFailed'
+        )
 
     def test_extract_error_response_from_non_client_error(self):
         result = ClientErrorHandler._extract_error_response(
@@ -299,8 +327,191 @@ class TestEnhancedErrorFormatter:
         assert formatted_message in output
         assert 'Additional error details' not in output
         assert 'Details: <complex value>' in output
-        assert '--cli-error-format json' in output
-        assert '--cli-error-format yaml' in output
+        assert '--cli-error-format with json, yaml, or text' in output
+
+    def test_format_error_with_nested_dict(self):
+        """Test formatting with nested dictionary structures."""
+        error_info = {
+            'Code': 'ValidationError',
+            'Message': 'Validation failed',
+            'FieldErrors': {
+                'email': {'pattern': 'invalid', 'required': True},
+                'age': {'min': 0, 'max': 120},
+            },
+        }
+        formatted_message = (
+            'An error occurred (ValidationError): Validation failed'
+        )
+
+        stream = io.StringIO()
+        self.formatter.format_error(error_info, formatted_message, stream)
+
+        output = stream.getvalue()
+        assert formatted_message in output
+        assert 'FieldErrors: <complex value>' in output
+
+    def test_format_error_with_list_of_dicts(self):
+        """Test formatting with list containing dictionaries."""
+        error_info = {
+            'Code': 'TransactionCanceledException',
+            'Message': 'Transaction cancelled',
+            'CancellationReasons': [
+                {'Code': 'ConditionalCheckFailed', 'Message': 'Check failed'},
+                {'Code': 'ItemCollectionSizeLimitExceeded', 'Message': 'Too large'},
+            ],
+        }
+        formatted_message = (
+            'An error occurred (TransactionCanceledException): '
+            'Transaction cancelled'
+        )
+
+        stream = io.StringIO()
+        self.formatter.format_error(error_info, formatted_message, stream)
+
+        output = stream.getvalue()
+        assert formatted_message in output
+        assert 'CancellationReasons: <complex value>' in output
+
+    def test_format_error_with_mixed_types(self):
+        """Test formatting with various data types."""
+        error_info = {
+            'Code': 'ComplexError',
+            'Message': 'Complex error occurred',
+            'StringField': 'test-value',
+            'IntField': 42,
+            'FloatField': 3.14,
+            'BoolField': True,
+            'NoneField': None,
+        }
+        formatted_message = (
+            'An error occurred (ComplexError): Complex error occurred'
+        )
+
+        stream = io.StringIO()
+        self.formatter.format_error(error_info, formatted_message, stream)
+
+        output = stream.getvalue()
+        assert formatted_message in output
+        assert 'Additional error details' in output
+        assert 'StringField: test-value' in output
+        assert 'IntField: 42' in output
+        assert 'FloatField: 3.14' in output
+        assert 'BoolField: True' in output
+        assert 'NoneField: None' in output
+
+    def test_format_error_with_unicode_and_special_chars(self):
+        """Test formatting with unicode and special characters."""
+        error_info = {
+            'Code': 'InvalidInput',
+            'Message': 'Invalid input provided',
+            'UserName': 'José García',
+            'Description': 'Error with "quotes" and \'apostrophes\'',
+            'Path': '/path/to/file.txt',
+        }
+        formatted_message = (
+            'An error occurred (InvalidInput): Invalid input provided'
+        )
+
+        stream = io.StringIO()
+        self.formatter.format_error(error_info, formatted_message, stream)
+
+        output = stream.getvalue()
+        assert formatted_message in output
+        assert 'José García' in output
+        assert 'quotes' in output
+        assert 'apostrophes' in output
+
+    def test_format_error_with_large_list(self):
+        """Test that large lists are marked as complex."""
+        error_info = {
+            'Code': 'LargeList',
+            'Message': 'Large list error',
+            'Items': list(range(10)),
+        }
+        formatted_message = (
+            'An error occurred (LargeList): Large list error'
+        )
+
+        stream = io.StringIO()
+        self.formatter.format_error(error_info, formatted_message, stream)
+
+        output = stream.getvalue()
+        assert formatted_message in output
+        assert 'Items: <complex value>' in output
+
+
+class TestRealWorldErrorScenarios:
+    """Test real-world AWS error response structures."""
+
+    def setup_method(self):
+        self.session = FakeSession()
+        self.handler = ClientErrorHandler(self.session)
+
+    def test_dynamodb_transaction_cancelled_error(self):
+        """Test DynamoDB TransactionCanceledException with CancellationReasons."""
+        error_response = {
+            'Error': {
+                'Code': 'TransactionCanceledException',
+                'Message': (
+                    'Transaction cancelled, please refer to '
+                    'CancellationReasons for specific reasons'
+                ),
+            },
+            'CancellationReasons': [
+                {
+                    'Code': 'ConditionalCheckFailed',
+                    'Message': 'The conditional request failed',
+                    'Item': {
+                        'id': {'S': 'item-123'},
+                        'status': {'S': 'active'},
+                    },
+                },
+                {
+                    'Code': 'None',
+                    'Message': None,
+                },
+            ],
+            'ResponseMetadata': {
+                'RequestId': 'abc-123',
+                'HTTPStatusCode': 400,
+            },
+        }
+        client_error = ClientError(error_response, 'TransactWriteItems')
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+
+        rc = self.handler.handle_exception(client_error, stdout, stderr)
+
+        assert rc == CLIENT_ERROR_RC
+        stderr_output = stderr.getvalue()
+        assert 'TransactionCanceledException' in stderr_output
+        assert 'CancellationReasons' in stderr_output
+
+    def test_throttling_error_with_retry_info(self):
+        """Test throttling error with retry information."""
+        error_response = {
+            'Error': {
+                'Code': 'ThrottlingException',
+                'Message': 'Rate exceeded',
+            },
+            'RetryAfterSeconds': 30,
+            'RequestsPerSecond': 100,
+            'CurrentRate': 150,
+            'ResponseMetadata': {'RequestId': 'throttle-123'},
+        }
+        client_error = ClientError(error_response, 'DescribeInstances')
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+
+        rc = self.handler.handle_exception(client_error, stdout, stderr)
+
+        assert rc == CLIENT_ERROR_RC
+        stderr_output = stderr.getvalue()
+        assert 'ThrottlingException' in stderr_output
+        assert '30' in stderr_output
+        assert '100' in stderr_output
 
 
 class TestParsedGlobalsPassthrough:

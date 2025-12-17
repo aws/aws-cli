@@ -66,8 +66,8 @@ class EnhancedErrorFormatter:
                 else:
                     stream.write(
                         f'{key}: <complex value>\n'
-                        f'(Use --cli-error-format with json, yaml, text, '
-                        f'or table to see full details)\n'
+                        f'(Use --cli-error-format with json, yaml, '
+                        f'or text to see full details)\n'
                     )
         else:
             stream.write('\nAdditional error details:\n')
@@ -80,7 +80,7 @@ class EnhancedErrorFormatter:
                     stream.write(
                         f'  {key}: <complex value>\n'
                         f'    (Use --cli-error-format with json, yaml, '
-                        f'text, or table to see full details)\n'
+                        f'or text to see full details)\n'
                     )
 
     def _is_simple_value(self, value):
@@ -266,7 +266,19 @@ class ClientErrorHandler(FilteredExceptionHandler):
             return None
 
         if hasattr(exception, 'response') and 'Error' in exception.response:
-            return {'Error': exception.response['Error']}
+            error_dict = dict(exception.response['Error'])
+
+            # AWS services return modeled error fields
+            # at the top level of the error response,
+            # not nested under an Error key. Botocore preserves this structure.
+            # Include these fields to provide complete error information.
+            # Exclude response metadata and avoid duplicates.
+            excluded_keys = {'Error', 'ResponseMetadata', 'Code', 'Message'}
+            for key, value in exception.response.items():
+                if key not in excluded_keys and key not in error_dict:
+                    error_dict[key] = value
+
+            return {'Error': error_dict}
 
         return None
 

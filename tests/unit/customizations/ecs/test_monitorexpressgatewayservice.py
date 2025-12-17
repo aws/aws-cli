@@ -177,6 +177,7 @@ class TestECSExpressGatewayServiceWatcher:
     def test_init_uses_injected_collector(self):
         """Test watcher uses injected collector instead of creating one"""
         mock_collector = Mock()
+        mock_display_strategy = Mock()
 
         watcher = ECSExpressGatewayServiceWatcher(
             Mock(),
@@ -184,6 +185,7 @@ class TestECSExpressGatewayServiceWatcher:
             "RESOURCE",
             "INTERACTIVE",
             collector=mock_collector,
+            display_strategy=mock_display_strategy,
         )
 
         assert watcher.collector == mock_collector

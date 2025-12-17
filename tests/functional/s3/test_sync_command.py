@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscli.testutils import cd, mock, skip_if_case_sensitive
+from awscli.testutils import cd, mock, skip_if_case_sensitive, skip_if_windows
 from awscli.compat import BytesIO
 from tests.functional.s3 import BaseS3TransferCommandTest
 
@@ -476,6 +476,7 @@ class TestSyncCaseConflict(BaseS3TransferCommandTest):
         _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
         assert f"warning: Downloading bucket/{self.upper_key}" in stderr
 
+    @skip_if_windows("Can't rename to same file")
     def test_warn_with_case_conflicts_in_s3(self):
         cmd = (
             f"{self.prefix} s3://bucket {self.files.rootdir} "
@@ -524,6 +525,7 @@ class TestSyncCaseConflict(BaseS3TransferCommandTest):
         ]
         self.run_cmd(cmd, expected_rc=0)
 
+    @skip_if_windows("Can't rename to same file")
     def test_ignore_with_case_conflicts_in_s3(self):
         cmd = (
             f"{self.prefix} s3://bucket {self.files.rootdir} "

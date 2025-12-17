@@ -13,7 +13,7 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest, skip_if_windows
 from awscli.testutils import capture_input
 from awscli.testutils import mock 
 from awscli.compat import BytesIO
@@ -1339,6 +1339,7 @@ class TestS3ExpressCpRecursive(BaseCPCommandTest):
         _, stderr, _ = self.run_cmd(cmd, expected_rc=255)
         assert "`skip` is not a valid value" in stderr
 
+    @skip_if_windows("Can't rename to same file")
     def test_s3_express_warn_emits_warning(self):
         cmd = (
             f"{self.prefix} s3://bucket--usw2-az1--x-s3 {self.files.rootdir} "

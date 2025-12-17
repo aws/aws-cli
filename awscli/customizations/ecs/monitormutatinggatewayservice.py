@@ -96,8 +96,8 @@ class MonitoringModeArgument(CustomArgument):
         super().__init__(
             name,
             help_text=(
-                'Display mode for monitoring output (requires --monitor-resources). '
-                'INTERACTIVE (default if TTY available) - Real-time display with spinner and keyboard navigation. '
+                'Display mode for monitoring output (requires ``--monitor-resources``). '
+                'INTERACTIVE (default if TTY available) - Real-time display with keyboard navigation. '
                 'TEXT-ONLY - Text output with timestamps, suitable for logging and non-interactive environments.'
             ),
             choices=['INTERACTIVE', 'TEXT-ONLY'],
@@ -182,9 +182,9 @@ class MonitorMutatingGatewayService:
             monitor_value
         )
 
-        # Parse and validate monitor_mode
+        # Validate monitor_mode
         mode_value = getattr(parsed_args, 'monitor_mode', None)
-        self.effective_mode = self._validate_and_parse_mode(
+        self.effective_mode = self._validate_mode(
             mode_value, self.effective_resource_view
         )
 
@@ -204,15 +204,15 @@ class MonitorMutatingGatewayService:
         else:
             return monitor_value
 
-    def _validate_and_parse_mode(self, mode_value, resource_view):
-        """Validate and parse the monitor mode value.
+    def _validate_mode(self, mode_value, resource_view):
+        """Validate the monitor mode value.
 
         Args:
             mode_value: Value from --monitor-mode flag
             resource_view: Effective resource view (None if not monitoring)
 
         Returns:
-            str: Display mode ('interactive' or 'text-only')
+            str: Display mode ('INTERACTIVE' or 'TEXT-ONLY')
 
         Raises:
             ValueError: If mode is specified without resource monitoring

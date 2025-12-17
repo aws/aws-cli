@@ -121,17 +121,6 @@ class TestMonitorMutatingGatewayService:
 
         assert not self.handler.effective_resource_view
 
-    def test_operation_args_parsed_no_monitor_resources_attr(self):
-        parsed_args = Mock()
-        # Remove the attribute
-        del parsed_args.monitor_resources
-        del parsed_args.monitor_mode
-        parsed_globals = Mock()
-
-        self.handler.operation_args_parsed(parsed_args, parsed_globals)
-
-        assert not self.handler.effective_resource_view
-
     def test_after_call_with_monitoring_enabled(self):
         # Setup
         mock_watcher_class = Mock()

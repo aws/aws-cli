@@ -104,11 +104,19 @@ errors and warnings.
 ``cli_error_format`` controls how AWS service errors are displayed. The valid 
 values of the ``cli_error_format`` configuration variable are:
 
-* STANDARD - AWS service errors containing modeled fields beyond Code and 
-  Message are written to stderr in the configured output format. This is the 
-  default behavior.
-* LEGACY - AWS service errors are written to stderr as unstructured text, 
-  displaying only the error code and message.
+* enhanced - AWS service errors display additional modeled fields in a 
+  human-readable format with inline display for simple values and small 
+  collections. This is the default behavior.
+* json - AWS service errors are formatted as JSON, showing all modeled fields 
+  in the error response.
+* yaml - AWS service errors are formatted as YAML, showing all modeled fields 
+  in the error response.
+* text - AWS service errors are formatted as text with key-value pairs, showing 
+  all modeled fields in the error response.
+* table - AWS service errors are formatted as a table, showing all modeled 
+  fields in the error response.
+* legacy - AWS service errors are written to stderr as unstructured text, 
+  displaying only the error code and message without additional modeled fields.
 
 ``cli_timestamp_format`` controls the format of timestamps displayed by the AWS CLI.
 The valid values of the ``cli_timestamp_format`` configuration variable are:

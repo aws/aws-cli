@@ -66,8 +66,8 @@ class EnhancedErrorFormatter:
                 else:
                     stream.write(
                         f'{key}: <complex value>\n'
-                        f'(Use --cli-error-format json or --cli-error-format yaml '
-                        f'to see full details)\n'
+                        f'(Use --cli-error-format with json, yaml, text, '
+                        f'or table to see full details)\n'
                     )
         else:
             stream.write('\nAdditional error details:\n')
@@ -79,8 +79,8 @@ class EnhancedErrorFormatter:
                 else:
                     stream.write(
                         f'  {key}: <complex value>\n'
-                        f'    (Use --cli-error-format json or --cli-error-format yaml '
-                        f'to see full details)\n'
+                        f'    (Use --cli-error-format with json, yaml, '
+                        f'text, or table to see full details)\n'
                     )
 
     def _is_simple_value(self, value):
@@ -99,12 +99,10 @@ class EnhancedErrorFormatter:
 
     def _format_inline(self, value):
         if isinstance(value, list):
-            items_str = ', '.join(str(item) for item in value)
-            return f'[{items_str}]'
+            return f"[{', '.join(str(item) for item in value)}]"
         elif isinstance(value, dict):
-            items = [f'{k}: {v}' for k, v in value.items()]
-            items_str = ', '.join(items)
-            return f'{{{items_str}}}'
+            items = ', '.join(f'{k}: {v}' for k, v in value.items())
+            return f'{{{items}}}'
         return str(value)
 
     def _get_additional_fields(self, error_info):
@@ -207,8 +205,10 @@ class ClientErrorHandler(FilteredExceptionHandler):
             )
             if error_format:
                 return error_format.lower()
-        except (KeyError, AttributeError):
-            pass
+        except (KeyError, AttributeError) as e:
+            LOG.debug(
+                'Failed to get cli_error_format from config: %s', e
+            )
 
         return 'enhanced'
 

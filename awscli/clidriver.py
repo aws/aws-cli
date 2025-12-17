@@ -246,10 +246,6 @@ class CLIDriver:
         else:
             self.session = session
         self._error_handler = error_handler
-        if self._error_handler is None:
-            self._error_handler = construct_cli_error_handlers_chain(
-                self.session
-            )
         if debug:
             self._set_logging(debug)
         self._update_config_chain()
@@ -536,6 +532,12 @@ class CLIDriver:
         command_table = self._get_command_table()
         parser = self.create_parser(command_table)
         self._add_aliases(command_table, parser)
+
+        if self._error_handler is None:
+            self._error_handler = construct_cli_error_handlers_chain(
+                self.session
+            )
+
         try:
             # Because _handle_top_level_args emits events, it's possible
             # that exceptions can be raised, which should have the same

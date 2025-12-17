@@ -384,7 +384,7 @@ class CLIDriver:
                 config_var_name='cli_error_format',
                 session=self.session,
             ),
-            ConstantProvider(value='STANDARD'),
+            ConstantProvider(value='enhanced'),
         ]
         return ChainProvider(providers=providers)
 
@@ -542,6 +542,9 @@ class CLIDriver:
             # general exception handling logic as calling into the
             # command table.  This is why it's in the try/except clause.
             parsed_args, remaining = parser.parse_known_args(args)
+            self._error_handler = construct_cli_error_handlers_chain(
+                self.session, parsed_args
+            )
             self._handle_top_level_args(parsed_args)
             validate_preferred_output_encoding()
             self._emit_session_event(parsed_args)

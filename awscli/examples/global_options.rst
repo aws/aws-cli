@@ -98,3 +98,19 @@
   
   Disable automatically prompt for CLI input parameters.
   
+``--cli-error-format`` (string)
+  
+  The formatting style for error output. By default, errors are displayed in enhanced format.
+  
+  
+  *   legacy
+  
+  *   json
+  
+  *   yaml
+  
+  *   text
+  
+  *   table
+  
+  *   enhanced

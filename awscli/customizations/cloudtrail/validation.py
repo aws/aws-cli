@@ -274,9 +274,10 @@ class DigestProvider:
         """
         digests = []
         marker = self._create_digest_key(start_date, prefix)
+        s3_digest_files_prefix = self._create_digest_prefix(start_date, prefix)
         client = self._client_provider.get_client(bucket)
         paginator = client.get_paginator('list_objects')
-        page_iterator = paginator.paginate(Bucket=bucket, Marker=marker)
+        page_iterator = paginator.paginate(Bucket=bucket, Marker=marker, Prefix=s3_digest_files_prefix)
         key_filter = page_iterator.search('Contents[*].Key')
         # Create a target start end end date
         target_start_date = format_date(normalize_date(start_date))
@@ -287,7 +288,7 @@ class DigestProvider:
         # Ensure digests are from the same trail.
         digest_key_regex = re.compile(self._create_digest_key_regex(prefix))
         for key in key_filter:
-            if digest_key_regex.match(key):
+            if key and digest_key_regex.match(key):
                 # Use a lexicographic comparison to know when to stop.
                 extracted_date = extract_digest_key_date(key)
                 if extracted_date > target_end_date:
@@ -357,6 +358,25 @@ class DigestProvider:
         if key_prefix:
             key = key_prefix + '/' + key
         return key
+
+    def _create_digest_prefix(self, start_date, key_prefix):
+        """Creates an S3 prefix to scope listing to trail's region.
+
+        :return: Returns a prefix string to limit S3 listing scope.
+        """
+        template = 'AWSLogs/'
+        template_params = {
+            'account_id': self.account_id,
+            'source_region': self.trail_source_region
+        }
+        if self.organization_id:
+            template += '{organization_id}/'
+            template_params['organization_id'] = self.organization_id
+        template += '{account_id}/CloudTrail-Digest/{source_region}'
+        prefix = template.format(**template_params)
+        if key_prefix:
+            prefix = key_prefix + '/' + prefix
+        return prefix
 
     def _create_digest_key_regex(self, key_prefix):
         """Creates a regular expression used to match against S3 keys"""

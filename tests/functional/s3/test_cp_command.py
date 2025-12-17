@@ -17,7 +17,12 @@ from awscrt.s3 import S3RequestTlsMode, S3RequestType
 
 from awscli.compat import BytesIO, OrderedDict
 from awscli.customizations.s3.utils import relative_path
-from awscli.testutils import BaseAWSCommandParamsTest, capture_input, mock
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    capture_input,
+    mock,
+    skip_if_windows,
+)
 from tests.functional.s3 import (
     BaseCRTTransferClientTest,
     BaseS3CLIRunnerTest,
@@ -2724,6 +2729,7 @@ class TestS3ExpressCpRecursive(BaseCPCommandTest):
         _, stderr, _ = self.run_cmd(cmd, expected_rc=252)
         assert "`skip` is not a valid value" in stderr
 
+    @skip_if_windows
     def test_s3_express_warn_emits_warning(self):
         cmd = (
             f"{self.prefix} s3://bucket--usw2-az1--x-s3 {self.files.rootdir} "

@@ -33,7 +33,6 @@ import sys
 import tempfile
 import time
 import unittest
-from functools import lru_cache
 from pathlib import Path
 from pprint import pformat
 from subprocess import PIPE, Popen
@@ -55,10 +54,9 @@ INTEG_LOG = logging.getLogger('awscli.tests.integration')
 AWS_CMD = None
 
 with tempfile.TemporaryDirectory() as tmpdir:
-    tmpf = Path(tmpdir) / 'a.txt'
-    with open(tmpf, 'w') as f:
+    with open(Path(tmpdir) / 'aws-cli-tmp-file', 'w') as f:
         pass
-    CASE_INSENSITIVE = (Path(tmpdir) / 'A.txt').exists()
+    CASE_INSENSITIVE = (Path(tmpdir) / 'AWS-CLI-TMP-FILE').exists()
 
 
 def skip_if_windows(reason):

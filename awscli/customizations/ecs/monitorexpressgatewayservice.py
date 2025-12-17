@@ -57,6 +57,7 @@ from awscli.customizations.ecs.expressgateway.display_strategy import (
 from awscli.customizations.ecs.prompt_toolkit_display import Display
 from awscli.customizations.ecs.serviceviewcollector import ServiceViewCollector
 from awscli.customizations.utils import uni_print
+from awscli.utils import write_exception
 
 
 class ECSMonitorExpressGatewayService(BasicCommand):
@@ -76,7 +77,7 @@ class ECSMonitorExpressGatewayService(BasicCommand):
         "Use ``--resource-view RESOURCE`` to view all service resources, or ``--resource-view DEPLOYMENT`` to track only "
         "resources that have changed in the most recent deployment. "
         "Choose ``--mode INTERACTIVE`` for real-time display with keyboard navigation (requires TTY), "
-        "or ``--mode text-only`` for text output with timestamps (works without TTY). "
+        "or ``--mode TEXT-ONLY`` for text output with timestamps (works without TTY). "
         "The monitoring session continues until manually stopped by the user or the specified timeout is reached. "
         "In interactive mode, use keyboard shortcuts: up/down to scroll through resources, 'q' to quit. "
         "In TEXT-ONLY mode, press Ctrl+C to stop monitoring."
@@ -108,11 +109,11 @@ class ECSMonitorExpressGatewayService(BasicCommand):
             'name': 'mode',
             'help_text': (
                 "Display mode for monitoring output. "
-                "interactive (default if TTY available) - Real-time display with spinner and keyboard navigation. "
-                "text-only - Text output with timestamps and change detection (works without TTY)."
+                "INTERACTIVE (default if TTY available) - Real-time display with spinner and keyboard navigation. "
+                "TEXT-ONLY - Text output with timestamps and change detection (works without TTY)."
             ),
             'required': False,
-            'choices': ['interactive', 'text-only'],
+            'choices': ['INTERACTIVE', 'TEXT-ONLY'],
         },
         {
             'name': 'timeout',
@@ -146,7 +147,7 @@ class ECSMonitorExpressGatewayService(BasicCommand):
         try:
             display_mode = self._determine_display_mode(parsed_args.mode)
         except ValueError as e:
-            uni_print(str(e), sys.stderr)
+            write_exception(e, sys.stderr)
             return 1
 
         try:
@@ -187,16 +188,16 @@ class ECSMonitorExpressGatewayService(BasicCommand):
         # Determine display mode with auto-detection
         if requested_mode is None:
             # Auto-detect: interactive if TTY available, else text-only
-            return 'interactive' if sys.stdout.isatty() else 'text-only'
+            return 'INTERACTIVE' if sys.stdout.isatty() else 'TEXT-ONLY'
 
         # Validate requested mode
-        if requested_mode == 'interactive':
+        if requested_mode == 'INTERACTIVE':
             if not sys.stdout.isatty():
                 raise ValueError(
                     "Error: Interactive mode requires a TTY (terminal). "
-                    "Use --mode text-only for non-interactive environments."
+                    "Use --mode TEXT-ONLY for non-interactive environments."
                 )
-            return 'interactive'
+            return 'INTERACTIVE'
 
         # text-only mode doesn't require TTY
         return requested_mode
@@ -244,7 +245,6 @@ class ECSExpressGatewayServiceWatcher:
         use_color=True,
         collector=None,
     ):
-        self._client = client
         self.service_arn = service_arn
         self.display_mode = display_mode
         self.timeout_minutes = timeout_minutes
@@ -275,10 +275,15 @@ class ECSExpressGatewayServiceWatcher:
 
         Returns:
             DisplayStrategy: Appropriate strategy for the selected mode
+
+        Raises:
+            ValueError: If display mode is not 'INTERACTIVE' or 'TEXT-ONLY'
         """
-        if self.display_mode == 'text-only':
+        if self.display_mode == 'TEXT-ONLY':
             return TextOnlyDisplayStrategy(use_color=self.use_color)
-        else:
+        elif self.display_mode == 'INTERACTIVE':
             return InteractiveDisplayStrategy(
                 display=Display(), use_color=self.use_color
             )
+        else:
+            raise ValueError(f"Invalid display mode: {self.display_mode}")

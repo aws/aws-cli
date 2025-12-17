@@ -91,7 +91,7 @@ class TestECSMonitorExpressGatewayServiceCommand:
             service_arn="test-arn",
             resource_view="RESOURCE",
             timeout=30,
-            mode='interactive',  # Explicitly request interactive mode
+            mode='INTERACTIVE',
         )
         parsed_globals = Mock(
             region="us-west-2",
@@ -137,185 +137,90 @@ class TestECSMonitorExpressGatewayServiceCommand:
         command._run_main(parsed_args, parsed_globals)
 
 
+@pytest.fixture
+def watcher_app_session():
+    """Fixture that creates and manages an app session for watcher tests."""
+    with create_app_session(output=DummyOutput()) as session:
+        yield session
+
+
+@pytest.fixture
+def service_arn():
+    """Fixture that provides a test service ARN."""
+    return "arn:aws:ecs:us-west-2:123456789012:service/my-cluster/my-service"
+
+
 class TestECSExpressGatewayServiceWatcher:
     """Test the watcher class through public interface"""
 
-    def setup_method(self):
-        self.app_session = create_app_session(output=DummyOutput())
-        self.app_session.__enter__()
-        self.mock_client = Mock()
-        self.service_arn = (
-            "arn:aws:ecs:us-west-2:123456789012:service/my-cluster/my-service"
+    def test_init_creates_collector_with_correct_parameters(self):
+        """Test watcher creates collector with correct client, service_arn, resource_view, use_color"""
+        mock_client = Mock()
+        service_arn = "arn:aws:ecs:us-west-2:123456789012:service/test-service"
+
+        watcher = ECSExpressGatewayServiceWatcher(
+            mock_client,
+            service_arn,
+            resource_view="DEPLOYMENT",
+            display_mode="TEXT-ONLY",
+            use_color=False,
         )
 
-    def teardown_method(self):
-        if hasattr(self, 'app_session'):
-            self.app_session.__exit__(None, None, None)
+        # Verify collector was created with correct parameters
+        assert watcher.collector is not None
+        assert watcher.collector._client == mock_client
+        assert watcher.collector.service_arn == service_arn
+        assert watcher.collector.mode == "DEPLOYMENT"
+        assert watcher.collector.use_color is False
 
-    def _create_watcher_with_mocks(
-        self, resource_view="RESOURCE", timeout=1, display_mode="interactive"
+    def test_init_uses_injected_collector(self):
+        """Test watcher uses injected collector instead of creating one"""
+        mock_collector = Mock()
+
+        watcher = ECSExpressGatewayServiceWatcher(
+            Mock(),
+            "arn:aws:ecs:us-west-2:123456789012:service/test-service",
+            "RESOURCE",
+            "INTERACTIVE",
+            collector=mock_collector,
+        )
+
+        assert watcher.collector == mock_collector
+
+    def test_exec_calls_display_strategy_with_correct_parameters(
+        self, watcher_app_session
     ):
-        """Helper to create watcher with mocked display strategy"""
+        """Test exec() calls display strategy with collector, start_time, and timeout"""
+        mock_collector = Mock()
         mock_display_strategy = Mock()
 
-        # Create watcher with mocked strategy
         watcher = ECSExpressGatewayServiceWatcher(
-            self.mock_client,
-            self.service_arn,
-            resource_view,
-            display_mode,
-            timeout_minutes=timeout,
+            Mock(),
+            "arn:aws:ecs:us-west-2:123456789012:service/test-service",
+            "RESOURCE",
+            "INTERACTIVE",
+            timeout_minutes=15,
             display_strategy=mock_display_strategy,
+            collector=mock_collector,
         )
 
-        # Mock exec to call the collector once and print output
-        collector = watcher.collector
-
-        def mock_exec():
-            try:
-                output = collector.get_current_view("⠋")
-                print(output)
-                print("Monitoring Complete!")
-            except Exception as e:
-                # Re-raise expected exceptions
-                if isinstance(e, (ClientError, MonitoringError)):
-                    raise
-                # For other exceptions, just print and complete
-                print("Monitoring Complete!")
-
-        watcher.exec = mock_exec
-        return watcher
-
-    @patch('time.sleep')
-    def test_exec_successful_all_mode_monitoring(self, mock_sleep, capsys):
-        """Test successful monitoring in RESOURCE mode with resource parsing"""
-        watcher = self._create_watcher_with_mocks()
-        mock_sleep.side_effect = KeyboardInterrupt()
-
-        self.mock_client.describe_express_gateway_service.return_value = {
-            "service": {
-                "serviceArn": self.service_arn,
-                "cluster": "my-cluster",
-                "activeConfigurations": [{"serviceRevisionArn": "rev-arn"}],
-            }
-        }
-        self.mock_client.describe_service_revisions.return_value = {
-            "serviceRevisions": [
-                {
-                    "arn": "rev-arn",
-                    "ecsManagedResources": {
-                        "ingressPaths": [
-                            {
-                                "endpoint": "https://api.example.com",
-                                "loadBalancer": {
-                                    "arn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-lb/1234567890abcdef",
-                                    "status": "ACTIVE",
-                                },
-                                "targetGroups": [
-                                    {
-                                        "arn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-tg/1234567890abcdef",
-                                        "status": "HEALTHY",
-                                    }
-                                ],
-                            }
-                        ],
-                        "serviceSecurityGroups": [
-                            {
-                                "arn": "arn:aws:ec2:us-west-2:123456789012:security-group/sg-1234567890abcdef0",
-                                "status": "ACTIVE",
-                            }
-                        ],
-                        "logGroups": [
-                            {
-                                "arn": "arn:aws:logs:us-west-2:123456789012:log-group:/aws/ecs/my-service",
-                                "status": "ACTIVE",
-                            }
-                        ],
-                    },
-                }
-            ]
-        }
-        self.mock_client.describe_services.return_value = {
-            "services": [{"events": [{"message": "Running"}]}]
-        }
-
         watcher.exec()
-        captured = capsys.readouterr()
-        output_text = captured.out
 
-        # Verify parsed resources appear in output
-        assert "Cluster" in output_text
-        assert "Service" in output_text
-        assert "IngressPath" in output_text
-        assert "LoadBalancer" in output_text
-        assert "TargetGroup" in output_text
-        assert "SecurityGroup" in output_text
-        assert "LogGroup" in output_text
+        # Verify display strategy was called once
+        mock_display_strategy.execute_monitoring.assert_called_once()
 
-        # Specific identifiers
-        assert "https://api.example.com" in output_text  # IngressPath endpoint
-        assert "my-lb" in output_text  # LoadBalancer identifier
-        assert "my-tg" in output_text  # TargetGroup identifier
-        assert (
-            "sg-1234567890abcdef0" in output_text
-        )  # SecurityGroup identifier
-        assert "/aws/ecs/my-service" in output_text  # LogGroup identifier
+        # Verify correct parameters were passed
+        call_args = mock_display_strategy.execute_monitoring.call_args
+        assert call_args.kwargs['collector'] == mock_collector
+        assert call_args.kwargs['start_time'] == watcher.start_time
+        assert call_args.kwargs['timeout_minutes'] == 15
 
-        # Status values
-        assert "ACTIVE" in output_text  # LoadBalancer and SecurityGroup status
-        assert "HEALTHY" in output_text  # TargetGroup status
-
-    @patch('time.sleep')
-    def test_exec_successful_delta_mode_with_deployment(
-        self, mock_sleep, capsys
+    def test_exec_propagates_exceptions_from_display_strategy(
+        self, watcher_app_session
     ):
-        """Test DEPLOYMENT mode executes successfully"""
-        watcher = self._create_watcher_with_mocks()
-        mock_sleep.side_effect = KeyboardInterrupt()
-
-        self.mock_client.describe_express_gateway_service.return_value = {
-            "service": {
-                "serviceArn": self.service_arn,
-                "cluster": "my-cluster",
-                "activeConfigurations": [],
-            }
-        }
-        self.mock_client.describe_services.return_value = {
-            "services": [{"events": [{"message": "Service running"}]}]
-        }
-
-        watcher.exec()
-        captured = capsys.readouterr()
-
-        # Verify DEPLOYMENT mode executes successfully
-        assert captured.out
-
-    @patch('time.sleep')
-    def test_exec_keyboard_interrupt_handling(self, mock_sleep, capsys):
-        watcher = self._create_watcher_with_mocks()
-        mock_sleep.side_effect = KeyboardInterrupt()
-
-        self.mock_client.describe_express_gateway_service.return_value = {
-            "service": {
-                "serviceArn": self.service_arn,
-                "cluster": "my-cluster",
-                "activeConfigurations": [],
-            }
-        }
-
-        watcher.exec()
-        captured = capsys.readouterr()
-
-        # Verify completion message is printed
-        assert "Monitoring Complete!" in captured.out
-
-    @patch('time.sleep')
-    def test_exec_with_service_not_found_error(self, mock_sleep):
-        """Test exec() with service not found error bubbles up"""
-        watcher = self._create_watcher_with_mocks()
-        mock_sleep.side_effect = KeyboardInterrupt()
-
-        error = ClientError(
+        """Test exec() propagates exceptions from display strategy"""
+        mock_display_strategy = Mock()
+        mock_display_strategy.execute_monitoring.side_effect = ClientError(
             error_response={
                 'Error': {
                     'Code': 'ServiceNotFoundException',
@@ -324,12 +229,19 @@ class TestECSExpressGatewayServiceWatcher:
             },
             operation_name='DescribeExpressGatewayService',
         )
-        self.mock_client.describe_express_gateway_service.side_effect = error
+
+        watcher = ECSExpressGatewayServiceWatcher(
+            Mock(),
+            "arn:aws:ecs:us-west-2:123456789012:service/test-service",
+            "RESOURCE",
+            "INTERACTIVE",
+            display_strategy=mock_display_strategy,
+            collector=Mock(),
+        )
 
         with pytest.raises(ClientError) as exc_info:
             watcher.exec()
 
-        # Verify the specific error is raised
         assert (
             exc_info.value.response['Error']['Code']
             == 'ServiceNotFoundException'
@@ -351,14 +263,6 @@ class TestMonitoringError:
 
 class TestColorSupport:
     """Test color support functionality"""
-
-    def setup_method(self):
-        self.app_session = create_app_session(output=DummyOutput())
-        self.app_session.__enter__()
-
-    def teardown_method(self):
-        if hasattr(self, 'app_session'):
-            self.app_session.__exit__(None, None, None)
 
     def test_should_use_color_on(self):
         """Test _should_use_color returns True when color is 'on'"""
@@ -396,7 +300,7 @@ class TestColorSupport:
 
         assert command._should_use_color(parsed_globals) is False
 
-    def test_watcher_accepts_use_color_parameter(self):
+    def test_watcher_accepts_use_color_parameter(self, watcher_app_session):
         """Test ECSExpressGatewayServiceWatcher accepts use_color parameter"""
         mock_client = Mock()
 
@@ -405,7 +309,7 @@ class TestColorSupport:
             mock_client,
             "arn:aws:ecs:us-east-1:123456789012:service/test-service",
             "ALL",
-            "interactive",
+            "INTERACTIVE",
             use_color=True,
         )
         assert watcher.collector.use_color is True
@@ -415,7 +319,20 @@ class TestColorSupport:
             mock_client,
             "arn:aws:ecs:us-east-1:123456789012:service/test-service",
             "ALL",
-            "interactive",
+            "INTERACTIVE",
             use_color=False,
         )
         assert watcher.collector.use_color is False
+
+    def test_invalid_display_mode_raises_error(self):
+        """Test that invalid display mode raises ValueError"""
+        mock_client = Mock()
+
+        with pytest.raises(ValueError) as exc_info:
+            ECSExpressGatewayServiceWatcher(
+                mock_client,
+                "arn:aws:ecs:us-east-1:123456789012:service/test-service",
+                "RESOURCE",
+                "INVALID_MODE",
+            )
+        assert "Invalid display mode: INVALID_MODE" in str(exc_info.value)

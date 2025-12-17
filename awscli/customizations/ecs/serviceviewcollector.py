@@ -282,7 +282,10 @@ class ServiceViewCollector:
             self._describe_and_parse_service_revisions(service_revision_arns)
         )
 
-        if len(service_revision_resources) != len(service_revision_arns):
+        # If empty, we're still waiting for active configurations
+        if not service_revision_resources or len(
+            service_revision_resources
+        ) != len(service_revision_arns):
             return (None, "Trying to describe service revisions")
 
         service_resource = reduce(

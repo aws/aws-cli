@@ -108,9 +108,7 @@ class TestClientErrorHandler:
         }
         client_error = ClientError(error_response, 'GetObject')
 
-        self.session.config_store.set_config_provider(
-            'cli_error_format', mock.Mock(provide=lambda: 'legacy')
-        )
+        self.session.session_vars['cli_error_format'] = 'legacy'
 
         stdout = io.StringIO()
         stderr = io.StringIO()
@@ -119,8 +117,8 @@ class TestClientErrorHandler:
 
         assert rc == CLIENT_ERROR_RC
         stderr_output = stderr.getvalue()
-        # Legacy format should not show structured fields
         assert 'NoSuchBucket' in stderr_output
+        assert 'BucketName' not in stderr_output
 
     def test_error_format_case_insensitive(self):
         """Test that error format config is case-insensitive."""
@@ -301,8 +299,8 @@ class TestEnhancedErrorFormatter:
         assert formatted_message in output
         assert 'Additional error details' not in output
         assert 'Details: <complex value>' in output
-        assert '--error-format json' in output
-        assert '--error-format yaml' in output
+        assert '--cli-error-format json' in output
+        assert '--cli-error-format yaml' in output
 
 
 class TestParsedGlobalsPassthrough:

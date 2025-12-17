@@ -66,7 +66,7 @@ class EnhancedErrorFormatter:
                 else:
                     stream.write(
                         f'{key}: <complex value>\n'
-                        f'(Use --error-format json or --error-format yaml '
+                        f'(Use --cli-error-format json or --cli-error-format yaml '
                         f'to see full details)\n'
                     )
         else:
@@ -79,7 +79,7 @@ class EnhancedErrorFormatter:
                 else:
                     stream.write(
                         f'  {key}: <complex value>\n'
-                        f'    (Use --error-format json or --error-format yaml '
+                        f'    (Use --cli-error-format json or --cli-error-format yaml '
                         f'to see full details)\n'
                     )
 

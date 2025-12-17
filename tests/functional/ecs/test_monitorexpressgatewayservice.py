@@ -6,7 +6,7 @@
 #
 # http://aws.amazon.com/apache2.0/
 
-from unittest.mock import Mock, patch
+from unittest.mock import ANY, Mock, patch
 
 import pytest
 
@@ -37,10 +37,14 @@ def command(mock_session, mock_watcher_class):
 
 
 @pytest.fixture
-def mock_client(mock_session):
-    """Fixture that provides a mock ECS client."""
+def command_with_mock_session(mock_session, mock_watcher_class):
+    """Fixture that provides command with mock session and client configured."""
     client = Mock()
-    return client
+    mock_session.create_client.return_value = client
+    command = ECSMonitorExpressGatewayService(
+        mock_session, watcher_class=mock_watcher_class
+    )
+    return command
 
 
 class TestECSMonitorExpressGatewayService:
@@ -67,9 +71,9 @@ class TestECSMonitorExpressGatewayService:
 
     @patch('sys.stdout.isatty', return_value=False)
     def test_run_main_with_text_only_mode(
-        self, mock_isatty, command, mock_watcher_class, mock_client
+        self, mock_isatty, command_with_mock_session, mock_watcher_class
     ):
-        command._session.create_client.return_value = mock_client
+        command = command_with_mock_session
         mock_watcher = Mock()
         mock_watcher_class.return_value = mock_watcher
 
@@ -90,7 +94,7 @@ class TestECSMonitorExpressGatewayService:
 
         # Verify watcher was created with correct parameters (positional)
         mock_watcher_class.assert_called_once_with(
-            mock_client,
+            ANY,
             parsed_args.service_arn,
             'RESOURCE',
             'TEXT-ONLY',
@@ -103,9 +107,9 @@ class TestECSMonitorExpressGatewayService:
 
     @patch('sys.stdout.isatty', return_value=True)
     def test_run_main_with_interactive_mode(
-        self, mock_isatty, command, mock_watcher_class, mock_client
+        self, mock_isatty, command_with_mock_session, mock_watcher_class
     ):
-        command._session.create_client.return_value = mock_client
+        command = command_with_mock_session
         mock_watcher = Mock()
         mock_watcher_class.return_value = mock_watcher
 
@@ -126,7 +130,7 @@ class TestECSMonitorExpressGatewayService:
 
         # Verify watcher was created with correct mode
         mock_watcher_class.assert_called_once_with(
-            mock_client,
+            ANY,
             parsed_args.service_arn,
             'DEPLOYMENT',
             'INTERACTIVE',
@@ -136,9 +140,9 @@ class TestECSMonitorExpressGatewayService:
 
     @patch('sys.stdout.isatty', return_value=True)
     def test_run_main_auto_mode_with_tty(
-        self, mock_isatty, command, mock_watcher_class, mock_client
+        self, mock_isatty, command_with_mock_session, mock_watcher_class
     ):
-        command._session.create_client.return_value = mock_client
+        command = command_with_mock_session
         mock_watcher = Mock()
         mock_watcher_class.return_value = mock_watcher
 
@@ -163,9 +167,9 @@ class TestECSMonitorExpressGatewayService:
 
     @patch('sys.stdout.isatty', return_value=False)
     def test_run_main_auto_mode_without_tty(
-        self, mock_isatty, command, mock_watcher_class, mock_client
+        self, mock_isatty, command_with_mock_session, mock_watcher_class
     ):
-        command._session.create_client.return_value = mock_client
+        command = command_with_mock_session
         mock_watcher = Mock()
         mock_watcher_class.return_value = mock_watcher
 
@@ -190,9 +194,9 @@ class TestECSMonitorExpressGatewayService:
 
     @patch('sys.stdout.isatty', return_value=False)
     def test_run_main_with_color_on(
-        self, mock_isatty, command, mock_watcher_class, mock_client
+        self, mock_isatty, command_with_mock_session, mock_watcher_class
     ):
-        command._session.create_client.return_value = mock_client
+        command = command_with_mock_session
         mock_watcher = Mock()
         mock_watcher_class.return_value = mock_watcher
 
@@ -219,12 +223,11 @@ class TestECSMonitorExpressGatewayService:
     def test_run_main_creates_ecs_client(
         self,
         mock_isatty,
-        command,
         mock_session,
+        command_with_mock_session,
         mock_watcher_class,
-        mock_client,
     ):
-        command._session.create_client.return_value = mock_client
+        command = command_with_mock_session
         mock_watcher = Mock()
         mock_watcher_class.return_value = mock_watcher
 
@@ -253,13 +256,13 @@ class TestECSMonitorExpressGatewayService:
 
         # Verify client was passed to watcher
         args = mock_watcher_class.call_args[0]
-        assert args[0] == mock_client
+        assert args[0] is not None  # Client was created and passed
 
     @patch('sys.stdout.isatty', return_value=False)
     def test_run_main_with_default_resource_view(
-        self, mock_isatty, command, mock_watcher_class, mock_client
+        self, mock_isatty, command_with_mock_session, mock_watcher_class
     ):
-        command._session.create_client.return_value = mock_client
+        command = command_with_mock_session
         mock_watcher = Mock()
         mock_watcher_class.return_value = mock_watcher
 

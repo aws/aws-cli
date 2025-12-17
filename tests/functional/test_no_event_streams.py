@@ -44,13 +44,7 @@ def test_no_event_stream_unless_allowed(
         record_property
 ):
     full_command = f'{command_name} {sub_name}'
-    if (
-            (
-                model.has_event_stream_input
-                or model.has_event_stream_output
-            )
-            and full_command not in _ALLOWED_COMMANDS
-    ):
+    if model.has_event_stream_input or model.has_event_stream_output:
         # Store the service and operation in
         # PyTest custom properties
         record_property(

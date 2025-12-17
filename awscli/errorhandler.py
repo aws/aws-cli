@@ -43,6 +43,8 @@ from awscli.utils import PagerInitializationException
 LOG = logging.getLogger(__name__)
 
 VALID_ERROR_FORMATS = ['legacy', 'json', 'yaml', 'text', 'table', 'enhanced']
+# Maximum number of items to display inline for collections
+MAX_INLINE_ITEMS = 5
 
 
 class EnhancedErrorFormatter:
@@ -87,11 +89,11 @@ class EnhancedErrorFormatter:
 
     def _is_small_collection(self, value):
         if isinstance(value, list):
-            return len(value) < 5 and all(
+            return len(value) < MAX_INLINE_ITEMS and all(
                 self._is_simple_value(item) for item in value
             )
         elif isinstance(value, dict):
-            return len(value) < 5 and all(
+            return len(value) < MAX_INLINE_ITEMS and all(
                 self._is_simple_value(v) for v in value.values()
             )
         return False
@@ -179,7 +181,7 @@ class ClientErrorHandler(FilteredExceptionHandler):
     def __init__(self, session=None, parsed_globals=None):
         self._session = session
         self._parsed_globals = parsed_globals
-        self._enhanced_formatter = EnhancedErrorFormatter()
+        self._enhanced_formatter = None
 
     def _do_handle_exception(self, exception, stdout, stderr):
         displayed_structured = False
@@ -194,72 +196,68 @@ class ClientErrorHandler(FilteredExceptionHandler):
         return self.RC
 
     def _resolve_error_format(self, parsed_globals):
-        error_format = (
-            getattr(parsed_globals, 'cli_error_format', None)
-            if parsed_globals
-            else None
-        )
+        if parsed_globals:
+            error_format = getattr(parsed_globals, 'cli_error_format', None)
+            if error_format:
+                return error_format.lower()
+        try:
+            error_format = self._session.get_config_variable(
+                'cli_error_format'
+            )
+            if error_format:
+                return error_format.lower()
+        except (KeyError, AttributeError):
+            pass
 
-        if error_format is None:
-            try:
-                error_format = self._session.get_config_variable(
-                    'cli_error_format'
-                )
-            except (KeyError, AttributeError):
-                error_format = None
-
-        if error_format is None:
-            error_format = 'enhanced'
-
-        return error_format.lower()
+        return 'enhanced'
 
     def _try_display_structured_error(self, exception, stderr):
         try:
             error_response = self._extract_error_response(exception)
+            if not error_response or 'Error' not in error_response:
+                return False
 
-            if error_response and 'Error' in error_response:
-                error_info = error_response['Error']
+            error_info = error_response['Error']
+            error_format = self._resolve_error_format(self._parsed_globals)
 
-                parsed_globals = self._parsed_globals
+            if error_format not in VALID_ERROR_FORMATS:
+                LOG.warning(
+                    f"Invalid cli_error_format: '{error_format}'. "
+                    f"Using 'enhanced' format."
+                )
+                error_format = 'enhanced'
 
-                error_format = self._resolve_error_format(parsed_globals)
+            if error_format == 'legacy':
+                return False
 
-                if error_format not in VALID_ERROR_FORMATS:
-                    raise ValueError(
-                        f"Invalid value for cli_error_format: '{error_format}'\n"
-                        f"Valid choices are: {', '.join(VALID_ERROR_FORMATS)}"
-                    )
+            formatted_message = str(exception)
 
-                formatted_message = str(exception)
+            if error_format == 'enhanced':
+                if self._enhanced_formatter is None:
+                    self._enhanced_formatter = EnhancedErrorFormatter()
+                self._enhanced_formatter.format_error(
+                    error_info, formatted_message, stderr
+                )
+                return True
 
-                if error_format == 'legacy':
-                    return False
-                elif error_format == 'enhanced':
-                    self._enhanced_formatter.format_error(
-                        error_info, formatted_message, stderr
-                    )
-                    return True
-                else:
-                    temp_parsed_globals = argparse.Namespace()
-                    temp_parsed_globals.output = error_format
-                    temp_parsed_globals.query = None
-                    temp_parsed_globals.color = (
-                        getattr(parsed_globals, 'color', 'auto')
-                        if parsed_globals
-                        else 'auto'
-                    )
+            temp_parsed_globals = argparse.Namespace()
+            temp_parsed_globals.output = error_format
+            temp_parsed_globals.query = None
+            temp_parsed_globals.color = (
+                getattr(self._parsed_globals, 'color', 'auto')
+                if self._parsed_globals
+                else 'auto'
+            )
 
-                    formatter = get_formatter(
-                        error_format, temp_parsed_globals
-                    )
-                    formatter('error', error_info, stderr)
-                    return True
+            formatter = get_formatter(error_format, temp_parsed_globals)
+            formatter('error', error_info, stderr)
+            return True
+
         except Exception as e:
             LOG.debug(
                 'Failed to display structured error: %s', e, exc_info=True
             )
-
-        return False
+            return False
 
     @staticmethod
     def _extract_error_response(exception):

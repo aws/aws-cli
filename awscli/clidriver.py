@@ -1046,19 +1046,13 @@ class CLIOperationCaller:
     def _make_client_call(
         self, client, operation_name, parameters, parsed_globals
     ):
-        try:
-            py_operation_name = xform_name(operation_name)
-            if (
-                client.can_paginate(py_operation_name)
-                and parsed_globals.paginate
-            ):
-                paginator = client.get_paginator(py_operation_name)
-                response = paginator.paginate(**parameters)
-            else:
-                response = getattr(client, py_operation_name)(**parameters)
-            return response
-        except ClientError:
-            raise
+        py_operation_name = xform_name(operation_name)
+        if client.can_paginate(py_operation_name) and parsed_globals.paginate:
+            paginator = client.get_paginator(py_operation_name)
+            response = paginator.paginate(**parameters)
+        else:
+            response = getattr(client, py_operation_name)(**parameters)
+        return response
 
     def _display_response(self, command_name, response, parsed_globals):
         output = parsed_globals.output

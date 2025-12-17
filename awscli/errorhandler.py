@@ -87,14 +87,12 @@ class EnhancedErrorFormatter:
 
     def _is_small_collection(self, value):
         if isinstance(value, list):
-            return (
-                len(value) < 5
-                and all(self._is_simple_value(item) for item in value)
+            return len(value) < 5 and all(
+                self._is_simple_value(item) for item in value
             )
         elif isinstance(value, dict):
-            return (
-                len(value) < 5
-                and all(self._is_simple_value(v) for v in value.values())
+            return len(value) < 5 and all(
+                self._is_simple_value(v) for v in value.values()
             )
         return False
 
@@ -108,11 +106,7 @@ class EnhancedErrorFormatter:
 
     def _get_additional_fields(self, error_info):
         standard_keys = {'Code', 'Message'}
-        return {
-            k: v
-            for k, v in error_info.items()
-            if k not in standard_keys
-        }
+        return {k: v for k, v in error_info.items() if k not in standard_keys}
 
 
 def construct_entry_point_handlers_chain():
@@ -232,8 +226,8 @@ class ClientErrorHandler(FilteredExceptionHandler):
 
                 if error_format not in VALID_ERROR_FORMATS:
                     raise ValueError(
-                        f"Invalid cli_error_format: {error_format}. "
-                        f"Valid values are: {', '.join(VALID_ERROR_FORMATS)}"
+                        f"Invalid value for cli_error_format: '{error_format}'\n"
+                        f"Valid choices are: {', '.join(VALID_ERROR_FORMATS)}"
                     )
 
                 formatted_message = str(exception)

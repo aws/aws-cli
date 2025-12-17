@@ -151,7 +151,6 @@ class TestClientErrorHandler:
 
 class TestEnhancedErrorFormatter:
     def setup_method(self):
-
         self.formatter = EnhancedErrorFormatter()
 
     def test_is_simple_value(self):
@@ -307,9 +306,7 @@ class TestEnhancedErrorFormatter:
 
 
 class TestParsedGlobalsPassthrough:
-
     def test_error_handler_receives_parsed_globals_from_clidriver(self):
-
         session = FakeSession()
 
         parsed_globals = argparse.Namespace()
@@ -339,9 +336,7 @@ class TestParsedGlobalsPassthrough:
         assert rc == CLIENT_ERROR_RC
 
         stderr_output = stderr.getvalue()
-        assert (
-            '"Code"' in stderr_output or '"code"' in stderr_output.lower()
-        )
+        assert '"Code"' in stderr_output or '"code"' in stderr_output.lower()
         assert 'NoSuchBucket' in stderr_output
         assert 'test-bucket' in stderr_output
 

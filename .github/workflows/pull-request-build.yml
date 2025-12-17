@@ -1,6 +1,6 @@
-name: Build SDK
+name: Build internal AWS CLI v2
 on:
-  pull_request_review:
+  pull_request:
     types: [ opened, synchronize, ready_for_review ]
 
 concurrency:
@@ -17,7 +17,7 @@ env:
   ROLE_SESSION_DURATION_SECONDS: 7200
 
 jobs:
-  aws-sdk-pr-build:
+  aws-cli-v2-pr-build:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     permissions:
@@ -29,9 +29,9 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@main
         with:
-          role-to-assume: '$IAM_ROLE_ARN'
+          role-to-assume: ${{ env.IAM_ROLE_ARN }}
           role-session-name: PullRequestBuildGitHubAction
-          role-duration-seconds: '$ROLE_SESSION_DURATION_SECONDS'
+          role-duration-seconds: ${{ env.ROLE_SESSION_DURATION_SECONDS }}
           aws-region: us-west-2
       - name: Download Build Script
         run: |

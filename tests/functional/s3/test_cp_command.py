@@ -2729,7 +2729,7 @@ class TestS3ExpressCpRecursive(BaseCPCommandTest):
         _, stderr, _ = self.run_cmd(cmd, expected_rc=252)
         assert "`skip` is not a valid value" in stderr
 
-    @skip_if_windows
+    @skip_if_windows("Can't rename to same file")
     def test_s3_express_warn_emits_warning(self):
         cmd = (
             f"{self.prefix} s3://bucket--usw2-az1--x-s3 {self.files.rootdir} "

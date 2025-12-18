@@ -28,16 +28,16 @@ def _generate_command_tests():
             for sub_name, sub_command in sub_help.command_table.items():
                 op_help = sub_command.create_help_command()
                 model = op_help.obj
-                # Extract the properties needed for tests to avoid
-                # parametrizing entire model objects, which may cause
-                # excessive memory usage.
-                model_description = {
-                    'has_event_stream_input': model.has_event_stream_input,
-                    'has_event_stream_output': model.has_event_stream_output,
-                    'service_name': model.service_model.service_name,
-                    'name': model.name,
-                }
                 if isinstance(model, OperationModel):
+                    # Extract the properties needed for tests to avoid
+                    # parametrizing entire model objects, which may cause
+                    # excessive memory usage.
+                    model_description = {
+                        'has_event_stream_input': model.has_event_stream_input,
+                        'has_event_stream_output': model.has_event_stream_output,
+                        'service_name': model.service_model.service_name,
+                        'name': model.name,
+                    }
                     yield command_name, sub_name, model_description
 
 

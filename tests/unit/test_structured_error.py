@@ -327,7 +327,7 @@ class TestEnhancedErrorFormatter:
         assert formatted_message in output
         assert 'Additional error details' not in output
         assert 'Details: <complex value>' in output
-        assert '--cli-error-format with json, yaml, or text' in output
+        assert '--cli-error-format with json or yaml' in output
 
     def test_format_error_with_nested_dict(self):
         """Test formatting with nested dictionary structures."""

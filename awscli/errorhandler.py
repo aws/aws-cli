@@ -66,8 +66,8 @@ class EnhancedErrorFormatter:
                 else:
                     stream.write(
                         f'{key}: <complex value>\n'
-                        f'(Use --cli-error-format with json, yaml, '
-                        f'or text to see full details)\n'
+                        f'(Use --cli-error-format with json or yaml '
+                        f'to see full details)\n'
                     )
         else:
             stream.write('\nAdditional error details:\n')
@@ -79,8 +79,8 @@ class EnhancedErrorFormatter:
                 else:
                     stream.write(
                         f'  {key}: <complex value>\n'
-                        f'    (Use --cli-error-format with json, yaml, '
-                        f'or text to see full details)\n'
+                        f'    (Use --cli-error-format with json or yaml '
+                        f'to see full details)\n'
                     )
 
     def _is_simple_value(self, value):

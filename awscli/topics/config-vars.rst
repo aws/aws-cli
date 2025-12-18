@@ -82,6 +82,9 @@ max_attempts         N/A            max_attempts          AWS_MAX_ATTEMPTS      
 retry_mode           N/A            retry_mode            AWS_RETRY_MODE        Type of retries performed
 -------------------- -------------- --------------------- --------------------- --------------------------------
 cli_pager            --no-cli-pager cli_pager             AWS_PAGER             Redirect/Disable output to pager
+-------------------- -------------- --------------------- --------------------- --------------------------------
+cli_error_format     --cli-error-   cli_error_format      AWS_CLI_ERROR_FORMAT  Format for error output
+                     format
 ==================== ============== ===================== ===================== ================================
 
 The third column, Config Entry, is the value you would specify in the AWS CLI

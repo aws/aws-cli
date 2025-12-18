@@ -56,32 +56,18 @@ class EnhancedErrorFormatter:
         if not additional_fields:
             return
 
-        if len(additional_fields) == 1:
-            stream.write('\n')
-            for key, value in additional_fields.items():
-                if self._is_simple_value(value):
-                    stream.write(f'{key}: {value}\n')
-                elif self._is_small_collection(value):
-                    stream.write(f'{key}: {self._format_inline(value)}\n')
-                else:
-                    stream.write(
-                        f'{key}: <complex value>\n'
-                        f'(Use --cli-error-format with json or yaml '
-                        f'to see full details)\n'
-                    )
-        else:
-            stream.write('\nAdditional error details:\n')
-            for key, value in additional_fields.items():
-                if self._is_simple_value(value):
-                    stream.write(f'  {key}: {value}\n')
-                elif self._is_small_collection(value):
-                    stream.write(f'  {key}: {self._format_inline(value)}\n')
-                else:
-                    stream.write(
-                        f'  {key}: <complex value>\n'
-                        f'    (Use --cli-error-format with json or yaml '
-                        f'to see full details)\n'
-                    )
+        stream.write('\nAdditional error details:\n')
+        for key, value in additional_fields.items():
+            if self._is_simple_value(value):
+                stream.write(f'{key}: {value}\n')
+            elif self._is_small_collection(value):
+                stream.write(f'{key}: {self._format_inline(value)}\n')
+            else:
+                stream.write(
+                    f'{key}: <complex value>\n'
+                    f'(Use --cli-error-format with json or yaml '
+                    f'to see full details)\n'
+                )
 
     def _is_simple_value(self, value):
         return isinstance(value, (str, int, float, bool, type(None)))

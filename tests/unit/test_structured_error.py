@@ -287,7 +287,7 @@ class TestEnhancedErrorFormatter:
 
         output = stream.getvalue()
         assert formatted_message in output
-        assert 'Additional error details' not in output
+        assert 'Additional error details' in output
         assert 'AllowedValues: [value1, value2, value3]' in output
 
     def test_format_error_with_small_dict(self):
@@ -305,7 +305,7 @@ class TestEnhancedErrorFormatter:
 
         output = stream.getvalue()
         assert formatted_message in output
-        assert 'Additional error details' not in output
+        assert 'Additional error details' in output
         assert 'Metadata:' in output
         assert 'key1: value1' in output
         assert 'key2: value2' in output
@@ -325,7 +325,7 @@ class TestEnhancedErrorFormatter:
 
         output = stream.getvalue()
         assert formatted_message in output
-        assert 'Additional error details' not in output
+        assert 'Additional error details' in output
         assert 'Details: <complex value>' in output
         assert '--cli-error-format with json or yaml' in output
 

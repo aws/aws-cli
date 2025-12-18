@@ -28,8 +28,17 @@ def _generate_command_tests():
             for sub_name, sub_command in sub_help.command_table.items():
                 op_help = sub_command.create_help_command()
                 model = op_help.obj
+                # Extract the properties needed for tests to avoid
+                # parametrizing entire model objects, which may cause
+                # excessive memory usage.
+                model_description = {
+                    'has_event_stream_input': model.has_event_stream_input,
+                    'has_event_stream_output': model.has_event_stream_output,
+                    'service_name': model.service_model.service_name,
+                    'name': model.name,
+                }
                 if isinstance(model, OperationModel):
-                    yield command_name, sub_name, model
+                    yield command_name, sub_name, model_description
 
 
 @pytest.mark.validates_models
@@ -43,13 +52,13 @@ def test_no_event_stream_unless_allowed(
         record_property
 ):
     full_command = f'{command_name} {sub_name}'
-    if model.has_event_stream_input or model.has_event_stream_output:
+    if model['has_event_stream_input'] or model['has_event_stream_output']:
         # Store the service and operation in
         # PyTest custom properties
         record_property(
-            'aws_service', model.service_model.service_name
+            'aws_service', model['service_name']
         )
-        record_property('aws_operation', model.name)
+        record_property('aws_operation', model['name'])
         supported_commands = '\n'.join(_ALLOWED_COMMANDS)
         assert full_command in _ALLOWED_COMMANDS, (
             f'The {full_command} command uses event streams '

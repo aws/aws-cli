@@ -6107,6 +6107,24 @@
       },
       "documentation":"<p>Configures the command to treat the <code>payloadTemplate</code> as a JSON document for preprocessing. This preprocessor substitutes placeholders with parameter values to generate the command execution request payload. </p>"
     },
+    "BatchConfig":{
+      "type":"structure",
+      "members":{
+        "maxBatchOpenMs":{
+          "shape":"MaxBatchOpenMs",
+          "documentation":"<p>The maximum amount of time (in milliseconds) that an outgoing call waits for other calls with which it batches messages of the same type. The higher the setting, the longer the latency of the batched HTTP Action will be.</p>"
+        },
+        "maxBatchSize":{
+          "shape":"MaxBatchSize",
+          "documentation":"<p>The maximum number of messages that are batched together in a single action execution.</p>"
+        },
+        "maxBatchSizeBytes":{
+          "shape":"MaxBatchSizeBytes",
+          "documentation":"<p>Maximum size of a message batch, in bytes.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for batching.</p>"
+    },
     "BatchMode":{"type":"boolean"},
     "BeforeSubstitutionFlag":{"type":"boolean"},
     "Behavior":{
@@ -11922,6 +11940,7 @@
     "ElasticsearchId":{"type":"string"},
     "ElasticsearchIndex":{"type":"string"},
     "ElasticsearchType":{"type":"string"},
+    "EnableBatching":{"type":"boolean"},
     "EnableCachingForHttp":{"type":"boolean"},
     "EnableIoTLoggingParams":{
       "type":"structure",
@@ -13111,6 +13130,14 @@
         "auth":{
           "shape":"HttpAuthorization",
           "documentation":"<p>The authentication method to use when sending data to an HTTPS endpoint.</p>"
+        },
+        "enableBatching":{
+          "shape":"EnableBatching",
+          "documentation":"<p>Whether to process the HTTP action messages into a single request. Value can be true or false.</p>"
+        },
+        "batchConfig":{
+          "shape":"BatchConfig",
+          "documentation":"<p>The configuration settings for batching. For more information, see <a href=\"/iot/latest/developerguide/http_batching.html\">Batching HTTP action messages</a>.</p>"
         }
       },
       "documentation":"<p>Send data to an HTTPS endpoint.</p>"
@@ -17030,6 +17057,21 @@
       "type":"string",
       "max":1024,
       "pattern":"[A-Za-z0-9+/]+={0,2}"
+    },
+    "MaxBatchOpenMs":{
+      "type":"integer",
+      "max":200,
+      "min":5
+    },
+    "MaxBatchSize":{
+      "type":"integer",
+      "max":10,
+      "min":2
+    },
+    "MaxBatchSizeBytes":{
+      "type":"integer",
+      "max":131072,
+      "min":100
     },
     "MaxBuckets":{
       "type":"integer",

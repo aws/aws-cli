@@ -89,6 +89,7 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Retrieves detailed information about a Region switch plan. You must specify the ARN of the plan.</p>",
+      "readonly":true,
       "staticContextParams":{
         "UseControlPlaneEndpoint":{"value":true}
       }
@@ -105,7 +106,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Retrieves the evaluation status of a Region switch plan. The evaluation status provides information about the last time the plan was evaluated and any warnings or issues detected.</p>"
+      "documentation":"<p>Retrieves the evaluation status of a Region switch plan. The evaluation status provides information about the last time the plan was evaluated and any warnings or issues detected.</p>",
+      "readonly":true
     },
     "GetPlanExecution":{
       "name":"GetPlanExecution",
@@ -119,7 +121,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Retrieves detailed information about a specific plan execution. You must specify the plan ARN and execution ID.</p>"
+      "documentation":"<p>Retrieves detailed information about a specific plan execution. You must specify the plan ARN and execution ID.</p>",
+      "readonly":true
     },
     "GetPlanInRegion":{
       "name":"GetPlanInRegion",
@@ -133,7 +136,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Retrieves information about a Region switch plan in a specific Amazon Web Services Region. This operation is useful for getting Region-specific information about a plan.</p>"
+      "documentation":"<p>Retrieves information about a Region switch plan in a specific Amazon Web Services Region. This operation is useful for getting Region-specific information about a plan.</p>",
+      "readonly":true
     },
     "ListPlanExecutionEvents":{
       "name":"ListPlanExecutionEvents",
@@ -147,7 +151,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the events that occurred during a plan execution. These events provide a detailed timeline of the execution process.</p>"
+      "documentation":"<p>Lists the events that occurred during a plan execution. These events provide a detailed timeline of the execution process.</p>",
+      "readonly":true
     },
     "ListPlanExecutions":{
       "name":"ListPlanExecutions",
@@ -161,7 +166,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the executions of a Region switch plan. This operation returns information about both current and historical executions.</p>"
+      "documentation":"<p>Lists the executions of a Region switch plan. This operation returns information about both current and historical executions.</p>",
+      "readonly":true
     },
     "ListPlans":{
       "name":"ListPlans",
@@ -172,6 +178,7 @@
       "input":{"shape":"ListPlansRequest"},
       "output":{"shape":"ListPlansResponse"},
       "documentation":"<p>Lists all Region switch plans in your Amazon Web Services account.</p>",
+      "readonly":true,
       "staticContextParams":{
         "UseControlPlaneEndpoint":{"value":true}
       }
@@ -187,7 +194,8 @@
       "errors":[
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all Region switch plans in your Amazon Web Services account that are available in the current Amazon Web Services Region.</p>"
+      "documentation":"<p>Lists all Region switch plans in your Amazon Web Services account that are available in the current Amazon Web Services Region.</p>",
+      "readonly":true
     },
     "ListRoute53HealthChecks":{
       "name":"ListRoute53HealthChecks",
@@ -203,9 +211,27 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>List the Amazon Route 53 health checks.</p>",
+      "readonly":true,
       "staticContextParams":{
         "UseControlPlaneEndpoint":{"value":true}
       }
+    },
+    "ListRoute53HealthChecksInRegion":{
+      "name":"ListRoute53HealthChecksInRegion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListRoute53HealthChecksInRegionRequest"},
+      "output":{"shape":"ListRoute53HealthChecksInRegionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"IllegalArgumentException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>List the Amazon Route 53 health checks in a specific Amazon Web Services Region.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -220,6 +246,7 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists the tags attached to a Region switch resource.</p>",
+      "readonly":true,
       "staticContextParams":{
         "UseControlPlaneEndpoint":{"value":true}
       }
@@ -598,7 +625,7 @@
     },
     "AsgArn":{
       "type":"string",
-      "pattern":"arn:aws:autoscaling:[a-z0-9-]+:\\d{12}:autoScalingGroup:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}:autoScalingGroupName/[\\S\\s]{1,255}"
+      "pattern":"arn:aws[a-zA-Z-]*:autoscaling:[a-z0-9-]+:\\d{12}:autoScalingGroup:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}:autoScalingGroupName/[\\S\\s]{1,255}"
     },
     "AsgList":{
       "type":"list",
@@ -889,11 +916,11 @@
     },
     "EcsClusterArn":{
       "type":"string",
-      "pattern":"arn:aws:ecs:[a-z0-9-]+:\\d{12}:cluster/[a-zA-Z0-9_-]{1,255}"
+      "pattern":"arn:aws[a-zA-Z-]*:ecs:[a-z0-9-]+:\\d{12}:cluster/[a-zA-Z0-9_-]{1,255}"
     },
     "EcsServiceArn":{
       "type":"string",
-      "pattern":"arn:aws:ecs:[a-z0-9-]+:\\d{12}:service/[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]{1,255}"
+      "pattern":"arn:aws[a-zA-Z-]*:ecs:[a-z0-9-]+:\\d{12}:service/[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]{1,255}"
     },
     "EcsUngraceful":{
       "type":"structure",
@@ -1754,6 +1781,51 @@
         }
       }
     },
+    "ListRoute53HealthChecksInRegionRequest":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"PlanArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Arc Region Switch Plan.</p>"
+        },
+        "hostedZoneId":{
+          "shape":"Route53HostedZoneId",
+          "documentation":"<p>The hosted zone ID for the health checks.</p>"
+        },
+        "recordName":{
+          "shape":"Route53RecordName",
+          "documentation":"<p>The record name for the health checks.</p>"
+        },
+        "maxResults":{
+          "shape":"ListRoute53HealthChecksInRegionRequestMaxResultsInteger",
+          "documentation":"<p>The number of objects that you want to return with this call.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>nextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>nextToken</code> response to request the next page of results.</p>"
+        }
+      }
+    },
+    "ListRoute53HealthChecksInRegionRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListRoute53HealthChecksInRegionResponse":{
+      "type":"structure",
+      "members":{
+        "healthChecks":{
+          "shape":"Route53HealthCheckList",
+          "documentation":"<p>List of the health checks requested.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Specifies that you want to receive the next page of results. Valid only if you received a <code>nextToken</code> response in the previous request. If you did, it indicates that more output is available. Set this parameter to the value provided by the previous call's <code>nextToken</code> response to request the next page of results.</p>"
+        }
+      }
+    },
     "ListRoute53HealthChecksRequest":{
       "type":"structure",
       "required":["arn"],
@@ -2088,6 +2160,10 @@
           "shape":"Route53HealthCheckId",
           "documentation":"<p>The Amazon Route 53 health check ID.</p>"
         },
+        "status":{
+          "shape":"Route53HealthCheckStatus",
+          "documentation":"<p>The Amazon Route 53 health check status.</p>"
+        },
         "region":{
           "shape":"Region",
           "documentation":"<p>The Amazon Route 53 Region.</p>"
@@ -2142,6 +2218,14 @@
     "Route53HealthCheckList":{
       "type":"list",
       "member":{"shape":"Route53HealthCheck"}
+    },
+    "Route53HealthCheckStatus":{
+      "type":"string",
+      "enum":[
+        "healthy",
+        "unhealthy",
+        "unknown"
+      ]
     },
     "Route53HostedZoneId":{
       "type":"string",

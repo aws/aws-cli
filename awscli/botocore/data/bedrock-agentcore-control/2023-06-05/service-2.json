@@ -1853,6 +1853,24 @@
       "member":{"shape":"AllowedClient"},
       "min":1
     },
+    "AllowedQueryParameters":{
+      "type":"list",
+      "member":{"shape":"HttpQueryParameterName"},
+      "max":10,
+      "min":1
+    },
+    "AllowedRequestHeaders":{
+      "type":"list",
+      "member":{"shape":"HttpHeaderName"},
+      "max":10,
+      "min":1
+    },
+    "AllowedResponseHeaders":{
+      "type":"list",
+      "member":{"shape":"HttpHeaderName"},
+      "max":10,
+      "min":1
+    },
     "AllowedScopeType":{
       "type":"string",
       "max":255,
@@ -3150,6 +3168,10 @@
         "credentialProviderConfigurations":{
           "shape":"CredentialProviderConfigurations",
           "documentation":"<p>The credential provider configurations for the target. These configurations specify how the gateway authenticates with the target endpoint.</p>"
+        },
+        "metadataConfiguration":{
+          "shape":"MetadataConfiguration",
+          "documentation":"<p>Optional configuration for HTTP header and query parameter propagation to and from the gateway target.</p>"
         }
       }
     },
@@ -3209,6 +3231,10 @@
         "lastSynchronizedAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The last synchronization of the target.</p>"
+        },
+        "metadataConfiguration":{
+          "shape":"MetadataConfiguration",
+          "documentation":"<p>The metadata configuration that was applied to the created gateway target.</p>"
         }
       }
     },
@@ -5272,6 +5298,10 @@
         "lastSynchronizedAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The last synchronization time.</p>"
+        },
+        "metadataConfiguration":{
+          "shape":"MetadataConfiguration",
+          "documentation":"<p>The metadata configuration for HTTP header and query parameter propagation to and from this gateway target.</p>"
         }
       },
       "documentation":"<p>The gateway target.</p>"
@@ -5882,6 +5912,10 @@
         "lastSynchronizedAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The last synchronization of the target.</p>"
+        },
+        "metadataConfiguration":{
+          "shape":"MetadataConfiguration",
+          "documentation":"<p>The metadata configuration for HTTP header and query parameter propagation for the retrieved gateway target.</p>"
         }
       }
     },
@@ -6424,6 +6458,16 @@
       "max":256,
       "min":1,
       "pattern":"(Authorization|X-Amzn-Bedrock-AgentCore-Runtime-Custom-[a-zA-Z0-9-]+)"
+    },
+    "HttpHeaderName":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "HttpQueryParameterName":{
+      "type":"string",
+      "max":40,
+      "min":1
     },
     "InboundTokenClaimNameType":{
       "type":"string",
@@ -7724,6 +7768,24 @@
       "box":true,
       "max":50,
       "min":1
+    },
+    "MetadataConfiguration":{
+      "type":"structure",
+      "members":{
+        "allowedRequestHeaders":{
+          "shape":"AllowedRequestHeaders",
+          "documentation":"<p>A list of HTTP headers that are allowed to be propagated from incoming client requests to the target.</p>"
+        },
+        "allowedQueryParameters":{
+          "shape":"AllowedQueryParameters",
+          "documentation":"<p>A list of URL query parameters that are allowed to be propagated from incoming gateway URL to the target.</p>"
+        },
+        "allowedResponseHeaders":{
+          "shape":"AllowedResponseHeaders",
+          "documentation":"<p>A list of HTTP headers that are allowed to be propagated from the target response back to the client.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for HTTP header and query parameter propagation between the gateway and target servers.</p>"
     },
     "MicrosoftOauth2ProviderConfigInput":{
       "type":"structure",
@@ -10403,6 +10465,10 @@
         "credentialProviderConfigurations":{
           "shape":"CredentialProviderConfigurations",
           "documentation":"<p>The updated credential provider configurations for the gateway target.</p>"
+        },
+        "metadataConfiguration":{
+          "shape":"MetadataConfiguration",
+          "documentation":"<p>Configuration for HTTP header and query parameter propagation to the gateway target.</p>"
         }
       }
     },
@@ -10459,6 +10525,10 @@
         "lastSynchronizedAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The date and time at which the targets were last synchronized.</p>"
+        },
+        "metadataConfiguration":{
+          "shape":"MetadataConfiguration",
+          "documentation":"<p>The metadata configuration that was applied to the gateway target.</p>"
         }
       }
     },

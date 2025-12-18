@@ -1456,6 +1456,25 @@
       ],
       "documentation":"<p>Updates collaboration metadata and can only be called by the collaboration owner.</p>"
     },
+    "UpdateCollaborationChangeRequest":{
+      "name":"UpdateCollaborationChangeRequest",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/collaborations/{collaborationIdentifier}/changeRequests/{changeRequestIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateCollaborationChangeRequestInput"},
+      "output":{"shape":"UpdateCollaborationChangeRequestOutput"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates an existing collaboration change request. This operation allows approval actions for pending change requests in collaborations (APPROVE, DENY, CANCEL, COMMIT).</p> <p>For change requests without automatic approval, a member in the collaboration can manually APPROVE or DENY a change request. The collaboration owner can manually CANCEL or COMMIT a change request.</p>"
+    },
     "UpdateConfiguredAudienceModelAssociation":{
       "name":"UpdateConfiguredAudienceModelAssociation",
       "http":{
@@ -2552,6 +2571,32 @@
         "CLEAN_ROOMS_SQL"
       ]
     },
+    "ApprovalStatus":{
+      "type":"string",
+      "enum":[
+        "APPROVED",
+        "DENIED",
+        "PENDING"
+      ]
+    },
+    "ApprovalStatusDetails":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"ApprovalStatus",
+          "documentation":"<p>The approval status of a member's vote on the change request. Valid values are PENDING (if they haven't voted), APPROVED, or DENIED.</p>"
+        }
+      },
+      "documentation":"<p>Contains detailed information about the approval state of a given member in the collaboration for a given collaboration change request.</p>"
+    },
+    "ApprovalStatuses":{
+      "type":"map",
+      "key":{"shape":"AccountId"},
+      "value":{"shape":"ApprovalStatusDetails"},
+      "max":50,
+      "min":1
+    },
     "AthenaDatabaseName":{
       "type":"string",
       "max":128,
@@ -2609,7 +2654,11 @@
     },
     "AutoApprovedChangeType":{
       "type":"string",
-      "enum":["ADD_MEMBER"]
+      "enum":[
+        "ADD_MEMBER",
+        "GRANT_RECEIVE_RESULTS_ABILITY",
+        "REVOKE_RECEIVE_RESULTS_ABILITY"
+      ]
     },
     "AutoApprovedChangeTypeList":{
       "type":"list",
@@ -2941,6 +2990,15 @@
       "max":10,
       "min":1
     },
+    "ChangeRequestAction":{
+      "type":"string",
+      "enum":[
+        "APPROVE",
+        "DENY",
+        "CANCEL",
+        "COMMIT"
+      ]
+    },
     "ChangeRequestStatus":{
       "type":"string",
       "enum":[
@@ -2957,6 +3015,10 @@
         "member":{
           "shape":"MemberChangeSpecification",
           "documentation":"<p>The member change specification when the change type is <code>MEMBER</code>.</p>"
+        },
+        "collaboration":{
+          "shape":"CollaborationChangeSpecification",
+          "documentation":"<p>The collaboration configuration changes being requested. Currently, this only supports modifying which change types are auto-approved for the collaboration.</p>"
         }
       },
       "documentation":"<p>A union that contains the specification details for different types of changes.</p>",
@@ -2964,11 +3026,19 @@
     },
     "ChangeSpecificationType":{
       "type":"string",
-      "enum":["MEMBER"]
+      "enum":[
+        "MEMBER",
+        "COLLABORATION"
+      ]
     },
     "ChangeType":{
       "type":"string",
-      "enum":["ADD_MEMBER"]
+      "enum":[
+        "ADD_MEMBER",
+        "GRANT_RECEIVE_RESULTS_ABILITY",
+        "REVOKE_RECEIVE_RESULTS_ABILITY",
+        "EDIT_AUTO_APPROVED_CHANGE_TYPES"
+      ]
     },
     "ChangeTypeList":{
       "type":"list",
@@ -3263,6 +3333,10 @@
         "changes":{
           "shape":"ChangeList",
           "documentation":"<p>The list of changes specified in this change request.</p>"
+        },
+        "approvals":{
+          "shape":"ApprovalStatuses",
+          "documentation":"<p>A list of approval details from collaboration members, including approval status and multi-party approval workflow information.</p>"
         }
       },
       "documentation":"<p>Represents a request to modify a collaboration. Change requests enable structured modifications to collaborations after they have been created.</p>"
@@ -3312,6 +3386,10 @@
         "changes":{
           "shape":"ChangeList",
           "documentation":"<p>Summary of the changes in this change request.</p>"
+        },
+        "approvals":{
+          "shape":"ApprovalStatuses",
+          "documentation":"<p>Summary of approval statuses from all collaboration members for this change request.</p>"
         }
       },
       "documentation":"<p>Summary information about a collaboration change request.</p>"
@@ -3319,6 +3397,16 @@
     "CollaborationChangeRequestSummaryList":{
       "type":"list",
       "member":{"shape":"CollaborationChangeRequestSummary"}
+    },
+    "CollaborationChangeSpecification":{
+      "type":"structure",
+      "members":{
+        "autoApprovedChangeTypes":{
+          "shape":"AutoApprovedChangeTypeList",
+          "documentation":"<p>Defines requested updates to properties of the collaboration. Currently, this only supports modifying which change types are auto-approved for the collaboration.</p>"
+        }
+      },
+      "documentation":"<p>Defines the specific changes being requested for a collaboration, including configuration modifications and approval requirements.</p>"
     },
     "CollaborationConfiguredAudienceModelAssociation":{
       "type":"structure",
@@ -8577,7 +8665,7 @@
     },
     "ParameterValue":{
       "type":"string",
-      "max":250,
+      "max":1000,
       "min":0
     },
     "PaymentConfiguration":{
@@ -10712,6 +10800,39 @@
           "shape":"AnalysisTemplate",
           "documentation":"<p>The analysis template.</p>"
         }
+      }
+    },
+    "UpdateCollaborationChangeRequestInput":{
+      "type":"structure",
+      "required":[
+        "collaborationIdentifier",
+        "changeRequestIdentifier",
+        "action"
+      ],
+      "members":{
+        "collaborationIdentifier":{
+          "shape":"CollaborationIdentifier",
+          "documentation":"<p>The unique identifier of the collaboration that contains the change request to be updated.</p>",
+          "location":"uri",
+          "locationName":"collaborationIdentifier"
+        },
+        "changeRequestIdentifier":{
+          "shape":"CollaborationChangeRequestIdentifier",
+          "documentation":"<p>The unique identifier of the specific change request to be updated within the collaboration.</p>",
+          "location":"uri",
+          "locationName":"changeRequestIdentifier"
+        },
+        "action":{
+          "shape":"ChangeRequestAction",
+          "documentation":"<p>The action to perform on the change request. Valid values include APPROVE (approve the change), DENY (reject the change), CANCEL (cancel the request), and COMMIT (commit after the request is approved).</p> <p>For change requests without automatic approval, a member in the collaboration can manually APPROVE or DENY a change request. The collaboration owner can manually CANCEL or COMMIT a change request.</p>"
+        }
+      }
+    },
+    "UpdateCollaborationChangeRequestOutput":{
+      "type":"structure",
+      "required":["collaborationChangeRequest"],
+      "members":{
+        "collaborationChangeRequest":{"shape":"CollaborationChangeRequest"}
       }
     },
     "UpdateCollaborationInput":{

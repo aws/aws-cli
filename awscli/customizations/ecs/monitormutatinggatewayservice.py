@@ -92,9 +92,9 @@ class MonitoringResourcesArgument(CustomArgument):
 class MonitoringModeArgument(CustomArgument):
     """Custom CLI argument for monitor display mode. Only used when --monitor-resources is specified."""
 
-    def __init__(self, name):
+    def __init__(self):
         super().__init__(
-            name,
+            'monitor-mode',
             help_text=(
                 'Display mode for monitoring output (requires ``--monitor-resources``). '
                 'INTERACTIVE (default if TTY available) - Real-time display with keyboard navigation. '
@@ -148,7 +148,7 @@ class MonitorMutatingGatewayService:
         argument_table['monitor-resources'] = MonitoringResourcesArgument(
             'monitor-resources'
         )
-        argument_table['monitor-mode'] = MonitoringModeArgument('monitor-mode')
+        argument_table['monitor-mode'] = MonitoringModeArgument()
 
     def operation_args_parsed(self, parsed_args, parsed_globals, **kwargs):
         """Store monitoring flag state and globals after argument parsing.

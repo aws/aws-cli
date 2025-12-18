@@ -124,6 +124,7 @@ from awscli.customizations.servicecatalog import (
 from awscli.customizations.sessendemail import register_ses_send_email
 from awscli.customizations.sessionmanager import register_ssm_session
 from awscli.customizations.sso import register_sso_commands
+from awscli.customizations.console import register_console_commands
 from awscli.customizations.streamingoutputarg import add_streaming_output_arg
 from awscli.customizations.timestampformat import register_timestamp_format
 from awscli.customizations.toplevelbool import register_bool_params
@@ -239,3 +240,4 @@ def awscli_initialize(event_handlers):
     register_quicksight_asset_bundle_customizations(event_handlers)
     register_ec2_instance_connect_commands(event_handlers)
     register_login_cmds(event_handlers)
+    register_console_commands(event_handlers)

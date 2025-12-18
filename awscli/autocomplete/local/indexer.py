@@ -25,7 +25,7 @@ class ModelIndexer:
         'ddb': 'High level DynamoDB commands',
     }
 
-    _NON_SERVICE_COMMANDS = ['configure', 'history', 'cli-dev', 'login', 'logout']
+    _NON_SERVICE_COMMANDS = ['configure', 'history', 'cli-dev', 'login', 'logout', 'console']
 
     _CREATE_CMD_TABLE = """\
         CREATE TABLE IF NOT EXISTS command_table (
@@ -111,7 +111,7 @@ class ModelIndexer:
             if name in self._HIGH_LEVEL_SERVICE_FULL_NAMES:
                 return self._HIGH_LEVEL_SERVICE_FULL_NAMES[name]
             service = help_command_table.get(name)
-            if service:
+            if service and hasattr(service, 'service_model'):
                 return service.service_model.metadata['serviceFullName']
 
     def _generate_command_index(

@@ -2,6 +2,25 @@
 CHANGELOG
 =========
 
+2.32.20
+=======
+
+* api-change:``iot``: This release adds message batching for the IoT Rules Engine HTTP action.
+* api-change:``ec2``: This release adds AvailabilityZoneId support for CreateFleet, ModifyFleet, DescribeFleets, RequestSpotFleet, ModifySpotFleetRequests and DescribeSpotFleetRequests APIs.
+* api-change:``ecr``: Adds support for ECR Create On Push
+* api-change:``sesv2``: Amazon SES introduces Email Validation feature which checks email addresses for syntax errors, domain validity, and risky addresses to help maintain deliverability and protect sender reputation. SES also adds resource tagging and ABAC support for EmailTemplates and CustomVerificationEmailTemplates.
+* api-change:``ssm-sap``: Added "Stopping" for the HANA Database Status.
+* api-change:``cleanrooms``: Adding support for collaboration change requests requiring an approval workflow. Adding support for change requests that grant or revoke results receiver ability and modifying auto approved change types in an existing collaboration.
+* api-change:``opensearch``: Amazon OpenSearch Service adds support for warm nodes, enabling new multi-tier architecture.
+* api-change:``bedrock-agentcore-control``: Feature to support header exchanges between Bedrock AgentCore Gateway Targets and client, along with propagating query parameter to the configured targets.
+* api-change:``ecs``: Adding support for Event Windows via a new ECS account setting "fargateEventWindows". When enabled, ECS Fargate will use the configured event window for patching tasks. Introducing "CapacityOptionType" for CreateCapacityProvider API, allowing support for Spot capacity for ECS Managed Instances.
+* api-change:``arc-region-switch``: New API to list Route 53 health checks created by ARC region switch for a plan in a specific AWS Region using the Region switch Regional data plane.
+* api-change:``artifact``: Add support for ListReportVersions API  for the calling AWS account.
+* api-change:``appstream``: Added support for new operating systems (1) Ubuntu 24.04 Pro LTS on Elastic fleets, and (2) Microsoft Server 2025 on Always-On and On-Demand fleets
+* api-change:``bedrock-data-automation``: Blueprint Optimization (BPO) is a new Amazon Bedrock Data Automation (BDA) capability that improves blueprint inference accuracy using example content assets and ground truth data. BPO works by generating better instructions for fields in the Blueprint using provided data.
+* enhancement:cloudtrail: Fixed performance issue in cloudtrail validate-logs command by scoping S3 digest file listing to the trail's region instead of processing digest files from all regions.
+
+
 2.32.19
 =======
 

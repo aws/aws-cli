@@ -2,11 +2,15 @@ import argparse
 import difflib
 import sys
 from pathlib import Path
-from typing import List
+from typing import Dict, List, Optional, Tuple
 
-from awsclilinter.linter import ScriptLinter
-from awsclilinter.rules import LintFinding
+from ast_grep_py.ast_grep_py import SgRoot
+
+from awsclilinter import linter
+from awsclilinter.linter import parse
+from awsclilinter.rules import LintFinding, LintRule
 from awsclilinter.rules.base64_rule import Base64BinaryFormatRule
+from awsclilinter.rules.pagination_rule import PaginationRule
 
 # ANSI color codes
 RED = "\033[31m"
@@ -18,16 +22,22 @@ RESET = "\033[0m"
 CONTEXT_SIZE = 3
 
 
-def get_user_choice(prompt: str) -> str:
+def prompt_user_choice_interactive_mode() -> str:
     """Get user input for interactive mode."""
     while True:
-        choice = input(prompt).lower().strip()
-        if choice in ["y", "n", "u", "s"]:
+        choice = (
+            input(
+                "\nApply this fix? [y] yes, [n] no, [u] update all, [s] save and exit, [q] quit: "
+            )
+            .lower()
+            .strip()
+        )
+        if choice in ["y", "n", "u", "s", "q"]:
             return choice
-        print("Invalid choice. Please enter y, n, u, or s.")
+        print("Invalid choice. Please enter y, n, u, s, or q.")
 
 
-def display_finding(finding: LintFinding, index: int, total: int, script_content: str):
+def display_finding(finding: LintFinding, index: int, script_content: str):
     """Display a finding to the user with context."""
     src_lines = script_content.splitlines(keepends=True)
 
@@ -53,7 +63,7 @@ def display_finding(finding: LintFinding, index: int, total: int, script_content
             f"{len(src_context)} != {len(dest_context)}."
         )
 
-    print(f"\n[{index}/{total}] {finding.rule_name}")
+    print(f"\n[{index}] {finding.rule_name}")
     print(f"{finding.description}")
 
     diff = difflib.unified_diff(src_context, dest_context, lineterm="")
@@ -75,22 +85,87 @@ def display_finding(finding: LintFinding, index: int, total: int, script_content
             print(line, end="")
 
 
-def interactive_mode(findings: List[LintFinding], script_content: str) -> List[LintFinding]:
-    """Run interactive mode and return accepted findings."""
-    accepted = []
-    for i, finding in enumerate(findings, 1):
-        display_finding(finding, i, len(findings), script_content)
-        choice = get_user_choice("\nApply this fix? [y]es, [n]o, [u]pdate all, [s]ave and exit: ")
+def apply_all_fixes(
+    findings_with_rules: List[Tuple[LintFinding, LintRule]],
+    ast: SgRoot,
+) -> str:
+    """Apply all fixes using rule-by-rule processing.
 
-        if choice == "y":
-            accepted.append(finding)
-        elif choice == "u":
-            accepted.extend(findings[i - 1 :])
-            break
-        elif choice == "s":
-            break
+    Since multiple rules can target the same command, we must process one rule
+    at a time and re-parse the updated script between rules to get fresh Edit objects.
 
-    return accepted
+    Args:
+        findings_with_rules: List of findings and their rules.
+        ast: Current script represented as an AST.
+
+    Returns:
+        Modified script content
+    """
+    current_ast = ast
+
+    # Group findings by rule
+    findings_by_rule: Dict[str, List[LintFinding]] = {}
+    for finding, rule in findings_with_rules:
+        if rule.name not in findings_by_rule:
+            findings_by_rule[rule.name] = []
+        findings_by_rule[rule.name].append(finding)
+
+    # Process one rule at a time, re-parsing between rules
+    for rule in findings_by_rule:
+        updated_script = linter.apply_fixes(current_ast, findings_by_rule[rule])
+        current_ast = parse(updated_script)
+    return current_ast.root().text()
+
+
+def interactive_mode_for_rule(
+    findings: List[LintFinding],
+    ast: SgRoot,
+    finding_offset: int,
+) -> Tuple[SgRoot, bool, Optional[str]]:
+    """Run interactive mode for a single rule's findings.
+
+    Args:
+        findings: List of findings for this rule.
+        ast: Current script content, represented as an AST.
+        finding_offset: Offset for display numbering.
+
+    Returns:
+        Tuple of (ast, changes_made, last_choice)
+        ast is the resulting AST from this interactive mode execution.
+        changes_made whether the AST was updated based on user choice.
+        last_choice is the last choice entered by the user.
+    """
+    accepted_findings: List[LintFinding] = []
+    last_choice: Optional[str] = None
+
+    for i, finding in enumerate(findings):
+        display_finding(finding, finding_offset + i + 1, ast.root().text())
+        last_choice = prompt_user_choice_interactive_mode()
+
+        if last_choice == "y":
+            accepted_findings.append(finding)
+        elif last_choice == "n":
+            pass  # Skip this finding
+        elif last_choice == "u":
+            # Accept this and all remaining findings for this rule.
+            accepted_findings.extend(findings[i:])
+            if accepted_findings:
+                ast = parse(linter.apply_fixes(ast, accepted_findings))
+            return ast, True, last_choice
+        elif last_choice == "s":
+            # Apply accepted findings and stop processing
+            if accepted_findings:
+                ast = parse(linter.apply_fixes(ast, accepted_findings))
+            return ast, len(accepted_findings) > 0, last_choice
+        elif last_choice == "q":
+            print("Quitting without saving.")
+            sys.exit(0)
+
+    if accepted_findings:
+        ast = parse(linter.apply_fixes(ast, accepted_findings))
+        return ast, True, last_choice
+
+    return ast, False, last_choice
 
 
 def main():
@@ -102,7 +177,7 @@ def main():
     parser.add_argument(
         "--fix", action="store_true", help="Apply fixes to the script (modifies in place)"
     )
-    parser.add_argument("--output", help="Output path for the fixed script")
+    parser.add_argument("--output", help="Output path for the modified script")
     parser.add_argument(
         "-i",
         "--interactive",
@@ -127,31 +202,79 @@ def main():
 
     script_content = script_path.read_text()
 
-    rules = [Base64BinaryFormatRule()]
-    linter = ScriptLinter(rules)
-    findings = linter.lint(script_content)
-
-    if not findings:
-        print("No issues found.")
-        return
+    rules = [Base64BinaryFormatRule(), PaginationRule()]
 
     if args.interactive:
-        findings = interactive_mode(findings, script_content)
-        if not findings:
+        current_ast = parse(script_content)
+
+        current_script = script_content
+        any_changes = False
+        finding_offset = 0
+        findings_found = 0
+
+        # Process one rule at a time, re-parsing between rules
+
+        for rule_index, rule in enumerate(rules):
+            # Lint for this specific rule with current script state
+            rule_findings = linter.lint_for_rule(current_ast, rule)
+
+            if not rule_findings:
+                continue
+
+            findings_found += len(rule_findings)
+            current_ast, changes_made, last_choice = interactive_mode_for_rule(
+                rule_findings, current_ast, finding_offset
+            )
+
+            if changes_made:
+                current_script = current_ast.root().text()
+                any_changes = True
+
+            finding_offset += len(rule_findings)
+
+            if last_choice == "s":
+                break
+
+            # If user chose 'u', auto-apply all remaining rules
+            if last_choice == "u":
+                for remaining_rule in rules[rule_index + 1 :]:
+                    remaining_findings = linter.lint_for_rule(current_ast, remaining_rule)
+                    if remaining_findings:
+                        current_script = linter.apply_fixes(current_ast, remaining_findings)
+                        any_changes = True
+                break
+
+        if findings_found == 0:
+            print("No issues found.")
+            return
+        else:
+            print(f"Found {findings_found} issues.")
+
+        if not any_changes:
             print("No changes accepted.")
             return
 
-    if args.fix or args.output or args.interactive:
-        # Interactive mode is functionally equivalent to --fix, except the user
-        # can select a subset of the changes to apply.
-        fixed_content = linter.apply_fixes(script_content, findings)
         output_path = Path(args.output) if args.output else script_path
-        output_path.write_text(fixed_content)
-        print(f"Fixed script written to: {output_path}")
+        output_path.write_text(current_script)
+        print(f"Modified script written to: {output_path}")
+    elif args.fix or args.output:
+        current_ast = parse(script_content)
+        findings_with_rules = linter.lint(current_ast, rules)
+        updated_script = apply_all_fixes(findings_with_rules, current_ast)
+        output_path = Path(args.output) if args.output else script_path
+        output_path.write_text(updated_script)
+        print(f"Modified script written to: {output_path}")
     else:
-        print(f"\nFound {len(findings)} issue(s):\n")
-        for i, finding in enumerate(findings, 1):
-            display_finding(finding, i, len(findings), script_content)
+        current_ast = parse(script_content)
+        findings_with_rules = linter.lint(current_ast, rules)
+
+        if not findings_with_rules:
+            print("No issues found.")
+            return
+
+        print(f"\nFound {len(findings_with_rules)} issue(s):\n")
+        for i, (finding, _) in enumerate(findings_with_rules, 1):
+            display_finding(finding, i, script_content)
         print("\n\nRun with --fix to apply changes or --interactive to review each change.")
 
 

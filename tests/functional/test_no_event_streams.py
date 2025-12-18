@@ -29,17 +29,16 @@ def _generate_command_tests():
                 op_help = sub_command.create_help_command()
                 model = op_help.obj
                 if isinstance(model, OperationModel):
-                    yield command_name, sub_name, sub_command, model
+                    yield command_name, sub_name, model
 
 
 @pytest.mark.validates_models
 @pytest.mark.parametrize(
-    "command_name, sub_name, sub_command, model", _generate_command_tests()
+    "command_name, sub_name, model", _generate_command_tests()
 )
 def test_no_event_stream_unless_allowed(
         command_name,
         sub_name,
-        sub_command,
         model,
         record_property
 ):

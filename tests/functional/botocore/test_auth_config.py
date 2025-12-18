@@ -62,7 +62,7 @@ def _all_test_cases():
                 # Skip service due to known mixed auth configurations.
                 continue
         if auth_config:
-            auth_services.append([service, auth_config, service_model])
+            auth_services.append([service, auth_config])
         for operation in service_model.operation_names:
             operation_model = service_model.operation_model(operation)
             if operation_model.auth:
@@ -75,16 +75,15 @@ AUTH_SERVICES, AUTH_OPERATIONS = _all_test_cases()
 
 @pytest.mark.validates_models
 @pytest.mark.parametrize(
-    "auth_service, auth_config, service_model",
+    "auth_service, auth_config",
     AUTH_SERVICES
 )
 def test_all_requirements_match_for_service(
         auth_service,
         auth_config,
-        service_model,
         record_property
 ):
-    record_property("aws_service", service_model.service_name)
+    record_property("aws_service", auth_service)
     # Validates that all service-level signature types have the same requirements
     message = f'Found mixed signer requirements for service: {auth_service}'
     assert_all_requirements_match(auth_config, message)

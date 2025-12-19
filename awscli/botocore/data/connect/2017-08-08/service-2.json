@@ -711,7 +711,7 @@
         {"shape":"InvalidParameterException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a new data table with the specified properties. Supports the creation of all table properties except for attributes and values. A table with no attributes and values is a valid state for a table. The number of tables per instance is limited to 100 per instance. Customers can request an increase by using AWS Service Quotas.</p>"
+      "documentation":"<p>Creates a new data table with the specified properties. Supports the creation of all table properties except for attributes and values. A table with no attributes and values is a valid state for a table. The number of tables per instance is limited to 100 per instance. Customers can request an increase by using Amazon Web Services Service Quotas.</p>"
     },
     "CreateDataTableAttribute":{
       "name":"CreateDataTableAttribute",
@@ -2665,7 +2665,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InvalidParameterException"}
       ],
-      "documentation":"<p>Evaluates values at the time of the request and returns them. It considers the request's timezone or the table's timezone, in that order, when accessing time based tables. When a value is accessed, the accessor's identity and the time of access are saved alongside the value to help identify values that are actively in use. The term \"Batch\" is not included in the operation name since it does not meet all the criteria for a batch operation as specified in Batch Operations: AWS API Standards.</p>"
+      "documentation":"<p>Evaluates values at the time of the request and returns them. It considers the request's timezone or the table's timezone, in that order, when accessing time based tables. When a value is accessed, the accessor's identity and the time of access are saved alongside the value to help identify values that are actively in use. The term \"Batch\" is not included in the operation name since it does not meet all the criteria for a batch operation as specified in Batch Operations: Amazon Web Services API Standards.</p>"
     },
     "GetAttachedFile":{
       "name":"GetAttachedFile",
@@ -3180,7 +3180,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InvalidParameterException"}
       ],
-      "documentation":"<p>Returns all attributes for a specified data table. A maximum of 100 attributes per data table is allowed. Customers can request an increase by using AWS Service Quotas. The response can be filtered by specific attribute IDs for CloudFormation integration.</p>"
+      "documentation":"<p>Returns all attributes for a specified data table. A maximum of 100 attributes per data table is allowed. Customers can request an increase by using Amazon Web Services Service Quotas. The response can be filtered by specific attribute IDs for CloudFormation integration.</p>"
     },
     "ListDataTablePrimaryValues":{
       "name":"ListDataTablePrimaryValues",
@@ -4683,7 +4683,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Initiates a new outbound SMS contact to a customer. Response of this API provides the <code>ContactId</code> of the outbound SMS contact created.</p> <p> <b>SourceEndpoint</b> only supports Endpoints with <code>CONNECT_PHONENUMBER_ARN</code> as Type and <b>DestinationEndpoint</b> only supports Endpoints with <code>TELEPHONE_NUMBER</code> as Type. <b>ContactFlowId</b> initiates the flow to manage the new SMS contact created.</p> <p>This API can be used to initiate outbound SMS contacts for an agent, or it can also deflect an ongoing contact to an outbound SMS contact by using the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_StartOutboundChatContact.html\">StartOutboundChatContact</a> Flow Action.</p> <p>For more information about using SMS in Amazon Connect, see the following topics in the <i>Amazon Connect Administrator Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-sms-messaging.html\">Set up SMS messaging</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/sms-number.html\">Request an SMS-enabled phone number through AWS End User Messaging SMS</a> </p> </li> </ul>"
+      "documentation":"<p>Initiates a new outbound SMS or WhatsApp contact to a customer. Response of this API provides the <code>ContactId</code> of the outbound SMS or WhatsApp contact created.</p> <p> <b>SourceEndpoint</b> only supports Endpoints with <code>CONNECT_PHONENUMBER_ARN</code> as Type and <b>DestinationEndpoint</b> only supports Endpoints with <code>TELEPHONE_NUMBER</code> as Type. <b>ContactFlowId</b> initiates the flow to manage the new contact created.</p> <p>This API can be used to initiate outbound SMS or WhatsApp contacts for an agent, or it can also deflect an ongoing contact to an outbound SMS or WhatsApp contact by using the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_StartOutboundChatContact.html\">StartOutboundChatContact</a> Flow Action.</p> <p>For more information about using SMS or WhatsApp in Amazon Connect, see the following topics in the <i>Amazon Connect Administrator Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/setup-sms-messaging.html\">Set up SMS messaging</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/sms-number.html\">Request an SMS-enabled phone number through Amazon Web Services End User Messaging SMS</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/whatsapp-integration.html\">Set up WhatsApp Business messaging</a> </p> </li> </ul>"
     },
     "StartOutboundEmailContact":{
       "name":"StartOutboundEmailContact",
@@ -12030,12 +12030,16 @@
           "shape":"CurrentMetricName",
           "documentation":"<p>The name of the metric.</p>"
         },
+        "MetricId":{
+          "shape":"CurrentMetricId",
+          "documentation":"<p>Out of the box current metrics or custom metrics can be referenced via this field. This field is a valid AWS Connect Arn or a UUID.</p>"
+        },
         "Unit":{
           "shape":"Unit",
-          "documentation":"<p>The unit for the metric.</p>"
+          "documentation":"<note> <p>The Unit parameter is not supported for custom metrics.</p> </note> <p>The unit for the metric.</p>"
         }
       },
-      "documentation":"<p>Contains information about a real-time metric. For a description of each metric, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Metrics definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+      "documentation":"<p>Contains information about a real-time metric. For a description of each metric, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Metrics definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <important> <p>Only one of either the Name or MetricId is required.</p> </important>"
     },
     "CurrentMetricData":{
       "type":"structure",
@@ -12055,6 +12059,10 @@
     "CurrentMetricDataCollections":{
       "type":"list",
       "member":{"shape":"CurrentMetricData"}
+    },
+    "CurrentMetricId":{
+      "type":"string",
+      "pattern":"^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})|(arn:[a-z0-9-]+:connect:[a-z0-9-]+:(?:([0-9]{12}):instance/[a-z0-9-]+/metric/[a-z0-9-]+(?::[a-z0-9-]+)?|aws:metric/[A-Z_]+))$"
     },
     "CurrentMetricName":{
       "type":"string",
@@ -12230,7 +12238,7 @@
         },
         "LastModifiedRegion":{
           "shape":"RegionName",
-          "documentation":"<p>The AWS region where the data table was last modified, used for region replication.</p>"
+          "documentation":"<p>The Amazon Web Services Region where the data table was last modified, used for region replication.</p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -12298,7 +12306,7 @@
         },
         "LastModifiedRegion":{
           "shape":"RegionName",
-          "documentation":"<p>The AWS region where this attribute was last modified, used for region replication.</p>"
+          "documentation":"<p>The Amazon Web Services Region where this attribute was last modified, used for region replication.</p>"
         },
         "Validation":{
           "shape":"Validation",
@@ -14783,6 +14791,14 @@
         "AgentStatus":{
           "shape":"AgentStatusIdentifier",
           "documentation":"<p>Information about the agent status assigned to the user.</p>"
+        },
+        "Subtype":{
+          "shape":"Subtype",
+          "documentation":"<p>The subtype of the channel used for the contact.</p>"
+        },
+        "ValidationTestType":{
+          "shape":"ValidationTestType",
+          "documentation":"<p>The testing and simulation type</p>"
         }
       },
       "documentation":"<p>Contains information about the dimensions for a set of metrics.</p>"
@@ -17885,6 +17901,14 @@
         "AgentStatuses":{
           "shape":"AgentStatuses",
           "documentation":"<p>A list of up to 50 agent status IDs or ARNs.</p>"
+        },
+        "Subtypes":{
+          "shape":"Subtypes",
+          "documentation":"<p>A list of up to 10 subtypes can be provided.</p>"
+        },
+        "ValidationTestTypes":{
+          "shape":"ValidationTestTypes",
+          "documentation":"<p>A list of up to 10 validationTestTypes can be provided.</p>"
         }
       },
       "documentation":"<p>Contains the filter to apply when retrieving metrics.</p>"
@@ -18171,15 +18195,15 @@
         },
         "Filters":{
           "shape":"Filters",
-          "documentation":"<p>The filters to apply to returned metrics. You can filter up to the following limits:</p> <ul> <li> <p>Queues: 100</p> </li> <li> <p>Routing profiles: 100</p> </li> <li> <p>Channels: 3 (VOICE, CHAT, and TASK channels are supported.)</p> </li> <li> <p>RoutingStepExpressions: 50</p> </li> <li> <p>AgentStatuses: 50</p> </li> </ul> <p>Metric data is retrieved only for the resources associated with the queues or routing profiles, and by any channels included in the filter. (You cannot filter by both queue AND routing profile.) You can include both resource IDs and resource ARNs in the same request.</p> <p>When using <code>AgentStatuses</code> as filter make sure Queues is added as primary filter.</p> <p>When using the <code>RoutingStepExpression</code> filter, you need to pass exactly one <code>QueueId</code>. The filter is also case sensitive so when using the <code>RoutingStepExpression</code> filter, grouping by <code>ROUTING_STEP_EXPRESSION</code> is required.</p> <p>Currently tagging is only supported on the resources that are passed in the filter.</p>"
+          "documentation":"<p>The filters to apply to returned metrics. You can filter up to the following limits:</p> <ul> <li> <p>Queues: 100</p> </li> <li> <p>Routing profiles: 100</p> </li> <li> <p>Channels: 3 (VOICE, CHAT, and TASK channels are supported.)</p> </li> <li> <p>RoutingStepExpressions: 50</p> </li> <li> <p>AgentStatuses: 50</p> </li> <li> <p>Subtypes: 10</p> </li> <li> <p>ValidationTestTypes: 10</p> </li> </ul> <p>Metric data is retrieved only for the resources associated with the queues or routing profiles, and by any channels included in the filter. (You cannot filter by both queue AND routing profile.) You can include both resource IDs and resource ARNs in the same request.</p> <p>When using <code>AgentStatuses</code> as filter make sure Queues is added as primary filter.</p> <p>When using <code>Subtypes</code> as filter make sure Queues is added as primary filter.</p> <p>When using <code>ValidationTestTypes</code> as filter make sure Queues is added as primary filter.</p> <p>When using the <code>RoutingStepExpression</code> filter, you need to pass exactly one <code>QueueId</code>. The filter is also case sensitive so when using the <code>RoutingStepExpression</code> filter, grouping by <code>ROUTING_STEP_EXPRESSION</code> is required.</p> <p>Currently tagging is only supported on the resources that are passed in the filter.</p>"
         },
         "Groupings":{
           "shape":"Groupings",
-          "documentation":"<p>Defines the level of aggregation for metrics data by a dimension(s). Its similar to sorting items into buckets based on a common characteristic, then counting or calculating something for each bucket. For example, when grouped by <code>QUEUE</code>, the metrics returned apply to each queue rather than aggregated for all queues. </p> <p>The grouping list is an ordered list, with the first item in the list defined as the primary grouping. If no grouping is included in the request, the aggregation happens at the instance-level.</p> <ul> <li> <p>If you group by <code>CHANNEL</code>, you should include a Channels filter. VOICE, CHAT, and TASK channels are supported.</p> </li> <li> <p>If you group by <code>AGENT_STATUS</code>, you must include the <code>QUEUE</code> as the primary grouping and use queue filter. When you group by <code>AGENT_STATUS</code>, the only metric available is the <code>AGENTS_ONLINE</code> metric.</p> </li> <li> <p>If you group by <code>ROUTING_PROFILE</code>, you must include either a queue or routing profile filter. In addition, a routing profile filter is required for metrics <code>CONTACTS_SCHEDULED</code>, <code>CONTACTS_IN_QUEUE</code>, and <code> OLDEST_CONTACT_AGE</code>.</p> </li> <li> <p>When using the <code>RoutingStepExpression</code> filter, group by <code>ROUTING_STEP_EXPRESSION</code> is required.</p> </li> </ul>"
+          "documentation":"<p>Defines the level of aggregation for metrics data by a dimension(s). Its similar to sorting items into buckets based on a common characteristic, then counting or calculating something for each bucket. For example, when grouped by <code>QUEUE</code>, the metrics returned apply to each queue rather than aggregated for all queues. </p> <p>The grouping list is an ordered list, with the first item in the list defined as the primary grouping. If no grouping is included in the request, the aggregation happens at the instance-level.</p> <ul> <li> <p>If you group by <code>CHANNEL</code>, you should include a Channels filter. VOICE, CHAT, and TASK channels are supported.</p> </li> <li> <p>If you group by <code>AGENT_STATUS</code>, you must include the <code>QUEUE</code> as the primary grouping and use queue filter. When you group by <code>AGENT_STATUS</code>, the only metric available is the <code>AGENTS_ONLINE</code> metric.</p> </li> <li> <p>If you group by <code>SUBTYPE</code> or <code>VALIDATION_TEST_TYPE</code> as secondary grouping then you must include <code>QUEUE</code> as primary grouping and use Queue as filter</p> </li> <li> <p>If you group by <code>ROUTING_PROFILE</code>, you must include either a queue or routing profile filter. In addition, a routing profile filter is required for metrics <code>CONTACTS_SCHEDULED</code>, <code>CONTACTS_IN_QUEUE</code>, and <code> OLDEST_CONTACT_AGE</code>.</p> </li> <li> <p>When using the <code>RoutingStepExpression</code> filter, group by <code>ROUTING_STEP_EXPRESSION</code> is required.</p> </li> </ul>"
         },
         "CurrentMetrics":{
           "shape":"CurrentMetrics",
-          "documentation":"<p>The metrics to retrieve. Specify the name and unit for each metric. The following metrics are available. For a description of all the metrics, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Metrics definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <dl> <dt>AGENTS_AFTER_CONTACT_WORK</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#aftercallwork-real-time\">ACW</a> </p> </dd> <dt>AGENTS_AVAILABLE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#available-real-time\">Available</a> </p> </dd> <dt>AGENTS_ERROR</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#error-real-time\">Error</a> </p> </dd> <dt>AGENTS_NON_PRODUCTIVE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#non-productive-time-real-time\">NPT (Non-Productive Time)</a> </p> </dd> <dt>AGENTS_ON_CALL</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#on-call-real-time\">On contact</a> </p> </dd> <dt>AGENTS_ON_CONTACT</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#on-call-real-time\">On contact</a> </p> </dd> <dt>AGENTS_ONLINE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#online-real-time\">Online</a> </p> </dd> <dt>AGENTS_STAFFED</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#staffed-real-time\">Staffed</a> </p> </dd> <dt>CONTACTS_IN_QUEUE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#in-queue-real-time\">In queue</a> </p> </dd> <dt>CONTACTS_SCHEDULED</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#scheduled-real-time\">Scheduled</a> </p> </dd> <dt>OLDEST_CONTACT_AGE</dt> <dd> <p>Unit: SECONDS</p> <p>When you use groupings, Unit says SECONDS and the Value is returned in SECONDS. </p> <p>When you do not use groupings, Unit says SECONDS but the Value is returned in MILLISECONDS. For example, if you get a response like this:</p> <p> <code>{ \"Metric\": { \"Name\": \"OLDEST_CONTACT_AGE\", \"Unit\": \"SECONDS\" }, \"Value\": 24113.0 </code>}</p> <p>The actual OLDEST_CONTACT_AGE is 24 seconds.</p> <p>When the filter <code>RoutingStepExpression</code> is used, this metric is still calculated from enqueue time. For example, if a contact that has been queued under <code>&lt;Expression 1&gt;</code> for 10 seconds has expired and <code>&lt;Expression 2&gt;</code> becomes active, then <code>OLDEST_CONTACT_AGE</code> for this queue will be counted starting from 10, not 0.</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#oldest-real-time\">Oldest</a> </p> </dd> <dt>SLOTS_ACTIVE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#active-real-time\">Active</a> </p> </dd> <dt>SLOTS_AVAILABLE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#availability-real-time\">Availability</a> </p> </dd> </dl>"
+          "documentation":"<p>The metrics to retrieve. Specify the name or metricId, and unit for each metric. The following metrics are available. For a description of all the metrics, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Metrics definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <note> <p> MetricId should be used to reference custom metrics or out of the box metrics as Arn. If using MetricId, the limit is 10 MetricId per request.</p> </note> <dl> <dt>AGENTS_AFTER_CONTACT_WORK</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#aftercallwork-real-time\">ACW</a> </p> </dd> <dt>AGENTS_AVAILABLE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#available-real-time\">Available</a> </p> </dd> <dt>AGENTS_ERROR</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#error-real-time\">Error</a> </p> </dd> <dt>AGENTS_NON_PRODUCTIVE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#non-productive-time-real-time\">NPT (Non-Productive Time)</a> </p> </dd> <dt>AGENTS_ON_CALL</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#on-call-real-time\">On contact</a> </p> </dd> <dt>AGENTS_ON_CONTACT</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#on-call-real-time\">On contact</a> </p> </dd> <dt>AGENTS_ONLINE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#online-real-time\">Online</a> </p> </dd> <dt>AGENTS_STAFFED</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#staffed-real-time\">Staffed</a> </p> </dd> <dt>CONTACTS_IN_QUEUE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#in-queue-real-time\">In queue</a> </p> </dd> <dt>CONTACTS_SCHEDULED</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#scheduled-real-time\">Scheduled</a> </p> </dd> <dt>OLDEST_CONTACT_AGE</dt> <dd> <p>Unit: SECONDS</p> <p>When you use groupings, Unit says SECONDS and the Value is returned in SECONDS. </p> <p>When you do not use groupings, Unit says SECONDS but the Value is returned in MILLISECONDS. For example, if you get a response like this:</p> <p> <code>{ \"Metric\": { \"Name\": \"OLDEST_CONTACT_AGE\", \"Unit\": \"SECONDS\" }, \"Value\": 24113.0 </code>}</p> <p>The actual OLDEST_CONTACT_AGE is 24 seconds.</p> <p>When the filter <code>RoutingStepExpression</code> is used, this metric is still calculated from enqueue time. For example, if a contact that has been queued under <code>&lt;Expression 1&gt;</code> for 10 seconds has expired and <code>&lt;Expression 2&gt;</code> becomes active, then <code>OLDEST_CONTACT_AGE</code> for this queue will be counted starting from 10, not 0.</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#oldest-real-time\">Oldest</a> </p> </dd> <dt>SLOTS_ACTIVE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#active-real-time\">Active</a> </p> </dd> <dt>SLOTS_AVAILABLE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#availability-real-time\">Availability</a> </p> </dd> </dl>"
         },
         "NextToken":{
           "shape":"NextToken",
@@ -18700,7 +18724,9 @@
         "CHANNEL",
         "ROUTING_PROFILE",
         "ROUTING_STEP_EXPRESSION",
-        "AGENT_STATUS"
+        "AGENT_STATUS",
+        "SUBTYPE",
+        "VALIDATION_TEST_TYPE"
       ]
     },
     "GroupingV2":{"type":"string"},
@@ -21632,7 +21658,7 @@
         },
         "InstanceId":{
           "shape":"InstanceId",
-          "documentation":"<p>The identifier of the Amazon Connect instance that phone numbers are claimed to. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance. If both <code>TargetArn</code> and <code>InstanceId</code> are not provided, this API lists numbers claimed to all the Amazon Connect instances belonging to your account in the same AWS Region as the request.</p>"
+          "documentation":"<p>The identifier of the Amazon Connect instance that phone numbers are claimed to. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance. If both <code>TargetArn</code> and <code>InstanceId</code> are not provided, this API lists numbers claimed to all the Amazon Connect instances belonging to your account in the same Amazon Web Services Region as the request.</p>"
         },
         "MaxResults":{
           "shape":"MaxResult1000",
@@ -29198,7 +29224,7 @@
         },
         "DisconnectOnCustomerExit":{
           "shape":"DisconnectOnCustomerExit",
-          "documentation":"<p>A list of participant types to automatically disconnect when the end customer ends the chat session, allowing them to continue through disconnect flows such as surveys or feedback forms.</p> <p>Valid value: <code>AGENT</code>.</p> <p>With the <code>DisconnectOnCustomerExit</code> parameter, you can configure automatic agent disconnection when end customers end the chat, ensuring that disconnect flows are triggered consistently regardless of which participant disconnects first.</p>"
+          "documentation":"<p>A list of participant types to automatically disconnect when the end customer ends the chat session, allowing them to continue through disconnect flows such as surveys or feedback forms.</p>"
         }
       }
     },
@@ -29466,7 +29492,7 @@
         },
         "SegmentAttributes":{
           "shape":"SegmentAttributes",
-          "documentation":"<p>A set of system defined key-value pairs stored on individual contact segments using an attribute map. The attributes are standard Amazon Connect attributes. They can be accessed in flows.</p> <ul> <li> <p>Attribute keys can include only alphanumeric, <code>-</code>, and <code>_</code>.</p> </li> <li> <p>This field can be used to show channel subtype, such as <code>connect:Guide</code> and <code>connect:SMS</code>.</p> </li> </ul>"
+          "documentation":"<p>A set of system defined key-value pairs stored on individual contact segments using an attribute map. The attributes are standard Amazon Connect attributes. They can be accessed in flows.</p> <ul> <li> <p>Attribute keys can include only alphanumeric, <code>-</code>, and <code>_</code>.</p> </li> <li> <p>This field can be used to show channel subtype, such as <code>connect:SMS</code> and <code>connect:WhatsApp</code>.</p> </li> </ul>"
         },
         "Attributes":{
           "shape":"Attributes",
@@ -29493,7 +29519,7 @@
         },
         "ClientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the AWS SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>. The token is valid for 7 days after creation. If a contact is already started, the contact ID is returned.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>. The token is valid for 7 days after creation. If a contact is already started, the contact ID is returned.</p>",
           "idempotencyToken":true
         }
       }
@@ -30085,6 +30111,11 @@
       "type":"string",
       "max":100,
       "min":1
+    },
+    "Subtypes":{
+      "type":"list",
+      "member":{"shape":"Subtype"},
+      "max":10
     },
     "SuccessfulBatchAssociationSummary":{
       "type":"structure",
@@ -33788,6 +33819,12 @@
       "type":"list",
       "member":{"shape":"String"}
     },
+    "ValidationTestType":{"type":"string"},
+    "ValidationTestTypes":{
+      "type":"list",
+      "member":{"shape":"ValidationTestType"},
+      "max":10
+    },
     "Value":{"type":"double"},
     "ValueBoundary":{
       "type":"integer",
@@ -34330,7 +34367,7 @@
         },
         "LastModifiedRegion":{
           "shape":"RegionName",
-          "documentation":"<p>The AWS Region where the workspace was last modified.</p>"
+          "documentation":"<p>The Amazon Web Services Region where the workspace was last modified.</p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -34573,7 +34610,7 @@
         },
         "LastModifiedRegion":{
           "shape":"RegionName",
-          "documentation":"<p>The AWS Region where the workspace was last modified.</p>"
+          "documentation":"<p>The Amazon Web Services Region where the workspace was last modified.</p>"
         }
       },
       "documentation":"<p>Contains summary information about a workspace.</p>"

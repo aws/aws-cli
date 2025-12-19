@@ -13063,7 +13063,14 @@
     },
     "GetV2LoggingOptionsRequest":{
       "type":"structure",
-      "members":{}
+      "members":{
+        "verbose":{
+          "shape":"VerboseFlag",
+          "documentation":"<p> The flag is used to get all the event types and their respective configuration that event-based logging supports. </p>",
+          "location":"querystring",
+          "locationName":"verbose"
+        }
+      }
     },
     "GetV2LoggingOptionsResponse":{
       "type":"structure",
@@ -13079,6 +13086,10 @@
         "disableAllLogs":{
           "shape":"DisableAllLogs",
           "documentation":"<p>Disables all logs.</p>"
+        },
+        "eventConfigurations":{
+          "shape":"LogEventConfigurations",
+          "documentation":"<p> The list of event configurations that override account-level logging. </p>"
         }
       }
     },
@@ -13137,7 +13148,7 @@
         },
         "batchConfig":{
           "shape":"BatchConfig",
-          "documentation":"<p>The configuration settings for batching. For more information, see <a href=\"/iot/latest/developerguide/http_batching.html\">Batching HTTP action messages</a>.</p>"
+          "documentation":"<p>The configuration settings for batching. For more information, see <a href=\"https://docs.aws.amazon.com/iot/latest/developerguide/http_batching.html\"> Batching HTTP action messages</a>.</p>"
         }
       },
       "documentation":"<p>Send data to an HTTPS endpoint.</p>"
@@ -16898,6 +16909,40 @@
       },
       "documentation":"<p>Describes how to interpret an application-defined timestamp value from an MQTT message payload and the precision of that value.</p>"
     },
+    "LogDestination":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"^[.\\-_/#A-Za-z0-9]+$"
+    },
+    "LogEventConfiguration":{
+      "type":"structure",
+      "required":["eventType"],
+      "members":{
+        "eventType":{
+          "shape":"LogEventType",
+          "documentation":"<p> The type of event to log. These include event types like Connect, Publish, and Disconnect. </p>"
+        },
+        "logLevel":{
+          "shape":"LogLevel",
+          "documentation":"<p> The logging level for the specified event type. Determines the verbosity of log messages generated for this event type. </p>"
+        },
+        "logDestination":{
+          "shape":"LogDestination",
+          "documentation":"<p> CloudWatch Log Group for event-based logging. Specifies where log events should be sent. The log destination for event-based logging overrides default Log Group for the specified event type and applies to all resources associated with that event. </p>"
+        }
+      },
+      "documentation":"<p> Configuration for event-based logging that specifies which event types to log and their logging settings. Used for account-level logging overrides. </p>"
+    },
+    "LogEventConfigurations":{
+      "type":"list",
+      "member":{"shape":"LogEventConfiguration"}
+    },
+    "LogEventType":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
     "LogGroupName":{"type":"string"},
     "LogLevel":{
       "type":"string",
@@ -19474,6 +19519,10 @@
         "disableAllLogs":{
           "shape":"DisableAllLogs",
           "documentation":"<p>If true all logs are disabled. The default is false.</p>"
+        },
+        "eventConfigurations":{
+          "shape":"LogEventConfigurations",
+          "documentation":"<p> The list of event configurations that override account-level logging. </p>"
         }
       }
     },
@@ -22503,6 +22552,7 @@
       "pattern":"[\\s\\S]*"
     },
     "Variance":{"type":"double"},
+    "VerboseFlag":{"type":"boolean"},
     "VerificationState":{
       "type":"string",
       "enum":[

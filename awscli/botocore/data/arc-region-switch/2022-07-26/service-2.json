@@ -728,6 +728,7 @@
           "shape":"TriggerList",
           "documentation":"<p>The triggers associated with a Region switch plan.</p>"
         },
+        "reportConfiguration":{"shape":"ReportConfiguration"},
         "name":{
           "shape":"PlanName",
           "documentation":"<p>The name of a Region switch plan.</p>"
@@ -814,6 +815,83 @@
     "DeletePlanResponse":{
       "type":"structure",
       "members":{}
+    },
+    "DocumentDbClusterArn":{
+      "type":"string",
+      "pattern":"arn:aws[a-zA-Z-]*:rds:[a-z0-9-]+:\\d{12}:cluster:[a-zA-Z0-9][a-zA-Z0-9-_]{0,99}"
+    },
+    "DocumentDbClusterArns":{
+      "type":"list",
+      "member":{"shape":"DocumentDbClusterArn"}
+    },
+    "DocumentDbConfiguration":{
+      "type":"structure",
+      "required":[
+        "behavior",
+        "globalClusterIdentifier",
+        "databaseClusterArns"
+      ],
+      "members":{
+        "timeoutMinutes":{
+          "shape":"DocumentDbConfigurationTimeoutMinutesInteger",
+          "documentation":"<p>The timeout value specified for the configuration.</p>"
+        },
+        "crossAccountRole":{
+          "shape":"IamRoleArn",
+          "documentation":"<p>The cross account role for the configuration.</p>"
+        },
+        "externalId":{
+          "shape":"String",
+          "documentation":"<p>The external ID (secret key) for the configuration.</p>"
+        },
+        "behavior":{
+          "shape":"DocumentDbDefaultBehavior",
+          "documentation":"<p>The behavior for a global cluster, that is, only allow switchover or also allow failover.</p>"
+        },
+        "ungraceful":{
+          "shape":"DocumentDbUngraceful",
+          "documentation":"<p>The settings for ungraceful execution.</p>"
+        },
+        "globalClusterIdentifier":{
+          "shape":"DocumentDbGlobalClusterIdentifier",
+          "documentation":"<p>The global cluster identifier for a DocumentDB global cluster.</p>"
+        },
+        "databaseClusterArns":{
+          "shape":"DocumentDbClusterArns",
+          "documentation":"<p>The database cluster Amazon Resource Names (ARNs) for a DocumentDB global cluster.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for Amazon DocumentDB global clusters used in a Region switch plan.</p>"
+    },
+    "DocumentDbConfigurationTimeoutMinutesInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "DocumentDbDefaultBehavior":{
+      "type":"string",
+      "enum":[
+        "switchoverOnly",
+        "failover"
+      ]
+    },
+    "DocumentDbGlobalClusterIdentifier":{
+      "type":"string",
+      "pattern":"[A-Za-z][0-9A-Za-z-:._]*"
+    },
+    "DocumentDbUngraceful":{
+      "type":"structure",
+      "members":{
+        "ungraceful":{
+          "shape":"DocumentDbUngracefulBehavior",
+          "documentation":"<p>The settings for ungraceful execution.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for handling failures when performing operations on DocumentDB global clusters.</p>"
+    },
+    "DocumentDbUngracefulBehavior":{
+      "type":"string",
+      "enum":["failover"]
     },
     "Duration":{
       "type":"string",
@@ -1111,7 +1189,8 @@
         "route53HealthCheckConfig":{
           "shape":"Route53HealthCheckConfiguration",
           "documentation":"<p>The Amazon Route 53 health check configuration.</p>"
-        }
+        },
+        "documentDbConfig":{"shape":"DocumentDbConfiguration"}
       },
       "documentation":"<p>Execution block configurations for a workflow in a Region switch plan. An execution block represents a specific type of action to perform during a Region switch.</p>",
       "union":true
@@ -1128,7 +1207,8 @@
         "Parallel",
         "ECSServiceScaling",
         "EKSResourceScaling",
-        "Route53HealthCheck"
+        "Route53HealthCheck",
+        "DocumentDb"
       ]
     },
     "ExecutionComment":{
@@ -1210,7 +1290,8 @@
         "stepCanceled",
         "stepPendingApproval",
         "stepExecutionBehaviorChangedToUngraceful",
-        "stepPendingApplicationHealthMonitor"
+        "stepPendingApplicationHealthMonitor",
+        "planEvaluationWarning"
       ]
     },
     "ExecutionId":{"type":"string"},
@@ -1237,9 +1318,51 @@
         "completedMonitoringApplicationHealth"
       ]
     },
+    "FailedReportErrorCode":{
+      "type":"string",
+      "enum":[
+        "insufficientPermissions",
+        "invalidResource",
+        "configurationError"
+      ]
+    },
+    "FailedReportOutput":{
+      "type":"structure",
+      "members":{
+        "errorCode":{
+          "shape":"FailedReportErrorCode",
+          "documentation":"<p>The error code for the failed report generation.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>The error message for the failed report generation.</p>"
+        }
+      },
+      "documentation":"<p>Information about a report generation that failed.</p>"
+    },
     "Float":{
       "type":"float",
       "box":true
+    },
+    "GeneratedReport":{
+      "type":"structure",
+      "members":{
+        "reportGenerationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the report was generated.</p>"
+        },
+        "reportOutput":{
+          "shape":"ReportOutput",
+          "documentation":"<p>The output location or cause of a failure in report generation.</p>"
+        }
+      },
+      "documentation":"<p>Information about a generated execution report.</p>"
+    },
+    "GeneratedReportDetails":{
+      "type":"list",
+      "member":{"shape":"GeneratedReport"},
+      "max":1,
+      "min":0
     },
     "GetPlanEvaluationStatusRequest":{
       "type":"structure",
@@ -1385,6 +1508,10 @@
         "actualRecoveryTime":{
           "shape":"Duration",
           "documentation":"<p>The actual recovery time that Region switch calculates for a plan execution. Actual recovery time includes the time for the plan to run added to the time elapsed until the application health alarms that you've specified are healthy again.</p>"
+        },
+        "generatedReportDetails":{
+          "shape":"GeneratedReportDetails",
+          "documentation":"<p>Information about the location of a generated report, or the cause of its failure.</p>"
         },
         "nextToken":{
           "shape":"String",
@@ -1966,6 +2093,10 @@
           "shape":"TriggerList",
           "documentation":"<p>The triggers for a plan.</p>"
         },
+        "reportConfiguration":{
+          "shape":"ReportConfiguration",
+          "documentation":"<p>The report configuration for a plan.</p>"
+        },
         "name":{
           "shape":"PlanName",
           "documentation":"<p>The name for a plan.</p>"
@@ -2073,6 +2204,48 @@
       "type":"map",
       "key":{"shape":"Region"},
       "value":{"shape":"KubernetesScalingResource"}
+    },
+    "ReportConfiguration":{
+      "type":"structure",
+      "members":{
+        "reportOutput":{
+          "shape":"ReportOutputList",
+          "documentation":"<p>The output configuration for the report.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for automatic report generation for plan executions. When configured, Region switch automatically generates a report after each plan execution that includes execution events, plan configuration, and CloudWatch alarm states.</p>"
+    },
+    "ReportOutput":{
+      "type":"structure",
+      "members":{
+        "s3ReportOutput":{
+          "shape":"S3ReportOutput",
+          "documentation":"<p>Information about a report delivered to Amazon S3.</p>"
+        },
+        "failedReportOutput":{
+          "shape":"FailedReportOutput",
+          "documentation":"<p>The details about a failed report generation.</p>"
+        }
+      },
+      "documentation":"<p>The output location or cause of a failure in report generation.</p>",
+      "union":true
+    },
+    "ReportOutputConfiguration":{
+      "type":"structure",
+      "members":{
+        "s3Configuration":{
+          "shape":"S3ReportOutputConfiguration",
+          "documentation":"<p>Configuration for delivering reports to an Amazon S3 bucket.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for report output destinations used in a Region switch plan.</p>",
+      "union":true
+    },
+    "ReportOutputList":{
+      "type":"list",
+      "member":{"shape":"ReportOutputConfiguration"},
+      "max":1,
+      "min":1
     },
     "ResourceArn":{"type":"string"},
     "ResourceNotFoundException":{
@@ -2267,6 +2440,36 @@
         "On",
         "Off"
       ]
+    },
+    "S3ReportOutput":{
+      "type":"structure",
+      "members":{
+        "s3ObjectKey":{
+          "shape":"String",
+          "documentation":"<p>The S3 object key where the generated report is stored.</p>"
+        }
+      },
+      "documentation":"<p>Information about a report delivered to Amazon S3.</p>"
+    },
+    "S3ReportOutputConfiguration":{
+      "type":"structure",
+      "members":{
+        "bucketPath":{
+          "shape":"S3ReportOutputConfigurationBucketPathString",
+          "documentation":"<p>The S3 bucket name and optional prefix where reports are stored. Format: bucket-name or bucket-name/prefix.</p>"
+        },
+        "bucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID that owns the S3 bucket. Required to ensure the bucket is still owned by the same expected owner at generation time.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for delivering generated reports to an Amazon S3 bucket.</p>"
+    },
+    "S3ReportOutputConfigurationBucketPathString":{
+      "type":"string",
+      "max":512,
+      "min":3,
+      "pattern":"(?:s3://)?[a-z0-9][a-z0-9-]{1,61}[a-z0-9](?:/[^/ ][^/]*)*/?"
     },
     "Service":{
       "type":"structure",
@@ -2673,6 +2876,10 @@
         "triggers":{
           "shape":"TriggerList",
           "documentation":"<p>The updated conditions that can automatically trigger the execution of the plan.</p>"
+        },
+        "reportConfiguration":{
+          "shape":"ReportConfiguration",
+          "documentation":"<p>The updated report configuration for the plan.</p>"
         }
       }
     },

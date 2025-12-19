@@ -12,7 +12,7 @@
 # language governing permissions and limitations under the License.
 
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 
 import dateutil.parser
 
@@ -155,9 +155,9 @@ class ManagedResource:
             lines.append(f"  Reason: {self.reason}")
 
         if self.updated_at:
-            updated_time = datetime.fromtimestamp(self.updated_at).strftime(
-                "%Y-%m-%d %H:%M:%S"
-            )
+            updated_time = datetime.fromtimestamp(
+                self.updated_at, tz=timezone.utc
+            ).strftime("%Y-%m-%d %H:%M:%SZ")
             lines.append(f"  Last Updated At: {updated_time}")
 
         if self.additional_info:

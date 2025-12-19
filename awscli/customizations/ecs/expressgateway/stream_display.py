@@ -14,6 +14,7 @@
 """Stream display implementation for ECS Express Gateway Service monitoring."""
 
 import time
+from datetime import datetime, timezone
 
 from awscli.customizations.ecs.expressgateway.managedresourcegroup import (
     ManagedResourceGroup,
@@ -108,4 +109,4 @@ class StreamDisplay:
 
     def _get_timestamp(self):
         """Get formatted timestamp."""
-        return time.strftime("%Y-%m-%d %H:%M:%S")
+        return datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%SZ")

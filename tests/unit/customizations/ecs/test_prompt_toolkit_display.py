@@ -13,7 +13,7 @@ class TestPromptToolkitDisplay:
     @pytest.fixture
     def display(self):
         with create_app_session(output=DummyOutput()):
-            return Display()
+            yield Display()
 
     def test_init(self, display):
         """Test Display initialization."""

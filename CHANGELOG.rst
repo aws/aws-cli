@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.32.21
+=======
+
+* api-change:``qbusiness``: It is a internal bug fix for region expansion
+* api-change:``iot``: This release adds event-based logging feature that enables granular event logging controls for AWS IoT logs.
+* api-change:``connect``: Adding support for Custom Metrics and Pre-Defined Attributes to GetCurrentMetricData API.
+* api-change:``workspaces-web``: Add support for WebAuthn under user settings.
+* api-change:``wickr``: AWS Wickr now provides a suite of admin APIs to allow you to programmatically manage secure communication for Wickr networks at scale. These APIs enable you to automate administrative workflows including user lifecycle management, network configuration, and security group administration.
+* api-change:``emr-serverless``: Added JobLevelCostAllocationConfiguration field to enable cost allocation reporting at the job level, providing more granular visibility into EMR Serverless charges
+* api-change:``arc-region-switch``: Automatic Plan Execution Reports allow customers to maintain a concise record of their Region switch Plan executions.  This enables customer SREs and leadership to have a clear view of their recovery posture based on the generated reports for their Plan executions.
+
+
 2.32.20
 =======
 

@@ -19,20 +19,40 @@ from awscli.clidriver import create_clidriver
 def _generate_command_tests():
     driver = create_clidriver()
     help_command = driver.create_help_command()
-    top_level_params = set(driver.create_help_command().arg_table)
+    top_level_params = set(driver.create_help_command().arg_table.keys())
     for command_name, command_obj in list(help_command.command_table.items()):
         sub_help = command_obj.create_help_command()
         if hasattr(sub_help, 'command_table'):
             for sub_name, sub_command in sub_help.command_table.items():
-                yield command_name, sub_name, sub_command, top_level_params
+                op_help = sub_command.create_help_command()
+                model = op_help.obj
+                arg_table = op_help.arg_table
+                if not isinstance(model, OperationModel):
+                    continue
+                yield (
+                    command_name,
+                    sub_name,
+                    model.service_model.service_name,
+                    model.name,
+                    arg_table,
+                    top_level_params
+                )
 
 
 @pytest.mark.validates_models
 @pytest.mark.parametrize(
-    "command_name, sub_name, sub_command, builtins", _generate_command_tests()
+    "command_name, sub_name, service_name, "
+    "operation_name, arg_table, builtins",
+    _generate_command_tests()
 )
 def test_no_shadowed_builtins(
-    command_name, sub_name, sub_command, builtins, record_property
+        command_name,
+        sub_name,
+        service_name,
+        operation_name,
+        arg_table,
+        builtins,
+        record_property
 ):
     """Verify no command params are shadowed or prefixed by the built-in param.
 
@@ -60,9 +80,6 @@ def test_no_shadowed_builtins(
 
     """
     errors = []
-    op_help = sub_command.create_help_command()
-    model = op_help.obj
-    arg_table = op_help.arg_table
     for arg_name in arg_table:
         if any(p.startswith(arg_name) for p in builtins):
             # Then we are shadowing or prefixing a top level argument
@@ -71,11 +88,10 @@ def test_no_shadowed_builtins(
                 f'{command_name}.{sub_name}.{arg_name}'
             )
     if errors:
-        if isinstance(model, OperationModel):
-            # Store the service and operation in
-            # PyTest custom properties
-            record_property(
-                'aws_service', model.service_model.service_name
-            )
-            record_property('aws_operation', model.name)
+        # Store the service and operation in
+        # PyTest custom properties
+        record_property(
+            'aws_service', service_name
+        )
+        record_property('aws_operation', operation_name)
         raise AssertionError('\n' + '\n'.join(errors))

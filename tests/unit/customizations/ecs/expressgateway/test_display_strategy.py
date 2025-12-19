@@ -256,7 +256,6 @@ class TestTextOnlyDisplayStrategy:
         output = capsys.readouterr().out
         printed_output = output
         assert "Starting monitoring" in printed_output
-        assert "Polling for updates" in printed_output
         assert "stopped by user" in printed_output
         assert "complete" in printed_output
 

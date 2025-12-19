@@ -199,8 +199,6 @@ class TextOnlyDisplayStrategy(DisplayStrategy):
                     break
 
                 try:
-                    self.stream_display.show_polling_message()
-
                     collector.get_current_view("")
 
                     # Extract cached result for diff detection

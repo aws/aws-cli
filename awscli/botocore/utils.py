@@ -4082,7 +4082,6 @@ CLIENT_NAME_TO_HYPHENIZED_SERVICE_ID_OVERRIDES = {
     'ds-data': 'directory-service-data',
     'dynamodbstreams': 'dynamodb-streams',
     'elasticbeanstalk': 'elastic-beanstalk',
-    'elastictranscoder': 'elastic-transcoder',
     'elb': 'elastic-load-balancing',
     'elbv2': 'elastic-load-balancing-v2',
     'es': 'elasticsearch-service',

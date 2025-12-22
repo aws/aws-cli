@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.44.5
+======
+
+* api-change:``config``: Added supported resourceTypes for Config from July to November 2025
+* api-change:``ec2``: Adds support for linkedGroupId on the CreatePlacementGroup and DescribePlacementGroups APIs. The linkedGroupId parameter is reserved for future use.
+* api-change:``guardduty``: Make accountIds a required field in GetRemainingFreeTrialDays API to reflect service behavior.
+* api-change:``pcs``: Change API Reference Documentation for default Mode in Accounting and SlurmRest
+
+
 1.44.4
 ======
 

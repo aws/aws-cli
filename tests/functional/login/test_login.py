@@ -230,3 +230,104 @@ def test_new_profile_without_region(
         },
         'configfile',
     )
+
+
+@pytest.mark.parametrize(
+    'profile_config,expect_prompt_to_be_called',
+    [
+        pytest.param({}, False, id="Empty profile"),
+        pytest.param(
+            {'login_session': 'arn:aws:iam::0123456789012:user/Admin'},
+            False,
+            id="Existing login profile",
+        ),
+        pytest.param(
+            {'web_identity_token_file': '/path'},
+            True,
+            id="Web Identity Token profile",
+        ),
+        pytest.param({'sso_role_name': 'role'}, True, id="SSO profile"),
+        pytest.param(
+            {'aws_access_key_id': 'AKIAIOSFODNN7EXAMPLE'},
+            True,
+            id="IAM access key profile",
+        ),
+        pytest.param(
+            {'role_arn': 'arn:aws:iam::123456789012:role/MyRole'},
+            True,
+            id="Assume role profile",
+        ),
+        pytest.param(
+            {'credential_process': '/path/to/credential/process'},
+            True,
+            id="Credential process profile",
+        ),
+    ],
+)
+@mock.patch('awscli.customizations.login.login.compat_input', return_value='y')
+@mock.patch('awscli.customizations.login.utils.get_base_sign_in_uri')
+@mock.patch(
+    'awscli.customizations.login.utils.SameDeviceLoginTokenFetcher.fetch_token'
+)
+def test_accept_change_to_existing_profile_if_needed(
+    mock_token_fetcher,
+    mock_base_sign_in_uri,
+    mock_input,
+    mock_login_command,
+    mock_session,
+    profile_config,
+    expect_prompt_to_be_called,
+):
+    mock_base_sign_in_uri.return_value = 'https://foo'
+    mock_token_fetcher.return_value = (
+        {
+            'accessToken': 'access_token',
+            'idToken': SAMPLE_ID_TOKEN,
+            'expiresIn': 3600,
+        },
+        'arn:aws:iam::0123456789012:user/Admin',
+    )
+    mock_session.full_config = {'profiles': {'profile-name': profile_config}}
+
+    mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
+    mock_token_fetcher.assert_called_once()
+
+    assert mock_input.called == expect_prompt_to_be_called
+
+
+@mock.patch('awscli.customizations.login.login.compat_input', return_value='n')
+@mock.patch('awscli.customizations.login.utils.get_base_sign_in_uri')
+@mock.patch(
+    'awscli.customizations.login.utils.SameDeviceLoginTokenFetcher.fetch_token'
+)
+def test_decline_change_to_existing_profile_does_not_update(
+    mock_token_fetcher,
+    mock_base_sign_in_uri,
+    mock_input,
+    mock_login_command,
+    mock_session,
+    mock_config_file_writer,
+    mock_token_loader,
+):
+    mock_base_sign_in_uri.return_value = 'https://foo'
+    mock_token_fetcher.return_value = (
+        {
+            'accessToken': 'access_token',
+            'idToken': SAMPLE_ID_TOKEN,
+            'expiresIn': 3600,
+        },
+        'arn:aws:iam::0123456789012:user/Admin',
+    )
+    mock_session.full_config = {
+        'profiles': {
+            'profile-name': {'aws_access_key_id': 'AKIAIOSFODNN7EXAMPLE'}
+        }
+    }
+
+    mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
+
+    # Because we mocked 'n' to compat_input above, we don't expect the command
+    # to have finished when the user declines the existing credential prompt
+    mock_input.assert_called_once()
+    mock_token_loader.save_token.assert_not_called()
+    mock_config_file_writer.update_config.assert_not_called()

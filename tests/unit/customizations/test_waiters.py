@@ -181,7 +181,7 @@ class TestWait(BaseAWSCommandParamsTest):
         self.parsed_response = {'Table': {'TableStatus': 'ACTIVE'}}
         self.assert_params_for_cmd(cmdline, result)
 
-    def test_elastictranscoder_jobs_complete(self):
+    def test_rdb_jobs_complete(self):
         cmdline = 'rds wait db-instance-available'
         cmdline += ' --db-instance-identifier abc'
         result = {'DBInstanceIdentifier': 'abc'}

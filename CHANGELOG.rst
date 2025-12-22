@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.32.22
+=======
+
+* enhancement:``ecs``: Introduces a text-only mode to the existing ECS Express Mode service commands. Text-only mode can be enabled via using the ``--mode TEXT-ONLY`` flag with the ``ecs monitor-express-gateway-service`` command, or via using the ``--monitor-mode TEXT-ONLY`` and ``--monitor-resources`` flags with the ``ecs create-express-gateway-service``, ``ecs update-express-gateway-service``, or ``ecs delete-express-gateway-service`` commands.
+* api-change:``guardduty``: Make accountIds a required field in GetRemainingFreeTrialDays API to reflect service behavior.
+* api-change:``config``: Added supported resourceTypes for Config from July to November 2025
+* api-change:``pcs``: Change API Reference Documentation for default Mode in Accounting and SlurmRest
+* api-change:``ec2``: Adds support for linkedGroupId on the CreatePlacementGroup and DescribePlacementGroups APIs. The linkedGroupId parameter is reserved for future use.
+
+
 2.32.21
 =======
 

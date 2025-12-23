@@ -747,6 +747,8 @@ class PTKStubber:
     _ALLOWED_SELECT_MENU_KWARGS = {
         "display_format",
         "max_height",
+        "enable_filter",
+        "no_results_message",
     }
 
     def __init__(self, user_inputs=None):
@@ -1484,6 +1486,66 @@ class TestConfigureSSOCommand:
         sso_cmd = sso_cmd_factory(session=session)
         assert sso_cmd(args, parsed_globals) == 0
 
+    def test_multiple_accounts_uses_filterable_menu(
+        self,
+        sso_cmd,
+        ptk_stubber,
+        aws_config,
+        stub_sso_list_roles,
+        stub_sso_list_accounts,
+        mock_do_sso_login,
+        botocore_session,
+        args,
+        parsed_globals,
+        configure_sso_legacy_inputs,
+        capsys,
+    ):
+        """Test that multiple accounts selection shows filter instructions"""
+        inputs = configure_sso_legacy_inputs
+        selected_account_id = inputs.account_id_select.answer["accountId"]
+        ptk_stubber.user_inputs = inputs
+
+        stub_sso_list_accounts(inputs.account_id_select.expected_choices)
+        stub_sso_list_roles(
+            inputs.role_name_select.expected_choices,
+            expected_account_id=selected_account_id,
+        )
+
+        sso_cmd(args, parsed_globals)
+
+        # Verify the filter instructions are shown for multiple accounts
+        stdout = capsys.readouterr().out
+        assert "Use arrow keys to navigate, type to filter" in stdout
+        assert "There are 2 AWS accounts available to you" in stdout
+
+    def test_single_account_does_not_use_filterable_menu(
+        self,
+        sso_cmd,
+        ptk_stubber,
+        aws_config,
+        stub_simple_single_item_sso_responses,
+        mock_do_sso_login,
+        botocore_session,
+        args,
+        parsed_globals,
+        configure_sso_legacy_inputs,
+        account_id,
+        role_name,
+        capsys,
+    ):
+        """Test that single account does not show filter instructions"""
+        inputs = configure_sso_legacy_inputs
+        inputs.skip_account_and_role_selection()
+        ptk_stubber.user_inputs = inputs
+        stub_simple_single_item_sso_responses(account_id, role_name)
+
+        sso_cmd(args, parsed_globals)
+
+        # Verify the filter instructions are NOT shown for single account
+        stdout = capsys.readouterr().out
+        assert "Use arrow keys to navigate, type to filter" not in stdout
+        assert "The only AWS account available to you is" in stdout
+
     def test_single_account_single_role_device_code_fallback(
         self,
         sso_cmd,
@@ -1524,12 +1586,109 @@ class TestConfigureSSOCommand:
             ],
         )
 
+    def test_accounts_are_sorted_by_name(
+        self,
+        sso_cmd,
+    ):
+        """Test that accounts are sorted by accountName"""
+        from unittest.mock import Mock
+
+        # Create accounts in non-alphabetical order
+        unsorted_accounts = [
+            {
+                "accountId": "333333333333",
+                "accountName": "Zulu",
+                "emailAddress": "zulu@example.com",
+            },
+            {
+                "accountId": "111111111111",
+                "accountName": "Alpha",
+                "emailAddress": "alpha@example.com",
+            },
+            {
+                "accountId": "222222222222",
+                "accountName": "Beta",
+                "emailAddress": "beta@example.com",
+            },
+        ]
+
+        # Mock _get_all_accounts to return unsorted accounts
+        sso_cmd._get_all_accounts = Mock(
+            return_value={"accountList": unsorted_accounts}
+        )
+
+        # Create a mock selector to capture the sorted accounts
+        mock_selector = Mock(
+            return_value={
+                "accountId": "111111111111",
+                "accountName": "Alpha",
+                "emailAddress": "alpha@example.com",
+            }
+        )
+        sso_cmd._selector = mock_selector
+
+        # Call the method directly to test sorting
+        sso_account_id = sso_cmd._prompt_for_account(
+            Mock(), {"accessToken": "test-token"}  # sso client mock
+        )
+
+        # Verify the selector was called with sorted accounts
+        mock_selector.assert_called_once()
+        called_accounts = mock_selector.call_args[0][0]
+
+        # Verify accounts were sorted alphabetically by name
+        assert len(called_accounts) == 3
+        assert called_accounts[0]["accountName"] == "Alpha"
+        assert called_accounts[1]["accountName"] == "Beta"
+        assert called_accounts[2]["accountName"] == "Zulu"
+        assert sso_account_id == "111111111111"
+
+    def test_roles_are_sorted_by_name(
+        self,
+        sso_cmd,
+    ):
+        """Test that roles are sorted by roleName"""
+        from unittest.mock import Mock
+
+        # Create roles in non-alphabetical order
+        unsorted_roles = [
+            {"roleName": "PowerUser"},
+            {"roleName": "Administrator"},
+            {"roleName": "ReadOnly"},
+        ]
+
+        # Mock _get_all_roles to return unsorted roles
+        sso_cmd._get_all_roles = Mock(return_value={"roleList": unsorted_roles})
+
+        # Create a mock selector to capture the sorted roles
+        mock_selector = Mock(return_value="Administrator")
+        original_selector = sso_cmd._selector
+        sso_cmd._selector = mock_selector
+
+        # Call the method directly to test sorting
+        sso_role_name = sso_cmd._prompt_for_role(
+            Mock(),  # sso client mock
+            {"accessToken": "test-token"},
+            "111111111111",
+        )
+
+        # Verify the selector was called with sorted role names
+        mock_selector.assert_called()
+        called_role_names = mock_selector.call_args[0][0]
+
+        # Verify roles were sorted alphabetically
+        assert len(called_role_names) == 3
+        assert called_role_names[0] == "Administrator"
+        assert called_role_names[1] == "PowerUser"
+        assert called_role_names[2] == "ReadOnly"
+        assert sso_role_name == "Administrator"
+
 
 class TestPrintConclusion:
     def test_print_conclusion_default_profile_with_credentials(
         self, sso_cmd, capsys
     ):
-        sso_cmd._print_conclusion(True, 'default')
+        sso_cmd._print_conclusion(True, "default")
         captured = capsys.readouterr()
         assert (
             "The AWS CLI is now configured to use the default profile."
@@ -1564,7 +1723,7 @@ class TestPrintConclusion:
     def test_print_conclusion_default_profile_case_insensitive(
         selfself, sso_cmd, capsys
     ):
-        sso_cmd._print_conclusion(True, 'DEFAULT')
+        sso_cmd._print_conclusion(True, "DEFAULT")
         captured = capsys.readouterr()
         assert (
             "The AWS CLI is now configured to use the default profile."
@@ -1750,9 +1909,7 @@ class TestPTKPrompt(unittest.TestCase):
 
     def test_can_provide_toolbar(self):
         toolbar = "Toolbar content"
-        self.prompter.get_value(
-            "default_value", "Prompt Text", toolbar=toolbar
-        )
+        self.prompter.get_value("default_value", "Prompt Text", toolbar=toolbar)
         self.assert_expected_toolbar(toolbar)
 
     def test_can_provide_prompt_format(self):

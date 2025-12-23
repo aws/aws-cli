@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+1.44.6
+======
+
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``geo-places``: Adds support for InferredSecondaryAddress place type, Designator in SecondaryAddressComponent and Heading in ReverseGeocode.
+* api-change:``pinpoint-sms-voice-v2``: This release adds support for the Registration Reviewer feature, which provides generative AI feedback on a phone number or sender ID registration to ensure completeness before sending to downstream (carrier) review.
+* api-change:``s3``: Add additional validation to Outpost bucket names.
+* enhancement:``s3``: Adds new parameter ``--case-conflict`` that configures how case conflicts are handled on case-insensitive filesystems
+
+
 1.44.5
 ======
 

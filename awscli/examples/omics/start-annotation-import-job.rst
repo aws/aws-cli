@@ -14,4 +14,4 @@ Output::
         "jobId": "984162c7-xmpl-4d23-ab47-286f7950bfbf"
     }
 
-For more information, see `Omics Analytics <https://docs.aws.amazon.com/omics/latest/dev/omics-analytics.html>`__ in the *Amazon Omics Developer Guide*.
+For more information, see `HealthOmics Analytics <https://docs.aws.amazon.com/omics/latest/dev/omics-analytics.html>`__ in the *AWS HealthOmics User Guide*.

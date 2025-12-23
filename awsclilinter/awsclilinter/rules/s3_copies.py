@@ -9,16 +9,17 @@ class S3CopyRule(LintRule):
     """Detects AWS CLI high-level s3 cp/mv/sync bucket-to-bucket commands."""
 
     def _follows_s3_bucket_any_kind(self):
+        # Returns a rule that ensures the pattern comes after an S3 bucket.
         return {
             "follows": {
                 "stopBy": "end",
                 "any": [
-                    # Occurs after unquoted S3 bucket
+                    # Occurs after unquoted S3 bucket (e.g. s3://bucket).
                     {
                         "kind": "word",
                         "regex": "\\As3://",
                     },
-                    # Occurs after double-quoted S3 bucket
+                    # Occurs after double-quoted S3 bucket (e.g. "s3://bucket").
                     {
                         "kind": "string",
                         "has": {
@@ -27,12 +28,12 @@ class S3CopyRule(LintRule):
                             "regex": "\\As3://",
                         }
                     },
-                    # Occurs after raw-string S3 bucket
+                    # Occurs after raw-string S3 bucket (e.g. 's3://bucket').
                     {
                         "kind": "raw_string",
                         "regex": "\\As3://",
                     },
-                    # Occurs after concatenated S3 bucket
+                    # Occurs after concatenated S3 bucket (e.g. s3://$S3_BUCKET_NAME).
                     {
                         "kind": "concatenation",
                         "has": {
@@ -92,6 +93,7 @@ class S3CopyRule(LintRule):
                     "kind": "word",
                     "pattern": "s3",
                 }},
+                # The command is either cp, mv, or sync
                 {"has": {
                     "any": [
                         {
@@ -108,35 +110,17 @@ class S3CopyRule(LintRule):
                         }
                     ]
                 }},
-                {"any": [
-                    {
-                        "has": {
-                            "kind": "word",
-                            "pattern": "cp",
-                        }
-                    },
-                    {
-                        "has": {
-                            "kind": "word",
-                            "pattern": "mv",
-                        }
-                    },
-                    {
-                        "has": {
-                            "kind": "word",
-                            "pattern": "sync",
-                        }
-                    }
-                ]},
+                # The command has two S3 buckets (signifies a bucket-to-bucket copy).
                 {"has": {
                     "any": [
-                        # Unquoted S3 bucket
+                        # Has an S3 bucket followed by an unquoted S3 bucket (e.g. s3://bucket).
                         {
                             "kind": "word",
                             "regex": "\\As3://",
                             **self._follows_s3_bucket_any_kind(),
                         },
-                        # Double-quoted S3 bucket
+                        # Has an S3 bucket followed by a
+                        # double-quoted S3 bucket (e.g. "s3://bucket").
                         {
                             "kind": "string",
                             "has": {
@@ -146,13 +130,15 @@ class S3CopyRule(LintRule):
                             },
                             **self._follows_s3_bucket_any_kind(),
                         },
-                        # Raw-string S3 bucket
+                        # Has an S3 bucket followed by a
+                        # raw-string S3 bucket (e.g. 's3://bucket').
                         {
                             "kind": "raw_string",
                             "regex": "\\As3://",
                             **self._follows_s3_bucket_any_kind(),
                         },
-                        # Concatenated S3 bucket
+                        # Has an S3 bucket followed by a
+                        # concatenated S3 bucket (e.g. s3://$S3_BUCKET_NAME).
                         {
                             "kind": "concatenation",
                             "has": {

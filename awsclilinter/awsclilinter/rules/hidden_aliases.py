@@ -130,6 +130,7 @@ _HIDDEN_ALIASES = [
         "operation": "register-volume",
         "alternative": "ec2-volume-id",
         "alias": "ec-2-volume-id",
+        "deprecated": True,
     },
 ]
 
@@ -137,11 +138,19 @@ _HIDDEN_ALIASES = [
 class HiddenAliasRule(LintRule):
     """Detects AWS CLI commands using hidden aliases."""
 
-    def __init__(self, alias: str, alternative: str, service: str, operation: str):
+    def __init__(
+        self,
+        alias: str,
+        alternative: str,
+        service: str,
+        operation: str,
+        deprecated: bool = False,
+    ):
         self._hidden_alias = alias
         self._alternative = alternative
         self._service = service
         self._operation = operation
+        self._deprecated = deprecated
 
     @property
     def name(self) -> str:
@@ -150,11 +159,20 @@ class HiddenAliasRule(LintRule):
     @property
     def description(self) -> str:
         return (
-            f"In AWS CLI v2, the hidden alias {self._hidden_alias} was removed."
-            "You must replace usage of the obsolete alias with the corresponding "
-            f"working parameter: {self._alternative}. See "
-            "https://docs.aws.amazon.com/cli/latest/userguide"
-            "/cliv2-migration-changes.html#cliv2-migration-aliases."
+            (
+                f"In AWS CLI v2, the hidden alias {self._hidden_alias} was removed. "
+                "You must replace usage of the obsolete alias with the corresponding "
+                f"working parameter: {self._alternative}. See "
+                "https://docs.aws.amazon.com/cli/latest/userguide"
+                "/cliv2-migration-changes.html#cliv2-migration-aliases."
+            )
+            if not self._deprecated
+            else (
+                f"In AWS CLI v2, The hidden alias {self._hidden_alias} was removed. "
+                f"Additionally, the {self._service} service was deprecated and removed. See "
+                "https://docs.aws.amazon.com/cli/latest/userguide"
+                "/cliv2-migration-changes.html#cliv2-migration-aliases."
+            )
         )
 
     def check(self, root: SgRoot) -> List[LintFinding]:
@@ -198,6 +216,7 @@ def create_all_hidden_alias_rules() -> List[HiddenAliasRule]:
             alternative=hidden_alias_def["alternative"],
             service=hidden_alias_def["service"],
             operation=hidden_alias_def["operation"],
+            deprecated=hidden_alias_def.get("deprecated", False),
         )
         for hidden_alias_def in _HIDDEN_ALIASES
     ]

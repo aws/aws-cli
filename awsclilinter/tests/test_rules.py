@@ -104,7 +104,9 @@ class TestDeployEmptyChangesetRule:
 
     def test_no_detection_with_no_fail_flag(self):
         """Test no detection when --no-fail-on-empty-changeset is present."""
-        script = "aws cloudformation deploy --template-file template.yaml --no-fail-on-empty-changeset"
+        script = (
+            "aws cloudformation deploy --template-file template.yaml --no-fail-on-empty-changeset"
+        )
         root = SgRoot(script, "bash")
         rule = DeployEmptyChangesetRule()
         findings = rule.check(root)
@@ -172,7 +174,9 @@ class TestHiddenAliasRule:
 
     def test_rule_properties(self):
         """Test rule description."""
-        rule = HiddenAliasRule("authentication-code-1", "authentication-code1", "iam", "enable-mfa-device")
+        rule = HiddenAliasRule(
+            "authentication-code-1", "authentication-code1", "iam", "enable-mfa-device"
+        )
         assert "authentication-code-1" in rule.description
         assert "authentication-code1" in rule.description
 
@@ -180,7 +184,9 @@ class TestHiddenAliasRule:
         """Test detection of hidden alias usage."""
         script = "aws iam enable-mfa-device --user-name Bob --authentication-code-1 123456"
         root = SgRoot(script, "bash")
-        rule = HiddenAliasRule("authentication-code-1", "authentication-code1", "iam", "enable-mfa-device")
+        rule = HiddenAliasRule(
+            "authentication-code-1", "authentication-code1", "iam", "enable-mfa-device"
+        )
         findings = rule.check(root)
 
         assert len(findings) == 1
@@ -190,7 +196,9 @@ class TestHiddenAliasRule:
         """Test no detection when correct parameter is used."""
         script = "aws iam enable-mfa-device --user-name Bob --authentication-code1 123456"
         root = SgRoot(script, "bash")
-        rule = HiddenAliasRule("authentication-code-1", "authentication-code1", "iam", "enable-mfa-device")
+        rule = HiddenAliasRule(
+            "authentication-code-1", "authentication-code1", "iam", "enable-mfa-device"
+        )
         findings = rule.check(root)
 
         assert len(findings) == 0

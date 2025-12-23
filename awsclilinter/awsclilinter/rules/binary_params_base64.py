@@ -18,16 +18,17 @@ class Base64BinaryFormatRule(LintRule):
         return (
             "In AWS CLI v2, an input parameter typed as binary large object (BLOB) expects "
             "the input to be base64-encoded. To retain v1 behavior after upgrading to AWS CLI v2, "
-            "add `--cli-binary-format raw-in-base64-out`."
+            "add `--cli-binary-format raw-in-base64-out`. See https://docs.aws.amazon.com/cli/"
+            "latest/userguide/cliv2-migration-changes.html#cliv2-migration-binaryparam."
         )
 
     def check(self, root: SgRoot) -> List[LintFinding]:
         """Check for AWS CLI commands missing --cli-binary-format."""
         node = root.root()
         base64_broken_nodes = node.find_all(
-            all=[
+            all=[  # type: ignore[arg-type]
                 {"kind": "command"},
-                {"pattern": "aws $SERVICE $OPERATION $$$ARGS"},
+                {"pattern": "aws $SERVICE $OPERATION"},
                 {"not": {"has": {"kind": "word", "pattern": "--cli-binary-format"}}},
             ]
         )

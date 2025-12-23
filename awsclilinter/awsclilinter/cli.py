@@ -9,8 +9,11 @@ from ast_grep_py.ast_grep_py import SgRoot
 from awsclilinter import linter
 from awsclilinter.linter import parse
 from awsclilinter.rules import LintFinding, LintRule
-from awsclilinter.rules.base64_rule import Base64BinaryFormatRule
-from awsclilinter.rules.pagination_rule import PaginationRule
+from awsclilinter.rules.binary_params_base64 import Base64BinaryFormatRule
+from awsclilinter.rules.default_pager import DefaultPagerRule
+from awsclilinter.rules.deploy_empty_changeset import DeployEmptyChangesetRule
+from awsclilinter.rules.hidden_aliases import create_all_hidden_alias_rules
+from awsclilinter.rules.s3_copies import S3CopyRule
 
 # ANSI color codes
 RED = "\033[31m"
@@ -76,7 +79,7 @@ def display_finding(finding: LintFinding, index: int, script_content: str):
             print(f"\n{CYAN}{line}{RESET}")
         elif line.startswith("-"):
             # Removed line
-            print(f"{RED}{line}{RESET}", end="")
+            print(f"{RED}{line}{RESET}\n", end="")
         elif line.startswith("+"):
             # Added line
             print(f"{GREEN}{line}{RESET}", end="")
@@ -202,7 +205,13 @@ def main():
 
     script_content = script_path.read_text()
 
-    rules = [Base64BinaryFormatRule(), PaginationRule()]
+    rules = [
+        Base64BinaryFormatRule(),
+        DefaultPagerRule(),
+        S3CopyRule(),
+        DeployEmptyChangesetRule(),
+        *create_all_hidden_alias_rules(),
+    ]
 
     if args.interactive:
         current_ast = parse(script_content)

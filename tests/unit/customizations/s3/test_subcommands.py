@@ -503,7 +503,8 @@ class CommandArchitectureTest(BaseAWSCommandParamsTest):
                   'paths_type': 's3local', 'region': 'us-east-1',
                   'endpoint_url': None, 'verify_ssl': None,
                   'follow_symlinks': True, 'page_size': None,
-                  'is_stream': False, 'source_region': None, 'v2_debug': False}
+                  'is_stream': False, 'source_region': None, 'v2_debug': False,
+                  'case_conflict': 'ignore'}
         self.parsed_responses = [{"ETag": "abcd", "ContentLength": 100,
                                   "LastModified": "2014-01-09T20:45:49.000Z"}]
         config = RuntimeConfig().build_config()

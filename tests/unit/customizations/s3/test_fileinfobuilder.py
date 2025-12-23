@@ -28,7 +28,9 @@ class TestFileInfoBuilder(unittest.TestCase):
                           src_type='src_type', dest_type='dest_type',
                           operation_name='operation_name',
                           response_data='associated_response_data',
-                          etag='etag',)]
+                          etag='etag',
+                          case_conflict_submitted='case_conflict_submitted',
+                          case_conflict_key='case_conflict_key',)]
         file_infos = info_setter.call(files)
         for file_info in file_infos:
             attributes = file_info.__dict__.keys()

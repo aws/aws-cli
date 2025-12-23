@@ -249,7 +249,6 @@ def main():
         DefaultPagerRule(),
         S3CopyRule(),
         DeployEmptyChangesetRule(),
-        EcrGetLoginRule(),
         *create_all_hidden_alias_rules(),
         # Rules that do not automatically generate fixes go last
         EcrGetLoginRule(),

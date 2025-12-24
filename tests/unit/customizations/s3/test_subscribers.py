@@ -28,6 +28,7 @@ from awscli.customizations.s3 import utils
 from awscli.customizations.s3.fileinfo import FileInfo
 from awscli.customizations.s3.results import WarningResult
 from awscli.customizations.s3.subscribers import (
+    CaseConflictCleanupSubscriber,
     CopyPropsSubscriberFactory,
     CreateDirectoryError,
     DeleteCopySourceObjectSubscriber,
@@ -751,3 +752,17 @@ class TestSetTagsSubscriber(BaseCopyPropsSubscriberTest):
         self.client.delete_object.assert_called_once_with(
             Bucket=self.bucket, Key=self.key, RequestPayer='requester'
         )
+
+
+class TestCaseConflictCleanupSubscriber:
+    def test_on_done_removes_key_from_set(self):
+        submitted = {123, 456}
+        subscriber = CaseConflictCleanupSubscriber(submitted, 123)
+        subscriber.on_done(future=None)
+        assert submitted == {456}
+
+    def test_on_done_handles_missing_key(self):
+        submitted = {456}
+        subscriber = CaseConflictCleanupSubscriber(submitted, 123)
+        subscriber.on_done(future=None)
+        assert submitted == {456}

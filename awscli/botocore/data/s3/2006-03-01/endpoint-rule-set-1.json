@@ -5372,12 +5372,12 @@
                                 {
                                     "conditions": [
                                         {
-                                            "fn": "stringEquals",
+                                            "fn": "aws.isVirtualHostableS3Bucket",
                                             "argv": [
                                                 {
-                                                    "ref": "hardwareType"
+                                                    "ref": "Bucket"
                                                 },
-                                                "e"
+                                                false
                                             ]
                                         }
                                     ],
@@ -5388,9 +5388,9 @@
                                                     "fn": "stringEquals",
                                                     "argv": [
                                                         {
-                                                            "ref": "regionPrefix"
+                                                            "ref": "hardwareType"
                                                         },
-                                                        "beta"
+                                                        "e"
                                                     ]
                                                 }
                                             ],
@@ -5398,8 +5398,37 @@
                                                 {
                                                     "conditions": [
                                                         {
-                                                            "fn": "not",
+                                                            "fn": "stringEquals",
                                                             "argv": [
+                                                                {
+                                                                    "ref": "regionPrefix"
+                                                                },
+                                                                "beta"
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "not",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "isSet",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "Endpoint"
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "error": "Expected a endpoint to be specified but no endpoint was found",
+                                                            "type": "error"
+                                                        },
+                                                        {
+                                                            "conditions": [
                                                                 {
                                                                     "fn": "isSet",
                                                                     "argv": [
@@ -5407,35 +5436,169 @@
                                                                             "ref": "Endpoint"
                                                                         }
                                                                     ]
+                                                                },
+                                                                {
+                                                                    "fn": "parseURL",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "Endpoint"
+                                                                        }
+                                                                    ],
+                                                                    "assign": "url"
                                                                 }
-                                                            ]
+                                                            ],
+                                                            "endpoint": {
+                                                                "url": "https://{Bucket}.ec2.{url#authority}",
+                                                                "properties": {
+                                                                    "authSchemes": [
+                                                                        {
+                                                                            "disableDoubleEncoding": true,
+                                                                            "name": "sigv4a",
+                                                                            "signingName": "s3-outposts",
+                                                                            "signingRegionSet": [
+                                                                                "*"
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "disableDoubleEncoding": true,
+                                                                            "name": "sigv4",
+                                                                            "signingName": "s3-outposts",
+                                                                            "signingRegion": "{Region}"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
                                                         }
                                                     ],
-                                                    "error": "Expected a endpoint to be specified but no endpoint was found",
-                                                    "type": "error"
+                                                    "type": "tree"
                                                 },
                                                 {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "isSet",
-                                                            "argv": [
+                                                    "conditions": [],
+                                                    "endpoint": {
+                                                        "url": "https://{Bucket}.ec2.s3-outposts.{Region}.{regionPartition#dnsSuffix}",
+                                                        "properties": {
+                                                            "authSchemes": [
                                                                 {
-                                                                    "ref": "Endpoint"
+                                                                    "disableDoubleEncoding": true,
+                                                                    "name": "sigv4a",
+                                                                    "signingName": "s3-outposts",
+                                                                    "signingRegionSet": [
+                                                                        "*"
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "disableDoubleEncoding": true,
+                                                                    "name": "sigv4",
+                                                                    "signingName": "s3-outposts",
+                                                                    "signingRegion": "{Region}"
                                                                 }
                                                             ]
                                                         },
+                                                        "headers": {}
+                                                    },
+                                                    "type": "endpoint"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "stringEquals",
+                                                    "argv": [
                                                         {
-                                                            "fn": "parseURL",
+                                                            "ref": "hardwareType"
+                                                        },
+                                                        "o"
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "stringEquals",
                                                             "argv": [
                                                                 {
-                                                                    "ref": "Endpoint"
-                                                                }
-                                                            ],
-                                                            "assign": "url"
+                                                                    "ref": "regionPrefix"
+                                                                },
+                                                                "beta"
+                                                            ]
                                                         }
                                                     ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "not",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "isSet",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "Endpoint"
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "error": "Expected a endpoint to be specified but no endpoint was found",
+                                                            "type": "error"
+                                                        },
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "isSet",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "Endpoint"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "fn": "parseURL",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "Endpoint"
+                                                                        }
+                                                                    ],
+                                                                    "assign": "url"
+                                                                }
+                                                            ],
+                                                            "endpoint": {
+                                                                "url": "https://{Bucket}.op-{outpostId}.{url#authority}",
+                                                                "properties": {
+                                                                    "authSchemes": [
+                                                                        {
+                                                                            "disableDoubleEncoding": true,
+                                                                            "name": "sigv4a",
+                                                                            "signingName": "s3-outposts",
+                                                                            "signingRegionSet": [
+                                                                                "*"
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "disableDoubleEncoding": true,
+                                                                            "name": "sigv4",
+                                                                            "signingName": "s3-outposts",
+                                                                            "signingRegion": "{Region}"
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
                                                     "endpoint": {
-                                                        "url": "https://{Bucket}.ec2.{url#authority}",
+                                                        "url": "https://{Bucket}.op-{outpostId}.s3-outposts.{Region}.{regionPartition#dnsSuffix}",
                                                         "properties": {
                                                             "authSchemes": [
                                                                 {
@@ -5463,157 +5626,15 @@
                                         },
                                         {
                                             "conditions": [],
-                                            "endpoint": {
-                                                "url": "https://{Bucket}.ec2.s3-outposts.{Region}.{regionPartition#dnsSuffix}",
-                                                "properties": {
-                                                    "authSchemes": [
-                                                        {
-                                                            "disableDoubleEncoding": true,
-                                                            "name": "sigv4a",
-                                                            "signingName": "s3-outposts",
-                                                            "signingRegionSet": [
-                                                                "*"
-                                                            ]
-                                                        },
-                                                        {
-                                                            "disableDoubleEncoding": true,
-                                                            "name": "sigv4",
-                                                            "signingName": "s3-outposts",
-                                                            "signingRegion": "{Region}"
-                                                        }
-                                                    ]
-                                                },
-                                                "headers": {}
-                                            },
-                                            "type": "endpoint"
-                                        }
-                                    ],
-                                    "type": "tree"
-                                },
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "stringEquals",
-                                            "argv": [
-                                                {
-                                                    "ref": "hardwareType"
-                                                },
-                                                "o"
-                                            ]
-                                        }
-                                    ],
-                                    "rules": [
-                                        {
-                                            "conditions": [
-                                                {
-                                                    "fn": "stringEquals",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "regionPrefix"
-                                                        },
-                                                        "beta"
-                                                    ]
-                                                }
-                                            ],
-                                            "rules": [
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "not",
-                                                            "argv": [
-                                                                {
-                                                                    "fn": "isSet",
-                                                                    "argv": [
-                                                                        {
-                                                                            "ref": "Endpoint"
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "error": "Expected a endpoint to be specified but no endpoint was found",
-                                                    "type": "error"
-                                                },
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "isSet",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "Endpoint"
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "fn": "parseURL",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "Endpoint"
-                                                                }
-                                                            ],
-                                                            "assign": "url"
-                                                        }
-                                                    ],
-                                                    "endpoint": {
-                                                        "url": "https://{Bucket}.op-{outpostId}.{url#authority}",
-                                                        "properties": {
-                                                            "authSchemes": [
-                                                                {
-                                                                    "disableDoubleEncoding": true,
-                                                                    "name": "sigv4a",
-                                                                    "signingName": "s3-outposts",
-                                                                    "signingRegionSet": [
-                                                                        "*"
-                                                                    ]
-                                                                },
-                                                                {
-                                                                    "disableDoubleEncoding": true,
-                                                                    "name": "sigv4",
-                                                                    "signingName": "s3-outposts",
-                                                                    "signingRegion": "{Region}"
-                                                                }
-                                                            ]
-                                                        },
-                                                        "headers": {}
-                                                    },
-                                                    "type": "endpoint"
-                                                }
-                                            ],
-                                            "type": "tree"
-                                        },
-                                        {
-                                            "conditions": [],
-                                            "endpoint": {
-                                                "url": "https://{Bucket}.op-{outpostId}.s3-outposts.{Region}.{regionPartition#dnsSuffix}",
-                                                "properties": {
-                                                    "authSchemes": [
-                                                        {
-                                                            "disableDoubleEncoding": true,
-                                                            "name": "sigv4a",
-                                                            "signingName": "s3-outposts",
-                                                            "signingRegionSet": [
-                                                                "*"
-                                                            ]
-                                                        },
-                                                        {
-                                                            "disableDoubleEncoding": true,
-                                                            "name": "sigv4",
-                                                            "signingName": "s3-outposts",
-                                                            "signingRegion": "{Region}"
-                                                        }
-                                                    ]
-                                                },
-                                                "headers": {}
-                                            },
-                                            "type": "endpoint"
+                                            "error": "Unrecognized hardware type: \"Expected hardware type o or e but got {hardwareType}\"",
+                                            "type": "error"
                                         }
                                     ],
                                     "type": "tree"
                                 },
                                 {
                                     "conditions": [],
-                                    "error": "Unrecognized hardware type: \"Expected hardware type o or e but got {hardwareType}\"",
+                                    "error": "Invalid Outposts Bucket alias - it must be a valid bucket name.",
                                     "type": "error"
                                 }
                             ],

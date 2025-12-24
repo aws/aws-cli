@@ -76,18 +76,18 @@ class TestLinter:
         findings_with_rules = linter.lint(ast, [Base64BinaryFormatRule(), EcrGetLoginRule()])
 
         assert len(findings_with_rules) == 2
-        
+
         # First finding should be fixable
         fixable_finding = findings_with_rules[0][0]
         assert fixable_finding.auto_fixable is True
         assert fixable_finding.edit is not None
-        
+
         # Second finding should be manual review
         manual_finding = findings_with_rules[1][0]
         assert manual_finding.auto_fixable is False
         assert manual_finding.edit is None
         assert manual_finding.suggested_manual_fix is not None
-        
+
         # Apply fixes should only fix the fixable finding
         findings = [f for f, _ in findings_with_rules]
         fixed = linter.apply_fixes(ast, findings)

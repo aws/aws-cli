@@ -236,15 +236,15 @@ class TestCLI:
         with patch("sys.argv", ["upgrade-aws-cli", "--script", str(script_file), "--fix"]):
             main()
             captured = capsys.readouterr()
-            
+
             # Should show fix was applied
             assert "Applied 2 fix(es) automatically" in captured.out
-            
+
             # Should show manual review section
             assert "issue(s) require manual review" in captured.out
             assert "MANUAL REVIEW REQUIRED" in captured.out
             assert "This issue requires manual intervention" in captured.out
-            
+
             # Script should have auto-fixes applied but manual review command unchanged
             fixed_content = script_file.read_text()
             assert "--cli-binary-format" in fixed_content
@@ -275,14 +275,14 @@ class TestCLI:
             with patch("builtins.input", side_effect=["y", "y", "n"]):
                 main()
                 captured = capsys.readouterr()
-                
+
                 # Should display manual review finding
                 assert "MANUAL REVIEW REQUIRED" in captured.out
                 assert "This issue requires manual intervention" in captured.out
-                
+
                 # Should prompt with [n]ext, [s]ave and exit, [q]uit for manual review
                 # (not [y]es, [n]o, [u]pdate all, etc.)
-                
+
                 # Output should have auto-fixes but not manual review changes
                 fixed_content = output_file.read_text()
                 assert "--cli-binary-format" in fixed_content
@@ -296,7 +296,8 @@ class TestCLI:
         script_file.write_text(
             "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json\n"
             "aws ecr get-login --region us-west-2\n"
-            "aws kinesis put-record --stream-name samplestream --data file://data --partition-key samplepartitionkey"
+            "aws kinesis put-record --stream-name samplestream "
+            "--data file://data --partition-key samplepartitionkey"
         )
 
         with patch(
@@ -314,14 +315,14 @@ class TestCLI:
             # This should save and exit without processing any remaining findings
             with patch("builtins.input", side_effect=["y", "y", "y", "y", "s"]):
                 main()
-                
+
                 # Output should have all auto-fixes applied
                 fixed_content = output_file.read_text()
                 assert fixed_content.count("--cli-binary-format") == 2
                 assert fixed_content.count("--no-cli-pager") == 2
-                
+
                 # Manual review command should be unchanged
                 assert "aws ecr get-login" in fixed_content
-                
+
                 # Should have saved and exited
                 assert output_file.exists()

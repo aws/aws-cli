@@ -33,7 +33,8 @@ def prompt_user_choice_interactive_mode(auto_fixable: bool = True) -> str:
         if auto_fixable:
             choice = (
                 input(
-                    "\nApply this fix? [y] yes, [n] no, [u] update all, [s] save and exit, [q] quit: "
+                    "\nApply this fix? [y] yes, [n] no, "
+                    "[u] update all, [s] save and exit, [q] quit: "
                 )
                 .lower()
                 .strip()
@@ -62,10 +63,7 @@ def display_finding(finding: LintFinding, index: int, script_content: str):
         print(f"{finding.description}")
 
         diff = difflib.unified_diff(
-            script_content.splitlines(),
-            fixed_content.splitlines(),
-            n=CONTEXT_SIZE,
-            lineterm=""
+            script_content.splitlines(), fixed_content.splitlines(), n=CONTEXT_SIZE, lineterm=""
         )
         for line_num, line in enumerate(diff):
             if line_num < 2:
@@ -188,7 +186,7 @@ def interactive_mode_for_rule(
         elif last_choice == "u":
             # Accept this and all remaining fixable findings for this rule.
             accepted_findings.append(finding)
-            for remaining_finding in findings[i + 1:]:
+            for remaining_finding in findings[i + 1 :]:
                 if remaining_finding.auto_fixable:
                     accepted_findings.append(remaining_finding)
             if accepted_findings:

@@ -33,21 +33,27 @@ class EcrGetLoginRule(LintRule):
         nodes = node.find_all(
             all=[  # type: ignore[arg-type]
                 {"kind": "command"},
-                {"has": {
-                    "kind": "command_name",
+                {
+                    "has": {
+                        "kind": "command_name",
+                        "has": {
+                            "kind": "word",
+                            "pattern": "aws",
+                        },
+                    }
+                },
+                {
                     "has": {
                         "kind": "word",
-                        "pattern": "aws",
-                    },
-                }},
-                {"has": {
-                    "kind": "word",
-                    "pattern": "ecr",
-                }},
-                {"has": {
-                    "kind": "word",
-                    "pattern": "get-login",
-                }},
+                        "pattern": "ecr",
+                    }
+                },
+                {
+                    "has": {
+                        "kind": "word",
+                        "pattern": "get-login",
+                    }
+                },
             ]
         )
 

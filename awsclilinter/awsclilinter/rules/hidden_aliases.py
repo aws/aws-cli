@@ -181,32 +181,35 @@ class HiddenAliasRule(LintRule):
         nodes = node.find_all(
             all=[  # type: ignore[arg-type]
                 {"kind": "command"},
-                {"has": {
-                    "kind": "command_name",
+                {
+                    "has": {
+                        "kind": "command_name",
+                        "has": {
+                            "kind": "word",
+                            "pattern": "aws",
+                        },
+                    }
+                },
+                {
                     "has": {
                         "kind": "word",
-                        "pattern": "aws",
-                    },
-                }},
-                {"has": {
-                    "kind": "word",
-                    "pattern": self._service,
-                }},
-                {"has": {
-                    "kind": "word",
-                    "pattern": self._operation,
-                }},
-                {"has": {
-                    "kind": "word",
-                    "pattern": f"--{self._hidden_alias}"
-                }},
+                        "pattern": self._service,
+                    }
+                },
+                {
+                    "has": {
+                        "kind": "word",
+                        "pattern": self._operation,
+                    }
+                },
+                {"has": {"kind": "word", "pattern": f"--{self._hidden_alias}"}},
             ]
         )
 
         findings = []
         for stmt in nodes:
             original = stmt.text()
-            suggested = original + f" --{self._alternative}"
+            suggested = original.replace(f"--{self._hidden_alias}", f"--{self._alternative}")
             edit = stmt.replace(suggested)
 
             findings.append(

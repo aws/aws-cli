@@ -29,21 +29,27 @@ class DeployEmptyChangesetRule(LintRule):
         nodes = node.find_all(
             all=[  # type: ignore[arg-type]
                 {"kind": "command"},
-                {"has": {
-                    "kind": "command_name",
+                {
+                    "has": {
+                        "kind": "command_name",
+                        "has": {
+                            "kind": "word",
+                            "pattern": "aws",
+                        },
+                    }
+                },
+                {
                     "has": {
                         "kind": "word",
-                        "pattern": "aws",
-                    },
-                }},
-                {"has": {
-                    "kind": "word",
-                    "pattern": "cloudformation",
-                }},
-                {"has": {
-                    "kind": "word",
-                    "pattern": "deploy",
-                }},
+                        "pattern": "cloudformation",
+                    }
+                },
+                {
+                    "has": {
+                        "kind": "word",
+                        "pattern": "deploy",
+                    }
+                },
                 {"not": {"has": {"kind": "word", "pattern": "--fail-on-empty-changeset"}}},
                 {"not": {"has": {"kind": "word", "pattern": "--no-fail-on-empty-changeset"}}},
             ]

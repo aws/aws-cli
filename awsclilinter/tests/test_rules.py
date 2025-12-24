@@ -38,6 +38,16 @@ class TestBase64BinaryFormatRule:
 
         assert len(findings) == 0
 
+    def test_detects_ecr_describe_repositories(self):
+        """Test detection for ecr describe-repositories command."""
+        script = "aws ecr describe-repositories"
+        root = SgRoot(script, "bash")
+        rule = Base64BinaryFormatRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 1
+        assert "--cli-binary-format" in findings[0].edit.inserted_text
+
 
 class TestDefaultPagerRule:
     """Test cases for DefaultPagerRule."""
@@ -74,6 +84,16 @@ class TestDefaultPagerRule:
         findings = rule.check(root)
 
         assert len(findings) == 2
+
+    def test_detects_ecr_describe_repositories(self):
+        """Test detection for ecr describe-repositories command."""
+        script = "aws ecr describe-repositories"
+        root = SgRoot(script, "bash")
+        rule = DefaultPagerRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 1
+        assert "--no-cli-pager" in findings[0].edit.inserted_text
 
 
 class TestDeployEmptyChangesetRule:
@@ -213,6 +233,17 @@ class TestHiddenAliasRule:
 
         assert len(findings) == 1
         assert "--code-sha256" in findings[0].edit.inserted_text
+
+    def test_fix_replaces_hidden_alias(self):
+        """Test detection of public-key-base-64 alias in lightsail."""
+        script = "aws lightsail import-key-pair --key-pair-name mykey --public-key-base-64 c3NoLXJzYQ=="
+        root = SgRoot(script, "bash")
+        rule = HiddenAliasRule("public-key-base-64", "public-key-base64", "lightsail", "import-key-pair")
+        findings = rule.check(root)
+
+        assert len(findings) == 1
+        assert "public-key-base-64" not in findings[0].edit.inserted_text
+        assert "--public-key-base64" in findings[0].edit.inserted_text
 
 
 class TestEcrGetLoginRule:

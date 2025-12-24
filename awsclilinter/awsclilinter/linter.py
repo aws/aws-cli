@@ -17,7 +17,13 @@ def lint(ast: SgRoot, rules: List[LintRule]) -> List[Tuple[LintFinding, LintRule
         findings = rule.check(ast)
         for finding in findings:
             findings_with_rules.append((finding, rule))
-    return sorted(findings_with_rules, key=lambda fr: (fr[0].edit.start_pos, fr[0].edit.end_pos))
+    return sorted(
+        findings_with_rules,
+        key=lambda fr: (
+            fr[0].edit.start_pos if fr[0].edit else fr[0].line_start,
+            fr[0].edit.end_pos if fr[0].edit else fr[0].line_end,
+        ),
+    )
 
 
 def lint_for_rule(ast: SgRoot, rule: LintRule) -> List[LintFinding]:
@@ -31,7 +37,13 @@ def lint_for_rule(ast: SgRoot, rule: LintRule) -> List[LintFinding]:
         List of findings for this rule, sorted by position (ascending)
     """
     findings = rule.check(ast)
-    return sorted(findings, key=lambda f: (f.edit.start_pos, f.edit.end_pos))
+    return sorted(
+        findings,
+        key=lambda f: (
+            f.edit.start_pos if f.edit else f.line_start,
+            f.edit.end_pos if f.edit else f.line_end,
+        ),
+    )
 
 
 def apply_fixes(ast: SgRoot, findings: List[LintFinding]) -> str:
@@ -49,5 +61,8 @@ def apply_fixes(ast: SgRoot, findings: List[LintFinding]) -> str:
         return root.text()
 
     # Collect all edits - they should be non-overlapping within a single rule
-    edits = [f.edit for f in findings]
+    # Filter out non-fixable findings
+    edits = [f.edit for f in findings if f.auto_fixable]
+    if not edits:
+        return root.text()
     return root.commit_edits(edits)

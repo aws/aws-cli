@@ -8,6 +8,59 @@ from awsclilinter.rules import LintFinding, LintRule
 class S3CopyRule(LintRule):
     """Detects AWS CLI high-level s3 cp/mv/sync bucket-to-bucket commands."""
 
+    def _follows_s3_bucket_any_kind(self):
+        # Returns a rule that ensures the pattern comes after an S3 bucket.
+        return {
+            "follows": {
+                "stopBy": "end",
+                "any": [
+                    # Occurs after unquoted S3 bucket (e.g. s3://bucket).
+                    {
+                        "kind": "word",
+                        "regex": "\\As3://",
+                    },
+                    # Occurs after double-quoted S3 bucket (e.g. "s3://bucket").
+                    {
+                        "kind": "string",
+                        "has": {
+                            "kind": "string_content",
+                            "nthChild": 1,
+                            "regex": "\\As3://",
+                        },
+                    },
+                    # Occurs after raw-string S3 bucket (e.g. 's3://bucket').
+                    {
+                        "kind": "raw_string",
+                        "regex": "\\As3://",
+                    },
+                    # Occurs after concatenated S3 bucket (e.g. s3://$S3_BUCKET_NAME).
+                    {
+                        "kind": "concatenation",
+                        "has": {
+                            "any": [
+                                {
+                                    "kind": "word",
+                                    "regex": "\\As3://",
+                                },
+                                {
+                                    "kind": "string",
+                                    "has": {
+                                        "kind": "string_content",
+                                        "nthChild": 1,
+                                        "regex": "\\As3://",
+                                    },
+                                },
+                                {
+                                    "kind": "raw_string",
+                                    "regex": "\\As3://",
+                                },
+                            ]
+                        },
+                    },
+                ],
+            }
+        }
+
     @property
     def name(self) -> str:
         return "s3-copy"
@@ -30,18 +83,94 @@ class S3CopyRule(LintRule):
             all=[  # type: ignore[arg-type]
                 {"kind": "command"},
                 {
-                    "any": [
-                        {"pattern": "aws s3 cp"},
-                        {"pattern": "aws s3 mv"},
-                        {"pattern": "aws s3 sync"},
-                    ]
+                    "has": {
+                        "kind": "command_name",
+                        "has": {
+                            "kind": "word",
+                            "pattern": "aws",
+                        },
+                    }
                 },
-                {"has": {"kind": "word", "regex": "\\As3://"}},
                 {
                     "has": {
                         "kind": "word",
-                        "regex": "\\As3://",
-                        "follows": {"stopBy": "end", "kind": "word", "regex": "\\As3://"},
+                        "pattern": "s3",
+                    }
+                },
+                # The command is either cp, mv, or sync
+                {
+                    "has": {
+                        "any": [
+                            {
+                                "kind": "word",
+                                "pattern": "cp",
+                            },
+                            {
+                                "kind": "word",
+                                "pattern": "mv",
+                            },
+                            {
+                                "kind": "word",
+                                "pattern": "sync",
+                            },
+                        ]
+                    }
+                },
+                # The command has two S3 buckets (signifies a bucket-to-bucket copy).
+                {
+                    "has": {
+                        "any": [
+                            # Has an S3 bucket followed by an unquoted S3 bucket (e.g. s3://bucket).
+                            {
+                                "kind": "word",
+                                "regex": "\\As3://",
+                                **self._follows_s3_bucket_any_kind(),
+                            },
+                            # Has an S3 bucket followed by a
+                            # double-quoted S3 bucket (e.g. "s3://bucket").
+                            {
+                                "kind": "string",
+                                "has": {
+                                    "kind": "string_content",
+                                    "nthChild": 1,
+                                    "regex": "\\As3://",
+                                },
+                                **self._follows_s3_bucket_any_kind(),
+                            },
+                            # Has an S3 bucket followed by a
+                            # raw-string S3 bucket (e.g. 's3://bucket').
+                            {
+                                "kind": "raw_string",
+                                "regex": "\\As3://",
+                                **self._follows_s3_bucket_any_kind(),
+                            },
+                            # Has an S3 bucket followed by a
+                            # concatenated S3 bucket (e.g. s3://$S3_BUCKET_NAME).
+                            {
+                                "kind": "concatenation",
+                                "has": {
+                                    "any": [
+                                        {
+                                            "kind": "word",
+                                            "regex": "\\As3://",
+                                        },
+                                        {
+                                            "kind": "string",
+                                            "has": {
+                                                "kind": "string_content",
+                                                "nthChild": 1,
+                                                "regex": "\\As3://",
+                                            },
+                                        },
+                                        {
+                                            "kind": "raw_string",
+                                            "regex": "\\As3://",
+                                        },
+                                    ]
+                                },
+                                **self._follows_s3_bucket_any_kind(),
+                            },
+                        ]
                     }
                 },
                 {"not": {"has": {"kind": "word", "pattern": "--copy-props"}}},

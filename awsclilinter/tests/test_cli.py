@@ -212,3 +212,117 @@ class TestCLI:
                 assert exc_info.value.code == 0
                 # Output file should not exist since we quit without saving
                 assert not output_file.exists()
+
+    def test_dry_run_mode_with_manual_review(self, tmp_path, capsys):
+        """Test dry run mode displays manual review findings."""
+        script_file = tmp_path / "test.sh"
+        script_file.write_text("aws ecr get-login --region us-west-2")
+
+        with patch("sys.argv", ["upgrade-aws-cli", "--script", str(script_file)]):
+            main()
+            captured = capsys.readouterr()
+            assert "MANUAL REVIEW REQUIRED" in captured.out
+            assert "This issue requires manual intervention" in captured.out
+            assert "get-login-password" in captured.out
+
+    def test_fix_mode_with_manual_review(self, tmp_path, capsys):
+        """Test fix mode displays manual review findings after applying fixes."""
+        script_file = tmp_path / "test.sh"
+        script_file.write_text(
+            "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json\n"
+            "aws ecr get-login --region us-west-2"
+        )
+
+        with patch("sys.argv", ["upgrade-aws-cli", "--script", str(script_file), "--fix"]):
+            main()
+            captured = capsys.readouterr()
+
+            # Should show fix was applied
+            assert "Applied 2 fix(es) automatically" in captured.out
+
+            # Should show manual review section
+            assert "issue(s) require manual review" in captured.out
+            assert "MANUAL REVIEW REQUIRED" in captured.out
+            assert "This issue requires manual intervention" in captured.out
+
+            # Script should have auto-fixes applied but manual review command unchanged
+            fixed_content = script_file.read_text()
+            assert "--cli-binary-format" in fixed_content
+            assert "--no-cli-pager" in fixed_content
+            assert "aws ecr get-login" in fixed_content
+
+    def test_interactive_mode_with_manual_review(self, tmp_path, capsys):
+        """Test interactive mode handles manual review findings."""
+        script_file = tmp_path / "test.sh"
+        output_file = tmp_path / "output.sh"
+        script_file.write_text(
+            "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json\n"
+            "aws ecr get-login --region us-west-2"
+        )
+
+        with patch(
+            "sys.argv",
+            [
+                "upgrade-aws-cli",
+                "--script",
+                str(script_file),
+                "--interactive",
+                "--output",
+                str(output_file),
+            ],
+        ):
+            # Accept first two auto-fixable findings, then 'n' for manual review finding
+            with patch("builtins.input", side_effect=["y", "y", "n"]):
+                main()
+                captured = capsys.readouterr()
+
+                # Should display manual review finding
+                assert "MANUAL REVIEW REQUIRED" in captured.out
+                assert "This issue requires manual intervention" in captured.out
+
+                # Should prompt with [n]ext, [s]ave and exit, [q]uit for manual review
+                # (not [y]es, [n]o, [u]pdate all, etc.)
+
+                # Output should have auto-fixes but not manual review changes
+                fixed_content = output_file.read_text()
+                assert "--cli-binary-format" in fixed_content
+                assert "--no-cli-pager" in fixed_content
+                assert "aws ecr get-login" in fixed_content
+
+    def test_interactive_mode_manual_review_save_and_exit(self, tmp_path):
+        """Test interactive mode with 's' on manual review finding."""
+        script_file = tmp_path / "test.sh"
+        output_file = tmp_path / "output.sh"
+        script_file.write_text(
+            "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json\n"
+            "aws ecr get-login --region us-west-2\n"
+            "aws kinesis put-record --stream-name samplestream "
+            "--data file://data --partition-key samplepartitionkey"
+        )
+
+        with patch(
+            "sys.argv",
+            [
+                "upgrade-aws-cli",
+                "--script",
+                str(script_file),
+                "--interactive",
+                "--output",
+                str(output_file),
+            ],
+        ):
+            # Accept all 4 auto-fixable findings, then 's' on manual review finding (5th)
+            # This should save and exit without processing any remaining findings
+            with patch("builtins.input", side_effect=["y", "y", "y", "y", "s"]):
+                main()
+
+                # Output should have all auto-fixes applied
+                fixed_content = output_file.read_text()
+                assert fixed_content.count("--cli-binary-format") == 2
+                assert fixed_content.count("--no-cli-pager") == 2
+
+                # Manual review command should be unchanged
+                assert "aws ecr get-login" in fixed_content
+
+                # Should have saved and exited
+                assert output_file.exists()

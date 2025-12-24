@@ -27,8 +27,26 @@ class DefaultPagerRule(LintRule):
         nodes = node.find_all(
             all=[  # type: ignore[arg-type]
                 {"kind": "command"},
-                {"pattern": "aws $SERVICE $OPERATION"},
+                {
+                    "has": {
+                        "kind": "command_name",
+                        "has": {
+                            "kind": "word",
+                            "pattern": "aws",
+                        },
+                    }
+                },
                 {"not": {"has": {"kind": "word", "pattern": "--no-cli-pager"}}},
+                # Command is not ecr-get-login, since it was removed in AWS CLI v2, and we don't
+                # want to add v2-specific arguments to commands that don't exist in AWS CLI v2.
+                {
+                    "not": {
+                        "all": [
+                            {"has": {"kind": "word", "pattern": "ecr"}},
+                            {"has": {"kind": "word", "pattern": "get-login"}},
+                        ]
+                    }
+                },
             ]
         )
 

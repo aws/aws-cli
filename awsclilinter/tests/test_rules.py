@@ -3,6 +3,7 @@ from ast_grep_py import SgRoot
 from awsclilinter.rules.binary_params_base64 import Base64BinaryFormatRule
 from awsclilinter.rules.default_pager import DefaultPagerRule
 from awsclilinter.rules.deploy_empty_changeset import DeployEmptyChangesetRule
+from awsclilinter.rules.ecr_get_login import EcrGetLoginRule
 from awsclilinter.rules.hidden_aliases import HiddenAliasRule
 from awsclilinter.rules.s3_copies import S3CopyRule
 
@@ -36,6 +37,16 @@ class TestBase64BinaryFormatRule:
         findings = rule.check(root)
 
         assert len(findings) == 0
+
+    def test_detects_ecr_describe_repositories(self):
+        """Test detection for ecr describe-repositories command."""
+        script = "aws ecr describe-repositories"
+        root = SgRoot(script, "bash")
+        rule = Base64BinaryFormatRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 1
+        assert "--cli-binary-format" in findings[0].edit.inserted_text
 
 
 class TestDefaultPagerRule:
@@ -73,6 +84,16 @@ class TestDefaultPagerRule:
         findings = rule.check(root)
 
         assert len(findings) == 2
+
+    def test_detects_ecr_describe_repositories(self):
+        """Test detection for ecr describe-repositories command."""
+        script = "aws ecr describe-repositories"
+        root = SgRoot(script, "bash")
+        rule = DefaultPagerRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 1
+        assert "--no-cli-pager" in findings[0].edit.inserted_text
 
 
 class TestDeployEmptyChangesetRule:
@@ -212,3 +233,70 @@ class TestHiddenAliasRule:
 
         assert len(findings) == 1
         assert "--code-sha256" in findings[0].edit.inserted_text
+
+    def test_fix_replaces_hidden_alias(self):
+        """Test detection of public-key-base-64 alias in lightsail."""
+        script = "aws lightsail import-key-pair --key-pair-name mykey --public-key-base-64 c3NoLXJzYQ=="
+        root = SgRoot(script, "bash")
+        rule = HiddenAliasRule("public-key-base-64", "public-key-base64", "lightsail", "import-key-pair")
+        findings = rule.check(root)
+
+        assert len(findings) == 1
+        assert "public-key-base-64" not in findings[0].edit.inserted_text
+        assert "--public-key-base64" in findings[0].edit.inserted_text
+
+
+class TestEcrGetLoginRule:
+    """Test cases for EcrGetLoginRule (manual review only)."""
+
+    def test_rule_properties(self):
+        """Test rule description and auto_fixable property."""
+        rule = EcrGetLoginRule()
+        assert "ecr get-login" in rule.description
+
+    def test_detects_ecr_get_login(self):
+        """Test detection of ecr get-login command."""
+        script = "aws ecr get-login --region us-west-2"
+        root = SgRoot(script, "bash")
+        rule = EcrGetLoginRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 1
+        assert findings[0].edit is None
+        assert findings[0].suggested_manual_fix is not None
+        assert "get-login-password" in findings[0].suggested_manual_fix
+        assert findings[0].auto_fixable is False
+
+    def test_detects_ecr_get_login_with_debug(self):
+        """Test detection of ecr get-login with --debug flag."""
+        script = "aws ecr --debug get-login"
+        root = SgRoot(script, "bash")
+        rule = EcrGetLoginRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 1
+        assert findings[0].edit is None
+        assert findings[0].suggested_manual_fix is not None
+        assert findings[0].auto_fixable is False
+
+    def test_no_detection_for_other_ecr_commands(self):
+        """Test no detection for other ECR commands."""
+        script = "aws ecr describe-repositories"
+        root = SgRoot(script, "bash")
+        rule = EcrGetLoginRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 0
+
+    def test_detects_multiple_ecr_get_login(self):
+        """Test detection of multiple ecr get-login commands."""
+        script = "aws ecr get-login\naws ecr get-login --region us-east-1"
+        root = SgRoot(script, "bash")
+        rule = EcrGetLoginRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 2
+        for finding in findings:
+            assert finding.edit is None
+            assert finding.suggested_manual_fix is not None
+            assert finding.auto_fixable is False

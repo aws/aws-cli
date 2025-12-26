@@ -318,13 +318,6 @@ man_pages = [
         '',
         1,
     ),
-    (
-        'reference/elastictranscoder/index',
-        'aws-elastictranscoder',
-        'Amazon Elastic Transcoder',
-        '',
-        1,
-    ),
     ('reference/elb/index', 'aws-elb', 'Elastic Load Balancing', '', 1),
     ('reference/emr/index', 'aws-emr', 'Amazon Elastic MapReduce', '', 1),
     (

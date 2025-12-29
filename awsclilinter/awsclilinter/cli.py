@@ -97,7 +97,8 @@ def display_finding(finding: LintFinding, index: int, script_content: str):
         context_start = max(0, start_line - CONTEXT_SIZE)
         context_end = min(len(src_lines), end_line + CONTEXT_SIZE + 1)
 
-        print(f"\n[{index}] {finding.rule_name} {color_text("[MANUAL REVIEW REQUIRED]", YELLOW)}")
+        manual_tag = color_text("[MANUAL REVIEW REQUIRED]", YELLOW)
+        print(f"\n[{index}] {finding.rule_name} {manual_tag}")
         print(f"{finding.description}\n")
 
         print(color_text(f"Lines {context_start + 1}-{context_end + 1}", CYAN))
@@ -108,13 +109,12 @@ def display_finding(finding: LintFinding, index: int, script_content: str):
             else:
                 print(f"{line}")
 
-        print(
-            f"\n{color_text(
-                f'⚠️  This issue requires manual intervention. '
-                f'Suggested action: {finding.suggested_manual_fix}', 
-                YELLOW
-            )}"
+        warning_msg = color_text(
+            f'⚠️  This issue requires manual intervention. '
+            f'Suggested action: {finding.suggested_manual_fix}',
+            YELLOW
         )
+        print(f"\n{warning_msg}")
 
 
 def auto_fix_mode(
@@ -164,11 +164,10 @@ def auto_fix_mode(
 
     # If there were findings that need manual review, display them last.
     if non_auto_fixable:
-        print(
-            f"\n{color_text(
-                f'⚠️  {len(non_auto_fixable)} issue(s) require manual review:', YELLOW
-            )}\n"
+        warning_header = color_text(
+            f'⚠️  {len(non_auto_fixable)} issue(s) require manual review:', YELLOW
         )
+        print(f"\n{warning_header}\n")
         for i, (finding, _) in enumerate(non_auto_fixable, 1):
             display_finding(finding, i, script_content)
 

@@ -118,11 +118,11 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.assertEqual(p.stderr, '')
 
     def test_help_with_warning_blocks(self):
-        p = aws('elastictranscoder create-pipeline help')
+        p = aws('bedrock-runtime invoke-model help')
         self.assertEqual(p.rc, 0, p.stderr)
         # Check text that appears in the warning block to ensure
         # the block was actually rendered.
-        self.assertRegex(p.stdout, r'To\s+receive\s+notifications')
+        self.assertRegex(p.stdout, r"To\s+deny\s+all\s+inference\s+access")
 
     def test_param_shorthand(self):
         p = aws(

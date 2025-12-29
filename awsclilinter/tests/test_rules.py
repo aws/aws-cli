@@ -236,9 +236,13 @@ class TestHiddenAliasRule:
 
     def test_fix_replaces_hidden_alias(self):
         """Test detection of public-key-base-64 alias in lightsail."""
-        script = "aws lightsail import-key-pair --key-pair-name mykey --public-key-base-64 c3NoLXJzYQ=="
+        script = (
+            "aws lightsail import-key-pair --key-pair-name mykey --public-key-base-64 c3NoLXJzYQ=="
+        )
         root = SgRoot(script, "bash")
-        rule = HiddenAliasRule("public-key-base-64", "public-key-base64", "lightsail", "import-key-pair")
+        rule = HiddenAliasRule(
+            "public-key-base-64", "public-key-base64", "lightsail", "import-key-pair"
+        )
         findings = rule.check(root)
 
         assert len(findings) == 1

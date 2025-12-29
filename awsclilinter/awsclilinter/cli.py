@@ -110,9 +110,9 @@ def display_finding(finding: LintFinding, index: int, script_content: str):
                 print(f"{line}")
 
         warning_msg = color_text(
-            f'⚠️  This issue requires manual intervention. '
-            f'Suggested action: {finding.suggested_manual_fix}',
-            YELLOW
+            f"⚠️  This issue requires manual intervention. "
+            f"Suggested action: {finding.suggested_manual_fix}",
+            YELLOW,
         )
         print(f"\n{warning_msg}")
 
@@ -165,7 +165,7 @@ def auto_fix_mode(
     # If there were findings that need manual review, display them last.
     if non_auto_fixable:
         warning_header = color_text(
-            f'⚠️  {len(non_auto_fixable)} issue(s) require manual review:', YELLOW
+            f"⚠️  {len(non_auto_fixable)} issue(s) require manual review:", YELLOW
         )
         print(f"\n{warning_header}\n")
         for i, (finding, _) in enumerate(non_auto_fixable, 1):

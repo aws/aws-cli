@@ -78,8 +78,7 @@ def _display_finding(finding: LintFinding, index: int, script_content: str):
                 continue
             elif line_num == 2:
                 # The 3rd line is the context control line.
-                print("\n")
-                print(_color_text(line, CYAN))
+                print(f"\n{_color_text(line, CYAN)}")
             elif line.startswith("-"):
                 # Removed line
                 print(_color_text(line, RED))

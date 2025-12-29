@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.32.25
+=======
+
+* api-change:``quicksight``: This release adds support for quick users to be able to perform role upgrades on their own. Additionally it allows admins to make this feature admin or auto approval along with new self upgrade capability that can be restricted by Admins.
+* api-change:``connect``: Changes for Contact for Global Search
+* api-change:``elastictranscoder``: The elastictranscoder client has been removed following the deprecation of the service.
+
+
 2.32.24
 =======
 

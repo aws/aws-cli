@@ -2,7 +2,7 @@ import argparse
 import difflib
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 from ast_grep_py.ast_grep_py import SgRoot
 
@@ -106,37 +106,56 @@ def display_finding(finding: LintFinding, index: int, script_content: str):
         )
 
 
-def apply_all_fixes(
-    findings_with_rules: List[Tuple[LintFinding, LintRule]],
-    ast: SgRoot,
-) -> str:
-    """Apply all fixes using rule-by-rule processing.
-
-    Since multiple rules can target the same command, we must process one rule
-    at a time and reparse the updated script between rules to get fresh Edit objects.
+def auto_fix_mode(
+    rules: List[LintRule],
+    script_content: str,
+    output_path: Path,
+):
+    """Handler for auto-fix mode. Lints the input script based on the input rules list. If
+    any findings were detected that can be automatically fixed, applies the automatic
+    fixes to the script and writes it to the output path.
 
     Args:
-        findings_with_rules: List of findings and their rules.
-        ast: Current script represented as an AST.
-
-    Returns:
-        Modified script content
+        rules: List of findings and their rules.
+        script_content: Current script represented as an AST.
+        output_path: The path to write the updated script if any findings were detected.
     """
-    current_ast = ast
+    current_ast = parse(script_content)
 
-    # Group fixable findings by rule
-    findings_by_rule: Dict[str, List[LintFinding]] = {}
-    for finding, rule in findings_with_rules:
-        if finding.auto_fixable:
-            if rule.name not in findings_by_rule:
-                findings_by_rule[rule.name] = []
-            findings_by_rule[rule.name].append(finding)
+    findings_found = 0
+    num_auto_fixable_findings = 0
+    non_auto_fixable = []
 
-    # Process one rule at a time, re-parsing between rules
-    for rule in findings_by_rule:
-        updated_script = linter.apply_fixes(current_ast, findings_by_rule[rule])
-        current_ast = parse(updated_script)
-    return current_ast.root().text()
+    for rule_index, rule in enumerate(rules):
+        # Lint for this specific rule with current script state
+        rule_findings = linter.lint_for_rule(current_ast, rule)
+        auto_fixable_findings = [f for f in rule_findings if f.auto_fixable]
+
+        findings_found += len(rule_findings)
+        num_auto_fixable_findings += len(auto_fixable_findings)
+
+        non_auto_fixable.extend(
+            (finding, rule) for finding in rule_findings if not finding.auto_fixable
+        )
+
+        # Avoid an unnecessary reparse if no changes were made to the script
+        if not auto_fixable_findings:
+            continue
+
+        current_ast = parse(linter.apply_fixes(current_ast, auto_fixable_findings))
+
+    if num_auto_fixable_findings:
+        output_path.write_text(current_ast.root().text())
+        print(f"Modified script written to: {output_path}")
+        print(f"Applied {num_auto_fixable_findings} fix(es) automatically.")
+    else:
+        print("No findings with automatic fixes were detected.")
+
+    # If there were findings that need manual review, display them last.
+    if non_auto_fixable:
+        print(f"\n{YELLOW}⚠️  {len(non_auto_fixable)} issue(s) require manual review:{RESET}\n")
+        for i, (finding, _) in enumerate(non_auto_fixable, 1):
+            display_finding(finding, i, script_content)
 
 
 def interactive_mode_for_rule(
@@ -260,7 +279,7 @@ def main():
         finding_offset = 0
         findings_found = 0
 
-        # Process one rule at a time, re-parsing between rules
+        # Process one rule at a time, reparsing between rules
 
         for rule_index, rule in enumerate(rules):
             # Lint for this specific rule with current script state
@@ -270,11 +289,11 @@ def main():
                 continue
 
             findings_found += len(rule_findings)
-            current_ast, changes_made, last_choice = interactive_mode_for_rule(
+            current_ast, num_auto_fixable_findings, last_choice = interactive_mode_for_rule(
                 rule_findings, current_ast, finding_offset
             )
 
-            if changes_made:
+            if num_auto_fixable_findings:
                 current_script = current_ast.root().text()
                 any_changes = True
 
@@ -306,25 +325,7 @@ def main():
         output_path.write_text(current_script)
         print(f"Modified script written to: {output_path}")
     elif args.fix or args.output:
-        current_ast = parse(script_content)
-        findings_with_rules = linter.lint(current_ast, rules)
-
-        fixable = [(f, r) for f, r in findings_with_rules if f.auto_fixable]
-        non_fixable = [(f, r) for f, r in findings_with_rules if not f.auto_fixable]
-
-        if fixable:
-            updated_script = apply_all_fixes(fixable, current_ast)
-            output_path = Path(args.output) if args.output else script_path
-            output_path.write_text(updated_script)
-            print(f"Modified script written to: {output_path}")
-            print(f"Applied {len(fixable)} fix(es) automatically.")
-        else:
-            print("No automatic fixes available.")
-
-        if non_fixable:
-            print(f"\n{YELLOW}⚠️  {len(non_fixable)} issue(s) require manual review:{RESET}\n")
-            for i, (finding, _) in enumerate(non_fixable, 1):
-                display_finding(finding, i, script_content)
+        auto_fix_mode(rules, script_content, Path(args.output) if args.output else script_path)
     else:
         current_ast = parse(script_content)
         findings_with_rules = linter.lint(current_ast, rules)

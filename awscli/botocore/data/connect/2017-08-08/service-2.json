@@ -4090,7 +4090,8 @@
       "errors":[
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"InternalServiceException"}
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidActiveRegionException"}
       ],
       "documentation":"<p>When a contact is being recorded, and the recording has been suspended using SuspendContactRecording, this API resumes recording whatever recording is selected in the flow configuration: call, screen, or both. If only call recording or only screen recording is enabled, then it would resume.</p> <p>Voice and screen recordings are supported.</p>"
     },
@@ -4626,7 +4627,8 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"InternalServiceException"}
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidActiveRegionException"}
       ],
       "documentation":"<p>Starts recording the contact: </p> <ul> <li> <p>If the API is called <i>before</i> the agent joins the call, recording starts when the agent joins the call.</p> </li> <li> <p>If the API is called <i>after</i> the agent joins the call, recording starts at the time of the API call.</p> </li> </ul> <p>StartContactRecording is a one-time action. For example, if you use StopContactRecording to stop recording an ongoing call, you can't use StartContactRecording to restart it. For scenarios where the recording has started and you want to suspend and resume it, such as when collecting sensitive information (for example, a credit card number), use SuspendContactRecording and ResumeContactRecording.</p> <p>You can use this API to override the recording behavior configured in the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/set-recording-behavior.html\">Set recording behavior</a> block.</p> <p>Only voice recordings are supported at this time.</p>"
     },
@@ -4789,7 +4791,8 @@
         {"shape":"ContactNotFoundException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"InternalServiceException"}
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidActiveRegionException"}
       ],
       "documentation":"<p>Ends the specified contact. Use this API to stop queued callbacks. It does not work for voice contacts that use the following initiation methods:</p> <ul> <li> <p>DISCONNECT</p> </li> <li> <p>TRANSFER</p> </li> <li> <p>QUEUE_TRANSFER</p> </li> <li> <p>EXTERNAL_OUTBOUND</p> </li> <li> <p>MONITOR</p> </li> </ul> <p>Chat and task contacts can be terminated in any state, regardless of initiation method.</p>"
     },
@@ -4822,7 +4825,8 @@
       "errors":[
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"InternalServiceException"}
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidActiveRegionException"}
       ],
       "documentation":"<p>Stops recording a call when a contact is being recorded. StopContactRecording is a one-time action. If you use StopContactRecording to stop recording an ongoing call, you can't use StartContactRecording to restart it. For scenarios where the recording has started and you want to suspend it for sensitive information (for example, to collect a credit card number), and then restart it, use SuspendContactRecording and ResumeContactRecording.</p> <p>Only voice recordings are supported at this time.</p>"
     },
@@ -4870,7 +4874,8 @@
       "errors":[
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"InternalServiceException"}
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidActiveRegionException"}
       ],
       "documentation":"<p>When a contact is being recorded, this API suspends recording whatever is selected in the flow configuration: call (IVR or agent), screen, or both. If only call recording or only screen recording is enabled, then it would be suspended. For example, you might suspend the screen recording while collecting sensitive information, such as a credit card number. Then use <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ResumeContactRecording.html\">ResumeContactRecording</a> to restart recording the screen.</p> <p>The period of time that the recording is suspended is filled with silence in the final recording. </p> <p> Voice (IVR, agent) and screen recordings are supported.</p>"
     },
@@ -4887,7 +4892,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServiceException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidActiveRegionException"}
       ],
       "documentation":"<p>Adds the specified tags to the contact resource. For more information about this API is used, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/granular-billing.html\">Set up granular billing for a detailed view of your Amazon Connect usage</a>. </p>",
       "idempotent":true
@@ -4940,7 +4946,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServiceException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidActiveRegionException"}
       ],
       "documentation":"<p>Removes the specified tags from the contact resource. For more information about this API is used, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/granular-billing.html\">Set up granular billing for a detailed view of your Amazon Connect usage</a>.</p>",
       "idempotent":true
@@ -5010,7 +5017,8 @@
         {"shape":"InternalServiceException"},
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ConflictException"}
+        {"shape":"ConflictException"},
+        {"shape":"InvalidActiveRegionException"}
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Adds or updates user-defined contact information associated with the specified contact. At least one field to be updated must be present in the request.</p> <important> <p>You can add or update user-defined contact information for both ongoing and completed contacts.</p> </important>"
     },
@@ -5026,7 +5034,8 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"InternalServiceException"}
+        {"shape":"InternalServiceException"},
+        {"shape":"InvalidActiveRegionException"}
       ],
       "documentation":"<p>Creates or updates user-defined contact attributes associated with the specified contact.</p> <p>You can create or update user-defined attributes for both ongoing and completed contacts. For example, while the call is active, you can update the customer's name or the reason the customer called. You can add notes about steps that the agent took during the call that display to the next agent that takes the call. You can also update attributes for a contact using data from your CRM application and save the data with the contact in Amazon Connect. You could also flag calls for additional analysis, such as legal review or to identify abusive callers.</p> <p>Contact attributes are available in Amazon Connect for 24 months, and are then deleted. For information about contact record retention and the maximum size of the contact record attributes section, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#feature-limits\">Feature specifications</a> in the <i>Amazon Connect Administrator Guide</i>. </p>"
     },
@@ -5172,7 +5181,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServiceException"},
         {"shape":"ThrottlingException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidActiveRegionException"}
       ],
       "documentation":"<p>Updates routing priority and age on the contact (<b>QueuePriority</b> and <b>QueueTimeAdjustmentInSeconds</b>). These properties can be used to change a customer's position in the queue. For example, you can move a contact to the back of the queue by setting a lower routing priority relative to other contacts in queue; or you can move a contact to the front of the queue by increasing the routing age which will make the contact look artificially older and therefore higher up in the first-in-first-out routing order. Note that adjusting the routing age of a contact affects only its position in queue, and not its actual queue wait time as reported through metrics. These properties can also be updated by using <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/change-routing-priority.html\">the Set routing priority / age flow block</a>.</p> <note> <p>Either <b>QueuePriority</b> or <b>QueueTimeAdjustmentInSeconds</b> should be provided within the request body, but not both.</p> </note>"
     },
@@ -6090,6 +6100,11 @@
           "documentation":"<p>A version of the evaluation form.</p>"
         }
       }
+    },
+    "ActiveRegion":{
+      "type":"string",
+      "max":1024,
+      "min":0
     },
     "AdditionalEmailRecipients":{
       "type":"structure",
@@ -9080,6 +9095,10 @@
         "NextContacts":{
           "shape":"NextContacts",
           "documentation":"<p> List of next contact entries for the contact. </p>"
+        },
+        "GlobalResiliencyMetadata":{
+          "shape":"GlobalResiliencyMetadata",
+          "documentation":"<p>Information about the global resiliency configuration for the contact, including traffic distribution details.</p>"
         }
       },
       "documentation":"<p>Contains information about a contact.</p>"
@@ -18702,6 +18721,24 @@
         }
       }
     },
+    "GlobalResiliencyMetadata":{
+      "type":"structure",
+      "members":{
+        "ActiveRegion":{
+          "shape":"ActiveRegion",
+          "documentation":"<p>The current AWS region in which the contact is active. This indicates where the contact is being processed in real-time.</p>"
+        },
+        "OriginRegion":{
+          "shape":"OriginRegion",
+          "documentation":"<p>The AWS region where the contact was originally created and initiated. This may differ from the ActiveRegion if the contact has been transferred across regions.</p>"
+        },
+        "TrafficDistributionGroupId":{
+          "shape":"TrafficDistributionGroupId",
+          "documentation":"<p>The identifier of the traffic distribution group.</p>"
+        }
+      },
+      "documentation":"<p>Information about the global resiliency configuration for the contact, including traffic distribution details.</p>"
+    },
     "GlobalSignInEndpoint":{
       "type":"string",
       "max":128,
@@ -19944,6 +19981,15 @@
         "WEEK",
         "TOTAL"
       ]
+    },
+    "InvalidActiveRegionException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"Message"}
+      },
+      "documentation":"<p>This exception occurs when an API request is made to a non-active region in an Amazon Connect instance configured with Amazon Connect Global Resiliency. For example, if the active region is US West (Oregon) and a request is made to US East (N. Virginia), the exception will be returned.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
     },
     "InvalidContactFlowException":{
       "type":"structure",
@@ -23599,6 +23645,11 @@
     "Origin":{
       "type":"string",
       "max":267
+    },
+    "OriginRegion":{
+      "type":"string",
+      "max":1024,
+      "min":0
     },
     "OriginsList":{
       "type":"list",

@@ -70,6 +70,32 @@ class TestCLI:
             assert "--cli-binary-format" in fixed_content
             assert "--no-cli-pager" in fixed_content
 
+    def test_fix_mode_multiple_lint_rules_per_command(self, tmp_path, capsys):
+        """Test fix mode in the case that multiple linting rules have findings
+        for a single command.
+        """
+        script_file = tmp_path / "test.sh"
+        script_file.write_text(
+            "aws lambda publish-version --function-name myfunction --code-sha256 abc123\n"
+            "aws deploy create-deployment-group --application-name myapp "
+            "--deployment-group-name mygroup --ec-2-tag-set file://tags.json"
+        )
+
+        with patch("sys.argv", ["upgrade-aws-cli", "--script", str(script_file), "--fix"]):
+            main()
+            captured = capsys.readouterr()
+
+            # Should show fix was applied
+            assert "Applied 5 fix(es) automatically" in captured.out
+            # The number of lines should remain the same after applying fixes
+            assert len(script_file.read_text().splitlines()) == 2
+
+            # The hidden alias must not be present in the modified script
+            assert "--ec-2-tag-set" not in script_file.read_text()
+
+            # The no-pager flag should appear twice in the modified script, one for each command.
+            assert script_file.read_text().count("--no-cli-pager") == 2
+
     def test_output_mode(self, tmp_path):
         """Test output mode creates new file."""
         script_file = tmp_path / "test.sh"

@@ -1,10 +1,42 @@
-aws-cli
-=======
+AWS-CLI
+=================
 
 .. image:: https://github.com/aws/aws-cli/actions/workflows/run-tests.yml/badge.svg
    :target: https://github.com/aws/aws-cli/actions/workflows/run-tests.yml
    :alt: Build Status
 
+.. image:: https://img.shields.io/badge/license-Apache%202.0-blue.svg
+   :target: https://opensource.org/licenses/Apache-2.0
+   :alt: License Apache 2.0
+
+.. image:: awscli/assets/Amazon_Web_Services-Logo.png
+   :alt: AWS Logo
+   :align: center
+   :height: 200px
+
+The AWS Command Line Interface (CLI) is a unified tool to manage your Amazon Web Services resources, enabling seamless automation and scripting of cloud operations.
+
+----------------
+
+Table of Contents
+=================
+
+- `About <#about>`__
+- `Getting Started <#getting-started>`__
+- `Requirements <#requirements>`__
+- `Notices <#notices>`__
+- `Maintenance and Support <#maintenance-and-support-for-cli-major-versions>`__
+- `Installation <#installation>`__
+- `Configuration <#configuration>`__
+- `Basic Commands <#basic-commands>`__
+- `Command Completion <#command-completion>`__
+- `Getting Help <#getting-help>`__
+- `More Resources <#more-resources>`__
+
+----------------
+
+About
+=================
 This package provides a unified command line interface to Amazon Web
 Services.
 
@@ -15,14 +47,14 @@ Jump to:
 -  `More Resources <#more-resources>`__
 
 Getting Started
----------------
+=================
 
 This README is for the AWS CLI version 1. If you are looking for
 information about the AWS CLI version 2, please visit the `v2
 branch <https://github.com/aws/aws-cli/tree/v2>`__.
 
 Requirements
-~~~~~~~~~~~~
+=================
 
 The aws-cli package works on Python versions:
 
@@ -34,7 +66,7 @@ The aws-cli package works on Python versions:
 -  3.14.x and greater
 
 Notices
-~~~~~~~
+=================
 
 On 2025-04-22, support for Python 3.8 ended for the AWS CLI. This follows the
 Python Software Foundation `end of support <https://peps.python.org/pep-0569/#lifespan>`__
@@ -49,14 +81,14 @@ website <https://aws.amazon.com/security/security-bulletins>`__ *for
 any important security bulletins related to aws-cli.*
 
 Maintenance and Support for CLI Major Versions
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=================
 
 The AWS CLI version 1 was made generally available on 09/02/2013 and is currently in the full support phase of the availability life cycle.
 
 For information about maintenance and support for SDK major versions and their underlying dependencies, see the `Maintenance Policy <https://docs.aws.amazon.com/credref/latest/refdocs/maint-policy.html>`__ section in the *AWS SDKs and Tools Shared Configuration and Credentials Reference Guide*.
 
 Installation
-~~~~~~~~~~~~
+=================
 
 Installation of the AWS CLI and its dependencies use a range of packaging
 features provided by ``pip`` and ``setuptools``. To ensure smooth installation,
@@ -116,7 +148,7 @@ See the
 section of the AWS CLI User Guide for more information.
 
 Configuration
-~~~~~~~~~~~~~
+=================
 
 Before using the AWS CLI, you need to configure your AWS credentials.
 You can do this in several ways:
@@ -223,7 +255,7 @@ You can access this topic from the AWS CLI as well by running
 ``aws help config-vars``.
 
 Basic Commands
-~~~~~~~~~~~~~~
+=================
 
 An AWS CLI command has the following structure:
 
@@ -262,7 +294,7 @@ CLI <https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-using.html>`__
 chapter of the AWS CLI User Guide.
 
 Command Completion
-~~~~~~~~~~~~~~~~~~
+=================
 
 The aws-cli package includes a command completion feature for Unix-like
 systems. This feature is not automatically installed so you need to
@@ -271,7 +303,7 @@ completion
 topic <https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-completion.html>`__.
 
 Getting Help
-------------
+=================
 
 The best way to interact with our team is through GitHub. You can `open
 an issue <https://github.com/aws/aws-cli/issues/new/choose>`__ and
@@ -296,7 +328,7 @@ the services or their limitations, you may find the `Amazon Web Services
 Discussion Forums <https://forums.aws.amazon.com/>`__ helpful.
 
 More Resources
---------------
+=================
 
 -  `Changelog <https://github.com/aws/aws-cli/blob/develop/CHANGELOG.rst>`__
 -  `AWS CLI

@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.44.8
+======
+
+* api-change:``connect``: Changes for Contact for Global Search
+* api-change:``quicksight``: This release adds support for quick users to be able to perform role upgrades on their own. Additionally it allows admins to make this feature admin or auto approval along with new self upgrade capability that can be restricted by Admins.
+
+
 1.44.7
 ======
 

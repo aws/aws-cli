@@ -2,10 +2,9 @@ import argparse
 import difflib
 import sys
 from pathlib import Path
-from typing import List, Optional, Tuple, Any
+from typing import List, Optional, Tuple
 
-from ast_grep_py import SgRoot
-from ast_grep_py.ast_grep_py import SgRoot, SgNode
+from ast_grep_py.ast_grep_py import SgRoot
 
 from awsclilinter import linter
 from awsclilinter.linter import parse
@@ -162,8 +161,7 @@ def auto_fix_mode(
         output_path: The path to write the updated script if any findings were detected.
     """
     current_ast, num_auto_fixable_findings, non_auto_fixable = _lint_and_fix_script(
-        rules,
-        parse(script_content)
+        rules, parse(script_content)
     )
 
     if num_auto_fixable_findings:
@@ -184,9 +182,9 @@ def auto_fix_mode(
 
 
 def dry_run_mode(
-        rules: List[LintRule],
-        script_content: str,
-        script_path: Path,
+    rules: List[LintRule],
+    script_content: str,
+    script_path: Path,
 ):
     """Handler for dry-run mode. Lints the input script based on the input rules list and
     prints the diff to stdout.
@@ -197,8 +195,7 @@ def dry_run_mode(
         script_path: Path to the script being linted.
     """
     current_ast, num_auto_fixable_findings, non_auto_fixable = _lint_and_fix_script(
-        rules,
-        parse(script_content)
+        rules, parse(script_content)
     )
 
     if not num_auto_fixable_findings and not non_auto_fixable:

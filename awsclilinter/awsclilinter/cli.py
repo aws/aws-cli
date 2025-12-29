@@ -2,9 +2,10 @@ import argparse
 import difflib
 import sys
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Any
 
-from ast_grep_py.ast_grep_py import SgRoot
+from ast_grep_py import SgRoot
+from ast_grep_py.ast_grep_py import SgRoot, SgNode
 
 from awsclilinter import linter
 from awsclilinter.linter import parse
@@ -27,14 +28,14 @@ RESET = "\033[0m"
 CONTEXT_SIZE = 3
 
 
-def color_text(text, color_code):
+def _color_text(text, color_code):
     """Colorize text for terminal output only if a TTY is available."""
     if sys.stdout.isatty():
         return f"{color_code}{text}{RESET}"
     return text
 
 
-def prompt_user_choice_interactive_mode(auto_fixable: bool = True) -> str:
+def _prompt_user_choice_interactive_mode(auto_fixable: bool = True) -> str:
     """Get user input for interactive mode."""
     while True:
         if auto_fixable:
@@ -56,7 +57,7 @@ def prompt_user_choice_interactive_mode(auto_fixable: bool = True) -> str:
             print("Invalid choice. Please enter n, s, or q.")
 
 
-def display_finding(finding: LintFinding, index: int, script_content: str):
+def _display_finding(finding: LintFinding, index: int, script_content: str):
     """Display a finding to the user with context."""
     if finding.auto_fixable:
         # Apply the edit to get the fixed content
@@ -79,13 +80,13 @@ def display_finding(finding: LintFinding, index: int, script_content: str):
             elif line_num == 2:
                 # The 3rd line is the context control line.
                 print("\n")
-                print(color_text(line, CYAN))
+                print(_color_text(line, CYAN))
             elif line.startswith("-"):
                 # Removed line
-                print(color_text(line, RED))
+                print(_color_text(line, RED))
             elif line.startswith("+"):
                 # Added line
-                print(color_text(line, GREEN))
+                print(_color_text(line, GREEN))
             else:
                 # Context (unchanged) lines always start with whitespace.
                 print(line)
@@ -97,19 +98,19 @@ def display_finding(finding: LintFinding, index: int, script_content: str):
         context_start = max(0, start_line - CONTEXT_SIZE)
         context_end = min(len(src_lines), end_line + CONTEXT_SIZE + 1)
 
-        manual_tag = color_text("[MANUAL REVIEW REQUIRED]", YELLOW)
+        manual_tag = _color_text("[MANUAL REVIEW REQUIRED]", YELLOW)
         print(f"\n[{index}] {finding.rule_name} {manual_tag}")
         print(f"{finding.description}\n")
 
-        print(color_text(f"Lines {context_start + 1}-{context_end + 1}", CYAN))
+        print(_color_text(f"Lines {context_start + 1}-{context_end + 1}", CYAN))
         for i in range(context_start, context_end):
             line = src_lines[i]
             if start_line <= i <= end_line:
-                print(f"{color_text(line, YELLOW)}")
+                print(f"{_color_text(line, YELLOW)}")
             else:
                 print(f"{line}")
 
-        warning_msg = color_text(
+        warning_msg = _color_text(
             f"⚠️  This issue requires manual intervention. "
             f"Suggested action: {finding.suggested_manual_fix}",
             YELLOW,
@@ -117,22 +118,11 @@ def display_finding(finding: LintFinding, index: int, script_content: str):
         print(f"\n{warning_msg}")
 
 
-def auto_fix_mode(
+def _lint_and_fix_script(
     rules: List[LintRule],
-    script_content: str,
-    output_path: Path,
-):
-    """Handler for auto-fix mode. Lints the input script based on the input rules list. If
-    any findings were detected that can be automatically fixed, applies the automatic
-    fixes to the script and writes it to the output path.
-
-    Args:
-        rules: List of findings and their rules.
-        script_content: Current script represented as an AST.
-        output_path: The path to write the updated script if any findings were detected.
-    """
-    current_ast = parse(script_content)
-
+    script_ast: SgRoot,
+) -> tuple[SgRoot, int, list[tuple[LintFinding, LintRule]]]:
+    current_ast = script_ast
     findings_found = 0
     num_auto_fixable_findings = 0
     non_auto_fixable = []
@@ -154,6 +144,27 @@ def auto_fix_mode(
             continue
 
         current_ast = parse(linter.apply_fixes(current_ast, auto_fixable_findings))
+    return current_ast, num_auto_fixable_findings, non_auto_fixable
+
+
+def auto_fix_mode(
+    rules: List[LintRule],
+    script_content: str,
+    output_path: Path,
+):
+    """Handler for auto-fix mode. Lints the input script based on the input rules list. If
+    any findings were detected that can be automatically fixed, applies the automatic
+    fixes to the script and writes it to the output path.
+
+    Args:
+        rules: List of linting rules to run against the input script.
+        script_content: Current script represented as an AST.
+        output_path: The path to write the updated script if any findings were detected.
+    """
+    current_ast, num_auto_fixable_findings, non_auto_fixable = _lint_and_fix_script(
+        rules,
+        parse(script_content)
+    )
 
     if num_auto_fixable_findings:
         output_path.write_text(current_ast.root().text())
@@ -164,12 +175,83 @@ def auto_fix_mode(
 
     # If there were findings that need manual review, display them last.
     if non_auto_fixable:
-        warning_header = color_text(
+        warning_header = _color_text(
             f"⚠️  {len(non_auto_fixable)} issue(s) require manual review:", YELLOW
         )
         print(f"\n{warning_header}\n")
         for i, (finding, _) in enumerate(non_auto_fixable, 1):
-            display_finding(finding, i, script_content)
+            _display_finding(finding, i, script_content)
+
+
+def dry_run_mode(
+        rules: List[LintRule],
+        script_content: str,
+        script_path: Path,
+):
+    """Handler for dry-run mode. Lints the input script based on the input rules list and
+    prints the diff to stdout.
+
+    Args:
+        rules: List of linting rules to run against the input script.
+        script_content: The input script.
+        script_path: Path to the script being linted.
+    """
+    current_ast, num_auto_fixable_findings, non_auto_fixable = _lint_and_fix_script(
+        rules,
+        parse(script_content)
+    )
+
+    if not num_auto_fixable_findings and not non_auto_fixable:
+        print("No issues found.")
+        return
+
+    print(f"\nFound {num_auto_fixable_findings + len(non_auto_fixable)} issue(s):")
+    if num_auto_fixable_findings and non_auto_fixable:
+        print(f"  - {num_auto_fixable_findings} can be automatically fixed")
+        print(f"  - {len(non_auto_fixable)} require manual review")
+    print()
+
+    diff = difflib.unified_diff(
+        script_content.splitlines(),
+        current_ast.root().text().splitlines(),
+        n=CONTEXT_SIZE,
+        lineterm="",
+    )
+    for line_num, line in enumerate(diff):
+        if line_num == 0:
+            # First line is always '--- '
+            print(f"{line}a/{script_path}")
+        elif line_num == 1:
+            # Second line is always '+++ '
+            print(f"{line}b/{script_path}")
+        elif line.startswith("@"):
+            # Context control line.
+            print(f"\n{_color_text(line, CYAN)}")
+        elif line.startswith("-"):
+            # Removed line
+            print(_color_text(line, RED))
+        elif line.startswith("+"):
+            # Added line
+            print(_color_text(line, GREEN))
+        else:
+            # Context (unchanged) lines always start with whitespace.
+            print(line)
+
+    if non_auto_fixable:
+        warning_header = _color_text(
+            f"⚠️  {len(non_auto_fixable)} issue(s) require manual review:", YELLOW
+        )
+        print(f"\n{warning_header}\n")
+        for i, (finding, _) in enumerate(non_auto_fixable, 1):
+            _display_finding(finding, i, script_content)
+
+    if num_auto_fixable_findings:
+        print(
+            "\n\nRun with `--fix` to apply automatic fixes to the script, "
+            "or `--output PATH` to write the modified script to a specific path."
+        )
+    else:
+        print("\n\nAll issues require manual review.")
 
 
 def interactive_mode_for_rule(
@@ -194,11 +276,11 @@ def interactive_mode_for_rule(
     last_choice: Optional[str] = None
 
     for i, finding in enumerate(findings):
-        display_finding(finding, finding_offset + i + 1, ast.root().text())
+        _display_finding(finding, finding_offset + i + 1, ast.root().text())
 
         if not finding.auto_fixable:
             # Non-fixable finding - only allow next, save, or quit
-            last_choice = prompt_user_choice_interactive_mode(auto_fixable=False)
+            last_choice = _prompt_user_choice_interactive_mode(auto_fixable=False)
             if last_choice == "q":
                 print("Quit without saving.")
                 sys.exit(0)
@@ -210,7 +292,7 @@ def interactive_mode_for_rule(
             # 'n' means continue to next finding
             continue
 
-        last_choice = prompt_user_choice_interactive_mode(auto_fixable=True)
+        last_choice = _prompt_user_choice_interactive_mode(auto_fixable=True)
 
         if last_choice == "y":
             accepted_findings.append(finding)
@@ -341,31 +423,7 @@ def main():
     elif args.fix or args.output:
         auto_fix_mode(rules, script_content, Path(args.output) if args.output else script_path)
     else:
-        current_ast = parse(script_content)
-        findings_with_rules = linter.lint(current_ast, rules)
-
-        if not findings_with_rules:
-            print("No issues found.")
-            return
-
-        fixable = [(f, r) for f, r in findings_with_rules if f.auto_fixable]
-        non_fixable = [(f, r) for f, r in findings_with_rules if not f.auto_fixable]
-
-        print(f"\nFound {len(findings_with_rules)} issue(s):")
-        if fixable and non_fixable:
-            print(f"  - {len(fixable)} can be automatically fixed")
-            print(f"  - {len(non_fixable)} require manual review")
-        print()
-
-        for i, (finding, _) in enumerate(findings_with_rules, 1):
-            display_finding(finding, i, script_content)
-
-        if fixable:
-            print("\n\nRun with --fix to apply automatic fixes")
-            if non_fixable:
-                print("Non-fixable issues will be shown for manual review")
-        else:
-            print("\n\nAll issues require manual review")
+        dry_run_mode(rules, script_content, script_path)
 
 
 if __name__ == "__main__":

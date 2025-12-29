@@ -27,6 +27,13 @@ RESET = "\033[0m"
 CONTEXT_SIZE = 3
 
 
+def color_text(text, color_code):
+    """Colorize text for terminal output only if a TTY is available."""
+    if sys.stdout.isatty():
+        return f"{color_code}{text}{RESET}"
+    return text
+
+
 def prompt_user_choice_interactive_mode(auto_fixable: bool = True) -> str:
     """Get user input for interactive mode."""
     while True:
@@ -71,13 +78,14 @@ def display_finding(finding: LintFinding, index: int, script_content: str):
                 continue
             elif line_num == 2:
                 # The 3rd line is the context control line.
-                print(f"\n{CYAN}{line}{RESET}")
+                print("\n")
+                print(color_text(line, CYAN))
             elif line.startswith("-"):
                 # Removed line
-                print(f"{RED}{line}{RESET}")
+                print(color_text(line, RED))
             elif line.startswith("+"):
                 # Added line
-                print(f"{GREEN}{line}{RESET}")
+                print(color_text(line, GREEN))
             else:
                 # Context (unchanged) lines always start with whitespace.
                 print(line)
@@ -89,20 +97,23 @@ def display_finding(finding: LintFinding, index: int, script_content: str):
         context_start = max(0, start_line - CONTEXT_SIZE)
         context_end = min(len(src_lines), end_line + CONTEXT_SIZE + 1)
 
-        print(f"\n[{index}] {finding.rule_name} {YELLOW}[MANUAL REVIEW REQUIRED]{RESET}")
-        print(f"{finding.description}")
+        print(f"\n[{index}] {finding.rule_name} {color_text("[MANUAL REVIEW REQUIRED]", YELLOW)}")
+        print(f"{finding.description}\n")
 
-        print(f"\n{CYAN}Lines {context_start + 1}-{context_end + 1}{RESET}")
+        print(color_text(f"Lines {context_start + 1}-{context_end + 1}", CYAN))
         for i in range(context_start, context_end):
             line = src_lines[i]
             if start_line <= i <= end_line:
-                print(f"{YELLOW}{line}{RESET}")
+                print(f"{color_text(line, YELLOW)}")
             else:
                 print(f"{line}")
 
         print(
-            f"\n{YELLOW}⚠️  This issue requires manual intervention. "
-            f"Suggested action: {finding.suggested_manual_fix}{RESET}"
+            f"\n{color_text(
+                f'⚠️  This issue requires manual intervention. '
+                f'Suggested action: {finding.suggested_manual_fix}', 
+                YELLOW
+            )}"
         )
 
 
@@ -153,7 +164,11 @@ def auto_fix_mode(
 
     # If there were findings that need manual review, display them last.
     if non_auto_fixable:
-        print(f"\n{YELLOW}⚠️  {len(non_auto_fixable)} issue(s) require manual review:{RESET}\n")
+        print(
+            f"\n{color_text(
+                f'⚠️  {len(non_auto_fixable)} issue(s) require manual review:', YELLOW
+            )}\n"
+        )
         for i, (finding, _) in enumerate(non_auto_fixable, 1):
             display_finding(finding, i, script_content)
 

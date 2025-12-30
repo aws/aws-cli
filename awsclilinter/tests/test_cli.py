@@ -10,7 +10,7 @@ class TestCLI:
 
     def test_script_not_found(self, capsys):
         """Test error when script file doesn't exist."""
-        with patch("sys.argv", ["upgrade-aws-cli", "--script", "nonexistent.sh"]):
+        with patch("sys.argv", ["migrate-aws-cli", "--script", "nonexistent.sh"]):
             with pytest.raises(SystemExit) as exc_info:
                 main()
             assert exc_info.value.code == 1
@@ -18,7 +18,7 @@ class TestCLI:
     def test_fix_and_output_conflict(self, capsys):
         """Test error when both --fix and --output are provided."""
         with patch(
-            "sys.argv", ["upgrade-aws-cli", "--script", "test.sh", "--fix", "--output", "out.sh"]
+            "sys.argv", ["migrate-aws-cli", "--script", "test.sh", "--fix", "--output", "out.sh"]
         ):
             with pytest.raises(SystemExit) as exc_info:
                 main()
@@ -27,7 +27,7 @@ class TestCLI:
     def test_fix_and_interactive_conflict(self, capsys):
         """Test error when both --fix and --interactive are provided."""
         with patch(
-            "sys.argv", ["upgrade-aws-cli", "--script", "test.sh", "--fix", "--interactive"]
+            "sys.argv", ["migrate-aws-cli", "--script", "test.sh", "--fix", "--interactive"]
         ):
             with pytest.raises(SystemExit) as exc_info:
                 main()
@@ -38,7 +38,7 @@ class TestCLI:
         script_file = tmp_path / "test.sh"
         script_file.write_text("echo 'hello world'")
 
-        with patch("sys.argv", ["upgrade-aws-cli", "--script", str(script_file)]):
+        with patch("sys.argv", ["migrate-aws-cli", "--script", str(script_file)]):
             main()
             captured = capsys.readouterr()
             assert "No issues found" in captured.out
@@ -50,7 +50,7 @@ class TestCLI:
             "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json"
         )
 
-        with patch("sys.argv", ["upgrade-aws-cli", "--script", str(script_file)]):
+        with patch("sys.argv", ["migrate-aws-cli", "--script", str(script_file)]):
             main()
             captured = capsys.readouterr()
             assert "Found" in captured.out
@@ -63,7 +63,7 @@ class TestCLI:
             "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json"
         )
 
-        with patch("sys.argv", ["upgrade-aws-cli", "--script", str(script_file), "--fix"]):
+        with patch("sys.argv", ["migrate-aws-cli", "--script", str(script_file), "--fix"]):
             main()
             fixed_content = script_file.read_text()
             # 1 command, 2 rules = 2 flags added
@@ -81,7 +81,7 @@ class TestCLI:
             "--deployment-group-name mygroup --ec-2-tag-set file://tags.json"
         )
 
-        with patch("sys.argv", ["upgrade-aws-cli", "--script", str(script_file), "--fix"]):
+        with patch("sys.argv", ["migrate-aws-cli", "--script", str(script_file), "--fix"]):
             main()
             captured = capsys.readouterr()
 
@@ -106,7 +106,7 @@ class TestCLI:
 
         with patch(
             "sys.argv",
-            ["upgrade-aws-cli", "--script", str(script_file), "--output", str(output_file)],
+            ["migrate-aws-cli", "--script", str(script_file), "--output", str(output_file)],
         ):
             main()
             assert output_file.exists()
@@ -128,7 +128,7 @@ class TestCLI:
         with patch(
             "sys.argv",
             [
-                "upgrade-aws-cli",
+                "migrate-aws-cli",
                 "--script",
                 str(script_file),
                 "--interactive",
@@ -150,7 +150,7 @@ class TestCLI:
         original = "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json"
         script_file.write_text(original)
 
-        with patch("sys.argv", ["upgrade-aws-cli", "--script", str(script_file), "--interactive"]):
+        with patch("sys.argv", ["migrate-aws-cli", "--script", str(script_file), "--interactive"]):
             with patch("builtins.input", return_value="n"):
                 main()
                 captured = capsys.readouterr()
@@ -169,7 +169,7 @@ class TestCLI:
         with patch(
             "sys.argv",
             [
-                "upgrade-aws-cli",
+                "migrate-aws-cli",
                 "--script",
                 str(script_file),
                 "--interactive",
@@ -197,7 +197,7 @@ class TestCLI:
         with patch(
             "sys.argv",
             [
-                "upgrade-aws-cli",
+                "migrate-aws-cli",
                 "--script",
                 str(script_file),
                 "--interactive",
@@ -224,7 +224,7 @@ class TestCLI:
         with patch(
             "sys.argv",
             [
-                "upgrade-aws-cli",
+                "migrate-aws-cli",
                 "--script",
                 str(script_file),
                 "--interactive",
@@ -244,7 +244,7 @@ class TestCLI:
         script_file = tmp_path / "test.sh"
         script_file.write_text("aws ecr get-login --region us-west-2")
 
-        with patch("sys.argv", ["upgrade-aws-cli", "--script", str(script_file)]):
+        with patch("sys.argv", ["migrate-aws-cli", "--script", str(script_file)]):
             main()
             captured = capsys.readouterr()
             assert "MANUAL REVIEW REQUIRED" in captured.out
@@ -259,7 +259,7 @@ class TestCLI:
             "aws ecr get-login --region us-west-2"
         )
 
-        with patch("sys.argv", ["upgrade-aws-cli", "--script", str(script_file), "--fix"]):
+        with patch("sys.argv", ["migrate-aws-cli", "--script", str(script_file), "--fix"]):
             main()
             captured = capsys.readouterr()
 
@@ -289,7 +289,7 @@ class TestCLI:
         with patch(
             "sys.argv",
             [
-                "upgrade-aws-cli",
+                "migrate-aws-cli",
                 "--script",
                 str(script_file),
                 "--interactive",
@@ -329,7 +329,7 @@ class TestCLI:
         with patch(
             "sys.argv",
             [
-                "upgrade-aws-cli",
+                "migrate-aws-cli",
                 "--script",
                 str(script_file),
                 "--interactive",

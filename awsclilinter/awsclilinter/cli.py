@@ -202,12 +202,6 @@ def dry_run_mode(
         print("No issues found.")
         return
 
-    print(f"\nFound {num_auto_fixable_findings + len(non_auto_fixable)} issue(s):")
-    if num_auto_fixable_findings and non_auto_fixable:
-        print(f"  - {num_auto_fixable_findings} can be automatically fixed")
-        print(f"  - {len(non_auto_fixable)} require manual review")
-    print()
-
     diff = difflib.unified_diff(
         script_content.splitlines(),
         current_ast.root().text().splitlines(),
@@ -241,6 +235,11 @@ def dry_run_mode(
         print(f"\n{warning_header}\n")
         for i, (finding, _) in enumerate(non_auto_fixable, 1):
             _display_finding(finding, i, script_content)
+
+    print(f"\nFound {num_auto_fixable_findings + len(non_auto_fixable)} issue(s):")
+    if num_auto_fixable_findings and non_auto_fixable:
+        print(f"  - {num_auto_fixable_findings} can be automatically fixed")
+        print(f"  - {len(non_auto_fixable)} require manual review")
 
     if num_auto_fixable_findings:
         print(
@@ -383,11 +382,11 @@ def main():
                 continue
 
             findings_found += len(rule_findings)
-            current_ast, num_auto_fixable_findings, last_choice = interactive_mode_for_rule(
+            current_ast, changes_made, last_choice = interactive_mode_for_rule(
                 rule_findings, current_ast, finding_offset
             )
 
-            if num_auto_fixable_findings:
+            if changes_made:
                 current_script = current_ast.root().text()
                 any_changes = True
 
@@ -400,6 +399,7 @@ def main():
             if last_choice == "u":
                 for remaining_rule in rules[rule_index + 1 :]:
                     remaining_findings = linter.lint_for_rule(current_ast, remaining_rule)
+                    findings_found += len(remaining_findings)
                     if remaining_findings:
                         current_script = linter.apply_fixes(current_ast, remaining_findings)
                         any_changes = True

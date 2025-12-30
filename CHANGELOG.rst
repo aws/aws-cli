@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.32.26
+=======
+
+* api-change:``kafkaconnect``: This change sets the KafkaConnect GovCloud FIPS and FIPS DualStack endpoints to use kafkaconnect instead of kafkaconnect-fips as the service name. This is done to match the Kafka endpoints.
+* api-change:``connect``: Adds support for searching global contacts using the ActiveRegions filter, and pagination support for ListSecurityProfileFlowModules and ListEntitySecurityProfiles.
+
+
 2.32.25
 =======
 

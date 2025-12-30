@@ -238,7 +238,7 @@ def random_bucket_name(prefix='awscli-s3integ', num_random=15):
     :returns: The name of a randomly generated bucket name as a string.
 
     """
-    return f"{prefix}-{random_chars(num_random)}-{int(time.time())}"
+    return f"{prefix}-{random_chars(num_random)}-{uuid.uuid4().hex[:10]}"
 
 
 class BaseCLIDriverTest(unittest.TestCase):

@@ -356,8 +356,14 @@ class TestEnhancedErrorFormatter:
             'Code': 'TransactionCanceledException',
             'Message': 'Transaction cancelled',
             'CancellationReasons': [
-                {'Code': 'ConditionalCheckFailed', 'Message': 'Check failed'},
-                {'Code': 'ItemCollectionSizeLimitExceeded', 'Message': 'Too large'},
+                {
+                    'Code': 'ConditionalCheckFailed',
+                    'Message': 'Check failed',
+                },
+                {
+                    'Code': 'ItemCollectionSizeLimitExceeded',
+                    'Message': 'Too large',
+                },
             ],
         }
         formatted_message = (
@@ -448,7 +454,10 @@ class TestRealWorldErrorScenarios:
         self.handler = ClientErrorHandler(self.session)
 
     def test_dynamodb_transaction_cancelled_error(self):
-        """Test DynamoDB TransactionCanceledException with CancellationReasons."""
+        """
+        Test DynamoDB TransactionCanceledException with
+        CancellationReasons.
+        """
         error_response = {
             'Error': {
                 'Code': 'TransactionCanceledException',
@@ -523,9 +532,7 @@ class TestParsedGlobalsPassthrough:
         parsed_globals.command = 's3'
         parsed_globals.color = 'auto'
 
-        error_handler = construct_cli_error_handlers_chain(
-            session, parsed_globals
-        )
+        error_handler = construct_cli_error_handlers_chain(session)
 
         error_response = {
             'Error': {
@@ -540,7 +547,9 @@ class TestParsedGlobalsPassthrough:
         stdout = io.StringIO()
         stderr = io.StringIO()
 
-        rc = error_handler.handle_exception(client_error, stdout, stderr)
+        rc = error_handler.handle_exception(
+            client_error, stdout, stderr, parsed_globals=parsed_globals
+        )
 
         assert rc == CLIENT_ERROR_RC
 
@@ -552,7 +561,7 @@ class TestParsedGlobalsPassthrough:
     def test_error_handler_without_parsed_globals_uses_default(self):
         session = FakeSession()
 
-        error_handler = construct_cli_error_handlers_chain(session, None)
+        error_handler = construct_cli_error_handlers_chain(session)
 
         error_response = {
             'Error': {
@@ -567,7 +576,9 @@ class TestParsedGlobalsPassthrough:
         stdout = io.StringIO()
         stderr = io.StringIO()
 
-        rc = error_handler.handle_exception(client_error, stdout, stderr)
+        rc = error_handler.handle_exception(
+            client_error, stdout, stderr, parsed_globals=None
+        )
 
         assert rc == CLIENT_ERROR_RC
 

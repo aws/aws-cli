@@ -536,16 +536,14 @@ class CLIDriver:
         command_table = self._get_command_table()
         parser = self.create_parser(command_table)
         self._add_aliases(command_table, parser)
-
+        parsed_globals = None
         try:
             # Because _handle_top_level_args emits events, it's possible
             # that exceptions can be raised, which should have the same
             # general exception handling logic as calling into the
             # command table.  This is why it's in the try/except clause.
             parsed_args, remaining = parser.parse_known_args(args)
-            self._error_handler = construct_cli_error_handlers_chain(
-                self.session, parsed_args
-            )
+            parsed_globals = parsed_args
             self._handle_top_level_args(parsed_args)
             validate_preferred_output_encoding()
             self._emit_session_event(parsed_args)
@@ -562,6 +560,7 @@ class CLIDriver:
                 e,
                 stdout=get_stdout_text_writer(),
                 stderr=get_stderr_text_writer(),
+                parsed_globals=parsed_globals,
             )
 
     def _emit_session_event(self, parsed_args):
@@ -842,7 +841,10 @@ class ServiceOperation:
     def __call__(self, args, parsed_globals):
         # Once we know we're trying to call a particular operation
         # of a service we can go ahead and load the parameters.
-        event = f'before-building-argument-table-parser.{self._parent_name}.{self._name}'
+        event = (
+            f'before-building-argument-table-parser.'
+            f'{self._parent_name}.{self._name}'
+        )
         self._emit(
             event,
             argument_table=self.arg_table,

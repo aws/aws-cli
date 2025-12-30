@@ -106,7 +106,7 @@ def construct_entry_point_handlers_chain():
     return ChainedExceptionHandler(exception_handlers=handlers)
 
 
-def construct_cli_error_handlers_chain(session=None, parsed_globals=None):
+def construct_cli_error_handlers_chain(session=None):
     handlers = [
         ParamValidationErrorsHandler(),
         UnknownArgumentErrorHandler(),
@@ -115,7 +115,7 @@ def construct_cli_error_handlers_chain(session=None, parsed_globals=None):
         NoCredentialsErrorHandler(),
         PagerErrorHandler(),
         InterruptExceptionHandler(),
-        ClientErrorHandler(session, parsed_globals),
+        ClientErrorHandler(session),
         GeneralExceptionHandler(),
     ]
     return ChainedExceptionHandler(exception_handlers=handlers)
@@ -130,13 +130,15 @@ class FilteredExceptionHandler(BaseExceptionHandler):
     EXCEPTIONS_TO_HANDLE = ()
     MESSAGE = '%s'
 
-    def handle_exception(self, exception, stdout, stderr):
+    def handle_exception(self, exception, stdout, stderr, **kwargs):
         if isinstance(exception, self.EXCEPTIONS_TO_HANDLE):
-            return_val = self._do_handle_exception(exception, stdout, stderr)
+            return_val = self._do_handle_exception(
+                exception, stdout, stderr, **kwargs
+            )
             if return_val is not None:
                 return return_val
 
-    def _do_handle_exception(self, exception, stdout, stderr):
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
         stderr.write("\n")
         stderr.write(self.MESSAGE % exception)
         stderr.write("\n")
@@ -163,20 +165,22 @@ class ClientErrorHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = ClientError
     RC = CLIENT_ERROR_RC
 
-    def __init__(self, session=None, parsed_globals=None):
+    def __init__(self, session=None):
         self._session = session
-        self._parsed_globals = parsed_globals
         self._enhanced_formatter = None
 
-    def _do_handle_exception(self, exception, stdout, stderr):
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
+        parsed_globals = kwargs.get('parsed_globals')
         displayed_structured = False
         if self._session:
             displayed_structured = self._try_display_structured_error(
-                exception, stderr
+                exception, stderr, parsed_globals
             )
 
         if not displayed_structured:
-            return super()._do_handle_exception(exception, stdout, stderr)
+            return super()._do_handle_exception(
+                exception, stdout, stderr, **kwargs
+            )
 
         return self.RC
 
@@ -198,14 +202,16 @@ class ClientErrorHandler(FilteredExceptionHandler):
 
         return 'enhanced'
 
-    def _try_display_structured_error(self, exception, stderr):
+    def _try_display_structured_error(
+        self, exception, stderr, parsed_globals=None
+    ):
         try:
             error_response = self._extract_error_response(exception)
             if not error_response or 'Error' not in error_response:
                 return False
 
             error_info = error_response['Error']
-            error_format = self._resolve_error_format(self._parsed_globals)
+            error_format = self._resolve_error_format(parsed_globals)
 
             if error_format not in VALID_ERROR_FORMATS:
                 LOG.warning(
@@ -231,8 +237,8 @@ class ClientErrorHandler(FilteredExceptionHandler):
             temp_parsed_globals.output = error_format
             temp_parsed_globals.query = None
             temp_parsed_globals.color = (
-                getattr(self._parsed_globals, 'color', 'auto')
-                if self._parsed_globals
+                getattr(parsed_globals, 'color', 'auto')
+                if parsed_globals
                 else 'auto'
             )
 
@@ -340,8 +346,10 @@ class ChainedExceptionHandler(BaseExceptionHandler):
     def inject_handler(self, position, handler):
         self._exception_handlers.insert(position, handler)
 
-    def handle_exception(self, exception, stdout, stderr):
+    def handle_exception(self, exception, stdout, stderr, **kwargs):
         for handler in self._exception_handlers:
-            return_value = handler.handle_exception(exception, stdout, stderr)
+            return_value = handler.handle_exception(
+                exception, stdout, stderr, **kwargs
+            )
             if return_value is not None:
                 return return_value

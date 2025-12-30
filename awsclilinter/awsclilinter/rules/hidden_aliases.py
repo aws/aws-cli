@@ -211,7 +211,10 @@ class HiddenAliasRule(LintRule):
                                     "regex": f"\\A--{self._hidden_alias}\\z",
                                 },
                             },
-                            {"kind": "raw_string", "regex": f"--{self._hidden_alias}"},
+                            {
+                                "kind": "raw_string",
+                                "regex": f"--{self._hidden_alias}"
+                            },
                         ]
                     }
                 },

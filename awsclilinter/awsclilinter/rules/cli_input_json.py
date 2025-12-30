@@ -53,7 +53,10 @@ class CLIInputJSONRule(LintRule):
                                     "regex": "\\A--cli-input-json\\z",
                                 },
                             },
-                            {"kind": "raw_string", "regex": "--cli-input-json"},
+                            {
+                                "kind": "raw_string",
+                                "regex": "--cli-input-json",
+                            },
                         ]
                     }
                 },

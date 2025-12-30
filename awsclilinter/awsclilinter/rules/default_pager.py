@@ -47,7 +47,10 @@ class DefaultPagerRule(LintRule):
                                         "regex": "\\A--no-cli-pager\\z",
                                     },
                                 },
-                                {"kind": "raw_string", "regex": "--no-cli-pager"},
+                                {
+                                    "kind": "raw_string",
+                                    "regex": "--no-cli-pager",
+                                },
                             ]
                         }
                     }

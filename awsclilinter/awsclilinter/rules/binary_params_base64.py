@@ -48,7 +48,10 @@ class Base64BinaryFormatRule(LintRule):
                                         "regex": "\\A--cli-binary-format\\z",
                                     },
                                 },
-                                {"kind": "raw_string", "regex": "--cli-binary-format"},
+                                {
+                                    "kind": "raw_string",
+                                    "regex": "--cli-binary-format",
+                                },
                             ]
                         }
                     }

@@ -1,7 +1,7 @@
 def has_aws_command_any_kind():
     return {
         "has": {
-           "kind": "command_name",
+            "kind": "command_name",
             "has": {
                 "any": [
                     {
@@ -10,17 +10,10 @@ def has_aws_command_any_kind():
                     },
                     {
                         "kind": "string",
-                        "has": {
-                            "kind": "string_content",
-                            "nthChild": 1,
-                            "regex": "\\Aaws\\z"
-                        }
+                        "has": {"kind": "string_content", "nthChild": 1, "regex": "\\Aaws\\z"},
                     },
-                    {
-                        "kind": "raw_string",
-                        "regex": "\\Aaws\\z"
-                    },
+                    {"kind": "raw_string", "regex": "aws"},
                 ]
-            }
+            },
         }
     }

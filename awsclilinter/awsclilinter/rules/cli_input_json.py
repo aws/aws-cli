@@ -10,10 +10,10 @@ class CLIInputJSONRule(LintRule):
     """Detects AWS CLI commands that use the `--cli-input-json` parameter."""
 
     _SUGGESTED_MANUAL_FIX = (
-        "If pagination-related parameters are present in the JSON file specified with "
-        "`--cli-input-json`, remove the pagination parameters from the JSON file "
+        "If pagination-related parameters are present in the input JSON specified with "
+        "`--cli-input-json`, remove the pagination parameters from the input JSON "
         "to retain v1 behavior. Alternatively, migrate to v2 behavior by moving the pagination "
-        "parameters from the JSON file onto the command as separate command line parameters. "
+        "parameters from the input JSON onto the command as separate command line parameters. "
         "See https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration-changes.html"
         "#cliv2-migration-skeleton-paging.\n"
     )
@@ -32,7 +32,6 @@ class CLIInputJSONRule(LintRule):
 
     def check(self, root: SgRoot) -> List[LintFinding]:
         """Check for AWS CLI commands that use `--cli-input-json`."""
-        # TODO Add tests for this rule, and test (especially this rule).
         node = root.root()
         nodes = node.find_all(
             all=[  # type: ignore[arg-type]
@@ -51,13 +50,10 @@ class CLIInputJSONRule(LintRule):
                                 "has": {
                                     "kind": "string_content",
                                     "nthChild": 1,
-                                    "regex": "\\A--cli-input-json\\z"
-                                }
+                                    "regex": "\\A--cli-input-json\\z",
+                                },
                             },
-                            {
-                                "kind": "raw_string",
-                                "regex": "\\A--cli-input-json\\z"
-                            },
+                            {"kind": "raw_string", "regex": "--cli-input-json"},
                         ]
                     }
                 },

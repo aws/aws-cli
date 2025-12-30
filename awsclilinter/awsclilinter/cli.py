@@ -10,6 +10,7 @@ from awsclilinter import linter
 from awsclilinter.linter import parse
 from awsclilinter.rules import LintFinding, LintRule
 from awsclilinter.rules.binary_params_base64 import Base64BinaryFormatRule
+from awsclilinter.rules.cli_input_json import CLIInputJSONRule
 from awsclilinter.rules.default_pager import DefaultPagerRule
 from awsclilinter.rules.deploy_empty_changeset import DeployEmptyChangesetRule
 from awsclilinter.rules.ecr_get_login import EcrGetLoginRule
@@ -361,6 +362,7 @@ def main():
         *create_all_hidden_alias_rules(),
         # Rules that do not automatically generate fixes go last
         EcrGetLoginRule(),
+        CLIInputJSONRule(),
     ]
 
     if args.interactive:

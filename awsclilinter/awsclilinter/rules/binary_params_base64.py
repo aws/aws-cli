@@ -3,6 +3,7 @@ from typing import List
 from ast_grep_py.ast_grep_py import SgRoot
 
 from awsclilinter.rules import LintFinding, LintRule
+from awsclilinter.rules.utils import has_aws_command_any_kind
 
 
 class Base64BinaryFormatRule(LintRule):
@@ -28,16 +29,33 @@ class Base64BinaryFormatRule(LintRule):
         base64_broken_nodes = node.find_all(
             all=[  # type: ignore[arg-type]
                 {"kind": "command"},
+                has_aws_command_any_kind(),
+                # Does not have the --cli-binary-format parameter
+                # (unquoted, double-quoted, or single-quoted).
                 {
-                    "has": {
-                        "kind": "command_name",
+                    "not": {
                         "has": {
-                            "kind": "word",
-                            "pattern": "aws",
-                        },
+                            "any": [
+                                {
+                                    "kind": "word",
+                                    "pattern": "--cli-binary-format",
+                                },
+                                {
+                                    "kind": "string",
+                                    "has": {
+                                        "kind": "string_content",
+                                        "nthChild": 1,
+                                        "regex": "\\A--cli-binary-format\\z"
+                                    }
+                                },
+                                {
+                                    "kind": "raw_string",
+                                    "regex": "\\A--cli-binary-format\\z"
+                                },
+                            ]
+                        }
                     }
                 },
-                {"not": {"has": {"kind": "word", "pattern": "--cli-binary-format"}}},
                 # Command is not ecr-get-login, since it was removed in AWS CLI v2, and we don't
                 # want to add v2-specific arguments to commands that don't exist in AWS CLI v2.
                 {

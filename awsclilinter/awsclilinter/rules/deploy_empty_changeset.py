@@ -3,6 +3,7 @@ from typing import List
 from ast_grep_py.ast_grep_py import SgRoot
 
 from awsclilinter.rules import LintFinding, LintRule
+from awsclilinter.rules.utils import has_aws_command_any_kind
 
 
 class DeployEmptyChangesetRule(LintRule):
@@ -16,7 +17,7 @@ class DeployEmptyChangesetRule(LintRule):
     def description(self) -> str:
         return (
             "In AWS CLI v2, deploying an AWS CloudFormation Template that results in an empty "
-            "changeset will NOT result in an error. You can add the -–fail-on-empty-changeset "
+            "changeset will NOT result in an error. You can add the --fail-on-empty-changeset "
             "flag to retain v1 behavior in v2. See https://docs.aws.amazon.com/cli/latest/"
             "userguide/cliv2-migration-changes.html#cliv2-migration-cfn."
         )
@@ -29,15 +30,7 @@ class DeployEmptyChangesetRule(LintRule):
         nodes = node.find_all(
             all=[  # type: ignore[arg-type]
                 {"kind": "command"},
-                {
-                    "has": {
-                        "kind": "command_name",
-                        "has": {
-                            "kind": "word",
-                            "pattern": "aws",
-                        },
-                    }
-                },
+                has_aws_command_any_kind(),
                 {
                     "has": {
                         "kind": "word",

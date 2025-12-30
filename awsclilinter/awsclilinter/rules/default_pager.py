@@ -3,6 +3,7 @@ from typing import List
 from ast_grep_py.ast_grep_py import SgRoot
 
 from awsclilinter.rules import LintFinding, LintRule
+from awsclilinter.rules.utils import has_aws_command_any_kind
 
 
 class DefaultPagerRule(LintRule):
@@ -27,16 +28,33 @@ class DefaultPagerRule(LintRule):
         nodes = node.find_all(
             all=[  # type: ignore[arg-type]
                 {"kind": "command"},
+                has_aws_command_any_kind(),
+                # Does not have the --no-cli-pager parameter
+                # (unquoted, double-quoted, or single-quoted).
                 {
-                    "has": {
-                        "kind": "command_name",
+                    "not": {
                         "has": {
-                            "kind": "word",
-                            "pattern": "aws",
-                        },
+                            "any": [
+                                {
+                                    "kind": "word",
+                                    "pattern": "--no-cli-pager",
+                                },
+                                {
+                                    "kind": "string",
+                                    "has": {
+                                        "kind": "string_content",
+                                        "nthChild": 1,
+                                        "regex": "\\A--no-cli-pager\\z"
+                                    }
+                                },
+                                {
+                                    "kind": "raw_string",
+                                    "regex": "\\A--no-cli-pager\\z"
+                                },
+                            ]
+                        }
                     }
                 },
-                {"not": {"has": {"kind": "word", "pattern": "--no-cli-pager"}}},
                 # Command is not ecr-get-login, since it was removed in AWS CLI v2, and we don't
                 # want to add v2-specific arguments to commands that don't exist in AWS CLI v2.
                 {

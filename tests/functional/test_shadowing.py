@@ -23,17 +23,18 @@ def _generate_command_tests():
     for command_name, command_obj in list(help_command.command_table.items()):
         sub_help = command_obj.create_help_command()
         if hasattr(sub_help, 'command_table'):
-            yield command_name, sub_help.command_table, top_level_params
+            for sub_name, sub_command in sub_help.command_table.items():
+                yield command_name, sub_name, sub_command, top_level_params
 
 
 @pytest.mark.validates_models
 @pytest.mark.parametrize(
-    "command_name, command_table, builtins", _generate_command_tests()
+    "command_name, sub_name, sub_command, builtins", _generate_command_tests()
 )
 def test_no_shadowed_builtins(
-    command_name, command_table, builtins, record_property
+    command_name, sub_name, sub_command, builtins, record_property
 ):
-    """Verify no command params are shadowed or prefixed by the built in param.
+    """Verify no command params are shadowed or prefixed by the built-in param.
 
     The CLI parses all command line options into a single namespace.
     This means that option names must be unique and cannot conflict
@@ -59,23 +60,22 @@ def test_no_shadowed_builtins(
 
     """
     errors = []
-    for sub_name, sub_command in command_table.items():
-        op_help = sub_command.create_help_command()
-        model = op_help.obj
-        arg_table = op_help.arg_table
-        for arg_name in arg_table:
-            if any(p.startswith(arg_name) for p in builtins):
-                if isinstance(model, OperationModel):
-                    # Store the service and operation in
-                    # PyTest custom properties
-                    record_property(
-                        'aws_service', model.service_model.service_name
-                    )
-                    record_property('aws_operation', model.name)
-                # Then we are shadowing or prefixing a top level argument
-                errors.append(
-                    'Shadowing/Prefixing a top level option: '
-                    f'{command_name}.{sub_name}.{arg_name}'
-                )
+    op_help = sub_command.create_help_command()
+    model = op_help.obj
+    arg_table = op_help.arg_table
+    for arg_name in arg_table:
+        if any(p.startswith(arg_name) for p in builtins):
+            # Then we are shadowing or prefixing a top level argument
+            errors.append(
+                'Shadowing/Prefixing a top level option: '
+                f'{command_name}.{sub_name}.{arg_name}'
+            )
     if errors:
+        if isinstance(model, OperationModel):
+            # Store the service and operation in
+            # PyTest custom properties
+            record_property(
+                'aws_service', model.service_model.service_name
+            )
+            record_property('aws_operation', model.name)
         raise AssertionError('\n' + '\n'.join(errors))

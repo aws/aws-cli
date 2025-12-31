@@ -42,25 +42,25 @@ If you want to run `awsclilinter` from source, see the [Installing development v
 ### Dry-run mode (default)
 Display issues without modifying the script:
 ```bash
-upgrade-aws-cli --script upload_s3_files.sh
+migrate-aws-cli --script upload_s3_files.sh
 ```
 
 ### Fix mode
 Automatically update the input script:
 ```bash
-upgrade-aws-cli --script upload_s3_files.sh --fix
+migrate-aws-cli --script upload_s3_files.sh --fix
 ```
 
 ### Output mode
 Create a new fixed script without modifying the original:
 ```bash
-upgrade-aws-cli --script upload_s3_files.sh --output upload_s3_files_v2.sh
+migrate-aws-cli --script upload_s3_files.sh --output upload_s3_files_v2.sh
 ```
 
 ### Interactive mode
 Review and accept/reject each change individually:
 ```bash
-upgrade-aws-cli --script upload_s3_files.sh --interactive --output upload_s3_files_v2.sh
+migrate-aws-cli --script upload_s3_files.sh --interactive --output upload_s3_files_v2.sh
 ```
 
 In interactive mode, you can:
@@ -95,7 +95,7 @@ source .venv/bin/activate
 
 ### Running the CLI
 ```bash
-upgrade-aws-cli --script <script.sh>
+migrate-aws-cli --script <script.sh>
 ```
 
 ### Running tests

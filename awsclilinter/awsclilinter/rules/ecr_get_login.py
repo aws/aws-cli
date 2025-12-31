@@ -3,6 +3,7 @@ from typing import List
 from ast_grep_py.ast_grep_py import SgRoot
 
 from awsclilinter.rules import LintFinding, LintRule
+from awsclilinter.rules.utils import has_aws_command_any_kind
 
 
 class EcrGetLoginRule(LintRule):
@@ -33,15 +34,7 @@ class EcrGetLoginRule(LintRule):
         nodes = node.find_all(
             all=[  # type: ignore[arg-type]
                 {"kind": "command"},
-                {
-                    "has": {
-                        "kind": "command_name",
-                        "has": {
-                            "kind": "word",
-                            "pattern": "aws",
-                        },
-                    }
-                },
+                has_aws_command_any_kind(),
                 {
                     "has": {
                         "kind": "word",

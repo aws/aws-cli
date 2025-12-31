@@ -212,10 +212,10 @@ def dry_run_mode(
     for line_num, line in enumerate(diff):
         if line_num == 0:
             # First line is always '--- '
-            print(f"{line}a/{script_path}")
+            print(f"{line}{script_path}")
         elif line_num == 1:
             # Second line is always '+++ '
-            print(f"{line}b/{script_path}")
+            print(f"{line}{script_path}")
         elif line.startswith("@"):
             # Context control line.
             print(f"\n{_color_text(line, CYAN)}")

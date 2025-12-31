@@ -352,3 +352,21 @@ class TestCLI:
 
                 # Should have saved and exited
                 assert output_file.exists()
+
+    def test_version_flag(self, capsys):
+        """Test --version flag displays version and exits."""
+        with patch("sys.argv", ["migrate-aws-cli", "--version"]):
+            with pytest.raises(SystemExit) as exc_info:
+                main()
+            assert exc_info.value.code == 0
+            captured = capsys.readouterr()
+            assert "migrate-aws-cli" in captured.out
+
+    def test_version_flag_short(self, capsys):
+        """Test -v flag displays version and exits."""
+        with patch("sys.argv", ["migrate-aws-cli", "-v"]):
+            with pytest.raises(SystemExit) as exc_info:
+                main()
+            assert exc_info.value.code == 0
+            captured = capsys.readouterr()
+            assert "migrate-aws-cli" in captured.out

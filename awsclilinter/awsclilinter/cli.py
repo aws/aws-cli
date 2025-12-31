@@ -7,6 +7,7 @@ from typing import List, Optional, Tuple
 from ast_grep_py.ast_grep_py import SgRoot
 
 from awsclilinter import linter
+from awsclilinter import __version__
 from awsclilinter.linter import parse
 from awsclilinter.rules import LintFinding, LintRule
 from awsclilinter.rules.binary_params_base64 import Base64BinaryFormatRule
@@ -324,6 +325,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="Lint and upgrade bash scripts from AWS CLI v1 to v2"
     )
+    parser.add_argument("-v", "--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument("--script", required=True, help="Path to the bash script to lint")
     parser.add_argument(
         "--fix", action="store_true", help="Apply fixes to the script (modifies in place)"

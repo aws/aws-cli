@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 
+from botocore.exceptions import ClientError
 from s3transfer.manager import TransferManager
 
 from awscli.testutils import mock
@@ -365,6 +366,7 @@ class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
 
     def test_dry_run(self):
         self.cli_params['dryrun'] = True
+        self.transfer_manager.client = mock.Mock()
         self.transfer_request_submitter = UploadRequestSubmitter(
             self.transfer_manager, self.result_queue, self.cli_params)
         fileinfo = FileInfo(
@@ -377,6 +379,110 @@ class TestUploadRequestSubmitter(BaseTransferRequestSubmitterTest):
         self.assertEqual(result.transfer_type, 'upload')
         self.assertTrue(result.src.endswith(self.filename))
         self.assertEqual(result.dest, 's3://' + self.bucket + '/' + self.key)
+
+    def test_dry_run_validates_bucket_access(self):
+        # Regression test for https://github.com/aws/aws-cli/issues/9935
+        # Verify that dryrun validates bucket access by calling head_bucket
+        self.cli_params['dryrun'] = True
+        self.transfer_manager.client = mock.Mock()
+        self.transfer_request_submitter = UploadRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params)
+        fileinfo = FileInfo(
+            src=self.filename, src_type='local', operation_name='upload',
+            dest=self.bucket + '/' + self.key, dest_type='s3')
+        self.transfer_request_submitter.submit(fileinfo)
+
+        # Verify head_bucket was called to validate bucket access
+        self.transfer_manager.client.head_bucket.assert_called_once_with(
+            Bucket=self.bucket
+        )
+
+    def test_dry_run_fails_on_access_denied(self):
+        # Regression test for https://github.com/aws/aws-cli/issues/9935
+        # Verify that dryrun fails with AccessDenied when user lacks
+        # bucket access permissions
+        self.cli_params['dryrun'] = True
+        self.transfer_manager.client = mock.Mock()
+        self.transfer_manager.client.head_bucket.side_effect = ClientError(
+            {'Error': {'Code': '403', 'Message': 'Forbidden'}},
+            'HeadBucket'
+        )
+        self.transfer_request_submitter = UploadRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params)
+        fileinfo = FileInfo(
+            src=self.filename, src_type='local', operation_name='upload',
+            dest=self.bucket + '/' + self.key, dest_type='s3')
+
+        with self.assertRaises(ClientError) as context:
+            self.transfer_request_submitter.submit(fileinfo)
+
+        self.assertEqual(context.exception.response['Error']['Code'], '403')
+
+    def test_dry_run_fails_on_nonexistent_bucket(self):
+        # Regression test for https://github.com/aws/aws-cli/issues/9935
+        # Verify that dryrun fails when bucket does not exist
+        self.cli_params['dryrun'] = True
+        self.transfer_manager.client = mock.Mock()
+        self.transfer_manager.client.head_bucket.side_effect = ClientError(
+            {'Error': {'Code': '404', 'Message': 'Not Found'}},
+            'HeadBucket'
+        )
+        self.transfer_request_submitter = UploadRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params)
+        fileinfo = FileInfo(
+            src=self.filename, src_type='local', operation_name='upload',
+            dest=self.bucket + '/' + self.key, dest_type='s3')
+
+        with self.assertRaises(ClientError) as context:
+            self.transfer_request_submitter.submit(fileinfo)
+
+        self.assertEqual(context.exception.response['Error']['Code'], '404')
+
+    def test_dry_run_caches_bucket_validation(self):
+        # Regression test for https://github.com/aws/aws-cli/issues/9935
+        # Verify that bucket access is only validated once per bucket
+        self.cli_params['dryrun'] = True
+        self.transfer_manager.client = mock.Mock()
+        self.transfer_request_submitter = UploadRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params)
+
+        # Submit multiple files to the same bucket
+        for i in range(3):
+            fileinfo = FileInfo(
+                src=self.filename, src_type='local', operation_name='upload',
+                dest=self.bucket + '/key' + str(i), dest_type='s3')
+            self.transfer_request_submitter.submit(fileinfo)
+
+        # head_bucket should only be called once per bucket
+        self.assertEqual(
+            self.transfer_manager.client.head_bucket.call_count, 1
+        )
+
+        # All three should result in DryRunResult
+        for i in range(3):
+            result = self.result_queue.get()
+            self.assertIsInstance(result, DryRunResult)
+
+    def test_dry_run_validates_each_bucket_separately(self):
+        # Regression test for https://github.com/aws/aws-cli/issues/9935
+        # Verify that different buckets are validated separately
+        self.cli_params['dryrun'] = True
+        self.transfer_manager.client = mock.Mock()
+        self.transfer_request_submitter = UploadRequestSubmitter(
+            self.transfer_manager, self.result_queue, self.cli_params)
+
+        # Submit files to different buckets
+        buckets = ['bucket1', 'bucket2', 'bucket3']
+        for bucket in buckets:
+            fileinfo = FileInfo(
+                src=self.filename, src_type='local', operation_name='upload',
+                dest=bucket + '/' + self.key, dest_type='s3')
+            self.transfer_request_submitter.submit(fileinfo)
+
+        # head_bucket should be called once per bucket
+        self.assertEqual(
+            self.transfer_manager.client.head_bucket.call_count, 3
+        )
 
     def test_submit_move_adds_delete_source_subscriber(self):
         fileinfo = FileInfo(

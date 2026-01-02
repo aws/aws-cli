@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.32.28
+=======
+
+* bugfix:``s3``: Reverts addition of ``--case-conflict`` feature which caused a performance regression when copying from S3 to large local directories
+
+
 2.32.27
 =======
 

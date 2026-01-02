@@ -264,12 +264,3 @@ class MissingFileSync(BaseSync):
             src_file.dest,
         )
         return True
-
-
-class AlwaysSync(BaseSync):
-    def __init__(self, sync_type='file_at_src_and_dest'):
-        super(AlwaysSync, self).__init__(sync_type)
-
-    def determine_should_sync(self, src_file, dest_file):
-        LOG.debug(f"syncing: {src_file.src} -> {src_file.dest}")
-        return True

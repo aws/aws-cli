@@ -36,12 +36,10 @@ from awscli.customizations.s3.fileinfobuilder import FileInfoBuilder
 from awscli.customizations.s3.filters import create_filter
 from awscli.customizations.s3.s3handler import S3TransferHandlerFactory
 from awscli.customizations.s3.syncstrategy.base import (
-    AlwaysSync,
     MissingFileSync,
     NeverSync,
     SizeAndLastModifiedSync,
 )
-from awscli.customizations.s3.syncstrategy.caseconflict import CaseConflictSync
 from awscli.customizations.s3.utils import (
     AppendFilter,
     RequestParamsMapper,
@@ -545,7 +543,9 @@ PROGRESS_MULTILINE = {
     'name': 'progress-multiline',
     'dest': 'progress_multiline',
     'action': 'store_true',
-    'help_text': ('Show progress on multiple lines.'),
+    'help_text': (
+        'Show progress on multiple lines.'
+    ),
 }
 
 
@@ -663,35 +663,6 @@ BUCKET_REGION = {
         'https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region'
     ),
 }
-
-
-CASE_CONFLICT = {
-    'name': 'case-conflict',
-    'choices': [
-        'ignore',
-        'skip',
-        'warn',
-        'error',
-    ],
-    'default': 'warn',
-    'help_text': (
-        "Configures behavior when attempting to download multiple objects "
-        "whose keys differ only by case, which can cause undefined behavior "
-        "on case-insensitive filesystems. "
-        "This parameter only applies for commands that perform multiple S3 "
-        "to local downloads. "
-        f"See <a href='{CaseConflictSync.DOC_URI}'>Handling case "
-        "conflicts</a> for details. Valid values are: "
-        "<ul>"
-        "<li>``error`` - Raise an error and abort downloads.</li>"
-        "<li>``warn`` - The default value. Emit a warning and download "
-        "the object.</li>"
-        "<li>``skip`` - Skip downloading the object.</li>"
-        "<li>``ignore`` - Ignore the conflict and download the object.</li>"
-        "</ul>"
-    ),
-}
-
 
 TRANSFER_ARGS = [
     DRYRUN,
@@ -1110,14 +1081,7 @@ class CpCommand(S3TransferCommand):
             }
         ]
         + TRANSFER_ARGS
-        + [
-            METADATA,
-            COPY_PROPS,
-            METADATA_DIRECTIVE,
-            EXPECTED_SIZE,
-            RECURSIVE,
-            CASE_CONFLICT,
-        ]
+        + [METADATA, COPY_PROPS, METADATA_DIRECTIVE, EXPECTED_SIZE, RECURSIVE]
     )
 
 
@@ -1141,7 +1105,6 @@ class MvCommand(S3TransferCommand):
             METADATA_DIRECTIVE,
             RECURSIVE,
             VALIDATE_SAME_S3_PATHS,
-            CASE_CONFLICT,
         ]
     )
 
@@ -1187,7 +1150,7 @@ class SyncCommand(S3TransferCommand):
             }
         ]
         + TRANSFER_ARGS
-        + [METADATA, COPY_PROPS, METADATA_DIRECTIVE, CASE_CONFLICT]
+        + [METADATA, COPY_PROPS, METADATA_DIRECTIVE]
     )
 
 
@@ -1344,16 +1307,7 @@ class CommandArchitecture:
         sync_strategies['file_at_src_and_dest_sync_strategy'] = (
             SizeAndLastModifiedSync()
         )
-        if self._should_handle_case_conflicts():
-            sync_strategies['file_not_at_dest_sync_strategy'] = (
-                CaseConflictSync(
-                    on_case_conflict=self.parameters['case_conflict']
-                )
-            )
-        else:
-            sync_strategies['file_not_at_dest_sync_strategy'] = (
-                MissingFileSync()
-            )
+        sync_strategies['file_not_at_dest_sync_strategy'] = MissingFileSync()
         sync_strategies['file_not_at_src_sync_strategy'] = NeverSync()
 
         # Determine what strategies to override if any.
@@ -1486,12 +1440,6 @@ class CommandArchitecture:
                 'file_info_builder': [file_info_builder],
                 's3_handler': [s3_transfer_handler],
             }
-            if self._should_handle_case_conflicts():
-                self._handle_case_conflicts(
-                    command_dict,
-                    rev_files,
-                    rev_generator,
-                )
         elif self.cmd == 'rm':
             command_dict = {
                 'setup': [files],
@@ -1508,12 +1456,6 @@ class CommandArchitecture:
                 'file_info_builder': [file_info_builder],
                 's3_handler': [s3_transfer_handler],
             }
-            if self._should_handle_case_conflicts():
-                self._handle_case_conflicts(
-                    command_dict,
-                    rev_files,
-                    rev_generator,
-                )
 
         files = command_dict['setup']
         while self.instructions:
@@ -1574,74 +1516,6 @@ class CommandArchitecture:
                     'sse_c_key': self.parameters.get('sse_c_copy_source_key'),
                 },
             )
-
-    def _should_handle_case_conflicts(self):
-        return (
-            self.cmd in {'sync', 'cp', 'mv'}
-            and self.parameters.get('paths_type') == 's3local'
-            and self.parameters['case_conflict'] != 'ignore'
-            and self.parameters.get('dir_op')
-        )
-
-    def _handle_case_conflicts(self, command_dict, rev_files, rev_generator):
-        # Objects are not returned in lexicographical order when
-        # operated on S3 Express directory buckets. This is required
-        # for sync operations to behave correctly, which is what
-        # recursive copies and moves fall back to so potential case
-        # conflicts can be detected and handled.
-        if not is_s3express_bucket(
-            split_s3_bucket_key(self.parameters['src'])[0]
-        ):
-            self._modify_instructions_for_case_conflicts(
-                command_dict, rev_files, rev_generator
-            )
-            return
-        # `skip` and `error` are not valid choices in this case because
-        # it's not possible to detect case conflicts.
-        if self.parameters['case_conflict'] not in {'ignore', 'warn'}:
-            raise ParamValidationError(
-                f"`{self.parameters['case_conflict']}` is not a valid value "
-                "for `--case-conflict` when operating on S3 Express "
-                "directory buckets. Valid values: `warn`, `ignore`."
-            )
-        msg = (
-            "warning: Recursive copies/moves from an S3 Express "
-            "directory bucket to a case-insensitive local filesystem "
-            "may result in undefined behavior if there are "
-            "S3 object key names that differ only by case. To disable "
-            "this warning, set the `--case-conflict` parameter to `ignore`. "
-            f"For more information, see {CaseConflictSync.DOC_URI}."
-        )
-        uni_print(msg, sys.stderr)
-
-    def _modify_instructions_for_case_conflicts(
-        self, command_dict, rev_files, rev_generator
-    ):
-        # Command will perform recursive S3 to local downloads.
-        # Checking for potential case conflicts requires knowledge
-        # of local files. Instead of writing a separate validation
-        # mechanism for recursive downloads, we modify the instructions
-        # to mimic a sync command.
-        sync_strategies = {
-            # Local filename exists with exact case match. Always sync
-            # because it's a copy operation.
-            'file_at_src_and_dest_sync_strategy': AlwaysSync(),
-            # Local filename either doesn't exist or differs only by case.
-            # Let `CaseConflictSync` determine which it is and handle it
-            # according to configured `--case-conflict` parameter.
-            'file_not_at_dest_sync_strategy': CaseConflictSync(
-                on_case_conflict=self.parameters['case_conflict']
-            ),
-            # Copy is one-way so never sync if not at source.
-            'file_not_at_src_sync_strategy': NeverSync(),
-        }
-        command_dict['setup'].append(rev_files)
-        command_dict['file_generator'].append(rev_generator)
-        command_dict['filters'].append(create_filter(self.parameters))
-        command_dict['comparator'] = [Comparator(**sync_strategies)]
-        self.instructions.insert(
-            self.instructions.index('file_info_builder'), 'comparator'
-        )
 
 
 # TODO: This class is fairly quirky in the sense that it is both a builder

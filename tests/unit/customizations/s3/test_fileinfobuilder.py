@@ -36,8 +36,6 @@ class TestFileInfoBuilder(unittest.TestCase):
                 operation_name='operation_name',
                 response_data='associated_response_data',
                 etag='etag',
-                case_conflict_submitted='case_conflict_submitted',
-                case_conflict_key='case_conflict_key',
             )
         ]
         file_infos = info_setter.call(files)

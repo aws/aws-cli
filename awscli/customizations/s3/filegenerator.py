@@ -94,8 +94,7 @@ class FileDecodingError(Exception):
 class FileStat(object):
     def __init__(self, src, dest=None, compare_key=None, size=None,
                  last_update=None, src_type=None, dest_type=None,
-                 operation_name=None, response_data=None, etag=None,
-                 case_conflict_submitted=None, case_conflict_key=None,):
+                 operation_name=None, response_data=None, etag=None):
         self.src = src
         self.dest = dest
         self.compare_key = compare_key
@@ -106,8 +105,6 @@ class FileStat(object):
         self.operation_name = operation_name
         self.response_data = response_data
         self.etag = etag
-        self.case_conflict_submitted = case_conflict_submitted
-        self.case_conflict_key = case_conflict_key
 
 
 class FileGenerator(object):

@@ -690,20 +690,6 @@ class OnDoneFilteredSubscriber(BaseSubscriber):
         pass
 
 
-class CaseConflictCleanupSubscriber(BaseSubscriber):
-    """
-    A subscriber which removes object compare key from case conflict set
-    when download finishes.
-    """
-
-    def __init__(self, submitted, case_conflict_key):
-        self._submitted = submitted
-        self._key = case_conflict_key
-
-    def on_done(self, future, **kwargs):
-        self._submitted.discard(self._key)
-
-
 class DeleteSourceSubscriber(OnDoneFilteredSubscriber):
     """A subscriber which deletes the source of the transfer."""
     def _on_success(self, future):

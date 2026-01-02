@@ -40,7 +40,7 @@ from awscli.customizations.s3.utils import (
     ProvideLastModifiedTimeSubscriber, DirectoryCreatorSubscriber,
     DeleteSourceObjectSubscriber, DeleteSourceFileSubscriber,
     DeleteCopySourceObjectSubscriber, NonSeekableStream, CreateDirectoryError,
-    S3PathResolver, CaseConflictCleanupSubscriber)
+    S3PathResolver)
 from awscli.customizations.s3.results import WarningResult
 from tests.unit.customizations.s3 import FakeTransferFuture
 from tests.unit.customizations.s3 import FakeTransferFutureMeta
@@ -1207,17 +1207,3 @@ class TestS3PathResolver:
     def test_has_underlying_s3_path(self, path, expected_has_underlying_s3_path):
         has_underlying_s3_path = S3PathResolver.has_underlying_s3_path(path)
         assert has_underlying_s3_path == expected_has_underlying_s3_path
-
-
-class TestCaseConflictCleanupSubscriber:
-    def test_on_done_removes_key_from_set(self):
-        submitted = {123, 456}
-        subscriber = CaseConflictCleanupSubscriber(submitted, 123)
-        subscriber.on_done(future=None)
-        assert submitted == {456}
-
-    def test_on_done_handles_missing_key(self):
-        submitted = {456}
-        subscriber = CaseConflictCleanupSubscriber(submitted, 123)
-        subscriber.on_done(future=None)
-        assert submitted == {456}

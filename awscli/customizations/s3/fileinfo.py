@@ -42,8 +42,7 @@ class FileInfo(object):
                  last_update=None, src_type=None, dest_type=None,
                  operation_name=None, client=None, parameters=None,
                  source_client=None, is_stream=False,
-                 associated_response_data=None, etag=None,
-                 case_conflict_submitted=None, case_conflict_key=None,):
+                 associated_response_data=None, etag=None):
         self.src = src
         self.src_type = src_type
         self.operation_name = operation_name
@@ -61,8 +60,6 @@ class FileInfo(object):
         self.is_stream = is_stream
         self.associated_response_data = associated_response_data
         self.etag = etag
-        self.case_conflict_submitted = case_conflict_submitted
-        self.case_conflict_key = case_conflict_key
 
     def is_glacier_compatible(self):
         """Determines if a file info object is glacier compatible

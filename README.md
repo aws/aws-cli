@@ -1,4 +1,4 @@
-# AWS CLI v1-to-v2 Upgrade Linter
+# AWS CLI v1-to-v2 Migration Tool
 
 A CLI tool that lints bash scripts for AWS CLI v1 usage and updates them to avoid breaking 
 changes introduced in AWS CLI v2. Not all breaking changes can be detected statically, 
@@ -9,7 +9,7 @@ For a full list of the breaking changes introduced with AWS CLI v2, see
 
 ## Installation
 
-Most users should install AWS CLI Linter via `pip` in a `virtualenv`:
+Most users should install AWS CLI v1-to-v2 Migration Tool via `pip` in a `virtualenv`:
 
 ```shell
 $ python3 -m pip install awsclilinter
@@ -74,11 +74,11 @@ In interactive mode, you can:
 
 ### Installing development versions
 
-If you are interested in using the latest released version of the AWS CLI Linter, please see the [Installation](#installation) section. 
-This section is for anyone who wants to install the development version of the AWS CLI Linter. You might need to do this if:
+If you are interested in using the latest released version of the AWS CLI v1-to-v2 Migration Tool, please see the [Installation](#installation) section. 
+This section is for anyone who wants to install the development version of the AWS CLI v1-to-v2 Migration Tool. You might need to do this if:
 
-* You are developing a feature for the AWS CLI Linter and plan on submitting a Pull Request.
-* You want to test the latest changes of the AWS CLI Linter before they make it into an official release.
+* You are developing a feature for the AWS CLI v1-to-v2 Migration Tool and plan on submitting a Pull Request.
+* You want to test the latest changes of the AWS CLI v1-to-v2 Migration Tool before they make it into an official release.
 
 Install [uv](https://docs.astral.sh/uv/) if you haven't already, then set up the development environment:
 

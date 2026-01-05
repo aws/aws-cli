@@ -190,6 +190,15 @@ class TestS3CopyRule:
 
         assert len(findings) == 0
 
+    def test_no_detection_non_s3_paths(self):
+        """Test no detection for paths that don't start with s3://."""
+        script = "aws s3 cp 'as3://test-bucket1' 'as3://test-bucket2'"
+        root = SgRoot(script, "bash")
+        rule = S3CopyRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 0
+
 
 class TestHiddenAliasRule:
     """Test cases for HiddenAliasRule."""

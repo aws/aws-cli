@@ -10,9 +10,9 @@ def has_aws_command_any_kind():
                     },
                     {
                         "kind": "string",
-                        "has": {"kind": "string_content", "nthChild": 1, "regex": "\\Aaws\\z"},
+                        "pattern": '"aws"',
                     },
-                    {"kind": "raw_string", "regex": "aws"},
+                    {"kind": "raw_string", "pattern": "'aws'"},
                 ]
             },
         }

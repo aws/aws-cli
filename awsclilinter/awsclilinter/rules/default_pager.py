@@ -41,15 +41,11 @@ class DefaultPagerRule(LintRule):
                                 },
                                 {
                                     "kind": "string",
-                                    "has": {
-                                        "kind": "string_content",
-                                        "nthChild": 1,
-                                        "regex": "\\A--no-cli-pager\\z",
-                                    },
+                                    "pattern": '"--no-cli-pager"',
                                 },
                                 {
                                     "kind": "raw_string",
-                                    "regex": "--no-cli-pager",
+                                    "pattern": "'--no-cli-pager'",
                                 },
                             ]
                         }

@@ -6,8 +6,7 @@ from typing import List, Optional, Tuple
 
 from ast_grep_py.ast_grep_py import SgRoot
 
-from awsclilinter import linter
-from awsclilinter import __version__
+from awsclilinter import __version__, linter
 from awsclilinter.linter import parse
 from awsclilinter.rules import LintFinding, LintRule
 from awsclilinter.rules.binary_params_base64 import Base64BinaryFormatRule
@@ -118,7 +117,7 @@ def _display_finding(finding: LintFinding, index: int, script_content: str):
         print(f"\n{warning_msg}")
 
 
-def _lint_and_fix_script(
+def _lint_and_generate_updated_script(
     rules: List[LintRule],
     script_ast: SgRoot,
 ) -> tuple[SgRoot, int, list[tuple[LintFinding, LintRule]]]:
@@ -161,7 +160,7 @@ def auto_fix_mode(
         script_content: Current script represented as an AST.
         output_path: The path to write the updated script if any findings were detected.
     """
-    current_ast, num_auto_fixable_findings, non_auto_fixable = _lint_and_fix_script(
+    current_ast, num_auto_fixable_findings, non_auto_fixable = _lint_and_generate_updated_script(
         rules, parse(script_content)
     )
 
@@ -195,7 +194,7 @@ def dry_run_mode(
         script_content: The input script.
         script_path: Path to the script being linted.
     """
-    current_ast, num_auto_fixable_findings, non_auto_fixable = _lint_and_fix_script(
+    current_ast, num_auto_fixable_findings, non_auto_fixable = _lint_and_generate_updated_script(
         rules, parse(script_content)
     )
 

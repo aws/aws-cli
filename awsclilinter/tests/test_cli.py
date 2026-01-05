@@ -370,3 +370,26 @@ class TestCLI:
             assert exc_info.value.code == 0
             captured = capsys.readouterr()
             assert "migrate-aws-cli" in captured.out
+
+    def test_non_aws_command_not_matched(self, tmp_path, capsys):
+        """Test that commands like 'myaws' are not matched as AWS CLI commands."""
+        script_file = tmp_path / "test.sh"
+        script_file.write_text("'myaws' s3 ls")
+
+        with patch("sys.argv", ["migrate-aws-cli", "--script", str(script_file)]):
+            main()
+            captured = capsys.readouterr()
+            assert "No issues found" in captured.out
+
+    def test_quoted_aws_command_matched(self, tmp_path, capsys):
+        """Test that 'aws' in single quotes is correctly matched."""
+        script_file = tmp_path / "test.sh"
+        script_file.write_text(
+            "'aws' secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json"
+        )
+
+        with patch("sys.argv", ["migrate-aws-cli", "--script", str(script_file)]):
+            main()
+            captured = capsys.readouterr()
+            # Should find issues since 'aws' is a valid AWS CLI command
+            assert "Found 2 issue" in captured.out

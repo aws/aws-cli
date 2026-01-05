@@ -32,7 +32,7 @@ class S3CopyRule(LintRule):
                     # Occurs after raw-string S3 bucket (e.g. 's3://bucket').
                     {
                         "kind": "raw_string",
-                        "regex": "s3://",
+                        "regex": "'s3://[^']+'",
                     },
                     # Occurs after concatenated S3 bucket (e.g. s3://$S3_BUCKET_NAME).
                     {
@@ -53,7 +53,7 @@ class S3CopyRule(LintRule):
                                 },
                                 {
                                     "kind": "raw_string",
-                                    "regex": "s3://",
+                                    "regex": "'s3://[^']+'",
                                 },
                             ]
                         },
@@ -134,7 +134,7 @@ class S3CopyRule(LintRule):
                             # raw-string S3 bucket (e.g. 's3://bucket').
                             {
                                 "kind": "raw_string",
-                                "regex": "s3://",
+                                "regex": "'s3://[^']+'",
                                 **self._follows_s3_bucket_any_kind(),
                             },
                             # Has an S3 bucket followed by a
@@ -157,7 +157,7 @@ class S3CopyRule(LintRule):
                                         },
                                         {
                                             "kind": "raw_string",
-                                            "regex": "s3://",
+                                            "regex": "'s3://[^']+'",
                                         },
                                     ]
                                 },

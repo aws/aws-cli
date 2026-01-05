@@ -96,9 +96,9 @@ class LoginCommand(BasicCommand):
         if profile_name not in self._session.available_profiles:
             self._session._profile_map[profile_name] = {}
 
-        if not self.accept_existing_credentials_warning_if_needed(
-            profile_name
-        ):
+        # Abort if the profile is already configured with a different style
+        # of credentials, since they'd still have precedence over login
+        if self.does_profile_have_non_login_credentials(profile_name):
             return
 
         config = botocore.config.Config(
@@ -182,11 +182,10 @@ class LoginCommand(BasicCommand):
             else:
                 uni_print('Invalid response. Please enter "y" or "n"')
 
-    def accept_existing_credentials_warning_if_needed(self, profile_name):
+    def does_profile_have_non_login_credentials(self, profile_name):
         """
-        Checks if the specified profile is already configured with a
-        different style of credentials. If so, warn the user and prompt them to
-        continue.
+        Checks if the specified profile is already configured
+        with a different style of credentials.
         """
         config = self._session.full_config['profiles'].get(profile_name, {})
         existing_credentials_style = None
@@ -202,28 +201,17 @@ class LoginCommand(BasicCommand):
         elif 'credential_process' in config:
             existing_credentials_style = 'Credential Process'
 
-        if not existing_credentials_style:
+        if existing_credentials_style:
+            uni_print(
+                f'\nError: Profile \'{profile_name}\' is already configured '
+                f'with {existing_credentials_style} credentials.\n\n'
+                f'You may run \'aws login --profile new-profile-name\' to '
+                f'create a new profile, or you must first manually '
+                f'remove the existing credentials from \'{profile_name}\'.\n'
+            )
             return True
 
-        while True:
-            response = compat_input(
-                f'\nWarning: Profile \'{profile_name}\' is already configured '
-                f'with {existing_credentials_style} credentials. '
-                f'If you continue to log in, the CLI and other tools may '
-                f'continue to use the existing credentials instead.\n\n'
-                f'You may run \'aws login --profile new-profile-name\' to '
-                f'create a new profile, or else you may manually remove the '
-                f'existing credentials from \'{profile_name}\'.\n\n'
-                f'Do you want to continue adding login credentials '
-                f'to \'{profile_name}\'? (y/n): '
-            )
-
-            if response.lower() in ('y', 'yes'):
-                return True
-            elif response.lower() in ('n', 'no'):
-                return False
-            else:
-                uni_print('Invalid response. Please enter "y" or "n"')
+        return False
 
     @staticmethod
     def resolve_sign_in_type(parsed_args):

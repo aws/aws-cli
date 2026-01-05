@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.32.29
+=======
+
+* api-change:``cleanroomsml``: AWS Clean Rooms ML now supports advanced Spark configurations to optimize SQL performance when creating an MLInputChannel or an audience generation job.
+
+
 2.32.28
 =======
 

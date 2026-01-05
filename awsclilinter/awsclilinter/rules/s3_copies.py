@@ -3,6 +3,7 @@ from typing import List
 from ast_grep_py.ast_grep_py import SgRoot
 
 from awsclilinter.rules import LintFinding, LintRule
+from awsclilinter.rules.utils import has_aws_command_any_kind
 
 
 class S3CopyRule(LintRule):
@@ -31,7 +32,7 @@ class S3CopyRule(LintRule):
                     # Occurs after raw-string S3 bucket (e.g. 's3://bucket').
                     {
                         "kind": "raw_string",
-                        "regex": "\\As3://",
+                        "regex": "'s3://[^']+'",
                     },
                     # Occurs after concatenated S3 bucket (e.g. s3://$S3_BUCKET_NAME).
                     {
@@ -52,7 +53,7 @@ class S3CopyRule(LintRule):
                                 },
                                 {
                                     "kind": "raw_string",
-                                    "regex": "\\As3://",
+                                    "regex": "'s3://[^']+'",
                                 },
                             ]
                         },
@@ -82,15 +83,7 @@ class S3CopyRule(LintRule):
         nodes = node.find_all(
             all=[  # type: ignore[arg-type]
                 {"kind": "command"},
-                {
-                    "has": {
-                        "kind": "command_name",
-                        "has": {
-                            "kind": "word",
-                            "pattern": "aws",
-                        },
-                    }
-                },
+                has_aws_command_any_kind(),
                 {
                     "has": {
                         "kind": "word",
@@ -141,7 +134,7 @@ class S3CopyRule(LintRule):
                             # raw-string S3 bucket (e.g. 's3://bucket').
                             {
                                 "kind": "raw_string",
-                                "regex": "\\As3://",
+                                "regex": "'s3://[^']+'",
                                 **self._follows_s3_bucket_any_kind(),
                             },
                             # Has an S3 bucket followed by a
@@ -164,7 +157,7 @@ class S3CopyRule(LintRule):
                                         },
                                         {
                                             "kind": "raw_string",
-                                            "regex": "\\As3://",
+                                            "regex": "'s3://[^']+'",
                                         },
                                     ]
                                 },

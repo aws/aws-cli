@@ -4,7 +4,7 @@
 TEMPLATE_FILE="$1"
 BUCKET="$2"
 
-aws secretsmanager put-secret-value --secret-id secret1213 \
+'aws' secretsmanager put-secret-value --secret-id secret1213 \
   --secret-binary file://data.json
 
 if

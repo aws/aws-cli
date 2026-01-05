@@ -1,6 +1,7 @@
 from ast_grep_py import SgRoot
 
 from awsclilinter.rules.binary_params_base64 import Base64BinaryFormatRule
+from awsclilinter.rules.cli_input_json import CLIInputJSONRule
 from awsclilinter.rules.default_pager import DefaultPagerRule
 from awsclilinter.rules.deploy_empty_changeset import DeployEmptyChangesetRule
 from awsclilinter.rules.ecr_get_login import EcrGetLoginRule
@@ -189,6 +190,15 @@ class TestS3CopyRule:
 
         assert len(findings) == 0
 
+    def test_no_detection_non_s3_paths(self):
+        """Test no detection for paths that don't start with s3://."""
+        script = "aws s3 cp 'as3://test-bucket1' 'as3://test-bucket2'"
+        root = SgRoot(script, "bash")
+        rule = S3CopyRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 0
+
 
 class TestHiddenAliasRule:
     """Test cases for HiddenAliasRule."""
@@ -236,9 +246,13 @@ class TestHiddenAliasRule:
 
     def test_fix_replaces_hidden_alias(self):
         """Test detection of public-key-base-64 alias in lightsail."""
-        script = "aws lightsail import-key-pair --key-pair-name mykey --public-key-base-64 c3NoLXJzYQ=="
+        script = (
+            "aws lightsail import-key-pair --key-pair-name mykey --public-key-base-64 c3NoLXJzYQ=="
+        )
         root = SgRoot(script, "bash")
-        rule = HiddenAliasRule("public-key-base-64", "public-key-base64", "lightsail", "import-key-pair")
+        rule = HiddenAliasRule(
+            "public-key-base-64", "public-key-base64", "lightsail", "import-key-pair"
+        )
         findings = rule.check(root)
 
         assert len(findings) == 1
@@ -293,6 +307,78 @@ class TestEcrGetLoginRule:
         script = "aws ecr get-login\naws ecr get-login --region us-east-1"
         root = SgRoot(script, "bash")
         rule = EcrGetLoginRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 2
+        for finding in findings:
+            assert finding.edit is None
+            assert finding.suggested_manual_fix is not None
+            assert finding.auto_fixable is False
+
+
+class TestCLIInputJSONRule:
+    """Test cases for CLIInputJSONRule (manual review only)."""
+
+    def test_rule_properties(self):
+        """Test rule description and auto_fixable property."""
+        rule = CLIInputJSONRule()
+        assert "cli-input-json" in rule.description
+        assert "pagination" in rule.description
+
+    def test_detects_cli_input_json(self):
+        """Test detection of the `--cli-input-json` parameter."""
+        script = "aws ec2 describe-instances --cli-input-json file://input.json"
+        root = SgRoot(script, "bash")
+        rule = CLIInputJSONRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 1
+        assert findings[0].edit is None
+        assert findings[0].suggested_manual_fix is not None
+        assert "pagination" in findings[0].suggested_manual_fix
+        assert findings[0].auto_fixable is False
+
+    def test_detects_cli_input_json_double_quoted(self):
+        """Test detection of the `--cli-input-json` parameter with double quotes."""
+        script = 'aws s3api list-objects "--cli-input-json" file://input.json'
+        root = SgRoot(script, "bash")
+        rule = CLIInputJSONRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 1
+        assert findings[0].edit is None
+        assert findings[0].suggested_manual_fix is not None
+        assert findings[0].auto_fixable is False
+
+    def test_detects_cli_input_json_single_quoted(self):
+        """Test detection of the `--cli-input-json` parameter with single quotes."""
+        script = "aws dynamodb query '--cli-input-json' file://query.json"
+        root = SgRoot(script, "bash")
+        rule = CLIInputJSONRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 1
+        assert findings[0].edit is None
+        assert findings[0].suggested_manual_fix is not None
+        assert findings[0].auto_fixable is False
+
+    def test_no_detection_without_cli_input_json(self):
+        """Test no detection when the `--cli-input-json` parameter is not present."""
+        script = "aws ec2 describe-instances --region us-west-2"
+        root = SgRoot(script, "bash")
+        rule = CLIInputJSONRule()
+        findings = rule.check(root)
+
+        assert len(findings) == 0
+
+    def test_detects_multiple_cli_input_json(self):
+        """Test detection of multiple commands with --cli-input-json."""
+        script = (
+            "aws ec2 describe-instances --cli-input-json file://input.json\n"
+            "aws s3api list-buckets --cli-input-json file://buckets.json"
+        )
+        root = SgRoot(script, "bash")
+        rule = CLIInputJSONRule()
         findings = rule.check(root)
 
         assert len(findings) == 2

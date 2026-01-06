@@ -1,11 +1,18 @@
 # AWS CLI v1-to-v2 Migration Tool
 
-A CLI tool that lints bash scripts for AWS CLI v1 usage and updates them to avoid breaking 
+A command-line tool that lints bash scripts for AWS CLI v1 usage and updates them to avoid breaking 
 changes introduced in AWS CLI v2. Not all breaking changes can be detected statically, 
 thus not all of them are supported by this tool.
 
 For a full list of the breaking changes introduced with AWS CLI v2, see 
 [Breaking changes between AWS CLI version 1 and AWS CLI version 2](https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration-changes.html#cliv2-migration-changes-breaking).
+
+Jump to:
+
+* [Installation](#installation)
+* [Usage](#usage)
+* [Development](#development)
+* [Getting Help](#getting-help)
 
 ## Installation
 
@@ -121,3 +128,11 @@ rm -rf .venv build dist *.egg-info
 find . -type d -name __pycache__ -exec rm -rf {} +
 find . -type f -name "*.pyc" -delete
 ```
+
+## Getting Help
+
+The best way to interact with our team is through GitHub. You can [open an issue](https://github.com/aws/aws-cli/issues/new/choose) and choose the templates for the AWS CLI v1-to-v2 Migration Tool.
+
+If you have a support plan with AWS Support, you can also create a new support case.
+
+Please check for open similar issues before opening another one.

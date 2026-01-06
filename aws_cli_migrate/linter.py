@@ -14,7 +14,7 @@ from typing import List, Tuple
 
 from ast_grep_py.ast_grep_py import SgRoot
 
-from awsclilinter.rules import LintFinding, LintRule
+from aws_cli_migrate.rules import LintFinding, LintRule
 
 
 def parse(script_content: str) -> SgRoot:

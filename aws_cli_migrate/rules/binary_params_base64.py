@@ -14,34 +14,35 @@ from typing import List
 
 from ast_grep_py.ast_grep_py import SgRoot
 
-from awsclilinter.rules import LintFinding, LintRule
-from awsclilinter.rules.utils import has_aws_command_any_kind
+from aws_cli_migrate.rules import LintFinding, LintRule
+from aws_cli_migrate.rules.utils import has_aws_command_any_kind
 
 
-class DefaultPagerRule(LintRule):
-    """Detects AWS CLI commands missing --no-cli-pager flag."""
+class Base64BinaryFormatRule(LintRule):
+    """Detects any AWS CLI command that does not specify the --cli-binary-format. This mitigates
+    the breaking change with how AWS CLI v2 treats binary parameters."""
 
     @property
     def name(self) -> str:
-        return "pager-by-default"
+        return "binary-params-base64"
 
     @property
     def description(self) -> str:
         return (
-            "AWS CLI v2 uses the system pager by default for all command output. "
-            "Add --no-cli-pager to disable use of the pager and match v1 behavior. See "
-            "https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration-changes.html"
-            "#cliv2-migration-output-pager."
+            "In AWS CLI v2, an input parameter typed as binary large object (BLOB) expects "
+            "the input to be base64-encoded. To retain v1 behavior after upgrading to AWS CLI v2, "
+            "add `--cli-binary-format raw-in-base64-out`. See https://docs.aws.amazon.com/cli/"
+            "latest/userguide/cliv2-migration-changes.html#cliv2-migration-binaryparam."
         )
 
     def check(self, root: SgRoot) -> List[LintFinding]:
-        """Check for AWS CLI commands missing --no-cli-pager."""
+        """Check for AWS CLI commands missing --cli-binary-format."""
         node = root.root()
-        nodes = node.find_all(
+        base64_broken_nodes = node.find_all(
             all=[  # type: ignore[arg-type]
                 {"kind": "command"},
                 has_aws_command_any_kind(),
-                # Does not have the --no-cli-pager parameter
+                # Does not have the --cli-binary-format parameter
                 # (unquoted, double-quoted, or single-quoted).
                 {
                     "not": {
@@ -49,15 +50,12 @@ class DefaultPagerRule(LintRule):
                             "any": [
                                 {
                                     "kind": "word",
-                                    "pattern": "--no-cli-pager",
+                                    "pattern": "--cli-binary-format",
                                 },
-                                {
-                                    "kind": "string",
-                                    "pattern": '"--no-cli-pager"',
-                                },
+                                {"kind": "string", "pattern": '"--cli-binary-format"'},
                                 {
                                     "kind": "raw_string",
-                                    "pattern": "'--no-cli-pager'",
+                                    "pattern": "'--cli-binary-format'",
                                 },
                             ]
                         }
@@ -77,9 +75,11 @@ class DefaultPagerRule(LintRule):
         )
 
         findings = []
-        for stmt in nodes:
+        for stmt in base64_broken_nodes:
             original = stmt.text()
-            suggested = original + " --no-cli-pager"
+            # To retain v1 behavior after migrating to v2, append
+            # --cli-binary-format raw-in-base64-out
+            suggested = original + " --cli-binary-format raw-in-base64-out"
             edit = stmt.replace(suggested)
 
             findings.append(

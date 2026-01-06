@@ -12,30 +12,30 @@ For a full list of the breaking changes introduced with AWS CLI v2, see
 Most users should install AWS CLI v1-to-v2 Migration Tool via `pip` in a `virtualenv`:
 
 ```shell
-$ python3 -m pip install awsclilinter
+$ python3 -m pip install aws-cli-migrate
 ```
 
 or, if you are not installing in a `virtualenv`, to install globally:
 
 ```shell
-$ sudo python3 -m pip install awsclilinter
+$ sudo python3 -m pip install aws-cli-migrate
 ```
 
 or for your user:
 
 ```shell
-$ python3 -m pip install --user awsclilinter
+$ python3 -m pip install --user aws-cli-migrate
 ```
 
-If you have the `awsclilinter` package installed and want to upgrade to the latest version, you can run:
+If you have the `aws-cli-migrate` package installed and want to upgrade to the latest version, you can run:
 
 ```shell
-$ python3 -m pip install --upgrade awsclilinter
+$ python3 -m pip install --upgrade aws-cli-migrate
 ```
 
-This will install the `awsclilinter` package as well as all dependencies.
+This will install the `aws-cli-migrate` package as well as all dependencies.
 
-If you want to run `awsclilinter` from source, see the [Installing development versions](#installing-development-versions) section.
+If you want to run `aws-cli-migrate` from source, see the [Installing development versions](#installing-development-versions) section.
 
 ## Usage
 
@@ -105,14 +105,14 @@ uv run pytest tests/ -v
 
 ### Code formatting
 ```bash
-uv run ruff format awsclilinter tests
-uv run ruff check --select I --fix awsclilinter tests
+uv run ruff format aws_cli_migrate tests
+uv run ruff check --select I --fix aws_cli_migrate tests
 ```
 
 ### Code linting
 ```bash
-uv run ruff format --check awsclilinter tests
-uv run ruff check awsclilinter tests
+uv run ruff format --check aws_cli_migrate tests
+uv run ruff check aws_cli_migrate tests
 ```
 
 ### Clean local workspace

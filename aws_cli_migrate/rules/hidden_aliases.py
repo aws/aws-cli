@@ -14,8 +14,8 @@ from typing import List
 
 from ast_grep_py.ast_grep_py import SgRoot
 
-from awsclilinter.rules import LintFinding, LintRule
-from awsclilinter.rules.utils import has_aws_command_any_kind
+from aws_cli_migrate.rules import LintFinding, LintRule
+from aws_cli_migrate.rules.utils import has_aws_command_any_kind
 
 _HIDDEN_ALIASES = [
     {

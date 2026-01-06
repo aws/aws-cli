@@ -18,16 +18,16 @@ from typing import List, Optional, Tuple
 
 from ast_grep_py.ast_grep_py import SgRoot
 
-from awsclilinter import __version__, linter
-from awsclilinter.linter import parse
-from awsclilinter.rules import LintFinding, LintRule
-from awsclilinter.rules.binary_params_base64 import Base64BinaryFormatRule
-from awsclilinter.rules.cli_input_json import CLIInputJSONRule
-from awsclilinter.rules.default_pager import DefaultPagerRule
-from awsclilinter.rules.deploy_empty_changeset import DeployEmptyChangesetRule
-from awsclilinter.rules.ecr_get_login import EcrGetLoginRule
-from awsclilinter.rules.hidden_aliases import create_all_hidden_alias_rules
-from awsclilinter.rules.s3_copies import S3CopyRule
+from aws_cli_migrate import __version__, linter
+from aws_cli_migrate.linter import parse
+from aws_cli_migrate.rules import LintFinding, LintRule
+from aws_cli_migrate.rules.binary_params_base64 import Base64BinaryFormatRule
+from aws_cli_migrate.rules.cli_input_json import CLIInputJSONRule
+from aws_cli_migrate.rules.default_pager import DefaultPagerRule
+from aws_cli_migrate.rules.deploy_empty_changeset import DeployEmptyChangesetRule
+from aws_cli_migrate.rules.ecr_get_login import EcrGetLoginRule
+from aws_cli_migrate.rules.hidden_aliases import create_all_hidden_alias_rules
+from aws_cli_migrate.rules.s3_copies import S3CopyRule
 
 # ANSI color codes
 RED = "\033[31m"

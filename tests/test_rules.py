@@ -10,15 +10,15 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from ast_grep_py import SgRoot
+from ast_grep_py.ast_grep_py import SgRoot
 
-from awsclilinter.rules.binary_params_base64 import Base64BinaryFormatRule
-from awsclilinter.rules.cli_input_json import CLIInputJSONRule
-from awsclilinter.rules.default_pager import DefaultPagerRule
-from awsclilinter.rules.deploy_empty_changeset import DeployEmptyChangesetRule
-from awsclilinter.rules.ecr_get_login import EcrGetLoginRule
-from awsclilinter.rules.hidden_aliases import HiddenAliasRule
-from awsclilinter.rules.s3_copies import S3CopyRule
+from aws_cli_migrate.rules.binary_params_base64 import Base64BinaryFormatRule
+from aws_cli_migrate.rules.cli_input_json import CLIInputJSONRule
+from aws_cli_migrate.rules.default_pager import DefaultPagerRule
+from aws_cli_migrate.rules.deploy_empty_changeset import DeployEmptyChangesetRule
+from aws_cli_migrate.rules.ecr_get_login import EcrGetLoginRule
+from aws_cli_migrate.rules.hidden_aliases import HiddenAliasRule
+from aws_cli_migrate.rules.s3_copies import S3CopyRule
 
 
 class TestBase64BinaryFormatRule:

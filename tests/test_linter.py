@@ -10,9 +10,9 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from awsclilinter import linter
-from awsclilinter.rules.binary_params_base64 import Base64BinaryFormatRule
-from awsclilinter.rules.ecr_get_login import EcrGetLoginRule
+from aws_cli_migrate import linter
+from aws_cli_migrate.rules.binary_params_base64 import Base64BinaryFormatRule
+from aws_cli_migrate.rules.ecr_get_login import EcrGetLoginRule
 
 
 class TestLinter:

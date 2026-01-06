@@ -14,34 +14,30 @@ from typing import List
 
 from ast_grep_py.ast_grep_py import SgRoot
 
-from awsclilinter.rules import LintFinding, LintRule
-from awsclilinter.rules.utils import has_aws_command_any_kind
+from aws_cli_migrate.rules import LintFinding, LintRule
+from aws_cli_migrate.rules.utils import has_aws_command_any_kind
 
 
-class EcrGetLoginRule(LintRule):
-    """Detects AWS CLI ECR get-login commands."""
-
-    _SUGGESTED_MANUAL_FIX = (
-        "Use `aws ecr get-login-password` instead, and pipe the results into the "
-        "`docker login` command with the `--password-stdin` option. See "
-        "https://docs.aws.amazon.com/cli/latest/userguide/"
-        "cliv2-migration-changes.html#cliv2-migration-ecr-get-login.\n"
-    )
+class DeployEmptyChangesetRule(LintRule):
+    """Detects AWS CLI CloudFormation deploy commands."""
 
     @property
     def name(self) -> str:
-        return "ecr-get-login"
+        return "deploy-empty-changeset"
 
     @property
     def description(self) -> str:
         return (
-            "In AWS CLI v2, The `ecr get-login` command has been removed. You must use "
-            "`ecr get-login-password` instead. See https://docs.aws.amazon.com/cli/latest/userguide/"
-            "cliv2-migration-changes.html#cliv2-migration-ecr-get-login.\n"
+            "In AWS CLI v2, deploying an AWS CloudFormation Template that results in an empty "
+            "changeset will NOT result in an error. You can add the --fail-on-empty-changeset "
+            "flag to retain v1 behavior in v2. See https://docs.aws.amazon.com/cli/latest/"
+            "userguide/cliv2-migration-changes.html#cliv2-migration-cfn."
         )
 
     def check(self, root: SgRoot) -> List[LintFinding]:
-        """Check for AWS CLI ECR get-login commands."""
+        """Check for AWS CLI CloudFormation deploy commands
+        without the --fail-on-empty-changeset or --no-fail-on-empty-changeset arguments.
+        """
         node = root.root()
         nodes = node.find_all(
             all=[  # type: ignore[arg-type]
@@ -50,27 +46,32 @@ class EcrGetLoginRule(LintRule):
                 {
                     "has": {
                         "kind": "word",
-                        "pattern": "ecr",
+                        "pattern": "cloudformation",
                     }
                 },
                 {
                     "has": {
                         "kind": "word",
-                        "pattern": "get-login",
+                        "pattern": "deploy",
                     }
                 },
+                {"not": {"has": {"kind": "word", "pattern": "--fail-on-empty-changeset"}}},
+                {"not": {"has": {"kind": "word", "pattern": "--no-fail-on-empty-changeset"}}},
             ]
         )
 
         findings = []
         for stmt in nodes:
+            original = stmt.text()
+            suggested = original + " --fail-on-empty-changeset"
+            edit = stmt.replace(suggested)
+
             findings.append(
                 LintFinding(
                     line_start=stmt.range().start.line,
                     line_end=stmt.range().end.line,
-                    edit=None,
-                    original_text=stmt.text(),
-                    suggested_manual_fix=self._SUGGESTED_MANUAL_FIX,
+                    edit=edit,
+                    original_text=original,
                     rule_name=self.name,
                     description=self.description,
                 )

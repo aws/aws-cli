@@ -14,7 +14,7 @@ from unittest.mock import patch
 
 import pytest
 
-from awsclilinter.cli import main
+from aws_cli_migrate.cli import main
 
 
 class TestCLI:

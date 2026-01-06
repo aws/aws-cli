@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.44.13
+=======
+
+* api-change:``ce``: This release updates existing reservation recommendations API to support deployment model.
+* api-change:``emr-serverless``: Added support for enabling disk encryption using customer managed AWS KMS keys to CreateApplication, UpdateApplication and StartJobRun APIs.
+
+
 1.44.12
 =======
 

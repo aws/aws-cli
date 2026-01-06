@@ -23,7 +23,7 @@ class CaseConflictSync(BaseSync):
     def __init__(
             self,
             sync_type='file_not_at_dest',
-            on_case_conflict='warn',
+            on_case_conflict='ignore',
             submitted=None,
     ):
         super().__init__(sync_type)
@@ -58,6 +58,10 @@ class CaseConflictSync(BaseSync):
             src_file.case_conflict_submitted = self._submitted
             src_file.case_conflict_key = lower_compare_key
         return should_sync
+
+    @staticmethod
+    def _handle_ignore(src_file):
+        return True
 
     @staticmethod
     def _handle_skip(src_file):

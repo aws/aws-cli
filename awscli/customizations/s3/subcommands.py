@@ -491,7 +491,7 @@ CASE_CONFLICT = {
          'warn',
          'error',
     ],
-    'default': 'warn',
+    'default': 'ignore',
     'help_text': (
          "Configures behavior when attempting to download multiple objects "
          "whose keys differ only by case, which can cause undefined behavior "
@@ -502,10 +502,10 @@ CASE_CONFLICT = {
          "conflicts</a> for details. Valid values are: "
          "<ul>"
          "<li>``error`` - Raise an error and abort downloads.</li>"
-         "<li>``warn`` - The default value. Emit a warning and download "
-         "the object.</li>"
+         "<li>``warn`` - Emit a warning and download the object.</li>"
          "<li>``skip`` - Skip downloading the object.</li>"
-         "<li>``ignore`` - Ignore the conflict and download the object.</li>"
+         "<li>``ignore`` - The default value. Ignore the conflict and "
+         "download the object.</li>"
          "</ul>"
     ),
  }

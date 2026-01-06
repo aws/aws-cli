@@ -114,7 +114,7 @@ class TestCLI:
             captured = capsys.readouterr()
 
             # Should show fix was applied
-            assert "Applied 5 fix(es) automatically" in captured.out
+            assert f"Applied 5 fix(es) to: {str(tmp_path)}" in captured.out
             # The number of lines should remain the same after applying fixes
             assert len(script_file.read_text().splitlines()) == 2
 
@@ -292,7 +292,7 @@ class TestCLI:
             captured = capsys.readouterr()
 
             # Should show fix was applied
-            assert "Applied 2 fix(es) automatically" in captured.out
+            assert f"Applied 2 fix(es) to: {str(tmp_path)}" in captured.out
 
             # Should show manual review section
             assert "issue(s) require manual review" in captured.out

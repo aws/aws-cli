@@ -168,12 +168,14 @@ def _lint_and_generate_updated_script(
     return current_ast, num_auto_fixable_findings, non_auto_fixable
 
 
-def _interactive_mode_for_rule(
+def _interactive_prompt_for_rule(
     findings: List[LintFinding],
     ast: SgRoot,
     finding_offset: int,
 ) -> Tuple[SgRoot, int, Optional[str]]:
-    """Run interactive mode for a single rule's findings.
+    """Execute interactive prompting for a single rule's findings. For each finding,
+    the user will be prompted to enter a control code; the control code options
+    depends on whether the finding is auto-fixable.
 
     Args:
         findings: List of findings for this rule.
@@ -266,7 +268,7 @@ def _process_rule_interactive_mode(
         updated_ast = parse(linter.apply_fixes(current_ast, fixable)) if fixable else current_ast
         return updated_ast, len(rule_findings), len(fixable), non_fixable, None
     else:
-        updated_ast, fixes_applied, last_choice = _interactive_mode_for_rule(
+        updated_ast, fixes_applied, last_choice = _interactive_prompt_for_rule(
             rule_findings, current_ast, finding_offset
         )
         return updated_ast, len(rule_findings), fixes_applied, [], last_choice

@@ -339,7 +339,6 @@ class URLLib3Session:
 
     def _get_pool_manager_kwargs(self, **extra_kwargs):
         pool_manager_kwargs = {
-            'strict': True,
             'timeout': self._timeout,
             'maxsize': self._max_pool_connections,
             'ssl_context': self._get_ssl_context(),

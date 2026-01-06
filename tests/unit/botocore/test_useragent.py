@@ -236,3 +236,27 @@ def test_non_positive_user_agent_component_size_config_raises():
     with pytest.raises(ValueError) as excinfo:
         UserAgentComponentSizeConfig(-1, ',')
     assert 'Invalid `max_size_in_bytes`' in str(excinfo.value)
+
+
+def test_hash_in_user_agent_appid():
+    ua = UserAgentString(
+        platform_name='linux',
+        platform_version='1.2.3-foo',
+        platform_machine='x86_64',
+        python_version='3.8.20',
+        python_implementation='Dpython',
+        execution_env='AWS_Lambda_python3.8',
+    ).with_client_config(Config(user_agent_appid='fooapp#1.0.0'))
+
+    actual = ua.to_string()
+    expected = (
+        f'Botocore/{botocore_version} '
+        'ua/2.1 '
+        'os/linux#1.2.3-foo '
+        'md/arch#x86_64 '
+        'lang/python#3.8.20 '
+        'md/pyimpl#Dpython '
+        'exec-env/AWS_Lambda_python3.8 '
+        'app/fooapp#1.0.0'
+    )
+    assert actual == expected

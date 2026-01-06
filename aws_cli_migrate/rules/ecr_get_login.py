@@ -33,6 +33,11 @@ class EcrGetLoginRule(LintRule):
         return "ecr-get-login"
 
     @property
+    def auto_fixable(self) -> bool:
+        """Return whether the rule's check() function returns auto_fixable LintFindings."""
+        return False
+
+    @property
     def description(self) -> str:
         return (
             "In AWS CLI v2, The `ecr get-login` command has been removed. You must use "

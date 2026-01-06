@@ -26,6 +26,11 @@ class DeployEmptyChangesetRule(LintRule):
         return "deploy-empty-changeset"
 
     @property
+    def auto_fixable(self) -> bool:
+        """Return whether the rule's check() function returns auto_fixable LintFindings."""
+        return True
+
+    @property
     def description(self) -> str:
         return (
             "In AWS CLI v2, deploying an AWS CloudFormation Template that results in an empty "

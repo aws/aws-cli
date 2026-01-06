@@ -170,6 +170,11 @@ class HiddenAliasRule(LintRule):
         return f"hidden-alias-{self._hidden_alias}"
 
     @property
+    def auto_fixable(self) -> bool:
+        """Return whether the rule's check() function returns auto_fixable LintFindings."""
+        return True
+
+    @property
     def description(self) -> str:
         return (
             (

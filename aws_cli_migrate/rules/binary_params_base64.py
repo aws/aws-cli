@@ -27,6 +27,11 @@ class Base64BinaryFormatRule(LintRule):
         return "binary-params-base64"
 
     @property
+    def auto_fixable(self) -> bool:
+        """Return whether the rule's check() function returns auto_fixable LintFindings."""
+        return True
+
+    @property
     def description(self) -> str:
         return (
             "In AWS CLI v2, an input parameter typed as binary large object (BLOB) expects "

@@ -240,7 +240,12 @@ def _interactive_mode_for_rule(
 def _process_rule_interactive_mode(
     rule: LintRule, current_ast: SgRoot, auto_apply: bool, finding_offset: int = 0
 ) -> Tuple[SgRoot, int, int, List[LintFinding], Optional[str]]:
-    """Process a single rule via interactive mode and return results.
+    """Process a single rule for interactive mode and return results. This function will
+    automatically apply fixes and skip interactive prompting if auto_apply is True. If
+    auto_apply is False, interactive prompting will be used to determine what fixes to
+    apply.
+
+    Findings that cannot be automatically fixed will be flagged for manual review and summarized.
 
     Args:
         rule: The rule to process.

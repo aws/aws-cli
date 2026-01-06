@@ -1,4 +1,5 @@
 import socket
+from concurrent.futures import CancelledError
 
 import pytest
 from botocore.awsrequest import (
@@ -12,13 +13,13 @@ from botocore.exceptions import (
     ProxyConnectionError,
 )
 from botocore.httpsession import (
+    BUFFER_SIZE,
     ProxyConfiguration,
     URLLib3Session,
     get_cert_path,
     mask_proxy_url,
 )
 from urllib3.exceptions import NewConnectionError, ProtocolError, ProxyError
-from concurrent.futures import CancelledError
 
 from tests import mock, unittest
 
@@ -157,6 +158,8 @@ class TestURLLib3Session(unittest.TestCase):
             'cert_file': None,
             'key_file': None,
         }
+        if BUFFER_SIZE:
+            call_kwargs['blocksize'] = BUFFER_SIZE
         call_kwargs.update(assert_kwargs)
         manager.assert_called_with(*assert_args, **call_kwargs)
 

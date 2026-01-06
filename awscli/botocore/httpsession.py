@@ -4,6 +4,7 @@ import os.path
 import socket
 import sys
 from base64 import b64encode
+from concurrent.futures import CancelledError
 
 from urllib3 import PoolManager, Timeout, proxy_from_url
 from urllib3.exceptions import (
@@ -17,6 +18,7 @@ from urllib3.exceptions import (
 )
 from urllib3.exceptions import ReadTimeoutError as URLLib3ReadTimeoutError
 from urllib3.exceptions import SSLError as URLLib3SSLError
+from urllib3.poolmanager import PoolKey
 from urllib3.util.retry import Retry
 from urllib3.util.ssl_ import (
     OP_NO_COMPRESSION,
@@ -27,8 +29,6 @@ from urllib3.util.ssl_ import (
     ssl,
 )
 from urllib3.util.url import parse_url
-
-from concurrent.futures import CancelledError
 
 try:
     from urllib3.util.ssl_ import OP_NO_TICKET, PROTOCOL_TLS_CLIENT
@@ -75,6 +75,15 @@ logger = logging.getLogger(__name__)
 DEFAULT_TIMEOUT = 60
 MAX_POOL_CONNECTIONS = 10
 DEFAULT_CA_BUNDLE = os.path.join(os.path.dirname(__file__), 'cacert.pem')
+BUFFER_SIZE = None
+if hasattr(PoolKey, 'key_blocksize'):
+    # urllib3 2.0 implemented its own chunking logic and set
+    # a default blocksize of 16KB. This creates a noticeable
+    # performance bottleneck when transferring objects
+    # larger than 100MB. Based on experiments, a blocksize
+    # of 128KB significantly improves throughput before
+    # getting diminishing returns.
+    BUFFER_SIZE = 1024 * 128
 
 try:
     from certifi import where
@@ -338,6 +347,8 @@ class URLLib3Session:
             'cert_file': self._cert_file,
             'key_file': self._key_file,
         }
+        if BUFFER_SIZE:
+            pool_manager_kwargs['blocksize'] = BUFFER_SIZE
         pool_manager_kwargs.update(**extra_kwargs)
         return pool_manager_kwargs
 

@@ -46,11 +46,11 @@ parameter. The following values are valid options:
 
 * ``error`` - When a case conflict is detected, the command will immediately
   fail and abort in-progress downloads.
-* ``warn`` - (Default) When a case conflict is detected, the AWS CLI will
+* ``warn`` - When a case conflict is detected, the AWS CLI will
   display a warning.
 * ``skip`` - When a case conflict is detected, the command will skip
   downloading the object and continue and display a warning.
-* ``ignore`` - Case conflicts will not be detected or handled.
+* ``ignore`` - (Default) Case conflicts will not be detected or handled.
 
 
 Continuing the prior example, the following describes what happens when

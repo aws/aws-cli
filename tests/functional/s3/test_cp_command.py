@@ -2709,6 +2709,19 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
 class TestCpRecursiveCaseConflict(TestSyncCaseConflict):
     prefix = 's3 cp --recursive '
 
+    def test_ignore_by_default(self):
+        self.files.create_file(self.lower_key, 'mycontent')
+        # Note there's no --case-conflict param.
+        cmd = f"{self.prefix} s3://bucket {self.files.rootdir}"
+        self.parsed_responses = [
+            self.list_objects_response([self.upper_key]),
+            self.get_object_response(),
+        ]
+        # Expect success, so not error mode.
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
+        # No warnings in stderr, so not warn or skip mode.
+        assert not stderr
+
 
 class TestS3ExpressCpRecursive(BaseCPCommandTest):
     prefix = 's3 cp --recursive '

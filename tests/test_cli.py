@@ -87,9 +87,7 @@ class TestCLI:
     def test_fix_mode_no_issues_found(self, tmp_path, capsys):
         """Test fix mode when no issues are found."""
         script_file = tmp_path / "test.sh"
-        script_file.write_text(
-            "echo 'foobar'"
-        )
+        script_file.write_text("echo 'foobar'")
 
         with patch("sys.argv", ["migrate-aws-cli", "--script", str(script_file), "--fix"]):
             main()

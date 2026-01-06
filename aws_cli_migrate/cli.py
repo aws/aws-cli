@@ -70,14 +70,11 @@ def _prompt_user_choice_interactive_mode(auto_fixable: bool = True) -> str:
 
 
 def _summarize_non_fixable_findings(
-        non_auto_fixable_findings: List[LintFinding],
-        script_content: str
+    non_auto_fixable_findings: List[LintFinding], script_content: str
 ):
     """Summarize the input non-fixable findings."""
     warning_header = _color_text(
-        f"⚠️  {len(non_auto_fixable_findings)} issue(s) "
-        f"require manual review:",
-        YELLOW
+        f"⚠️  {len(non_auto_fixable_findings)} issue(s) require manual review:", YELLOW
     )
     print(f"\n{warning_header}\n")
     for i, finding in enumerate(non_auto_fixable_findings, 1):
@@ -161,9 +158,7 @@ def _lint_and_generate_updated_script(
         findings_found += len(rule_findings)
         num_auto_fixable_findings += len(auto_fixable_findings)
 
-        non_auto_fixable.extend(
-            finding for finding in rule_findings if not finding.auto_fixable
-        )
+        non_auto_fixable.extend(finding for finding in rule_findings if not finding.auto_fixable)
 
         # Avoid an unnecessary reparse if no changes were made to the script
         if not auto_fixable_findings:
@@ -174,10 +169,7 @@ def _lint_and_generate_updated_script(
 
 
 def _process_rule_interactive_mode(
-    rule: LintRule,
-    current_ast: SgRoot,
-    auto_apply: bool,
-    finding_offset: int = 0
+    rule: LintRule, current_ast: SgRoot, auto_apply: bool, finding_offset: int = 0
 ) -> Tuple[SgRoot, int, int, List[LintFinding], Optional[str]]:
     """Process a single rule in interactive mode and return results.
 
@@ -200,7 +192,9 @@ def _process_rule_interactive_mode(
         updated_ast = parse(linter.apply_fixes(current_ast, fixable)) if fixable else current_ast
         return updated_ast, len(rule_findings), len(fixable), non_fixable, None
     else:
-        updated_ast, fixes_applied, last_choice = interactive_mode_for_rule(rule_findings, current_ast, finding_offset)
+        updated_ast, fixes_applied, last_choice = interactive_mode_for_rule(
+            rule_findings, current_ast, finding_offset
+        )
         return updated_ast, len(rule_findings), fixes_applied, [], last_choice
 
 
@@ -231,10 +225,7 @@ def auto_fix_mode(
 
     # If there were findings that need manual review, summarize them.
     if non_auto_fixable:
-        _summarize_non_fixable_findings(
-            non_auto_fixable,
-            script_content
-        )
+        _summarize_non_fixable_findings(non_auto_fixable, script_content)
 
     # Summarize the auto-fix results last.
     if num_auto_fixable_findings:
@@ -292,10 +283,7 @@ def dry_run_mode(
             print(line)
 
     if non_auto_fixable:
-        _summarize_non_fixable_findings(
-            non_auto_fixable,
-            script_content
-        )
+        _summarize_non_fixable_findings(non_auto_fixable, script_content)
 
     print(f"\nFound {num_auto_fixable_findings + len(non_auto_fixable)} issue(s):")
     if num_auto_fixable_findings and non_auto_fixable:
@@ -334,19 +322,19 @@ def interactive_mode(
         current_ast, findings_count, fixes_applied, _, last_choice = _process_rule_interactive_mode(
             rule, current_ast, auto_apply=False, finding_offset=finding_offset
         )
-        
+
         if findings_count == 0:
             continue
-        
+
         findings_found += findings_count
         num_auto_fixes_applied += fixes_applied
         finding_offset += findings_count
-        
+
         if last_choice == "s":
             break
-        
+
         if last_choice == "u":
-            for remaining_rule in rules[rule_index + 1:]:
+            for remaining_rule in rules[rule_index + 1 :]:
                 current_ast, f_count, fixes, non_fixable, _ = _process_rule_interactive_mode(
                     remaining_rule, current_ast, auto_apply=True
                 )
@@ -358,7 +346,7 @@ def interactive_mode(
     if findings_found == 0:
         print("No issues found.")
         return
-    
+
     print(f"Found {findings_found} issue(s).")
     if non_auto_fixable_findings_to_summarize:
         _summarize_non_fixable_findings(non_auto_fixable_findings_to_summarize, script_content)

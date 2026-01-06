@@ -53,12 +53,6 @@ class LintRule(ABC):
 
     @property
     @abstractmethod
-    def auto_fixable(self) -> bool:
-        """Return whether the rule's check() function returns auto_fixable LintFindings."""
-        pass
-
-    @property
-    @abstractmethod
     def description(self) -> str:
         """Return a description of what the rule checks."""
         pass

@@ -26,11 +26,6 @@ class DefaultPagerRule(LintRule):
         return "pager-by-default"
 
     @property
-    def auto_fixable(self) -> bool:
-        """Return whether the rule's check() function returns auto_fixable LintFindings."""
-        return True
-
-    @property
     def description(self) -> str:
         return (
             "AWS CLI v2 uses the system pager by default for all command output. "

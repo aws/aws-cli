@@ -168,10 +168,79 @@ def _lint_and_generate_updated_script(
     return current_ast, num_auto_fixable_findings, non_auto_fixable
 
 
+def _interactive_mode_for_rule(
+    findings: List[LintFinding],
+    ast: SgRoot,
+    finding_offset: int,
+) -> Tuple[SgRoot, int, Optional[str]]:
+    """Run interactive mode for a single rule's findings.
+
+    Args:
+        findings: List of findings for this rule.
+        ast: Current script content, represented as an AST.
+        finding_offset: Offset for display numbering.
+
+    Returns:
+        Tuple of (ast, applied_fixes, last_choice)
+        ast is the resulting AST from this interactive mode execution.
+        applied_fixes number of fixes applied to the AST.
+        last_choice is the last choice entered by the user.
+    """
+    accepted_findings: List[LintFinding] = []
+    last_choice: Optional[str] = None
+
+    for i, finding in enumerate(findings):
+        _display_finding(finding, finding_offset + i + 1, ast.root().text())
+
+        if not finding.auto_fixable:
+            # Non-fixable finding - only allow next, save, or quit
+            last_choice = _prompt_user_choice_interactive_mode(auto_fixable=False)
+            if last_choice == "q":
+                print("Quit without saving.")
+                sys.exit(0)
+            elif last_choice == "s":
+                # Save and exit - apply accepted findings before returning
+                if accepted_findings:
+                    ast = parse(linter.apply_fixes(ast, accepted_findings))
+                return ast, len(accepted_findings), last_choice
+            # 'n' means continue to next finding
+            continue
+
+        last_choice = _prompt_user_choice_interactive_mode(auto_fixable=True)
+
+        if last_choice == "y":
+            accepted_findings.append(finding)
+        elif last_choice == "n":
+            pass  # Skip this finding
+        elif last_choice == "u":
+            # Accept this and all remaining fixable findings for this rule.
+            accepted_findings.append(finding)
+            for remaining_finding in findings[i + 1 :]:
+                if remaining_finding.auto_fixable:
+                    accepted_findings.append(remaining_finding)
+            if accepted_findings:
+                ast = parse(linter.apply_fixes(ast, accepted_findings))
+            return ast, len(accepted_findings), last_choice
+        elif last_choice == "s":
+            # Apply accepted findings and stop processing
+            if accepted_findings:
+                ast = parse(linter.apply_fixes(ast, accepted_findings))
+            return ast, len(accepted_findings), last_choice
+        elif last_choice == "q":
+            print("Quitting without saving.")
+            sys.exit(0)
+
+    if accepted_findings:
+        ast = parse(linter.apply_fixes(ast, accepted_findings))
+        return ast, len(accepted_findings), last_choice
+
+    return ast, 0, last_choice
+
+
 def _process_rule_interactive_mode(
     rule: LintRule, current_ast: SgRoot, auto_apply: bool, finding_offset: int = 0
 ) -> Tuple[SgRoot, int, int, List[LintFinding], Optional[str]]:
-    """Process a single rule in interactive mode and return results.
+    """Process a single rule via interactive mode and return results.
 
     Args:
         rule: The rule to process.
@@ -192,7 +261,7 @@ def _process_rule_interactive_mode(
         updated_ast = parse(linter.apply_fixes(current_ast, fixable)) if fixable else current_ast
         return updated_ast, len(rule_findings), len(fixable), non_fixable, None
     else:
-        updated_ast, fixes_applied, last_choice = interactive_mode_for_rule(
+        updated_ast, fixes_applied, last_choice = _interactive_mode_for_rule(
             rule_findings, current_ast, finding_offset
         )
         return updated_ast, len(rule_findings), fixes_applied, [], last_choice
@@ -356,75 +425,6 @@ def interactive_mode(
         print(f"Applied {num_auto_fixes_applied} fix(es) to: {output_path}")
     else:
         print("No changes were accepted. No script updates were written.")
-
-
-def interactive_mode_for_rule(
-    findings: List[LintFinding],
-    ast: SgRoot,
-    finding_offset: int,
-) -> Tuple[SgRoot, int, Optional[str]]:
-    """Run interactive mode for a single rule's findings.
-
-    Args:
-        findings: List of findings for this rule.
-        ast: Current script content, represented as an AST.
-        finding_offset: Offset for display numbering.
-
-    Returns:
-        Tuple of (ast, applied_fixes, last_choice)
-        ast is the resulting AST from this interactive mode execution.
-        applied_fixes number of fixes applied to the AST.
-        last_choice is the last choice entered by the user.
-    """
-    accepted_findings: List[LintFinding] = []
-    last_choice: Optional[str] = None
-
-    for i, finding in enumerate(findings):
-        _display_finding(finding, finding_offset + i + 1, ast.root().text())
-
-        if not finding.auto_fixable:
-            # Non-fixable finding - only allow next, save, or quit
-            last_choice = _prompt_user_choice_interactive_mode(auto_fixable=False)
-            if last_choice == "q":
-                print("Quit without saving.")
-                sys.exit(0)
-            elif last_choice == "s":
-                # Save and exit - apply accepted findings before returning
-                if accepted_findings:
-                    ast = parse(linter.apply_fixes(ast, accepted_findings))
-                return ast, len(accepted_findings), last_choice
-            # 'n' means continue to next finding
-            continue
-
-        last_choice = _prompt_user_choice_interactive_mode(auto_fixable=True)
-
-        if last_choice == "y":
-            accepted_findings.append(finding)
-        elif last_choice == "n":
-            pass  # Skip this finding
-        elif last_choice == "u":
-            # Accept this and all remaining fixable findings for this rule.
-            accepted_findings.append(finding)
-            for remaining_finding in findings[i + 1 :]:
-                if remaining_finding.auto_fixable:
-                    accepted_findings.append(remaining_finding)
-            if accepted_findings:
-                ast = parse(linter.apply_fixes(ast, accepted_findings))
-            return ast, len(accepted_findings), last_choice
-        elif last_choice == "s":
-            # Apply accepted findings and stop processing
-            if accepted_findings:
-                ast = parse(linter.apply_fixes(ast, accepted_findings))
-            return ast, len(accepted_findings), last_choice
-        elif last_choice == "q":
-            print("Quitting without saving.")
-            sys.exit(0)
-
-    if accepted_findings:
-        ast = parse(linter.apply_fixes(ast, accepted_findings))
-        return ast, len(accepted_findings), last_choice
-
-    return ast, 0, last_choice
 
 
 def main():

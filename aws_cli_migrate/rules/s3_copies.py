@@ -79,11 +79,6 @@ class S3CopyRule(LintRule):
         return "s3-copy"
 
     @property
-    def auto_fixable(self) -> bool:
-        """Return whether the rule's check() function returns auto_fixable LintFindings."""
-        return True
-
-    @property
     def description(self) -> str:
         return (
             "In AWS CLI v2, object properties will be copied from the source in multipart "

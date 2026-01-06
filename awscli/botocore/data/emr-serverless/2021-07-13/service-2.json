@@ -374,6 +374,10 @@
           "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/emr-serverless/latest/APIReference/API_Configuration.html\">Configuration</a> specifications of an application. Each configuration consists of a classification and properties. You use this parameter when creating or updating an application. To see the runtimeConfiguration object of an application, run the <a href=\"https://docs.aws.amazon.com/emr-serverless/latest/APIReference/API_GetApplication.html\">GetApplication</a> API operation.</p>"
         },
         "monitoringConfiguration":{"shape":"MonitoringConfiguration"},
+        "diskEncryptionConfiguration":{
+          "shape":"DiskEncryptionConfiguration",
+          "documentation":"<p>The configuration object that allows encrypting local disks.</p>"
+        },
         "interactiveConfiguration":{
           "shape":"InteractiveConfiguration",
           "documentation":"<p>The interactive configuration object that enables the interactive use cases for an application.</p>"
@@ -652,6 +656,10 @@
         "monitoringConfiguration":{
           "shape":"MonitoringConfiguration",
           "documentation":"<p>The override configurations for monitoring.</p>"
+        },
+        "diskEncryptionConfiguration":{
+          "shape":"DiskEncryptionConfiguration",
+          "documentation":"<p>The override configuration to encrypt local disks.</p>"
         }
       },
       "documentation":"<p>A configuration specification to be used to override existing configurations.</p>"
@@ -756,6 +764,10 @@
           "shape":"MonitoringConfiguration",
           "documentation":"<p>The configuration setting for monitoring.</p>"
         },
+        "diskEncryptionConfiguration":{
+          "shape":"DiskEncryptionConfiguration",
+          "documentation":"<p>The configuration object that allows encrypting local disks.</p>"
+        },
         "interactiveConfiguration":{
           "shape":"InteractiveConfiguration",
           "documentation":"<p>The interactive configuration object that enables the interactive use cases to use when running an application.</p>"
@@ -812,6 +824,20 @@
       "type":"structure",
       "members":{}
     },
+    "DiskEncryptionConfiguration":{
+      "type":"structure",
+      "members":{
+        "encryptionContext":{
+          "shape":"EncryptionContext",
+          "documentation":"<p>Specifies the optional encryption context that will be used when encrypting the data. An encryption context is a collection of non-secret key-value pairs that represent additional authenticated data. </p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"EncryptionKeyArn",
+          "documentation":"<p>The KMS key ARN to encrypt local disks.</p>"
+        }
+      },
+      "documentation":"<p>The configuration object that allows encrypting local disks.</p>"
+    },
     "DiskSize":{
       "type":"string",
       "max":15,
@@ -830,6 +856,23 @@
       "type":"long",
       "max":1000000,
       "min":0
+    },
+    "EncryptionContext":{
+      "type":"map",
+      "key":{"shape":"EncryptionContextKey"},
+      "value":{"shape":"EncryptionContextValue"},
+      "max":8,
+      "min":0
+    },
+    "EncryptionContextKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "EncryptionContextValue":{
+      "type":"string",
+      "max":384,
+      "min":1
     },
     "EncryptionKeyArn":{
       "type":"string",
@@ -2291,6 +2334,10 @@
         "monitoringConfiguration":{
           "shape":"MonitoringConfiguration",
           "documentation":"<p>The configuration setting for monitoring.</p>"
+        },
+        "diskEncryptionConfiguration":{
+          "shape":"DiskEncryptionConfiguration",
+          "documentation":"<p>The configuration object that allows encrypting local disks.</p>"
         },
         "schedulerConfiguration":{
           "shape":"SchedulerConfiguration",

@@ -259,9 +259,7 @@ class TestCLI:
             ],
         ):
             with patch("builtins.input", return_value="q"):
-                with pytest.raises(SystemExit) as exc_info:
-                    main()
-                assert exc_info.value.code == 0
+                main()
                 # Output file should not exist since we quit without saving
                 assert not output_file.exists()
 

@@ -13,6 +13,7 @@
 import argparse
 import difflib
 import sys
+from enum import Enum
 from pathlib import Path
 from typing import List, Optional, Tuple
 
@@ -40,6 +41,15 @@ RESET = "\033[0m"
 CONTEXT_SIZE = 3
 
 
+class UserChoice(Enum):
+    YES = 1
+    NO = 2
+    UPDATE_ALL = 3
+    SAVE_EXIT = 4
+    QUIT = 5
+    NEXT = 6
+
+
 def _color_text(text, color_code):
     """Colorize text for terminal output only if a TTY is available."""
     if sys.stdout.isatty():
@@ -47,8 +57,20 @@ def _color_text(text, color_code):
     return text
 
 
-def _prompt_user_choice_interactive_mode(auto_fixable: bool = True) -> str:
+def _prompt_user_choice_interactive_mode(auto_fixable: bool = True) -> UserChoice:
     """Get user input for interactive mode."""
+    _AUTO_FIX_CHOICE_MAP = {
+        "y": UserChoice.YES,
+        "n": UserChoice.NO,
+        "u": UserChoice.UPDATE_ALL,
+        "s": UserChoice.SAVE_EXIT,
+        "q": UserChoice.QUIT,
+    }
+    _NON_AUTO_FIX_CHOICE_MAP = {
+        "n": UserChoice.NEXT,
+        "s": UserChoice.SAVE_EXIT,
+        "q": UserChoice.QUIT,
+    }
     while True:
         if auto_fixable:
             choice = (
@@ -60,12 +82,12 @@ def _prompt_user_choice_interactive_mode(auto_fixable: bool = True) -> str:
                 .strip()
             )
             if choice in ["y", "n", "u", "s", "q"]:
-                return choice
+                return _AUTO_FIX_CHOICE_MAP[choice]
             print("Invalid choice. Please enter y, n, u, s, or q.")
         else:
             choice = input("\n[n] next, [s] save, [q] quit: ").lower().strip()
             if choice in ["n", "s", "q"]:
-                return choice
+                return _NON_AUTO_FIX_CHOICE_MAP[choice]
             print("Invalid choice. Please enter n, s, or q.")
 
 
@@ -170,108 +192,61 @@ def _lint_and_generate_updated_script(
 
 def _interactive_prompt_for_rule(
     findings: List[LintFinding],
-    ast: SgRoot,
+    script_content: str,
     finding_offset: int,
-) -> Tuple[SgRoot, int, Optional[str]]:
+) -> Tuple[List[LintFinding], Optional[UserChoice]]:
     """Execute interactive prompting for a single rule's findings. For each finding,
     the user will be prompted to enter a control code; the control code options
     depends on whether the finding is auto-fixable.
 
+    This function returns a list of the accepted findings, and the last choice selected by the
+    user.
+
     Args:
         findings: List of findings for this rule.
-        ast: Current script content, represented as an AST.
+        script_content: Current script content.
         finding_offset: Offset for display numbering.
 
     Returns:
-        Tuple of (ast, applied_fixes, last_choice)
-        ast is the resulting AST from this interactive mode execution.
-        applied_fixes number of fixes applied to the AST.
+        Tuple of (accepted_findings, last_choice)
+        accepted_findings the findings accepted by the user.
         last_choice is the last choice entered by the user.
     """
     accepted_findings: List[LintFinding] = []
-    last_choice: Optional[str] = None
+    last_choice: Optional[UserChoice] = None
 
     for i, finding in enumerate(findings):
-        _display_finding(finding, finding_offset + i + 1, ast.root().text())
+        _display_finding(finding, finding_offset + i + 1, script_content)
+        last_choice = _prompt_user_choice_interactive_mode(auto_fixable=finding.auto_fixable)
 
         if not finding.auto_fixable:
             # Non-fixable finding - only allow next, save, or quit
-            last_choice = _prompt_user_choice_interactive_mode(auto_fixable=False)
-            if last_choice == "q":
-                print("Quit without saving.")
-                sys.exit(0)
-            elif last_choice == "s":
-                # Save and exit - apply accepted findings before returning
-                if accepted_findings:
-                    ast = parse(linter.apply_fixes(ast, accepted_findings))
-                return ast, len(accepted_findings), last_choice
-            # 'n' means continue to next finding
-            continue
+            if last_choice == UserChoice.QUIT or last_choice == UserChoice.SAVE_EXIT:
+                # User's choice was 'quit'/'save', which is terminal.
+                return accepted_findings, last_choice
+            elif last_choice == UserChoice.NEXT:
+                # User's choice was 'next'.
+                continue
+            else:
+                raise RuntimeError(f"Unexpected value of last_choice: {last_choice}")
+        else:
+            if last_choice == UserChoice.YES:
+                accepted_findings.append(finding)
+            elif last_choice == UserChoice.NO:
+                # User rejected the suggested fix from the finding.
+                continue
+            elif last_choice == UserChoice.UPDATE_ALL:
+                # User's choice was 'update all'. Accept all remaining findings
+                # including the current one.
+                accepted_findings.extend(f for f in findings[i:] if f.auto_fixable)
+                return accepted_findings, last_choice
+            elif last_choice == UserChoice.SAVE_EXIT or last_choice == UserChoice.QUIT:
+                # User's choice was 'save'/'quit', which is terminal.
+                return accepted_findings, last_choice
+            else:
+                raise RuntimeError(f"Unexpected value of last_choice: {last_choice}")
 
-        last_choice = _prompt_user_choice_interactive_mode(auto_fixable=True)
-
-        if last_choice == "y":
-            accepted_findings.append(finding)
-        elif last_choice == "n":
-            pass  # Skip this finding
-        elif last_choice == "u":
-            # Accept this and all remaining fixable findings for this rule.
-            accepted_findings.append(finding)
-            for remaining_finding in findings[i + 1 :]:
-                if remaining_finding.auto_fixable:
-                    accepted_findings.append(remaining_finding)
-            if accepted_findings:
-                ast = parse(linter.apply_fixes(ast, accepted_findings))
-            return ast, len(accepted_findings), last_choice
-        elif last_choice == "s":
-            # Apply accepted findings and stop processing
-            if accepted_findings:
-                ast = parse(linter.apply_fixes(ast, accepted_findings))
-            return ast, len(accepted_findings), last_choice
-        elif last_choice == "q":
-            print("Quitting without saving.")
-            sys.exit(0)
-
-    if accepted_findings:
-        ast = parse(linter.apply_fixes(ast, accepted_findings))
-        return ast, len(accepted_findings), last_choice
-
-    return ast, 0, last_choice
-
-
-def _process_rule_interactive_mode(
-    rule: LintRule, current_ast: SgRoot, auto_apply: bool, finding_offset: int = 0
-) -> Tuple[SgRoot, int, int, List[LintFinding], Optional[str]]:
-    """Process a single rule for interactive mode and return results. This function will
-    automatically apply fixes and skip interactive prompting if auto_apply is True. If
-    auto_apply is False, interactive prompting will be used to determine what fixes to
-    apply.
-
-    Findings that cannot be automatically fixed will be flagged for manual review and summarized.
-
-    Args:
-        rule: The rule to process.
-        current_ast: Current script AST.
-        auto_apply: If True, auto-apply fixes; if False, use interactive mode.
-        finding_offset: Offset for display numbering in interactive mode.
-
-    Returns:
-        Tuple of (updated_ast, findings_count, fixes_applied, non_fixable_findings, last_choice)
-    """
-    rule_findings = linter.lint_for_rule(current_ast, rule)
-    if not rule_findings:
-        return current_ast, 0, 0, [], None
-
-    if auto_apply:
-        non_fixable = [f for f in rule_findings if not f.auto_fixable]
-        fixable = [f for f in rule_findings if f.auto_fixable]
-        updated_ast = parse(linter.apply_fixes(current_ast, fixable)) if fixable else current_ast
-        return updated_ast, len(rule_findings), len(fixable), non_fixable, None
-    else:
-        updated_ast, fixes_applied, last_choice = _interactive_prompt_for_rule(
-            rule_findings, current_ast, finding_offset
-        )
-        return updated_ast, len(rule_findings), fixes_applied, [], last_choice
+    return accepted_findings, last_choice
 
 
 def auto_fix_mode(
@@ -389,44 +364,90 @@ def interactive_mode(
         output_path: Path to the script being linted.
     """
     current_ast = parse(script_content)
+    auto_apply = False
     finding_offset = 0
     findings_found = 0
     num_auto_fixes_applied = 0
     non_auto_fixable_findings_to_summarize: List[LintFinding] = []
 
     for rule_index, rule in enumerate(rules):
-        current_ast, findings_count, fixes_applied, _, last_choice = _process_rule_interactive_mode(
-            rule, current_ast, auto_apply=False, finding_offset=finding_offset
-        )
+        rule_findings = linter.lint_for_rule(current_ast, rule)
 
-        if findings_count == 0:
+        if not rule_findings:
             continue
 
-        findings_found += findings_count
-        num_auto_fixes_applied += fixes_applied
-        finding_offset += findings_count
-
-        if last_choice == "s":
+        if auto_apply:
+            # Since we are in auto-apply mode, we do not prompt the user and instead
+            # automatically accept all findings for this rule.
+            accepted_findings = rule_findings
+            last_choice: Optional[UserChoice] = None
+        else:
+            accepted_findings, last_choice = _interactive_prompt_for_rule(
+                rule_findings, current_ast.root().text(), finding_offset
+            )
+        auto_fixable_findings = [f for f in accepted_findings if f.auto_fixable]
+        num_auto_fixes_applied += len(auto_fixable_findings)
+        findings_found += len(rule_findings)
+        finding_offset += len(rule_findings)
+        if last_choice == UserChoice.QUIT:
+            # User selected 'quit'.
+            print("Quit without saving.")
+            return
+        elif last_choice == UserChoice.SAVE_EXIT:
+            # Update the AST if any of the accepted findings were auto-fixable.
+            current_ast = (
+                parse(linter.apply_fixes(current_ast, auto_fixable_findings))
+                if auto_fixable_findings
+                else current_ast
+            )
+            # Write the updated script if any auto-fixes were applied.
             break
-
-        if last_choice == "u":
-            for remaining_rule in rules[rule_index + 1 :]:
-                current_ast, f_count, fixes, non_fixable, _ = _process_rule_interactive_mode(
-                    remaining_rule, current_ast, auto_apply=True
-                )
-                findings_found += f_count
-                num_auto_fixes_applied += fixes
-                non_auto_fixable_findings_to_summarize.extend(non_fixable)
-            break
+        elif last_choice == UserChoice.UPDATE_ALL:
+            # Update the AST if any of the accepted findings were auto-fixable.
+            current_ast = (
+                parse(linter.apply_fixes(current_ast, auto_fixable_findings))
+                if auto_fixable_findings
+                else current_ast
+            )
+            # Store the findings that were not auto-fixable for final summarization.
+            non_auto_fixable_findings_to_summarize.extend(
+                f for f in rule_findings if not f.auto_fixable
+            )
+            # Enable auto_apply so subsequent rules will automatically
+            # accept and apply findings.
+            auto_apply = True
+        elif (
+            last_choice == UserChoice.YES
+            or last_choice == UserChoice.NO
+            or last_choice == UserChoice.NEXT
+            or last_choice is None
+        ):
+            # If last_choice is None, then we did not prompt the user for any findings
+            # for the current rule. This may occur if user entered 'u' for a previous rule.
+            # Otherwise, if last_choice is Yes/No/Next, then we still apply AST updates, if any.
+            # Update the AST if any of the accepted findings were auto-fixable.
+            current_ast = (
+                parse(linter.apply_fixes(current_ast, auto_fixable_findings))
+                if auto_fixable_findings
+                else current_ast
+            )
+            pass
+        else:
+            raise RuntimeError(f"Unexpected value of last_choice: {last_choice}")
 
     if findings_found == 0:
         print("No issues found.")
         return
 
     print(f"Found {findings_found} issue(s).")
-    if non_auto_fixable_findings_to_summarize:
-        _summarize_non_fixable_findings(non_auto_fixable_findings_to_summarize, script_content)
 
+    # Summarize the non-auto-fixable findings, if any.
+    if non_auto_fixable_findings_to_summarize:
+        _summarize_non_fixable_findings(
+            non_auto_fixable_findings_to_summarize, current_ast.root().text()
+        )
+
+    # Write the updated script if any auto-fixes were applied.
     if num_auto_fixes_applied:
         output_path.write_text(current_ast.root().text())
         print(f"Applied {num_auto_fixes_applied} fix(es) to: {output_path}")

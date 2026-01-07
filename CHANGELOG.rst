@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.32.31
+=======
+
+* api-change:``workspaces``: Add StateMessage and ProgressPercentage fields to DescribeCustomWorkspaceImageImport API response.
+
+
 2.32.30
 =======
 

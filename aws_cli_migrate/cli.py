@@ -96,7 +96,7 @@ def _summarize_non_fixable_findings(
 ):
     """Summarize the input non-fixable findings."""
     warning_header = _color_text(
-        f"⚠️  {len(non_auto_fixable_findings)} issue(s) require manual review:", YELLOW
+        f"️{len(non_auto_fixable_findings)} issue(s) require manual review:", YELLOW
     )
     print(f"\n{warning_header}\n")
     for i, finding in enumerate(non_auto_fixable_findings, 1):
@@ -156,7 +156,7 @@ def _display_finding(finding: LintFinding, index: int, script_content: str):
                 print(f"{line}")
 
         warning_msg = _color_text(
-            f"⚠️  This issue requires manual intervention. "
+            f"[WARNING]️ This issue requires manual intervention. "
             f"Suggested action: {finding.suggested_manual_fix}",
             YELLOW,
         )

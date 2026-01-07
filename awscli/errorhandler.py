@@ -309,7 +309,7 @@ class UnknownArgumentErrorHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = UnknownArgumentError
     RC = PARAM_VALIDATION_ERROR_RC
 
-    def _do_handle_exception(self, exception, stdout, stderr):
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
         stderr.write("\n")
         stderr.write(f'usage: {USAGE}\n{exception}\n')
         stderr.write("\n")

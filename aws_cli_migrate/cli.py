@@ -344,7 +344,8 @@ def dry_run_mode(
     if num_auto_fixable_findings:
         print(
             "\n\nRun with `--fix` to apply automatic fixes to the script, "
-            "or `--output PATH` to write the modified script to a specific path."
+            "or `--output PATH` to write the modified script to a specific path, or "
+            "`--interactive` to review the findings interactively."
         )
     else:
         print("\n\nAll issues require manual review.")

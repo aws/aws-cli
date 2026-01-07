@@ -20,6 +20,7 @@ from awscli.customizations.configure.sso import (
     RequiredInputValidator,
 )
 from awscli.customizations.configure.writer import ConfigFileWriter
+from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.login.utils import (
     CrossDeviceLoginTokenFetcher,
     LoginType,
@@ -98,8 +99,7 @@ class LoginCommand(BasicCommand):
 
         # Abort if the profile is already configured with a different style
         # of credentials, since they'd still have precedence over login
-        if self.does_profile_have_non_login_credentials(profile_name):
-            return
+        self.ensure_profile_does_not_have_existing_credentials(profile_name)
 
         config = botocore.config.Config(
             region_name=region,
@@ -182,10 +182,10 @@ class LoginCommand(BasicCommand):
             else:
                 uni_print('Invalid response. Please enter "y" or "n"')
 
-    def does_profile_have_non_login_credentials(self, profile_name):
+    def ensure_profile_does_not_have_existing_credentials(self, profile_name):
         """
-        Checks if the specified profile is already configured
-        with a different style of credentials.
+        Raises an error if the specified profile is already
+        configured with a different style of credentials.
         """
         config = self._session.full_config['profiles'].get(profile_name, {})
         existing_credentials_style = None
@@ -202,14 +202,14 @@ class LoginCommand(BasicCommand):
             existing_credentials_style = 'Credential Process'
 
         if existing_credentials_style:
-            uni_print(
-                f'\nError: Profile \'{profile_name}\' is already configured '
+            raise ConfigurationError(
+                f'Profile \'{profile_name}\' is already configured '
                 f'with {existing_credentials_style} credentials.\n\n'
                 f'You may run \'aws login --profile new-profile-name\' to '
-                f'create a new profile, or you must first manually '
-                f'remove the existing credentials from \'{profile_name}\'.\n'
+                f'create a new profile with the specified name. Otherwise you '
+                f'must first manually remove the existing credentials '
+                f'from \'{profile_name}\'.\n'
             )
-            return True
 
         return False
 

@@ -6,6 +6,7 @@ from unittest import mock
 
 import pytest
 
+from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.login.login import LoginCommand
 
 DEFAULT_ARGS = Namespace(remote=False)
@@ -288,9 +289,10 @@ def test_abort_if_profile_has_existing_credentials(
     )
     mock_session.full_config = {'profiles': {'profile-name': profile_config}}
 
-    mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
-
     if expected_to_abort:
-        mock_token_fetcher.assert_not_called()
+        with pytest.raises(ConfigurationError):
+            mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
+            mock_token_fetcher.assert_not_called()
     else:
+        mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
         mock_token_fetcher.assert_called_once()

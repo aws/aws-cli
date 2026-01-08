@@ -74,8 +74,16 @@ AUTH_SERVICES, AUTH_OPERATIONS = _all_test_cases()
 
 
 @pytest.mark.validates_models
-@pytest.mark.parametrize("auth_service, auth_config", AUTH_SERVICES)
-def test_all_requirements_match_for_service(auth_service, auth_config):
+@pytest.mark.parametrize(
+    "auth_service, auth_config",
+    AUTH_SERVICES
+)
+def test_all_requirements_match_for_service(
+        auth_service,
+        auth_config,
+        record_property
+):
+    record_property("aws_service", auth_service)
     # Validates that all service-level signature types have the same requirements
     message = f'Found mixed signer requirements for service: {auth_service}'
     assert_all_requirements_match(auth_config, message)
@@ -83,7 +91,9 @@ def test_all_requirements_match_for_service(auth_service, auth_config):
 
 @pytest.mark.validates_models
 @pytest.mark.parametrize("auth_service, operation_model", AUTH_OPERATIONS)
-def test_all_requirements_match_for_operation(auth_service, operation_model):
+def test_all_requirements_match_for_operation(auth_service, operation_model, record_property):
+    record_property("aws_service", operation_model.service_model.service_name)
+    record_property("aws_operation", operation_model.name)
     # Validates that all operation-level signature types have the same requirements
     message = f'Found mixed signer requirements for operation: {auth_service}.{operation_model.name}'
     auth_config = operation_model.auth

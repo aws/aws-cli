@@ -168,7 +168,6 @@ def _lint_and_generate_updated_script(
     script_ast: SgRoot,
 ) -> tuple[SgRoot, int, list[LintFinding]]:
     current_ast = script_ast
-    findings_found = 0
     num_auto_fixable_findings = 0
     non_auto_fixable = []
 
@@ -177,9 +176,7 @@ def _lint_and_generate_updated_script(
         rule_findings = linter.lint_for_rule(current_ast, rule)
         auto_fixable_findings = [f for f in rule_findings if f.auto_fixable]
 
-        findings_found += len(rule_findings)
         num_auto_fixable_findings += len(auto_fixable_findings)
-
         non_auto_fixable.extend(finding for finding in rule_findings if not finding.auto_fixable)
 
         # Avoid an unnecessary reparse if no changes were made to the script
@@ -424,7 +421,6 @@ def interactive_mode(
                 if auto_fixable_findings
                 else current_ast
             )
-            pass
         elif last_choice == UserChoice.NEXT:
             # If last_choice is Next, then we know the last finding displayed for this rule
             # was not auto-fixable. We'll still update the AST with any auto-fixable findings.
@@ -438,7 +434,6 @@ def interactive_mode(
                 if auto_fixable_findings
                 else current_ast
             )
-            pass
         elif last_choice is None and auto_apply:
             # In auto-apply mode, we apply all auto-fixes and store any findings that were not
             # auto-fixable for final summarization.
@@ -452,7 +447,6 @@ def interactive_mode(
             non_auto_fixable_findings_to_summarize.extend(
                 f for f in rule_findings if not f.auto_fixable
             )
-            pass
         else:
             raise RuntimeError(
                 f"Unexpected value of (last_choice, auto_apply): {(last_choice, auto_apply)}"

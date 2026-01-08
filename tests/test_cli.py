@@ -210,6 +210,37 @@ class TestCLI:
                 assert fixed_content.count("--cli-binary-format") == 2
                 assert fixed_content.count("--no-cli-pager") == 2
 
+    def test_interactive_mode_update_all_summarizes_unseen_manual_issues(self, tmp_path, capsys):
+        """Test interactive mode with 'u' summarizes issues that are not auto-fixable that were
+        not encountered in interactive mode.
+        """
+        script_file = tmp_path / "test.sh"
+        output_file = tmp_path / "output.sh"
+        script_file.write_text(
+            "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json\n"
+            "aws ecr get-login"
+        )
+
+        with patch(
+            "sys.argv",
+            [
+                "migrate-aws-cli",
+                "--script",
+                str(script_file),
+                "--interactive",
+                "--output",
+                str(output_file),
+            ],
+        ):
+            with patch("builtins.input", return_value="u"):
+                main()
+                fixed_content = output_file.read_text()
+                captured = capsys.readouterr()
+                # 1 auto-fixable command, 2 applicable rules = 2 auto-fixes.
+                assert fixed_content.count("--cli-binary-format") == 1
+                assert fixed_content.count("--no-cli-pager") == 1
+                assert "️1 issue(s) require manual review:" in captured.out
+
     def test_interactive_mode_save_and_exit(self, tmp_path):
         """Test interactive mode with 's' to save and exit."""
         script_file = tmp_path / "test.sh"

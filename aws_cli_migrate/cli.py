@@ -417,15 +417,7 @@ def interactive_mode(
             # Enable auto_apply so subsequent rules will automatically
             # accept and apply findings.
             auto_apply = True
-        elif (
-            last_choice == UserChoice.YES
-            or last_choice == UserChoice.NO
-            or last_choice == UserChoice.NEXT
-            or last_choice is None
-        ):
-            # If last_choice is None, then we did not prompt the user for any findings
-            # for the current rule. This may occur if user entered 'u' for a previous rule.
-            # Otherwise, if last_choice is Yes/No/Next, then we still apply AST updates, if any.
+        elif last_choice == UserChoice.YES or last_choice == UserChoice.NO:
             # Update the AST if any of the accepted findings were auto-fixable.
             current_ast = (
                 parse(linter.apply_fixes(current_ast, auto_fixable_findings))
@@ -433,8 +425,38 @@ def interactive_mode(
                 else current_ast
             )
             pass
+        elif last_choice == UserChoice.NEXT:
+            # If last_choice is Next, then we know the last finding displayed for this rule
+            # was not auto-fixable. We'll still update the AST with any auto-fixable findings.
+            # Note that if "The last finding for this rule is not auto-fixable implies no
+            # findings for this rule are auto-fixable" is a true assumption, then applying
+            # auto-fixes in this case is a no-op. As of version 1.0.0, this assumption is true,
+            # but we'll leave open the possibility that it is not true in the future.
+            # Update the AST if any of the accepted findings were auto-fixable.
+            current_ast = (
+                parse(linter.apply_fixes(current_ast, auto_fixable_findings))
+                if auto_fixable_findings
+                else current_ast
+            )
+            pass
+        elif last_choice is None and auto_apply:
+            # In auto-apply mode, we apply all auto-fixes and store any findings that were not
+            # auto-fixable for final summarization.
+            # Update the AST if any of the accepted findings were auto-fixable.
+            current_ast = (
+                parse(linter.apply_fixes(current_ast, auto_fixable_findings))
+                if auto_fixable_findings
+                else current_ast
+            )
+            # Store the findings that were not auto-fixable for final summarization.
+            non_auto_fixable_findings_to_summarize.extend(
+                f for f in rule_findings if not f.auto_fixable
+            )
+            pass
         else:
-            raise RuntimeError(f"Unexpected value of last_choice: {last_choice}")
+            raise RuntimeError(
+                f"Unexpected value of (last_choice, auto_apply): {(last_choice, auto_apply)}"
+            )
 
     if findings_found == 0:
         print("No issues found.")

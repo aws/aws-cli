@@ -1,41 +1,48 @@
-# AWS CLI v1-to-v2 Upgrade Linter
+# AWS CLI v1-to-v2 Migration Tool
 
-A CLI tool that lints bash scripts for AWS CLI v1 usage and updates them to avoid breaking 
+A command-line tool that lints bash scripts for AWS CLI v1 usage and updates them to avoid breaking 
 changes introduced in AWS CLI v2. Not all breaking changes can be detected statically, 
 thus not all of them are supported by this tool.
 
 For a full list of the breaking changes introduced with AWS CLI v2, see 
 [Breaking changes between AWS CLI version 1 and AWS CLI version 2](https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration-changes.html#cliv2-migration-changes-breaking).
 
+Jump to:
+
+* [Installation](#installation)
+* [Usage](#usage)
+* [Development](#development)
+* [Getting Help](#getting-help)
+
 ## Installation
 
-Most users should install AWS CLI Linter via `pip` in a `virtualenv`:
+Most users should install AWS CLI v1-to-v2 Migration Tool via `pip` in a `virtualenv`:
 
 ```shell
-$ python3 -m pip install awsclilinter
+$ python3 -m pip install aws-cli-migrate
 ```
 
 or, if you are not installing in a `virtualenv`, to install globally:
 
 ```shell
-$ sudo python3 -m pip install awsclilinter
+$ sudo python3 -m pip install aws-cli-migrate
 ```
 
 or for your user:
 
 ```shell
-$ python3 -m pip install --user awsclilinter
+$ python3 -m pip install --user aws-cli-migrate
 ```
 
-If you have the `awsclilinter` package installed and want to upgrade to the latest version, you can run:
+If you have the `aws-cli-migrate` package installed and want to upgrade to the latest version, you can run:
 
 ```shell
-$ python3 -m pip install --upgrade awsclilinter
+$ python3 -m pip install --upgrade aws-cli-migrate
 ```
 
-This will install the `awsclilinter` package as well as all dependencies.
+This will install the `aws-cli-migrate` package as well as all dependencies.
 
-If you want to run `awsclilinter` from source, see the [Installing development versions](#installing-development-versions) section.
+If you want to run `aws-cli-migrate` from source, see the [Installing development versions](#installing-development-versions) section.
 
 ## Usage
 
@@ -74,11 +81,11 @@ In interactive mode, you can:
 
 ### Installing development versions
 
-If you are interested in using the latest released version of the AWS CLI Linter, please see the [Installation](#installation) section. 
-This section is for anyone who wants to install the development version of the AWS CLI Linter. You might need to do this if:
+If you are interested in using the latest released version of the AWS CLI v1-to-v2 Migration Tool, please see the [Installation](#installation) section. 
+This section is for anyone who wants to install the development version of the AWS CLI v1-to-v2 Migration Tool. You might need to do this if:
 
-* You are developing a feature for the AWS CLI Linter and plan on submitting a Pull Request.
-* You want to test the latest changes of the AWS CLI Linter before they make it into an official release.
+* You are developing a feature for the AWS CLI v1-to-v2 Migration Tool and plan on submitting a Pull Request.
+* You want to test the latest changes of the AWS CLI v1-to-v2 Migration Tool before they make it into an official release.
 
 Install [uv](https://docs.astral.sh/uv/) if you haven't already, then set up the development environment:
 
@@ -105,14 +112,14 @@ uv run pytest tests/ -v
 
 ### Code formatting
 ```bash
-uv run ruff format awsclilinter tests
-uv run ruff check --select I --fix awsclilinter tests
+uv run ruff format aws_cli_migrate tests
+uv run ruff check --select I --fix aws_cli_migrate tests
 ```
 
 ### Code linting
 ```bash
-uv run ruff format --check awsclilinter tests
-uv run ruff check awsclilinter tests
+uv run ruff format --check aws_cli_migrate tests
+uv run ruff check aws_cli_migrate tests
 ```
 
 ### Clean local workspace
@@ -121,3 +128,11 @@ rm -rf .venv build dist *.egg-info
 find . -type d -name __pycache__ -exec rm -rf {} +
 find . -type f -name "*.pyc" -delete
 ```
+
+## Getting Help
+
+The best way to interact with our team is through GitHub. You can [open an issue](https://github.com/aws/aws-cli/issues/new/choose) and choose the templates for the AWS CLI v1-to-v2 Migration Tool.
+
+If you have a support plan with AWS Support, you can also create a new support case.
+
+Please check for open similar issues before opening another one.

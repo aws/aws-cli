@@ -1,8 +1,20 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You
+# may not use this file except in compliance with the License. A copy of
+# the License is located at
+#
+#     http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+# ANY KIND, either express or implied. See the License for the specific
+# language governing permissions and limitations under the License.
 from unittest.mock import patch
 
 import pytest
 
-from awsclilinter.cli import main
+from aws_cli_migrate.cli import main
 
 
 class TestCLI:
@@ -56,7 +68,7 @@ class TestCLI:
             assert "Found" in captured.out
             assert "issue" in captured.out
 
-    def test_fix_mode(self, tmp_path):
+    def test_fix_mode(self, tmp_path, capsys):
         """Test fix mode modifies the script."""
         script_file = tmp_path / "test.sh"
         script_file.write_text(
@@ -66,9 +78,23 @@ class TestCLI:
         with patch("sys.argv", ["migrate-aws-cli", "--script", str(script_file), "--fix"]):
             main()
             fixed_content = script_file.read_text()
+            captured_out = capsys.readouterr()
             # 1 command, 2 rules = 2 flags added
             assert "--cli-binary-format" in fixed_content
             assert "--no-cli-pager" in fixed_content
+            assert "Found 2 issue(s)." in captured_out.out
+
+    def test_fix_mode_no_issues_found(self, tmp_path, capsys):
+        """Test fix mode when no issues are found."""
+        script_file = tmp_path / "test.sh"
+        script_file.write_text("echo 'foobar'")
+
+        with patch("sys.argv", ["migrate-aws-cli", "--script", str(script_file), "--fix"]):
+            main()
+            fixed_content = script_file.read_text()
+            captured_out = capsys.readouterr()
+            assert fixed_content == "echo 'foobar'"
+            assert "No issues found" in captured_out.out
 
     def test_fix_mode_multiple_lint_rules_per_command(self, tmp_path, capsys):
         """Test fix mode in the case that multiple linting rules have findings
@@ -86,7 +112,7 @@ class TestCLI:
             captured = capsys.readouterr()
 
             # Should show fix was applied
-            assert "Applied 5 fix(es) automatically" in captured.out
+            assert f"Applied 5 fix(es) to: {str(tmp_path)}" in captured.out
             # The number of lines should remain the same after applying fixes
             assert len(script_file.read_text().splitlines()) == 2
 
@@ -154,7 +180,7 @@ class TestCLI:
             with patch("builtins.input", return_value="n"):
                 main()
                 captured = capsys.readouterr()
-                assert "No changes accepted" in captured.out
+                assert "No changes were accepted" in captured.out
 
     def test_interactive_mode_update_all(self, tmp_path):
         """Test interactive mode with 'u' to accept remaining changes."""
@@ -183,6 +209,37 @@ class TestCLI:
                 # 2 commands, 2 rules = 4 findings, so 2 of each flag
                 assert fixed_content.count("--cli-binary-format") == 2
                 assert fixed_content.count("--no-cli-pager") == 2
+
+    def test_interactive_mode_update_all_summarizes_unseen_manual_issues(self, tmp_path, capsys):
+        """Test interactive mode with 'u' summarizes issues that are not auto-fixable that were
+        not encountered in interactive mode.
+        """
+        script_file = tmp_path / "test.sh"
+        output_file = tmp_path / "output.sh"
+        script_file.write_text(
+            "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json\n"
+            "aws ecr get-login"
+        )
+
+        with patch(
+            "sys.argv",
+            [
+                "migrate-aws-cli",
+                "--script",
+                str(script_file),
+                "--interactive",
+                "--output",
+                str(output_file),
+            ],
+        ):
+            with patch("builtins.input", return_value="u"):
+                main()
+                fixed_content = output_file.read_text()
+                captured = capsys.readouterr()
+                # 1 auto-fixable command, 2 applicable rules = 2 auto-fixes.
+                assert fixed_content.count("--cli-binary-format") == 1
+                assert fixed_content.count("--no-cli-pager") == 1
+                assert "️1 issue(s) require manual review:" in captured.out
 
     def test_interactive_mode_save_and_exit(self, tmp_path):
         """Test interactive mode with 's' to save and exit."""
@@ -233,9 +290,7 @@ class TestCLI:
             ],
         ):
             with patch("builtins.input", return_value="q"):
-                with pytest.raises(SystemExit) as exc_info:
-                    main()
-                assert exc_info.value.code == 0
+                main()
                 # Output file should not exist since we quit without saving
                 assert not output_file.exists()
 
@@ -264,7 +319,7 @@ class TestCLI:
             captured = capsys.readouterr()
 
             # Should show fix was applied
-            assert "Applied 2 fix(es) automatically" in captured.out
+            assert f"Applied 2 fix(es) to: {str(tmp_path)}" in captured.out
 
             # Should show manual review section
             assert "issue(s) require manual review" in captured.out
@@ -393,3 +448,32 @@ class TestCLI:
             captured = capsys.readouterr()
             # Should find issues since 'aws' is a valid AWS CLI command
             assert "Found 2 issue" in captured.out
+
+    def test_interactive_mode_s3_cp_ls(self, tmp_path, capsys):
+        """Test interactive mode with s3 cp and ls commands."""
+        script_file = tmp_path / "test.sh"
+        output_file = tmp_path / "output.sh"
+        script_file.write_text(
+            "aws s3 cp s3://source-bucket/file.txt s3://dest-bucket/file.txt\n"
+            "aws s3 ls s3://my-bucket"
+        )
+
+        with patch(
+            "sys.argv",
+            [
+                "migrate-aws-cli",
+                "--script",
+                str(script_file),
+                "--interactive",
+                "--output",
+                str(output_file),
+            ],
+        ):
+            with patch("builtins.input", side_effect=["y", "u"]):
+                main()
+                fixed_content = output_file.read_text()
+                captured = capsys.readouterr()
+                assert fixed_content.count("--cli-binary-format") == 2
+                assert fixed_content.count("--no-cli-pager") == 2
+                assert fixed_content.count("--copy-props none") == 1
+                assert "Found 5 issue" in captured.out

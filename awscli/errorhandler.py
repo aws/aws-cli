@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import argparse
 import logging
 import signal
 
@@ -36,10 +37,63 @@ from awscli.customizations.exceptions import (
     ConfigurationError,
     ParamValidationError,
 )
+from awscli.formatter import get_formatter
 from awscli.utils import PagerInitializationException
 from awscli.errorformat import write_error
 
 LOG = logging.getLogger(__name__)
+
+VALID_ERROR_FORMATS = ['legacy', 'json', 'yaml', 'text', 'table', 'enhanced']
+# Maximum number of items to display inline for collections
+MAX_INLINE_ITEMS = 5
+
+
+class EnhancedErrorFormatter:
+    def format_error(self, error_info, formatted_message, stream):
+        stream.write(f'{formatted_message}\n')
+
+        additional_fields = self._get_additional_fields(error_info)
+
+        if not additional_fields:
+            return
+
+        stream.write('\nAdditional error details:\n')
+        for key, value in additional_fields.items():
+            if self._is_simple_value(value):
+                stream.write(f'{key}: {value}\n')
+            elif self._is_small_collection(value):
+                stream.write(f'{key}: {self._format_inline(value)}\n')
+            else:
+                stream.write(
+                    f'{key}: <complex value> '
+                    f'(Use --cli-error-format with json or yaml to see full details)\n'
+                )
+
+    def _is_simple_value(self, value):
+        return isinstance(value, (str, int, float, bool, type(None)))
+
+    def _is_small_collection(self, value):
+        if isinstance(value, list):
+            return len(value) < MAX_INLINE_ITEMS and all(
+                self._is_simple_value(item) for item in value
+            )
+        elif isinstance(value, dict):
+            return len(value) < MAX_INLINE_ITEMS and all(
+                self._is_simple_value(v) for v in value.values()
+            )
+        return False
+
+    def _format_inline(self, value):
+        if isinstance(value, list):
+            return f"[{', '.join(str(item) for item in value)}]"
+        elif isinstance(value, dict):
+            items = ', '.join(f'{k}: {v}' for k, v in value.items())
+            return f'{{{items}}}'
+        return str(value)
+
+    def _get_additional_fields(self, error_info):
+        standard_keys = {'Code', 'Message'}
+        return {k: v for k, v in error_info.items() if k not in standard_keys}
 
 
 def construct_entry_point_handlers_chain():
@@ -52,7 +106,7 @@ def construct_entry_point_handlers_chain():
     return ChainedExceptionHandler(exception_handlers=handlers)
 
 
-def construct_cli_error_handlers_chain():
+def construct_cli_error_handlers_chain(session=None):
     handlers = [
         ParamValidationErrorsHandler(),
         UnknownArgumentErrorHandler(),
@@ -61,7 +115,7 @@ def construct_cli_error_handlers_chain():
         NoCredentialsErrorHandler(),
         PagerErrorHandler(),
         InterruptExceptionHandler(),
-        ClientErrorHandler(),
+        ClientErrorHandler(session),
         GeneralExceptionHandler(),
     ]
     return ChainedExceptionHandler(exception_handlers=handlers)
@@ -76,13 +130,15 @@ class FilteredExceptionHandler(BaseExceptionHandler):
     EXCEPTIONS_TO_HANDLE = ()
     MESSAGE = '%s'
 
-    def handle_exception(self, exception, stdout, stderr):
+    def handle_exception(self, exception, stdout, stderr, **kwargs):
         if isinstance(exception, self.EXCEPTIONS_TO_HANDLE):
-            return_val = self._do_handle_exception(exception, stdout, stderr)
+            return_val = self._do_handle_exception(
+                exception, stdout, stderr, **kwargs
+            )
             if return_val is not None:
                 return return_val
 
-    def _do_handle_exception(self, exception, stdout, stderr):
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
         message = self.MESSAGE % exception
         write_error(stderr, message)
         return self.RC
@@ -100,13 +156,120 @@ class ParamValidationErrorsHandler(FilteredExceptionHandler):
 
 
 class SilenceParamValidationMsgErrorHandler(ParamValidationErrorsHandler):
-    def _do_handle_exception(self, exception, stdout, stderr):
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
         return self.RC
 
 
 class ClientErrorHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = ClientError
     RC = CLIENT_ERROR_RC
+
+    def __init__(self, session=None):
+        self._session = session
+        self._enhanced_formatter = None
+
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
+        parsed_globals = kwargs.get('parsed_globals')
+        displayed_structured = False
+        if self._session:
+            displayed_structured = self._try_display_structured_error(
+                exception, stderr, parsed_globals
+            )
+
+        if not displayed_structured:
+            return super()._do_handle_exception(
+                exception, stdout, stderr, **kwargs
+            )
+
+        return self.RC
+
+    def _resolve_error_format(self, parsed_globals):
+        if parsed_globals:
+            error_format = getattr(parsed_globals, 'cli_error_format', None)
+            if error_format:
+                return error_format.lower()
+        try:
+            error_format = self._session.get_config_variable(
+                'cli_error_format'
+            )
+            if error_format:
+                return error_format.lower()
+        except (KeyError, AttributeError) as e:
+            LOG.debug(
+                'Failed to get cli_error_format from config: %s', e
+            )
+
+        return 'enhanced'
+
+    def _try_display_structured_error(
+        self, exception, stderr, parsed_globals=None
+    ):
+        try:
+            error_response = self._extract_error_response(exception)
+            if not error_response or 'Error' not in error_response:
+                return False
+
+            error_info = error_response['Error']
+            error_format = self._resolve_error_format(parsed_globals)
+
+            if error_format not in VALID_ERROR_FORMATS:
+                LOG.warning(
+                    f"Invalid cli_error_format: '{error_format}'. "
+                    f"Using 'enhanced' format."
+                )
+                error_format = 'enhanced'
+
+            if error_format == 'legacy':
+                return False
+
+            formatted_message = str(exception)
+
+            if error_format == 'enhanced':
+                if self._enhanced_formatter is None:
+                    self._enhanced_formatter = EnhancedErrorFormatter()
+                self._enhanced_formatter.format_error(
+                    error_info, formatted_message, stderr
+                )
+                return True
+
+            if parsed_globals:
+                formatter = get_formatter(error_format, parsed_globals)
+            else:
+                formatter_args = argparse.Namespace()
+                formatter_args.query = None
+                formatter_args.color = 'auto'
+                formatter = get_formatter(error_format, formatter_args)
+
+            formatter('error', error_info, stderr)
+            return True
+
+        except Exception as e:
+            LOG.debug(
+                'Failed to display structured error: %s', e, exc_info=True
+            )
+            return False
+
+    @staticmethod
+    def _extract_error_response(exception):
+        if not isinstance(exception, ClientError):
+            return None
+
+        if hasattr(exception, 'response') and 'Error' in exception.response:
+            error_dict = dict(exception.response['Error'])
+
+            # AWS services return modeled error fields
+            # at the top level of the error response,
+            # not nested under an Error key. Botocore preserves this structure.
+            # Include these fields to provide complete error information.
+            # Exclude response metadata and avoid duplicates.
+            excluded_keys = {'Error', 'ResponseMetadata', 'Code', 'Message'}
+            for key, value in exception.response.items():
+                if key not in excluded_keys and key not in error_dict:
+                    error_dict[key] = value
+
+            return {'Error': error_dict}
+
+        return None
 
 
 class ConfigurationErrorHandler(FilteredExceptionHandler):
@@ -143,7 +306,7 @@ class UnknownArgumentErrorHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = UnknownArgumentError
     RC = PARAM_VALIDATION_ERROR_RC
 
-    def _do_handle_exception(self, exception, stdout, stderr):
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
         stderr.write("\n")
         stderr.write(f'usage: {USAGE}\n')
         write_error(stderr, str(exception))
@@ -154,7 +317,7 @@ class InterruptExceptionHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = KeyboardInterrupt
     RC = 128 + signal.SIGINT
 
-    def _do_handle_exception(self, exception, stdout, stderr):
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
         stdout.write("\n")
         return self.RC
 
@@ -162,7 +325,7 @@ class InterruptExceptionHandler(FilteredExceptionHandler):
 class PrompterInterruptExceptionHandler(InterruptExceptionHandler):
     EXCEPTIONS_TO_HANDLE = PrompterKeyboardInterrupt
 
-    def _do_handle_exception(self, exception, stdout, stderr):
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
         stderr.write(f'{exception}')
         stderr.write("\n")
         return self.RC
@@ -180,8 +343,10 @@ class ChainedExceptionHandler(BaseExceptionHandler):
     def inject_handler(self, position, handler):
         self._exception_handlers.insert(position, handler)
 
-    def handle_exception(self, exception, stdout, stderr):
+    def handle_exception(self, exception, stdout, stderr, **kwargs):
         for handler in self._exception_handlers:
-            return_value = handler.handle_exception(exception, stdout, stderr)
+            return_value = handler.handle_exception(
+                exception, stdout, stderr, **kwargs
+            )
             if return_value is not None:
                 return return_value

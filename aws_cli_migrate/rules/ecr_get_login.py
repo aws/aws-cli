@@ -25,7 +25,7 @@ class EcrGetLoginRule(LintRule):
         "Use `aws ecr get-login-password` instead, and pipe the results into the "
         "`docker login` command with the `--password-stdin` option. See "
         "https://docs.aws.amazon.com/cli/latest/userguide/"
-        "cliv2-migration-changes.html#cliv2-migration-ecr-get-login.\n"
+        "cliv2-migration-changes.html#cliv2-migration-ecr-get-login."
     )
 
     @property
@@ -37,7 +37,7 @@ class EcrGetLoginRule(LintRule):
         return (
             "In AWS CLI v2, The `ecr get-login` command has been removed. You must use "
             "`ecr get-login-password` instead. See https://docs.aws.amazon.com/cli/latest/userguide/"
-            "cliv2-migration-changes.html#cliv2-migration-ecr-get-login.\n"
+            "cliv2-migration-changes.html#cliv2-migration-ecr-get-login."
         )
 
     def check(self, root: SgRoot) -> List[LintFinding]:

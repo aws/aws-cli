@@ -27,7 +27,7 @@ class CLIInputJSONRule(LintRule):
         "to retain v1 behavior. Alternatively, migrate to v2 behavior by moving the pagination "
         "parameters from the input JSON onto the command as separate command line parameters. "
         "See https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration-changes.html"
-        "#cliv2-migration-skeleton-paging.\n"
+        "#cliv2-migration-skeleton-paging."
     )
 
     @property
@@ -39,7 +39,7 @@ class CLIInputJSONRule(LintRule):
         return (
             "In AWS CLI v2, specifying pagination parameters via `--cli-input-json` "
             "will turn off automatic pagination. See https://docs.aws.amazon.com/cli/"
-            "latest/userguide/cliv2-migration-changes.html#cliv2-migration-skeleton-paging.\n"
+            "latest/userguide/cliv2-migration-changes.html#cliv2-migration-skeleton-paging."
         )
 
     def check(self, root: SgRoot) -> List[LintFinding]:

@@ -39,6 +39,7 @@ from awscli.customizations.exceptions import (
 )
 from awscli.formatter import get_formatter
 from awscli.utils import PagerInitializationException
+from awscli.errorformat import write_error
 
 LOG = logging.getLogger(__name__)
 
@@ -138,9 +139,8 @@ class FilteredExceptionHandler(BaseExceptionHandler):
                 return return_val
 
     def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
-        stderr.write("\n")
-        stderr.write(self.MESSAGE % exception)
-        stderr.write("\n")
+        message = self.MESSAGE % exception
+        write_error(stderr, message)
         return self.RC
 
 
@@ -308,8 +308,8 @@ class UnknownArgumentErrorHandler(FilteredExceptionHandler):
 
     def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
         stderr.write("\n")
-        stderr.write(f'usage: {USAGE}\n{exception}\n')
-        stderr.write("\n")
+        stderr.write(f'usage: {USAGE}\n')
+        write_error(stderr, str(exception))
         return self.RC
 
 

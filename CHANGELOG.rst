@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.32.32
+=======
+
+* enhancement:urllib3: Update urllib3 to version 2.6.3
+* enhancement:HTTP: Move 100-continue behavior to use `HTTPConnections` request interface.
+* enhancement:``login``: Prevent ``aws login`` from updating a profile with a different style of existing credentials.
+* api-change:``transcribe``: Adds waiters to Amazon Transcribe.
+* api-change:``glue``: Adding MaterializedViews task run APIs
+* api-change:``cloudfront``: Added EntityLimitExceeded exception handling to the following API operations AssociateDistributionWebACL, AssociateDistributionTenantWebACL, UpdateDistributionWithStagingConfig
+* api-change:``medialive``: MediaPackage v2 output groups in MediaLive can now accept one additional destination for single pipeline channels and up to two additional destinations for standard channels. MediaPackage v2 destinations now support sending to cross region MediaPackage channels.
+* api-change:``bedrock-agentcore-control``: Adds optional field "view" to GetMemory API input to give customers control over whether CMK encrypted data such as strategy decryption or override prompts is returned or not.
+
+
 2.32.31
 =======
 

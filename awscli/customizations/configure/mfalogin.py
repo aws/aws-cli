@@ -24,6 +24,7 @@ from awscli.compat import compat_input
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure import profile_to_section
 from awscli.customizations.configure.writer import ConfigFileWriter
+from awscli.errorformat import write_error
 
 LOG = logging.getLogger(__name__)
 
@@ -142,7 +143,7 @@ class ConfigureMFALoginCommand(BasicCommand):
             'None', 'mfa_token', 'MFA token code'
         )
         if not token_code:
-            sys.stderr.write("MFA token code is required\n")
+            write_error(sys.stderr, "MFA token code is required")
             return None
         return token_code
 
@@ -156,7 +157,7 @@ class ConfigureMFALoginCommand(BasicCommand):
             )
             return response
         except ClientError as e:
-            sys.stderr.write(f"An error occurred: {e}\n")
+            write_error(sys.stderr, f"An error occurred: {e}")
             return None
 
     def _resolve_mfa_serial(self, parsed_args, source_config):
@@ -167,7 +168,7 @@ class ConfigureMFALoginCommand(BasicCommand):
                 'None', 'mfa_serial', 'MFA serial number or ARN'
             )
             if not mfa_serial:
-                sys.stderr.write("MFA serial number or MFA device ARN is required\n")
+                write_error(sys.stderr, "MFA serial number or MFA device ARN is required")
                 return None
         return mfa_serial
 
@@ -252,7 +253,7 @@ class ConfigureMFALoginCommand(BasicCommand):
                 'None', config_name, prompt_text
             )
             if not value or value == 'None':
-                sys.stderr.write(f"{prompt_text} is required\n")
+                write_error(sys.stderr, f"{prompt_text} is required")
                 return 1
             values[config_name] = value
 

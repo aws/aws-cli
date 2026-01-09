@@ -91,7 +91,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_with_bad_boolean_value(self):
         self.set_configs(BAD_BOOLEAN_VALUE_CONFIGS)
         cmd = CREATE_CLUSTER_CMD
-        expect_error_msg = "\n%s\n" % InvalidBooleanConfigError.fmt.format(
+        expect_error_msg = "\naws: [ERROR]: %s\n" % InvalidBooleanConfigError.fmt.format(
             config_value='False1',
             config_key='enable_debugging',
             profile_var_name='default',

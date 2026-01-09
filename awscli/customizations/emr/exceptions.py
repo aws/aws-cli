@@ -41,7 +41,7 @@ class MissingParametersError(EmrError, ParamValidationError):
     """
 
     fmt = (
-        'aws: error: The following required parameters are missing for '
+        'The following required parameters are missing for '
         '{object_name}: {missing}.'
     )
 
@@ -53,7 +53,7 @@ class EmptyListError(EmrError, ParamValidationError):
     :ivar param: The provided list parameter
     """
 
-    fmt = 'aws: error: The prameter {param} cannot be an empty list.'
+    fmt = 'The prameter {param} cannot be an empty list.'
 
 
 class MissingRequiredInstanceGroupsError(EmrError, ParamValidationError):
@@ -63,7 +63,7 @@ class MissingRequiredInstanceGroupsError(EmrError, ParamValidationError):
     """
 
     fmt = (
-        'aws: error: Must specify either --instance-groups or '
+        'Must specify either --instance-groups or '
         '--instance-type with --instance-count(optional) to '
         'configure instance groups.'
     )
@@ -77,7 +77,7 @@ class InstanceGroupsValidationError(EmrError, ParamValidationError):
     """
 
     fmt = (
-        'aws: error: You may not specify --instance-type '
+        'You may not specify --instance-type '
         'or --instance-count with --instance-groups, '
         'because --instance-type and --instance-count are '
         'shortcut options for --instance-groups.'
@@ -91,7 +91,7 @@ class InvalidAmiVersionError(EmrError, ParamValidationError):
     """
 
     fmt = (
-        'aws: error: The supplied AMI version "{ami_version}" is invalid.'
+        'The supplied AMI version "{ami_version}" is invalid.'
         ' Please see AMI Versions Supported in Amazon EMR in '
         'Amazon Elastic MapReduce Developer Guide: '
         'http://docs.aws.amazon.com/ElasticMapReduce/'
@@ -108,7 +108,7 @@ class MissingBooleanOptionsError(EmrError, ParamValidationError):
     """
 
     fmt = (
-        'aws: error: Must specify one of the following boolean options: '
+        'Must specify one of the following boolean options: '
         '{true_option}|{false_option}.'
     )
 
@@ -120,7 +120,7 @@ class UnknownStepTypeError(EmrError, ParamValidationError):
     :ivar step_type: the step_type provided.
     """
 
-    fmt = 'aws: error: The step type {step_type} is not supported.'
+    fmt = 'The step type {step_type} is not supported.'
 
 
 class UnknownIamEndpointError(EmrError):
@@ -154,7 +154,7 @@ class LogUriError(EmrError, ParamValidationError):
     """
 
     fmt = (
-        'aws: error: LogUri not specified. You must specify a logUri '
+        'LogUri not specified. You must specify a logUri '
         'if you enable debugging when creating a cluster.'
     )
 
@@ -212,7 +212,7 @@ class SubnetAndAzValidationError(EmrError, ParamValidationError):
     """
 
     fmt = (
-        'aws: error: You may not specify both a SubnetId and an Availabili'
+        'You may not specify both a SubnetId and an Availabili'
         'tyZone (placement) because ec2SubnetId implies a placement.'
     )
 
@@ -222,7 +222,7 @@ class RequiredOptionsError(EmrError, ParamValidationError):
     Either of option1 or option2 is required.
     """
 
-    fmt = 'aws: error: Either {option1} or {option2} is required.'
+    fmt = 'Either {option1} or {option2} is required.'
 
 
 class MutualExclusiveOptionError(EmrError, ParamValidationError):
@@ -236,7 +236,7 @@ class MutualExclusiveOptionError(EmrError, ParamValidationError):
 
     def __init__(self, **kwargs):
         msg = (
-            'aws: error: You cannot specify both '
+            'You cannot specify both '
             + kwargs.get('option1', '')
             + ' and '
             + kwargs.get('option2', '')
@@ -256,7 +256,7 @@ class MissingApplicationsError(EmrError, ParamValidationError):
 
     def __init__(self, **kwargs):
         msg = (
-            'aws: error: Some of the steps require the following'
+            'Some of the steps require the following'
             ' applications to be installed: '
             + ', '.join(kwargs['applications'])
             + '. Please install the'
@@ -270,7 +270,7 @@ class ClusterTerminatedError(EmrError):
     The cluster is terminating or has already terminated.
     """
 
-    fmt = 'aws: error: Cluster terminating or already terminated.'
+    fmt = 'Cluster terminating or already terminated.'
 
 
 class ClusterStatesFilterValidationError(EmrError, ParamValidationError):
@@ -282,7 +282,7 @@ class ClusterStatesFilterValidationError(EmrError, ParamValidationError):
     """
 
     fmt = (
-        'aws: error: You can specify only one of the cluster state '
+        'You can specify only one of the cluster state '
         'filters: --cluster-states, --active, --terminated, --failed.'
     )
 
@@ -296,7 +296,7 @@ class MissingClusterAttributesError(EmrError, ParamValidationError):
     """
 
     fmt = (
-        'aws: error: Must specify one of the following boolean options: '
+        'Must specify one of the following boolean options: '
         '--visible-to-all-users|--no-visible-to-all-users, '
         '--termination-protected|--no-termination-protected, '
         '--auto-terminate|--no-auto-terminate, '
@@ -314,14 +314,14 @@ class InvalidEmrFsArgumentsError(EmrError, ParamValidationError):
     """
 
     fmt = (
-        'aws: error: {parent_object_name} is not specified. Thus, '
+        '{parent_object_name} is not specified. Thus, '
         ' following parameters are invalid: {invalid}'
     )
 
 
 class DuplicateEmrFsConfigurationError(EmrError, ParamValidationError):
     fmt = (
-        'aws: error: EMRFS should be configured either using '
+        'EMRFS should be configured either using '
         '--configuration or --emrfs but not both'
     )
 
@@ -334,7 +334,7 @@ class UnknownCseProviderTypeError(EmrError, ParamValidationError):
     """
 
     fmt = (
-        'aws: error: The client side encryption type "{provider_type}" is '
+        'The client side encryption type "{provider_type}" is '
         'not supported. You must specify either KMS or Custom'
     )
 
@@ -347,7 +347,7 @@ class UnknownEncryptionTypeError(EmrError, ParamValidationError):
     """
 
     fmt = (
-        'aws: error: The encryption type "{encryption}" is invalid. '
+        'The encryption type "{encryption}" is invalid. '
         'You must specify either ServerSide or ClientSide'
     )
 
@@ -361,14 +361,14 @@ class BothSseAndEncryptionConfiguredError(EmrError, ParamValidationError):
     """
 
     fmt = (
-        'aws: error: Both SSE={sse} and Encryption={encryption} are '
+        'Both SSE={sse} and Encryption={encryption} are '
         'configured for --emrfs. You must specify only one of the two.'
     )
 
 
 class InvalidBooleanConfigError(EmrError, ParamValidationError):
     fmt = (
-        "aws: error: {config_value} for {config_key} in the config file is "
+        "{config_value} for {config_key} in the config file is "
         "invalid. The value should be either 'True' or 'False'. Use "
         "'aws configure set {profile_var_name}.emr.{config_key} <value>' "
         "command to set a valid value."
@@ -377,13 +377,13 @@ class InvalidBooleanConfigError(EmrError, ParamValidationError):
 
 class UnsupportedCommandWithReleaseError(EmrError, ParamValidationError):
     fmt = (
-        "aws: error: {command} is not supported with "
+        "{command} is not supported with "
         "'{release_label}' release."
     )
 
 
 class MissingAutoScalingRoleError(EmrError, ParamValidationError):
     fmt = (
-        "aws: error: Must specify --auto-scaling-role when configuring an "
+        "Must specify --auto-scaling-role when configuring an "
         "AutoScaling policy for an instance group."
     )

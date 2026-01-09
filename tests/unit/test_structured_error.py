@@ -449,6 +449,7 @@ class TestParsedGlobalsPassthrough:
         parsed_globals.cli_error_format = 'json'
         parsed_globals.command = 's3'
         parsed_globals.color = 'auto'
+        parsed_globals.query = None
 
         error_handler = construct_cli_error_handlers_chain(session)
 
@@ -472,7 +473,7 @@ class TestParsedGlobalsPassthrough:
         assert rc == CLIENT_ERROR_RC
 
         stderr_output = stderr.getvalue()
-        assert '"Code"' in stderr_output or '"code"' in stderr_output.lower()
+        assert '"Code"' in stderr_output
         assert 'NoSuchBucket' in stderr_output
         assert 'test-bucket' in stderr_output
 

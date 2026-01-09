@@ -24,8 +24,8 @@
       "input":{"shape":"CreateConnectorRequest"},
       "output":{"shape":"CreateConnectorResponse"},
       "errors":[
-        {"shape":"NotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"NotFoundException"},
         {"shape":"BadRequestException"},
         {"shape":"ForbiddenException"},
         {"shape":"ServiceUnavailableException"},
@@ -45,8 +45,8 @@
       "input":{"shape":"CreateCustomPluginRequest"},
       "output":{"shape":"CreateCustomPluginResponse"},
       "errors":[
-        {"shape":"NotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"NotFoundException"},
         {"shape":"BadRequestException"},
         {"shape":"ForbiddenException"},
         {"shape":"ServiceUnavailableException"},
@@ -66,8 +66,8 @@
       "input":{"shape":"CreateWorkerConfigurationRequest"},
       "output":{"shape":"CreateWorkerConfigurationResponse"},
       "errors":[
-        {"shape":"NotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"NotFoundException"},
         {"shape":"BadRequestException"},
         {"shape":"ForbiddenException"},
         {"shape":"ServiceUnavailableException"},
@@ -158,7 +158,8 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Returns summary information about the connector.</p>"
+      "documentation":"<p>Returns summary information about the connector.</p>",
+      "readonly":true
     },
     "DescribeConnectorOperation":{
       "name":"DescribeConnectorOperation",
@@ -178,7 +179,8 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Returns information about the specified connector's operations.</p>"
+      "documentation":"<p>Returns information about the specified connector's operations.</p>",
+      "readonly":true
     },
     "DescribeCustomPlugin":{
       "name":"DescribeCustomPlugin",
@@ -198,7 +200,8 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>A summary description of the custom plugin.</p>"
+      "documentation":"<p>A summary description of the custom plugin.</p>",
+      "readonly":true
     },
     "DescribeWorkerConfiguration":{
       "name":"DescribeWorkerConfiguration",
@@ -218,7 +221,8 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Returns information about a worker configuration.</p>"
+      "documentation":"<p>Returns information about a worker configuration.</p>",
+      "readonly":true
     },
     "ListConnectorOperations":{
       "name":"ListConnectorOperations",
@@ -238,7 +242,8 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Lists information about a connector's operation(s).</p>"
+      "documentation":"<p>Lists information about a connector's operation(s).</p>",
+      "readonly":true
     },
     "ListConnectors":{
       "name":"ListConnectors",
@@ -258,7 +263,8 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Returns a list of all the connectors in this account and Region. The list is limited to connectors whose name starts with the specified prefix. The response also includes a description of each of the listed connectors.</p>"
+      "documentation":"<p>Returns a list of all the connectors in this account and Region. The list is limited to connectors whose name starts with the specified prefix. The response also includes a description of each of the listed connectors.</p>",
+      "readonly":true
     },
     "ListCustomPlugins":{
       "name":"ListCustomPlugins",
@@ -278,7 +284,8 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Returns a list of all of the custom plugins in this account and Region.</p>"
+      "documentation":"<p>Returns a list of all of the custom plugins in this account and Region.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -298,7 +305,8 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Lists all the tags attached to the specified resource.</p>"
+      "documentation":"<p>Lists all the tags attached to the specified resource.</p>",
+      "readonly":true
     },
     "ListWorkerConfigurations":{
       "name":"ListWorkerConfigurations",
@@ -318,7 +326,8 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Returns a list of all of the worker configurations in this account and Region.</p>"
+      "documentation":"<p>Returns a list of all of the worker configurations in this account and Region.</p>",
+      "readonly":true
     },
     "TagResource":{
       "name":"TagResource",
@@ -330,8 +339,8 @@
       "input":{"shape":"TagResourceRequest"},
       "output":{"shape":"TagResourceResponse"},
       "errors":[
-        {"shape":"NotFoundException"},
         {"shape":"ConflictException"},
+        {"shape":"NotFoundException"},
         {"shape":"BadRequestException"},
         {"shape":"ForbiddenException"},
         {"shape":"ServiceUnavailableException"},
@@ -381,7 +390,7 @@
         {"shape":"UnauthorizedException"},
         {"shape":"InternalServerErrorException"}
       ],
-      "documentation":"<p>Updates the specified connector.</p>",
+      "documentation":"<p>Updates the specified connector. For request body, specify only one parameter: either <code>capacity</code> or <code>connectorConfiguration</code>.</p>",
       "idempotent":true
     }
   },
@@ -757,6 +766,10 @@
           "shape":"LogDeliveryDescription",
           "documentation":"<p>The settings for delivering connector logs to Amazon CloudWatch Logs.</p>"
         },
+        "networkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>The network type of the connector. It gives connectors connectivity to either IPv4 (IPV4) or IPv4 and IPv6 (DUAL) destinations. Defaults to IPV4.</p>"
+        },
         "plugins":{
           "shape":"__listOfPluginDescription",
           "documentation":"<p>Specifies which plugins were used for this connector.</p>"
@@ -822,9 +835,13 @@
           "shape":"LogDelivery",
           "documentation":"<p>Details about log delivery.</p>"
         },
+        "networkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>The network type of the connector. It gives connectors connectivity to either IPv4 (IPV4) or IPv4 and IPv6 (DUAL) destinations. Defaults to IPV4.</p>"
+        },
         "plugins":{
           "shape":"__listOfPlugin",
-          "documentation":"<important> <p>Amazon MSK Connect does not currently support specifying multiple plugins as a list. To use more than one plugin for your connector, you can create a single custom plugin using a ZIP file that bundles multiple plugins together.</p> </important> <p>Specifies which plugin to use for the connector. You must specify a single-element list containing one <code>customPlugin</code> object.</p>"
+          "documentation":"<p><important> <p>Amazon MSK Connect does not currently support specifying multiple plugins as a list. To use more than one plugin for your connector, you can create a single custom plugin using a ZIP file that bundles multiple plugins together.</p> </important> <p>Specifies which plugin to use for the connector. You must specify a single-element list containing one <code>customPlugin</code> object.</p></p>"
         },
         "serviceExecutionRoleArn":{
           "shape":"__string",
@@ -1313,6 +1330,10 @@
           "shape":"LogDeliveryDescription",
           "documentation":"<p>Details about delivering logs to Amazon CloudWatch Logs.</p>"
         },
+        "networkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>The network type of the connector. It gives connectors connectivity to either IPv4 (IPV4) or IPv4 and IPv6 (DUAL) destinations. Defaults to IPV4.</p>"
+        },
         "plugins":{
           "shape":"__listOfPluginDescription",
           "documentation":"<p>Specifies which plugins were used for this connector.</p>"
@@ -1738,6 +1759,14 @@
       "max":100,
       "min":1
     },
+    "NetworkType":{
+      "type":"string",
+      "documentation":"<p>The network type of a connector.</p>",
+      "enum":[
+        "IPV4",
+        "DUAL"
+      ]
+    },
     "NotFoundException":{
       "type":"structure",
       "members":{
@@ -2018,8 +2047,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -2080,8 +2108,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateConnectorRequest":{
       "type":"structure",

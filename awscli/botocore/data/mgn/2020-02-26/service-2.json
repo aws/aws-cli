@@ -2,9 +2,10 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2020-02-26",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"mgn",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
+    "protocols":["rest-json"],
     "serviceAbbreviation":"mgn",
     "serviceFullName":"Application Migration Service",
     "serviceId":"mgn",
@@ -144,8 +145,8 @@
       "output":{"shape":"LaunchConfigurationTemplate"},
       "errors":[
         {"shape":"UninitializedAccountException"},
-        {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Creates a new Launch Configuration Template.</p>"
     },
@@ -160,8 +161,8 @@
       "output":{"shape":"ReplicationConfigurationTemplate"},
       "errors":[
         {"shape":"UninitializedAccountException"},
-        {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Creates a new ReplicationConfigurationTemplate.</p>"
     },
@@ -329,7 +330,8 @@
         {"shape":"UninitializedAccountException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves detailed job log items with paging.</p>"
+      "documentation":"<p>Retrieves detailed job log items with paging.</p>",
+      "readonly":true
     },
     "DescribeJobs":{
       "name":"DescribeJobs",
@@ -344,7 +346,8 @@
         {"shape":"UninitializedAccountException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Returns a list of Jobs. Use the JobsID and fromDate and toData filters to limit which jobs are returned. The response is sorted by creationDataTime - latest date first. Jobs are normally created by the StartTest, StartCutover, and TerminateTargetInstances APIs. Jobs are also created by DiagnosticLaunch and TerminateDiagnosticInstances, which are APIs available only to *Support* and only used in response to relevant support tickets.</p>"
+      "documentation":"<p>Returns a list of Jobs. Use the JobsID and fromDate and toData filters to limit which jobs are returned. The response is sorted by creationDataTime - latest date first. Jobs are normally created by the StartTest, StartCutover, and TerminateTargetInstances APIs. Jobs are also created by DiagnosticLaunch and TerminateDiagnosticInstances, which are APIs available only to *Support* and only used in response to relevant support tickets.</p>",
+      "readonly":true
     },
     "DescribeLaunchConfigurationTemplates":{
       "name":"DescribeLaunchConfigurationTemplates",
@@ -360,7 +363,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Lists all Launch Configuration Templates, filtered by Launch Configuration Template IDs</p>"
+      "documentation":"<p>Lists all Launch Configuration Templates, filtered by Launch Configuration Template IDs</p>",
+      "readonly":true
     },
     "DescribeReplicationConfigurationTemplates":{
       "name":"DescribeReplicationConfigurationTemplates",
@@ -376,7 +380,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Lists all ReplicationConfigurationTemplates, filtered by Source Server IDs.</p>"
+      "documentation":"<p>Lists all ReplicationConfigurationTemplates, filtered by Source Server IDs.</p>",
+      "readonly":true
     },
     "DescribeSourceServers":{
       "name":"DescribeSourceServers",
@@ -391,7 +396,8 @@
         {"shape":"UninitializedAccountException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves all SourceServers or multiple SourceServers by ID.</p>"
+      "documentation":"<p>Retrieves all SourceServers or multiple SourceServers by ID.</p>",
+      "readonly":true
     },
     "DescribeVcenterClients":{
       "name":"DescribeVcenterClients",
@@ -407,7 +413,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Returns a list of the installed vCenter clients.</p>"
+      "documentation":"<p>Returns a list of the installed vCenter clients.</p>",
+      "readonly":true
     },
     "DisassociateApplications":{
       "name":"DisassociateApplications",
@@ -489,7 +496,8 @@
         {"shape":"UninitializedAccountException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists all LaunchConfigurations available, filtered by Source Server IDs.</p>"
+      "documentation":"<p>Lists all LaunchConfigurations available, filtered by Source Server IDs.</p>",
+      "readonly":true
     },
     "GetReplicationConfiguration":{
       "name":"GetReplicationConfiguration",
@@ -504,7 +512,8 @@
         {"shape":"UninitializedAccountException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Lists all ReplicationConfigurations, filtered by Source Server ID.</p>"
+      "documentation":"<p>Lists all ReplicationConfigurations, filtered by Source Server ID.</p>",
+      "readonly":true
     },
     "InitializeService":{
       "name":"InitializeService",
@@ -516,8 +525,8 @@
       "input":{"shape":"InitializeServiceRequest"},
       "output":{"shape":"InitializeServiceResponse"},
       "errors":[
-        {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Initialize Application Migration Service.</p>"
     },
@@ -533,7 +542,8 @@
       "errors":[
         {"shape":"UninitializedAccountException"}
       ],
-      "documentation":"<p>Retrieves all applications or multiple applications by ID.</p>"
+      "documentation":"<p>Retrieves all applications or multiple applications by ID.</p>",
+      "readonly":true
     },
     "ListConnectors":{
       "name":"ListConnectors",
@@ -548,7 +558,8 @@
         {"shape":"UninitializedAccountException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>List Connectors.</p>"
+      "documentation":"<p>List Connectors.</p>",
+      "readonly":true
     },
     "ListExportErrors":{
       "name":"ListExportErrors",
@@ -563,7 +574,8 @@
         {"shape":"UninitializedAccountException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>List export errors.</p>"
+      "documentation":"<p>List export errors.</p>",
+      "readonly":true
     },
     "ListExports":{
       "name":"ListExports",
@@ -577,7 +589,8 @@
       "errors":[
         {"shape":"UninitializedAccountException"}
       ],
-      "documentation":"<p>List exports.</p>"
+      "documentation":"<p>List exports.</p>",
+      "readonly":true
     },
     "ListImportErrors":{
       "name":"ListImportErrors",
@@ -592,7 +605,8 @@
         {"shape":"UninitializedAccountException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>List import errors.</p>"
+      "documentation":"<p>List import errors.</p>",
+      "readonly":true
     },
     "ListImports":{
       "name":"ListImports",
@@ -607,7 +621,8 @@
         {"shape":"UninitializedAccountException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>List imports.</p>"
+      "documentation":"<p>List imports.</p>",
+      "readonly":true
     },
     "ListManagedAccounts":{
       "name":"ListManagedAccounts",
@@ -622,7 +637,8 @@
         {"shape":"UninitializedAccountException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>List Managed Accounts.</p>"
+      "documentation":"<p>List Managed Accounts.</p>",
+      "readonly":true
     },
     "ListSourceServerActions":{
       "name":"ListSourceServerActions",
@@ -637,7 +653,8 @@
         {"shape":"UninitializedAccountException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>List source server post migration custom actions.</p>"
+      "documentation":"<p>List source server post migration custom actions.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -651,11 +668,12 @@
       "errors":[
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>List all tags for your Application Migration Service resources.</p>"
+      "documentation":"<p>List all tags for your Application Migration Service resources.</p>",
+      "readonly":true
     },
     "ListTemplateActions":{
       "name":"ListTemplateActions",
@@ -670,7 +688,8 @@
         {"shape":"UninitializedAccountException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>List template post migration custom actions.</p>"
+      "documentation":"<p>List template post migration custom actions.</p>",
+      "readonly":true
     },
     "ListWaves":{
       "name":"ListWaves",
@@ -684,7 +703,8 @@
       "errors":[
         {"shape":"UninitializedAccountException"}
       ],
-      "documentation":"<p>Retrieves all waves or multiple waves by ID.</p>"
+      "documentation":"<p>Retrieves all waves or multiple waves by ID.</p>",
+      "readonly":true
     },
     "MarkAsArchived":{
       "name":"MarkAsArchived",
@@ -886,7 +906,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Starts replication for SNAPSHOT_SHIPPING agents.</p>"
+      "documentation":"<p>Start replication for source server irrespective of its replication type.</p>"
     },
     "StartTest":{
       "name":"StartTest",
@@ -933,8 +953,8 @@
       "errors":[
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Adds or overwrites only the specified tags for the specified Application Migration Service resource or resources. When you specify an existing tag key, the value is overwritten with the new value. Each resource can have a maximum of 50 tags. Each tag consists of a key and optional value.</p>",
@@ -999,8 +1019,8 @@
       "errors":[
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
-        {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes the specified set of tags from the specified set of Application Migration Service resources.</p>",
@@ -1070,8 +1090,8 @@
       "errors":[
         {"shape":"UninitializedAccountException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Updates an existing Launch Configuration Template by ID.</p>"
     },
@@ -1087,8 +1107,8 @@
       "errors":[
         {"shape":"UninitializedAccountException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Allows you to update multiple ReplicationConfigurations by Source Server ID.</p>",
@@ -1106,8 +1126,8 @@
       "errors":[
         {"shape":"UninitializedAccountException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ValidationException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
       ],
       "documentation":"<p>Updates multiple ReplicationConfigurationTemplates by ID.</p>"
     },
@@ -1143,7 +1163,7 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Allows you to change between the AGENT_BASED replication type and the SNAPSHOT_SHIPPING replication type.</p>"
+      "documentation":"<p>Allows you to change between the AGENT_BASED replication type and the SNAPSHOT_SHIPPING replication type. </p> <p>SNAPSHOT_SHIPPING should be used for agentless replication.</p>"
     },
     "UpdateWave":{
       "name":"UpdateWave",
@@ -1172,8 +1192,8 @@
     "AccessDeniedException":{
       "type":"structure",
       "members":{
-        "code":{"shape":"LargeBoundedString"},
-        "message":{"shape":"LargeBoundedString"}
+        "message":{"shape":"LargeBoundedString"},
+        "code":{"shape":"LargeBoundedString"}
       },
       "documentation":"<p>Operating denied due to a file permission or access check error.</p>",
       "error":{
@@ -1186,7 +1206,7 @@
       "type":"string",
       "max":12,
       "min":12,
-      "pattern":"[0-9]{12,}"
+      "pattern":".*[0-9]{12,}.*"
     },
     "ActionCategory":{
       "type":"string",
@@ -1208,13 +1228,13 @@
       "type":"string",
       "max":256,
       "min":0,
-      "pattern":"^[0-9a-zA-Z ():/.,'-_#*; ]*$"
+      "pattern":"[0-9a-zA-Z ():/.,'-_#*; ]*"
     },
     "ActionID":{
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"[0-9a-zA-Z]$"
+      "pattern":".*[0-9a-zA-Z]"
     },
     "ActionIDs":{
       "type":"list",
@@ -1226,15 +1246,11 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"^[^\\s\\x00]( *[^\\s\\x00])*$"
+      "pattern":"[^\\s\\x00]( *[^\\s\\x00])*"
     },
     "Application":{
       "type":"structure",
       "members":{
-        "applicationAggregatedStatus":{
-          "shape":"ApplicationAggregatedStatus",
-          "documentation":"<p>Application aggregated status.</p>"
-        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Application ID.</p>"
@@ -1243,9 +1259,9 @@
           "shape":"ARN",
           "documentation":"<p>Application ARN.</p>"
         },
-        "creationDateTime":{
-          "shape":"ISO8601DatetimeString",
-          "documentation":"<p>Application creation dateTime.</p>"
+        "name":{
+          "shape":"ApplicationName",
+          "documentation":"<p>Application name.</p>"
         },
         "description":{
           "shape":"ApplicationDescription",
@@ -1255,13 +1271,17 @@
           "shape":"Boolean",
           "documentation":"<p>Application archival status.</p>"
         },
+        "applicationAggregatedStatus":{
+          "shape":"ApplicationAggregatedStatus",
+          "documentation":"<p>Application aggregated status.</p>"
+        },
+        "creationDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Application creation dateTime.</p>"
+        },
         "lastModifiedDateTime":{
           "shape":"ISO8601DatetimeString",
           "documentation":"<p>Application last modified dateTime.</p>"
-        },
-        "name":{
-          "shape":"ApplicationName",
-          "documentation":"<p>Application name.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -1276,13 +1296,13 @@
     "ApplicationAggregatedStatus":{
       "type":"structure",
       "members":{
-        "healthStatus":{
-          "shape":"ApplicationHealthStatus",
-          "documentation":"<p>Application aggregated status health status.</p>"
-        },
         "lastUpdateDateTime":{
           "shape":"ISO8601DatetimeString",
           "documentation":"<p>Application aggregated status last update dateTime.</p>"
+        },
+        "healthStatus":{
+          "shape":"ApplicationHealthStatus",
+          "documentation":"<p>Application aggregated status health status.</p>"
         },
         "progressStatus":{
           "shape":"ApplicationProgressStatus",
@@ -1299,7 +1319,7 @@
       "type":"string",
       "max":600,
       "min":0,
-      "pattern":"^[^\\x00]*$"
+      "pattern":"[^\\x00]*"
     },
     "ApplicationHealthStatus":{
       "type":"string",
@@ -1313,7 +1333,7 @@
       "type":"string",
       "max":21,
       "min":21,
-      "pattern":"^app-[0-9a-zA-Z]{17}$"
+      "pattern":"app-[0-9a-zA-Z]{17}"
     },
     "ApplicationIDs":{
       "type":"list",
@@ -1331,7 +1351,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"^[^\\s\\x00]( *[^\\s\\x00])*$"
+      "pattern":"[^\\s\\x00]( *[^\\s\\x00])*"
     },
     "ApplicationProgressStatus":{
       "type":"string",
@@ -1349,13 +1369,13 @@
       "type":"structure",
       "required":["applicationID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Account ID.</p>"
-        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Application ID.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
         }
       }
     },
@@ -1363,41 +1383,40 @@
       "type":"structure",
       "required":["waveID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Account ID.</p>"
-        },
         "waveID":{
           "shape":"WaveID",
           "documentation":"<p>Wave ID.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
         }
       }
     },
     "AssociateApplicationsRequest":{
       "type":"structure",
       "required":[
-        "applicationIDs",
-        "waveID"
+        "waveID",
+        "applicationIDs"
       ],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Account ID.</p>"
+        "waveID":{
+          "shape":"WaveID",
+          "documentation":"<p>Wave ID.</p>"
         },
         "applicationIDs":{
           "shape":"ApplicationIDs",
           "documentation":"<p>Application IDs list.</p>"
         },
-        "waveID":{
-          "shape":"WaveID",
-          "documentation":"<p>Wave ID.</p>"
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
         }
       }
     },
     "AssociateApplicationsResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "AssociateSourceServersRequest":{
       "type":"structure",
@@ -1406,10 +1425,6 @@
         "sourceServerIDs"
       ],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Account ID.</p>"
-        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Application ID.</p>"
@@ -1417,6 +1432,10 @@
         "sourceServerIDs":{
           "shape":"AssociateSourceServersRequestSourceServerIDs",
           "documentation":"<p>Source server IDs list.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
         }
       }
     },
@@ -1428,8 +1447,7 @@
     },
     "AssociateSourceServersResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "BandwidthThrottling":{
       "type":"long",
@@ -1470,21 +1488,21 @@
     "ChangeServerLifeCycleStateRequest":{
       "type":"structure",
       "required":[
-        "lifeCycle",
-        "sourceServerID"
+        "sourceServerID",
+        "lifeCycle"
       ],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>The request to change the source server migration account ID.</p>"
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>The request to change the source server migration lifecycle state by source server ID.</p>"
         },
         "lifeCycle":{
           "shape":"ChangeServerLifeCycleStateSourceServerLifecycle",
           "documentation":"<p>The request to change the source server migration lifecycle state.</p>"
         },
-        "sourceServerID":{
-          "shape":"SourceServerID",
-          "documentation":"<p>The request to change the source server migration lifecycle state by source server ID.</p>"
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>The request to change the source server migration account ID.</p>"
         }
       }
     },
@@ -1516,17 +1534,13 @@
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"^[\\.\\-_/#A-Za-z0-9]+$"
+      "pattern":"[\\.\\-_/#A-Za-z0-9]+"
     },
     "ConflictException":{
       "type":"structure",
       "members":{
-        "code":{"shape":"LargeBoundedString"},
-        "errors":{
-          "shape":"ConflictExceptionErrors",
-          "documentation":"<p>Conflict Exception specific errors.</p>"
-        },
         "message":{"shape":"LargeBoundedString"},
+        "code":{"shape":"LargeBoundedString"},
         "resourceId":{
           "shape":"LargeBoundedString",
           "documentation":"<p>A conflict occurred when prompting for the Resource ID.</p>"
@@ -1534,6 +1548,10 @@
         "resourceType":{
           "shape":"LargeBoundedString",
           "documentation":"<p>A conflict occurred when prompting for resource type.</p>"
+        },
+        "errors":{
+          "shape":"ConflictExceptionErrors",
+          "documentation":"<p>Conflict Exception specific errors.</p>"
         }
       },
       "documentation":"<p>The request could not be completed due to a conflict with the current state of the target resource.</p>",
@@ -1550,10 +1568,6 @@
     "Connector":{
       "type":"structure",
       "members":{
-        "arn":{
-          "shape":"ARN",
-          "documentation":"<p>Connector arn.</p>"
-        },
         "connectorID":{
           "shape":"ConnectorID",
           "documentation":"<p>Connector ID.</p>"
@@ -1562,17 +1576,21 @@
           "shape":"ConnectorName",
           "documentation":"<p>Connector name.</p>"
         },
-        "ssmCommandConfig":{
-          "shape":"ConnectorSsmCommandConfig",
-          "documentation":"<p>Connector SSM command config.</p>"
-        },
         "ssmInstanceID":{
           "shape":"SsmInstanceID",
           "documentation":"<p>Connector SSM instance ID.</p>"
         },
+        "arn":{
+          "shape":"ARN",
+          "documentation":"<p>Connector arn.</p>"
+        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Connector tags.</p>"
+        },
+        "ssmCommandConfig":{
+          "shape":"ConnectorSsmCommandConfig",
+          "documentation":"<p>Connector SSM command config.</p>"
         }
       }
     },
@@ -1580,13 +1598,13 @@
       "type":"string",
       "max":100,
       "min":27,
-      "pattern":"^arn:[\\w-]+:mgn:([a-z]{2}-(gov-)?[a-z]+-\\d{1})?:(\\d{12})?:connector\\/(connector-[0-9a-zA-Z]{17})$"
+      "pattern":"arn:[\\w-]+:mgn:([a-z]{2}-(gov-)?[a-z]+-\\d{1})?:(\\d{12})?:connector\\/(connector-[0-9a-zA-Z]{17})"
     },
     "ConnectorID":{
       "type":"string",
       "max":27,
       "min":27,
-      "pattern":"^connector-[0-9a-zA-Z]{17}$"
+      "pattern":"connector-[0-9a-zA-Z]{17}"
     },
     "ConnectorIDsFilter":{
       "type":"list",
@@ -1598,30 +1616,30 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"^[A-Za-z0-9_-]+$"
+      "pattern":"[A-Za-z0-9_-]+"
     },
     "ConnectorSsmCommandConfig":{
       "type":"structure",
       "required":[
-        "cloudWatchOutputEnabled",
-        "s3OutputEnabled"
+        "s3OutputEnabled",
+        "cloudWatchOutputEnabled"
       ],
       "members":{
-        "cloudWatchLogGroupName":{
-          "shape":"CloudWatchLogGroupName",
-          "documentation":"<p>Connector SSM command config CloudWatch log group name.</p>"
-        },
-        "cloudWatchOutputEnabled":{
+        "s3OutputEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Connector SSM command config CloudWatch output enabled.</p>"
+          "documentation":"<p>Connector SSM command config S3 output enabled.</p>"
         },
         "outputS3BucketName":{
           "shape":"S3BucketName",
           "documentation":"<p>Connector SSM command config output S3 bucket name.</p>"
         },
-        "s3OutputEnabled":{
+        "cloudWatchOutputEnabled":{
           "shape":"Boolean",
-          "documentation":"<p>Connector SSM command config S3 output enabled.</p>"
+          "documentation":"<p>Connector SSM command config CloudWatch output enabled.</p>"
+        },
+        "cloudWatchLogGroupName":{
+          "shape":"CloudWatchLogGroupName",
+          "documentation":"<p>Connector SSM command config CloudWatch log group name.</p>"
         }
       },
       "documentation":"<p>Connector SSM command config.</p>"
@@ -1640,21 +1658,21 @@
       "type":"structure",
       "required":["name"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Account ID.</p>"
+        "name":{
+          "shape":"ApplicationName",
+          "documentation":"<p>Application name.</p>"
         },
         "description":{
           "shape":"ApplicationDescription",
           "documentation":"<p>Application description.</p>"
         },
-        "name":{
-          "shape":"ApplicationName",
-          "documentation":"<p>Application name.</p>"
-        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Application tags.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
         }
       }
     },
@@ -1669,10 +1687,6 @@
           "shape":"ConnectorName",
           "documentation":"<p>Create Connector request name.</p>"
         },
-        "ssmCommandConfig":{
-          "shape":"ConnectorSsmCommandConfig",
-          "documentation":"<p>Create Connector request SSM command config.</p>"
-        },
         "ssmInstanceID":{
           "shape":"SsmInstanceID",
           "documentation":"<p>Create Connector request SSM instance ID.</p>"
@@ -1680,98 +1694,114 @@
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Create Connector request tags.</p>"
+        },
+        "ssmCommandConfig":{
+          "shape":"ConnectorSsmCommandConfig",
+          "documentation":"<p>Create Connector request SSM command config.</p>"
         }
       }
     },
     "CreateLaunchConfigurationTemplateRequest":{
       "type":"structure",
       "members":{
-        "associatePublicIpAddress":{
-          "shape":"Boolean",
-          "documentation":"<p>Associate public Ip address.</p>"
-        },
-        "bootMode":{
-          "shape":"BootMode",
-          "documentation":"<p>Launch configuration template boot mode.</p>"
-        },
-        "copyPrivateIp":{
-          "shape":"Boolean",
-          "documentation":"<p>Copy private Ip.</p>"
-        },
-        "copyTags":{
-          "shape":"Boolean",
-          "documentation":"<p>Copy tags.</p>"
+        "postLaunchActions":{
+          "shape":"PostLaunchActions",
+          "documentation":"<p>Launch configuration template post launch actions.</p>"
         },
         "enableMapAutoTagging":{
           "shape":"Boolean",
           "documentation":"<p>Enable map auto tagging.</p>"
         },
-        "largeVolumeConf":{
-          "shape":"LaunchTemplateDiskConf",
-          "documentation":"<p>Large volume config.</p>"
-        },
-        "launchDisposition":{
-          "shape":"LaunchDisposition",
-          "documentation":"<p>Launch disposition.</p>"
-        },
-        "licensing":{"shape":"Licensing"},
         "mapAutoTaggingMpeID":{
           "shape":"TagValue",
           "documentation":"<p>Launch configuration template map auto tagging MPE ID.</p>"
-        },
-        "postLaunchActions":{
-          "shape":"PostLaunchActions",
-          "documentation":"<p>Launch configuration template post launch actions.</p>"
-        },
-        "smallVolumeConf":{
-          "shape":"LaunchTemplateDiskConf",
-          "documentation":"<p>Small volume config.</p>"
-        },
-        "smallVolumeMaxSize":{
-          "shape":"PositiveInteger",
-          "documentation":"<p>Small volume maximum size.</p>"
         },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Request to associate tags during creation of a Launch Configuration Template.</p>"
         },
+        "launchDisposition":{
+          "shape":"LaunchDisposition",
+          "documentation":"<p>Launch disposition.</p>"
+        },
         "targetInstanceTypeRightSizingMethod":{
           "shape":"TargetInstanceTypeRightSizingMethod",
           "documentation":"<p>Target instance type right-sizing method.</p>"
+        },
+        "copyPrivateIp":{
+          "shape":"Boolean",
+          "documentation":"<p>Copy private Ip.</p>"
+        },
+        "associatePublicIpAddress":{
+          "shape":"Boolean",
+          "documentation":"<p>Associate public Ip address.</p>"
+        },
+        "copyTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Copy tags.</p>"
+        },
+        "licensing":{"shape":"Licensing"},
+        "bootMode":{
+          "shape":"BootMode",
+          "documentation":"<p>Launch configuration template boot mode.</p>"
+        },
+        "smallVolumeMaxSize":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Small volume maximum size.</p>"
+        },
+        "smallVolumeConf":{
+          "shape":"LaunchTemplateDiskConf",
+          "documentation":"<p>Small volume config.</p>"
+        },
+        "largeVolumeConf":{
+          "shape":"LaunchTemplateDiskConf",
+          "documentation":"<p>Large volume config.</p>"
+        },
+        "enableParametersEncryption":{
+          "shape":"Boolean",
+          "documentation":"<p>Enable parameters encryption.</p>"
+        },
+        "parametersEncryptionKey":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>Parameters encryption key.</p>"
         }
       }
     },
     "CreateReplicationConfigurationTemplateRequest":{
       "type":"structure",
       "required":[
+        "stagingAreaSubnetId",
         "associateDefaultSecurityGroup",
-        "bandwidthThrottling",
-        "createPublicIP",
-        "dataPlaneRouting",
+        "replicationServersSecurityGroupsIDs",
+        "replicationServerInstanceType",
+        "useDedicatedReplicationServer",
         "defaultLargeStagingDiskType",
         "ebsEncryption",
-        "replicationServerInstanceType",
-        "replicationServersSecurityGroupsIDs",
-        "stagingAreaSubnetId",
-        "stagingAreaTags",
-        "useDedicatedReplicationServer"
+        "bandwidthThrottling",
+        "dataPlaneRouting",
+        "createPublicIP",
+        "stagingAreaTags"
       ],
       "members":{
+        "stagingAreaSubnetId":{
+          "shape":"SubnetID",
+          "documentation":"<p>Request to configure the Staging Area subnet ID during Replication Settings template creation.</p>"
+        },
         "associateDefaultSecurityGroup":{
           "shape":"Boolean",
           "documentation":"<p>Request to associate the default Application Migration Service Security group with the Replication Settings template.</p>"
         },
-        "bandwidthThrottling":{
-          "shape":"BandwidthThrottling",
-          "documentation":"<p>Request to configure bandwidth throttling during Replication Settings template creation.</p>"
+        "replicationServersSecurityGroupsIDs":{
+          "shape":"ReplicationServersSecurityGroupsIDs",
+          "documentation":"<p>Request to configure the Replication Server Security group ID during Replication Settings template creation.</p>"
         },
-        "createPublicIP":{
+        "replicationServerInstanceType":{
+          "shape":"EC2InstanceType",
+          "documentation":"<p>Request to configure the Replication Server instance type during Replication Settings template creation.</p>"
+        },
+        "useDedicatedReplicationServer":{
           "shape":"Boolean",
-          "documentation":"<p>Request to create Public IP during Replication Settings template creation.</p>"
-        },
-        "dataPlaneRouting":{
-          "shape":"ReplicationConfigurationDataPlaneRouting",
-          "documentation":"<p>Request to configure data plane routing during Replication Settings template creation.</p>"
+          "documentation":"<p>Request to use Dedicated Replication Servers during Replication Settings template creation.</p>"
         },
         "defaultLargeStagingDiskType":{
           "shape":"ReplicationConfigurationDefaultLargeStagingDiskType",
@@ -1785,33 +1815,33 @@
           "shape":"ARN",
           "documentation":"<p>Request to configure an EBS encryption key during Replication Settings template creation.</p>"
         },
-        "replicationServerInstanceType":{
-          "shape":"EC2InstanceType",
-          "documentation":"<p>Request to configure the Replication Server instance type during Replication Settings template creation.</p>"
+        "bandwidthThrottling":{
+          "shape":"BandwidthThrottling",
+          "documentation":"<p>Request to configure bandwidth throttling during Replication Settings template creation.</p>"
         },
-        "replicationServersSecurityGroupsIDs":{
-          "shape":"ReplicationServersSecurityGroupsIDs",
-          "documentation":"<p>Request to configure the Replication Server Security group ID during Replication Settings template creation.</p>"
+        "dataPlaneRouting":{
+          "shape":"ReplicationConfigurationDataPlaneRouting",
+          "documentation":"<p>Request to configure data plane routing during Replication Settings template creation.</p>"
         },
-        "stagingAreaSubnetId":{
-          "shape":"SubnetID",
-          "documentation":"<p>Request to configure the Staging Area subnet ID during Replication Settings template creation.</p>"
+        "createPublicIP":{
+          "shape":"Boolean",
+          "documentation":"<p>Request to create Public IP during Replication Settings template creation.</p>"
         },
         "stagingAreaTags":{
           "shape":"TagsMap",
           "documentation":"<p>Request to configure Staging Area tags during Replication Settings template creation.</p>"
         },
+        "useFipsEndpoint":{
+          "shape":"Boolean",
+          "documentation":"<p>Request to use Fips Endpoint during Replication Settings template creation.</p>"
+        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Request to configure tags during Replication Settings template creation.</p>"
         },
-        "useDedicatedReplicationServer":{
-          "shape":"Boolean",
-          "documentation":"<p>Request to use Dedicated Replication Servers during Replication Settings template creation.</p>"
-        },
-        "useFipsEndpoint":{
-          "shape":"Boolean",
-          "documentation":"<p>Request to use Fips Endpoint during Replication Settings template creation.</p>"
+        "internetProtocol":{
+          "shape":"InternetProtocol",
+          "documentation":"<p>Request to configure the internet protocol to IPv4 or IPv6.</p>"
         }
       }
     },
@@ -1819,21 +1849,21 @@
       "type":"structure",
       "required":["name"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Account ID.</p>"
+        "name":{
+          "shape":"WaveName",
+          "documentation":"<p>Wave name.</p>"
         },
         "description":{
           "shape":"WaveDescription",
           "documentation":"<p>Wave description.</p>"
         },
-        "name":{
-          "shape":"WaveName",
-          "documentation":"<p>Wave name.</p>"
-        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Wave tags.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
         }
       }
     },
@@ -1875,33 +1905,37 @@
     "DataReplicationInfo":{
       "type":"structure",
       "members":{
-        "dataReplicationError":{
-          "shape":"DataReplicationError",
-          "documentation":"<p>Error in obtaining data replication info.</p>"
-        },
-        "dataReplicationInitiation":{
-          "shape":"DataReplicationInitiation",
-          "documentation":"<p>Request to query whether data replication has been initiated.</p>"
-        },
-        "dataReplicationState":{
-          "shape":"DataReplicationState",
-          "documentation":"<p>Request to query the data replication state.</p>"
+        "lagDuration":{
+          "shape":"ISO8601DurationString",
+          "documentation":"<p>Request to query data replication lag duration.</p>"
         },
         "etaDateTime":{
           "shape":"ISO8601DatetimeString",
           "documentation":"<p>Request to query the time when data replication will be complete.</p>"
         },
-        "lagDuration":{
-          "shape":"ISO8601DurationString",
-          "documentation":"<p>Request to query data replication lag duration.</p>"
+        "replicatedDisks":{
+          "shape":"DataReplicationInfoReplicatedDisks",
+          "documentation":"<p>Request to query disks replicated.</p>"
+        },
+        "dataReplicationState":{
+          "shape":"DataReplicationState",
+          "documentation":"<p>Request to query the data replication state.</p>"
+        },
+        "dataReplicationInitiation":{
+          "shape":"DataReplicationInitiation",
+          "documentation":"<p>Request to query whether data replication has been initiated.</p>"
+        },
+        "dataReplicationError":{
+          "shape":"DataReplicationError",
+          "documentation":"<p>Error in obtaining data replication info.</p>"
         },
         "lastSnapshotDateTime":{
           "shape":"ISO8601DatetimeString",
           "documentation":"<p>Request to query data replication last snapshot time.</p>"
         },
-        "replicatedDisks":{
-          "shape":"DataReplicationInfoReplicatedDisks",
-          "documentation":"<p>Request to query disks replicated.</p>"
+        "replicatorId":{
+          "shape":"ReplicatorID",
+          "documentation":"<p>Replication server instance ID.</p>"
         }
       },
       "documentation":"<p>Request data replication info.</p>"
@@ -1909,13 +1943,13 @@
     "DataReplicationInfoReplicatedDisk":{
       "type":"structure",
       "members":{
-        "backloggedStorageBytes":{
-          "shape":"PositiveInteger",
-          "documentation":"<p>Request to query data replication backlog size in bytes.</p>"
-        },
         "deviceName":{
           "shape":"BoundedString",
           "documentation":"<p>Request to query device name.</p>"
+        },
+        "totalStorageBytes":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Request to query total amount of data replicated in bytes.</p>"
         },
         "replicatedStorageBytes":{
           "shape":"PositiveInteger",
@@ -1925,9 +1959,9 @@
           "shape":"PositiveInteger",
           "documentation":"<p>Request to query amount of data rescanned in bytes.</p>"
         },
-        "totalStorageBytes":{
+        "backloggedStorageBytes":{
           "shape":"PositiveInteger",
-          "documentation":"<p>Request to query total amount of data replicated in bytes.</p>"
+          "documentation":"<p>Request to query data replication backlog size in bytes.</p>"
         }
       },
       "documentation":"<p>Request to query disks replicated.</p>"
@@ -1941,13 +1975,13 @@
     "DataReplicationInitiation":{
       "type":"structure",
       "members":{
-        "nextAttemptDateTime":{
-          "shape":"ISO8601DatetimeString",
-          "documentation":"<p>Request to query next data initiation date and time.</p>"
-        },
         "startDateTime":{
           "shape":"ISO8601DatetimeString",
           "documentation":"<p>Request to query data initiation start date and time.</p>"
+        },
+        "nextAttemptDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Request to query next data initiation date and time.</p>"
         },
         "steps":{
           "shape":"DataReplicationInitiationSteps",
@@ -2021,20 +2055,19 @@
       "type":"structure",
       "required":["applicationID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Account ID.</p>"
-        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Application ID.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
         }
       }
     },
     "DeleteApplicationResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteConnectorRequest":{
       "type":"structure",
@@ -2050,20 +2083,19 @@
       "type":"structure",
       "required":["jobID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Request to delete Job from service by Account ID.</p>"
-        },
         "jobID":{
           "shape":"JobID",
           "documentation":"<p>Request to delete Job from service by Job ID.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to delete Job from service by Account ID.</p>"
         }
       }
     },
     "DeleteJobResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteLaunchConfigurationTemplateRequest":{
       "type":"structure",
@@ -2077,8 +2109,7 @@
     },
     "DeleteLaunchConfigurationTemplateResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteReplicationConfigurationTemplateRequest":{
       "type":"structure",
@@ -2092,27 +2123,25 @@
     },
     "DeleteReplicationConfigurationTemplateResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteSourceServerRequest":{
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Request to delete Source Server from service by Account ID.</p>"
-        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Request to delete Source Server from service by Server ID.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to delete Source Server from service by Account ID.</p>"
         }
       }
     },
     "DeleteSourceServerResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteVcenterClientRequest":{
       "type":"structure",
@@ -2128,29 +2157,24 @@
       "type":"structure",
       "required":["waveID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Account ID.</p>"
-        },
         "waveID":{
           "shape":"WaveID",
           "documentation":"<p>Wave ID.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
         }
       }
     },
     "DeleteWaveResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DescribeJobLogItemsRequest":{
       "type":"structure",
       "required":["jobID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Request to describe Job log Account ID.</p>"
-        },
         "jobID":{
           "shape":"JobID",
           "documentation":"<p>Request to describe Job log job ID.</p>"
@@ -2162,6 +2186,10 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>Request to describe Job log next token.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to describe Job log Account ID.</p>"
         }
       }
     },
@@ -2181,10 +2209,6 @@
     "DescribeJobsRequest":{
       "type":"structure",
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Request to describe job log items by Account ID.</p>"
-        },
         "filters":{
           "shape":"DescribeJobsRequestFilters",
           "documentation":"<p>Request to describe Job log filters.</p>"
@@ -2196,19 +2220,23 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>Request to describe job log items by next token.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to describe job log items by Account ID.</p>"
         }
       }
     },
     "DescribeJobsRequestFilters":{
       "type":"structure",
       "members":{
-        "fromDate":{
-          "shape":"ISO8601DatetimeString",
-          "documentation":"<p>Request to describe Job log filters by date.</p>"
-        },
         "jobIDs":{
           "shape":"DescribeJobsRequestFiltersJobIDs",
           "documentation":"<p>Request to describe Job log filters by job ID.</p>"
+        },
+        "fromDate":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Request to describe Job log filters by date.</p>"
         },
         "toDate":{
           "shape":"ISO8601DatetimeString",
@@ -2269,6 +2297,10 @@
     "DescribeReplicationConfigurationTemplatesRequest":{
       "type":"structure",
       "members":{
+        "replicationConfigurationTemplateIDs":{
+          "shape":"ReplicationConfigurationTemplateIDs",
+          "documentation":"<p>Request to describe Replication Configuration template by template IDs.</p>"
+        },
         "maxResults":{
           "shape":"MaxResultsType",
           "documentation":"<p>Request to describe Replication Configuration template by max results.</p>"
@@ -2276,10 +2308,6 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>Request to describe Replication Configuration template by next token.</p>"
-        },
-        "replicationConfigurationTemplateIDs":{
-          "shape":"ReplicationConfigurationTemplateIDs",
-          "documentation":"<p>Request to describe Replication Configuration template by template IDs.</p>"
         }
       }
     },
@@ -2299,10 +2327,6 @@
     "DescribeSourceServersRequest":{
       "type":"structure",
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Request to filter Source Servers list by Accoun ID.</p>"
-        },
         "filters":{
           "shape":"DescribeSourceServersRequestFilters",
           "documentation":"<p>Request to filter Source Servers list.</p>"
@@ -2314,6 +2338,10 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>Request to filter Source Servers list by next token.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to filter Source Servers list by Accoun ID.</p>"
         }
       }
     },
@@ -2326,25 +2354,25 @@
     "DescribeSourceServersRequestFilters":{
       "type":"structure",
       "members":{
-        "applicationIDs":{
-          "shape":"DescribeSourceServersRequestApplicationIDs",
-          "documentation":"<p>Request to filter Source Servers list by application IDs.</p>"
+        "sourceServerIDs":{
+          "shape":"DescribeSourceServersRequestFiltersIDs",
+          "documentation":"<p>Request to filter Source Servers list by Source Server ID.</p>"
         },
         "isArchived":{
           "shape":"Boolean",
           "documentation":"<p>Request to filter Source Servers list by archived.</p>"
         },
-        "lifeCycleStates":{
-          "shape":"LifeCycleStates",
-          "documentation":"<p>Request to filter Source Servers list by life cycle states.</p>"
-        },
         "replicationTypes":{
           "shape":"ReplicationTypes",
           "documentation":"<p>Request to filter Source Servers list by replication type.</p>"
         },
-        "sourceServerIDs":{
-          "shape":"DescribeSourceServersRequestFiltersIDs",
-          "documentation":"<p>Request to filter Source Servers list by Source Server ID.</p>"
+        "lifeCycleStates":{
+          "shape":"LifeCycleStates",
+          "documentation":"<p>Request to filter Source Servers list by life cycle states.</p>"
+        },
+        "applicationIDs":{
+          "shape":"DescribeSourceServersRequestApplicationIDs",
+          "documentation":"<p>Request to filter Source Servers list by application IDs.</p>"
         }
       },
       "documentation":"<p>Request to filter Source Servers list.</p>"
@@ -2401,28 +2429,27 @@
     "DisassociateApplicationsRequest":{
       "type":"structure",
       "required":[
-        "applicationIDs",
-        "waveID"
+        "waveID",
+        "applicationIDs"
       ],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Account ID.</p>"
+        "waveID":{
+          "shape":"WaveID",
+          "documentation":"<p>Wave ID.</p>"
         },
         "applicationIDs":{
           "shape":"ApplicationIDs",
           "documentation":"<p>Application IDs list.</p>"
         },
-        "waveID":{
-          "shape":"WaveID",
-          "documentation":"<p>Wave ID.</p>"
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
         }
       }
     },
     "DisassociateApplicationsResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisassociateSourceServersRequest":{
       "type":"structure",
@@ -2431,10 +2458,6 @@
         "sourceServerIDs"
       ],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Account ID.</p>"
-        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Application ID.</p>"
@@ -2442,6 +2465,10 @@
         "sourceServerIDs":{
           "shape":"DisassociateSourceServersRequestSourceServerIDs",
           "documentation":"<p>Source server IDs list.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
         }
       }
     },
@@ -2453,33 +2480,32 @@
     },
     "DisassociateSourceServersResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DisconnectFromServiceRequest":{
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Request to disconnect Source Server from service by Account ID.</p>"
-        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Request to disconnect Source Server from service by Server ID.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to disconnect Source Server from service by Account ID.</p>"
         }
       }
     },
     "Disk":{
       "type":"structure",
       "members":{
-        "bytes":{
-          "shape":"PositiveInteger",
-          "documentation":"<p>The amount of storage on the disk in bytes.</p>"
-        },
         "deviceName":{
           "shape":"BoundedString",
           "documentation":"<p>The disk or device name.</p>"
+        },
+        "bytes":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>The amount of storage on the disk in bytes.</p>"
         }
       },
       "documentation":"<p>The disk identifier.</p>"
@@ -2492,13 +2518,13 @@
     },
     "DocumentVersion":{
       "type":"string",
-      "pattern":"^(\\$DEFAULT|\\$LATEST|[0-9]+)$"
+      "pattern":"(\\$DEFAULT|\\$LATEST|[0-9]+)"
     },
     "EC2InstanceID":{
       "type":"string",
       "max":255,
       "min":0,
-      "pattern":"^i-[0-9a-fA-F]{8,}$"
+      "pattern":"i-[0-9a-fA-F]{8,}"
     },
     "EC2InstanceType":{
       "type":"string",
@@ -2509,18 +2535,18 @@
       "type":"string",
       "max":20,
       "min":20,
-      "pattern":"^lt-[0-9a-z]{17}$"
+      "pattern":"lt-[0-9a-z]{17}"
     },
     "ErrorDetails":{
       "type":"structure",
       "members":{
-        "code":{
-          "shape":"BoundedString",
-          "documentation":"<p>Error details code.</p>"
-        },
         "message":{
           "shape":"LargeBoundedString",
           "documentation":"<p>Error details message.</p>"
+        },
+        "code":{
+          "shape":"BoundedString",
+          "documentation":"<p>Error details code.</p>"
         },
         "resourceId":{
           "shape":"LargeBoundedString",
@@ -2551,7 +2577,7 @@
       "type":"string",
       "max":24,
       "min":24,
-      "pattern":"^export-[0-9a-zA-Z]{17}$"
+      "pattern":"export-[0-9a-zA-Z]{17}"
     },
     "ExportStatus":{
       "type":"string",
@@ -2565,6 +2591,26 @@
     "ExportTask":{
       "type":"structure",
       "members":{
+        "exportID":{
+          "shape":"ExportID",
+          "documentation":"<p>Export task id.</p>"
+        },
+        "arn":{
+          "shape":"ARN",
+          "documentation":"<p>ExportTask arn.</p>"
+        },
+        "s3Bucket":{
+          "shape":"S3BucketName",
+          "documentation":"<p>Export task s3 bucket.</p>"
+        },
+        "s3Key":{
+          "shape":"S3Key",
+          "documentation":"<p>Export task s3 key.</p>"
+        },
+        "s3BucketOwner":{
+          "shape":"AccountID",
+          "documentation":"<p>Export task s3 bucket owner.</p>"
+        },
         "creationDateTime":{
           "shape":"ISO8601DatetimeString",
           "documentation":"<p>Export task creation datetime.</p>"
@@ -2573,33 +2619,21 @@
           "shape":"ISO8601DatetimeString",
           "documentation":"<p>Export task end datetime.</p>"
         },
-        "exportID":{
-          "shape":"ExportID",
-          "documentation":"<p>Export task id.</p>"
+        "status":{
+          "shape":"ExportStatus",
+          "documentation":"<p>Export task status.</p>"
         },
         "progressPercentage":{
           "shape":"Float",
           "documentation":"<p>Export task progress percentage.</p>"
         },
-        "s3Bucket":{
-          "shape":"S3BucketName",
-          "documentation":"<p>Export task s3 bucket.</p>"
-        },
-        "s3BucketOwner":{
-          "shape":"AccountID",
-          "documentation":"<p>Export task s3 bucket owner.</p>"
-        },
-        "s3Key":{
-          "shape":"S3Key",
-          "documentation":"<p>Export task s3 key.</p>"
-        },
-        "status":{
-          "shape":"ExportStatus",
-          "documentation":"<p>Export task status.</p>"
-        },
         "summary":{
           "shape":"ExportTaskSummary",
           "documentation":"<p>Export task summary.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Export task tags.</p>"
         }
       },
       "documentation":"<p>Export task.</p>"
@@ -2607,13 +2641,13 @@
     "ExportTaskError":{
       "type":"structure",
       "members":{
-        "errorData":{
-          "shape":"ExportErrorData",
-          "documentation":"<p>Export task error data.</p>"
-        },
         "errorDateTime":{
           "shape":"ISO8601DatetimeString",
           "documentation":"<p>Export task error datetime.</p>"
+        },
+        "errorData":{
+          "shape":"ExportErrorData",
+          "documentation":"<p>Export task error data.</p>"
         }
       },
       "documentation":"<p>Export task error.</p>"
@@ -2621,13 +2655,13 @@
     "ExportTaskSummary":{
       "type":"structure",
       "members":{
-        "applicationsCount":{
-          "shape":"PositiveInteger",
-          "documentation":"<p>Export task summary applications count.</p>"
-        },
         "serversCount":{
           "shape":"PositiveInteger",
           "documentation":"<p>Export task summary servers count.</p>"
+        },
+        "applicationsCount":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Export task summary applications count.</p>"
         },
         "wavesCount":{
           "shape":"PositiveInteger",
@@ -2644,13 +2678,13 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Request to finalize Cutover by Source Account ID.</p>"
-        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Request to finalize Cutover by Source Server ID.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to finalize Cutover by Source Account ID.</p>"
         }
       }
     },
@@ -2671,13 +2705,13 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Request to get Launch Configuration information by Account ID.</p>"
-        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Request to get Launch Configuration information by Source Server ID.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to get Launch Configuration information by Account ID.</p>"
         }
       }
     },
@@ -2685,13 +2719,13 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Request to get Replication Configuration by Account ID.</p>"
-        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Request to get Replication Configuration by Source Server ID.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to get Replication Configuration by Account ID.</p>"
         }
       }
     },
@@ -2703,7 +2737,7 @@
       "type":"string",
       "max":32,
       "min":19,
-      "pattern":"^[1-9][0-9]*-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([0-1][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?Z$"
+      "pattern":"[1-9][0-9]*-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([0-1][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?Z"
     },
     "ISO8601DurationString":{
       "type":"string",
@@ -2713,10 +2747,6 @@
     "IdentificationHints":{
       "type":"structure",
       "members":{
-        "awsInstanceID":{
-          "shape":"EC2InstanceID",
-          "documentation":"<p>AWS Instance ID identification hint.</p>"
-        },
         "fqdn":{
           "shape":"BoundedString",
           "documentation":"<p>FQDN address identification hint.</p>"
@@ -2725,13 +2755,17 @@
           "shape":"BoundedString",
           "documentation":"<p>Hostname identification hint.</p>"
         },
-        "vmPath":{
-          "shape":"BoundedString",
-          "documentation":"<p>vCenter VM path identification hint.</p>"
-        },
         "vmWareUuid":{
           "shape":"BoundedString",
           "documentation":"<p>vmWare UUID identification hint.</p>"
+        },
+        "awsInstanceID":{
+          "shape":"EC2InstanceID",
+          "documentation":"<p>AWS Instance ID identification hint.</p>"
+        },
+        "vmPath":{
+          "shape":"BoundedString",
+          "documentation":"<p>vCenter VM path identification hint.</p>"
         }
       },
       "documentation":"<p>Identification hints.</p>"
@@ -2739,33 +2773,33 @@
     "ImportErrorData":{
       "type":"structure",
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Import error data source account ID.</p>"
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Import error data source server ID.</p>"
         },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Import error data application ID.</p>"
         },
+        "waveID":{
+          "shape":"WaveID",
+          "documentation":"<p>Import error data wave id.</p>"
+        },
         "ec2LaunchTemplateID":{
           "shape":"BoundedString",
           "documentation":"<p>Import error data ec2 LaunchTemplate ID.</p>"
-        },
-        "rawError":{
-          "shape":"LargeBoundedString",
-          "documentation":"<p>Import error data raw error.</p>"
         },
         "rowNumber":{
           "shape":"PositiveInteger",
           "documentation":"<p>Import error data row number.</p>"
         },
-        "sourceServerID":{
-          "shape":"SourceServerID",
-          "documentation":"<p>Import error data source server ID.</p>"
+        "rawError":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Import error data raw error.</p>"
         },
-        "waveID":{
-          "shape":"WaveID",
-          "documentation":"<p>Import error data wave id.</p>"
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Import error data source account ID.</p>"
         }
       },
       "documentation":"<p>Import error data.</p>"
@@ -2785,7 +2819,7 @@
       "type":"string",
       "max":24,
       "min":24,
-      "pattern":"^import-[0-9a-zA-Z]{17}$"
+      "pattern":"import-[0-9a-zA-Z]{17}"
     },
     "ImportIDsFilter":{
       "type":"list",
@@ -2809,6 +2843,18 @@
     "ImportTask":{
       "type":"structure",
       "members":{
+        "importID":{
+          "shape":"ImportID",
+          "documentation":"<p>Import task id.</p>"
+        },
+        "arn":{
+          "shape":"ARN",
+          "documentation":"<p>ImportTask arn.</p>"
+        },
+        "s3BucketSource":{
+          "shape":"S3BucketSource",
+          "documentation":"<p>Import task s3 bucket source.</p>"
+        },
         "creationDateTime":{
           "shape":"ISO8601DatetimeString",
           "documentation":"<p>Import task creation datetime.</p>"
@@ -2817,25 +2863,21 @@
           "shape":"ISO8601DatetimeString",
           "documentation":"<p>Import task end datetime.</p>"
         },
-        "importID":{
-          "shape":"ImportID",
-          "documentation":"<p>Import task id.</p>"
+        "status":{
+          "shape":"ImportStatus",
+          "documentation":"<p>Import task status.</p>"
         },
         "progressPercentage":{
           "shape":"Float",
           "documentation":"<p>Import task progress percentage.</p>"
         },
-        "s3BucketSource":{
-          "shape":"S3BucketSource",
-          "documentation":"<p>Import task s3 bucket source.</p>"
-        },
-        "status":{
-          "shape":"ImportStatus",
-          "documentation":"<p>Import task status.</p>"
-        },
         "summary":{
           "shape":"ImportTaskSummary",
           "documentation":"<p>Import task summary.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Import task tags.</p>"
         }
       },
       "documentation":"<p>Import task.</p>"
@@ -2843,10 +2885,6 @@
     "ImportTaskError":{
       "type":"structure",
       "members":{
-        "errorData":{
-          "shape":"ImportErrorData",
-          "documentation":"<p>Import task error data.</p>"
-        },
         "errorDateTime":{
           "shape":"ISO8601DatetimeString",
           "documentation":"<p>Import task error datetime.</p>"
@@ -2854,6 +2892,10 @@
         "errorType":{
           "shape":"ImportErrorType",
           "documentation":"<p>Import task error type.</p>"
+        },
+        "errorData":{
+          "shape":"ImportErrorData",
+          "documentation":"<p>Import task error data.</p>"
         }
       },
       "documentation":"<p>Import task error.</p>"
@@ -2861,6 +2903,10 @@
     "ImportTaskSummary":{
       "type":"structure",
       "members":{
+        "waves":{
+          "shape":"ImportTaskSummaryWaves",
+          "documentation":"<p>Import task summary waves.</p>"
+        },
         "applications":{
           "shape":"ImportTaskSummaryApplications",
           "documentation":"<p>Import task summary applications.</p>"
@@ -2868,10 +2914,6 @@
         "servers":{
           "shape":"ImportTaskSummaryServers",
           "documentation":"<p>Import task summary servers.</p>"
-        },
-        "waves":{
-          "shape":"ImportTaskSummaryWaves",
-          "documentation":"<p>Import task summary waves.</p>"
         }
       },
       "documentation":"<p>Import task summary.</p>"
@@ -2920,13 +2962,11 @@
     },
     "InitializeServiceRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "InitializeServiceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "InitiatedBy":{
       "type":"string",
@@ -2954,6 +2994,13 @@
       "exception":true,
       "fault":true
     },
+    "InternetProtocol":{
+      "type":"string",
+      "enum":[
+        "IPV4",
+        "IPV6"
+      ]
+    },
     "Iops":{
       "type":"long",
       "box":true,
@@ -2964,15 +3011,27 @@
       "type":"string",
       "max":1011,
       "min":1,
-      "pattern":"^[a-zA-Z0-9_]+(\\.[a-zA-Z0-9_\\[\\]]+)*$"
+      "pattern":"[a-zA-Z0-9_]+(\\.[a-zA-Z0-9_\\[\\]]+)*"
     },
     "Job":{
       "type":"structure",
       "required":["jobID"],
       "members":{
+        "jobID":{
+          "shape":"JobID",
+          "documentation":"<p>Job ID.</p>"
+        },
         "arn":{
           "shape":"ARN",
           "documentation":"<p>the ARN of the specific Job.</p>"
+        },
+        "type":{
+          "shape":"JobType",
+          "documentation":"<p>Job type.</p>"
+        },
+        "initiatedBy":{
+          "shape":"InitiatedBy",
+          "documentation":"<p>Job initiated by field.</p>"
         },
         "creationDateTime":{
           "shape":"ISO8601DatetimeString",
@@ -2982,29 +3041,17 @@
           "shape":"ISO8601DatetimeString",
           "documentation":"<p>Job end time.</p>"
         },
-        "initiatedBy":{
-          "shape":"InitiatedBy",
-          "documentation":"<p>Job initiated by field.</p>"
-        },
-        "jobID":{
-          "shape":"JobID",
-          "documentation":"<p>Job ID.</p>"
+        "status":{
+          "shape":"JobStatus",
+          "documentation":"<p>Job status.</p>"
         },
         "participatingServers":{
           "shape":"ParticipatingServers",
           "documentation":"<p>Servers participating in a specific Job.</p>"
         },
-        "status":{
-          "shape":"JobStatus",
-          "documentation":"<p>Job status.</p>"
-        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Tags associated with specific Job.</p>"
-        },
-        "type":{
-          "shape":"JobType",
-          "documentation":"<p>Job type.</p>"
         }
       },
       "documentation":"<p>Job.</p>"
@@ -3013,11 +3060,15 @@
       "type":"string",
       "max":24,
       "min":24,
-      "pattern":"^mgnjob-[0-9a-zA-Z]{17}$"
+      "pattern":"mgnjob-[0-9a-zA-Z]{17}"
     },
     "JobLog":{
       "type":"structure",
       "members":{
+        "logDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Job log event date and time.</p>"
+        },
         "event":{
           "shape":"JobLogEvent",
           "documentation":"<p>Job log event.</p>"
@@ -3025,10 +3076,6 @@
         "eventData":{
           "shape":"JobLogEventData",
           "documentation":"<p>Job event data</p>"
-        },
-        "logDateTime":{
-          "shape":"ISO8601DatetimeString",
-          "documentation":"<p>Job log event date and time.</p>"
         }
       },
       "documentation":"<p>Job log.</p>"
@@ -3057,21 +3104,29 @@
     "JobLogEventData":{
       "type":"structure",
       "members":{
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Job Event Source Server ID.</p>"
+        },
         "conversionServerID":{
           "shape":"EC2InstanceID",
           "documentation":"<p>Job Event conversion Server ID.</p>"
+        },
+        "targetInstanceID":{
+          "shape":"EC2InstanceID",
+          "documentation":"<p>Job Event Target instance ID.</p>"
         },
         "rawError":{
           "shape":"LargeBoundedString",
           "documentation":"<p>Job error.</p>"
         },
-        "sourceServerID":{
-          "shape":"SourceServerID",
-          "documentation":"<p>Job Event Source Server ID.</p>"
+        "attemptCount":{
+          "shape":"StrictlyPositiveInteger",
+          "documentation":"<p>Retries for this operation.</p>"
         },
-        "targetInstanceID":{
-          "shape":"EC2InstanceID",
-          "documentation":"<p>Job Event Target instance ID.</p>"
+        "maxAttemptsCount":{
+          "shape":"StrictlyPositiveInteger",
+          "documentation":"<p>The maximum number of retries that will be attempted if this operation failed.</p>"
         }
       },
       "documentation":"<p>Job log data</p>"
@@ -3083,6 +3138,14 @@
     "JobPostLaunchActionsLaunchStatus":{
       "type":"structure",
       "members":{
+        "ssmDocument":{
+          "shape":"SsmDocument",
+          "documentation":"<p>AWS Systems Manager's Document of the of the Job Post Launch Actions.</p>"
+        },
+        "ssmDocumentType":{
+          "shape":"SsmDocumentType",
+          "documentation":"<p>AWS Systems Manager Document type.</p>"
+        },
         "executionID":{
           "shape":"BoundedString",
           "documentation":"<p>AWS Systems Manager Document's execution ID of the of the Job Post Launch Actions.</p>"
@@ -3094,14 +3157,6 @@
         "failureReason":{
           "shape":"BoundedString",
           "documentation":"<p>AWS Systems Manager Document's failure reason.</p>"
-        },
-        "ssmDocument":{
-          "shape":"SsmDocument",
-          "documentation":"<p>AWS Systems Manager's Document of the of the Job Post Launch Actions.</p>"
-        },
-        "ssmDocumentType":{
-          "shape":"SsmDocumentType",
-          "documentation":"<p>AWS Systems Manager Document type.</p>"
         }
       },
       "documentation":"<p>Launch Status of the Job Post Launch Actions.</p>"
@@ -3125,6 +3180,12 @@
       "type":"list",
       "member":{"shape":"Job"}
     },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":276,
+      "min":0,
+      "pattern":"((arn:[\\w-]+:kms:([a-z]{2}-(gov-)?[a-z]+-\\d{1})?:(\\d{12})?:((alias|key)/[a-zA-Z0-9:/_-]{1,256}))|())"
+    },
     "LargeBoundedString":{
       "type":"string",
       "max":65536,
@@ -3133,9 +3194,25 @@
     "LaunchConfiguration":{
       "type":"structure",
       "members":{
-        "bootMode":{
-          "shape":"BootMode",
-          "documentation":"<p>Launch configuration boot mode.</p>"
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Launch configuration Source Server ID.</p>"
+        },
+        "name":{
+          "shape":"SmallBoundedString",
+          "documentation":"<p>Launch configuration name.</p>"
+        },
+        "ec2LaunchTemplateID":{
+          "shape":"BoundedString",
+          "documentation":"<p>Launch configuration EC2 Launch template ID.</p>"
+        },
+        "launchDisposition":{
+          "shape":"LaunchDisposition",
+          "documentation":"<p>Launch disposition for launch configuration.</p>"
+        },
+        "targetInstanceTypeRightSizingMethod":{
+          "shape":"TargetInstanceTypeRightSizingMethod",
+          "documentation":"<p>Launch configuration Target instance type right sizing method.</p>"
         },
         "copyPrivateIp":{
           "shape":"Boolean",
@@ -3145,38 +3222,22 @@
           "shape":"Boolean",
           "documentation":"<p>Copy Tags during Launch Configuration.</p>"
         },
-        "ec2LaunchTemplateID":{
-          "shape":"BoundedString",
-          "documentation":"<p>Launch configuration EC2 Launch template ID.</p>"
-        },
-        "enableMapAutoTagging":{
-          "shape":"Boolean",
-          "documentation":"<p>Enable map auto tagging.</p>"
-        },
-        "launchDisposition":{
-          "shape":"LaunchDisposition",
-          "documentation":"<p>Launch disposition for launch configuration.</p>"
-        },
         "licensing":{
           "shape":"Licensing",
           "documentation":"<p>Launch configuration OS licensing.</p>"
         },
+        "bootMode":{
+          "shape":"BootMode",
+          "documentation":"<p>Launch configuration boot mode.</p>"
+        },
+        "postLaunchActions":{"shape":"PostLaunchActions"},
+        "enableMapAutoTagging":{
+          "shape":"Boolean",
+          "documentation":"<p>Enable map auto tagging.</p>"
+        },
         "mapAutoTaggingMpeID":{
           "shape":"TagValue",
           "documentation":"<p>Map auto tagging MPE ID.</p>"
-        },
-        "name":{
-          "shape":"SmallBoundedString",
-          "documentation":"<p>Launch configuration name.</p>"
-        },
-        "postLaunchActions":{"shape":"PostLaunchActions"},
-        "sourceServerID":{
-          "shape":"SourceServerID",
-          "documentation":"<p>Launch configuration Source Server ID.</p>"
-        },
-        "targetInstanceTypeRightSizingMethod":{
-          "shape":"TargetInstanceTypeRightSizingMethod",
-          "documentation":"<p>Launch configuration Target instance type right sizing method.</p>"
         }
       }
     },
@@ -3184,70 +3245,78 @@
       "type":"structure",
       "required":["launchConfigurationTemplateID"],
       "members":{
-        "arn":{
-          "shape":"ARN",
-          "documentation":"<p>ARN of the Launch Configuration Template.</p>"
-        },
-        "associatePublicIpAddress":{
-          "shape":"Boolean",
-          "documentation":"<p>Associate public Ip address.</p>"
-        },
-        "bootMode":{
-          "shape":"BootMode",
-          "documentation":"<p>Launch configuration template boot mode.</p>"
-        },
-        "copyPrivateIp":{
-          "shape":"Boolean",
-          "documentation":"<p>Copy private Ip.</p>"
-        },
-        "copyTags":{
-          "shape":"Boolean",
-          "documentation":"<p>Copy tags.</p>"
-        },
-        "ec2LaunchTemplateID":{
-          "shape":"EC2LaunchConfigurationTemplateID",
-          "documentation":"<p>EC2 launch template ID.</p>"
-        },
-        "enableMapAutoTagging":{
-          "shape":"Boolean",
-          "documentation":"<p>Enable map auto tagging.</p>"
-        },
-        "largeVolumeConf":{
-          "shape":"LaunchTemplateDiskConf",
-          "documentation":"<p>Large volume config.</p>"
-        },
         "launchConfigurationTemplateID":{
           "shape":"LaunchConfigurationTemplateID",
           "documentation":"<p>ID of the Launch Configuration Template.</p>"
         },
-        "launchDisposition":{
-          "shape":"LaunchDisposition",
-          "documentation":"<p>Launch disposition.</p>"
-        },
-        "licensing":{"shape":"Licensing"},
-        "mapAutoTaggingMpeID":{
-          "shape":"TagValue",
-          "documentation":"<p>Launch configuration template map auto tagging MPE ID.</p>"
+        "arn":{
+          "shape":"ARN",
+          "documentation":"<p>ARN of the Launch Configuration Template.</p>"
         },
         "postLaunchActions":{
           "shape":"PostLaunchActions",
           "documentation":"<p>Post Launch Actions of the Launch Configuration Template.</p>"
         },
-        "smallVolumeConf":{
-          "shape":"LaunchTemplateDiskConf",
-          "documentation":"<p>Small volume config.</p>"
+        "enableMapAutoTagging":{
+          "shape":"Boolean",
+          "documentation":"<p>Enable map auto tagging.</p>"
         },
-        "smallVolumeMaxSize":{
-          "shape":"PositiveInteger",
-          "documentation":"<p>Small volume maximum size.</p>"
+        "mapAutoTaggingMpeID":{
+          "shape":"TagValue",
+          "documentation":"<p>Launch configuration template map auto tagging MPE ID.</p>"
         },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Tags of the Launch Configuration Template.</p>"
         },
+        "ec2LaunchTemplateID":{
+          "shape":"EC2LaunchConfigurationTemplateID",
+          "documentation":"<p>EC2 launch template ID.</p>"
+        },
+        "launchDisposition":{
+          "shape":"LaunchDisposition",
+          "documentation":"<p>Launch disposition.</p>"
+        },
         "targetInstanceTypeRightSizingMethod":{
           "shape":"TargetInstanceTypeRightSizingMethod",
           "documentation":"<p>Target instance type right-sizing method.</p>"
+        },
+        "copyPrivateIp":{
+          "shape":"Boolean",
+          "documentation":"<p>Copy private Ip.</p>"
+        },
+        "associatePublicIpAddress":{
+          "shape":"Boolean",
+          "documentation":"<p>Associate public Ip address.</p>"
+        },
+        "copyTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Copy tags.</p>"
+        },
+        "licensing":{"shape":"Licensing"},
+        "bootMode":{
+          "shape":"BootMode",
+          "documentation":"<p>Launch configuration template boot mode.</p>"
+        },
+        "smallVolumeMaxSize":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Small volume maximum size.</p>"
+        },
+        "smallVolumeConf":{
+          "shape":"LaunchTemplateDiskConf",
+          "documentation":"<p>Small volume config.</p>"
+        },
+        "largeVolumeConf":{
+          "shape":"LaunchTemplateDiskConf",
+          "documentation":"<p>Large volume config.</p>"
+        },
+        "enableParametersEncryption":{
+          "shape":"Boolean",
+          "documentation":"<p>Enable parameters encryption.</p>"
+        },
+        "parametersEncryptionKey":{
+          "shape":"ARN",
+          "documentation":"<p>Parameters encryption key.</p>"
         }
       }
     },
@@ -3255,7 +3324,7 @@
       "type":"string",
       "max":21,
       "min":21,
-      "pattern":"^lct-[0-9a-zA-Z]{17}$"
+      "pattern":"lct-[0-9a-zA-Z]{17}"
     },
     "LaunchConfigurationTemplateIDs":{
       "type":"list",
@@ -3289,6 +3358,10 @@
     "LaunchTemplateDiskConf":{
       "type":"structure",
       "members":{
+        "volumeType":{
+          "shape":"VolumeType",
+          "documentation":"<p>Launch template disk volume type configuration.</p>"
+        },
         "iops":{
           "shape":"Iops",
           "documentation":"<p>Launch template disk iops configuration.</p>"
@@ -3296,10 +3369,6 @@
         "throughput":{
           "shape":"Throughput",
           "documentation":"<p>Launch template disk throughput configuration.</p>"
-        },
-        "volumeType":{
-          "shape":"VolumeType",
-          "documentation":"<p>Launch template disk volume type configuration.</p>"
         }
       },
       "documentation":"<p>Launch template disk configuration.</p>"
@@ -3311,13 +3380,13 @@
           "shape":"EC2InstanceID",
           "documentation":"<p>Launched instance EC2 ID.</p>"
         },
-        "firstBoot":{
-          "shape":"FirstBoot",
-          "documentation":"<p>Launched instance first boot.</p>"
-        },
         "jobID":{
           "shape":"JobID",
           "documentation":"<p>Launched instance Job ID.</p>"
+        },
+        "firstBoot":{
+          "shape":"FirstBoot",
+          "documentation":"<p>Launched instance first boot.</p>"
         }
       },
       "documentation":"<p>Launched instance.</p>"
@@ -3339,17 +3408,13 @@
           "shape":"ISO8601DatetimeString",
           "documentation":"<p>Lifecycle added to service data and time.</p>"
         },
-        "elapsedReplicationDuration":{
-          "shape":"ISO8601DurationString",
-          "documentation":"<p>Lifecycle elapsed time and duration.</p>"
-        },
         "firstByteDateTime":{
           "shape":"ISO8601DatetimeString",
           "documentation":"<p>Lifecycle replication initiation date and time.</p>"
         },
-        "lastCutover":{
-          "shape":"LifeCycleLastCutover",
-          "documentation":"<p>Lifecycle last Cutover.</p>"
+        "elapsedReplicationDuration":{
+          "shape":"ISO8601DurationString",
+          "documentation":"<p>Lifecycle elapsed time and duration.</p>"
         },
         "lastSeenByServiceDateTime":{
           "shape":"ISO8601DatetimeString",
@@ -3358,6 +3423,10 @@
         "lastTest":{
           "shape":"LifeCycleLastTest",
           "documentation":"<p>Lifecycle last Test.</p>"
+        },
+        "lastCutover":{
+          "shape":"LifeCycleLastCutover",
+          "documentation":"<p>Lifecycle last Cutover.</p>"
         },
         "state":{
           "shape":"LifeCycleState",
@@ -3369,10 +3438,6 @@
     "LifeCycleLastCutover":{
       "type":"structure",
       "members":{
-        "finalized":{
-          "shape":"LifeCycleLastCutoverFinalized",
-          "documentation":"<p>Lifecycle Cutover finalized date and time.</p>"
-        },
         "initiated":{
           "shape":"LifeCycleLastCutoverInitiated",
           "documentation":"<p>Lifecycle last Cutover initiated.</p>"
@@ -3380,6 +3445,10 @@
         "reverted":{
           "shape":"LifeCycleLastCutoverReverted",
           "documentation":"<p>Lifecycle last Cutover reverted.</p>"
+        },
+        "finalized":{
+          "shape":"LifeCycleLastCutoverFinalized",
+          "documentation":"<p>Lifecycle Cutover finalized date and time.</p>"
         }
       },
       "documentation":"<p>Lifecycle last Cutover .</p>"
@@ -3421,10 +3490,6 @@
     "LifeCycleLastTest":{
       "type":"structure",
       "members":{
-        "finalized":{
-          "shape":"LifeCycleLastTestFinalized",
-          "documentation":"<p>Lifecycle last Test finalized.</p>"
-        },
         "initiated":{
           "shape":"LifeCycleLastTestInitiated",
           "documentation":"<p>Lifecycle last Test initiated.</p>"
@@ -3432,6 +3497,10 @@
         "reverted":{
           "shape":"LifeCycleLastTestReverted",
           "documentation":"<p>Lifecycle last Test reverted.</p>"
+        },
+        "finalized":{
+          "shape":"LifeCycleLastTestFinalized",
+          "documentation":"<p>Lifecycle last Test finalized.</p>"
         }
       },
       "documentation":"<p>Lifecycle last Test.</p>"
@@ -3494,10 +3563,6 @@
     "ListApplicationsRequest":{
       "type":"structure",
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Applications list Account ID.</p>"
-        },
         "filters":{
           "shape":"ListApplicationsRequestFilters",
           "documentation":"<p>Applications list filters.</p>"
@@ -3509,6 +3574,10 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>Request next token.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Applications list Account ID.</p>"
         }
       }
     },
@@ -3769,9 +3838,9 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Account ID to return when listing source server post migration custom actions.</p>"
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Source server ID.</p>"
         },
         "filters":{
           "shape":"SourceServerActionsRequestFilters",
@@ -3785,9 +3854,9 @@
           "shape":"PaginationToken",
           "documentation":"<p>Next token to use when listing source server post migration custom actions.</p>"
         },
-        "sourceServerID":{
-          "shape":"SourceServerID",
-          "documentation":"<p>Source server ID.</p>"
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID to return when listing source server post migration custom actions.</p>"
         }
       }
     },
@@ -3829,13 +3898,13 @@
       "type":"structure",
       "required":["launchConfigurationTemplateID"],
       "members":{
-        "filters":{
-          "shape":"TemplateActionsRequestFilters",
-          "documentation":"<p>Filters to apply when listing template post migration custom actions.</p>"
-        },
         "launchConfigurationTemplateID":{
           "shape":"LaunchConfigurationTemplateID",
           "documentation":"<p>Launch configuration template ID.</p>"
+        },
+        "filters":{
+          "shape":"TemplateActionsRequestFilters",
+          "documentation":"<p>Filters to apply when listing template post migration custom actions.</p>"
         },
         "maxResults":{
           "shape":"MaxResultsType",
@@ -3863,10 +3932,6 @@
     "ListWavesRequest":{
       "type":"structure",
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Request account ID.</p>"
-        },
         "filters":{
           "shape":"ListWavesRequestFilters",
           "documentation":"<p>Waves list filters.</p>"
@@ -3878,19 +3943,23 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>Request next token.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request account ID.</p>"
         }
       }
     },
     "ListWavesRequestFilters":{
       "type":"structure",
       "members":{
-        "isArchived":{
-          "shape":"Boolean",
-          "documentation":"<p>Filter waves list by archival status.</p>"
-        },
         "waveIDs":{
           "shape":"WaveIDsFilter",
           "documentation":"<p>Filter waves list by wave ID.</p>"
+        },
+        "isArchived":{
+          "shape":"Boolean",
+          "documentation":"<p>Filter waves list by archival status.</p>"
         }
       },
       "documentation":"<p>Waves list filters.</p>"
@@ -3928,13 +3997,13 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Mark as archived by Account ID.</p>"
-        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Mark as archived by Source Server ID.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Mark as archived by Account ID.</p>"
         }
       }
     },
@@ -3947,6 +4016,10 @@
     "NetworkInterface":{
       "type":"structure",
       "members":{
+        "macAddress":{
+          "shape":"BoundedString",
+          "documentation":"<p>Network interface Mac address.</p>"
+        },
         "ips":{
           "shape":"IPsList",
           "documentation":"<p>Network interface IPs.</p>"
@@ -3954,10 +4027,6 @@
         "isPrimary":{
           "shape":"Boolean",
           "documentation":"<p>Network interface primary IP.</p>"
-        },
-        "macAddress":{
-          "shape":"BoundedString",
-          "documentation":"<p>Network interface Mac address.</p>"
         }
       },
       "documentation":"<p>Network interface.</p>"
@@ -3980,7 +4049,7 @@
     },
     "OperatingSystemString":{
       "type":"string",
-      "pattern":"^(linux|windows)$"
+      "pattern":"(linux|windows)"
     },
     "OrderType":{
       "type":"integer",
@@ -3997,6 +4066,10 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Participating server Source Server ID.</p>"
+        },
         "launchStatus":{
           "shape":"LaunchStatus",
           "documentation":"<p>Participating server launch status.</p>"
@@ -4008,10 +4081,6 @@
         "postLaunchActionsStatus":{
           "shape":"PostLaunchActionsStatus",
           "documentation":"<p>Participating server's Post Launch Actions Status.</p>"
-        },
-        "sourceServerID":{
-          "shape":"SourceServerID",
-          "documentation":"<p>Participating server Source Server ID.</p>"
         }
       },
       "documentation":"<p>Server participating in Job.</p>"
@@ -4024,13 +4093,13 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Pause Replication Request account ID.</p>"
-        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Pause Replication Request source server ID.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Pause Replication Request account ID.</p>"
         }
       }
     },
@@ -4049,10 +4118,6 @@
     "PostLaunchActions":{
       "type":"structure",
       "members":{
-        "cloudWatchLogGroupName":{
-          "shape":"CloudWatchLogGroupName",
-          "documentation":"<p>AWS Systems Manager Command's CloudWatch log group name.</p>"
-        },
         "deployment":{
           "shape":"PostLaunchActionsDeploymentType",
           "documentation":"<p>Deployment type in which AWS Systems Manager Documents will be executed.</p>"
@@ -4064,6 +4129,10 @@
         "s3OutputKeyPrefix":{
           "shape":"BoundedString",
           "documentation":"<p>AWS Systems Manager Command's logs S3 output key prefix.</p>"
+        },
+        "cloudWatchLogGroupName":{
+          "shape":"CloudWatchLogGroupName",
+          "documentation":"<p>AWS Systems Manager Command's CloudWatch log group name.</p>"
         },
         "ssmDocuments":{
           "shape":"SsmDocuments",
@@ -4087,13 +4156,13 @@
     "PostLaunchActionsStatus":{
       "type":"structure",
       "members":{
-        "postLaunchActionsLaunchStatusList":{
-          "shape":"PostLaunchActionsLaunchStatusList",
-          "documentation":"<p>List of Post Launch Action status.</p>"
-        },
         "ssmAgentDiscoveryDatetime":{
           "shape":"ISO8601DatetimeString",
           "documentation":"<p>Time where the AWS Systems Manager was detected as running on the Test or Cutover instance.</p>"
+        },
+        "postLaunchActionsLaunchStatusList":{
+          "shape":"PostLaunchActionsLaunchStatusList",
+          "documentation":"<p>List of Post Launch Action status.</p>"
         }
       },
       "documentation":"<p>Status of the Post Launch Actions running on the Test or Cutover instance.</p>"
@@ -4101,209 +4170,223 @@
     "PutSourceServerActionRequest":{
       "type":"structure",
       "required":[
-        "actionID",
+        "sourceServerID",
         "actionName",
         "documentIdentifier",
         "order",
-        "sourceServerID"
+        "actionID"
       ],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Source server post migration custom account ID.</p>"
-        },
-        "actionID":{
-          "shape":"ActionID",
-          "documentation":"<p>Source server post migration custom action ID.</p>"
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Source server ID.</p>"
         },
         "actionName":{
           "shape":"ActionName",
           "documentation":"<p>Source server post migration custom action name.</p>"
         },
-        "active":{
-          "shape":"Boolean",
-          "documentation":"<p>Source server post migration custom action active status.</p>"
-        },
-        "category":{
-          "shape":"ActionCategory",
-          "documentation":"<p>Source server post migration custom action category.</p>"
-        },
-        "description":{
-          "shape":"ActionDescription",
-          "documentation":"<p>Source server post migration custom action description.</p>"
-        },
         "documentIdentifier":{
           "shape":"BoundedString",
           "documentation":"<p>Source server post migration custom action document identifier.</p>"
-        },
-        "documentVersion":{
-          "shape":"DocumentVersion",
-          "documentation":"<p>Source server post migration custom action document version.</p>"
-        },
-        "externalParameters":{
-          "shape":"SsmDocumentExternalParameters",
-          "documentation":"<p>Source server post migration custom action external parameters.</p>"
-        },
-        "mustSucceedForCutover":{
-          "shape":"Boolean",
-          "documentation":"<p>Source server post migration custom action must succeed for cutover.</p>"
         },
         "order":{
           "shape":"OrderType",
           "documentation":"<p>Source server post migration custom action order.</p>"
         },
-        "parameters":{
-          "shape":"SsmDocumentParameters",
-          "documentation":"<p>Source server post migration custom action parameters.</p>"
+        "actionID":{
+          "shape":"ActionID",
+          "documentation":"<p>Source server post migration custom action ID.</p>"
         },
-        "sourceServerID":{
-          "shape":"SourceServerID",
-          "documentation":"<p>Source server ID.</p>"
+        "documentVersion":{
+          "shape":"DocumentVersion",
+          "documentation":"<p>Source server post migration custom action document version.</p>"
+        },
+        "active":{
+          "shape":"Boolean",
+          "documentation":"<p>Source server post migration custom action active status.</p>"
         },
         "timeoutSeconds":{
           "shape":"StrictlyPositiveInteger",
           "documentation":"<p>Source server post migration custom action timeout in seconds.</p>"
+        },
+        "mustSucceedForCutover":{
+          "shape":"Boolean",
+          "documentation":"<p>Source server post migration custom action must succeed for cutover.</p>"
+        },
+        "parameters":{
+          "shape":"SsmDocumentParameters",
+          "documentation":"<p>Source server post migration custom action parameters.</p>"
+        },
+        "externalParameters":{
+          "shape":"SsmDocumentExternalParameters",
+          "documentation":"<p>Source server post migration custom action external parameters.</p>"
+        },
+        "description":{
+          "shape":"ActionDescription",
+          "documentation":"<p>Source server post migration custom action description.</p>"
+        },
+        "category":{
+          "shape":"ActionCategory",
+          "documentation":"<p>Source server post migration custom action category.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Source server post migration custom account ID.</p>"
         }
       }
     },
     "PutTemplateActionRequest":{
       "type":"structure",
       "required":[
-        "actionID",
+        "launchConfigurationTemplateID",
         "actionName",
         "documentIdentifier",
-        "launchConfigurationTemplateID",
-        "order"
+        "order",
+        "actionID"
       ],
       "members":{
-        "actionID":{
-          "shape":"ActionID",
-          "documentation":"<p>Template post migration custom action ID.</p>"
+        "launchConfigurationTemplateID":{
+          "shape":"LaunchConfigurationTemplateID",
+          "documentation":"<p>Launch configuration template ID.</p>"
         },
         "actionName":{
           "shape":"BoundedString",
           "documentation":"<p>Template post migration custom action name.</p>"
         },
-        "active":{
-          "shape":"Boolean",
-          "documentation":"<p>Template post migration custom action active status.</p>"
-        },
-        "category":{
-          "shape":"ActionCategory",
-          "documentation":"<p>Template post migration custom action category.</p>"
-        },
-        "description":{
-          "shape":"ActionDescription",
-          "documentation":"<p>Template post migration custom action description.</p>"
-        },
         "documentIdentifier":{
           "shape":"BoundedString",
           "documentation":"<p>Template post migration custom action document identifier.</p>"
-        },
-        "documentVersion":{
-          "shape":"DocumentVersion",
-          "documentation":"<p>Template post migration custom action document version.</p>"
-        },
-        "externalParameters":{
-          "shape":"SsmDocumentExternalParameters",
-          "documentation":"<p>Template post migration custom action external parameters.</p>"
-        },
-        "launchConfigurationTemplateID":{
-          "shape":"LaunchConfigurationTemplateID",
-          "documentation":"<p>Launch configuration template ID.</p>"
-        },
-        "mustSucceedForCutover":{
-          "shape":"Boolean",
-          "documentation":"<p>Template post migration custom action must succeed for cutover.</p>"
-        },
-        "operatingSystem":{
-          "shape":"OperatingSystemString",
-          "documentation":"<p>Operating system eligible for this template post migration custom action.</p>"
         },
         "order":{
           "shape":"OrderType",
           "documentation":"<p>Template post migration custom action order.</p>"
         },
-        "parameters":{
-          "shape":"SsmDocumentParameters",
-          "documentation":"<p>Template post migration custom action parameters.</p>"
+        "actionID":{
+          "shape":"ActionID",
+          "documentation":"<p>Template post migration custom action ID.</p>"
+        },
+        "documentVersion":{
+          "shape":"DocumentVersion",
+          "documentation":"<p>Template post migration custom action document version.</p>"
+        },
+        "active":{
+          "shape":"Boolean",
+          "documentation":"<p>Template post migration custom action active status.</p>"
         },
         "timeoutSeconds":{
           "shape":"StrictlyPositiveInteger",
           "documentation":"<p>Template post migration custom action timeout in seconds.</p>"
+        },
+        "mustSucceedForCutover":{
+          "shape":"Boolean",
+          "documentation":"<p>Template post migration custom action must succeed for cutover.</p>"
+        },
+        "parameters":{
+          "shape":"SsmDocumentParameters",
+          "documentation":"<p>Template post migration custom action parameters.</p>"
+        },
+        "operatingSystem":{
+          "shape":"OperatingSystemString",
+          "documentation":"<p>Operating system eligible for this template post migration custom action.</p>"
+        },
+        "externalParameters":{
+          "shape":"SsmDocumentExternalParameters",
+          "documentation":"<p>Template post migration custom action external parameters.</p>"
+        },
+        "description":{
+          "shape":"ActionDescription",
+          "documentation":"<p>Template post migration custom action description.</p>"
+        },
+        "category":{
+          "shape":"ActionCategory",
+          "documentation":"<p>Template post migration custom action category.</p>"
         }
       }
     },
     "RemoveSourceServerActionRequest":{
       "type":"structure",
       "required":[
-        "actionID",
-        "sourceServerID"
+        "sourceServerID",
+        "actionID"
       ],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Source server post migration account ID.</p>"
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Source server ID of the post migration custom action to remove.</p>"
         },
         "actionID":{
           "shape":"ActionID",
           "documentation":"<p>Source server post migration custom action ID to remove.</p>"
         },
-        "sourceServerID":{
-          "shape":"SourceServerID",
-          "documentation":"<p>Source server ID of the post migration custom action to remove.</p>"
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Source server post migration account ID.</p>"
         }
       }
     },
     "RemoveSourceServerActionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "RemoveTemplateActionRequest":{
       "type":"structure",
       "required":[
-        "actionID",
-        "launchConfigurationTemplateID"
+        "launchConfigurationTemplateID",
+        "actionID"
       ],
       "members":{
-        "actionID":{
-          "shape":"ActionID",
-          "documentation":"<p>Template post migration custom action ID to remove.</p>"
-        },
         "launchConfigurationTemplateID":{
           "shape":"LaunchConfigurationTemplateID",
           "documentation":"<p>Launch configuration template ID of the post migration custom action to remove.</p>"
+        },
+        "actionID":{
+          "shape":"ActionID",
+          "documentation":"<p>Template post migration custom action ID to remove.</p>"
         }
       }
     },
     "RemoveTemplateActionResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "ReplicationConfiguration":{
       "type":"structure",
       "members":{
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Replication Configuration Source Server ID.</p>"
+        },
+        "name":{
+          "shape":"SmallBoundedString",
+          "documentation":"<p>Replication Configuration name.</p>"
+        },
+        "stagingAreaSubnetId":{
+          "shape":"SubnetID",
+          "documentation":"<p>Replication Configuration Staging Area subnet ID.</p>"
+        },
         "associateDefaultSecurityGroup":{
           "shape":"Boolean",
           "documentation":"<p>Replication Configuration associate default Application Migration Service Security Group.</p>"
         },
-        "bandwidthThrottling":{
-          "shape":"BandwidthThrottling",
-          "documentation":"<p>Replication Configuration set bandwidth throttling.</p>"
+        "replicationServersSecurityGroupsIDs":{
+          "shape":"ReplicationServersSecurityGroupsIDs",
+          "documentation":"<p>Replication Configuration Replication Server Security Group IDs.</p>"
         },
-        "createPublicIP":{
+        "replicationServerInstanceType":{
+          "shape":"EC2InstanceType",
+          "documentation":"<p>Replication Configuration Replication Server instance type.</p>"
+        },
+        "useDedicatedReplicationServer":{
           "shape":"Boolean",
-          "documentation":"<p>Replication Configuration create Public IP.</p>"
-        },
-        "dataPlaneRouting":{
-          "shape":"ReplicationConfigurationDataPlaneRouting",
-          "documentation":"<p>Replication Configuration data plane routing.</p>"
+          "documentation":"<p>Replication Configuration use Dedicated Replication Server.</p>"
         },
         "defaultLargeStagingDiskType":{
           "shape":"ReplicationConfigurationDefaultLargeStagingDiskType",
           "documentation":"<p>Replication Configuration use default large Staging Disks.</p>"
+        },
+        "replicatedDisks":{
+          "shape":"ReplicationConfigurationReplicatedDisks",
+          "documentation":"<p>Replication Configuration replicated disks.</p>"
         },
         "ebsEncryption":{
           "shape":"ReplicationConfigurationEbsEncryption",
@@ -4313,41 +4396,29 @@
           "shape":"ARN",
           "documentation":"<p>Replication Configuration EBS encryption key ARN.</p>"
         },
-        "name":{
-          "shape":"SmallBoundedString",
-          "documentation":"<p>Replication Configuration name.</p>"
+        "bandwidthThrottling":{
+          "shape":"BandwidthThrottling",
+          "documentation":"<p>Replication Configuration set bandwidth throttling.</p>"
         },
-        "replicatedDisks":{
-          "shape":"ReplicationConfigurationReplicatedDisks",
-          "documentation":"<p>Replication Configuration replicated disks.</p>"
+        "dataPlaneRouting":{
+          "shape":"ReplicationConfigurationDataPlaneRouting",
+          "documentation":"<p>Replication Configuration data plane routing.</p>"
         },
-        "replicationServerInstanceType":{
-          "shape":"EC2InstanceType",
-          "documentation":"<p>Replication Configuration Replication Server instance type.</p>"
-        },
-        "replicationServersSecurityGroupsIDs":{
-          "shape":"ReplicationServersSecurityGroupsIDs",
-          "documentation":"<p>Replication Configuration Replication Server Security Group IDs.</p>"
-        },
-        "sourceServerID":{
-          "shape":"SourceServerID",
-          "documentation":"<p>Replication Configuration Source Server ID.</p>"
-        },
-        "stagingAreaSubnetId":{
-          "shape":"SubnetID",
-          "documentation":"<p>Replication Configuration Staging Area subnet ID.</p>"
+        "createPublicIP":{
+          "shape":"Boolean",
+          "documentation":"<p>Replication Configuration create Public IP.</p>"
         },
         "stagingAreaTags":{
           "shape":"TagsMap",
           "documentation":"<p>Replication Configuration Staging Area tags.</p>"
         },
-        "useDedicatedReplicationServer":{
-          "shape":"Boolean",
-          "documentation":"<p>Replication Configuration use Dedicated Replication Server.</p>"
-        },
         "useFipsEndpoint":{
           "shape":"Boolean",
           "documentation":"<p>Replication Configuration use Fips Endpoint.</p>"
+        },
+        "internetProtocol":{
+          "shape":"InternetProtocol",
+          "documentation":"<p>Replication Configuration internet protocol.</p>"
         }
       }
     },
@@ -4380,10 +4451,6 @@
           "shape":"BoundedString",
           "documentation":"<p>Replication Configuration replicated disk device name.</p>"
         },
-        "iops":{
-          "shape":"PositiveInteger",
-          "documentation":"<p>Replication Configuration replicated disk IOPs.</p>"
-        },
         "isBootDisk":{
           "shape":"Boolean",
           "documentation":"<p>Replication Configuration replicated disk boot disk.</p>"
@@ -4391,6 +4458,10 @@
         "stagingDiskType":{
           "shape":"ReplicationConfigurationReplicatedDiskStagingDiskType",
           "documentation":"<p>Replication Configuration replicated disk staging disk type.</p>"
+        },
+        "iops":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Replication Configuration replicated disk IOPs.</p>"
         },
         "throughput":{
           "shape":"PositiveInteger",
@@ -4422,25 +4493,33 @@
       "type":"structure",
       "required":["replicationConfigurationTemplateID"],
       "members":{
+        "replicationConfigurationTemplateID":{
+          "shape":"ReplicationConfigurationTemplateID",
+          "documentation":"<p>Replication Configuration template ID.</p>"
+        },
         "arn":{
           "shape":"ARN",
           "documentation":"<p>Replication Configuration template ARN.</p>"
+        },
+        "stagingAreaSubnetId":{
+          "shape":"SubnetID",
+          "documentation":"<p>Replication Configuration template Staging Area subnet ID.</p>"
         },
         "associateDefaultSecurityGroup":{
           "shape":"Boolean",
           "documentation":"<p>Replication Configuration template associate default Application Migration Service Security group.</p>"
         },
-        "bandwidthThrottling":{
-          "shape":"BandwidthThrottling",
-          "documentation":"<p>Replication Configuration template bandwidth throttling.</p>"
+        "replicationServersSecurityGroupsIDs":{
+          "shape":"ReplicationServersSecurityGroupsIDs",
+          "documentation":"<p>Replication Configuration template server Security Groups IDs.</p>"
         },
-        "createPublicIP":{
+        "replicationServerInstanceType":{
+          "shape":"EC2InstanceType",
+          "documentation":"<p>Replication Configuration template server instance type.</p>"
+        },
+        "useDedicatedReplicationServer":{
           "shape":"Boolean",
-          "documentation":"<p>Replication Configuration template create Public IP.</p>"
-        },
-        "dataPlaneRouting":{
-          "shape":"ReplicationConfigurationDataPlaneRouting",
-          "documentation":"<p>Replication Configuration template data plane routing.</p>"
+          "documentation":"<p>Replication Configuration template use Dedicated Replication Server.</p>"
         },
         "defaultLargeStagingDiskType":{
           "shape":"ReplicationConfigurationDefaultLargeStagingDiskType",
@@ -4454,37 +4533,33 @@
           "shape":"ARN",
           "documentation":"<p>Replication Configuration template EBS encryption key ARN.</p>"
         },
-        "replicationConfigurationTemplateID":{
-          "shape":"ReplicationConfigurationTemplateID",
-          "documentation":"<p>Replication Configuration template ID.</p>"
+        "bandwidthThrottling":{
+          "shape":"BandwidthThrottling",
+          "documentation":"<p>Replication Configuration template bandwidth throttling.</p>"
         },
-        "replicationServerInstanceType":{
-          "shape":"EC2InstanceType",
-          "documentation":"<p>Replication Configuration template server instance type.</p>"
+        "dataPlaneRouting":{
+          "shape":"ReplicationConfigurationDataPlaneRouting",
+          "documentation":"<p>Replication Configuration template data plane routing.</p>"
         },
-        "replicationServersSecurityGroupsIDs":{
-          "shape":"ReplicationServersSecurityGroupsIDs",
-          "documentation":"<p>Replication Configuration template server Security Groups IDs.</p>"
-        },
-        "stagingAreaSubnetId":{
-          "shape":"SubnetID",
-          "documentation":"<p>Replication Configuration template Staging Area subnet ID.</p>"
+        "createPublicIP":{
+          "shape":"Boolean",
+          "documentation":"<p>Replication Configuration template create Public IP.</p>"
         },
         "stagingAreaTags":{
           "shape":"TagsMap",
           "documentation":"<p>Replication Configuration template Staging Area Tags.</p>"
         },
+        "useFipsEndpoint":{
+          "shape":"Boolean",
+          "documentation":"<p>Replication Configuration template use Fips Endpoint.</p>"
+        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Replication Configuration template Tags.</p>"
         },
-        "useDedicatedReplicationServer":{
-          "shape":"Boolean",
-          "documentation":"<p>Replication Configuration template use Dedicated Replication Server.</p>"
-        },
-        "useFipsEndpoint":{
-          "shape":"Boolean",
-          "documentation":"<p>Replication Configuration template use Fips Endpoint.</p>"
+        "internetProtocol":{
+          "shape":"InternetProtocol",
+          "documentation":"<p>Replication Configuration template internet protocol.</p>"
         }
       }
     },
@@ -4492,7 +4567,7 @@
       "type":"string",
       "max":21,
       "min":21,
-      "pattern":"^rct-[0-9a-zA-Z]{17}$"
+      "pattern":"rct-[0-9a-zA-Z]{17}"
     },
     "ReplicationConfigurationTemplateIDs":{
       "type":"list",
@@ -4523,11 +4598,17 @@
       "max":2,
       "min":0
     },
+    "ReplicatorID":{
+      "type":"string",
+      "max":19,
+      "min":19,
+      "pattern":"i-[0-9a-zA-Z]{17}"
+    },
     "ResourceNotFoundException":{
       "type":"structure",
       "members":{
-        "code":{"shape":"LargeBoundedString"},
         "message":{"shape":"LargeBoundedString"},
+        "code":{"shape":"LargeBoundedString"},
         "resourceId":{
           "shape":"LargeBoundedString",
           "documentation":"<p>Resource ID not found error.</p>"
@@ -4548,13 +4629,13 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Resume Replication Request account ID.</p>"
-        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Resume Replication Request source server ID.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Resume Replication Request account ID.</p>"
         }
       }
     },
@@ -4562,19 +4643,19 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Retry data replication for Account ID.</p>"
-        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Retry data replication for Source Server ID.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Retry data replication for Account ID.</p>"
         }
       }
     },
     "S3BucketName":{
       "type":"string",
-      "pattern":"^[a-zA-Z0-9.\\-_]{1,255}$"
+      "pattern":"[a-zA-Z0-9.\\-_]{1,255}"
     },
     "S3BucketSource":{
       "type":"structure",
@@ -4587,20 +4668,20 @@
           "shape":"S3BucketName",
           "documentation":"<p>S3 bucket source s3 bucket.</p>"
         },
-        "s3BucketOwner":{
-          "shape":"AccountID",
-          "documentation":"<p>S3 bucket source s3 bucket owner.</p>"
-        },
         "s3Key":{
           "shape":"S3Key",
           "documentation":"<p>S3 bucket source s3 key.</p>"
+        },
+        "s3BucketOwner":{
+          "shape":"AccountID",
+          "documentation":"<p>S3 bucket source s3 bucket owner.</p>"
         }
       },
       "documentation":"<p>S3 bucket source.</p>"
     },
     "S3Key":{
       "type":"string",
-      "pattern":"^[^\\x00]{1,1020}\\.csv$"
+      "pattern":"[^\\x00]{1,1020}\\.csv"
     },
     "S3LogBucketName":{
       "type":"string",
@@ -4611,27 +4692,19 @@
       "type":"string",
       "max":100,
       "min":20,
-      "pattern":"^arn:[\\w-]+:secretsmanager:([a-z]{2}-(gov-)?[a-z]+-\\d{1})?:(\\d{12})?:secret:(.+)$"
+      "pattern":"arn:[\\w-]+:secretsmanager:([a-z]{2}-(gov-)?[a-z]+-\\d{1})?:(\\d{12})?:secret:(.+)"
     },
     "SecurityGroupID":{
       "type":"string",
       "max":255,
       "min":0,
-      "pattern":"^sg-[0-9a-fA-F]{8,}$"
+      "pattern":"sg-[0-9a-fA-F]{8,}"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
-        "code":{"shape":"LargeBoundedString"},
         "message":{"shape":"LargeBoundedString"},
-        "quotaCode":{
-          "shape":"LargeBoundedString",
-          "documentation":"<p>Exceeded the service quota code.</p>"
-        },
-        "quotaValue":{
-          "shape":"StrictlyPositiveInteger",
-          "documentation":"<p>Exceeded the service quota value.</p>"
-        },
+        "code":{"shape":"LargeBoundedString"},
         "resourceId":{
           "shape":"LargeBoundedString",
           "documentation":"<p>Exceeded the service quota resource ID.</p>"
@@ -4643,6 +4716,14 @@
         "serviceCode":{
           "shape":"LargeBoundedString",
           "documentation":"<p>Exceeded the service quota service code.</p>"
+        },
+        "quotaCode":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Exceeded the service quota code.</p>"
+        },
+        "quotaValue":{
+          "shape":"StrictlyPositiveInteger",
+          "documentation":"<p>Exceeded the service quota value.</p>"
         }
       },
       "documentation":"<p>The request could not be completed because its exceeded the service quota.</p>",
@@ -4660,37 +4741,37 @@
     "SourceProperties":{
       "type":"structure",
       "members":{
-        "cpus":{
-          "shape":"Cpus",
-          "documentation":"<p>Source Server CPUs.</p>"
+        "lastUpdatedDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Source server last update date and time.</p>"
         },
-        "disks":{
-          "shape":"Disks",
-          "documentation":"<p>Source Server disks.</p>"
+        "recommendedInstanceType":{
+          "shape":"EC2InstanceType",
+          "documentation":"<p>Source server recommended instance type.</p>"
         },
         "identificationHints":{
           "shape":"IdentificationHints",
           "documentation":"<p>Source server identification hints.</p>"
         },
-        "lastUpdatedDateTime":{
-          "shape":"ISO8601DatetimeString",
-          "documentation":"<p>Source server last update date and time.</p>"
-        },
         "networkInterfaces":{
           "shape":"NetworkInterfaces",
           "documentation":"<p>Source server network interfaces.</p>"
         },
-        "os":{
-          "shape":"OS",
-          "documentation":"<p>Source server OS.</p>"
+        "disks":{
+          "shape":"Disks",
+          "documentation":"<p>Source Server disks.</p>"
+        },
+        "cpus":{
+          "shape":"Cpus",
+          "documentation":"<p>Source Server CPUs.</p>"
         },
         "ramBytes":{
           "shape":"PositiveInteger",
           "documentation":"<p>Source server RAM in bytes.</p>"
         },
-        "recommendedInstanceType":{
-          "shape":"EC2InstanceType",
-          "documentation":"<p>Source server recommended instance type.</p>"
+        "os":{
+          "shape":"OS",
+          "documentation":"<p>Source server OS.</p>"
         }
       },
       "documentation":"<p>Source server properties.</p>"
@@ -4698,61 +4779,61 @@
     "SourceServer":{
       "type":"structure",
       "members":{
-        "applicationID":{
-          "shape":"ApplicationID",
-          "documentation":"<p>Source server application ID.</p>"
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Source server ID.</p>"
         },
         "arn":{
           "shape":"ARN",
           "documentation":"<p>Source server ARN.</p>"
         },
-        "connectorAction":{
-          "shape":"SourceServerConnectorAction",
-          "documentation":"<p>Source Server connector action.</p>"
-        },
-        "dataReplicationInfo":{
-          "shape":"DataReplicationInfo",
-          "documentation":"<p>Source server data replication info.</p>"
-        },
-        "fqdnForActionFramework":{
-          "shape":"BoundedString",
-          "documentation":"<p>Source server fqdn for action framework.</p>"
-        },
         "isArchived":{
           "shape":"Boolean",
           "documentation":"<p>Source server archived status.</p>"
-        },
-        "launchedInstance":{
-          "shape":"LaunchedInstance",
-          "documentation":"<p>Source server launched instance.</p>"
-        },
-        "lifeCycle":{
-          "shape":"LifeCycle",
-          "documentation":"<p>Source server lifecycle state.</p>"
-        },
-        "replicationType":{
-          "shape":"ReplicationType",
-          "documentation":"<p>Source server replication type.</p>"
-        },
-        "sourceProperties":{
-          "shape":"SourceProperties",
-          "documentation":"<p>Source server properties.</p>"
-        },
-        "sourceServerID":{
-          "shape":"SourceServerID",
-          "documentation":"<p>Source server ID.</p>"
         },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Source server Tags.</p>"
         },
-        "userProvidedID":{
-          "shape":"BoundedString",
-          "documentation":"<p>Source server user provided ID.</p>"
+        "launchedInstance":{
+          "shape":"LaunchedInstance",
+          "documentation":"<p>Source server launched instance.</p>"
+        },
+        "dataReplicationInfo":{
+          "shape":"DataReplicationInfo",
+          "documentation":"<p>Source server data replication info.</p>"
+        },
+        "lifeCycle":{
+          "shape":"LifeCycle",
+          "documentation":"<p>Source server lifecycle state.</p>"
+        },
+        "sourceProperties":{
+          "shape":"SourceProperties",
+          "documentation":"<p>Source server properties.</p>"
+        },
+        "replicationType":{
+          "shape":"ReplicationType",
+          "documentation":"<p>Source server replication type.</p>"
         },
         "vcenterClientID":{
           "shape":"VcenterClientID",
           "documentation":"<p>Source server vCenter client id.</p>"
+        },
+        "applicationID":{
+          "shape":"ApplicationID",
+          "documentation":"<p>Source server application ID.</p>"
+        },
+        "userProvidedID":{
+          "shape":"UserProvidedId",
+          "documentation":"<p>Source server user provided ID.</p>"
+        },
+        "fqdnForActionFramework":{
+          "shape":"BoundedString",
+          "documentation":"<p>Source server fqdn for action framework.</p>"
+        },
+        "connectorAction":{
+          "shape":"SourceServerConnectorAction",
+          "documentation":"<p>Source Server connector action.</p>"
         }
       }
     },
@@ -4767,45 +4848,45 @@
           "shape":"ActionName",
           "documentation":"<p>Source server post migration custom action name.</p>"
         },
-        "active":{
-          "shape":"Boolean",
-          "documentation":"<p>Source server post migration custom action active status.</p>"
-        },
-        "category":{
-          "shape":"ActionCategory",
-          "documentation":"<p>Source server post migration custom action category.</p>"
-        },
-        "description":{
-          "shape":"ActionDescription",
-          "documentation":"<p>Source server post migration custom action description.</p>"
-        },
         "documentIdentifier":{
           "shape":"BoundedString",
           "documentation":"<p>Source server post migration custom action document identifier.</p>"
-        },
-        "documentVersion":{
-          "shape":"DocumentVersion",
-          "documentation":"<p>Source server post migration custom action document version.</p>"
-        },
-        "externalParameters":{
-          "shape":"SsmDocumentExternalParameters",
-          "documentation":"<p>Source server post migration custom action external parameters.</p>"
-        },
-        "mustSucceedForCutover":{
-          "shape":"Boolean",
-          "documentation":"<p>Source server post migration custom action must succeed for cutover.</p>"
         },
         "order":{
           "shape":"OrderType",
           "documentation":"<p>Source server post migration custom action order.</p>"
         },
-        "parameters":{
-          "shape":"SsmDocumentParameters",
-          "documentation":"<p>Source server post migration custom action parameters.</p>"
+        "documentVersion":{
+          "shape":"DocumentVersion",
+          "documentation":"<p>Source server post migration custom action document version.</p>"
+        },
+        "active":{
+          "shape":"Boolean",
+          "documentation":"<p>Source server post migration custom action active status.</p>"
         },
         "timeoutSeconds":{
           "shape":"StrictlyPositiveInteger",
           "documentation":"<p>Source server post migration custom action timeout in seconds.</p>"
+        },
+        "mustSucceedForCutover":{
+          "shape":"Boolean",
+          "documentation":"<p>Source server post migration custom action must succeed for cutover.</p>"
+        },
+        "parameters":{
+          "shape":"SsmDocumentParameters",
+          "documentation":"<p>Source server post migration custom action parameters.</p>"
+        },
+        "externalParameters":{
+          "shape":"SsmDocumentExternalParameters",
+          "documentation":"<p>Source server post migration custom action external parameters.</p>"
+        },
+        "description":{
+          "shape":"ActionDescription",
+          "documentation":"<p>Source server post migration custom action description.</p>"
+        },
+        "category":{
+          "shape":"ActionCategory",
+          "documentation":"<p>Source server post migration custom action category.</p>"
         }
       }
     },
@@ -4828,13 +4909,13 @@
     "SourceServerConnectorAction":{
       "type":"structure",
       "members":{
-        "connectorArn":{
-          "shape":"ConnectorArn",
-          "documentation":"<p>Source Server connector action connector arn.</p>"
-        },
         "credentialsSecretArn":{
           "shape":"SecretArn",
           "documentation":"<p>Source Server connector action credentials secret arn.</p>"
+        },
+        "connectorArn":{
+          "shape":"ConnectorArn",
+          "documentation":"<p>Source Server connector action connector arn.</p>"
         }
       },
       "documentation":"<p>Source Server connector action.</p>"
@@ -4843,7 +4924,7 @@
       "type":"string",
       "max":19,
       "min":19,
-      "pattern":"^s-[0-9a-zA-Z]{17}$"
+      "pattern":"s-[0-9a-zA-Z]{17}"
     },
     "SourceServersList":{
       "type":"list",
@@ -4860,9 +4941,13 @@
           "shape":"BoundedString",
           "documentation":"<p>User-friendly name for the AWS Systems Manager Document.</p>"
         },
-        "externalParameters":{
-          "shape":"SsmDocumentExternalParameters",
-          "documentation":"<p>AWS Systems Manager Document external parameters.</p>"
+        "ssmDocumentName":{
+          "shape":"SsmDocumentName",
+          "documentation":"<p>AWS Systems Manager Document name or full ARN.</p>"
+        },
+        "timeoutSeconds":{
+          "shape":"StrictlyPositiveInteger",
+          "documentation":"<p>AWS Systems Manager Document timeout seconds.</p>"
         },
         "mustSucceedForCutover":{
           "shape":"Boolean",
@@ -4872,13 +4957,9 @@
           "shape":"SsmDocumentParameters",
           "documentation":"<p>AWS Systems Manager Document parameters.</p>"
         },
-        "ssmDocumentName":{
-          "shape":"SsmDocumentName",
-          "documentation":"<p>AWS Systems Manager Document name or full ARN.</p>"
-        },
-        "timeoutSeconds":{
-          "shape":"StrictlyPositiveInteger",
-          "documentation":"<p>AWS Systems Manager Document timeout seconds.</p>"
+        "externalParameters":{
+          "shape":"SsmDocumentExternalParameters",
+          "documentation":"<p>AWS Systems Manager Document external parameters.</p>"
         }
       },
       "documentation":"<p>AWS Systems Manager Document.</p>"
@@ -4894,13 +4975,13 @@
       "type":"string",
       "max":172,
       "min":3,
-      "pattern":"^([A-Za-z0-9/:_\\.-])+$"
+      "pattern":"([A-Za-z0-9/:_\\.-])+"
     },
     "SsmDocumentParameterName":{
       "type":"string",
       "max":1011,
       "min":1,
-      "pattern":"^([A-Za-z0-9])+$"
+      "pattern":"([A-Za-z0-9])+"
     },
     "SsmDocumentParameters":{
       "type":"map",
@@ -4937,22 +5018,22 @@
       "type":"string",
       "max":20,
       "min":19,
-      "pattern":"(^i-[0-9a-zA-Z]{17}$)|(^mi-[0-9a-zA-Z]{17}$)"
+      "pattern":".*(^i-[0-9a-zA-Z]{17}$)|(^mi-[0-9a-zA-Z]{17}$).*"
     },
     "SsmParameterStoreParameter":{
       "type":"structure",
       "required":[
-        "parameterName",
-        "parameterType"
+        "parameterType",
+        "parameterName"
       ],
       "members":{
-        "parameterName":{
-          "shape":"SsmParameterStoreParameterName",
-          "documentation":"<p>AWS Systems Manager Parameter Store parameter name.</p>"
-        },
         "parameterType":{
           "shape":"SsmParameterStoreParameterType",
           "documentation":"<p>AWS Systems Manager Parameter Store parameter type.</p>"
+        },
+        "parameterName":{
+          "shape":"SsmParameterStoreParameterName",
+          "documentation":"<p>AWS Systems Manager Parameter Store parameter name.</p>"
         }
       },
       "documentation":"<p>AWS Systems Manager Parameter Store parameter.</p>"
@@ -4961,11 +5042,14 @@
       "type":"string",
       "max":1011,
       "min":1,
-      "pattern":"^([A-Za-z0-9_\\.-])+$"
+      "pattern":"([A-Za-z0-9_\\.-])+"
     },
     "SsmParameterStoreParameterType":{
       "type":"string",
-      "enum":["STRING"]
+      "enum":[
+        "STRING",
+        "SECURE_STRING"
+      ]
     },
     "SsmParameterStoreParameters":{
       "type":"list",
@@ -4977,10 +5061,6 @@
       "type":"structure",
       "required":["sourceServerIDs"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Start Cutover by Account IDs</p>"
-        },
         "sourceServerIDs":{
           "shape":"StartCutoverRequestSourceServerIDs",
           "documentation":"<p>Start Cutover by Source Server IDs.</p>"
@@ -4988,6 +5068,10 @@
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Start Cutover by Tags.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Start Cutover by Account IDs</p>"
         }
       }
     },
@@ -5017,13 +5101,17 @@
           "shape":"S3BucketName",
           "documentation":"<p>Start export request s3 bucket.</p>"
         },
+        "s3Key":{
+          "shape":"S3Key",
+          "documentation":"<p>Start export request s3key.</p>"
+        },
         "s3BucketOwner":{
           "shape":"AccountID",
           "documentation":"<p>Start export request s3 bucket owner.</p>"
         },
-        "s3Key":{
-          "shape":"S3Key",
-          "documentation":"<p>Start export request s3key.</p>"
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Start import request tags.</p>"
         }
       },
       "documentation":"<p>Start export request.</p>"
@@ -5050,6 +5138,10 @@
         "s3BucketSource":{
           "shape":"S3BucketSource",
           "documentation":"<p>Start import request s3 bucket source.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Start import request tags.</p>"
         }
       },
       "documentation":"<p>Start import request.</p>"
@@ -5068,13 +5160,13 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Account ID on which to start replication.</p>"
-        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>ID of source server on which to start replication.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID on which to start replication.</p>"
         }
       }
     },
@@ -5082,10 +5174,6 @@
       "type":"structure",
       "required":["sourceServerIDs"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Start Test for Account ID.</p>"
-        },
         "sourceServerIDs":{
           "shape":"StartTestRequestSourceServerIDs",
           "documentation":"<p>Start Test for Source Server IDs.</p>"
@@ -5093,6 +5181,10 @@
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Start Test by Tags.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Start Test for Account ID.</p>"
         }
       }
     },
@@ -5115,13 +5207,13 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Stop Replication Request account ID.</p>"
-        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Stop Replication Request source server ID.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Stop Replication Request account ID.</p>"
         }
       }
     },
@@ -5134,7 +5226,7 @@
       "type":"string",
       "max":255,
       "min":0,
-      "pattern":"^subnet-[0-9a-fA-F]{8,}$"
+      "pattern":"subnet-[0-9a-fA-F]{8,}"
     },
     "TagKey":{
       "type":"string",
@@ -5196,49 +5288,49 @@
           "shape":"BoundedString",
           "documentation":"<p>Template post migration custom action name.</p>"
         },
-        "active":{
-          "shape":"Boolean",
-          "documentation":"<p>Template post migration custom action active status.</p>"
-        },
-        "category":{
-          "shape":"ActionCategory",
-          "documentation":"<p>Template post migration custom action category.</p>"
-        },
-        "description":{
-          "shape":"ActionDescription",
-          "documentation":"<p>Template post migration custom action description.</p>"
-        },
         "documentIdentifier":{
           "shape":"BoundedString",
           "documentation":"<p>Template post migration custom action document identifier.</p>"
-        },
-        "documentVersion":{
-          "shape":"DocumentVersion",
-          "documentation":"<p>Template post migration custom action document version.</p>"
-        },
-        "externalParameters":{
-          "shape":"SsmDocumentExternalParameters",
-          "documentation":"<p>Template post migration custom action external parameters.</p>"
-        },
-        "mustSucceedForCutover":{
-          "shape":"Boolean",
-          "documentation":"<p>Template post migration custom action must succeed for cutover.</p>"
-        },
-        "operatingSystem":{
-          "shape":"OperatingSystemString",
-          "documentation":"<p>Operating system eligible for this template post migration custom action.</p>"
         },
         "order":{
           "shape":"OrderType",
           "documentation":"<p>Template post migration custom action order.</p>"
         },
-        "parameters":{
-          "shape":"SsmDocumentParameters",
-          "documentation":"<p>Template post migration custom action parameters.</p>"
+        "documentVersion":{
+          "shape":"DocumentVersion",
+          "documentation":"<p>Template post migration custom action document version.</p>"
+        },
+        "active":{
+          "shape":"Boolean",
+          "documentation":"<p>Template post migration custom action active status.</p>"
         },
         "timeoutSeconds":{
           "shape":"StrictlyPositiveInteger",
           "documentation":"<p>Template post migration custom action timeout in seconds.</p>"
+        },
+        "mustSucceedForCutover":{
+          "shape":"Boolean",
+          "documentation":"<p>Template post migration custom action must succeed for cutover.</p>"
+        },
+        "parameters":{
+          "shape":"SsmDocumentParameters",
+          "documentation":"<p>Template post migration custom action parameters.</p>"
+        },
+        "operatingSystem":{
+          "shape":"OperatingSystemString",
+          "documentation":"<p>Operating system eligible for this template post migration custom action.</p>"
+        },
+        "externalParameters":{
+          "shape":"SsmDocumentExternalParameters",
+          "documentation":"<p>Template post migration custom action external parameters.</p>"
+        },
+        "description":{
+          "shape":"ActionDescription",
+          "documentation":"<p>Template post migration custom action description.</p>"
+        },
+        "category":{
+          "shape":"ActionCategory",
+          "documentation":"<p>Template post migration custom action category.</p>"
         }
       }
     },
@@ -5262,10 +5354,6 @@
       "type":"structure",
       "required":["sourceServerIDs"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Terminate Target instance by Account ID</p>"
-        },
         "sourceServerIDs":{
           "shape":"TerminateTargetInstancesRequestSourceServerIDs",
           "documentation":"<p>Terminate Target instance by Source Server IDs.</p>"
@@ -5273,6 +5361,10 @@
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Terminate Target instance by Tags.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Terminate Target instance by Account ID</p>"
         }
       }
     },
@@ -5296,6 +5388,10 @@
       "required":["message"],
       "members":{
         "message":{"shape":"LargeBoundedString"},
+        "serviceCode":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Reached throttling quota exception service code.</p>"
+        },
         "quotaCode":{
           "shape":"LargeBoundedString",
           "documentation":"<p>Reached throttling quota exception.</p>"
@@ -5305,10 +5401,6 @@
           "documentation":"<p>Reached throttling quota exception will retry after x seconds.</p>",
           "location":"header",
           "locationName":"Retry-After"
-        },
-        "serviceCode":{
-          "shape":"LargeBoundedString",
-          "documentation":"<p>Reached throttling quota exception service code.</p>"
         }
       },
       "documentation":"<p>Reached throttling quota exception.</p>",
@@ -5328,13 +5420,13 @@
       "type":"structure",
       "required":["applicationID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Account ID.</p>"
-        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Application ID.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
         }
       }
     },
@@ -5342,21 +5434,21 @@
       "type":"structure",
       "required":["waveID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Account ID.</p>"
-        },
         "waveID":{
           "shape":"WaveID",
           "documentation":"<p>Wave ID.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
         }
       }
     },
     "UninitializedAccountException":{
       "type":"structure",
       "members":{
-        "code":{"shape":"LargeBoundedString"},
-        "message":{"shape":"LargeBoundedString"}
+        "message":{"shape":"LargeBoundedString"},
+        "code":{"shape":"LargeBoundedString"}
       },
       "documentation":"<p>Uninitialized account exception.</p>",
       "error":{
@@ -5390,21 +5482,21 @@
       "type":"structure",
       "required":["applicationID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Account ID.</p>"
-        },
         "applicationID":{
           "shape":"ApplicationID",
           "documentation":"<p>Application ID.</p>"
+        },
+        "name":{
+          "shape":"ApplicationName",
+          "documentation":"<p>Application name.</p>"
         },
         "description":{
           "shape":"ApplicationDescription",
           "documentation":"<p>Application description.</p>"
         },
-        "name":{
-          "shape":"ApplicationName",
-          "documentation":"<p>Application name.</p>"
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
         }
       }
     },
@@ -5430,13 +5522,21 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Update Launch configuration Account ID.</p>"
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Update Launch configuration by Source Server ID request.</p>"
         },
-        "bootMode":{
-          "shape":"BootMode",
-          "documentation":"<p>Update Launch configuration boot mode request.</p>"
+        "name":{
+          "shape":"SmallBoundedString",
+          "documentation":"<p>Update Launch configuration name request.</p>"
+        },
+        "launchDisposition":{
+          "shape":"LaunchDisposition",
+          "documentation":"<p>Update Launch configuration launch disposition request.</p>"
+        },
+        "targetInstanceTypeRightSizingMethod":{
+          "shape":"TargetInstanceTypeRightSizingMethod",
+          "documentation":"<p>Update Launch configuration Target instance right sizing request.</p>"
         },
         "copyPrivateIp":{
           "shape":"Boolean",
@@ -5446,34 +5546,26 @@
           "shape":"Boolean",
           "documentation":"<p>Update Launch configuration copy Tags request.</p>"
         },
-        "enableMapAutoTagging":{
-          "shape":"Boolean",
-          "documentation":"<p>Enable map auto tagging.</p>"
-        },
-        "launchDisposition":{
-          "shape":"LaunchDisposition",
-          "documentation":"<p>Update Launch configuration launch disposition request.</p>"
-        },
         "licensing":{
           "shape":"Licensing",
           "documentation":"<p>Update Launch configuration licensing request.</p>"
+        },
+        "bootMode":{
+          "shape":"BootMode",
+          "documentation":"<p>Update Launch configuration boot mode request.</p>"
+        },
+        "postLaunchActions":{"shape":"PostLaunchActions"},
+        "enableMapAutoTagging":{
+          "shape":"Boolean",
+          "documentation":"<p>Enable map auto tagging.</p>"
         },
         "mapAutoTaggingMpeID":{
           "shape":"TagValue",
           "documentation":"<p>Launch configuration map auto tagging MPE ID.</p>"
         },
-        "name":{
-          "shape":"SmallBoundedString",
-          "documentation":"<p>Update Launch configuration name request.</p>"
-        },
-        "postLaunchActions":{"shape":"PostLaunchActions"},
-        "sourceServerID":{
-          "shape":"SourceServerID",
-          "documentation":"<p>Update Launch configuration by Source Server ID request.</p>"
-        },
-        "targetInstanceTypeRightSizingMethod":{
-          "shape":"TargetInstanceTypeRightSizingMethod",
-          "documentation":"<p>Update Launch configuration Target instance right sizing request.</p>"
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Update Launch configuration Account ID.</p>"
         }
       }
     },
@@ -5481,58 +5573,66 @@
       "type":"structure",
       "required":["launchConfigurationTemplateID"],
       "members":{
-        "associatePublicIpAddress":{
-          "shape":"Boolean",
-          "documentation":"<p>Associate public Ip address.</p>"
-        },
-        "bootMode":{
-          "shape":"BootMode",
-          "documentation":"<p>Launch configuration template boot mode.</p>"
-        },
-        "copyPrivateIp":{
-          "shape":"Boolean",
-          "documentation":"<p>Copy private Ip.</p>"
-        },
-        "copyTags":{
-          "shape":"Boolean",
-          "documentation":"<p>Copy tags.</p>"
-        },
-        "enableMapAutoTagging":{
-          "shape":"Boolean",
-          "documentation":"<p>Enable map auto tagging.</p>"
-        },
-        "largeVolumeConf":{
-          "shape":"LaunchTemplateDiskConf",
-          "documentation":"<p>Large volume config.</p>"
-        },
         "launchConfigurationTemplateID":{
           "shape":"LaunchConfigurationTemplateID",
           "documentation":"<p>Launch Configuration Template ID.</p>"
-        },
-        "launchDisposition":{
-          "shape":"LaunchDisposition",
-          "documentation":"<p>Launch disposition.</p>"
-        },
-        "licensing":{"shape":"Licensing"},
-        "mapAutoTaggingMpeID":{
-          "shape":"TagValue",
-          "documentation":"<p>Launch configuration template map auto tagging MPE ID.</p>"
         },
         "postLaunchActions":{
           "shape":"PostLaunchActions",
           "documentation":"<p>Post Launch Action to execute on the Test or Cutover instance.</p>"
         },
-        "smallVolumeConf":{
-          "shape":"LaunchTemplateDiskConf",
-          "documentation":"<p>Small volume config.</p>"
+        "enableMapAutoTagging":{
+          "shape":"Boolean",
+          "documentation":"<p>Enable map auto tagging.</p>"
+        },
+        "mapAutoTaggingMpeID":{
+          "shape":"TagValue",
+          "documentation":"<p>Launch configuration template map auto tagging MPE ID.</p>"
+        },
+        "launchDisposition":{
+          "shape":"LaunchDisposition",
+          "documentation":"<p>Launch disposition.</p>"
+        },
+        "targetInstanceTypeRightSizingMethod":{
+          "shape":"TargetInstanceTypeRightSizingMethod",
+          "documentation":"<p>Target instance type right-sizing method.</p>"
+        },
+        "copyPrivateIp":{
+          "shape":"Boolean",
+          "documentation":"<p>Copy private Ip.</p>"
+        },
+        "associatePublicIpAddress":{
+          "shape":"Boolean",
+          "documentation":"<p>Associate public Ip address.</p>"
+        },
+        "copyTags":{
+          "shape":"Boolean",
+          "documentation":"<p>Copy tags.</p>"
+        },
+        "licensing":{"shape":"Licensing"},
+        "bootMode":{
+          "shape":"BootMode",
+          "documentation":"<p>Launch configuration template boot mode.</p>"
         },
         "smallVolumeMaxSize":{
           "shape":"PositiveInteger",
           "documentation":"<p>Small volume maximum size.</p>"
         },
-        "targetInstanceTypeRightSizingMethod":{
-          "shape":"TargetInstanceTypeRightSizingMethod",
-          "documentation":"<p>Target instance type right-sizing method.</p>"
+        "smallVolumeConf":{
+          "shape":"LaunchTemplateDiskConf",
+          "documentation":"<p>Small volume config.</p>"
+        },
+        "largeVolumeConf":{
+          "shape":"LaunchTemplateDiskConf",
+          "documentation":"<p>Large volume config.</p>"
+        },
+        "enableParametersEncryption":{
+          "shape":"Boolean",
+          "documentation":"<p>Enable parameters encryption.</p>"
+        },
+        "parametersEncryptionKey":{
+          "shape":"ARN",
+          "documentation":"<p>Parameters encryption key.</p>"
         }
       }
     },
@@ -5540,29 +5640,41 @@
       "type":"structure",
       "required":["sourceServerID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Update replication configuration Account ID request.</p>"
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Update replication configuration Source Server ID request.</p>"
+        },
+        "name":{
+          "shape":"SmallBoundedString",
+          "documentation":"<p>Update replication configuration name request.</p>"
+        },
+        "stagingAreaSubnetId":{
+          "shape":"SubnetID",
+          "documentation":"<p>Update replication configuration Staging Area subnet request.</p>"
         },
         "associateDefaultSecurityGroup":{
           "shape":"Boolean",
           "documentation":"<p>Update replication configuration associate default Application Migration Service Security group request.</p>"
         },
-        "bandwidthThrottling":{
-          "shape":"BandwidthThrottling",
-          "documentation":"<p>Update replication configuration bandwidth throttling request.</p>"
+        "replicationServersSecurityGroupsIDs":{
+          "shape":"ReplicationServersSecurityGroupsIDs",
+          "documentation":"<p>Update replication configuration Replication Server Security Groups IDs request.</p>"
         },
-        "createPublicIP":{
+        "replicationServerInstanceType":{
+          "shape":"EC2InstanceType",
+          "documentation":"<p>Update replication configuration Replication Server instance type request.</p>"
+        },
+        "useDedicatedReplicationServer":{
           "shape":"Boolean",
-          "documentation":"<p>Update replication configuration create Public IP request.</p>"
-        },
-        "dataPlaneRouting":{
-          "shape":"ReplicationConfigurationDataPlaneRouting",
-          "documentation":"<p>Update replication configuration data plane routing request.</p>"
+          "documentation":"<p>Update replication configuration use dedicated Replication Server request.</p>"
         },
         "defaultLargeStagingDiskType":{
           "shape":"ReplicationConfigurationDefaultLargeStagingDiskType",
           "documentation":"<p>Update replication configuration use default large Staging Disk type request.</p>"
+        },
+        "replicatedDisks":{
+          "shape":"ReplicationConfigurationReplicatedDisks",
+          "documentation":"<p>Update replication configuration replicated disks request.</p>"
         },
         "ebsEncryption":{
           "shape":"ReplicationConfigurationEbsEncryption",
@@ -5572,41 +5684,33 @@
           "shape":"ARN",
           "documentation":"<p>Update replication configuration EBS encryption key ARN request.</p>"
         },
-        "name":{
-          "shape":"SmallBoundedString",
-          "documentation":"<p>Update replication configuration name request.</p>"
+        "bandwidthThrottling":{
+          "shape":"BandwidthThrottling",
+          "documentation":"<p>Update replication configuration bandwidth throttling request.</p>"
         },
-        "replicatedDisks":{
-          "shape":"ReplicationConfigurationReplicatedDisks",
-          "documentation":"<p>Update replication configuration replicated disks request.</p>"
+        "dataPlaneRouting":{
+          "shape":"ReplicationConfigurationDataPlaneRouting",
+          "documentation":"<p>Update replication configuration data plane routing request.</p>"
         },
-        "replicationServerInstanceType":{
-          "shape":"EC2InstanceType",
-          "documentation":"<p>Update replication configuration Replication Server instance type request.</p>"
-        },
-        "replicationServersSecurityGroupsIDs":{
-          "shape":"ReplicationServersSecurityGroupsIDs",
-          "documentation":"<p>Update replication configuration Replication Server Security Groups IDs request.</p>"
-        },
-        "sourceServerID":{
-          "shape":"SourceServerID",
-          "documentation":"<p>Update replication configuration Source Server ID request.</p>"
-        },
-        "stagingAreaSubnetId":{
-          "shape":"SubnetID",
-          "documentation":"<p>Update replication configuration Staging Area subnet request.</p>"
+        "createPublicIP":{
+          "shape":"Boolean",
+          "documentation":"<p>Update replication configuration create Public IP request.</p>"
         },
         "stagingAreaTags":{
           "shape":"TagsMap",
           "documentation":"<p>Update replication configuration Staging Area Tags request.</p>"
         },
-        "useDedicatedReplicationServer":{
-          "shape":"Boolean",
-          "documentation":"<p>Update replication configuration use dedicated Replication Server request.</p>"
-        },
         "useFipsEndpoint":{
           "shape":"Boolean",
           "documentation":"<p>Update replication configuration use Fips Endpoint.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Update replication configuration Account ID request.</p>"
+        },
+        "internetProtocol":{
+          "shape":"InternetProtocol",
+          "documentation":"<p>Update replication configuration internet protocol.</p>"
         }
       }
     },
@@ -5614,25 +5718,33 @@
       "type":"structure",
       "required":["replicationConfigurationTemplateID"],
       "members":{
+        "replicationConfigurationTemplateID":{
+          "shape":"ReplicationConfigurationTemplateID",
+          "documentation":"<p>Update replication configuration template template ID request.</p>"
+        },
         "arn":{
           "shape":"ARN",
           "documentation":"<p>Update replication configuration template ARN request.</p>"
+        },
+        "stagingAreaSubnetId":{
+          "shape":"SubnetID",
+          "documentation":"<p>Update replication configuration template Staging Area subnet ID request.</p>"
         },
         "associateDefaultSecurityGroup":{
           "shape":"Boolean",
           "documentation":"<p>Update replication configuration template associate default Application Migration Service Security group request.</p>"
         },
-        "bandwidthThrottling":{
-          "shape":"BandwidthThrottling",
-          "documentation":"<p>Update replication configuration template bandwidth throttling request.</p>"
+        "replicationServersSecurityGroupsIDs":{
+          "shape":"ReplicationServersSecurityGroupsIDs",
+          "documentation":"<p>Update replication configuration template Replication Server Security groups IDs request.</p>"
         },
-        "createPublicIP":{
+        "replicationServerInstanceType":{
+          "shape":"EC2InstanceType",
+          "documentation":"<p>Update replication configuration template Replication Server instance type request.</p>"
+        },
+        "useDedicatedReplicationServer":{
           "shape":"Boolean",
-          "documentation":"<p>Update replication configuration template create Public IP request.</p>"
-        },
-        "dataPlaneRouting":{
-          "shape":"ReplicationConfigurationDataPlaneRouting",
-          "documentation":"<p>Update replication configuration template data plane routing request.</p>"
+          "documentation":"<p>Update replication configuration template use dedicated Replication Server request.</p>"
         },
         "defaultLargeStagingDiskType":{
           "shape":"ReplicationConfigurationDefaultLargeStagingDiskType",
@@ -5646,54 +5758,50 @@
           "shape":"ARN",
           "documentation":"<p>Update replication configuration template EBS encryption key ARN request.</p>"
         },
-        "replicationConfigurationTemplateID":{
-          "shape":"ReplicationConfigurationTemplateID",
-          "documentation":"<p>Update replication configuration template template ID request.</p>"
+        "bandwidthThrottling":{
+          "shape":"BandwidthThrottling",
+          "documentation":"<p>Update replication configuration template bandwidth throttling request.</p>"
         },
-        "replicationServerInstanceType":{
-          "shape":"EC2InstanceType",
-          "documentation":"<p>Update replication configuration template Replication Server instance type request.</p>"
+        "dataPlaneRouting":{
+          "shape":"ReplicationConfigurationDataPlaneRouting",
+          "documentation":"<p>Update replication configuration template data plane routing request.</p>"
         },
-        "replicationServersSecurityGroupsIDs":{
-          "shape":"ReplicationServersSecurityGroupsIDs",
-          "documentation":"<p>Update replication configuration template Replication Server Security groups IDs request.</p>"
-        },
-        "stagingAreaSubnetId":{
-          "shape":"SubnetID",
-          "documentation":"<p>Update replication configuration template Staging Area subnet ID request.</p>"
+        "createPublicIP":{
+          "shape":"Boolean",
+          "documentation":"<p>Update replication configuration template create Public IP request.</p>"
         },
         "stagingAreaTags":{
           "shape":"TagsMap",
           "documentation":"<p>Update replication configuration template Staging Area Tags request.</p>"
         },
-        "useDedicatedReplicationServer":{
-          "shape":"Boolean",
-          "documentation":"<p>Update replication configuration template use dedicated Replication Server request.</p>"
-        },
         "useFipsEndpoint":{
           "shape":"Boolean",
           "documentation":"<p>Update replication configuration template use Fips Endpoint request.</p>"
+        },
+        "internetProtocol":{
+          "shape":"InternetProtocol",
+          "documentation":"<p>Update replication configuration template internet protocol request.</p>"
         }
       }
     },
     "UpdateSourceServerReplicationTypeRequest":{
       "type":"structure",
       "required":[
-        "replicationType",
-        "sourceServerID"
+        "sourceServerID",
+        "replicationType"
       ],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Account ID on which to update replication type.</p>"
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>ID of source server on which to update replication type.</p>"
         },
         "replicationType":{
           "shape":"ReplicationType",
           "documentation":"<p>Replication type to which to update source server.</p>"
         },
-        "sourceServerID":{
-          "shape":"SourceServerID",
-          "documentation":"<p>ID of source server on which to update replication type.</p>"
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID on which to update replication type.</p>"
         }
       }
     },
@@ -5705,13 +5813,13 @@
           "shape":"AccountID",
           "documentation":"<p>Update Source Server request account ID.</p>"
         },
-        "connectorAction":{
-          "shape":"SourceServerConnectorAction",
-          "documentation":"<p>Update Source Server request connector action.</p>"
-        },
         "sourceServerID":{
           "shape":"SourceServerID",
           "documentation":"<p>Update Source Server request source server ID.</p>"
+        },
+        "connectorAction":{
+          "shape":"SourceServerConnectorAction",
+          "documentation":"<p>Update Source Server request connector action.</p>"
         }
       }
     },
@@ -5719,36 +5827,42 @@
       "type":"structure",
       "required":["waveID"],
       "members":{
-        "accountID":{
-          "shape":"AccountID",
-          "documentation":"<p>Account ID.</p>"
-        },
-        "description":{
-          "shape":"WaveDescription",
-          "documentation":"<p>Wave description.</p>"
+        "waveID":{
+          "shape":"WaveID",
+          "documentation":"<p>Wave ID.</p>"
         },
         "name":{
           "shape":"WaveName",
           "documentation":"<p>Wave name.</p>"
         },
-        "waveID":{
-          "shape":"WaveID",
-          "documentation":"<p>Wave ID.</p>"
+        "description":{
+          "shape":"WaveDescription",
+          "documentation":"<p>Wave description.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
         }
       }
+    },
+    "UserProvidedId":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[^\\s\\x00]( *[^\\s\\x00])*"
     },
     "ValidationException":{
       "type":"structure",
       "members":{
-        "code":{"shape":"LargeBoundedString"},
-        "fieldList":{
-          "shape":"ValidationExceptionFieldList",
-          "documentation":"<p>Validate exception field list.</p>"
-        },
         "message":{"shape":"LargeBoundedString"},
+        "code":{"shape":"LargeBoundedString"},
         "reason":{
           "shape":"ValidationExceptionReason",
           "documentation":"<p>Validate exception reason.</p>"
+        },
+        "fieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>Validate exception field list.</p>"
         }
       },
       "documentation":"<p>Validate exception.</p>",
@@ -5761,13 +5875,13 @@
     "ValidationExceptionField":{
       "type":"structure",
       "members":{
-        "message":{
-          "shape":"LargeBoundedString",
-          "documentation":"<p>Validate exception field message.</p>"
-        },
         "name":{
           "shape":"LargeBoundedString",
           "documentation":"<p>Validate exception field name.</p>"
+        },
+        "message":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>Validate exception field message.</p>"
         }
       },
       "documentation":"<p>Validate exception field.</p>"
@@ -5788,17 +5902,25 @@
     "VcenterClient":{
       "type":"structure",
       "members":{
+        "vcenterClientID":{
+          "shape":"VcenterClientID",
+          "documentation":"<p>ID of vCenter client.</p>"
+        },
         "arn":{
           "shape":"ARN",
           "documentation":"<p>Arn of vCenter client.</p>"
         },
-        "datacenterName":{
-          "shape":"BoundedString",
-          "documentation":"<p>Datacenter name of vCenter client.</p>"
-        },
         "hostname":{
           "shape":"BoundedString",
           "documentation":"<p>Hostname of vCenter client .</p>"
+        },
+        "vcenterUUID":{
+          "shape":"BoundedString",
+          "documentation":"<p>Vcenter UUID of vCenter client.</p>"
+        },
+        "datacenterName":{
+          "shape":"BoundedString",
+          "documentation":"<p>Datacenter name of vCenter client.</p>"
         },
         "lastSeenDatetime":{
           "shape":"ISO8601DatetimeString",
@@ -5811,14 +5933,6 @@
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>Tags for vCenter client.</p>"
-        },
-        "vcenterClientID":{
-          "shape":"VcenterClientID",
-          "documentation":"<p>ID of vCenter client.</p>"
-        },
-        "vcenterUUID":{
-          "shape":"BoundedString",
-          "documentation":"<p>Vcenter UUID of vCenter client.</p>"
         }
       },
       "documentation":"<p>vCenter client.</p>"
@@ -5827,7 +5941,7 @@
       "type":"string",
       "max":21,
       "min":21,
-      "pattern":"^vcc-[0-9a-zA-Z]{17}$"
+      "pattern":"vcc-[0-9a-zA-Z]{17}"
     },
     "VcenterClientList":{
       "type":"list",
@@ -5848,13 +5962,17 @@
     "Wave":{
       "type":"structure",
       "members":{
+        "waveID":{
+          "shape":"WaveID",
+          "documentation":"<p>Wave ID.</p>"
+        },
         "arn":{
           "shape":"ARN",
           "documentation":"<p>Wave ARN.</p>"
         },
-        "creationDateTime":{
-          "shape":"ISO8601DatetimeString",
-          "documentation":"<p>Wave creation dateTime.</p>"
+        "name":{
+          "shape":"WaveName",
+          "documentation":"<p>Wave name.</p>"
         },
         "description":{
           "shape":"WaveDescription",
@@ -5864,46 +5982,42 @@
           "shape":"Boolean",
           "documentation":"<p>Wave archival status.</p>"
         },
-        "lastModifiedDateTime":{
-          "shape":"ISO8601DatetimeString",
-          "documentation":"<p>Wave last modified dateTime.</p>"
-        },
-        "name":{
-          "shape":"WaveName",
-          "documentation":"<p>Wave name.</p>"
-        },
-        "tags":{
-          "shape":"TagsMap",
-          "documentation":"<p>Wave tags.</p>"
-        },
         "waveAggregatedStatus":{
           "shape":"WaveAggregatedStatus",
           "documentation":"<p>Wave aggregated status.</p>"
         },
-        "waveID":{
-          "shape":"WaveID",
-          "documentation":"<p>Wave ID.</p>"
+        "creationDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Wave creation dateTime.</p>"
+        },
+        "lastModifiedDateTime":{
+          "shape":"ISO8601DatetimeString",
+          "documentation":"<p>Wave last modified dateTime.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Wave tags.</p>"
         }
       }
     },
     "WaveAggregatedStatus":{
       "type":"structure",
       "members":{
-        "healthStatus":{
-          "shape":"WaveHealthStatus",
-          "documentation":"<p>Wave aggregated status health status.</p>"
-        },
         "lastUpdateDateTime":{
           "shape":"ISO8601DatetimeString",
           "documentation":"<p>Wave aggregated status last update dateTime.</p>"
         },
-        "progressStatus":{
-          "shape":"WaveProgressStatus",
-          "documentation":"<p>Wave aggregated status progress status.</p>"
-        },
         "replicationStartedDateTime":{
           "shape":"ISO8601DatetimeString",
           "documentation":"<p>DateTime marking when the first source server in the wave started replication.</p>"
+        },
+        "healthStatus":{
+          "shape":"WaveHealthStatus",
+          "documentation":"<p>Wave aggregated status health status.</p>"
+        },
+        "progressStatus":{
+          "shape":"WaveProgressStatus",
+          "documentation":"<p>Wave aggregated status progress status.</p>"
         },
         "totalApplications":{
           "shape":"PositiveInteger",
@@ -5916,7 +6030,7 @@
       "type":"string",
       "max":600,
       "min":0,
-      "pattern":"^[^\\x00]*$"
+      "pattern":"[^\\x00]*"
     },
     "WaveHealthStatus":{
       "type":"string",
@@ -5930,7 +6044,7 @@
       "type":"string",
       "max":22,
       "min":22,
-      "pattern":"^wave-[0-9a-zA-Z]{17}$"
+      "pattern":"wave-[0-9a-zA-Z]{17}"
     },
     "WaveIDsFilter":{
       "type":"list",
@@ -5942,7 +6056,7 @@
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"^[^\\s\\x00]( *[^\\s\\x00])*$"
+      "pattern":"[^\\s\\x00]( *[^\\s\\x00])*"
     },
     "WaveProgressStatus":{
       "type":"string",

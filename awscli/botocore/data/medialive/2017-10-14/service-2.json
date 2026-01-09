@@ -7444,6 +7444,11 @@
           "shape": "ChannelEngineVersionResponse",
           "locationName": "channelEngineVersion",
           "documentation": "Requested engine version for this channel."
+        },
+        "LinkedChannelSettings": {
+          "shape": "DescribeLinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "Linked Channel Settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for Channel"
@@ -7595,6 +7600,11 @@
           "shape": "__listOfChannelEngineVersionResponse",
           "locationName": "usedChannelEngineVersions",
           "documentation": "The engine version that the running pipelines are using."
+        },
+        "LinkedChannelSettings": {
+          "shape": "DescribeLinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "Linked Channel Settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for ChannelSummary"
@@ -7770,6 +7780,11 @@
         "DryRun": {
           "shape": "__boolean",
           "locationName": "dryRun"
+        },
+        "LinkedChannelSettings": {
+          "shape": "LinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "The linked channel settings for the channel."
         }
       },
       "documentation": "Placeholder documentation for CreateChannel"
@@ -7860,6 +7875,11 @@
         "DryRun": {
           "shape": "__boolean",
           "locationName": "dryRun"
+        },
+        "LinkedChannelSettings": {
+          "shape": "LinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "The linked channel settings for the channel."
         }
       },
       "documentation": "A request to create a channel"
@@ -8493,6 +8513,11 @@
           "shape": "ChannelEngineVersionResponse",
           "locationName": "channelEngineVersion",
           "documentation": "Requested engine version for this channel."
+        },
+        "LinkedChannelSettings": {
+          "shape": "DescribeLinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "Linked Channel Settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for DeleteChannelResponse"
@@ -8958,6 +8983,11 @@
           "shape": "ChannelEngineVersionResponse",
           "locationName": "channelEngineVersion",
           "documentation": "Requested engine version for this channel."
+        },
+        "LinkedChannelSettings": {
+          "shape": "DescribeLinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "Linked Channel Settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for DescribeChannelResponse"
@@ -16598,7 +16628,13 @@
     },
     "PipelineLockingSettings": {
       "type": "structure",
-      "members": {},
+      "members": {
+        "PipelineLockingMethod": {
+          "shape": "PipelineLockingMethod",
+          "locationName": "pipelineLockingMethod",
+          "documentation": "The method to use to lock the video frames in the pipelines. sourceTimecode (default): Use the timecode in the source. videoAlignment: Lock frames that the encoder identifies as having matching content. If videoAlignment is selected, existing timecodes will not be used for any locking decisions."
+        }
+      },
       "documentation": "Pipeline Locking Settings"
     },
     "PipelinePauseStateSettings": {
@@ -17977,6 +18013,11 @@
           "shape": "ChannelEngineVersionResponse",
           "locationName": "channelEngineVersion",
           "documentation": "Requested engine version for this channel."
+        },
+        "LinkedChannelSettings": {
+          "shape": "DescribeLinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "Linked Channel Settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for StartChannelResponse"
@@ -18401,6 +18442,11 @@
           "shape": "ChannelEngineVersionResponse",
           "locationName": "channelEngineVersion",
           "documentation": "Requested engine version for this channel."
+        },
+        "LinkedChannelSettings": {
+          "shape": "DescribeLinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "Linked Channel Settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for StopChannelResponse"
@@ -19071,6 +19117,11 @@
           "shape": "AnywhereSettings",
           "locationName": "anywhereSettings",
           "documentation": "The Elemental Anywhere settings for this channel."
+        },
+        "LinkedChannelSettings": {
+          "shape": "LinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "The linked channel settings for the channel."
         }
       },
       "documentation": "Placeholder documentation for UpdateChannel"
@@ -19196,6 +19247,11 @@
           "shape": "AnywhereSettings",
           "locationName": "anywhereSettings",
           "documentation": "The Elemental Anywhere settings for this channel."
+        },
+        "LinkedChannelSettings": {
+          "shape": "LinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "The linked channel settings for the channel."
         }
       },
       "documentation": "A request to update a channel.",
@@ -21031,6 +21087,11 @@
           "shape": "ChannelEngineVersionResponse",
           "locationName": "channelEngineVersion",
           "documentation": "Requested engine version for this channel."
+        },
+        "LinkedChannelSettings": {
+          "shape": "DescribeLinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "Linked Channel Settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for RestartChannelPipelinesResponse"
@@ -29997,6 +30058,109 @@
         "shape": "RouterDestinationSettings"
       },
       "documentation": "Placeholder documentation for __listOfRouterDestinationSettings"
+    },
+    "DescribeFollowerChannelSettings": {
+      "type": "structure",
+      "members": {
+        "LinkedChannelType": {
+          "shape": "LinkedChannelType",
+          "locationName": "linkedChannelType",
+          "documentation": "Specifies this as a follower channel"
+        },
+        "PrimaryChannelArn": {
+          "shape": "__string",
+          "locationName": "primaryChannelArn",
+          "documentation": "The ARN of the primary channel this channel follows"
+        }
+      },
+      "documentation": "Details of a follower channel in a linked pair"
+    },
+    "DescribeLinkedChannelSettings": {
+      "type": "structure",
+      "members": {
+        "FollowerChannelSettings": {
+          "shape": "DescribeFollowerChannelSettings",
+          "locationName": "followerChannelSettings"
+        },
+        "PrimaryChannelSettings": {
+          "shape": "DescribePrimaryChannelSettings",
+          "locationName": "primaryChannelSettings"
+        }
+      },
+      "documentation": "Linked channel configuration details"
+    },
+    "DescribePrimaryChannelSettings": {
+      "type": "structure",
+      "members": {
+        "FollowingChannelArns": {
+          "shape": "__listOf__string",
+          "locationName": "followingChannelArns",
+          "documentation": "The ARNs of the following channels for this primary channel"
+        },
+        "LinkedChannelType": {
+          "shape": "LinkedChannelType",
+          "locationName": "linkedChannelType",
+          "documentation": "Specifies this as a primary channel"
+        }
+      },
+      "documentation": "Details of a primary (leader) channel in a linked pair"
+    },
+    "FollowerChannelSettings": {
+      "type": "structure",
+      "members": {
+        "LinkedChannelType": {
+          "shape": "LinkedChannelType",
+          "locationName": "linkedChannelType",
+          "documentation": "Specifies this as a follower channel"
+        },
+        "PrimaryChannelArn": {
+          "shape": "__string",
+          "locationName": "primaryChannelArn",
+          "documentation": "The ARN of the primary channel to follow"
+        }
+      },
+      "documentation": "Settings for a follower channel in a linked pair"
+    },
+    "LinkedChannelSettings": {
+      "type": "structure",
+      "members": {
+        "FollowerChannelSettings": {
+          "shape": "FollowerChannelSettings",
+          "locationName": "followerChannelSettings"
+        },
+        "PrimaryChannelSettings": {
+          "shape": "PrimaryChannelSettings",
+          "locationName": "primaryChannelSettings"
+        }
+      },
+      "documentation": "Configuration for linked channel relationships"
+    },
+    "LinkedChannelType": {
+      "type": "string",
+      "documentation": "The values for the role for a linked channel.",
+      "enum": [
+        "FOLLOWING_CHANNEL",
+        "PRIMARY_CHANNEL"
+      ]
+    },
+    "PipelineLockingMethod": {
+      "type": "string",
+      "documentation": "Pipeline Locking Method",
+      "enum": [
+        "SOURCE_TIMECODE",
+        "VIDEO_ALIGNMENT"
+      ]
+    },
+    "PrimaryChannelSettings": {
+      "type": "structure",
+      "members": {
+        "LinkedChannelType": {
+          "shape": "LinkedChannelType",
+          "locationName": "linkedChannelType",
+          "documentation": "Specifies this as a primary channel"
+        }
+      },
+      "documentation": "Settings for a primary (leader) channel in a linked pair"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

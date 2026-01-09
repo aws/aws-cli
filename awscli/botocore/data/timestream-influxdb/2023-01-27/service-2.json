@@ -245,6 +245,44 @@
       ],
       "documentation":"<p>A list of tags applied to the resource.</p>"
     },
+    "RebootDbCluster":{
+      "name":"RebootDbCluster",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RebootDbClusterInput"},
+      "output":{"shape":"RebootDbClusterOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Reboots a Timestream for InfluxDB cluster.</p>",
+      "idempotent":true
+    },
+    "RebootDbInstance":{
+      "name":"RebootDbInstance",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RebootDbInstanceInput"},
+      "output":{"shape":"RebootDbInstanceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Reboots a Timestream for InfluxDB instance.</p>",
+      "idempotent":true
+    },
     "TagResource":{
       "name":"TagResource",
       "http":{
@@ -356,7 +394,11 @@
         "AVAILABLE",
         "FAILED",
         "DELETED",
-        "MAINTENANCE"
+        "MAINTENANCE",
+        "UPDATING_INSTANCE_TYPE",
+        "REBOOTING",
+        "REBOOT_FAILED",
+        "PARTIALLY_AVAILABLE"
       ]
     },
     "ConflictException":{
@@ -2590,6 +2632,144 @@
       "max":65535,
       "min":1024
     },
+    "RebootDbClusterInput":{
+      "type":"structure",
+      "required":["dbClusterId"],
+      "members":{
+        "dbClusterId":{
+          "shape":"DbClusterId",
+          "documentation":"<p>Service-generated unique identifier of the DB cluster to reboot.</p>"
+        },
+        "instanceIds":{
+          "shape":"RebootDbClusterInputInstanceIdsList",
+          "documentation":"<p>A list of service-generated unique DB Instance Ids belonging to the DB Cluster to reboot.</p>"
+        }
+      }
+    },
+    "RebootDbClusterInputInstanceIdsList":{
+      "type":"list",
+      "member":{"shape":"DbInstanceId"},
+      "max":3,
+      "min":0
+    },
+    "RebootDbClusterOutput":{
+      "type":"structure",
+      "members":{
+        "dbClusterStatus":{
+          "shape":"ClusterStatus",
+          "documentation":"<p>The status of the DB Cluster.</p>"
+        }
+      }
+    },
+    "RebootDbInstanceInput":{
+      "type":"structure",
+      "required":["identifier"],
+      "members":{
+        "identifier":{
+          "shape":"DbInstanceIdentifier",
+          "documentation":"<p>The id of the DB instance to reboot.</p>"
+        }
+      }
+    },
+    "RebootDbInstanceOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "name",
+        "arn",
+        "vpcSubnetIds"
+      ],
+      "members":{
+        "id":{
+          "shape":"DbInstanceId",
+          "documentation":"<p>A service-generated unique identifier.</p>"
+        },
+        "name":{
+          "shape":"DbInstanceName",
+          "documentation":"<p>The customer-supplied name that uniquely identifies the DB instance when interacting with the Amazon Timestream for InfluxDB API and CLI commands.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the DB instance.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the DB instance.</p>"
+        },
+        "endpoint":{
+          "shape":"String",
+          "documentation":"<p>The endpoint used to connect to InfluxDB. The default InfluxDB port is 8086.</p>"
+        },
+        "port":{
+          "shape":"Port",
+          "documentation":"<p>The port number on which InfluxDB accepts connections.</p>"
+        },
+        "networkType":{
+          "shape":"NetworkType",
+          "documentation":"<p>Specifies whether the networkType of the Timestream for InfluxDB instance is IPV4, which can communicate over IPv4 protocol only, or DUAL, which can communicate over both IPv4 and IPv6 protocols.</p>"
+        },
+        "dbInstanceType":{
+          "shape":"DbInstanceType",
+          "documentation":"<p>The Timestream for InfluxDB instance type that InfluxDB runs on.</p>"
+        },
+        "dbStorageType":{
+          "shape":"DbStorageType",
+          "documentation":"<p>The Timestream for InfluxDB DB storage type that InfluxDB stores data on.</p>"
+        },
+        "allocatedStorage":{
+          "shape":"AllocatedStorage",
+          "documentation":"<p>The amount of storage allocated for your DB storage type (in gibibytes).</p>"
+        },
+        "deploymentType":{
+          "shape":"DeploymentType",
+          "documentation":"<p>Specifies whether the Timestream for InfluxDB is deployed as Single-AZ or with a MultiAZ Standby for High availability.</p>"
+        },
+        "vpcSubnetIds":{
+          "shape":"VpcSubnetIdList",
+          "documentation":"<p>A list of VPC subnet IDs associated with the DB instance.</p>"
+        },
+        "publiclyAccessible":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates if the DB instance has a public IP to facilitate access.</p>"
+        },
+        "vpcSecurityGroupIds":{
+          "shape":"VpcSecurityGroupIdList",
+          "documentation":"<p>A list of VPC security group IDs associated with the DB instance.</p>"
+        },
+        "dbParameterGroupIdentifier":{
+          "shape":"DbParameterGroupIdentifier",
+          "documentation":"<p>The id of the DB parameter group assigned to your DB instance.</p>"
+        },
+        "availabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone in which the DB instance resides.</p>"
+        },
+        "secondaryAvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone in which the standby instance is located when deploying with a MultiAZ standby instance.</p>"
+        },
+        "logDeliveryConfiguration":{
+          "shape":"LogDeliveryConfiguration",
+          "documentation":"<p>Configuration for sending InfluxDB engine logs to send to specified S3 bucket.</p>"
+        },
+        "influxAuthParametersSecretArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Secrets Manager secret containing the initial InfluxDB authorization parameters. The secret value is a JSON formatted key-value pair holding InfluxDB authorization values: organization, bucket, username, and password.</p>"
+        },
+        "dbClusterId":{
+          "shape":"DbClusterId",
+          "documentation":"<p>Specifies the DbCluster to which this DbInstance belongs to.</p>"
+        },
+        "instanceMode":{
+          "shape":"InstanceMode",
+          "documentation":"<p>Specifies the DbInstance's role in the cluster.</p>"
+        },
+        "instanceModes":{
+          "shape":"InstanceModeList",
+          "documentation":"<p>Specifies the DbInstance's roles in the cluster.</p>"
+        }
+      }
+    },
     "RequestTagMap":{
       "type":"map",
       "key":{"shape":"TagKey"},
@@ -2670,7 +2850,9 @@
         "FAILED",
         "UPDATING_DEPLOYMENT_TYPE",
         "UPDATING_INSTANCE_TYPE",
-        "MAINTENANCE"
+        "MAINTENANCE",
+        "REBOOTING",
+        "REBOOT_FAILED"
       ]
     },
     "String":{"type":"string"},
@@ -2972,7 +3154,7 @@
     "VpcSubnetIdList":{
       "type":"list",
       "member":{"shape":"VpcSubnetId"},
-      "max":3,
+      "max":6,
       "min":1
     }
   },

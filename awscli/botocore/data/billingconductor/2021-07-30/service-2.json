@@ -832,6 +832,18 @@
       },
       "documentation":"<p>The key-value pair that represents the attribute by which the <code>BillingGroupCostReportResults</code> are grouped. For example, if you want a service-level breakdown for Amazon Simple Storage Service (Amazon S3) of the billing group, the attribute will be a key-value pair of <code>\"PRODUCT_NAME\"</code> and <code>\"S3\"</code>.</p>"
     },
+    "AttributeValue":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]+"
+    },
+    "AttributeValueList":{
+      "type":"list",
+      "member":{"shape":"AttributeValue"},
+      "max":1,
+      "min":0
+    },
     "AttributesList":{
       "type":"list",
       "member":{"shape":"Attribute"}
@@ -1130,7 +1142,10 @@
     "ComputationRuleEnum":{
       "type":"string",
       "documentation":"<p>The display settings of the custom line item</p>",
-      "enum":["CONSOLIDATED"]
+      "enum":[
+        "ITEMIZED",
+        "CONSOLIDATED"
+      ]
     },
     "ConflictException":{
       "type":"structure",
@@ -1931,8 +1946,7 @@
       "type":"structure",
       "required":[
         "Attribute",
-        "MatchOption",
-        "Values"
+        "MatchOption"
       ],
       "members":{
         "Attribute":{
@@ -1946,13 +1960,20 @@
         "Values":{
           "shape":"LineItemFilterValuesList",
           "documentation":"<p>The values of the line item filter. This specifies the values to filter on. Currently, you can only exclude Savings Plans discounts.</p>"
+        },
+        "AttributeValues":{
+          "shape":"AttributeValueList",
+          "documentation":"<p>The values of the line item filter. This specifies the values to filter on.</p>"
         }
       },
       "documentation":"<p>A representation of the line item filter for your custom line item. You can use line item filters to include or exclude specific resource values from the billing group's total cost. For example, if you create a custom line item and you want to filter out a value, such as Savings Plans discounts, you can update <code>LineItemFilter</code> to exclude it.</p>"
     },
     "LineItemFilterAttributeName":{
       "type":"string",
-      "enum":["LINE_ITEM_TYPE"]
+      "enum":[
+        "LINE_ITEM_TYPE",
+        "SERVICE"
+      ]
     },
     "LineItemFilterValue":{
       "type":"string",
@@ -2590,7 +2611,10 @@
     "MarginPercentage":{"type":"string"},
     "MatchOption":{
       "type":"string",
-      "enum":["NOT_EQUAL"]
+      "enum":[
+        "NOT_EQUAL",
+        "EQUAL"
+      ]
     },
     "MaxBillingGroupCostReportResults":{
       "type":"integer",
@@ -3504,6 +3528,7 @@
         "ILLEGAL_MODIFIER_PERCENTAGE",
         "ILLEGAL_TYPE",
         "ILLEGAL_BILLING_GROUP_TYPE",
+        "ILLEGAL_BILLING_GROUP_PRICING_PLAN",
         "ILLEGAL_ENDED_BILLINGGROUP",
         "ILLEGAL_TIERING_INPUT",
         "ILLEGAL_OPERATION",

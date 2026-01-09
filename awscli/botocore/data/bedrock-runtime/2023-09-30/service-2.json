@@ -463,6 +463,68 @@
       },
       "documentation":"<p>A summary of an asynchronous invocation.</p>"
     },
+    "AudioBlock":{
+      "type":"structure",
+      "required":[
+        "format",
+        "source"
+      ],
+      "members":{
+        "format":{
+          "shape":"AudioFormat",
+          "documentation":"<p>The format of the audio data, such as MP3, WAV, FLAC, or other supported audio formats.</p>"
+        },
+        "source":{
+          "shape":"AudioSource",
+          "documentation":"<p>The source of the audio data, which can be provided as raw bytes or an S3 location.</p>"
+        },
+        "error":{
+          "shape":"ErrorBlock",
+          "documentation":"<p>Error information if the audio block could not be processed or contains invalid data.</p>"
+        }
+      },
+      "documentation":"<p>An audio content block that contains audio data in various supported formats.</p>"
+    },
+    "AudioFormat":{
+      "type":"string",
+      "enum":[
+        "mp3",
+        "opus",
+        "wav",
+        "aac",
+        "flac",
+        "mp4",
+        "ogg",
+        "mkv",
+        "mka",
+        "x-aac",
+        "m4a",
+        "mpeg",
+        "mpga",
+        "pcm",
+        "webm"
+      ]
+    },
+    "AudioSource":{
+      "type":"structure",
+      "members":{
+        "bytes":{
+          "shape":"AudioSourceBytesBlob",
+          "documentation":"<p>Audio data encoded in base64.</p>"
+        },
+        "s3Location":{
+          "shape":"S3Location",
+          "documentation":"<p>A reference to audio data stored in an Amazon S3 bucket. To see which models support S3 uploads, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference-supported-models-features.html\">Supported models and features for Converse</a>.</p>"
+        }
+      },
+      "documentation":"<p>The source of audio data, which can be provided either as raw bytes or a reference to an S3 location.</p>",
+      "sensitive":true,
+      "union":true
+    },
+    "AudioSourceBytesBlob":{
+      "type":"blob",
+      "min":1
+    },
     "AutoToolChoice":{
       "type":"structure",
       "members":{},
@@ -699,6 +761,10 @@
           "shape":"VideoBlock",
           "documentation":"<p>Video to include in the message. </p>"
         },
+        "audio":{
+          "shape":"AudioBlock",
+          "documentation":"<p>An audio content block containing audio data in the conversation.</p>"
+        },
         "toolUse":{
           "shape":"ToolUseBlock",
           "documentation":"<p>Information about a tool use request from a model.</p>"
@@ -753,6 +819,10 @@
         "citation":{
           "shape":"CitationsDelta",
           "documentation":"<p>Incremental citation information that is streamed as part of the response generation process.</p>"
+        },
+        "image":{
+          "shape":"ImageBlockDelta",
+          "documentation":"<p>A streaming delta event containing incremental image data.</p>"
         }
       },
       "documentation":"<p>A block of content in a streaming response.</p>",
@@ -787,6 +857,10 @@
         "toolResult":{
           "shape":"ToolResultBlockStart",
           "documentation":"<p>The </p>"
+        },
+        "image":{
+          "shape":"ImageBlockStart",
+          "documentation":"<p>The initial event indicating the start of a streaming image block.</p>"
         }
       },
       "documentation":"<p>Content block start information.</p>",
@@ -1430,6 +1504,17 @@
     "DocumentSourceBytesBlob":{
       "type":"blob",
       "min":1
+    },
+    "ErrorBlock":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable error message describing what went wrong during content processing.</p>"
+        }
+      },
+      "documentation":"<p>A block containing error information when content processing fails.</p>",
+      "sensitive":true
     },
     "FoundationModelVersionIdentifier":{
       "type":"string",
@@ -2768,9 +2853,38 @@
         "source":{
           "shape":"ImageSource",
           "documentation":"<p>The source for the image.</p>"
+        },
+        "error":{
+          "shape":"ErrorBlock",
+          "documentation":"<p>Error information if the image block could not be processed or contains invalid data.</p>"
         }
       },
       "documentation":"<p>Image content for a message.</p>"
+    },
+    "ImageBlockDelta":{
+      "type":"structure",
+      "members":{
+        "source":{
+          "shape":"ImageSource",
+          "documentation":"<p>The incremental image source data for this delta event.</p>"
+        },
+        "error":{
+          "shape":"ErrorBlock",
+          "documentation":"<p>Error information if this image delta could not be processed.</p>"
+        }
+      },
+      "documentation":"<p>A streaming delta event that contains incremental image data during streaming responses.</p>"
+    },
+    "ImageBlockStart":{
+      "type":"structure",
+      "required":["format"],
+      "members":{
+        "format":{
+          "shape":"ImageFormat",
+          "documentation":"<p>The format of the image data that will be streamed in subsequent delta events.</p>"
+        }
+      },
+      "documentation":"<p>The initial event in a streaming image block that indicates the start of image content.</p>"
     },
     "ImageFormat":{
       "type":"string",
@@ -2794,6 +2908,7 @@
         }
       },
       "documentation":"<p>The source for an image.</p>",
+      "sensitive":true,
       "union":true
     },
     "ImageSourceBytesBlob":{
@@ -3771,6 +3886,8 @@
         "stop_sequence",
         "guardrail_intervened",
         "content_filtered",
+        "malformed_model_output",
+        "malformed_tool_use",
         "model_context_window_exceeded"
       ]
     },
@@ -4032,6 +4149,10 @@
         "text":{
           "shape":"String",
           "documentation":"<p>The reasoning the model used to return the output.</p>"
+        },
+        "json":{
+          "shape":"Document",
+          "documentation":"<p>The JSON schema for the tool result content block. see <a href=\"https://json-schema.org/understanding-json-schema/reference\">JSON Schema Reference</a>.</p>"
         }
       },
       "documentation":"<p>Contains incremental updates to tool results information during streaming responses. This allows clients to build up tool results data progressively as the response is generated.</p>",

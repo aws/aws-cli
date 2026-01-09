@@ -707,6 +707,20 @@
       ],
       "documentation":"<p>Retrieve inbox placement and engagement rates for the domains that you use to send email.</p>"
     },
+    "GetEmailAddressInsights":{
+      "name":"GetEmailAddressInsights",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/email-address-insights/"
+      },
+      "input":{"shape":"GetEmailAddressInsightsRequest"},
+      "output":{"shape":"GetEmailAddressInsightsResponse"},
+      "errors":[
+        {"shape":"TooManyRequestsException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Provides validation insights about a specific email address, including syntax validation, DNS record checks, mailbox existence, and other deliverability factors.</p>"
+    },
     "GetEmailIdentity":{
       "name":"GetEmailIdentity",
       "http":{
@@ -1406,7 +1420,7 @@
       "name":"PutEmailIdentityDkimSigningAttributes",
       "http":{
         "method":"PUT",
-        "requestUri":"/v1/email/identities/{EmailIdentity}/dkim/signing"
+        "requestUri":"/v2/email/identities/{EmailIdentity}/dkim/signing"
       },
       "input":{"shape":"PutEmailIdentityDkimSigningAttributesRequest"},
       "output":{"shape":"PutEmailIdentityDkimSigningAttributesResponse"},
@@ -1758,7 +1772,7 @@
       "type":"string",
       "max":1011,
       "min":20,
-      "pattern":"arn:(aws|aws-[a-z-]+):ses:[a-z]{2}-[a-z-]+-[0-9]:[0-9]{1,20}:mailmanager-archive/a-[a-z0-9]{24,62}"
+      "pattern":"arn:(aws|aws-[a-z-]+):ses:[a-z]{2,4}-[a-z-]+-[0-9]:[0-9]{1,20}:mailmanager-archive/a-[a-z0-9]{24,62}"
     },
     "ArchivingOptions":{
       "type":"structure",
@@ -2438,6 +2452,10 @@
           "shape":"TemplateContent",
           "documentation":"<p>The content of the custom verification email. The total size of the email must be less than 10 MB. The message body may contain HTML, with some limitations. For more information, see <a href=\"https://docs.aws.amazon.com/ses/latest/dg/creating-identities.html#send-email-verify-address-custom-faq\">Custom verification email frequently asked questions</a> in the <i>Amazon SES Developer Guide</i>.</p>"
         },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of objects that define the tags (keys and values) to associate with the custom verification email template.</p>"
+        },
         "SuccessRedirectionURL":{
           "shape":"SuccessRedirectionURL",
           "documentation":"<p>The URL that the recipient of the verification email is sent to if his or her address is successfully verified.</p>"
@@ -2609,6 +2627,10 @@
         "TemplateContent":{
           "shape":"EmailTemplateContent",
           "documentation":"<p>The content of the email template, composed of a subject line, an HTML part, and a text-only part.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of objects that define the tags (keys and values) to associate with the email template.</p>"
         }
       },
       "documentation":"<p>Represents a request to create an email template. For more information, see the <a href=\"https://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-personalized-email-api.html\">Amazon SES Developer Guide</a>.</p>"
@@ -3334,6 +3356,10 @@
           "shape":"DnsTokenList",
           "documentation":"<p>If you used <a href=\"https://docs.aws.amazon.com/ses/latest/DeveloperGuide/easy-dkim.html\">Easy DKIM</a> to configure DKIM authentication for the domain, then this object contains a set of unique strings that you use to create a set of CNAME records that you add to the DNS configuration for your domain. When Amazon SES detects these records in the DNS configuration for your domain, the DKIM authentication process is complete.</p> <p>If you configured DKIM authentication for the domain by providing your own public-private key pair, then this object contains the selector for the public key.</p> <p>Regardless of the DKIM authentication method you use, Amazon SES searches for the appropriate records in the DNS configuration of the domain for up to 72 hours.</p>"
         },
+        "SigningHostedZone":{
+          "shape":"HostedZone",
+          "documentation":"<p>The hosted zone where Amazon SES publishes the DKIM public key TXT records for this email identity. This value indicates the DNS zone that customers must reference when configuring their CNAME records for DKIM authentication.</p> <p>When configuring DKIM for your domain, create CNAME records in your DNS that point to the selectors in this hosted zone. For example:</p> <p> <code> selector1._domainkey.yourdomain.com CNAME selector1.&lt;SigningHostedZone&gt; </code> </p> <p> <code> selector2._domainkey.yourdomain.com CNAME selector2.&lt;SigningHostedZone&gt; </code> </p> <p> <code> selector3._domainkey.yourdomain.com CNAME selector3.&lt;SigningHostedZone&gt; </code> </p>"
+        },
         "SigningAttributesOrigin":{
           "shape":"DkimSigningAttributesOrigin",
           "documentation":"<p>A string that indicates how DKIM was configured for the identity. These are the possible values:</p> <ul> <li> <p> <code>AWS_SES</code> – Indicates that DKIM was configured for the identity by using <a href=\"https://docs.aws.amazon.com/ses/latest/DeveloperGuide/easy-dkim.html\">Easy DKIM</a>.</p> </li> <li> <p> <code>EXTERNAL</code> – Indicates that DKIM was configured for the identity by using Bring Your Own DKIM (BYODKIM).</p> </li> <li> <p> <code>AWS_SES_AF_SOUTH_1</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Africa (Cape Town) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_EU_NORTH_1</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Europe (Stockholm) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_AP_SOUTH_1</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Asia Pacific (Mumbai) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_AP_SOUTH_2</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Asia Pacific (Hyderabad) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_EU_WEST_3</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Europe (Paris) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_EU_WEST_2</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Europe (London) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_EU_SOUTH_1</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Europe (Milan) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_EU_WEST_1</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Europe (Ireland) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_AP_NORTHEAST_3</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Asia Pacific (Osaka) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_AP_NORTHEAST_2</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Asia Pacific (Seoul) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_ME_CENTRAL_1</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Middle East (UAE) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_ME_SOUTH_1</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Middle East (Bahrain) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_AP_NORTHEAST_1</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Asia Pacific (Tokyo) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_IL_CENTRAL_1</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Israel (Tel Aviv) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_SA_EAST_1</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in South America (São Paulo) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_CA_CENTRAL_1</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Canada (Central) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_CA_WEST_1</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Canada (Calgary) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_AP_SOUTHEAST_1</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Asia Pacific (Singapore) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_AP_SOUTHEAST_2</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Asia Pacific (Sydney) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_AP_SOUTHEAST_3</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Asia Pacific (Jakarta) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_AP_SOUTHEAST_5</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Asia Pacific (Malaysia) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_EU_CENTRAL_1</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Europe (Frankfurt) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_EU_CENTRAL_2</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in Europe (Zurich) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_US_EAST_1</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in US East (N. Virginia) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_US_EAST_2</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in US East (Ohio) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_US_WEST_1</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in US West (N. California) region using Deterministic Easy-DKIM (DEED). </p> </li> <li> <p> <code>AWS_SES_US_WEST_2</code> – Indicates that DKIM was configured for the identity by replicating signing attributes from a parent identity in US West (Oregon) region using Deterministic Easy-DKIM (DEED). </p> </li> </ul>"
@@ -3558,6 +3584,55 @@
       "type":"list",
       "member":{"shape":"InsightsEmailAddress"},
       "max":5
+    },
+    "EmailAddressInsightsConfidenceVerdict":{
+      "type":"string",
+      "documentation":"<p>The confidence level of SES that the email address meets the validation criteria:</p> <ul> <li> <p> <code>LOW</code> - Weak or no indication of the speciﬁc check (e.g., LOW for IsRoleAddress means the email is less likely to be a role-based address).</p> </li> <li> <p> <code>MEDIUM</code> - Moderate indication of the speciﬁc check (e.g., MEDIUM for IsDisposable means the email might be a disposable address).</p> </li> <li> <p> <code>HIGH</code> - Strong indication of the speciﬁc check (e.g., HIGH for IsRandomInput means the email is very likely randomly generated).</p> </li> </ul>",
+      "enum":[
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
+    },
+    "EmailAddressInsightsMailboxEvaluations":{
+      "type":"structure",
+      "members":{
+        "HasValidSyntax":{
+          "shape":"EmailAddressInsightsVerdict",
+          "documentation":"<p>Checks that the email address follows proper RFC standards and contains valid characters in the correct format.</p>"
+        },
+        "HasValidDnsRecords":{
+          "shape":"EmailAddressInsightsVerdict",
+          "documentation":"<p>Checks that the domain exists, has valid DNS records, and is conﬁgured to receive email.</p>"
+        },
+        "MailboxExists":{
+          "shape":"EmailAddressInsightsVerdict",
+          "documentation":"<p>Checks that the mailbox exists and can receive messages without actually sending an email.</p>"
+        },
+        "IsRoleAddress":{
+          "shape":"EmailAddressInsightsVerdict",
+          "documentation":"<p>Identiﬁes role-based addresses (such as admin@, support@, or info@) that may have lower engagement rates.</p>"
+        },
+        "IsDisposable":{
+          "shape":"EmailAddressInsightsVerdict",
+          "documentation":"<p>Checks disposable or temporary email addresses that could negatively impact your sender reputation.</p>"
+        },
+        "IsRandomInput":{
+          "shape":"EmailAddressInsightsVerdict",
+          "documentation":"<p>Checks if the input appears to be random text.</p>"
+        }
+      },
+      "documentation":"<p>Contains individual validation checks performed on an email address.</p>"
+    },
+    "EmailAddressInsightsVerdict":{
+      "type":"structure",
+      "members":{
+        "ConfidenceVerdict":{
+          "shape":"EmailAddressInsightsConfidenceVerdict",
+          "documentation":"<p>The confidence level of the validation verdict.</p>"
+        }
+      },
+      "documentation":"<p>Contains the overall validation verdict for an email address.</p>"
     },
     "EmailAddressList":{
       "type":"list",
@@ -4238,6 +4313,10 @@
           "shape":"TemplateContent",
           "documentation":"<p>The content of the custom verification email.</p>"
         },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of objects that define the tags (keys and values) that are associated with the custom verification email template.</p>"
+        },
         "SuccessRedirectionURL":{
           "shape":"SuccessRedirectionURL",
           "documentation":"<p>The URL that the recipient of the verification email is sent to if his or her address is successfully verified.</p>"
@@ -4480,6 +4559,27 @@
       },
       "documentation":"<p>An object that includes statistics that are related to the domain that you specified.</p>"
     },
+    "GetEmailAddressInsightsRequest":{
+      "type":"structure",
+      "required":["EmailAddress"],
+      "members":{
+        "EmailAddress":{
+          "shape":"EmailAddress",
+          "documentation":"<p>The email address to analyze for validation insights.</p>"
+        }
+      },
+      "documentation":"<p>A request to return validation insights about an email address.</p>"
+    },
+    "GetEmailAddressInsightsResponse":{
+      "type":"structure",
+      "members":{
+        "MailboxValidation":{
+          "shape":"MailboxValidation",
+          "documentation":"<p>Detailed validation results for the email address.</p>"
+        }
+      },
+      "documentation":"<p>Validation insights about an email address.</p>"
+    },
     "GetEmailIdentityPoliciesRequest":{
       "type":"structure",
       "required":["EmailIdentity"],
@@ -4589,6 +4689,10 @@
         "TemplateContent":{
           "shape":"EmailTemplateContent",
           "documentation":"<p>The content of the email template, composed of a subject line, an HTML part, and a text-only part.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>An array of objects that define the tags (keys and values) that are associated with the email template.</p>"
         }
       },
       "documentation":"<p>The following element is returned by the service.</p>"
@@ -4882,6 +4986,7 @@
       },
       "documentation":"<p>An object containing additional settings for your VDM configuration as applicable to the Guardian.</p>"
     },
+    "HostedZone":{"type":"string"},
     "HttpsPolicy":{
       "type":"string",
       "documentation":"<p>The https policy to use for tracking open and click events. If the value is OPTIONAL or HttpsPolicy is not specified, the open trackers use HTTP and click tracker use the original protocol of the link. If the value is REQUIRE, both open and click tracker uses HTTPS and if the value is REQUIRE_OPEN_ONLY open tracker uses HTTPS and link tracker is same as original protocol of the link. </p>",
@@ -5931,6 +6036,20 @@
         "TRANSACTIONAL"
       ]
     },
+    "MailboxValidation":{
+      "type":"structure",
+      "members":{
+        "IsValid":{
+          "shape":"EmailAddressInsightsVerdict",
+          "documentation":"<p>Overall validity assessment with a conﬁdence verdict.</p>"
+        },
+        "Evaluations":{
+          "shape":"EmailAddressInsightsMailboxEvaluations",
+          "documentation":"<p>Specific validation checks performed on the email address.</p>"
+        }
+      },
+      "documentation":"<p>Contains detailed validation information about an email address.</p>"
+    },
     "Max24HourSend":{"type":"double"},
     "MaxDeliverySeconds":{
       "type":"long",
@@ -6452,6 +6571,10 @@
         "SuppressedReasons":{
           "shape":"SuppressionListReasons",
           "documentation":"<p>A list that contains the reasons that email addresses will be automatically added to the suppression list for your account. This list can contain any or all of the following:</p> <ul> <li> <p> <code>COMPLAINT</code> – Amazon SES adds an email address to the suppression list for your account when a message sent to that address results in a complaint.</p> </li> <li> <p> <code>BOUNCE</code> – Amazon SES adds an email address to the suppression list for your account when a message sent to that address results in a hard bounce.</p> </li> </ul>"
+        },
+        "ValidationAttributes":{
+          "shape":"SuppressionValidationAttributes",
+          "documentation":"<p>An object that contains additional suppression attributes for your account.</p>"
         }
       },
       "documentation":"<p>A request to change your account's suppression preferences.</p>"
@@ -6585,6 +6708,10 @@
         "SuppressedReasons":{
           "shape":"SuppressionListReasons",
           "documentation":"<p>A list that contains the reasons that email addresses are automatically added to the suppression list for your account. This list can contain any or all of the following:</p> <ul> <li> <p> <code>COMPLAINT</code> – Amazon SES adds an email address to the suppression list for your account when a message sent to that address results in a complaint.</p> </li> <li> <p> <code>BOUNCE</code> – Amazon SES adds an email address to the suppression list for your account when a message sent to that address results in a hard bounce.</p> </li> </ul>"
+        },
+        "ValidationOptions":{
+          "shape":"SuppressionValidationOptions",
+          "documentation":"<p>An object that contains information about the email address suppression preferences for the configuration set in the current Amazon Web Services Region.</p>"
         }
       },
       "documentation":"<p>A request to change the account suppression list preferences for a specific configuration set.</p>"
@@ -6812,6 +6939,10 @@
         "DkimTokens":{
           "shape":"DnsTokenList",
           "documentation":"<p>If you used <a href=\"https://docs.aws.amazon.com/ses/latest/DeveloperGuide/easy-dkim.html\">Easy DKIM</a> to configure DKIM authentication for the domain, then this object contains a set of unique strings that you use to create a set of CNAME records that you add to the DNS configuration for your domain. When Amazon SES detects these records in the DNS configuration for your domain, the DKIM authentication process is complete.</p> <p>If you configured DKIM authentication for the domain by providing your own public-private key pair, then this object contains the selector that's associated with your public key.</p> <p>Regardless of the DKIM authentication method you use, Amazon SES searches for the appropriate records in the DNS configuration of the domain for up to 72 hours.</p>"
+        },
+        "SigningHostedZone":{
+          "shape":"HostedZone",
+          "documentation":"<p>The hosted zone where Amazon SES publishes the DKIM public key TXT records for this email identity. This value indicates the DNS zone that customers must reference when configuring their CNAME records for DKIM authentication.</p> <p>When configuring DKIM for your domain, create CNAME records in your DNS that point to the selectors in this hosted zone. For example:</p> <p> <code> selector1._domainkey.yourdomain.com CNAME selector1.&lt;SigningHostedZone&gt; </code> </p> <p> <code> selector2._domainkey.yourdomain.com CNAME selector2.&lt;SigningHostedZone&gt; </code> </p> <p> <code> selector3._domainkey.yourdomain.com CNAME selector3.&lt;SigningHostedZone&gt; </code> </p>"
         }
       },
       "documentation":"<p>If the action is successful, the service sends back an HTTP 200 response.</p> <p>The following data is returned in JSON format by the service.</p>"
@@ -7583,9 +7714,45 @@
         "SuppressedReasons":{
           "shape":"SuppressionListReasons",
           "documentation":"<p>A list that contains the reasons that email addresses will be automatically added to the suppression list for your account. This list can contain any or all of the following:</p> <ul> <li> <p> <code>COMPLAINT</code> – Amazon SES adds an email address to the suppression list for your account when a message sent to that address results in a complaint.</p> </li> <li> <p> <code>BOUNCE</code> – Amazon SES adds an email address to the suppression list for your account when a message sent to that address results in a hard bounce.</p> </li> </ul>"
-        }
+        },
+        "ValidationAttributes":{"shape":"SuppressionValidationAttributes"}
       },
       "documentation":"<p>An object that contains information about the email address suppression preferences for your account in the current Amazon Web Services Region.</p>"
+    },
+    "SuppressionConditionThreshold":{
+      "type":"structure",
+      "required":["ConditionThresholdEnabled"],
+      "members":{
+        "ConditionThresholdEnabled":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>Indicates whether Auto Validation is enabled for suppression. Set to <code>ENABLED</code> to enable the Auto Validation feature, or set to <code>DISABLED</code> to disable it.</p>"
+        },
+        "OverallConfidenceThreshold":{
+          "shape":"SuppressionConfidenceThreshold",
+          "documentation":"<p>The overall confidence threshold used to determine suppression decisions.</p>"
+        }
+      },
+      "documentation":"<p>Contains Auto Validation settings, allowing you to suppress sending to specific destination(s) if they do not meet required threshold. For details on Auto Validation, see <a href=\"https://docs.aws.amazon.com/ses/latest/DeveloperGuide/email-validation.html\">Auto Validation</a>.</p>"
+    },
+    "SuppressionConfidenceThreshold":{
+      "type":"structure",
+      "required":["ConfidenceVerdictThreshold"],
+      "members":{
+        "ConfidenceVerdictThreshold":{
+          "shape":"SuppressionConfidenceVerdictThreshold",
+          "documentation":"<p>The confidence level threshold for suppression decisions.</p>"
+        }
+      },
+      "documentation":"<p>Contains the confidence threshold settings for Auto Validation.</p>"
+    },
+    "SuppressionConfidenceVerdictThreshold":{
+      "type":"string",
+      "documentation":"<p>The confidence level threshold for suppression validation:</p> <ul> <li> <p> <code>MEDIUM</code> – Allows emails to be sent to addresses with medium or high delivery likelihood.</p> </li> <li> <p> <code>HIGH</code> – Allows emails to be sent only to addresses with high delivery likelihood.</p> </li> <li> <p> <code>MANAGED</code> – Managed confidence threshold where Amazon SES automatically determines the appropriate level.</p> </li> </ul>",
+      "enum":[
+        "MEDIUM",
+        "HIGH",
+        "MANAGED"
+      ]
     },
     "SuppressionListDestination":{
       "type":"structure",
@@ -7624,9 +7791,32 @@
         "SuppressedReasons":{
           "shape":"SuppressionListReasons",
           "documentation":"<p>A list that contains the reasons that email addresses are automatically added to the suppression list for your account. This list can contain any or all of the following:</p> <ul> <li> <p> <code>COMPLAINT</code> – Amazon SES adds an email address to the suppression list for your account when a message sent to that address results in a complaint.</p> </li> <li> <p> <code>BOUNCE</code> – Amazon SES adds an email address to the suppression list for your account when a message sent to that address results in a hard bounce.</p> </li> </ul>"
-        }
+        },
+        "ValidationOptions":{"shape":"SuppressionValidationOptions"}
       },
       "documentation":"<p>An object that contains information about the suppression list preferences for your account.</p>"
+    },
+    "SuppressionValidationAttributes":{
+      "type":"structure",
+      "required":["ConditionThreshold"],
+      "members":{
+        "ConditionThreshold":{
+          "shape":"SuppressionConditionThreshold",
+          "documentation":"<p>Specifies the condition threshold settings for account-level suppression.</p>"
+        }
+      },
+      "documentation":"<p>Structure containing validation attributes used for suppressing sending to specific destination on account level.</p>"
+    },
+    "SuppressionValidationOptions":{
+      "type":"structure",
+      "required":["ConditionThreshold"],
+      "members":{
+        "ConditionThreshold":{
+          "shape":"SuppressionConditionThreshold",
+          "documentation":"<p>Specifies the condition threshold settings for suppression validation.</p>"
+        }
+      },
+      "documentation":"<p>Contains validation options for email address suppression.</p>"
     },
     "Tag":{
       "type":"structure",

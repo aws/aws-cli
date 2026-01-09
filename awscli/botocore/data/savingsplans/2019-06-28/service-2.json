@@ -57,9 +57,10 @@
       "output":{"shape":"DescribeSavingsPlanRatesResponse"},
       "errors":[
         {"shape":"ResourceNotFoundException"},
-        {"shape":"ValidationException"}
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Describes the rates for the specified Savings Plan.</p>"
+      "documentation":"<p>Describes the rates for a specific, existing Savings Plan.</p>"
     },
     "DescribeSavingsPlans":{
       "name":"DescribeSavingsPlans",
@@ -87,7 +88,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Describes the offering rates for the specified Savings Plans.</p>"
+      "documentation":"<p>Describes the offering rates for Savings Plans you might want to purchase.</p>"
     },
     "DescribeSavingsPlansOfferings":{
       "name":"DescribeSavingsPlansOfferings",
@@ -216,7 +217,8 @@
       "type":"string",
       "enum":[
         "CNY",
-        "USD"
+        "USD",
+        "EUR"
       ]
     },
     "CurrencyList":{
@@ -650,7 +652,7 @@
         },
         "returnableUntil":{
           "shape":"String",
-          "documentation":"<p>The time until when a return for the Savings Plan can be requested. If the Savings Plan is not returnable, the field reflects the Savings Plan start time.</p>"
+          "documentation":"<p>The time until when a return for the Savings Plan can be requested. If the Savings Plan is not returnable, the field reflects the Savings Plans start time.</p>"
         }
       },
       "documentation":"<p>Information about a Savings Plan.</p>"
@@ -909,7 +911,16 @@
         "EC2",
         "Fargate",
         "Lambda",
-        "SageMaker"
+        "SageMaker",
+        "RDS",
+        "DSQL",
+        "DynamoDB",
+        "ElastiCache",
+        "DocDB",
+        "Neptune",
+        "Timestream",
+        "Keyspaces",
+        "DMS"
       ]
     },
     "SavingsPlanProductTypeList":{
@@ -1045,7 +1056,16 @@
         "AmazonECS",
         "AmazonEKS",
         "AWSLambda",
-        "AmazonSageMaker"
+        "AmazonSageMaker",
+        "AmazonRDS",
+        "AuroraDSQL",
+        "AmazonDynamoDB",
+        "AmazonElastiCache",
+        "AmazonDocDB",
+        "AmazonNeptune",
+        "AmazonTimestream",
+        "AmazonMCS",
+        "AWSDatabaseMigrationSvc"
       ]
     },
     "SavingsPlanRateServiceCodeList":{
@@ -1057,7 +1077,19 @@
       "enum":[
         "Hrs",
         "Lambda-GB-Second",
-        "Request"
+        "Request",
+        "ACU-Hr",
+        "ReadRequestUnits",
+        "WriteRequestUnits",
+        "ReadCapacityUnit-Hrs",
+        "WriteCapacityUnit-Hrs",
+        "ReplicatedWriteRequestUnits",
+        "ReplicatedWriteCapacityUnit-Hrs",
+        "GB-Hours",
+        "DPU",
+        "ElastiCacheProcessingUnit",
+        "DCU-Hr",
+        "NCU-hr"
       ]
     },
     "SavingsPlanRateUsageType":{
@@ -1100,7 +1132,8 @@
       "enum":[
         "Compute",
         "EC2Instance",
-        "SageMaker"
+        "SageMaker",
+        "Database"
       ]
     },
     "SavingsPlanTypeList":{
@@ -1131,7 +1164,8 @@
         "savings-plan-type",
         "payment-option",
         "start",
-        "end"
+        "end",
+        "instance-family"
       ]
     },
     "ServiceQuotaExceededException":{

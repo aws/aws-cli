@@ -68,25 +68,34 @@ class TestMonitorResourcesAction:
         assert namespace.monitor_resources == 'RESOURCE'
 
 
+@pytest.fixture
+def mock_watcher_class():
+    """Fixture that provides a mock watcher class."""
+    watcher_class = Mock()
+    watcher_class.is_monitoring_available.return_value = True
+    return watcher_class
+
+
+@pytest.fixture
+def handler(mock_watcher_class):
+    """Fixture that provides a MonitorMutatingGatewayService handler."""
+    return MonitorMutatingGatewayService(
+        'create-gateway-service',
+        'DEPLOYMENT',
+        watcher_class=mock_watcher_class,
+    )
+
+
 class TestMonitorMutatingGatewayService:
     """Test the event handler for monitoring gateway service mutations."""
 
-    def setup_method(self):
-        self.mock_watcher_class = Mock()
-        self.mock_watcher_class.is_monitoring_available.return_value = True
-        self.handler = MonitorMutatingGatewayService(
-            'create-gateway-service',
-            'DEPLOYMENT',
-            watcher_class=self.mock_watcher_class,
-        )
-
-    def test_init(self):
+    def test_init(self, handler):
         """Test proper initialization of the handler."""
-        assert self.handler.api == 'create-gateway-service'
-        assert self.handler.default_resource_view == 'DEPLOYMENT'
-        assert self.handler.api_pascal_case == 'CreateGatewayService'
-        assert self.handler.session is None
-        assert self.handler.parsed_globals is None
+        assert handler.api == 'create-gateway-service'
+        assert handler.default_resource_view == 'DEPLOYMENT'
+        assert handler.api_pascal_case == 'CreateGatewayService'
+        assert handler.session is None
+        assert handler.parsed_globals is None
 
     def test_pascal_case_conversion(self):
         """Test API name conversion to PascalCase."""
@@ -102,82 +111,83 @@ class TestMonitorMutatingGatewayService:
             handler = MonitorMutatingGatewayService(api_name, 'RESOURCE')
             assert handler.api_pascal_case == expected_pascal
 
-    def test_before_building_argument_table_parser(self):
+    def test_before_building_argument_table_parser(self, handler):
         """Test storing session for later use."""
         session = Mock()
 
-        self.handler.before_building_argument_table_parser(session)
+        handler.before_building_argument_table_parser(session)
 
-        assert self.handler.session == session
+        assert handler.session == session
 
-    def test_building_argument_table(self):
+    def test_building_argument_table(self, handler):
         """Test adding monitoring argument to the command's argument table."""
         argument_table = {}
         session = Mock()
 
-        self.handler.building_argument_table(argument_table, session)
+        handler.building_argument_table(argument_table, session)
 
         assert 'monitor-resources' in argument_table
         assert isinstance(
             argument_table['monitor-resources'], MonitoringResourcesArgument
         )
 
-    def test_operation_args_parsed_with_flag(self):
+    def test_operation_args_parsed_with_flag(self, handler):
         """Test storing monitoring flag when enabled with default."""
         parsed_args = Mock()
         parsed_args.monitor_resources = '__DEFAULT__'
         parsed_globals = Mock()
 
-        self.handler.operation_args_parsed(parsed_args, parsed_globals)
+        handler.operation_args_parsed(parsed_args, parsed_globals)
 
-        assert self.handler.effective_resource_view == 'DEPLOYMENT'
+        assert handler.effective_resource_view == 'DEPLOYMENT'
 
-    def test_operation_args_parsed_with_explicit_choice(self):
+    def test_operation_args_parsed_with_explicit_choice(self, handler):
         """Test storing monitoring flag with explicit choice."""
         parsed_args = Mock()
         parsed_args.monitor_resources = 'RESOURCE'
         parsed_globals = Mock()
 
-        self.handler.operation_args_parsed(parsed_args, parsed_globals)
+        handler.operation_args_parsed(parsed_args, parsed_globals)
 
-        assert self.handler.effective_resource_view == 'RESOURCE'
+        assert handler.effective_resource_view == 'RESOURCE'
 
-    def test_operation_args_parsed_without_flag(self):
+    def test_operation_args_parsed_without_flag(self, handler):
         """Test storing monitoring flag when disabled."""
         parsed_args = Mock()
         parsed_args.monitor_resources = None
+        parsed_args.monitor_mode = None
         parsed_globals = Mock()
 
-        self.handler.operation_args_parsed(parsed_args, parsed_globals)
+        handler.operation_args_parsed(parsed_args, parsed_globals)
 
-        assert self.handler.effective_resource_view is None
+        assert handler.effective_resource_view is None
 
-    def test_operation_args_parsed_missing_attribute(self):
+    def test_operation_args_parsed_missing_attribute(self, handler):
         """Test handling missing monitor_resources attribute."""
         # Mock without monitor_resources attribute
         parsed_args = Mock(spec=[])
         parsed_globals = Mock()
 
-        self.handler.operation_args_parsed(parsed_args, parsed_globals)
+        handler.operation_args_parsed(parsed_args, parsed_globals)
 
-        assert self.handler.effective_resource_view is None
+        assert handler.effective_resource_view is None
 
-    def test_after_call_monitoring_disabled(self):
+    def test_after_call_monitoring_disabled(self, handler):
         """Test that monitoring is skipped when flag is disabled."""
-        self.handler.effective_resource_view = None
+        handler.effective_resource_view = None
         parsed = {}
         context = Mock()
         http_response = Mock()
         http_response.status_code = 200
 
         # Should return early without doing anything
-        self.handler.after_call(parsed, context, http_response)
+        handler.after_call(parsed, context, http_response)
 
         # No assertions needed - just verify no exceptions
 
-    def test_after_call_http_error(self):
+    def test_after_call_http_error(self, handler):
         """Test that monitoring is skipped on HTTP errors."""
-        self.handler.effective_resource_view = 'DEPLOYMENT'
+        handler.effective_resource_view = 'DEPLOYMENT'
         parsed = {
             'service': {'serviceArn': 'arn:aws:ecs:us-west-2:123:service/test'}
         }
@@ -186,13 +196,13 @@ class TestMonitorMutatingGatewayService:
         http_response.status_code = 400
 
         # Should return early without doing anything
-        self.handler.after_call(parsed, context, http_response)
+        handler.after_call(parsed, context, http_response)
 
         # No assertions needed - just verify no exceptions
 
-    def test_after_call_missing_service_arn(self):
+    def test_after_call_missing_service_arn(self, handler):
         """Test that monitoring is skipped when service ARN is missing."""
-        self.handler.effective_resource_view = 'DEPLOYMENT'
+        handler.effective_resource_view = 'DEPLOYMENT'
         # Missing serviceArn
         parsed = {'service': {}}
         context = Mock()
@@ -200,15 +210,15 @@ class TestMonitorMutatingGatewayService:
         http_response.status_code = 200
 
         # Should return early without doing anything
-        self.handler.after_call(parsed, context, http_response)
+        handler.after_call(parsed, context, http_response)
 
         # No assertions needed - just verify no exceptions
 
-    def test_after_call_missing_session(self, capsys):
+    def test_after_call_missing_session(self, handler, capsys):
         """Test handling when session is not available."""
-        self.handler.effective_resource_view = 'DEPLOYMENT'
-        self.handler.session = None
-        self.handler.parsed_globals = None
+        handler.effective_resource_view = 'DEPLOYMENT'
+        handler.session = None
+        handler.parsed_globals = None
 
         parsed = {
             'service': {'serviceArn': 'arn:aws:ecs:us-west-2:123:service/test'}
@@ -217,7 +227,7 @@ class TestMonitorMutatingGatewayService:
         http_response = Mock()
         http_response.status_code = 200
 
-        self.handler.after_call(parsed, context, http_response)
+        handler.after_call(parsed, context, http_response)
 
         captured = capsys.readouterr()
         assert (
@@ -238,6 +248,7 @@ class TestMonitorMutatingGatewayService:
         )
         handler.monitor_resources = '__DEFAULT__'
         handler.effective_resource_view = 'DEPLOYMENT'
+        handler.effective_mode = 'TEXT-ONLY'
 
         mock_session = Mock()
         mock_parsed_globals = Mock()
@@ -277,17 +288,20 @@ class TestMonitorMutatingGatewayService:
             mock_client,
             service_arn,
             'DEPLOYMENT',
+            'TEXT-ONLY',
             use_color=False,
         )
         mock_watcher.exec.assert_called_once()
         # Verify parsed response was cleared
         assert parsed == {}
 
-    def test_after_call_monitoring_not_available(self, capsys):
-        """Test that monitoring is skipped when not available (no TTY)."""
+    @patch('sys.stdout.isatty', return_value=False)
+    def test_after_call_interactive_mode_without_tty(
+        self, mock_isatty, capsys
+    ):
+        """Test that interactive mode is skipped when TTY is not available."""
         # Setup handler state
         mock_watcher_class = Mock()
-        mock_watcher_class.is_monitoring_available.return_value = False
 
         handler = MonitorMutatingGatewayService(
             'create-gateway-service',
@@ -295,6 +309,7 @@ class TestMonitorMutatingGatewayService:
             watcher_class=mock_watcher_class,
         )
         handler.effective_resource_view = 'DEPLOYMENT'
+        handler.effective_mode = 'INTERACTIVE'
 
         mock_session = Mock()
         mock_parsed_globals = Mock()
@@ -314,7 +329,6 @@ class TestMonitorMutatingGatewayService:
         # Setup call parameters
         service_arn = 'arn:aws:ecs:us-west-2:123456789012:service/test-service'
         parsed = {'service': {'serviceArn': service_arn}}
-        original_parsed = dict(parsed)
         context = Mock()
         http_response = Mock()
         http_response.status_code = 200
@@ -322,17 +336,19 @@ class TestMonitorMutatingGatewayService:
         # Execute
         handler.after_call(parsed, context, http_response)
 
-        # Verify parsed response was not cleared
-        assert parsed == original_parsed
-
-        # Verify warning message was printed
+        # Verify error message was printed
         captured = capsys.readouterr()
         assert (
-            "Monitoring is not available (requires TTY). Skipping monitoring.\n"
+            "aws: [ERROR]: Interactive mode requires a TTY (terminal)."
             in captured.err
         )
+        assert "Use --monitor-mode TEXT-ONLY" in captured.err
 
-    def test_after_call_exception_handling(self, capsys):
+        # Verify watcher was not called
+        mock_watcher_class.assert_not_called()
+
+    @patch('sys.stdout.isatty', return_value=True)
+    def test_after_call_exception_handling(self, mock_isatty, capsys):
         """Test exception handling in after_call method."""
         # Setup handler state
         mock_watcher_class = Mock()
@@ -346,6 +362,7 @@ class TestMonitorMutatingGatewayService:
             watcher_class=mock_watcher_class,
         )
         handler.effective_resource_view = 'DEPLOYMENT'
+        handler.effective_mode = 'INTERACTIVE'
 
         mock_session = Mock()
         mock_parsed_globals = Mock()
@@ -369,16 +386,13 @@ class TestMonitorMutatingGatewayService:
         http_response = Mock()
         http_response.status_code = 200
 
-        # Execute - should not raise exception
-        handler.after_call(parsed, context, http_response)
+        # Execute - exception should propagate
+        with pytest.raises(Exception, match="Test exception"):
+            handler.after_call(parsed, context, http_response)
 
-        captured = capsys.readouterr()
-        assert "Encountered an error, terminating monitoring" in captured.err
-        assert "Test exception" in captured.err
-
-    def test_events(self):
+    def test_events(self, handler):
         """Test that correct events are returned for CLI integration."""
-        events = self.handler.events()
+        events = handler.events()
 
         expected_events = [
             "before-building-argument-table-parser.ecs.create-gateway-service",

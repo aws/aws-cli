@@ -66,34 +66,34 @@ class AWSConnection:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._original_response_cls = self.response_class
-        # We'd ideally hook into httplib's states, but they're all
-        # __mangled_vars so we use our own state var.  This variable is set
-        # when we receive an early response from the server.  If this value is
-        # set to True, any calls to send() are noops.  This value is reset to
-        # false every time _send_request is called.  This is to workaround the
-        # fact that py2.6 (and only py2.6) has a separate send() call for the
-        # body in _send_request, as opposed to endheaders(), which is where the
-        # body is sent in all versions > 2.6.
+        # This variable is set when we receive an early response from the
+        # server. If this value is set to True, any calls to send() are noops.
+        # This value is reset to false every time _send_request is called.
+        # This is to workaround changes in urllib3 2.0 which uses separate
+        # send() calls in request() instead of delegating to endheaders(),
+        # which is where the body is sent in CPython's HTTPConnection.
         self._response_received = False
         self._expect_header_set = False
+        self._send_called = False
 
     def close(self):
         super().close()
         # Reset all of our instance state we were tracking.
         self._response_received = False
         self._expect_header_set = False
+        self._send_called = False
         self.response_class = self._original_response_cls
 
-    def _send_request(self, method, url, body, headers, *args, **kwargs):
+    def request(self, method, url, body=None, headers=None, *args, **kwargs):
+        if headers is None:
+            headers = {}
         self._response_received = False
         if headers.get('Expect', b'') == b'100-continue':
             self._expect_header_set = True
         else:
             self._expect_header_set = False
             self.response_class = self._original_response_cls
-        rval = super()._send_request(
-            method, url, body, headers, *args, **kwargs
-        )
+        rval = super().request(method, url, body, headers, *args, **kwargs)
         self._expect_header_set = False
         return rval
 
@@ -210,10 +210,15 @@ class AWSConnection:
 
     def send(self, str):
         if self._response_received:
-            logger.debug(
-                "send() called, but reseponse already received. "
-                "Not sending data."
-            )
+            if not self._send_called:
+                # urllib3 2.0 chunks and calls send potentially
+                # thousands of times inside `request` unlike the
+                # standard library. Only log this once for sanity.
+                logger.debug(
+                    "send() called, but response already received. "
+                    "Not sending data."
+                )
+            self._send_called = True
             return
         return super().send(str)
 

@@ -30,7 +30,6 @@ from botocore.configprovider import (
     ScopedConfigProvider,
 )
 from botocore.context import start_as_current_context
-from botocore.exceptions import ClientError
 from botocore.history import get_global_history_recorder
 
 from awscli import __version__
@@ -536,14 +535,13 @@ class CLIDriver:
         command_table = self._get_command_table()
         parser = self.create_parser(command_table)
         self._add_aliases(command_table, parser)
-        parsed_globals = None
+        parsed_args = None
         try:
             # Because _handle_top_level_args emits events, it's possible
             # that exceptions can be raised, which should have the same
             # general exception handling logic as calling into the
             # command table.  This is why it's in the try/except clause.
             parsed_args, remaining = parser.parse_known_args(args)
-            parsed_globals = parsed_args
             self._handle_top_level_args(parsed_args)
             validate_preferred_output_encoding()
             self._emit_session_event(parsed_args)
@@ -560,7 +558,7 @@ class CLIDriver:
                 e,
                 stdout=get_stdout_text_writer(),
                 stderr=get_stderr_text_writer(),
-                parsed_globals=parsed_globals,
+                parsed_globals=parsed_args,
             )
 
     def _emit_session_event(self, parsed_args):

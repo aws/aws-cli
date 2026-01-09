@@ -64,9 +64,8 @@ class EnhancedErrorFormatter:
                 stream.write(f'{key}: {self._format_inline(value)}\n')
             else:
                 stream.write(
-                    f'{key}: <complex value>\n'
-                    f'(Use --cli-error-format with json or yaml '
-                    f'to see full details)\n'
+                    f'{key}: <complex value> '
+                    f'(Use --cli-error-format with json or yaml to see full details)\n'
                 )
 
     def _is_simple_value(self, value):
@@ -157,7 +156,7 @@ class ParamValidationErrorsHandler(FilteredExceptionHandler):
 
 
 class SilenceParamValidationMsgErrorHandler(ParamValidationErrorsHandler):
-    def _do_handle_exception(self, exception, stdout, stderr):
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
         return self.RC
 
 
@@ -233,16 +232,14 @@ class ClientErrorHandler(FilteredExceptionHandler):
                 )
                 return True
 
-            temp_parsed_globals = argparse.Namespace()
-            temp_parsed_globals.output = error_format
-            temp_parsed_globals.query = None
-            temp_parsed_globals.color = (
-                getattr(parsed_globals, 'color', 'auto')
-                if parsed_globals
-                else 'auto'
-            )
+            if parsed_globals:
+                formatter = get_formatter(error_format, parsed_globals)
+            else:
+                formatter_args = argparse.Namespace()
+                formatter_args.query = None
+                formatter_args.color = 'auto'
+                formatter = get_formatter(error_format, formatter_args)
 
-            formatter = get_formatter(error_format, temp_parsed_globals)
             formatter('error', error_info, stderr)
             return True
 
@@ -320,7 +317,7 @@ class InterruptExceptionHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = KeyboardInterrupt
     RC = 128 + signal.SIGINT
 
-    def _do_handle_exception(self, exception, stdout, stderr):
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
         stdout.write("\n")
         return self.RC
 
@@ -328,7 +325,7 @@ class InterruptExceptionHandler(FilteredExceptionHandler):
 class PrompterInterruptExceptionHandler(InterruptExceptionHandler):
     EXCEPTIONS_TO_HANDLE = PrompterKeyboardInterrupt
 
-    def _do_handle_exception(self, exception, stdout, stderr):
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
         stderr.write(f'{exception}')
         stderr.write("\n")
         return self.RC

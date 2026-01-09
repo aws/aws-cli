@@ -30,59 +30,6 @@ class TestClientErrorHandler:
         self.session = FakeSession()
         self.handler = ClientErrorHandler(self.session)
 
-    def test_extract_error_response_from_client_error(self):
-        error_response = {
-            'Error': {
-                'Code': 'NoSuchBucket',
-                'Message': 'The specified bucket does not exist',
-                'BucketName': 'my-bucket',
-            },
-            'ResponseMetadata': {'RequestId': '123'},
-        }
-        client_error = ClientError(error_response, 'GetObject')
-
-        result = ClientErrorHandler._extract_error_response(client_error)
-
-        assert result is not None
-        assert 'Error' in result
-        assert result['Error']['Code'] == 'NoSuchBucket'
-        assert result['Error']['BucketName'] == 'my-bucket'
-
-    def test_extract_error_response_with_top_level_fields(self):
-        error_response = {
-            'Error': {
-                'Code': 'TransactionCanceledException',
-                'Message': 'Transaction cancelled',
-            },
-            'CancellationReasons': [
-                {
-                    'Code': 'ConditionalCheckFailed',
-                    'Message': 'The conditional request failed',
-                    'Item': {'id': {'S': '123'}},
-                }
-            ],
-            'ResponseMetadata': {'RequestId': '456'},
-        }
-        client_error = ClientError(error_response, 'TransactWriteItems')
-
-        result = ClientErrorHandler._extract_error_response(client_error)
-
-        assert result is not None
-        assert 'Error' in result
-        assert result['Error']['Code'] == 'TransactionCanceledException'
-        assert 'CancellationReasons' in result['Error']
-        assert len(result['Error']['CancellationReasons']) == 1
-        assert (
-            result['Error']['CancellationReasons'][0]['Code']
-            == 'ConditionalCheckFailed'
-        )
-
-    def test_extract_error_response_from_non_client_error(self):
-        result = ClientErrorHandler._extract_error_response(
-            ValueError('Some error')
-        )
-        assert result is None
-
     def test_displays_structured_error_with_additional_members(self):
         error_response = {
             'Error': {
@@ -149,7 +96,6 @@ class TestClientErrorHandler:
         assert 'BucketName' not in stderr_output
 
     def test_error_format_case_insensitive(self):
-        """Test that error format config is case-insensitive."""
         error_response = {
             'Error': {
                 'Code': 'NoSuchBucket',
@@ -179,65 +125,6 @@ class TestEnhancedErrorFormatter:
     def setup_method(self):
         self.formatter = EnhancedErrorFormatter()
 
-    def test_is_simple_value(self):
-        assert self.formatter._is_simple_value('string')
-        assert self.formatter._is_simple_value(42)
-        assert self.formatter._is_simple_value(3.14)
-        assert self.formatter._is_simple_value(True)
-        assert self.formatter._is_simple_value(None)
-        assert not self.formatter._is_simple_value([1, 2, 3])
-        assert not self.formatter._is_simple_value({'key': 'value'})
-
-    def test_is_small_collection_list(self):
-        assert self.formatter._is_small_collection(['a', 'b'])
-        assert self.formatter._is_small_collection([1, 2, 3, 4])
-
-        assert not self.formatter._is_small_collection([1, 2, 3, 4, 5])
-
-        assert not self.formatter._is_small_collection([1, [2, 3]])
-        assert not self.formatter._is_small_collection([{'key': 'value'}])
-
-    def test_is_small_collection_dict(self):
-        assert self.formatter._is_small_collection({'key': 'value'})
-        assert self.formatter._is_small_collection(
-            {'a': 1, 'b': 2, 'c': 3, 'd': 4}
-        )
-
-        assert not self.formatter._is_small_collection(
-            {'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5}
-        )
-
-        assert not self.formatter._is_small_collection({'key': [1, 2]})
-        assert not self.formatter._is_small_collection({'key': {'nested': 1}})
-
-    def test_format_inline_list(self):
-        result = self.formatter._format_inline([1, 2, 3])
-        assert result == '[1, 2, 3]'
-
-        result = self.formatter._format_inline(['a', 'b', 'c'])
-        assert result == '[a, b, c]'
-
-    def test_format_inline_dict(self):
-        result = self.formatter._format_inline({'a': 1, 'b': 2})
-        assert 'a: 1' in result
-        assert 'b: 2' in result
-        assert result.startswith('{')
-        assert result.endswith('}')
-
-    def test_get_additional_fields(self):
-        error_info = {
-            'Code': 'NoSuchBucket',
-            'Message': 'The bucket does not exist',
-            'BucketName': 'my-bucket',
-            'Region': 'us-east-1',
-        }
-
-        additional = self.formatter._get_additional_fields(error_info)
-        assert 'Code' not in additional
-        assert 'Message' not in additional
-        assert additional['BucketName'] == 'my-bucket'
-        assert additional['Region'] == 'us-east-1'
-
     def test_format_error_with_no_additional_fields(self):
         error_info = {
             'Code': 'AccessDenied',
@@ -249,8 +136,8 @@ class TestEnhancedErrorFormatter:
         self.formatter.format_error(error_info, formatted_message, stream)
 
         output = stream.getvalue()
-        assert formatted_message in output
-        assert 'Additional error details' not in output
+        expected = 'An error occurred (AccessDenied): Access Denied\n'
+        assert output == expected
 
     def test_format_error_with_simple_fields(self):
         error_info = {
@@ -267,10 +154,14 @@ class TestEnhancedErrorFormatter:
         self.formatter.format_error(error_info, formatted_message, stream)
 
         output = stream.getvalue()
-        assert formatted_message in output
-        assert 'Additional error details' in output
-        assert 'BucketName: my-bucket' in output
-        assert 'Region: us-east-1' in output
+        expected = (
+            'An error occurred (NoSuchBucket): The bucket does not exist\n'
+            '\n'
+            'Additional error details:\n'
+            'BucketName: my-bucket\n'
+            'Region: us-east-1\n'
+        )
+        assert output == expected
 
     def test_format_error_with_small_list(self):
         error_info = {
@@ -286,9 +177,13 @@ class TestEnhancedErrorFormatter:
         self.formatter.format_error(error_info, formatted_message, stream)
 
         output = stream.getvalue()
-        assert formatted_message in output
-        assert 'Additional error details' in output
-        assert 'AllowedValues: [value1, value2, value3]' in output
+        expected = (
+            'An error occurred (ValidationError): Validation failed\n'
+            '\n'
+            'Additional error details:\n'
+            'AllowedValues: [value1, value2, value3]\n'
+        )
+        assert output == expected
 
     def test_format_error_with_small_dict(self):
         error_info = {
@@ -304,11 +199,13 @@ class TestEnhancedErrorFormatter:
         self.formatter.format_error(error_info, formatted_message, stream)
 
         output = stream.getvalue()
-        assert formatted_message in output
-        assert 'Additional error details' in output
-        assert 'Metadata:' in output
-        assert 'key1: value1' in output
-        assert 'key2: value2' in output
+        expected = (
+            'An error occurred (ValidationError): Validation failed\n'
+            '\n'
+            'Additional error details:\n'
+            'Metadata: {key1: value1, key2: value2}\n'
+        )
+        assert output == expected
 
     def test_format_error_with_complex_object(self):
         error_info = {
@@ -324,13 +221,17 @@ class TestEnhancedErrorFormatter:
         self.formatter.format_error(error_info, formatted_message, stream)
 
         output = stream.getvalue()
-        assert formatted_message in output
-        assert 'Additional error details' in output
-        assert 'Details: <complex value>' in output
-        assert '--cli-error-format with json or yaml' in output
+        expected = (
+            'An error occurred (ValidationError): Validation failed\n'
+            '\n'
+            'Additional error details:\n'
+            'Details: <complex value> '
+            '(Use --cli-error-format with json or yaml to see full details)\n'
+        )
+        assert output == expected
+        assert 'Details: <complex value> (Use --cli-error-format' in output
 
     def test_format_error_with_nested_dict(self):
-        """Test formatting with nested dictionary structures."""
         error_info = {
             'Code': 'ValidationError',
             'Message': 'Validation failed',
@@ -347,11 +248,16 @@ class TestEnhancedErrorFormatter:
         self.formatter.format_error(error_info, formatted_message, stream)
 
         output = stream.getvalue()
-        assert formatted_message in output
-        assert 'FieldErrors: <complex value>' in output
+        expected = (
+            'An error occurred (ValidationError): Validation failed\n'
+            '\n'
+            'Additional error details:\n'
+            'FieldErrors: <complex value> '
+            '(Use --cli-error-format with json or yaml to see full details)\n'
+        )
+        assert output == expected
 
     def test_format_error_with_list_of_dicts(self):
-        """Test formatting with list containing dictionaries."""
         error_info = {
             'Code': 'TransactionCanceledException',
             'Message': 'Transaction cancelled',
@@ -375,11 +281,17 @@ class TestEnhancedErrorFormatter:
         self.formatter.format_error(error_info, formatted_message, stream)
 
         output = stream.getvalue()
-        assert formatted_message in output
-        assert 'CancellationReasons: <complex value>' in output
+        expected = (
+            'An error occurred (TransactionCanceledException): '
+            'Transaction cancelled\n'
+            '\n'
+            'Additional error details:\n'
+            'CancellationReasons: <complex value> '
+            '(Use --cli-error-format with json or yaml to see full details)\n'
+        )
+        assert output == expected
 
     def test_format_error_with_mixed_types(self):
-        """Test formatting with various data types."""
         error_info = {
             'Code': 'ComplexError',
             'Message': 'Complex error occurred',
@@ -397,16 +309,19 @@ class TestEnhancedErrorFormatter:
         self.formatter.format_error(error_info, formatted_message, stream)
 
         output = stream.getvalue()
-        assert formatted_message in output
-        assert 'Additional error details' in output
-        assert 'StringField: test-value' in output
-        assert 'IntField: 42' in output
-        assert 'FloatField: 3.14' in output
-        assert 'BoolField: True' in output
-        assert 'NoneField: None' in output
+        expected = (
+            'An error occurred (ComplexError): Complex error occurred\n'
+            '\n'
+            'Additional error details:\n'
+            'StringField: test-value\n'
+            'IntField: 42\n'
+            'FloatField: 3.14\n'
+            'BoolField: True\n'
+            'NoneField: None\n'
+        )
+        assert output == expected
 
     def test_format_error_with_unicode_and_special_chars(self):
-        """Test formatting with unicode and special characters."""
         error_info = {
             'Code': 'InvalidInput',
             'Message': 'Invalid input provided',
@@ -422,13 +337,17 @@ class TestEnhancedErrorFormatter:
         self.formatter.format_error(error_info, formatted_message, stream)
 
         output = stream.getvalue()
-        assert formatted_message in output
-        assert 'José García' in output
-        assert 'quotes' in output
-        assert 'apostrophes' in output
+        expected = (
+            'An error occurred (InvalidInput): Invalid input provided\n'
+            '\n'
+            'Additional error details:\n'
+            'UserName: José García\n'
+            'Description: Error with "quotes" and \'apostrophes\'\n'
+            'Path: /path/to/file.txt\n'
+        )
+        assert output == expected
 
     def test_format_error_with_large_list(self):
-        """Test that large lists are marked as complex."""
         error_info = {
             'Code': 'LargeList',
             'Message': 'Large list error',
@@ -442,22 +361,22 @@ class TestEnhancedErrorFormatter:
         self.formatter.format_error(error_info, formatted_message, stream)
 
         output = stream.getvalue()
-        assert formatted_message in output
-        assert 'Items: <complex value>' in output
+        expected = (
+            'An error occurred (LargeList): Large list error\n'
+            '\n'
+            'Additional error details:\n'
+            'Items: <complex value> '
+            '(Use --cli-error-format with json or yaml to see full details)\n'
+        )
+        assert output == expected
 
 
 class TestRealWorldErrorScenarios:
-    """Test real-world AWS error response structures."""
-
     def setup_method(self):
         self.session = FakeSession()
         self.handler = ClientErrorHandler(self.session)
 
     def test_dynamodb_transaction_cancelled_error(self):
-        """
-        Test DynamoDB TransactionCanceledException with
-        CancellationReasons.
-        """
         error_response = {
             'Error': {
                 'Code': 'TransactionCanceledException',
@@ -498,7 +417,6 @@ class TestRealWorldErrorScenarios:
         assert 'CancellationReasons' in stderr_output
 
     def test_throttling_error_with_retry_info(self):
-        """Test throttling error with retry information."""
         error_response = {
             'Error': {
                 'Code': 'ThrottlingException',

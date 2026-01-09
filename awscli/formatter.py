@@ -375,10 +375,8 @@ class OffFormatter(Formatter):
 
     def __call__(self, command_name, response, stream=None):
         if is_response_paginated(response):
-            for page in response:
-                self._get_transformed_response_for_output(page)
-        else:
-            self._get_transformed_response_for_output(response)
+            for _ in response:
+                pass
 
 
 CLI_OUTPUT_FORMATS = {

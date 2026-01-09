@@ -2290,6 +2290,22 @@
       ],
       "documentation":"<p>Creates mappings.</p>"
     },
+    "GetMaterializedViewRefreshTaskRun":{
+      "name":"GetMaterializedViewRefreshTaskRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetMaterializedViewRefreshTaskRunRequest"},
+      "output":{"shape":"GetMaterializedViewRefreshTaskRunResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Get the associated metadata/information for a task run, given a task run ID.</p>"
+    },
     "GetPartition":{
       "name":"GetPartition",
       "http":{
@@ -3129,6 +3145,21 @@
       ],
       "documentation":"<p> Retrieves a sortable, filterable list of existing Glue machine learning transforms in this Amazon Web Services account, or the resources with the specified tag. This operation takes the optional <code>Tags</code> field, which you can use as a filter of the responses so that tagged resources can be retrieved as a group. If you choose to use tag filtering, only resources with the tags are retrieved. </p>"
     },
+    "ListMaterializedViewRefreshTaskRuns":{
+      "name":"ListMaterializedViewRefreshTaskRuns",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListMaterializedViewRefreshTaskRunsRequest"},
+      "output":{"shape":"ListMaterializedViewRefreshTaskRunsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>List all task runs for a particular account.</p>"
+    },
     "ListRegistries":{
       "name":"ListRegistries",
       "http":{
@@ -3703,6 +3734,24 @@
       ],
       "documentation":"<p>Starts the active learning workflow for your machine learning transform to improve the transform's quality by generating label sets and adding labels.</p> <p>When the <code>StartMLLabelingSetGenerationTaskRun</code> finishes, Glue will have generated a \"labeling set\" or a set of questions for humans to answer.</p> <p>In the case of the <code>FindMatches</code> transform, these questions are of the form, “What is the correct way to group these rows together into groups composed entirely of matching records?” </p> <p>After the labeling process is finished, you can upload your labels with a call to <code>StartImportLabelsTaskRun</code>. After <code>StartImportLabelsTaskRun</code> finishes, all future runs of the machine learning transform will use the new and improved labels and perform a higher-quality transformation.</p> <p>Note: The role used to write the generated labeling set to the <code>OutputS3Path</code> is the role associated with the Machine Learning Transform, specified in the <code>CreateMLTransform</code> API.</p>"
     },
+    "StartMaterializedViewRefreshTaskRun":{
+      "name":"StartMaterializedViewRefreshTaskRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartMaterializedViewRefreshTaskRunRequest"},
+      "output":{"shape":"StartMaterializedViewRefreshTaskRunResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"MaterializedViewRefreshTaskRunningException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"InvalidInputException"}
+      ],
+      "documentation":"<p>Starts a materialized view refresh task run, for a specified table and columns.</p>"
+    },
     "StartTrigger":{
       "name":"StartTrigger",
       "http":{
@@ -3801,6 +3850,23 @@
         {"shape":"OperationTimeoutException"}
       ],
       "documentation":"<p>Sets the schedule state of the specified crawler to <code>NOT_SCHEDULED</code>, but does not stop the crawler if it is already running.</p>"
+    },
+    "StopMaterializedViewRefreshTaskRun":{
+      "name":"StopMaterializedViewRefreshTaskRun",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StopMaterializedViewRefreshTaskRunRequest"},
+      "output":{"shape":"StopMaterializedViewRefreshTaskRunResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"MaterializedViewRefreshTaskNotRunningException"},
+        {"shape":"MaterializedViewRefreshTaskStoppingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"}
+      ],
+      "documentation":"<p>Stops a materialized view refresh task run, for a specified table and columns.</p>"
     },
     "StopSession":{
       "name":"StopSession",
@@ -6081,6 +6147,10 @@
     "BoxedPositiveInt":{
       "type":"integer",
       "box":true,
+      "min":0
+    },
+    "ByteCount":{
+      "type":"long",
       "min":0
     },
     "CancelDataQualityRuleRecommendationRunRequest":{
@@ -15499,6 +15569,32 @@
         }
       }
     },
+    "GetMaterializedViewRefreshTaskRunRequest":{
+      "type":"structure",
+      "required":[
+        "CatalogId",
+        "MaterializedViewRefreshTaskRunId"
+      ],
+      "members":{
+        "CatalogId":{
+          "shape":"NameString",
+          "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the account ID is used by default.</p>"
+        },
+        "MaterializedViewRefreshTaskRunId":{
+          "shape":"UUIDv4",
+          "documentation":"<p>The identifier for the particular materialized view refresh task run.</p>"
+        }
+      }
+    },
+    "GetMaterializedViewRefreshTaskRunResponse":{
+      "type":"structure",
+      "members":{
+        "MaterializedViewRefreshTaskRun":{
+          "shape":"MaterializedViewRefreshTaskRun",
+          "documentation":"<p>A MaterializedViewRefreshTaskRun object representing the details of the task run.</p>"
+        }
+      }
+    },
     "GetPartitionIndexesRequest":{
       "type":"structure",
       "required":[
@@ -19869,6 +19965,45 @@
         }
       }
     },
+    "ListMaterializedViewRefreshTaskRunsRequest":{
+      "type":"structure",
+      "required":["CatalogId"],
+      "members":{
+        "CatalogId":{
+          "shape":"NameString",
+          "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the account ID is used by default.</p>"
+        },
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>The database where the table resides.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the table for which statistics is generated.</p>"
+        },
+        "MaxResults":{
+          "shape":"PageSize",
+          "documentation":"<p>The maximum size of the response.</p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if this is a continuation call.</p>"
+        }
+      }
+    },
+    "ListMaterializedViewRefreshTaskRunsResponse":{
+      "type":"structure",
+      "members":{
+        "MaterializedViewRefreshTaskRuns":{
+          "shape":"MaterializedViewRefreshTaskRunsList",
+          "documentation":"<p>The results of the ListMaterializedViewRefreshTaskRuns action. </p>"
+        },
+        "NextToken":{
+          "shape":"Token",
+          "documentation":"<p>A continuation token, if not all task run IDs have yet been returned.</p>"
+        }
+      }
+    },
     "ListOfString":{
       "type":"list",
       "member":{"shape":"String"}
@@ -20474,6 +20609,117 @@
       "member":{"shape":"NameString"},
       "max":10,
       "min":0
+    },
+    "MaterializedViewRefreshState":{
+      "type":"string",
+      "enum":[
+        "STARTING",
+        "RUNNING",
+        "SUCCEEDED",
+        "FAILED",
+        "STOPPED"
+      ]
+    },
+    "MaterializedViewRefreshTaskNotRunningException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"MessageString"}
+      },
+      "documentation":"<p>Exception thrown when stopping a task that is not in running state.</p>",
+      "exception":true
+    },
+    "MaterializedViewRefreshTaskRun":{
+      "type":"structure",
+      "members":{
+        "CustomerId":{
+          "shape":"AccountId",
+          "documentation":"<p>The Amazon Web Services account ID.</p>"
+        },
+        "MaterializedViewRefreshTaskRunId":{
+          "shape":"UUIDv4",
+          "documentation":"<p>The identifier of the materialized view refresh task run.</p>"
+        },
+        "DatabaseName":{
+          "shape":"DatabaseName",
+          "documentation":"<p>The database where the table resides.</p>"
+        },
+        "TableName":{
+          "shape":"TableName",
+          "documentation":"<p>The name of the table for which statistics is generated.</p>"
+        },
+        "CatalogId":{
+          "shape":"CatalogIdString",
+          "documentation":"<p>The ID of the Data Catalog where the table resides. If none is supplied, the account ID is used by default.</p>"
+        },
+        "Role":{
+          "shape":"Role",
+          "documentation":"<p>The IAM role that the service assumes to generate statistics.</p>"
+        },
+        "Status":{
+          "shape":"MaterializedViewRefreshState",
+          "documentation":"<p>The status of the task run.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time that this task was created.</p>"
+        },
+        "LastUpdated":{
+          "shape":"Timestamp",
+          "documentation":"<p>The last point in time when this task was modified.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The start time of the task.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The end time of the task.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"DescriptionString",
+          "documentation":"<p>The error message for the job.</p>"
+        },
+        "DPUSeconds":{
+          "shape":"NonNegativeDouble",
+          "documentation":"<p>The calculated DPU usage in seconds for all autoscaled workers.</p>"
+        },
+        "RefreshType":{
+          "shape":"MaterializedViewRefreshType",
+          "documentation":"<p>The type of the refresh task run. Either FULL or INCREMENTAL.</p>"
+        },
+        "ProcessedBytes":{
+          "shape":"ByteCount",
+          "documentation":"<p>The number of bytes the refresh task run has scanned to refresh the materialized view.</p>"
+        }
+      },
+      "documentation":"<p>The object that shows the details of the materialized view refresh task run.</p>"
+    },
+    "MaterializedViewRefreshTaskRunningException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"MessageString"}
+      },
+      "documentation":"<p>Exception thrown when a task is already in running state.</p>",
+      "exception":true
+    },
+    "MaterializedViewRefreshTaskRunsList":{
+      "type":"list",
+      "member":{"shape":"MaterializedViewRefreshTaskRun"}
+    },
+    "MaterializedViewRefreshTaskStoppingException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"MessageString"}
+      },
+      "documentation":"<p>Exception thrown when a task is already in stopping state.</p>",
+      "exception":true
+    },
+    "MaterializedViewRefreshType":{
+      "type":"string",
+      "enum":[
+        "FULL",
+        "INCREMENTAL"
+      ]
     },
     "MaxConcurrentRuns":{"type":"integer"},
     "MaxListTableOptimizerRunsTokenResults":{"type":"integer"},
@@ -25438,6 +25684,41 @@
         }
       }
     },
+    "StartMaterializedViewRefreshTaskRunRequest":{
+      "type":"structure",
+      "required":[
+        "CatalogId",
+        "DatabaseName",
+        "TableName"
+      ],
+      "members":{
+        "CatalogId":{
+          "shape":"NameString",
+          "documentation":"<p>The ID of the Data Catalog where the table reside. If none is supplied, the account ID is used by default.</p>"
+        },
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the database where the table resides.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the table to generate run the materialized view refresh task.</p>"
+        },
+        "FullRefresh":{
+          "shape":"NullableBoolean",
+          "documentation":"<p>Specifies whether this is a full refresh of the task run.</p>"
+        }
+      }
+    },
+    "StartMaterializedViewRefreshTaskRunResponse":{
+      "type":"structure",
+      "members":{
+        "MaterializedViewRefreshTaskRunId":{
+          "shape":"UUIDv4",
+          "documentation":"<p>The identifier for the materialized view refresh task run.</p>"
+        }
+      }
+    },
     "StartTriggerRequest":{
       "type":"structure",
       "required":["Name"],
@@ -25804,6 +26085,32 @@
       }
     },
     "StopCrawlerScheduleResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "StopMaterializedViewRefreshTaskRunRequest":{
+      "type":"structure",
+      "required":[
+        "CatalogId",
+        "DatabaseName",
+        "TableName"
+      ],
+      "members":{
+        "CatalogId":{
+          "shape":"NameString",
+          "documentation":"<p>The ID of the Data Catalog where the table reside. If none is supplied, the account ID is used by default.</p>"
+        },
+        "DatabaseName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the database where the table resides.</p>"
+        },
+        "TableName":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the table to generate statistics.</p>"
+        }
+      }
+    },
+    "StopMaterializedViewRefreshTaskRunResponse":{
       "type":"structure",
       "members":{}
     },
@@ -27172,6 +27479,10 @@
       "max":1024,
       "min":1,
       "pattern":"[\\u0020-\\uD7FF\\uE000-\\uFFFD\\uD800\\uDC00-\\uDBFF\\uDFFF\\r\\n\\t]*"
+    },
+    "UUIDv4":{
+      "type":"string",
+      "pattern":"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
     },
     "UnfilteredPartition":{
       "type":"structure",

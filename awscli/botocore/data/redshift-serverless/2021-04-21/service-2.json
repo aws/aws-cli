@@ -401,6 +401,25 @@
       ],
       "documentation":"<p>Returns information, such as the name, about a VPC endpoint.</p>"
     },
+    "GetIdentityCenterAuthToken":{
+      "name":"GetIdentityCenterAuthToken",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetIdentityCenterAuthTokenRequest"},
+      "output":{"shape":"GetIdentityCenterAuthTokenResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"DryRunException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns an Identity Center authentication token for accessing Amazon Redshift Serverless workgroups.</p> <p>The token provides secure access to data within the specified workgroups using Identity Center identity propagation. The token expires after a specified duration and must be refreshed for continued access.</p> <p>The Identity and Access Management (IAM) user or role that runs GetIdentityCenterAuthToken must have appropriate permissions to access the specified workgroups and Identity Center integration must be configured for the workgroups.</p>"
+    },
     "GetNamespace":{
       "name":"GetNamespace",
       "http":{
@@ -537,6 +556,7 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"DryRunException"},
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Get the Redshift Serverless version for a specified track.</p>"
@@ -2015,6 +2035,30 @@
           "documentation":"<p>The returned VPC endpoint.</p>"
         }
       }
+    },
+    "GetIdentityCenterAuthTokenRequest":{
+      "type":"structure",
+      "required":["workgroupNames"],
+      "members":{
+        "workgroupNames":{
+          "shape":"WorkgroupNameList",
+          "documentation":"<p>A list of workgroup names for which to generate the Identity Center authentication token.</p> <p>Constraints:</p> <ul> <li> <p>Must contain between 1 and 20 workgroup names.</p> </li> <li> <p>Each workgroup name must be a valid Amazon Redshift Serverless workgroup identifier.</p> </li> <li> <p>All specified workgroups must have Identity Center integration enabled.</p> </li> </ul>"
+        }
+      }
+    },
+    "GetIdentityCenterAuthTokenResponse":{
+      "type":"structure",
+      "members":{
+        "expirationTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the Identity Center authentication token expires.</p> <p>After this time, a new token must be requested for continued access.</p>"
+        },
+        "token":{
+          "shape":"String",
+          "documentation":"<p>The Identity Center authentication token that can be used to access data in the specified workgroups.</p> <p>This token contains the Identity Center identity information and is encrypted for secure transmission.</p>"
+        }
+      },
+      "sensitive":true
     },
     "GetNamespaceRequest":{
       "type":"structure",
@@ -4585,6 +4629,12 @@
       "max":64,
       "min":3,
       "pattern":"^[a-z0-9-]+$"
+    },
+    "WorkgroupNameList":{
+      "type":"list",
+      "member":{"shape":"WorkgroupName"},
+      "max":20,
+      "min":1
     },
     "WorkgroupStatus":{
       "type":"string",

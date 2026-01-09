@@ -1419,6 +1419,10 @@
         "S3VectorsEngine":{
           "shape":"S3VectorsEngine",
           "documentation":"<p>Container for parameters required to enable S3 vectors engine features on the specified domain.</p>"
+        },
+        "ServerlessVectorAcceleration":{
+          "shape":"ServerlessVectorAcceleration",
+          "documentation":"<p>Specifies whether to enable serverless vector acceleration for the domain. When enabled, provides <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/gpu-acceleration-vector-index.html\">GPU-accelerated</a> vector search capabilities for improved performance on vector workloads.</p>"
         }
       },
       "documentation":"<p>Container for parameters required to enable all machine learning features.</p>"
@@ -1433,6 +1437,10 @@
         "S3VectorsEngine":{
           "shape":"S3VectorsEngine",
           "documentation":"<p>Container for parameters representing the state of S3 vectors engine features on the specified domain.</p>"
+        },
+        "ServerlessVectorAcceleration":{
+          "shape":"ServerlessVectorAcceleration",
+          "documentation":"<p>The current serverless vector acceleration configuration for the domain.</p>"
         }
       },
       "documentation":"<p>Container for parameters representing the state of machine learning features on the specified domain.</p>"
@@ -2665,7 +2673,11 @@
           "shape":"AppConfigs",
           "documentation":"<p>Configuration settings for the OpenSearch application, including administrative options.</p>"
         },
-        "tagList":{"shape":"TagList"}
+        "tagList":{"shape":"TagList"},
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the application's data at rest. If provided, the application uses your customer-managed key for encryption. If omitted, the application uses an AWS-managed key. The KMS key must be in the same region as the application.</p>"
+        }
       }
     },
     "CreateApplicationResponse":{
@@ -2696,6 +2708,10 @@
         "createdAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp indicating when the OpenSearch application was created.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the application's data at rest.</p>"
         }
       }
     },
@@ -4772,6 +4788,10 @@
         "lastUpdatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp of the last update to the OpenSearch application.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key used to encrypt the application's data at rest.</p>"
         }
       }
     },
@@ -5535,6 +5555,12 @@
         }
       },
       "documentation":"<p>The configuration parameters to enable access to the key store required by the package.</p>"
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws[a-zA-Z-]*:kms:[a-z0-9-]+:[0-9]{12}:key/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
     },
     "KmsKeyId":{
       "type":"string",
@@ -6325,7 +6351,8 @@
       "enum":[
         "Data",
         "Ultrawarm",
-        "Master"
+        "Master",
+        "Warm"
       ]
     },
     "NonEmptyString":{
@@ -7519,6 +7546,16 @@
         }
       },
       "documentation":"<p> Configuration details for a Security Lake data source that can be used for direct queries. </p>"
+    },
+    "ServerlessVectorAcceleration":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether serverless vector acceleration is enabled for the domain.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for serverless vector acceleration, which provides <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/gpu-acceleration-vector-index.html\">GPU-accelerated</a> vector search capabilities for improved performance on vector workloads.</p>"
     },
     "ServiceSoftwareOptions":{
       "type":"structure",

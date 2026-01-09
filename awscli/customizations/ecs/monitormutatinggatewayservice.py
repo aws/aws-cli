@@ -64,7 +64,7 @@ class MonitorResourcesAction(argparse.Action):
 
 
 class MonitoringResourcesArgument(CustomArgument):
-    """Custom CLI argument for enabling resource monitoring.
+    """Custom CLI argument for enabling resource monitoring with optional mode.
 
     Adds the --monitor-resources flag to gateway service commands,
     allowing users to opt into real-time monitoring of resource changes.
@@ -74,19 +74,35 @@ class MonitoringResourcesArgument(CustomArgument):
         super().__init__(
             name,
             help_text=(
-                'Enable live monitoring of service resource status. '
+                'Enable monitoring of service resource status. '
                 'Specify ``DEPLOYMENT`` to show only resources that are being added or removed '
                 'as part of the latest service deployment, or ``RESOURCE`` to show all resources '
                 'from all active configurations of the service. '
                 'Defaults based on operation type: create-express-gateway-service and '
                 'update-express-gateway-service default to ``DEPLOYMENT`` mode. '
-                'delete-express-gateway-service defaults to ``RESOURCE`` mode. '
-                'Requires a terminal (TTY) to run.'
+                'delete-express-gateway-service defaults to ``RESOURCE`` mode.'
             ),
             choices=['DEPLOYMENT', 'RESOURCE'],
             nargs='?',
             action=MonitorResourcesAction,
             dest='monitor_resources',
+        )
+
+
+class MonitoringModeArgument(CustomArgument):
+    """Custom CLI argument for monitor display mode. Only used when --monitor-resources is specified."""
+
+    def __init__(self):
+        super().__init__(
+            'monitor-mode',
+            help_text=(
+                'Display mode for monitoring output (requires ``--monitor-resources``). '
+                'INTERACTIVE (default if TTY available) - Real-time display with keyboard navigation. '
+                'TEXT-ONLY - Text output with timestamps, suitable for logging and non-interactive environments.'
+            ),
+            choices=['INTERACTIVE', 'TEXT-ONLY'],
+            nargs='?',
+            dest='monitor_mode',
         )
 
 
@@ -110,6 +126,7 @@ class MonitorMutatingGatewayService:
         self.session = None
         self.parsed_globals = None
         self.effective_resource_view = None
+        self.effective_mode = None
         self._watcher_class = watcher_class or ECSExpressGatewayServiceWatcher
 
     def before_building_argument_table_parser(self, session, **kwargs):
@@ -131,6 +148,7 @@ class MonitorMutatingGatewayService:
         argument_table['monitor-resources'] = MonitoringResourcesArgument(
             'monitor-resources'
         )
+        argument_table['monitor-mode'] = MonitoringModeArgument()
 
     def operation_args_parsed(self, parsed_args, parsed_globals, **kwargs):
         """Store monitoring flag state and globals after argument parsing.
@@ -139,21 +157,71 @@ class MonitorMutatingGatewayService:
             parsed_args: Parsed command line arguments
             parsed_globals: Global CLI configuration
         """
+        self._parse_and_validate_monitoring_args(parsed_args, parsed_globals)
+
+    def _parse_and_validate_monitoring_args(self, parsed_args, parsed_globals):
+        """Parse and validate monitoring-related arguments.
+
+        Extracts monitor_resources and monitor_mode from parsed_args,
+        validates their combination, and sets effective_resource_view
+        and effective_mode.
+
+        Args:
+            parsed_args: Parsed command line arguments
+            parsed_globals: Global CLI configuration
+
+        Raises:
+            ValueError: If monitor-mode is used without monitor-resources
+        """
         # Store parsed_globals for later use
         self.parsed_globals = parsed_globals
 
-        # Get monitor_resources value and determine actual monitoring mode
+        # Parse monitor_resources to determine if monitoring is enabled
         monitor_value = getattr(parsed_args, 'monitor_resources', None)
+        self.effective_resource_view = self._parse_monitor_resources(
+            monitor_value
+        )
 
+        # Validate monitor_mode
+        mode_value = getattr(parsed_args, 'monitor_mode', None)
+        self.effective_mode = self._validate_mode(
+            mode_value, self.effective_resource_view
+        )
+
+    def _parse_monitor_resources(self, monitor_value):
+        """Parse monitor_resources value to determine resource view.
+
+        Args:
+            monitor_value: Value from --monitor-resources flag
+
+        Returns:
+            str or None: Resource view mode (DEPLOYMENT/RESOURCE) or None
+        """
         if monitor_value is None:
-            # Not specified, no monitoring
-            self.effective_resource_view = None
+            return None
         elif monitor_value == '__DEFAULT__':
-            # Flag specified without value, use default based on operation
-            self.effective_resource_view = self.default_resource_view
+            return self.default_resource_view
         else:
-            # Explicit choice provided (DEPLOYMENT or RESOURCE)
-            self.effective_resource_view = monitor_value
+            return monitor_value
+
+    def _validate_mode(self, mode_value, resource_view):
+        """Validate the monitor mode value.
+
+        Args:
+            mode_value: Value from --monitor-mode flag
+            resource_view: Effective resource view (None if not monitoring)
+
+        Returns:
+            str: Display mode ('INTERACTIVE' or 'TEXT-ONLY')
+
+        Raises:
+            ValueError: If mode is specified without resource monitoring
+        """
+        if mode_value is not None and resource_view is None:
+            raise ValueError(
+                "--monitor-mode can only be used with --monitor-resources"
+            )
+        return mode_value if mode_value else 'INTERACTIVE'
 
     def after_call(self, parsed, context, http_response, **kwargs):
         """Start monitoring after successful API call if flag is enabled.
@@ -171,13 +239,20 @@ class MonitorMutatingGatewayService:
         ).get('serviceArn'):
             return
 
-        # Check monitoring availability
-        if not self._watcher_class.is_monitoring_available():
+        # Interactive mode requires TTY, text-only does not
+        # Default to text-only if no TTY available
+        if self.effective_mode == 'INTERACTIVE' and not sys.stdout.isatty():
             uni_print(
-                "Monitoring is not available (requires TTY). Skipping monitoring.\n",
-                out_file=sys.stderr,
+                "aws: [ERROR]: Interactive mode requires a TTY (terminal). "
+                "Monitoring skipped. Use --monitor-mode TEXT-ONLY for non-interactive environments.",
+                sys.stderr,
             )
             return
+        elif self.effective_mode == 'INTERACTIVE' and sys.stdout.isatty():
+            pass  # Interactive mode with TTY - OK
+        elif not sys.stdout.isatty():
+            # No TTY - force text-only mode
+            self.effective_mode = 'TEXT-ONLY'
 
         if not self.session or not self.parsed_globals:
             uni_print(
@@ -199,20 +274,13 @@ class MonitorMutatingGatewayService:
         # Clear output when monitoring is invoked
         parsed.clear()
 
-        try:
-            self._watcher_class(
-                ecs_client,
-                service_arn,
-                self.effective_resource_view,
-                use_color=self._should_use_color(self.parsed_globals),
-            ).exec()
-        except Exception as e:
-            uni_print(
-                "Encountered an error, terminating monitoring\n"
-                + str(e)
-                + "\n",
-                out_file=sys.stderr,
-            )
+        self._watcher_class(
+            ecs_client,
+            service_arn,
+            self.effective_resource_view,
+            self.effective_mode,
+            use_color=self._should_use_color(self.parsed_globals),
+        ).exec()
 
     def _should_use_color(self, parsed_globals):
         """Determine if color output should be used based on global settings."""

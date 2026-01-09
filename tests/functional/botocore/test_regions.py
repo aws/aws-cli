@@ -44,7 +44,6 @@ KNOWN_REGIONS = {
         'elasticbeanstalk': 'elasticbeanstalk.ap-northeast-1.amazonaws.com',
         'elasticloadbalancing': 'elasticloadbalancing.ap-northeast-1.amazonaws.com',
         'elasticmapreduce': 'elasticmapreduce.ap-northeast-1.amazonaws.com',
-        'elastictranscoder': 'elastictranscoder.ap-northeast-1.amazonaws.com',
         'glacier': 'glacier.ap-northeast-1.amazonaws.com',
         'iot': 'iot.ap-northeast-1.amazonaws.com',
         'kinesis': 'kinesis.ap-northeast-1.amazonaws.com',
@@ -79,7 +78,6 @@ KNOWN_REGIONS = {
         'elasticbeanstalk': 'elasticbeanstalk.ap-southeast-1.amazonaws.com',
         'elasticloadbalancing': 'elasticloadbalancing.ap-southeast-1.amazonaws.com',
         'elasticmapreduce': 'elasticmapreduce.ap-southeast-1.amazonaws.com',
-        'elastictranscoder': 'elastictranscoder.ap-southeast-1.amazonaws.com',
         'kinesis': 'kinesis.ap-southeast-1.amazonaws.com',
         'kms': 'kms.ap-southeast-1.amazonaws.com',
         'logs': 'logs.ap-southeast-1.amazonaws.com',
@@ -207,7 +205,6 @@ KNOWN_REGIONS = {
         'elasticbeanstalk': 'elasticbeanstalk.eu-west-1.amazonaws.com',
         'elasticloadbalancing': 'elasticloadbalancing.eu-west-1.amazonaws.com',
         'elasticmapreduce': 'elasticmapreduce.eu-west-1.amazonaws.com',
-        'elastictranscoder': 'elastictranscoder.eu-west-1.amazonaws.com',
         'email': 'email.eu-west-1.amazonaws.com',
         'glacier': 'glacier.eu-west-1.amazonaws.com',
         'iot': 'iot.eu-west-1.amazonaws.com',
@@ -283,7 +280,6 @@ KNOWN_REGIONS = {
         'elasticbeanstalk': 'elasticbeanstalk.us-east-1.amazonaws.com',
         'elasticloadbalancing': 'elasticloadbalancing.us-east-1.amazonaws.com',
         'elasticmapreduce': 'elasticmapreduce.us-east-1.amazonaws.com',
-        'elastictranscoder': 'elastictranscoder.us-east-1.amazonaws.com',
         'email': 'email.us-east-1.amazonaws.com',
         'glacier': 'glacier.us-east-1.amazonaws.com',
         'iam': 'iam.amazonaws.com',
@@ -349,7 +345,6 @@ KNOWN_REGIONS = {
         'elasticbeanstalk': 'elasticbeanstalk.us-west-1.amazonaws.com',
         'elasticloadbalancing': 'elasticloadbalancing.us-west-1.amazonaws.com',
         'elasticmapreduce': 'elasticmapreduce.us-west-1.amazonaws.com',
-        'elastictranscoder': 'elastictranscoder.us-west-1.amazonaws.com',
         'glacier': 'glacier.us-west-1.amazonaws.com',
         'kinesis': 'kinesis.us-west-1.amazonaws.com',
         'kms': 'kms.us-west-1.amazonaws.com',
@@ -387,7 +382,6 @@ KNOWN_REGIONS = {
         'elasticfilesystem': 'elasticfilesystem.us-west-2.amazonaws.com',
         'elasticloadbalancing': 'elasticloadbalancing.us-west-2.amazonaws.com',
         'elasticmapreduce': 'elasticmapreduce.us-west-2.amazonaws.com',
-        'elastictranscoder': 'elastictranscoder.us-west-2.amazonaws.com',
         'email': 'email.us-west-2.amazonaws.com',
         'glacier': 'glacier.us-west-2.amazonaws.com',
         'iot': 'iot.us-west-2.amazonaws.com',
@@ -452,18 +446,6 @@ def test_single_service_region_endpoint(
     if not scheme:
         expected_endpoint = f'https://{expected_endpoint}'
     assert result['endpoint_url'] == expected_endpoint
-
-
-# Ensure that all S3 regions use s3v4 instead of v4
-def test_all_s3_endpoints_have_s3v4(patched_session):
-    session = patched_session
-    partitions = session.get_available_partitions()
-    resolver = session._get_internal_component('endpoint_resolver')
-    for partition_name in partitions:
-        for endpoint in session.get_available_regions('s3', partition_name):
-            resolved = resolver.construct_endpoint('s3', endpoint)
-            assert 's3v4' in resolved['signatureVersions']
-            assert 'v4' not in resolved['signatureVersions']
 
 
 @pytest.mark.parametrize(

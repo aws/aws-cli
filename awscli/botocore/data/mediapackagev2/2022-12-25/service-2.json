@@ -3818,9 +3818,19 @@
         "Url":{
           "shape":"SpekeKeyProviderUrlString",
           "documentation":"<p>The URL of the API Gateway proxy that you set up to talk to your key server. The API Gateway proxy must reside in the same AWS Region as MediaPackage and must start with https://.</p> <p>The following example shows a URL: <code>https://1wm2dx1f33.execute-api.us-west-2.amazonaws.com/SpekeSample/copyProtection</code> </p>"
+        },
+        "CertificateArn":{
+          "shape":"SpekeKeyProviderCertificateArnString",
+          "documentation":"<p>The ARN for the certificate that you imported to AWS Certificate Manager to add content key encryption to this endpoint. For this feature to work, your DRM key provider must support content key encryption.</p>"
         }
       },
       "documentation":"<p>The parameters for the SPEKE key provider.</p>"
+    },
+    "SpekeKeyProviderCertificateArnString":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:([^:\\n]+):acm:([^:\\n]+):([0-9]+):certificate/[a-zA-Z0-9-_]+"
     },
     "SpekeKeyProviderDrmSystemsList":{
       "type":"list",
@@ -4361,7 +4371,16 @@
         "MALFORMED_SECRET_ARN",
         "SECRET_FROM_DIFFERENT_ACCOUNT",
         "SECRET_FROM_DIFFERENT_REGION",
-        "INVALID_SECRET"
+        "INVALID_SECRET",
+        "RESOURCE_NOT_IN_SAME_REGION",
+        "CERTIFICATE_RESOURCE_NOT_FOUND",
+        "CERTIFICATE_ACCESS_DENIED",
+        "DESCRIBE_CERTIFICATE_FAILED",
+        "INVALID_CERTIFICATE_STATUS",
+        "INVALID_CERTIFICATE_KEY_ALGORITHM",
+        "INVALID_CERTIFICATE_SIGNATURE_ALGORITHM",
+        "MISSING_CERTIFICATE_DOMAIN_NAME",
+        "INVALID_ARN"
       ]
     }
   },

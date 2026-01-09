@@ -5426,8 +5426,7 @@
       "type":"structure",
       "required":[
         "epsilon",
-        "maxMembershipInferenceAttackScore",
-        "columnClassification"
+        "maxMembershipInferenceAttackScore"
       ],
       "members":{
         "epsilon":{
@@ -5628,16 +5627,16 @@
         "NONE"
       ]
     },
-    "ParameterKey":{
+    "ParameterMap":{
+      "type":"map",
+      "key":{"shape":"ParameterName"},
+      "value":{"shape":"ParameterValue"}
+    },
+    "ParameterName":{
       "type":"string",
       "max":100,
       "min":1,
       "pattern":"[0-9a-zA-Z_]+"
-    },
-    "ParameterMap":{
-      "type":"map",
-      "key":{"shape":"ParameterKey"},
-      "value":{"shape":"ParameterValue"}
     },
     "ParameterValue":{
       "type":"string",
@@ -5833,7 +5832,7 @@
         },
         "volumeSizeInGB":{
           "shape":"ResourceConfigVolumeSizeInGBInteger",
-          "documentation":"<p>The maximum size of the instance that is used to train the model.</p>"
+          "documentation":"<p>The volume size of the instance that is used to train the model. Please see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-store-volumes.html\">EC2 volume limit</a> for volume size limitations on different instance types.</p>"
         }
       },
       "documentation":"<p>Information about the EC2 resources that are used to train the model.</p>"
@@ -5939,6 +5938,23 @@
         "ALL",
         "NONE"
       ]
+    },
+    "SparkProperties":{
+      "type":"map",
+      "key":{"shape":"SparkPropertyKey"},
+      "value":{"shape":"SparkPropertyValue"},
+      "max":50,
+      "min":0
+    },
+    "SparkPropertyKey":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
+    "SparkPropertyValue":{
+      "type":"string",
+      "max":500,
+      "min":0
     },
     "StartAudienceExportJobRequest":{
       "type":"structure",
@@ -6829,7 +6845,8 @@
         "number":{
           "shape":"WorkerComputeConfigurationNumberInteger",
           "documentation":"<p>The number of compute workers that are used.</p>"
-        }
+        },
+        "properties":{"shape":"WorkerComputeConfigurationProperties"}
       },
       "documentation":"<p>Configuration information about the compute workers that perform the transform job.</p>"
     },
@@ -6838,6 +6855,17 @@
       "box":true,
       "max":400,
       "min":2
+    },
+    "WorkerComputeConfigurationProperties":{
+      "type":"structure",
+      "members":{
+        "spark":{
+          "shape":"SparkProperties",
+          "documentation":"<p>The Spark configuration properties for SQL workloads. This map contains key-value pairs that configure Apache Spark settings to optimize performance for your data processing jobs. You can specify up to 50 Spark properties, with each key being 1-200 characters and each value being 0-500 characters. These properties allow you to adjust compute capacity for large datasets and complex workloads.</p>"
+        }
+      },
+      "documentation":"<p>The configuration properties for the worker compute environment. These properties allow you to customize the compute settings for your Clean Rooms workloads.</p>",
+      "union":true
     },
     "WorkerComputeType":{
       "type":"string",

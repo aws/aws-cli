@@ -15,6 +15,11 @@ are provided in the case where you need to modify one of these values, either
 for performance reasons or to account for the specific environment where these
 ``aws s3`` commands are being run.
 
+.. note::
+   S3 commands have an option to use a custom endpoint using ``--endpoint-url``.
+   This overrides the default endpoint the command will use.
+   Use caution when configuring this parameter as it can cause unintended behavior including S3 redirect issues.
+   See `Service-specific endpoints <https://docs.aws.amazon.com/sdkref/latest/guide/feature-ss-endpoints.html>`_ page in the *AWS SDK reference guide* for more information.
 
 Configuration Values
 ====================

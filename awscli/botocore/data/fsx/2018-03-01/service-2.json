@@ -1507,6 +1507,24 @@
       },
       "documentation":"<p>Used to specify the configuration options for an FSx for ONTAP volume's storage aggregate or aggregates.</p>"
     },
+    "CreateAndAttachS3AccessPointOntapConfiguration":{
+      "type":"structure",
+      "required":[
+        "VolumeId",
+        "FileSystemIdentity"
+      ],
+      "members":{
+        "VolumeId":{
+          "shape":"VolumeId",
+          "documentation":"<p>The ID of the FSx for ONTAP volume to which you want the S3 access point attached.</p>"
+        },
+        "FileSystemIdentity":{
+          "shape":"OntapFileSystemIdentity",
+          "documentation":"<p>Specifies the file system user identity to use for authorizing file read and write requests that are made using this S3 access point.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the FSx for ONTAP volume that the S3 access point will be attached to, and the file system user identity.</p>"
+    },
     "CreateAndAttachS3AccessPointOpenZFSConfiguration":{
       "type":"structure",
       "required":[
@@ -1548,6 +1566,7 @@
           "shape":"CreateAndAttachS3AccessPointOpenZFSConfiguration",
           "documentation":"<p>Specifies the configuration to use when creating and attaching an S3 access point to an FSx for OpenZFS volume.</p>"
         },
+        "OntapConfiguration":{"shape":"CreateAndAttachS3AccessPointOntapConfiguration"},
         "S3AccessPoint":{
           "shape":"CreateAndAttachS3AccessPointS3Configuration",
           "documentation":"<p>Specifies the virtual private cloud (VPC) configuration if you're creating an access point that is restricted to a VPC. For more information, see <a href=\"https://docs.aws.amazon.com/fsx/latest/OpenZFSGuide/access-points-vpc.html\">Creating access points restricted to a virtual private cloud</a>.</p>"
@@ -4771,6 +4790,49 @@
       },
       "documentation":"<p>Configuration for the FSx for NetApp ONTAP file system.</p>"
     },
+    "OntapFileSystemIdentity":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"OntapFileSystemUserType",
+          "documentation":"<p>Specifies the FSx for ONTAP user identity type. Valid values are <code>UNIX</code> and <code>WINDOWS</code>.</p>"
+        },
+        "UnixUser":{
+          "shape":"OntapUnixFileSystemUser",
+          "documentation":"<p>Specifies the UNIX user identity for file system operations.</p>"
+        },
+        "WindowsUser":{
+          "shape":"OntapWindowsFileSystemUser",
+          "documentation":"<p>Specifies the Windows user identity for file system operations.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the file system user identity that will be used for authorizing all file access requests that are made using the S3 access point. The identity can be either a UNIX user or a Windows user.</p>"
+    },
+    "OntapFileSystemUserName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"^[^\\u0000\\u0085\\u2028\\u2029\\r\\n]{1,256}$"
+    },
+    "OntapFileSystemUserType":{
+      "type":"string",
+      "enum":[
+        "UNIX",
+        "WINDOWS"
+      ]
+    },
+    "OntapUnixFileSystemUser":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"OntapFileSystemUserName",
+          "documentation":"<p>The name of the UNIX user. The name can be up to 256 characters long.</p>"
+        }
+      },
+      "documentation":"<p>The FSx for ONTAP UNIX file system user that is used for authorizing all file access requests that are made using the S3 access point.</p>"
+    },
     "OntapVolumeConfiguration":{
       "type":"structure",
       "members":{
@@ -4848,6 +4910,17 @@
         "DP",
         "LS"
       ]
+    },
+    "OntapWindowsFileSystemUser":{
+      "type":"structure",
+      "required":["Name"],
+      "members":{
+        "Name":{
+          "shape":"OntapFileSystemUserName",
+          "documentation":"<p>The name of the Windows user. The name can be up to 256 characters long and supports Active Directory users.</p>"
+        }
+      },
+      "documentation":"<p>The FSx for ONTAP Windows file system user that is used for authorizing all file access requests that are made using the S3 access point.</p>"
     },
     "OpenZFSClientConfiguration":{
       "type":"structure",
@@ -5470,6 +5543,10 @@
           "shape":"S3AccessPointOpenZFSConfiguration",
           "documentation":"<p>The OpenZFSConfiguration of the S3 access point attachment.</p>"
         },
+        "OntapConfiguration":{
+          "shape":"S3AccessPointOntapConfiguration",
+          "documentation":"<p>The ONTAP configuration of the S3 access point attachment.</p>"
+        },
         "S3AccessPoint":{
           "shape":"S3AccessPoint",
           "documentation":"<p>The S3 access point configuration of the S3 access point attachment.</p>"
@@ -5484,7 +5561,8 @@
         "CREATING",
         "DELETING",
         "UPDATING",
-        "FAILED"
+        "FAILED",
+        "MISCONFIGURED"
       ]
     },
     "S3AccessPointAttachmentName":{
@@ -5508,7 +5586,10 @@
     },
     "S3AccessPointAttachmentType":{
       "type":"string",
-      "enum":["OPENZFS"]
+      "enum":[
+        "OPENZFS",
+        "ONTAP"
+      ]
     },
     "S3AccessPointAttachments":{
       "type":"list",
@@ -5552,6 +5633,20 @@
       "type":"list",
       "member":{"shape":"S3AccessPointAttachmentsFilter"},
       "max":2
+    },
+    "S3AccessPointOntapConfiguration":{
+      "type":"structure",
+      "members":{
+        "VolumeId":{
+          "shape":"VolumeId",
+          "documentation":"<p>The ID of the FSx for ONTAP volume that the S3 access point is attached to.</p>"
+        },
+        "FileSystemIdentity":{
+          "shape":"OntapFileSystemIdentity",
+          "documentation":"<p>The file system identity used to authorize file access requests made using the S3 access point.</p>"
+        }
+      },
+      "documentation":"<p>Describes the FSx for ONTAP attachment configuration of an S3 access point attachment.</p>"
     },
     "S3AccessPointOpenZFSConfiguration":{
       "type":"structure",

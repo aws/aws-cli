@@ -13,6 +13,25 @@
     "uid":"bedrock-data-automation-2023-07-26"
   },
   "operations":{
+    "CopyBlueprintStage":{
+      "name":"CopyBlueprintStage",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/blueprints/{blueprintArn}/copy-stage",
+        "responseCode":200
+      },
+      "input":{"shape":"CopyBlueprintStageRequest"},
+      "output":{"shape":"CopyBlueprintStageResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Copies a Blueprint from one stage to another</p>",
+      "idempotent":true
+    },
     "CreateBlueprint":{
       "name":"CreateBlueprint",
       "http":{
@@ -130,6 +149,25 @@
       "documentation":"<p>Gets an existing Amazon Bedrock Data Automation Blueprint</p>",
       "readonly":true
     },
+    "GetBlueprintOptimizationStatus":{
+      "name":"GetBlueprintOptimizationStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/getBlueprintOptimizationStatus/{invocationArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetBlueprintOptimizationStatusRequest"},
+      "output":{"shape":"GetBlueprintOptimizationStatusResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>API used to get blueprint optimization status.</p>",
+      "readonly":true
+    },
     "GetDataAutomationProject":{
       "name":"GetDataAutomationProject",
       "http":{
@@ -148,6 +186,26 @@
       ],
       "documentation":"<p>Gets an existing Amazon Bedrock Data Automation Project</p>",
       "readonly":true
+    },
+    "InvokeBlueprintOptimizationAsync":{
+      "name":"InvokeBlueprintOptimizationAsync",
+      "http":{
+        "method":"POST",
+        "requestUri":"/invokeBlueprintOptimizationAsync",
+        "responseCode":200
+      },
+      "input":{"shape":"InvokeBlueprintOptimizationAsyncRequest"},
+      "output":{"shape":"InvokeBlueprintOptimizationAsyncResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Invoke an async job to perform Blueprint Optimization</p>",
+      "idempotent":true
     },
     "ListBlueprints":{
       "name":"ListBlueprints",
@@ -419,7 +477,9 @@
         "blueprintVersion":{"shape":"BlueprintVersion"},
         "blueprintStage":{"shape":"BlueprintStage"},
         "kmsKeyId":{"shape":"KmsKeyId"},
-        "kmsEncryptionContext":{"shape":"KmsEncryptionContext"}
+        "kmsEncryptionContext":{"shape":"KmsEncryptionContext"},
+        "optimizationSamples":{"shape":"BlueprintOptimizationSamples"},
+        "optimizationTime":{"shape":"DateTimestamp"}
       },
       "documentation":"<p>Contains the information of a Blueprint.</p>"
     },
@@ -462,6 +522,73 @@
       "min":1,
       "pattern":"[a-zA-Z0-9-_]+",
       "sensitive":true
+    },
+    "BlueprintOptimizationInvocationArn":{
+      "type":"string",
+      "documentation":"<p>Invocation arn.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"arn:aws(|-cn|-iso|-iso-[a-z]|-us-gov):bedrock:[a-zA-Z0-9-]*:[0-9]{12}:blueprint-optimization-invocation/[a-zA-Z0-9-_]+"
+    },
+    "BlueprintOptimizationJobStatus":{
+      "type":"string",
+      "documentation":"<p>List of status supported by optimization jobs</p>",
+      "enum":[
+        "Created",
+        "InProgress",
+        "Success",
+        "ServiceError",
+        "ClientError"
+      ]
+    },
+    "BlueprintOptimizationObject":{
+      "type":"structure",
+      "required":["blueprintArn"],
+      "members":{
+        "blueprintArn":{
+          "shape":"BlueprintArn",
+          "documentation":"<p>Arn of blueprint.</p>"
+        },
+        "stage":{
+          "shape":"BlueprintStage",
+          "documentation":"<p>Stage of blueprint.</p>"
+        }
+      },
+      "documentation":"<p>Structure for single blueprint entity.</p>"
+    },
+    "BlueprintOptimizationOutputConfiguration":{
+      "type":"structure",
+      "required":["s3Object"],
+      "members":{
+        "s3Object":{
+          "shape":"S3Object",
+          "documentation":"<p>S3 object.</p>"
+        }
+      },
+      "documentation":"<p>Blueprint Optimization Output configuration.</p>"
+    },
+    "BlueprintOptimizationSample":{
+      "type":"structure",
+      "required":[
+        "assetS3Object",
+        "groundTruthS3Object"
+      ],
+      "members":{
+        "assetS3Object":{
+          "shape":"S3Object",
+          "documentation":"<p>S3 Object of the asset</p>"
+        },
+        "groundTruthS3Object":{
+          "shape":"S3Object",
+          "documentation":"<p>Ground truth for the Blueprint and Asset combination</p>"
+        }
+      },
+      "documentation":"<p>Blueprint Recommendation Sample</p>"
+    },
+    "BlueprintOptimizationSamples":{
+      "type":"list",
+      "member":{"shape":"BlueprintOptimizationSample"},
+      "documentation":"<p>List of Blueprint Optimization Samples</p>"
     },
     "BlueprintSchema":{
       "type":"string",
@@ -545,6 +672,41 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "CopyBlueprintStageRequest":{
+      "type":"structure",
+      "required":[
+        "blueprintArn",
+        "sourceStage",
+        "targetStage"
+      ],
+      "members":{
+        "blueprintArn":{
+          "shape":"BlueprintArn",
+          "documentation":"<p>Blueprint to be copied</p>",
+          "location":"uri",
+          "locationName":"blueprintArn"
+        },
+        "sourceStage":{
+          "shape":"BlueprintStage",
+          "documentation":"<p>Source stage to copy from</p>"
+        },
+        "targetStage":{
+          "shape":"BlueprintStage",
+          "documentation":"<p>Target stage to copy to</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Client token for idempotency</p>",
+          "idempotencyToken":true
+        }
+      },
+      "documentation":"<p>CopyBlueprintStage Request</p>"
+    },
+    "CopyBlueprintStageResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>CopyBlueprintStage Response</p>"
     },
     "CreateBlueprintRequest":{
       "type":"structure",
@@ -639,6 +801,13 @@
         "blueprints":{"shape":"BlueprintItems"}
       },
       "documentation":"<p>Custom output configuration</p>"
+    },
+    "DataAutomationProfileArn":{
+      "type":"string",
+      "documentation":"<p>Data automation profile arn.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"arn:aws(|-cn|-us-gov):bedrock:[a-zA-Z0-9-]*:(aws|[0-9]{12}):data-automation-profile/[a-zA-Z0-9-_.]+"
     },
     "DataAutomationProject":{
       "type":"structure",
@@ -944,6 +1113,41 @@
       "min":1,
       "pattern":".*\\S.*"
     },
+    "GetBlueprintOptimizationStatusRequest":{
+      "type":"structure",
+      "required":["invocationArn"],
+      "members":{
+        "invocationArn":{
+          "shape":"BlueprintOptimizationInvocationArn",
+          "documentation":"<p>Invocation arn.</p>",
+          "location":"uri",
+          "locationName":"invocationArn"
+        }
+      },
+      "documentation":"<p>Structure for request of GetBlueprintOptimizationStatus API.</p>"
+    },
+    "GetBlueprintOptimizationStatusResponse":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"BlueprintOptimizationJobStatus",
+          "documentation":"<p>Job Status.</p>"
+        },
+        "errorType":{
+          "shape":"String",
+          "documentation":"<p>Error Type.</p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p>Error Message.</p>"
+        },
+        "outputConfiguration":{
+          "shape":"BlueprintOptimizationOutputConfiguration",
+          "documentation":"<p>Output configuration.</p>"
+        }
+      },
+      "documentation":"<p>Response of GetBlueprintOptimizationStatus API.</p>"
+    },
     "GetBlueprintRequest":{
       "type":"structure",
       "required":["blueprintArn"],
@@ -1086,6 +1290,53 @@
       "error":{"httpStatusCode":500},
       "exception":true,
       "fault":true
+    },
+    "InvokeBlueprintOptimizationAsyncRequest":{
+      "type":"structure",
+      "required":[
+        "blueprint",
+        "samples",
+        "outputConfiguration",
+        "dataAutomationProfileArn"
+      ],
+      "members":{
+        "blueprint":{
+          "shape":"BlueprintOptimizationObject",
+          "documentation":"<p>Blueprint to be optimized</p>"
+        },
+        "samples":{
+          "shape":"BlueprintOptimizationSamples",
+          "documentation":"<p>List of Blueprint Optimization Samples</p>"
+        },
+        "outputConfiguration":{
+          "shape":"BlueprintOptimizationOutputConfiguration",
+          "documentation":"<p>Output configuration where the results should be placed</p>"
+        },
+        "dataAutomationProfileArn":{
+          "shape":"DataAutomationProfileArn",
+          "documentation":"<p>Data automation profile ARN</p>"
+        },
+        "encryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Encryption configuration.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>List of tags.</p>"
+        }
+      },
+      "documentation":"<p>Invoke Blueprint Optimization Async Request</p>"
+    },
+    "InvokeBlueprintOptimizationAsyncResponse":{
+      "type":"structure",
+      "required":["invocationArn"],
+      "members":{
+        "invocationArn":{
+          "shape":"BlueprintOptimizationInvocationArn",
+          "documentation":"<p>ARN of the blueprint optimization job</p>"
+        }
+      },
+      "documentation":"<p>Invoke Blueprint Optimization Async Response</p>"
     },
     "KmsEncryptionContext":{
       "type":"map",
@@ -1306,6 +1557,34 @@
         "ACCOUNT"
       ]
     },
+    "S3Object":{
+      "type":"structure",
+      "required":["s3Uri"],
+      "members":{
+        "s3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>S3 uri.</p>"
+        },
+        "version":{
+          "shape":"S3ObjectVersion",
+          "documentation":"<p>S3 object version.</p>"
+        }
+      },
+      "documentation":"<p>S3 object</p>"
+    },
+    "S3ObjectVersion":{
+      "type":"string",
+      "documentation":"<p>S3 object version.</p>",
+      "max":1024,
+      "min":1
+    },
+    "S3Uri":{
+      "type":"string",
+      "documentation":"<p>A path in S3</p>",
+      "max":1024,
+      "min":1,
+      "pattern":"s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?"
+    },
     "SensitiveDataConfiguration":{
       "type":"structure",
       "required":["detectionMode"],
@@ -1393,6 +1672,7 @@
         "DISABLED"
       ]
     },
+    "String":{"type":"string"},
     "Tag":{
       "type":"structure",
       "required":[
@@ -1451,7 +1731,7 @@
       "documentation":"<p>ARN of a taggable resource</p>",
       "max":1011,
       "min":20,
-      "pattern":"arn:aws(|-cn|-us-gov):bedrock:[a-z0-9-]*:[0-9]{12}:(blueprint|data-automation-project)/[a-zA-Z0-9-]{12,36}"
+      "pattern":"arn:aws(|-cn|-iso|-iso-[a-z]|-us-gov):bedrock:[a-z0-9-]*:[0-9]{12}:(blueprint|data-automation-project|blueprint-optimization-invocation)/[a-zA-Z0-9-]{12,36}"
     },
     "ThrottlingException":{
       "type":"structure",

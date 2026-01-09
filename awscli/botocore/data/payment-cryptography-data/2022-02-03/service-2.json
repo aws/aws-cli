@@ -49,6 +49,24 @@
       ],
       "documentation":"<p>Encrypts plaintext data to ciphertext using a symmetric (TDES, AES), asymmetric (RSA), or derived (DUKPT or EMV) encryption key scheme. For more information, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/encrypt-data.html\">Encrypt data</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p>You can generate an encryption key within Amazon Web Services Payment Cryptography by calling <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_CreateKey.html\">CreateKey</a>. You can import your own encryption key by calling <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_ImportKey.html\">ImportKey</a>.</p> <p>For this operation, the key must have <code>KeyModesOfUse</code> set to <code>Encrypt</code>. In asymmetric encryption, plaintext is encrypted using public component. You can import the public component of an asymmetric key pair created outside Amazon Web Services Payment Cryptography by calling <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_ImportKey.html\">ImportKey</a>. </p> <p>This operation also supports dynamic keys, allowing you to pass a dynamic encryption key as a TR-31 WrappedKeyBlock. This can be used when key material is frequently rotated, such as during every card transaction, and there is need to avoid importing short-lived keys into Amazon Web Services Payment Cryptography. To encrypt using dynamic keys, the <code>keyARN</code> is the Key Encryption Key (KEK) of the TR-31 wrapped encryption key material. The incoming wrapped key shall have a key purpose of D0 with a mode of use of B or D. For more information, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/use-cases-acquirers-dynamickeys.html\">Using Dynamic Keys</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p>For symmetric and DUKPT encryption, Amazon Web Services Payment Cryptography supports <code>TDES</code> and <code>AES</code> algorithms. For EMV encryption, Amazon Web Services Payment Cryptography supports <code>TDES</code> algorithms.For asymmetric encryption, Amazon Web Services Payment Cryptography supports <code>RSA</code>. </p> <p>When you use TDES or TDES DUKPT, the plaintext data length must be a multiple of 8 bytes. For AES or AES DUKPT, the plaintext data length must be a multiple of 16 bytes. For RSA, it sould be equal to the key size unless padding is enabled.</p> <p>To encrypt using DUKPT, you must already have a BDK (Base Derivation Key) key in your account with <code>KeyModesOfUse</code> set to <code>DeriveKey</code>, or you can generate a new DUKPT key by calling <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_CreateKey.html\">CreateKey</a>. To encrypt using EMV, you must already have an IMK (Issuer Master Key) key in your account with <code>KeyModesOfUse</code> set to <code>DeriveKey</code>.</p> <p>For information about valid keys for this operation, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-validattributes.html\">Understanding key attributes</a> and <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/crypto-ops-validkeys-ops.html\">Key types for specific data operations</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p> <b>Cross-account use</b>: This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>DecryptData</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_GetPublicKeyCertificate.html\">GetPublicCertificate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_ImportKey.html\">ImportKey</a> </p> </li> <li> <p> <a>ReEncryptData</a> </p> </li> </ul>"
     },
+    "GenerateAs2805KekValidation":{
+      "name":"GenerateAs2805KekValidation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/as2805kekvalidation/generate",
+        "responseCode":200
+      },
+      "input":{"shape":"GenerateAs2805KekValidationInput"},
+      "output":{"shape":"GenerateAs2805KekValidationOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Establishes node-to-node initialization between payment processing nodes such as an acquirer, issuer or payment network using Australian Standard 2805 (AS2805).</p> <p>During node-to-node initialization, both communicating nodes must validate that they possess the correct Key Encrypting Keys (KEKs) before proceeding with session key exchange. In AS2805, the sending KEK (KEKs) of one node corresponds to the receiving KEK (KEKr) of its partner node. Each node uses its KEK to encrypt and decrypt session keys exchanged between the nodes. A KEK can be created or imported into Amazon Web Services Payment Cryptography using either the <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_CreateKey.html\">CreateKey</a> or <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_ImportKey.html\">ImportKey</a> operations.</p> <p>The node initiating communication can use <code>GenerateAS2805KekValidation</code> to generate a combined KEK validation request and KEK validation response to send to the partnering node for validation. When invoked, the API internally generates a random sending key encrypted under KEKs and provides a receiving key encrypted under KEKr as response. The initiating node sends the response returned by this API to its partner for validation.</p> <p>For information about valid keys for this operation, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-validattributes.html\">Understanding key attributes</a> and <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/crypto-ops-validkeys-ops.html\">Key types for specific data operations</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>. </p> <p> <b>Cross-account use</b>: This operation can't be used across different Amazon Web Services accounts.</p>"
+    },
     "GenerateCardValidationData":{
       "name":"GenerateCardValidationData",
       "http":{
@@ -83,7 +101,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Generates a Message Authentication Code (MAC) cryptogram within Amazon Web Services Payment Cryptography. </p> <p>You can use this operation to authenticate card-related data by using known data values to generate MAC for data validation between the sending and receiving parties. This operation uses message data, a secret encryption key and MAC algorithm to generate a unique MAC value for transmission. The receiving party of the MAC must use the same message data, secret encryption key and MAC algorithm to reproduce another MAC value for comparision.</p> <p>You can use this operation to generate a DUPKT, CMAC, HMAC or EMV MAC by setting generation attributes and algorithm to the associated values. The MAC generation encryption key must have valid values for <code>KeyUsage</code> such as <code>TR31_M7_HMAC_KEY</code> for HMAC generation, and the key must have <code>KeyModesOfUse</code> set to <code>Generate</code> and <code>Verify</code>.</p> <p>For information about valid keys for this operation, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-validattributes.html\">Understanding key attributes</a> and <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/crypto-ops-validkeys-ops.html\">Key types for specific data operations</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>. </p> <p> <b>Cross-account use</b>: This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>VerifyMac</a> </p> </li> </ul>"
+      "documentation":"<p>Generates a Message Authentication Code (MAC) cryptogram within Amazon Web Services Payment Cryptography. </p> <p>You can use this operation to authenticate card-related data by using known data values to generate MAC for data validation between the sending and receiving parties. This operation uses message data, a secret encryption key and MAC algorithm to generate a unique MAC value for transmission. The receiving party of the MAC must use the same message data, secret encryption key and MAC algorithm to reproduce another MAC value for comparision.</p> <p>You can use this operation to generate a DUPKT, CMAC, HMAC or EMV MAC by setting generation attributes and algorithm to the associated values. The MAC generation encryption key must have valid values for <code>KeyUsage</code> such as <code>TR31_M7_HMAC_KEY</code> for HMAC generation, and the key must have <code>KeyModesOfUse</code> set to <code>Generate</code>.</p> <p>For information about valid keys for this operation, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-validattributes.html\">Understanding key attributes</a> and <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/crypto-ops-validkeys-ops.html\">Key types for specific data operations</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>. </p> <p> <b>Cross-account use</b>: This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a>VerifyMac</a> </p> </li> </ul>"
     },
     "GenerateMacEmvPinChange":{
       "name":"GenerateMacEmvPinChange",
@@ -155,7 +173,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Translates an encryption key between different wrapping keys without importing the key into Amazon Web Services Payment Cryptography.</p> <p>This operation can be used when key material is frequently rotated, such as during every card transaction, and there is a need to avoid importing short-lived keys into Amazon Web Services Payment Cryptography. It translates short-lived transaction keys such as Pin Encryption Key (PEK) generated for each transaction and wrapped with an ECDH (Elliptic Curve Diffie-Hellman) derived wrapping key to another KEK (Key Encryption Key) wrapping key. </p> <p>Before using this operation, you must first request the public key certificate of the ECC key pair generated within Amazon Web Services Payment Cryptography to establish an ECDH key agreement. In <code>TranslateKeyData</code>, the service uses its own ECC key pair, public certificate of receiving ECC key pair, and the key derivation parameters to generate a derived key. The service uses this derived key to unwrap the incoming transaction key received as a TR31WrappedKeyBlock and re-wrap using a user provided KEK to generate an outgoing Tr31WrappedKeyBlock. For more information on establishing ECDH derived keys, see the <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/create-keys.html\">Creating keys</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>.</p> <p>For information about valid keys for this operation, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-validattributes.html\">Understanding key attributes</a> and <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/crypto-ops-validkeys-ops.html\">Key types for specific data operations</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>. </p> <p> <b>Cross-account use</b>: This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_CreateKey.html\">CreateKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_GetPublicKeyCertificate.html\">GetPublicCertificate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_ImportKey.html\">ImportKey</a> </p> </li> </ul>"
+      "documentation":"<p>Translates an cryptographic key between different wrapping keys without importing the key into Amazon Web Services Payment Cryptography.</p> <p>This operation can be used when key material is frequently rotated, such as during every card transaction, and there is a need to avoid importing short-lived keys into Amazon Web Services Payment Cryptography. It translates short-lived transaction keys such as <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/terminology.html#terms.pek\">PEK</a> generated for each transaction and wrapped with an <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/terminology.html#terms.ecdh\">ECDH</a> derived wrapping key to another <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/terminology.html#terms.kek\">KEK</a> wrapping key. </p> <p>Before using this operation, you must first request the public key certificate of the ECC key pair generated within Amazon Web Services Payment Cryptography to establish an ECDH key agreement. In <code>TranslateKeyData</code>, the service uses its own ECC key pair, public certificate of receiving ECC key pair, and the key derivation parameters to generate a derived key. The service uses this derived key to unwrap the incoming transaction key received as a TR31WrappedKeyBlock and re-wrap using a user provided KEK to generate an outgoing Tr31WrappedKeyBlock.</p> <p>For information about valid keys for this operation, see <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-validattributes.html\">Understanding key attributes</a> and <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/userguide/crypto-ops-validkeys-ops.html\">Key types for specific data operations</a> in the <i>Amazon Web Services Payment Cryptography User Guide</i>. </p> <p> <b>Cross-account use</b>: This operation can't be used across different Amazon Web Services accounts.</p> <p> <b>Related operations:</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_CreateKey.html\">CreateKey</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_GetPublicKeyCertificate.html\">GetPublicCertificate</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/payment-cryptography/latest/APIReference/API_ImportKey.html\">ImportKey</a> </p> </li> </ul>"
     },
     "TranslatePinData":{
       "name":"TranslatePinData",
@@ -336,6 +354,46 @@
       "max":16,
       "min":16,
       "pattern":"[0-9a-fA-F]+",
+      "sensitive":true
+    },
+    "As2805KekValidationType":{
+      "type":"structure",
+      "members":{
+        "KekValidationRequest":{
+          "shape":"KekValidationRequest",
+          "documentation":"<p>Parameter information for generating a KEK validation request during node-to-node initialization.</p>"
+        },
+        "KekValidationResponse":{
+          "shape":"KekValidationResponse",
+          "documentation":"<p>Parameter information for generating a KEK validation response during node-to-node initialization.</p>"
+        }
+      },
+      "documentation":"<p>Parameter information for generating a random key for KEK validation to perform node-to-node initialization.</p>",
+      "union":true
+    },
+    "As2805PekDerivationAttributes":{
+      "type":"structure",
+      "required":[
+        "SystemTraceAuditNumber",
+        "TransactionAmount"
+      ],
+      "members":{
+        "SystemTraceAuditNumber":{
+          "shape":"SystemTraceAuditNumberType",
+          "documentation":"<p>The system trace audit number for the transaction.</p>"
+        },
+        "TransactionAmount":{
+          "shape":"TransactionAmountType",
+          "documentation":"<p>The transaction amount for the transaction.</p>"
+        }
+      },
+      "documentation":"<p>Parameter information to use a PEK derived using AS2805.</p>"
+    },
+    "As2805RandomKeyMaterial":{
+      "type":"string",
+      "max":48,
+      "min":32,
+      "pattern":"(?:[0-9a-fA-F]{32}|[0-9a-fA-F]{48})",
       "sensitive":true
     },
     "AsymmetricEncryptionAttributes":{
@@ -1076,6 +1134,55 @@
         "OFB"
       ]
     },
+    "GenerateAs2805KekValidationInput":{
+      "type":"structure",
+      "required":[
+        "KeyIdentifier",
+        "KekValidationType",
+        "RandomKeySendVariantMask"
+      ],
+      "members":{
+        "KeyIdentifier":{
+          "shape":"KeyArnOrKeyAliasType",
+          "documentation":"<p>The <code>keyARN</code> of sending KEK that Amazon Web Services Payment Cryptography uses for node-to-node initialization</p>"
+        },
+        "KekValidationType":{
+          "shape":"As2805KekValidationType",
+          "documentation":"<p>Parameter information for generating a random key for KEK validation to perform node-to-node initialization.</p>"
+        },
+        "RandomKeySendVariantMask":{
+          "shape":"RandomKeySendVariantMask",
+          "documentation":"<p>The key variant to use for generating a random key for KEK validation during node-to-node initialization.</p>"
+        }
+      }
+    },
+    "GenerateAs2805KekValidationOutput":{
+      "type":"structure",
+      "required":[
+        "KeyArn",
+        "KeyCheckValue",
+        "RandomKeySend",
+        "RandomKeyReceive"
+      ],
+      "members":{
+        "KeyArn":{
+          "shape":"KeyArn",
+          "documentation":"<p>The <code>keyARN</code> of sending KEK that Amazon Web Services Payment Cryptography validates for node-to-node initialization</p>"
+        },
+        "KeyCheckValue":{
+          "shape":"KeyCheckValue",
+          "documentation":"<p>The key check value (KCV) of the sending KEK that Amazon Web Services Payment Cryptography validates for node-to-node initialization.</p>"
+        },
+        "RandomKeySend":{
+          "shape":"As2805RandomKeyMaterial",
+          "documentation":"<p>The random key generated for sending KEK validation.</p>"
+        },
+        "RandomKeyReceive":{
+          "shape":"As2805RandomKeyMaterial",
+          "documentation":"<p>The random key generated for receiving KEK validation. The initiating node sends this key to its partner node for validation.</p>"
+        }
+      }
+    },
     "GenerateCardValidationDataInput":{
       "type":"structure",
       "required":[
@@ -1296,7 +1403,7 @@
         },
         "PinBlockFormat":{
           "shape":"PinBlockFormatForPinData",
-          "documentation":"<p>The PIN encoding format for pin data generation as specified in ISO 9564. Amazon Web Services Payment Cryptography supports <code>ISO_Format_0</code>, <code>ISO_Format_3</code> and <code>ISO_Format_4</code>.</p> <p>The <code>ISO_Format_0</code> PIN block format is equivalent to the ANSI X9.8, VISA-1, and ECI-1 PIN block formats. It is similar to a VISA-4 PIN block format. It supports a PIN from 4 to 12 digits in length.</p> <p>The <code>ISO_Format_3</code> PIN block format is the same as <code>ISO_Format_0</code> except that the fill digits are random values from 10 to 15.</p> <p>The <code>ISO_Format_4</code> PIN block format is the only one supporting AES encryption. It is similar to <code>ISO_Format_3</code> but doubles the pin block length by padding with fill digit A and random values from 10 to 15.</p>"
+          "documentation":"<p>The PIN encoding format for pin data generation as specified in ISO 9564. Amazon Web Services Payment Cryptography supports <code>ISO_Format_0</code>, <code>ISO_Format_3</code> and <code>ISO_Format_4</code>.</p> <p>The <code>ISO_Format_0</code> PIN block format is equivalent to the ANSI X9.8, VISA-1, and ECI-1 PIN block formats. It is similar to a VISA-4 PIN block format. It supports a PIN from 4 to 12 digits in length.</p> <p>The <code>ISO_Format_3</code> PIN block format is the same as <code>ISO_Format_0</code> except that the fill digits are random values from 10 to 15.</p> <p>The <code>ISO_Format_4</code> PIN block format is the only one supporting AES encryption.</p>"
         },
         "EncryptionWrappedKey":{"shape":"WrappedKey"}
       }
@@ -1608,6 +1715,28 @@
       "exception":true,
       "fault":true
     },
+    "KekValidationRequest":{
+      "type":"structure",
+      "required":["DeriveKeyAlgorithm"],
+      "members":{
+        "DeriveKeyAlgorithm":{
+          "shape":"SymmetricKeyAlgorithm",
+          "documentation":"<p>The key derivation algorithm to use for generating a KEK validation request.</p>"
+        }
+      },
+      "documentation":"<p>Parameter information for generating a KEK validation request during node-to-node initialization.</p>"
+    },
+    "KekValidationResponse":{
+      "type":"structure",
+      "required":["RandomKeySend"],
+      "members":{
+        "RandomKeySend":{
+          "shape":"As2805RandomKeyMaterial",
+          "documentation":"<p>The random key for generating a KEK validation response.</p>"
+        }
+      },
+      "documentation":"<p>Parameter information for generating a KEK validation response during node-to-node initialization.</p>"
+    },
     "KeyArn":{
       "type":"string",
       "max":150,
@@ -1653,7 +1782,7 @@
     "KeyMaterial":{
       "type":"string",
       "max":16384,
-      "min":48,
+      "min":32,
       "sensitive":true
     },
     "MacAlgorithm":{
@@ -1666,7 +1795,8 @@
         "HMAC_SHA224",
         "HMAC_SHA256",
         "HMAC_SHA384",
-        "HMAC_SHA512"
+        "HMAC_SHA512",
+        "AS2805_4_1"
       ]
     },
     "MacAlgorithmDukpt":{
@@ -1992,6 +2122,13 @@
       "pattern":"[0-9a-fA-F]+",
       "sensitive":true
     },
+    "RandomKeySendVariantMask":{
+      "type":"string",
+      "enum":[
+        "VARIANT_MASK_82C0",
+        "VARIANT_MASK_82"
+      ]
+    },
     "ReEncryptDataInput":{
       "type":"structure",
       "required":[
@@ -2299,6 +2436,12 @@
         "HMAC_SHA224"
       ]
     },
+    "SystemTraceAuditNumberType":{
+      "type":"string",
+      "max":6,
+      "min":6,
+      "pattern":"[0-9]+"
+    },
     "ThrottlingException":{
       "type":"structure",
       "members":{
@@ -2325,6 +2468,12 @@
       "pattern":"[0-9a-fA-F]+",
       "sensitive":true
     },
+    "TransactionAmountType":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"[0-9]+"
+    },
     "TransactionDataType":{
       "type":"string",
       "max":1024,
@@ -2349,7 +2498,7 @@
         },
         "KeyCheckValueAlgorithm":{
           "shape":"KeyCheckValueAlgorithm",
-          "documentation":"<p>The key check value (KCV) algorithm used for calculating the KCV.</p>"
+          "documentation":"<p>The key check value (KCV) algorithm used for calculating the KCV of the derived key.</p>"
         }
       }
     },
@@ -2408,6 +2557,10 @@
         "OutgoingWrappedKey":{
           "shape":"WrappedKey",
           "documentation":"<p>The WrappedKeyBlock containing the encryption key for encrypting outgoing PIN block data.</p>"
+        },
+        "IncomingAs2805Attributes":{
+          "shape":"As2805PekDerivationAttributes",
+          "documentation":"<p>The attributes and values to use for incoming AS2805 encryption key for PIN block translation.</p>"
         }
       }
     },
@@ -2438,23 +2591,38 @@
       "members":{
         "IsoFormat0":{
           "shape":"TranslationPinDataIsoFormat034",
-          "documentation":"<p>Parameters that are required for ISO9564 PIN format 0 tranlation.</p>"
+          "documentation":"<p>Parameters that are required for ISO9564 PIN format 0 translation.</p>"
         },
         "IsoFormat1":{
           "shape":"TranslationPinDataIsoFormat1",
-          "documentation":"<p>Parameters that are required for ISO9564 PIN format 1 tranlation.</p>"
+          "documentation":"<p>Parameters that are required for ISO9564 PIN format 1 translation.</p>"
         },
         "IsoFormat3":{
           "shape":"TranslationPinDataIsoFormat034",
-          "documentation":"<p>Parameters that are required for ISO9564 PIN format 3 tranlation.</p>"
+          "documentation":"<p>Parameters that are required for ISO9564 PIN format 3 translation.</p>"
         },
         "IsoFormat4":{
           "shape":"TranslationPinDataIsoFormat034",
-          "documentation":"<p>Parameters that are required for ISO9564 PIN format 4 tranlation.</p>"
+          "documentation":"<p>Parameters that are required for ISO9564 PIN format 4 translation.</p>"
+        },
+        "As2805Format0":{
+          "shape":"TranslationPinDataAs2805Format0",
+          "documentation":"<p>Parameters that are required for AS2805 PIN format 0 translation.</p>"
         }
       },
       "documentation":"<p>Parameters that are required for translation between ISO9564 PIN block formats 0,1,3,4.</p>",
       "union":true
+    },
+    "TranslationPinDataAs2805Format0":{
+      "type":"structure",
+      "required":["PrimaryAccountNumber"],
+      "members":{
+        "PrimaryAccountNumber":{
+          "shape":"PrimaryAccountNumberType",
+          "documentation":"<p>The Primary Account Number (PAN) of the cardholder. A PAN is a unique identifier for a payment credit or debit card and associates the card to a specific account holder.</p>"
+        }
+      },
+      "documentation":"<p>Parameters that are required for translation between AS2805 PIN format 0 translation.</p>"
     },
     "TranslationPinDataIsoFormat034":{
       "type":"structure",
@@ -2465,12 +2633,12 @@
           "documentation":"<p>The Primary Account Number (PAN) of the cardholder. A PAN is a unique identifier for a payment credit or debit card and associates the card to a specific account holder.</p>"
         }
       },
-      "documentation":"<p>Parameters that are required for tranlation between ISO9564 PIN format 0,3,4 tranlation.</p>"
+      "documentation":"<p>Parameters that are required for translation between ISO9564 PIN format 0,3,4 translation.</p>"
     },
     "TranslationPinDataIsoFormat1":{
       "type":"structure",
       "members":{},
-      "documentation":"<p>Parameters that are required for ISO9564 PIN format 1 tranlation.</p>"
+      "documentation":"<p>Parameters that are required for ISO9564 PIN format 1 translation.</p>"
     },
     "ValidationDataType":{
       "type":"string",

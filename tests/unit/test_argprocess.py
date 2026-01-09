@@ -556,6 +556,14 @@ class TestDocGen(BaseArgProcessTest):
         )
         self.assert_generated_example_contains(argument, expected_example_str)
 
+    def test_gen_struct_in_map_type_docs(self):
+        argument = self.get_param_model('sns.Publish.MessageAttributes')
+        expected_example_str = (
+            'KeyName1={DataType=string,StringValue=string,BinaryValue=blob},'
+            'KeyName2={DataType=string,StringValue=string,BinaryValue=blob}'
+        )
+        self.assert_generated_example_contains(argument, expected_example_str)
+
     def test_gen_list_scalar_docs(self):
         self.service_name = 'elb'
         self.service_id = 'elastic-load-balancing'

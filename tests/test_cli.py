@@ -112,15 +112,16 @@ class TestCLI:
             captured = capsys.readouterr()
 
             # Should show fix was applied
-            assert f"Applied 5 fix(es) to: {str(tmp_path)}" in captured.out
-            # The number of lines should remain the same after applying fixes
-            assert len(script_file.read_text().splitlines()) == 2
+            assert "Found 5 issue(s). 5 fixed. 0 require(s) manual review." in captured.out
+            assert f"Changes written to: " in captured.out
 
-            # The hidden alias must not be present in the modified script
-            assert "--ec-2-tag-set" not in script_file.read_text()
-
-            # The no-pager flag should appear twice in the modified script, one for each command.
-            assert script_file.read_text().count("--no-cli-pager") == 2
+            assert script_file.read_text() == (
+                "aws lambda publish-version --function-name myfunction --code-sha256 abc123 "
+                "--cli-binary-format raw-in-base64-out --no-cli-pager\n"
+                "aws deploy create-deployment-group --application-name myapp "
+                "--deployment-group-name mygroup --ec2-tag-set file://tags.json "
+                "--cli-binary-format raw-in-base64-out --no-cli-pager"
+            )
 
     def test_output_mode(self, tmp_path):
         """Test output mode creates new file."""
@@ -180,7 +181,10 @@ class TestCLI:
             with patch("builtins.input", return_value="n"):
                 main()
                 captured = capsys.readouterr()
-                assert "No changes were accepted" in captured.out
+                assert (
+                    "Found 2 issue(s). 0 fixed. 0 require(s) manual review.\n"
+                    "No changes to write." in captured.out
+                )
 
     def test_interactive_mode_update_all(self, tmp_path):
         """Test interactive mode with 'u' to accept remaining changes."""

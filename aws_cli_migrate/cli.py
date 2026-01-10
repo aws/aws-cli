@@ -12,6 +12,8 @@
 # language governing permissions and limitations under the License.
 import argparse
 import difflib
+import re
+
 import sys
 from enum import Enum
 from pathlib import Path
@@ -127,8 +129,15 @@ def _display_finding(finding: LintFinding, script_content: str, input_path: Path
                 continue
             elif line_num == 2:
                 # The 3rd line is the context control line.
-                context_starting_line = int(line[line.index("-") + 1 : line.index(",")])
-                context_size = int(line[line.index(",") + 1 : line.index(" +")])
+                match = re.search(r'@@ -(\d+)(?:,(\d+))?\s+\+', line)
+
+                if not match:
+                    # group(1) is always the starting line number 'x'
+                    return RuntimeError(f"Expected context control line. Received: {line}")
+                context_starting_line = int(match.group(1))
+                # If the context size is not specified in the control line, the context is
+                # exactly 1 line long.
+                context_size = int(match.group(2)) if match.group(2) else 1
                 context_end_line = context_starting_line + context_size
                 line_num_width = len(str(context_end_line))
                 continue

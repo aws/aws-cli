@@ -302,9 +302,11 @@ class TestCLI:
         with patch("sys.argv", ["migrate-aws-cli", "--script", str(script_file)]):
             main()
             captured = capsys.readouterr()
-            assert "MANUAL REVIEW REQUIRED" in captured.out
-            assert "This issue requires manual intervention" in captured.out
-            assert "get-login-password" in captured.out
+            assert "[MANUAL REVIEW REQUIRED] [ecr-get-login]" in captured.out
+            assert (
+               "Found 1 issue(s). 0 fixable with the `--fix` "
+               "option. 1 require(s) manual review."
+           ) in captured.out
 
     def test_fix_mode_with_manual_review(self, tmp_path, capsys):
         """Test fix mode displays manual review findings after applying fixes."""
@@ -319,18 +321,18 @@ class TestCLI:
             captured = capsys.readouterr()
 
             # Should show fix was applied
-            assert f"Applied 2 fix(es) to: {str(tmp_path)}" in captured.out
+            assert "Found 3 issue(s). 2 fixed. 1 require(s) manual review." in captured.out
+            assert f"Changes written to: {script_file}" in captured.out
 
-            # Should show manual review section
-            assert "issue(s) require manual review" in captured.out
-            assert "MANUAL REVIEW REQUIRED" in captured.out
-            assert "This issue requires manual intervention" in captured.out
+            # Should show manual review
+            assert "[MANUAL REVIEW REQUIRED] [ecr-get-login]" in captured.out
 
             # Script should have auto-fixes applied but manual review command unchanged
             fixed_content = script_file.read_text()
-            assert "--cli-binary-format" in fixed_content
-            assert "--no-cli-pager" in fixed_content
-            assert "aws ecr get-login" in fixed_content
+            assert fixed_content == (
+                "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json --cli-binary-format raw-in-base64-out --no-cli-pager\n"
+                "aws ecr get-login --region us-west-2"
+            )
 
     def test_interactive_mode_with_manual_review(self, tmp_path, capsys):
         """Test interactive mode handles manual review findings."""
@@ -359,16 +361,13 @@ class TestCLI:
 
                 # Should display manual review finding
                 assert "MANUAL REVIEW REQUIRED" in captured.out
-                assert "This issue requires manual intervention" in captured.out
-
-                # Should prompt with [n]ext, [s]ave and exit, [q]uit for manual review
-                # (not [y]es, [n]o, [u]pdate all, etc.)
 
                 # Output should have auto-fixes but not manual review changes
                 fixed_content = output_file.read_text()
-                assert "--cli-binary-format" in fixed_content
-                assert "--no-cli-pager" in fixed_content
-                assert "aws ecr get-login" in fixed_content
+                assert fixed_content == (
+                    "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json --cli-binary-format raw-in-base64-out --no-cli-pager\n"
+                    "aws ecr get-login --region us-west-2"
+                )
 
     def test_interactive_mode_manual_review_save_and_exit(self, tmp_path):
         """Test interactive mode with 's' on manual review finding."""

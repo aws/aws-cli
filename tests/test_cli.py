@@ -81,6 +81,21 @@ class TestCLI:
                 "Found 2 issue(s). 2 fixable with the `--fix` option. 0 require(s) manual review."
             ) in captured.out
 
+    def test_dry_run_mode_output(self, tmp_path):
+        """Test dry-run mode with output paameter specified."""
+        script_file = tmp_path / "test.sh"
+        output_file = tmp_path / "output.sh"
+        script_content = "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json"
+        script_file.write_text(script_content)
+
+        with patch(
+            "sys.argv",
+            ["migrate-aws-cli", "--script", str(script_file), "--output", str(output_file)],
+        ):
+            main()
+            assert not output_file.exists()
+            # verify the input script file is unchanged
+            assert script_file.read_text() == script_content
 
     def test_fix_mode(self, tmp_path, capsys):
         """Test fix mode modifies the script."""
@@ -137,8 +152,8 @@ class TestCLI:
                 "--cli-binary-format raw-in-base64-out --no-cli-pager"
             )
 
-    def test_output_mode(self, tmp_path):
-        """Test output mode creates new file."""
+    def test_fix_mode_with_output(self, tmp_path):
+        """Test auto-fix mode creates new file at the expected destination."""
         script_file = tmp_path / "test.sh"
         output_file = tmp_path / "output.sh"
         script_file.write_text(
@@ -147,14 +162,24 @@ class TestCLI:
 
         with patch(
             "sys.argv",
-            ["migrate-aws-cli", "--script", str(script_file), "--output", str(output_file)],
+            [
+                "migrate-aws-cli",
+                "--script",
+                str(script_file),
+                "--fix",
+                "--output",
+                str(output_file)
+            ],
         ):
             main()
             assert output_file.exists()
             content = output_file.read_text()
             # 1 command, 2 rules = 2 flags added
-            assert "--cli-binary-format" in content
-            assert "--no-cli-pager" in content
+            assert content == (
+                "aws secretsmanager put-secret-value --secret-id secret1213 "
+                "--secret-binary file://data.json --cli-binary-format raw-in-base64-out "
+                "--no-cli-pager"
+            )
 
     def test_interactive_mode_accept_all(self, tmp_path):
         """Test interactive mode with 'y' to accept all changes."""

@@ -133,7 +133,7 @@ def _display_finding(finding: LintFinding, script_content: str, input_path: Path
 
                 if not match:
                     # group(1) is always the starting line number 'x'
-                    return RuntimeError(f"Expected context control line. Received: {line}")
+                    raise RuntimeError(f"Expected context control line. Received: {line}")
                 context_starting_line = int(match.group(1))
                 # If the context size is not specified in the control line, the context is
                 # exactly 1 line long.
@@ -193,30 +193,6 @@ def _display_finding(finding: LintFinding, script_content: str, input_path: Path
             f"\n{input_path}:{start_line + 1} {manual_review_required_text} "
             f"[{finding.rule_name}] {finding.description}"
         )
-
-
-def _lint_and_generate_updated_script(
-    rules: List[LintRule],
-    script_ast: SgRoot,
-) -> tuple[SgRoot, int, list[LintFinding]]:
-    current_ast = script_ast
-    num_auto_fixable_findings = 0
-    non_auto_fixable = []
-
-    for rule_index, rule in enumerate(rules):
-        # Lint for this specific rule with current script state
-        rule_findings = linter.lint_for_rule(current_ast, rule)
-        auto_fixable_findings = [f for f in rule_findings if f.auto_fixable]
-
-        num_auto_fixable_findings += len(auto_fixable_findings)
-        non_auto_fixable.extend(finding for finding in rule_findings if not finding.auto_fixable)
-
-        # Avoid an unnecessary reparse if no changes were made to the script
-        if not auto_fixable_findings:
-            continue
-
-        current_ast = parse(linter.apply_fixes(current_ast, auto_fixable_findings))
-    return current_ast, num_auto_fixable_findings, non_auto_fixable
 
 
 def _interactive_prompt_for_rule(
@@ -299,7 +275,7 @@ def auto_fix_mode(
     num_auto_fixes_applied = 0
     num_manual_review_issues = 0
 
-    for rule_index, rule in enumerate(rules):
+    for rule in rules:
         rule_findings = linter.lint_for_rule(current_ast, rule)
 
         if not rule_findings:
@@ -548,10 +524,6 @@ def main():
 
     args = parser.parse_args()
 
-    if args.fix and args.output:
-        print("Error: Cannot use both --fix and --output")
-        sys.exit(1)
-
     if args.fix and args.interactive:
         print("Error: Cannot use both --fix and --interactive")
         sys.exit(1)
@@ -578,7 +550,7 @@ def main():
         interactive_mode(
             rules, script_content, script_path, Path(args.output) if args.output else script_path
         )
-    elif args.fix or args.output:
+    elif args.fix:
         auto_fix_mode(
             rules, script_content, script_path, Path(args.output) if args.output else script_path
         )

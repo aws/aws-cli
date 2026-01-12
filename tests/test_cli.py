@@ -73,8 +73,11 @@ class TestCLI:
                 f"{script_file}:1 [binary-params-base64]"
             ) in captured.out
             assert (
-                "1  |-aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json --cli-binary-format raw-in-base64-out\n"
-                "  1|+aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json --cli-binary-format raw-in-base64-out --no-cli-pager\n\n"
+                "1  |-aws secretsmanager put-secret-value --secret-id secret1213 "
+                "--secret-binary file://data.json --cli-binary-format raw-in-base64-out\n"
+                "  1|+aws secretsmanager put-secret-value --secret-id secret1213 "
+                "--secret-binary file://data.json --cli-binary-format raw-in-base64-out "
+                "--no-cli-pager\n\n"
                 f"{script_file}:1 [pager-by-default]"
             ) in captured.out
             assert (
@@ -85,7 +88,10 @@ class TestCLI:
         """Test dry-run mode with output paameter specified."""
         script_file = tmp_path / "test.sh"
         output_file = tmp_path / "output.sh"
-        script_content = "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json"
+        script_content = (
+            "aws secretsmanager put-secret-value --secret-id secret1213 "
+            "--secret-binary file://data.json"
+        )
         script_file.write_text(script_content)
 
         with patch(
@@ -142,7 +148,7 @@ class TestCLI:
 
             # Should show fix was applied
             assert "Found 5 issue(s). 5 fixed. 0 require(s) manual review." in captured.out
-            assert f"Changes written to: " in captured.out
+            assert "Changes written to: " in captured.out
 
             assert script_file.read_text() == (
                 "aws lambda publish-version --function-name myfunction --code-sha256 abc123 "
@@ -168,7 +174,7 @@ class TestCLI:
                 str(script_file),
                 "--fix",
                 "--output",
-                str(output_file)
+                str(output_file),
             ],
         ):
             main()
@@ -347,9 +353,8 @@ class TestCLI:
             captured = capsys.readouterr()
             assert "[MANUAL REVIEW REQUIRED] [ecr-get-login]" in captured.out
             assert (
-               "Found 1 issue(s). 0 fixable with the `--fix` "
-               "option. 1 require(s) manual review."
-           ) in captured.out
+                "Found 1 issue(s). 0 fixable with the `--fix` option. 1 require(s) manual review."
+            ) in captured.out
 
     def test_fix_mode_with_manual_review(self, tmp_path, capsys):
         """Test fix mode displays manual review findings after applying fixes."""
@@ -373,7 +378,9 @@ class TestCLI:
             # Script should have auto-fixes applied but manual review command unchanged
             fixed_content = script_file.read_text()
             assert fixed_content == (
-                "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json --cli-binary-format raw-in-base64-out --no-cli-pager\n"
+                "aws secretsmanager put-secret-value --secret-id secret1213 "
+                "--secret-binary file://data.json --cli-binary-format raw-in-base64-out "
+                "--no-cli-pager\n"
                 "aws ecr get-login --region us-west-2"
             )
 
@@ -408,7 +415,9 @@ class TestCLI:
                 # Output should have auto-fixes but not manual review changes
                 fixed_content = output_file.read_text()
                 assert fixed_content == (
-                    "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json --cli-binary-format raw-in-base64-out --no-cli-pager\n"
+                    "aws secretsmanager put-secret-value --secret-id secret1213 "
+                    "--secret-binary file://data.json --cli-binary-format raw-in-base64-out "
+                    "--no-cli-pager\n"
                     "aws ecr get-login --region us-west-2"
                 )
 

@@ -13,13 +13,10 @@
 import argparse
 import difflib
 import re
-
 import sys
 from enum import Enum
 from pathlib import Path
 from typing import List, Optional, Tuple
-
-from ast_grep_py.ast_grep_py import SgRoot
 
 from aws_cli_migrate import __version__, linter
 from aws_cli_migrate.linter import parse
@@ -129,7 +126,7 @@ def _display_finding(finding: LintFinding, script_content: str, input_path: Path
                 continue
             elif line_num == 2:
                 # The 3rd line is the context control line.
-                match = re.search(r'@@ -(\d+)(?:,(\d+))?\s+\+', line)
+                match = re.search(r"@@ -(\d+)(?:,(\d+))?\s+\+", line)
 
                 if not match:
                     # group(1) is always the starting line number 'x'
@@ -335,7 +332,7 @@ def dry_run_mode(
     num_auto_fixes_applied = 0  # fixable
     num_manual_review_issues = 0
 
-    for rule_index, rule in enumerate(rules):
+    for rule in rules:
         rule_findings = linter.lint_for_rule(current_ast, rule)
 
         if not rule_findings:

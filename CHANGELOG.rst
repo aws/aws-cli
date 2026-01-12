@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+1.44.16
+=======
+
+* api-change:``billing``: Cost Categories filtering support to BillingView data filter expressions through the new costCategories parameter, enabling users to filter billing views by AWS Cost Categories for more granular cost management and allocation.
+* api-change:``iot-managed-integrations``: This release introduces WiFi Simple Setup (WSS) enabling device provisioning via barcode scanning with automated network discovery, authentication, and credential provisioning. Additionally, it introduces 2P Device Capability Rediscovery for updating hub-managed device capabilities post-onboarding.
+* api-change:``sagemaker``: Added ultraServerType to the UltraServerInfo structure to support server type identification for SageMaker HyperPod
+* enhancement:``s3``: Adds new parameter ``--case-conflict`` that configures how case conflicts are handled on case-insensitive filesystems
+
+
 1.44.15
 =======
 

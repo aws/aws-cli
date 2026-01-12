@@ -19,18 +19,18 @@ class TestUploadBuild(BaseAWSCommandParamsTest):
     prefix = 'gamelift upload-build'
 
     def setUp(self):
-        super(TestUploadBuild, self).setUp()
+        super().setUp()
         self.files = FileCreator()
 
     def tearDown(self):
-        super(TestUploadBuild, self).tearDown()
+        super().tearDown()
         self.files.remove_all()
 
     def test_upload_build(self):
         self.files.create_file('tmpfile', 'Some contents')
         cmdline = self.prefix
         cmdline += ' --name mybuild --build-version myversion'
-        cmdline += ' --build-root %s' % self.files.rootdir
+        cmdline += f' --build-root {self.files.rootdir}'
 
         self.parsed_responses = [
             {'Build': {'BuildId': 'myid'}},
@@ -69,7 +69,7 @@ class TestUploadBuild(BaseAWSCommandParamsTest):
 
         # Check the output of the command.
         self.assertIn(
-            'Successfully uploaded %s to AWS GameLift' % self.files.rootdir,
+            f'Successfully uploaded {self.files.rootdir} to AWS GameLift',
             stdout)
         self.assertIn('Build ID: myid', stdout)
 
@@ -77,7 +77,7 @@ class TestUploadBuild(BaseAWSCommandParamsTest):
         self.files.create_file('tmpfile', 'Some contents')
         cmdline = self.prefix
         cmdline += ' --name mybuild --build-version myversion'
-        cmdline += ' --build-root %s' % self.files.rootdir
+        cmdline += f' --build-root {self.files.rootdir}'
         cmdline += ' --operating-system WINDOWS_2012'
 
         self.parsed_responses = [
@@ -118,14 +118,14 @@ class TestUploadBuild(BaseAWSCommandParamsTest):
 
         # Check the output of the command.
         self.assertIn(
-            'Successfully uploaded %s to AWS GameLift' % self.files.rootdir,
+            f'Successfully uploaded {self.files.rootdir} to AWS GameLift',
             stdout)
         self.assertIn('Build ID: myid', stdout)
 
     def test_upload_build_with_empty_directory(self):
         cmdline = self.prefix
         cmdline += ' --name mybuild --build-version myversion'
-        cmdline += ' --build-root %s' % self.files.rootdir
+        cmdline += f' --build-root {self.files.rootdir}'
 
         self.parsed_responses = [
             {'Build': {'BuildId': 'myid'}},
@@ -142,9 +142,8 @@ class TestUploadBuild(BaseAWSCommandParamsTest):
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
 
         self.assertIn(
-            'Fail to upload %s. '
-            'The build root directory is empty or does not exist.\n'
-            % self.files.rootdir,
+            f'Fail to upload {self.files.rootdir}. '
+            'The build root directory is empty or does not exist.\n',
             stderr)
 
     def test_upload_build_with_nonexistent_directory(self):
@@ -152,7 +151,7 @@ class TestUploadBuild(BaseAWSCommandParamsTest):
 
         cmdline = self.prefix
         cmdline += ' --name mybuild --build-version myversion'
-        cmdline += ' --build-root %s' % dir_not_exist
+        cmdline += f' --build-root {dir_not_exist}'
 
         self.parsed_responses = [
             {'Build': {'BuildId': 'myid'}},
@@ -169,15 +168,14 @@ class TestUploadBuild(BaseAWSCommandParamsTest):
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
 
         self.assertIn(
-            'Fail to upload %s. '
-            'The build root directory is empty or does not exist.\n'
-            % dir_not_exist,
+            f'Fail to upload {dir_not_exist}. '
+            'The build root directory is empty or does not exist.\n',
             stderr)
 
     def test_upload_build_with_nonprovided_directory(self):
         cmdline = self.prefix
         cmdline += ' --name mybuild --build-version myversion'
-        cmdline += ' --build-root %s' % '""'
+        cmdline += ' --build-root {}'.format('""')
 
         self.parsed_responses = [
             {'Build': {'BuildId': 'myid'}},
@@ -194,16 +192,15 @@ class TestUploadBuild(BaseAWSCommandParamsTest):
         stdout, stderr, rc = self.run_cmd(cmdline, expected_rc=255)
 
         self.assertIn(
-            'Fail to upload %s. '
-            'The build root directory is empty or does not exist.\n'
-            % '""',
+            'Fail to upload {}. '
+            'The build root directory is empty or does not exist.\n'.format('""'),
             stderr)
 
     def test_upload_build_with_server_sdk_version_param(self):
         self.files.create_file('tmpfile', 'Some contents')
         cmdline = self.prefix
         cmdline += ' --name mybuild --build-version myversion'
-        cmdline += ' --build-root %s' % self.files.rootdir
+        cmdline += f' --build-root {self.files.rootdir}'
         cmdline += ' --server-sdk-version 4.0.2'
 
         self.parsed_responses = [
@@ -244,7 +241,7 @@ class TestUploadBuild(BaseAWSCommandParamsTest):
 
         # Check the output of the command.
         self.assertIn(
-            'Successfully uploaded %s to AWS GameLift' % self.files.rootdir,
+            f'Successfully uploaded {self.files.rootdir} to AWS GameLift',
             stdout)
         self.assertIn('Build ID: myid', stdout)
 
@@ -258,10 +255,10 @@ class TestUploadBuild(BaseAWSCommandParamsTest):
         
         cmdline = self.prefix
         cmdline += ' --name mybuild --build-version myversion'
-        cmdline += ' --build-root %s' % self.files.rootdir
+        cmdline += f' --build-root {self.files.rootdir}'
         cmdline += ' --tags'
         for tag in expected_tags:
-            cmdline += ' %s=%s' % (tag['Key'], tag['Value'])
+            cmdline += ' {}={}'.format(tag['Key'], tag['Value'])
 
         self.parsed_responses = [
             {'Build': {'BuildId': 'myid'}},
@@ -301,6 +298,6 @@ class TestUploadBuild(BaseAWSCommandParamsTest):
 
         # Check the output of the command.
         self.assertIn(
-            'Successfully uploaded %s to AWS GameLift' % self.files.rootdir,
+            f'Successfully uploaded {self.files.rootdir} to AWS GameLift',
             stdout)
         self.assertIn('Build ID: myid', stdout)

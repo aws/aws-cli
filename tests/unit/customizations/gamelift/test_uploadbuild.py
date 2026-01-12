@@ -147,9 +147,8 @@ class TestGetGameSessionLogCommand(unittest.TestCase):
             self.cmd(self.args, self.global_args)
             self.assertEqual(
                 mock_stderr.getvalue(),
-                'Fail to upload %s. '
+                f'Fail to upload {self.build_root}. '
                 'The build root directory is empty or does not exist.\n'
-                % (self.build_root)
             )
 
     def test_error_message_when_directory_is_not_provided(self):
@@ -163,8 +162,8 @@ class TestGetGameSessionLogCommand(unittest.TestCase):
             self.cmd(self.args, self.global_args)
             self.assertEqual(
                 mock_stderr.getvalue(),
-                'Fail to upload %s. '
-                'The build root directory is empty or does not exist.\n' % ('')
+                'Fail to upload {}. '
+                'The build root directory is empty or does not exist.\n'.format('')
             )
 
     def test_error_message_when_directory_does_not_exist(self):
@@ -180,9 +179,8 @@ class TestGetGameSessionLogCommand(unittest.TestCase):
             self.cmd(self.args, self.global_args)
             self.assertEqual(
                 mock_stderr.getvalue(),
-                'Fail to upload %s. '
+                f'Fail to upload {dir_not_exist}. '
                 'The build root directory is empty or does not exist.\n'
-                % (dir_not_exist)
             )
 
     def test_temporary_file_does_exist_when_fails(self):

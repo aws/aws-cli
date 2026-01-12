@@ -67,9 +67,8 @@ class UploadBuildCommand(BasicCommand):
         # Validate a build directory
         if not validate_directory(args.build_root):
             sys.stderr.write(
-                'Fail to upload %s. '
+                f'Fail to upload {args.build_root}. '
                 'The build root directory is empty or does not exist.\n'
-                % (args.build_root)
             )
 
             return 255
@@ -111,7 +110,7 @@ class UploadBuildCommand(BasicCommand):
         s3_transfer_mgr = S3Transfer(s3_client)
 
         try:
-            fd, temporary_zipfile = tempfile.mkstemp('%s.zip' % build_id)
+            fd, temporary_zipfile = tempfile.mkstemp(f'{build_id}.zip')
             zip_directory(temporary_zipfile, args.build_root)
             s3_transfer_mgr.upload_file(
                 temporary_zipfile, bucket, key,
@@ -125,8 +124,8 @@ class UploadBuildCommand(BasicCommand):
             os.remove(temporary_zipfile)
 
         sys.stdout.write(
-            'Successfully uploaded %s to AWS GameLift\n'
-            'Build ID: %s\n' % (args.build_root, build_id))
+            f'Successfully uploaded {args.build_root} to AWS GameLift\n'
+            f'Build ID: {build_id}\n')
 
         return 0
 
@@ -159,7 +158,7 @@ def validate_directory(source_root):
 
 # TODO: Remove this class once available to CLI from s3transfer
 # docstring.
-class ProgressPercentage(object):
+class ProgressPercentage:
     def __init__(self, filename, label=None):
         self._filename = filename
         self._label = label
@@ -175,9 +174,6 @@ class ProgressPercentage(object):
             if self._size > 0:
                 percentage = (self._seen_so_far / self._size) * 100
                 sys.stdout.write(
-                    "\r%s  %s / %s  (%.2f%%)" % (
-                        self._label, human_readable_size(self._seen_so_far),
-                        human_readable_size(self._size), percentage
-                    )
+                    f"\r{self._label}  {human_readable_size(self._seen_so_far)} / {human_readable_size(self._size)}  ({percentage:.2f}%)"
                 )
                 sys.stdout.flush()

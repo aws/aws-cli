@@ -27,7 +27,9 @@ import json
 import logging
 import os
 import platform
+import random
 import shutil
+import string
 import sys
 import tempfile
 import time
@@ -36,6 +38,7 @@ import uuid
 from pprint import pformat
 from subprocess import PIPE, Popen
 from unittest import mock
+from pathlib import Path
 
 import botocore.loaders
 from botocore.awsrequest import AWSResponse
@@ -48,6 +51,11 @@ from awscli.utils import create_nested_client
 _LOADER = botocore.loaders.Loader()
 INTEG_LOG = logging.getLogger('awscli.tests.integration')
 AWS_CMD = None
+
+with tempfile.TemporaryDirectory() as tmpdir:
+    with open(Path(tmpdir) / 'aws-cli-tmp-file', 'w') as f:
+        pass
+    CASE_INSENSITIVE = (Path(tmpdir) / 'AWS-CLI-TMP-FILE').exists()
 
 
 def skip_if_windows(reason):
@@ -66,6 +74,15 @@ def skip_if_windows(reason):
             platform.system() not in ['Darwin', 'Linux'], reason
         )(func)
 
+    return decorator
+
+
+def skip_if_case_sensitive():
+    def decorator(func):
+        return unittest.skipIf(
+            not CASE_INSENSITIVE,
+            "This test requires a case-insensitive filesystem."
+        )(func)
     return decorator
 
 

@@ -129,6 +129,7 @@ class BaseExceptionHandler:
 
 class FilteredExceptionHandler(BaseExceptionHandler):
     EXCEPTIONS_TO_HANDLE = ()
+    RC = None
 
     def __init__(self, session=None):
         self._session = session
@@ -153,10 +154,11 @@ class FilteredExceptionHandler(BaseExceptionHandler):
                 error_info, formatted_message, stderr, parsed_globals
             )
             if displayed_structured:
-                return
+                return self.RC
 
         message = (error_info or {}).get('Message', str(exception))
         write_error(stderr, message)
+        return self.RC
 
     def _extract_error_info(self, exception):
         """Extract error information for structured formatting.
@@ -234,10 +236,6 @@ class ParamValidationErrorsHandler(FilteredExceptionHandler):
     )
     RC = PARAM_VALIDATION_ERROR_RC
 
-    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
-        super()._do_handle_exception(exception, stdout, stderr, **kwargs)
-        return self.RC
-
     def _extract_error_info(self, exception):
         return {'Code': 'ParamValidation', 'Message': str(exception)}
 
@@ -304,10 +302,6 @@ class ConfigurationErrorHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = ConfigurationError
     RC = CONFIGURATION_ERROR_RC
 
-    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
-        super()._do_handle_exception(exception, stdout, stderr, **kwargs)
-        return self.RC
-
     def _extract_error_info(self, exception):
         return {'Code': 'Configuration', 'Message': str(exception)}
 
@@ -315,10 +309,6 @@ class ConfigurationErrorHandler(FilteredExceptionHandler):
 class NoRegionErrorHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = NoRegionError
     RC = CONFIGURATION_ERROR_RC
-
-    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
-        super()._do_handle_exception(exception, stdout, stderr, **kwargs)
-        return self.RC
 
     def _extract_error_info(self, exception):
         message = (
@@ -332,22 +322,17 @@ class NoCredentialsErrorHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = NoCredentialsError
     RC = CONFIGURATION_ERROR_RC
 
-    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
-        super()._do_handle_exception(exception, stdout, stderr, **kwargs)
-        return self.RC
-
     def _extract_error_info(self, exception):
-        message = f'{exception}. You can configure credentials by running "aws login".'
+        message = (
+            f'{exception}. You can configure credentials '
+            f'by running "aws login".'
+        )
         return {'Code': 'NoCredentials', 'Message': message}
 
 
 class PagerErrorHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = PagerInitializationException
     RC = CONFIGURATION_ERROR_RC
-
-    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
-        super()._do_handle_exception(exception, stdout, stderr, **kwargs)
-        return self.RC
 
     def _extract_error_info(self, exception):
         message = (

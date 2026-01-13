@@ -16,7 +16,7 @@ import json
 import signal
 from unittest import mock
 
-import yaml
+from ruamel.yaml import YAML
 from botocore.exceptions import ClientError, NoCredentialsError, NoRegionError
 
 from awscli.arguments import UnknownArgumentError
@@ -463,6 +463,12 @@ class TestParsedGlobalsPassthrough:
 
 
 class TestNonModeledErrorStructuredFormatting:
+    def setup_method(self):
+        self.yaml = YAML(typ="safe", pure=True)
+
+    def _load_yaml(self, content):
+        return self.yaml.load(io.StringIO(content))
+
     def test_no_region_error_with_json_format(self):
         session = FakeSession()
         error_handler = construct_cli_error_handlers_chain(session)
@@ -503,7 +509,7 @@ class TestNonModeledErrorStructuredFormatting:
 
         assert rc == CONFIGURATION_ERROR_RC
         stderr_output = stderr.getvalue()
-        parsed_yaml = yaml.safe_load(stderr_output)
+        parsed_yaml = self._load_yaml(stderr_output)
         assert parsed_yaml['Code'] == 'NoCredentials'
         assert (
             'aws' in parsed_yaml['Message']
@@ -576,7 +582,7 @@ class TestNonModeledErrorStructuredFormatting:
 
         assert rc == PARAM_VALIDATION_ERROR_RC
         stderr_output = stderr.getvalue()
-        parsed_yaml = yaml.safe_load(stderr_output)
+        parsed_yaml = self._load_yaml(stderr_output)
         assert parsed_yaml['Code'] == 'ParamValidation'
         assert 'Invalid parameter value' in parsed_yaml['Message']
 

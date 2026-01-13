@@ -145,7 +145,7 @@ class FilteredExceptionHandler(BaseExceptionHandler):
         parsed_globals = kwargs.get('parsed_globals')
         error_info = self._extract_error_info(exception)
 
-        if error_info and self._session:
+        if error_info:
             formatted_message = self._get_formatted_message(
                 error_info, exception
             )
@@ -176,16 +176,18 @@ class FilteredExceptionHandler(BaseExceptionHandler):
             error_format = getattr(parsed_globals, 'cli_error_format', None)
             if error_format:
                 return error_format.lower()
-        try:
-            error_format = self._session.get_config_variable(
-                'cli_error_format'
-            )
-            if error_format:
-                return error_format.lower()
-        except (KeyError, AttributeError) as e:
-            LOG.debug(
-                'Failed to get cli_error_format from config: %s', e
-            )
+
+        if self._session:
+            try:
+                error_format = self._session.get_config_variable(
+                    'cli_error_format'
+                )
+                if error_format:
+                    return error_format.lower()
+            except (KeyError, AttributeError) as e:
+                LOG.debug(
+                    'Failed to get cli_error_format from config: %s', e
+                )
 
         return 'enhanced'
 
@@ -258,7 +260,7 @@ class ClientErrorHandler(FilteredExceptionHandler):
         parsed_globals = kwargs.get('parsed_globals')
         error_info = self._extract_error_info(exception)
 
-        if error_info and self._session:
+        if error_info:
             formatted_message = self._get_formatted_message(
                 error_info, exception
             )

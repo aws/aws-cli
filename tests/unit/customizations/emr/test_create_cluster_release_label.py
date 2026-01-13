@@ -289,7 +289,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             'emr-4.0.0 --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG
         )
         expected_error_msg = (
-            '\naws: [ERROR]: You cannot specify both --ami-version'
+            '\naws: [ERROR]: An error occurred (ParamValidation): You cannot specify both --ami-version'
             ' and --release-label options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -298,7 +298,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_if_ami_version_or_release_label_is_provided(self):
         cmd = self.prefix + ' --instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG
         expected_error_msg = (
-            '\naws: [ERROR]: Either --ami-version or'
+            '\naws: [ERROR]: An error occurred (ParamValidation): Either --ami-version or'
             ' --release-label is required.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -406,7 +406,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + '--ec2-attributes InstanceProfile=Ec2_InstanceProfile'
         )
         expected_error_msg = (
-            '\naws: [ERROR]: You cannot specify both --use-default-roles '
+            '\naws: [ERROR]: An error occurred (ParamValidation): You cannot specify both --use-default-roles '
             'and --ec2-attributes InstanceProfile options together. Either '
             'choose --use-default-roles or use both --service-role <roleName>'
             ' and --ec2-attributes InstanceProfile=<profileName>.\n'
@@ -420,7 +420,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--ec2-attributes InstanceProfile=Ec2_InstanceProfile'
         )
         expected_error_msg = (
-            '\naws: [ERROR]: You cannot specify both --use-default-roles '
+            '\naws: [ERROR]: An error occurred (ParamValidation): You cannot specify both --use-default-roles '
             'and --service-role options together. Either choose '
             '--use-default-roles or use both --service-role <roleName> '
             'and --ec2-attributes InstanceProfile=<profileName>.\n'
@@ -479,7 +479,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + '--auto-terminate --no-auto-terminate'
         )
         expected_error_msg = (
-            '\naws: [ERROR]: cannot use both --no-auto-terminate and'
+            '\naws: [ERROR]: An error occurred (ParamValidation): cannot use both --no-auto-terminate and'
             ' --auto-terminate options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -502,7 +502,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             DEFAULT_CMD + '--termination-protected --no-termination-protected'
         )
         expected_error_msg = (
-            '\naws: [ERROR]: cannot use both --termination-protected'
+            '\naws: [ERROR]: An error occurred (ParamValidation): cannot use both --termination-protected'
             ' and --no-termination-protected options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -532,7 +532,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + '--unhealthy-node-replacement --no-unhealthy-node-replacement'
         )
         expected_error_msg = (
-            '\naws: [ERROR]: cannot use both --unhealthy-node-replacement'
+            '\naws: [ERROR]: An error occurred (ParamValidation): cannot use both --unhealthy-node-replacement'
             ' and --no-unhealthy-node-replacement options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -551,7 +551,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_visible_to_all_users_and_no_visible_to_all_users(self):
         cmd = DEFAULT_CMD + '--visible-to-all-users --no-visible-to-all-users'
         expected_error_msg = (
-            '\naws: [ERROR]: cannot use both --visible-to-all-users and '
+            '\naws: [ERROR]: An error occurred (ParamValidation): cannot use both --visible-to-all-users and '
             '--no-visible-to-all-users options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -572,7 +572,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_extended_support_and_no_extended_support(self):
         cmd = DEFAULT_CMD + '--extended-support --no-extended-support'
         expected_error_msg = (
-            '\naws: [ERROR]: cannot use both --extended-support'
+            '\naws: [ERROR]: An error occurred (ParamValidation): cannot use both --extended-support'
             ' and --no-extended-support options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -625,7 +625,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_enable_debugging_no_log_uri(self):
         cmd = DEFAULT_CMD + '--enable-debugging'
         expected_error_msg = (
-            '\naws: [ERROR]: LogUri not specified. You must specify a logUri'
+            '\naws: [ERROR]: An error occurred (ParamValidation): LogUri not specified. You must specify a logUri'
             ' if you enable debugging when creating a cluster.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -638,7 +638,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + ' --log-uri s3://test/logs'
         )
         expected_error_msg = (
-            '\naws: [ERROR]: cannot use both --enable-debugging and '
+            '\naws: [ERROR]: An error occurred (ParamValidation): cannot use both --enable-debugging and '
             '--no-enable-debugging options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -718,7 +718,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             ' emr-4.0.0 '
         )
         expect_error_msg = (
-            '\naws: [ERROR]: Must specify either --instance-groups or '
+            '\naws: [ERROR]: An error occurred (ParamValidation): Must specify either --instance-groups or '
             '--instance-type with --instance-count(optional) to '
             'configure instance groups.\n'
         )
@@ -730,7 +730,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--instance-count 2'
         )
         expect_error_msg = (
-            '\naws: [ERROR]: Must specify either --instance-groups or '
+            '\naws: [ERROR]: An error occurred (ParamValidation): Must specify either --instance-groups or '
             '--instance-type with --instance-count(optional) to '
             'configure instance groups.\n'
         )
@@ -744,7 +744,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + DEFAULT_INSTANCE_GROUPS_ARG
         )
         expect_error_msg = (
-            '\naws: [ERROR]: You may not specify --instance-type '
+            '\naws: [ERROR]: An error occurred (ParamValidation): You may not specify --instance-type '
             'or --instance-count with --instance-groups, '
             'because --instance-type and --instance-count are '
             'shortcut options for --instance-groups.\n'
@@ -758,7 +758,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             '--instance-groups ' + DEFAULT_INSTANCE_GROUPS_ARG
         )
         expect_error_msg = (
-            '\naws: [ERROR]: You may not specify --instance-type '
+            '\naws: [ERROR]: An error occurred (ParamValidation): You may not specify --instance-type '
             'or --instance-count with --instance-groups, '
             'because --instance-type and --instance-count are '
             'shortcut options for --instance-groups.\n'
@@ -927,7 +927,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + 'SubnetId=subnet-123456,AvailabilityZone=us-east-1a'
         )
         expect_error_msg = (
-            '\naws: [ERROR]: You may not specify both a SubnetId and an Availab'
+            '\naws: [ERROR]: An error occurred (ParamValidation): You may not specify both a SubnetId and an Availab'
             'ilityZone (placement) because ec2SubnetId implies a placement.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -993,7 +993,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             cmd += ba_cmd
 
         expected_error_msg = (
-            '\naws: [ERROR]: maximum number of '
+            '\naws: [ERROR]: An error occurred (ParamValidation): maximum number of '
             + 'bootstrap actions for a cluster exceeded.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1006,7 +1006,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
         for i in range(1, 20):
             cmd += ba_cmd
         expected_error_msg = (
-            '\naws: [ERROR]: maximum number of '
+            '\naws: [ERROR]: An error occurred (ParamValidation): maximum number of '
             + 'bootstrap actions for a cluster exceeded.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1057,7 +1057,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_wrong_step_type_error(self):
         cmd = DEFAULT_CMD + '--steps Type=unknown'
         expected_error_msg = (
-            '\naws: [ERROR]: The step type unknown is not supported.\n'
+            '\naws: [ERROR]: An error occurred (ParamValidation): The step type unknown is not supported.\n'
         )
         result = self.run_cmd(cmd, 252)
         self.assertEqual(expected_error_msg, result[1])
@@ -1071,7 +1071,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_custom_jar_step_missing_jar(self):
         cmd = DEFAULT_CMD + '--steps Name=CustomJarMissingJar'
         expect_error_msg = (
-            '\naws: [ERROR]: The following '
+            '\naws: [ERROR]: An error occurred (ParamValidation): The following '
             + 'required parameters are missing for CustomJARStepConfig: Jar.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1118,7 +1118,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_streaming_step_missing_args(self):
         cmd = DEFAULT_CMD + '--steps Type=Streaming'
         expect_error_msg = (
-            '\naws: [ERROR]: The following '
+            '\naws: [ERROR]: An error occurred (ParamValidation): The following '
             + 'required parameters are missing for StreamingStepConfig: Args.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1152,7 +1152,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_hive_step_missing_args(self):
         cmd = DEFAULT_CMD + '--applications Name=Hive --steps Type=Hive'
         expect_error_msg = (
-            '\naws: [ERROR]: The following '
+            '\naws: [ERROR]: An error occurred (ParamValidation): The following '
             + 'required parameters are missing for HiveStepConfig: Args.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1183,7 +1183,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_pig_missing_args(self):
         cmd = DEFAULT_CMD + '--applications Name=Pig --steps Type=Pig'
         expect_error_msg = (
-            '\naws: [ERROR]: The following '
+            '\naws: [ERROR]: An error occurred (ParamValidation): The following '
             + 'required parameters are missing for PigStepConfig: Args.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1331,7 +1331,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + CONSTANTS.INSTANCE_GROUPS_WITH_AUTOSCALING_POLICY_ARG
         )
         expected_error_msg = (
-            '\naws: [ERROR]: Must specify --auto-scaling-role when'
+            '\naws: [ERROR]: An error occurred (ParamValidation): Must specify --auto-scaling-role when'
             ' configuring an AutoScaling policy for an instance group.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1582,7 +1582,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + CONSTANTS.INSTANCE_GROUPS_WITH_EBS_VOLUME_ARG
         )
         expected_error_msg = (
-            '\naws: [ERROR]: You cannot specify both --instance-groups'
+            '\naws: [ERROR]: An error occurred (ParamValidation): You cannot specify both --instance-groups'
             ' and --instance-fleets options together.\n'
         )
         result = self.run_cmd(cmd, 252)
@@ -1596,7 +1596,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
             + ' --ec2-attributes SubnetId=subnetid-1,SubnetIds=[subnetid-1,subnetid-2]'
         )
         expected_error_msg = (
-            '\naws: [ERROR]: You cannot specify both SubnetId'
+            '\naws: [ERROR]: An error occurred (ParamValidation): You cannot specify both SubnetId'
             ' and SubnetIds options together.\n'
         )
         result = self.run_cmd(cmd, 252)

@@ -725,7 +725,8 @@ class TestAWSCommand(BaseAWSCommandParamsTest):
             driver.main('ec2 describe-instances'.split())
         self.assertEqual(
             f.write.call_args_list[1][0][0],
-            'aws: [ERROR]: Unable to locate credentials. '
+            'aws: [ERROR]: An error occurred (NoCredentials): '
+            'Unable to locate credentials. '
             'You can configure credentials by running "aws login".',
         )
 

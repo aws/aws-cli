@@ -37,9 +37,9 @@ from awscli.customizations.exceptions import (
     ConfigurationError,
     ParamValidationError,
 )
+from awscli.errorformat import write_error
 from awscli.formatter import get_formatter
 from awscli.utils import PagerInitializationException
-from awscli.errorformat import write_error
 
 LOG = logging.getLogger(__name__)
 
@@ -185,9 +185,7 @@ class FilteredExceptionHandler(BaseExceptionHandler):
                 if error_format:
                     return error_format.lower()
             except (KeyError, AttributeError) as e:
-                LOG.debug(
-                    'Failed to get cli_error_format from config: %s', e
-                )
+                LOG.debug('Failed to get cli_error_format from config: %s', e)
 
         return 'enhanced'
 
@@ -241,10 +239,7 @@ class ParamValidationErrorsHandler(FilteredExceptionHandler):
         return self.RC
 
     def _extract_error_info(self, exception):
-        return {
-            'Code': 'ParamValidation',
-            'Message': str(exception)
-        }
+        return {'Code': 'ParamValidation', 'Message': str(exception)}
 
 
 class SilenceParamValidationMsgErrorHandler(ParamValidationErrorsHandler):
@@ -314,10 +309,7 @@ class ConfigurationErrorHandler(FilteredExceptionHandler):
         return self.RC
 
     def _extract_error_info(self, exception):
-        return {
-            'Code': 'Configuration',
-            'Message': str(exception)
-        }
+        return {'Code': 'Configuration', 'Message': str(exception)}
 
 
 class NoRegionErrorHandler(FilteredExceptionHandler):
@@ -333,10 +325,7 @@ class NoRegionErrorHandler(FilteredExceptionHandler):
             f'{exception} You can also configure your region by running '
             f'"aws configure".'
         )
-        return {
-            'Code': 'NoRegion',
-            'Message': message
-        }
+        return {'Code': 'NoRegion', 'Message': message}
 
 
 class NoCredentialsErrorHandler(FilteredExceptionHandler):
@@ -349,10 +338,7 @@ class NoCredentialsErrorHandler(FilteredExceptionHandler):
 
     def _extract_error_info(self, exception):
         message = f'{exception}. You can configure credentials by running "aws login".'
-        return {
-            'Code': 'NoCredentials',
-            'Message': message
-        }
+        return {'Code': 'NoCredentials', 'Message': message}
 
 
 class PagerErrorHandler(FilteredExceptionHandler):
@@ -370,10 +356,7 @@ class PagerErrorHandler(FilteredExceptionHandler):
             f'Learn more about configuring the output pager by running '
             f'"aws help config-vars".'
         )
-        return {
-            'Code': 'Pager',
-            'Message': message
-        }
+        return {'Code': 'Pager', 'Message': message}
 
 
 class UnknownArgumentErrorHandler(FilteredExceptionHandler):

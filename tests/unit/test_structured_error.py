@@ -17,7 +17,6 @@ import signal
 from unittest import mock
 
 import yaml
-
 from botocore.exceptions import ClientError, NoCredentialsError, NoRegionError
 
 from awscli.arguments import UnknownArgumentError
@@ -389,7 +388,9 @@ class TestRealWorldErrorScenarios:
         assert rc == CLIENT_ERROR_RC
         stderr_output = stderr.getvalue()
         assert 'aws: [ERROR]:' in stderr_output
-        assert 'An error occurred (TransactionCanceledException)' in stderr_output
+        assert (
+            'An error occurred (TransactionCanceledException)' in stderr_output
+        )
         assert 'CancellationReasons: <complex value>' in stderr_output
 
 
@@ -504,7 +505,10 @@ class TestNonModeledErrorStructuredFormatting:
         stderr_output = stderr.getvalue()
         parsed_yaml = yaml.safe_load(stderr_output)
         assert parsed_yaml['Code'] == 'NoCredentials'
-        assert 'aws' in parsed_yaml['Message'] and 'login' in parsed_yaml['Message']
+        assert (
+            'aws' in parsed_yaml['Message']
+            and 'login' in parsed_yaml['Message']
+        )
 
     def test_configuration_error_with_enhanced_format(self):
         session = FakeSession()

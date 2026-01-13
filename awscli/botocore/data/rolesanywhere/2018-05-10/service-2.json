@@ -2,16 +2,15 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2018-05-10",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"rolesanywhere",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
     "protocols":["rest-json"],
     "serviceFullName":"IAM Roles Anywhere",
     "serviceId":"RolesAnywhere",
     "signatureVersion":"v4",
     "signingName":"rolesanywhere",
-    "uid":"rolesanywhere-2018-05-10",
-    "auth":["aws.auth#sigv4"]
+    "uid":"rolesanywhere-2018-05-10"
   },
   "operations":{
     "CreateProfile":{
@@ -211,7 +210,8 @@
       "errors":[
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Gets a certificate revocation list (CRL).</p> <p> <b>Required permissions: </b> <code>rolesanywhere:GetCrl</code>. </p>"
+      "documentation":"<p>Gets a certificate revocation list (CRL).</p> <p> <b>Required permissions: </b> <code>rolesanywhere:GetCrl</code>. </p>",
+      "readonly":true
     },
     "GetProfile":{
       "name":"GetProfile",
@@ -226,7 +226,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Gets a profile.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:GetProfile</code>. </p>"
+      "documentation":"<p>Gets a profile.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:GetProfile</code>. </p>",
+      "readonly":true
     },
     "GetSubject":{
       "name":"GetSubject",
@@ -241,7 +242,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Gets a <i>subject</i>, which associates a certificate identity with authentication attempts. The subject stores auditing information such as the status of the last authentication attempt, the certificate data used in the attempt, and the last time the associated identity attempted authentication. </p> <p> <b>Required permissions: </b> <code>rolesanywhere:GetSubject</code>. </p>"
+      "documentation":"<p>Gets a <i>subject</i>, which associates a certificate identity with authentication attempts. The subject stores auditing information such as the status of the last authentication attempt, the certificate data used in the attempt, and the last time the associated identity attempted authentication. </p> <p> <b>Required permissions: </b> <code>rolesanywhere:GetSubject</code>. </p>",
+      "readonly":true
     },
     "GetTrustAnchor":{
       "name":"GetTrustAnchor",
@@ -257,7 +259,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Gets a trust anchor.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:GetTrustAnchor</code>. </p>"
+      "documentation":"<p>Gets a trust anchor.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:GetTrustAnchor</code>. </p>",
+      "readonly":true
     },
     "ImportCrl":{
       "name":"ImportCrl",
@@ -287,7 +290,8 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all certificate revocation lists (CRL) in the authenticated account and Amazon Web Services Region.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:ListCrls</code>. </p>"
+      "documentation":"<p>Lists all certificate revocation lists (CRL) in the authenticated account and Amazon Web Services Region.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:ListCrls</code>. </p>",
+      "readonly":true
     },
     "ListProfiles":{
       "name":"ListProfiles",
@@ -302,7 +306,8 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists all profiles in the authenticated account and Amazon Web Services Region.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:ListProfiles</code>. </p>"
+      "documentation":"<p>Lists all profiles in the authenticated account and Amazon Web Services Region.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:ListProfiles</code>. </p>",
+      "readonly":true
     },
     "ListSubjects":{
       "name":"ListSubjects",
@@ -317,7 +322,8 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the subjects in the authenticated account and Amazon Web Services Region.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:ListSubjects</code>. </p>"
+      "documentation":"<p>Lists the subjects in the authenticated account and Amazon Web Services Region.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:ListSubjects</code>. </p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -333,7 +339,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the tags attached to the resource.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:ListTagsForResource</code>. </p>"
+      "documentation":"<p>Lists the tags attached to the resource.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:ListTagsForResource</code>. </p>",
+      "readonly":true
     },
     "ListTrustAnchors":{
       "name":"ListTrustAnchors",
@@ -348,7 +355,8 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the trust anchors in the authenticated account and Amazon Web Services Region.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:ListTrustAnchors</code>. </p>"
+      "documentation":"<p>Lists the trust anchors in the authenticated account and Amazon Web Services Region.</p> <p> <b>Required permissions: </b> <code>rolesanywhere:ListTrustAnchors</code>. </p>",
+      "readonly":true
     },
     "PutAttributeMapping":{
       "name":"PutAttributeMapping",
@@ -539,9 +547,25 @@
         "roleArns"
       ],
       "members":{
-        "acceptRoleSessionName":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the profile.</p>"
+        },
+        "requireInstanceProperties":{
           "shape":"Boolean",
-          "documentation":"<p>Used to determine if a custom role session name will be accepted in a temporary credential request.</p>"
+          "documentation":"<p>Unused, saved for future use. Will likely specify whether instance properties are required in temporary credential requests with this profile. </p>"
+        },
+        "sessionPolicy":{
+          "shape":"String",
+          "documentation":"<p>A session policy that applies to the trust boundary of the vended session credentials. </p>"
+        },
+        "roleArns":{
+          "shape":"RoleArnList",
+          "documentation":"<p>A list of IAM roles that this profile can assume in a temporary credential request.</p>"
+        },
+        "managedPolicyArns":{
+          "shape":"ManagedPolicyList",
+          "documentation":"<p>A list of managed policy ARNs that apply to the vended session credentials. </p>"
         },
         "durationSeconds":{
           "shape":"CreateProfileRequestDurationSecondsInteger",
@@ -551,29 +575,13 @@
           "shape":"Boolean",
           "documentation":"<p>Specifies whether the profile is enabled.</p>"
         },
-        "managedPolicyArns":{
-          "shape":"ManagedPolicyList",
-          "documentation":"<p>A list of managed policy ARNs that apply to the vended session credentials. </p>"
-        },
-        "name":{
-          "shape":"ResourceName",
-          "documentation":"<p>The name of the profile.</p>"
-        },
-        "requireInstanceProperties":{
-          "shape":"Boolean",
-          "documentation":"<p>Specifies whether instance properties are required in temporary credential requests with this profile. </p>"
-        },
-        "roleArns":{
-          "shape":"RoleArnList",
-          "documentation":"<p>A list of IAM roles that this profile can assume in a temporary credential request.</p>"
-        },
-        "sessionPolicy":{
-          "shape":"String",
-          "documentation":"<p>A session policy that applies to the trust boundary of the vended session credentials. </p>"
-        },
         "tags":{
           "shape":"TagList",
           "documentation":"<p>The tags to attach to the profile.</p>"
+        },
+        "acceptRoleSessionName":{
+          "shape":"Boolean",
+          "documentation":"<p>Used to determine if a custom role session name will be accepted in a temporary credential request.</p>"
         }
       }
     },
@@ -590,25 +598,25 @@
         "source"
       ],
       "members":{
-        "enabled":{
-          "shape":"Boolean",
-          "documentation":"<p>Specifies whether the trust anchor is enabled.</p>"
-        },
         "name":{
           "shape":"ResourceName",
           "documentation":"<p>The name of the trust anchor.</p>"
-        },
-        "notificationSettings":{
-          "shape":"NotificationSettings",
-          "documentation":"<p>A list of notification settings to be associated to the trust anchor.</p>"
         },
         "source":{
           "shape":"Source",
           "documentation":"<p>The trust anchor type and its related certificate data.</p>"
         },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the trust anchor is enabled.</p>"
+        },
         "tags":{
           "shape":"TagList",
           "documentation":"<p>The tags to attach to the trust anchor.</p>"
+        },
+        "notificationSettings":{
+          "shape":"NotificationSettings",
+          "documentation":"<p>A list of notification settings to be associated to the trust anchor.</p>"
         }
       }
     },
@@ -619,18 +627,6 @@
     "CredentialSummary":{
       "type":"structure",
       "members":{
-        "enabled":{
-          "shape":"Boolean",
-          "documentation":"<p>Indicates whether the credential is enabled.</p>"
-        },
-        "failed":{
-          "shape":"Boolean",
-          "documentation":"<p>Indicates whether the temporary credential request was successful. </p>"
-        },
-        "issuer":{
-          "shape":"String",
-          "documentation":"<p>The fully qualified domain name of the issuing certificate for the presented end-entity certificate.</p>"
-        },
         "seenAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The ISO-8601 time stamp of when the certificate was last used in a temporary credential request.</p>"
@@ -639,9 +635,21 @@
           "shape":"String",
           "documentation":"<p>The serial number of the certificate.</p>"
         },
+        "issuer":{
+          "shape":"String",
+          "documentation":"<p>The fully qualified domain name of the issuing certificate for the presented end-entity certificate.</p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the credential is enabled.</p>"
+        },
         "x509CertificateData":{
           "shape":"String",
           "documentation":"<p>The PEM-encoded data of the certificate.</p>"
+        },
+        "failed":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the temporary credential request was successful. </p>"
         }
       },
       "documentation":"<p>A record of a presented X509 credential from a temporary credential request. </p>"
@@ -649,33 +657,33 @@
     "CrlDetail":{
       "type":"structure",
       "members":{
-        "createdAt":{
-          "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The ISO-8601 timestamp when the certificate revocation list (CRL) was created. </p>"
+        "crlId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier of the certificate revocation list (CRL).</p>"
         },
         "crlArn":{
           "shape":"String",
           "documentation":"<p>The ARN of the certificate revocation list (CRL).</p>"
         },
-        "crlData":{
-          "shape":"Blob",
-          "documentation":"<p>The state of the certificate revocation list (CRL) after a read or write operation.</p>"
-        },
-        "crlId":{
-          "shape":"Uuid",
-          "documentation":"<p>The unique identifier of the certificate revocation list (CRL).</p>"
+        "name":{
+          "shape":"String",
+          "documentation":"<p>The name of the certificate revocation list (CRL).</p>"
         },
         "enabled":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the certificate revocation list (CRL) is enabled.</p>"
         },
-        "name":{
-          "shape":"String",
-          "documentation":"<p>The name of the certificate revocation list (CRL).</p>"
+        "crlData":{
+          "shape":"Blob",
+          "documentation":"<p>The state of the certificate revocation list (CRL) after a read or write operation.</p>"
         },
         "trustAnchorArn":{
           "shape":"String",
           "documentation":"<p>The ARN of the TrustAnchor the certificate revocation list (CRL) will provide revocation for. </p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The ISO-8601 timestamp when the certificate revocation list (CRL) was created. </p>"
         },
         "updatedAt":{
           "shape":"SyntheticTimestamp_date_time",
@@ -701,21 +709,21 @@
     "DeleteAttributeMappingRequest":{
       "type":"structure",
       "required":[
-        "certificateField",
-        "profileId"
+        "profileId",
+        "certificateField"
       ],
       "members":{
-        "certificateField":{
-          "shape":"CertificateField",
-          "documentation":"<p>Fields (x509Subject, x509Issuer and x509SAN) within X.509 certificates.</p>",
-          "location":"querystring",
-          "locationName":"certificateField"
-        },
         "profileId":{
           "shape":"Uuid",
           "documentation":"<p>The unique identifier of the profile.</p>",
           "location":"uri",
           "locationName":"profileId"
+        },
+        "certificateField":{
+          "shape":"CertificateField",
+          "documentation":"<p>Fields (x509Subject, x509Issuer and x509SAN) within X.509 certificates.</p>",
+          "location":"querystring",
+          "locationName":"certificateField"
         },
         "specifiers":{
           "shape":"SpecifierList",
@@ -738,11 +746,15 @@
     "ImportCrlRequest":{
       "type":"structure",
       "required":[
-        "crlData",
         "name",
+        "crlData",
         "trustAnchorArn"
       ],
       "members":{
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the certificate revocation list (CRL).</p>"
+        },
         "crlData":{
           "shape":"ImportCrlRequestCrlDataBlob",
           "documentation":"<p>The x509 v3 specified certificate revocation list (CRL).</p>"
@@ -750,10 +762,6 @@
         "enabled":{
           "shape":"Boolean",
           "documentation":"<p>Specifies whether the certificate revocation list (CRL) is enabled.</p>"
-        },
-        "name":{
-          "shape":"ResourceName",
-          "documentation":"<p>The name of the certificate revocation list (CRL).</p>"
         },
         "tags":{
           "shape":"TagList",
@@ -777,17 +785,17 @@
     "InstanceProperty":{
       "type":"structure",
       "members":{
-        "failed":{
-          "shape":"Boolean",
-          "documentation":"<p>Indicates whether the temporary credential request was successful. </p>"
+        "seenAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The ISO-8601 time stamp of when the certificate was last used in a temporary credential request.</p>"
         },
         "properties":{
           "shape":"InstancePropertyMap",
           "documentation":"<p>A list of instanceProperty objects. </p>"
         },
-        "seenAt":{
-          "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The ISO-8601 time stamp of when the certificate was last used in a temporary credential request.</p>"
+        "failed":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the temporary credential request was successful. </p>"
         }
       },
       "documentation":"<p>A key-value pair you set that identifies a property of the authenticating instance.</p>"
@@ -816,13 +824,13 @@
     "ListCrlsResponse":{
       "type":"structure",
       "members":{
-        "crls":{
-          "shape":"CrlDetails",
-          "documentation":"<p>A list of certificate revocation lists (CRL). </p>"
-        },
         "nextToken":{
           "shape":"String",
           "documentation":"<p>A token that indicates where the output should continue from, if a previous request did not show all results. To get the next results, make the request again with this value.</p>"
+        },
+        "crls":{
+          "shape":"CrlDetails",
+          "documentation":"<p>A list of certificate revocation lists (CRL). </p>"
         }
       }
     },
@@ -864,13 +872,13 @@
     "ListSubjectsResponse":{
       "type":"structure",
       "members":{
-        "nextToken":{
-          "shape":"String",
-          "documentation":"<p>A token that indicates where the output should continue from, if a previous request did not show all results. To get the next results, make the request again with this value.</p>"
-        },
         "subjects":{
           "shape":"SubjectSummaries",
           "documentation":"<p>A list of subjects.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A token that indicates where the output should continue from, if a previous request did not show all results. To get the next results, make the request again with this value.</p>"
         }
       }
     },
@@ -957,10 +965,6 @@
         "event"
       ],
       "members":{
-        "channel":{
-          "shape":"NotificationChannel",
-          "documentation":"<p>The specified channel of notification. IAM Roles Anywhere uses CloudWatch metrics, EventBridge, and Health Dashboard to notify for an event.</p> <note> <p>In the absence of a specific channel, IAM Roles Anywhere applies this setting to 'ALL' channels.</p> </note>"
-        },
         "enabled":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the notification setting is enabled.</p>"
@@ -972,6 +976,10 @@
         "threshold":{
           "shape":"NotificationSettingThresholdInteger",
           "documentation":"<p>The number of days before a notification event. This value is required for a notification setting that is enabled.</p>"
+        },
+        "channel":{
+          "shape":"NotificationChannel",
+          "documentation":"<p>The specified channel of notification. IAM Roles Anywhere uses CloudWatch metrics, EventBridge, and Health Dashboard to notify for an event.</p> <note> <p>In the absence of a specific channel, IAM Roles Anywhere applies this setting to 'ALL' channels.</p> </note>"
         }
       },
       "documentation":"<p> Customizable notification settings that will be applied to notification events. IAM Roles Anywhere consumes these settings while notifying across multiple channels - CloudWatch metrics, EventBridge, and Health Dashboard. </p>"
@@ -983,14 +991,6 @@
         "event"
       ],
       "members":{
-        "channel":{
-          "shape":"NotificationChannel",
-          "documentation":"<p>The specified channel of notification. IAM Roles Anywhere uses CloudWatch metrics, EventBridge, and Health Dashboard to notify for an event.</p> <note> <p>In the absence of a specific channel, IAM Roles Anywhere applies this setting to 'ALL' channels.</p> </note>"
-        },
-        "configuredBy":{
-          "shape":"NotificationSettingDetailConfiguredByString",
-          "documentation":"<p>The principal that configured the notification setting. For default settings configured by IAM Roles Anywhere, the value is <code>rolesanywhere.amazonaws.com</code>, and for customized notifications settings, it is the respective account ID. </p>"
-        },
         "enabled":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the notification setting is enabled.</p>"
@@ -1002,6 +1002,14 @@
         "threshold":{
           "shape":"NotificationSettingDetailThresholdInteger",
           "documentation":"<p>The number of days before a notification event.</p>"
+        },
+        "channel":{
+          "shape":"NotificationChannel",
+          "documentation":"<p>The specified channel of notification. IAM Roles Anywhere uses CloudWatch metrics, EventBridge, and Health Dashboard to notify for an event.</p> <note> <p>In the absence of a specific channel, IAM Roles Anywhere applies this setting to 'ALL' channels.</p> </note>"
+        },
+        "configuredBy":{
+          "shape":"NotificationSettingDetailConfiguredByString",
+          "documentation":"<p>The principal that configured the notification setting. For default settings configured by IAM Roles Anywhere, the value is <code>rolesanywhere.amazonaws.com</code>, and for customized notifications settings, it is the respective account ID. </p>"
         }
       },
       "documentation":"<p>The state of a notification setting.</p> <p>A notification setting includes information such as event name, threshold, status of the notification setting, and the channel to notify.</p>"
@@ -1027,13 +1035,13 @@
       "type":"structure",
       "required":["event"],
       "members":{
-        "channel":{
-          "shape":"NotificationChannel",
-          "documentation":"<p>The specified channel of notification.</p>"
-        },
         "event":{
           "shape":"NotificationEvent",
           "documentation":"<p>The notification setting event to reset.</p>"
+        },
+        "channel":{
+          "shape":"NotificationChannel",
+          "documentation":"<p>The specified channel of notification.</p>"
         }
       },
       "documentation":"<p>A notification setting key to reset. A notification setting key includes the event and the channel. </p>"
@@ -1060,11 +1068,59 @@
       "type":"string",
       "max":1011,
       "min":1,
-      "pattern":"^arn:aws(-[^:]+)?:rolesanywhere(:.*){2}(:profile.*)$"
+      "pattern":"arn:aws(-[^:]+)?:rolesanywhere(:.*){2}(:profile.*)"
     },
     "ProfileDetail":{
       "type":"structure",
       "members":{
+        "profileId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier of the profile.</p>"
+        },
+        "profileArn":{
+          "shape":"ProfileArn",
+          "documentation":"<p>The ARN of the profile.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the profile.</p>"
+        },
+        "requireInstanceProperties":{
+          "shape":"Boolean",
+          "documentation":"<p>Unused, saved for future use. Will likely specify whether instance properties are required in temporary credential requests with this profile. </p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the profile is enabled.</p>"
+        },
+        "createdBy":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account that created the profile.</p>"
+        },
+        "sessionPolicy":{
+          "shape":"String",
+          "documentation":"<p>A session policy that applies to the trust boundary of the vended session credentials. </p>"
+        },
+        "roleArns":{
+          "shape":"RoleArnList",
+          "documentation":"<p>A list of IAM roles that this profile can assume in a temporary credential request.</p>"
+        },
+        "managedPolicyArns":{
+          "shape":"ManagedPolicyList",
+          "documentation":"<p>A list of managed policy ARNs that apply to the vended session credentials. </p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The ISO-8601 timestamp when the profile was created. </p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The ISO-8601 timestamp when the profile was last updated. </p>"
+        },
+        "durationSeconds":{
+          "shape":"Integer",
+          "documentation":"<p> Used to determine how long sessions vended using this profile are valid for. See the <code>Expiration</code> section of the <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/userguide/authentication-create-session.html#credentials-object\">CreateSession API documentation</a> page for more details. In requests, if this value is not provided, the default value will be 3600. </p>"
+        },
         "acceptRoleSessionName":{
           "shape":"Boolean",
           "documentation":"<p>Used to determine if a custom role session name will be accepted in a temporary credential request.</p>"
@@ -1072,54 +1128,6 @@
         "attributeMappings":{
           "shape":"AttributeMappings",
           "documentation":"<p>A mapping applied to the authenticating end-entity certificate.</p>"
-        },
-        "createdAt":{
-          "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The ISO-8601 timestamp when the profile was created. </p>"
-        },
-        "createdBy":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Web Services account that created the profile.</p>"
-        },
-        "durationSeconds":{
-          "shape":"Integer",
-          "documentation":"<p> Used to determine how long sessions vended using this profile are valid for. See the <code>Expiration</code> section of the <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/userguide/authentication-create-session.html#credentials-object\">CreateSession API documentation</a> page for more details. In requests, if this value is not provided, the default value will be 3600. </p>"
-        },
-        "enabled":{
-          "shape":"Boolean",
-          "documentation":"<p>Indicates whether the profile is enabled.</p>"
-        },
-        "managedPolicyArns":{
-          "shape":"ManagedPolicyList",
-          "documentation":"<p>A list of managed policy ARNs that apply to the vended session credentials. </p>"
-        },
-        "name":{
-          "shape":"ResourceName",
-          "documentation":"<p>The name of the profile.</p>"
-        },
-        "profileArn":{
-          "shape":"ProfileArn",
-          "documentation":"<p>The ARN of the profile.</p>"
-        },
-        "profileId":{
-          "shape":"Uuid",
-          "documentation":"<p>The unique identifier of the profile.</p>"
-        },
-        "requireInstanceProperties":{
-          "shape":"Boolean",
-          "documentation":"<p>Specifies whether instance properties are required in temporary credential requests with this profile. </p>"
-        },
-        "roleArns":{
-          "shape":"RoleArnList",
-          "documentation":"<p>A list of IAM roles that this profile can assume in a temporary credential request.</p>"
-        },
-        "sessionPolicy":{
-          "shape":"String",
-          "documentation":"<p>A session policy that applies to the trust boundary of the vended session credentials. </p>"
-        },
-        "updatedAt":{
-          "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The ISO-8601 timestamp when the profile was last updated. </p>"
         }
       },
       "documentation":"<p>The state of the profile after a read or write operation.</p>"
@@ -1140,11 +1148,17 @@
     "PutAttributeMappingRequest":{
       "type":"structure",
       "required":[
+        "profileId",
         "certificateField",
-        "mappingRules",
-        "profileId"
+        "mappingRules"
       ],
       "members":{
+        "profileId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier of the profile.</p>",
+          "location":"uri",
+          "locationName":"profileId"
+        },
         "certificateField":{
           "shape":"CertificateField",
           "documentation":"<p>Fields (x509Subject, x509Issuer and x509SAN) within X.509 certificates.</p>"
@@ -1152,12 +1166,6 @@
         "mappingRules":{
           "shape":"MappingRules",
           "documentation":"<p>A list of mapping entries for every supported specifier or sub-field.</p>"
-        },
-        "profileId":{
-          "shape":"Uuid",
-          "documentation":"<p>The unique identifier of the profile.</p>",
-          "location":"uri",
-          "locationName":"profileId"
         }
       }
     },
@@ -1174,17 +1182,17 @@
     "PutNotificationSettingsRequest":{
       "type":"structure",
       "required":[
-        "notificationSettings",
-        "trustAnchorId"
+        "trustAnchorId",
+        "notificationSettings"
       ],
       "members":{
-        "notificationSettings":{
-          "shape":"NotificationSettings",
-          "documentation":"<p>A list of notification settings to be associated to the trust anchor.</p>"
-        },
         "trustAnchorId":{
           "shape":"Uuid",
           "documentation":"<p>The unique identifier of the trust anchor.</p>"
+        },
+        "notificationSettings":{
+          "shape":"NotificationSettings",
+          "documentation":"<p>A list of notification settings to be associated to the trust anchor.</p>"
         }
       }
     },
@@ -1198,17 +1206,17 @@
     "ResetNotificationSettingsRequest":{
       "type":"structure",
       "required":[
-        "notificationSettingKeys",
-        "trustAnchorId"
+        "trustAnchorId",
+        "notificationSettingKeys"
       ],
       "members":{
-        "notificationSettingKeys":{
-          "shape":"NotificationSettingKeys",
-          "documentation":"<p>A list of notification setting keys to reset. A notification setting key includes the event and the channel. </p>"
-        },
         "trustAnchorId":{
           "shape":"Uuid",
           "documentation":"<p>The unique identifier of the trust anchor.</p>"
+        },
+        "notificationSettingKeys":{
+          "shape":"NotificationSettingKeys",
+          "documentation":"<p>A list of notification setting keys to reset. A notification setting key includes the event and the channel. </p>"
         }
       }
     },
@@ -1223,7 +1231,7 @@
       "type":"string",
       "max":255,
       "min":1,
-      "pattern":"^[ a-zA-Z0-9-_]*$"
+      "pattern":"[ a-zA-Z0-9-_]*"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -1241,7 +1249,7 @@
       "type":"string",
       "max":1011,
       "min":1,
-      "pattern":"^arn:aws(-[^:]+)?:iam(:.*){2}(:role.*)$"
+      "pattern":"arn:aws(-[^:]+)?:iam(:.*){2}(:role.*)"
     },
     "RoleArnList":{
       "type":"list",
@@ -1300,13 +1308,13 @@
     "Source":{
       "type":"structure",
       "members":{
-        "sourceData":{
-          "shape":"SourceData",
-          "documentation":"<p>The data field of the trust anchor depending on its type. </p>"
-        },
         "sourceType":{
           "shape":"TrustAnchorType",
           "documentation":"<p>The type of the trust anchor. </p>"
+        },
+        "sourceData":{
+          "shape":"SourceData",
+          "documentation":"<p>The data field of the trust anchor depending on its type. </p>"
         }
       },
       "documentation":"<p>The trust anchor type and its related certificate data.</p>"
@@ -1314,13 +1322,13 @@
     "SourceData":{
       "type":"structure",
       "members":{
-        "acmPcaArn":{
-          "shape":"String",
-          "documentation":"<p> The root certificate of the Private Certificate Authority specified by this ARN is used in trust validation for temporary credential requests. Included for trust anchors of type <code>AWS_ACM_PCA</code>. </p>"
-        },
         "x509CertificateData":{
           "shape":"SourceDataX509CertificateDataString",
           "documentation":"<p>The PEM-encoded data for the certificate anchor. Included for trust anchors of type <code>CERTIFICATE_BUNDLE</code>. </p>"
+        },
+        "acmPcaArn":{
+          "shape":"String",
+          "documentation":"<p> The root certificate of the Private Certificate Authority specified by this ARN is used in trust validation for temporary credential requests. Included for trust anchors of type <code>AWS_ACM_PCA</code>. </p>"
         }
       },
       "documentation":"<p>The data field of the trust anchor depending on its type. </p>",
@@ -1328,7 +1336,7 @@
     },
     "SourceDataX509CertificateDataString":{
       "type":"string",
-      "max":8000,
+      "max":16000,
       "min":1
     },
     "SpecifierList":{
@@ -1339,26 +1347,6 @@
     "SubjectDetail":{
       "type":"structure",
       "members":{
-        "createdAt":{
-          "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The ISO-8601 timestamp when the subject was created. </p>"
-        },
-        "credentials":{
-          "shape":"CredentialSummaries",
-          "documentation":"<p>The temporary session credentials vended at the last authenticating call with this subject.</p>"
-        },
-        "enabled":{
-          "shape":"Boolean",
-          "documentation":"<p>The enabled status of the subject.</p>"
-        },
-        "instanceProperties":{
-          "shape":"InstanceProperties",
-          "documentation":"<p>The specified instance properties associated with the request.</p>"
-        },
-        "lastSeenAt":{
-          "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The ISO-8601 timestamp of the last time this subject requested temporary session credentials.</p>"
-        },
         "subjectArn":{
           "shape":"String",
           "documentation":"<p>The ARN of the resource.</p>"
@@ -1367,13 +1355,33 @@
           "shape":"Uuid",
           "documentation":"<p>The id of the resource</p>"
         },
-        "updatedAt":{
-          "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The ISO-8601 timestamp when the subject was last updated.</p>"
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>The enabled status of the subject.</p>"
         },
         "x509Subject":{
           "shape":"String",
           "documentation":"<p>The x509 principal identifier of the authenticating certificate.</p>"
+        },
+        "lastSeenAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The ISO-8601 timestamp of the last time this subject requested temporary session credentials.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The ISO-8601 timestamp when the subject was created. </p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The ISO-8601 timestamp when the subject was last updated.</p>"
+        },
+        "credentials":{
+          "shape":"CredentialSummaries",
+          "documentation":"<p>The temporary session credentials vended at the last authenticating call with this subject.</p>"
+        },
+        "instanceProperties":{
+          "shape":"InstanceProperties",
+          "documentation":"<p>The specified instance properties associated with the request.</p>"
         }
       },
       "documentation":"<p>The state of the subject after a read or write operation.</p>"
@@ -1394,18 +1402,6 @@
     "SubjectSummary":{
       "type":"structure",
       "members":{
-        "createdAt":{
-          "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The ISO-8601 time stamp of when the certificate was first used in a temporary credential request.</p>"
-        },
-        "enabled":{
-          "shape":"Boolean",
-          "documentation":"<p>The enabled status of the subject. </p>"
-        },
-        "lastSeenAt":{
-          "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The ISO-8601 time stamp of when the certificate was last used in a temporary credential request.</p>"
-        },
         "subjectArn":{
           "shape":"String",
           "documentation":"<p>The ARN of the resource.</p>"
@@ -1414,13 +1410,25 @@
           "shape":"Uuid",
           "documentation":"<p>The id of the resource.</p>"
         },
-        "updatedAt":{
-          "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The ISO-8601 timestamp when the subject was last updated. </p>"
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>The enabled status of the subject. </p>"
         },
         "x509Subject":{
           "shape":"String",
           "documentation":"<p>The x509 principal identifier of the authenticating certificate.</p>"
+        },
+        "lastSeenAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The ISO-8601 time stamp of when the certificate was last used in a temporary credential request.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The ISO-8601 time stamp of when the certificate was first used in a temporary credential request.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The ISO-8601 timestamp when the subject was last updated. </p>"
         }
       },
       "documentation":"<p>A summary representation of subjects.</p>"
@@ -1451,7 +1459,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^[ a-zA-Z0-9_.:/=+@-]*$",
+      "pattern":"[ a-zA-Z0-9_.:/=+@-]*",
       "sensitive":true
     },
     "TagKeyList":{
@@ -1485,14 +1493,13 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
       "max":256,
       "min":0,
-      "pattern":"^[ a-zA-Z0-9_.:/=+@-]*$",
+      "pattern":"[ a-zA-Z0-9_.:/=+@-]*",
       "sensitive":true
     },
     "TooManyTagsException":{
@@ -1511,42 +1518,42 @@
       "type":"string",
       "max":1011,
       "min":1,
-      "pattern":"^arn:aws(-[^:]+)?:rolesanywhere(:.*){2}(:trust-anchor.*)$"
+      "pattern":"arn:aws(-[^:]+)?:rolesanywhere(:.*){2}(:trust-anchor.*)"
     },
     "TrustAnchorDetail":{
       "type":"structure",
       "members":{
-        "createdAt":{
-          "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The ISO-8601 timestamp when the trust anchor was created. </p>"
-        },
-        "enabled":{
-          "shape":"Boolean",
-          "documentation":"<p>Indicates whether the trust anchor is enabled.</p>"
-        },
-        "name":{
-          "shape":"ResourceName",
-          "documentation":"<p>The name of the trust anchor.</p>"
-        },
-        "notificationSettings":{
-          "shape":"NotificationSettingDetails",
-          "documentation":"<p>A list of notification settings to be associated to the trust anchor.</p>"
-        },
-        "source":{
-          "shape":"Source",
-          "documentation":"<p>The trust anchor type and its related certificate data.</p>"
+        "trustAnchorId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier of the trust anchor.</p>"
         },
         "trustAnchorArn":{
           "shape":"String",
           "documentation":"<p>The ARN of the trust anchor.</p>"
         },
-        "trustAnchorId":{
-          "shape":"Uuid",
-          "documentation":"<p>The unique identifier of the trust anchor.</p>"
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the trust anchor.</p>"
+        },
+        "source":{
+          "shape":"Source",
+          "documentation":"<p>The trust anchor type and its related certificate data.</p>"
+        },
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the trust anchor is enabled.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The ISO-8601 timestamp when the trust anchor was created. </p>"
         },
         "updatedAt":{
           "shape":"SyntheticTimestamp_date_time",
           "documentation":"<p>The ISO-8601 timestamp when the trust anchor was last updated. </p>"
+        },
+        "notificationSettings":{
+          "shape":"NotificationSettingDetails",
+          "documentation":"<p>A list of notification settings to be associated to the trust anchor.</p>"
         }
       },
       "documentation":"<p>The state of the trust anchor after a read or write operation. </p>"
@@ -1592,17 +1599,12 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateCrlRequest":{
       "type":"structure",
       "required":["crlId"],
       "members":{
-        "crlData":{
-          "shape":"UpdateCrlRequestCrlDataBlob",
-          "documentation":"<p>The x509 v3 specified certificate revocation list (CRL).</p>"
-        },
         "crlId":{
           "shape":"Uuid",
           "documentation":"<p>The unique identifier of the certificate revocation list (CRL).</p>",
@@ -1612,6 +1614,10 @@
         "name":{
           "shape":"ResourceName",
           "documentation":"<p>The name of the Crl.</p>"
+        },
+        "crlData":{
+          "shape":"UpdateCrlRequestCrlDataBlob",
+          "documentation":"<p>The x509 v3 specified certificate revocation list (CRL).</p>"
         }
       }
     },
@@ -1624,35 +1630,35 @@
       "type":"structure",
       "required":["profileId"],
       "members":{
-        "acceptRoleSessionName":{
-          "shape":"Boolean",
-          "documentation":"<p>Used to determine if a custom role session name will be accepted in a temporary credential request.</p>"
-        },
-        "durationSeconds":{
-          "shape":"UpdateProfileRequestDurationSecondsInteger",
-          "documentation":"<p> Used to determine how long sessions vended using this profile are valid for. See the <code>Expiration</code> section of the <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/userguide/authentication-create-session.html#credentials-object\">CreateSession API documentation</a> page for more details. In requests, if this value is not provided, the default value will be 3600. </p>"
-        },
-        "managedPolicyArns":{
-          "shape":"ManagedPolicyList",
-          "documentation":"<p>A list of managed policy ARNs that apply to the vended session credentials. </p>"
-        },
-        "name":{
-          "shape":"ResourceName",
-          "documentation":"<p>The name of the profile.</p>"
-        },
         "profileId":{
           "shape":"Uuid",
           "documentation":"<p>The unique identifier of the profile.</p>",
           "location":"uri",
           "locationName":"profileId"
         },
-        "roleArns":{
-          "shape":"RoleArnList",
-          "documentation":"<p>A list of IAM roles that this profile can assume in a temporary credential request.</p>"
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the profile.</p>"
         },
         "sessionPolicy":{
           "shape":"UpdateProfileRequestSessionPolicyString",
           "documentation":"<p>A session policy that applies to the trust boundary of the vended session credentials. </p>"
+        },
+        "roleArns":{
+          "shape":"RoleArnList",
+          "documentation":"<p>A list of IAM roles that this profile can assume in a temporary credential request.</p>"
+        },
+        "managedPolicyArns":{
+          "shape":"ManagedPolicyList",
+          "documentation":"<p>A list of managed policy ARNs that apply to the vended session credentials. </p>"
+        },
+        "durationSeconds":{
+          "shape":"UpdateProfileRequestDurationSecondsInteger",
+          "documentation":"<p> Used to determine how long sessions vended using this profile are valid for. See the <code>Expiration</code> section of the <a href=\"https://docs.aws.amazon.com/rolesanywhere/latest/userguide/authentication-create-session.html#credentials-object\">CreateSession API documentation</a> page for more details. In requests, if this value is not provided, the default value will be 3600. </p>"
+        },
+        "acceptRoleSessionName":{
+          "shape":"Boolean",
+          "documentation":"<p>Used to determine if a custom role session name will be accepted in a temporary credential request.</p>"
         }
       }
     },
@@ -1671,6 +1677,12 @@
       "type":"structure",
       "required":["trustAnchorId"],
       "members":{
+        "trustAnchorId":{
+          "shape":"Uuid",
+          "documentation":"<p>The unique identifier of the trust anchor.</p>",
+          "location":"uri",
+          "locationName":"trustAnchorId"
+        },
         "name":{
           "shape":"ResourceName",
           "documentation":"<p>The name of the trust anchor.</p>"
@@ -1678,12 +1690,6 @@
         "source":{
           "shape":"Source",
           "documentation":"<p>The trust anchor type and its related certificate data.</p>"
-        },
-        "trustAnchorId":{
-          "shape":"Uuid",
-          "documentation":"<p>The unique identifier of the trust anchor.</p>",
-          "location":"uri",
-          "locationName":"trustAnchorId"
         }
       }
     },
@@ -1691,7 +1697,7 @@
       "type":"string",
       "max":36,
       "min":36,
-      "pattern":"[a-f0-9]{8}-([a-z0-9]{4}-){3}[a-z0-9]{12}"
+      "pattern":".*[a-f0-9]{8}-([a-z0-9]{4}-){3}[a-z0-9]{12}.*"
     },
     "ValidationException":{
       "type":"structure",

@@ -17,12 +17,18 @@ from awscrt.s3 import S3RequestTlsMode, S3RequestType
 
 from awscli.compat import BytesIO, OrderedDict
 from awscli.customizations.s3.utils import relative_path
-from awscli.testutils import BaseAWSCommandParamsTest, capture_input, mock
+from awscli.testutils import (
+    BaseAWSCommandParamsTest,
+    capture_input,
+    mock,
+    skip_if_windows,
+)
 from tests.functional.s3 import (
     BaseCRTTransferClientTest,
     BaseS3CLIRunnerTest,
     BaseS3TransferCommandTest,
 )
+from tests.functional.s3.test_sync_command import TestSyncCaseConflict
 
 MB = 1024**2
 
@@ -2925,3 +2931,55 @@ class TestCpWithCRTClient(BaseCRTTransferClientTest):
         self.assertEqual(len(crt_requests), 1)
         tls_context_options = mock_client_tls_context_options.call_args[0][0]
         self.assertFalse(tls_context_options.verify_peer)
+
+
+class TestCpRecursiveCaseConflict(TestSyncCaseConflict):
+    prefix = 's3 cp --recursive '
+
+    def test_ignore_by_default(self):
+        self.files.create_file(self.lower_key, 'mycontent')
+        # Note there's no --case-conflict param.
+        cmd = f"{self.prefix} s3://bucket {self.files.rootdir}"
+        self.parsed_responses = [
+            self.list_objects_response([self.upper_key]),
+            self.get_object_response(),
+        ]
+        # Expect success, so not error mode.
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
+        # No warnings in stderr, so not warn or skip mode.
+        assert not stderr
+
+
+class TestS3ExpressCpRecursive(BaseCPCommandTest):
+    prefix = 's3 cp --recursive '
+
+    def test_s3_express_error_raises_exception(self):
+        cmd = (
+            f"{self.prefix} s3://bucket--usw2-az1--x-s3 {self.files.rootdir} "
+            "--case-conflict error"
+        )
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=252)
+        assert "`error` is not a valid value" in stderr
+
+    def test_s3_express_skip_raises_exception(self):
+        cmd = (
+            f"{self.prefix} s3://bucket--usw2-az1--x-s3 {self.files.rootdir} "
+            "--case-conflict skip"
+        )
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=252)
+        assert "`skip` is not a valid value" in stderr
+
+    @skip_if_windows("Can't rename to same file")
+    def test_s3_express_warn_emits_warning(self):
+        cmd = (
+            f"{self.prefix} s3://bucket--usw2-az1--x-s3 {self.files.rootdir} "
+            "--case-conflict warn"
+        )
+        self.parsed_responses = [
+            self.list_objects_response(['a.txt', 'A.txt']),
+            self.get_object_response(),
+            self.get_object_response(),
+        ]
+
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
+        assert "warning: Recursive copies/moves" in stderr

@@ -4373,7 +4373,8 @@
         },
         "Version":{
           "shape":"LaunchTemplateVersion",
-          "documentation":"<p>Version of the EC2 launch template.</p>"
+          "documentation":"<p>Version of the EC2 launch template.</p>",
+          "locationName":"version"
         }
       },
       "documentation":"<p>Contains information about the Amazon EC2 launch template involved in a GuardDuty finding, including unique identifiers of the Amazon EC2 instances.</p>"
@@ -5838,7 +5839,10 @@
     },
     "GetRemainingFreeTrialDaysRequest":{
       "type":"structure",
-      "required":["DetectorId"],
+      "required":[
+        "AccountIds",
+        "DetectorId"
+      ],
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
@@ -9219,6 +9223,11 @@
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) that identifies the database instance involved in the finding.</p>",
           "locationName":"dbInstanceArn"
+        },
+        "DbiResourceId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the database resource involved in the activity that prompted GuardDuty to generate the finding.</p>",
+          "locationName":"dbiResourceId"
         },
         "Tags":{
           "shape":"Tags",

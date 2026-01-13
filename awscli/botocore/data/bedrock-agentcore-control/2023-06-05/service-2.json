@@ -262,7 +262,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a policy within the AgentCore Policy system. Policies provide real-time, deterministic control over agentic interactions with AgentCore Gateway. Using the Cedar policy language, you can define fine-grained policies that specify which interactions with Gateway tools are permitted based on input parameters and OAuth claims, ensuring agents operate within defined boundaries and business rules. The policy is validated during creation against the Cedar schema generated from the Gateway's tools' input schemas, which defines the available tools, their parameters, and expected data types. This is an asynchronous operation. Use the <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/API_GetPolicy.html\">GetPolicy</a> operation to poll the <code>status</code> field to track completion.</p>"
+      "documentation":"<p>Creates a policy within the AgentCore Policy system. Policies provide real-time, deterministic control over agentic interactions with AgentCore Gateway. Using the Cedar policy language, you can define fine-grained policies that specify which interactions with Gateway tools are permitted based on input parameters and OAuth claims, ensuring agents operate within defined boundaries and business rules. The policy is validated during creation against the Cedar schema generated from the Gateway's tools' input schemas, which defines the available tools, their parameters, and expected data types. This is an asynchronous operation. Use the <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_GetPolicy.html\">GetPolicy</a> operation to poll the <code>status</code> field to track completion.</p>"
     },
     "CreatePolicyEngine":{
       "name":"CreatePolicyEngine",
@@ -281,7 +281,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a new policy engine within the AgentCore Policy system. A policy engine is a collection of policies that evaluates and authorizes agent tool calls. When associated with Gateways (each Gateway can be associated with at most one policy engine, but multiple Gateways can be associated with the same engine), the policy engine intercepts all agent requests and determines whether to allow or deny each action based on the defined policies. This is an asynchronous operation. Use the <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/API_GetPolicyEngine.html\">GetPolicyEngine</a> operation to poll the <code>status</code> field to track completion.</p>"
+      "documentation":"<p>Creates a new policy engine within the AgentCore Policy system. A policy engine is a collection of policies that evaluates and authorizes agent tool calls. When associated with Gateways (each Gateway can be associated with at most one policy engine, but multiple Gateways can be associated with the same engine), the policy engine intercepts all agent requests and determines whether to allow or deny each action based on the defined policies. This is an asynchronous operation. Use the <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_GetPolicyEngine.html\">GetPolicyEngine</a> operation to poll the <code>status</code> field to track completion.</p>"
     },
     "CreateWorkloadIdentity":{
       "name":"CreateWorkloadIdentity",
@@ -1853,6 +1853,24 @@
       "member":{"shape":"AllowedClient"},
       "min":1
     },
+    "AllowedQueryParameters":{
+      "type":"list",
+      "member":{"shape":"HttpQueryParameterName"},
+      "max":10,
+      "min":1
+    },
+    "AllowedRequestHeaders":{
+      "type":"list",
+      "member":{"shape":"HttpHeaderName"},
+      "max":10,
+      "min":1
+    },
+    "AllowedResponseHeaders":{
+      "type":"list",
+      "member":{"shape":"HttpHeaderName"},
+      "max":10,
+      "min":1
+    },
     "AllowedScopeType":{
       "type":"string",
       "max":255,
@@ -3150,6 +3168,10 @@
         "credentialProviderConfigurations":{
           "shape":"CredentialProviderConfigurations",
           "documentation":"<p>The credential provider configurations for the target. These configurations specify how the gateway authenticates with the target endpoint.</p>"
+        },
+        "metadataConfiguration":{
+          "shape":"MetadataConfiguration",
+          "documentation":"<p>Optional configuration for HTTP header and query parameter propagation to and from the gateway target.</p>"
         }
       }
     },
@@ -3209,6 +3231,10 @@
         "lastSynchronizedAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The last synchronization of the target.</p>"
+        },
+        "metadataConfiguration":{
+          "shape":"MetadataConfiguration",
+          "documentation":"<p>The metadata configuration that was applied to the created gateway target.</p>"
         }
       }
     },
@@ -5272,6 +5298,10 @@
         "lastSynchronizedAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The last synchronization time.</p>"
+        },
+        "metadataConfiguration":{
+          "shape":"MetadataConfiguration",
+          "documentation":"<p>The metadata configuration for HTTP header and query parameter propagation to and from this gateway target.</p>"
         }
       },
       "documentation":"<p>The gateway target.</p>"
@@ -5882,6 +5912,10 @@
         "lastSynchronizedAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The last synchronization of the target.</p>"
+        },
+        "metadataConfiguration":{
+          "shape":"MetadataConfiguration",
+          "documentation":"<p>The metadata configuration for HTTP header and query parameter propagation for the retrieved gateway target.</p>"
         }
       }
     },
@@ -5894,6 +5928,12 @@
           "documentation":"<p>The unique identifier of the memory to retrieve.</p>",
           "location":"uri",
           "locationName":"memoryId"
+        },
+        "view":{
+          "shape":"MemoryView",
+          "documentation":"<p>The level of detail to return for the memory.</p>",
+          "location":"querystring",
+          "locationName":"view"
         }
       }
     },
@@ -6115,7 +6155,7 @@
       "members":{
         "policyGenerationId":{
           "shape":"ResourceId",
-          "documentation":"<p>The unique identifier of the policy generation request to be retrieved. This must be a valid generation ID from a previous <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/API_StartPolicyGeneration.html\">StartPolicyGeneration</a> call.</p>",
+          "documentation":"<p>The unique identifier of the policy generation request to be retrieved. This must be a valid generation ID from a previous <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_StartPolicyGeneration.html\">StartPolicyGeneration</a> call.</p>",
           "location":"uri",
           "locationName":"policyGenerationId"
         },
@@ -6424,6 +6464,16 @@
       "max":256,
       "min":1,
       "pattern":"(Authorization|X-Amzn-Bedrock-AgentCore-Runtime-Custom-[a-zA-Z0-9-]+)"
+    },
+    "HttpHeaderName":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "HttpQueryParameterName":{
+      "type":"string",
+      "max":40,
+      "min":1
     },
     "InboundTokenClaimNameType":{
       "type":"string",
@@ -7130,7 +7180,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A pagination token returned from a previous <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/API_ListPolicies.html\">ListPolicies</a> call. Use this token to retrieve the next page of results when the response is paginated.</p>",
+          "documentation":"<p>A pagination token returned from a previous <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_ListPolicies.html\">ListPolicies</a> call. Use this token to retrieve the next page of results when the response is paginated.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -7173,7 +7223,7 @@
       "members":{
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A pagination token returned from a previous <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/API_ListPolicyEngines.html\">ListPolicyEngines</a> call. Use this token to retrieve the next page of results when the response is paginated.</p>",
+          "documentation":"<p>A pagination token returned from a previous <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_ListPolicyEngines.html\">ListPolicyEngines</a> call. Use this token to retrieve the next page of results when the response is paginated.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -7195,7 +7245,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A pagination token that can be used in subsequent <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/API_ListPolicyEngines.html\">ListPolicyEngines</a> calls to retrieve additional results. This token is only present when there are more results available. </p>"
+          "documentation":"<p>A pagination token that can be used in subsequent <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_ListPolicyEngines.html\">ListPolicyEngines</a> calls to retrieve additional results. This token is only present when there are more results available. </p>"
         }
       }
     },
@@ -7208,7 +7258,7 @@
       "members":{
         "policyGenerationId":{
           "shape":"ResourceId",
-          "documentation":"<p>The unique identifier of the policy generation request whose assets are to be retrieved. This must be a valid generation ID from a previous <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/API_StartPolicyGeneration.html\">StartPolicyGeneration</a> call that has completed processing.</p>",
+          "documentation":"<p>The unique identifier of the policy generation request whose assets are to be retrieved. This must be a valid generation ID from a previous <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_StartPolicyGeneration.html\">StartPolicyGeneration</a> call that has completed processing.</p>",
           "location":"uri",
           "locationName":"policyGenerationId"
         },
@@ -7220,7 +7270,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A pagination token returned from a previous <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/API_ListPolicyGenerationAssets.html\">ListPolicyGenerationAssets</a> call. Use this token to retrieve the next page of assets when the response is paginated due to large numbers of generated policy options.</p>",
+          "documentation":"<p>A pagination token returned from a previous <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_ListPolicyGenerationAssets.html\">ListPolicyGenerationAssets</a> call. Use this token to retrieve the next page of assets when the response is paginated due to large numbers of generated policy options.</p>",
           "location":"querystring",
           "locationName":"nextToken"
         },
@@ -7241,7 +7291,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>A pagination token that can be used in subsequent <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/API_ListPolicyGenerationAssets.html\">ListPolicyGenerationAssets</a> calls to retrieve additional assets. This token is only present when there are more generated policy assets available beyond the current response.</p>"
+          "documentation":"<p>A pagination token that can be used in subsequent <a href=\"https://docs.aws.amazon.com/bedrock-agentcore-control/latest/APIReference/API_ListPolicyGenerationAssets.html\">ListPolicyGenerationAssets</a> calls to retrieve additional assets. This token is only present when there are more generated policy assets available beyond the current response.</p>"
         }
       }
     },
@@ -7699,6 +7749,13 @@
       "type":"list",
       "member":{"shape":"MemorySummary"}
     },
+    "MemoryView":{
+      "type":"string",
+      "enum":[
+        "full",
+        "without_decryption"
+      ]
+    },
     "MessageBasedTrigger":{
       "type":"structure",
       "members":{
@@ -7724,6 +7781,24 @@
       "box":true,
       "max":50,
       "min":1
+    },
+    "MetadataConfiguration":{
+      "type":"structure",
+      "members":{
+        "allowedRequestHeaders":{
+          "shape":"AllowedRequestHeaders",
+          "documentation":"<p>A list of HTTP headers that are allowed to be propagated from incoming client requests to the target.</p>"
+        },
+        "allowedQueryParameters":{
+          "shape":"AllowedQueryParameters",
+          "documentation":"<p>A list of URL query parameters that are allowed to be propagated from incoming gateway URL to the target.</p>"
+        },
+        "allowedResponseHeaders":{
+          "shape":"AllowedResponseHeaders",
+          "documentation":"<p>A list of HTTP headers that are allowed to be propagated from the target response back to the client.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for HTTP header and query parameter propagation between the gateway and target servers.</p>"
     },
     "MicrosoftOauth2ProviderConfigInput":{
       "type":"structure",
@@ -10403,6 +10478,10 @@
         "credentialProviderConfigurations":{
           "shape":"CredentialProviderConfigurations",
           "documentation":"<p>The updated credential provider configurations for the gateway target.</p>"
+        },
+        "metadataConfiguration":{
+          "shape":"MetadataConfiguration",
+          "documentation":"<p>Configuration for HTTP header and query parameter propagation to the gateway target.</p>"
         }
       }
     },
@@ -10459,6 +10538,10 @@
         "lastSynchronizedAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The date and time at which the targets were last synchronized.</p>"
+        },
+        "metadataConfiguration":{
+          "shape":"MetadataConfiguration",
+          "documentation":"<p>The metadata configuration that was applied to the gateway target.</p>"
         }
       }
     },

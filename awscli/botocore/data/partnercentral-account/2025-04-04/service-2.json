@@ -285,6 +285,24 @@
       "documentation":"<p>Retrieves the visibility settings for a partner profile, determining who can see the profile information.</p>",
       "readonly":true
     },
+    "GetVerification":{
+      "name":"GetVerification",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetVerificationRequest"},
+      "output":{"shape":"GetVerificationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the current status and details of a verification process for a partner account. This operation allows partners to check the progress and results of business or registrant verification processes.</p>",
+      "readonly":true
+    },
     "ListConnectionInvitations":{
       "name":"ListConnectionInvitations",
       "http":{
@@ -440,6 +458,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Initiates a profile update task to modify partner profile information asynchronously.</p>",
+      "idempotent":true
+    },
+    "StartVerification":{
+      "name":"StartVerification",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartVerificationRequest"},
+      "output":{"shape":"StartVerificationResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Initiates a new verification process for a partner account. This operation begins the verification workflow for either business registration or individual registrant identity verification as required by AWS Partner Central.</p>",
       "idempotent":true
     },
     "TagResource":{
@@ -672,6 +709,44 @@
         }
       },
       "documentation":"<p>Contains information about a business rule validation error that occurred during an operation.</p>"
+    },
+    "BusinessVerificationDetails":{
+      "type":"structure",
+      "required":[
+        "LegalName",
+        "RegistrationId",
+        "CountryCode"
+      ],
+      "members":{
+        "LegalName":{
+          "shape":"LegalName",
+          "documentation":"<p>The official legal name of the business as registered with the appropriate government authorities.</p>"
+        },
+        "RegistrationId":{
+          "shape":"RegistrationId",
+          "documentation":"<p>The unique business registration identifier assigned by the government or regulatory authority, such as a company registration number or tax identification number.</p>"
+        },
+        "CountryCode":{
+          "shape":"CountryCode",
+          "documentation":"<p>The ISO 3166-1 alpha-2 country code where the business is legally registered and operates.</p>"
+        },
+        "JurisdictionOfIncorporation":{
+          "shape":"JurisdictionCode",
+          "documentation":"<p>The specific legal jurisdiction or state where the business was incorporated or registered, providing additional location context beyond the country code.</p>"
+        }
+      },
+      "documentation":"<p>Contains the business information required for verifying a company's legal status and registration details within AWS Partner Central.</p>"
+    },
+    "BusinessVerificationResponse":{
+      "type":"structure",
+      "required":["BusinessVerificationDetails"],
+      "members":{
+        "BusinessVerificationDetails":{
+          "shape":"BusinessVerificationDetails",
+          "documentation":"<p>The business verification details that were processed and verified, potentially including additional information discovered during the verification process.</p>"
+        }
+      },
+      "documentation":"<p>Contains the response information and results from a business verification process, including any verification-specific data returned by the verification service.</p>"
     },
     "CancelConnectionInvitationRequest":{
       "type":"structure",
@@ -941,6 +1016,7 @@
       "min":1,
       "pattern":"[A-Za-z0-9-_]+"
     },
+    "CompletionUrl":{"type":"string"},
     "ConflictException":{
       "type":"structure",
       "required":[
@@ -969,7 +1045,9 @@
         "INCOMPATIBLE_CONNECTION_INVITATION_RECEIVER",
         "DUPLICATE_CONNECTION",
         "INCOMPATIBLE_CONNECTION_STATE",
-        "INCOMPATIBLE_CONNECTION_PREFERENCES_REVISION"
+        "INCOMPATIBLE_CONNECTION_PREFERENCES_REVISION",
+        "ACCOUNT_ALREADY_VERIFIED",
+        "VERIFICATION_ALREADY_IN_PROGRESS"
       ]
     },
     "Connection":{
@@ -1231,6 +1309,12 @@
       "type":"map",
       "key":{"shape":"ConnectionType"},
       "value":{"shape":"ConnectionTypeSummary"}
+    },
+    "CountryCode":{
+      "type":"string",
+      "max":2,
+      "min":2,
+      "pattern":"[A-Z]{2}"
     },
     "CreateConnectionInvitationRequest":{
       "type":"structure",
@@ -1983,6 +2067,51 @@
         }
       }
     },
+    "GetVerificationRequest":{
+      "type":"structure",
+      "required":["VerificationType"],
+      "members":{
+        "VerificationType":{
+          "shape":"VerificationType",
+          "documentation":"<p>The type of verification to retrieve information for. Valid values include business verification for company registration details and registrant verification for individual identity confirmation.</p>"
+        }
+      }
+    },
+    "GetVerificationResponse":{
+      "type":"structure",
+      "required":[
+        "VerificationType",
+        "VerificationStatus",
+        "VerificationResponseDetails",
+        "StartedAt"
+      ],
+      "members":{
+        "VerificationType":{
+          "shape":"VerificationType",
+          "documentation":"<p>The type of verification that was requested and processed.</p>"
+        },
+        "VerificationStatus":{
+          "shape":"VerificationStatus",
+          "documentation":"<p>The current status of the verification process. Possible values include pending, in-progress, completed, failed, or expired.</p>"
+        },
+        "VerificationStatusReason":{
+          "shape":"VerificationStatusReason",
+          "documentation":"<p>Additional information explaining the current verification status, particularly useful when the status indicates a failure or requires additional action.</p>"
+        },
+        "VerificationResponseDetails":{
+          "shape":"VerificationResponseDetails",
+          "documentation":"<p>Detailed response information specific to the type of verification performed, including any verification-specific data or results.</p>"
+        },
+        "StartedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the verification process was initiated.</p>"
+        },
+        "CompletedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the verification process was completed. This field is null if the verification is still in progress.</p>"
+        }
+      }
+    },
     "IndustrySegment":{
       "type":"string",
       "enum":[
@@ -2051,6 +2180,19 @@
         "CANCELED",
         "EXPIRED"
       ]
+    },
+    "JurisdictionCode":{
+      "type":"string",
+      "max":2,
+      "min":2,
+      "pattern":"[A-Z0-9]{2}"
+    },
+    "LegalName":{
+      "type":"string",
+      "max":80,
+      "min":1,
+      "pattern":"[\\u0020-\\u007E\\u00A0-\\uD7FF\\uE000-\\uFFFD]+",
+      "sensitive":true
     },
     "ListConnectionInvitationsRequest":{
       "type":"structure",
@@ -2603,6 +2745,36 @@
         }
       }
     },
+    "RegistrantVerificationDetails":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Contains the personal information required for verifying an individual's identity as part of the partner registration process in AWS Partner Central.</p>"
+    },
+    "RegistrantVerificationResponse":{
+      "type":"structure",
+      "required":[
+        "CompletionUrl",
+        "CompletionUrlExpiresAt"
+      ],
+      "members":{
+        "CompletionUrl":{
+          "shape":"CompletionUrl",
+          "documentation":"<p>A secure URL where the registrant can complete additional verification steps, such as document upload or identity confirmation through a third-party verification service.</p>"
+        },
+        "CompletionUrlExpiresAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the completion URL expires and is no longer valid for accessing the verification workflow.</p>"
+        }
+      },
+      "documentation":"<p>Contains the response information from a registrant verification process, including any verification-specific data and next steps for the individual verification workflow.</p>"
+    },
+    "RegistrationId":{
+      "type":"string",
+      "max":80,
+      "min":1,
+      "pattern":"[\\u0020-\\u007E\\u00A0-\\uD7FF\\uE000-\\uFFFD]+",
+      "sensitive":true
+    },
     "RejectConnectionInvitationRequest":{
       "type":"structure",
       "required":[
@@ -2742,7 +2914,8 @@
         "SENDER_PROFILE_NOT_FOUND",
         "RECEIVER_PROFILE_NOT_FOUND",
         "CONNECTION_INVITATION_NOT_FOUND",
-        "CONNECTION_NOT_FOUND"
+        "CONNECTION_NOT_FOUND",
+        "VERIFICATION_NOT_FOUND"
       ]
     },
     "Revision":{
@@ -2898,6 +3071,55 @@
         "ErrorDetailList":{
           "shape":"ErrorDetailList",
           "documentation":"<p>A list of error details if any errors occurred during the profile update task.</p>"
+        }
+      }
+    },
+    "StartVerificationRequest":{
+      "type":"structure",
+      "members":{
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. This prevents duplicate verification processes from being started accidentally.</p>",
+          "idempotencyToken":true
+        },
+        "VerificationDetails":{
+          "shape":"VerificationDetails",
+          "documentation":"<p>The specific details required for the verification process, including business information for business verification or personal information for registrant verification.</p>"
+        }
+      }
+    },
+    "StartVerificationResponse":{
+      "type":"structure",
+      "required":[
+        "VerificationType",
+        "VerificationStatus",
+        "VerificationResponseDetails",
+        "StartedAt"
+      ],
+      "members":{
+        "VerificationType":{
+          "shape":"VerificationType",
+          "documentation":"<p>The type of verification that was started based on the provided verification details.</p>"
+        },
+        "VerificationStatus":{
+          "shape":"VerificationStatus",
+          "documentation":"<p>The initial status of the verification process after it has been started. Typically this will be pending or in-progress.</p>"
+        },
+        "VerificationStatusReason":{
+          "shape":"VerificationStatusReason",
+          "documentation":"<p>Additional information about the initial verification status, including any immediate feedback about the submitted verification details.</p>"
+        },
+        "VerificationResponseDetails":{
+          "shape":"VerificationResponseDetails",
+          "documentation":"<p>Initial response details specific to the type of verification started, which may include next steps or additional requirements.</p>"
+        },
+        "StartedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the verification process was successfully initiated.</p>"
+        },
+        "CompletedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the verification process was completed. This field is typically null for newly started verifications unless they complete immediately.</p>"
         }
       }
     },
@@ -3185,6 +3407,59 @@
       "enum":[
         "REQUEST_VALIDATION_FAILED",
         "BUSINESS_VALIDATION_FAILED"
+      ]
+    },
+    "VerificationDetails":{
+      "type":"structure",
+      "members":{
+        "BusinessVerificationDetails":{
+          "shape":"BusinessVerificationDetails",
+          "documentation":"<p>The business verification details to be used when starting a business verification process.</p>"
+        },
+        "RegistrantVerificationDetails":{
+          "shape":"RegistrantVerificationDetails",
+          "documentation":"<p>The registrant verification details to be used when starting an individual identity verification process.</p>"
+        }
+      },
+      "documentation":"<p>A union structure containing the specific details required for different types of verification processes supported by AWS Partner Central.</p>",
+      "union":true
+    },
+    "VerificationResponseDetails":{
+      "type":"structure",
+      "members":{
+        "BusinessVerificationResponse":{
+          "shape":"BusinessVerificationResponse",
+          "documentation":"<p>The response details from a business verification process, including verification results and any additional business information discovered.</p>"
+        },
+        "RegistrantVerificationResponse":{
+          "shape":"RegistrantVerificationResponse",
+          "documentation":"<p>The response details from a registrant verification process, including verification results and any additional steps required for identity confirmation.</p>"
+        }
+      },
+      "documentation":"<p>A union structure containing the response details specific to different types of verification processes, providing type-specific information and results.</p>",
+      "union":true
+    },
+    "VerificationStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING_CUSTOMER_ACTION",
+        "IN_PROGRESS",
+        "FAILED",
+        "SUCCEEDED",
+        "REJECTED"
+      ]
+    },
+    "VerificationStatusReason":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"[\\u0020-\\u007E\\u00A0-\\uD7FF\\uE000-\\uFFFD]+"
+    },
+    "VerificationType":{
+      "type":"string",
+      "enum":[
+        "BUSINESS_VERIFICATION",
+        "REGISTRANT_VERIFICATION"
       ]
     }
   },

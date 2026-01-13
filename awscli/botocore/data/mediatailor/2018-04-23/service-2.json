@@ -633,6 +633,16 @@
       },
       "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns.</p>"
     },
+    "AdDecisionServerConfiguration":{
+      "type":"structure",
+      "members":{
+        "HttpRequest":{
+          "shape":"HttpRequest",
+          "documentation":"<p>The HTTP request configuration parameters for the ad decision server.</p>"
+        }
+      },
+      "documentation":"<p>Configuration parameters for customizing HTTP requests sent to the ad decision server (ADS). This allows you to specify the HTTP method, headers, request body, and compression settings for ADS requests.</p>"
+    },
     "AdMarkerPassthrough":{
       "type":"structure",
       "members":{
@@ -969,6 +979,13 @@
         }
       },
       "documentation":"<p>Clip range configuration for the VOD source associated with the program.</p>"
+    },
+    "CompressionMethod":{
+      "type":"string",
+      "enum":[
+        "NONE",
+        "GZIP"
+      ]
     },
     "ConfigurationAliasesRequest":{
       "type":"map",
@@ -2282,6 +2299,10 @@
         "AdConditioningConfiguration":{
           "shape":"AdConditioningConfiguration",
           "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns, and what priority MediaTailor uses when inserting ads. </p>"
+        },
+        "AdDecisionServerConfiguration":{
+          "shape":"AdDecisionServerConfiguration",
+          "documentation":"<p>The configuration for customizing HTTP requests to the ad decision server (ADS). This includes settings for request method, headers, body content, and compression options.</p>"
         }
       }
     },
@@ -2405,6 +2426,28 @@
       "type":"list",
       "member":{"shape":"HttpPackageConfiguration"},
       "documentation":"<p>The VOD source's HTTP package configuration settings.</p>"
+    },
+    "HttpRequest":{
+      "type":"structure",
+      "members":{
+        "Method":{
+          "shape":"Method",
+          "documentation":"<p>The HTTP method to use when making requests to the ad decision server. Supported values are <code>GET</code> and <code>POST</code>.</p>"
+        },
+        "Body":{
+          "shape":"__string",
+          "documentation":"<p>The request body content to send with HTTP requests to the ad decision server. This value is only eligible for <code>POST</code> requests.</p>"
+        },
+        "Headers":{
+          "shape":"StringMap",
+          "documentation":"<p>Custom HTTP headers to include in requests to the ad decision server. Specify headers as key-value pairs. This value is only eligible for <code>POST</code> requests.</p>"
+        },
+        "CompressRequest":{
+          "shape":"CompressionMethod",
+          "documentation":"<p>The compression method to apply to requests sent to the ad decision server. Supported values are <code>NONE</code> and <code>GZIP</code>. This value is only eligible for <code>POST</code> requests.</p>"
+        }
+      },
+      "documentation":"<p>HTTP request configuration parameters that define how MediaTailor communicates with the ad decision server.</p>"
     },
     "InsertionMode":{
       "type":"string",
@@ -2888,6 +2931,13 @@
         "TIME_SIGNAL"
       ]
     },
+    "Method":{
+      "type":"string",
+      "enum":[
+        "GET",
+        "POST"
+      ]
+    },
     "Mode":{
       "type":"string",
       "enum":[
@@ -2994,7 +3044,8 @@
         "AdConditioningConfiguration":{
           "shape":"AdConditioningConfiguration",
           "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns, and what priority MediaTailor uses when inserting ads.</p>"
-        }
+        },
+        "AdDecisionServerConfiguration":{"shape":"AdDecisionServerConfiguration"}
       },
       "documentation":"<p>A playback configuration. For information about MediaTailor configurations, see <a href=\"https://docs.aws.amazon.com/mediatailor/latest/ug/configurations.html\">Working with configurations in AWS Elemental MediaTailor</a>.</p>"
     },
@@ -3042,15 +3093,15 @@
         },
         "TrafficShapingType":{
           "shape":"TrafficShapingType",
-          "documentation":"<p>Indicates the type of traffic shaping used for prefetch traffic shaping and limiting the number of requests to the ADS at one time.</p>"
+          "documentation":"<p>Indicates the type of traffic shaping used to limit the number of requests to the ADS at one time.</p>"
         },
         "TrafficShapingRetrievalWindow":{
           "shape":"TrafficShapingRetrievalWindow",
-          "documentation":"<p>Configuration for spreading ADS traffic across a set window instead of sending ADS requests for all sessions at the same time.</p>"
+          "documentation":"<p>The configuration that tells Elemental MediaTailor how many seconds to spread out requests to the ad decision server (ADS). Instead of sending ADS requests for all sessions at the same time, MediaTailor spreads the requests across the amount of time specified in the retrieval window.</p>"
         },
         "TrafficShapingTpsConfiguration":{
           "shape":"TrafficShapingTpsConfiguration",
-          "documentation":"<p>The configuration for TPS-based traffic shaping that limits the number of requests to the ad decision server (ADS) based on transactions per second instead of time windows.</p>"
+          "documentation":"<p>The configuration for TPS-based traffic shaping. This approach limits requests to the ad decision server (ADS) based on transactions per second and concurrent users.</p>"
         }
       },
       "documentation":"<p>A complex type that contains settings governing when MediaTailor prefetches ads, and which dynamic variables that MediaTailor includes in the request to the ad decision server.</p>"
@@ -3196,6 +3247,10 @@
         "AdConditioningConfiguration":{
           "shape":"AdConditioningConfiguration",
           "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns, and what priority MediaTailor uses when inserting ads. </p>"
+        },
+        "AdDecisionServerConfiguration":{
+          "shape":"AdDecisionServerConfiguration",
+          "documentation":"<p>The configuration for customizing HTTP requests to the ad decision server (ADS). This includes settings for request method, headers, body content, and compression options.</p>"
         }
       }
     },
@@ -3286,6 +3341,10 @@
         "AdConditioningConfiguration":{
           "shape":"AdConditioningConfiguration",
           "documentation":"<p>The setting that indicates what conditioning MediaTailor will perform on ads that the ad decision server (ADS) returns, and what priority MediaTailor uses when inserting ads. </p>"
+        },
+        "AdDecisionServerConfiguration":{
+          "shape":"AdDecisionServerConfiguration",
+          "documentation":"<p>The configuration for customizing HTTP requests to the ad decision server (ADS). This includes settings for request method, headers, body content, and compression options.</p>"
         }
       }
     },
@@ -3343,15 +3402,15 @@
         },
         "TrafficShapingType":{
           "shape":"TrafficShapingType",
-          "documentation":"<p>Indicates the type of traffic shaping used for traffic shaping and limiting the number of requests to the ADS at one time.</p>"
+          "documentation":"<p>Indicates the type of traffic shaping used to limit the number of requests to the ADS at one time.</p>"
         },
         "TrafficShapingRetrievalWindow":{
           "shape":"TrafficShapingRetrievalWindow",
-          "documentation":"<p>Configuration for spreading ADS traffic across a set window instead of sending ADS requests for all sessions at the same time.</p>"
+          "documentation":"<p>The configuration that tells Elemental MediaTailor how many seconds to spread out requests to the ad decision server (ADS). Instead of sending ADS requests for all sessions at the same time, MediaTailor spreads the requests across the amount of time specified in the retrieval window.</p>"
         },
         "TrafficShapingTpsConfiguration":{
           "shape":"TrafficShapingTpsConfiguration",
-          "documentation":"<p>The configuration for TPS-based traffic shaping that limits the number of requests to the ad decision server (ADS) based on transactions per second instead of time windows.</p>"
+          "documentation":"<p>The configuration for TPS-based traffic shaping. This approach limits requests to the ad decision server (ADS) based on transactions per second and concurrent users.</p>"
         }
       },
       "documentation":"<p>With recurring prefetch, MediaTailor automatically prefetches ads for every avail that occurs during the retrieval window. The following configurations describe the MediaTailor behavior when prefetching ads for a live event.</p>"
@@ -3728,6 +3787,11 @@
       ]
     },
     "String":{"type":"string"},
+    "StringMap":{
+      "type":"map",
+      "key":{"shape":"__string"},
+      "value":{"shape":"__string"}
+    },
     "TagResourceRequest":{
       "type":"structure",
       "required":[
@@ -3784,7 +3848,7 @@
           "documentation":"<p>The amount of time, in seconds, that MediaTailor spreads prefetch requests to the ADS. </p>"
         }
       },
-      "documentation":"<p>The configuration that tells Elemental MediaTailor how to spread out requests to the ad decision server (ADS). Instead of sending ADS requests for all sessions at the same time, MediaTailor spreads the requests across the amount of time specified in the retrieval window.</p>"
+      "documentation":"<p>The configuration that tells Elemental MediaTailor how many seconds to spread out requests to the ad decision server (ADS). Instead of sending ADS requests for all sessions at the same time, MediaTailor spreads the requests across the amount of time specified in the retrieval window.</p>"
     },
     "TrafficShapingTpsConfiguration":{
       "type":"structure",
@@ -3798,7 +3862,7 @@
           "documentation":"<p>The expected peak number of concurrent viewers for your content. MediaTailor uses this value along with peak TPS to determine how to distribute prefetch requests across the available capacity without exceeding your ADS limits.</p>"
         }
       },
-      "documentation":"<p>The configuration for TPS-based traffic shaping. This approach limits requests to the ad decision server (ADS) based on transactions per second and concurrent users, providing more intuitive capacity management compared to time-window based traffic shaping.</p>"
+      "documentation":"<p>The configuration for TPS-based traffic shaping. This approach limits requests to the ad decision server (ADS) based on transactions per second and concurrent users.</p>"
     },
     "TrafficShapingType":{
       "type":"string",

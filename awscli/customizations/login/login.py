@@ -20,6 +20,7 @@ from awscli.customizations.configure.sso import (
     RequiredInputValidator,
 )
 from awscli.customizations.configure.writer import ConfigFileWriter
+from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.login.utils import (
     CrossDeviceLoginTokenFetcher,
     LoginType,
@@ -95,6 +96,10 @@ class LoginCommand(BasicCommand):
         # If the login is successful we'll save the profile at the end.
         if profile_name not in self._session.available_profiles:
             self._session._profile_map[profile_name] = {}
+
+        # Abort if the profile is already configured with a different style
+        # of credentials, since they'd still have precedence over login
+        self.ensure_profile_does_not_have_existing_credentials(profile_name)
 
         config = botocore.config.Config(
             region_name=region,
@@ -176,6 +181,37 @@ class LoginCommand(BasicCommand):
                 return False
             else:
                 uni_print('Invalid response. Please enter "y" or "n"')
+
+    def ensure_profile_does_not_have_existing_credentials(self, profile_name):
+        """
+        Raises an error if the specified profile is already
+        configured with a different style of credentials.
+        """
+        config = self._session.full_config['profiles'].get(profile_name, {})
+        existing_credentials_style = None
+
+        if 'web_identity_token_file' in config:
+            existing_credentials_style = 'Web Identity'
+        elif 'sso_role_name' in config or 'sso_account_id' in config:
+            existing_credentials_style = 'SSO'
+        elif 'aws_access_key_id' in config:
+            existing_credentials_style = 'Access Key'
+        elif 'role_arn' in config:
+            existing_credentials_style = 'Assume Role'
+        elif 'credential_process' in config:
+            existing_credentials_style = 'Credential Process'
+
+        if existing_credentials_style:
+            raise ConfigurationError(
+                f'Profile \'{profile_name}\' is already configured '
+                f'with {existing_credentials_style} credentials.\n\n'
+                f'You may run \'aws login --profile new-profile-name\' to '
+                f'create a new profile with the specified name. Otherwise you '
+                f'must first manually remove the existing credentials '
+                f'from \'{profile_name}\'.\n'
+            )
+
+        return False
 
     @staticmethod
     def resolve_sign_in_type(parsed_args):

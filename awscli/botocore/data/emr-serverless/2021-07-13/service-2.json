@@ -374,6 +374,10 @@
           "documentation":"<p>The <a href=\"https://docs.aws.amazon.com/emr-serverless/latest/APIReference/API_Configuration.html\">Configuration</a> specifications of an application. Each configuration consists of a classification and properties. You use this parameter when creating or updating an application. To see the runtimeConfiguration object of an application, run the <a href=\"https://docs.aws.amazon.com/emr-serverless/latest/APIReference/API_GetApplication.html\">GetApplication</a> API operation.</p>"
         },
         "monitoringConfiguration":{"shape":"MonitoringConfiguration"},
+        "diskEncryptionConfiguration":{
+          "shape":"DiskEncryptionConfiguration",
+          "documentation":"<p>The configuration object that allows encrypting local disks.</p>"
+        },
         "interactiveConfiguration":{
           "shape":"InteractiveConfiguration",
           "documentation":"<p>The interactive configuration object that enables the interactive use cases for an application.</p>"
@@ -385,6 +389,10 @@
         "identityCenterConfiguration":{
           "shape":"IdentityCenterConfiguration",
           "documentation":"<p>The IAM Identity Center configuration applied to enable trusted identity propagation.</p>"
+        },
+        "jobLevelCostAllocationConfiguration":{
+          "shape":"JobLevelCostAllocationConfiguration",
+          "documentation":"<p>The configuration object that enables job level cost allocation.</p>"
         }
       },
       "documentation":"<p>Information about an application. Amazon EMR Serverless uses applications to run jobs.</p>"
@@ -648,6 +656,10 @@
         "monitoringConfiguration":{
           "shape":"MonitoringConfiguration",
           "documentation":"<p>The override configurations for monitoring.</p>"
+        },
+        "diskEncryptionConfiguration":{
+          "shape":"DiskEncryptionConfiguration",
+          "documentation":"<p>The override configuration to encrypt local disks.</p>"
         }
       },
       "documentation":"<p>A configuration specification to be used to override existing configurations.</p>"
@@ -752,6 +764,10 @@
           "shape":"MonitoringConfiguration",
           "documentation":"<p>The configuration setting for monitoring.</p>"
         },
+        "diskEncryptionConfiguration":{
+          "shape":"DiskEncryptionConfiguration",
+          "documentation":"<p>The configuration object that allows encrypting local disks.</p>"
+        },
         "interactiveConfiguration":{
           "shape":"InteractiveConfiguration",
           "documentation":"<p>The interactive configuration object that enables the interactive use cases to use when running an application.</p>"
@@ -763,6 +779,10 @@
         "identityCenterConfiguration":{
           "shape":"IdentityCenterConfigurationInput",
           "documentation":"<p>The IAM Identity Center Configuration accepts the Identity Center instance parameter required to enable trusted identity propagation. This configuration allows identity propagation between integrated services and the Identity Center instance.</p>"
+        },
+        "jobLevelCostAllocationConfiguration":{
+          "shape":"JobLevelCostAllocationConfiguration",
+          "documentation":"<p>The configuration object that enables job level cost allocation.</p>"
         }
       }
     },
@@ -804,6 +824,20 @@
       "type":"structure",
       "members":{}
     },
+    "DiskEncryptionConfiguration":{
+      "type":"structure",
+      "members":{
+        "encryptionContext":{
+          "shape":"EncryptionContext",
+          "documentation":"<p>Specifies the optional encryption context that will be used when encrypting the data. An encryption context is a collection of non-secret key-value pairs that represent additional authenticated data. </p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"EncryptionKeyArn",
+          "documentation":"<p>The KMS key ARN to encrypt local disks.</p>"
+        }
+      },
+      "documentation":"<p>The configuration object that allows encrypting local disks.</p>"
+    },
     "DiskSize":{
       "type":"string",
       "max":15,
@@ -822,6 +856,23 @@
       "type":"long",
       "max":1000000,
       "min":0
+    },
+    "EncryptionContext":{
+      "type":"map",
+      "key":{"shape":"EncryptionContextKey"},
+      "value":{"shape":"EncryptionContextValue"},
+      "max":8,
+      "min":0
+    },
+    "EncryptionContextKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "EncryptionContextValue":{
+      "type":"string",
+      "max":384,
+      "min":1
     },
     "EncryptionKeyArn":{
       "type":"string",
@@ -1141,6 +1192,16 @@
       },
       "documentation":"<p>The driver that the job runs on.</p>",
       "union":true
+    },
+    "JobLevelCostAllocationConfiguration":{
+      "type":"structure",
+      "members":{
+        "enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables job level cost allocation for the application.</p>"
+        }
+      },
+      "documentation":"<p>The configuration object that enables job level cost allocation.</p>"
     },
     "JobRun":{
       "type":"structure",
@@ -2274,6 +2335,10 @@
           "shape":"MonitoringConfiguration",
           "documentation":"<p>The configuration setting for monitoring.</p>"
         },
+        "diskEncryptionConfiguration":{
+          "shape":"DiskEncryptionConfiguration",
+          "documentation":"<p>The configuration object that allows encrypting local disks.</p>"
+        },
         "schedulerConfiguration":{
           "shape":"SchedulerConfiguration",
           "documentation":"<p>The scheduler configuration for batch and streaming jobs running on this application. Supported with release labels emr-7.0.0 and above.</p>"
@@ -2281,6 +2346,10 @@
         "identityCenterConfiguration":{
           "shape":"IdentityCenterConfigurationInput",
           "documentation":"<p>Specifies the IAM Identity Center configuration used to enable or disable trusted identity propagation. When provided, this configuration determines how the application interacts with IAM Identity Center for user authentication and access control.</p>"
+        },
+        "jobLevelCostAllocationConfiguration":{
+          "shape":"JobLevelCostAllocationConfiguration",
+          "documentation":"<p>The configuration object that enables job level cost allocation.</p>"
         }
       }
     },

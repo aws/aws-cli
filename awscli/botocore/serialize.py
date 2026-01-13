@@ -989,6 +989,10 @@ class BaseRpcV2Serializer(Serializer):
         if input_shape is not None:
             self._serialize_payload(parameters, serialized, input_shape)
 
+        host_prefix = self._expand_host_prefix(parameters, operation_model)
+        if host_prefix is not None:
+            serialized['host_prefix'] = host_prefix
+
         self._serialize_headers(serialized, operation_model)
 
         return serialized

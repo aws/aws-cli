@@ -41,7 +41,7 @@ class Config:
     :type user_agent_appid: str
     :param user_agent_appid: A value that gets included in the User-Agent
         string in the format "app/<user_agent_appid>". Allowed characters are
-        ASCII alphanumerics and ``!$%&'*+-.^_`|~``. All other characters will
+        ASCII alphanumerics and ``!#$%&'*+-.^_`|~``. All other characters will
         be replaced by a ``-``.
 
     :type connect_timeout: float or int

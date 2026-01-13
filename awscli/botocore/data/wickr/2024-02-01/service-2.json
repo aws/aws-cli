@@ -1,0 +1,4174 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2024-02-01",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"admin.wickr",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"AWS Wickr Admin API",
+    "serviceId":"Wickr",
+    "signatureVersion":"v4",
+    "signingName":"wickr",
+    "uid":"wickr-2024-02-01"
+  },
+  "operations":{
+    "BatchCreateUser":{
+      "name":"BatchCreateUser",
+      "http":{
+        "method":"POST",
+        "requestUri":"/networks/{networkId}/users",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchCreateUserRequest"},
+      "output":{"shape":"BatchCreateUserResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Creates multiple users in a specified Wickr network. This operation allows you to provision multiple user accounts simultaneously, optionally specifying security groups, and validation requirements for each user.</p> <note> <p> <code>codeValidation</code>, <code>inviteCode</code>, and <code>inviteCodeTtl</code> are restricted to networks under preview only.</p> </note>"
+    },
+    "BatchDeleteUser":{
+      "name":"BatchDeleteUser",
+      "http":{
+        "method":"POST",
+        "requestUri":"/networks/{networkId}/users/batch-delete",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchDeleteUserRequest"},
+      "output":{"shape":"BatchDeleteUserResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Deletes multiple users from a specified Wickr network. This operation permanently removes user accounts and their associated data from the network.</p>",
+      "idempotent":true
+    },
+    "BatchLookupUserUname":{
+      "name":"BatchLookupUserUname",
+      "http":{
+        "method":"POST",
+        "requestUri":"/networks/{networkId}/users/uname-lookup",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchLookupUserUnameRequest"},
+      "output":{"shape":"BatchLookupUserUnameResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Looks up multiple user usernames from their unique username hashes (unames). This operation allows you to retrieve the email addresses associated with a list of username hashes.</p>"
+    },
+    "BatchReinviteUser":{
+      "name":"BatchReinviteUser",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/networks/{networkId}/users/re-invite",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchReinviteUserRequest"},
+      "output":{"shape":"BatchReinviteUserResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Resends invitation codes to multiple users who have pending invitations in a Wickr network. This operation is useful when users haven't accepted their initial invitations or when invitations have expired.</p>"
+    },
+    "BatchResetDevicesForUser":{
+      "name":"BatchResetDevicesForUser",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/networks/{networkId}/users/{userId}/devices",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchResetDevicesForUserRequest"},
+      "output":{"shape":"BatchResetDevicesForUserResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Resets multiple devices for a specific user in a Wickr network. This operation forces the selected devices to log out and requires users to re-authenticate, which is useful for security purposes or when devices need to be revoked.</p>",
+      "idempotent":true
+    },
+    "BatchToggleUserSuspendStatus":{
+      "name":"BatchToggleUserSuspendStatus",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/networks/{networkId}/users/toggleSuspend",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchToggleUserSuspendStatusRequest"},
+      "output":{"shape":"BatchToggleUserSuspendStatusResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Suspends or unsuspends multiple users in a Wickr network. Suspended users cannot access the network until they are unsuspended. This operation is useful for temporarily restricting access without deleting user accounts.</p>",
+      "idempotent":true
+    },
+    "CreateBot":{
+      "name":"CreateBot",
+      "http":{
+        "method":"POST",
+        "requestUri":"/networks/{networkId}/bots",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateBotRequest"},
+      "output":{"shape":"CreateBotResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Creates a new bot in a specified Wickr network. Bots are automated accounts that can send and receive messages, enabling integration with external systems and automation of tasks.</p>"
+    },
+    "CreateDataRetentionBot":{
+      "name":"CreateDataRetentionBot",
+      "http":{
+        "method":"POST",
+        "requestUri":"/networks/{networkId}/data-retention-bots",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateDataRetentionBotRequest"},
+      "output":{"shape":"CreateDataRetentionBotResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Creates a data retention bot in a Wickr network. Data retention bots are specialized bots that handle message archiving and compliance by capturing and storing messages for regulatory or organizational requirements.</p>"
+    },
+    "CreateDataRetentionBotChallenge":{
+      "name":"CreateDataRetentionBotChallenge",
+      "http":{
+        "method":"POST",
+        "requestUri":"/networks/{networkId}/data-retention-bots/challenge",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateDataRetentionBotChallengeRequest"},
+      "output":{"shape":"CreateDataRetentionBotChallengeResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Creates a new challenge password for the data retention bot. This password is used for authentication when the bot connects to the network.</p>"
+    },
+    "CreateNetwork":{
+      "name":"CreateNetwork",
+      "http":{
+        "method":"POST",
+        "requestUri":"/networks",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateNetworkRequest"},
+      "output":{"shape":"CreateNetworkResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Creates a new Wickr network with specified access level and configuration. This operation provisions a new communication network for your organization.</p>",
+      "idempotent":true
+    },
+    "CreateSecurityGroup":{
+      "name":"CreateSecurityGroup",
+      "http":{
+        "method":"POST",
+        "requestUri":"/networks/{networkId}/security-groups",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateSecurityGroupRequest"},
+      "output":{"shape":"CreateSecurityGroupResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Creates a new security group in a Wickr network. Security groups allow you to organize users and control their permissions, features, and security settings.</p>",
+      "idempotent":true
+    },
+    "DeleteBot":{
+      "name":"DeleteBot",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/networks/{networkId}/bots/{botId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteBotRequest"},
+      "output":{"shape":"DeleteBotResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Deletes a bot from a specified Wickr network. This operation permanently removes the bot account and its associated data from the network.</p>",
+      "idempotent":true
+    },
+    "DeleteDataRetentionBot":{
+      "name":"DeleteDataRetentionBot",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/networks/{networkId}/data-retention-bots",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteDataRetentionBotRequest"},
+      "output":{"shape":"DeleteDataRetentionBotResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Deletes the data retention bot from a Wickr network. This operation permanently removes the bot and all its associated data from the database.</p>",
+      "idempotent":true
+    },
+    "DeleteNetwork":{
+      "name":"DeleteNetwork",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/networks/{networkId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteNetworkRequest"},
+      "output":{"shape":"DeleteNetworkResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Deletes a Wickr network and all its associated resources, including users, bots, security groups, and settings. This operation is permanent and cannot be undone.</p>",
+      "idempotent":true
+    },
+    "DeleteSecurityGroup":{
+      "name":"DeleteSecurityGroup",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/networks/{networkId}/security-groups/{groupId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteSecurityGroupRequest"},
+      "output":{"shape":"DeleteSecurityGroupResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Deletes a security group from a Wickr network. This operation cannot be performed on the default security group.</p>",
+      "idempotent":true
+    },
+    "GetBot":{
+      "name":"GetBot",
+      "http":{
+        "method":"GET",
+        "requestUri":"/networks/{networkId}/bots/{botId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetBotRequest"},
+      "output":{"shape":"GetBotResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a specific bot in a Wickr network, including its status, group membership, and authentication details.</p>",
+      "readonly":true
+    },
+    "GetBotsCount":{
+      "name":"GetBotsCount",
+      "http":{
+        "method":"GET",
+        "requestUri":"/networks/{networkId}/bots/count",
+        "responseCode":200
+      },
+      "input":{"shape":"GetBotsCountRequest"},
+      "output":{"shape":"GetBotsCountResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Retrieves the count of bots in a Wickr network, categorized by their status (pending, active, and total).</p>",
+      "readonly":true
+    },
+    "GetDataRetentionBot":{
+      "name":"GetDataRetentionBot",
+      "http":{
+        "method":"GET",
+        "requestUri":"/networks/{networkId}/data-retention-bots",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDataRetentionBotRequest"},
+      "output":{"shape":"GetDataRetentionBotResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Retrieves information about the data retention bot in a Wickr network, including its status and whether the data retention service is enabled.</p>",
+      "readonly":true
+    },
+    "GetGuestUserHistoryCount":{
+      "name":"GetGuestUserHistoryCount",
+      "http":{
+        "method":"GET",
+        "requestUri":"/networks/{networkId}/guest-users/count",
+        "responseCode":200
+      },
+      "input":{"shape":"GetGuestUserHistoryCountRequest"},
+      "output":{"shape":"GetGuestUserHistoryCountResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Retrieves historical guest user count data for a Wickr network, showing the number of guest users per billing period over the past 90 days.</p>",
+      "readonly":true
+    },
+    "GetNetwork":{
+      "name":"GetNetwork",
+      "http":{
+        "method":"GET",
+        "requestUri":"/networks/{networkId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetNetworkRequest"},
+      "output":{"shape":"GetNetworkResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a specific Wickr network, including its configuration, access level, and status.</p>",
+      "readonly":true
+    },
+    "GetNetworkSettings":{
+      "name":"GetNetworkSettings",
+      "http":{
+        "method":"GET",
+        "requestUri":"/networks/{networkId}/settings",
+        "responseCode":200
+      },
+      "input":{"shape":"GetNetworkSettingsRequest"},
+      "output":{"shape":"GetNetworkSettingsResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Retrieves all network-level settings for a Wickr network, including client metrics, data retention, and other configuration options.</p>",
+      "readonly":true
+    },
+    "GetOidcInfo":{
+      "name":"GetOidcInfo",
+      "http":{
+        "method":"GET",
+        "requestUri":"/networks/{networkId}/oidc",
+        "responseCode":200
+      },
+      "input":{"shape":"GetOidcInfoRequest"},
+      "output":{"shape":"GetOidcInfoResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Retrieves the OpenID Connect (OIDC) configuration for a Wickr network, including SSO settings and optional token information if access token parameters are provided.</p>",
+      "readonly":true
+    },
+    "GetSecurityGroup":{
+      "name":"GetSecurityGroup",
+      "http":{
+        "method":"GET",
+        "requestUri":"/networks/{networkId}/security-groups/{groupId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSecurityGroupRequest"},
+      "output":{"shape":"GetSecurityGroupResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a specific security group in a Wickr network, including its settings, member counts, and configuration.</p>",
+      "readonly":true
+    },
+    "GetUser":{
+      "name":"GetUser",
+      "http":{
+        "method":"GET",
+        "requestUri":"/networks/{networkId}/users/{userId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetUserRequest"},
+      "output":{"shape":"GetUserResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a specific user in a Wickr network, including their profile, status, and activity history.</p>",
+      "readonly":true
+    },
+    "GetUsersCount":{
+      "name":"GetUsersCount",
+      "http":{
+        "method":"GET",
+        "requestUri":"/networks/{networkId}/users/count",
+        "responseCode":200
+      },
+      "input":{"shape":"GetUsersCountRequest"},
+      "output":{"shape":"GetUsersCountResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Retrieves the count of users in a Wickr network, categorized by their status (pending, active, rejected) and showing how many users can still be added.</p>",
+      "readonly":true
+    },
+    "ListBlockedGuestUsers":{
+      "name":"ListBlockedGuestUsers",
+      "http":{
+        "method":"GET",
+        "requestUri":"/networks/{networkId}/guest-users/blocklist",
+        "responseCode":200
+      },
+      "input":{"shape":"ListBlockedGuestUsersRequest"},
+      "output":{"shape":"ListBlockedGuestUsersResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of guest users who have been blocked from a Wickr network. You can filter and sort the results.</p>",
+      "readonly":true
+    },
+    "ListBots":{
+      "name":"ListBots",
+      "http":{
+        "method":"GET",
+        "requestUri":"/networks/{networkId}/bots",
+        "responseCode":200
+      },
+      "input":{"shape":"ListBotsRequest"},
+      "output":{"shape":"ListBotsResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of bots in a specified Wickr network. You can filter and sort the results based on various criteria.</p>",
+      "readonly":true
+    },
+    "ListDevicesForUser":{
+      "name":"ListDevicesForUser",
+      "http":{
+        "method":"GET",
+        "requestUri":"/networks/{networkId}/users/{userId}/devices",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDevicesForUserRequest"},
+      "output":{"shape":"ListDevicesForUserResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of devices associated with a specific user in a Wickr network. This operation returns information about all devices where the user has logged into Wickr.</p>",
+      "readonly":true
+    },
+    "ListGuestUsers":{
+      "name":"ListGuestUsers",
+      "http":{
+        "method":"GET",
+        "requestUri":"/networks/{networkId}/guest-users",
+        "responseCode":200
+      },
+      "input":{"shape":"ListGuestUsersRequest"},
+      "output":{"shape":"ListGuestUsersResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of guest users who have communicated with your Wickr network. Guest users are external users from federated networks who can communicate with network members.</p>",
+      "readonly":true
+    },
+    "ListNetworks":{
+      "name":"ListNetworks",
+      "http":{
+        "method":"GET",
+        "requestUri":"/networks",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNetworksRequest"},
+      "output":{"shape":"ListNetworksResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of all Wickr networks associated with your Amazon Web Services account. You can sort the results by network ID or name.</p>",
+      "readonly":true
+    },
+    "ListSecurityGroupUsers":{
+      "name":"ListSecurityGroupUsers",
+      "http":{
+        "method":"GET",
+        "requestUri":"/networks/{networkId}/security-groups/{groupId}/users",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSecurityGroupUsersRequest"},
+      "output":{"shape":"ListSecurityGroupUsersResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of users who belong to a specific security group in a Wickr network.</p>",
+      "readonly":true
+    },
+    "ListSecurityGroups":{
+      "name":"ListSecurityGroups",
+      "http":{
+        "method":"GET",
+        "requestUri":"/networks/{networkId}/security-groups",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSecurityGroupsRequest"},
+      "output":{"shape":"ListSecurityGroupsResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of security groups in a specified Wickr network. You can sort the results by various criteria.</p>",
+      "readonly":true
+    },
+    "ListUsers":{
+      "name":"ListUsers",
+      "http":{
+        "method":"GET",
+        "requestUri":"/networks/{networkId}/users",
+        "responseCode":200
+      },
+      "input":{"shape":"ListUsersRequest"},
+      "output":{"shape":"ListUsersResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of users in a specified Wickr network. You can filter and sort the results based on various criteria such as name, status, or security group membership.</p>",
+      "readonly":true
+    },
+    "RegisterOidcConfig":{
+      "name":"RegisterOidcConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/networks/{networkId}/oidc/save",
+        "responseCode":200
+      },
+      "input":{"shape":"RegisterOidcConfigRequest"},
+      "output":{"shape":"RegisterOidcConfigResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Registers and saves an OpenID Connect (OIDC) configuration for a Wickr network, enabling Single Sign-On (SSO) authentication through an identity provider.</p>"
+    },
+    "RegisterOidcConfigTest":{
+      "name":"RegisterOidcConfigTest",
+      "http":{
+        "method":"POST",
+        "requestUri":"/networks/{networkId}/oidc/test",
+        "responseCode":200
+      },
+      "input":{"shape":"RegisterOidcConfigTestRequest"},
+      "output":{"shape":"RegisterOidcConfigTestResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Tests an OpenID Connect (OIDC) configuration for a Wickr network by validating the connection to the identity provider and retrieving its supported capabilities.</p>"
+    },
+    "UpdateBot":{
+      "name":"UpdateBot",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/networks/{networkId}/bots/{botId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateBotRequest"},
+      "output":{"shape":"UpdateBotResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Updates the properties of an existing bot in a Wickr network. This operation allows you to modify the bot's display name, security group, password, or suspension status.</p>",
+      "idempotent":true
+    },
+    "UpdateDataRetention":{
+      "name":"UpdateDataRetention",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/networks/{networkId}/data-retention-bots",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateDataRetentionRequest"},
+      "output":{"shape":"UpdateDataRetentionResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Updates the data retention bot settings, allowing you to enable or disable the data retention service, or acknowledge the public key message.</p>",
+      "idempotent":true
+    },
+    "UpdateGuestUser":{
+      "name":"UpdateGuestUser",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/networks/{networkId}/guest-users/{usernameHash}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateGuestUserRequest"},
+      "output":{"shape":"UpdateGuestUserResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Updates the block status of a guest user in a Wickr network. This operation allows you to block or unblock a guest user from accessing the network.</p>"
+    },
+    "UpdateNetwork":{
+      "name":"UpdateNetwork",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/networks/{networkId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateNetworkRequest"},
+      "output":{"shape":"UpdateNetworkResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Updates the properties of an existing Wickr network, such as its name or encryption key configuration.</p>",
+      "idempotent":true
+    },
+    "UpdateNetworkSettings":{
+      "name":"UpdateNetworkSettings",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/networks/{networkId}/settings",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateNetworkSettingsRequest"},
+      "output":{"shape":"UpdateNetworkSettingsResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Updates network-level settings for a Wickr network. You can modify settings such as client metrics, data retention, and other network-wide options.</p>",
+      "idempotent":true
+    },
+    "UpdateSecurityGroup":{
+      "name":"UpdateSecurityGroup",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/networks/{networkId}/security-groups/{groupId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateSecurityGroupRequest"},
+      "output":{"shape":"UpdateSecurityGroupResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Updates the properties of an existing security group in a Wickr network, such as its name or settings.</p>",
+      "idempotent":true
+    },
+    "UpdateUser":{
+      "name":"UpdateUser",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/networks/{networkId}/users",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateUserRequest"},
+      "output":{"shape":"UpdateUserResponse"},
+      "errors":[
+        {"shape":"ValidationError"},
+        {"shape":"BadRequestError"},
+        {"shape":"ResourceNotFoundError"},
+        {"shape":"ForbiddenError"},
+        {"shape":"UnauthorizedError"},
+        {"shape":"InternalServerError"},
+        {"shape":"RateLimitError"}
+      ],
+      "documentation":"<p>Updates the properties of an existing user in a Wickr network. This operation allows you to modify the user's name, password, security group membership, and invite code settings.</p> <note> <p> <code>codeValidation</code>, <code>inviteCode</code>, and <code>inviteCodeTtl</code> are restricted to networks under preview only.</p> </note>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "AccessLevel":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "PREMIUM"
+      ]
+    },
+    "AppIds":{
+      "type":"list",
+      "member":{"shape":"GenericString"}
+    },
+    "BadRequestError":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A detailed message explaining what was wrong with the request and how to correct it.</p>"
+        }
+      },
+      "documentation":"<p>The request was invalid or malformed. This error occurs when the request parameters do not meet the API requirements, such as invalid field values, missing required parameters, or improperly formatted data.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "BasicDeviceObject":{
+      "type":"structure",
+      "members":{
+        "appId":{
+          "shape":"GenericString",
+          "documentation":"<p>The unique application ID for the Wickr app on this device.</p>"
+        },
+        "created":{
+          "shape":"GenericString",
+          "documentation":"<p>The timestamp when the device first appeared in the Wickr database.</p>"
+        },
+        "lastLogin":{
+          "shape":"GenericString",
+          "documentation":"<p>The timestamp when the device last successfully logged into Wickr. This is also used to determine SSO idle time.</p>"
+        },
+        "statusText":{
+          "shape":"GenericString",
+          "documentation":"<p>The current status of the device, either 'Active' or 'Reset' depending on whether the device is currently active or has been marked for reset.</p>"
+        },
+        "suspend":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the device is suspended.</p>"
+        },
+        "type":{
+          "shape":"GenericString",
+          "documentation":"<p>The operating system of the device (e.g., 'MacOSX', 'Windows', 'iOS', 'Android').</p>"
+        }
+      },
+      "documentation":"<p>Represents a device where a user has logged into Wickr, containing information about the device's type, status, and login history.</p>"
+    },
+    "BatchCreateUserRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "users"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network where users will be created.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "users":{
+          "shape":"BatchCreateUserRequestItems",
+          "documentation":"<p>A list of user objects containing the details for each user to be created, including username, name, security groups, and optional invite codes. Maximum 50 users per batch request.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique identifier for this request to ensure idempotency. If you retry a request with the same client token, the service will return the same response without creating duplicate users.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Client-Token"
+        }
+      }
+    },
+    "BatchCreateUserRequestItem":{
+      "type":"structure",
+      "required":[
+        "securityGroupIds",
+        "username"
+      ],
+      "members":{
+        "firstName":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The first name of the user.</p>"
+        },
+        "lastName":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The last name of the user.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"SecurityGroupIdList",
+          "documentation":"<p>A list of security group IDs to which the user should be assigned.</p>"
+        },
+        "username":{
+          "shape":"GenericString",
+          "documentation":"<p>The email address or username for the user. Must be unique within the network.</p>"
+        },
+        "inviteCode":{
+          "shape":"GenericString",
+          "documentation":"<p>A custom invite code for the user. If not provided, one will be generated automatically.</p>"
+        },
+        "inviteCodeTtl":{
+          "shape":"Integer",
+          "documentation":"<p>The time-to-live for the invite code in days. After this period, the invite code will expire.</p>"
+        },
+        "codeValidation":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the user can be verified through a custom invite code.</p>"
+        }
+      },
+      "documentation":"<p>Contains the details for a single user to be created in a batch user creation request.</p> <note> <p>A user can only be assigned to a single security group. Attempting to add a user to multiple security groups is not supported and will result in an error.</p> </note> <note> <p> <code>codeValidation</code>, <code>inviteCode</code>, and <code>inviteCodeTtl</code> are restricted to networks under preview only.</p> </note>"
+    },
+    "BatchCreateUserRequestItems":{
+      "type":"list",
+      "member":{"shape":"BatchCreateUserRequestItem"}
+    },
+    "BatchCreateUserResponse":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message indicating the overall result of the batch operation.</p>"
+        },
+        "successful":{
+          "shape":"Users",
+          "documentation":"<p>A list of user objects that were successfully created, including their assigned user IDs and invite codes.</p>"
+        },
+        "failed":{
+          "shape":"BatchUserErrorResponseItems",
+          "documentation":"<p>A list of user creation attempts that failed, including error details explaining why each user could not be created.</p>"
+        }
+      }
+    },
+    "BatchDeleteUserRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "userIds"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network from which users will be deleted.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "userIds":{
+          "shape":"UserIds",
+          "documentation":"<p>A list of user IDs identifying the users to be deleted from the network. Maximum 50 users per batch request.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique identifier for this request to ensure idempotency. If you retry a request with the same client token, the service will return the same response without attempting to delete users again.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Client-Token"
+        }
+      }
+    },
+    "BatchDeleteUserResponse":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message indicating the overall result of the batch deletion operation.</p>"
+        },
+        "successful":{
+          "shape":"BatchUserSuccessResponseItems",
+          "documentation":"<p>A list of user IDs that were successfully deleted from the network.</p>"
+        },
+        "failed":{
+          "shape":"BatchUserErrorResponseItems",
+          "documentation":"<p>A list of user deletion attempts that failed, including error details explaining why each user could not be deleted.</p>"
+        }
+      }
+    },
+    "BatchDeviceErrorResponseItem":{
+      "type":"structure",
+      "required":["appId"],
+      "members":{
+        "field":{
+          "shape":"GenericString",
+          "documentation":"<p>The field that caused the error.</p>"
+        },
+        "reason":{
+          "shape":"GenericString",
+          "documentation":"<p>A description of why the device operation failed.</p>"
+        },
+        "appId":{
+          "shape":"GenericString",
+          "documentation":"<p>The application ID of the device that failed to be processed.</p>"
+        }
+      },
+      "documentation":"<p>Contains error information for a device operation that failed in a batch device request.</p>"
+    },
+    "BatchDeviceErrorResponseItems":{
+      "type":"list",
+      "member":{"shape":"BatchDeviceErrorResponseItem"}
+    },
+    "BatchDeviceSuccessResponseItem":{
+      "type":"structure",
+      "required":["appId"],
+      "members":{
+        "appId":{
+          "shape":"GenericString",
+          "documentation":"<p>The application ID of the device that was successfully processed.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a device that was successfully processed in a batch device operation.</p>"
+    },
+    "BatchDeviceSuccessResponseItems":{
+      "type":"list",
+      "member":{"shape":"BatchDeviceSuccessResponseItem"}
+    },
+    "BatchLookupUserUnameRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "unames"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network where the users will be looked up.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "unames":{
+          "shape":"Unames",
+          "documentation":"<p>A list of username hashes (unames) to look up. Each uname is a unique identifier for a user's username. Maximum 50 unames per batch request.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique identifier for this request to ensure idempotency.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Client-Token"
+        }
+      }
+    },
+    "BatchLookupUserUnameResponse":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message indicating the overall result of the batch lookup operation.</p>"
+        },
+        "successful":{
+          "shape":"BatchUnameSuccessResponseItems",
+          "documentation":"<p>A list of successfully resolved username hashes with their corresponding email addresses.</p>"
+        },
+        "failed":{
+          "shape":"BatchUnameErrorResponseItems",
+          "documentation":"<p>A list of username hash lookup attempts that failed, including error details explaining why each lookup failed.</p>"
+        }
+      }
+    },
+    "BatchReinviteUserRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "userIds"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network where users will be reinvited.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "userIds":{
+          "shape":"UserIds",
+          "documentation":"<p>A list of user IDs identifying the users to be reinvited to the network. Maximum 50 users per batch request.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique identifier for this request to ensure idempotency.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Client-Token"
+        }
+      }
+    },
+    "BatchReinviteUserResponse":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message indicating the overall result of the batch reinvitation operation.</p>"
+        },
+        "successful":{
+          "shape":"BatchUserSuccessResponseItems",
+          "documentation":"<p>A list of user IDs that were successfully reinvited.</p>"
+        },
+        "failed":{
+          "shape":"BatchUserErrorResponseItems",
+          "documentation":"<p>A list of reinvitation attempts that failed, including error details explaining why each user could not be reinvited.</p>"
+        }
+      }
+    },
+    "BatchResetDevicesForUserRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "userId",
+        "appIds"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network containing the user whose devices will be reset.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "userId":{
+          "shape":"UserId",
+          "documentation":"<p>The ID of the user whose devices will be reset.</p>",
+          "location":"uri",
+          "locationName":"userId"
+        },
+        "appIds":{
+          "shape":"AppIds",
+          "documentation":"<p>A list of application IDs identifying the specific devices to be reset for the user. Maximum 50 devices per batch request.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique identifier for this request to ensure idempotency.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Client-Token"
+        }
+      }
+    },
+    "BatchResetDevicesForUserResponse":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message indicating the overall result of the batch device reset operation.</p>"
+        },
+        "successful":{
+          "shape":"BatchDeviceSuccessResponseItems",
+          "documentation":"<p>A list of application IDs that were successfully reset.</p>"
+        },
+        "failed":{
+          "shape":"BatchDeviceErrorResponseItems",
+          "documentation":"<p>A list of device reset attempts that failed, including error details explaining why each device could not be reset.</p>"
+        }
+      }
+    },
+    "BatchToggleUserSuspendStatusRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "suspend",
+        "userIds"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network where users will be suspended or unsuspended.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "suspend":{
+          "shape":"Boolean",
+          "documentation":"<p>A boolean value indicating whether to suspend (true) or unsuspend (false) the specified users.</p>",
+          "location":"querystring",
+          "locationName":"suspend"
+        },
+        "userIds":{
+          "shape":"UserIds",
+          "documentation":"<p>A list of user IDs identifying the users whose suspend status will be toggled. Maximum 50 users per batch request.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique identifier for this request to ensure idempotency.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Client-Token"
+        }
+      }
+    },
+    "BatchToggleUserSuspendStatusResponse":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message indicating the overall result of the batch suspend status toggle operation.</p>"
+        },
+        "successful":{
+          "shape":"BatchUserSuccessResponseItems",
+          "documentation":"<p>A list of user IDs whose suspend status was successfully toggled.</p>"
+        },
+        "failed":{
+          "shape":"BatchUserErrorResponseItems",
+          "documentation":"<p>A list of suspend status toggle attempts that failed, including error details explaining why each user's status could not be changed.</p>"
+        }
+      }
+    },
+    "BatchUnameErrorResponseItem":{
+      "type":"structure",
+      "required":["uname"],
+      "members":{
+        "field":{
+          "shape":"GenericString",
+          "documentation":"<p>The field that caused the error.</p>"
+        },
+        "reason":{
+          "shape":"GenericString",
+          "documentation":"<p>A description of why the username hash lookup failed.</p>"
+        },
+        "uname":{
+          "shape":"Uname",
+          "documentation":"<p>The username hash that failed to be looked up.</p>"
+        }
+      },
+      "documentation":"<p>Contains error information for a username hash lookup that failed in a batch uname lookup request.</p>"
+    },
+    "BatchUnameErrorResponseItems":{
+      "type":"list",
+      "member":{"shape":"BatchUnameErrorResponseItem"}
+    },
+    "BatchUnameSuccessResponseItem":{
+      "type":"structure",
+      "required":[
+        "uname",
+        "username"
+      ],
+      "members":{
+        "uname":{
+          "shape":"Uname",
+          "documentation":"<p>The username hash that was successfully resolved.</p>"
+        },
+        "username":{
+          "shape":"GenericString",
+          "documentation":"<p>The email address or username corresponding to the username hash.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a username hash that was successfully resolved in a batch uname lookup operation.</p>"
+    },
+    "BatchUnameSuccessResponseItems":{
+      "type":"list",
+      "member":{"shape":"BatchUnameSuccessResponseItem"}
+    },
+    "BatchUserErrorResponseItem":{
+      "type":"structure",
+      "required":["userId"],
+      "members":{
+        "field":{
+          "shape":"GenericString",
+          "documentation":"<p>The field that caused the error.</p>"
+        },
+        "reason":{
+          "shape":"GenericString",
+          "documentation":"<p>A description of why the user operation failed.</p>"
+        },
+        "userId":{
+          "shape":"UserId",
+          "documentation":"<p>The user ID associated with the failed operation.</p>"
+        }
+      },
+      "documentation":"<p>Contains error information for a user operation that failed in a batch user request.</p>"
+    },
+    "BatchUserErrorResponseItems":{
+      "type":"list",
+      "member":{"shape":"BatchUserErrorResponseItem"}
+    },
+    "BatchUserSuccessResponseItem":{
+      "type":"structure",
+      "required":["userId"],
+      "members":{
+        "userId":{
+          "shape":"UserId",
+          "documentation":"<p>The user ID that was successfully processed.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a user that was successfully processed in a batch user operation.</p>"
+    },
+    "BatchUserSuccessResponseItems":{
+      "type":"list",
+      "member":{"shape":"BatchUserSuccessResponseItem"}
+    },
+    "BlockedGuestUser":{
+      "type":"structure",
+      "required":[
+        "username",
+        "admin",
+        "modified",
+        "usernameHash"
+      ],
+      "members":{
+        "username":{
+          "shape":"GenericString",
+          "documentation":"<p>The username of the blocked guest user.</p>"
+        },
+        "admin":{
+          "shape":"GenericString",
+          "documentation":"<p>The username of the administrator who blocked this guest user.</p>"
+        },
+        "modified":{
+          "shape":"GenericString",
+          "documentation":"<p>The timestamp when the guest user was blocked or last modified.</p>"
+        },
+        "usernameHash":{
+          "shape":"GenericString",
+          "documentation":"<p>The unique username hash identifier for the blocked guest user.</p>"
+        }
+      },
+      "documentation":"<p>Represents a guest user who has been blocked from accessing a Wickr network.</p>"
+    },
+    "BlockedGuestUserList":{
+      "type":"list",
+      "member":{"shape":"BlockedGuestUser"}
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "Bot":{
+      "type":"structure",
+      "members":{
+        "botId":{
+          "shape":"GenericString",
+          "documentation":"<p>The unique identifier of the bot.</p>"
+        },
+        "displayName":{
+          "shape":"GenericString",
+          "documentation":"<p>The display name of the bot that is visible to users.</p>"
+        },
+        "username":{
+          "shape":"GenericString",
+          "documentation":"<p>The username of the bot.</p>"
+        },
+        "uname":{
+          "shape":"GenericString",
+          "documentation":"<p>The unique username hash identifier for the bot.</p>"
+        },
+        "pubkey":{
+          "shape":"GenericString",
+          "documentation":"<p>The public key of the bot used for encryption.</p>"
+        },
+        "status":{
+          "shape":"BotStatus",
+          "documentation":"<p>The current status of the bot (1 for pending, 2 for active).</p>"
+        },
+        "groupId":{
+          "shape":"GenericString",
+          "documentation":"<p>The ID of the security group to which the bot belongs.</p>"
+        },
+        "hasChallenge":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the bot has a password set.</p>"
+        },
+        "suspended":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the bot is currently suspended.</p>"
+        },
+        "lastLogin":{
+          "shape":"GenericString",
+          "documentation":"<p>The timestamp of the bot's last login.</p>"
+        }
+      },
+      "documentation":"<p>Represents a bot account in a Wickr network with all its informational fields.</p>"
+    },
+    "BotId":{
+      "type":"string",
+      "max":10,
+      "min":1,
+      "pattern":"[0-9]+"
+    },
+    "BotStatus":{
+      "type":"integer",
+      "box":true
+    },
+    "Bots":{
+      "type":"list",
+      "member":{"shape":"Bot"}
+    },
+    "CallingSettings":{
+      "type":"structure",
+      "members":{
+        "canStart11Call":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether users can start one-to-one calls.</p>"
+        },
+        "canVideoCall":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether users can make video calls (as opposed to audio-only calls). Valid only when audio call(canStart11Call) is enabled.</p>"
+        },
+        "forceTcpCall":{
+          "shape":"Boolean",
+          "documentation":"<p>When enabled, forces all calls to use TCP protocol instead of UDP for network traversal.</p>"
+        }
+      },
+      "documentation":"<p>Defines the calling feature permissions and settings for users in a security group, controlling what types of calls users can initiate and participate in.</p>"
+    },
+    "ClientToken":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-_:]+"
+    },
+    "CreateBotRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "username",
+        "groupId",
+        "challenge"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network where the bot will be created.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "username":{
+          "shape":"GenericString",
+          "documentation":"<p>The username for the bot. This must be unique within the network and follow the network's naming conventions.</p>"
+        },
+        "displayName":{
+          "shape":"GenericString",
+          "documentation":"<p>The display name for the bot that will be visible to users in the network.</p>"
+        },
+        "groupId":{
+          "shape":"GenericString",
+          "documentation":"<p>The ID of the security group to which the bot will be assigned.</p>"
+        },
+        "challenge":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The password for the bot account.</p>"
+        }
+      }
+    },
+    "CreateBotResponse":{
+      "type":"structure",
+      "required":["botId"],
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message indicating the result of the bot creation operation.</p>"
+        },
+        "botId":{
+          "shape":"BotId",
+          "documentation":"<p>The unique identifier assigned to the newly created bot.</p>"
+        },
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the network where the bot was created.</p>"
+        },
+        "username":{
+          "shape":"GenericString",
+          "documentation":"<p>The username of the newly created bot.</p>"
+        },
+        "displayName":{
+          "shape":"GenericString",
+          "documentation":"<p>The display name of the newly created bot.</p>"
+        },
+        "groupId":{
+          "shape":"GenericString",
+          "documentation":"<p>The ID of the security group to which the bot was assigned.</p>"
+        }
+      }
+    },
+    "CreateDataRetentionBotChallengeRequest":{
+      "type":"structure",
+      "required":["networkId"],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network containing the data retention bot.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        }
+      }
+    },
+    "CreateDataRetentionBotChallengeResponse":{
+      "type":"structure",
+      "required":["challenge"],
+      "members":{
+        "challenge":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The newly generated challenge password for the data retention bot.</p>"
+        }
+      }
+    },
+    "CreateDataRetentionBotRequest":{
+      "type":"structure",
+      "required":["networkId"],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network where the data retention bot will be created.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        }
+      }
+    },
+    "CreateDataRetentionBotResponse":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message indicating that the data retention bot was successfully provisioned.</p>"
+        }
+      }
+    },
+    "CreateNetworkRequest":{
+      "type":"structure",
+      "required":[
+        "networkName",
+        "accessLevel"
+      ],
+      "members":{
+        "networkName":{
+          "shape":"GenericString",
+          "documentation":"<p>The name for the new network. Must be between 1 and 20 characters.</p>"
+        },
+        "accessLevel":{
+          "shape":"AccessLevel",
+          "documentation":"<p>The access level for the network. Valid values are STANDARD or PREMIUM, which determine the features and capabilities available to network members.</p>"
+        },
+        "enablePremiumFreeTrial":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to enable a premium free trial for the network. It is optional and has a default value as false. When set to true, the network starts with premium features for a limited trial period. </p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"GenericString",
+          "documentation":"<p>The ARN of the Amazon Web Services KMS customer managed key to use for encrypting sensitive data in the network.</p>"
+        }
+      }
+    },
+    "CreateNetworkResponse":{
+      "type":"structure",
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The unique identifier assigned to the newly created network.</p>"
+        },
+        "networkName":{
+          "shape":"GenericString",
+          "documentation":"<p>The name of the newly created network.</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"GenericString",
+          "documentation":"<p>The ARN of the KMS key being used to encrypt sensitive data in the network.</p>"
+        }
+      }
+    },
+    "CreateSecurityGroupRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "name",
+        "securityGroupSettings"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network where the security group will be created.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "name":{
+          "shape":"GenericString",
+          "documentation":"<p>The name for the new security group.</p>"
+        },
+        "securityGroupSettings":{
+          "shape":"SecurityGroupSettingsRequest",
+          "documentation":"<p>The configuration settings for the security group, including permissions, federation settings, and feature controls.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique identifier for this request to ensure idempotency.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Client-Token"
+        }
+      }
+    },
+    "CreateSecurityGroupResponse":{
+      "type":"structure",
+      "required":["securityGroup"],
+      "members":{
+        "securityGroup":{
+          "shape":"SecurityGroup",
+          "documentation":"<p>The details of the newly created security group, including its ID, name, and settings.</p>"
+        }
+      }
+    },
+    "DataRetentionActionType":{
+      "type":"string",
+      "enum":[
+        "ENABLE",
+        "DISABLE",
+        "PUBKEY_MSG_ACK"
+      ]
+    },
+    "DeleteBotRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "botId"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network from which the bot will be deleted.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "botId":{
+          "shape":"BotId",
+          "documentation":"<p>The unique identifier of the bot to be deleted.</p>",
+          "location":"uri",
+          "locationName":"botId"
+        }
+      }
+    },
+    "DeleteBotResponse":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message indicating the result of the bot deletion operation.</p>"
+        }
+      }
+    },
+    "DeleteDataRetentionBotRequest":{
+      "type":"structure",
+      "required":["networkId"],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network from which the data retention bot will be deleted.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        }
+      }
+    },
+    "DeleteDataRetentionBotResponse":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message indicating that the data retention bot and all associated data were successfully deleted.</p>"
+        }
+      }
+    },
+    "DeleteNetworkRequest":{
+      "type":"structure",
+      "required":["networkId"],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network to delete.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique identifier for this request to ensure idempotency. If you retry a request with the same client token, the service will return the same response without attempting to delete the network again.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Client-Token"
+        }
+      }
+    },
+    "DeleteNetworkResponse":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message indicating that the network deletion has been initiated successfully.</p>"
+        }
+      }
+    },
+    "DeleteSecurityGroupRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "groupId"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network from which the security group will be deleted.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "groupId":{
+          "shape":"GenericString",
+          "documentation":"<p>The unique identifier of the security group to delete.</p>",
+          "location":"uri",
+          "locationName":"groupId"
+        }
+      }
+    },
+    "DeleteSecurityGroupResponse":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message indicating the result of the security group deletion operation.</p>"
+        },
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the network from which the security group was deleted.</p>"
+        },
+        "groupId":{
+          "shape":"GenericString",
+          "documentation":"<p>The ID of the security group that was deleted.</p>"
+        }
+      }
+    },
+    "Devices":{
+      "type":"list",
+      "member":{"shape":"BasicDeviceObject"}
+    },
+    "ErrorDetail":{
+      "type":"structure",
+      "members":{
+        "field":{
+          "shape":"GenericString",
+          "documentation":"<p>The name of the field that contains an error or warning.</p>"
+        },
+        "reason":{
+          "shape":"GenericString",
+          "documentation":"<p>A detailed description of the error or warning.</p>"
+        }
+      },
+      "documentation":"<p>Contains detailed error information explaining why an operation failed, including which field caused the error and the reason for the failure.</p>"
+    },
+    "ErrorDetailList":{
+      "type":"list",
+      "member":{"shape":"ErrorDetail"}
+    },
+    "ForbiddenError":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message explaining why access was denied and what permissions are required.</p>"
+        }
+      },
+      "documentation":"<p>Access to the requested resource is forbidden. This error occurs when the authenticated user does not have the necessary permissions to perform the requested operation, even though they are authenticated.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "GenericString":{
+      "type":"string",
+      "pattern":"[\\S\\s]*"
+    },
+    "GetBotRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "botId"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network containing the bot.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "botId":{
+          "shape":"BotId",
+          "documentation":"<p>The unique identifier of the bot to retrieve.</p>",
+          "location":"uri",
+          "locationName":"botId"
+        }
+      }
+    },
+    "GetBotResponse":{
+      "type":"structure",
+      "members":{
+        "botId":{
+          "shape":"GenericString",
+          "documentation":"<p>The unique identifier of the bot.</p>"
+        },
+        "displayName":{
+          "shape":"GenericString",
+          "documentation":"<p>The display name of the bot that is visible to users.</p>"
+        },
+        "username":{
+          "shape":"GenericString",
+          "documentation":"<p>The username of the bot.</p>"
+        },
+        "uname":{
+          "shape":"GenericString",
+          "documentation":"<p>The unique username hash identifier for the bot.</p>"
+        },
+        "pubkey":{
+          "shape":"GenericString",
+          "documentation":"<p>The public key of the bot used for encryption.</p>"
+        },
+        "status":{
+          "shape":"BotStatus",
+          "documentation":"<p>The current status of the bot (1 for pending, 2 for active).</p>"
+        },
+        "groupId":{
+          "shape":"GenericString",
+          "documentation":"<p>The ID of the security group to which the bot belongs.</p>"
+        },
+        "hasChallenge":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the bot has a password set.</p>"
+        },
+        "suspended":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the bot is currently suspended.</p>"
+        },
+        "lastLogin":{
+          "shape":"GenericString",
+          "documentation":"<p>The timestamp of the bot's last login.</p>"
+        }
+      }
+    },
+    "GetBotsCountRequest":{
+      "type":"structure",
+      "required":["networkId"],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network for which to retrieve bot counts.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        }
+      }
+    },
+    "GetBotsCountResponse":{
+      "type":"structure",
+      "required":[
+        "pending",
+        "active",
+        "total"
+      ],
+      "members":{
+        "pending":{
+          "shape":"Integer",
+          "documentation":"<p>The number of bots with pending status (invited but not yet activated).</p>"
+        },
+        "active":{
+          "shape":"Integer",
+          "documentation":"<p>The number of bots with active status.</p>"
+        },
+        "total":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of bots in the network (active and pending).</p>"
+        }
+      }
+    },
+    "GetDataRetentionBotRequest":{
+      "type":"structure",
+      "required":["networkId"],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network containing the data retention bot.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        }
+      }
+    },
+    "GetDataRetentionBotResponse":{
+      "type":"structure",
+      "members":{
+        "botName":{
+          "shape":"GenericString",
+          "documentation":"<p>The name of the data retention bot.</p>"
+        },
+        "botExists":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether a data retention bot exists in the network.</p>"
+        },
+        "isBotActive":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the data retention bot is active and operational.</p>"
+        },
+        "isDataRetentionBotRegistered":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the data retention bot has been registered with the network.</p>"
+        },
+        "isDataRetentionServiceEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the data retention service is enabled for the network.</p>"
+        },
+        "isPubkeyMsgAcked":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the public key message has been acknowledged by the bot.</p>"
+        }
+      }
+    },
+    "GetGuestUserHistoryCountRequest":{
+      "type":"structure",
+      "required":["networkId"],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network for which to retrieve guest user history.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        }
+      }
+    },
+    "GetGuestUserHistoryCountResponse":{
+      "type":"structure",
+      "required":["history"],
+      "members":{
+        "history":{
+          "shape":"GuestUserHistoryCountList",
+          "documentation":"<p>A list of historical guest user counts, organized by month and billing period.</p>"
+        }
+      }
+    },
+    "GetNetworkRequest":{
+      "type":"structure",
+      "required":["networkId"],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network to retrieve.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        }
+      }
+    },
+    "GetNetworkResponse":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "networkName",
+        "accessLevel",
+        "awsAccountId",
+        "networkArn"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The unique identifier of the network.</p>"
+        },
+        "networkName":{
+          "shape":"GenericString",
+          "documentation":"<p>The name of the network.</p>"
+        },
+        "accessLevel":{
+          "shape":"AccessLevel",
+          "documentation":"<p>The access level of the network (STANDARD or PREMIUM), which determines available features and capabilities.</p>"
+        },
+        "awsAccountId":{
+          "shape":"GenericString",
+          "documentation":"<p>The Amazon Web Services account ID that owns the network.</p>"
+        },
+        "networkArn":{
+          "shape":"GenericString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the network.</p>"
+        },
+        "standing":{
+          "shape":"Integer",
+          "documentation":"<p>The current standing or status of the network.</p>"
+        },
+        "freeTrialExpiration":{
+          "shape":"GenericString",
+          "documentation":"<p>The expiration date and time for the network's free trial period, if applicable.</p>"
+        },
+        "migrationState":{
+          "shape":"Integer",
+          "documentation":"<p>The SSO redirect URI migration state, managed by the SSO redirect migration wizard. Values: 0 (not started), 1 (in progress), or 2 (completed).</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"GenericString",
+          "documentation":"<p>The ARN of the Amazon Web Services KMS customer managed key used for encrypting sensitive data in the network.</p>"
+        }
+      }
+    },
+    "GetNetworkSettingsRequest":{
+      "type":"structure",
+      "required":["networkId"],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network whose settings will be retrieved.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        }
+      }
+    },
+    "GetNetworkSettingsResponse":{
+      "type":"structure",
+      "required":["settings"],
+      "members":{
+        "settings":{
+          "shape":"SettingsList",
+          "documentation":"<p>A list of network settings, where each setting includes a name, value, and type.</p>"
+        }
+      }
+    },
+    "GetOidcInfoRequest":{
+      "type":"structure",
+      "required":["networkId"],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network whose OIDC configuration will be retrieved.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "clientId":{
+          "shape":"GenericString",
+          "documentation":"<p>The OAuth client ID for retrieving access tokens (optional).</p>",
+          "location":"querystring",
+          "locationName":"clientId"
+        },
+        "code":{
+          "shape":"GenericString",
+          "documentation":"<p>The authorization code for retrieving access tokens (optional).</p>",
+          "location":"querystring",
+          "locationName":"code"
+        },
+        "grantType":{
+          "shape":"GenericString",
+          "documentation":"<p>The OAuth grant type for retrieving access tokens (optional).</p>",
+          "location":"querystring",
+          "locationName":"grantType"
+        },
+        "redirectUri":{
+          "shape":"GenericString",
+          "documentation":"<p>The redirect URI for the OAuth flow (optional).</p>",
+          "location":"querystring",
+          "locationName":"redirectUri"
+        },
+        "url":{
+          "shape":"GenericString",
+          "documentation":"<p>The URL for the OIDC provider (optional).</p>",
+          "location":"querystring",
+          "locationName":"url"
+        },
+        "clientSecret":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The OAuth client secret for retrieving access tokens (optional).</p>",
+          "location":"querystring",
+          "locationName":"clientSecret"
+        },
+        "codeVerifier":{
+          "shape":"GenericString",
+          "documentation":"<p>The PKCE code verifier for enhanced security in the OAuth flow (optional).</p>",
+          "location":"querystring",
+          "locationName":"codeVerifier"
+        },
+        "certificate":{
+          "shape":"GenericString",
+          "documentation":"<p>The CA certificate for secure communication with the OIDC provider (optional).</p>",
+          "location":"querystring",
+          "locationName":"certificate"
+        }
+      }
+    },
+    "GetOidcInfoResponse":{
+      "type":"structure",
+      "members":{
+        "openidConnectInfo":{
+          "shape":"OidcConfigInfo",
+          "documentation":"<p>The OpenID Connect configuration information for the network, including issuer, client ID, scopes, and other SSO settings.</p>"
+        },
+        "tokenInfo":{
+          "shape":"OidcTokenInfo",
+          "documentation":"<p>OAuth token information including access token, refresh token, and expiration details (only present if token parameters were provided in the request).</p>"
+        }
+      }
+    },
+    "GetSecurityGroupRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "groupId"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network containing the security group.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "groupId":{
+          "shape":"GenericString",
+          "documentation":"<p>The unique identifier of the security group to retrieve.</p>",
+          "location":"uri",
+          "locationName":"groupId"
+        }
+      }
+    },
+    "GetSecurityGroupResponse":{
+      "type":"structure",
+      "required":["securityGroup"],
+      "members":{
+        "securityGroup":{
+          "shape":"SecurityGroup",
+          "documentation":"<p>The detailed information about the security group, including all its settings and member counts.</p>"
+        }
+      }
+    },
+    "GetUserRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "userId"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network containing the user.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "userId":{
+          "shape":"UserId",
+          "documentation":"<p>The unique identifier of the user to retrieve.</p>",
+          "location":"uri",
+          "locationName":"userId"
+        },
+        "startTime":{
+          "shape":"SyntheticTimestamp_epoch_seconds",
+          "documentation":"<p>The start time for filtering the user's last activity. Only activity after this timestamp will be considered. Time is specified in epoch seconds.</p>",
+          "location":"querystring",
+          "locationName":"startTime"
+        },
+        "endTime":{
+          "shape":"SyntheticTimestamp_epoch_seconds",
+          "documentation":"<p>The end time for filtering the user's last activity. Only activity before this timestamp will be considered. Time is specified in epoch seconds.</p>",
+          "location":"querystring",
+          "locationName":"endTime"
+        }
+      }
+    },
+    "GetUserResponse":{
+      "type":"structure",
+      "required":["userId"],
+      "members":{
+        "userId":{
+          "shape":"UserId",
+          "documentation":"<p>The unique identifier of the user.</p>"
+        },
+        "firstName":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The first name of the user.</p>"
+        },
+        "lastName":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The last name of the user.</p>"
+        },
+        "username":{
+          "shape":"GenericString",
+          "documentation":"<p>The email address or username of the user.</p>"
+        },
+        "isAdmin":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the user has administrator privileges in the network.</p>"
+        },
+        "suspended":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the user is currently suspended.</p>"
+        },
+        "status":{
+          "shape":"Integer",
+          "documentation":"<p>The current status of the user (1 for pending, 2 for active).</p>"
+        },
+        "lastActivity":{
+          "shape":"Integer",
+          "documentation":"<p>The timestamp of the user's last activity in the network, specified in epoch seconds.</p>"
+        },
+        "lastLogin":{
+          "shape":"Integer",
+          "documentation":"<p>The timestamp of the user's last login to the network, specified in epoch seconds.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"SecurityGroupIdList",
+          "documentation":"<p>A list of security group IDs to which the user belongs.</p>"
+        }
+      }
+    },
+    "GetUsersCountRequest":{
+      "type":"structure",
+      "required":["networkId"],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network for which to retrieve user counts.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        }
+      }
+    },
+    "GetUsersCountResponse":{
+      "type":"structure",
+      "required":[
+        "pending",
+        "active",
+        "rejected",
+        "remaining",
+        "total"
+      ],
+      "members":{
+        "pending":{
+          "shape":"Integer",
+          "documentation":"<p>The number of users with pending status (invited but not yet accepted).</p>"
+        },
+        "active":{
+          "shape":"Integer",
+          "documentation":"<p>The number of users with active status in the network.</p>"
+        },
+        "rejected":{
+          "shape":"Integer",
+          "documentation":"<p>The number of users who have rejected network invitations.</p>"
+        },
+        "remaining":{
+          "shape":"Integer",
+          "documentation":"<p>The number of additional users that can be added to the network while maintaining premium free trial eligibility.</p>"
+        },
+        "total":{
+          "shape":"Integer",
+          "documentation":"<p>The total number of users in the network (active and pending combined).</p>"
+        }
+      }
+    },
+    "GuestUser":{
+      "type":"structure",
+      "required":[
+        "billingPeriod",
+        "username",
+        "usernameHash"
+      ],
+      "members":{
+        "billingPeriod":{
+          "shape":"GenericString",
+          "documentation":"<p>The billing period when this guest user accessed the network (e.g., '2024-01').</p>"
+        },
+        "username":{
+          "shape":"GenericString",
+          "documentation":"<p>The username of the guest user.</p>"
+        },
+        "usernameHash":{
+          "shape":"GenericString",
+          "documentation":"<p>The unique username hash identifier for the guest user.</p>"
+        }
+      },
+      "documentation":"<p>Represents a guest user who has accessed the network from a federated Wickr network.</p>"
+    },
+    "GuestUserHistoryCount":{
+      "type":"structure",
+      "required":[
+        "month",
+        "count"
+      ],
+      "members":{
+        "month":{
+          "shape":"GenericString",
+          "documentation":"<p>The month and billing period in YYYY_MM format (e.g., '2024_01').</p>"
+        },
+        "count":{
+          "shape":"GenericString",
+          "documentation":"<p>The number of guest users who have communicated with your Wickr network during this billing period.</p>"
+        }
+      },
+      "documentation":"<p>Contains the count of guest users for a specific billing period, used for tracking historical guest user activity.</p>"
+    },
+    "GuestUserHistoryCountList":{
+      "type":"list",
+      "member":{"shape":"GuestUserHistoryCount"}
+    },
+    "GuestUserList":{
+      "type":"list",
+      "member":{"shape":"GuestUser"}
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerError":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message describing the internal server error that occurred.</p>"
+        }
+      },
+      "documentation":"<p>An unexpected error occurred on the server while processing the request. This indicates a problem with the Wickr service itself rather than with the request. If this error persists, contact Amazon Web Services Support.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "ListBlockedGuestUsersRequest":{
+      "type":"structure",
+      "required":["networkId"],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network from which to list blocked guest users.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of blocked guest users to return in a single page. Valid range is 1-100. Default is 10.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "sortDirection":{
+          "shape":"SortDirection",
+          "documentation":"<p>The direction to sort results. Valid values are 'ASC' (ascending) or 'DESC' (descending). Default is 'DESC'.</p>",
+          "location":"querystring",
+          "locationName":"sortDirection"
+        },
+        "sortFields":{
+          "shape":"GenericString",
+          "documentation":"<p>The field to sort blocked guest users by. Accepted values include 'username', 'admin', and 'modified'.</p>",
+          "location":"querystring",
+          "locationName":"sortFields"
+        },
+        "username":{
+          "shape":"GenericString",
+          "documentation":"<p>Filter results to only include blocked guest users with usernames matching this value.</p>",
+          "location":"querystring",
+          "locationName":"username"
+        },
+        "admin":{
+          "shape":"GenericString",
+          "documentation":"<p>Filter results to only include blocked guest users that were blocked by this administrator.</p>",
+          "location":"querystring",
+          "locationName":"admin"
+        },
+        "nextToken":{
+          "shape":"GenericString",
+          "documentation":"<p>The token for retrieving the next page of results. This is returned from a previous request when there are more results available.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListBlockedGuestUsersResponse":{
+      "type":"structure",
+      "required":["blocklist"],
+      "members":{
+        "nextToken":{
+          "shape":"GenericString",
+          "documentation":"<p>The token to use for retrieving the next page of results. If this is not present, there are no more results.</p>"
+        },
+        "blocklist":{
+          "shape":"BlockedGuestUserList",
+          "documentation":"<p>A list of blocked guest user objects within the current page.</p>"
+        }
+      }
+    },
+    "ListBotsRequest":{
+      "type":"structure",
+      "required":["networkId"],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network from which to list bots.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "nextToken":{
+          "shape":"GenericString",
+          "documentation":"<p>The token for retrieving the next page of results. This is returned from a previous request when there are more results available.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of bots to return in a single page. Valid range is 1-100. Default is 10.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "sortFields":{
+          "shape":"GenericString",
+          "documentation":"<p>The fields to sort bots by. Multiple fields can be specified by separating them with '+'. Accepted values include 'username', 'firstName', 'displayName', 'status', and 'groupId'.</p>",
+          "location":"querystring",
+          "locationName":"sortFields"
+        },
+        "sortDirection":{
+          "shape":"SortDirection",
+          "documentation":"<p>The direction to sort results. Valid values are 'ASC' (ascending) or 'DESC' (descending). Default is 'DESC'.</p>",
+          "location":"querystring",
+          "locationName":"sortDirection"
+        },
+        "displayName":{
+          "shape":"GenericString",
+          "documentation":"<p>Filter results to only include bots with display names matching this value.</p>",
+          "location":"querystring",
+          "locationName":"displayName"
+        },
+        "username":{
+          "shape":"GenericString",
+          "documentation":"<p>Filter results to only include bots with usernames matching this value.</p>",
+          "location":"querystring",
+          "locationName":"username"
+        },
+        "status":{
+          "shape":"BotStatus",
+          "documentation":"<p>Filter results to only include bots with this status (1 for pending, 2 for active).</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "groupId":{
+          "shape":"GenericString",
+          "documentation":"<p>Filter results to only include bots belonging to this security group.</p>",
+          "location":"querystring",
+          "locationName":"groupId"
+        }
+      }
+    },
+    "ListBotsResponse":{
+      "type":"structure",
+      "required":["bots"],
+      "members":{
+        "bots":{
+          "shape":"Bots",
+          "documentation":"<p>A list of bot objects matching the specified filters and within the current page.</p>"
+        },
+        "nextToken":{
+          "shape":"GenericString",
+          "documentation":"<p>The token to use for retrieving the next page of results. If this is not present, there are no more results.</p>"
+        }
+      }
+    },
+    "ListDevicesForUserRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "userId"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network containing the user.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "userId":{
+          "shape":"UserId",
+          "documentation":"<p>The unique identifier of the user whose devices will be listed.</p>",
+          "location":"uri",
+          "locationName":"userId"
+        },
+        "nextToken":{
+          "shape":"GenericString",
+          "documentation":"<p>The token for retrieving the next page of results. This is returned from a previous request when there are more results available.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of devices to return in a single page. Valid range is 1-100. Default is 10.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "sortFields":{
+          "shape":"GenericString",
+          "documentation":"<p>The fields to sort devices by. Multiple fields can be specified by separating them with '+'. Accepted values include 'lastlogin', 'type', 'suspend', and 'created'.</p>",
+          "location":"querystring",
+          "locationName":"sortFields"
+        },
+        "sortDirection":{
+          "shape":"SortDirection",
+          "documentation":"<p>The direction to sort results. Valid values are 'ASC' (ascending) or 'DESC' (descending). Default is 'DESC'.</p>",
+          "location":"querystring",
+          "locationName":"sortDirection"
+        }
+      }
+    },
+    "ListDevicesForUserResponse":{
+      "type":"structure",
+      "required":["devices"],
+      "members":{
+        "nextToken":{
+          "shape":"GenericString",
+          "documentation":"<p>The token to use for retrieving the next page of results. If this is not present, there are no more results.</p>"
+        },
+        "devices":{
+          "shape":"Devices",
+          "documentation":"<p>A list of device objects associated with the user within the current page.</p>"
+        }
+      }
+    },
+    "ListGuestUsersRequest":{
+      "type":"structure",
+      "required":["networkId"],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network from which to list guest users.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of guest users to return in a single page. Valid range is 1-100. Default is 10.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "sortDirection":{
+          "shape":"SortDirection",
+          "documentation":"<p>The direction to sort results. Valid values are 'ASC' (ascending) or 'DESC' (descending). Default is 'DESC'.</p>",
+          "location":"querystring",
+          "locationName":"sortDirection"
+        },
+        "sortFields":{
+          "shape":"GenericString",
+          "documentation":"<p>The field to sort guest users by. Accepted values include 'username' and 'billingPeriod'.</p>",
+          "location":"querystring",
+          "locationName":"sortFields"
+        },
+        "username":{
+          "shape":"GenericString",
+          "documentation":"<p>Filter results to only include guest users with usernames matching this value.</p>",
+          "location":"querystring",
+          "locationName":"username"
+        },
+        "billingPeriod":{
+          "shape":"GenericString",
+          "documentation":"<p>Filter results to only include guest users from this billing period (e.g., '2024-01').</p>",
+          "location":"querystring",
+          "locationName":"billingPeriod"
+        },
+        "nextToken":{
+          "shape":"GenericString",
+          "documentation":"<p>The token for retrieving the next page of results. This is returned from a previous request when there are more results available.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListGuestUsersResponse":{
+      "type":"structure",
+      "required":["guestlist"],
+      "members":{
+        "nextToken":{
+          "shape":"GenericString",
+          "documentation":"<p>The token to use for retrieving the next page of results. If this is not present, there are no more results.</p>"
+        },
+        "guestlist":{
+          "shape":"GuestUserList",
+          "documentation":"<p>A list of guest user objects within the current page.</p>"
+        }
+      }
+    },
+    "ListNetworksRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of networks to return in a single page. Valid range is 1-100. Default is 10.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "sortFields":{
+          "shape":"GenericString",
+          "documentation":"<p>The field to sort networks by. Accepted values are 'networkId' and 'networkName'. Default is 'networkId'.</p>",
+          "location":"querystring",
+          "locationName":"sortFields"
+        },
+        "sortDirection":{
+          "shape":"SortDirection",
+          "documentation":"<p>The direction to sort results. Valid values are 'ASC' (ascending) or 'DESC' (descending). Default is 'DESC'.</p>",
+          "location":"querystring",
+          "locationName":"sortDirection"
+        },
+        "nextToken":{
+          "shape":"GenericString",
+          "documentation":"<p>The token for retrieving the next page of results. This is returned from a previous request when there are more results available.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListNetworksResponse":{
+      "type":"structure",
+      "required":["networks"],
+      "members":{
+        "networks":{
+          "shape":"NetworkList",
+          "documentation":"<p>A list of network objects for the Amazon Web Services account.</p>"
+        },
+        "nextToken":{
+          "shape":"GenericString",
+          "documentation":"<p>The token to use for retrieving the next page of results. If this is not present, there are no more results.</p>"
+        }
+      }
+    },
+    "ListSecurityGroupUsersRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "groupId"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network containing the security group.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "groupId":{
+          "shape":"GenericString",
+          "documentation":"<p>The unique identifier of the security group whose users will be listed.</p>",
+          "location":"uri",
+          "locationName":"groupId"
+        },
+        "nextToken":{
+          "shape":"GenericString",
+          "documentation":"<p>The token for retrieving the next page of results. This is returned from a previous request when there are more results available.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of users to return in a single page. Valid range is 1-100. Default is 10.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "sortFields":{
+          "shape":"GenericString",
+          "documentation":"<p>The field to sort users by. Multiple fields can be specified by separating them with '+'. Accepted values include 'username', 'firstName', and 'lastName'.</p>",
+          "location":"querystring",
+          "locationName":"sortFields"
+        },
+        "sortDirection":{
+          "shape":"SortDirection",
+          "documentation":"<p>The direction to sort results. Valid values are 'ASC' (ascending) or 'DESC' (descending). Default is 'DESC'.</p>",
+          "location":"querystring",
+          "locationName":"sortDirection"
+        }
+      }
+    },
+    "ListSecurityGroupUsersResponse":{
+      "type":"structure",
+      "required":["users"],
+      "members":{
+        "users":{
+          "shape":"Users",
+          "documentation":"<p>A list of user objects belonging to the security group within the current page.</p>"
+        },
+        "nextToken":{
+          "shape":"GenericString",
+          "documentation":"<p>The token to use for retrieving the next page of results. If this is not present, there are no more results.</p>"
+        }
+      }
+    },
+    "ListSecurityGroupsRequest":{
+      "type":"structure",
+      "required":["networkId"],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network from which to list security groups.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "nextToken":{
+          "shape":"GenericString",
+          "documentation":"<p>The token for retrieving the next page of results. This is returned from a previous request when there are more results available.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of security groups to return in a single page. Valid range is 1-100. Default is 10.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "sortFields":{
+          "shape":"GenericString",
+          "documentation":"<p>The field to sort security groups by. Accepted values include 'id' and 'name'.</p>",
+          "location":"querystring",
+          "locationName":"sortFields"
+        },
+        "sortDirection":{
+          "shape":"SortDirection",
+          "documentation":"<p>The direction to sort results. Valid values are 'ASC' (ascending) or 'DESC' (descending). Default is 'DESC'.</p>",
+          "location":"querystring",
+          "locationName":"sortDirection"
+        }
+      }
+    },
+    "ListSecurityGroupsResponse":{
+      "type":"structure",
+      "members":{
+        "securityGroups":{
+          "shape":"SecurityGroupList",
+          "documentation":"<p>A list of security group objects in the current page.</p>"
+        },
+        "nextToken":{
+          "shape":"GenericString",
+          "documentation":"<p>The token to use for retrieving the next page of results. If this is not present, there are no more results.</p>"
+        }
+      }
+    },
+    "ListUsersRequest":{
+      "type":"structure",
+      "required":["networkId"],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network from which to list users.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "nextToken":{
+          "shape":"GenericString",
+          "documentation":"<p>The token for retrieving the next page of results. This is returned from a previous request when there are more results available.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of users to return in a single page. Valid range is 1-100. Default is 10.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "sortFields":{
+          "shape":"GenericString",
+          "documentation":"<p>The fields to sort users by. Multiple fields can be specified by separating them with '+'. Accepted values include 'username', 'firstName', 'lastName', 'status', and 'groupId'.</p>",
+          "location":"querystring",
+          "locationName":"sortFields"
+        },
+        "sortDirection":{
+          "shape":"SortDirection",
+          "documentation":"<p>The direction to sort results. Valid values are 'ASC' (ascending) or 'DESC' (descending). Default is 'DESC'.</p>",
+          "location":"querystring",
+          "locationName":"sortDirection"
+        },
+        "firstName":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Filter results to only include users with first names matching this value.</p>",
+          "location":"querystring",
+          "locationName":"firstName"
+        },
+        "lastName":{
+          "shape":"SensitiveString",
+          "documentation":"<p>Filter results to only include users with last names matching this value.</p>",
+          "location":"querystring",
+          "locationName":"lastName"
+        },
+        "username":{
+          "shape":"GenericString",
+          "documentation":"<p>Filter results to only include users with usernames matching this value.</p>",
+          "location":"querystring",
+          "locationName":"username"
+        },
+        "status":{
+          "shape":"UserStatus",
+          "documentation":"<p>Filter results to only include users with this status (1 for pending, 2 for active).</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "groupId":{
+          "shape":"GenericString",
+          "documentation":"<p>Filter results to only include users belonging to this security group.</p>",
+          "location":"querystring",
+          "locationName":"groupId"
+        }
+      }
+    },
+    "ListUsersResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"GenericString",
+          "documentation":"<p>The token to use for retrieving the next page of results. If this is not present, there are no more results.</p>"
+        },
+        "users":{
+          "shape":"Users",
+          "documentation":"<p>A list of user objects matching the specified filters and within the current page.</p>"
+        }
+      }
+    },
+    "Long":{
+      "type":"long",
+      "box":true
+    },
+    "Network":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "networkName",
+        "accessLevel",
+        "awsAccountId",
+        "networkArn"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The unique identifier of the network.</p>"
+        },
+        "networkName":{
+          "shape":"GenericString",
+          "documentation":"<p>The name of the network.</p>"
+        },
+        "accessLevel":{
+          "shape":"AccessLevel",
+          "documentation":"<p>The access level of the network (STANDARD or PREMIUM), which determines available features and capabilities.</p>"
+        },
+        "awsAccountId":{
+          "shape":"GenericString",
+          "documentation":"<p>The Amazon Web Services account ID that owns the network.</p>"
+        },
+        "networkArn":{
+          "shape":"GenericString",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the network.</p>"
+        },
+        "standing":{
+          "shape":"Integer",
+          "documentation":"<p>The current standing or status of the network.</p>"
+        },
+        "freeTrialExpiration":{
+          "shape":"GenericString",
+          "documentation":"<p>The expiration date and time for the network's free trial period, if applicable.</p>"
+        },
+        "migrationState":{
+          "shape":"Integer",
+          "documentation":"<p>The SSO redirect URI migration state, managed by the SSO redirect migration wizard. Values: 0 (not started), 1 (in progress), or 2 (completed).</p>"
+        },
+        "encryptionKeyArn":{
+          "shape":"GenericString",
+          "documentation":"<p>The ARN of the Amazon Web Services KMS customer managed key used for encrypting sensitive data in the network.</p>"
+        }
+      },
+      "documentation":"<p>Represents a Wickr network with all its configuration and status information.</p>"
+    },
+    "NetworkId":{
+      "type":"string",
+      "max":8,
+      "min":8,
+      "pattern":"[0-9]{8}"
+    },
+    "NetworkList":{
+      "type":"list",
+      "member":{"shape":"Network"}
+    },
+    "NetworkSettings":{
+      "type":"structure",
+      "members":{
+        "enableClientMetrics":{
+          "shape":"Boolean",
+          "documentation":"<p>Allows Wickr clients to send anonymized performance and usage metrics to the Wickr backend server for service improvement and troubleshooting.</p>"
+        },
+        "readReceiptConfig":{
+          "shape":"ReadReceiptConfig",
+          "documentation":"<p>Configuration for read receipts at the network level, controlling the default behavior for whether senders can see when their messages have been read.</p>"
+        },
+        "dataRetention":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the data retention feature is enabled for the network. When true, messages are captured by the data retention bot for compliance and archiving purposes.</p>"
+        }
+      },
+      "documentation":"<p>Contains network-level configuration settings that apply to all users and security groups within a Wickr network.</p>"
+    },
+    "OidcConfigInfo":{
+      "type":"structure",
+      "required":[
+        "companyId",
+        "scopes",
+        "issuer"
+      ],
+      "members":{
+        "applicationName":{
+          "shape":"GenericString",
+          "documentation":"<p>The name of the OIDC application as registered with the identity provider.</p>"
+        },
+        "clientId":{
+          "shape":"GenericString",
+          "documentation":"<p>The OAuth client ID assigned by the identity provider for authentication requests.</p>"
+        },
+        "companyId":{
+          "shape":"GenericString",
+          "documentation":"<p>Custom identifier your end users will use to sign in with SSO.</p>"
+        },
+        "scopes":{
+          "shape":"GenericString",
+          "documentation":"<p>The OAuth scopes requested from the identity provider, which determine what user information is accessible (e.g., 'openid profile email').</p>"
+        },
+        "issuer":{
+          "shape":"GenericString",
+          "documentation":"<p>The issuer URL of the identity provider, which serves as the base URL for OIDC endpoints and configuration discovery.</p>"
+        },
+        "clientSecret":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The OAuth client secret used to authenticate the application with the identity provider.</p>"
+        },
+        "secret":{
+          "shape":"SensitiveString",
+          "documentation":"<p>An additional secret credential used by the identity provider for authentication.</p>"
+        },
+        "redirectUrl":{
+          "shape":"GenericString",
+          "documentation":"<p>The callback URL where the identity provider redirects users after successful authentication. This URL must be registered with the identity provider.</p>"
+        },
+        "userId":{
+          "shape":"GenericString",
+          "documentation":"<p>The claim field from the OIDC token to use as the unique user identifier (e.g., 'email', 'sub', or a custom claim).</p>"
+        },
+        "customUsername":{
+          "shape":"GenericString",
+          "documentation":"<p>A custom field mapping to extract the username from the OIDC token when the standard username claim is insufficient.</p>"
+        },
+        "caCertificate":{
+          "shape":"GenericString",
+          "documentation":"<p>The X.509 CA certificate for validating SSL/TLS connections to the identity provider when using self-signed or enterprise certificates.</p>"
+        },
+        "applicationId":{
+          "shape":"OidcConfigInfoApplicationIdInteger",
+          "documentation":"<p>The unique identifier for the registered OIDC application. Valid range is 1-10.</p>"
+        },
+        "ssoTokenBufferMinutes":{
+          "shape":"Integer",
+          "documentation":"<p>The grace period in minutes before the SSO token expires when the system should proactively refresh the token to maintain seamless user access.</p>"
+        },
+        "extraAuthParams":{
+          "shape":"GenericString",
+          "documentation":"<p>Additional authentication parameters to include in the OIDC authorization request as a query string. Useful for provider-specific extensions.</p>"
+        }
+      },
+      "documentation":"<p>Contains the OpenID Connect (OIDC) configuration information for Single Sign-On (SSO) authentication, including identity provider settings and client credentials.</p>"
+    },
+    "OidcConfigInfoApplicationIdInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "OidcTokenInfo":{
+      "type":"structure",
+      "members":{
+        "codeVerifier":{
+          "shape":"GenericString",
+          "documentation":"<p>The PKCE (Proof Key for Code Exchange) code verifier, a cryptographically random string used to enhance security in the OAuth flow.</p>"
+        },
+        "codeChallenge":{
+          "shape":"GenericString",
+          "documentation":"<p>The PKCE code challenge, a transformed version of the code verifier sent during the authorization request for verification.</p>"
+        },
+        "accessToken":{
+          "shape":"GenericString",
+          "documentation":"<p>The OAuth access token that can be used to access protected resources on behalf of the authenticated user.</p>"
+        },
+        "idToken":{
+          "shape":"GenericString",
+          "documentation":"<p>The OpenID Connect ID token containing user identity information and authentication context as a signed JWT.</p>"
+        },
+        "refreshToken":{
+          "shape":"GenericString",
+          "documentation":"<p>The OAuth refresh token that can be used to obtain new access tokens without requiring the user to re-authenticate.</p>"
+        },
+        "tokenType":{
+          "shape":"GenericString",
+          "documentation":"<p>The type of access token issued, typically 'Bearer', which indicates how the token should be used in API requests.</p>"
+        },
+        "expiresIn":{
+          "shape":"Long",
+          "documentation":"<p>The lifetime of the access token in seconds, indicating when the token will expire and need to be refreshed.</p>"
+        }
+      },
+      "documentation":"<p>Contains OAuth token information returned from the identity provider, including access tokens, ID tokens, and PKCE parameters used for secure authentication.</p>"
+    },
+    "PasswordRequirements":{
+      "type":"structure",
+      "members":{
+        "lowercase":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum number of lowercase letters required in passwords.</p>"
+        },
+        "minLength":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum password length in characters.</p>"
+        },
+        "numbers":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum number of numeric characters required in passwords.</p>"
+        },
+        "symbols":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum number of special symbol characters required in passwords.</p>"
+        },
+        "uppercase":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum number of uppercase letters required in passwords.</p>"
+        }
+      },
+      "documentation":"<p>Defines password complexity requirements for users in a security group, including minimum length and character type requirements.</p>"
+    },
+    "PermittedNetworksList":{
+      "type":"list",
+      "member":{"shape":"NetworkId"}
+    },
+    "PermittedWickrEnterpriseNetwork":{
+      "type":"structure",
+      "required":[
+        "domain",
+        "networkId"
+      ],
+      "members":{
+        "domain":{
+          "shape":"GenericString",
+          "documentation":"<p>The domain identifier for the permitted Wickr enterprise network.</p>"
+        },
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The network ID of the permitted Wickr enterprise network.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a Wickr enterprise network that is permitted for global federation, allowing users to communicate with members of the specified network.</p>"
+    },
+    "PermittedWickrEnterpriseNetworksList":{
+      "type":"list",
+      "member":{"shape":"PermittedWickrEnterpriseNetwork"}
+    },
+    "RateLimitError":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message indicating that the rate limit was exceeded and suggesting when to retry.</p>"
+        }
+      },
+      "documentation":"<p>The request was throttled because too many requests were sent in a short period of time. Wait a moment and retry the request. Consider implementing exponential backoff in your application.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ReadReceiptConfig":{
+      "type":"structure",
+      "members":{
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The read receipt status mode for the network.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for read receipts at the network level, controlling whether senders can see when their messages have been read.</p>"
+    },
+    "RegisterOidcConfigRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "companyId",
+        "issuer",
+        "scopes"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network for which OIDC will be configured.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "companyId":{
+          "shape":"GenericString",
+          "documentation":"<p>Custom identifier your end users will use to sign in with SSO.</p>"
+        },
+        "customUsername":{
+          "shape":"GenericString",
+          "documentation":"<p>A custom field mapping to extract the username from the OIDC token (optional). </p> <note> <p>The customUsername is only required if you use something other than email as the username field.</p> </note>"
+        },
+        "extraAuthParams":{
+          "shape":"GenericString",
+          "documentation":"<p>Additional authentication parameters to include in the OIDC flow (optional).</p>"
+        },
+        "issuer":{
+          "shape":"GenericString",
+          "documentation":"<p>The issuer URL of the OIDC provider (e.g., 'https://login.example.com').</p>"
+        },
+        "scopes":{
+          "shape":"GenericString",
+          "documentation":"<p>The OAuth scopes to request from the OIDC provider (e.g., 'openid profile email').</p>"
+        },
+        "secret":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The client secret for authenticating with the OIDC provider (optional).</p>"
+        },
+        "ssoTokenBufferMinutes":{
+          "shape":"Integer",
+          "documentation":"<p>The buffer time in minutes before the SSO token expires to refresh it (optional).</p>"
+        },
+        "userId":{
+          "shape":"GenericString",
+          "documentation":"<p>Unique identifier provided by your identity provider to authenticate the access request. Also referred to as clientID.</p>"
+        }
+      }
+    },
+    "RegisterOidcConfigResponse":{
+      "type":"structure",
+      "required":[
+        "companyId",
+        "scopes",
+        "issuer"
+      ],
+      "members":{
+        "applicationName":{
+          "shape":"GenericString",
+          "documentation":"<p>The name of the registered OIDC application.</p>"
+        },
+        "clientId":{
+          "shape":"GenericString",
+          "documentation":"<p>The OAuth client ID assigned to the application.</p>"
+        },
+        "companyId":{
+          "shape":"GenericString",
+          "documentation":"<p>Custom identifier your end users will use to sign in with SSO.</p>"
+        },
+        "scopes":{
+          "shape":"GenericString",
+          "documentation":"<p>The OAuth scopes configured for the application.</p>"
+        },
+        "issuer":{
+          "shape":"GenericString",
+          "documentation":"<p>The issuer URL of the OIDC provider.</p>"
+        },
+        "clientSecret":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The OAuth client secret for the application.</p>"
+        },
+        "secret":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The client secret for authenticating with the OIDC provider.</p>"
+        },
+        "redirectUrl":{
+          "shape":"GenericString",
+          "documentation":"<p>The redirect URL configured for the OAuth flow.</p>"
+        },
+        "userId":{
+          "shape":"GenericString",
+          "documentation":"<p>The claim field being used as the user identifier.</p>"
+        },
+        "customUsername":{
+          "shape":"GenericString",
+          "documentation":"<p>The custom field mapping used for extracting the username.</p>"
+        },
+        "caCertificate":{
+          "shape":"GenericString",
+          "documentation":"<p>The CA certificate used for secure communication with the OIDC provider.</p>"
+        },
+        "applicationId":{
+          "shape":"RegisterOidcConfigResponseApplicationIdInteger",
+          "documentation":"<p>The unique identifier for the registered OIDC application.</p>"
+        },
+        "ssoTokenBufferMinutes":{
+          "shape":"Integer",
+          "documentation":"<p>The buffer time in minutes before the SSO token expires.</p>"
+        },
+        "extraAuthParams":{
+          "shape":"GenericString",
+          "documentation":"<p>The additional authentication parameters configured for the OIDC flow.</p>"
+        }
+      }
+    },
+    "RegisterOidcConfigResponseApplicationIdInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "RegisterOidcConfigTestRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "issuer",
+        "scopes"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network for which the OIDC configuration will be tested.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "extraAuthParams":{
+          "shape":"GenericString",
+          "documentation":"<p>Additional authentication parameters to include in the test (optional).</p>"
+        },
+        "issuer":{
+          "shape":"GenericString",
+          "documentation":"<p>The issuer URL of the OIDC provider to test.</p>"
+        },
+        "scopes":{
+          "shape":"GenericString",
+          "documentation":"<p>The OAuth scopes to test with the OIDC provider.</p>"
+        },
+        "certificate":{
+          "shape":"GenericString",
+          "documentation":"<p>The CA certificate for secure communication with the OIDC provider (optional).</p>"
+        }
+      }
+    },
+    "RegisterOidcConfigTestResponse":{
+      "type":"structure",
+      "members":{
+        "tokenEndpoint":{
+          "shape":"GenericString",
+          "documentation":"<p>The token endpoint URL discovered from the OIDC provider.</p>"
+        },
+        "userinfoEndpoint":{
+          "shape":"GenericString",
+          "documentation":"<p>The user info endpoint URL discovered from the OIDC provider.</p>"
+        },
+        "responseTypesSupported":{
+          "shape":"StringList",
+          "documentation":"<p>The OAuth response types supported by the OIDC provider.</p>"
+        },
+        "scopesSupported":{
+          "shape":"StringList",
+          "documentation":"<p>The OAuth scopes supported by the OIDC provider.</p>"
+        },
+        "issuer":{
+          "shape":"GenericString",
+          "documentation":"<p>The issuer URL confirmed by the OIDC provider.</p>"
+        },
+        "authorizationEndpoint":{
+          "shape":"GenericString",
+          "documentation":"<p>The authorization endpoint URL discovered from the OIDC provider.</p>"
+        },
+        "endSessionEndpoint":{
+          "shape":"GenericString",
+          "documentation":"<p>The end session endpoint URL for logging out users from the OIDC provider.</p>"
+        },
+        "logoutEndpoint":{
+          "shape":"GenericString",
+          "documentation":"<p>The logout endpoint URL for terminating user sessions.</p>"
+        },
+        "grantTypesSupported":{
+          "shape":"StringList",
+          "documentation":"<p>The OAuth grant types supported by the OIDC provider.</p>"
+        },
+        "revocationEndpoint":{
+          "shape":"GenericString",
+          "documentation":"<p>The token revocation endpoint URL for invalidating tokens.</p>"
+        },
+        "tokenEndpointAuthMethodsSupported":{
+          "shape":"StringList",
+          "documentation":"<p>The authentication methods supported by the token endpoint.</p>"
+        },
+        "microsoftMultiRefreshToken":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the provider supports Microsoft multi-refresh tokens.</p>"
+        }
+      }
+    },
+    "ResourceNotFoundError":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message identifying which resource was not found.</p>"
+        }
+      },
+      "documentation":"<p>The requested resource could not be found. This error occurs when you try to access or modify a network, user, bot, security group, or other resource that doesn't exist or has been deleted.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "SecurityGroup":{
+      "type":"structure",
+      "required":[
+        "activeMembers",
+        "botMembers",
+        "id",
+        "isDefault",
+        "name",
+        "modified",
+        "securityGroupSettings"
+      ],
+      "members":{
+        "activeMembers":{
+          "shape":"Integer",
+          "documentation":"<p>The number of active user members currently in the security group.</p>"
+        },
+        "botMembers":{
+          "shape":"Integer",
+          "documentation":"<p>The number of bot members currently in the security group.</p>"
+        },
+        "activeDirectoryGuid":{
+          "shape":"GenericString",
+          "documentation":"<p>The GUID of the Active Directory group associated with this security group, if synchronized with LDAP.</p>"
+        },
+        "id":{
+          "shape":"GenericString",
+          "documentation":"<p>The unique identifier of the security group.</p>"
+        },
+        "isDefault":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether this is the default security group for the network. Each network has only one default group.</p>"
+        },
+        "name":{
+          "shape":"GenericString",
+          "documentation":"<p>The human-readable name of the security group.</p>"
+        },
+        "modified":{
+          "shape":"Integer",
+          "documentation":"<p>The timestamp when the security group was last modified, specified in epoch seconds.</p>"
+        },
+        "securityGroupSettings":{
+          "shape":"SecurityGroupSettings",
+          "documentation":"<p>The comprehensive configuration settings that define capabilities and restrictions for members of this security group.</p>"
+        }
+      },
+      "documentation":"<p>Represents a security group in a Wickr network, containing membership statistics, configuration, and all permission settings that apply to its members.</p>"
+    },
+    "SecurityGroupId":{
+      "type":"string",
+      "pattern":"[\\S]+"
+    },
+    "SecurityGroupIdList":{
+      "type":"list",
+      "member":{"shape":"SecurityGroupId"}
+    },
+    "SecurityGroupList":{
+      "type":"list",
+      "member":{"shape":"SecurityGroup"}
+    },
+    "SecurityGroupSettings":{
+      "type":"structure",
+      "members":{
+        "alwaysReauthenticate":{
+          "shape":"Boolean",
+          "documentation":"<p>Requires users to reauthenticate every time they return to the application, providing an additional layer of security.</p>"
+        },
+        "atakPackageValues":{
+          "shape":"SecurityGroupStringList",
+          "documentation":"<p>Configuration values for ATAK (Android Team Awareness Kit) package integration, when ATAK is enabled.</p>"
+        },
+        "calling":{
+          "shape":"CallingSettings",
+          "documentation":"<p>The calling feature permissions and settings that control what types of calls users can initiate and participate in.</p>"
+        },
+        "checkForUpdates":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables automatic checking for Wickr client updates to ensure users stay current with the latest version.</p>"
+        },
+        "enableAtak":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables ATAK (Android Team Awareness Kit) integration for tactical communication and situational awareness.</p>"
+        },
+        "enableCrashReports":{
+          "shape":"Boolean",
+          "documentation":"<p>Allow users to report crashes.</p>"
+        },
+        "enableFileDownload":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether users can download files from messages to their devices.</p>"
+        },
+        "enableGuestFederation":{
+          "shape":"Boolean",
+          "documentation":"<p>Allows users to communicate with guest users from other Wickr networks and federated external networks.</p>"
+        },
+        "enableNotificationPreview":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables message preview text in push notifications, allowing users to see message content before opening the app.</p>"
+        },
+        "enableOpenAccessOption":{
+          "shape":"Boolean",
+          "documentation":"<p> Allow users to avoid censorship when they are geo-blocked or have network limitations.</p>"
+        },
+        "enableRestrictedGlobalFederation":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables restricted global federation, limiting external communication to only specified permitted networks.</p>"
+        },
+        "filesEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables file sharing capabilities, allowing users to send and receive files in conversations.</p>"
+        },
+        "forceDeviceLockout":{
+          "shape":"Integer",
+          "documentation":"<p> Defines the number of failed login attempts before data stored on the device is reset. Should be less than lockoutThreshold.</p>"
+        },
+        "forceOpenAccess":{
+          "shape":"Boolean",
+          "documentation":"<p>Automatically enable and enforce Wickr open access on all devices. Valid only if enableOpenAccessOption settings is enabled.</p>"
+        },
+        "forceReadReceipts":{
+          "shape":"Boolean",
+          "documentation":"<p>Allow user approved bots to read messages in rooms without using a slash command.</p>"
+        },
+        "globalFederation":{
+          "shape":"Boolean",
+          "documentation":"<p>Allows users to communicate with users on other Wickr instances (Wickr Enterprise) outside the current network.</p>"
+        },
+        "isAtoEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enforces a two-factor authentication when a user adds a new device to their account.</p>"
+        },
+        "isLinkPreviewEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables automatic preview of links shared in messages, showing webpage thumbnails and descriptions.</p>"
+        },
+        "locationAllowMaps":{
+          "shape":"Boolean",
+          "documentation":"<p>Allows map integration in location sharing, enabling users to view shared locations on interactive maps. Only allowed when location setting is enabled.</p>"
+        },
+        "locationEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables location sharing features, allowing users to share their current location with others.</p>"
+        },
+        "maxAutoDownloadSize":{
+          "shape":"Long",
+          "documentation":"<p>The maximum file size in bytes that will be automatically downloaded without user confirmation. Only allowed if fileDownload is enabled. Valid Values [512000 (low_quality), 7340032 (high_quality) ]</p>"
+        },
+        "maxBor":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum burn-on-read (BOR) time in seconds, which determines how long messages remain visible before auto-deletion after being read.</p>"
+        },
+        "maxTtl":{
+          "shape":"Long",
+          "documentation":"<p>The maximum time-to-live (TTL) in seconds for messages, after which they will be automatically deleted from all devices.</p>"
+        },
+        "messageForwardingEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables message forwarding, allowing users to forward messages from one conversation to another.</p>"
+        },
+        "passwordRequirements":{
+          "shape":"PasswordRequirements",
+          "documentation":"<p>The password complexity requirements that users must follow when creating or changing passwords.</p>"
+        },
+        "presenceEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables presence indicators that show whether users are online, away, or offline.</p>"
+        },
+        "quickResponses":{
+          "shape":"SecurityGroupStringList",
+          "documentation":"<p>A list of pre-defined quick response message templates that users can send with a single tap.</p>"
+        },
+        "showMasterRecoveryKey":{
+          "shape":"Boolean",
+          "documentation":"<p>Users will get a master recovery key that can be used to securely sign in to their Wickr account without having access to their primary device for authentication. Available in SSO enabled network.</p>"
+        },
+        "shredder":{
+          "shape":"ShredderSettings",
+          "documentation":"<p>The message shredder configuration that controls secure deletion of messages and files from devices.</p>"
+        },
+        "ssoMaxIdleMinutes":{
+          "shape":"Integer",
+          "documentation":"<p>The duration for which users SSO session remains inactive before automatically logging them out for security. Available in SSO enabled network.</p>"
+        },
+        "federationMode":{
+          "shape":"Integer",
+          "documentation":"<p>The local federation mode controlling how users can communicate with other networks. Values: 0 (none), 1 (federated), 2 (restricted).</p>"
+        },
+        "lockoutThreshold":{
+          "shape":"Integer",
+          "documentation":"<p>The number of failed password attempts before a user account is locked out.</p>"
+        },
+        "permittedNetworks":{
+          "shape":"PermittedNetworksList",
+          "documentation":"<p>A list of network IDs that are permitted for local federation when federation mode is set to restricted.</p>"
+        },
+        "permittedWickrAwsNetworks":{
+          "shape":"WickrAwsNetworksList",
+          "documentation":"<p>A list of permitted Wickr networks for global federation, restricting communication to specific approved networks.</p>"
+        },
+        "permittedWickrEnterpriseNetworks":{
+          "shape":"PermittedWickrEnterpriseNetworksList",
+          "documentation":"<p>A list of permitted Wickr Enterprise networks for global federation, restricting communication to specific approved networks.</p>"
+        }
+      },
+      "documentation":"<p>Comprehensive configuration settings that define all user capabilities, restrictions, and features for members of a security group. These settings control everything from calling permissions to federation settings to security policies.</p>"
+    },
+    "SecurityGroupSettingsRequest":{
+      "type":"structure",
+      "members":{
+        "lockoutThreshold":{
+          "shape":"Integer",
+          "documentation":"<p>The number of failed password attempts before a user account is locked out.</p>"
+        },
+        "permittedNetworks":{
+          "shape":"PermittedNetworksList",
+          "documentation":"<p>A list of network IDs that are permitted for local federation when federation mode is set to restricted.</p>"
+        },
+        "enableGuestFederation":{
+          "shape":"Boolean",
+          "documentation":"<p>Guest users let you work with people outside your organization that only have limited access to Wickr. Only valid when federationMode is set to Global.</p>"
+        },
+        "globalFederation":{
+          "shape":"Boolean",
+          "documentation":"<p>Allow users to securely federate with all Amazon Web Services Wickr networks and Amazon Web Services Enterprise networks.</p>"
+        },
+        "federationMode":{
+          "shape":"Integer",
+          "documentation":"<p>The local federation mode. Values: 0 (none), 1 (federated - all networks), 2 (restricted - only permitted networks).</p>"
+        },
+        "enableRestrictedGlobalFederation":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables restricted global federation to limit communication to specific permitted networks only. Requires globalFederation to be enabled.</p>"
+        },
+        "permittedWickrAwsNetworks":{
+          "shape":"WickrAwsNetworksList",
+          "documentation":"<p>A list of permitted Amazon Web Services Wickr networks for restricted global federation.</p>"
+        },
+        "permittedWickrEnterpriseNetworks":{
+          "shape":"PermittedWickrEnterpriseNetworksList",
+          "documentation":"<p>A list of permitted Wickr Enterprise networks for restricted global federation.</p>"
+        }
+      },
+      "documentation":"<p>Contains the security group configuration settings that can be specified when creating or updating a security group. This is a subset of SecurityGroupSettings containing only the modifiable federation and security settings.</p>"
+    },
+    "SecurityGroupStringList":{
+      "type":"list",
+      "member":{"shape":"GenericString"}
+    },
+    "SensitiveString":{
+      "type":"string",
+      "pattern":"[\\S\\s]*",
+      "sensitive":true
+    },
+    "Setting":{
+      "type":"structure",
+      "required":[
+        "optionName",
+        "value",
+        "type"
+      ],
+      "members":{
+        "optionName":{
+          "shape":"GenericString",
+          "documentation":"<p>The name of the network setting (e.g., 'enableClientMetrics', 'dataRetention').</p>"
+        },
+        "value":{
+          "shape":"GenericString",
+          "documentation":"<p>The current value of the setting as a string. Boolean values are represented as 'true' or 'false'.</p>"
+        },
+        "type":{
+          "shape":"GenericString",
+          "documentation":"<p>The data type of the setting value (e.g., 'boolean', 'string', 'number').</p>"
+        }
+      },
+      "documentation":"<p>Represents a single network-level configuration setting with its name, value, and data type. Settings control network-wide behaviors and features.</p>"
+    },
+    "SettingsList":{
+      "type":"list",
+      "member":{"shape":"Setting"}
+    },
+    "ShredderSettings":{
+      "type":"structure",
+      "members":{
+        "canProcessManually":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether users can manually trigger the shredder to delete content.</p>"
+        },
+        "intensity":{
+          "shape":"Integer",
+          "documentation":"<p>Prevents Wickr data from being recovered by overwriting deleted Wickr data. Valid Values: Must be one of [0, 20, 60, 100]</p>"
+        }
+      },
+      "documentation":"<p>Configuration for the message shredder feature, which securely deletes messages and files from devices to prevent data recovery.</p>"
+    },
+    "SortDirection":{
+      "type":"string",
+      "enum":[
+        "ASC",
+        "DESC"
+      ]
+    },
+    "Status":{
+      "type":"string",
+      "enum":[
+        "DISABLED",
+        "ENABLED",
+        "FORCE_ENABLED"
+      ]
+    },
+    "StringList":{
+      "type":"list",
+      "member":{"shape":"GenericString"}
+    },
+    "SyntheticTimestamp_epoch_seconds":{
+      "type":"timestamp",
+      "timestampFormat":"unixTimestamp"
+    },
+    "Uname":{"type":"string"},
+    "Unames":{
+      "type":"list",
+      "member":{"shape":"GenericString"}
+    },
+    "UnauthorizedError":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message explaining why the authentication failed.</p>"
+        }
+      },
+      "documentation":"<p>The request was not authenticated or the authentication credentials were invalid. This error occurs when the request lacks valid authentication credentials or the credentials have expired.</p>",
+      "error":{
+        "httpStatusCode":401,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "UpdateBotRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "botId"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network containing the bot to update.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "botId":{
+          "shape":"BotId",
+          "documentation":"<p>The unique identifier of the bot to update.</p>",
+          "location":"uri",
+          "locationName":"botId"
+        },
+        "displayName":{
+          "shape":"GenericString",
+          "documentation":"<p>The new display name for the bot.</p>"
+        },
+        "groupId":{
+          "shape":"GenericString",
+          "documentation":"<p>The ID of the new security group to assign the bot to.</p>"
+        },
+        "challenge":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The new password for the bot account.</p>"
+        },
+        "suspend":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true to suspend the bot or false to unsuspend it. Omit this field for standard updates that don't affect suspension status.</p>"
+        }
+      }
+    },
+    "UpdateBotResponse":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message indicating the result of the bot update operation.</p>"
+        }
+      }
+    },
+    "UpdateDataRetentionRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "actionType"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network containing the data retention bot.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "actionType":{
+          "shape":"DataRetentionActionType",
+          "documentation":"<p>The action to perform. Valid values are 'ENABLE' (to enable the data retention service), 'DISABLE' (to disable the service), or 'PUBKEY_MSG_ACK' (to acknowledge the public key message).</p>"
+        }
+      }
+    },
+    "UpdateDataRetentionResponse":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message indicating the result of the update operation.</p>"
+        }
+      }
+    },
+    "UpdateGuestUserRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "usernameHash",
+        "block"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network where the guest user's status will be updated.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "usernameHash":{
+          "shape":"GenericString",
+          "documentation":"<p>The username hash (unique identifier) of the guest user to update.</p>",
+          "location":"uri",
+          "locationName":"usernameHash"
+        },
+        "block":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to true to block the guest user or false to unblock them.</p>"
+        }
+      }
+    },
+    "UpdateGuestUserResponse":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message indicating the result of the update operation.</p>"
+        }
+      }
+    },
+    "UpdateNetworkRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "networkName"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network to update.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "networkName":{
+          "shape":"GenericString",
+          "documentation":"<p>The new name for the network. Must be between 1 and 20 characters.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique identifier for this request to ensure idempotency.</p>",
+          "idempotencyToken":true,
+          "location":"header",
+          "locationName":"X-Client-Token"
+        },
+        "encryptionKeyArn":{
+          "shape":"GenericString",
+          "documentation":"<p>The ARN of the Amazon Web Services KMS customer managed key to use for encrypting sensitive data in the network.</p>"
+        }
+      }
+    },
+    "UpdateNetworkResponse":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"GenericString",
+          "documentation":"<p>A message indicating that the network was updated successfully.</p>"
+        }
+      }
+    },
+    "UpdateNetworkSettingsRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "settings"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network whose settings will be updated.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "settings":{
+          "shape":"NetworkSettings",
+          "documentation":"<p>A map of setting names to their new values. Each setting should be provided with its appropriate type (boolean, string, number, etc.).</p>"
+        }
+      }
+    },
+    "UpdateNetworkSettingsResponse":{
+      "type":"structure",
+      "required":["settings"],
+      "members":{
+        "settings":{
+          "shape":"SettingsList",
+          "documentation":"<p>A list of the updated network settings, showing the new values for each modified setting.</p>"
+        }
+      }
+    },
+    "UpdateSecurityGroupRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "groupId"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network containing the security group to update.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "groupId":{
+          "shape":"GenericString",
+          "documentation":"<p>The unique identifier of the security group to update.</p>",
+          "location":"uri",
+          "locationName":"groupId"
+        },
+        "name":{
+          "shape":"GenericString",
+          "documentation":"<p>The new name for the security group.</p>"
+        },
+        "securityGroupSettings":{
+          "shape":"SecurityGroupSettings",
+          "documentation":"<p>The updated configuration settings for the security group.</p> <p>Federation mode - 0 (Local federation), 1 (Restricted federation), 2 (Global federation) </p>"
+        }
+      }
+    },
+    "UpdateSecurityGroupResponse":{
+      "type":"structure",
+      "required":["securityGroup"],
+      "members":{
+        "securityGroup":{
+          "shape":"SecurityGroup",
+          "documentation":"<p>The updated security group details, including the new settings.</p>"
+        }
+      }
+    },
+    "UpdateUserDetails":{
+      "type":"structure",
+      "members":{
+        "firstName":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The new first name for the user.</p>"
+        },
+        "lastName":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The new last name for the user.</p>"
+        },
+        "username":{
+          "shape":"GenericString",
+          "documentation":"<p>The new username or email address for the user.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"SecurityGroupIdList",
+          "documentation":"<p>The updated list of security group IDs to which the user should belong.</p>"
+        },
+        "inviteCode":{
+          "shape":"GenericString",
+          "documentation":"<p>A new custom invite code for the user.</p>"
+        },
+        "inviteCodeTtl":{
+          "shape":"Integer",
+          "documentation":"<p>The new time-to-live for the invite code in days.</p>"
+        },
+        "codeValidation":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the user can be verified through a custom invite code.</p>"
+        }
+      },
+      "documentation":"<p>Contains the modifiable details for updating an existing user, including name, password, security group membership, and invitation settings.</p> <note> <p>A user can only be assigned to a single security group. Attempting to add a user to multiple security groups is not supported and will result in an error.</p> </note>"
+    },
+    "UpdateUserRequest":{
+      "type":"structure",
+      "required":[
+        "networkId",
+        "userId"
+      ],
+      "members":{
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the Wickr network containing the user to update.</p>",
+          "location":"uri",
+          "locationName":"networkId"
+        },
+        "userId":{
+          "shape":"UserId",
+          "documentation":"<p>The unique identifier of the user to update.</p>"
+        },
+        "userDetails":{
+          "shape":"UpdateUserDetails",
+          "documentation":"<p>An object containing the user details to be updated, such as name, password, security groups, and invite code settings.</p>"
+        }
+      }
+    },
+    "UpdateUserResponse":{
+      "type":"structure",
+      "required":[
+        "userId",
+        "networkId",
+        "suspended"
+      ],
+      "members":{
+        "userId":{
+          "shape":"UserId",
+          "documentation":"<p>The unique identifier of the updated user.</p>"
+        },
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The ID of the network where the user was updated.</p>"
+        },
+        "securityGroupIds":{
+          "shape":"SecurityGroupIdList",
+          "documentation":"<p>The list of security group IDs to which the user now belongs after the update.</p>"
+        },
+        "firstName":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The updated first name of the user.</p>"
+        },
+        "lastName":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The updated last name of the user.</p>"
+        },
+        "middleName":{
+          "shape":"GenericString",
+          "documentation":"<p>The middle name of the user (currently not used).</p>"
+        },
+        "suspended":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the user is suspended after the update.</p>"
+        },
+        "modified":{
+          "shape":"Integer",
+          "documentation":"<p>The timestamp when the user was last modified, specified in epoch seconds.</p>"
+        },
+        "status":{
+          "shape":"Integer",
+          "documentation":"<p>The user's status after the update.</p>"
+        },
+        "inviteCode":{
+          "shape":"GenericString",
+          "documentation":"<p>The updated invite code for the user, if applicable.</p>"
+        },
+        "inviteExpiration":{
+          "shape":"Integer",
+          "documentation":"<p>The expiration time of the user's invite code, specified in epoch seconds.</p>"
+        },
+        "codeValidation":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the user can be verified through a custom invite code.</p>"
+        }
+      }
+    },
+    "User":{
+      "type":"structure",
+      "members":{
+        "userId":{
+          "shape":"UserId",
+          "documentation":"<p>The unique identifier for the user within the network.</p>"
+        },
+        "firstName":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The first name of the user.</p>"
+        },
+        "lastName":{
+          "shape":"SensitiveString",
+          "documentation":"<p>The last name of the user.</p>"
+        },
+        "username":{
+          "shape":"GenericString",
+          "documentation":"<p>The email address or username of the user. For bots, this must end in 'bot'.</p>"
+        },
+        "securityGroups":{
+          "shape":"SecurityGroupIdList",
+          "documentation":"<p>A list of security group IDs to which the user is assigned, determining their permissions and feature access.</p>"
+        },
+        "isAdmin":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the user has administrator privileges in the network.</p>"
+        },
+        "suspended":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the user is currently suspended and unable to access the network.</p>"
+        },
+        "status":{
+          "shape":"Integer",
+          "documentation":"<p>The current status of the user (1 for pending invitation, 2 for active).</p>"
+        },
+        "otpEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether one-time password (OTP) authentication is enabled for the user.</p>"
+        },
+        "scimId":{
+          "shape":"GenericString",
+          "documentation":"<p>The SCIM (System for Cross-domain Identity Management) identifier for the user, used for identity synchronization. Currently not used.</p>"
+        },
+        "type":{
+          "shape":"GenericString",
+          "documentation":"<p>The descriptive type of the user account (e.g., 'user').</p>"
+        },
+        "cell":{
+          "shape":"GenericString",
+          "documentation":"<p>The phone number minus country code, used for cloud deployments.</p>"
+        },
+        "countryCode":{
+          "shape":"GenericString",
+          "documentation":"<p>The country code for the user's phone number, used for cloud deployments.</p>"
+        },
+        "challengeFailures":{
+          "shape":"Integer",
+          "documentation":"<p>The number of failed password attempts for enterprise deployments, used for account lockout policies.</p>"
+        },
+        "isInviteExpired":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the user's email invitation code has expired, applicable to cloud deployments.</p>"
+        },
+        "isUser":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether this account is a user (as opposed to a bot or other account type).</p>"
+        },
+        "inviteCode":{
+          "shape":"GenericString",
+          "documentation":"<p>The invitation code for this user, used during registration to join the network.</p>"
+        },
+        "codeValidation":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the user can be verified through a custom invite code.</p>"
+        },
+        "uname":{
+          "shape":"GenericString",
+          "documentation":"<p>The unique identifier for the user.</p>"
+        }
+      },
+      "documentation":"<p>Represents a user account in a Wickr network with detailed profile information, status, security settings, and authentication details.</p> <note> <p>codeValidation, inviteCode and inviteCodeTtl are restricted to networks under preview only.</p> </note>"
+    },
+    "UserId":{
+      "type":"string",
+      "max":10,
+      "min":1,
+      "pattern":"[0-9]+"
+    },
+    "UserIds":{
+      "type":"list",
+      "member":{"shape":"UserId"}
+    },
+    "UserStatus":{
+      "type":"integer",
+      "box":true
+    },
+    "Users":{
+      "type":"list",
+      "member":{"shape":"User"}
+    },
+    "ValidationError":{
+      "type":"structure",
+      "members":{
+        "reasons":{
+          "shape":"ErrorDetailList",
+          "documentation":"<p>A list of validation error details, where each item identifies a specific field that failed validation and explains the reason for the failure.</p>"
+        }
+      },
+      "documentation":"<p>One or more fields in the request failed validation. This error provides detailed information about which fields were invalid and why, allowing you to correct the request and retry.</p>",
+      "error":{
+        "httpStatusCode":422,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "WickrAwsNetworks":{
+      "type":"structure",
+      "required":[
+        "region",
+        "networkId"
+      ],
+      "members":{
+        "region":{
+          "shape":"GenericString",
+          "documentation":"<p>The Amazon Web Services region identifier where the network is hosted (e.g., 'us-east-1').</p>"
+        },
+        "networkId":{
+          "shape":"NetworkId",
+          "documentation":"<p>The network ID of the Wickr Amazon Web Services network.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a Amazon Web Services Wickr network by region and network ID, used for configuring permitted networks for global federation.</p>"
+    },
+    "WickrAwsNetworksList":{
+      "type":"list",
+      "member":{"shape":"WickrAwsNetworks"}
+    }
+  },
+  "documentation":"<p>Welcome to the <i>Amazon Web Services Wickr API Reference</i>.</p> <p>The Amazon Web Services Wickr application programming interface (API) is designed for administrators to perform key tasks, such as creating and managing Amazon Web Services Wickr, networks, users, security groups, bots and more. This guide provides detailed information about the Amazon Web Services Wickr API, including operations, types, inputs and outputs, and error codes. You can use an Amazon Web Services SDK, the Amazon Web Services Command Line Interface (Amazon Web Services CLI, or the REST API to make API calls for Amazon Web Services Wickr. </p> <p> <i>Using Amazon Web Services SDK</i> </p> <p>The SDK clients authenticate your requests by using access keys that you provide. For more information, see <a href=\"https://docs.aws.amazon.com/sdkref/latest/guide/access.html\">Authentication and access using Amazon Web Services SDKs and tools</a> in the <i>Amazon Web Services SDKs and Tools Reference Guide</i>. </p> <p> <i>Using Amazon Web Services CLI</i> </p> <p>Use your access keys with the Amazon Web Services CLI to make API calls. For more information about setting up the Amazon Web Services CLI, see <a href=\"https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html\">Getting started with the Amazon Web Services CLI</a> in the <i>Amazon Web Services Command Line Interface User Guide for Version 2</i>. </p> <p> <i>Using REST APIs</i> </p> <p>If you use REST to make API calls, you must authenticate your request by providing a signature. Amazon Web Services Wickr supports Signature Version 4. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html\">Amazon Web Services Signature Version 4 for API requests</a> in the <i>Amazon Web Services Identity and Access Management User Guide</i>. </p> <p>Access and permissions to the APIs can be controlled by Amazon Web Services Identity and Access Management. The managed policy <a href=\"https://docs.aws.amazon.com/wickr/latest/adminguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AWSWickrFullAccess\">Amazon Web ServicesWickrFullAccess</a> grants full administrative permission to the Amazon Web Services Wickr service APIs. For more information on restricting access to specific operations, see <a href=\"https://docs.aws.amazon.com/wickr/latest/adminguide/security-iam.html\">Identity and access management for Amazon Web Services Wickr </a> in the <i>Amazon Web Services Wickr Administration Guide</i>. </p> <p> <i>Types of Errors</i>:</p> <p>The Amazon Web Services Wickr APIs provide an HTTP interface. HTTP defines ranges of HTTP Status Codes for different types of error responses.</p> <ol> <li> <p>Client errors are indicated by HTTP Status Code class of 4xx</p> </li> <li> <p>Service errors are indicated by HTTP Status Code class of 5xx</p> </li> </ol> <p>In this reference guide, the documentation for each API has an Errors section that includes a brief discussion about HTTP status codes. We recommend looking there as part of your investigation when you get an error.</p>"
+}

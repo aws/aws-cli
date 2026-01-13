@@ -49,9 +49,7 @@ MAX_INLINE_ITEMS = 5
 
 
 class EnhancedErrorFormatter:
-    def format_error(self, error_info, formatted_message, stream):
-        stream.write(f'{formatted_message}\n')
-
+    def format_error(self, error_info, stream):
         additional_fields = self._get_additional_fields(error_info)
 
         if not additional_fields:
@@ -66,7 +64,8 @@ class EnhancedErrorFormatter:
             else:
                 stream.write(
                     f'{key}: <complex value> '
-                    f'(Use --cli-error-format with json or yaml to see full details)\n'
+                    f'(Use --cli-error-format with json or yaml '
+                    f'to see full details)\n'
                 )
 
     def _is_simple_value(self, value):
@@ -107,16 +106,18 @@ def construct_entry_point_handlers_chain():
 
 
 def construct_cli_error_handlers_chain(session=None):
+    # UnknownArgumentErrorHandler and InterruptExceptionHandler are
+    # intentionally excluded from structured formatting
     handlers = [
-        ParamValidationErrorsHandler(),
+        ParamValidationErrorsHandler(session),
         UnknownArgumentErrorHandler(),
-        ConfigurationErrorHandler(),
-        NoRegionErrorHandler(),
-        NoCredentialsErrorHandler(),
-        PagerErrorHandler(),
+        ConfigurationErrorHandler(session),
+        NoRegionErrorHandler(session),
+        NoCredentialsErrorHandler(session),
+        PagerErrorHandler(session),
         InterruptExceptionHandler(),
         ClientErrorHandler(session),
-        GeneralExceptionHandler(),
+        GeneralExceptionHandler(session),
     ]
     return ChainedExceptionHandler(exception_handlers=handlers)
 
@@ -128,7 +129,9 @@ class BaseExceptionHandler:
 
 class FilteredExceptionHandler(BaseExceptionHandler):
     EXCEPTIONS_TO_HANDLE = ()
-    MESSAGE = '%s'
+
+    def __init__(self, session=None):
+        self._session = session
 
     def handle_exception(self, exception, stdout, stderr, **kwargs):
         if isinstance(exception, self.EXCEPTIONS_TO_HANDLE):
@@ -139,49 +142,34 @@ class FilteredExceptionHandler(BaseExceptionHandler):
                 return return_val
 
     def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
-        message = self.MESSAGE % exception
-        write_error(stderr, message)
-        return self.RC
-
-
-class ParamValidationErrorsHandler(FilteredExceptionHandler):
-    EXCEPTIONS_TO_HANDLE = (
-        ParamError,
-        ParamSyntaxError,
-        ArgParseException,
-        ParamValidationError,
-        BotocoreParamValidationError,
-    )
-    RC = PARAM_VALIDATION_ERROR_RC
-
-
-class SilenceParamValidationMsgErrorHandler(ParamValidationErrorsHandler):
-    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
-        return self.RC
-
-
-class ClientErrorHandler(FilteredExceptionHandler):
-    EXCEPTIONS_TO_HANDLE = ClientError
-    RC = CLIENT_ERROR_RC
-
-    def __init__(self, session=None):
-        self._session = session
-        self._enhanced_formatter = None
-
-    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
         parsed_globals = kwargs.get('parsed_globals')
-        displayed_structured = False
-        if self._session:
-            displayed_structured = self._try_display_structured_error(
-                exception, stderr, parsed_globals
-            )
+        error_info = self._extract_error_info(exception)
 
-        if not displayed_structured:
-            return super()._do_handle_exception(
-                exception, stdout, stderr, **kwargs
+        if error_info and self._session:
+            formatted_message = self._get_formatted_message(
+                error_info, exception
             )
+            displayed_structured = self._display_structured_error(
+                error_info, formatted_message, stderr, parsed_globals
+            )
+            if displayed_structured:
+                return
 
-        return self.RC
+        message = (error_info or {}).get('Message', str(exception))
+        write_error(stderr, message)
+
+    def _extract_error_info(self, exception):
+        """Extract error information for structured formatting.
+
+        Returns None by default. Subclasses should override to provide
+        error information as a dict with 'Code' and 'Message' keys.
+        """
+        return None
+
+    def _get_formatted_message(self, error_info, exception):
+        code = error_info.get('Code', 'Unknown')
+        message = error_info.get('Message', str(exception))
+        return f"An error occurred ({code}): {message}"
 
     def _resolve_error_format(self, parsed_globals):
         if parsed_globals:
@@ -201,16 +189,14 @@ class ClientErrorHandler(FilteredExceptionHandler):
 
         return 'enhanced'
 
-    def _try_display_structured_error(
-        self, exception, stderr, parsed_globals=None
+    def _display_structured_error(
+        self, error_info, formatted_message, stderr, parsed_globals=None
     ):
         try:
-            error_response = self._extract_error_response(exception)
-            if not error_response or 'Error' not in error_response:
-                return False
-
-            error_info = error_response['Error']
             error_format = self._resolve_error_format(parsed_globals)
+
+            if error_format == 'legacy':
+                return False
 
             if error_format not in VALID_ERROR_FORMATS:
                 LOG.warning(
@@ -219,27 +205,15 @@ class ClientErrorHandler(FilteredExceptionHandler):
                 )
                 error_format = 'enhanced'
 
-            if error_format == 'legacy':
-                return False
-
-            formatted_message = str(exception)
-
             if error_format == 'enhanced':
-                if self._enhanced_formatter is None:
-                    self._enhanced_formatter = EnhancedErrorFormatter()
-                self._enhanced_formatter.format_error(
-                    error_info, formatted_message, stderr
-                )
+                write_error(stderr, formatted_message)
+                EnhancedErrorFormatter().format_error(error_info, stderr)
                 return True
 
-            if parsed_globals:
-                formatter = get_formatter(error_format, parsed_globals)
-            else:
-                formatter_args = argparse.Namespace()
-                formatter_args.query = None
-                formatter_args.color = 'auto'
-                formatter = get_formatter(error_format, formatter_args)
-
+            formatter_args = parsed_globals or argparse.Namespace(
+                query=None, color='auto'
+            )
+            formatter = get_formatter(error_format, formatter_args)
             formatter('error', error_info, stderr)
             return True
 
@@ -248,6 +222,63 @@ class ClientErrorHandler(FilteredExceptionHandler):
                 'Failed to display structured error: %s', e, exc_info=True
             )
             return False
+
+
+class ParamValidationErrorsHandler(FilteredExceptionHandler):
+    EXCEPTIONS_TO_HANDLE = (
+        ParamError,
+        ParamSyntaxError,
+        ArgParseException,
+        ParamValidationError,
+        BotocoreParamValidationError,
+    )
+    RC = PARAM_VALIDATION_ERROR_RC
+
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
+        super()._do_handle_exception(exception, stdout, stderr, **kwargs)
+        return self.RC
+
+    def _extract_error_info(self, exception):
+        return {
+            'Code': 'ParamValidation',
+            'Message': str(exception)
+        }
+
+
+class SilenceParamValidationMsgErrorHandler(ParamValidationErrorsHandler):
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
+        return self.RC
+
+
+class ClientErrorHandler(FilteredExceptionHandler):
+    EXCEPTIONS_TO_HANDLE = ClientError
+    RC = CLIENT_ERROR_RC
+
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
+        parsed_globals = kwargs.get('parsed_globals')
+        error_info = self._extract_error_info(exception)
+
+        if error_info and self._session:
+            formatted_message = self._get_formatted_message(
+                error_info, exception
+            )
+            displayed_structured = self._display_structured_error(
+                error_info, formatted_message, stderr, parsed_globals
+            )
+            if displayed_structured:
+                return self.RC
+
+        write_error(stderr, str(exception))
+        return self.RC
+
+    def _get_formatted_message(self, error_info, exception):
+        return str(exception)
+
+    def _extract_error_info(self, exception):
+        error_response = self._extract_error_response(exception)
+        if error_response and 'Error' in error_response:
+            return error_response['Error']
+        return None
 
     @staticmethod
     def _extract_error_response(exception):
@@ -276,30 +307,71 @@ class ConfigurationErrorHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = ConfigurationError
     RC = CONFIGURATION_ERROR_RC
 
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
+        super()._do_handle_exception(exception, stdout, stderr, **kwargs)
+        return self.RC
+
+    def _extract_error_info(self, exception):
+        return {
+            'Code': 'Configuration',
+            'Message': str(exception)
+        }
+
 
 class NoRegionErrorHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = NoRegionError
     RC = CONFIGURATION_ERROR_RC
-    MESSAGE = (
-        '%s You can also configure your region by running "aws configure".'
-    )
+
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
+        super()._do_handle_exception(exception, stdout, stderr, **kwargs)
+        return self.RC
+
+    def _extract_error_info(self, exception):
+        message = (
+            f'{exception} You can also configure your region by running '
+            f'"aws configure".'
+        )
+        return {
+            'Code': 'NoRegion',
+            'Message': message
+        }
 
 
 class NoCredentialsErrorHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = NoCredentialsError
     RC = CONFIGURATION_ERROR_RC
-    MESSAGE = '%s. You can configure credentials by running "aws login".'
+
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
+        super()._do_handle_exception(exception, stdout, stderr, **kwargs)
+        return self.RC
+
+    def _extract_error_info(self, exception):
+        message = f'{exception}. You can configure credentials by running "aws login".'
+        return {
+            'Code': 'NoCredentials',
+            'Message': message
+        }
 
 
 class PagerErrorHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = PagerInitializationException
     RC = CONFIGURATION_ERROR_RC
-    MESSAGE = (
-        'Unable to redirect output to pager. Received the '
-        'following error when opening pager:\n%s\n\n'
-        'Learn more about configuring the output pager by running '
-        '"aws help config-vars".'
-    )
+
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
+        super()._do_handle_exception(exception, stdout, stderr, **kwargs)
+        return self.RC
+
+    def _extract_error_info(self, exception):
+        message = (
+            f'Unable to redirect output to pager. Received the '
+            f'following error when opening pager:\n{exception}\n\n'
+            f'Learn more about configuring the output pager by running '
+            f'"aws help config-vars".'
+        )
+        return {
+            'Code': 'Pager',
+            'Message': message
+        }
 
 
 class UnknownArgumentErrorHandler(FilteredExceptionHandler):
@@ -334,6 +406,12 @@ class PrompterInterruptExceptionHandler(InterruptExceptionHandler):
 class GeneralExceptionHandler(FilteredExceptionHandler):
     EXCEPTIONS_TO_HANDLE = Exception
     RC = GENERAL_ERROR_RC
+
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
+        # Generic exceptions don't have meaningful structure,
+        # so always use plain text formatting
+        write_error(stderr, str(exception))
+        return self.RC
 
 
 class ChainedExceptionHandler(BaseExceptionHandler):

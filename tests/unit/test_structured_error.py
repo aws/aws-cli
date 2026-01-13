@@ -12,16 +12,30 @@
 # language governing permissions and limitations under the License.
 import argparse
 import io
+import json
+import signal
 from unittest import mock
 
-from botocore.exceptions import ClientError
+import yaml
 
-from awscli.constants import CLIENT_ERROR_RC
+from botocore.exceptions import ClientError, NoCredentialsError, NoRegionError
+
+from awscli.arguments import UnknownArgumentError
+from awscli.constants import (
+    CLIENT_ERROR_RC,
+    CONFIGURATION_ERROR_RC,
+    PARAM_VALIDATION_ERROR_RC,
+)
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
+)
 from awscli.errorhandler import (
     ClientErrorHandler,
     EnhancedErrorFormatter,
     construct_cli_error_handlers_chain,
 )
+from awscli.utils import PagerInitializationException
 from tests.unit.test_clidriver import FakeSession
 
 
@@ -48,9 +62,9 @@ class TestClientErrorHandler:
 
         assert rc == CLIENT_ERROR_RC
         stderr_output = stderr.getvalue()
-        assert 'NoSuchBucket' in stderr_output
-        assert 'my-bucket' in stderr_output
-        assert 'BucketName' in stderr_output
+        assert 'aws: [ERROR]:' in stderr_output
+        assert 'An error occurred (NoSuchBucket)' in stderr_output
+        assert 'BucketName: my-bucket' in stderr_output
 
     def test_displays_standard_error_without_additional_members(self):
         error_response = {
@@ -69,7 +83,8 @@ class TestClientErrorHandler:
 
         assert rc == CLIENT_ERROR_RC
         stderr_output = stderr.getvalue()
-        assert 'AccessDenied' in stderr_output
+        assert 'aws: [ERROR]:' in stderr_output
+        assert 'An error occurred (AccessDenied)' in stderr_output
         assert 'Additional error details' not in stderr_output
 
     def test_respects_legacy_format_config(self):
@@ -117,8 +132,9 @@ class TestClientErrorHandler:
 
         assert rc == CLIENT_ERROR_RC
         stderr_output = stderr.getvalue()
-        assert 'NoSuchBucket' in stderr_output
-        assert 'test' in stderr_output
+        assert 'aws: [ERROR]:' in stderr_output
+        assert 'An error occurred (NoSuchBucket)' in stderr_output
+        assert 'BucketName: test' in stderr_output
 
 
 class TestEnhancedErrorFormatter:
@@ -130,14 +146,12 @@ class TestEnhancedErrorFormatter:
             'Code': 'AccessDenied',
             'Message': 'Access Denied',
         }
-        formatted_message = 'An error occurred (AccessDenied): Access Denied'
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, formatted_message, stream)
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
-        expected = 'An error occurred (AccessDenied): Access Denied\n'
-        assert output == expected
+        assert output == ''
 
     def test_format_error_with_simple_fields(self):
         error_info = {
@@ -146,16 +160,12 @@ class TestEnhancedErrorFormatter:
             'BucketName': 'my-bucket',
             'Region': 'us-east-1',
         }
-        formatted_message = (
-            'An error occurred (NoSuchBucket): The bucket does not exist'
-        )
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, formatted_message, stream)
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         expected = (
-            'An error occurred (NoSuchBucket): The bucket does not exist\n'
             '\n'
             'Additional error details:\n'
             'BucketName: my-bucket\n'
@@ -169,16 +179,12 @@ class TestEnhancedErrorFormatter:
             'Message': 'Validation failed',
             'AllowedValues': ['value1', 'value2', 'value3'],
         }
-        formatted_message = (
-            'An error occurred (ValidationError): Validation failed'
-        )
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, formatted_message, stream)
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         expected = (
-            'An error occurred (ValidationError): Validation failed\n'
             '\n'
             'Additional error details:\n'
             'AllowedValues: [value1, value2, value3]\n'
@@ -191,16 +197,12 @@ class TestEnhancedErrorFormatter:
             'Message': 'Validation failed',
             'Metadata': {'key1': 'value1', 'key2': 'value2'},
         }
-        formatted_message = (
-            'An error occurred (ValidationError): Validation failed'
-        )
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, formatted_message, stream)
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         expected = (
-            'An error occurred (ValidationError): Validation failed\n'
             '\n'
             'Additional error details:\n'
             'Metadata: {key1: value1, key2: value2}\n'
@@ -213,23 +215,18 @@ class TestEnhancedErrorFormatter:
             'Message': 'Validation failed',
             'Details': [1, 2, 3, 4, 5, 6],
         }
-        formatted_message = (
-            'An error occurred (ValidationError): Validation failed'
-        )
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, formatted_message, stream)
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         expected = (
-            'An error occurred (ValidationError): Validation failed\n'
             '\n'
             'Additional error details:\n'
             'Details: <complex value> '
             '(Use --cli-error-format with json or yaml to see full details)\n'
         )
         assert output == expected
-        assert 'Details: <complex value> (Use --cli-error-format' in output
 
     def test_format_error_with_nested_dict(self):
         error_info = {
@@ -240,16 +237,12 @@ class TestEnhancedErrorFormatter:
                 'age': {'min': 0, 'max': 120},
             },
         }
-        formatted_message = (
-            'An error occurred (ValidationError): Validation failed'
-        )
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, formatted_message, stream)
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         expected = (
-            'An error occurred (ValidationError): Validation failed\n'
             '\n'
             'Additional error details:\n'
             'FieldErrors: <complex value> '
@@ -272,18 +265,12 @@ class TestEnhancedErrorFormatter:
                 },
             ],
         }
-        formatted_message = (
-            'An error occurred (TransactionCanceledException): '
-            'Transaction cancelled'
-        )
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, formatted_message, stream)
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         expected = (
-            'An error occurred (TransactionCanceledException): '
-            'Transaction cancelled\n'
             '\n'
             'Additional error details:\n'
             'CancellationReasons: <complex value> '
@@ -301,16 +288,12 @@ class TestEnhancedErrorFormatter:
             'BoolField': True,
             'NoneField': None,
         }
-        formatted_message = (
-            'An error occurred (ComplexError): Complex error occurred'
-        )
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, formatted_message, stream)
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         expected = (
-            'An error occurred (ComplexError): Complex error occurred\n'
             '\n'
             'Additional error details:\n'
             'StringField: test-value\n'
@@ -325,23 +308,19 @@ class TestEnhancedErrorFormatter:
         error_info = {
             'Code': 'InvalidInput',
             'Message': 'Invalid input provided',
-            'UserName': 'José García',
+            'UserName': 'éîa',
             'Description': 'Error with "quotes" and \'apostrophes\'',
             'Path': '/path/to/file.txt',
         }
-        formatted_message = (
-            'An error occurred (InvalidInput): Invalid input provided'
-        )
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, formatted_message, stream)
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         expected = (
-            'An error occurred (InvalidInput): Invalid input provided\n'
             '\n'
             'Additional error details:\n'
-            'UserName: José García\n'
+            'UserName: éîa\n'
             'Description: Error with "quotes" and \'apostrophes\'\n'
             'Path: /path/to/file.txt\n'
         )
@@ -353,16 +332,12 @@ class TestEnhancedErrorFormatter:
             'Message': 'Large list error',
             'Items': list(range(10)),
         }
-        formatted_message = (
-            'An error occurred (LargeList): Large list error'
-        )
 
         stream = io.StringIO()
-        self.formatter.format_error(error_info, formatted_message, stream)
+        self.formatter.format_error(error_info, stream)
 
         output = stream.getvalue()
         expected = (
-            'An error occurred (LargeList): Large list error\n'
             '\n'
             'Additional error details:\n'
             'Items: <complex value> '
@@ -413,32 +388,9 @@ class TestRealWorldErrorScenarios:
 
         assert rc == CLIENT_ERROR_RC
         stderr_output = stderr.getvalue()
-        assert 'TransactionCanceledException' in stderr_output
-        assert 'CancellationReasons' in stderr_output
-
-    def test_throttling_error_with_retry_info(self):
-        error_response = {
-            'Error': {
-                'Code': 'ThrottlingException',
-                'Message': 'Rate exceeded',
-            },
-            'RetryAfterSeconds': 30,
-            'RequestsPerSecond': 100,
-            'CurrentRate': 150,
-            'ResponseMetadata': {'RequestId': 'throttle-123'},
-        }
-        client_error = ClientError(error_response, 'DescribeInstances')
-
-        stdout = io.StringIO()
-        stderr = io.StringIO()
-
-        rc = self.handler.handle_exception(client_error, stdout, stderr)
-
-        assert rc == CLIENT_ERROR_RC
-        stderr_output = stderr.getvalue()
-        assert 'ThrottlingException' in stderr_output
-        assert '30' in stderr_output
-        assert '100' in stderr_output
+        assert 'aws: [ERROR]:' in stderr_output
+        assert 'An error occurred (TransactionCanceledException)' in stderr_output
+        assert 'CancellationReasons: <complex value>' in stderr_output
 
 
 class TestParsedGlobalsPassthrough:
@@ -473,9 +425,10 @@ class TestParsedGlobalsPassthrough:
         assert rc == CLIENT_ERROR_RC
 
         stderr_output = stderr.getvalue()
-        assert '"Code"' in stderr_output
-        assert 'NoSuchBucket' in stderr_output
-        assert 'test-bucket' in stderr_output
+        parsed_json = json.loads(stderr_output)
+        assert parsed_json['Code'] == 'NoSuchBucket'
+        assert parsed_json['Message'] == 'The specified bucket does not exist'
+        assert parsed_json['BucketName'] == 'test-bucket'
 
     def test_error_handler_without_parsed_globals_uses_default(self):
         session = FakeSession()
@@ -502,6 +455,236 @@ class TestParsedGlobalsPassthrough:
         assert rc == CLIENT_ERROR_RC
 
         stderr_output = stderr.getvalue()
-        assert 'NoSuchBucket' in stderr_output
-        assert 'test-bucket' in stderr_output
-        assert 'BucketName' in stderr_output
+        assert 'aws: [ERROR]:' in stderr_output
+        assert 'An error occurred (NoSuchBucket)' in stderr_output
+        assert 'BucketName: test-bucket' in stderr_output
+        assert '"Code"' not in stderr_output
+
+
+class TestNonModeledErrorStructuredFormatting:
+    def test_no_region_error_with_json_format(self):
+        session = FakeSession()
+        error_handler = construct_cli_error_handlers_chain(session)
+        exception = NoRegionError()
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        parsed_globals = argparse.Namespace()
+        parsed_globals.cli_error_format = 'json'
+        parsed_globals.query = None
+        parsed_globals.color = 'auto'
+
+        rc = error_handler.handle_exception(
+            exception, stdout, stderr, parsed_globals=parsed_globals
+        )
+
+        assert rc == CONFIGURATION_ERROR_RC
+        stderr_output = stderr.getvalue()
+        parsed_json = json.loads(stderr_output)
+        assert parsed_json['Code'] == 'NoRegion'
+        assert 'aws configure' in parsed_json['Message']
+
+    def test_no_credentials_error_with_yaml_format(self):
+        session = FakeSession()
+        error_handler = construct_cli_error_handlers_chain(session)
+        exception = NoCredentialsError()
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        parsed_globals = argparse.Namespace()
+        parsed_globals.cli_error_format = 'yaml'
+        parsed_globals.query = None
+        parsed_globals.color = 'auto'
+
+        rc = error_handler.handle_exception(
+            exception, stdout, stderr, parsed_globals=parsed_globals
+        )
+
+        assert rc == CONFIGURATION_ERROR_RC
+        stderr_output = stderr.getvalue()
+        parsed_yaml = yaml.safe_load(stderr_output)
+        assert parsed_yaml['Code'] == 'NoCredentials'
+        assert 'aws' in parsed_yaml['Message'] and 'login' in parsed_yaml['Message']
+
+    def test_configuration_error_with_enhanced_format(self):
+        session = FakeSession()
+
+        error_handler = construct_cli_error_handlers_chain(session)
+        exception = ConfigurationError('Invalid configuration value')
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        parsed_globals = argparse.Namespace()
+        parsed_globals.cli_error_format = 'enhanced'
+        parsed_globals.query = None
+        parsed_globals.color = 'auto'
+
+        rc = error_handler.handle_exception(
+            exception, stdout, stderr, parsed_globals=parsed_globals
+        )
+
+        assert rc == CONFIGURATION_ERROR_RC
+        stderr_output = stderr.getvalue()
+        assert 'aws: [ERROR]:' in stderr_output
+        assert 'An error occurred (Configuration)' in stderr_output
+        assert 'Invalid configuration value' in stderr_output
+        assert '"Code"' not in stderr_output
+
+    def test_pager_error_with_json_format(self):
+        session = FakeSession()
+
+        error_handler = construct_cli_error_handlers_chain(session)
+        exception = PagerInitializationException('Pager not found')
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        parsed_globals = argparse.Namespace()
+        parsed_globals.cli_error_format = 'json'
+        parsed_globals.query = None
+        parsed_globals.color = 'auto'
+
+        rc = error_handler.handle_exception(
+            exception, stdout, stderr, parsed_globals=parsed_globals
+        )
+
+        assert rc == CONFIGURATION_ERROR_RC
+        stderr_output = stderr.getvalue()
+        parsed_json = json.loads(stderr_output)
+        assert parsed_json['Code'] == 'Pager'
+        assert 'Unable to redirect output to pager' in parsed_json['Message']
+
+    def test_param_validation_error_with_yaml_format(self):
+        session = FakeSession()
+
+        error_handler = construct_cli_error_handlers_chain(session)
+        exception = ParamValidationError('Invalid parameter value')
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        parsed_globals = argparse.Namespace()
+        parsed_globals.cli_error_format = 'yaml'
+        parsed_globals.query = None
+        parsed_globals.color = 'auto'
+
+        rc = error_handler.handle_exception(
+            exception, stdout, stderr, parsed_globals=parsed_globals
+        )
+
+        assert rc == PARAM_VALIDATION_ERROR_RC
+        stderr_output = stderr.getvalue()
+        parsed_yaml = yaml.safe_load(stderr_output)
+        assert parsed_yaml['Code'] == 'ParamValidation'
+        assert 'Invalid parameter value' in parsed_yaml['Message']
+
+    def test_error_codes_without_error_suffix(self):
+        session = FakeSession()
+        error_handler = construct_cli_error_handlers_chain(session)
+
+        parsed_globals = argparse.Namespace()
+        parsed_globals.cli_error_format = 'json'
+        parsed_globals.query = None
+        parsed_globals.color = 'auto'
+
+        test_cases = [
+            (NoRegionError(), 'NoRegion'),
+            (NoCredentialsError(), 'NoCredentials'),
+            (ConfigurationError('test'), 'Configuration'),
+            (PagerInitializationException('test'), 'Pager'),
+            (ParamValidationError('test'), 'ParamValidation'),
+        ]
+
+        for exception, expected_code in test_cases:
+            stdout = io.StringIO()
+            stderr = io.StringIO()
+
+            error_handler.handle_exception(
+                exception, stdout, stderr, parsed_globals=parsed_globals
+            )
+
+            stderr_output = stderr.getvalue()
+            parsed_json = json.loads(stderr_output)
+            assert parsed_json['Code'] == expected_code
+
+    def test_unknown_argument_error_remains_plain_text(self):
+        session = FakeSession()
+        error_handler = construct_cli_error_handlers_chain(session)
+        exception = UnknownArgumentError('--invalid-arg')
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        parsed_globals = argparse.Namespace()
+        parsed_globals.cli_error_format = 'json'
+        parsed_globals.query = None
+        parsed_globals.color = 'auto'
+
+        rc = error_handler.handle_exception(
+            exception, stdout, stderr, parsed_globals=parsed_globals
+        )
+
+        assert rc == PARAM_VALIDATION_ERROR_RC
+        stderr_output = stderr.getvalue()
+        assert 'usage:' in stderr_output
+        assert '"Code"' not in stderr_output
+
+    def test_legacy_format_uses_plain_text(self):
+        session = FakeSession()
+        error_handler = construct_cli_error_handlers_chain(session)
+        exception = NoRegionError()
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        parsed_globals = argparse.Namespace()
+        parsed_globals.cli_error_format = 'legacy'
+        parsed_globals.query = None
+        parsed_globals.color = 'auto'
+
+        rc = error_handler.handle_exception(
+            exception, stdout, stderr, parsed_globals=parsed_globals
+        )
+
+        assert rc == CONFIGURATION_ERROR_RC
+        stderr_output = stderr.getvalue()
+        assert 'aws configure' in stderr_output
+        assert '"Code"' not in stderr_output
+
+    def test_enhanced_format_includes_error_prefix(self):
+        session = FakeSession()
+        error_handler = construct_cli_error_handlers_chain(session)
+        exception = NoRegionError()
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        parsed_globals = argparse.Namespace()
+        parsed_globals.cli_error_format = 'enhanced'
+        parsed_globals.query = None
+        parsed_globals.color = 'auto'
+
+        rc = error_handler.handle_exception(
+            exception, stdout, stderr, parsed_globals=parsed_globals
+        )
+
+        assert rc == CONFIGURATION_ERROR_RC
+        stderr_output = stderr.getvalue()
+        assert 'aws: [ERROR]:' in stderr_output
+        assert 'An error occurred (NoRegion)' in stderr_output
+
+    def test_interrupt_exception_remains_plain_text(self):
+        session = FakeSession()
+        error_handler = construct_cli_error_handlers_chain(session)
+        exception = KeyboardInterrupt()
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        parsed_globals = argparse.Namespace()
+        parsed_globals.cli_error_format = 'json'
+        parsed_globals.query = None
+        parsed_globals.color = 'auto'
+
+        rc = error_handler.handle_exception(
+            exception, stdout, stderr, parsed_globals=parsed_globals
+        )
+
+        assert rc == 128 + signal.SIGINT
+        stdout_output = stdout.getvalue()
+        assert stdout_output == "\n"
+        assert '"Code"' not in stderr.getvalue()

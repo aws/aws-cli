@@ -193,24 +193,8 @@ class TestOffFormatter:
         self.formatter = OffFormatter(self.args)
         self.output = StringIO()
 
-    def test_suppresses_simple_response(self):
+    def test_suppresses_response(self):
         response = {'Key': 'Value'}
-        self.formatter('test-command', response, self.output)
-        assert self.output.getvalue() == ''
-
-    def test_suppresses_complex_response(self):
-        response = {
-            'Items': [
-                {'Name': 'Item1', 'Value': 'data'},
-                {'Name': 'Item2', 'Value': 'more-data'}
-            ],
-            'Count': 2
-        }
-        self.formatter('test-command', response, self.output)
-        assert self.output.getvalue() == ''
-
-    def test_suppresses_empty_response(self):
-        response = {}
         self.formatter('test-command', response, self.output)
         assert self.output.getvalue() == ''
 

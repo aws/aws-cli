@@ -1535,11 +1535,10 @@ class CommandArchitecture:
             )
 
     def _get_s3_handler_params(self):
-        """
-        Removing no-overwrite params from sync since file to
-        be synced are already separated out using sync strategy
-        """
         params = self.parameters.copy()
+        
+        # Removing no-overwrite params from sync since file to be synced are
+        # already separated out using sync strategy
         if self.cmd == 'sync':
             params.pop('no_overwrite', None)
         return params
@@ -1861,12 +1860,6 @@ class CommandParameters:
                 )
 
     def _validate_no_overwrite_for_download_streaming(self):
-        """
-        Validates that no-overwrite parameter is not used with streaming downloads.
-
-        Raises:
-            ParamValidationError: If no-overwrite is specified with a streaming download.
-        """
         if (
             self.parameters['is_stream']
             and self.parameters.get('no_overwrite')

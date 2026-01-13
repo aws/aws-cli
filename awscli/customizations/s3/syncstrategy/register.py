@@ -49,7 +49,7 @@ def register_sync_strategies(command_table, session, **kwargs):
     # Register the delete sync strategy.
     register_sync_strategy(session, DeleteSync, 'file_not_at_src')
 
-    # Register the noOverwrite sync strategy
+    # Register the nooverwrite sync strategy
     register_sync_strategy(session, NoOverwriteSync, 'file_at_src_and_dest')
 
     # Register additional sync strategies here...

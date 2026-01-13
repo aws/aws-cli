@@ -562,7 +562,6 @@ class RequestParamsMapper:
 
     @classmethod
     def _set_no_overwrite_param(cls, request_params, cli_params):
-        """Map No overwrite header with IfNoneMatch"""
         if cli_params.get('no_overwrite'):
             request_params['IfNoneMatch'] = "*"
 

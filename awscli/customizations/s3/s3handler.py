@@ -13,7 +13,6 @@
 import logging
 import os
 
-from botocore.exceptions import ClientError
 from s3transfer.manager import TransferManager
 
 from awscli.compat import get_binary_stdin

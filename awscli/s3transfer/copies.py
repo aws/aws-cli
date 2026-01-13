@@ -103,7 +103,6 @@ class CopySubmissionTask(SubmissionTask):
         :param transfer_future: The transfer future associated with the
             transfer request that tasks are being submitted for
         """
-        call_args = transfer_future.meta.call_args
         if (
             transfer_future.meta.size is None
             or transfer_future.meta.etag is None
@@ -113,6 +112,7 @@ class CopySubmissionTask(SubmissionTask):
             # the TransferManager. If the object is outside of the region
             # of the client, they may have to provide the file size themselves
             # with a completely new client.
+            call_args = transfer_future.meta.call_args
             head_object_request = (
                 self._get_head_object_request_from_copy_source(
                     call_args.copy_source

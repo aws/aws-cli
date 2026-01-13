@@ -129,9 +129,7 @@ class DoneResultSubscriber(BaseResultSubscriber, OnDoneFilteredSubscriber):
             self._result_queue.put(error_result_cls(exception=e))
         elif self._is_precondition_failed(e):
             LOGGER.debug(
-                "Warning: Skipping file %s as it already exists on %s",
-                self._src,
-                self._dest,
+                f"warning: Skipping file {self._src} as it already exists on {self._dest}"
             )
             self._result_queue.put(
                 SkipFileResult(
@@ -151,7 +149,6 @@ class DoneResultSubscriber(BaseResultSubscriber, OnDoneFilteredSubscriber):
             )
 
     def _is_precondition_failed(self, exception):
-        """Check if this is a PreconditionFailed error"""
         return (
             hasattr(exception, 'response')
             and exception.response.get('Error', {}).get('Code')

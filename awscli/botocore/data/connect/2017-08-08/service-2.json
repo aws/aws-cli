@@ -158,6 +158,24 @@
       ],
       "documentation":"<p>Associates a connect resource to a flow.</p>"
     },
+    "AssociateHoursOfOperations":{
+      "name":"AssociateHoursOfOperations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/hours-of-operations/{InstanceId}/{HoursOfOperationId}/associate-hours"
+      },
+      "input":{"shape":"AssociateHoursOfOperationsRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ConditionalOperationFailedException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Associates a set of hours of operations with another hours of operation. Refer to Administrator Guide <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/hours-of-operation-overrides.html\"> here </a> for more information on inheriting overrides from parent hours of operation(s).</p>"
+    },
     "AssociateInstanceStorageConfig":{
       "name":"AssociateInstanceStorageConfig",
       "http":{
@@ -790,7 +808,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"LimitExceededException"},
         {"shape":"ThrottlingException"},
-        {"shape":"InternalServiceException"}
+        {"shape":"InternalServiceException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Creates hours of operation. </p>"
     },
@@ -2448,6 +2467,23 @@
       ],
       "documentation":"<p>Disassociates a connect resource from a flow.</p>"
     },
+    "DisassociateHoursOfOperations":{
+      "name":"DisassociateHoursOfOperations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/hours-of-operations/{InstanceId}/{HoursOfOperationId}/disassociate-hours"
+      },
+      "input":{"shape":"DisassociateHoursOfOperationsRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ConditionalOperationFailedException"}
+      ],
+      "documentation":"<p>Disassociates a set of hours of operations with another hours of operation. Refer to Administrator Guide <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/hours-of-operation-overrides.html\"> here </a> for more information on inheriting overrides from parent hours of operation(s).</p>"
+    },
     "DisassociateInstanceStorageConfig":{
       "name":"DisassociateInstanceStorageConfig",
       "http":{
@@ -3041,6 +3077,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>For the specified version of Amazon Lex, returns a paginated list of all the Amazon Lex bots currently associated with the instance. Use this API to return both Amazon Lex V1 and V2 bots.</p>"
+    },
+    "ListChildHoursOfOperations":{
+      "name":"ListChildHoursOfOperations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/hours-of-operations/{InstanceId}/{HoursOfOperationId}/hours"
+      },
+      "input":{"shape":"ListChildHoursOfOperationsRequest"},
+      "output":{"shape":"ListChildHoursOfOperationsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Provides information about the child hours of operations for the specified parent hours of operation.</p> <p>For more information about child hours of operations, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/\">Link overrides from different hours of operation</a> in the <i> Administrator Guide</i>.</p>"
     },
     "ListContactEvaluations":{
       "name":"ListContactEvaluations",
@@ -7000,6 +7053,32 @@
       "type":"structure",
       "members":{}
     },
+    "AssociateHoursOfOperationsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "HoursOfOperationId",
+        "ParentHoursOfOperationConfigs"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "HoursOfOperationId":{
+          "shape":"HoursOfOperationId",
+          "documentation":"<p>The identifier of the child hours of operation.</p>",
+          "location":"uri",
+          "locationName":"HoursOfOperationId"
+        },
+        "ParentHoursOfOperationConfigs":{
+          "shape":"ParentHoursOfOperationConfigList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the parent hours of operation resources to associate with the child hours of operation resource.</p>"
+        }
+      }
+    },
     "AssociateInstanceStorageConfigRequest":{
       "type":"structure",
       "required":[
@@ -7161,7 +7240,7 @@
         },
         "ManualAssignmentQueueConfigs":{
           "shape":"RoutingProfileManualAssignmentQueueConfigList",
-          "documentation":"<p>The manual assignment queues to associate with this routing profile.</p>"
+          "documentation":"<p>The manual assignment queues to associate with this routing profile.</p> <p>Note: Use this config for chat, email, and task contacts. It does not support voice contacts.</p>"
         }
       }
     },
@@ -8688,6 +8767,10 @@
       "type":"string",
       "max":350,
       "min":1
+    },
+    "ChildHoursOfOperationsList":{
+      "type":"list",
+      "member":{"shape":"HoursOfOperationsIdentifier"}
     },
     "ClaimPhoneNumberRequest":{
       "type":"structure",
@@ -10810,6 +10893,14 @@
         "EffectiveTill":{
           "shape":"HoursOfOperationOverrideYearMonthDayDateFormat",
           "documentation":"<p>The date until when the hours of operation override is effective.</p>"
+        },
+        "RecurrenceConfig":{
+          "shape":"RecurrenceConfig",
+          "documentation":"<p>Configuration for a recurring event.</p>"
+        },
+        "OverrideType":{
+          "shape":"OverrideType",
+          "documentation":"<p>Whether the override will be defined as a <i>standard</i> or as a <i>recurring event</i>.</p> <p>For more information about how override types are applied, see <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/connect/latest/adminguide/hours-of-operation-overrides.html\">Build your list of overrides</a> in the <i> Administrator Guide</i>.</p>"
         }
       }
     },
@@ -10852,6 +10943,10 @@
         "Config":{
           "shape":"HoursOfOperationConfigList",
           "documentation":"<p>Configuration information for the hours of operation: day, start time, and end time.</p>"
+        },
+        "ParentHoursOfOperationConfigs":{
+          "shape":"ParentHoursOfOperationConfigList",
+          "documentation":"<p>Configuration for parent hours of operations. Eg: ResourceArn. </p> <p>For more information about parent hours of operations, see <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/connect/latest/adminguide/hours-of-operation-overrides.html\">Link overrides from different hours of operation</a> in the <i> Administrator Guide</i>.</p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -11327,7 +11422,7 @@
         },
         "ManualAssignmentQueueConfigs":{
           "shape":"RoutingProfileManualAssignmentQueueConfigList",
-          "documentation":"<p>The manual assignment queues associated with the routing profile. If no queue is added, agents and supervisors can't pick or assign any contacts from this routing profile. The limit of 10 array members applies to the maximum number of RoutingProfileManualAssignmentQueueConfig objects that can be passed during a CreateRoutingProfile API request. It is different from the quota of 50 queues per routing profile per instance that is listed in Amazon Connect service quotas.</p>"
+          "documentation":"<p>The manual assignment queues associated with the routing profile. If no queue is added, agents and supervisors can't pick or assign any contacts from this routing profile. The limit of 10 array members applies to the maximum number of RoutingProfileManualAssignmentQueueConfig objects that can be passed during a CreateRoutingProfile API request. It is different from the quota of 50 queues per routing profile per instance that is listed in Amazon Connect service quotas.</p> <p>Note: Use this config for chat, email, and task contacts. It does not support voice contacts.</p>"
         },
         "MediaConcurrencies":{
           "shape":"MediaConcurrencies",
@@ -14999,6 +15094,32 @@
       "type":"structure",
       "members":{}
     },
+    "DisassociateHoursOfOperationsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "HoursOfOperationId",
+        "ParentHoursOfOperationIds"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "HoursOfOperationId":{
+          "shape":"HoursOfOperationId",
+          "documentation":"<p>The identifier of the child hours of operation.</p>",
+          "location":"uri",
+          "locationName":"HoursOfOperationId"
+        },
+        "ParentHoursOfOperationIds":{
+          "shape":"ParentHoursOfOperationIdList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the parent hours of operation resources to disassociate with the child hours of operation resource.</p>"
+        }
+      }
+    },
     "DisassociateInstanceStorageConfigRequest":{
       "type":"structure",
       "required":[
@@ -15465,6 +15586,24 @@
         }
       },
       "documentation":"<p>Information about the hours of operations with the effective override applied.</p>"
+    },
+    "EffectiveOverrideHours":{
+      "type":"structure",
+      "members":{
+        "Date":{
+          "shape":"HoursOfOperationOverrideYearMonthDayDateFormat",
+          "documentation":"<p>The date that the hours of operation override applies to.</p>"
+        },
+        "OverrideHours":{
+          "shape":"OverrideHours",
+          "documentation":"<p>Information about the hours of operation overrides that apply to a specific date.</p>"
+        }
+      },
+      "documentation":"<p>Information about the hours of operation overrides which contribute to effective hours of operations.</p>"
+    },
+    "EffectiveOverrideHoursList":{
+      "type":"list",
+      "member":{"shape":"EffectiveOverrideHours"}
     },
     "Email":{
       "type":"string",
@@ -18355,6 +18494,10 @@
           "shape":"EffectiveHoursOfOperationList",
           "documentation":"<p>Information about the effective hours of operations.</p>"
         },
+        "EffectiveOverrideHoursList":{
+          "shape":"EffectiveOverrideHoursList",
+          "documentation":"<p>Information about override configurations applied to the base hours of operation to calculate the effective hours.</p> <p>For more information about how override types are applied, see <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/connect/latest/adminguide/hours-of-operation-overrides.html\">Build your list of overrides</a> in the <i> Administrator Guide</i>.</p>"
+        },
         "TimeZone":{
           "shape":"TimeZone",
           "documentation":"<p>The time zone for the hours of operation.</p>"
@@ -19206,6 +19349,10 @@
           "shape":"HoursOfOperationConfigList",
           "documentation":"<p>Configuration information for the hours of operation.</p>"
         },
+        "ParentHoursOfOperations":{
+          "shape":"ParentHoursOfOperationsList",
+          "documentation":"<p>Information about parent hours of operations.</p>"
+        },
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
@@ -19307,6 +19454,14 @@
         "EffectiveTill":{
           "shape":"HoursOfOperationOverrideYearMonthDayDateFormat",
           "documentation":"<p>The date until the hours of operation override is effective.</p>"
+        },
+        "RecurrenceConfig":{
+          "shape":"RecurrenceConfig",
+          "documentation":"<p>Configuration for a recurring event.</p>"
+        },
+        "OverrideType":{
+          "shape":"OverrideType",
+          "documentation":"<p>Whether the override will be defined as a <i>standard</i> or as a <i>recurring event</i>.</p>"
         }
       },
       "documentation":"<p>Information about the hours of operations override.</p>"
@@ -19449,6 +19604,28 @@
         }
       },
       "documentation":"<p>The start time or end time for an hours of operation.</p>"
+    },
+    "HoursOfOperationsIdentifier":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Id"
+      ],
+      "members":{
+        "Name":{
+          "shape":"CommonNameLength127",
+          "documentation":"<p>Name of the hours of operation</p>"
+        },
+        "Id":{
+          "shape":"HoursOfOperationId",
+          "documentation":"<p>Unique identifier of the hours of operation.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>Amazon Resource Name (ARN) of the hours of operations.</p>"
+        }
+      },
+      "documentation":"<p>Identifier for a hours of operations resource: ARN, ID, Name</p>"
     },
     "IAMRestrictedPrimaryValue":{
       "type":"string",
@@ -19990,6 +20167,12 @@
         "TOTAL"
       ]
     },
+    "IntervalPositiveInteger":{
+      "type":"integer",
+      "box":true,
+      "max":6,
+      "min":1
+    },
     "InvalidActiveRegionException":{
       "type":"structure",
       "members":{
@@ -20514,6 +20697,61 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListChildHoursOfOperationsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "HoursOfOperationId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "HoursOfOperationId":{
+          "shape":"HoursOfOperationId",
+          "documentation":"<p>The identifier of the parent hours of operation.</p>",
+          "location":"uri",
+          "locationName":"HoursOfOperationId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page. The default MaxResult size is 100.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListChildHoursOfOperationsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        },
+        "ChildHoursOfOperationsSummaryList":{
+          "shape":"ChildHoursOfOperationsList",
+          "documentation":"<p>Information about the hours of operation.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this resource was last modified.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The Amazon Web Services Region where this resource was last modified.</p>"
         }
       }
     },
@@ -23393,6 +23631,26 @@
         }
       }
     },
+    "Month":{
+      "type":"integer",
+      "box":true,
+      "max":12,
+      "min":1
+    },
+    "MonthDay":{
+      "type":"integer",
+      "box":true,
+      "max":31,
+      "min":-1
+    },
+    "MonthDayList":{
+      "type":"list",
+      "member":{"shape":"MonthDay"}
+    },
+    "MonthList":{
+      "type":"list",
+      "member":{"shape":"Month"}
+    },
     "MultiSelectQuestionRuleCategoryAutomation":{
       "type":"structure",
       "required":[
@@ -23650,6 +23908,13 @@
       "type":"list",
       "member":{"shape":"OperationalHour"}
     },
+    "OperationalStatus":{
+      "type":"string",
+      "enum":[
+        "OPEN",
+        "CLOSED"
+      ]
+    },
     "Origin":{
       "type":"string",
       "max":267
@@ -23829,6 +24094,26 @@
         "SATURDAY"
       ]
     },
+    "OverrideHour":{
+      "type":"structure",
+      "members":{
+        "Start":{"shape":"OverrideTimeSlice"},
+        "End":{"shape":"OverrideTimeSlice"},
+        "OverrideName":{
+          "shape":"CommonHumanReadableName",
+          "documentation":"<p>Unique identifier name for the override.</p>"
+        },
+        "OperationalStatus":{
+          "shape":"OperationalStatus",
+          "documentation":"<p>Indicates whether the status is open or closed during the override period. This status determines how the override modifies the base hours of operation schedule.</p>"
+        }
+      },
+      "documentation":"<p>Information about hours of operation override</p>"
+    },
+    "OverrideHours":{
+      "type":"list",
+      "member":{"shape":"OverrideHour"}
+    },
     "OverrideTimeSlice":{
       "type":"structure",
       "required":[
@@ -23848,6 +24133,14 @@
         }
       },
       "documentation":"<p>The start time or end time for an hours of operation override.</p>"
+    },
+    "OverrideType":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "OPEN",
+        "CLOSED"
+      ]
     },
     "PEM":{
       "type":"string",
@@ -23951,6 +24244,32 @@
         }
       },
       "documentation":"<p>Contains primary color configuration for a workspace theme.</p>"
+    },
+    "ParentHoursOfOperationConfig":{
+      "type":"structure",
+      "members":{
+        "HoursOfOperationId":{
+          "shape":"HoursOfOperationId",
+          "documentation":"<p>The identifier for the hours of operation.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration for the parent hours of operation.</p>"
+    },
+    "ParentHoursOfOperationConfigList":{
+      "type":"list",
+      "member":{"shape":"ParentHoursOfOperationConfig"},
+      "max":3,
+      "min":0
+    },
+    "ParentHoursOfOperationIdList":{
+      "type":"list",
+      "member":{"shape":"HoursOfOperationId"},
+      "max":3,
+      "min":1
+    },
+    "ParentHoursOfOperationsList":{
+      "type":"list",
+      "member":{"shape":"HoursOfOperationsIdentifier"}
     },
     "ParticipantCapabilities":{
       "type":"structure",
@@ -26135,6 +26454,58 @@
     "Recordings":{
       "type":"list",
       "member":{"shape":"RecordingInfo"}
+    },
+    "RecurrenceConfig":{
+      "type":"structure",
+      "required":["RecurrencePattern"],
+      "members":{
+        "RecurrencePattern":{
+          "shape":"RecurrencePattern",
+          "documentation":"<p>The recurrence pattern that defines how the event repeats. Example: Frequency, Interval, ByMonth, ByMonthDay, ByWeekdayOccurrence</p>"
+        }
+      },
+      "documentation":"<p>Defines the recurrence configuration for overrides. This configuration uses a recurrence pattern to specify when and how frequently an event should repeat.</p>"
+    },
+    "RecurrenceFrequency":{
+      "type":"string",
+      "enum":[
+        "WEEKLY",
+        "MONTHLY",
+        "YEARLY"
+      ]
+    },
+    "RecurrencePattern":{
+      "type":"structure",
+      "required":[
+        "Frequency",
+        "Interval"
+      ],
+      "members":{
+        "Frequency":{
+          "shape":"RecurrenceFrequency",
+          "documentation":"<p>Defines how often the pattern repeats. This is the base unit for the recurrence schedule and works in conjunction with the Interval field to determine the exact repetition sequence.</p>"
+        },
+        "Interval":{
+          "shape":"IntervalPositiveInteger",
+          "documentation":"<p>Specifies the number of frequency units between each occurrence. Must be a positive integer. </p> <p> Examples: To repeat every week, set Interval=1 with WEEKLY frequency. To repeat every two months, set Interval=2 with MONTHLY frequency.</p>"
+        },
+        "ByMonth":{
+          "shape":"MonthList",
+          "documentation":"<p>Specifies which month the event should occur in (1-12, where 1=January, 12=December). Used with YEARLY frequency to schedule events in specific month. </p> <p>Note: It does not accept multiple values in the same list</p>",
+          "box":true
+        },
+        "ByMonthDay":{
+          "shape":"MonthDayList",
+          "documentation":"<p>Specifies which day of the month the event should occur on (1-31). Used with MONTHLY or YEARLY frequency to schedule events on specific date within a month.</p> <p> Examples: [15] for events on the 15th of each month, [-1] for events on the last day of month. </p> <p>Note: It does not accept multiple values in the same list. If a specified day doesn't exist in a particular month (e.g., day 31 in February), the event will be skipped for that month. This field cannot be used simultaneously with ByWeekdayOccurrence as they represent different scheduling approaches (specific dates vs. relative weekday positions).</p>",
+          "box":true
+        },
+        "ByWeekdayOccurrence":{
+          "shape":"WeekdayOccurrenceList",
+          "documentation":"<p>Specifies which occurrence of a weekday within the month the event should occur on. Must be used with MONTHLY or YEARLY frequency. </p> <p>Example: 2 corresponds to second occurrence of the weekday in the month. -1 corresponds to last occurrence of the weekday in the month </p> <p>The weekday itself is specified separately in the HoursOfOperationConfig. Example: To schedule the recurring event for the 2nd Thursday of April every year, set ByWeekdayOccurrence=[2], Day=THURSDAY, ByMonth=[4], Frequency: YEARLY and INTERVAL=1.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Specifies the detailed pattern for event recurrence. Use this to define complex scheduling rules such as \"every 2nd Tuesday of the month\" or \"every 3 months on the 15th\".</p>"
     },
     "Reference":{
       "type":"structure",
@@ -31945,6 +32316,14 @@
         "EffectiveTill":{
           "shape":"HoursOfOperationOverrideYearMonthDayDateFormat",
           "documentation":"<p>The date until the hours of operation override is effective.</p>"
+        },
+        "RecurrenceConfig":{
+          "shape":"RecurrenceConfig",
+          "documentation":"<p>Configuration for a recurring event.</p>"
+        },
+        "OverrideType":{
+          "shape":"OverrideType",
+          "documentation":"<p>Whether the override will be defined as a <i>standard</i> or as a <i>recurring event</i>.</p> <p>For more information about how override types are applied, see <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/connect/latest/adminguide/hours-of-operation-overrides.html\">Build your list of overrides</a> in the <i> Administrator Guide</i>.</p>"
         }
       }
     },
@@ -34372,6 +34751,18 @@
         "TO_AGENT",
         "ALL"
       ]
+    },
+    "WeekdayOccurrenceInteger":{
+      "type":"integer",
+      "box":true,
+      "max":4,
+      "min":-1
+    },
+    "WeekdayOccurrenceList":{
+      "type":"list",
+      "member":{"shape":"WeekdayOccurrenceInteger"},
+      "max":1,
+      "min":0
     },
     "WisdomInfo":{
       "type":"structure",

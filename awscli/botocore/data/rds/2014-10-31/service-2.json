@@ -2,6 +2,7 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2014-10-31",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"rds",
     "protocol":"query",
     "protocols":["query"],
@@ -9,9 +10,9 @@
     "serviceFullName":"Amazon Relational Database Service",
     "serviceId":"RDS",
     "signatureVersion":"v4",
+    "signingName":"rds",
     "uid":"rds-2014-10-31",
-    "xmlNamespace":"http://rds.amazonaws.com/doc/2014-10-31/",
-    "auth":["aws.auth#sigv4"]
+    "xmlNamespace":"http://rds.amazonaws.com/doc/2014-10-31/"
   },
   "operations":{
     "AddRoleToDBCluster":{
@@ -22,10 +23,10 @@
       },
       "input":{"shape":"AddRoleToDBClusterMessage"},
       "errors":[
-        {"shape":"DBClusterNotFoundFault"},
-        {"shape":"DBClusterRoleAlreadyExistsFault"},
+        {"shape":"DBClusterRoleQuotaExceededFault"},
         {"shape":"InvalidDBClusterStateFault"},
-        {"shape":"DBClusterRoleQuotaExceededFault"}
+        {"shape":"DBClusterRoleAlreadyExistsFault"},
+        {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Associates an Identity and Access Management (IAM) role with a DB cluster.</p>"
     },
@@ -37,10 +38,10 @@
       },
       "input":{"shape":"AddRoleToDBInstanceMessage"},
       "errors":[
+        {"shape":"DBInstanceRoleQuotaExceededFault"},
         {"shape":"DBInstanceNotFoundFault"},
-        {"shape":"DBInstanceRoleAlreadyExistsFault"},
         {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"DBInstanceRoleQuotaExceededFault"}
+        {"shape":"DBInstanceRoleAlreadyExistsFault"}
       ],
       "documentation":"<p>Associates an Amazon Web Services Identity and Access Management (IAM) role with a DB instance.</p> <note> <p>To add a role to a DB instance, the status of the DB instance must be <code>available</code>.</p> </note> <p>This command doesn't apply to RDS Custom.</p>"
     },
@@ -56,8 +57,8 @@
         "resultWrapper":"AddSourceIdentifierToSubscriptionResult"
       },
       "errors":[
-        {"shape":"SubscriptionNotFoundFault"},
-        {"shape":"SourceNotFoundFault"}
+        {"shape":"SourceNotFoundFault"},
+        {"shape":"SubscriptionNotFoundFault"}
       ],
       "documentation":"<p>Adds a source identifier to an existing RDS event notification subscription.</p>"
     },
@@ -69,20 +70,20 @@
       },
       "input":{"shape":"AddTagsToResourceMessage"},
       "errors":[
-        {"shape":"DBInstanceNotFoundFault"},
-        {"shape":"DBClusterNotFoundFault"},
-        {"shape":"DBSnapshotNotFoundFault"},
         {"shape":"DBProxyNotFoundFault"},
-        {"shape":"DBProxyEndpointNotFoundFault"},
-        {"shape":"DBProxyTargetGroupNotFoundFault"},
-        {"shape":"BlueGreenDeploymentNotFoundFault"},
-        {"shape":"TenantDatabaseNotFoundFault"},
         {"shape":"DBSnapshotTenantDatabaseNotFoundFault"},
         {"shape":"IntegrationNotFoundFault"},
-        {"shape":"DBShardGroupNotFoundFault"},
-        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"TenantDatabaseNotFoundFault"},
+        {"shape":"BlueGreenDeploymentNotFoundFault"},
+        {"shape":"DBSnapshotNotFoundFault"},
+        {"shape":"DBProxyEndpointNotFoundFault"},
+        {"shape":"InvalidDBClusterEndpointStateFault"},
         {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"InvalidDBClusterEndpointStateFault"}
+        {"shape":"DBShardGroupNotFoundFault"},
+        {"shape":"DBClusterNotFoundFault"},
+        {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"DBProxyTargetGroupNotFoundFault"},
+        {"shape":"InvalidDBClusterStateFault"}
       ],
       "documentation":"<p>Adds metadata tags to an Amazon RDS resource. These tags can also be used with cost allocation reporting to track cost associated with Amazon RDS resources, or used in a Condition statement in an IAM policy for Amazon RDS.</p> <p>For an overview on tagging your relational database resources, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html\">Tagging Amazon RDS Resources</a> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html\">Tagging Amazon Aurora and Amazon RDS Resources</a>. </p>"
     },
@@ -116,10 +117,10 @@
         "resultWrapper":"AuthorizeDBSecurityGroupIngressResult"
       },
       "errors":[
-        {"shape":"DBSecurityGroupNotFoundFault"},
         {"shape":"InvalidDBSecurityGroupStateFault"},
-        {"shape":"AuthorizationAlreadyExistsFault"},
-        {"shape":"AuthorizationQuotaExceededFault"}
+        {"shape":"AuthorizationQuotaExceededFault"},
+        {"shape":"DBSecurityGroupNotFoundFault"},
+        {"shape":"AuthorizationAlreadyExistsFault"}
       ],
       "documentation":"<p>Enables ingress to a DBSecurityGroup using one of two forms of authorization. First, EC2 or VPC security groups can be added to the DBSecurityGroup if the application using the database is running on EC2 or VPC instances. Second, IP ranges are available if the application accessing your database is running on the internet. Required parameters for this API are one of CIDR range, EC2SecurityGroupId for VPC, or (EC2SecurityGroupOwnerId and either EC2SecurityGroupName or EC2SecurityGroupId for non-VPC).</p> <p>You can't authorize ingress from an EC2 security group in one Amazon Web Services Region to an Amazon RDS DB instance in another. You can't authorize ingress from a VPC security group in one VPC to an Amazon RDS DB instance in another.</p> <p>For an overview of CIDR ranges, go to the <a href=\"http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing\">Wikipedia Tutorial</a>.</p> <note> <p>EC2-Classic was retired on August 15, 2022. If you haven't migrated from EC2-Classic to a VPC, we recommend that you migrate as soon as possible. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-migrate.html\">Migrate from EC2-Classic to a VPC</a> in the <i>Amazon EC2 User Guide</i>, the blog <a href=\"http://aws.amazon.com/blogs/aws/ec2-classic-is-retiring-heres-how-to-prepare/\">EC2-Classic Networking is Retiring – Here’s How to Prepare</a>, and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.Non-VPC2VPC.html\">Moving a DB instance not in a VPC into a VPC</a> in the <i>Amazon RDS User Guide</i>.</p> </note>"
     },
@@ -135,8 +136,8 @@
         "resultWrapper":"BacktrackDBClusterResult"
       },
       "errors":[
-        {"shape":"DBClusterNotFoundFault"},
-        {"shape":"InvalidDBClusterStateFault"}
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Backtracks a DB cluster to a specific time, without creating a new DB cluster.</p> <p>For more information on backtracking, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Managing.Backtrack.html\"> Backtracking an Aurora DB Cluster</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This action applies only to Aurora MySQL DB clusters.</p> </note>"
     },
@@ -170,8 +171,8 @@
       },
       "errors":[
         {"shape":"DBParameterGroupNotFoundFault"},
-        {"shape":"DBParameterGroupQuotaExceededFault"},
-        {"shape":"DBParameterGroupAlreadyExistsFault"}
+        {"shape":"DBParameterGroupAlreadyExistsFault"},
+        {"shape":"DBParameterGroupQuotaExceededFault"}
       ],
       "documentation":"<p>Copies the specified DB cluster parameter group.</p> <note> <p>You can't copy a default DB cluster parameter group. Instead, create a new custom DB cluster parameter group, which copies the default parameters and values for the specified DB cluster parameter group family.</p> </note>"
     },
@@ -187,11 +188,11 @@
         "resultWrapper":"CopyDBClusterSnapshotResult"
       },
       "errors":[
-        {"shape":"DBClusterSnapshotAlreadyExistsFault"},
         {"shape":"DBClusterSnapshotNotFoundFault"},
-        {"shape":"InvalidDBClusterStateFault"},
         {"shape":"InvalidDBClusterSnapshotStateFault"},
+        {"shape":"InvalidDBClusterStateFault"},
         {"shape":"SnapshotQuotaExceededFault"},
+        {"shape":"DBClusterSnapshotAlreadyExistsFault"},
         {"shape":"KMSKeyNotAccessibleFault"}
       ],
       "documentation":"<p>Copies a snapshot of a DB cluster.</p> <p>To copy a DB cluster snapshot from a shared manual DB cluster snapshot, <code>SourceDBClusterSnapshotIdentifier</code> must be the Amazon Resource Name (ARN) of the shared DB cluster snapshot.</p> <p>You can copy an encrypted DB cluster snapshot from another Amazon Web Services Region. In that case, the Amazon Web Services Region where you call the <code>CopyDBClusterSnapshot</code> operation is the destination Amazon Web Services Region for the encrypted DB cluster snapshot to be copied to. To copy an encrypted DB cluster snapshot from another Amazon Web Services Region, you must provide the following values:</p> <ul> <li> <p> <code>KmsKeyId</code> - The Amazon Web Services Key Management System (Amazon Web Services KMS) key identifier for the key to use to encrypt the copy of the DB cluster snapshot in the destination Amazon Web Services Region.</p> </li> <li> <p> <code>TargetDBClusterSnapshotIdentifier</code> - The identifier for the new copy of the DB cluster snapshot in the destination Amazon Web Services Region.</p> </li> <li> <p> <code>SourceDBClusterSnapshotIdentifier</code> - The DB cluster snapshot identifier for the encrypted DB cluster snapshot to be copied. This identifier must be in the ARN format for the source Amazon Web Services Region and is the same value as the <code>SourceDBClusterSnapshotIdentifier</code> in the presigned URL.</p> </li> </ul> <p>To cancel the copy operation once it is in progress, delete the target DB cluster snapshot identified by <code>TargetDBClusterSnapshotIdentifier</code> while that DB cluster snapshot is in \"copying\" status.</p> <p>For more information on copying encrypted Amazon Aurora DB cluster snapshots from one Amazon Web Services Region to another, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_CopySnapshot.html\"> Copying a Snapshot</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p>"
@@ -226,12 +227,12 @@
         "resultWrapper":"CopyDBSnapshotResult"
       },
       "errors":[
-        {"shape":"DBSnapshotAlreadyExistsFault"},
-        {"shape":"DBSnapshotNotFoundFault"},
-        {"shape":"InvalidDBSnapshotStateFault"},
         {"shape":"SnapshotQuotaExceededFault"},
+        {"shape":"DBSnapshotNotFoundFault"},
+        {"shape":"CustomAvailabilityZoneNotFoundFault"},
+        {"shape":"InvalidDBSnapshotStateFault"},
         {"shape":"KMSKeyNotAccessibleFault"},
-        {"shape":"CustomAvailabilityZoneNotFoundFault"}
+        {"shape":"DBSnapshotAlreadyExistsFault"}
       ],
       "documentation":"<p>Copies the specified DB snapshot. The source DB snapshot must be in the <code>available</code> state.</p> <p>You can copy a snapshot from one Amazon Web Services Region to another. In that case, the Amazon Web Services Region where you call the <code>CopyDBSnapshot</code> operation is the destination Amazon Web Services Region for the DB snapshot copy.</p> <p>This command doesn't apply to RDS Custom.</p> <p>For more information about copying snapshots, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CopySnapshot.html#USER_CopyDBSnapshot\">Copying a DB Snapshot</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
@@ -247,9 +248,9 @@
         "resultWrapper":"CopyOptionGroupResult"
       },
       "errors":[
-        {"shape":"OptionGroupAlreadyExistsFault"},
         {"shape":"OptionGroupNotFoundFault"},
-        {"shape":"OptionGroupQuotaExceededFault"}
+        {"shape":"OptionGroupQuotaExceededFault"},
+        {"shape":"OptionGroupAlreadyExistsFault"}
       ],
       "documentation":"<p>Copies the specified option group.</p>"
     },
@@ -265,18 +266,18 @@
         "resultWrapper":"CreateBlueGreenDeploymentResult"
       },
       "errors":[
-        {"shape":"DBInstanceNotFoundFault"},
-        {"shape":"DBClusterNotFoundFault"},
+        {"shape":"StorageQuotaExceededFault"},
+        {"shape":"DBParameterGroupNotFoundFault"},
+        {"shape":"BlueGreenDeploymentAlreadyExistsFault"},
         {"shape":"SourceDatabaseNotSupportedFault"},
         {"shape":"SourceClusterNotSupportedFault"},
-        {"shape":"BlueGreenDeploymentAlreadyExistsFault"},
-        {"shape":"DBParameterGroupNotFoundFault"},
-        {"shape":"DBClusterParameterGroupNotFoundFault"},
-        {"shape":"InstanceQuotaExceededFault"},
-        {"shape":"DBClusterQuotaExceededFault"},
-        {"shape":"StorageQuotaExceededFault"},
         {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"InvalidDBClusterStateFault"}
+        {"shape":"DBClusterParameterGroupNotFoundFault"},
+        {"shape":"DBClusterNotFoundFault"},
+        {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"InstanceQuotaExceededFault"},
+        {"shape":"DBClusterQuotaExceededFault"}
       ],
       "documentation":"<p>Creates a blue/green deployment.</p> <p>A blue/green deployment creates a staging environment that copies the production environment. In a blue/green deployment, the blue environment is the current production environment. The green environment is the staging environment, and it stays in sync with the current production environment.</p> <p>You can make changes to the databases in the green environment without affecting production workloads. For example, you can upgrade the major or minor DB engine version, change database parameters, or make schema changes in the staging environment. You can thoroughly test changes in the green environment. When ready, you can switch over the environments to promote the green environment to be the new production environment. The switchover typically takes under a minute.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html\">Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html\"> Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon Aurora User Guide</i>.</p>"
     },
@@ -292,13 +293,13 @@
         "resultWrapper":"CreateCustomDBEngineVersionResult"
       },
       "errors":[
-        {"shape":"CustomDBEngineVersionAlreadyExistsFault"},
-        {"shape":"CustomDBEngineVersionQuotaExceededFault"},
-        {"shape":"KMSKeyNotAccessibleFault"},
-        {"shape":"Ec2ImagePropertiesNotSupportedFault"},
-        {"shape":"CreateCustomDBEngineVersionFault"},
         {"shape":"CustomDBEngineVersionNotFoundFault"},
-        {"shape":"InvalidCustomDBEngineVersionStateFault"}
+        {"shape":"Ec2ImagePropertiesNotSupportedFault"},
+        {"shape":"InvalidCustomDBEngineVersionStateFault"},
+        {"shape":"CustomDBEngineVersionQuotaExceededFault"},
+        {"shape":"CreateCustomDBEngineVersionFault"},
+        {"shape":"KMSKeyNotAccessibleFault"},
+        {"shape":"CustomDBEngineVersionAlreadyExistsFault"}
       ],
       "documentation":"<p>Creates a custom DB engine version (CEV).</p>"
     },
@@ -314,30 +315,30 @@
         "resultWrapper":"CreateDBClusterResult"
       },
       "errors":[
-        {"shape":"DBClusterAlreadyExistsFault"},
-        {"shape":"InsufficientDBInstanceCapacityFault"},
-        {"shape":"InsufficientStorageClusterCapacityFault"},
-        {"shape":"DBClusterQuotaExceededFault"},
-        {"shape":"StorageQuotaExceededFault"},
-        {"shape":"DBSubnetGroupNotFoundFault"},
-        {"shape":"InvalidVPCNetworkStateFault"},
-        {"shape":"InvalidDBClusterStateFault"},
-        {"shape":"InvalidDBSubnetGroupFault"},
-        {"shape":"InvalidDBSubnetGroupStateFault"},
-        {"shape":"InvalidSubnet"},
-        {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"DBClusterParameterGroupNotFoundFault"},
-        {"shape":"KMSKeyNotAccessibleFault"},
-        {"shape":"DBClusterNotFoundFault"},
-        {"shape":"DBInstanceNotFoundFault"},
         {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
-        {"shape":"GlobalClusterNotFoundFault"},
-        {"shape":"InvalidGlobalClusterStateFault"},
-        {"shape":"NetworkTypeNotSupported"},
-        {"shape":"DomainNotFoundFault"},
+        {"shape":"InvalidDBSubnetGroupFault"},
+        {"shape":"DBClusterParameterGroupNotFoundFault"},
+        {"shape":"InsufficientDBInstanceCapacityFault"},
+        {"shape":"InvalidSubnet"},
+        {"shape":"DBClusterNotFoundFault"},
+        {"shape":"VpcEncryptionControlViolationException"},
         {"shape":"StorageTypeNotSupportedFault"},
         {"shape":"OptionGroupNotFoundFault"},
-        {"shape":"VpcEncryptionControlViolationException"}
+        {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"DBClusterAlreadyExistsFault"},
+        {"shape":"InvalidGlobalClusterStateFault"},
+        {"shape":"NetworkTypeNotSupported"},
+        {"shape":"GlobalClusterNotFoundFault"},
+        {"shape":"StorageQuotaExceededFault"},
+        {"shape":"DomainNotFoundFault"},
+        {"shape":"InsufficientStorageClusterCapacityFault"},
+        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"KMSKeyNotAccessibleFault"},
+        {"shape":"InvalidVPCNetworkStateFault"},
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"InvalidDBSubnetGroupStateFault"},
+        {"shape":"DBSubnetGroupNotFoundFault"},
+        {"shape":"DBClusterQuotaExceededFault"}
       ],
       "documentation":"<p>Creates a new Amazon Aurora DB cluster or Multi-AZ DB cluster.</p> <p>If you create an Aurora DB cluster, the request creates an empty cluster. You must explicitly create the writer instance for your DB cluster using the <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html\">CreateDBInstance</a> operation. If you create a Multi-AZ DB cluster, the request creates a writer and two reader DB instances for you, each in a different Availability Zone.</p> <p>You can use the <code>ReplicationSourceIdentifier</code> parameter to create an Amazon Aurora DB cluster as a read replica of another DB cluster or Amazon RDS for MySQL or PostgreSQL DB instance. For more information about Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\">What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>You can also use the <code>ReplicationSourceIdentifier</code> parameter to create a Multi-AZ DB cluster read replica with an RDS for MySQL or PostgreSQL DB instance as the source. For more information about Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\">Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
@@ -353,12 +354,12 @@
         "resultWrapper":"CreateDBClusterEndpointResult"
       },
       "errors":[
-        {"shape":"DBClusterEndpointQuotaExceededFault"},
         {"shape":"DBClusterEndpointAlreadyExistsFault"},
-        {"shape":"DBClusterNotFoundFault"},
-        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"DBClusterEndpointQuotaExceededFault"},
         {"shape":"DBInstanceNotFoundFault"},
-        {"shape":"InvalidDBInstanceStateFault"}
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Creates a new custom endpoint and associates it with an Amazon Aurora DB cluster.</p> <note> <p>This action applies only to Aurora DB clusters.</p> </note>"
     },
@@ -374,8 +375,8 @@
         "resultWrapper":"CreateDBClusterParameterGroupResult"
       },
       "errors":[
-        {"shape":"DBParameterGroupQuotaExceededFault"},
-        {"shape":"DBParameterGroupAlreadyExistsFault"}
+        {"shape":"DBParameterGroupAlreadyExistsFault"},
+        {"shape":"DBParameterGroupQuotaExceededFault"}
       ],
       "documentation":"<p>Creates a new DB cluster parameter group.</p> <p>Parameters in a DB cluster parameter group apply to all of the instances in a DB cluster.</p> <p>A DB cluster parameter group is initially created with the default parameters for the database engine used by instances in the DB cluster. To provide custom values for any of the parameters, you must modify the group after creating it using <code>ModifyDBClusterParameterGroup</code>. Once you've created a DB cluster parameter group, you need to associate it with your DB cluster using <code>ModifyDBCluster</code>.</p> <p>When you associate a new DB cluster parameter group with a running Aurora DB cluster, reboot the DB instances in the DB cluster without failover for the new DB cluster parameter group and associated settings to take effect.</p> <p>When you associate a new DB cluster parameter group with a running Multi-AZ DB cluster, reboot the DB cluster without failover for the new DB cluster parameter group and associated settings to take effect.</p> <important> <p>After you create a DB cluster parameter group, you should wait at least 5 minutes before creating your first DB cluster that uses that DB cluster parameter group as the default parameter group. This allows Amazon RDS to fully complete the create action before the DB cluster parameter group is used as the default for a new DB cluster. This is especially important for parameters that are critical when creating the default database for a DB cluster, such as the character set for the default database defined by the <code>character_set_database</code> parameter. You can use the <i>Parameter Groups</i> option of the <a href=\"https://console.aws.amazon.com/rds/\">Amazon RDS console</a> or the <code>DescribeDBClusterParameters</code> operation to verify that your DB cluster parameter group has been created or modified.</p> </important> <p>For more information on Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
@@ -391,11 +392,11 @@
         "resultWrapper":"CreateDBClusterSnapshotResult"
       },
       "errors":[
-        {"shape":"DBClusterSnapshotAlreadyExistsFault"},
+        {"shape":"InvalidDBClusterSnapshotStateFault"},
         {"shape":"InvalidDBClusterStateFault"},
-        {"shape":"DBClusterNotFoundFault"},
         {"shape":"SnapshotQuotaExceededFault"},
-        {"shape":"InvalidDBClusterSnapshotStateFault"}
+        {"shape":"DBClusterSnapshotAlreadyExistsFault"},
+        {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Creates a snapshot of a DB cluster.</p> <p>For more information on Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
@@ -411,29 +412,29 @@
         "resultWrapper":"CreateDBInstanceResult"
       },
       "errors":[
-        {"shape":"DBInstanceAlreadyExistsFault"},
-        {"shape":"InsufficientDBInstanceCapacityFault"},
+        {"shape":"AuthorizationNotFoundFault"},
         {"shape":"DBParameterGroupNotFoundFault"},
-        {"shape":"DBSecurityGroupNotFoundFault"},
+        {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
+        {"shape":"InsufficientDBInstanceCapacityFault"},
+        {"shape":"InvalidSubnet"},
+        {"shape":"DBClusterNotFoundFault"},
+        {"shape":"VpcEncryptionControlViolationException"},
+        {"shape":"ProvisionedIopsNotAvailableInAZFault"},
+        {"shape":"StorageTypeNotSupportedFault"},
+        {"shape":"OptionGroupNotFoundFault"},
+        {"shape":"NetworkTypeNotSupported"},
         {"shape":"InstanceQuotaExceededFault"},
         {"shape":"StorageQuotaExceededFault"},
-        {"shape":"DBSubnetGroupNotFoundFault"},
-        {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
-        {"shape":"InvalidDBClusterStateFault"},
-        {"shape":"InvalidSubnet"},
-        {"shape":"InvalidVPCNetworkStateFault"},
-        {"shape":"ProvisionedIopsNotAvailableInAZFault"},
-        {"shape":"OptionGroupNotFoundFault"},
-        {"shape":"DBClusterNotFoundFault"},
-        {"shape":"StorageTypeNotSupportedFault"},
-        {"shape":"AuthorizationNotFoundFault"},
-        {"shape":"KMSKeyNotAccessibleFault"},
-        {"shape":"DomainNotFoundFault"},
-        {"shape":"NetworkTypeNotSupported"},
         {"shape":"BackupPolicyNotFoundFault"},
+        {"shape":"DomainNotFoundFault"},
         {"shape":"CertificateNotFoundFault"},
+        {"shape":"KMSKeyNotAccessibleFault"},
+        {"shape":"DBInstanceAlreadyExistsFault"},
         {"shape":"TenantDatabaseQuotaExceededFault"},
-        {"shape":"VpcEncryptionControlViolationException"}
+        {"shape":"DBSecurityGroupNotFoundFault"},
+        {"shape":"InvalidVPCNetworkStateFault"},
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"DBSubnetGroupNotFoundFault"}
       ],
       "documentation":"<p>Creates a new DB instance.</p> <p>The new DB instance can be an RDS DB instance, or it can be a DB instance in an Aurora DB cluster. For an Aurora DB cluster, you can call this operation multiple times to add more than one DB instance to the cluster.</p> <p>For more information about creating an RDS DB instance, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreateDBInstance.html\"> Creating an Amazon RDS DB instance</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about creating a DB instance in an Aurora DB cluster, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.CreateInstance.html\"> Creating an Amazon Aurora DB cluster</a> in the <i>Amazon Aurora User Guide</i>.</p>"
     },
@@ -449,31 +450,31 @@
         "resultWrapper":"CreateDBInstanceReadReplicaResult"
       },
       "errors":[
-        {"shape":"DBInstanceAlreadyExistsFault"},
-        {"shape":"InsufficientDBInstanceCapacityFault"},
         {"shape":"DBParameterGroupNotFoundFault"},
-        {"shape":"DBSecurityGroupNotFoundFault"},
+        {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
+        {"shape":"InvalidDBSubnetGroupFault"},
+        {"shape":"InsufficientDBInstanceCapacityFault"},
+        {"shape":"InvalidSubnet"},
+        {"shape":"DBClusterNotFoundFault"},
+        {"shape":"VpcEncryptionControlViolationException"},
+        {"shape":"ProvisionedIopsNotAvailableInAZFault"},
+        {"shape":"StorageTypeNotSupportedFault"},
+        {"shape":"DBSubnetGroupNotAllowedFault"},
+        {"shape":"OptionGroupNotFoundFault"},
+        {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"NetworkTypeNotSupported"},
         {"shape":"InstanceQuotaExceededFault"},
         {"shape":"StorageQuotaExceededFault"},
-        {"shape":"DBInstanceNotFoundFault"},
-        {"shape":"DBClusterNotFoundFault"},
-        {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"InvalidDBClusterStateFault"},
-        {"shape":"DBSubnetGroupNotFoundFault"},
-        {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
-        {"shape":"InvalidSubnet"},
-        {"shape":"InvalidVPCNetworkStateFault"},
-        {"shape":"ProvisionedIopsNotAvailableInAZFault"},
-        {"shape":"OptionGroupNotFoundFault"},
-        {"shape":"DBSubnetGroupNotAllowedFault"},
-        {"shape":"InvalidDBSubnetGroupFault"},
-        {"shape":"StorageTypeNotSupportedFault"},
-        {"shape":"KMSKeyNotAccessibleFault"},
-        {"shape":"NetworkTypeNotSupported"},
         {"shape":"DomainNotFoundFault"},
-        {"shape":"TenantDatabaseQuotaExceededFault"},
         {"shape":"CertificateNotFoundFault"},
-        {"shape":"VpcEncryptionControlViolationException"}
+        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"KMSKeyNotAccessibleFault"},
+        {"shape":"DBInstanceAlreadyExistsFault"},
+        {"shape":"TenantDatabaseQuotaExceededFault"},
+        {"shape":"DBSecurityGroupNotFoundFault"},
+        {"shape":"InvalidVPCNetworkStateFault"},
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"DBSubnetGroupNotFoundFault"}
       ],
       "documentation":"<p>Creates a new DB instance that acts as a read replica for an existing source DB instance or Multi-AZ DB cluster. You can create a read replica for a DB instance running Db2, MariaDB, MySQL, Oracle, PostgreSQL, or SQL Server. You can create a read replica for a Multi-AZ DB cluster running MySQL or PostgreSQL. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html\">Working with read replicas</a> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html#multi-az-db-clusters-migrating-to-instance-with-read-replica\">Migrating from a Multi-AZ DB cluster to a DB instance using a read replica</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Amazon Aurora doesn't support this operation. To create a DB instance for an Aurora DB cluster, use the <code>CreateDBInstance</code> operation.</p> <p>RDS creates read replicas with backups disabled. All other attributes (including DB security groups and DB parameter groups) are inherited from the source DB instance or cluster, except as specified.</p> <important> <p>Your source DB instance or cluster must have backup retention enabled.</p> </important>"
     },
@@ -489,8 +490,8 @@
         "resultWrapper":"CreateDBParameterGroupResult"
       },
       "errors":[
-        {"shape":"DBParameterGroupQuotaExceededFault"},
-        {"shape":"DBParameterGroupAlreadyExistsFault"}
+        {"shape":"DBParameterGroupAlreadyExistsFault"},
+        {"shape":"DBParameterGroupQuotaExceededFault"}
       ],
       "documentation":"<p>Creates a new DB parameter group.</p> <p>A DB parameter group is initially created with the default parameters for the database engine used by the DB instance. To provide custom values for any of the parameters, you must modify the group after creating it using <code>ModifyDBParameterGroup</code>. Once you've created a DB parameter group, you need to associate it with your DB instance using <code>ModifyDBInstance</code>. When you associate a new DB parameter group with a running DB instance, you need to reboot the DB instance without failover for the new DB parameter group and associated settings to take effect.</p> <p>This command doesn't apply to RDS Custom.</p>"
     },
@@ -506,8 +507,8 @@
         "resultWrapper":"CreateDBProxyResult"
       },
       "errors":[
-        {"shape":"InvalidSubnet"},
         {"shape":"DBProxyAlreadyExistsFault"},
+        {"shape":"InvalidSubnet"},
         {"shape":"DBProxyQuotaExceededFault"}
       ],
       "documentation":"<p>Creates a new DB proxy.</p>"
@@ -524,11 +525,11 @@
         "resultWrapper":"CreateDBProxyEndpointResult"
       },
       "errors":[
-        {"shape":"InvalidSubnet"},
         {"shape":"DBProxyNotFoundFault"},
         {"shape":"DBProxyEndpointAlreadyExistsFault"},
+        {"shape":"InvalidDBProxyStateFault"},
         {"shape":"DBProxyEndpointQuotaExceededFault"},
-        {"shape":"InvalidDBProxyStateFault"}
+        {"shape":"InvalidSubnet"}
       ],
       "documentation":"<p>Creates a <code>DBProxyEndpoint</code>. Only applies to proxies that are associated with Aurora DB clusters. You can use DB proxy endpoints to specify read/write or read-only access to the DB cluster. You can also use DB proxy endpoints to access a DB proxy through a different VPC than the proxy's default VPC.</p>"
     },
@@ -544,8 +545,8 @@
         "resultWrapper":"CreateDBSecurityGroupResult"
       },
       "errors":[
-        {"shape":"DBSecurityGroupAlreadyExistsFault"},
         {"shape":"DBSecurityGroupQuotaExceededFault"},
+        {"shape":"DBSecurityGroupAlreadyExistsFault"},
         {"shape":"DBSecurityGroupNotSupportedFault"}
       ],
       "documentation":"<p>Creates a new DB security group. DB security groups control access to a DB instance.</p> <p>A DB security group controls access to EC2-Classic DB instances that are not in a VPC.</p> <note> <p>EC2-Classic was retired on August 15, 2022. If you haven't migrated from EC2-Classic to a VPC, we recommend that you migrate as soon as possible. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-migrate.html\">Migrate from EC2-Classic to a VPC</a> in the <i>Amazon EC2 User Guide</i>, the blog <a href=\"http://aws.amazon.com/blogs/aws/ec2-classic-is-retiring-heres-how-to-prepare/\">EC2-Classic Networking is Retiring – Here’s How to Prepare</a>, and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.Non-VPC2VPC.html\">Moving a DB instance not in a VPC into a VPC</a> in the <i>Amazon RDS User Guide</i>.</p> </note>"
@@ -562,13 +563,13 @@
         "resultWrapper":"CreateDBShardGroupResult"
       },
       "errors":[
-        {"shape":"DBShardGroupAlreadyExistsFault"},
-        {"shape":"DBClusterNotFoundFault"},
         {"shape":"MaxDBShardGroupLimitReached"},
-        {"shape":"InvalidDBClusterStateFault"},
-        {"shape":"UnsupportedDBEngineVersionFault"},
+        {"shape":"DBShardGroupAlreadyExistsFault"},
         {"shape":"InvalidVPCNetworkStateFault"},
-        {"shape":"NetworkTypeNotSupported"}
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"NetworkTypeNotSupported"},
+        {"shape":"UnsupportedDBEngineVersionFault"},
+        {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Creates a new DB shard group for Aurora Limitless Database. You must enable Aurora Limitless Database to create a DB shard group.</p> <p>Valid for: Aurora DB clusters only</p>"
     },
@@ -584,10 +585,10 @@
         "resultWrapper":"CreateDBSnapshotResult"
       },
       "errors":[
-        {"shape":"DBSnapshotAlreadyExistsFault"},
-        {"shape":"InvalidDBInstanceStateFault"},
         {"shape":"DBInstanceNotFoundFault"},
-        {"shape":"SnapshotQuotaExceededFault"}
+        {"shape":"SnapshotQuotaExceededFault"},
+        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"DBSnapshotAlreadyExistsFault"}
       ],
       "documentation":"<p>Creates a snapshot of a DB instance. The source DB instance must be in the <code>available</code> or <code>storage-optimization</code> state.</p>"
     },
@@ -604,9 +605,9 @@
       },
       "errors":[
         {"shape":"DBSubnetGroupAlreadyExistsFault"},
-        {"shape":"DBSubnetGroupQuotaExceededFault"},
-        {"shape":"DBSubnetQuotaExceededFault"},
         {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
+        {"shape":"DBSubnetQuotaExceededFault"},
+        {"shape":"DBSubnetGroupQuotaExceededFault"},
         {"shape":"InvalidSubnet"}
       ],
       "documentation":"<p>Creates a new DB subnet group. DB subnet groups must contain at least one subnet in at least two AZs in the Amazon Web Services Region.</p>"
@@ -623,13 +624,13 @@
         "resultWrapper":"CreateEventSubscriptionResult"
       },
       "errors":[
-        {"shape":"EventSubscriptionQuotaExceededFault"},
-        {"shape":"SubscriptionAlreadyExistFault"},
-        {"shape":"SNSInvalidTopicFault"},
-        {"shape":"SNSNoAuthorizationFault"},
         {"shape":"SNSTopicArnNotFoundFault"},
+        {"shape":"SourceNotFoundFault"},
+        {"shape":"SNSInvalidTopicFault"},
+        {"shape":"SubscriptionAlreadyExistFault"},
         {"shape":"SubscriptionCategoryNotFoundFault"},
-        {"shape":"SourceNotFoundFault"}
+        {"shape":"EventSubscriptionQuotaExceededFault"},
+        {"shape":"SNSNoAuthorizationFault"}
       ],
       "documentation":"<p>Creates an RDS event notification subscription. This operation requires a topic Amazon Resource Name (ARN) created by either the RDS console, the SNS console, or the SNS API. To obtain an ARN with SNS, you must create a topic in Amazon SNS and subscribe to the topic. The ARN is displayed in the SNS console.</p> <p>You can specify the type of source (<code>SourceType</code>) that you want to be notified of and provide a list of RDS sources (<code>SourceIds</code>) that triggers the events. You can also provide a list of event categories (<code>EventCategories</code>) for events that you want to be notified of. For example, you can specify <code>SourceType</code> = <code>db-instance</code>, <code>SourceIds</code> = <code>mydbinstance1</code>, <code>mydbinstance2</code> and <code>EventCategories</code> = <code>Availability</code>, <code>Backup</code>.</p> <p>If you specify both the <code>SourceType</code> and <code>SourceIds</code>, such as <code>SourceType</code> = <code>db-instance</code> and <code>SourceIds</code> = <code>myDBInstance1</code>, you are notified of all the <code>db-instance</code> events for the specified source. If you specify a <code>SourceType</code> but do not specify <code>SourceIds</code>, you receive notice of the events for that source type for all your RDS sources. If you don't specify either the SourceType or the <code>SourceIds</code>, you are notified of events generated from all RDS sources belonging to your customer account.</p> <p>For more information about subscribing to an event for RDS DB engines, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Events.Subscribing.html\"> Subscribing to Amazon RDS event notification</a> in the <i>Amazon RDS User Guide</i>.</p> <p>For more information about subscribing to an event for Aurora DB engines, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Events.Subscribing.html\"> Subscribing to Amazon RDS event notification</a> in the <i>Amazon Aurora User Guide</i>.</p>"
     },
@@ -645,12 +646,12 @@
         "resultWrapper":"CreateGlobalClusterResult"
       },
       "errors":[
-        {"shape":"GlobalClusterAlreadyExistsFault"},
+        {"shape":"ResourceNotFoundFault"},
         {"shape":"GlobalClusterQuotaExceededFault"},
         {"shape":"InvalidDBClusterStateFault"},
-        {"shape":"DBClusterNotFoundFault"},
         {"shape":"InvalidDBShardGroupStateFault"},
-        {"shape":"ResourceNotFoundFault"}
+        {"shape":"GlobalClusterAlreadyExistsFault"},
+        {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Creates an Aurora global database spread across multiple Amazon Web Services Regions. The global database contains a single primary cluster with read-write capability, and a read-only secondary cluster that receives data from the primary cluster through high-speed replication performed by the Aurora storage subsystem.</p> <p>You can create a global database that is initially empty, and then create the primary and secondary DB clusters in the global database. Or you can specify an existing Aurora cluster during the create operation, and this cluster becomes the primary cluster of the global database.</p> <note> <p>This operation applies only to Aurora DB clusters.</p> </note>"
     },
@@ -666,12 +667,12 @@
         "resultWrapper":"CreateIntegrationResult"
       },
       "errors":[
-        {"shape":"DBClusterNotFoundFault"},
+        {"shape":"IntegrationQuotaExceededFault"},
         {"shape":"DBInstanceNotFoundFault"},
         {"shape":"IntegrationAlreadyExistsFault"},
-        {"shape":"IntegrationQuotaExceededFault"},
         {"shape":"KMSKeyNotAccessibleFault"},
-        {"shape":"IntegrationConflictOperationFault"}
+        {"shape":"IntegrationConflictOperationFault"},
+        {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Creates a zero-ETL integration with Amazon Redshift.</p>"
     },
@@ -687,8 +688,8 @@
         "resultWrapper":"CreateOptionGroupResult"
       },
       "errors":[
-        {"shape":"OptionGroupAlreadyExistsFault"},
-        {"shape":"OptionGroupQuotaExceededFault"}
+        {"shape":"OptionGroupQuotaExceededFault"},
+        {"shape":"OptionGroupAlreadyExistsFault"}
       ],
       "documentation":"<p>Creates a new option group. You can create up to 20 option groups.</p> <p>This command doesn't apply to RDS Custom.</p>"
     },
@@ -705,10 +706,10 @@
       },
       "errors":[
         {"shape":"DBInstanceNotFoundFault"},
-        {"shape":"InvalidDBInstanceStateFault"},
         {"shape":"TenantDatabaseAlreadyExistsFault"},
-        {"shape":"TenantDatabaseQuotaExceededFault"},
-        {"shape":"KMSKeyNotAccessibleFault"}
+        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"KMSKeyNotAccessibleFault"},
+        {"shape":"TenantDatabaseQuotaExceededFault"}
       ],
       "documentation":"<p>Creates a tenant database in a DB instance that uses the multi-tenant configuration. Only RDS for Oracle container database (CDB) instances are supported.</p>"
     },
@@ -724,8 +725,8 @@
         "resultWrapper":"DeleteBlueGreenDeploymentResult"
       },
       "errors":[
-        {"shape":"BlueGreenDeploymentNotFoundFault"},
-        {"shape":"InvalidBlueGreenDeploymentStateFault"}
+        {"shape":"InvalidBlueGreenDeploymentStateFault"},
+        {"shape":"BlueGreenDeploymentNotFoundFault"}
       ],
       "documentation":"<p>Deletes a blue/green deployment.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html\">Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html\">Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon Aurora User Guide</i>.</p>"
     },
@@ -758,14 +759,14 @@
         "resultWrapper":"DeleteDBClusterResult"
       },
       "errors":[
-        {"shape":"DBClusterNotFoundFault"},
+        {"shape":"InvalidDBClusterSnapshotStateFault"},
         {"shape":"InvalidDBClusterStateFault"},
         {"shape":"InvalidGlobalClusterStateFault"},
-        {"shape":"DBClusterSnapshotAlreadyExistsFault"},
         {"shape":"SnapshotQuotaExceededFault"},
-        {"shape":"InvalidDBClusterSnapshotStateFault"},
+        {"shape":"DBClusterSnapshotAlreadyExistsFault"},
+        {"shape":"KMSKeyNotAccessibleFault"},
         {"shape":"DBClusterAutomatedBackupQuotaExceededFault"},
-        {"shape":"KMSKeyNotAccessibleFault"}
+        {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>The DeleteDBCluster action deletes a previously provisioned DB cluster. When you delete a DB cluster, all automated backups for that DB cluster are deleted and can't be recovered. Manual DB cluster snapshots of the specified DB cluster are not deleted.</p> <p>If you're deleting a Multi-AZ DB cluster with read replicas, all cluster members are terminated and read replicas are promoted to standalone instances.</p> <p>For more information on Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
@@ -781,8 +782,8 @@
         "resultWrapper":"DeleteDBClusterAutomatedBackupResult"
       },
       "errors":[
-        {"shape":"InvalidDBClusterAutomatedBackupStateFault"},
-        {"shape":"DBClusterAutomatedBackupNotFoundFault"}
+        {"shape":"DBClusterAutomatedBackupNotFoundFault"},
+        {"shape":"InvalidDBClusterAutomatedBackupStateFault"}
       ],
       "documentation":"<p>Deletes automated backups using the <code>DbClusterResourceId</code> value of the source DB cluster or the Amazon Resource Name (ARN) of the automated backups.</p>"
     },
@@ -798,9 +799,9 @@
         "resultWrapper":"DeleteDBClusterEndpointResult"
       },
       "errors":[
-        {"shape":"InvalidDBClusterEndpointStateFault"},
         {"shape":"DBClusterEndpointNotFoundFault"},
-        {"shape":"InvalidDBClusterStateFault"}
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"InvalidDBClusterEndpointStateFault"}
       ],
       "documentation":"<p>Deletes a custom endpoint and removes it from an Amazon Aurora DB cluster.</p> <note> <p>This action only applies to Aurora DB clusters.</p> </note>"
     },
@@ -812,8 +813,8 @@
       },
       "input":{"shape":"DeleteDBClusterParameterGroupMessage"},
       "errors":[
-        {"shape":"InvalidDBParameterGroupStateFault"},
-        {"shape":"DBParameterGroupNotFoundFault"}
+        {"shape":"DBParameterGroupNotFoundFault"},
+        {"shape":"InvalidDBParameterGroupStateFault"}
       ],
       "documentation":"<p>Deletes a specified DB cluster parameter group. The DB cluster parameter group to be deleted can't be associated with any DB clusters.</p> <p>For more information on Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
@@ -829,8 +830,8 @@
         "resultWrapper":"DeleteDBClusterSnapshotResult"
       },
       "errors":[
-        {"shape":"InvalidDBClusterSnapshotStateFault"},
-        {"shape":"DBClusterSnapshotNotFoundFault"}
+        {"shape":"DBClusterSnapshotNotFoundFault"},
+        {"shape":"InvalidDBClusterSnapshotStateFault"}
       ],
       "documentation":"<p>Deletes a DB cluster snapshot. If the snapshot is being copied, the copy operation is terminated.</p> <note> <p>The DB cluster snapshot must be in the <code>available</code> state to be deleted.</p> </note> <p>For more information on Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
@@ -846,13 +847,13 @@
         "resultWrapper":"DeleteDBInstanceResult"
       },
       "errors":[
-        {"shape":"DBInstanceNotFoundFault"},
-        {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"DBSnapshotAlreadyExistsFault"},
-        {"shape":"SnapshotQuotaExceededFault"},
-        {"shape":"InvalidDBClusterStateFault"},
         {"shape":"DBInstanceAutomatedBackupQuotaExceededFault"},
-        {"shape":"KMSKeyNotAccessibleFault"}
+        {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"SnapshotQuotaExceededFault"},
+        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"KMSKeyNotAccessibleFault"},
+        {"shape":"DBSnapshotAlreadyExistsFault"}
       ],
       "documentation":"<p>Deletes a previously provisioned DB instance. When you delete a DB instance, all automated backups for that instance are deleted and can't be recovered. However, manual DB snapshots of the DB instance aren't deleted.</p> <p>If you request a final DB snapshot, the status of the Amazon RDS DB instance is <code>deleting</code> until the DB snapshot is created. This operation can't be canceled or reverted after it begins. To monitor the status of this operation, use <code>DescribeDBInstance</code>.</p> <p>When a DB instance is in a failure state and has a status of <code>failed</code>, <code>incompatible-restore</code>, or <code>incompatible-network</code>, you can only delete it when you skip creation of the final snapshot with the <code>SkipFinalSnapshot</code> parameter.</p> <p>If the specified DB instance is part of an Amazon Aurora DB cluster, you can't delete the DB instance if both of the following conditions are true:</p> <ul> <li> <p>The DB cluster is a read replica of another Amazon Aurora DB cluster.</p> </li> <li> <p>The DB instance is the only instance in the DB cluster.</p> </li> </ul> <p>To delete a DB instance in this case, first use the <code>PromoteReadReplicaDBCluster</code> operation to promote the DB cluster so that it's no longer a read replica. After the promotion completes, use the <code>DeleteDBInstance</code> operation to delete the final instance in the DB cluster.</p> <important> <p>For RDS Custom DB instances, deleting the DB instance permanently deletes the EC2 instance and the associated EBS volumes. Make sure that you don't terminate or delete these resources before you delete the DB instance. Otherwise, deleting the DB instance and creation of the final snapshot might fail.</p> </important>"
     },
@@ -881,8 +882,8 @@
       },
       "input":{"shape":"DeleteDBParameterGroupMessage"},
       "errors":[
-        {"shape":"InvalidDBParameterGroupStateFault"},
-        {"shape":"DBParameterGroupNotFoundFault"}
+        {"shape":"DBParameterGroupNotFoundFault"},
+        {"shape":"InvalidDBParameterGroupStateFault"}
       ],
       "documentation":"<p>Deletes a specified DB parameter group. The DB parameter group to be deleted can't be associated with any DB instances.</p>"
     },
@@ -915,8 +916,8 @@
         "resultWrapper":"DeleteDBProxyEndpointResult"
       },
       "errors":[
-        {"shape":"DBProxyEndpointNotFoundFault"},
-        {"shape":"InvalidDBProxyEndpointStateFault"}
+        {"shape":"InvalidDBProxyEndpointStateFault"},
+        {"shape":"DBProxyEndpointNotFoundFault"}
       ],
       "documentation":"<p>Deletes a <code>DBProxyEndpoint</code>. Doing so removes the ability to access the DB proxy using the endpoint that you defined. The endpoint that you delete might have provided capabilities such as read/write or read-only operations, or using a different VPC than the DB proxy's default VPC.</p>"
     },
@@ -945,9 +946,9 @@
         "resultWrapper":"DeleteDBShardGroupResult"
       },
       "errors":[
+        {"shape":"InvalidDBClusterStateFault"},
         {"shape":"DBShardGroupNotFoundFault"},
-        {"shape":"InvalidDBShardGroupStateFault"},
-        {"shape":"InvalidDBClusterStateFault"}
+        {"shape":"InvalidDBShardGroupStateFault"}
       ],
       "documentation":"<p>Deletes an Aurora Limitless Database DB shard group.</p>"
     },
@@ -963,8 +964,8 @@
         "resultWrapper":"DeleteDBSnapshotResult"
       },
       "errors":[
-        {"shape":"InvalidDBSnapshotStateFault"},
-        {"shape":"DBSnapshotNotFoundFault"}
+        {"shape":"DBSnapshotNotFoundFault"},
+        {"shape":"InvalidDBSnapshotStateFault"}
       ],
       "documentation":"<p>Deletes a DB snapshot. If the snapshot is being copied, the copy operation is terminated.</p> <note> <p>The DB snapshot must be in the <code>available</code> state to be deleted.</p> </note>"
     },
@@ -976,8 +977,8 @@
       },
       "input":{"shape":"DeleteDBSubnetGroupMessage"},
       "errors":[
-        {"shape":"InvalidDBSubnetGroupStateFault"},
         {"shape":"InvalidDBSubnetStateFault"},
+        {"shape":"InvalidDBSubnetGroupStateFault"},
         {"shape":"DBSubnetGroupNotFoundFault"}
       ],
       "documentation":"<p>Deletes a DB subnet group.</p> <note> <p>The specified database subnet group must not be associated with any DB instances.</p> </note>"
@@ -1011,8 +1012,8 @@
         "resultWrapper":"DeleteGlobalClusterResult"
       },
       "errors":[
-        {"shape":"GlobalClusterNotFoundFault"},
-        {"shape":"InvalidGlobalClusterStateFault"}
+        {"shape":"InvalidGlobalClusterStateFault"},
+        {"shape":"GlobalClusterNotFoundFault"}
       ],
       "documentation":"<p>Deletes a global database cluster. The primary and secondary clusters must already be detached or destroyed first.</p> <note> <p>This action only applies to Aurora DB clusters.</p> </note>"
     },
@@ -1028,9 +1029,9 @@
         "resultWrapper":"DeleteIntegrationResult"
       },
       "errors":[
+        {"shape":"InvalidIntegrationStateFault"},
         {"shape":"IntegrationNotFoundFault"},
-        {"shape":"IntegrationConflictOperationFault"},
-        {"shape":"InvalidIntegrationStateFault"}
+        {"shape":"IntegrationConflictOperationFault"}
       ],
       "documentation":"<p>Deletes a zero-ETL integration with Amazon Redshift.</p>"
     },
@@ -1059,8 +1060,8 @@
         "resultWrapper":"DeleteTenantDatabaseResult"
       },
       "errors":[
-        {"shape":"DBInstanceNotFoundFault"},
         {"shape":"TenantDatabaseNotFoundFault"},
+        {"shape":"DBInstanceNotFoundFault"},
         {"shape":"InvalidDBInstanceStateFault"},
         {"shape":"DBSnapshotAlreadyExistsFault"}
       ],
@@ -1078,10 +1079,10 @@
         "resultWrapper":"DeregisterDBProxyTargetsResult"
       },
       "errors":[
-        {"shape":"DBProxyTargetNotFoundFault"},
-        {"shape":"DBProxyTargetGroupNotFoundFault"},
         {"shape":"DBProxyNotFoundFault"},
-        {"shape":"InvalidDBProxyStateFault"}
+        {"shape":"DBProxyTargetGroupNotFoundFault"},
+        {"shape":"InvalidDBProxyStateFault"},
+        {"shape":"DBProxyTargetNotFoundFault"}
       ],
       "documentation":"<p>Remove the association between one or more <code>DBProxyTarget</code> data structures and a <code>DBProxyTargetGroup</code>.</p>"
     },
@@ -1159,8 +1160,8 @@
         "resultWrapper":"DescribeDBClusterBacktracksResult"
       },
       "errors":[
-        {"shape":"DBClusterNotFoundFault"},
-        {"shape":"DBClusterBacktrackNotFoundFault"}
+        {"shape":"DBClusterBacktrackNotFoundFault"},
+        {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Returns information about backtracks for a DB cluster.</p> <p>For more information on Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This action only applies to Aurora MySQL DB clusters.</p> </note>"
     },
@@ -1433,9 +1434,9 @@
       },
       "errors":[
         {"shape":"DBProxyNotFoundFault"},
-        {"shape":"DBProxyTargetNotFoundFault"},
         {"shape":"DBProxyTargetGroupNotFoundFault"},
-        {"shape":"InvalidDBProxyStateFault"}
+        {"shape":"InvalidDBProxyStateFault"},
+        {"shape":"DBProxyTargetNotFoundFault"}
       ],
       "documentation":"<p>Returns information about <code>DBProxyTarget</code> objects. This API supports pagination.</p>"
     },
@@ -1873,9 +1874,9 @@
         "resultWrapper":"FailoverDBClusterResult"
       },
       "errors":[
-        {"shape":"DBClusterNotFoundFault"},
         {"shape":"InvalidDBClusterStateFault"},
-        {"shape":"InvalidDBInstanceStateFault"}
+        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Forces a failover for a DB cluster.</p> <p>For an Aurora DB cluster, failover for a DB cluster promotes one of the Aurora Replicas (read-only instances) in the DB cluster to be the primary DB instance (the cluster writer).</p> <p>For a Multi-AZ DB cluster, after RDS terminates the primary DB instance, the internal monitoring system detects that the primary DB instance is unhealthy and promotes a readable standby (read-only instances) in the DB cluster to be the primary DB instance (the cluster writer). Failover times are typically less than 35 seconds.</p> <p>An Amazon Aurora DB cluster automatically fails over to an Aurora Replica, if one exists, when the primary DB instance fails. A Multi-AZ DB cluster automatically fails over to a readable standby DB instance when the primary DB instance fails.</p> <p>To simulate a failure of a primary instance for testing, you can force a failover. Because each instance in a DB cluster has its own endpoint address, make sure to clean up and re-establish any existing connections that use those endpoint addresses when the failover is complete.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
@@ -1891,9 +1892,9 @@
         "resultWrapper":"FailoverGlobalClusterResult"
       },
       "errors":[
-        {"shape":"GlobalClusterNotFoundFault"},
-        {"shape":"InvalidGlobalClusterStateFault"},
         {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"InvalidGlobalClusterStateFault"},
+        {"shape":"GlobalClusterNotFoundFault"},
         {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Promotes the specified secondary DB cluster to be the primary DB cluster in the global database cluster to fail over or switch over a global database. Switchover operations were previously called \"managed planned failovers.\"</p> <note> <p>Although this operation can be used either to fail over or to switch over a global database cluster, its intended use is for global database failover. To switch over a global database cluster, we recommend that you use the <a>SwitchoverGlobalCluster</a> operation instead.</p> </note> <p>How you use this operation depends on whether you are failing over or switching over your global database cluster:</p> <ul> <li> <p>Failing over - Specify the <code>AllowDataLoss</code> parameter and don't specify the <code>Switchover</code> parameter.</p> </li> <li> <p>Switching over - Specify the <code>Switchover</code> parameter or omit it, but don't specify the <code>AllowDataLoss</code> parameter.</p> </li> </ul> <p> <b>About failing over and switching over</b> </p> <p>While failing over and switching over a global database cluster both change the primary DB cluster, you use these operations for different reasons:</p> <ul> <li> <p> <i>Failing over</i> - Use this operation to respond to an unplanned event, such as a Regional disaster in the primary Region. Failing over can result in a loss of write transaction data that wasn't replicated to the chosen secondary before the failover event occurred. However, the recovery process that promotes a DB instance on the chosen seconday DB cluster to be the primary writer DB instance guarantees that the data is in a transactionally consistent state.</p> <p>For more information about failing over an Amazon Aurora global database, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-disaster-recovery.html#aurora-global-database-failover.managed-unplanned\">Performing managed failovers for Aurora global databases</a> in the <i>Amazon Aurora User Guide</i>.</p> </li> <li> <p> <i>Switching over</i> - Use this operation on a healthy global database cluster for planned events, such as Regional rotation or to fail back to the original primary DB cluster after a failover operation. With this operation, there is no data loss.</p> <p>For more information about switching over an Amazon Aurora global database, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-disaster-recovery.html#aurora-global-database-disaster-recovery.managed-failover\">Performing switchovers for Aurora global databases</a> in the <i>Amazon Aurora User Guide</i>.</p> </li> </ul>"
@@ -1910,17 +1911,17 @@
         "resultWrapper":"ListTagsForResourceResult"
       },
       "errors":[
-        {"shape":"DBInstanceNotFoundFault"},
-        {"shape":"DBSnapshotNotFoundFault"},
-        {"shape":"DBClusterNotFoundFault"},
         {"shape":"DBProxyNotFoundFault"},
-        {"shape":"DBProxyTargetGroupNotFoundFault"},
-        {"shape":"DBProxyEndpointNotFoundFault"},
-        {"shape":"BlueGreenDeploymentNotFoundFault"},
-        {"shape":"TenantDatabaseNotFoundFault"},
         {"shape":"DBSnapshotTenantDatabaseNotFoundFault"},
         {"shape":"IntegrationNotFoundFault"},
-        {"shape":"DBShardGroupNotFoundFault"}
+        {"shape":"TenantDatabaseNotFoundFault"},
+        {"shape":"BlueGreenDeploymentNotFoundFault"},
+        {"shape":"DBSnapshotNotFoundFault"},
+        {"shape":"DBProxyEndpointNotFoundFault"},
+        {"shape":"DBShardGroupNotFoundFault"},
+        {"shape":"DBClusterNotFoundFault"},
+        {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"DBProxyTargetGroupNotFoundFault"}
       ],
       "documentation":"<p>Lists all tags on an Amazon RDS resource.</p> <p>For an overview on tagging an Amazon RDS resource, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html\">Tagging Amazon RDS Resources</a> in the <i>Amazon RDS User Guide</i> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html\">Tagging Amazon Aurora and Amazon RDS Resources</a> in the <i>Amazon Aurora User Guide</i>.</p>"
     },
@@ -1936,9 +1937,9 @@
         "resultWrapper":"ModifyActivityStreamResult"
       },
       "errors":[
-        {"shape":"InvalidDBInstanceStateFault"},
         {"shape":"ResourceNotFoundFault"},
-        {"shape":"DBInstanceNotFoundFault"}
+        {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"InvalidDBInstanceStateFault"}
       ],
       "documentation":"<p>Changes the audit policy state of a database activity stream to either locked (default) or unlocked. A locked policy is read-only, whereas an unlocked policy is read/write. If your activity stream is started and locked, you can unlock it, customize your audit policy, and then lock your activity stream. Restarting the activity stream isn't required. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/DBActivityStreams.Modifying.html\"> Modifying a database activity stream</a> in the <i>Amazon RDS User Guide</i>. </p> <p>This operation is supported for RDS for Oracle and Microsoft SQL Server.</p>"
     },
@@ -1970,9 +1971,9 @@
         "resultWrapper":"ModifyCurrentDBClusterCapacityResult"
       },
       "errors":[
-        {"shape":"DBClusterNotFoundFault"},
+        {"shape":"InvalidDBClusterCapacityFault"},
         {"shape":"InvalidDBClusterStateFault"},
-        {"shape":"InvalidDBClusterCapacityFault"}
+        {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Set the capacity of an Aurora Serverless v1 DB cluster to a specific value.</p> <p>Aurora Serverless v1 scales seamlessly based on the workload on the DB cluster. In some cases, the capacity might not scale fast enough to meet a sudden change in workload, such as a large number of new transactions. Call <code>ModifyCurrentDBClusterCapacity</code> to set the capacity explicitly.</p> <p>After this call sets the DB cluster capacity, Aurora Serverless v1 can automatically scale the DB cluster based on the cooldown period for scaling up and the cooldown period for scaling down.</p> <p>For more information about Aurora Serverless v1, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html\">Using Amazon Aurora Serverless v1</a> in the <i>Amazon Aurora User Guide</i>.</p> <important> <p>If you call <code>ModifyCurrentDBClusterCapacity</code> with the default <code>TimeoutAction</code>, connections that prevent Aurora Serverless v1 from finding a scaling point might be dropped. For more information about scaling points, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.how-it-works.html#aurora-serverless.how-it-works.auto-scaling\"> Autoscaling for Aurora Serverless v1</a> in the <i>Amazon Aurora User Guide</i>.</p> </important> <note> <p>This operation only applies to Aurora Serverless v1 DB clusters.</p> </note>"
     },
@@ -2005,27 +2006,27 @@
         "resultWrapper":"ModifyDBClusterResult"
       },
       "errors":[
-        {"shape":"DBClusterNotFoundFault"},
-        {"shape":"InvalidDBClusterStateFault"},
         {"shape":"StorageQuotaExceededFault"},
-        {"shape":"DBSubnetGroupNotFoundFault"},
-        {"shape":"InvalidVPCNetworkStateFault"},
-        {"shape":"InvalidDBSubnetGroupStateFault"},
-        {"shape":"InvalidSubnet"},
-        {"shape":"DBClusterParameterGroupNotFoundFault"},
         {"shape":"DBParameterGroupNotFoundFault"},
-        {"shape":"InvalidDBSecurityGroupStateFault"},
-        {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"DBClusterAlreadyExistsFault"},
-        {"shape":"DBInstanceAlreadyExistsFault"},
-        {"shape":"NetworkTypeNotSupported"},
         {"shape":"DomainNotFoundFault"},
-        {"shape":"InvalidGlobalClusterStateFault"},
-        {"shape":"StorageTypeNotSupportedFault"},
-        {"shape":"StorageTypeNotAvailableFault"},
-        {"shape":"OptionGroupNotFoundFault"},
+        {"shape":"InvalidDBInstanceStateFault"},
         {"shape":"KMSKeyNotAccessibleFault"},
-        {"shape":"VpcEncryptionControlViolationException"}
+        {"shape":"DBClusterParameterGroupNotFoundFault"},
+        {"shape":"DBInstanceAlreadyExistsFault"},
+        {"shape":"InvalidSubnet"},
+        {"shape":"DBClusterNotFoundFault"},
+        {"shape":"VpcEncryptionControlViolationException"},
+        {"shape":"InvalidDBSecurityGroupStateFault"},
+        {"shape":"StorageTypeNotAvailableFault"},
+        {"shape":"StorageTypeNotSupportedFault"},
+        {"shape":"OptionGroupNotFoundFault"},
+        {"shape":"InvalidVPCNetworkStateFault"},
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"DBClusterAlreadyExistsFault"},
+        {"shape":"InvalidGlobalClusterStateFault"},
+        {"shape":"NetworkTypeNotSupported"},
+        {"shape":"InvalidDBSubnetGroupStateFault"},
+        {"shape":"DBSubnetGroupNotFoundFault"}
       ],
       "documentation":"<p>Modifies the settings of an Amazon Aurora DB cluster or a Multi-AZ DB cluster. You can change one or more settings by specifying these parameters and the new values in the request.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
@@ -2041,10 +2042,10 @@
         "resultWrapper":"ModifyDBClusterEndpointResult"
       },
       "errors":[
-        {"shape":"InvalidDBClusterStateFault"},
-        {"shape":"InvalidDBClusterEndpointStateFault"},
         {"shape":"DBClusterEndpointNotFoundFault"},
         {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"InvalidDBClusterEndpointStateFault"},
         {"shape":"InvalidDBInstanceStateFault"}
       ],
       "documentation":"<p>Modifies the properties of an endpoint in an Amazon Aurora DB cluster.</p> <note> <p>This operation only applies to Aurora DB clusters.</p> </note>"
@@ -2079,8 +2080,8 @@
       },
       "errors":[
         {"shape":"DBClusterSnapshotNotFoundFault"},
-        {"shape":"InvalidDBClusterSnapshotStateFault"},
-        {"shape":"SharedSnapshotQuotaExceededFault"}
+        {"shape":"SharedSnapshotQuotaExceededFault"},
+        {"shape":"InvalidDBClusterSnapshotStateFault"}
       ],
       "documentation":"<p>Adds an attribute and values to, or removes an attribute and values from, a manual DB cluster snapshot.</p> <p>To share a manual DB cluster snapshot with other Amazon Web Services accounts, specify <code>restore</code> as the <code>AttributeName</code> and use the <code>ValuesToAdd</code> parameter to add a list of IDs of the Amazon Web Services accounts that are authorized to restore the manual DB cluster snapshot. Use the value <code>all</code> to make the manual DB cluster snapshot public, which means that it can be copied or restored by all Amazon Web Services accounts.</p> <note> <p>Don't add the <code>all</code> value for any manual DB cluster snapshots that contain private information that you don't want available to all Amazon Web Services accounts.</p> </note> <p>If a manual DB cluster snapshot is encrypted, it can be shared, but only by specifying a list of authorized Amazon Web Services account IDs for the <code>ValuesToAdd</code> parameter. You can't use <code>all</code> as a value for that parameter in this case.</p> <p>To view which Amazon Web Services accounts have access to copy or restore a manual DB cluster snapshot, or whether a manual DB cluster snapshot is public or private, use the <a>DescribeDBClusterSnapshotAttributes</a> API operation. The accounts are returned as values for the <code>restore</code> attribute.</p>"
     },
@@ -2096,28 +2097,28 @@
         "resultWrapper":"ModifyDBInstanceResult"
       },
       "errors":[
-        {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"InvalidDBSecurityGroupStateFault"},
-        {"shape":"DBInstanceAlreadyExistsFault"},
-        {"shape":"DBInstanceNotFoundFault"},
-        {"shape":"DBSecurityGroupNotFoundFault"},
+        {"shape":"AuthorizationNotFoundFault"},
         {"shape":"DBParameterGroupNotFoundFault"},
         {"shape":"InsufficientDBInstanceCapacityFault"},
-        {"shape":"StorageQuotaExceededFault"},
-        {"shape":"InvalidVPCNetworkStateFault"},
+        {"shape":"VpcEncryptionControlViolationException"},
+        {"shape":"InvalidDBSecurityGroupStateFault"},
         {"shape":"ProvisionedIopsNotAvailableInAZFault"},
-        {"shape":"OptionGroupNotFoundFault"},
-        {"shape":"DBUpgradeDependencyFailureFault"},
         {"shape":"StorageTypeNotSupportedFault"},
-        {"shape":"AuthorizationNotFoundFault"},
-        {"shape":"CertificateNotFoundFault"},
-        {"shape":"DomainNotFoundFault"},
-        {"shape":"BackupPolicyNotFoundFault"},
-        {"shape":"KMSKeyNotAccessibleFault"},
+        {"shape":"OptionGroupNotFoundFault"},
+        {"shape":"DBInstanceNotFoundFault"},
         {"shape":"NetworkTypeNotSupported"},
-        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"StorageQuotaExceededFault"},
+        {"shape":"BackupPolicyNotFoundFault"},
+        {"shape":"DomainNotFoundFault"},
+        {"shape":"CertificateNotFoundFault"},
+        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"KMSKeyNotAccessibleFault"},
+        {"shape":"DBInstanceAlreadyExistsFault"},
+        {"shape":"DBUpgradeDependencyFailureFault"},
         {"shape":"TenantDatabaseQuotaExceededFault"},
-        {"shape":"VpcEncryptionControlViolationException"}
+        {"shape":"DBSecurityGroupNotFoundFault"},
+        {"shape":"InvalidVPCNetworkStateFault"},
+        {"shape":"InvalidDBClusterStateFault"}
       ],
       "documentation":"<p>Modifies settings for a DB instance. You can change one or more database configuration parameters by specifying these parameters and the new values in the request. To learn what modifications you can make to your DB instance, call <code>DescribeValidDBInstanceModifications</code> before you call <code>ModifyDBInstance</code>.</p>"
     },
@@ -2168,9 +2169,9 @@
         "resultWrapper":"ModifyDBProxyEndpointResult"
       },
       "errors":[
-        {"shape":"DBProxyEndpointNotFoundFault"},
-        {"shape":"DBProxyEndpointAlreadyExistsFault"},
         {"shape":"InvalidDBProxyEndpointStateFault"},
+        {"shape":"DBProxyEndpointAlreadyExistsFault"},
+        {"shape":"DBProxyEndpointNotFoundFault"},
         {"shape":"InvalidDBProxyStateFault"}
       ],
       "documentation":"<p>Changes the settings for an existing DB proxy endpoint.</p>"
@@ -2219,8 +2220,8 @@
         "resultWrapper":"ModifyDBShardGroupResult"
       },
       "errors":[
-        {"shape":"InvalidDBClusterStateFault"},
         {"shape":"DBShardGroupAlreadyExistsFault"},
+        {"shape":"InvalidDBClusterStateFault"},
         {"shape":"DBShardGroupNotFoundFault"}
       ],
       "documentation":"<p>Modifies the settings of an Aurora Limitless Database DB shard group. You can change one or more settings by specifying these parameters and the new values in the request.</p>"
@@ -2255,9 +2256,9 @@
         "resultWrapper":"ModifyDBSnapshotAttributeResult"
       },
       "errors":[
+        {"shape":"SharedSnapshotQuotaExceededFault"},
         {"shape":"DBSnapshotNotFoundFault"},
-        {"shape":"InvalidDBSnapshotStateFault"},
-        {"shape":"SharedSnapshotQuotaExceededFault"}
+        {"shape":"InvalidDBSnapshotStateFault"}
       ],
       "documentation":"<p>Adds an attribute and values to, or removes an attribute and values from, a manual DB snapshot.</p> <p>To share a manual DB snapshot with other Amazon Web Services accounts, specify <code>restore</code> as the <code>AttributeName</code> and use the <code>ValuesToAdd</code> parameter to add a list of IDs of the Amazon Web Services accounts that are authorized to restore the manual DB snapshot. Uses the value <code>all</code> to make the manual DB snapshot public, which means it can be copied or restored by all Amazon Web Services accounts.</p> <note> <p>Don't add the <code>all</code> value for any manual DB snapshots that contain private information that you don't want available to all Amazon Web Services accounts.</p> </note> <p>If the manual DB snapshot is encrypted, it can be shared, but only by specifying a list of authorized Amazon Web Services account IDs for the <code>ValuesToAdd</code> parameter. You can't use <code>all</code> as a value for that parameter in this case.</p> <p>To view which Amazon Web Services accounts have access to copy or restore a manual DB snapshot, or whether a manual DB snapshot public or private, use the <a>DescribeDBSnapshotAttributes</a> API operation. The accounts are returned as values for the <code>restore</code> attribute.</p>"
     },
@@ -2273,11 +2274,11 @@
         "resultWrapper":"ModifyDBSubnetGroupResult"
       },
       "errors":[
-        {"shape":"DBSubnetGroupNotFoundFault"},
-        {"shape":"DBSubnetQuotaExceededFault"},
         {"shape":"SubnetAlreadyInUse"},
         {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
+        {"shape":"DBSubnetQuotaExceededFault"},
         {"shape":"InvalidDBSubnetGroupStateFault"},
+        {"shape":"DBSubnetGroupNotFoundFault"},
         {"shape":"InvalidSubnet"}
       ],
       "documentation":"<p>Modifies an existing DB subnet group. DB subnet groups must contain at least one subnet in at least two AZs in the Amazon Web Services Region.</p>"
@@ -2294,12 +2295,12 @@
         "resultWrapper":"ModifyEventSubscriptionResult"
       },
       "errors":[
-        {"shape":"EventSubscriptionQuotaExceededFault"},
-        {"shape":"SubscriptionNotFoundFault"},
-        {"shape":"SNSInvalidTopicFault"},
-        {"shape":"SNSNoAuthorizationFault"},
         {"shape":"SNSTopicArnNotFoundFault"},
-        {"shape":"SubscriptionCategoryNotFoundFault"}
+        {"shape":"SNSInvalidTopicFault"},
+        {"shape":"SubscriptionCategoryNotFoundFault"},
+        {"shape":"SubscriptionNotFoundFault"},
+        {"shape":"EventSubscriptionQuotaExceededFault"},
+        {"shape":"SNSNoAuthorizationFault"}
       ],
       "documentation":"<p>Modifies an existing RDS event notification subscription. You can't modify the source identifiers using this call. To change source identifiers for a subscription, use the <code>AddSourceIdentifierToSubscription</code> and <code>RemoveSourceIdentifierFromSubscription</code> calls.</p> <p>You can see a list of the event categories for a given source type (<code>SourceType</code>) in <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Events.html\">Events</a> in the <i>Amazon RDS User Guide</i> or by using the <code>DescribeEventCategories</code> operation.</p>"
     },
@@ -2315,11 +2316,11 @@
         "resultWrapper":"ModifyGlobalClusterResult"
       },
       "errors":[
-        {"shape":"GlobalClusterNotFoundFault"},
-        {"shape":"GlobalClusterAlreadyExistsFault"},
-        {"shape":"InvalidGlobalClusterStateFault"},
         {"shape":"InvalidDBClusterStateFault"},
-        {"shape":"InvalidDBInstanceStateFault"}
+        {"shape":"InvalidGlobalClusterStateFault"},
+        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"GlobalClusterNotFoundFault"},
+        {"shape":"GlobalClusterAlreadyExistsFault"}
       ],
       "documentation":"<p>Modifies a setting for an Amazon Aurora global database cluster. You can change one or more database configuration parameters by specifying these parameters and the new values in the request. For more information on Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This operation only applies to Aurora global database clusters.</p> </note>"
     },
@@ -2335,8 +2336,8 @@
         "resultWrapper":"ModifyIntegrationResult"
       },
       "errors":[
-        {"shape":"IntegrationNotFoundFault"},
         {"shape":"InvalidIntegrationStateFault"},
+        {"shape":"IntegrationNotFoundFault"},
         {"shape":"IntegrationConflictOperationFault"}
       ],
       "documentation":"<p>Modifies a zero-ETL integration with Amazon Redshift.</p>"
@@ -2353,8 +2354,8 @@
         "resultWrapper":"ModifyOptionGroupResult"
       },
       "errors":[
-        {"shape":"InvalidOptionGroupStateFault"},
-        {"shape":"OptionGroupNotFoundFault"}
+        {"shape":"OptionGroupNotFoundFault"},
+        {"shape":"InvalidOptionGroupStateFault"}
       ],
       "documentation":"<p>Modifies an existing option group.</p>"
     },
@@ -2370,8 +2371,8 @@
         "resultWrapper":"ModifyTenantDatabaseResult"
       },
       "errors":[
-        {"shape":"DBInstanceNotFoundFault"},
         {"shape":"TenantDatabaseNotFoundFault"},
+        {"shape":"DBInstanceNotFoundFault"},
         {"shape":"TenantDatabaseAlreadyExistsFault"},
         {"shape":"InvalidDBInstanceStateFault"},
         {"shape":"KMSKeyNotAccessibleFault"}
@@ -2390,8 +2391,8 @@
         "resultWrapper":"PromoteReadReplicaResult"
       },
       "errors":[
-        {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"DBInstanceNotFoundFault"}
+        {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"InvalidDBInstanceStateFault"}
       ],
       "documentation":"<p>Promotes a read replica DB instance to a standalone DB instance.</p> <note> <ul> <li> <p>Backup duration is a function of the amount of changes to the database since the previous backup. If you plan to promote a read replica to a standalone instance, we recommend that you enable backups and complete at least one backup prior to promotion. In addition, a read replica cannot be promoted to a standalone instance when it is in the <code>backing-up</code> status. If you have enabled backups on your read replica, configure the automated backup window so that daily backups do not interfere with read replica promotion.</p> </li> <li> <p>This command doesn't apply to Aurora MySQL, Aurora PostgreSQL, or RDS Custom.</p> </li> </ul> </note>"
     },
@@ -2407,8 +2408,8 @@
         "resultWrapper":"PromoteReadReplicaDBClusterResult"
       },
       "errors":[
-        {"shape":"DBClusterNotFoundFault"},
-        {"shape":"InvalidDBClusterStateFault"}
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Promotes a read replica DB cluster to a standalone DB cluster.</p>"
     },
@@ -2424,8 +2425,8 @@
         "resultWrapper":"PurchaseReservedDBInstancesOfferingResult"
       },
       "errors":[
-        {"shape":"ReservedDBInstancesOfferingNotFoundFault"},
         {"shape":"ReservedDBInstanceAlreadyExistsFault"},
+        {"shape":"ReservedDBInstancesOfferingNotFoundFault"},
         {"shape":"ReservedDBInstanceQuotaExceededFault"}
       ],
       "documentation":"<p>Purchases a reserved DB instance offering.</p>"
@@ -2442,9 +2443,9 @@
         "resultWrapper":"RebootDBClusterResult"
       },
       "errors":[
-        {"shape":"DBClusterNotFoundFault"},
         {"shape":"InvalidDBClusterStateFault"},
-        {"shape":"InvalidDBInstanceStateFault"}
+        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>You might need to reboot your DB cluster, usually for maintenance reasons. For example, if you make certain modifications, or if you change the DB cluster parameter group associated with the DB cluster, reboot the DB cluster for the changes to take effect.</p> <p>Rebooting a DB cluster restarts the database engine service. Rebooting a DB cluster results in a momentary outage, during which the DB cluster status is set to rebooting.</p> <p>Use this operation only for a non-Aurora Multi-AZ DB cluster.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide.</i> </p>"
     },
@@ -2460,8 +2461,8 @@
         "resultWrapper":"RebootDBInstanceResult"
       },
       "errors":[
-        {"shape":"InvalidDBInstanceStateFault"},
         {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"InvalidDBInstanceStateFault"},
         {"shape":"KMSKeyNotAccessibleFault"}
       ],
       "documentation":"<p>You might need to reboot your DB instance, usually for maintenance reasons. For example, if you make certain modifications, or if you change the DB parameter group associated with the DB instance, you must reboot the instance for the changes to take effect.</p> <p>Rebooting a DB instance restarts the database engine service. Rebooting a DB instance results in a momentary outage, during which the DB instance status is set to rebooting.</p> <p>For more information about rebooting, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_RebootInstance.html\">Rebooting a DB Instance</a> in the <i>Amazon RDS User Guide.</i> </p> <p>This command doesn't apply to RDS Custom.</p> <p>If your DB instance is part of a Multi-AZ DB cluster, you can reboot the DB cluster with the <code>RebootDBCluster</code> operation.</p>"
@@ -2495,15 +2496,15 @@
         "resultWrapper":"RegisterDBProxyTargetsResult"
       },
       "errors":[
+        {"shape":"InsufficientAvailableIPsInSubnetFault"},
         {"shape":"DBProxyNotFoundFault"},
-        {"shape":"DBProxyTargetGroupNotFoundFault"},
-        {"shape":"DBClusterNotFoundFault"},
         {"shape":"DBInstanceNotFoundFault"},
-        {"shape":"DBProxyTargetAlreadyRegisteredFault"},
-        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"DBProxyTargetGroupNotFoundFault"},
         {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"InvalidDBInstanceStateFault"},
         {"shape":"InvalidDBProxyStateFault"},
-        {"shape":"InsufficientAvailableIPsInSubnetFault"}
+        {"shape":"DBProxyTargetAlreadyRegisteredFault"},
+        {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Associate one or more <code>DBProxyTarget</code> data structures with a <code>DBProxyTargetGroup</code>.</p>"
     },
@@ -2519,9 +2520,9 @@
         "resultWrapper":"RemoveFromGlobalClusterResult"
       },
       "errors":[
-        {"shape":"GlobalClusterNotFoundFault"},
-        {"shape":"InvalidGlobalClusterStateFault"},
         {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"InvalidGlobalClusterStateFault"},
+        {"shape":"GlobalClusterNotFoundFault"},
         {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Detaches an Aurora secondary cluster from an Aurora global database cluster. The cluster becomes a standalone cluster with read-write capability instead of being read-only and receiving data from a primary cluster in a different Region.</p> <note> <p>This operation only applies to Aurora DB clusters.</p> </note>"
@@ -2534,9 +2535,9 @@
       },
       "input":{"shape":"RemoveRoleFromDBClusterMessage"},
       "errors":[
-        {"shape":"DBClusterNotFoundFault"},
+        {"shape":"InvalidDBClusterStateFault"},
         {"shape":"DBClusterRoleNotFoundFault"},
-        {"shape":"InvalidDBClusterStateFault"}
+        {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Removes the asssociation of an Amazon Web Services Identity and Access Management (IAM) role from a DB cluster.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide.</i> </p>"
     },
@@ -2566,8 +2567,8 @@
         "resultWrapper":"RemoveSourceIdentifierFromSubscriptionResult"
       },
       "errors":[
-        {"shape":"SubscriptionNotFoundFault"},
-        {"shape":"SourceNotFoundFault"}
+        {"shape":"SourceNotFoundFault"},
+        {"shape":"SubscriptionNotFoundFault"}
       ],
       "documentation":"<p>Removes a source identifier from an existing RDS event notification subscription.</p>"
     },
@@ -2579,20 +2580,20 @@
       },
       "input":{"shape":"RemoveTagsFromResourceMessage"},
       "errors":[
-        {"shape":"DBInstanceNotFoundFault"},
-        {"shape":"DBSnapshotNotFoundFault"},
-        {"shape":"DBClusterNotFoundFault"},
         {"shape":"DBProxyNotFoundFault"},
-        {"shape":"DBProxyEndpointNotFoundFault"},
-        {"shape":"DBProxyTargetGroupNotFoundFault"},
-        {"shape":"BlueGreenDeploymentNotFoundFault"},
-        {"shape":"TenantDatabaseNotFoundFault"},
         {"shape":"DBSnapshotTenantDatabaseNotFoundFault"},
         {"shape":"IntegrationNotFoundFault"},
-        {"shape":"DBShardGroupNotFoundFault"},
-        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"TenantDatabaseNotFoundFault"},
+        {"shape":"BlueGreenDeploymentNotFoundFault"},
+        {"shape":"DBSnapshotNotFoundFault"},
+        {"shape":"DBProxyEndpointNotFoundFault"},
+        {"shape":"InvalidDBClusterEndpointStateFault"},
         {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"InvalidDBClusterEndpointStateFault"}
+        {"shape":"DBShardGroupNotFoundFault"},
+        {"shape":"DBClusterNotFoundFault"},
+        {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"DBProxyTargetGroupNotFoundFault"},
+        {"shape":"InvalidDBClusterStateFault"}
       ],
       "documentation":"<p>Removes metadata tags from an Amazon RDS resource.</p> <p>For an overview on tagging an Amazon RDS resource, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html\">Tagging Amazon RDS Resources</a> in the <i>Amazon RDS User Guide</i> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html\">Tagging Amazon Aurora and Amazon RDS Resources</a> in the <i>Amazon Aurora User Guide</i>.</p>"
     },
@@ -2608,8 +2609,8 @@
         "resultWrapper":"ResetDBClusterParameterGroupResult"
       },
       "errors":[
-        {"shape":"InvalidDBParameterGroupStateFault"},
-        {"shape":"DBParameterGroupNotFoundFault"}
+        {"shape":"DBParameterGroupNotFoundFault"},
+        {"shape":"InvalidDBParameterGroupStateFault"}
       ],
       "documentation":"<p>Modifies the parameters of a DB cluster parameter group to the default value. To reset specific parameters submit a list of the following: <code>ParameterName</code> and <code>ApplyMethod</code>. To reset the entire DB cluster parameter group, specify the <code>DBClusterParameterGroupName</code> and <code>ResetAllParameters</code> parameters.</p> <p>When resetting the entire group, dynamic parameters are updated immediately and static parameters are set to <code>pending-reboot</code> to take effect on the next DB instance restart or <code>RebootDBInstance</code> request. You must call <code>RebootDBInstance</code> for every DB instance in your DB cluster that you want the updated static parameter to apply to.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide.</i> </p>"
     },
@@ -2625,8 +2626,8 @@
         "resultWrapper":"ResetDBParameterGroupResult"
       },
       "errors":[
-        {"shape":"InvalidDBParameterGroupStateFault"},
-        {"shape":"DBParameterGroupNotFoundFault"}
+        {"shape":"DBParameterGroupNotFoundFault"},
+        {"shape":"InvalidDBParameterGroupStateFault"}
       ],
       "documentation":"<p>Modifies the parameters of a DB parameter group to the engine/system default value. To reset specific parameters, provide a list of the following: <code>ParameterName</code> and <code>ApplyMethod</code>. To reset the entire DB parameter group, specify the <code>DBParameterGroup</code> name and <code>ResetAllParameters</code> parameters. When resetting the entire group, dynamic parameters are updated immediately and static parameters are set to <code>pending-reboot</code> to take effect on the next DB instance restart or <code>RebootDBInstance</code> request.</p>"
     },
@@ -2642,22 +2643,22 @@
         "resultWrapper":"RestoreDBClusterFromS3Result"
       },
       "errors":[
-        {"shape":"DBClusterAlreadyExistsFault"},
-        {"shape":"DBClusterQuotaExceededFault"},
         {"shape":"StorageQuotaExceededFault"},
-        {"shape":"DBSubnetGroupNotFoundFault"},
-        {"shape":"InvalidVPCNetworkStateFault"},
-        {"shape":"InvalidDBClusterStateFault"},
-        {"shape":"InvalidDBSubnetGroupStateFault"},
-        {"shape":"InvalidSubnet"},
-        {"shape":"InvalidS3BucketFault"},
-        {"shape":"DBClusterParameterGroupNotFoundFault"},
-        {"shape":"KMSKeyNotAccessibleFault"},
-        {"shape":"DBClusterNotFoundFault"},
-        {"shape":"NetworkTypeNotSupported"},
         {"shape":"DomainNotFoundFault"},
         {"shape":"InsufficientStorageClusterCapacityFault"},
-        {"shape":"StorageTypeNotSupportedFault"}
+        {"shape":"KMSKeyNotAccessibleFault"},
+        {"shape":"DBClusterParameterGroupNotFoundFault"},
+        {"shape":"InvalidSubnet"},
+        {"shape":"DBClusterNotFoundFault"},
+        {"shape":"StorageTypeNotSupportedFault"},
+        {"shape":"InvalidVPCNetworkStateFault"},
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"DBClusterAlreadyExistsFault"},
+        {"shape":"NetworkTypeNotSupported"},
+        {"shape":"InvalidDBSubnetGroupStateFault"},
+        {"shape":"DBSubnetGroupNotFoundFault"},
+        {"shape":"InvalidS3BucketFault"},
+        {"shape":"DBClusterQuotaExceededFault"}
       ],
       "documentation":"<p>Creates an Amazon Aurora DB cluster from MySQL data stored in an Amazon S3 bucket. Amazon RDS must be authorized to access the Amazon S3 bucket and the data must be created using the Percona XtraBackup utility as described in <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Migrating.ExtMySQL.html#AuroraMySQL.Migrating.ExtMySQL.S3\"> Migrating Data from MySQL by Using an Amazon S3 Bucket</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This operation only restores the DB cluster, not the DB instances for that DB cluster. You must invoke the <code>CreateDBInstance</code> operation to create DB instances for the restored DB cluster, specifying the identifier of the restored DB cluster in <code>DBClusterIdentifier</code>. You can create DB instances only after the <code>RestoreDBClusterFromS3</code> operation has completed and the DB cluster is available.</p> </note> <p>For more information on Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This operation only applies to Aurora DB clusters. The source DB engine must be MySQL.</p> </note>"
     },
@@ -2673,31 +2674,29 @@
         "resultWrapper":"RestoreDBClusterFromSnapshotResult"
       },
       "errors":[
-        {"shape":"DBClusterAlreadyExistsFault"},
-        {"shape":"DBClusterQuotaExceededFault"},
-        {"shape":"StorageQuotaExceededFault"},
-        {"shape":"DBSubnetGroupNotFoundFault"},
-        {"shape":"DBSnapshotNotFoundFault"},
         {"shape":"DBClusterSnapshotNotFoundFault"},
-        {"shape":"InsufficientDBClusterCapacityFault"},
-        {"shape":"InsufficientStorageClusterCapacityFault"},
-        {"shape":"InvalidDBSnapshotStateFault"},
-        {"shape":"InvalidDBClusterSnapshotStateFault"},
-        {"shape":"StorageQuotaExceededFault"},
-        {"shape":"InvalidVPCNetworkStateFault"},
         {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
-        {"shape":"InvalidRestoreFault"},
-        {"shape":"DBSubnetGroupNotFoundFault"},
-        {"shape":"InvalidSubnet"},
-        {"shape":"OptionGroupNotFoundFault"},
-        {"shape":"KMSKeyNotAccessibleFault"},
-        {"shape":"NetworkTypeNotSupported"},
-        {"shape":"DomainNotFoundFault"},
+        {"shape":"InvalidDBSnapshotStateFault"},
         {"shape":"DBClusterParameterGroupNotFoundFault"},
-        {"shape":"StorageTypeNotSupportedFault"},
-        {"shape":"InvalidDBInstanceStateFault"},
         {"shape":"InsufficientDBInstanceCapacityFault"},
-        {"shape":"VpcEncryptionControlViolationException"}
+        {"shape":"InvalidSubnet"},
+        {"shape":"VpcEncryptionControlViolationException"},
+        {"shape":"StorageTypeNotSupportedFault"},
+        {"shape":"OptionGroupNotFoundFault"},
+        {"shape":"InvalidDBClusterSnapshotStateFault"},
+        {"shape":"DBClusterAlreadyExistsFault"},
+        {"shape":"NetworkTypeNotSupported"},
+        {"shape":"InsufficientDBClusterCapacityFault"},
+        {"shape":"StorageQuotaExceededFault"},
+        {"shape":"DomainNotFoundFault"},
+        {"shape":"DBSnapshotNotFoundFault"},
+        {"shape":"InsufficientStorageClusterCapacityFault"},
+        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"KMSKeyNotAccessibleFault"},
+        {"shape":"InvalidVPCNetworkStateFault"},
+        {"shape":"DBSubnetGroupNotFoundFault"},
+        {"shape":"InvalidRestoreFault"},
+        {"shape":"DBClusterQuotaExceededFault"}
       ],
       "documentation":"<p>Creates a new DB cluster from a DB snapshot or DB cluster snapshot.</p> <p>The target DB cluster is created from the source snapshot with a default configuration. If you don't specify a security group, the new DB cluster is associated with the default security group.</p> <note> <p>This operation only restores the DB cluster, not the DB instances for that DB cluster. You must invoke the <code>CreateDBInstance</code> operation to create DB instances for the restored DB cluster, specifying the identifier of the restored DB cluster in <code>DBClusterIdentifier</code>. You can create DB instances only after the <code>RestoreDBClusterFromSnapshot</code> operation has completed and the DB cluster is available.</p> </note> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide.</i> </p>"
     },
@@ -2713,29 +2712,29 @@
         "resultWrapper":"RestoreDBClusterToPointInTimeResult"
       },
       "errors":[
-        {"shape":"DBClusterAlreadyExistsFault"},
-        {"shape":"DBClusterNotFoundFault"},
-        {"shape":"DBClusterQuotaExceededFault"},
         {"shape":"DBClusterSnapshotNotFoundFault"},
-        {"shape":"DBSubnetGroupNotFoundFault"},
-        {"shape":"InsufficientDBClusterCapacityFault"},
-        {"shape":"InsufficientStorageClusterCapacityFault"},
-        {"shape":"InvalidDBClusterSnapshotStateFault"},
-        {"shape":"InvalidDBClusterStateFault"},
         {"shape":"InvalidDBSnapshotStateFault"},
-        {"shape":"InvalidRestoreFault"},
-        {"shape":"InvalidSubnet"},
-        {"shape":"InvalidVPCNetworkStateFault"},
-        {"shape":"KMSKeyNotAccessibleFault"},
-        {"shape":"OptionGroupNotFoundFault"},
-        {"shape":"StorageQuotaExceededFault"},
-        {"shape":"NetworkTypeNotSupported"},
-        {"shape":"DomainNotFoundFault"},
         {"shape":"DBClusterParameterGroupNotFoundFault"},
-        {"shape":"StorageTypeNotSupportedFault"},
-        {"shape":"DBClusterAutomatedBackupNotFoundFault"},
         {"shape":"InsufficientDBInstanceCapacityFault"},
-        {"shape":"VpcEncryptionControlViolationException"}
+        {"shape":"InvalidSubnet"},
+        {"shape":"DBClusterNotFoundFault"},
+        {"shape":"VpcEncryptionControlViolationException"},
+        {"shape":"StorageTypeNotSupportedFault"},
+        {"shape":"OptionGroupNotFoundFault"},
+        {"shape":"InvalidDBClusterSnapshotStateFault"},
+        {"shape":"DBClusterAlreadyExistsFault"},
+        {"shape":"NetworkTypeNotSupported"},
+        {"shape":"InsufficientDBClusterCapacityFault"},
+        {"shape":"StorageQuotaExceededFault"},
+        {"shape":"DomainNotFoundFault"},
+        {"shape":"InsufficientStorageClusterCapacityFault"},
+        {"shape":"KMSKeyNotAccessibleFault"},
+        {"shape":"DBClusterAutomatedBackupNotFoundFault"},
+        {"shape":"InvalidVPCNetworkStateFault"},
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"DBSubnetGroupNotFoundFault"},
+        {"shape":"InvalidRestoreFault"},
+        {"shape":"DBClusterQuotaExceededFault"}
       ],
       "documentation":"<p>Restores a DB cluster to an arbitrary point in time. Users can restore to any point in time before <code>LatestRestorableTime</code> for up to <code>BackupRetentionPeriod</code> days. The target DB cluster is created from the source DB cluster with the same configuration as the original DB cluster, except that the new DB cluster is created with the default DB security group. Unless the <code>RestoreType</code> is set to <code>copy-on-write</code>, the restore may occur in a different Availability Zone (AZ) from the original DB cluster. The AZ where RDS restores the DB cluster depends on the AZs in the specified subnet group.</p> <note> <p>For Aurora, this operation only restores the DB cluster, not the DB instances for that DB cluster. You must invoke the <code>CreateDBInstance</code> operation to create DB instances for the restored DB cluster, specifying the identifier of the restored DB cluster in <code>DBClusterIdentifier</code>. You can create DB instances only after the <code>RestoreDBClusterToPointInTime</code> operation has completed and the DB cluster is available.</p> </note> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide.</i> </p>"
     },
@@ -2751,31 +2750,31 @@
         "resultWrapper":"RestoreDBInstanceFromDBSnapshotResult"
       },
       "errors":[
-        {"shape":"DBInstanceAlreadyExistsFault"},
-        {"shape":"DBSnapshotNotFoundFault"},
-        {"shape":"InstanceQuotaExceededFault"},
-        {"shape":"InsufficientDBInstanceCapacityFault"},
-        {"shape":"InvalidDBSnapshotStateFault"},
-        {"shape":"StorageQuotaExceededFault"},
-        {"shape":"InvalidVPCNetworkStateFault"},
-        {"shape":"InvalidRestoreFault"},
-        {"shape":"DBSubnetGroupNotFoundFault"},
-        {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
-        {"shape":"InvalidSubnet"},
-        {"shape":"ProvisionedIopsNotAvailableInAZFault"},
-        {"shape":"OptionGroupNotFoundFault"},
-        {"shape":"StorageTypeNotSupportedFault"},
         {"shape":"AuthorizationNotFoundFault"},
-        {"shape":"KMSKeyNotAccessibleFault"},
-        {"shape":"DBSecurityGroupNotFoundFault"},
-        {"shape":"DomainNotFoundFault"},
-        {"shape":"DBParameterGroupNotFoundFault"},
-        {"shape":"NetworkTypeNotSupported"},
-        {"shape":"BackupPolicyNotFoundFault"},
         {"shape":"DBClusterSnapshotNotFoundFault"},
+        {"shape":"DBParameterGroupNotFoundFault"},
+        {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
+        {"shape":"InvalidDBSnapshotStateFault"},
+        {"shape":"InsufficientDBInstanceCapacityFault"},
+        {"shape":"InvalidSubnet"},
+        {"shape":"VpcEncryptionControlViolationException"},
+        {"shape":"ProvisionedIopsNotAvailableInAZFault"},
+        {"shape":"StorageTypeNotSupportedFault"},
+        {"shape":"OptionGroupNotFoundFault"},
+        {"shape":"NetworkTypeNotSupported"},
+        {"shape":"InstanceQuotaExceededFault"},
+        {"shape":"StorageQuotaExceededFault"},
+        {"shape":"BackupPolicyNotFoundFault"},
+        {"shape":"DomainNotFoundFault"},
+        {"shape":"DBSnapshotNotFoundFault"},
         {"shape":"CertificateNotFoundFault"},
+        {"shape":"KMSKeyNotAccessibleFault"},
+        {"shape":"DBInstanceAlreadyExistsFault"},
         {"shape":"TenantDatabaseQuotaExceededFault"},
-        {"shape":"VpcEncryptionControlViolationException"}
+        {"shape":"DBSecurityGroupNotFoundFault"},
+        {"shape":"InvalidVPCNetworkStateFault"},
+        {"shape":"DBSubnetGroupNotFoundFault"},
+        {"shape":"InvalidRestoreFault"}
       ],
       "documentation":"<p>Creates a new DB instance from a DB snapshot. The target database is created from the source database restore point with most of the source's original configuration, including the default security group and DB parameter group. By default, the new DB instance is created as a Single-AZ deployment, except when the instance is a SQL Server instance that has an option group associated with mirroring. In this case, the instance becomes a Multi-AZ deployment, not a Single-AZ deployment.</p> <p>If you want to replace your original DB instance with the new, restored DB instance, then rename your original DB instance before you call the <code>RestoreDBInstanceFromDBSnapshot</code> operation. RDS doesn't allow two DB instances with the same name. After you have renamed your original DB instance with a different identifier, then you can pass the original name of the DB instance as the <code>DBInstanceIdentifier</code> in the call to the <code>RestoreDBInstanceFromDBSnapshot</code> operation. The result is that you replace the original DB instance with the DB instance created from the snapshot.</p> <p>If you are restoring from a shared manual DB snapshot, the <code>DBSnapshotIdentifier</code> must be the ARN of the shared DB snapshot.</p> <p>To restore from a DB snapshot with an unsupported engine version, you must first upgrade the engine version of the snapshot. For more information about upgrading a RDS for MySQL DB snapshot engine version, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/mysql-upgrade-snapshot.html\">Upgrading a MySQL DB snapshot engine version</a>. For more information about upgrading a RDS for PostgreSQL DB snapshot engine version, <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBSnapshot.PostgreSQL.html\">Upgrading a PostgreSQL DB snapshot engine version</a>.</p> <note> <p>This command doesn't apply to Aurora MySQL and Aurora PostgreSQL. For Aurora, use <code>RestoreDBClusterFromSnapshot</code>.</p> </note>"
     },
@@ -2791,26 +2790,26 @@
         "resultWrapper":"RestoreDBInstanceFromS3Result"
       },
       "errors":[
-        {"shape":"DBInstanceAlreadyExistsFault"},
-        {"shape":"InsufficientDBInstanceCapacityFault"},
-        {"shape":"DBParameterGroupNotFoundFault"},
-        {"shape":"DBSecurityGroupNotFoundFault"},
-        {"shape":"InstanceQuotaExceededFault"},
-        {"shape":"StorageQuotaExceededFault"},
-        {"shape":"DBSubnetGroupNotFoundFault"},
-        {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
-        {"shape":"InvalidSubnet"},
-        {"shape":"InvalidVPCNetworkStateFault"},
-        {"shape":"InvalidS3BucketFault"},
-        {"shape":"ProvisionedIopsNotAvailableInAZFault"},
-        {"shape":"OptionGroupNotFoundFault"},
-        {"shape":"StorageTypeNotSupportedFault"},
         {"shape":"AuthorizationNotFoundFault"},
-        {"shape":"KMSKeyNotAccessibleFault"},
-        {"shape":"NetworkTypeNotSupported"},
+        {"shape":"StorageQuotaExceededFault"},
+        {"shape":"DBParameterGroupNotFoundFault"},
         {"shape":"BackupPolicyNotFoundFault"},
+        {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
         {"shape":"CertificateNotFoundFault"},
-        {"shape":"VpcEncryptionControlViolationException"}
+        {"shape":"KMSKeyNotAccessibleFault"},
+        {"shape":"InsufficientDBInstanceCapacityFault"},
+        {"shape":"DBInstanceAlreadyExistsFault"},
+        {"shape":"InvalidSubnet"},
+        {"shape":"VpcEncryptionControlViolationException"},
+        {"shape":"ProvisionedIopsNotAvailableInAZFault"},
+        {"shape":"StorageTypeNotSupportedFault"},
+        {"shape":"OptionGroupNotFoundFault"},
+        {"shape":"DBSecurityGroupNotFoundFault"},
+        {"shape":"InvalidVPCNetworkStateFault"},
+        {"shape":"NetworkTypeNotSupported"},
+        {"shape":"InstanceQuotaExceededFault"},
+        {"shape":"DBSubnetGroupNotFoundFault"},
+        {"shape":"InvalidS3BucketFault"}
       ],
       "documentation":"<p>Amazon Relational Database Service (Amazon RDS) supports importing MySQL databases by using backup files. You can create a backup of your on-premises database, store it on Amazon Simple Storage Service (Amazon S3), and then restore the backup file onto a new Amazon RDS DB instance running MySQL. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/MySQL.Procedural.Importing.html\">Restoring a backup into an Amazon RDS for MySQL DB instance</a> in the <i>Amazon RDS User Guide.</i> </p> <p>This operation doesn't apply to RDS Custom.</p>"
     },
@@ -2826,32 +2825,32 @@
         "resultWrapper":"RestoreDBInstanceToPointInTimeResult"
       },
       "errors":[
-        {"shape":"DBInstanceAlreadyExistsFault"},
-        {"shape":"DBInstanceNotFoundFault"},
-        {"shape":"InstanceQuotaExceededFault"},
-        {"shape":"InsufficientDBInstanceCapacityFault"},
-        {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"PointInTimeRestoreNotEnabledFault"},
-        {"shape":"StorageQuotaExceededFault"},
-        {"shape":"InvalidVPCNetworkStateFault"},
-        {"shape":"InvalidRestoreFault"},
-        {"shape":"DBSubnetGroupNotFoundFault"},
-        {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
-        {"shape":"InvalidSubnet"},
-        {"shape":"ProvisionedIopsNotAvailableInAZFault"},
-        {"shape":"OptionGroupNotFoundFault"},
-        {"shape":"StorageTypeNotSupportedFault"},
         {"shape":"AuthorizationNotFoundFault"},
-        {"shape":"KMSKeyNotAccessibleFault"},
-        {"shape":"DBSecurityGroupNotFoundFault"},
-        {"shape":"DomainNotFoundFault"},
-        {"shape":"BackupPolicyNotFoundFault"},
         {"shape":"DBParameterGroupNotFoundFault"},
-        {"shape":"NetworkTypeNotSupported"},
+        {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
+        {"shape":"InsufficientDBInstanceCapacityFault"},
+        {"shape":"InvalidSubnet"},
+        {"shape":"VpcEncryptionControlViolationException"},
+        {"shape":"ProvisionedIopsNotAvailableInAZFault"},
+        {"shape":"StorageTypeNotSupportedFault"},
+        {"shape":"OptionGroupNotFoundFault"},
+        {"shape":"DBInstanceNotFoundFault"},
         {"shape":"DBInstanceAutomatedBackupNotFoundFault"},
-        {"shape":"TenantDatabaseQuotaExceededFault"},
+        {"shape":"NetworkTypeNotSupported"},
+        {"shape":"InstanceQuotaExceededFault"},
+        {"shape":"StorageQuotaExceededFault"},
+        {"shape":"BackupPolicyNotFoundFault"},
+        {"shape":"DomainNotFoundFault"},
         {"shape":"CertificateNotFoundFault"},
-        {"shape":"VpcEncryptionControlViolationException"}
+        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"KMSKeyNotAccessibleFault"},
+        {"shape":"DBInstanceAlreadyExistsFault"},
+        {"shape":"TenantDatabaseQuotaExceededFault"},
+        {"shape":"DBSecurityGroupNotFoundFault"},
+        {"shape":"InvalidVPCNetworkStateFault"},
+        {"shape":"PointInTimeRestoreNotEnabledFault"},
+        {"shape":"DBSubnetGroupNotFoundFault"},
+        {"shape":"InvalidRestoreFault"}
       ],
       "documentation":"<p>Restores a DB instance to an arbitrary point in time. You can restore to any point in time before the time identified by the <code>LatestRestorableTime</code> property. You can restore to a point up to the number of days specified by the <code>BackupRetentionPeriod</code> property.</p> <p>The target database is created with most of the original configuration, but in a system-selected Availability Zone, with the default security group, the default subnet group, and the default DB parameter group. By default, the new DB instance is created as a single-AZ deployment except when the instance is a SQL Server instance that has an option group that is associated with mirroring; in this case, the instance becomes a mirrored deployment and not a single-AZ deployment.</p> <note> <p>This operation doesn't apply to Aurora MySQL and Aurora PostgreSQL. For Aurora, use <code>RestoreDBClusterToPointInTime</code>.</p> </note>"
     },
@@ -2867,9 +2866,9 @@
         "resultWrapper":"RevokeDBSecurityGroupIngressResult"
       },
       "errors":[
-        {"shape":"DBSecurityGroupNotFoundFault"},
+        {"shape":"InvalidDBSecurityGroupStateFault"},
         {"shape":"AuthorizationNotFoundFault"},
-        {"shape":"InvalidDBSecurityGroupStateFault"}
+        {"shape":"DBSecurityGroupNotFoundFault"}
       ],
       "documentation":"<p>Revokes ingress from a DBSecurityGroup for previously authorized IP ranges or EC2 or VPC security groups. Required parameters for this API are one of CIDRIP, EC2SecurityGroupId for VPC, or (EC2SecurityGroupOwnerId and either EC2SecurityGroupName or EC2SecurityGroupId).</p> <note> <p>EC2-Classic was retired on August 15, 2022. If you haven't migrated from EC2-Classic to a VPC, we recommend that you migrate as soon as possible. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/vpc-migrate.html\">Migrate from EC2-Classic to a VPC</a> in the <i>Amazon EC2 User Guide</i>, the blog <a href=\"http://aws.amazon.com/blogs/aws/ec2-classic-is-retiring-heres-how-to-prepare/\">EC2-Classic Networking is Retiring – Here’s How to Prepare</a>, and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.Non-VPC2VPC.html\">Moving a DB instance not in a VPC into a VPC</a> in the <i>Amazon RDS User Guide</i>.</p> </note>"
     },
@@ -2885,12 +2884,12 @@
         "resultWrapper":"StartActivityStreamResult"
       },
       "errors":[
-        {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"InvalidDBClusterStateFault"},
         {"shape":"ResourceNotFoundFault"},
-        {"shape":"DBClusterNotFoundFault"},
         {"shape":"DBInstanceNotFoundFault"},
-        {"shape":"KMSKeyNotAccessibleFault"}
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"KMSKeyNotAccessibleFault"},
+        {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Starts a database activity stream to monitor activity on the database. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html\"> Monitoring Amazon Aurora with Database Activity Streams</a> in the <i>Amazon Aurora User Guide</i> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/DBActivityStreams.html\"> Monitoring Amazon RDS with Database Activity Streams</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
@@ -2906,11 +2905,11 @@
         "resultWrapper":"StartDBClusterResult"
       },
       "errors":[
-        {"shape":"DBClusterNotFoundFault"},
         {"shape":"InvalidDBClusterStateFault"},
         {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"InvalidDBShardGroupStateFault"},
         {"shape":"KMSKeyNotAccessibleFault"},
+        {"shape":"InvalidDBShardGroupStateFault"},
+        {"shape":"DBClusterNotFoundFault"},
         {"shape":"VpcEncryptionControlViolationException"}
       ],
       "documentation":"<p>Starts an Amazon Aurora DB cluster that was stopped using the Amazon Web Services console, the stop-db-cluster CLI command, or the <code>StopDBCluster</code> operation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-cluster-stop-start.html\"> Stopping and Starting an Aurora Cluster</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This operation only applies to Aurora DB clusters.</p> </note>"
@@ -2927,18 +2926,18 @@
         "resultWrapper":"StartDBInstanceResult"
       },
       "errors":[
-        {"shape":"DBInstanceNotFoundFault"},
-        {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"InsufficientDBInstanceCapacityFault"},
-        {"shape":"DBSubnetGroupNotFoundFault"},
-        {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
-        {"shape":"InvalidDBClusterStateFault"},
-        {"shape":"InvalidSubnet"},
-        {"shape":"InvalidVPCNetworkStateFault"},
-        {"shape":"DBClusterNotFoundFault"},
         {"shape":"AuthorizationNotFoundFault"},
+        {"shape":"DBSubnetGroupDoesNotCoverEnoughAZs"},
+        {"shape":"InvalidDBInstanceStateFault"},
         {"shape":"KMSKeyNotAccessibleFault"},
-        {"shape":"VpcEncryptionControlViolationException"}
+        {"shape":"InsufficientDBInstanceCapacityFault"},
+        {"shape":"InvalidSubnet"},
+        {"shape":"DBClusterNotFoundFault"},
+        {"shape":"VpcEncryptionControlViolationException"},
+        {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"InvalidVPCNetworkStateFault"},
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"DBSubnetGroupNotFoundFault"}
       ],
       "documentation":"<p>Starts an Amazon RDS DB instance that was stopped using the Amazon Web Services console, the stop-db-instance CLI command, or the <code>StopDBInstance</code> operation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_StartInstance.html\"> Starting an Amazon RDS DB instance That Was Previously Stopped</a> in the <i>Amazon RDS User Guide.</i> </p> <note> <p>This command doesn't apply to RDS Custom, Aurora MySQL, and Aurora PostgreSQL. For Aurora DB clusters, use <code>StartDBCluster</code> instead.</p> </note>"
     },
@@ -2954,12 +2953,12 @@
         "resultWrapper":"StartDBInstanceAutomatedBackupsReplicationResult"
       },
       "errors":[
+        {"shape":"InvalidDBInstanceAutomatedBackupStateFault"},
+        {"shape":"StorageTypeNotSupportedFault"},
+        {"shape":"DBInstanceAutomatedBackupQuotaExceededFault"},
         {"shape":"DBInstanceNotFoundFault"},
         {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"KMSKeyNotAccessibleFault"},
-        {"shape":"InvalidDBInstanceAutomatedBackupStateFault"},
-        {"shape":"DBInstanceAutomatedBackupQuotaExceededFault"},
-        {"shape":"StorageTypeNotSupportedFault"}
+        {"shape":"KMSKeyNotAccessibleFault"}
       ],
       "documentation":"<p>Enables replication of automated backups to a different Amazon Web Services Region.</p> <p>This command doesn't apply to RDS Custom.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReplicateBackups.html\"> Replicating Automated Backups to Another Amazon Web Services Region</a> in the <i>Amazon RDS User Guide.</i> </p>"
     },
@@ -2975,16 +2974,16 @@
         "resultWrapper":"StartExportTaskResult"
       },
       "errors":[
-        {"shape":"DBSnapshotNotFoundFault"},
         {"shape":"DBClusterSnapshotNotFoundFault"},
-        {"shape":"DBClusterNotFoundFault"},
         {"shape":"ExportTaskAlreadyExistsFault"},
-        {"shape":"InvalidS3BucketFault"},
-        {"shape":"IamRoleNotFoundFault"},
+        {"shape":"DBSnapshotNotFoundFault"},
         {"shape":"IamRoleMissingPermissionsFault"},
-        {"shape":"InvalidExportOnlyFault"},
+        {"shape":"InvalidExportSourceStateFault"},
         {"shape":"KMSKeyNotAccessibleFault"},
-        {"shape":"InvalidExportSourceStateFault"}
+        {"shape":"IamRoleNotFoundFault"},
+        {"shape":"InvalidExportOnlyFault"},
+        {"shape":"InvalidS3BucketFault"},
+        {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Starts an export of DB snapshot or DB cluster data to Amazon S3. The provided IAM role must have access to the S3 bucket.</p> <p>You can't export snapshot data from RDS Custom DB instances. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RDS_Fea_Regions_DB-eng.Feature.ExportSnapshotToS3.html\"> Supported Regions and DB engines for exporting snapshots to S3 in Amazon RDS</a>.</p> <p>For more information on exporting DB snapshot data, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ExportSnapshot.html\">Exporting DB snapshot data to Amazon S3</a> in the <i>Amazon RDS User Guide</i> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-export-snapshot.html\">Exporting DB cluster snapshot data to Amazon S3</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on exporting DB cluster data, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/export-cluster-data.html\">Exporting DB cluster data to Amazon S3</a> in the <i>Amazon Aurora User Guide</i>.</p>"
     },
@@ -3000,11 +2999,11 @@
         "resultWrapper":"StopActivityStreamResult"
       },
       "errors":[
-        {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"InvalidDBClusterStateFault"},
         {"shape":"ResourceNotFoundFault"},
-        {"shape":"DBClusterNotFoundFault"},
-        {"shape":"DBInstanceNotFoundFault"}
+        {"shape":"DBInstanceNotFoundFault"},
+        {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Stops a database activity stream that was started using the Amazon Web Services console, the <code>start-activity-stream</code> CLI command, or the <code>StartActivityStream</code> operation.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html\"> Monitoring Amazon Aurora with Database Activity Streams</a> in the <i>Amazon Aurora User Guide</i> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/DBActivityStreams.html\"> Monitoring Amazon RDS with Database Activity Streams</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
@@ -3020,10 +3019,10 @@
         "resultWrapper":"StopDBClusterResult"
       },
       "errors":[
-        {"shape":"DBClusterNotFoundFault"},
         {"shape":"InvalidDBClusterStateFault"},
         {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"InvalidDBShardGroupStateFault"}
+        {"shape":"InvalidDBShardGroupStateFault"},
+        {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Stops an Amazon Aurora DB cluster. When you stop a DB cluster, Aurora retains the DB cluster's metadata, including its endpoints and DB parameter groups. Aurora also retains the transaction logs so you can do a point-in-time restore if necessary.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-cluster-stop-start.html\"> Stopping and Starting an Aurora Cluster</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This operation only applies to Aurora DB clusters.</p> </note>"
     },
@@ -3040,10 +3039,10 @@
       },
       "errors":[
         {"shape":"DBInstanceNotFoundFault"},
-        {"shape":"InvalidDBInstanceStateFault"},
-        {"shape":"DBSnapshotAlreadyExistsFault"},
+        {"shape":"InvalidDBClusterStateFault"},
         {"shape":"SnapshotQuotaExceededFault"},
-        {"shape":"InvalidDBClusterStateFault"}
+        {"shape":"InvalidDBInstanceStateFault"},
+        {"shape":"DBSnapshotAlreadyExistsFault"}
       ],
       "documentation":"<p>Stops an Amazon RDS DB instance temporarily. When you stop a DB instance, Amazon RDS retains the DB instance's metadata, including its endpoint, DB parameter group, and option group membership. Amazon RDS also retains the transaction logs so you can do a point-in-time restore if necessary. The instance restarts automatically after 7 days.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_StopInstance.html\"> Stopping an Amazon RDS DB Instance Temporarily</a> in the <i>Amazon RDS User Guide.</i> </p> <note> <p>This command doesn't apply to RDS Custom, Aurora MySQL, and Aurora PostgreSQL. For Aurora clusters, use <code>StopDBCluster</code> instead.</p> </note>"
     },
@@ -3076,8 +3075,8 @@
         "resultWrapper":"SwitchoverBlueGreenDeploymentResult"
       },
       "errors":[
-        {"shape":"BlueGreenDeploymentNotFoundFault"},
-        {"shape":"InvalidBlueGreenDeploymentStateFault"}
+        {"shape":"InvalidBlueGreenDeploymentStateFault"},
+        {"shape":"BlueGreenDeploymentNotFoundFault"}
       ],
       "documentation":"<p>Switches over a blue/green deployment.</p> <p>Before you switch over, production traffic is routed to the databases in the blue environment. After you switch over, production traffic is routed to the databases in the green environment.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html\">Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html\">Using Amazon RDS Blue/Green Deployments for database updates</a> in the <i>Amazon Aurora User Guide</i>.</p>"
     },
@@ -3093,9 +3092,9 @@
         "resultWrapper":"SwitchoverGlobalClusterResult"
       },
       "errors":[
-        {"shape":"GlobalClusterNotFoundFault"},
-        {"shape":"InvalidGlobalClusterStateFault"},
         {"shape":"InvalidDBClusterStateFault"},
+        {"shape":"InvalidGlobalClusterStateFault"},
+        {"shape":"GlobalClusterNotFoundFault"},
         {"shape":"DBClusterNotFoundFault"}
       ],
       "documentation":"<p>Switches over the specified secondary DB cluster to be the new primary DB cluster in the global database cluster. Switchover operations were previously called \"managed planned failovers.\"</p> <p>Aurora promotes the specified secondary cluster to assume full read/write capabilities and demotes the current primary cluster to a secondary (read-only) cluster, maintaining the orginal replication topology. All secondary clusters are synchronized with the primary at the beginning of the process so the new primary continues operations for the Aurora global database without losing any data. Your database is unavailable for a short time while the primary and selected secondary clusters are assuming their new roles. For more information about switching over an Aurora global database, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-disaster-recovery.html#aurora-global-database-disaster-recovery.managed-failover\">Performing switchovers for Amazon Aurora global databases</a> in the <i>Amazon Aurora User Guide</i>.</p> <note> <p>This operation is intended for controlled environments, for operations such as \"regional rotation\" or to fall back to the original primary after a global database failover.</p> </note>"
@@ -3594,7 +3593,7 @@
       "type":"string",
       "max":350,
       "min":43,
-      "pattern":"^arn:aws[a-z-]*:backup:[-a-z0-9]+:[0-9]{12}:[-a-z]+:([a-z0-9\\-]+:)?[a-z][a-z0-9\\-]{0,255}$"
+      "pattern":"arn:aws[a-z-]*:backup:[-a-z0-9]+:[0-9]{12}:[-a-z]+:([a-z0-9\\-]+:)?[a-z][a-z0-9\\-]{0,255}"
     },
     "BacktrackDBClusterMessage":{
       "type":"structure",
@@ -3625,6 +3624,7 @@
     "BackupPolicyNotFoundFault":{
       "type":"structure",
       "members":{},
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>",
       "deprecated":true,
       "deprecatedMessage":"Please avoid using this fault",
       "error":{
@@ -3742,7 +3742,10 @@
     "BlueGreenDeploymentTaskName":{"type":"string"},
     "BlueGreenDeploymentTaskStatus":{"type":"string"},
     "Boolean":{"type":"boolean"},
-    "BooleanOptional":{"type":"boolean"},
+    "BooleanOptional":{
+      "type":"boolean",
+      "box":true
+    },
     "BucketName":{
       "type":"string",
       "max":63,
@@ -3961,7 +3964,7 @@
           "documentation":"<p>Each item in the list represents a class of SQL operations that normally cause all later statements in a session using a proxy to be pinned to the same underlying database connection. Including an item in the list exempts that class of SQL operations from the pinning behavior.</p> <p>Default: no session pinning filters</p>"
         },
         "InitQuery":{
-          "shape":"String",
+          "shape":"OperatorSensitiveString",
           "documentation":"<p>Add an initialization query, or modify the current one. You can specify one or more SQL statements for the proxy to run when opening each new database connection. The setting is typically used with <code>SET</code> statements to make sure that each connection has identical settings. Make sure the query added here is valid. This is an optional field, so you can choose to leave it empty. For including multiple variables in a single SET statement, use a comma separator.</p> <p>For example: <code>SET variable1=value1, variable2=value2</code> </p> <p>Default: no initialization query</p> <important> <p>Since you can access initialization query as part of target group configuration, it is not protected by authentication or cryptographic methods. Anyone with access to view or manage your proxy target group configuration can view the initialization query. You should not add sensitive data, such as passwords or long-lived encryption keys, to this option.</p> </important>"
         }
       },
@@ -3987,7 +3990,7 @@
           "documentation":"<p>Each item in the list represents a class of SQL operations that normally cause all later statements in a session using a proxy to be pinned to the same underlying database connection. Including an item in the list exempts that class of SQL operations from the pinning behavior. This setting is only supported for MySQL engine family databases. Currently, the only allowed value is <code>EXCLUDE_VARIABLE_SETS</code>.</p>"
         },
         "InitQuery":{
-          "shape":"String",
+          "shape":"OperatorSensitiveString",
           "documentation":"<p>One or more SQL statements for the proxy to run when opening each new database connection. The setting is typically used with <code>SET</code> statements to make sure that each connection has identical settings. The query added here must be valid. For including multiple variables in a single SET statement, use a comma separator. This is an optional field.</p> <p>For example: <code>SET variable1=value1, variable2=value2</code> </p> <important> <p>Since you can access initialization query as part of target group configuration, it is not protected by authentication or cryptographic methods. Anyone with access to view or manage your proxy target group configuration can view the initialization query. You should not add sensitive data, such as passwords or long-lived encryption keys, to this option.</p> </important>"
         }
       },
@@ -4291,6 +4294,10 @@
           "shape":"String255",
           "documentation":"<p>The Amazon S3 directory that contains the database installation files for your CEV. For example, a valid bucket name is <code>123456789012/cev1</code>. If this setting isn't specified, no prefix is assumed.</p>"
         },
+        "DatabaseInstallationFiles":{
+          "shape":"StringList",
+          "documentation":"<p>The database installation files (ISO and EXE) uploaded to Amazon S3 for your database engine version to import to Amazon RDS.</p>"
+        },
         "ImageId":{
           "shape":"String255",
           "documentation":"<p>The ID of the Amazon Machine Image (AMI). For RDS Custom for SQL Server, an AMI ID is required to create a CEV. For RDS Custom for Oracle, the default is the most recent AMI available, but you can specify an AMI ID that was used in a different Oracle CEV. Find the AMIs used by your CEVs by calling the <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DescribeDBEngineVersions.html\">DescribeDBEngineVersions</a> operation.</p>"
@@ -4315,11 +4322,7 @@
           "shape":"CustomDBEngineVersionManifest",
           "documentation":"<p>The CEV manifest, which is a JSON document that describes the installation .zip files stored in Amazon S3. Specify the name/value pairs in a file or a quoted string. RDS Custom applies the patches in the order in which they are listed.</p> <p>The following JSON fields are valid:</p> <dl> <dt>MediaImportTemplateVersion</dt> <dd> <p>Version of the CEV manifest. The date is in the format <code>YYYY-MM-DD</code>.</p> </dd> <dt>databaseInstallationFileNames</dt> <dd> <p>Ordered list of installation files for the CEV.</p> </dd> <dt>opatchFileNames</dt> <dd> <p>Ordered list of OPatch installers used for the Oracle DB engine.</p> </dd> <dt>psuRuPatchFileNames</dt> <dd> <p>The PSU and RU patches for this CEV.</p> </dd> <dt>OtherPatchFileNames</dt> <dd> <p>The patches that are not in the list of PSU and RU patches. Amazon RDS applies these patches after applying the PSU and RU patches.</p> </dd> </dl> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-cev.html#custom-cev.preparing.manifest\"> Creating the CEV manifest</a> in the <i>Amazon RDS User Guide</i>.</p>"
         },
-        "Tags":{"shape":"TagList"},
-        "DatabaseInstallationFiles":{
-          "shape":"StringList",
-          "documentation":"<p>The database installation files (ISO and EXE) uploaded to Amazon S3 for your database engine version to import to Amazon RDS.</p>"
-        }
+        "Tags":{"shape":"TagList"}
       }
     },
     "CreateDBClusterEndpointMessage":{
@@ -4926,6 +4929,10 @@
           "shape":"String",
           "documentation":"<p>The life cycle type for this DB instance.</p> <note> <p>By default, this value is set to <code>open-source-rds-extended-support</code>, which enrolls your DB instance into Amazon RDS Extended Support. At the end of standard support, you can avoid charges for Extended Support by setting the value to <code>open-source-rds-extended-support-disabled</code>. In this case, creating the DB instance will fail if the DB major version is past its end of standard support date.</p> </note> <p>This setting applies only to RDS for MySQL and RDS for PostgreSQL. For Amazon Aurora DB instances, the life cycle type is managed by the DB cluster.</p> <p>You can use this setting to enroll your DB instance into Amazon RDS Extended Support. With RDS Extended Support, you can run the selected major engine version on your DB instance past the end of standard support for that engine version. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/extended-support.html\">Amazon RDS Extended Support with Amazon RDS</a> in the <i>Amazon RDS User Guide</i>.</p> <p>Valid Values: <code>open-source-rds-extended-support | open-source-rds-extended-support-disabled</code> </p> <p>Default: <code>open-source-rds-extended-support</code> </p>"
         },
+        "AdditionalStorageVolumes":{
+          "shape":"AdditionalStorageVolumesList",
+          "documentation":"<p>A list of additional storage volumes to create for the DB instance. You can create up to three additional storage volumes using the names <code>rdsdbdata2</code>, <code>rdsdbdata3</code>, and <code>rdsdbdata4</code>. Additional storage volumes are supported for RDS for Oracle and RDS for SQL Server DB instances only.</p>"
+        },
         "TagSpecifications":{
           "shape":"TagSpecificationList",
           "documentation":"<p>Tags to assign to resources associated with the DB instance.</p> <p>Valid Values: </p> <ul> <li> <p> <code>auto-backup</code> - The DB instance's automated backup.</p> </li> </ul>"
@@ -4933,10 +4940,6 @@
         "MasterUserAuthenticationType":{
           "shape":"MasterUserAuthenticationType",
           "documentation":"<p>Specifies the authentication type for the master user. With IAM master user authentication, you can configure the master DB user with IAM database authentication when you create a DB instance.</p> <p>You can specify one of the following values:</p> <ul> <li> <p> <code>password</code> - Use standard database authentication with a password.</p> </li> <li> <p> <code>iam-db-auth</code> - Use IAM database authentication for the master user.</p> </li> </ul> <p>This option is only valid for RDS for PostgreSQL and Aurora PostgreSQL engines.</p>"
-        },
-        "AdditionalStorageVolumes":{
-          "shape":"AdditionalStorageVolumesList",
-          "documentation":"<p>A list of additional storage volumes to create for the DB instance. You can create up to three additional storage volumes using the names <code>rdsdbdata2</code>, <code>rdsdbdata3</code>, and <code>rdsdbdata4</code>. Additional storage volumes are supported for RDS for Oracle and RDS for SQL Server DB instances only.</p>"
         }
       },
       "documentation":"<p/>"
@@ -5130,15 +5133,16 @@
           "shape":"String",
           "documentation":"<p>The CA certificate identifier to use for the read replica's server certificate.</p> <p>This setting doesn't apply to RDS Custom DB instances.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html\">Using SSL/TLS to encrypt a connection to a DB instance</a> in the <i>Amazon RDS User Guide</i> and <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html\"> Using SSL/TLS to encrypt a connection to a DB cluster</a> in the <i>Amazon Aurora User Guide</i>.</p>"
         },
-        "TagSpecifications":{
-          "shape":"TagSpecificationList",
-          "documentation":"<p>Tags to assign to resources associated with the DB instance.</p> <p>Valid Values: </p> <ul> <li> <p> <code>auto-backup</code> - The DB instance's automated backup.</p> </li> </ul>"
-        },
         "AdditionalStorageVolumes":{
           "shape":"AdditionalStorageVolumesList",
           "documentation":"<p>A list of additional storage volumes to create for the DB instance. You can create up to three additional storage volumes using the names <code>rdsdbdata2</code>, <code>rdsdbdata3</code>, and <code>rdsdbdata4</code>. Additional storage volumes are supported for RDS for Oracle and RDS for SQL Server DB instances only.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>Tags to assign to resources associated with the DB instance.</p> <p>Valid Values: </p> <ul> <li> <p> <code>auto-backup</code> - The DB instance's automated backup.</p> </li> </ul>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "CreateDBInstanceReadReplicaResult":{
       "type":"structure",
@@ -5705,13 +5709,13 @@
       "type":"string",
       "max":35,
       "min":1,
-      "pattern":"^[A-Za-z0-9-]{1,35}$"
+      "pattern":"[A-Za-z0-9-]{1,35}"
     },
     "CustomEngineVersion":{
       "type":"string",
       "max":60,
       "min":1,
-      "pattern":"^[a-z0-9_.-]{1,60}$"
+      "pattern":"[a-z0-9_.-]{1,60}"
     },
     "CustomEngineVersionStatus":{
       "type":"string",
@@ -6876,6 +6880,10 @@
           "shape":"String",
           "documentation":"<p>The Amazon S3 directory that contains the database installation files. If not specified, then no prefix is assumed.</p>"
         },
+        "DatabaseInstallationFiles":{
+          "shape":"StringList",
+          "documentation":"<p>The database installation files (ISO and EXE) uploaded to Amazon S3 for your database engine version to import to Amazon RDS. Required for <code>sqlserver-dev-ee</code>.</p>"
+        },
         "CustomDBEngineVersionManifest":{
           "shape":"CustomDBEngineVersionManifest",
           "documentation":"<p>JSON string that lists the installation files and parameters that RDS Custom uses to create a custom engine version (CEV). RDS Custom applies the patches in the order in which they're listed in the manifest. You can set the Oracle home, Oracle base, and UNIX/Linux user and group using the installation parameters. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-cev.preparing.html#custom-cev.preparing.manifest.fields\">JSON fields in the CEV manifest</a> in the <i>Amazon RDS User Guide</i>. </p>"
@@ -6899,6 +6907,10 @@
         "DefaultCharacterSet":{
           "shape":"CharacterSet",
           "documentation":"<p>The default character set for new instances of this engine version, if the <code>CharacterSetName</code> parameter of the CreateDBInstance API isn't specified.</p>"
+        },
+        "FailureReason":{
+          "shape":"String",
+          "documentation":"<p>The reason that the custom engine version creation for <code>sqlserver-dev-ee</code> failed with an <code>incompatible-installation-media</code> status.</p>"
         },
         "Image":{
           "shape":"CustomDBEngineVersionAMI",
@@ -6992,14 +7004,6 @@
         "ServerlessV2FeaturesSupport":{
           "shape":"ServerlessV2FeaturesSupport",
           "documentation":"<p>Specifies any Aurora Serverless v2 properties or limits that differ between Aurora engine versions. You can test the values of this attribute when deciding which Aurora version to use in a new or upgraded DB cluster. You can also retrieve the version of an existing DB cluster and check whether that version supports certain Aurora Serverless v2 features before you attempt to use those features. </p>"
-        },
-        "DatabaseInstallationFiles":{
-          "shape":"StringList",
-          "documentation":"<p>The database installation files (ISO and EXE) uploaded to Amazon S3 for your database engine version to import to Amazon RDS. Required for <code>sqlserver-dev-ee</code>.</p>"
-        },
-        "FailureReason":{
-          "shape":"String",
-          "documentation":"<p>The reason that the custom engine version creation for <code>sqlserver-dev-ee</code> failed with an <code>incompatible-installation-media</code> status.</p>"
         }
       },
       "documentation":"<p>This data type is used as a response element in the action <code>DescribeDBEngineVersions</code>.</p>"
@@ -8712,13 +8716,13 @@
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the DB instance has a dedicated log volume (DLV) enabled.</p>"
         },
-        "SnapshotAvailabilityZone":{
-          "shape":"String",
-          "documentation":"<p>Specifies the name of the Availability Zone where RDS stores the DB snapshot. This value is valid only for snapshots that RDS stores on a Dedicated Local Zone.</p>"
-        },
         "AdditionalStorageVolumes":{
           "shape":"AdditionalStorageVolumesList",
           "documentation":"<p>The additional storage volumes associated with the DB snapshot. RDS supports additional storage volumes for RDS for Oracle and RDS for SQL Server.</p>"
+        },
+        "SnapshotAvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>Specifies the name of the Availability Zone where RDS stores the DB snapshot. This value is valid only for snapshots that RDS stores on a Dedicated Local Zone.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon RDS DB snapshot.</p> <p>This data type is used as a response element in the <code>DescribeDBSnapshots</code> action.</p>",
@@ -9034,7 +9038,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"^arn:[A-Za-z][0-9A-Za-z-:._]*"
+      "pattern":"arn:[A-Za-z][0-9A-Za-z-:._]*"
     },
     "DatabaseInsightsMode":{
       "type":"string",
@@ -9743,7 +9747,8 @@
           "shape":"BooleanOptional",
           "documentation":"<p>Specifies whether to also list the engine versions that aren't available. The default is to list only available engine versions.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DescribeDBInstanceAutomatedBackupsMessage":{
       "type":"structure",
@@ -9951,7 +9956,8 @@
           "shape":"String",
           "documentation":"<p>An optional pagination token provided by a previous <code>DescribeDBParameters</code> request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DescribeDBProxiesRequest":{
       "type":"structure",
@@ -10900,7 +10906,10 @@
       "exception":true
     },
     "Double":{"type":"double"},
-    "DoubleOptional":{"type":"double"},
+    "DoubleOptional":{
+      "type":"double",
+      "box":true
+    },
     "DoubleRange":{
       "type":"structure",
       "members":{
@@ -11441,7 +11450,7 @@
       "members":{
         "Status":{
           "shape":"FailoverStatus",
-          "documentation":"<p>The current status of the global cluster. Possible values are as follows:</p> <ul> <li> <p>pending &#x96; The service received a request to switch over or fail over the global cluster. The global cluster's primary DB cluster and the specified secondary DB cluster are being verified before the operation starts.</p> </li> <li> <p>failing-over &#x96; Aurora is promoting the chosen secondary Aurora DB cluster to become the new primary DB cluster to fail over the global cluster.</p> </li> <li> <p>cancelling &#x96; The request to switch over or fail over the global cluster was cancelled and the primary Aurora DB cluster and the selected secondary Aurora DB cluster are returning to their previous states.</p> </li> <li> <p>switching-over &#x96; This status covers the range of Aurora internal operations that take place during the switchover process, such as demoting the primary Aurora DB cluster, promoting the secondary Aurora DB cluster, and synchronizing replicas.</p> </li> </ul>"
+          "documentation":"<p>The current status of the global cluster. Possible values are as follows:</p> <ul> <li> <p>pending &#150; The service received a request to switch over or fail over the global cluster. The global cluster's primary DB cluster and the specified secondary DB cluster are being verified before the operation starts.</p> </li> <li> <p>failing-over &#150; Aurora is promoting the chosen secondary Aurora DB cluster to become the new primary DB cluster to fail over the global cluster.</p> </li> <li> <p>cancelling &#150; The request to switch over or fail over the global cluster was cancelled and the primary Aurora DB cluster and the selected secondary Aurora DB cluster are returning to their previous states.</p> </li> <li> <p>switching-over &#150; This status covers the range of Aurora internal operations that take place during the switchover process, such as demoting the primary Aurora DB cluster, promoting the secondary Aurora DB cluster, and synchronizing replicas.</p> </li> </ul>"
         },
         "FromDbClusterArn":{
           "shape":"String",
@@ -11770,7 +11779,10 @@
       "exception":true
     },
     "Integer":{"type":"integer"},
-    "IntegerOptional":{"type":"integer"},
+    "IntegerOptional":{
+      "type":"integer",
+      "box":true
+    },
     "Integration":{
       "type":"structure",
       "members":{
@@ -12356,7 +12368,10 @@
       "member":{"shape":"String"}
     },
     "Long":{"type":"long"},
-    "LongOptional":{"type":"long"},
+    "LongOptional":{
+      "type":"long",
+      "box":true
+    },
     "MajorEngineVersion":{
       "type":"string",
       "max":50,
@@ -12405,6 +12420,7 @@
     },
     "MaxRecords":{
       "type":"integer",
+      "box":true,
       "max":100,
       "min":20
     },
@@ -13148,6 +13164,10 @@
           "shape":"String",
           "documentation":"<p>The target Oracle DB engine when you convert a non-CDB to a CDB. This intermediate step is necessary to upgrade an Oracle Database 19c non-CDB to an Oracle Database 21c CDB.</p> <p>Note the following requirements:</p> <ul> <li> <p>Make sure that you specify <code>oracle-ee-cdb</code> or <code>oracle-se2-cdb</code>.</p> </li> <li> <p>Make sure that your DB engine runs Oracle Database 19c with an April 2021 or later RU.</p> </li> </ul> <p>Note the following limitations:</p> <ul> <li> <p>You can't convert a CDB to a non-CDB.</p> </li> <li> <p>You can't convert a replica database.</p> </li> <li> <p>You can't convert a non-CDB to a CDB and upgrade the engine version in the same command.</p> </li> <li> <p>You can't convert the existing custom parameter or option group when it has options or parameters that are permanent or persistent. In this situation, the DB instance reverts to the default option and parameter group. To avoid reverting to the default, specify a new parameter group with <code>--db-parameter-group-name</code> and a new option group with <code>--option-group-name</code>.</p> </li> </ul>"
         },
+        "AdditionalStorageVolumes":{
+          "shape":"ModifyAdditionalStorageVolumesList",
+          "documentation":"<p>A list of additional storage volumes to modify or delete for the DB instance. You can create up to 3 additional storage volumes. Additional storage volumes are supported for RDS for Oracle and RDS for SQL Server DB instances only.</p>"
+        },
         "TagSpecifications":{
           "shape":"TagSpecificationList",
           "documentation":"<p>Tags to assign to resources associated with the DB instance.</p> <p>Valid Values: </p> <ul> <li> <p> <code>auto-backup</code> - The DB instance's automated backup.</p> </li> </ul>"
@@ -13155,10 +13175,6 @@
         "MasterUserAuthenticationType":{
           "shape":"MasterUserAuthenticationType",
           "documentation":"<p>Specifies the authentication type for the master user. With IAM master user authentication, you can change the master DB user to use IAM database authentication.</p> <p>You can specify one of the following values:</p> <ul> <li> <p> <code>password</code> - Use standard database authentication with a password.</p> </li> <li> <p> <code>iam-db-auth</code> - Use IAM database authentication for the master user.</p> </li> </ul> <p>This option is only valid for RDS for PostgreSQL and Aurora PostgreSQL engines.</p>"
-        },
-        "AdditionalStorageVolumes":{
-          "shape":"ModifyAdditionalStorageVolumesList",
-          "documentation":"<p>A list of additional storage volumes to modify or delete for the DB instance. You can create up to 3 additional storage volumes. Additional storage volumes are supported for RDS for Oracle and RDS for SQL Server DB instances only.</p>"
         }
       },
       "documentation":"<p/>"
@@ -13596,6 +13612,10 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "OperatorSensitiveString":{
+      "type":"string",
+      "sensitive":true
     },
     "Option":{
       "type":"structure",
@@ -14190,13 +14210,13 @@
           "shape":"Boolean",
           "documentation":"<p>Indicates whether a DB instance supports using a dedicated log volume (DLV).</p>"
         },
-        "SupportsHttpEndpoint":{
-          "shape":"Boolean",
-          "documentation":"<p>Indicates whether a DB instance supports HTTP endpoints.</p>"
-        },
         "SupportsAdditionalStorageVolumes":{
           "shape":"BooleanOptional",
           "documentation":"<p>Indicates whether the DB instance class supports additional storage volumes.</p>"
+        },
+        "SupportsHttpEndpoint":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether a DB instance supports HTTP endpoints.</p>"
         },
         "AvailableAdditionalStorageVolumesOptions":{
           "shape":"AvailableAdditionalStorageVolumesOptionList",
@@ -15926,6 +15946,10 @@
           "shape":"String",
           "documentation":"<p>The life cycle type for this DB instance.</p> <note> <p>By default, this value is set to <code>open-source-rds-extended-support</code>, which enrolls your DB instance into Amazon RDS Extended Support. At the end of standard support, you can avoid charges for Extended Support by setting the value to <code>open-source-rds-extended-support-disabled</code>. In this case, RDS automatically upgrades your restored DB instance to a higher engine version, if the major engine version is past its end of standard support date.</p> </note> <p>You can use this setting to enroll your DB instance into Amazon RDS Extended Support. With RDS Extended Support, you can run the selected major engine version on your DB instance past the end of standard support for that engine version. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/extended-support.html\">Amazon RDS Extended Support with Amazon RDS</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting applies only to RDS for MySQL and RDS for PostgreSQL. For Amazon Aurora DB instances, the life cycle type is managed by the DB cluster.</p> <p>Valid Values: <code>open-source-rds-extended-support | open-source-rds-extended-support-disabled</code> </p> <p>Default: <code>open-source-rds-extended-support</code> </p>"
         },
+        "AdditionalStorageVolumes":{
+          "shape":"AdditionalStorageVolumesList",
+          "documentation":"<p>A list of additional storage volumes to create for the DB instance. You can create up to three additional storage volumes using the names <code>rdsdbdata2</code>, <code>rdsdbdata3</code>, and <code>rdsdbdata4</code>. Additional storage volumes are supported for RDS for Oracle and RDS for SQL Server DB instances only.</p>"
+        },
         "TagSpecifications":{
           "shape":"TagSpecificationList",
           "documentation":"<p>Tags to assign to resources associated with the DB instance.</p> <p>Valid Values: </p> <ul> <li> <p> <code>auto-backup</code> - The DB instance's automated backup.</p> </li> </ul>"
@@ -15937,10 +15961,6 @@
         "MasterUserSecretKmsKeyId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services KMS key identifier to encrypt a secret that is automatically generated and managed in Amazon Web Services Secrets Manager.</p> <p>This setting is valid only if the master user password is managed by RDS in Amazon Web Services Secrets Manager for the DB instance.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key. To use a KMS key in a different Amazon Web Services account, specify the key ARN or alias ARN.</p> <p>If you don't specify <code>MasterUserSecretKmsKeyId</code>, then the <code>aws/secretsmanager</code> KMS key is used to encrypt the secret. If the secret is in a different Amazon Web Services account, then you can't use the <code>aws/secretsmanager</code> KMS key to encrypt the secret, and you must use a customer managed KMS key.</p> <p>There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services Region.</p>"
-        },
-        "AdditionalStorageVolumes":{
-          "shape":"AdditionalStorageVolumesList",
-          "documentation":"<p>A list of additional storage volumes to create for the DB instance. You can create up to three additional storage volumes using the names <code>rdsdbdata2</code>, <code>rdsdbdata3</code>, and <code>rdsdbdata4</code>. Additional storage volumes are supported for RDS for Oracle and RDS for SQL Server DB instances only.</p>"
         }
       },
       "documentation":"<p/>"
@@ -16171,13 +16191,13 @@
           "shape":"String",
           "documentation":"<p>The life cycle type for this DB instance.</p> <note> <p>By default, this value is set to <code>open-source-rds-extended-support</code>, which enrolls your DB instance into Amazon RDS Extended Support. At the end of standard support, you can avoid charges for Extended Support by setting the value to <code>open-source-rds-extended-support-disabled</code>. In this case, RDS automatically upgrades your restored DB instance to a higher engine version, if the major engine version is past its end of standard support date.</p> </note> <p>You can use this setting to enroll your DB instance into Amazon RDS Extended Support. With RDS Extended Support, you can run the selected major engine version on your DB instance past the end of standard support for that engine version. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/extended-support.html\">Amazon RDS Extended Support Amazon RDS</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting applies only to RDS for MySQL and RDS for PostgreSQL. For Amazon Aurora DB instances, the life cycle type is managed by the DB cluster.</p> <p>Valid Values: <code>open-source-rds-extended-support | open-source-rds-extended-support-disabled</code> </p> <p>Default: <code>open-source-rds-extended-support</code> </p>"
         },
-        "TagSpecifications":{
-          "shape":"TagSpecificationList",
-          "documentation":"<p>Tags to assign to resources associated with the DB instance.</p> <p>Valid Values: </p> <ul> <li> <p> <code>auto-backup</code> - The DB instance's automated backup.</p> </li> </ul>"
-        },
         "AdditionalStorageVolumes":{
           "shape":"AdditionalStorageVolumesList",
           "documentation":"<p>A list of additional storage volumes to modify or delete for the DB instance. You can modify or delete up to three additional storage volumes using the names <code>rdsdbdata2</code>, <code>rdsdbdata3</code>, and <code>rdsdbdata4</code>. Additional storage volumes are supported for RDS for Oracle and RDS for SQL Server DB instances only.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>Tags to assign to resources associated with the DB instance.</p> <p>Valid Values: </p> <ul> <li> <p> <code>auto-backup</code> - The DB instance's automated backup.</p> </li> </ul>"
         }
       }
     },
@@ -16372,6 +16392,10 @@
           "shape":"String",
           "documentation":"<p>The life cycle type for this DB instance.</p> <note> <p>By default, this value is set to <code>open-source-rds-extended-support</code>, which enrolls your DB instance into Amazon RDS Extended Support. At the end of standard support, you can avoid charges for Extended Support by setting the value to <code>open-source-rds-extended-support-disabled</code>. In this case, RDS automatically upgrades your restored DB instance to a higher engine version, if the major engine version is past its end of standard support date.</p> </note> <p>You can use this setting to enroll your DB instance into Amazon RDS Extended Support. With RDS Extended Support, you can run the selected major engine version on your DB instance past the end of standard support for that engine version. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/extended-support.html\">Amazon RDS Extended Support with Amazon RDS</a> in the <i>Amazon RDS User Guide</i>.</p> <p>This setting applies only to RDS for MySQL and RDS for PostgreSQL. For Amazon Aurora DB instances, the life cycle type is managed by the DB cluster.</p> <p>Valid Values: <code>open-source-rds-extended-support | open-source-rds-extended-support-disabled</code> </p> <p>Default: <code>open-source-rds-extended-support</code> </p>"
         },
+        "AdditionalStorageVolumes":{
+          "shape":"AdditionalStorageVolumesList",
+          "documentation":"<p>A list of additional storage volumes to restore to the DB instance. You can restore up to three additional storage volumes using the names <code>rdsdbdata2</code>, <code>rdsdbdata3</code>, and <code>rdsdbdata4</code>. Additional storage volumes are supported for RDS for Oracle and RDS for SQL Server DB instances only.</p>"
+        },
         "TagSpecifications":{
           "shape":"TagSpecificationList",
           "documentation":"<p>Tags to assign to resources associated with the DB instance.</p> <p>Valid Values: </p> <ul> <li> <p> <code>auto-backup</code> - The DB instance's automated backup.</p> </li> </ul>"
@@ -16383,10 +16407,6 @@
         "MasterUserSecretKmsKeyId":{
           "shape":"String",
           "documentation":"<p>The Amazon Web Services KMS key identifier to encrypt a secret that is automatically generated and managed in Amazon Web Services Secrets Manager.</p> <p>This setting is valid only if the master user password is managed by RDS in Amazon Web Services Secrets Manager for the DB instance.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key. To use a KMS key in a different Amazon Web Services account, specify the key ARN or alias ARN.</p> <p>If you don't specify <code>MasterUserSecretKmsKeyId</code>, then the <code>aws/secretsmanager</code> KMS key is used to encrypt the secret. If the secret is in a different Amazon Web Services account, then you can't use the <code>aws/secretsmanager</code> KMS key to encrypt the secret, and you must use a customer managed KMS key.</p> <p>There is a default KMS key for your Amazon Web Services account. Your Amazon Web Services account has a different default KMS key for each Amazon Web Services Region.</p>"
-        },
-        "AdditionalStorageVolumes":{
-          "shape":"AdditionalStorageVolumesList",
-          "documentation":"<p>A list of additional storage volumes to restore to the DB instance. You can restore up to three additional storage volumes using the names <code>rdsdbdata2</code>, <code>rdsdbdata3</code>, and <code>rdsdbdata4</code>. Additional storage volumes are supported for RDS for Oracle and RDS for SQL Server DB instances only.</p>"
         }
       },
       "documentation":"<p/>"
@@ -17223,6 +17243,7 @@
     },
     "SwitchoverTimeout":{
       "type":"integer",
+      "box":true,
       "min":30
     },
     "TStamp":{"type":"timestamp"},
@@ -17800,5 +17821,5 @@
       ]
     }
   },
-  "documentation":"<fullname>Amazon Relational Database Service</fullname> <p/> <p>Amazon Relational Database Service (Amazon RDS) is a web service that makes it easier to set up, operate, and scale a relational database in the cloud. It provides cost-efficient, resizeable capacity for an industry-standard relational database and manages common database administration tasks, freeing up developers to focus on what makes their applications and businesses unique.</p> <p>Amazon RDS gives you access to the capabilities of a MySQL, MariaDB, PostgreSQL, Microsoft SQL Server, Oracle, Db2, or Amazon Aurora database server. These capabilities mean that the code, applications, and tools you already use today with your existing databases work with Amazon RDS without modification. Amazon RDS automatically backs up your database and maintains the database software that powers your DB instance. Amazon RDS is flexible: you can scale your DB instance's compute resources and storage capacity to meet your application's demand. As with all Amazon Web Services, there are no up-front investments, and you pay only for the resources you use.</p> <p>This interface reference for Amazon RDS contains documentation for a programming or command line interface you can use to manage Amazon RDS. Amazon RDS is asynchronous, which means that some interfaces might require techniques such as polling or callback functions to determine when a command has been applied. In this reference, the parameter descriptions indicate whether a command is applied immediately, on the next instance reboot, or during the maintenance window. The reference structure is as follows, and we list following some related topics from the user guide.</p> <p> <b>Amazon RDS API Reference</b> </p> <ul> <li> <p>For the alphabetical list of API actions, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_Operations.html\">API Actions</a>.</p> </li> <li> <p>For the alphabetical list of data types, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_Types.html\">Data Types</a>.</p> </li> <li> <p>For a list of common query parameters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/CommonParameters.html\">Common Parameters</a>.</p> </li> <li> <p>For descriptions of the error codes, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/CommonErrors.html\">Common Errors</a>.</p> </li> </ul> <p> <b>Amazon RDS User Guide</b> </p> <ul> <li> <p>For a summary of the Amazon RDS interfaces, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html#Welcome.Interfaces\">Available RDS Interfaces</a>.</p> </li> <li> <p>For more information about how to use the Query API, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Using_the_Query_API.html\">Using the Query API</a>.</p> </li> </ul>"
+  "documentation":"<p><fullname>Amazon Relational Database Service</fullname> <p/> <p>Amazon Relational Database Service (Amazon RDS) is a web service that makes it easier to set up, operate, and scale a relational database in the cloud. It provides cost-efficient, resizeable capacity for an industry-standard relational database and manages common database administration tasks, freeing up developers to focus on what makes their applications and businesses unique.</p> <p>Amazon RDS gives you access to the capabilities of a MySQL, MariaDB, PostgreSQL, Microsoft SQL Server, Oracle, Db2, or Amazon Aurora database server. These capabilities mean that the code, applications, and tools you already use today with your existing databases work with Amazon RDS without modification. Amazon RDS automatically backs up your database and maintains the database software that powers your DB instance. Amazon RDS is flexible: you can scale your DB instance's compute resources and storage capacity to meet your application's demand. As with all Amazon Web Services, there are no up-front investments, and you pay only for the resources you use.</p> <p>This interface reference for Amazon RDS contains documentation for a programming or command line interface you can use to manage Amazon RDS. Amazon RDS is asynchronous, which means that some interfaces might require techniques such as polling or callback functions to determine when a command has been applied. In this reference, the parameter descriptions indicate whether a command is applied immediately, on the next instance reboot, or during the maintenance window. The reference structure is as follows, and we list following some related topics from the user guide.</p> <p> <b>Amazon RDS API Reference</b> </p> <ul> <li> <p>For the alphabetical list of API actions, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_Operations.html\">API Actions</a>.</p> </li> <li> <p>For the alphabetical list of data types, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_Types.html\">Data Types</a>.</p> </li> <li> <p>For a list of common query parameters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/CommonParameters.html\">Common Parameters</a>.</p> </li> <li> <p>For descriptions of the error codes, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/CommonErrors.html\">Common Errors</a>.</p> </li> </ul> <p> <b>Amazon RDS User Guide</b> </p> <ul> <li> <p>For a summary of the Amazon RDS interfaces, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html#Welcome.Interfaces\">Available RDS Interfaces</a>.</p> </li> <li> <p>For more information about how to use the Query API, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Using_the_Query_API.html\">Using the Query API</a>.</p> </li> </ul></p>"
 }

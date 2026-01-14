@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.44.18
+=======
+
+* api-change:``ce``: Cost Categories added support to BillingView data filter expressions through the new costCategories parameter, enabling users to filter billing views by AWS Cost Categories for more granular cost management and allocation.
+* api-change:``connect``: Amazon Connect makes it easier to manage contact center operating hours by enabling automated scheduling for recurring events like holidays and maintenance windows. Set up recurring patterns (weekly, monthly, etc.) or link to another hours of operation to inherit overrides.
+* api-change:``eks``: Added support for BOTTLEROCKET NVIDIA FIPS AMIs to AMI types in US regions.
+* api-change:``rds``: no feature changes. model migrated to Smithy
+* api-change:``redshift``: Adds support for enabling extra compute resources for automatic optimization during create and modify operations in Amazon Redshift clusters.
+* api-change:``redshift-serverless``: Adds support for enabling extra compute resources for automatic optimization during create and update operations in Amazon Redshift Serverless workgroups.
+* api-change:``socialmessaging``: This release clarifies WhatsApp template operations as a resource-authenticated operation via the parent WhatsApp Business Account. It also introduces new parameters for parameter format, CTA URL link tracking, and template body examples, and increases the phone number ID length.
+
+
 1.44.17
 =======
 

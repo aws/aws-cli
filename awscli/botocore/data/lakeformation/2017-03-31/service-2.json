@@ -568,6 +568,25 @@
       ],
       "documentation":"<p>Returns the set of Amazon S3 objects that make up the specified governed table. A transaction ID or timestamp can be specified for time-travel queries.</p>"
     },
+    "GetTemporaryDataLocationCredentials":{
+      "name":"GetTemporaryDataLocationCredentials",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetTemporaryDataLocationCredentials"
+      },
+      "input":{"shape":"GetTemporaryDataLocationCredentialsRequest"},
+      "output":{"shape":"GetTemporaryDataLocationCredentialsResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"GlueEncryptionException"},
+        {"shape":"EntityNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Allows a user or application in a secure environment to access data in a specific Amazon S3 location registered with Lake Formation by providing temporary scoped credentials that are limited to the requested data location and the caller's authorized access level.</p> <p> The API operation returns an error in the following scenarios:</p> <ul> <li> <p>The data location is not registered with Lake Formation. </p> </li> <li> <p>No Glue table is associated with the data location.</p> </li> <li> <p>The caller doesn't have required permissions on the associated table. The caller must have <code>SELECT</code> or <code>SUPER</code> permissions on the associated table, and credential vending for full table access must be enabled in the data lake settings. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/lake-formation/latest/dg/full-table-credential-vending.html\">Application integration for full table access</a>.</p> </li> <li> <p>The data location is in a different Amazon Web Services Region. Lake Formation doesn't support cross-Region access when vending credentials for a data location. Lake Formation only supports Amazon S3 paths registered within the same Region as the API call. </p> </li> </ul>"
+    },
     "GetTemporaryGluePartitionCredentials":{
       "name":"GetTemporaryGluePartitionCredentials",
       "http":{
@@ -1062,6 +1081,10 @@
       "exception":true
     },
     "AccessKeyIdString":{"type":"string"},
+    "AccountIdString":{
+      "type":"string",
+      "pattern":"^\\d{12}$"
+    },
     "AddLFTagsToResourceRequest":{
       "type":"structure",
       "required":[
@@ -1431,6 +1454,17 @@
       },
       "documentation":"<p>A Lake Formation condition, which applies to permissions and opt-ins that contain an expression.</p>"
     },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "Message":{
+          "shape":"MessageString",
+          "documentation":"<p>A message describing the problem.</p>"
+        }
+      },
+      "documentation":"<p>Multiple resources exist with the same Amazon S3 location</p>",
+      "exception":true
+    },
     "ContextKey":{
       "type":"string",
       "max":128,
@@ -1564,6 +1598,13 @@
       "box":true,
       "max":43200,
       "min":900
+    },
+    "CredentialsScope":{
+      "type":"string",
+      "enum":[
+        "READ",
+        "READWRITE"
+      ]
     },
     "DataCellsFilter":{
       "type":"structure",
@@ -2468,6 +2509,38 @@
         "NextToken":{
           "shape":"TokenString",
           "documentation":"<p>A continuation token indicating whether additional data is available.</p>"
+        }
+      }
+    },
+    "GetTemporaryDataLocationCredentialsRequest":{
+      "type":"structure",
+      "members":{
+        "DurationSeconds":{
+          "shape":"CredentialTimeoutDurationSecondInteger",
+          "documentation":"<p>The time period, between 900 and 43,200 seconds, for the timeout of the temporary credentials.</p>"
+        },
+        "AuditContext":{"shape":"AuditContext"},
+        "DataLocations":{
+          "shape":"PathStringList",
+          "documentation":"<p>The Amazon S3 data location that you want to access.</p>"
+        },
+        "CredentialsScope":{
+          "shape":"CredentialsScope",
+          "documentation":"<p>The credential scope is determined by the caller's Lake Formation permission on the associated table. Credential scope can be either:</p> <ul> <li> <p>READ - Provides read-only access to the data location.</p> </li> <li> <p>READ_WRITE - Provides both read and write access to the data location.</p> </li> </ul>"
+        }
+      }
+    },
+    "GetTemporaryDataLocationCredentialsResponse":{
+      "type":"structure",
+      "members":{
+        "Credentials":{"shape":"TemporaryCredentials"},
+        "AccessibleDataLocations":{
+          "shape":"PathStringList",
+          "documentation":"<p>Refers to the Amazon S3 locations that can be accessed through the <code>GetTemporaryCredentialsForLocation</code> API operation.</p>"
+        },
+        "CredentialsScope":{
+          "shape":"CredentialsScope",
+          "documentation":"<p>The credential scope is determined by the caller's Lake Formation permission on the associated table. Credential scope can be either:</p> <ul> <li> <p>READ - Provides read-only access to the data location.</p> </li> <li> <p>READ_WRITE - Provides both read and write access to the data location.</p> </li> </ul>"
         }
       }
     },
@@ -3627,6 +3700,10 @@
         "WithPrivilegedAccess":{
           "shape":"Boolean",
           "documentation":"<p>Grants the calling principal the permissions to perform all supported Lake Formation operations on the registered data location. </p>"
+        },
+        "ExpectedResourceOwnerAccount":{
+          "shape":"AccountIdString",
+          "documentation":"<p>The Amazon Web Services account that owns the Glue tables associated with specific Amazon S3 locations. </p>"
         }
       }
     },
@@ -3733,6 +3810,14 @@
         "WithPrivilegedAccess":{
           "shape":"NullableBoolean",
           "documentation":"<p>Grants the calling principal the permissions to perform all supported Lake Formation operations on the registered data location. </p>"
+        },
+        "VerificationStatus":{
+          "shape":"VerificationStatus",
+          "documentation":"<p>Indicates whether the registered role has sufficient permissions to access registered Amazon S3 location. Verification Status can be one of the following: </p> <ul> <li> <p>VERIFIED - Registered role has sufficient permissions to access registered Amazon S3 location.</p> </li> <li> <p>NOT_VERIFIED - Registered role does not have sufficient permissions to access registered Amazon S3 location.</p> </li> <li> <p>VERIFICATION_FAILED - Unable to verify if the registered role can access the registered Amazon S3 location.</p> </li> </ul>"
+        },
+        "ExpectedResourceOwnerAccount":{
+          "shape":"AccountIdString",
+          "documentation":"<p>The Amazon Web Services account that owns the Glue tables associated with specific Amazon S3 locations. </p>"
         }
       },
       "documentation":"<p>A structure containing information about an Lake Formation resource.</p>"
@@ -4193,6 +4278,28 @@
       },
       "documentation":"<p>A structure describing a table resource with LF-tags.</p>"
     },
+    "TemporaryCredentials":{
+      "type":"structure",
+      "members":{
+        "AccessKeyId":{
+          "shape":"AccessKeyIdString",
+          "documentation":"<p>The access key ID for the temporary credentials.</p>"
+        },
+        "SecretAccessKey":{
+          "shape":"SecretAccessKeyString",
+          "documentation":"<p>The secret key for the temporary credentials.</p>"
+        },
+        "SessionToken":{
+          "shape":"SessionTokenString",
+          "documentation":"<p>The session token for the temporary credentials.</p>"
+        },
+        "Expiration":{
+          "shape":"ExpirationTimestamp",
+          "documentation":"<p>The date and time when the temporary credentials expire.</p>"
+        }
+      },
+      "documentation":"<p>A temporary set of credentials for an Lake Formation user. These credentials are scoped down to only access the raw data sources that the user has access to. </p> <p>The temporary security credentials consist of an access key and a session token. The access key consists of an access key ID and a secret key. When the credentials are created, they are associated with an IAM access control policy that limits what the user can do when using the credentials.</p>"
+    },
     "ThrottledException":{
       "type":"structure",
       "members":{
@@ -4445,6 +4552,10 @@
         "HybridAccessEnabled":{
           "shape":"NullableBoolean",
           "documentation":"<p> Specifies whether the data access of tables pointing to the location can be managed by both Lake Formation permissions as well as Amazon S3 bucket policies. </p>"
+        },
+        "ExpectedResourceOwnerAccount":{
+          "shape":"AccountIdString",
+          "documentation":"<p>The Amazon Web Services account that owns the Glue tables associated with specific Amazon S3 locations. </p>"
         }
       }
     },
@@ -4526,6 +4637,14 @@
       "type":"list",
       "member":{"shape":"ValueString"},
       "min":1
+    },
+    "VerificationStatus":{
+      "type":"string",
+      "enum":[
+        "VERIFIED",
+        "VERIFICATION_FAILED",
+        "NOT_VERIFIED"
+      ]
     },
     "VersionString":{
       "type":"string",

@@ -2281,13 +2281,24 @@
     "AIPromptInferenceConfiguration":{
       "type":"structure",
       "members":{
-        "textAIPromptInferenceConfiguration":{
-          "shape":"TextAIPromptInferenceConfiguration",
-          "documentation":"<p>The inference configuration for text-based AI Prompts.</p>"
+        "temperature":{
+          "shape":"Probability",
+          "documentation":"<p>The temperature setting for controlling randomness in the generated response.</p>"
+        },
+        "topP":{
+          "shape":"Probability",
+          "documentation":"<p>The top-P sampling parameter for nucleus sampling.</p>"
+        },
+        "topK":{
+          "shape":"TopK",
+          "documentation":"<p>The top-K sampling parameter for token selection.</p>"
+        },
+        "maxTokensToSample":{
+          "shape":"MaxTokensToSample",
+          "documentation":"<p>The maximum number of tokens to generate in the response.</p>"
         }
       },
-      "documentation":"<p>The configuration for inference parameters when using AI Prompts.</p>",
-      "union":true
+      "documentation":"<p>The configuration for inference parameters when using AI Prompts.</p>"
     },
     "AIPromptModelIdentifier":{
       "type":"string",
@@ -7841,8 +7852,9 @@
     },
     "MaxTokensToSample":{
       "type":"integer",
+      "box":true,
       "max":4096,
-      "min":0,
+      "min":1,
       "sensitive":true
     },
     "MessageConfiguration":{
@@ -8807,6 +8819,7 @@
     },
     "Probability":{
       "type":"float",
+      "box":true,
       "max":1,
       "min":0,
       "sensitive":true
@@ -11479,28 +11492,6 @@
       "min":1,
       "sensitive":true
     },
-    "TextAIPromptInferenceConfiguration":{
-      "type":"structure",
-      "members":{
-        "temperature":{
-          "shape":"Probability",
-          "documentation":"<p>The temperature setting for controlling randomness in the generated response.</p>"
-        },
-        "topP":{
-          "shape":"Probability",
-          "documentation":"<p>The top-P sampling parameter for nucleus sampling.</p>"
-        },
-        "topK":{
-          "shape":"TopK",
-          "documentation":"<p>The top-K sampling parameter for token selection.</p>"
-        },
-        "maxTokensToSample":{
-          "shape":"MaxTokensToSample",
-          "documentation":"<p>The maximum number of tokens to generate in the response.</p>"
-        }
-      },
-      "documentation":"<p>Inference configuration for text-based AI Prompts.</p>"
-    },
     "TextData":{
       "type":"structure",
       "members":{
@@ -11540,8 +11531,8 @@
     },
     "TextMessageValueString":{
       "type":"string",
-      "max":1024,
-      "min":1,
+      "max":25000,
+      "min":0,
       "sensitive":true
     },
     "ThrottlingException":{
@@ -11790,6 +11781,7 @@
     },
     "TopK":{
       "type":"integer",
+      "box":true,
       "max":200,
       "min":0,
       "sensitive":true

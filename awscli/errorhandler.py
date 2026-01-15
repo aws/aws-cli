@@ -123,7 +123,7 @@ def construct_cli_error_handlers_chain(session=None):
 
 
 class BaseExceptionHandler:
-    def handle_exception(self, exception, stdout, stderr):
+    def handle_exception(self, exception, stdout, stderr, **kwargs):
         raise NotImplementedError('handle_exception')
 
 

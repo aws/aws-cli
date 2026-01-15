@@ -2,6 +2,57 @@
 CHANGELOG
 =========
 
+1.44.18
+=======
+
+* api-change:``ce``: Cost Categories added support to BillingView data filter expressions through the new costCategories parameter, enabling users to filter billing views by AWS Cost Categories for more granular cost management and allocation.
+* api-change:``connect``: Amazon Connect makes it easier to manage contact center operating hours by enabling automated scheduling for recurring events like holidays and maintenance windows. Set up recurring patterns (weekly, monthly, etc.) or link to another hours of operation to inherit overrides.
+* api-change:``eks``: Added support for BOTTLEROCKET NVIDIA FIPS AMIs to AMI types in US regions.
+* api-change:``rds``: no feature changes. model migrated to Smithy
+* api-change:``redshift``: Adds support for enabling extra compute resources for automatic optimization during create and modify operations in Amazon Redshift clusters.
+* api-change:``redshift-serverless``: Adds support for enabling extra compute resources for automatic optimization during create and update operations in Amazon Redshift Serverless workgroups.
+* api-change:``socialmessaging``: This release clarifies WhatsApp template operations as a resource-authenticated operation via the parent WhatsApp Business Account. It also introduces new parameters for parameter format, CTA URL link tracking, and template body examples, and increases the phone number ID length.
+
+
+1.44.17
+=======
+
+* api-change:``bedrock``: This change will increase TestCase guardContent input size from 1024 to 2028 characters and PolicyBuildDocumentDescription from 2000 to 4000 characters
+* api-change:``datazone``: Adds support for IAM role subscriptions to Glue table listings via CreateSubscriptionRequest API. Also adds owningIamPrincipalArn filter to List APIs and subscriptionGrantCreationMode parameter to subscription target APIs for controlling grant creation behavior.
+
+
+1.44.16
+=======
+
+* api-change:``billing``: Cost Categories filtering support to BillingView data filter expressions through the new costCategories parameter, enabling users to filter billing views by AWS Cost Categories for more granular cost management and allocation.
+* api-change:``iot-managed-integrations``: This release introduces WiFi Simple Setup (WSS) enabling device provisioning via barcode scanning with automated network discovery, authentication, and credential provisioning. Additionally, it introduces 2P Device Capability Rediscovery for updating hub-managed device capabilities post-onboarding.
+* api-change:``sagemaker``: Added ultraServerType to the UltraServerInfo structure to support server type identification for SageMaker HyperPod
+* enhancement:``s3``: Adds new parameter ``--case-conflict`` that configures how case conflicts are handled on case-insensitive filesystems
+
+
+1.44.15
+=======
+
+* api-change:``bedrock-agentcore-control``: Adds optional field "view" to GetMemory API input to give customers control over whether CMK encrypted data such as strategy decryption or override prompts is returned or not.
+* api-change:``cloudfront``: Added EntityLimitExceeded exception handling to the following API operations AssociateDistributionWebACL, AssociateDistributionTenantWebACL, UpdateDistributionWithStagingConfig
+* api-change:``glue``: Adding MaterializedViews task run APIs
+* api-change:``medialive``: MediaPackage v2 output groups in MediaLive can now accept one additional destination for single pipeline channels and up to two additional destinations for standard channels. MediaPackage v2 destinations now support sending to cross region MediaPackage channels.
+* api-change:``transcribe``: Adds waiters to Amazon Transcribe.
+
+
+1.44.14
+=======
+
+* api-change:``workspaces``: Add StateMessage and ProgressPercentage fields to DescribeCustomWorkspaceImageImport API response.
+
+
+1.44.13
+=======
+
+* api-change:``ce``: This release updates existing reservation recommendations API to support deployment model.
+* api-change:``emr-serverless``: Added support for enabling disk encryption using customer managed AWS KMS keys to CreateApplication, UpdateApplication and StartJobRun APIs.
+
+
 1.44.12
 =======
 

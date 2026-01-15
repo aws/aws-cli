@@ -27,14 +27,14 @@ class TestCLI:
                 main()
             assert exc_info.value.code == 1
 
-    def test_fix_and_output_conflict(self, capsys):
-        """Test error when both --fix and --output are provided."""
+    def test_fix_and_output(self, tmp_path, capsys):
+        """Test no errors when both --fix and --output are provided."""
+        script_file = tmp_path / "test.sh"
+        script_file.write_text("echo 'hello world'")
         with patch(
-            "sys.argv", ["migrate-aws-cli", "--script", "test.sh", "--fix", "--output", "out.sh"]
+            "sys.argv", ["migrate-aws-cli", "--script", str(script_file), "--fix", "--output", "out.sh"]
         ):
-            with pytest.raises(SystemExit) as exc_info:
-                main()
-            assert exc_info.value.code == 1
+            main()
 
     def test_fix_and_interactive_conflict(self, capsys):
         """Test error when both --fix and --interactive are provided."""

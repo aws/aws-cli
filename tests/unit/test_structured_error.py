@@ -60,10 +60,15 @@ class TestClientErrorHandler:
         rc = self.handler.handle_exception(client_error, stdout, stderr)
 
         assert rc == CLIENT_ERROR_RC
-        stderr_output = stderr.getvalue()
-        assert 'aws: [ERROR]:' in stderr_output
-        assert 'An error occurred (NoSuchBucket)' in stderr_output
-        assert 'BucketName: my-bucket' in stderr_output
+        expected = (
+            '\n'
+            'aws: [ERROR]: An error occurred (NoSuchBucket) '
+            'when calling the GetObject operation: Error\n'
+            '\n'
+            'Additional error details:\n'
+            'BucketName: my-bucket\n'
+        )
+        assert stderr.getvalue() == expected
 
     def test_displays_standard_error_without_additional_members(self):
         error_response = {
@@ -81,10 +86,12 @@ class TestClientErrorHandler:
         rc = self.handler.handle_exception(client_error, stdout, stderr)
 
         assert rc == CLIENT_ERROR_RC
-        stderr_output = stderr.getvalue()
-        assert 'aws: [ERROR]:' in stderr_output
-        assert 'An error occurred (AccessDenied)' in stderr_output
-        assert 'Additional error details' not in stderr_output
+        expected = (
+            '\n'
+            'aws: [ERROR]: An error occurred (AccessDenied) '
+            'when calling the GetObject operation: Access Denied\n'
+        )
+        assert stderr.getvalue() == expected
 
     def test_respects_legacy_format_config(self):
         error_response = {
@@ -105,9 +112,12 @@ class TestClientErrorHandler:
         rc = self.handler.handle_exception(client_error, stdout, stderr)
 
         assert rc == CLIENT_ERROR_RC
-        stderr_output = stderr.getvalue()
-        assert 'NoSuchBucket' in stderr_output
-        assert 'BucketName' not in stderr_output
+        expected = (
+            '\n'
+            'aws: [ERROR]: An error occurred (NoSuchBucket) '
+            'when calling the GetObject operation: Error\n'
+        )
+        assert stderr.getvalue() == expected
 
     def test_error_format_case_insensitive(self):
         error_response = {
@@ -130,10 +140,15 @@ class TestClientErrorHandler:
         rc = self.handler.handle_exception(client_error, stdout, stderr)
 
         assert rc == CLIENT_ERROR_RC
-        stderr_output = stderr.getvalue()
-        assert 'aws: [ERROR]:' in stderr_output
-        assert 'An error occurred (NoSuchBucket)' in stderr_output
-        assert 'BucketName: test' in stderr_output
+        expected = (
+            '\n'
+            'aws: [ERROR]: An error occurred (NoSuchBucket) '
+            'when calling the GetObject operation: Error\n'
+            '\n'
+            'Additional error details:\n'
+            'BucketName: test\n'
+        )
+        assert stderr.getvalue() == expected
 
 
 class TestEnhancedErrorFormatter:
@@ -386,12 +401,18 @@ class TestRealWorldErrorScenarios:
         rc = self.handler.handle_exception(client_error, stdout, stderr)
 
         assert rc == CLIENT_ERROR_RC
-        stderr_output = stderr.getvalue()
-        assert 'aws: [ERROR]:' in stderr_output
-        assert (
-            'An error occurred (TransactionCanceledException)' in stderr_output
+        expected = (
+            '\n'
+            'aws: [ERROR]: An error occurred (TransactionCanceledException) '
+            'when calling the TransactWriteItems operation: '
+            'Transaction cancelled, please refer to '
+            'CancellationReasons for specific reasons\n'
+            '\n'
+            'Additional error details:\n'
+            'CancellationReasons: <complex value> '
+            '(Use --cli-error-format with json or yaml to see full details)\n'
         )
-        assert 'CancellationReasons: <complex value>' in stderr_output
+        assert stderr.getvalue() == expected
 
 
 class TestParsedGlobalsPassthrough:
@@ -454,12 +475,16 @@ class TestParsedGlobalsPassthrough:
         )
 
         assert rc == CLIENT_ERROR_RC
-
-        stderr_output = stderr.getvalue()
-        assert 'aws: [ERROR]:' in stderr_output
-        assert 'An error occurred (NoSuchBucket)' in stderr_output
-        assert 'BucketName: test-bucket' in stderr_output
-        assert '"Code"' not in stderr_output
+        expected = (
+            '\n'
+            'aws: [ERROR]: An error occurred (NoSuchBucket) '
+            'when calling the GetObject operation: '
+            'The specified bucket does not exist\n'
+            '\n'
+            'Additional error details:\n'
+            'BucketName: test-bucket\n'
+        )
+        assert stderr.getvalue() == expected
 
 
 class TestNonModeledErrorStructuredFormatting:
@@ -534,11 +559,12 @@ class TestNonModeledErrorStructuredFormatting:
         )
 
         assert rc == CONFIGURATION_ERROR_RC
-        stderr_output = stderr.getvalue()
-        assert 'aws: [ERROR]:' in stderr_output
-        assert 'An error occurred (Configuration)' in stderr_output
-        assert 'Invalid configuration value' in stderr_output
-        assert '"Code"' not in stderr_output
+        expected = (
+            '\n'
+            'aws: [ERROR]: An error occurred (Configuration): '
+            'Invalid configuration value\n'
+        )
+        assert stderr.getvalue() == expected
 
     def test_pager_error_with_json_format(self):
         session = FakeSession()
@@ -632,9 +658,20 @@ class TestNonModeledErrorStructuredFormatting:
         )
 
         assert rc == PARAM_VALIDATION_ERROR_RC
-        stderr_output = stderr.getvalue()
-        assert 'usage:' in stderr_output
-        assert '"Code"' not in stderr_output
+        expected = (
+            '\n'
+            'usage: aws [options] <command> <subcommand> '
+            '[<subcommand> ...] [parameters]\n'
+            'To see help text, you can run:\n'
+            '\n'
+            '  aws help\n'
+            '  aws <command> help\n'
+            '  aws <command> <subcommand> help\n'
+            '\n'
+            '\n'
+            'aws: [ERROR]: --invalid-arg\n'
+        )
+        assert stderr.getvalue() == expected
 
     def test_legacy_format_uses_plain_text(self):
         session = FakeSession()
@@ -653,9 +690,12 @@ class TestNonModeledErrorStructuredFormatting:
         )
 
         assert rc == CONFIGURATION_ERROR_RC
-        stderr_output = stderr.getvalue()
-        assert 'aws configure' in stderr_output
-        assert '"Code"' not in stderr_output
+        expected = (
+            '\n'
+            'aws: [ERROR]: You must specify a region. You can also '
+            'configure your region by running "aws configure".\n'
+        )
+        assert stderr.getvalue() == expected
 
     def test_enhanced_format_includes_error_prefix(self):
         session = FakeSession()
@@ -674,9 +714,13 @@ class TestNonModeledErrorStructuredFormatting:
         )
 
         assert rc == CONFIGURATION_ERROR_RC
-        stderr_output = stderr.getvalue()
-        assert 'aws: [ERROR]:' in stderr_output
-        assert 'An error occurred (NoRegion)' in stderr_output
+        expected = (
+            '\n'
+            'aws: [ERROR]: An error occurred (NoRegion): '
+            'You must specify a region. You can also configure your region '
+            'by running "aws configure".\n'
+        )
+        assert stderr.getvalue() == expected
 
     def test_interrupt_exception_remains_plain_text(self):
         session = FakeSession()
@@ -695,6 +739,5 @@ class TestNonModeledErrorStructuredFormatting:
         )
 
         assert rc == 128 + signal.SIGINT
-        stdout_output = stdout.getvalue()
-        assert stdout_output == "\n"
-        assert '"Code"' not in stderr.getvalue()
+        assert stdout.getvalue() == "\n"
+        assert stderr.getvalue() == ""

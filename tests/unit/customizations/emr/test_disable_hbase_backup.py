@@ -73,7 +73,7 @@ class TestDisableHBaseBackups(BaseAWSCommandParamsTest):
         args = ' --cluster-id j-ABCD'
         cmdline = self.prefix + args
         expected_error_msg = (
-            '\naws: [ERROR]: Should specify at least one of --full' + ' and --incremental.\n'
+            '\naws: [ERROR]: An error occurred (ParamValidation): Should specify at least one of --full' + ' and --incremental.\n'
         )
         result = self.run_cmd(cmdline, 252)
 
@@ -87,7 +87,7 @@ class TestDisableHBaseBackups(BaseAWSCommandParamsTest):
         args = ' --cluster-id j-ABCD --full'
         cmdline = self.prefix + args
         expected_error_msg = (
-            "\naws: [ERROR]: disable-hbase-backups"
+            "\naws: [ERROR]: An error occurred (ParamValidation): disable-hbase-backups"
             " is not supported with 'emr-4.0' release.\n"
         )
         result = self.run_cmd(cmdline, 252)

@@ -82,6 +82,9 @@ max_attempts         N/A            max_attempts          AWS_MAX_ATTEMPTS      
 retry_mode           N/A            retry_mode            AWS_RETRY_MODE        Type of retries performed
 -------------------- -------------- --------------------- --------------------- --------------------------------
 cli_pager            --no-cli-pager cli_pager             AWS_PAGER             Redirect/Disable output to pager
+-------------------- -------------- --------------------- --------------------- --------------------------------
+cli_error_format     --cli-error-   cli_error_format      AWS_CLI_ERROR_FORMAT  Format for error output
+                     format
 ==================== ============== ===================== ===================== ================================
 
 The third column, Config Entry, is the value you would specify in the AWS CLI
@@ -94,6 +97,26 @@ The valid values of the ``output`` configuration variable are:
 * json
 * table
 * text
+* yaml
+* yaml-stream
+* off
+
+The ``off`` value suppresses all stdout output while preserving stderr for 
+errors and warnings.
+
+``cli_error_format`` controls how CLI errors are displayed. The valid 
+values of the ``cli_error_format`` configuration variable are:
+
+* enhanced - Errors display additional fields in a 
+  human-readable format with inline display for simple values and small 
+  collections. This is the default behavior.
+* json - Errors are formatted as JSON, showing all available fields.
+* yaml - Errors are formatted as YAML, showing all available fields.
+* text - Errors are formatted as text with key-value pairs, showing 
+  all available fields.
+* table - Errors are formatted as a table, showing all available fields.
+* legacy - Errors are written to stderr as unstructured text, 
+  displaying only the error code and message without additional fields.
 
 ``cli_timestamp_format`` controls the format of timestamps displayed by the AWS CLI.
 The valid values of the ``cli_timestamp_format`` configuration variable are:

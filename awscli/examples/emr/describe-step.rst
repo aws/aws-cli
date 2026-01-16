@@ -8,9 +8,9 @@ Output::
       "Step": {
           "Status": {
               "Timeline": {
-                  "EndDateTime": 1433200470.481,
-                  "CreationDateTime": 1433199926.597,
-                  "StartDateTime": 1433200404.959
+                  "EndDateTime": "2015-06-01T19:14:30.481000-0400",
+                  "CreationDateTime": "2015-06-01T19:05:26.597000-0400",
+                  "StartDateTime": "2015-06-01T19:13:24.959000-0400"
               },
               "State": "COMPLETED",
               "StateChangeReason": {}

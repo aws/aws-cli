@@ -29,7 +29,7 @@ class DefaultPagerRule(LintRule):
     def description(self) -> str:
         return (
             "AWS CLI v2 uses the system pager by default for all command output. "
-            "Add --no-cli-pager to disable use of the pager and match v1 behavior. See "
+            "Add `--no-cli-pager` to disable use of the pager and match v1 behavior. See "
             "https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration-changes.html"
             "#cliv2-migration-output-pager."
         )

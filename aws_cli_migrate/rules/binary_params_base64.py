@@ -30,8 +30,9 @@ class Base64BinaryFormatRule(LintRule):
     def description(self) -> str:
         return (
             "In AWS CLI v2, an input parameter typed as binary large object (BLOB) expects "
-            "the input to be base64-encoded. To retain v1 behavior after upgrading to AWS CLI v2, "
-            "add `--cli-binary-format raw-in-base64-out`. See https://docs.aws.amazon.com/cli/"
+            "the input to be base64-encoded. If using a BLOB-type input parameter, retain v1 "
+            "behavior after upgrading to AWS CLI v2 by adding "
+            "`--cli-binary-format raw-in-base64-out`. See https://docs.aws.amazon.com/cli/"
             "latest/userguide/cliv2-migration-changes.html#cliv2-migration-binaryparam."
         )
 

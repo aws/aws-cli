@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.33.2
+======
+
+* api-change:``sagemaker``: Adding security consideration comments for lcc accessing execution role under root access
+* api-change:``resource-explorer-2``: Added ViewName to View-related responses and ServiceViewName to GetServiceView response.
+* api-change:``datazone``: This release adds support for numeric filtering and complex free-text searches cases for the Search and SearchListings APIs.
+* api-change:``connect``: Adds support to allow customers to create form with Dispute configuration
+* api-change:``glacier``: Documentation updates for Amazon Glacier's maintenance mode
+* enhancement:ContainerProvider: The ContainerProvider now works with arbitray HTTPS URLs for `AWS_CONTAINER_CREDENTIALS_FULL_URI`.
+* api-change:``launch-wizard``: Added UpdateDeployment, ListDeploymentPatternVersions and GetDeploymentPatternVersion APIs for Launch Wizard
+
+
 2.33.1
 ======
 

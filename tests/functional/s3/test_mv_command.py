@@ -525,7 +525,8 @@ class TestMvCommandWithValidateSameS3Paths(BaseS3TransferCommandTest):
         ]
         stderr = self.run_cmd(cmdline, expected_rc=252)[1]
         self.assertEqual(
-            "\naws: [ERROR]: Couldn't find multi-region access point with alias foobar.mrap "
+            "\naws: [ERROR]: An error occurred (ParamValidation): "
+            "Couldn't find multi-region access point with alias foobar.mrap "
             "in account 123456789012\n",
             stderr,
         )

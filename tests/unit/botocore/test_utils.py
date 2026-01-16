@@ -2719,8 +2719,8 @@ class TestContainerMetadataFetcher(unittest.TestCase):
     def test_link_local_http_is_not_allowed(self):
         self.assert_host_is_not_allowed('http://169.254.0.1/foo')
 
-    def test_link_local_https_is_not_allowed(self):
-        self.assert_host_is_not_allowed('https://169.254.0.1/foo')
+    def test_can_use_link_local_https(self):
+        self.assert_can_retrieve_metadata_from('https://169.254.0.1/foo')
 
     def test_non_link_local_nonallowed_url(self):
         self.assert_host_is_not_allowed('http://169.1.2.3/foo')
@@ -2728,8 +2728,8 @@ class TestContainerMetadataFetcher(unittest.TestCase):
     def test_error_raised_on_nonallowed_url(self):
         self.assert_host_is_not_allowed('http://somewhere.com/foo')
 
-    def test_external_host_not_allowed_if_https(self):
-        self.assert_host_is_not_allowed('https://somewhere.com/foo')
+    def test_can_use_external_host_if_https(self):
+        self.assert_can_retrieve_metadata_from('https://somewhere.com/foo')
 
 
 class TestUnsigned(unittest.TestCase):

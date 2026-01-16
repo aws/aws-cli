@@ -117,6 +117,15 @@ class WindowsCmdFormatter(BasePerLineFormatter):
     _VAR_FORMAT = 'set {var_name}={var_value}'
 
 
+class FishShellFormatter(BasePerLineFormatter):
+    FORMAT = 'fish'
+    DOCUMENTATION = (
+        'Display credentials as Fish shell environment variables: '
+        '``set -gx AWS_ACCESS_KEY_ID EXAMPLE``'
+    )
+    _VAR_FORMAT = 'set -gx {var_name} {var_value}'
+
+
 class CredentialProcessFormatter(BaseCredentialFormatter):
     FORMAT = 'process'
     DOCUMENTATION = (
@@ -152,6 +161,7 @@ SUPPORTED_FORMATS = {
         BashNoExportEnvFormatter,
         PowershellFormatter,
         WindowsCmdFormatter,
+        FishShellFormatter,
     ]
 }
 

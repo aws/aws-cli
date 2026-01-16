@@ -10824,6 +10824,10 @@
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
         },
+        "ReviewConfiguration":{
+          "shape":"EvaluationReviewConfiguration",
+          "documentation":"<p>Configuration information about evaluation reviews.</p>"
+        },
         "TargetConfiguration":{
           "shape":"EvaluationFormTargetConfiguration",
           "documentation":"<p>Configuration that specifies the target for the evaluation form.</p>"
@@ -16287,6 +16291,10 @@
           "shape":"EvaluationFormAutoEvaluationConfiguration",
           "documentation":"<p>The automatic evaluation configuration of an evaluation form.</p>"
         },
+        "ReviewConfiguration":{
+          "shape":"EvaluationReviewConfiguration",
+          "documentation":"<p>Configuration for evaluation review settings of this evaluation form.</p>"
+        },
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
@@ -16362,6 +16370,10 @@
         "LanguageConfiguration":{
           "shape":"EvaluationFormLanguageConfiguration",
           "documentation":"<p>Configuration for language settings of this evaluation form content.</p>"
+        },
+        "ReviewConfiguration":{
+          "shape":"EvaluationReviewConfiguration",
+          "documentation":"<p>Configuration for evaluation review settings of this evaluation form content.</p>"
         }
       },
       "documentation":"<p>Information about an evaluation form used in a contact evaluation.</p>"
@@ -17308,6 +17320,10 @@
           "shape":"EvaluationAcknowledgement",
           "documentation":"<p>Information related to evaluation acknowledgement.</p>"
         },
+        "Review":{
+          "shape":"EvaluationReviewMetadata",
+          "documentation":"<p>Information about reviews of this evaluation.</p>"
+        },
         "ContactParticipant":{
           "shape":"EvaluationContactParticipant",
           "documentation":"<p>Information about a contact participant in this evaluation.</p>"
@@ -17371,6 +17387,112 @@
         }
       },
       "documentation":"<p>Details of the input data used for automated question processing.</p>"
+    },
+    "EvaluationReviewConfiguration":{
+      "type":"structure",
+      "required":["ReviewNotificationRecipients"],
+      "members":{
+        "ReviewNotificationRecipients":{
+          "shape":"EvaluationReviewNotificationRecipientList",
+          "documentation":"<p>List of recipients who should be notified when a review is requested.</p>"
+        },
+        "EligibilityDays":{
+          "shape":"Integer",
+          "documentation":"<p>Number of days during which a request for review can be submitted for evaluations created from this form.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for evaluation reviews.</p>"
+    },
+    "EvaluationReviewMetadata":{
+      "type":"structure",
+      "required":[
+        "CreatedTime",
+        "CreatedBy",
+        "ReviewRequestComments"
+      ],
+      "members":{
+        "ReviewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation review.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the evaluation review was created.</p>"
+        },
+        "CreatedBy":{
+          "shape":"ARN",
+          "documentation":"<p>The user who created the evaluation review.</p>"
+        },
+        "ReviewRequestComments":{
+          "shape":"EvaluationReviewRequestCommentList",
+          "documentation":"<p>Comments provided when requesting the evaluation review.</p>"
+        }
+      },
+      "documentation":"<p>Metadata information about an evaluation review.</p>"
+    },
+    "EvaluationReviewNotificationRecipient":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "Value"
+      ],
+      "members":{
+        "Type":{
+          "shape":"EvaluationReviewNotificationRecipientType",
+          "documentation":"<p>The type of notification recipient.</p>"
+        },
+        "Value":{
+          "shape":"EvaluationReviewNotificationRecipientValue",
+          "documentation":"<p>The value associated with the notification recipient type.</p>"
+        }
+      },
+      "documentation":"<p>Information about a recipient who should be notified when an evaluation review is requested.</p>"
+    },
+    "EvaluationReviewNotificationRecipientList":{
+      "type":"list",
+      "member":{"shape":"EvaluationReviewNotificationRecipient"},
+      "min":1
+    },
+    "EvaluationReviewNotificationRecipientType":{
+      "type":"string",
+      "enum":["USER_ID"]
+    },
+    "EvaluationReviewNotificationRecipientValue":{
+      "type":"structure",
+      "members":{
+        "UserId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The user identifier for the notification recipient.</p>"
+        }
+      },
+      "documentation":"<p>The value information for an evaluation review notification recipient.</p>"
+    },
+    "EvaluationReviewRequestComment":{
+      "type":"structure",
+      "members":{
+        "Comment":{
+          "shape":"EvaluationReviewRequestCommentContent",
+          "documentation":"<p>The text content of the review request comment.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the review request comment was created.</p>"
+        },
+        "CreatedBy":{
+          "shape":"ARN",
+          "documentation":"<p>The user who created the review request comment.</p>"
+        }
+      },
+      "documentation":"<p>A comment provided when requesting an evaluation review.</p>"
+    },
+    "EvaluationReviewRequestCommentContent":{
+      "type":"string",
+      "max":500
+    },
+    "EvaluationReviewRequestCommentList":{
+      "type":"list",
+      "member":{"shape":"EvaluationReviewRequestComment"},
+      "max":1
     },
     "EvaluationScore":{
       "type":"structure",
@@ -17586,7 +17708,9 @@
       "type":"string",
       "enum":[
         "DRAFT",
-        "SUBMITTED"
+        "SUBMITTED",
+        "REVIEW_REQUESTED",
+        "UNDER_REVIEW"
       ]
     },
     "EvaluationSuggestedAnswer":{
@@ -32224,6 +32348,10 @@
         "AutoEvaluationConfiguration":{
           "shape":"EvaluationFormAutoEvaluationConfiguration",
           "documentation":"<p>Whether automated evaluations are enabled.</p>"
+        },
+        "ReviewConfiguration":{
+          "shape":"EvaluationReviewConfiguration",
+          "documentation":"<p>Configuration for evaluation review settings of the evaluation form.</p>"
         },
         "AsDraft":{
           "shape":"BoxedBoolean",

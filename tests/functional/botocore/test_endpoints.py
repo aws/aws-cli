@@ -105,7 +105,7 @@ def _available_services():
 
 @pytest.mark.validates_models
 @pytest.mark.parametrize("service_name", _available_services())
-def test_client_name_matches_hyphenized_service_id(service_name):
+def test_client_name_matches_hyphenized_service_id(service_name, record_property):
     """Generates tests for each service to verify that the computed service
     named based on the service id matches the service name used to
     create a client (i.e the directory name in botocore/data)
@@ -114,6 +114,7 @@ def test_client_name_matches_hyphenized_service_id(service_name):
     session = get_session()
     service_model = session.get_service_model(service_name)
     computed_name = service_model.service_id.replace(' ', '-').lower()
+    record_property('aws_service', service_name)
 
     # Handle known exceptions where we have renamed the service directory
     # for one reason or another.

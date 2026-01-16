@@ -14,6 +14,17 @@ Jump to:
 -  `Getting Help <#getting-help>`__
 -  `More Resources <#more-resources>`__
 
+
+Entering Maintenance Mode on July 15, 2026
+------------------------------------------
+
+We `announced <https://aws.amazon.com/blogs/developer/cli-v1-maintenance-mode-announcement/>`__
+the upcoming **end-of-support for the AWS CLI v1**. We recommend
+that you migrate to
+`AWS CLI v2 <https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration.html>`__.
+For dates, additional details, and information on how to migrate,
+please refer to the linked announcement.
+
 Getting Started
 ---------------
 

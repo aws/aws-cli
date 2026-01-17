@@ -437,7 +437,7 @@ class ParamShorthandDocGen(ParamShorthand):
     """Documentation generator for param shorthand syntax."""
 
     _DONT_DOC = object()
-    _MAX_STACK = 3
+    _MAX_STACK = 4
 
     def supports_shorthand(self, argument_model):
         """Checks if a CLI argument supports shorthand syntax."""
@@ -539,7 +539,11 @@ class ParamShorthandDocGen(ParamShorthand):
 
     def _map_docs(self, argument_model, stack):
         k = argument_model.key
-        value_docs = self._shorthand_docs(argument_model.value, stack)
+        stack.append(argument_model.value.name)
+        try:
+            value_docs = self._shorthand_docs(argument_model.value, stack)
+        finally:
+            stack.pop()
         start = 'KeyName1=%s,KeyName2=%s' % (value_docs, value_docs)
         if k.enum and not stack:
             start += '\n\nWhere valid key names are:\n'

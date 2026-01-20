@@ -582,7 +582,7 @@
     },
     "ActionId":{
       "type":"string",
-      "max":200,
+      "max":512,
       "min":1,
       "pattern":".*",
       "sensitive":true
@@ -1424,6 +1424,10 @@
           "shape":"DeletionProtection",
           "documentation":"<p>Specifies whether the policy store can be deleted. If enabled, the policy store can't be deleted.</p> <p>The default state is <code>DISABLED</code>.</p>"
         },
+        "encryptionSettings":{
+          "shape":"EncryptionSettings",
+          "documentation":"<p>Specifies the encryption settings used to encrypt the policy store and their child resources. Allows for the ability to use a customer owned KMS key for encryption of data.</p> <p>This is an optional field to be used when providing a customer-managed KMS key for encryption.</p>"
+        },
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The list of key-value pairs to associate with the policy store.</p>"
@@ -1643,6 +1647,51 @@
       "pattern":"-?(\\d+d)?(\\d+h)?(\\d+m)?(\\d+s)?(\\d+ms)?",
       "sensitive":true
     },
+    "EncryptionContext":{
+      "type":"map",
+      "key":{"shape":"EncryptionContextKey"},
+      "value":{"shape":"EncryptionContextValue"},
+      "max":8192,
+      "min":0
+    },
+    "EncryptionContextKey":{
+      "type":"string",
+      "min":1
+    },
+    "EncryptionContextValue":{
+      "type":"string",
+      "min":1
+    },
+    "EncryptionSettings":{
+      "type":"structure",
+      "members":{
+        "kmsEncryptionSettings":{
+          "shape":"KmsEncryptionSettings",
+          "documentation":"<p>The KMS encryption settings for this policy store to encrypt data with. It will contain the customer-managed KMS key, and a user-defined encryption context. </p>"
+        },
+        "default":{
+          "shape":"Unit",
+          "documentation":"<p>Use AWS owned encryption keys for encrypting policy store data.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the encryption configuration for the policy store and child resources. </p> <p>This data type is used as a request parameter in the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_CreatePolicyStore.html\">CreatePolicyStore</a> operation.</p>",
+      "union":true
+    },
+    "EncryptionState":{
+      "type":"structure",
+      "members":{
+        "kmsEncryptionState":{
+          "shape":"KmsEncryptionState",
+          "documentation":"<p>The KMS encryption settings currently configured for this policy store to encrypt data with. It contains the customer-managed KMS key, and a user-defined encryption context. </p>"
+        },
+        "default":{
+          "shape":"Unit",
+          "documentation":"<p>Policy store data is encrypted using AWS owned encryption keys.</p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the encryption configuration for the policy store and child resources.</p> <p>This data type is used as a response parameter field for the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_GetPolicyStore.html\">GetPolicyStore</a> operation.</p>",
+      "union":true
+    },
     "EntitiesDefinition":{
       "type":"structure",
       "members":{
@@ -1670,7 +1719,7 @@
     },
     "EntityId":{
       "type":"string",
-      "max":200,
+      "max":612,
       "min":1,
       "pattern":".*",
       "sensitive":true
@@ -1944,6 +1993,10 @@
         "deletionProtection":{
           "shape":"DeletionProtection",
           "documentation":"<p>Specifies whether the policy store can be deleted. If enabled, the policy store can't be deleted.</p> <p>The default state is <code>DISABLED</code>.</p>"
+        },
+        "encryptionState":{
+          "shape":"EncryptionState",
+          "documentation":"<p>A structure that contains the encryption configuration for the policy store.</p>"
         },
         "cedarVersion":{
           "shape":"CedarVersion",
@@ -2339,6 +2392,43 @@
       "max":2048,
       "min":1,
       "pattern":"https://.*"
+    },
+    "KmsEncryptionSettings":{
+      "type":"structure",
+      "required":["key"],
+      "members":{
+        "key":{
+          "shape":"KmsKey",
+          "documentation":"<p>The customer-managed KMS key <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a>, alias or ID to be used for encryption processes. </p> <p>Users can provide the full KMS key ARN, a KMS key alias, or a KMS key ID, but it will be mapped to the full KMS key ARN after policy store creation, and referenced when encrypting child resources. </p>"
+        },
+        "encryptionContext":{
+          "shape":"EncryptionContext",
+          "documentation":"<p>User-defined, additional context to be added to encryption processes. </p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the KMS encryption configuration for the policy store. The encryption settings determine what customer-managed KMS key will be used to encrypt all resources within the policy store, and any user-defined context key-value pairs to append during encryption processes.</p> <p>This data type is used as a field that is part of the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_EncryptionSettings.html\">EncryptionSettings</a> type.</p>"
+    },
+    "KmsEncryptionState":{
+      "type":"structure",
+      "required":[
+        "key",
+        "encryptionContext"
+      ],
+      "members":{
+        "key":{
+          "shape":"KmsKey",
+          "documentation":"<p>The customer-managed KMS key <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> being used for encryption processes. </p>"
+        },
+        "encryptionContext":{
+          "shape":"EncryptionContext",
+          "documentation":"<p>User-defined, additional context added to encryption processes. </p>"
+        }
+      },
+      "documentation":"<p>A structure that contains the KMS encryption configuration for the policy store. The encryption state shows what customer-managed KMS key is being used to encrypt all resources within the policy store, and any user-defined context key-value pairs added during encryption processes.</p> <p>This data type is used as a field that is part of the <a href=\"https://docs.aws.amazon.com/verifiedpermissions/latest/apireference/API_EncryptionState.html\">EncryptionState</a> type.</p>"
+    },
+    "KmsKey":{
+      "type":"string",
+      "pattern":"[a-zA-Z0-9:/_-]+"
     },
     "ListIdentitySourcesInput":{
       "type":"structure",
@@ -2869,7 +2959,7 @@
       "type":"string",
       "max":200,
       "min":1,
-      "pattern":"[a-zA-Z0-9-]*"
+      "pattern":"[a-zA-Z0-9-/_]*"
     },
     "PolicyItem":{
       "type":"structure",
@@ -3390,6 +3480,10 @@
       "documentation":"<p>No more tags be added because the limit (50) has been reached. To add new tags, use <code>UntagResource</code> to remove existing tags.</p>",
       "exception":true
     },
+    "Unit":{
+      "type":"structure",
+      "members":{}
+    },
     "UntagResourceInput":{
       "type":"structure",
       "required":[
@@ -3611,8 +3705,7 @@
       "type":"structure",
       "required":[
         "policyStoreId",
-        "policyId",
-        "definition"
+        "policyId"
       ],
       "members":{
         "policyStoreId":{

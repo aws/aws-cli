@@ -369,3 +369,17 @@ class TestConfigFileWriter(unittest.TestCase):
             '[new-section]\n'
             'region = us-west-2\n'
         )
+    def test_writer_skips_empty_values(tmp_path):
+    from awscli.customizations.configure.writer import ConfigFileWriter
+
+    config_file = tmp_path / "config"
+    writer = ConfigFileWriter()
+
+    writer.update_config(
+        {"region": "", "__section__": "default"},
+        str(config_file),
+    )
+
+    contents = config_file.read_text()
+    assert "region" not in contents
+

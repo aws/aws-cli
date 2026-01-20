@@ -227,9 +227,9 @@ class TableFormatter(FullyBufferedFormatter):
             try:
                 self.table.render(stream)
             except OSError:
-                # If they're piping stdout to another process which exits before
-                # we're done writing all of our output, we'll get an error about a
-                # closed pipe which we can safely ignore.
+                # If they're piping stdout to another process which exits
+                # before we're done writing all of our output, we'll get an
+                # error about a closed pipe which we can safely ignore.
                 pass
 
     def _build_table(self, title, current, indent_level=0):
@@ -368,12 +368,24 @@ class TextFormatter(Formatter):
         text.format_text(response, stream)
 
 
+class OffFormatter(Formatter):
+    """Formatter that suppresses all output.
+    Only stdout is suppressed; stderr (error messages) remains visible.
+    """
+
+    def __call__(self, command_name, response, stream=None):
+        if is_response_paginated(response):
+            for _ in response:
+                pass
+
+
 CLI_OUTPUT_FORMATS = {
     'json': JSONFormatter,
     'text': TextFormatter,
     'table': TableFormatter,
     'yaml': YAMLFormatter,
     'yaml-stream': StreamedYAMLFormatter,
+    'off': OffFormatter,
 }
 
 

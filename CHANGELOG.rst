@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.33.3
+======
+
+* api-change:``workspaces-instances``: Added billing configuration support for WorkSpaces Instances with monthly and hourly billing modes, including new filtering capabilities for instance type searches.
+* api-change:``bedrock-runtime``: Added support for extended prompt caching with one hour TTL.
+* api-change:``autoscaling``: This release adds support for three new filters when describing scaling activities, StartTimeLowerBound, StartTimeUpperBound, and Status.
+* api-change:``keyspaces``: Adds support for managing table pre-warming in Amazon Keyspaces (for Apache Cassandra)
+* api-change:``verifiedpermissions``: Amazon Verified Permissions now supports encryption of resources by a customer managed KMS key. Customers can now create new encrypted policy stores by passing in their customer managed key during policy store creation.
+* api-change:``odb``: Adds support for associating and disassociating IAM roles with Autonomous VM cluster resources through the AssociateIamRoleToResource and DisassociateIamRoleFromResource APIs. The GetCloudAutonomousVmCluster and ListCloudAutonomousVmClusters API responses now include the iamRoles field.
+
+
 2.33.2
 ======
 

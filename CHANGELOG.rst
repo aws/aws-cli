@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.33.4
+======
+
+* api-change:``quicksight``: Added documentation and model for sheet layout groups - allows sheet elements to be grouped, Added documentation and the feature enables admins to have granular control over connectors under actions, Updated API documentation for PDF Export in Snapshot Export APIs
+* api-change:``config``: AWS Config Conformance Packs now support tag-on-create through PutConformancePack API.
+* api-change:``bedrock-agentcore``: Supports custom browser extensions for AgentCore Browser and increased message payloads up to 100KB per message in an Event for AgentCore Memory
+* api-change:``ec2``: Added support of multiple EBS cards. New EbsCardIndex parameter enables attaching volumes to specific EBS cards on supported instance types for improved storage performance.
+
+
 2.33.3
 ======
 

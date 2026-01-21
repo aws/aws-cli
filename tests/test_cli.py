@@ -529,3 +529,190 @@ class TestCLI:
                 assert fixed_content.count("--no-cli-pager") == 2
                 assert fixed_content.count("--copy-props none") == 1
                 assert "Found 5 issue" in captured.out
+
+    def test_interactive_mode_accept_all_of_type(self, tmp_path):
+        """Test interactive mode with 'a' to accept all findings of current rule type."""
+        script_file = tmp_path / "test.sh"
+        output_file = tmp_path / "output.sh"
+        # Two commands that trigger binary-params-base64 and pager-by-default rules
+        script_file.write_text(
+            "aws secretsmanager put-secret-value --secret-id secret1213 --secret-binary file://data.json\n"
+            "aws kinesis put-record --stream-name samplestream --data file://data "
+            "--partition-key samplepartitionkey"
+        )
+
+        with patch(
+            "sys.argv",
+            [
+                "migrate-aws-cli",
+                "--script",
+                str(script_file),
+                "--interactive",
+                "--output",
+                str(output_file),
+            ],
+        ):
+            # 'a' on first finding (binary-params-base64 for cmd1) accepts all
+            # binary-params-base64 findings. Then 'a' on first pager-by-default
+            # finding accepts all pager-by-default findings.
+            with patch("builtins.input", side_effect=["a", "a"]):
+                main()
+                assert output_file.read_text() == (
+                    "aws secretsmanager put-secret-value --secret-id secret1213 "
+                    "--secret-binary file://data.json --cli-binary-format raw-in-base64-out "
+                    "--no-cli-pager\n"
+                    "aws kinesis put-record --stream-name samplestream --data file://data "
+                    "--partition-key samplepartitionkey --cli-binary-format raw-in-base64-out "
+                    "--no-cli-pager"
+                )
+
+    def test_interactive_mode_reject_all_of_type(self, tmp_path, capsys):
+        """Test interactive mode with 'r' to reject all findings of current rule type."""
+        script_file = tmp_path / "test.sh"
+        output_file = tmp_path / "output.sh"
+        script_file.write_text(
+            "aws secretsmanager put-secret-value --secret-id secret1213 "
+            "--secret-binary file://data.json\n"
+            "aws kinesis put-record --stream-name samplestream --data file://data "
+            "--partition-key samplepartitionkey"
+        )
+
+        with patch(
+            "sys.argv",
+            [
+                "migrate-aws-cli",
+                "--script",
+                str(script_file),
+                "--interactive",
+                "--output",
+                str(output_file),
+            ],
+        ):
+            # 'r' on first finding (binary-params-base64) rejects all binary-params-base64 findings
+            # 'a' on first pager-by-default finding accepts all pager-by-default findings
+            with patch("builtins.input", side_effect=["r", "a"]):
+                main()
+                captured = capsys.readouterr()
+                assert output_file.read_text() == (
+                    "aws secretsmanager put-secret-value --secret-id secret1213 "
+                    "--secret-binary file://data.json --no-cli-pager\n"
+                    "aws kinesis put-record --stream-name samplestream --data file://data "
+                    "--partition-key samplepartitionkey --no-cli-pager"
+                )
+                assert "Found 4 issue(s). 2 fixed. 0 require(s) manual review." in captured.out
+
+    def test_interactive_mode_accept_one_then_accept_all_of_type(self, tmp_path):
+        """Test interactive mode accepting one finding, then 'a' to accept rest of type."""
+        script_file = tmp_path / "test.sh"
+        output_file = tmp_path / "output.sh"
+        # Three commands that trigger binary-params-base64 rule
+        script_file.write_text(
+            "aws secretsmanager put-secret-value --secret-id secret1 "
+            "--secret-binary file://data1.json\n"
+            "aws kinesis put-record --stream-name stream1 --data file://data1 "
+            "--partition-key key1\n"
+            "aws lambda publish-version --function-name func1 --code-sha256 abc123"
+        )
+
+        with patch(
+            "sys.argv",
+            [
+                "migrate-aws-cli",
+                "--script",
+                str(script_file),
+                "--interactive",
+                "--output",
+                str(output_file),
+            ],
+        ):
+            # 'y' on first binary-params-base64 finding (cmd1)
+            # 'a' on second binary-params-base64 finding (cmd2) accepts remaining (cmd2 and cmd3)
+            # Then 'a' on first pager-by-default finding accepts all pager findings
+            with patch("builtins.input", side_effect=["y", "a", "a"]):
+                main()
+                assert output_file.read_text() == (
+                    "aws secretsmanager put-secret-value --secret-id secret1 "
+                    "--secret-binary file://data1.json --cli-binary-format raw-in-base64-out "
+                    "--no-cli-pager\n"
+                    "aws kinesis put-record --stream-name stream1 --data file://data1 "
+                    "--partition-key key1 --cli-binary-format raw-in-base64-out --no-cli-pager\n"
+                    "aws lambda publish-version --function-name func1 --code-sha256 abc123 "
+                    "--cli-binary-format raw-in-base64-out --no-cli-pager"
+                )
+
+    def test_interactive_mode_exhaust_first_type_then_accept_all_of_second_type(self, tmp_path):
+        """Test interactive mode exhausting first rule type, then 'a' on second type."""
+        script_file = tmp_path / "test.sh"
+        output_file = tmp_path / "output.sh"
+        # Two commands that trigger binary-params-base64 and pager-by-default rules
+        script_file.write_text(
+            "aws secretsmanager put-secret-value --secret-id secret1 --secret-binary file://data1.json\n"
+            "aws kinesis put-record --stream-name stream1 --data file://data1 --partition-key key1"
+        )
+
+        with patch(
+            "sys.argv",
+            [
+                "migrate-aws-cli",
+                "--script",
+                str(script_file),
+                "--interactive",
+                "--output",
+                str(output_file),
+            ],
+        ):
+            # 'y' on first binary-params-base64 finding (cmd1)
+            # 'n' on second binary-params-base64 finding (cmd2)
+            # Now binary-params-base64 rule is exhausted, move to pager-by-default
+            # 'a' on first pager-by-default finding accepts all pager findings
+            with patch("builtins.input", side_effect=["y", "n", "a"]):
+                main()
+                assert output_file.read_text() == (
+                    "aws secretsmanager put-secret-value --secret-id secret1 "
+                    "--secret-binary file://data1.json --cli-binary-format raw-in-base64-out "
+                    "--no-cli-pager\n"
+                    "aws kinesis put-record --stream-name stream1 --data file://data1 "
+                    "--partition-key key1 --no-cli-pager"
+                )
+
+    def test_interactive_mode_reject_all_of_type_after_accepting_some(self, tmp_path, capsys):
+        """Test interactive mode accepting some findings, then 'r' to reject rest of type."""
+        script_file = tmp_path / "test.sh"
+        output_file = tmp_path / "output.sh"
+        # Three commands that trigger binary-params-base64 rule
+        script_file.write_text(
+            "aws secretsmanager put-secret-value --secret-id secret1 "
+            "--secret-binary file://data1.json\n"
+            "aws kinesis put-record --stream-name stream1 --data file://data1 "
+            "--partition-key key1\n"
+            "aws lambda publish-version --function-name func1 --code-sha256 abc123"
+        )
+
+        with patch(
+            "sys.argv",
+            [
+                "migrate-aws-cli",
+                "--script",
+                str(script_file),
+                "--interactive",
+                "--output",
+                str(output_file),
+            ],
+        ):
+            # 'y' on first binary-params-base64 finding (cmd1)
+            # 'r' on second binary-params-base64 finding (cmd2) rejects remaining (cmd2 and cmd3)
+            # 'a' on first pager-by-default finding accepts all pager findings
+            with patch("builtins.input", side_effect=["y", "r", "a"]):
+                main()
+                captured = capsys.readouterr()
+                assert output_file.read_text() == (
+                    "aws secretsmanager put-secret-value --secret-id secret1 "
+                    "--secret-binary file://data1.json --cli-binary-format raw-in-base64-out "
+                    "--no-cli-pager\n"
+                    "aws kinesis put-record --stream-name stream1 --data file://data1 "
+                    "--partition-key key1 "
+                    "--no-cli-pager\n"
+                    "aws lambda publish-version --function-name func1 --code-sha256 abc123 "
+                    "--no-cli-pager"
+                )
+                assert "Found 6 issue(s). 4 fixed. 0 require(s) manual review." in captured.out

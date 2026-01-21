@@ -16,6 +16,7 @@ import logging
 import threading
 import time
 import uuid
+import os
 
 from botocore.history import BaseHistoryHandler
 
@@ -37,6 +38,12 @@ class DatabaseConnection:
     _ENABLE_WAL = 'PRAGMA journal_mode=WAL'
 
     def __init__(self, db_filename):
+        if not os.path.exists(db_filename):
+            open(db_filename, 'a').close()
+            os.chmod(db_filename, 0o600)
+        else:
+            if os.stat(db_filename).st_uid == os.getuid():
+                os.chmod(db_filename, 0o600)
         self._connection = sqlite3.connect(
             db_filename, check_same_thread=False, isolation_level=None
         )

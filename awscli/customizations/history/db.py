@@ -13,10 +13,10 @@
 import datetime
 import json
 import logging
+import os
 import threading
 import time
 import uuid
-import os
 
 from botocore.history import BaseHistoryHandler
 

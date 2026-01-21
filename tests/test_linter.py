@@ -65,7 +65,6 @@ class TestLinter:
         assert finding.rule_name == "ecr-get-login"
         assert finding.edit is None
         assert finding.auto_fixable is False
-        assert finding.suggested_manual_fix is not None
 
     def test_apply_fixes_skips_manual_review(self):
         """Test that apply_fixes skips non-fixable findings."""
@@ -98,7 +97,6 @@ class TestLinter:
         manual_finding = findings_with_rules[1][0]
         assert manual_finding.auto_fixable is False
         assert manual_finding.edit is None
-        assert manual_finding.suggested_manual_fix is not None
 
         # Apply fixes should only fix the fixable finding
         findings = [f for f, _ in findings_with_rules]

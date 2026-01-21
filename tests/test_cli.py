@@ -32,7 +32,8 @@ class TestCLI:
         script_file = tmp_path / "test.sh"
         script_file.write_text("echo 'hello world'")
         with patch(
-            "sys.argv", ["migrate-aws-cli", "--script", str(script_file), "--fix", "--output", "out.sh"]
+            "sys.argv",
+            ["migrate-aws-cli", "--script", str(script_file), "--fix", "--output", "out.sh"],
         ):
             main()
 
@@ -66,16 +67,16 @@ class TestCLI:
             main()
             captured = capsys.readouterr()
             assert (
-                "1  |-aws secretsmanager put-secret-value --secret-id secret1213 "
+                "1  │-aws secretsmanager put-secret-value --secret-id secret1213 "
                 "--secret-binary file://data.json\n"
-                "  1|+aws secretsmanager put-secret-value --secret-id secret1213 "
+                "  1│+aws secretsmanager put-secret-value --secret-id secret1213 "
                 "--secret-binary file://data.json --cli-binary-format raw-in-base64-out\n\n"
                 f"{script_file}:1 [binary-params-base64]"
             ) in captured.out
             assert (
-                "1  |-aws secretsmanager put-secret-value --secret-id secret1213 "
+                "1  │-aws secretsmanager put-secret-value --secret-id secret1213 "
                 "--secret-binary file://data.json --cli-binary-format raw-in-base64-out\n"
-                "  1|+aws secretsmanager put-secret-value --secret-id secret1213 "
+                "  1│+aws secretsmanager put-secret-value --secret-id secret1213 "
                 "--secret-binary file://data.json --cli-binary-format raw-in-base64-out "
                 "--no-cli-pager\n\n"
                 f"{script_file}:1 [pager-by-default]"

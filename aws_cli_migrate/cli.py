@@ -144,7 +144,7 @@ def _display_finding(finding: LintFinding, script_content: str, input_path: Path
                     str(context_starting_line + line_num - 3).rjust(line_num_width)
                 )
                 line_prefix = (
-                    f"{str(src_issue_line).rjust(line_num_width)} " + " " * line_num_width + "|"
+                    f"{str(src_issue_line).rjust(line_num_width)} " + " " * line_num_width + "│"
                 )
                 print(f"{line_prefix}{_color_text(line, RED)}")
             elif line.startswith("+"):
@@ -153,7 +153,7 @@ def _display_finding(finding: LintFinding, script_content: str, input_path: Path
                     str(context_starting_line + line_num - 4).rjust(line_num_width)
                 )
                 line_prefix = (
-                    " " * line_num_width + f" {str(dest_issue_line).rjust(line_num_width)}" + "|"
+                    " " * line_num_width + f" {str(dest_issue_line).rjust(line_num_width)}" + "│"
                 )
                 print(f"{line_prefix}{_color_text(line, GREEN)}")
             else:
@@ -162,7 +162,7 @@ def _display_finding(finding: LintFinding, script_content: str, input_path: Path
                 # to account for not printing a source/dest line for the deleted/added lines.
                 offset = 3 if src_issue_line is None else 4
                 raw_line_num = str(context_starting_line + line_num - offset).rjust(line_num_width)
-                line_prefix = f"{raw_line_num} {raw_line_num}|"
+                line_prefix = f"{raw_line_num} {raw_line_num}│"
                 print(f"{line_prefix}{line}")
         print(f"\n{input_path}:{src_issue_line} [{finding.rule_name}] {finding.description}")
     else:
@@ -178,11 +178,11 @@ def _display_finding(finding: LintFinding, script_content: str, input_path: Path
             line = src_lines[i]
             if start_line <= i <= end_line:
                 raw_line_num = str(i + 1).rjust(line_num_width)
-                line_prefix = f"{raw_line_num} {raw_line_num}|"
+                line_prefix = f"{raw_line_num} {raw_line_num}│"
                 print(f"{line_prefix}{_color_text(line, YELLOW)}")
             else:
                 raw_line_num = str(i + 1).rjust(line_num_width)
-                line_prefix = f"{raw_line_num} {raw_line_num}|"
+                line_prefix = f"{raw_line_num} {raw_line_num}│"
                 print(f"{line_prefix}{line}")
 
         manual_review_required_text = _color_text("[MANUAL REVIEW REQUIRED]", YELLOW)
@@ -218,6 +218,7 @@ def _interactive_prompt_for_rule(
     last_choice: Optional[UserChoice] = None
 
     for i, finding in enumerate(findings):
+        print()
         _display_finding(finding, script_content, input_path)
         last_choice = _prompt_user_choice_interactive_mode(auto_fixable=finding.auto_fixable)
 
@@ -329,8 +330,8 @@ def dry_run_mode(
     """
     current_ast = parse(script_content)
     findings_found = 0
-    num_auto_fixes_applied = 0  # fixable
-    num_manual_review_issues = 0
+    num_auto_fixable_findings = 0
+    num_manual_review_findings = 0
 
     for rule in rules:
         rule_findings = linter.lint_for_rule(current_ast, rule)
@@ -339,14 +340,16 @@ def dry_run_mode(
             continue
 
         for i, finding in enumerate(rule_findings, 1):
-            if findings_found > 0 or i > 1:
+            if findings_found > 0:
                 print("\n---\n")
+            else:
+                print()
+            findings_found += 1
             _display_finding(finding, current_ast.root().text(), input_path)
 
         auto_fixable_findings = [f for f in rule_findings if f.auto_fixable]
-        num_auto_fixes_applied += len(auto_fixable_findings)
-        num_manual_review_issues += len([f for f in rule_findings if not f.auto_fixable])
-        findings_found += len(rule_findings)
+        num_auto_fixable_findings += len(auto_fixable_findings)
+        num_manual_review_findings += len([f for f in rule_findings if not f.auto_fixable])
 
         current_ast = (
             parse(linter.apply_fixes(current_ast, auto_fixable_findings))
@@ -362,8 +365,8 @@ def dry_run_mode(
 
     print(
         f"Found {findings_found} issue(s). "
-        f"{num_auto_fixes_applied} fixable with the `--fix` option. "
-        f"{num_manual_review_issues} require(s) manual review."
+        f"{num_auto_fixable_findings} fixable with the `--fix` option. "
+        f"{num_manual_review_findings} require(s) manual review."
     )
 
 

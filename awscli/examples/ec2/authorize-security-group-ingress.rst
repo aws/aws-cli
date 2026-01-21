@@ -63,7 +63,7 @@ The following ``authorize-security-group-ingress`` example uses the ``ip-permiss
 
     aws ec2 authorize-security-group-ingress \
         --group-id sg-1234567890abcdef0 \
-        --ip-permissions 'IpProtocol=tcp,FromPort=3389,ToPort=3389,IpRanges=[{CidrIp=172.31.0.0/16}]" "IpProtocol=icmp,FromPort=-1,ToPort=-1,IpRanges=[{CidrIp=172.31.0.0/16}]'
+        --ip-permissions 'IpProtocol=tcp,FromPort=3389,ToPort=3389,IpRanges=[{CidrIp=172.31.0.0/16}]' 'IpProtocol=icmp,FromPort=-1,ToPort=-1,IpRanges=[{CidrIp=172.31.0.0/16}]'
 
 Output::
 

@@ -114,14 +114,14 @@ class JSONValue:
             FishShellFormatter,
             (
                 (
-                    'set -gx AWS_ACCESS_KEY_ID access_key\n'
-                    'set -gx AWS_SECRET_ACCESS_KEY secret_key\n'
+                    'set -gx AWS_ACCESS_KEY_ID "access_key"\n'
+                    'set -gx AWS_SECRET_ACCESS_KEY "secret_key"\n'
                 ),
                 (
-                    'set -gx AWS_ACCESS_KEY_ID access_key\n'
-                    'set -gx AWS_SECRET_ACCESS_KEY secret_key\n'
-                    'set -gx AWS_SESSION_TOKEN token\n'
-                    'set -gx AWS_CREDENTIAL_EXPIRATION 2023-01-01T00:00:00Z\n'
+                    'set -gx AWS_ACCESS_KEY_ID "access_key"\n'
+                    'set -gx AWS_SECRET_ACCESS_KEY "secret_key"\n'
+                    'set -gx AWS_SESSION_TOKEN "token"\n'
+                    'set -gx AWS_CREDENTIAL_EXPIRATION "2023-01-01T00:00:00Z"\n'
                 ),
             ),
         ),

@@ -121,9 +121,9 @@ class FishShellFormatter(BasePerLineFormatter):
     FORMAT = 'fish'
     DOCUMENTATION = (
         'Display credentials as Fish shell environment variables: '
-        '``set -gx AWS_ACCESS_KEY_ID EXAMPLE``'
+        '``set -gx AWS_ACCESS_KEY_ID "EXAMPLE"``'
     )
-    _VAR_FORMAT = 'set -gx {var_name} {var_value}'
+    _VAR_FORMAT = 'set -gx {var_name} "{var_value}"'
 
 
 class CredentialProcessFormatter(BaseCredentialFormatter):

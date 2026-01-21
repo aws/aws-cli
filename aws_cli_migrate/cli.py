@@ -293,14 +293,16 @@ def auto_fix_mode(
             continue
 
         for i, finding in enumerate(rule_findings, 1):
-            if findings_found > 0 or i > 1:
+            if findings_found > 0:
                 print("\n---\n")
+            else:
+                print()
+            findings_found += 1
             _display_finding(finding, current_ast.root().text(), input_path)
 
         auto_fixable_findings = [f for f in rule_findings if f.auto_fixable]
         num_auto_fixes_applied += len(auto_fixable_findings)
         num_manual_review_issues += len([f for f in rule_findings if not f.auto_fixable])
-        findings_found += len(rule_findings)
 
         current_ast = (
             parse(linter.apply_fixes(current_ast, auto_fixable_findings))

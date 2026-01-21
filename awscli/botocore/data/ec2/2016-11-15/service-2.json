@@ -10402,6 +10402,10 @@
           "shape":"VolumeId",
           "documentation":"<p>The ID of the EBS volume. The volume and instance must be within the same Availability Zone.</p>"
         },
+        "EbsCardIndex":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The index of the EBS card. Some instance types support multiple EBS cards. The default EBS card index is 0.</p>"
+        },
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>",
@@ -33373,6 +33377,10 @@
         "AvailabilityZoneId":{
           "shape":"String",
           "documentation":"<p>The ID of the Availability Zone where the EBS volume will be created (for example, <code>use1-az1</code>).</p> <p>Either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code> can be specified, but not both. If neither is specified, Amazon EC2 automatically selects an Availability Zone within the Region.</p> <p>This parameter is not supported when using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateFleet.html\">CreateFleet</a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeImages.html\">DescribeImages</a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RequestSpotFleet.html\">RequestSpotFleet</a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RequestSpotInstances.html\">RequestSpotInstances</a>, and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RunInstances.html\">RunInstances</a>.</p>"
+        },
+        "EbsCardIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the EBS card. Some instance types support multiple EBS cards. The default EBS card index is 0.</p>"
         }
       },
       "documentation":"<p>Describes a block device for an EBS volume.</p>"
@@ -33423,6 +33431,55 @@
       },
       "documentation":"<p>Describes a block device for an EBS volume.</p>"
     },
+    "EbsCardIndex":{"type":"integer"},
+    "EbsCardInfo":{
+      "type":"structure",
+      "members":{
+        "EbsCardIndex":{
+          "shape":"EbsCardIndex",
+          "documentation":"<p>The index of the EBS card.</p>",
+          "locationName":"ebsCardIndex"
+        },
+        "BaselineBandwidthInMbps":{
+          "shape":"BaselineBandwidthInMbps",
+          "documentation":"<p>The baseline bandwidth performance for the EBS card, in Mbps.</p>",
+          "locationName":"baselineBandwidthInMbps"
+        },
+        "BaselineThroughputInMBps":{
+          "shape":"BaselineThroughputInMBps",
+          "documentation":"<p>The baseline throughput performance for the EBS card, in MBps.</p>",
+          "locationName":"baselineThroughputInMBps"
+        },
+        "BaselineIops":{
+          "shape":"BaselineIops",
+          "documentation":"<p>The baseline IOPS performance for the EBS card.</p>",
+          "locationName":"baselineIops"
+        },
+        "MaximumBandwidthInMbps":{
+          "shape":"MaximumBandwidthInMbps",
+          "documentation":"<p>The maximum bandwidth performance for the EBS card, in Mbps.</p>",
+          "locationName":"maximumBandwidthInMbps"
+        },
+        "MaximumThroughputInMBps":{
+          "shape":"MaximumThroughputInMBps",
+          "documentation":"<p>The maximum throughput performance for the EBS card, in MBps.</p>",
+          "locationName":"maximumThroughputInMBps"
+        },
+        "MaximumIops":{
+          "shape":"MaximumIops",
+          "documentation":"<p>The maximum IOPS performance for the EBS card.</p>",
+          "locationName":"maximumIops"
+        }
+      },
+      "documentation":"<p>Describes the performance characteristics of an EBS card on the instance type.</p>"
+    },
+    "EbsCardInfoList":{
+      "type":"list",
+      "member":{
+        "shape":"EbsCardInfo",
+        "locationName":"item"
+      }
+    },
     "EbsEncryptionSupport":{
       "type":"string",
       "enum":[
@@ -33462,6 +33519,16 @@
           "shape":"AttachmentLimitType",
           "documentation":"<p>Indicates whether the instance type features a shared or dedicated Amazon EBS volume attachment limit. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/volume_limits.html\">Amazon EBS volume limits for Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"attachmentLimitType"
+        },
+        "MaximumEbsCards":{
+          "shape":"MaximumEbsCards",
+          "documentation":"<p>Indicates the number of EBS cards supported by the instance type.</p>",
+          "locationName":"maximumEbsCards"
+        },
+        "EbsCards":{
+          "shape":"EbsCardInfoList",
+          "documentation":"<p>Describes the EBS cards available for the instance type.</p>",
+          "locationName":"ebsCardSet"
         }
       },
       "documentation":"<p>Describes the Amazon EBS features supported by the instance type.</p>"
@@ -33503,6 +33570,11 @@
           "shape":"OperatorResponse",
           "documentation":"<p>The service provider that manages the EBS volume.</p>",
           "locationName":"operator"
+        },
+        "EbsCardIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the EBS card. Some instance types support multiple EBS cards. The default EBS card index is 0.</p>",
+          "locationName":"ebsCardIndex"
         }
       },
       "documentation":"<p>Describes a parameter used to set up an EBS volume in a block device mapping.</p>"
@@ -49224,6 +49296,11 @@
           "shape":"Integer",
           "documentation":"<p>The Amazon EBS Provisioned Rate for Volume Initialization (volume initialization rate) specified for the volume, in MiB/s. If no volume initialization rate was specified, the value is <code>null</code>.</p>",
           "locationName":"volumeInitializationRate"
+        },
+        "EbsCardIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the EBS card. Some instance types support multiple EBS cards. The default EBS card index is 0.</p>",
+          "locationName":"ebsCardIndex"
         }
       },
       "documentation":"<p>Describes a block device for an EBS volume.</p>"
@@ -49266,6 +49343,10 @@
         "VolumeInitializationRate":{
           "shape":"Integer",
           "documentation":"<p>Specifies the Amazon EBS Provisioned Rate for Volume Initialization (volume initialization rate), in MiB/s, at which to download the snapshot blocks from Amazon S3 to the volume. This is also known as <i>volume initialization</i>. Specifying a volume initialization rate ensures that the volume is initialized at a predictable and consistent rate after creation.</p> <p>This parameter is supported only for volumes created from snapshots. Omit this parameter if:</p> <ul> <li> <p>You want to create the volume using fast snapshot restore. You must specify a snapshot that is enabled for fast snapshot restore. In this case, the volume is fully initialized at creation.</p> <note> <p>If you specify a snapshot that is enabled for fast snapshot restore and a volume initialization rate, the volume will be initialized at the specified rate instead of fast snapshot restore.</p> </note> </li> <li> <p>You want to create a volume that is initialized at the default rate.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/initalize-volume.html\"> Initialize Amazon EBS volumes</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Valid range: 100 - 300 MiB/s</p>"
+        },
+        "EbsCardIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the EBS card. Some instance types support multiple EBS cards. The default EBS card index is 0.</p>"
         }
       },
       "documentation":"<p>The parameters for a block device for an EBS volume.</p>"
@@ -51574,6 +51655,7 @@
       "min":0
     },
     "MaximumEbsAttachments":{"type":"integer"},
+    "MaximumEbsCards":{"type":"integer"},
     "MaximumEfaInterfaces":{"type":"integer"},
     "MaximumEnaQueueCount":{"type":"integer"},
     "MaximumEnaQueueCountPerInterface":{"type":"integer"},
@@ -72757,6 +72839,11 @@
           "shape":"String",
           "documentation":"<p>The service principal of the Amazon Web Services service that owns the underlying resource to which the volume is attached.</p> <p>This parameter is returned only for volumes that are attached to Amazon Web Services-managed resources.</p>",
           "locationName":"instanceOwningService"
+        },
+        "EbsCardIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the EBS card. Some instance types support multiple EBS cards. The default EBS card index is 0.</p>",
+          "locationName":"ebsCardIndex"
         },
         "VolumeId":{
           "shape":"String",

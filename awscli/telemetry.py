@@ -77,12 +77,15 @@ class CLISessionDatabaseConnection:
     _ENABLE_WAL = 'PRAGMA journal_mode=WAL'
 
     def __init__(self, connection=None):
-        self._connection = connection or sqlite3.connect(
-            _CACHE_DIR / _DATABASE_FILENAME,
-            check_same_thread=False,
-            isolation_level=None,
-        )
-        self._ensure_cache_dir()
+        self._connection = connection
+        if self._connection is None:
+            self._ensure_cache_dir()
+            self._ensure_database_file()
+            self._connection = sqlite3.connect(
+                _CACHE_DIR / _DATABASE_FILENAME,
+                check_same_thread=False,
+                isolation_level=None,
+            )
         self._ensure_database_setup()
 
     def execute(self, query, *parameters):
@@ -95,7 +98,20 @@ class CLISessionDatabaseConnection:
             return sqlite3.Cursor(self._connection)
 
     def _ensure_cache_dir(self):
-        _CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        if not _CACHE_DIR.exists():
+            _CACHE_DIR.mkdir(parents=True, exist_ok=True, mode=0o700)
+        else:
+            if _CACHE_DIR.stat().st_uid == os.getuid():
+                os.chmod(_CACHE_DIR, 0o700)
+
+    def _ensure_database_file(self):
+        db_path = _CACHE_DIR / _DATABASE_FILENAME
+        if not db_path.exists():
+            open(db_path, 'a').close()
+            os.chmod(db_path, 0o600)
+        else:
+            if db_path.stat().st_uid == os.getuid():
+                os.chmod(db_path, 0o600)
 
     def _ensure_database_setup(self):
         self._create_session_table()

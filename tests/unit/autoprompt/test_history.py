@@ -13,6 +13,7 @@
 import json
 import os
 import shutil
+import stat
 import tempfile
 
 from prompt_toolkit.buffer import Buffer
@@ -22,7 +23,7 @@ from prompt_toolkit.formatted_text import FormattedText
 from prompt_toolkit.history import History
 
 from awscli.autoprompt.history import HistoryCompleter, HistoryDriver
-from awscli.testutils import mock, unittest
+from awscli.testutils import mock, skip_if_windows, unittest
 
 
 class TestHistoryCompleter(unittest.TestCase):
@@ -190,3 +191,54 @@ class TestHistoryDriver(unittest.TestCase):
         history_driver = HistoryDriver(self.filename)
         file_history_mock.store_string.side_effect = IOError
         history_driver.store_string('aws dynamodb create-table')
+
+
+@skip_if_windows("Permissions tests not applicable on Windows")
+class TestHistoryDriverPermissions(unittest.TestCase):
+    def setUp(self):
+        self.dirname = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.dirname)
+
+    def test_create_directory_with_secure_permissions(self):
+        subdir = os.path.join(self.dirname, 'newdir')
+        filename = os.path.join(subdir, 'prompt_history.json')
+        history_driver = HistoryDriver(filename)
+        history_driver.store_string('aws ec2 describe-instances')
+
+        self.assertTrue(os.path.isdir(subdir))
+        dir_mode = stat.S_IMODE(os.stat(subdir).st_mode)
+        self.assertEqual(dir_mode, 0o700)
+
+    def test_tighten_existing_directory_permissions(self):
+        subdir = os.path.join(self.dirname, 'existingdir')
+        os.makedirs(subdir, mode=0o755)
+        filename = os.path.join(subdir, 'prompt_history.json')
+
+        history_driver = HistoryDriver(filename)
+        history_driver.store_string('aws ec2 describe-instances')
+
+        dir_mode = stat.S_IMODE(os.stat(subdir).st_mode)
+        self.assertEqual(dir_mode, 0o700)
+
+    def test_create_file_with_secure_permissions(self):
+        filename = os.path.join(self.dirname, 'prompt_history.json')
+        history_driver = HistoryDriver(filename)
+        history_driver.store_string('aws ec2 describe-instances')
+
+        self.assertTrue(os.path.isfile(filename))
+        file_mode = stat.S_IMODE(os.stat(filename).st_mode)
+        self.assertEqual(file_mode, 0o600)
+
+    def test_tighten_existing_file_permissions(self):
+        filename = os.path.join(self.dirname, 'prompt_history.json')
+        with open(filename, 'w') as f:
+            json.dump({'version': 1, 'commands': []}, f)
+        os.chmod(filename, 0o644)
+
+        history_driver = HistoryDriver(filename)
+        history_driver.store_string('aws ec2 describe-instances')
+
+        file_mode = stat.S_IMODE(os.stat(filename).st_mode)
+        self.assertEqual(file_mode, 0o600)

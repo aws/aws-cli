@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import argparse
 import os
+import stat
 
 from botocore.exceptions import ProfileNotFound
 from botocore.history import HistoryRecorder
@@ -26,6 +27,7 @@ from awscli.customizations.history import (
 )
 from awscli.customizations.history.db import DatabaseHistoryHandler
 from awscli.testutils import FileCreator, mock, unittest
+from tests.markers import skip_if_windows
 
 
 class TestAttachHistoryHandler(unittest.TestCase):
@@ -170,6 +172,7 @@ class TestAttachHistoryHandler(unittest.TestCase):
         self.assertFalse(mock_recorder.add_handler.called)
         self.assertFalse(mock_db_sqlite3.connect.called)
 
+    @skip_if_windows
     @mock.patch('awscli.customizations.history.sqlite3')
     @mock.patch('awscli.customizations.history.db.sqlite3')
     @mock.patch(
@@ -192,9 +195,10 @@ class TestAttachHistoryHandler(unittest.TestCase):
                 session=mock_session, parsed_args=parsed_args
             )
             self.assertTrue(os.path.exists(directory_to_create))
-            dir_mode = os.stat(directory_to_create).st_mode & 0o777
+            dir_mode = stat.S_IMODE(os.stat(directory_to_create).st_mode)
             self.assertEqual(dir_mode, 0o700)
 
+    @skip_if_windows
     @mock.patch('awscli.customizations.history.sqlite3')
     @mock.patch('awscli.customizations.history.db.sqlite3')
     @mock.patch(
@@ -218,7 +222,7 @@ class TestAttachHistoryHandler(unittest.TestCase):
             attach_history_handler(
                 session=mock_session, parsed_args=parsed_args
             )
-            dir_mode = os.stat(directory_to_tighten).st_mode & 0o777
+            dir_mode = stat.S_IMODE(os.stat(directory_to_tighten).st_mode)
             self.assertEqual(dir_mode, 0o700)
 
 

@@ -15,6 +15,7 @@ import json
 import numbers
 import os
 import re
+import stat
 import threading
 
 from awscli.compat import queue
@@ -28,6 +29,7 @@ from awscli.customizations.history.db import (
 )
 from awscli.testutils import FileCreator, mock, unittest
 from tests import CaseInsensitiveDict
+from tests.markers import skip_if_windows
 
 
 class FakeDatabaseConnection:
@@ -55,48 +57,32 @@ class TestDatabaseConnection(unittest.TestCase):
         self.files.remove_all()
 
     @mock.patch('awscli.customizations.history.db.os.chmod')
+    @mock.patch('awscli.customizations.history.db.os.stat')
     @mock.patch('awscli.customizations.history.db.os.path.exists')
     @mock.patch('awscli.compat.sqlite3.connect')
     def test_can_connect_to_argument_file(
-        self, mock_connect, mock_exists, mock_chmod
+        self, mock_connect, mock_exists, mock_stat, mock_chmod
     ):
         mock_exists.return_value = True
+        mock_stat.return_value.st_uid = 1000
         expected_location = os.path.expanduser(
             os.path.join('~', 'foo', 'bar', 'baz.db')
         )
         with mock.patch(
-            'awscli.customizations.history.db.os.stat'
-        ) as mock_stat:
-            mock_stat.return_value.st_uid = os.getuid()
+            'awscli.customizations.history.db.os.getuid', return_value=1000
+        ):
             DatabaseConnection(expected_location)
         mock_connect.assert_called_with(
             expected_location, check_same_thread=False, isolation_level=None
         )
 
-    @mock.patch('awscli.customizations.history.db.os.chmod')
-    @mock.patch('awscli.customizations.history.db.os.path.exists')
     @mock.patch('awscli.compat.sqlite3.connect')
-    def test_does_try_to_enable_wal(
-        self, mock_connect, mock_exists, mock_chmod
-    ):
-        mock_exists.return_value = True
-        with mock.patch(
-            'awscli.customizations.history.db.os.stat'
-        ) as mock_stat:
-            mock_stat.return_value.st_uid = os.getuid()
-            conn = DatabaseConnection(':memory:')
+    def test_does_try_to_enable_wal(self, mock_connect):
+        conn = DatabaseConnection(':memory:')
         conn._connection.execute.assert_any_call('PRAGMA journal_mode=WAL')
 
-    @mock.patch('awscli.customizations.history.db.os.chmod')
-    @mock.patch('awscli.customizations.history.db.os.stat')
-    @mock.patch('awscli.customizations.history.db.os.path.exists')
-    def test_does_ensure_table_created_first(
-        self, mock_exists, mock_stat, mock_chmod
-    ):
-        mock_exists.return_value = False
-        mock_stat.return_value.st_uid = os.getuid()
-        with mock.patch('builtins.open', mock.mock_open()):
-            db = DatabaseConnection(":memory:")
+    def test_does_ensure_table_created_first(self):
+        db = DatabaseConnection(':memory:')
         cursor = db.execute('PRAGMA table_info(records)')
         schema = [col[:3] for col in cursor.fetchall()]
         expected_schema = [
@@ -109,34 +95,29 @@ class TestDatabaseConnection(unittest.TestCase):
         ]
         self.assertEqual(expected_schema, schema)
 
-    @mock.patch('awscli.customizations.history.db.os.chmod')
-    @mock.patch('awscli.customizations.history.db.os.path.exists')
     @mock.patch('awscli.compat.sqlite3.connect')
-    def test_can_close(self, mock_connect, mock_exists, mock_chmod):
-        mock_exists.return_value = True
+    def test_can_close(self, mock_connect):
         connection = mock.Mock()
         mock_connect.return_value = connection
-        with mock.patch(
-            'awscli.customizations.history.db.os.stat'
-        ) as mock_stat:
-            mock_stat.return_value.st_uid = os.getuid()
-            conn = DatabaseConnection(':memory:')
+        conn = DatabaseConnection(':memory:')
         conn.close()
         self.assertTrue(connection.close.called)
 
+    @skip_if_windows
     def test_create_new_file_with_secure_permissions(self):
         db_filename = os.path.join(self.files.rootdir, 'new_secure.db')
         DatabaseConnection(db_filename)
-        file_mode = os.stat(db_filename).st_mode & 0o777
+        file_mode = stat.S_IMODE(os.stat(db_filename).st_mode)
         self.assertEqual(file_mode, 0o600)
 
+    @skip_if_windows
     def test_tighten_existing_file_permissions(self):
         db_filename = os.path.join(self.files.rootdir, 'existing.db')
         open(db_filename, 'a').close()
         os.chmod(db_filename, 0o644)
 
         DatabaseConnection(db_filename)
-        file_mode = os.stat(db_filename).st_mode & 0o777
+        file_mode = stat.S_IMODE(os.stat(db_filename).st_mode)
         self.assertEqual(file_mode, 0o600)
 
 
@@ -291,17 +272,7 @@ class BaseDatabaseRecordWriterTester(BaseDatabaseRecordTester):
     )
 
     def setUp(self):
-        with mock.patch(
-            'awscli.customizations.history.db.os.path.exists',
-            return_value=False,
-        ):
-            with mock.patch('builtins.open', mock.mock_open()):
-                with mock.patch('awscli.customizations.history.db.os.chmod'):
-                    with mock.patch(
-                        'awscli.customizations.history.db.os.stat'
-                    ) as mock_stat:
-                        mock_stat.return_value.st_uid = os.getuid()
-                        self.db = DatabaseConnection(':memory:')
+        self.db = DatabaseConnection(':memory:')
         self.writer = DatabaseRecordWriter(self.db)
 
 

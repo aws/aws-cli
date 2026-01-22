@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
+import os
 import sys
 import time
 import logging
@@ -209,8 +210,8 @@ class Deployer(object):
         # Poll every 30 seconds. Polling too frequently risks hitting rate limits
         # on CloudFormation's DescribeStacks API
         waiter_config = {
-            'Delay': 30,
-            'MaxAttempts': 120,
+            'Delay': int(os.environ.get("AWS_WAITER_DELAY", 30)),
+            'MaxAttempts': int(os.environ.get("AWS_WAITER_MAXATTEMPTS", 120)),
         }
 
         try:

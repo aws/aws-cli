@@ -753,8 +753,9 @@ class PresignCommand(S3Command):
     DESCRIPTION = (
         "Generate a pre-signed URL for an Amazon S3 object. This allows "
         "anyone who receives the pre-signed URL to retrieve the S3 object "
-        "with an HTTP GET request. For sigv4 requests the region needs to be "
-        "configured explicitly."
+        "with an HTTP GET request or alternatively (with --method PUT parameter)"
+        "to write an S3 object with an HTTP PUT request. For sigv4 requests the"
+        "region needs to be configured explicitly."
     )
     USAGE = "<S3Uri>"
     ARG_TABLE = [{'name': 'path',
@@ -763,7 +764,12 @@ class PresignCommand(S3Command):
                   'cli_type_name': 'integer',
                   'help_text': (
                       'Number of seconds until the pre-signed '
-                      'URL expires.  Default is 3600 seconds.')}]
+                      'URL expires.  Default is 3600 seconds.')},
+                 {'name': 'method',
+                  'default': 'GET',
+                  'choices': ['GET', 'PUT'],
+                  'help_text': 'HTTP method to sign. One of GET or PUT'}
+                  ]
 
     def _run_main(self, parsed_args, parsed_globals):
         super(PresignCommand, self)._run_main(parsed_args, parsed_globals)
@@ -771,8 +777,9 @@ class PresignCommand(S3Command):
         if path.startswith('s3://'):
             path = path[5:]
         bucket, key = find_bucket_key(path)
+        method = parsed_args.method.lower() + "_object"
         url = self.client.generate_presigned_url(
-            'get_object',
+            method,
             {'Bucket': bucket, 'Key': key},
             ExpiresIn=parsed_args.expires_in
         )

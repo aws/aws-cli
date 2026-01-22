@@ -14,7 +14,7 @@ import argparse
 import difflib
 import re
 import sys
-from enum import Enum
+from enum import Enum, auto
 from pathlib import Path
 from typing import List, Optional, Tuple
 
@@ -41,14 +41,14 @@ CONTEXT_SIZE = 3
 
 
 class UserChoice(Enum):
-    YES = 1
-    NO = 2
-    ACCEPT_ALL_OF_TYPE = 3
-    REJECT_ALL_OF_TYPE = 4
-    UPDATE_ALL = 5
-    SAVE_EXIT = 6
-    QUIT = 7
-    NEXT = 8
+    YES = auto()
+    NO = auto()
+    ACCEPT_ALL_OF_TYPE = auto()
+    REJECT_ALL_OF_TYPE = auto()
+    UPDATE_ALL = auto()
+    SAVE_EXIT = auto()
+    QUIT = auto()
+    NEXT = auto()
 
 
 def _color_text(text, color_code):

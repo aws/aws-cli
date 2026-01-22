@@ -282,7 +282,10 @@ def auto_fix_mode(
         output_path: The path to write the updated script if any findings were detected.
     """
     current_ast = parse(script_content)
-    findings_found = 0
+    # Sequence of updates made to the script. Index i is the state of the script before
+    # applying the fixes for the i'th rule, if any.
+    script_states: List[str] = []
+    findings_with_script_index: List[Tuple[LintFinding, int]] = []
     num_auto_fixes_applied = 0
     num_manual_review_issues = 0
 
@@ -292,13 +295,11 @@ def auto_fix_mode(
         if not rule_findings:
             continue
 
+        # Store the finding, and an index that points to the current state of the script.
+        ast_index = len(script_states)
+        script_states.append(current_ast.root().text())
         for finding in rule_findings:
-            if findings_found > 0:
-                print("\n---\n")
-            else:
-                print()
-            findings_found += 1
-            _display_finding(finding, current_ast.root().text(), input_path)
+            findings_with_script_index.append((finding, ast_index))
 
         auto_fixable_findings = [f for f in rule_findings if f.auto_fixable]
         num_auto_fixes_applied += len(auto_fixable_findings)
@@ -310,14 +311,21 @@ def auto_fix_mode(
             else current_ast
         )
 
-    print()
-
-    if findings_found == 0:
+    if not findings_with_script_index:
         print(f"{input_path}: No issues found.")
         return
 
+    for i, (finding, ast_index) in enumerate(findings_with_script_index):
+        if i == 0:
+            print()
+        else:
+            print("\n---\n")
+        _display_finding(finding, script_states[ast_index], input_path)
+
+    print()
+
     print(
-        f"Found {findings_found} issue(s). "
+        f"Found {len(findings_with_script_index)} issue(s). "
         f"{num_auto_fixes_applied} fixed. "
         f"{num_manual_review_issues} require(s) manual review."
     )
@@ -344,7 +352,10 @@ def dry_run_mode(
         input_path: The path to the input script.
     """
     current_ast = parse(script_content)
-    findings_found = 0
+    # Sequence of updates made to the script. Index i is the state of the script before
+    # applying the fixes for the i'th rule, if any.
+    script_states: List[str] = []
+    findings_with_script_index: List[Tuple[LintFinding, int]] = []
     num_auto_fixable_findings = 0
     num_manual_review_findings = 0
 
@@ -354,13 +365,11 @@ def dry_run_mode(
         if not rule_findings:
             continue
 
+        # Store the finding, and an index that points to the current state of the script.
+        ast_index = len(script_states)
+        script_states.append(current_ast.root().text())
         for finding in rule_findings:
-            if findings_found > 0:
-                print("\n---\n")
-            else:
-                print()
-            findings_found += 1
-            _display_finding(finding, current_ast.root().text(), input_path)
+            findings_with_script_index.append((finding, ast_index))
 
         auto_fixable_findings = [f for f in rule_findings if f.auto_fixable]
         num_auto_fixable_findings += len(auto_fixable_findings)
@@ -372,14 +381,21 @@ def dry_run_mode(
             else current_ast
         )
 
-    print()
-
-    if findings_found == 0:
+    if not findings_with_script_index:
         print(f"{input_path}: No issues found.")
         return
 
+    for i, (finding, ast_index) in enumerate(findings_with_script_index):
+        if i == 0:
+            print()
+        else:
+            print("\n---\n")
+        _display_finding(finding, script_states[ast_index], input_path)
+
+    print()
+
     print(
-        f"Found {findings_found} issue(s). "
+        f"Found {len(findings_with_script_index)} issue(s). "
         f"{num_auto_fixable_findings} fixable with the `--fix` option. "
         f"{num_manual_review_findings} require(s) manual review."
     )

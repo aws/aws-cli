@@ -125,7 +125,7 @@ If you'd like to contribute to the project, please see our [Contributing Guide](
 
 ## Getting Help
 
-The best way to interact with our team is through GitHub. You can [open an issue](https://github.com/aws/aws-cli/issues/new/choose) and choose the templates for the AWS CLI v1-to-v2 Migration Tool.
+The best way to interact with our team is through GitHub. You can [open an issue](https://github.com/aws/aws-cli/issues/new?template=migration-tool.yml) and choose the templates for the AWS CLI v1-to-v2 Migration Tool.
 
 If you have a support plan with AWS Support, you can also create a new support case.
 

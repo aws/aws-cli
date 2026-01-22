@@ -56,6 +56,7 @@ class TestDatabaseConnection(unittest.TestCase):
     def tearDown(self):
         self.files.remove_all()
 
+    @skip_if_windows
     @mock.patch('awscli.customizations.history.db.os.chmod')
     @mock.patch('awscli.customizations.history.db.os.stat')
     @mock.patch('awscli.customizations.history.db.os.path.exists')
@@ -64,14 +65,11 @@ class TestDatabaseConnection(unittest.TestCase):
         self, mock_connect, mock_exists, mock_stat, mock_chmod
     ):
         mock_exists.return_value = True
-        mock_stat.return_value.st_uid = 1000
+        mock_stat.return_value.st_uid = os.getuid()
         expected_location = os.path.expanduser(
             os.path.join('~', 'foo', 'bar', 'baz.db')
         )
-        with mock.patch(
-            'awscli.customizations.history.db.os.getuid', return_value=1000
-        ):
-            DatabaseConnection(expected_location)
+        DatabaseConnection(expected_location)
         mock_connect.assert_called_with(
             expected_location, check_same_thread=False, isolation_level=None
         )

@@ -112,6 +112,14 @@ class UpdateKubeconfigCommand(BasicCommand):
             'required': False
         },
         {
+            'name': 'exec-profile',
+            'help_text': ("Profile to use when getting the access token "
+                          "or assuming the role specified in --role-arn. "
+                          "This overrides the current session profile, which "
+                          "will otherwise be used."),
+            'required': False
+        },
+        {
             'name': 'assume-role-arn',
             'help_text': ('To assume a role for retrieving cluster information, '
                          'specify an IAM role ARN with this option. '
@@ -367,10 +375,10 @@ class EKSClient(object):
                 self._parsed_args.role_arn
             ])
 
-        if self._session.profile:
+        if self._session.profile or getattr(self._parsed_args, 'exec_profile', None):
             generated_user["user"]["exec"]["env"] = [OrderedDict([
                 ("name", "AWS_PROFILE"),
-                ("value", self._session.profile)
+                ("value", getattr(self._parsed_args, 'exec_profile', None) or self._session.profile)
             ])]
 
         return generated_user

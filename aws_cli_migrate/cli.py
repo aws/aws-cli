@@ -102,7 +102,7 @@ def _summarize_non_fixable_findings(
         f"️{len(non_auto_fixable_findings)} issue(s) require manual review:", YELLOW
     )
     print(f"\n{warning_header}\n")
-    for i, finding in enumerate(non_auto_fixable_findings, 1):
+    for finding in non_auto_fixable_findings:
         _display_finding(finding, script_content, input_path)
 
 
@@ -292,7 +292,7 @@ def auto_fix_mode(
         if not rule_findings:
             continue
 
-        for i, finding in enumerate(rule_findings, 1):
+        for finding in rule_findings:
             if findings_found > 0:
                 print("\n---\n")
             else:
@@ -354,7 +354,7 @@ def dry_run_mode(
         if not rule_findings:
             continue
 
-        for i, finding in enumerate(rule_findings, 1):
+        for finding in rule_findings:
             if findings_found > 0:
                 print("\n---\n")
             else:
@@ -408,7 +408,7 @@ def interactive_mode(
     num_manual_review_issues = 0
     non_auto_fixable_findings_to_summarize: List[LintFinding] = []
 
-    for rule_index, rule in enumerate(rules):
+    for rule in rules:
         rule_findings = linter.lint_for_rule(current_ast, rule)
         num_auto_fixes_available += len([f for f in rule_findings if f.auto_fixable])
         num_manual_review_issues += len([f for f in rule_findings if not f.auto_fixable])

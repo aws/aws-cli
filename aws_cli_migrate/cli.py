@@ -84,12 +84,12 @@ def _prompt_user_choice_interactive_mode(auto_fixable: bool = True) -> UserChoic
                 .lower()
                 .strip()
             )
-            if choice in ["y", "n", "a", "r", "u", "s", "q"]:
+            if choice in _AUTO_FIX_CHOICE_MAP:
                 return _AUTO_FIX_CHOICE_MAP[choice]
             print("Invalid choice. Please enter y, n, a, r, u, s, or q.")
         else:
             choice = input("\n[n] next, [s] save, [q] quit: ").lower().strip()
-            if choice in ["n", "s", "q"]:
+            if choice in _NON_AUTO_FIX_CHOICE_MAP:
                 return _NON_AUTO_FIX_CHOICE_MAP[choice]
             print("Invalid choice. Please enter n, s, or q.")
 

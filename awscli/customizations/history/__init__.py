@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import logging
 import os
+import platform
 import sys
 
 from botocore.exceptions import ProfileNotFound
@@ -56,8 +57,9 @@ def attach_history_handler(session, parsed_args, **kwargs):
 
         history_dir = os.path.dirname(history_filename)
         if not os.path.isdir(history_dir):
-            os.makedirs(history_dir, mode=0o700)
-        else:
+            os.makedirs(history_dir)
+        # Restrict access on Unix (Windows relies on ACL inheritance)
+        if platform.system() != 'Windows':
             if os.stat(history_dir).st_uid == os.getuid():
                 os.chmod(history_dir, 0o700)
 

@@ -99,8 +99,9 @@ class CLISessionDatabaseConnection:
 
     def _ensure_cache_dir(self):
         if not _CACHE_DIR.exists():
-            _CACHE_DIR.mkdir(parents=True, exist_ok=True, mode=0o700)
-        else:
+            _CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        # Restrict access on Unix (Windows relies on ACL inheritance)
+        if not is_windows:
             if _CACHE_DIR.stat().st_uid == os.getuid():
                 os.chmod(_CACHE_DIR, 0o700)
 
@@ -108,8 +109,7 @@ class CLISessionDatabaseConnection:
         db_path = _CACHE_DIR / _DATABASE_FILENAME
         if not db_path.exists():
             open(db_path, 'a').close()
-            os.chmod(db_path, 0o600)
-        else:
+        if not is_windows:
             if db_path.stat().st_uid == os.getuid():
                 os.chmod(db_path, 0o600)
 

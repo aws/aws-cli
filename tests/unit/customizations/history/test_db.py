@@ -88,9 +88,13 @@ class TestDatabaseConnection(unittest.TestCase):
         conn._connection.execute.assert_any_call('PRAGMA journal_mode=WAL')
 
     @mock.patch('awscli.customizations.history.db.os.chmod')
+    @mock.patch('awscli.customizations.history.db.os.stat')
     @mock.patch('awscli.customizations.history.db.os.path.exists')
-    def test_does_ensure_table_created_first(self, mock_exists, mock_chmod):
+    def test_does_ensure_table_created_first(
+        self, mock_exists, mock_stat, mock_chmod
+    ):
         mock_exists.return_value = False
+        mock_stat.return_value.st_uid = os.getuid()
         with mock.patch('builtins.open', mock.mock_open()):
             db = DatabaseConnection(":memory:")
         cursor = db.execute('PRAGMA table_info(records)')
@@ -293,7 +297,11 @@ class BaseDatabaseRecordWriterTester(BaseDatabaseRecordTester):
         ):
             with mock.patch('builtins.open', mock.mock_open()):
                 with mock.patch('awscli.customizations.history.db.os.chmod'):
-                    self.db = DatabaseConnection(':memory:')
+                    with mock.patch(
+                        'awscli.customizations.history.db.os.stat'
+                    ) as mock_stat:
+                        mock_stat.return_value.st_uid = os.getuid()
+                        self.db = DatabaseConnection(':memory:')
         self.writer = DatabaseRecordWriter(self.db)
 
 

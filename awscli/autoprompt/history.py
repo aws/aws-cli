@@ -13,6 +13,7 @@
 import json
 import logging
 import os
+import platform
 
 from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.history import FileHistory
@@ -49,16 +50,18 @@ class HistoryDriver(FileHistory):
                 with open(self.filename) as f:
                     history = json.load(f)
             if not os.path.exists(dir_path):
-                os.makedirs(dir_path, mode=0o700)
-            else:
+                os.makedirs(dir_path)
+            # Restrict access on Unix (Windows relies on ACL inheritance)
+            if platform.system() != 'Windows':
                 if os.stat(dir_path).st_uid == os.getuid():
                     os.chmod(dir_path, 0o700)
             history['commands'].append(string)
             history['commands'] = history['commands'][-self._max_commands:]
             with open(self.filename, 'w') as f:
                 json.dump(history, f)
-            if os.stat(self.filename).st_uid == os.getuid():
-                os.chmod(self.filename, 0o600)
+            if platform.system() != 'Windows':
+                if os.stat(self.filename).st_uid == os.getuid():
+                    os.chmod(self.filename, 0o600)
         except Exception:
             LOG.debug('Exception on loading prompt history:', exc_info=True)
 

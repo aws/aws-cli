@@ -296,10 +296,10 @@ def auto_fix_mode(
             continue
 
         # Store the finding, and an index that points to the current state of the script.
-        ast_index = len(script_states)
         script_states.append(current_ast.root().text())
-        for finding in rule_findings:
-            findings_with_script_index.append((finding, ast_index))
+        findings_with_script_index.extend(
+            [(finding, len(script_states)) for finding in rule_findings]
+        )
 
         auto_fixable_findings = [f for f in rule_findings if f.auto_fixable]
         num_auto_fixes_applied += len(auto_fixable_findings)
@@ -365,10 +365,10 @@ def dry_run_mode(
             continue
 
         # Store the finding, and an index that points to the current state of the script.
-        ast_index = len(script_states)
         script_states.append(current_ast.root().text())
-        for finding in rule_findings:
-            findings_with_script_index.append((finding, ast_index))
+        findings_with_script_index.extend(
+            [(finding, len(script_states)) for finding in rule_findings]
+        )
 
         auto_fixable_findings = [f for f in rule_findings if f.auto_fixable]
         num_auto_fixable_findings += len(auto_fixable_findings)

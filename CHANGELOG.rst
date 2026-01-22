@@ -2,6 +2,21 @@
 CHANGELOG
 =========
 
+1.44.23
+=======
+
+* api-change:``autoscaling``: This release adds support for Amazon EC2 Auto Scaling group deletion protection
+* api-change:``budgets``: Add Budget FilterExpression and Metrics fields to DescribeBudgetPerformanceHistory to support more granular filtering options.
+* api-change:``dynamodb``: Adds additional waiters to Amazon DynamoDB.
+* api-change:``ec2``: Add better support for fractional GPU instances in DescribeInstanceTypes API. The new fields, logicalGpuCount, gpuPartitionSize, and workload array enable better GPU resource selection and filtering for both full and fractional GPU instance types.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``gamelift``: Amazon GameLift Servers Realtime now supports Node.js 24.x runtime on the Amazon Linux 2023 operating system.
+* api-change:``guardduty``: Adding new enum value for ScanStatusReason
+* api-change:``health``: Updates the lower range for the maxResults request property for DescribeAffectedEntities, DescribeAffectedEntitiesForOrganization, DescribeEvents, and DescribeEventsForOrganization API request properties.
+* api-change:``meteringmarketplace``: Customer Identifier parameter deprecation date has been removed. For new implementations, we recommend using the CustomerAWSAccountID. Your current integration will continue to work. When updating your implementation, consider migrating to CustomerAWSAccountID for improved integration.
+* api-change:``verifiedpermissions``: Adding documentation to user guide and API documentation for how customers can create new encrypted policy stores by passing in their customer managed key during policy store creation.
+
+
 1.44.22
 =======
 

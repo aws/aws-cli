@@ -23,7 +23,8 @@ from prompt_toolkit.formatted_text import FormattedText
 from prompt_toolkit.history import History
 
 from awscli.autoprompt.history import HistoryCompleter, HistoryDriver
-from awscli.testutils import mock, skip_if_windows, unittest
+from awscli.testutils import mock, unittest
+from tests.markers import skip_if_windows
 
 
 class TestHistoryCompleter(unittest.TestCase):
@@ -193,7 +194,7 @@ class TestHistoryDriver(unittest.TestCase):
         history_driver.store_string('aws dynamodb create-table')
 
 
-@skip_if_windows("Permissions tests not applicable on Windows")
+@skip_if_windows
 class TestHistoryDriverPermissions(unittest.TestCase):
     def setUp(self):
         self.dirname = tempfile.mkdtemp()

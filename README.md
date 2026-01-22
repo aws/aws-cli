@@ -52,19 +52,23 @@ Display issues without modifying the script:
 migrate-aws-cli --script upload_s3_files.sh
 ```
 
-### Fix mode
+
+### Auto-fix mode
+
 Automatically update the input script:
+
 ```bash
 migrate-aws-cli --script upload_s3_files.sh --fix
 ```
 
-### Output mode
-Create a new fixed script without modifying the original:
+Optionally, supply an output path to write the updated script, rather than updating the 
+input bash script:
 ```bash
-migrate-aws-cli --script upload_s3_files.sh --output upload_s3_files_v2.sh
+migrate-aws-cli --script upload_s3_files.sh --output upload_s3_files_v2.sh --fix
 ```
 
 ### Interactive mode
+
 Review and accept/reject each change individually:
 ```bash
 migrate-aws-cli --script upload_s3_files.sh --interactive --output upload_s3_files_v2.sh
@@ -73,6 +77,8 @@ migrate-aws-cli --script upload_s3_files.sh --interactive --output upload_s3_fil
 In interactive mode, you can:
 - Press `y` to accept the current change
 - Press `n` to skip the current change
+- Press `a` to accept all findings with the current type
+- Press `r` to reject all findings with the current type
 - Press `u` to accept all remaining changes
 - Press `s` to save and exit
 - Press `q` to quit without saving

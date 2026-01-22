@@ -40,7 +40,7 @@ class DatabaseConnection:
 
     def __init__(self, db_filename):
         # Skip file operations for in-memory databases
-        if db_filename != ':memory:' and not db_filename.startswith('file:'):
+        if db_filename != ':memory:':
             if not os.path.exists(db_filename):
                 open(db_filename, 'a').close()
             # Restrict access on Unix (Windows relies on ACL inheritance)

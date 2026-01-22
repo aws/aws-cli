@@ -1554,7 +1554,7 @@
         {"shape":"TerminalRoutingStrategyException"},
         {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere, Container</p> <p>Retrieves all active game sessions that match a set of search criteria and sorts them into a specified order. </p> <p>This operation is not designed to continually track game session status because that practice can cause you to exceed your API limit and generate errors. Instead, configure an Amazon Simple Notification Service (Amazon SNS) topic to receive notifications from a matchmaker or a game session placement queue.</p> <p>When searching for game sessions, you specify exactly where you want to search and provide a search filter expression, a sort expression, or both. A search request can search only one fleet, but it can search all of a fleet's locations. </p> <p>This operation can be used in the following ways: </p> <ul> <li> <p>To search all game sessions that are currently running on all locations in a fleet, provide a fleet or alias ID. This approach returns game sessions in the fleet's home Region and all remote locations that fit the search criteria.</p> </li> <li> <p>To search all game sessions that are currently running on a specific fleet location, provide a fleet or alias ID and a location name. For location, you can specify a fleet's home Region or any remote location.</p> </li> </ul> <p>Use the pagination parameters to retrieve results as a set of sequential pages. </p> <p>If successful, a <code>GameSession</code> object is returned for each game session that matches the request. Search finds game sessions that are in <code>ACTIVE</code> status only. To retrieve information on game sessions in other statuses, use <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeGameSessions.html\">DescribeGameSessions</a>.</p> <p>To set search and sort criteria, create a filter expression using the following game session attributes. For game session search examples, see the Examples section of this topic.</p> <ul> <li> <p> <b>gameSessionId</b> -- A unique identifier for the game session. You can use either a <code>GameSessionId</code> or <code>GameSessionArn</code> value. </p> </li> <li> <p> <b>gameSessionName</b> -- Name assigned to a game session. Game session names do not need to be unique to a game session.</p> </li> <li> <p> <b>gameSessionProperties</b> -- A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. The filter expression must specify the <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameProperty\">https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameProperty</a> -- a <code>Key</code> and a string <code>Value</code> to search for the game sessions.</p> <p>For example, to search for the above key-value pair, specify the following search filter: <code>gameSessionProperties.difficulty = \"novice\"</code>. All game property values are searched as strings.</p> <p> For examples of searching game sessions, see the ones below, and also see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-client-api.html#game-properties-search\">Search game sessions by game property</a>. </p> </li> <li> <p> <b>maximumSessions</b> -- Maximum number of player sessions allowed for a game session.</p> </li> <li> <p> <b>creationTimeMillis</b> -- Value indicating when a game session was created. It is expressed in Unix time as milliseconds.</p> </li> <li> <p> <b>playerSessionCount</b> -- Number of players currently connected to a game session. This value changes rapidly as players join the session or drop out.</p> </li> <li> <p> <b>hasAvailablePlayerSessions</b> -- Boolean value indicating whether a game session has reached its maximum number of players. It is highly recommended that all search requests include this filter attribute to optimize search performance and return only sessions that players can join. </p> </li> </ul> <note> <p>Returned values for <code>playerSessionCount</code> and <code>hasAvailablePlayerSessions</code> change quickly as players join sessions and others drop out. Results should be considered a snapshot in time. Be sure to refresh search results often, and handle sessions that fill up before a player can join. </p> </note> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere, Container</p> <p>Retrieves all active game sessions that match a set of search criteria and sorts them into a specified order. </p> <p>This operation is not designed to continually track game session status because that practice can cause you to exceed your API limit and generate errors. Instead, configure an Amazon Simple Notification Service (Amazon SNS) topic to receive notifications from a matchmaker or a game session placement queue.</p> <p>When searching for game sessions, you specify exactly where you want to search and provide a search filter expression, a sort expression, or both. A search request can search only one fleet, but it can search all of a fleet's locations. </p> <p>This operation can be used in the following ways: </p> <ul> <li> <p>To search all game sessions that are currently running on all locations in a fleet, provide a fleet or alias ID. This approach returns game sessions in the fleet's home Region and all remote locations that fit the search criteria.</p> </li> <li> <p>To search all game sessions that are currently running on a specific fleet location, provide a fleet or alias ID and a location name. For location, you can specify a fleet's home Region or any remote location.</p> </li> </ul> <p>Use the pagination parameters to retrieve results as a set of sequential pages. </p> <p>If successful, a <code>GameSession</code> object is returned for each game session that matches the request. Search finds game sessions that are in <code>ACTIVE</code> status only. To retrieve information on game sessions in other statuses, use <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeGameSessions.html\">DescribeGameSessions</a>.</p> <p>To set search and sort criteria, create a filter expression using the following game session attributes. For game session search examples, see the Examples section of this topic.</p> <ul> <li> <p> <b>gameSessionId</b> -- A unique identifier for the game session. You can use either a <code>GameSessionId</code> or <code>GameSessionArn</code> value. </p> </li> <li> <p> <b>gameSessionName</b> -- Name assigned to a game session. Game session names do not need to be unique to a game session.</p> </li> <li> <p> <b>gameSessionProperties</b> -- A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. The filter expression must specify the <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameProperty\">https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameProperty</a> -- a <code>Key</code> and a string <code>Value</code> to search for the game sessions.</p> <p>For example, to search for the above key-value pair, specify the following search filter: <code>gameSessionProperties.difficulty = \"novice\"</code>. All game property values are searched as strings.</p> <p> For examples of searching game sessions, see the ones below, and also see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-client-api.html#game-properties-search\">Search game sessions by game property</a>. </p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note> </li> <li> <p> <b>maximumSessions</b> -- Maximum number of player sessions allowed for a game session.</p> </li> <li> <p> <b>creationTimeMillis</b> -- Value indicating when a game session was created. It is expressed in Unix time as milliseconds.</p> </li> <li> <p> <b>playerSessionCount</b> -- Number of players currently connected to a game session. This value changes rapidly as players join the session or drop out.</p> </li> <li> <p> <b>hasAvailablePlayerSessions</b> -- Boolean value indicating whether a game session has reached its maximum number of players. It is highly recommended that all search requests include this filter attribute to optimize search performance and return only sessions that players can join. </p> </li> </ul> <note> <p>Returned values for <code>playerSessionCount</code> and <code>hasAvailablePlayerSessions</code> change quickly as players join sessions and others drop out. Results should be considered a snapshot in time. Be sure to refresh search results often, and handle sessions that fill up before a player can join. </p> </note> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
     },
     "StartFleetActions":{
       "name":"StartFleetActions",
@@ -2197,7 +2197,7 @@
         },
         "OperatingSystem":{
           "shape":"OperatingSystem",
-          "documentation":"<p>Operating system that the game server binaries are built to run on. This value determines the type of fleet resources that you can use for this build.</p> <note> <p>Amazon Linux 2 (AL2) will reach end of support on 6/30/2025. See more details in the <a href=\"http://aws.amazon.com/amazon-linux-2/faqs/\">Amazon Linux 2 FAQs</a>. For game servers that are hosted on AL2 and use server SDK version 4.x for Amazon GameLift Servers, first update the game server build to server SDK 5.x, and then deploy to AL2023 instances. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk5-migration.html\"> Migrate to server SDK version 5.</a> </p> </note>"
+          "documentation":"<p>Operating system that the game server binaries are built to run on. This value determines the type of fleet resources that you can use for this build.</p> <note> <p>Amazon Linux 2 (AL2) will reach end of support on 6/30/2026. See more details in the <a href=\"http://aws.amazon.com/amazon-linux-2/faqs/\">Amazon Linux 2 FAQs</a>. For game servers that are hosted on AL2 and use server SDK version 4.x for Amazon GameLift Servers, first update the game server build to server SDK 5.x, and then deploy to AL2023 instances. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk5-migration.html\"> Migrate to server SDK version 5.</a> </p> </note>"
         },
         "CreationTime":{
           "shape":"Timestamp",
@@ -2343,7 +2343,7 @@
         },
         "OperatingSystem":{
           "shape":"OperatingSystem",
-          "documentation":"<p>The type of operating system on the compute resource.</p> <note> <p>Amazon Linux 2 (AL2) will reach end of support on 6/30/2025. See more details in the <a href=\"http://aws.amazon.com/aws.amazon.com/amazon-linux-2/faqs/\">Amazon Linux 2 FAQs</a>. For game servers that are hosted on AL2 and use server SDK version 4.x for Amazon GameLift Servers, first update the game server build to server SDK 5.x, and then deploy to AL2023 instances. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk5-migration.html\"> Migrate to server SDK version 5.</a> </p> </note>"
+          "documentation":"<p>The type of operating system on the compute resource.</p> <note> <p>Amazon Linux 2 (AL2) will reach end of support on 6/30/2026. See more details in the <a href=\"http://aws.amazon.com/aws.amazon.com/amazon-linux-2/faqs/\">Amazon Linux 2 FAQs</a>. For game servers that are hosted on AL2 and use server SDK version 4.x for Amazon GameLift Servers, first update the game server build to server SDK 5.x, and then deploy to AL2023 instances. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk5-migration.html\"> Migrate to server SDK version 5.</a> </p> </note>"
         },
         "Type":{
           "shape":"EC2InstanceType",
@@ -2692,7 +2692,7 @@
         },
         "OperatingSystem":{
           "shape":"ContainerOperatingSystem",
-          "documentation":"<p>The platform that all containers in the container group definition run on.</p> <note> <p>Amazon Linux 2 (AL2) will reach end of support on 6/30/2025. See more details in the <a href=\"http://aws.amazon.com/amazon-linux-2/faqs/\">Amazon Linux 2 FAQs</a>. For game servers that are hosted on AL2 and use server SDK version 4.x for Amazon GameLift Servers, first update the game server build to server SDK 5.x, and then deploy to AL2023 instances. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk5-migration.html\"> Migrate to server SDK version 5.</a> </p> </note>"
+          "documentation":"<p>The platform that all containers in the container group definition run on.</p> <note> <p>Amazon Linux 2 (AL2) will reach end of support on 6/30/2026. See more details in the <a href=\"http://aws.amazon.com/amazon-linux-2/faqs/\">Amazon Linux 2 FAQs</a>. For game servers that are hosted on AL2 and use server SDK version 4.x for Amazon GameLift Servers, first update the game server build to server SDK 5.x, and then deploy to AL2023 instances. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk5-migration.html\"> Migrate to server SDK version 5.</a> </p> </note>"
         },
         "Name":{
           "shape":"ContainerGroupDefinitionName",
@@ -2994,7 +2994,7 @@
         },
         "OperatingSystem":{
           "shape":"OperatingSystem",
-          "documentation":"<p>The operating system that your game server binaries run on. This value determines the type of fleet resources that you use for this build. If your game build contains multiple executables, they all must run on the same operating system. You must specify a valid operating system in this request. There is no default value. You can't change a build's operating system later.</p> <note> <p>Amazon Linux 2 (AL2) will reach end of support on 6/30/2025. See more details in the <a href=\"http://aws.amazon.com/amazon-linux-2/faqs/\">Amazon Linux 2 FAQs</a>. For game servers that are hosted on AL2 and use server SDK version 4.x for Amazon GameLift Servers, first update the game server build to server SDK 5.x, and then deploy to AL2023 instances. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk5-migration.html\"> Migrate to server SDK version 5.</a> </p> </note>"
+          "documentation":"<p>The operating system that your game server binaries run on. This value determines the type of fleet resources that you use for this build. If your game build contains multiple executables, they all must run on the same operating system. You must specify a valid operating system in this request. There is no default value. You can't change a build's operating system later.</p> <note> <p>Amazon Linux 2 (AL2) will reach end of support on 6/30/2026. See more details in the <a href=\"http://aws.amazon.com/amazon-linux-2/faqs/\">Amazon Linux 2 FAQs</a>. For game servers that are hosted on AL2 and use server SDK version 4.x for Amazon GameLift Servers, first update the game server build to server SDK 5.x, and then deploy to AL2023 instances. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk5-migration.html\"> Migrate to server SDK version 5.</a> </p> </note> <note> <p>Windows Server 2016 will reach end of support on 1/12/2027. For game servers that are hosted on Windows Server 2016 and use server SDK version 4.x for Amazon GameLift Servers, first update the game server build to server SDK 5.x, and then deploy to Windows Server 2022 instances. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk5-migration.html\"> Migrate to server SDK version 5.</a> </p> </note>"
         },
         "Tags":{
           "shape":"TagList",
@@ -3133,7 +3133,7 @@
         },
         "OperatingSystem":{
           "shape":"ContainerOperatingSystem",
-          "documentation":"<p>The platform that all containers in the group use. Containers in a group must run on the same operating system.</p> <p>Default value: <code>AMAZON_LINUX_2023</code> </p> <note> <p>Amazon Linux 2 (AL2) will reach end of support on 6/30/2025. See more details in the <a href=\"http://aws.amazon.com/amazon-linux-2/faqs/\">Amazon Linux 2 FAQs</a>. For game servers that are hosted on AL2 and use server SDK version 4.x for Amazon GameLift Servers, first update the game server build to server SDK 5.x, and then deploy to AL2023 instances. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk5-migration.html\"> Migrate to server SDK version 5.</a> </p> </note>"
+          "documentation":"<p>The platform that all containers in the group use. Containers in a group must run on the same operating system.</p> <p>Default value: <code>AMAZON_LINUX_2023</code> </p> <note> <p>Amazon Linux 2 (AL2) will reach end of support on 6/30/2026. See more details in the <a href=\"http://aws.amazon.com/amazon-linux-2/faqs/\">Amazon Linux 2 FAQs</a>. For game servers that are hosted on AL2 and use server SDK version 4.x for Amazon GameLift Servers, first update the game server build to server SDK 5.x, and then deploy to AL2023 instances. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk5-migration.html\"> Migrate to server SDK version 5.</a> </p> </note>"
         },
         "VersionDescription":{
           "shape":"NonZeroAndMaxString",
@@ -3387,7 +3387,7 @@
         },
         "GameProperties":{
           "shape":"GamePropertyList",
-          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. For an example, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-client-api.html#game-properties-create\">Create a game session with custom properties</a>. </p>"
+          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. For an example, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-client-api.html#game-properties-create\">Create a game session with custom properties</a>. </p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note>"
         },
         "CreatorId":{
           "shape":"NonZeroAndMaxString",
@@ -3545,7 +3545,7 @@
         },
         "GameProperties":{
           "shape":"GamePropertyList",
-          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.</p>"
+          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.</p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note>"
         },
         "GameSessionData":{
           "shape":"GameSessionData",
@@ -3687,6 +3687,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of labels to assign to the new script resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources are useful for resource management, access management and cost allocation. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>. Once the resource is created, you can use <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_TagResource.html\">TagResource</a>, <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_UntagResource.html\">UntagResource</a>, and <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_ListTagsForResource.html\">ListTagsForResource</a> to add, remove, and view tags. The maximum tag limit may be lower than stated. See the Amazon Web Services General Reference for actual tagging limits.</p>"
+        },
+        "NodeJsVersion":{
+          "shape":"NodeJsVersion",
+          "documentation":"<p>The Node.js version used for execution of your Realtime script. The valid values are <code>10.x | 24.x</code>. By default, <code>NodeJsVersion</code> is <code>10.x</code>. This value cannot be updated later. </p>"
         }
       }
     },
@@ -5837,7 +5841,7 @@
         },
         "OperatingSystem":{
           "shape":"OperatingSystem",
-          "documentation":"<p>The operating system of the fleet's computing resources. A fleet's operating system is determined by the OS of the build or script that is deployed on this fleet. This attribute is used with fleets where <code>ComputeType</code> is <code>EC2</code>.</p> <note> <p>Amazon Linux 2 (AL2) will reach end of support on 6/30/2025. See more details in the <a href=\"http://aws.amazon.com/aws.amazon.com/amazon-linux-2/faqs/\">Amazon Linux 2 FAQs</a>. For game servers that are hosted on AL2 and use server SDK version 4.x for Amazon GameLift Servers, first update the game server build to server SDK 5.x, and then deploy to AL2023 instances. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk5-migration.html\"> Migrate to server SDK version 5.</a> </p> </note>"
+          "documentation":"<p>The operating system of the fleet's computing resources. A fleet's operating system is determined by the OS of the build or script that is deployed on this fleet. This attribute is used with fleets where <code>ComputeType</code> is <code>EC2</code>.</p> <note> <p>Amazon Linux 2 (AL2) will reach end of support on 6/30/2026. See more details in the <a href=\"http://aws.amazon.com/aws.amazon.com/amazon-linux-2/faqs/\">Amazon Linux 2 FAQs</a>. For game servers that are hosted on AL2 and use server SDK version 4.x for Amazon GameLift Servers, first update the game server build to server SDK 5.x, and then deploy to AL2023 instances. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk5-migration.html\"> Migrate to server SDK version 5.</a> </p> </note>"
         },
         "ResourceCreationLimitPolicy":{"shape":"ResourceCreationLimitPolicy"},
         "MetricGroups":{
@@ -6079,7 +6083,7 @@
       "members":{
         "Key":{
           "shape":"GamePropertyKey",
-          "documentation":"<p>The game property identifier.</p>"
+          "documentation":"<p>The game property identifier.</p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note>"
         },
         "Value":{
           "shape":"GamePropertyValue",
@@ -6605,7 +6609,7 @@
         },
         "GameProperties":{
           "shape":"GamePropertyList",
-          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>.</p>"
+          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>.</p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note>"
         },
         "IpAddress":{
           "shape":"IpAddress",
@@ -6739,7 +6743,7 @@
         },
         "GameProperties":{
           "shape":"GamePropertyList",
-          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>.</p>"
+          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>.</p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note>"
         },
         "MaximumPlayerSessionCount":{
           "shape":"WholeNumber",
@@ -7106,7 +7110,7 @@
         },
         "OperatingSystem":{
           "shape":"OperatingSystem",
-          "documentation":"<p>Operating system that is running on this EC2 instance. </p> <note> <p>Amazon Linux 2 (AL2) will reach end of support on 6/30/2025. See more details in the <a href=\"http://aws.amazon.com/aws.amazon.com/amazon-linux-2/faqs/\">Amazon Linux 2 FAQs</a>. For game servers that are hosted on AL2 and use server SDK version 4.x for Amazon GameLift Servers, first update the game server build to server SDK 5.x, and then deploy to AL2023 instances. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk5-migration.html\"> Migrate to server SDK version 5.</a> </p> </note>"
+          "documentation":"<p>Operating system that is running on this EC2 instance. </p> <note> <p>Amazon Linux 2 (AL2) will reach end of support on 6/30/2026. See more details in the <a href=\"http://aws.amazon.com/aws.amazon.com/amazon-linux-2/faqs/\">Amazon Linux 2 FAQs</a>. For game servers that are hosted on AL2 and use server SDK version 4.x for Amazon GameLift Servers, first update the game server build to server SDK 5.x, and then deploy to AL2023 instances. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk5-migration.html\"> Migrate to server SDK version 5.</a> </p> </note>"
         },
         "Type":{
           "shape":"EC2InstanceType",
@@ -8039,7 +8043,7 @@
         },
         "GameProperties":{
           "shape":"GamePropertyList",
-          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used when <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.</p>"
+          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used when <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.</p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note>"
         },
         "GameSessionData":{
           "shape":"GameSessionData",
@@ -8241,6 +8245,11 @@
       "type":"integer",
       "max":75,
       "min":30
+    },
+    "NodeJsVersion":{
+      "type":"string",
+      "max":16,
+      "pattern":"^\\d+\\.[x0-9]+$"
     },
     "NonBlankAndLengthConstraintString":{
       "type":"string",
@@ -9044,6 +9053,10 @@
         "StorageLocation":{
           "shape":"S3Location",
           "documentation":"<p>The location of the Amazon S3 bucket where a zipped file containing your Realtime scripts is stored. The storage location must specify the Amazon S3 bucket name, the zip file name (the \"key\"), and a role ARN that allows Amazon GameLift Servers to access the Amazon S3 storage location. The S3 bucket must be in the same Region where you want to create a new script. By default, Amazon GameLift Servers uploads the latest version of the zip file; if you have S3 object versioning turned on, you can use the <code>ObjectVersion</code> parameter to specify an earlier version. </p>"
+        },
+        "NodeJsVersion":{
+          "shape":"NodeJsVersion",
+          "documentation":"<p>The Node.js version used for execution of your Realtime script. The valid values are <code>10.x | 24.x</code>. By default, <code>NodeJsVersion</code> is <code>10.x</code>. This value cannot be updated later. </p>"
         }
       },
       "documentation":"<p>Properties describing a Realtime script.</p> <p> <b>Related actions</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
@@ -9218,7 +9231,7 @@
         },
         "GameProperties":{
           "shape":"GamePropertyList",
-          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>.</p>"
+          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>.</p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note>"
         },
         "MaximumPlayerSessionCount":{
           "shape":"WholeNumber",
@@ -9873,7 +9886,7 @@
         },
         "OperatingSystem":{
           "shape":"ContainerOperatingSystem",
-          "documentation":"<p>The platform that all containers in the group use. Containers in a group must run on the same operating system.</p> <note> <p>Amazon Linux 2 (AL2) will reach end of support on 6/30/2025. See more details in the <a href=\"http://aws.amazon.com/amazon-linux-2/faqs/\">Amazon Linux 2 FAQs</a>. For game servers that are hosted on AL2 and use server SDK version 4.x for Amazon GameLift Servers, first update the game server build to server SDK 5.x, and then deploy to AL2023 instances. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk5-migration.html\"> Migrate to server SDK version 5.</a> </p> </note>"
+          "documentation":"<p>The platform that all containers in the group use. Containers in a group must run on the same operating system.</p> <note> <p>Amazon Linux 2 (AL2) will reach end of support on 6/30/2026. See more details in the <a href=\"http://aws.amazon.com/amazon-linux-2/faqs/\">Amazon Linux 2 FAQs</a>. For game servers that are hosted on AL2 and use server SDK version 4.x for Amazon GameLift Servers, first update the game server build to server SDK 5.x, and then deploy to AL2023 instances. See <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-serversdk5-migration.html\"> Migrate to server SDK version 5.</a> </p> </note>"
         }
       }
     },
@@ -10106,7 +10119,7 @@
         },
         "GameProperties":{
           "shape":"GamePropertyList",
-          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. You can use this parameter to modify game properties in an active game session. This action adds new properties and modifies existing properties. There is no way to delete properties. For an example, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-client-api.html#game-properties-update\">Update the value of a game property</a>. </p>"
+          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. You can use this parameter to modify game properties in an active game session. This action adds new properties and modifies existing properties. There is no way to delete properties. For an example, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-client-api.html#game-properties-update\">Update the value of a game property</a>. </p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note>"
         }
       }
     },
@@ -10212,7 +10225,7 @@
         },
         "GameProperties":{
           "shape":"GamePropertyList",
-          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.</p>"
+          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.</p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note>"
         },
         "GameSessionData":{
           "shape":"GameSessionData",

@@ -39979,6 +39979,21 @@
           "documentation":"<p>The number of GPUs for the instance type.</p>",
           "locationName":"count"
         },
+        "LogicalGpuCount":{
+          "shape":"LogicalGpuCount",
+          "documentation":"<p>Total number of GPU devices of this type.</p>",
+          "locationName":"logicalGpuCount"
+        },
+        "GpuPartitionSize":{
+          "shape":"GpuPartitionSize",
+          "documentation":"<p>The size of each GPU as a fraction of a full GPU, between 0 (excluded) and 1 (included).</p>",
+          "locationName":"gpuPartitionSize"
+        },
+        "Workloads":{
+          "shape":"WorkloadsList",
+          "documentation":"<p>A list of workload types this GPU supports.</p>",
+          "locationName":"workloadSet"
+        },
         "MemoryInfo":{
           "shape":"GpuDeviceMemoryInfo",
           "documentation":"<p>Describes the memory available to the GPU accelerator.</p>",
@@ -40024,6 +40039,7 @@
       },
       "documentation":"<p>Describes the GPU accelerators for the instance type.</p>"
     },
+    "GpuPartitionSize":{"type":"double"},
     "GroupBy":{
       "type":"string",
       "enum":[
@@ -51319,6 +51335,7 @@
         "kinesis-data-firehose"
       ]
     },
+    "LogicalGpuCount":{"type":"integer"},
     "Long":{"type":"long"},
     "MacHost":{
       "type":"structure",
@@ -75047,6 +75064,14 @@
           "documentation":"<p>Information about the address pool.</p>",
           "locationName":"byoipCidr"
         }
+      }
+    },
+    "Workload":{"type":"string"},
+    "WorkloadsList":{
+      "type":"list",
+      "member":{
+        "shape":"Workload",
+        "locationName":"item"
       }
     },
     "ZoneIdStringList":{

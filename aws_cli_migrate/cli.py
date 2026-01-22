@@ -312,7 +312,7 @@ def auto_fix_mode(
         )
 
     if not findings_with_script_index:
-        print(f"{input_path}: No issues found.")
+        print(f"\n{input_path}: No issues found.")
         return
 
     for i, (finding, ast_index) in enumerate(findings_with_script_index):
@@ -323,7 +323,6 @@ def auto_fix_mode(
         _display_finding(finding, script_states[ast_index], input_path)
 
     print()
-
     print(
         f"Found {len(findings_with_script_index)} issue(s). "
         f"{num_auto_fixes_applied} fixed. "
@@ -382,7 +381,7 @@ def dry_run_mode(
         )
 
     if not findings_with_script_index:
-        print(f"{input_path}: No issues found.")
+        print(f"\n{input_path}: No issues found.")
         return
 
     for i, (finding, ast_index) in enumerate(findings_with_script_index):
@@ -393,7 +392,6 @@ def dry_run_mode(
         _display_finding(finding, script_states[ast_index], input_path)
 
     print()
-
     print(
         f"Found {len(findings_with_script_index)} issue(s). "
         f"{num_auto_fixable_findings} fixable with the `--fix` option. "

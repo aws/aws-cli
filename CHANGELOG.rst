@@ -2,6 +2,52 @@
 CHANGELOG
 =========
 
+2.33.5
+======
+
+* api-change:``budgets``: Add Budget FilterExpression and Metrics fields to DescribeBudgetPerformanceHistory to support more granular filtering options.
+* api-change:``verifiedpermissions``: Adding documentation to user guide and API documentation for how customers can create new encrypted policy stores by passing in their customer managed key during policy store creation.
+* api-change:``autoscaling``: This release adds support for Amazon EC2 Auto Scaling group deletion protection
+* api-change:``dynamodb``: Adds additional waiters to Amazon DynamoDB.
+* api-change:``health``: Updates the lower range for the maxResults request property for DescribeAffectedEntities, DescribeAffectedEntitiesForOrganization, DescribeEvents, and DescribeEventsForOrganization API request properties.
+* api-change:``meteringmarketplace``: Customer Identifier parameter deprecation date has been removed. For new implementations, we recommend using the CustomerAWSAccountID. Your current integration will continue to work. When updating your implementation, consider migrating to CustomerAWSAccountID for improved integration.
+* api-change:``ec2``: Add better support for fractional GPU instances in DescribeInstanceTypes API. The new fields, logicalGpuCount, gpuPartitionSize, and workload array enable better GPU resource selection and filtering for both full and fractional GPU instance types.
+* api-change:``gamelift``: Amazon GameLift Servers Realtime now supports Node.js 24.x runtime on the Amazon Linux 2023 operating system.
+* api-change:``guardduty``: Adding new enum value for ScanStatusReason
+
+
+2.33.4
+======
+
+* api-change:``quicksight``: Added documentation and model for sheet layout groups - allows sheet elements to be grouped, Added documentation and the feature enables admins to have granular control over connectors under actions, Updated API documentation for PDF Export in Snapshot Export APIs
+* api-change:``config``: AWS Config Conformance Packs now support tag-on-create through PutConformancePack API.
+* api-change:``bedrock-agentcore``: Supports custom browser extensions for AgentCore Browser and increased message payloads up to 100KB per message in an Event for AgentCore Memory
+* api-change:``ec2``: Added support of multiple EBS cards. New EbsCardIndex parameter enables attaching volumes to specific EBS cards on supported instance types for improved storage performance.
+
+
+2.33.3
+======
+
+* api-change:``workspaces-instances``: Added billing configuration support for WorkSpaces Instances with monthly and hourly billing modes, including new filtering capabilities for instance type searches.
+* api-change:``bedrock-runtime``: Added support for extended prompt caching with one hour TTL.
+* api-change:``autoscaling``: This release adds support for three new filters when describing scaling activities, StartTimeLowerBound, StartTimeUpperBound, and Status.
+* api-change:``keyspaces``: Adds support for managing table pre-warming in Amazon Keyspaces (for Apache Cassandra)
+* api-change:``verifiedpermissions``: Amazon Verified Permissions now supports encryption of resources by a customer managed KMS key. Customers can now create new encrypted policy stores by passing in their customer managed key during policy store creation.
+* api-change:``odb``: Adds support for associating and disassociating IAM roles with Autonomous VM cluster resources through the AssociateIamRoleToResource and DisassociateIamRoleFromResource APIs. The GetCloudAutonomousVmCluster and ListCloudAutonomousVmClusters API responses now include the iamRoles field.
+
+
+2.33.2
+======
+
+* api-change:``sagemaker``: Adding security consideration comments for lcc accessing execution role under root access
+* api-change:``resource-explorer-2``: Added ViewName to View-related responses and ServiceViewName to GetServiceView response.
+* api-change:``datazone``: This release adds support for numeric filtering and complex free-text searches cases for the Search and SearchListings APIs.
+* api-change:``connect``: Adds support to allow customers to create form with Dispute configuration
+* api-change:``glacier``: Documentation updates for Amazon Glacier's maintenance mode
+* enhancement:ContainerProvider: The ContainerProvider now works with arbitray HTTPS URLs for `AWS_CONTAINER_CREDENTIALS_FULL_URI`.
+* api-change:``launch-wizard``: Added UpdateDeployment, ListDeploymentPatternVersions and GetDeploymentPatternVersion APIs for Launch Wizard
+
+
 2.33.1
 ======
 

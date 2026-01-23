@@ -361,10 +361,15 @@
       "members":{
         "message":{
           "shape":"String",
-          "documentation":"<p>Description of the error.</p>"
+          "documentation":"<p>You don't have the required permissions to perform this operation. Verify your IAM permissions and try again.</p>"
         }
       },
       "documentation":"<p>You don't have sufficient access permissions to perform this action. </p>",
+      "error":{
+        "code":"AccessDeniedException",
+        "httpStatusCode":403,
+        "senderFault":true
+      },
       "exception":true
     },
     "AutoScalingPolicy":{
@@ -591,10 +596,15 @@
       "members":{
         "message":{
           "shape":"String",
-          "documentation":"<p>Description of the error.</p>"
+          "documentation":"<p>The requested operation conflicts with the current state of the resource or another concurrent operation.</p>"
         }
       },
       "documentation":"<p>Amazon Keyspaces couldn't complete the requested action. This error may occur if you try to perform an action and the same or a different action is already in progress, or if you try to create a resource that already exists. </p>",
+      "error":{
+        "code":"ConflictException",
+        "httpStatusCode":409,
+        "senderFault":true
+      },
       "exception":true
     },
     "CreateKeyspaceRequest":{
@@ -688,6 +698,10 @@
         "cdcSpecification":{
           "shape":"CdcSpecification",
           "documentation":"<p>The CDC stream settings of the table.</p>"
+        },
+        "warmThroughputSpecification":{
+          "shape":"WarmThroughputSpecification",
+          "documentation":"<p>Specifies the warm throughput settings for the table. Pre-warming a table helps you avoid capacity exceeded exceptions by pre-provisioning read and write capacity units to reduce cold start latency when your table receives traffic.</p> <p>For more information about pre-warming in Amazon Keyspaces, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/warm-throughput.html\">Pre-warm a table in Amazon Keyspaces</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
         }
       }
     },
@@ -758,8 +772,7 @@
     },
     "DeleteKeyspaceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteTableRequest":{
       "type":"structure",
@@ -780,8 +793,7 @@
     },
     "DeleteTableResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "DeleteTypeRequest":{
       "type":"structure",
@@ -1045,6 +1057,10 @@
         "cdcSpecification":{
           "shape":"CdcSpecificationSummary",
           "documentation":"<p>The CDC stream settings of the table.</p>"
+        },
+        "warmThroughputSpecification":{
+          "shape":"WarmThroughputSpecificationSummary",
+          "documentation":"<p>The warm throughput settings for the table, including the current status and configured read and write capacity units.</p>"
         }
       }
     },
@@ -1117,10 +1133,14 @@
       "members":{
         "message":{
           "shape":"String",
-          "documentation":"<p>Description of the error.</p>"
+          "documentation":"<p>An internal service error occurred. Retry your request. If the problem persists, contact Amazon Web Services Support.</p>"
         }
       },
       "documentation":"<p>Amazon Keyspaces was unable to fully process this request because of an internal server error.</p>",
+      "error":{
+        "code":"InternalServerException",
+        "httpStatusCode":500
+      },
       "exception":true,
       "fault":true
     },
@@ -1291,6 +1311,10 @@
         }
       }
     },
+    "Long":{
+      "type":"long",
+      "box":true
+    },
     "MaxResults":{
       "type":"integer",
       "box":true,
@@ -1410,7 +1434,11 @@
           "shape":"TableStatus",
           "documentation":"<p>The status of the multi-Region table in the specified Amazon Web Services Region.</p>"
         },
-        "capacitySpecification":{"shape":"CapacitySpecificationSummary"}
+        "capacitySpecification":{"shape":"CapacitySpecificationSummary"},
+        "warmThroughputSpecification":{
+          "shape":"WarmThroughputSpecificationSummary",
+          "documentation":"<p>The warm throughput settings for this replica, including the current status and configured read and write capacity units.</p>"
+        }
       },
       "documentation":"<p>The Region-specific settings of a multi-Region table in the specified Amazon Web Services Region.</p> <p>If the multi-Region table is using provisioned capacity and has optional auto scaling policies configured, note that the Region specific summary returns both read and write capacity settings. But only Region specific read capacity settings can be configured for a multi-Region table. In a multi-Region table, your write capacity units will be synced across all Amazon Web Services Regions to ensure that there is enough capacity to replicate write events across Regions.</p>"
     },
@@ -1466,14 +1494,19 @@
       "members":{
         "message":{
           "shape":"String",
-          "documentation":"<p>Description of the error.</p>"
+          "documentation":"<p>The specified resource was not found. Verify the resource identifier and ensure the resource exists and is in an ACTIVE state.</p>"
         },
         "resourceArn":{
           "shape":"ARN",
-          "documentation":"<p>The unique identifier in the format of Amazon Resource Name (ARN) for the resource couldn’t be found.</p>"
+          "documentation":"<p>The unique identifier in the format of Amazon Resource Name (ARN) for the resource couldn't be found.</p>"
         }
       },
       "documentation":"<p>The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, or its status might not be <code>ACTIVE</code>.</p>",
+      "error":{
+        "code":"ResourceNotFoundException",
+        "httpStatusCode":404,
+        "senderFault":true
+      },
       "exception":true
     },
     "RestoreTableRequest":{
@@ -1572,10 +1605,15 @@
       "members":{
         "message":{
           "shape":"String",
-          "documentation":"<p>Description of the error.</p>"
+          "documentation":"<p>The requested operation would exceed the service quota for this resource. Review the service quotas and adjust your request accordingly.</p>"
         }
       },
       "documentation":"<p>The operation exceeded the service quota for this resource. For more information on service quotas, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html\">Quotas</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>",
+      "error":{
+        "code":"ServiceQuotaExceededException",
+        "httpStatusCode":402,
+        "senderFault":true
+      },
       "exception":true
     },
     "SortOrder":{
@@ -1710,8 +1748,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
@@ -1801,8 +1838,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "UpdateKeyspaceRequest":{
       "type":"structure",
@@ -1883,6 +1919,10 @@
         "cdcSpecification":{
           "shape":"CdcSpecification",
           "documentation":"<p>The CDC stream settings of the table.</p>"
+        },
+        "warmThroughputSpecification":{
+          "shape":"WarmThroughputSpecification",
+          "documentation":"<p>Modifies the warm throughput settings for the table. You can update the read and write capacity units to adjust the pre-provisioned throughput.</p>"
         }
       }
     },
@@ -1901,10 +1941,15 @@
       "members":{
         "message":{
           "shape":"String",
-          "documentation":"<p>Description of the error.</p>"
+          "documentation":"<p>The request parameters are invalid or malformed. Review the API documentation and correct the request format.</p>"
         }
       },
       "documentation":"<p>The operation failed due to an invalid or malformed request.</p>",
+      "error":{
+        "code":"ValidationException",
+        "httpStatusCode":400,
+        "senderFault":true
+      },
       "exception":true
     },
     "ViewType":{
@@ -1914,6 +1959,60 @@
         "OLD_IMAGE",
         "KEYS_ONLY",
         "NEW_AND_OLD_IMAGES"
+      ]
+    },
+    "WarmThroughputSpecification":{
+      "type":"structure",
+      "members":{
+        "readUnitsPerSecond":{
+          "shape":"WarmThroughputSpecificationReadUnitsPerSecondLong",
+          "documentation":"<p>The number of read capacity units per second to pre-warm the table for read capacity throughput. The minimum value is 1.</p>"
+        },
+        "writeUnitsPerSecond":{
+          "shape":"WarmThroughputSpecificationWriteUnitsPerSecondLong",
+          "documentation":"<p>The number of write capacity units per second to pre-warm the table for write capacity throughput. The minimum value is 1.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the warm throughput settings for a table. Pre-warming a table by specifying warm throughput pre-provisions read and write capacity units to help avoid capacity exceeded exceptions and reduce latency when your table starts receiving traffic.</p> <p>For more information about pre-warming in Amazon Keyspaces, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/warm-throughput.html\">Pre-warm a table in Amazon Keyspaces</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
+    },
+    "WarmThroughputSpecificationReadUnitsPerSecondLong":{
+      "type":"long",
+      "box":true,
+      "min":1
+    },
+    "WarmThroughputSpecificationSummary":{
+      "type":"structure",
+      "required":[
+        "readUnitsPerSecond",
+        "writeUnitsPerSecond",
+        "status"
+      ],
+      "members":{
+        "readUnitsPerSecond":{
+          "shape":"Long",
+          "documentation":"<p>The number of read capacity units per second currently configured for warm throughput.</p>"
+        },
+        "writeUnitsPerSecond":{
+          "shape":"Long",
+          "documentation":"<p>The number of write capacity units per second currently configured for warm throughput.</p>"
+        },
+        "status":{
+          "shape":"WarmThroughputStatus",
+          "documentation":"<p>The current status of the warm throughput configuration. Valid values are <code>AVAILABLE</code> when the configuration is active, and <code>UPDATING</code> when changes are being applied.</p>"
+        }
+      },
+      "documentation":"<p>Contains the current warm throughput settings for a table, including the configured capacity units and the current status of the warm throughput configuration.</p>"
+    },
+    "WarmThroughputSpecificationWriteUnitsPerSecondLong":{
+      "type":"long",
+      "box":true,
+      "min":1
+    },
+    "WarmThroughputStatus":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "UPDATING"
       ]
     },
     "kmsKeyARN":{

@@ -60,7 +60,7 @@
         {"shape":"ServiceLinkedRoleFailure"},
         {"shape":"InstanceRefreshInProgressFault"}
       ],
-      "documentation":"<note> <p>This API operation is superseded by <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_AttachTrafficSources.html\">https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_AttachTrafficSources.html</a>, which can attach multiple traffic sources types. We recommend using <code>AttachTrafficSources</code> to simplify how you manage traffic sources. However, we continue to support <code>AttachLoadBalancers</code>. You can use both the original <code>AttachLoadBalancers</code> API operation and <code>AttachTrafficSources</code> on the same Auto Scaling group.</p> </note> <p>Attaches one or more Classic Load Balancers to the specified Auto Scaling group. Amazon EC2 Auto Scaling registers the running instances with these Classic Load Balancers.</p> <p>To describe the load balancers for an Auto Scaling group, call the <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_DescribeLoadBalancers.html\">DescribeLoadBalancers</a> API. To detach a load balancer from the Auto Scaling group, call the <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_DetachLoadBalancers.html\">DetachLoadBalancers</a> API.</p> <p>This operation is additive and does not detach existing Classic Load Balancers or target groups from the Auto Scaling group.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/autoscaling-load-balancer.html\">Use Elastic Load Balancing to distribute traffic across the instances in your Auto Scaling group</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
+      "documentation":"<note> <p>This API operation is superseded by <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_AttachTrafficSources.html\">AttachTrafficSources</a>, which can attach multiple traffic sources types. We recommend using <code>AttachTrafficSources</code> to simplify how you manage traffic sources. However, we continue to support <code>AttachLoadBalancers</code>. You can use both the original <code>AttachLoadBalancers</code> API operation and <code>AttachTrafficSources</code> on the same Auto Scaling group.</p> </note> <p>Attaches one or more Classic Load Balancers to the specified Auto Scaling group. Amazon EC2 Auto Scaling registers the running instances with these Classic Load Balancers.</p> <p>To describe the load balancers for an Auto Scaling group, call the <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_DescribeLoadBalancers.html\">DescribeLoadBalancers</a> API. To detach a load balancer from the Auto Scaling group, call the <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_DetachLoadBalancers.html\">DetachLoadBalancers</a> API.</p> <p>This operation is additive and does not detach existing Classic Load Balancers or target groups from the Auto Scaling group.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/autoscaling-load-balancer.html\">Use Elastic Load Balancing to distribute traffic across the instances in your Auto Scaling group</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
     },
     "AttachTrafficSources":{
       "name":"AttachTrafficSources",
@@ -678,7 +678,7 @@
       "errors":[
         {"shape":"ResourceContentionFault"}
       ],
-      "documentation":"<note> <p>This API operation is superseded by <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_DescribeTrafficSources.html\">DetachTrafficSources</a>, which can detach multiple traffic sources types. We recommend using <code>DetachTrafficSources</code> to simplify how you manage traffic sources. However, we continue to support <code>DetachLoadBalancerTargetGroups</code>. You can use both the original <code>DetachLoadBalancerTargetGroups</code> API operation and <code>DetachTrafficSources</code> on the same Auto Scaling group.</p> </note> <p>Detaches one or more target groups from the specified Auto Scaling group.</p> <p>When you detach a target group, it enters the <code>Removing</code> state while deregistering the instances in the group. When all instances are deregistered, then you can no longer describe the target group using the <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_DescribeLoadBalancerTargetGroups.html\">DescribeLoadBalancerTargetGroups</a> API call. The instances remain running.</p> <note> <p>You can use this operation to detach target groups that were attached by using <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_AttachLoadBalancerTargetGroups.html\">AttachLoadBalancerTargetGroups</a>, but not for target groups that were attached by using <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_AttachTrafficSources.html\">AttachTrafficSources</a>.</p> </note>"
+      "documentation":"<note> <p>This API operation is superseded by <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_DetachTrafficSources.html\">DetachTrafficSources</a>, which can detach multiple traffic sources types. We recommend using <code>DetachTrafficSources</code> to simplify how you manage traffic sources. However, we continue to support <code>DetachLoadBalancerTargetGroups</code>. You can use both the original <code>DetachLoadBalancerTargetGroups</code> API operation and <code>DetachTrafficSources</code> on the same Auto Scaling group.</p> </note> <p>Detaches one or more target groups from the specified Auto Scaling group.</p> <p>When you detach a target group, it enters the <code>Removing</code> state while deregistering the instances in the group. When all instances are deregistered, then you can no longer describe the target group using the <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_DescribeLoadBalancerTargetGroups.html\">DescribeLoadBalancerTargetGroups</a> API call. The instances remain running.</p> <note> <p>You can use this operation to detach target groups that were attached by using <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_AttachLoadBalancerTargetGroups.html\">AttachLoadBalancerTargetGroups</a>, but not for target groups that were attached by using <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/APIReference/API_AttachTrafficSources.html\">AttachTrafficSources</a>.</p> </note>"
     },
     "DetachLoadBalancers":{
       "name":"DetachLoadBalancers",
@@ -1544,6 +1544,10 @@
           "shape":"InstanceMaintenancePolicy",
           "documentation":"<p>An instance maintenance policy.</p>"
         },
+        "DeletionProtection":{
+          "shape":"DeletionProtection",
+          "documentation":"<p>The deletion protection setting for the Auto Scaling group.</p>"
+        },
         "AvailabilityZoneDistribution":{
           "shape":"AvailabilityZoneDistribution",
           "documentation":"<p>The EC2 instance capacity distribution across Availability Zones for the Auto Scaling group.</p>"
@@ -2144,6 +2148,10 @@
           "shape":"LifecycleHookSpecifications",
           "documentation":"<p>One or more lifecycle hooks to add to the Auto Scaling group before instances are launched.</p>"
         },
+        "DeletionProtection":{
+          "shape":"DeletionProtection",
+          "documentation":"<p> The deletion protection setting for the Auto Scaling group. This setting helps safeguard your Auto Scaling group and its instances by controlling whether the <code>DeleteAutoScalingGroup</code> operation is allowed. When deletion protection is enabled, users cannot delete the Auto Scaling group according to the specified protection level until the setting is changed back to a less restrictive level. </p> <p> The valid values are <code>none</code>, <code>prevent-force-deletion</code>, and <code>prevent-all-deletion</code>. </p> <p> Default: <code>none</code> </p>"
+        },
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>One or more tags. You can tag your Auto Scaling group and propagate the tags to the Amazon EC2 instances it launches. Tags are not propagated to Amazon EBS volumes. To add tags to Amazon EBS volumes, specify the tags in a launch template but use caution. If the launch template specifies an instance tag with a key that is also specified for the Auto Scaling group, Amazon EC2 Auto Scaling overrides the value of that instance tag with the value specified by the Auto Scaling group. For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-tagging.html\">Tag Auto Scaling groups and instances</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>.</p>"
@@ -2435,6 +2443,14 @@
           "documentation":"<p>Specifies that the warm pool is to be deleted along with all of its associated instances, without waiting for all instances to be terminated. This parameter also deletes any outstanding lifecycle actions associated with the warm pool instances.</p>"
         }
       }
+    },
+    "DeletionProtection":{
+      "type":"string",
+      "enum":[
+        "none",
+        "prevent-force-deletion",
+        "prevent-all-deletion"
+      ]
     },
     "DescribeAccountLimitsAnswer":{
       "type":"structure",
@@ -6115,6 +6131,10 @@
         "InstanceLifecyclePolicy":{
           "shape":"InstanceLifecyclePolicy",
           "documentation":"<p> The instance lifecycle policy for the Auto Scaling group. This policy controls instance behavior when an instance transitions through its lifecycle states. Configure retention triggers to specify when instances should move to a <code>Retained</code> state instead of automatic termination. </p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/autoscaling/ec2/userguide/instance-lifecycle-policy.html\"> Control instance retention with instance lifecycle policies</a> in the <i>Amazon EC2 Auto Scaling User Guide</i>. </p>"
+        },
+        "DeletionProtection":{
+          "shape":"DeletionProtection",
+          "documentation":"<p> The deletion protection setting for the Auto Scaling group. This setting helps safeguard your Auto Scaling group and its instances by controlling whether the <code>DeleteAutoScalingGroup</code> operation is allowed. When deletion protection is enabled, users cannot delete the Auto Scaling group according to the specified protection level until the setting is changed back to a less restrictive level. </p> <p> The valid values are <code>none</code>, <code>prevent-force-deletion</code>, and <code>prevent-all-deletion</code>. </p> <p> Default: <code>none</code> </p>"
         }
       }
     },

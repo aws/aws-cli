@@ -185,7 +185,6 @@ class TestDependencyClosure:
     def test_expected_unbounded_runtime_dependencies(self, awscli_package):
         expected_unbounded_dependencies = {
             "six",  # Transitive dependency from python-dateutil
-            "wcwidth",  # Transitive dependency from prompt-toolkit
         }
         all_dependencies = set()
         bounded_dependencies = set()

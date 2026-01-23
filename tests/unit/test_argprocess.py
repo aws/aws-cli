@@ -803,6 +803,24 @@ class TestDocGen(BaseArgProcessTest):
         generated_example = self.get_generated_example_for(argument)
         self.assertEqual(generated_example, '')
 
+    def test_structure_within_map(self):
+        argument = self.create_argument(
+            {
+                'A': {
+                    'type': 'map',
+                    'key': {'type': 'string'},
+                    'value': {
+                        'type': 'structure',
+                        'members': {
+                            'B': {'type': 'string'},
+                        },
+                    },
+                },
+            }
+        )
+        generated_example = self.get_generated_example_for(argument)
+        self.assertEqual('A={KeyName1={B=string},KeyName2={B=string}}', generated_example)
+
 
 class TestUnpackJSONParams(BaseArgProcessTest):
     def setUp(self):

@@ -13,6 +13,7 @@
 import os
 import sqlite3
 import stat
+from pathlib import Path
 from unittest.mock import MagicMock, PropertyMock, patch
 
 import pytest
@@ -143,15 +144,12 @@ class TestCLISessionDatabaseConnectionPermissions:
 
     def test_create_directory_with_secure_permissions(self):
         cache_dir = self.files.full_path('cache')
+        cache_path = Path(cache_dir)
 
-        with patch('awscli.telemetry._CACHE_DIR', cache_dir):
+        with patch('awscli.telemetry._CACHE_DIR', cache_path):
             with patch('awscli.telemetry._DATABASE_FILENAME', 'session.db'):
-                from pathlib import Path
-
-                cache_path = Path(cache_dir)
-                with patch('awscli.telemetry._CACHE_DIR', cache_path):
-                    conn = CLISessionDatabaseConnection()
-                    conn._connection.close()
+                conn = CLISessionDatabaseConnection()
+                conn._connection.close()
 
         assert os.path.isdir(cache_dir)
         dir_mode = stat.S_IMODE(os.stat(cache_dir).st_mode)
@@ -160,32 +158,25 @@ class TestCLISessionDatabaseConnectionPermissions:
     def test_tighten_existing_directory_permissions(self):
         cache_dir = self.files.full_path('cache')
         os.makedirs(cache_dir, mode=0o755)
+        cache_path = Path(cache_dir)
 
-        with patch('awscli.telemetry._CACHE_DIR', cache_dir):
+        with patch('awscli.telemetry._CACHE_DIR', cache_path):
             with patch('awscli.telemetry._DATABASE_FILENAME', 'session.db'):
-                from pathlib import Path
-
-                cache_path = Path(cache_dir)
-                with patch('awscli.telemetry._CACHE_DIR', cache_path):
-                    conn = CLISessionDatabaseConnection()
-                    conn._connection.close()
+                conn = CLISessionDatabaseConnection()
+                conn._connection.close()
 
         dir_mode = stat.S_IMODE(os.stat(cache_dir).st_mode)
         assert dir_mode == 0o700
 
     def test_create_database_file_with_secure_permissions(self):
         cache_dir = self.files.full_path('cache')
-        os.makedirs(cache_dir, mode=0o700)
         db_file = os.path.join(cache_dir, 'session.db')
+        cache_path = Path(cache_dir)
 
-        with patch('awscli.telemetry._CACHE_DIR', cache_dir):
+        with patch('awscli.telemetry._CACHE_DIR', cache_path):
             with patch('awscli.telemetry._DATABASE_FILENAME', 'session.db'):
-                from pathlib import Path
-
-                cache_path = Path(cache_dir)
-                with patch('awscli.telemetry._CACHE_DIR', cache_path):
-                    conn = CLISessionDatabaseConnection()
-                    conn._connection.close()
+                conn = CLISessionDatabaseConnection()
+                conn._connection.close()
 
         assert os.path.isfile(db_file)
         file_mode = stat.S_IMODE(os.stat(db_file).st_mode)
@@ -197,15 +188,12 @@ class TestCLISessionDatabaseConnectionPermissions:
         db_file = os.path.join(cache_dir, 'session.db')
         open(db_file, 'a').close()
         os.chmod(db_file, 0o644)
+        cache_path = Path(cache_dir)
 
-        with patch('awscli.telemetry._CACHE_DIR', cache_dir):
+        with patch('awscli.telemetry._CACHE_DIR', cache_path):
             with patch('awscli.telemetry._DATABASE_FILENAME', 'session.db'):
-                from pathlib import Path
-
-                cache_path = Path(cache_dir)
-                with patch('awscli.telemetry._CACHE_DIR', cache_path):
-                    conn = CLISessionDatabaseConnection()
-                    conn._connection.close()
+                conn = CLISessionDatabaseConnection()
+                conn._connection.close()
 
         file_mode = stat.S_IMODE(os.stat(db_file).st_mode)
         assert file_mode == 0o600

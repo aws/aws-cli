@@ -14,7 +14,6 @@ import datetime
 import json
 import logging
 import os
-import platform
 import threading
 import time
 import uuid
@@ -42,11 +41,13 @@ class DatabaseConnection:
         # Skip file operations for in-memory databases
         if db_filename != ':memory:':
             if not os.path.exists(db_filename):
+                # Create file so we can set permissions before sqlite opens it
                 open(db_filename, 'a').close()
-            # Restrict access on Unix (Windows relies on ACL inheritance)
-            if platform.system() != 'Windows':
+            try:
                 if os.stat(db_filename).st_uid == os.getuid():
                     os.chmod(db_filename, 0o600)
+            except (OSError, AttributeError) as e:
+                LOG.debug('Unable to set file permissions: %s', e)
         self._connection = sqlite3.connect(
             db_filename, check_same_thread=False, isolation_level=None
         )

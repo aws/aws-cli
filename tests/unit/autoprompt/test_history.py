@@ -16,6 +16,7 @@ import shutil
 import stat
 import tempfile
 
+import pytest
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.completion import Completion
 from prompt_toolkit.document import Document
@@ -194,52 +195,58 @@ class TestHistoryDriver(unittest.TestCase):
         history_driver.store_string('aws dynamodb create-table')
 
 
+@pytest.fixture
+def temp_dir():
+    dirname = tempfile.mkdtemp()
+    yield dirname
+    shutil.rmtree(dirname)
+
+
 @skip_if_windows
-class TestHistoryDriverPermissions(unittest.TestCase):
-    def setUp(self):
-        self.dirname = tempfile.mkdtemp()
+def test_create_directory_with_secure_permissions(temp_dir):
+    subdir = os.path.join(temp_dir, 'newdir')
+    filename = os.path.join(subdir, 'prompt_history.json')
+    history_driver = HistoryDriver(filename)
+    history_driver.store_string('aws ec2 describe-instances')
 
-    def tearDown(self):
-        shutil.rmtree(self.dirname)
+    assert os.path.isdir(subdir)
+    dir_mode = stat.S_IMODE(os.stat(subdir).st_mode)
+    assert dir_mode == 0o700
 
-    def test_create_directory_with_secure_permissions(self):
-        subdir = os.path.join(self.dirname, 'newdir')
-        filename = os.path.join(subdir, 'prompt_history.json')
-        history_driver = HistoryDriver(filename)
-        history_driver.store_string('aws ec2 describe-instances')
 
-        self.assertTrue(os.path.isdir(subdir))
-        dir_mode = stat.S_IMODE(os.stat(subdir).st_mode)
-        self.assertEqual(dir_mode, 0o700)
+@skip_if_windows
+def test_tighten_existing_directory_permissions(temp_dir):
+    subdir = os.path.join(temp_dir, 'existingdir')
+    os.makedirs(subdir, mode=0o755)
+    filename = os.path.join(subdir, 'prompt_history.json')
 
-    def test_tighten_existing_directory_permissions(self):
-        subdir = os.path.join(self.dirname, 'existingdir')
-        os.makedirs(subdir, mode=0o755)
-        filename = os.path.join(subdir, 'prompt_history.json')
+    history_driver = HistoryDriver(filename)
+    history_driver.store_string('aws ec2 describe-instances')
 
-        history_driver = HistoryDriver(filename)
-        history_driver.store_string('aws ec2 describe-instances')
+    dir_mode = stat.S_IMODE(os.stat(subdir).st_mode)
+    assert dir_mode == 0o700
 
-        dir_mode = stat.S_IMODE(os.stat(subdir).st_mode)
-        self.assertEqual(dir_mode, 0o700)
 
-    def test_create_file_with_secure_permissions(self):
-        filename = os.path.join(self.dirname, 'prompt_history.json')
-        history_driver = HistoryDriver(filename)
-        history_driver.store_string('aws ec2 describe-instances')
+@skip_if_windows
+def test_create_file_with_secure_permissions(temp_dir):
+    filename = os.path.join(temp_dir, 'prompt_history.json')
+    history_driver = HistoryDriver(filename)
+    history_driver.store_string('aws ec2 describe-instances')
 
-        self.assertTrue(os.path.isfile(filename))
-        file_mode = stat.S_IMODE(os.stat(filename).st_mode)
-        self.assertEqual(file_mode, 0o600)
+    assert os.path.isfile(filename)
+    file_mode = stat.S_IMODE(os.stat(filename).st_mode)
+    assert file_mode == 0o600
 
-    def test_tighten_existing_file_permissions(self):
-        filename = os.path.join(self.dirname, 'prompt_history.json')
-        with open(filename, 'w') as f:
-            json.dump({'version': 1, 'commands': []}, f)
-        os.chmod(filename, 0o644)
 
-        history_driver = HistoryDriver(filename)
-        history_driver.store_string('aws ec2 describe-instances')
+@skip_if_windows
+def test_tighten_existing_file_permissions(temp_dir):
+    filename = os.path.join(temp_dir, 'prompt_history.json')
+    with open(filename, 'w') as f:
+        json.dump({'version': 1, 'commands': []}, f)
+    os.chmod(filename, 0o644)
 
-        file_mode = stat.S_IMODE(os.stat(filename).st_mode)
-        self.assertEqual(file_mode, 0o600)
+    history_driver = HistoryDriver(filename)
+    history_driver.store_string('aws ec2 describe-instances')
+
+    file_mode = stat.S_IMODE(os.stat(filename).st_mode)
+    assert file_mode == 0o600

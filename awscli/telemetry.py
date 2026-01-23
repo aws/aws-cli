@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import io
+import logging
 import os
 import sqlite3
 import sys
@@ -27,6 +28,8 @@ from botocore.useragent import UserAgentComponent
 
 from awscli.compat import is_windows
 from awscli.utils import add_component_to_user_agent_extra
+
+LOG = logging.getLogger(__name__)
 
 _CACHE_DIR = Path.home() / '.aws' / 'cli' / 'cache'
 _DATABASE_FILENAME = 'session.db'
@@ -98,20 +101,22 @@ class CLISessionDatabaseConnection:
             return sqlite3.Cursor(self._connection)
 
     def _ensure_cache_dir(self):
-        if not _CACHE_DIR.exists():
-            _CACHE_DIR.mkdir(parents=True, exist_ok=True)
-        # Restrict access on Unix (Windows relies on ACL inheritance)
-        if not is_windows:
+        _CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        try:
             if _CACHE_DIR.stat().st_uid == os.getuid():
                 os.chmod(_CACHE_DIR, 0o700)
+        except (OSError, AttributeError) as e:
+            LOG.debug('Unable to set directory permissions: %s', e)
 
     def _ensure_database_file(self):
         db_path = _CACHE_DIR / _DATABASE_FILENAME
         if not db_path.exists():
             open(db_path, 'a').close()
-        if not is_windows:
+        try:
             if db_path.stat().st_uid == os.getuid():
                 os.chmod(db_path, 0o600)
+        except (OSError, AttributeError) as e:
+            LOG.debug('Unable to set file permissions: %s', e)
 
     def _ensure_database_setup(self):
         self._create_session_table()

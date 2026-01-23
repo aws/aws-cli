@@ -44,8 +44,7 @@ class DatabaseConnection:
                 # Create file so we can set permissions before sqlite opens it
                 open(db_filename, 'a').close()
             try:
-                if os.stat(db_filename).st_uid == os.getuid():
-                    os.chmod(db_filename, 0o600)
+                os.chmod(db_filename, 0o600)
             except (OSError, AttributeError) as e:
                 LOG.debug('Unable to set file permissions: %s', e)
         self._connection = sqlite3.connect(

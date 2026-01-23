@@ -103,8 +103,7 @@ class CLISessionDatabaseConnection:
     def _ensure_cache_dir(self):
         _CACHE_DIR.mkdir(parents=True, exist_ok=True)
         try:
-            if _CACHE_DIR.stat().st_uid == os.getuid():
-                os.chmod(_CACHE_DIR, 0o700)
+            os.chmod(_CACHE_DIR, 0o700)
         except (OSError, AttributeError) as e:
             LOG.debug('Unable to set directory permissions: %s', e)
 
@@ -113,8 +112,7 @@ class CLISessionDatabaseConnection:
         if not db_path.exists():
             open(db_path, 'a').close()
         try:
-            if db_path.stat().st_uid == os.getuid():
-                os.chmod(db_path, 0o600)
+            os.chmod(db_path, 0o600)
         except (OSError, AttributeError) as e:
             LOG.debug('Unable to set file permissions: %s', e)
 

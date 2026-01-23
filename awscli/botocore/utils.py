@@ -3944,10 +3944,9 @@ class JSONFileCache:
         if not os.path.isdir(self._working_dir):
             os.makedirs(self._working_dir)
         try:
-            if os.stat(self._working_dir).st_uid == os.getuid():
-                os.chmod(self._working_dir, 0o700)
-        except (OSError, AttributeError):
-            pass
+            os.chmod(self._working_dir, 0o700)
+        except (OSError, AttributeError) as e:
+            logger.debug('Unable to set directory permissions: %s', e)
         with os.fdopen(
             os.open(full_key, os.O_WRONLY | os.O_CREAT, 0o600), 'w'
         ) as f:

@@ -437,7 +437,7 @@ class ParamShorthandDocGen(ParamShorthand):
     """Documentation generator for param shorthand syntax."""
 
     _DONT_DOC = object()
-    _MAX_STACK = 4
+    _MAX_STACK = 3
 
     def supports_shorthand(self, argument_model):
         """Checks if a CLI argument supports shorthand syntax."""

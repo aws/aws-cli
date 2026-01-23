@@ -857,12 +857,7 @@ class TestDocGen(BaseArgProcessTest):
                                 'C': {
                                     'type': 'structure',
                                     'members': {
-                                        'D': {
-                                            'type': 'structure',
-                                            'members': {
-                                                'E': {'type': 'string'},
-                                            },
-                                        }
+                                        'D': {'type': 'string'},
                                     },
                                 }
                             },

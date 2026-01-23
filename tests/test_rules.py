@@ -289,8 +289,6 @@ class TestEcrGetLoginRule:
 
         assert len(findings) == 1
         assert findings[0].edit is None
-        assert findings[0].suggested_manual_fix is not None
-        assert "get-login-password" in findings[0].suggested_manual_fix
         assert findings[0].auto_fixable is False
 
     def test_detects_ecr_get_login_with_debug(self):
@@ -302,7 +300,6 @@ class TestEcrGetLoginRule:
 
         assert len(findings) == 1
         assert findings[0].edit is None
-        assert findings[0].suggested_manual_fix is not None
         assert findings[0].auto_fixable is False
 
     def test_no_detection_for_other_ecr_commands(self):
@@ -324,7 +321,6 @@ class TestEcrGetLoginRule:
         assert len(findings) == 2
         for finding in findings:
             assert finding.edit is None
-            assert finding.suggested_manual_fix is not None
             assert finding.auto_fixable is False
 
 
@@ -346,8 +342,6 @@ class TestCLIInputJSONRule:
 
         assert len(findings) == 1
         assert findings[0].edit is None
-        assert findings[0].suggested_manual_fix is not None
-        assert "pagination" in findings[0].suggested_manual_fix
         assert findings[0].auto_fixable is False
 
     def test_detects_cli_input_json_double_quoted(self):
@@ -359,7 +353,6 @@ class TestCLIInputJSONRule:
 
         assert len(findings) == 1
         assert findings[0].edit is None
-        assert findings[0].suggested_manual_fix is not None
         assert findings[0].auto_fixable is False
 
     def test_detects_cli_input_json_single_quoted(self):
@@ -371,7 +364,6 @@ class TestCLIInputJSONRule:
 
         assert len(findings) == 1
         assert findings[0].edit is None
-        assert findings[0].suggested_manual_fix is not None
         assert findings[0].auto_fixable is False
 
     def test_no_detection_without_cli_input_json(self):
@@ -396,5 +388,4 @@ class TestCLIInputJSONRule:
         assert len(findings) == 2
         for finding in findings:
             assert finding.edit is None
-            assert finding.suggested_manual_fix is not None
             assert finding.auto_fixable is False

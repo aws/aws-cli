@@ -14,7 +14,7 @@ import argparse
 import difflib
 import re
 import sys
-from enum import Enum
+from enum import Enum, auto
 from pathlib import Path
 from typing import List, Optional, Tuple
 
@@ -41,12 +41,14 @@ CONTEXT_SIZE = 3
 
 
 class UserChoice(Enum):
-    YES = 1
-    NO = 2
-    UPDATE_ALL = 3
-    SAVE_EXIT = 4
-    QUIT = 5
-    NEXT = 6
+    YES = auto()
+    NO = auto()
+    ACCEPT_ALL_OF_TYPE = auto()
+    REJECT_ALL_OF_TYPE = auto()
+    UPDATE_ALL = auto()
+    SAVE_EXIT = auto()
+    QUIT = auto()
+    NEXT = auto()
 
 
 def _color_text(text, color_code):
@@ -61,6 +63,8 @@ def _prompt_user_choice_interactive_mode(auto_fixable: bool = True) -> UserChoic
     _AUTO_FIX_CHOICE_MAP = {
         "y": UserChoice.YES,
         "n": UserChoice.NO,
+        "a": UserChoice.ACCEPT_ALL_OF_TYPE,
+        "r": UserChoice.REJECT_ALL_OF_TYPE,
         "u": UserChoice.UPDATE_ALL,
         "s": UserChoice.SAVE_EXIT,
         "q": UserChoice.QUIT,
@@ -74,18 +78,18 @@ def _prompt_user_choice_interactive_mode(auto_fixable: bool = True) -> UserChoic
         if auto_fixable:
             choice = (
                 input(
-                    "\nApply this fix? [y] yes, [n] no, "
-                    "[u] update all, [s] save and exit, [q] quit: "
+                    "\nApply this fix? [y] yes, [n] no, [a] accept all of type, "
+                    "[r] reject all of type, [u] update all, [s] save and exit, [q] quit: "
                 )
                 .lower()
                 .strip()
             )
-            if choice in ["y", "n", "u", "s", "q"]:
+            if choice in _AUTO_FIX_CHOICE_MAP:
                 return _AUTO_FIX_CHOICE_MAP[choice]
-            print("Invalid choice. Please enter y, n, u, s, or q.")
+            print("Invalid choice. Please enter y, n, a, r, u, s, or q.")
         else:
             choice = input("\n[n] next, [s] save, [q] quit: ").lower().strip()
-            if choice in ["n", "s", "q"]:
+            if choice in _NON_AUTO_FIX_CHOICE_MAP:
                 return _NON_AUTO_FIX_CHOICE_MAP[choice]
             print("Invalid choice. Please enter n, s, or q.")
 
@@ -98,7 +102,7 @@ def _summarize_non_fixable_findings(
         f"️{len(non_auto_fixable_findings)} issue(s) require manual review:", YELLOW
     )
     print(f"\n{warning_header}\n")
-    for i, finding in enumerate(non_auto_fixable_findings, 1):
+    for finding in non_auto_fixable_findings:
         _display_finding(finding, script_content, input_path)
 
 
@@ -144,7 +148,7 @@ def _display_finding(finding: LintFinding, script_content: str, input_path: Path
                     str(context_starting_line + line_num - 3).rjust(line_num_width)
                 )
                 line_prefix = (
-                    f"{str(src_issue_line).rjust(line_num_width)} " + " " * line_num_width + "|"
+                    f"{str(src_issue_line).rjust(line_num_width)} " + " " * line_num_width + "│"
                 )
                 print(f"{line_prefix}{_color_text(line, RED)}")
             elif line.startswith("+"):
@@ -153,7 +157,7 @@ def _display_finding(finding: LintFinding, script_content: str, input_path: Path
                     str(context_starting_line + line_num - 4).rjust(line_num_width)
                 )
                 line_prefix = (
-                    " " * line_num_width + f" {str(dest_issue_line).rjust(line_num_width)}" + "|"
+                    " " * line_num_width + f" {str(dest_issue_line).rjust(line_num_width)}" + "│"
                 )
                 print(f"{line_prefix}{_color_text(line, GREEN)}")
             else:
@@ -162,7 +166,7 @@ def _display_finding(finding: LintFinding, script_content: str, input_path: Path
                 # to account for not printing a source/dest line for the deleted/added lines.
                 offset = 3 if src_issue_line is None else 4
                 raw_line_num = str(context_starting_line + line_num - offset).rjust(line_num_width)
-                line_prefix = f"{raw_line_num} {raw_line_num}|"
+                line_prefix = f"{raw_line_num} {raw_line_num}│"
                 print(f"{line_prefix}{line}")
         print(f"\n{input_path}:{src_issue_line} [{finding.rule_name}] {finding.description}")
     else:
@@ -178,11 +182,11 @@ def _display_finding(finding: LintFinding, script_content: str, input_path: Path
             line = src_lines[i]
             if start_line <= i <= end_line:
                 raw_line_num = str(i + 1).rjust(line_num_width)
-                line_prefix = f"{raw_line_num} {raw_line_num}|"
+                line_prefix = f"{raw_line_num} {raw_line_num}│"
                 print(f"{line_prefix}{_color_text(line, YELLOW)}")
             else:
                 raw_line_num = str(i + 1).rjust(line_num_width)
-                line_prefix = f"{raw_line_num} {raw_line_num}|"
+                line_prefix = f"{raw_line_num} {raw_line_num}│"
                 print(f"{line_prefix}{line}")
 
         manual_review_required_text = _color_text("[MANUAL REVIEW REQUIRED]", YELLOW)
@@ -218,6 +222,7 @@ def _interactive_prompt_for_rule(
     last_choice: Optional[UserChoice] = None
 
     for i, finding in enumerate(findings):
+        print()
         _display_finding(finding, script_content, input_path)
         last_choice = _prompt_user_choice_interactive_mode(auto_fixable=finding.auto_fixable)
 
@@ -237,6 +242,15 @@ def _interactive_prompt_for_rule(
             elif last_choice == UserChoice.NO:
                 # User rejected the suggested fix from the finding.
                 continue
+            elif last_choice == UserChoice.ACCEPT_ALL_OF_TYPE:
+                # User's choice was 'accept all of type'. Accept all remaining findings
+                # of this rule type including the current one.
+                accepted_findings.extend(f for f in findings[i:] if f.auto_fixable)
+                return accepted_findings, last_choice
+            elif last_choice == UserChoice.REJECT_ALL_OF_TYPE:
+                # User's choice was 'reject all of type'. Reject all remaining findings
+                # of this rule type.
+                return accepted_findings, last_choice
             elif last_choice == UserChoice.UPDATE_ALL:
                 # User's choice was 'update all'. Accept all remaining findings
                 # including the current one.
@@ -268,7 +282,10 @@ def auto_fix_mode(
         output_path: The path to write the updated script if any findings were detected.
     """
     current_ast = parse(script_content)
-    findings_found = 0
+    # Sequence of updates made to the script. Index i is the state of the script before
+    # applying the fixes for the i'th rule, if any.
+    script_states: List[str] = []
+    findings_with_script_index: List[Tuple[LintFinding, int]] = []
     num_auto_fixes_applied = 0
     num_manual_review_issues = 0
 
@@ -278,15 +295,15 @@ def auto_fix_mode(
         if not rule_findings:
             continue
 
-        for i, finding in enumerate(rule_findings, 1):
-            if findings_found > 0 or i > 1:
-                print("\n---\n")
-            _display_finding(finding, current_ast.root().text(), input_path)
+        # Store the finding, and an index that points to the current state of the script.
+        script_states.append(current_ast.root().text())
+        findings_with_script_index.extend(
+            [(finding, len(script_states) - 1) for finding in rule_findings]
+        )
 
         auto_fixable_findings = [f for f in rule_findings if f.auto_fixable]
         num_auto_fixes_applied += len(auto_fixable_findings)
         num_manual_review_issues += len([f for f in rule_findings if not f.auto_fixable])
-        findings_found += len(rule_findings)
 
         current_ast = (
             parse(linter.apply_fixes(current_ast, auto_fixable_findings))
@@ -294,14 +311,20 @@ def auto_fix_mode(
             else current_ast
         )
 
-    print()
-
-    if findings_found == 0:
-        print(f"{input_path}: No issues found.")
+    if not findings_with_script_index:
+        print(f"\n{input_path}: No issues found.")
         return
 
+    for i, (finding, ast_index) in enumerate(findings_with_script_index):
+        if i == 0:
+            print()
+        else:
+            print("\n---\n")
+        _display_finding(finding, script_states[ast_index], input_path)
+
+    print()
     print(
-        f"Found {findings_found} issue(s). "
+        f"Found {len(findings_with_script_index)} issue(s). "
         f"{num_auto_fixes_applied} fixed. "
         f"{num_manual_review_issues} require(s) manual review."
     )
@@ -328,9 +351,12 @@ def dry_run_mode(
         input_path: The path to the input script.
     """
     current_ast = parse(script_content)
-    findings_found = 0
-    num_auto_fixes_applied = 0  # fixable
-    num_manual_review_issues = 0
+    # Sequence of updates made to the script. Index i is the state of the script before
+    # applying the fixes for the i'th rule, if any.
+    script_states: List[str] = []
+    findings_with_script_index: List[Tuple[LintFinding, int]] = []
+    num_auto_fixable_findings = 0
+    num_manual_review_findings = 0
 
     for rule in rules:
         rule_findings = linter.lint_for_rule(current_ast, rule)
@@ -338,15 +364,15 @@ def dry_run_mode(
         if not rule_findings:
             continue
 
-        for i, finding in enumerate(rule_findings, 1):
-            if findings_found > 0 or i > 1:
-                print("\n---\n")
-            _display_finding(finding, current_ast.root().text(), input_path)
+        # Store the finding, and an index that points to the current state of the script.
+        script_states.append(current_ast.root().text())
+        findings_with_script_index.extend(
+            [(finding, len(script_states) - 1) for finding in rule_findings]
+        )
 
         auto_fixable_findings = [f for f in rule_findings if f.auto_fixable]
-        num_auto_fixes_applied += len(auto_fixable_findings)
-        num_manual_review_issues += len([f for f in rule_findings if not f.auto_fixable])
-        findings_found += len(rule_findings)
+        num_auto_fixable_findings += len(auto_fixable_findings)
+        num_manual_review_findings += len([f for f in rule_findings if not f.auto_fixable])
 
         current_ast = (
             parse(linter.apply_fixes(current_ast, auto_fixable_findings))
@@ -354,16 +380,22 @@ def dry_run_mode(
             else current_ast
         )
 
-    print()
-
-    if findings_found == 0:
-        print(f"{input_path}: No issues found.")
+    if not findings_with_script_index:
+        print(f"\n{input_path}: No issues found.")
         return
 
+    for i, (finding, ast_index) in enumerate(findings_with_script_index):
+        if i == 0:
+            print()
+        else:
+            print("\n---\n")
+        _display_finding(finding, script_states[ast_index], input_path)
+
+    print()
     print(
-        f"Found {findings_found} issue(s). "
-        f"{num_auto_fixes_applied} fixable with the `--fix` option. "
-        f"{num_manual_review_issues} require(s) manual review."
+        f"Found {len(findings_with_script_index)} issue(s). "
+        f"{num_auto_fixable_findings} fixable with the `--fix` option. "
+        f"{num_manual_review_findings} require(s) manual review."
     )
 
 
@@ -390,7 +422,7 @@ def interactive_mode(
     num_manual_review_issues = 0
     non_auto_fixable_findings_to_summarize: List[LintFinding] = []
 
-    for rule_index, rule in enumerate(rules):
+    for rule in rules:
         rule_findings = linter.lint_for_rule(current_ast, rule)
         num_auto_fixes_available += len([f for f in rule_findings if f.auto_fixable])
         num_manual_review_issues += len([f for f in rule_findings if not f.auto_fixable])
@@ -437,7 +469,12 @@ def interactive_mode(
             # Enable auto_apply so subsequent rules will automatically
             # accept and apply findings.
             auto_apply = True
-        elif last_choice == UserChoice.YES or last_choice == UserChoice.NO:
+        elif (
+            last_choice == UserChoice.YES
+            or last_choice == UserChoice.NO
+            or last_choice == UserChoice.ACCEPT_ALL_OF_TYPE
+            or last_choice == UserChoice.REJECT_ALL_OF_TYPE
+        ):
             # Update the AST if any of the accepted findings were auto-fixable.
             current_ast = (
                 parse(linter.apply_fixes(current_ast, auto_fixable_findings))

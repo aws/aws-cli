@@ -27,14 +27,6 @@ class LintFinding:
     original_text: str
     rule_name: str
     description: str
-    suggested_manual_fix: Optional[str] = None
-
-    def __post_init__(self):
-        if self.edit is None and self.suggested_manual_fix is None:
-            raise ValueError(
-                f"suggested_manual_fix must be provided "
-                f"when edit is None for rule {self.rule_name}."
-            )
 
     @property
     def auto_fixable(self) -> bool:

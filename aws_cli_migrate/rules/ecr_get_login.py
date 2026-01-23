@@ -21,13 +21,6 @@ from aws_cli_migrate.rules.utils import has_aws_command_any_kind
 class EcrGetLoginRule(LintRule):
     """Detects AWS CLI ECR get-login commands."""
 
-    _SUGGESTED_MANUAL_FIX = (
-        "Use `aws ecr get-login-password` instead, and pipe the results into the "
-        "`docker login` command with the `--password-stdin` option. See "
-        "https://docs.aws.amazon.com/cli/latest/userguide/"
-        "cliv2-migration-changes.html#cliv2-migration-ecr-get-login."
-    )
-
     @property
     def name(self) -> str:
         return "ecr-get-login"
@@ -35,8 +28,9 @@ class EcrGetLoginRule(LintRule):
     @property
     def description(self) -> str:
         return (
-            "In AWS CLI v2, The `ecr get-login` command has been removed. You must use "
-            "`ecr get-login-password` instead. See https://docs.aws.amazon.com/cli/latest/userguide/"
+            "In AWS CLI v2, The `aws ecr get-login` command has been removed. You must use "
+            "`aws ecr get-login-password` instead. See "
+            "https://docs.aws.amazon.com/cli/latest/userguide/"
             "cliv2-migration-changes.html#cliv2-migration-ecr-get-login."
         )
 
@@ -70,7 +64,6 @@ class EcrGetLoginRule(LintRule):
                     line_end=stmt.range().end.line,
                     edit=None,
                     original_text=stmt.text(),
-                    suggested_manual_fix=self._SUGGESTED_MANUAL_FIX,
                     rule_name=self.name,
                     description=self.description,
                 )

@@ -1961,7 +1961,7 @@
       "members":{
         "name":{
           "shape":"ParameterName",
-          "documentation":"<p>The name of the parameter. The name must use only alphanumeric, underscore (_), or hyphen (-) characters but cannot start or end with a hyphen.</p>"
+          "documentation":"<p>The name of the parameter. The name must use only alphanumeric or underscore (_) characters.</p>"
         },
         "type":{
           "shape":"ParameterType",
@@ -7185,6 +7185,23 @@
       },
       "documentation":"<p>An object representing the collaboration member's payment responsibilities set by the collaboration creator for query and job compute costs.</p>"
     },
+    "JobParameterMap":{
+      "type":"map",
+      "key":{"shape":"JobParameterName"},
+      "value":{"shape":"JobParameterValue"},
+      "sensitive":true
+    },
+    "JobParameterName":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[0-9a-zA-Z_]+"
+    },
+    "JobParameterValue":{
+      "type":"string",
+      "max":1000,
+      "min":0
+    },
     "JobType":{
       "type":"string",
       "enum":[
@@ -9253,6 +9270,10 @@
         "analysisTemplateArn":{
           "shape":"AnalysisTemplateArn",
           "documentation":"<p> The ARN of the analysis template.</p>"
+        },
+        "parameters":{
+          "shape":"JobParameterMap",
+          "documentation":"<p>Runtime configuration values passed to the PySpark analysis script. Parameter names and types must match those defined in the analysis template.</p>"
         }
       },
       "documentation":"<p>The parameters for the protected job.</p>"

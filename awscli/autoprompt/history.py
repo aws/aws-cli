@@ -52,7 +52,7 @@ class HistoryDriver(FileHistory):
                 os.makedirs(dir_path)
             try:
                 os.chmod(dir_path, 0o700)
-            except (OSError, AttributeError) as e:
+            except OSError as e:
                 LOG.debug('Unable to set directory permissions: %s', e)
             history['commands'].append(string)
             history['commands'] = history['commands'][-self._max_commands :]
@@ -60,7 +60,7 @@ class HistoryDriver(FileHistory):
                 json.dump(history, f)
             try:
                 os.chmod(self.filename, 0o600)
-            except (OSError, AttributeError) as e:
+            except OSError as e:
                 LOG.debug('Unable to set file permissions: %s', e)
         except Exception:
             LOG.debug('Exception on loading prompt history:', exc_info=True)

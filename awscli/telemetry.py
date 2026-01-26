@@ -104,7 +104,7 @@ class CLISessionDatabaseConnection:
         _CACHE_DIR.mkdir(parents=True, exist_ok=True)
         try:
             os.chmod(_CACHE_DIR, 0o700)
-        except (OSError, AttributeError) as e:
+        except OSError as e:
             LOG.debug('Unable to set directory permissions: %s', e)
 
     def _ensure_database_file(self):
@@ -113,7 +113,7 @@ class CLISessionDatabaseConnection:
             open(db_path, 'a').close()
         try:
             os.chmod(db_path, 0o600)
-        except (OSError, AttributeError) as e:
+        except OSError as e:
             LOG.debug('Unable to set file permissions: %s', e)
 
     def _ensure_database_setup(self):

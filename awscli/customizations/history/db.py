@@ -45,7 +45,7 @@ class DatabaseConnection:
                 open(db_filename, 'a').close()
             try:
                 os.chmod(db_filename, 0o600)
-            except (OSError, AttributeError) as e:
+            except OSError as e:
                 LOG.debug('Unable to set file permissions: %s', e)
         self._connection = sqlite3.connect(
             db_filename, check_same_thread=False, isolation_level=None

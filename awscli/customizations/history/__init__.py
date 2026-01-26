@@ -59,7 +59,7 @@ def attach_history_handler(session, parsed_args, **kwargs):
             os.makedirs(history_dir)
         try:
             os.chmod(history_dir, 0o700)
-        except (OSError, AttributeError) as e:
+        except OSError as e:
             LOG.debug('Unable to set directory permissions: %s', e)
 
         connection = DatabaseConnection(history_filename)

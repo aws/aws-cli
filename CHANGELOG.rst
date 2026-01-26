@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.33.7
+======
+
+* api-change:``connectcases``: Amazon Connect now enables you to use tag-based access controls to define who can access specific cases. You can associate tags with case templates and configure security profiles to determine which users can access cases with those tags.
+* api-change:``groundstation``: Adds support for AWS Ground Station Telemetry.
+* api-change:``evidently``: Deprecate all Evidently API for AWS CloudWatch Evidently deprecation
+* api-change:``ec2``: DescribeInstanceTypes API response now includes an additionalFlexibleNetworkInterfaces field, the number of interfaces attachable to an instance when using flexible Elastic Network Adapter (ENA) queues in addition to the base number specified by maximumNetworkInterfaces.
+
+
 2.33.6
 ======
 

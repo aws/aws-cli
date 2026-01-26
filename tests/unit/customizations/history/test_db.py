@@ -58,14 +58,12 @@ class TestDatabaseConnection(unittest.TestCase):
 
     @skip_if_windows
     @mock.patch('awscli.customizations.history.db.os.chmod')
-    @mock.patch('awscli.customizations.history.db.os.stat')
     @mock.patch('awscli.customizations.history.db.os.path.exists')
     @mock.patch('awscli.compat.sqlite3.connect')
     def test_can_connect_to_argument_file(
-        self, mock_connect, mock_exists, mock_stat, mock_chmod
+        self, mock_connect, mock_exists, mock_chmod
     ):
         mock_exists.return_value = True
-        mock_stat.return_value.st_uid = os.getuid()
         expected_location = os.path.expanduser(
             os.path.join('~', 'foo', 'bar', 'baz.db')
         )

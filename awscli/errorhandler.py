@@ -64,7 +64,7 @@ class EnhancedErrorFormatter:
             else:
                 stream.write(
                     f'{key}: <complex value>, '
-                    f'json recommended for full details\n'
+                    f'--cli-error-format json recommended for full details\n'
                 )
 
     def _is_simple_value(self, value):

@@ -237,8 +237,7 @@ class TestEnhancedErrorFormatter:
         expected = (
             '\n'
             'Additional error details:\n'
-            'Details: <complex value> '
-            '(Use --cli-error-format with json or yaml to see full details)\n'
+            'Details: <complex value>, json recommended for full details\n'
         )
         assert output == expected
 
@@ -259,8 +258,7 @@ class TestEnhancedErrorFormatter:
         expected = (
             '\n'
             'Additional error details:\n'
-            'FieldErrors: <complex value> '
-            '(Use --cli-error-format with json or yaml to see full details)\n'
+            'FieldErrors: <complex value>, json recommended for full details\n'
         )
         assert output == expected
 
@@ -287,8 +285,8 @@ class TestEnhancedErrorFormatter:
         expected = (
             '\n'
             'Additional error details:\n'
-            'CancellationReasons: <complex value> '
-            '(Use --cli-error-format with json or yaml to see full details)\n'
+            'CancellationReasons: <complex value>, '
+            'json recommended for full details\n'
         )
         assert output == expected
 
@@ -354,8 +352,7 @@ class TestEnhancedErrorFormatter:
         expected = (
             '\n'
             'Additional error details:\n'
-            'Items: <complex value> '
-            '(Use --cli-error-format with json or yaml to see full details)\n'
+            'Items: <complex value>, json recommended for full details\n'
         )
         assert output == expected
 
@@ -409,8 +406,8 @@ class TestRealWorldErrorScenarios:
             'CancellationReasons for specific reasons\n'
             '\n'
             'Additional error details:\n'
-            'CancellationReasons: <complex value> '
-            '(Use --cli-error-format with json or yaml to see full details)\n'
+            'CancellationReasons: <complex value>, '
+            'json recommended for full details\n'
         )
         assert stderr.getvalue() == expected
 

@@ -4689,6 +4689,12 @@
     }
   },
   "shapes":{
+    "AbsoluteBorrowLimitResourceList":{
+      "type":"list",
+      "member":{"shape":"ComputeQuotaResourceConfig"},
+      "max":15,
+      "min":0
+    },
     "AcceleratorPartitionConfig":{
       "type":"structure",
       "required":[
@@ -7761,7 +7767,7 @@
     "BorrowLimit":{
       "type":"integer",
       "box":true,
-      "max":500,
+      "max":10000,
       "min":0
     },
     "Branch":{
@@ -16625,6 +16631,10 @@
           "shape":"FailureReason",
           "documentation":"<p>Failure reason of the cluster policy.</p>"
         },
+        "StatusDetails":{
+          "shape":"StatusDetailsMap",
+          "documentation":"<p>Additional details about the status of the cluster policy. This field provides context when the policy is in a non-active state, such as during creation, updates, or if failures occur.</p>"
+        },
         "ClusterArn":{
           "shape":"ClusterArn",
           "documentation":"<p>ARN of the cluster where the cluster policy is applied.</p>"
@@ -25314,6 +25324,13 @@
       "member":{"shape":"IdentityProviderOAuthSetting"},
       "max":20,
       "min":0
+    },
+    "IdleResourceSharing":{
+      "type":"string",
+      "enum":[
+        "Enabled",
+        "Disabled"
+      ]
     },
     "IdleSettings":{
       "type":"structure",
@@ -40137,6 +40154,10 @@
         "BorrowLimit":{
           "shape":"BorrowLimit",
           "documentation":"<p>The limit on how much idle compute can be borrowed.The values can be 1 - 500 percent of idle compute that the team is allowed to borrow.</p> <p>Default is <code>50</code>.</p>"
+        },
+        "AbsoluteBorrowLimits":{
+          "shape":"AbsoluteBorrowLimitResourceList",
+          "documentation":"<p>The absolute limits on compute resources that can be borrowed from idle compute. When specified, these limits define the maximum amount of specific resource types (such as accelerators, vCPU, or memory) that an entity can borrow, regardless of the percentage-based <code>BorrowLimit</code>.</p>"
         }
       },
       "documentation":"<p>Resource sharing configuration.</p>"
@@ -40714,9 +40735,21 @@
         "FairShare":{
           "shape":"FairShare",
           "documentation":"<p>When enabled, entities borrow idle compute based on their assigned <code>FairShareWeight</code>.</p> <p>When disabled, entities borrow idle compute based on a first-come first-serve basis.</p> <p>Default is <code>Enabled</code>.</p>"
+        },
+        "IdleResourceSharing":{
+          "shape":"IdleResourceSharing",
+          "documentation":"<p>Configuration for sharing idle compute resources across entities in the cluster. When enabled, unallocated resources are automatically calculated and made available for entities to borrow. </p>"
         }
       },
       "documentation":"<p>Cluster policy configuration. This policy is used for task prioritization and fair-share allocation. This helps prioritize critical workloads and distributes idle compute across entities.</p>"
+    },
+    "SchedulerConfigComponent":{
+      "type":"string",
+      "enum":[
+        "PriorityClasses",
+        "FairShare",
+        "IdleResourceSharing"
+      ]
     },
     "SchedulerResourceStatus":{
       "type":"string",
@@ -41993,6 +42026,11 @@
       "max":1024,
       "min":0,
       "pattern":".*"
+    },
+    "StatusDetailsMap":{
+      "type":"map",
+      "key":{"shape":"SchedulerConfigComponent"},
+      "value":{"shape":"SchedulerResourceStatus"}
     },
     "StatusMessage":{"type":"string"},
     "StepDescription":{

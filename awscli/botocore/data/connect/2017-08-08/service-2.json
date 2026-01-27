@@ -30976,6 +30976,10 @@
         "SegmentAttributes":{
           "shape":"SegmentAttributes",
           "documentation":"<p>A set of system defined key-value pairs stored on individual contact segments (unique contact ID) using an attribute map. The attributes are standard Amazon Connect attributes. They can be accessed in flows.</p> <p>Attribute keys can include only alphanumeric, -, and _.</p> <p>This field can be used to set Contact Expiry as a duration in minutes and set a UserId for the User who created a task.</p> <note> <p>To set contact expiry, a ValueMap must be specified containing the integer number of minutes the contact will be active for before expiring, with <code>SegmentAttributes</code> like { <code> \"connect:ContactExpiry\": {\"ValueMap\" : { \"ExpiryDuration\": { \"ValueInteger\": 135}}}}</code>. </p> <p>To set the created by user, a valid AgentResourceId must be supplied, with <code>SegmentAttributes</code> like { <code>\"connect:CreatedByUser\" { \"ValueString\": \"arn:aws:connect:us-west-2:xxxxxxxxxxxx:instance/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/agent/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\"}}}</code>. </p> </note>"
+        },
+        "Attachments":{
+          "shape":"TaskAttachments",
+          "documentation":"<p>List of S3 presigned URLs of task attachments and their file name. You can have a maximum of 5 attachments per task.</p>"
         }
       }
     },
@@ -31670,6 +31674,31 @@
         }
       },
       "documentation":"<p>Information about the task action.</p>"
+    },
+    "TaskAttachment":{
+      "type":"structure",
+      "required":[
+        "FileName",
+        "S3Url"
+      ],
+      "members":{
+        "FileName":{
+          "shape":"FileName",
+          "documentation":"<p>A case-sensitive name of the attached file being uploaded.</p>"
+        },
+        "S3Url":{
+          "shape":"PreSignedAttachmentUrl",
+          "documentation":"<p>The pre-signed URLs for the S3 bucket where the task attachment is stored.</p>"
+        }
+      },
+      "documentation":"<p>Information about the task attachment files.</p>"
+    },
+    "TaskAttachments":{
+      "type":"list",
+      "member":{"shape":"TaskAttachment"},
+      "max":5,
+      "min":1,
+      "sensitive":true
     },
     "TaskDescriptionExpression":{
       "type":"string",

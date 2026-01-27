@@ -3617,6 +3617,14 @@
         "sourceJobId":{
           "shape":"JobId",
           "documentation":"<p>The job ID for the source job.</p>"
+        },
+        "nameOverride":{
+          "shape":"JobName",
+          "documentation":"<p>A custom name to override the job name derived from the job template.</p>"
+        },
+        "descriptionOverride":{
+          "shape":"JobDescriptionOverride",
+          "documentation":"<p>A custom description to override the job description derived from the job template.</p>"
         }
       }
     },
@@ -7160,6 +7168,13 @@
       "min":1,
       "sensitive":true
     },
+    "JobDescriptionOverride":{
+      "type":"string",
+      "documentation":"<p>The input description for the job. Passing in an empty string removes any existing description.</p>",
+      "max":2048,
+      "min":0,
+      "sensitive":true
+    },
     "JobDetailsEntity":{
       "type":"structure",
       "required":[
@@ -10036,7 +10051,7 @@
         },
         "stringListFilter":{
           "shape":"StringListFilterExpression",
-          "documentation":"<p>Filters by a list of string values.</p>"
+          "documentation":"<p>Filters by a list of strings.</p>"
         },
         "groupFilter":{
           "shape":"SearchGroupedFilterExpressions",
@@ -11535,14 +11550,14 @@
         },
         "operator":{
           "shape":"ComparisonOperator",
-          "documentation":"<p>The type of comparison to use for this search. ANY_EQUALS and ALL_NOT_EQUALS are supported.</p>"
+          "documentation":"<p>The type of comparison to use for this search.</p>"
         },
         "values":{
           "shape":"StringFilterList",
           "documentation":"<p>The list of string values to search for.</p>"
         }
       },
-      "documentation":"<p>Searches for a match within a list of strings.</p>"
+      "documentation":"<p>Searches for a particular list of strings.</p>"
     },
     "Subdomain":{
       "type":"string",
@@ -12162,7 +12177,7 @@
         },
         "priority":{
           "shape":"JobPriority",
-          "documentation":"<p>The job priority to update.</p>"
+          "documentation":"<p>The updated job priority.</p>"
         },
         "maxFailedTasksCount":{
           "shape":"MaxFailedTasksCount",
@@ -12179,6 +12194,14 @@
         "maxWorkerCount":{
           "shape":"MaxWorkerCount",
           "documentation":"<p>The maximum number of worker hosts that can concurrently process a job. When the <code>maxWorkerCount</code> is reached, no more workers will be assigned to process the job, even if the fleets assigned to the job's queue has available workers.</p> <p>You can't set the <code>maxWorkerCount</code> to 0. If you set it to -1, there is no maximum number of workers.</p> <p>If you don't specify the <code>maxWorkerCount</code>, the default is -1.</p> <p>The maximum number of workers that can process tasks in the job.</p>"
+        },
+        "name":{
+          "shape":"JobName",
+          "documentation":"<p>The updated job name.</p>"
+        },
+        "description":{
+          "shape":"JobDescriptionOverride",
+          "documentation":"<p>The updated job description.</p>"
         },
         "farmId":{
           "shape":"FarmId",

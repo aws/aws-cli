@@ -237,8 +237,9 @@ class TestEnhancedErrorFormatter:
         expected = (
             '\n'
             'Additional error details:\n'
-            'Details: <complex value>, '
-            'use "--cli-error-format json" or another error format to see the full details\n'
+            'Details: <complex value>\n'
+            'Use "--cli-error-format json" or another error format '
+            'to see the full details.\n'
         )
         assert output == expected
 
@@ -259,8 +260,9 @@ class TestEnhancedErrorFormatter:
         expected = (
             '\n'
             'Additional error details:\n'
-            'FieldErrors: <complex value>, '
-            'use "--cli-error-format json" or another error format to see the full details\n'
+            'FieldErrors: <complex value>\n'
+            'Use "--cli-error-format json" or another error format '
+            'to see the full details.\n'
         )
         assert output == expected
 
@@ -287,8 +289,9 @@ class TestEnhancedErrorFormatter:
         expected = (
             '\n'
             'Additional error details:\n'
-            'CancellationReasons: <complex value>, '
-            'use "--cli-error-format json" or another error format to see the full details\n'
+            'CancellationReasons: <complex value>\n'
+            'Use "--cli-error-format json" or another error format '
+            'to see the full details.\n'
         )
         assert output == expected
 
@@ -354,8 +357,9 @@ class TestEnhancedErrorFormatter:
         expected = (
             '\n'
             'Additional error details:\n'
-            'Items: <complex value>, '
-            'use "--cli-error-format json" or another error format to see the full details\n'
+            'Items: <complex value>\n'
+            'Use "--cli-error-format json" or another error format '
+            'to see the full details.\n'
         )
         assert output == expected
 
@@ -409,8 +413,9 @@ class TestRealWorldErrorScenarios:
             'CancellationReasons for specific reasons\n'
             '\n'
             'Additional error details:\n'
-            'CancellationReasons: <complex value>, '
-            'use "--cli-error-format json" or another error format to see the full details\n'
+            'CancellationReasons: <complex value>\n'
+            'Use "--cli-error-format json" or another error format '
+            'to see the full details.\n'
         )
         assert stderr.getvalue() == expected
 

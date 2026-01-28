@@ -37,13 +37,13 @@ HISTORY_RECORDER = get_global_history_recorder()
 
 
 def register_history_mode(event_handlers):
-    event_handlers.register(
-        'session-initialized', attach_history_handler)
+    event_handlers.register('session-initialized', attach_history_handler)
 
 
 def register_history_commands(event_handlers):
     event_handlers.register(
-        "building-command-table.main", add_history_commands)
+        "building-command-table.main", add_history_commands
+    )
 
 
 def attach_history_handler(session, parsed_args, **kwargs):
@@ -51,7 +51,8 @@ def attach_history_handler(session, parsed_args, **kwargs):
         LOG.debug('Enabling CLI history')
 
         history_filename = os.environ.get(
-            HISTORY_FILENAME_ENV_VAR, DEFAULT_HISTORY_FILENAME)
+            HISTORY_FILENAME_ENV_VAR, DEFAULT_HISTORY_FILENAME
+        )
         history_dir = os.path.dirname(history_filename)
         if not os.path.isdir(history_dir):
             os.makedirs(history_dir)
@@ -106,10 +107,12 @@ class HistoryCommand(BasicCommand):
     )
     SUBCOMMANDS = [
         {'name': 'show', 'command_class': ShowCommand},
-        {'name': 'list', 'command_class': ListCommand}
+        {'name': 'list', 'command_class': ListCommand},
     ]
 
     def _run_main(self, parsed_args, parsed_globals):
         if parsed_args.subcommand is None:
-            raise ValueError("usage: aws [options] <command> <subcommand> "
-                             "[parameters]\naws: error: too few arguments")
+            raise ValueError(
+                "usage: aws [options] <command> <subcommand> "
+                "[parameters]\naws: error: too few arguments"
+            )

@@ -31,7 +31,7 @@ from awscli.testutils import FileCreator, mock, skip_if_windows, unittest
 from tests import CaseInsensitiveDict
 
 
-class FakeDatabaseConnection(object):
+class FakeDatabaseConnection:
     def __init__(self):
         self.execute = mock.MagicMock()
         self.closed = False
@@ -49,17 +49,21 @@ class TestGetHistoryDBFilename(unittest.TestCase):
 
 
 class TestDatabaseConnection(unittest.TestCase):
-    @mock.patch('awscli.customizations.history.db.os.path.exists',
-                return_value=True)
+    @mock.patch(
+        'awscli.customizations.history.db.os.path.exists', return_value=True
+    )
     @mock.patch('awscli.customizations.history.db.os.chmod')
     @mock.patch('awscli.compat.sqlite3.connect')
-    def test_can_connect_to_argument_file(self, mock_connect, mock_chmod,
-                                          mock_exists):
-        expected_location = os.path.expanduser(os.path.join(
-            '~', 'foo', 'bar', 'baz.db'))
+    def test_can_connect_to_argument_file(
+        self, mock_connect, mock_chmod, mock_exists
+    ):
+        expected_location = os.path.expanduser(
+            os.path.join('~', 'foo', 'bar', 'baz.db')
+        )
         DatabaseConnection(expected_location)
         mock_connect.assert_called_with(
-            expected_location, check_same_thread=False, isolation_level=None)
+            expected_location, check_same_thread=False, isolation_level=None
+        )
 
     @mock.patch('awscli.compat.sqlite3.connect')
     def test_does_try_to_enable_wal(self, mock_connect):
@@ -114,8 +118,7 @@ class TestDatabaseConnectionPermissions:
 
 class TestDatabaseHistoryHandler(unittest.TestCase):
     UUID_PATTERN = re.compile(
-        '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$',
-        re.I
+        '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$', re.I
     )
 
     def test_emit_does_write_cli_rc_record(self):
@@ -124,13 +127,16 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         handler = DatabaseHistoryHandler(writer, record_builder)
         handler.emit('CLI_RC', 0, 'CLI')
         call = writer.write_record.call_args[0][0]
-        self.assertEqual(call, {
-                    'command_id': mock.ANY,
-                    'event_type': 'CLI_RC',
-                    'payload': 0,
-                    'source': 'CLI',
-                    'timestamp': mock.ANY
-        })
+        self.assertEqual(
+            call,
+            {
+                'command_id': mock.ANY,
+                'event_type': 'CLI_RC',
+                'payload': 0,
+                'source': 'CLI',
+                'timestamp': mock.ANY,
+            },
+        )
         self.assertTrue(self.UUID_PATTERN.match(call['command_id']))
         self.assertIsInstance(call['timestamp'], numbers.Number)
 
@@ -140,13 +146,16 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         handler = DatabaseHistoryHandler(writer, record_builder)
         handler.emit('CLI_VERSION', 'Version Info', 'CLI')
         call = writer.write_record.call_args[0][0]
-        self.assertEqual(call, {
-                    'command_id': mock.ANY,
-                    'event_type': 'CLI_VERSION',
-                    'payload': 'Version Info',
-                    'source': 'CLI',
-                    'timestamp': mock.ANY
-        })
+        self.assertEqual(
+            call,
+            {
+                'command_id': mock.ANY,
+                'event_type': 'CLI_VERSION',
+                'payload': 'Version Info',
+                'source': 'CLI',
+                'timestamp': mock.ANY,
+            },
+        )
         self.assertTrue(self.UUID_PATTERN.match(call['command_id']))
         self.assertIsInstance(call['timestamp'], numbers.Number)
 
@@ -157,14 +166,17 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         payload = {'foo': 'bar'}
         handler.emit('API_CALL', payload, 'BOTOCORE')
         call = writer.write_record.call_args[0][0]
-        self.assertEqual(call, {
-                    'command_id': mock.ANY,
-                    'request_id': mock.ANY,
-                    'event_type': 'API_CALL',
-                    'payload': payload,
-                    'source': 'BOTOCORE',
-                    'timestamp': mock.ANY
-        })
+        self.assertEqual(
+            call,
+            {
+                'command_id': mock.ANY,
+                'request_id': mock.ANY,
+                'event_type': 'API_CALL',
+                'payload': payload,
+                'source': 'BOTOCORE',
+                'timestamp': mock.ANY,
+            },
+        )
         self.assertTrue(self.UUID_PATTERN.match(call['command_id']))
         self.assertTrue(self.UUID_PATTERN.match(call['request_id']))
 
@@ -178,14 +190,17 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         handler.emit('API_CALL', '', 'BOTOCORE')
         handler.emit('HTTP_REQUEST', payload, 'BOTOCORE')
         call = writer.write_record.call_args[0][0]
-        self.assertEqual(call, {
-                    'command_id': mock.ANY,
-                    'request_id': mock.ANY,
-                    'event_type': 'HTTP_REQUEST',
-                    'payload': payload,
-                    'source': 'BOTOCORE',
-                    'timestamp': mock.ANY
-        })
+        self.assertEqual(
+            call,
+            {
+                'command_id': mock.ANY,
+                'request_id': mock.ANY,
+                'event_type': 'HTTP_REQUEST',
+                'payload': payload,
+                'source': 'BOTOCORE',
+                'timestamp': mock.ANY,
+            },
+        )
         self.assertTrue(self.UUID_PATTERN.match(call['command_id']))
         self.assertTrue(self.UUID_PATTERN.match(call['request_id']))
 
@@ -199,14 +214,17 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         handler.emit('API_CALL', '', 'BOTOCORE')
         handler.emit('HTTP_RESPONSE', payload, 'BOTOCORE')
         call = writer.write_record.call_args[0][0]
-        self.assertEqual(call, {
-                    'command_id': mock.ANY,
-                    'request_id': mock.ANY,
-                    'event_type': 'HTTP_RESPONSE',
-                    'payload': payload,
-                    'source': 'BOTOCORE',
-                    'timestamp': mock.ANY
-        })
+        self.assertEqual(
+            call,
+            {
+                'command_id': mock.ANY,
+                'request_id': mock.ANY,
+                'event_type': 'HTTP_RESPONSE',
+                'payload': payload,
+                'source': 'BOTOCORE',
+                'timestamp': mock.ANY,
+            },
+        )
         self.assertTrue(self.UUID_PATTERN.match(call['command_id']))
         self.assertTrue(self.UUID_PATTERN.match(call['request_id']))
 
@@ -220,14 +238,17 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         handler.emit('API_CALL', '', 'BOTOCORE')
         handler.emit('PARSED_RESPONSE', payload, 'BOTOCORE')
         call = writer.write_record.call_args[0][0]
-        self.assertEqual(call, {
-                    'command_id': mock.ANY,
-                    'request_id': mock.ANY,
-                    'event_type': 'PARSED_RESPONSE',
-                    'payload': payload,
-                    'source': 'BOTOCORE',
-                    'timestamp': mock.ANY
-        })
+        self.assertEqual(
+            call,
+            {
+                'command_id': mock.ANY,
+                'request_id': mock.ANY,
+                'event_type': 'PARSED_RESPONSE',
+                'payload': payload,
+                'source': 'BOTOCORE',
+                'timestamp': mock.ANY,
+            },
+        )
         self.assertTrue(self.UUID_PATTERN.match(call['command_id']))
         self.assertTrue(self.UUID_PATTERN.match(call['request_id']))
 
@@ -237,13 +258,12 @@ class BaseDatabaseRecordTester(unittest.TestCase):
         for line in lines:
             self.assertIn(line, contents)
             beginning = contents.find(line)
-            contents = contents[(beginning + len(line)):]
+            contents = contents[(beginning + len(line)) :]
 
 
 class BaseDatabaseRecordWriterTester(BaseDatabaseRecordTester):
     UUID_PATTERN = re.compile(
-        '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$',
-        re.I
+        '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$', re.I
     )
 
     def setUp(self):
@@ -267,180 +287,233 @@ class TestDatabaseRecordWriter(BaseDatabaseRecordWriterTester):
         self.assertTrue(connection.close.called)
 
     def test_can_write_record(self):
-        self.writer.write_record({
-            'command_id': 'command',
-            'event_type': 'FOO',
-            'payload': 'bar',
-            'source': 'TEST',
-            'timestamp': 1234
-        })
+        self.writer.write_record(
+            {
+                'command_id': 'command',
+                'event_type': 'FOO',
+                'payload': 'bar',
+                'source': 'TEST',
+                'timestamp': 1234,
+            }
+        )
 
         # Now that we have verified the order of the fields in the insert
         # statement we can verify that the record values are in the correct
         # order in the tuple.
         # (command_id, request_id, source, event_type, timestamp, payload)
         written_record = self._read_last_record()
-        self.assertEqual(written_record,
-                         ('command', None, 'TEST', 'FOO', 1234, '"bar"'))
+        self.assertEqual(
+            written_record, ('command', None, 'TEST', 'FOO', 1234, '"bar"')
+        )
 
     def test_commit_count_matches_write_count(self):
         records_to_write = 10
         for _ in range(records_to_write):
-            self.writer.write_record({
-                'command_id': 'command',
-                'event_type': 'foo',
-                'payload': '',
-                'source': 'TEST',
-                'timestamp': 1234
-            })
+            self.writer.write_record(
+                {
+                    'command_id': 'command',
+                    'event_type': 'foo',
+                    'payload': '',
+                    'source': 'TEST',
+                    'timestamp': 1234,
+                }
+            )
         cursor = self.db.execute('SELECT COUNT(*) FROM records')
         record_count = cursor.fetchone()[0]
 
         self.assertEqual(record_count, records_to_write)
 
     def test_can_write_cli_version_record(self):
-        self.writer.write_record({
-            'command_id': 'command',
-            'event_type': 'CLI_VERSION',
-            'payload': ('aws-cli/1.11.184 Python/3.6.2 Darwin/15.6.0 '
-                        'botocore/1.7.42'),
-            'source': 'TEST',
-            'timestamp': 1234
-        })
+        self.writer.write_record(
+            {
+                'command_id': 'command',
+                'event_type': 'CLI_VERSION',
+                'payload': (
+                    'aws-cli/1.11.184 Python/3.6.2 Darwin/15.6.0 '
+                    'botocore/1.7.42'
+                ),
+                'source': 'TEST',
+                'timestamp': 1234,
+            }
+        )
         written_record = self._read_last_record()
 
         self.assertEqual(
             written_record,
-            ('command', None, 'TEST', 'CLI_VERSION', 1234,
-             '"aws-cli/1.11.184 Python/3.6.2 Darwin/15.6.0 botocore/1.7.42"')
+            (
+                'command',
+                None,
+                'TEST',
+                'CLI_VERSION',
+                1234,
+                '"aws-cli/1.11.184 Python/3.6.2 Darwin/15.6.0 botocore/1.7.42"',
+            ),
         )
 
     def test_can_write_cli_arguments_record(self):
-        self.writer.write_record({
-            'command_id': 'command',
-            'event_type': 'CLI_ARGUMENTS',
-            'payload': ['s3', 'ls'],
-            'source': 'TEST',
-            'timestamp': 1234
-        })
+        self.writer.write_record(
+            {
+                'command_id': 'command',
+                'event_type': 'CLI_ARGUMENTS',
+                'payload': ['s3', 'ls'],
+                'source': 'TEST',
+                'timestamp': 1234,
+            }
+        )
 
         written_record = self._read_last_record()
         self.assertEqual(
             written_record,
-            ('command', None, 'TEST', 'CLI_ARGUMENTS', 1234, '["s3", "ls"]')
+            ('command', None, 'TEST', 'CLI_ARGUMENTS', 1234, '["s3", "ls"]'),
         )
 
     def test_can_write_api_call_record(self):
-        self.writer.write_record({
-            'command_id': 'command',
-            'event_type': 'API_CALL',
-            'payload': {
-                'service': 's3',
-                'operation': 'ListBuckets',
-                'params': {},
-            },
-            'source': 'TEST',
-            'timestamp': 1234
-        })
+        self.writer.write_record(
+            {
+                'command_id': 'command',
+                'event_type': 'API_CALL',
+                'payload': {
+                    'service': 's3',
+                    'operation': 'ListBuckets',
+                    'params': {},
+                },
+                'source': 'TEST',
+                'timestamp': 1234,
+            }
+        )
 
         written_record = self._read_last_record()
         self.assertEqual(
             written_record,
-            ('command', None, 'TEST', 'API_CALL', 1234, json.dumps({
-                'service': 's3',
-                'operation': 'ListBuckets',
-                'params': {},
-            }))
+            (
+                'command',
+                None,
+                'TEST',
+                'API_CALL',
+                1234,
+                json.dumps(
+                    {
+                        'service': 's3',
+                        'operation': 'ListBuckets',
+                        'params': {},
+                    }
+                ),
+            ),
         )
 
     def test_can_write_http_request_record(self):
-        self.writer.write_record({
-            'command_id': 'command',
-            'event_type': 'HTTP_REQUEST',
-            'payload': {
-                'method': 'GET',
-                'headers': CaseInsensitiveDict({}),
-                'body': '...',
-            },
-            'source': 'TEST',
-            'timestamp': 1234
-        })
+        self.writer.write_record(
+            {
+                'command_id': 'command',
+                'event_type': 'HTTP_REQUEST',
+                'payload': {
+                    'method': 'GET',
+                    'headers': CaseInsensitiveDict({}),
+                    'body': '...',
+                },
+                'source': 'TEST',
+                'timestamp': 1234,
+            }
+        )
 
         written_record = self._read_last_record()
         self.assertEqual(
             written_record,
-            ('command', None, 'TEST', 'HTTP_REQUEST', 1234, json.dumps({
-                'method': 'GET',
-                'headers': {},
-                'body': '...',
-            }))
+            (
+                'command',
+                None,
+                'TEST',
+                'HTTP_REQUEST',
+                1234,
+                json.dumps(
+                    {
+                        'method': 'GET',
+                        'headers': {},
+                        'body': '...',
+                    }
+                ),
+            ),
         )
 
     def test_can_write_http_response_record(self):
-        self.writer.write_record({
-            'command_id': 'command',
-            'event_type': 'HTTP_RESPONSE',
-            'payload': {
-                'streaming': False,
-                'headers': {},
-                'body': '...',
-                'status_code': 200,
-                'request_id': '1234abcd'
-            },
-            'source': 'TEST',
-            'timestamp': 1234
-        })
+        self.writer.write_record(
+            {
+                'command_id': 'command',
+                'event_type': 'HTTP_RESPONSE',
+                'payload': {
+                    'streaming': False,
+                    'headers': {},
+                    'body': '...',
+                    'status_code': 200,
+                    'request_id': '1234abcd',
+                },
+                'source': 'TEST',
+                'timestamp': 1234,
+            }
+        )
 
         written_record = self._read_last_record()
         self.assertEqual(
             written_record,
-            ('command', None, 'TEST', 'HTTP_RESPONSE', 1234, json.dumps({
-                'streaming': False,
-                'headers': {},
-                'body': '...',
-                'status_code': 200,
-                'request_id': '1234abcd'
-            }))
+            (
+                'command',
+                None,
+                'TEST',
+                'HTTP_RESPONSE',
+                1234,
+                json.dumps(
+                    {
+                        'streaming': False,
+                        'headers': {},
+                        'body': '...',
+                        'status_code': 200,
+                        'request_id': '1234abcd',
+                    }
+                ),
+            ),
         )
 
     def test_can_write_parsed_response_record(self):
-        self.writer.write_record({
-            'command_id': 'command',
-            'event_type': 'PARSED_RESPONSE',
-            'payload': {},
-            'source': 'TEST',
-            'timestamp': 1234
-        })
+        self.writer.write_record(
+            {
+                'command_id': 'command',
+                'event_type': 'PARSED_RESPONSE',
+                'payload': {},
+                'source': 'TEST',
+                'timestamp': 1234,
+            }
+        )
 
         written_record = self._read_last_record()
         self.assertEqual(
             written_record,
-            ('command', None, 'TEST', 'PARSED_RESPONSE', 1234, '{}')
+            ('command', None, 'TEST', 'PARSED_RESPONSE', 1234, '{}'),
         )
 
     def test_can_write_cli_rc_record(self):
-        self.writer.write_record({
-            'command_id': 'command',
-            'event_type': 'CLI_RC',
-            'payload': 0,
-            'source': 'TEST',
-            'timestamp': 1234
-        })
+        self.writer.write_record(
+            {
+                'command_id': 'command',
+                'event_type': 'CLI_RC',
+                'payload': 0,
+                'source': 'TEST',
+                'timestamp': 1234,
+            }
+        )
 
         written_record = self._read_last_record()
         self.assertEqual(
-            written_record,
-            ('command', None, 'TEST', 'CLI_RC', 1234, '0')
+            written_record, ('command', None, 'TEST', 'CLI_RC', 1234, '0')
         )
 
 
-class ThreadedRecordBuilder(object):
+class ThreadedRecordBuilder:
     def __init__(self, tracker):
         self._read_q = queue.Queue()
         self._write_q = queue.Queue()
         self._thread = threading.Thread(
-            target=self._threaded_request_tracker,
-            args=(tracker,))
+            target=self._threaded_request_tracker, args=(tracker,)
+        )
 
     def _threaded_request_tracker(self, builder):
         while True:
@@ -528,8 +601,9 @@ class TestDatabaseRecordReader(BaseDatabaseRecordTester):
         self.assertTrue(self.fake_connection.closed)
 
     def test_row_factory_set(self):
-        self.assertEqual(self.fake_connection.row_factory,
-                         self.reader._row_factory)
+        self.assertEqual(
+            self.fake_connection.row_factory, self.reader._row_factory
+        )
 
     def test_iter_latest_records_performs_correct_query(self):
         expected_query = (
@@ -541,27 +615,32 @@ class TestDatabaseRecordReader(BaseDatabaseRecordTester):
         [_ for _ in self.reader.iter_latest_records()]
         self.assertEqual(
             self.fake_connection.execute.call_args[0][0].strip(),
-            expected_query.strip())
+            expected_query.strip(),
+        )
 
     def test_iter_latest_records_does_iter_records(self):
         records_to_get = [1, 2, 3]
         self.fake_connection.execute.return_value.__iter__.return_value = iter(
-            records_to_get)
+            records_to_get
+        )
         records = [r for r in self.reader.iter_latest_records()]
         self.assertEqual(records, records_to_get)
 
     def test_iter_records_performs_correct_query(self):
-        expected_query = ('SELECT * from records where id = ? '
-                          'ORDER BY timestamp')
+        expected_query = (
+            'SELECT * from records where id = ? ' 'ORDER BY timestamp'
+        )
         [_ for _ in self.reader.iter_records('fake_id')]
         self.assertEqual(
             self.fake_connection.execute.call_args[0][0].strip(),
-            expected_query.strip())
+            expected_query.strip(),
+        )
 
     def test_iter_records_does_iter_records(self):
         records_to_get = [1, 2, 3]
         self.fake_connection.execute.return_value.__iter__.return_value = iter(
-            records_to_get)
+            records_to_get
+        )
         records = [r for r in self.reader.iter_records('fake_id')]
         self.assertEqual(records, records_to_get)
 
@@ -572,10 +651,8 @@ class TestPayloadSerialzier(unittest.TestCase):
             'string': 'foo',
             'int': 4,
             'list': [1, 2, 'bar'],
-            'dict': {
-                'sun': 'moon'
-            },
-            'float': 1.2
+            'dict': {'sun': 'moon'},
+            'float': 1.2,
         }
         string_value = json.dumps(original, cls=PayloadSerializer)
         reloaded = json.loads(string_value)
@@ -589,9 +666,7 @@ class TestPayloadSerialzier(unittest.TestCase):
         self.assertEqual(iso_now, reloaded)
 
     def test_can_serialize_case_insensitive_dict(self):
-        original = CaseInsensitiveDict({
-            'fOo': 'bar'
-        })
+        original = CaseInsensitiveDict({'fOo': 'bar'})
         string_value = json.dumps(original, cls=PayloadSerializer)
         reloaded = json.loads(string_value)
         self.assertEqual(original, reloaded)
@@ -645,8 +720,8 @@ class TestPayloadSerialzier(unittest.TestCase):
             'list': ['foo', b'\xfe\xed'],
             'more_nesting': {
                 'bytes': b'\xfe\xed',
-                'tuple': ('bar', 'baz', b'\xfe\ed')
-            }
+                'tuple': ('bar', 'baz', b'\xfe\ed'),
+            },
         }
         encoded = {
             'foo': 'bar',
@@ -654,8 +729,8 @@ class TestPayloadSerialzier(unittest.TestCase):
             'list': ['foo', '<Byte sequence>'],
             'more_nesting': {
                 'bytes': '<Byte sequence>',
-                'tuple': ['bar', 'baz', '<Byte sequence>']
-            }
+                'tuple': ['bar', 'baz', '<Byte sequence>'],
+            },
         }
         string_value = json.dumps(original, cls=PayloadSerializer)
         reloaded = json.loads(string_value)
@@ -664,8 +739,7 @@ class TestPayloadSerialzier(unittest.TestCase):
 
 class TestRecordBuilder(unittest.TestCase):
     UUID_PATTERN = re.compile(
-        '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$',
-        re.I
+        '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$', re.I
     )
 
     def setUp(self):
@@ -714,7 +788,8 @@ class TestRecordBuilder(unittest.TestCase):
     def test_does_get_id_for_http_request_with_api_call(self):
         call_identifier = self._get_request_id_for_event_type('API_CALL')
         request_identifier = self._get_request_id_for_event_type(
-            'HTTP_REQUEST')
+            'HTTP_REQUEST'
+        )
 
         self.assertEqual(call_identifier, request_identifier)
         self.assertTrue(self.UUID_PATTERN.match(call_identifier))
@@ -722,7 +797,8 @@ class TestRecordBuilder(unittest.TestCase):
     def test_does_get_id_for_http_response_with_api_call(self):
         call_identifier = self._get_request_id_for_event_type('API_CALL')
         response_identifier = self._get_request_id_for_event_type(
-            'HTTP_RESPONSE')
+            'HTTP_RESPONSE'
+        )
 
         self.assertEqual(call_identifier, response_identifier)
         self.assertTrue(self.UUID_PATTERN.match(call_identifier))
@@ -730,7 +806,8 @@ class TestRecordBuilder(unittest.TestCase):
     def test_does_get_id_for_parsed_response_with_api_call(self):
         call_identifier = self._get_request_id_for_event_type('API_CALL')
         response_identifier = self._get_request_id_for_event_type(
-            'PARSED_RESPONSE')
+            'PARSED_RESPONSE'
+        )
 
         self.assertEqual(call_identifier, response_identifier)
         self.assertTrue(self.UUID_PATTERN.match(call_identifier))
@@ -755,29 +832,38 @@ class TestIdentifierLifecycles(unittest.TestCase):
     def _get_multiple_request_ids(self, events):
         fake_payload = {'body': b''}
         request_ids = [
-            self.builder.build_record(
-                event,
-                fake_payload.copy(),
-                ''
-            )['request_id']
+            self.builder.build_record(event, fake_payload.copy(), '')[
+                'request_id'
+            ]
             for event in events
         ]
         return request_ids
 
     def test_multiple_http_lifecycle_writes_have_same_request_id(self):
         request_ids = self._get_multiple_request_ids(
-             ['API_CALL', 'HTTP_REQUEST', 'HTTP_RESPONSE', 'PARSED_RESPONSE']
-         )
+            ['API_CALL', 'HTTP_REQUEST', 'HTTP_RESPONSE', 'PARSED_RESPONSE']
+        )
         # All request_ids should match since this is one request lifecycle
         unique_request_ids = set(request_ids)
         self.assertEqual(len(unique_request_ids), 1)
 
     def test_request_id_reset_on_api_call(self):
         request_ids = self._get_multiple_request_ids(
-             ['API_CALL', 'HTTP_REQUEST', 'HTTP_RESPONSE', 'PARSED_RESPONSE',
-              'API_CALL', 'HTTP_REQUEST', 'HTTP_RESPONSE', 'PARSED_RESPONSE',
-              'API_CALL', 'HTTP_REQUEST', 'HTTP_RESPONSE', 'PARSED_RESPONSE']
-         )
+            [
+                'API_CALL',
+                'HTTP_REQUEST',
+                'HTTP_RESPONSE',
+                'PARSED_RESPONSE',
+                'API_CALL',
+                'HTTP_REQUEST',
+                'HTTP_RESPONSE',
+                'PARSED_RESPONSE',
+                'API_CALL',
+                'HTTP_REQUEST',
+                'HTTP_RESPONSE',
+                'PARSED_RESPONSE',
+            ]
+        )
 
         # There should be three distinct requet_ids since there are three
         # distinct calls that end with a parsed response.

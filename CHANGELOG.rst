@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+1.44.27
+=======
+
+* api-change:``cognito-idp``: This release adds support for a new lambda trigger to transform federated user attributes during the authentication with external identity providers on Cognito Managed Login.
+* api-change:``connect``: Adds support for filtering search results based on tags assigned to contacts.
+* api-change:``ec2``: SearchTransitGatewayRoutes API response now includes a NextToken field, enabling pagination when retrieving large sets of transit gateway routes. Pass the returned NextToken value in subsequent requests to retrieve the next page of results.
+* api-change:``lambda``: We are launching ESM Metrics and logging for Kafka ESM to allow customers to monitor Kafka event processing using CloudWatch Metrics and Logs.
+* api-change:``mediaconnect``: This release adds support for NDI flow sources in AWS Elemental MediaConnect. You can now send content to your MediaConnect transport streams directly from your NDI environment using the new NDI source type. Also adds support for LARGE 4X flow size, which can be used when creating CDI JPEG-XS flows.
+* api-change:``mediaconvert``: This release adds a follow source mode for audio output channel count, an AES audio frame wrapping option for MXF outputs, and an option to signal DolbyVision compatibility using the SUPPLEMENTAL-CODECS tag in HLS manifests.
+* api-change:``s3``: Adds support for the UpdateObjectEncryption API to change the server-side encryption type of objects in general purpose buckets.
+* api-change:``s3control``: Adds support for the UpdateObjectEncryption API to change the server-side encryption type of objects in general purpose buckets.
+
+
 1.44.26
 =======
 

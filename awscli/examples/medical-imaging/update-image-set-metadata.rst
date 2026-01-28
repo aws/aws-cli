@@ -69,7 +69,8 @@ The following ``update-image-set-metadata`` example removes an instance from ima
         --image-set-id ea92b0d8838c72a3f25d00d13616f87e \
         --latest-version-id 1 \
         --cli-binary-format raw-in-base64-out \
-        --update-image-set-metadata-updates file://metadata-updates.json
+        --update-image-set-metadata-updates file://metadata-updates.json \
+        --force
 
 Contents of ``metadata-updates.json`` ::
 

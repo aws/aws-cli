@@ -5112,6 +5112,11 @@
           "shape":"S3ComputeObjectChecksumOperation",
           "documentation":"<p>Directs the specified job to compute checksum values for every object in the manifest.</p>",
           "box":true
+        },
+        "S3UpdateObjectEncryption":{
+          "shape":"S3UpdateObjectEncryptionOperation",
+          "documentation":"<p>Updates the server-side encryption type of an existing encrypted object in a general purpose bucket. You can use the <code>UpdateObjectEncryption</code> operation to change encrypted objects from server-side encryption with Amazon S3 managed keys (SSE-S3) to server-side encryption with Key Management Service (KMS) keys (SSE-KMS), or to apply S3 Bucket Keys. You can also use the <code>UpdateObjectEncryption</code> operation to change the customer-managed KMS key used to encrypt your data so that you can comply with custom key-rotation standards.</p>",
+          "box":true
         }
       },
       "documentation":"<p>The operation that you want this job to perform on every object listed in the manifest. For more information about the available operations, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/batch-ops-operations.html\">Operations</a> in the <i>Amazon S3 User Guide</i>.</p>"
@@ -6414,8 +6419,8 @@
     "NoSuchPublicAccessBlockConfigurationMessage":{"type":"string"},
     "NonEmptyKmsKeyArnString":{
       "type":"string",
-      "max":2000,
-      "min":1,
+      "max":2048,
+      "min":20,
       "pattern":"arn:aws[a-zA-Z0-9-]*:kms:[a-z0-9-]+:[0-9]{12}:key/[a-zA-Z0-9-]+"
     },
     "NonEmptyMaxLength1024String":{
@@ -6494,6 +6499,17 @@
     },
     "ObjectAgeValue":{"type":"integer"},
     "ObjectCreationTime":{"type":"timestamp"},
+    "ObjectEncryption":{
+      "type":"structure",
+      "members":{
+        "SSEKMS":{
+          "shape":"S3UpdateObjectEncryptionSSEKMS",
+          "documentation":"<p>Specifies to update the object encryption type to server-side encryption with Key Management Service (KMS) keys (SSE-KMS).</p>",
+          "locationName":"SSE-KMS"
+        }
+      },
+      "documentation":"<p>The updated server-side encryption type for this object. The <code>UpdateObjectEncryption</code> operation supports the SSE-KMS encryption type.</p> <p>Valid Values: <code>SSEKMS</code> </p>"
+    },
     "ObjectEncryptionFilter":{
       "type":"structure",
       "members":{
@@ -6719,7 +6735,8 @@
         "S3PutObjectLegalHold",
         "S3PutObjectRetention",
         "S3ReplicateObject",
-        "S3ComputeObjectChecksum"
+        "S3ComputeObjectChecksum",
+        "S3UpdateObjectEncryption"
       ]
     },
     "Organization":{
@@ -8256,6 +8273,33 @@
     "S3TagSet":{
       "type":"list",
       "member":{"shape":"S3Tag"}
+    },
+    "S3UpdateObjectEncryptionOperation":{
+      "type":"structure",
+      "members":{
+        "ObjectEncryption":{
+          "shape":"ObjectEncryption",
+          "documentation":"<p>The updated server-side encryption type for this S3 object. The <code>UpdateObjectEncryption</code> operation supports the SSE-KMS encryption type.</p>"
+        }
+      },
+      "documentation":"<p>With the <code>UpdateObjectEncryption</code> operation, you can atomically update the server-side encryption type of an existing object in a general purpose bucket without any data movement.</p>"
+    },
+    "S3UpdateObjectEncryptionSSEKMS":{
+      "type":"structure",
+      "required":["KMSKeyArn"],
+      "members":{
+        "KMSKeyArn":{
+          "shape":"NonEmptyKmsKeyArnString",
+          "documentation":"<p>Specifies the Amazon Web Services KMS key Amazon Resource Name (ARN) to use for the updated server-side encryption type. Required if <code>UpdateObjectEncryption</code> specifies <code>SSEKMS</code>.</p>"
+        },
+        "BucketKeyEnabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether Amazon S3 should use an S3 Bucket Key for object encryption with server-side encryption using Key Management Service (KMS) keys (SSE-KMS). If this value isn't specified, it defaults to <code>false</code>. Setting this value to <code>true</code> causes Amazon S3 to use an S3 Bucket Key for update object encryption with SSE-KMS.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>If <code>SSEKMS</code> is specified for <code>UpdateObjectEncryption</code>, this data type specifies the Amazon Web Services KMS key Amazon Resource Name (ARN) to use and whether to use an S3 Bucket Key for server-side encryption using Key Management Service (KMS) keys (SSE-KMS).</p>",
+      "locationName":"SSE-KMS"
     },
     "S3UserMetadata":{
       "type":"map",

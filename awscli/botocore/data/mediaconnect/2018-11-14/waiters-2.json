@@ -121,6 +121,11 @@
         "state" : "retry",
         "expected" : "UPDATING"
       }, {
+        "matcher" : "path",
+        "argument" : "RouterInput.State",
+        "state" : "retry",
+        "expected" : "MIGRATING"
+      }, {
         "matcher" : "error",
         "state" : "retry",
         "expected" : "InternalServerErrorException"
@@ -214,6 +219,11 @@
         "argument" : "RouterOutput.State",
         "state" : "retry",
         "expected" : "UPDATING"
+      }, {
+        "matcher" : "path",
+        "argument" : "RouterOutput.State",
+        "state" : "retry",
+        "expected" : "MIGRATING"
       }, {
         "matcher" : "error",
         "state" : "retry",
@@ -311,6 +321,31 @@
         "argument" : "RouterOutput.State",
         "state" : "failure",
         "expected" : "ERROR"
+      } ]
+    },
+    "OutputUnrouted" : {
+      "description" : "Wait until the Output is UNROUTED",
+      "delay" : 3,
+      "maxAttempts" : 40,
+      "operation" : "GetRouterOutput",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "RouterOutput.RoutedState",
+        "state" : "success",
+        "expected" : "UNROUTED"
+      }, {
+        "matcher" : "path",
+        "argument" : "RouterOutput.RoutedState",
+        "state" : "retry",
+        "expected" : "ROUTING"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "InternalServerErrorException"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "ServiceUnavailableException"
       } ]
     }
   }

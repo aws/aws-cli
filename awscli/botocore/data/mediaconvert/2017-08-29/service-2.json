@@ -1570,13 +1570,14 @@
     },
     "AacCodingMode": {
       "type": "string",
-      "documentation": "The Coding mode that you specify determines the number of audio channels and the audio channel layout metadata in your AAC output. Valid coding modes depend on the Rate control mode and Profile that you select. The following list shows the number of audio channels and channel layout for each coding mode. * 1.0 Audio Description (Receiver Mix): One channel, C. Includes audio description data from your stereo input. For more information see ETSI TS 101 154 Annex E. * 1.0 Mono: One channel, C. * 2.0 Stereo: Two channels, L, R. * 5.1 Surround: Six channels, C, L, R, Ls, Rs, LFE.",
+      "documentation": "The Coding mode that you specify determines the number of audio channels and the audio channel layout metadata in your AAC output. Valid coding modes depend on the Rate control mode and Profile that you select. The following list shows the number of audio channels and channel layout for each coding mode. * 1.0 Audio Description (Receiver Mix): One channel, C. Includes audio description data from your stereo input. For more information see ETSI TS 101 154 Annex E. * 1.0 Mono: One channel, C. * 2.0 Stereo: Two channels, L, R. * 5.1 Surround: Six channels, C, L, R, Ls, Rs, LFE. To follow the number of channels from your input audio, choose CODING_MODE_AUTO, and the service will automatically choose from one of the coding modes above.",
       "enum": [
         "AD_RECEIVER_MIX",
         "CODING_MODE_1_0",
         "CODING_MODE_1_1",
         "CODING_MODE_2_0",
-        "CODING_MODE_5_1"
+        "CODING_MODE_5_1",
+        "CODING_MODE_AUTO"
       ]
     },
     "AacLoudnessMeasurementMode": {
@@ -1624,7 +1625,7 @@
         "CodingMode": {
           "shape": "AacCodingMode",
           "locationName": "codingMode",
-          "documentation": "The Coding mode that you specify determines the number of audio channels and the audio channel layout metadata in your AAC output. Valid coding modes depend on the Rate control mode and Profile that you select. The following list shows the number of audio channels and channel layout for each coding mode. * 1.0 Audio Description (Receiver Mix): One channel, C. Includes audio description data from your stereo input. For more information see ETSI TS 101 154 Annex E. * 1.0 Mono: One channel, C. * 2.0 Stereo: Two channels, L, R. * 5.1 Surround: Six channels, C, L, R, Ls, Rs, LFE."
+          "documentation": "The Coding mode that you specify determines the number of audio channels and the audio channel layout metadata in your AAC output. Valid coding modes depend on the Rate control mode and Profile that you select. The following list shows the number of audio channels and channel layout for each coding mode. * 1.0 Audio Description (Receiver Mix): One channel, C. Includes audio description data from your stereo input. For more information see ETSI TS 101 154 Annex E. * 1.0 Mono: One channel, C. * 2.0 Stereo: Two channels, L, R. * 5.1 Surround: Six channels, C, L, R, Ls, Rs, LFE. To follow the number of channels from your input audio, choose CODING_MODE_AUTO, and the service will automatically choose from one of the coding modes above."
         },
         "LoudnessMeasurementMode": {
           "shape": "AacLoudnessMeasurementMode",
@@ -1708,7 +1709,8 @@
         "CODING_MODE_1_0",
         "CODING_MODE_1_1",
         "CODING_MODE_2_0",
-        "CODING_MODE_3_2_LFE"
+        "CODING_MODE_3_2_LFE",
+        "CODING_MODE_AUTO"
       ]
     },
     "Ac3DynamicRangeCompressionLine": {
@@ -1907,9 +1909,9 @@
           "documentation": "Specify Bit depth, in bits per sample, to choose the encoding quality for this audio track."
         },
         "Channels": {
-          "shape": "__integerMin1Max64",
+          "shape": "__integerMin0Max64",
           "locationName": "channels",
-          "documentation": "Specify the number of channels in this output audio track. Valid values are 1 and even numbers up to 64. For example, 1, 2, 4, 6, and so on, up to 64."
+          "documentation": "Specify the number of channels in this output audio track. Valid values are 0, 1, and even numbers up to 64.  Choose 0 to follow the number of channels from your input audio. Otherwise,  manually choose from 1, 2, 4, 6, and so on, up to 64."
         },
         "SampleRate": {
           "shape": "__integerMin8000Max192000",
@@ -2415,7 +2417,7 @@
         "SelectorType": {
           "shape": "AudioSelectorType",
           "locationName": "selectorType",
-          "documentation": "Specify how MediaConvert selects audio content within your input. The default is Track. PID: Select audio by specifying the Packet Identifier (PID) values for MPEG Transport Stream inputs. Use this when you know the exact PID values of your audio streams. Track: Default. Select audio by track number. This is the most common option and works with most input container formats. If more types of audio data get recognized in the future, these numberings may shift, but the numberings used for Stream mode will not. Language code: Select audio by language using an ISO 639-2 or ISO 639-3 three-letter       code in all capital letters. Use this when your source has embedded language metadata and you want to select tracks based on their language. HLS rendition group: Select audio from an HLS rendition group. Use this when your input is an HLS package with multiple audio renditions and you want to select specific rendition groups. All PCM: Select all uncompressed PCM audio tracks from your input automatically. This is useful when you want to include all PCM audio tracks without specifying individual track numbers. Stream: Select audio by stream number. Stream numbers include all tracks in the source file, regardless of type, and correspond to either the order of tracks in the file, or if applicable, the stream number metadata of the track. Although all tracks count toward these stream numbers, in this audio selector context, only the stream number of a track containing audio data may be used. If your source file contains a track which is not recognized by the service, then the corresponding stream number will still be reserved for future use. If more types of audio data get recognized in the future, these numberings will not shift."
+          "documentation": "Specify how MediaConvert selects audio content within your input. The default is Track. PID: Select audio by specifying the Packet Identifier (PID) values for MPEG Transport Stream inputs. Use this when you know the exact PID values of your audio streams. Track: Default. Select audio by track number. This is the most common option and works with most input container formats. If more types of audio data get recognized in the future, these numberings may shift, but the numberings used for Stream mode will not. Language code: Select audio by language using an ISO 639-2 or ISO 639-3 three-letter code in all capital letters. Use this when your source has embedded language metadata and you want to select tracks based on their language. HLS rendition group: Select audio from an HLS rendition group. Use this when your input is an HLS package with multiple audio renditions and you want to select specific rendition groups. All PCM: Select all uncompressed PCM audio tracks from your input automatically. This is useful when you want to include all PCM audio tracks without specifying individual track numbers. Stream: Select audio by stream number. Stream numbers include all tracks in the source file, regardless of type, and correspond to either the order of tracks in the file, or if applicable, the stream number metadata of the track. Although all tracks count toward these stream numbers, in this audio selector context, only the stream number of a track containing audio data may be used. If your source file contains a track which is not recognized by the service, then the corresponding stream number will still be reserved for future use. If more types of audio data get recognized in the future, these numberings will not shift."
         },
         "Streams": {
           "shape": "__listOf__integerMin1Max2147483647",
@@ -2443,7 +2445,7 @@
     },
     "AudioSelectorType": {
       "type": "string",
-      "documentation": "Specify how MediaConvert selects audio content within your input. The default is Track. PID: Select audio by specifying the Packet Identifier (PID) values for MPEG Transport Stream inputs. Use this when you know the exact PID values of your audio streams. Track: Default. Select audio by track number. This is the most common option and works with most input container formats. If more types of audio data get recognized in the future, these numberings may shift, but the numberings used for Stream mode will not. Language code: Select audio by language using an ISO 639-2 or ISO 639-3 three-letter       code in all capital letters. Use this when your source has embedded language metadata and you want to select tracks based on their language. HLS rendition group: Select audio from an HLS rendition group. Use this when your input is an HLS package with multiple audio renditions and you want to select specific rendition groups. All PCM: Select all uncompressed PCM audio tracks from your input automatically. This is useful when you want to include all PCM audio tracks without specifying individual track numbers. Stream: Select audio by stream number. Stream numbers include all tracks in the source file, regardless of type, and correspond to either the order of tracks in the file, or if applicable, the stream number metadata of the track. Although all tracks count toward these stream numbers, in this audio selector context, only the stream number of a track containing audio data may be used. If your source file contains a track which is not recognized by the service, then the corresponding stream number will still be reserved for future use. If more types of audio data get recognized in the future, these numberings will not shift.",
+      "documentation": "Specify how MediaConvert selects audio content within your input. The default is Track. PID: Select audio by specifying the Packet Identifier (PID) values for MPEG Transport Stream inputs. Use this when you know the exact PID values of your audio streams. Track: Default. Select audio by track number. This is the most common option and works with most input container formats. If more types of audio data get recognized in the future, these numberings may shift, but the numberings used for Stream mode will not. Language code: Select audio by language using an ISO 639-2 or ISO 639-3 three-letter code in all capital letters. Use this when your source has embedded language metadata and you want to select tracks based on their language. HLS rendition group: Select audio from an HLS rendition group. Use this when your input is an HLS package with multiple audio renditions and you want to select specific rendition groups. All PCM: Select all uncompressed PCM audio tracks from your input automatically. This is useful when you want to include all PCM audio tracks without specifying individual track numbers. Stream: Select audio by stream number. Stream numbers include all tracks in the source file, regardless of type, and correspond to either the order of tracks in the file, or if applicable, the stream number metadata of the track. Although all tracks count toward these stream numbers, in this audio selector context, only the stream number of a track containing audio data may be used. If your source file contains a track which is not recognized by the service, then the corresponding stream number will still be reserved for future use. If more types of audio data get recognized in the future, these numberings will not shift.",
       "enum": [
         "PID",
         "TRACK",
@@ -4318,7 +4320,7 @@
         "Format": {
           "shape": "Format",
           "locationName": "format",
-          "documentation": "The format of your media file. For example: MP4, QuickTime (MOV), Matroska (MKV), WebM or MXF. Note that this will be blank if your media file has a format that the MediaConvert Probe operation does not recognize."
+          "documentation": "The format of your media file. For example: MP4, QuickTime (MOV), Matroska (MKV), WebM, MXF or Wave. Note that this will be blank if your media file has a format that the MediaConvert Probe operation does not recognize."
         },
         "Tracks": {
           "shape": "__listOfTrack",
@@ -5191,6 +5193,11 @@
     "DolbyVision": {
       "type": "structure",
       "members": {
+        "Compatibility": {
+          "shape": "DolbyVisionCompatibility",
+          "locationName": "compatibility",
+          "documentation": "When you set Compatibility mapping to Duplicate Stream, DolbyVision streams that have a backward compatible base layer (e.g., DolbyVision 8.1) will cause a duplicate stream to be signaled in the manifest as a duplicate stream. When you set Compatibility mapping to Supplemntal Codecs, DolbyVision streams that have a backward compatible base layer (e.g., DolbyVision 8.1) will cause the associate stream in the manifest to include a SUPPLEMENTAL_CODECS property."
+        },
         "L6Metadata": {
           "shape": "DolbyVisionLevel6Metadata",
           "locationName": "l6Metadata",
@@ -5213,6 +5220,14 @@
         }
       },
       "documentation": "Create Dolby Vision Profile 5 or Profile 8.1 compatible video output."
+    },
+    "DolbyVisionCompatibility": {
+      "type": "string",
+      "documentation": "When you set Compatibility mapping to Duplicate Stream, DolbyVision streams that have a backward compatible base layer (e.g., DolbyVision 8.1) will cause a duplicate stream to be signaled in the manifest as a duplicate stream. When you set Compatibility mapping to Supplemntal Codecs, DolbyVision streams that have a backward compatible base layer (e.g., DolbyVision 8.1) will cause the associate stream in the manifest to include a SUPPLEMENTAL_CODECS property.",
+      "enum": [
+        "DUPLICATE_STREAM",
+        "SUPPLEMENTAL_CODECS"
+      ]
     },
     "DolbyVisionLevel6Metadata": {
       "type": "structure",
@@ -5853,7 +5868,8 @@
       "enum": [
         "CODING_MODE_1_0",
         "CODING_MODE_2_0",
-        "CODING_MODE_3_2"
+        "CODING_MODE_3_2",
+        "CODING_MODE_AUTO"
       ]
     },
     "Eac3DcFilter": {
@@ -6334,9 +6350,9 @@
           "documentation": "Specify Bit depth (BitDepth), in bits per sample, to choose the encoding quality for this audio track."
         },
         "Channels": {
-          "shape": "__integerMin1Max8",
+          "shape": "__integerMin0Max8",
           "locationName": "channels",
-          "documentation": "Specify the number of channels in this output audio track. Choosing Mono on the console gives you 1 output channel; choosing Stereo gives you 2. In the API, valid values are between 1 and 8."
+          "documentation": "Specify the number of channels in this output audio track. Valid values are 0, 1, and even numbers up to 8.  Choose 0 to follow the number of channels from your input audio. Otherwise, manually choose from 1, 2, 4, 6, and 8."
         },
         "SampleRate": {
           "shape": "__integerMin22050Max192000",
@@ -6392,7 +6408,8 @@
         "quicktime",
         "matroska",
         "webm",
-        "mxf"
+        "mxf",
+        "wave"
       ]
     },
     "FrameCaptureSettings": {
@@ -10786,9 +10803,9 @@
           "documentation": "Specify the average bitrate in bits per second."
         },
         "Channels": {
-          "shape": "__integerMin1Max2",
+          "shape": "__integerMin0Max2",
           "locationName": "channels",
-          "documentation": "Set Channels to specify the number of channels in this output audio track. Choosing Mono in will give you 1 output channel; choosing Stereo will give you 2. In the API, valid values are 1 and 2."
+          "documentation": "Set Channels to specify the number of channels in this output audio track. Choosing Follow input will use the number of channels found in the audio source; choosing Mono will give you 1 output channel; choosing Stereo will give you 2. In the API, valid values are 0, 1, and 2."
         },
         "SampleRate": {
           "shape": "__integerMin32000Max48000",
@@ -10815,9 +10832,9 @@
           "documentation": "Specify the average bitrate in bits per second."
         },
         "Channels": {
-          "shape": "__integerMin1Max2",
+          "shape": "__integerMin0Max2",
           "locationName": "channels",
-          "documentation": "Specify the number of channels in this output audio track. Choosing Mono gives you 1 output channel; choosing Stereo gives you 2. In the API, valid values are 1 and 2."
+          "documentation": "Specify the number of channels in this output audio track. Choosing Follow input will use the number of channels found in the audio source; choosing Mono gives you 1 output channel; choosing Stereo gives you 2. In the API, valid values are 0, 1, and 2."
         },
         "RateControlMode": {
           "shape": "Mp3RateControlMode",
@@ -11547,6 +11564,11 @@
           "locationName": "profile",
           "documentation": "Specify the MXF profile, also called shim, for this output. To automatically select a profile according to your output video codec and resolution, leave blank. For a list of codecs supported with each MXF profile, see https://docs.aws.amazon.com/mediaconvert/latest/ug/codecs-supported-with-each-mxf-profile.html. For more information about the automatic selection behavior, see https://docs.aws.amazon.com/mediaconvert/latest/ug/default-automatic-selection-of-mxf-profiles.html."
         },
+        "UncompressedAudioWrapping": {
+          "shape": "MxfUncompressedAudioWrapping",
+          "locationName": "uncompressedAudioWrapping",
+          "documentation": "Choose the audio frame wrapping mode for PCM tracks in MXF outputs. AUTO (default): Uses codec-appropriate defaults - BWF for H.264/AVC, AES3 for MPEG2/XDCAM. AES3: Use AES3 frame wrapping with SMPTE-compliant descriptors. This setting only takes effect when the MXF profile is OP1a."
+        },
         "XavcProfileSettings": {
           "shape": "MxfXavcProfileSettings",
           "locationName": "xavcProfileSettings",
@@ -11554,6 +11576,14 @@
         }
       },
       "documentation": "These settings relate to your MXF output container."
+    },
+    "MxfUncompressedAudioWrapping": {
+      "type": "string",
+      "documentation": "Choose the audio frame wrapping mode for PCM tracks in MXF outputs. AUTO (default): Uses codec-appropriate defaults - BWF for H.264/AVC, AES3 for MPEG2/XDCAM. AES3: Use AES3 frame wrapping with SMPTE-compliant descriptors. This setting only takes effect when the MXF profile is OP1a.",
+      "enum": [
+        "AUTO",
+        "AES3"
+      ]
     },
     "MxfXavcDurationMode": {
       "type": "string",
@@ -11851,9 +11881,9 @@
           "documentation": "Optional. Specify the average bitrate in bits per second. Valid values are multiples of 8000, from 32000 through 192000. The default value is 96000, which we recommend for quality and bandwidth."
         },
         "Channels": {
-          "shape": "__integerMin1Max2",
+          "shape": "__integerMin0Max2",
           "locationName": "channels",
-          "documentation": "Specify the number of channels in this output audio track. Choosing Mono on gives you 1 output channel; choosing Stereo gives you 2. In the API, valid values are 1 and 2."
+          "documentation": "Specify the number of channels in this output audio track. Choosing Follow input will use the number of channels found in the audio source; choosing Mono gives you 1 output channel; choosing Stereo gives you 2. In the API, valid values are 0, 1, and 2."
         },
         "SampleRate": {
           "shape": "__integerMin16000Max48000",
@@ -14493,7 +14523,7 @@
         "Streams": {
           "shape": "__listOf__integerMin1Max2147483647",
           "locationName": "streams",
-          "documentation": "Specify one or more video streams for MediaConvert to use from your HLS input. Enter an integer corresponding to the stream number, with the first stream in your HLS multivariant playlist starting at 1.For re-encoding workflows, MediaConvert uses the video stream that you select with the highest bitrate as the input.For video passthrough workflows, you specify whether to passthrough a single video stream or multiple video streams under Video selector source in the output video encoding settings."
+          "documentation": "Specify one or more video streams for MediaConvert to use from your HLS input. Enter an integer corresponding to the stream number, with the first stream in your HLS multivariant playlist starting at 1. For re-encoding workflows, MediaConvert uses the video stream that you select with the highest bitrate as the input. For video passthrough workflows, you specify whether to passthrough a single video stream or multiple video streams under Video selector source in the output video encoding settings."
         }
       },
       "documentation": "Input video selectors contain the video settings for the input. Each of your inputs can have up to one video selector."
@@ -14526,9 +14556,9 @@
       "type": "structure",
       "members": {
         "Channels": {
-          "shape": "__integerMin1Max2",
+          "shape": "__integerMin0Max2",
           "locationName": "channels",
-          "documentation": "Optional. Specify the number of channels in this output audio track. Choosing Mono on the console gives you 1 output channel; choosing Stereo gives you 2. In the API, valid values are 1 and 2. The default value is 2."
+          "documentation": "Optional. Specify the number of channels in this output audio track. Choosing Follow input will use the number of channels found in the audio source; choosing Mono on the console gives you 1 output channel; choosing Stereo gives you 2. In the API, valid values are 0, 1, and 2. The default value is 2."
         },
         "SampleRate": {
           "shape": "__integerMin22050Max48000",
@@ -14816,9 +14846,9 @@
           "documentation": "Specify Bit depth, in bits per sample, to choose the encoding quality for this audio track."
         },
         "Channels": {
-          "shape": "__integerMin1Max64",
+          "shape": "__integerMin0Max64",
           "locationName": "channels",
-          "documentation": "Specify the number of channels in this output audio track. Valid values are 1 and even numbers up to 64. For example, 1, 2, 4, 6, and so on, up to 64."
+          "documentation": "Specify the number of channels in this output audio track. Valid values are 0, 1, and even numbers up to 64.  Choose 0 to follow the number of channels from your input audio. Otherwise,  manually choose from 1, 2, 4, 6, and so on, up to 64."
         },
         "Format": {
           "shape": "WavFormat",
@@ -15384,6 +15414,11 @@
       "min": 0,
       "max": 16
     },
+    "__integerMin0Max2": {
+      "type": "integer",
+      "min": 0,
+      "max": 2
+    },
     "__integerMin0Max2147483647": {
       "type": "integer",
       "min": 0,
@@ -15448,6 +15483,11 @@
       "type": "integer",
       "min": 0,
       "max": 50000
+    },
+    "__integerMin0Max64": {
+      "type": "integer",
+      "min": 0,
+      "max": 64
     },
     "__integerMin0Max65534": {
       "type": "integer",
@@ -15579,11 +15619,6 @@
       "min": 1,
       "max": 17895697
     },
-    "__integerMin1Max2": {
-      "type": "integer",
-      "min": 1,
-      "max": 2
-    },
     "__integerMin1Max20": {
       "type": "integer",
       "min": 1,
@@ -15643,11 +15678,6 @@
       "type": "integer",
       "min": 1,
       "max": 64
-    },
-    "__integerMin1Max8": {
-      "type": "integer",
-      "min": 1,
-      "max": 8
     },
     "__integerMin1Max86400000": {
       "type": "integer",

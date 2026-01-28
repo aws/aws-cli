@@ -1459,7 +1459,7 @@
         {"shape":"NotFoundException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p> Updates an existing flow.</p>",
+      "documentation":"<p> Updates an existing flow.</p> <note> <p> Because <code>UpdateFlowSources</code> and <code>UpdateFlow</code> are separate operations, you can't change both the source type AND the flow size in a single request. </p> <ul> <li> <p>If you have a <code>MEDIUM</code> flow and you want to change the flow source to NDI®:</p> <ul> <li> <p>First, use the <code>UpdateFlow</code> operation to upgrade the flow size to <code>LARGE</code>. </p> </li> <li> <p>After that, you can then use the <code>UpdateFlowSource</code> operation to configure the NDI source. </p> </li> </ul> </li> <li> <p>If you're switching from an NDI source to a transport stream (TS) source and want to downgrade the flow size: </p> <ul> <li> <p>First, use the <code>UpdateFlowSource</code> operation to change the flow source type. </p> </li> <li> <p>After that, you can then use the <code>UpdateFlow</code> operation to downgrade the flow size to <code>MEDIUM</code>.</p> </li> </ul> </li> </ul> </note>",
       "idempotent":true
     },
     "UpdateFlowEntitlement":{
@@ -1539,7 +1539,7 @@
         {"shape":"NotFoundException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p> Updates the source of a flow.</p>",
+      "documentation":"<p> Updates the source of a flow.</p> <note> <p> Because <code>UpdateFlowSources</code> and <code>UpdateFlow</code> are separate operations, you can't change both the source type AND the flow size in a single request. </p> <ul> <li> <p>If you have a <code>MEDIUM</code> flow and you want to change the flow source to NDI®:</p> <ul> <li> <p>First, use the <code>UpdateFlow</code> operation to upgrade the flow size to <code>LARGE</code>. </p> </li> <li> <p>After that, you can then use the <code>UpdateFlowSource</code> operation to configure the NDI source. </p> </li> </ul> </li> <li> <p>If you're switching from an NDI source to a transport stream (TS) source and want to downgrade the flow size: </p> <ul> <li> <p>First, use the <code>UpdateFlowSource</code> operation to change the flow source type. </p> </li> <li> <p>After that, you can then use the <code>UpdateFlow</code> operation to downgrade the flow size to <code>MEDIUM</code>.</p> </li> </ul> </li> </ul> </note>",
       "idempotent":true
     },
     "UpdateGatewayInstance":{
@@ -2209,7 +2209,7 @@
         },
         "NdiProgramName":{
           "shape":"String",
-          "documentation":"<p> A suffix for the names of the NDI sources that the flow creates. If a custom name isn't specified, MediaConnect uses the output name. </p>",
+          "documentation":"<p> A suffix for the name of the NDI® sender that the flow creates. If a custom name isn't specified, MediaConnect uses the output name. </p>",
           "locationName":"ndiProgramName"
         },
         "OutputTags":{
@@ -2944,13 +2944,17 @@
         },
         "FlowSize":{
           "shape":"FlowSize",
-          "documentation":"<p> Determines the processing capacity and feature set of the flow. Set this optional parameter to <code>LARGE</code> if you want to enable NDI outputs on the flow. </p>",
+          "documentation":"<p> Determines the processing capacity and feature set of the flow. Set this optional parameter to <code>LARGE</code> if you want to enable NDI sources or outputs on the flow. </p>",
           "locationName":"flowSize"
         },
         "NdiConfig":{
           "shape":"NdiConfig",
-          "documentation":"<p> Specifies the configuration settings for NDI outputs. Required when the flow includes NDI outputs. </p>",
+          "documentation":"<p> Specifies the configuration settings for a flow's NDI source or output. Required when the flow includes an NDI source or output. </p>",
           "locationName":"ndiConfig"
+        },
+        "EncodingConfig":{
+          "shape":"EncodingConfig",
+          "locationName":"encodingConfig"
         },
         "FlowTags":{
           "shape":"__mapOfString",
@@ -3057,7 +3061,7 @@
         },
         "RegionName":{
           "shape":"String",
-          "documentation":"<p>The AWS Region for the router input. Defaults to the current region if not specified.</p>",
+          "documentation":"<p>The Amazon Web Services Region for the router input. Defaults to the current region if not specified.</p>",
           "locationName":"regionName"
         },
         "AvailabilityZone":{
@@ -3123,7 +3127,7 @@
         },
         "RegionName":{
           "shape":"String",
-          "documentation":"<p>The AWS Region for the router network interface. Defaults to the current region if not specified.</p>",
+          "documentation":"<p>The Amazon Web Services Region for the router network interface. Defaults to the current region if not specified.</p>",
           "locationName":"regionName"
         },
         "Tags":{
@@ -3192,7 +3196,7 @@
         },
         "RegionName":{
           "shape":"String",
-          "documentation":"<p>The AWS Region for the router output. Defaults to the current region if not specified.</p>",
+          "documentation":"<p>The Amazon Web Services Region for the router output. Defaults to the current region if not specified.</p>",
           "locationName":"regionName"
         },
         "AvailabilityZone":{
@@ -3573,6 +3577,11 @@
           "shape":"TransportMediaInfo",
           "documentation":"<p> Information about the flow's transport media. </p>",
           "locationName":"transportMediaInfo"
+        },
+        "NdiInfo":{
+          "shape":"NdiSourceMetadataInfo",
+          "documentation":"<p> The NDI® specific information about the flow's source. This includes the current active NDI sender, a list of all discovered NDI senders, the associated media streams for the active NDI sender, and any relevant status messages. </p>",
+          "locationName":"ndiInfo"
         }
       }
     },
@@ -3792,6 +3801,22 @@
         "high"
       ]
     },
+    "EncodingConfig":{
+      "type":"structure",
+      "members":{
+        "EncodingProfile":{
+          "shape":"EncodingProfile",
+          "documentation":"<p> The encoding profile to use when transcoding the NDI source content to a transport stream. You can change this value while the flow is running. </p>",
+          "locationName":"encodingProfile"
+        },
+        "VideoMaxBitrate":{
+          "shape":"Integer",
+          "documentation":"<p> The maximum video bitrate to use when transcoding the NDI source to a transport stream. This parameter enables you to override the default video bitrate within the encoding profile's supported range. </p> <p> The supported range is 10,000,000 - 50,000,000 bits per second (bps). If you don't specify a value, MediaConnect uses the default value of 20,000,000 bps. </p>",
+          "locationName":"videoMaxBitrate"
+        }
+      },
+      "documentation":"<p> The encoding configuration to apply to the NDI® source when transcoding it to a transport stream for downstream distribution. You can choose between several predefined encoding profiles based on common use cases. </p>"
+    },
     "EncodingName":{
       "type":"string",
       "enum":[
@@ -3840,6 +3865,13 @@
         }
       },
       "documentation":"<p> A collection of parameters that determine how MediaConnect will convert the content. These fields only apply to outputs on flows that have a CDI source.</p>"
+    },
+    "EncodingProfile":{
+      "type":"string",
+      "enum":[
+        "DISTRIBUTION_H264_DEFAULT",
+        "CONTRIBUTION_H264_DEFAULT"
+      ]
     },
     "Encryption":{
       "type":"structure",
@@ -3891,7 +3923,7 @@
           "locationName":"url"
         }
       },
-      "documentation":"<p> Information about the encryption of the flow.</p>"
+      "documentation":"<p> Encryption information.</p>"
     },
     "Entitlement":{
       "type":"structure",
@@ -4176,13 +4208,18 @@
         },
         "FlowSize":{
           "shape":"FlowSize",
-          "documentation":"<p> Determines the processing capacity and feature set of the flow. Set this optional parameter to LARGE if you want to enable NDI outputs on the flow. </p>",
+          "documentation":"<p> Determines the processing capacity and feature set of the flow. </p>",
           "locationName":"flowSize"
         },
         "NdiConfig":{
           "shape":"NdiConfig",
-          "documentation":"<p>Specifies the configuration settings for NDI outputs. Required when the flow includes NDI outputs. </p>",
+          "documentation":"<p>Specifies the configuration settings for a flow's NDI source or output. Required when the flow includes an NDI source or output.</p>",
           "locationName":"ndiConfig"
+        },
+        "EncodingConfig":{
+          "shape":"EncodingConfig",
+          "documentation":"<p> The encoding configuration to apply to the NDI® source when transcoding it to a transport stream for downstream distribution. </p>",
+          "locationName":"encodingConfig"
         }
       },
       "documentation":"<p> The settings for a flow, including its source, outputs, and entitlements.</p>"
@@ -4199,7 +4236,8 @@
       "type":"string",
       "enum":[
         "MEDIUM",
-        "LARGE"
+        "LARGE",
+        "LARGE_4X"
       ]
     },
     "FlowSourceArn":{
@@ -5535,7 +5573,7 @@
         },
         "RegionName":{
           "shape":"String",
-          "documentation":"<p>The AWS Region where the router input is located.</p>",
+          "documentation":"<p>The Amazon Web Services Region where the router input is located.</p>",
           "locationName":"regionName"
         },
         "AvailabilityZone":{
@@ -5642,7 +5680,7 @@
         },
         "RegionName":{
           "shape":"String",
-          "documentation":"<p>The AWS Region where the router network interface is located.</p>",
+          "documentation":"<p>The Amazon Web Services Region where the router network interface is located.</p>",
           "locationName":"regionName"
         },
         "CreatedAt":{
@@ -5712,7 +5750,7 @@
         },
         "RegionName":{
           "shape":"String",
-          "documentation":"<p>The AWS Region where the router output is located.</p>",
+          "documentation":"<p>The AAmazon Web Services Region where the router output is located.</p>",
           "locationName":"regionName"
         },
         "AvailabilityZone":{
@@ -5966,7 +6004,7 @@
           "locationName":"encryptionKeyConfiguration"
         }
       },
-      "documentation":"<p>The encryption configuration that defines how content is encrypted during transit between MediaConnect Router and MediaLive. This configuration determines whether encryption keys are automatically managed by the service or manually managed through AWS Secrets Manager.</p>"
+      "documentation":"<p>The encryption configuration that defines how content is encrypted during transit between MediaConnect Router and MediaLive. This configuration determines whether encryption keys are automatically managed by the service or manually managed through Secrets Manager.</p>"
     },
     "MediaLiveTransitEncryptionKeyConfiguration":{
       "type":"structure",
@@ -6354,7 +6392,7 @@
       "members":{
         "NdiState":{
           "shape":"NdiState",
-          "documentation":"<p>A setting that controls whether NDI outputs can be used in the flow. Must be ENABLED to add NDI outputs. Default is DISABLED. </p>",
+          "documentation":"<p>A setting that controls whether NDI® sources or outputs can be used in the flow. </p> <p> The default value is <code>DISABLED</code>. This value must be set as <code>ENABLED</code> for your flow to support NDI sources or outputs. </p>",
           "locationName":"ndiState"
         },
         "MachineName":{
@@ -6368,7 +6406,7 @@
           "locationName":"ndiDiscoveryServers"
         }
       },
-      "documentation":"<p>Specifies the configuration settings for NDI outputs. Required when the flow includes NDI outputs. </p>"
+      "documentation":"<p>Specifies the configuration settings for NDI sources and outputs. </p>"
     },
     "NdiDiscoveryServerConfig":{
       "type":"structure",
@@ -6393,7 +6431,124 @@
           "locationName":"vpcInterfaceAdapter"
         }
       },
-      "documentation":"<p>Specifies the configuration settings for individual NDI discovery servers. A maximum of 3 servers is allowed. </p>"
+      "documentation":"<p>Specifies the configuration settings for individual NDI® discovery servers. A maximum of 3 servers is allowed. </p>"
+    },
+    "NdiMediaInfo":{
+      "type":"structure",
+      "required":["Streams"],
+      "members":{
+        "Streams":{
+          "shape":"__listOfNdiMediaStreamInfo",
+          "documentation":"<p> A list of the individual media streams that make up the NDI source. This includes details about each stream's codec, resolution, frame rate, audio channels, and other parameters. </p>",
+          "locationName":"streams"
+        }
+      },
+      "documentation":"<p> Metadata about the audio and video media that is part of the NDI® source content. This includes details about the individual media streams. </p>"
+    },
+    "NdiMediaStreamInfo":{
+      "type":"structure",
+      "required":[
+        "StreamType",
+        "Codec",
+        "StreamId"
+      ],
+      "members":{
+        "StreamType":{
+          "shape":"String",
+          "documentation":"<p> The type of media stream (for example, <code>Video</code> or <code>Audio</code>). </p>",
+          "locationName":"streamType"
+        },
+        "Codec":{
+          "shape":"String",
+          "documentation":"<p> The codec used for the media stream. For NDI sources, use <code>speed-hq</code>. </p>",
+          "locationName":"codec"
+        },
+        "StreamId":{
+          "shape":"Integer",
+          "documentation":"<p> A unique identifier for the media stream. </p>",
+          "locationName":"streamId"
+        },
+        "ScanMode":{
+          "shape":"ScanMode",
+          "documentation":"<p> The method used to display video frames. Used when the <code>streamType</code> is <code>Video</code>.</p>",
+          "locationName":"scanMode"
+        },
+        "FrameResolution":{
+          "shape":"FrameResolution",
+          "documentation":"<p> The width and height dimensions of the video frame in pixels. Used when the <code>streamType</code> is <code>Video</code>. </p>",
+          "locationName":"frameResolution"
+        },
+        "FrameRate":{
+          "shape":"String",
+          "documentation":"<p> The number of video frames displayed per second. Used when the <code>streamType</code> is <code>Video</code>. </p>",
+          "locationName":"frameRate"
+        },
+        "Channels":{
+          "shape":"Integer",
+          "documentation":"<p> The number of audio channels in the stream. Used when the <code>streamType</code> is <code>Audio</code>.</p>",
+          "locationName":"channels"
+        },
+        "SampleRate":{
+          "shape":"Integer",
+          "documentation":"<p> The number of audio samples captured per second, measured in kilohertz (kHz). Used when the <code>streamType</code> is <code>Audio</code>.</p>",
+          "locationName":"sampleRate"
+        }
+      },
+      "documentation":"<p> Detailed information about a single media stream that is part of an NDI® source. This includes details about the stream type, codec, resolution, frame rate, audio channels, and sample rate. </p>"
+    },
+    "NdiSourceInfo":{
+      "type":"structure",
+      "required":["SourceName"],
+      "members":{
+        "SourceName":{
+          "shape":"String",
+          "documentation":"<p> The name of the upstream NDI sender. </p>",
+          "locationName":"sourceName"
+        }
+      },
+      "documentation":"<p> Information about a single NDI® sender, including its name. </p>"
+    },
+    "NdiSourceMetadataInfo":{
+      "type":"structure",
+      "required":[
+        "DiscoveredSources",
+        "MediaInfo",
+        "Messages"
+      ],
+      "members":{
+        "ActiveSource":{
+          "shape":"NdiSourceInfo",
+          "documentation":"<p> The connected NDI sender that's currently sending source content to the flow's NDI source. </p>",
+          "locationName":"activeSource"
+        },
+        "DiscoveredSources":{
+          "shape":"__listOfNdiSourceInfo",
+          "documentation":"<p> A list of the available upstream NDI senders aggregated from all of your configured discovery servers. </p>",
+          "locationName":"discoveredSources"
+        },
+        "MediaInfo":{
+          "shape":"NdiMediaInfo",
+          "documentation":"<p> Detailed information about the media streams (video, audio, and so on) that are part of the active NDI source. </p>",
+          "locationName":"mediaInfo"
+        },
+        "Messages":{
+          "shape":"__listOfMessageDetail",
+          "documentation":"<p> Any status messages or error codes related to the NDI source and its metadata. </p>",
+          "locationName":"messages"
+        }
+      },
+      "documentation":"<p> Comprehensive information about the NDI® source that's associated with a flow. This includes the currently active NDI source, a list of all discovered NDI senders, metadata about the media streams, and any relevant status messages. </p>"
+    },
+    "NdiSourceSettings":{
+      "type":"structure",
+      "members":{
+        "SourceName":{
+          "shape":"String",
+          "documentation":"<p> The exact name of an existing NDI sender that's registered with your discovery server. If included, the format of this name must be <code>MACHINENAME (ProgramName)</code>. </p>",
+          "locationName":"sourceName"
+        }
+      },
+      "documentation":"<p> The settings for the NDI® source. This includes the exact name of the upstream NDI sender that you want to connect to your source. </p>"
     },
     "NdiState":{
       "type":"string",
@@ -6571,7 +6726,7 @@
         },
         "PeerIpAddress":{
           "shape":"String",
-          "documentation":"<p>The IP address of the device that is currently receiving content from this output.</p> <note> <ul> <li> <p>For outputs that use protocols where you specify the destination (such as SRT Caller or Zixi Push), this value matches the configured destination address.</p> </li> <li> <p>For outputs that use listener protocols (such as SRT Listener), this value shows the address of the connected receiver. </p> </li> <li> <p>Peer IP addresses aren't available for entitlements, managed MediaLive outputs, NDI outputs, and CDI/ST2110 outputs. </p> </li> <li> <p>The peer IP address might not be visible for flows that haven't been started yet, or flows that were started before May 2025. In these cases, restart your flow to see the peer IP address.</p> </li> </ul> </note>",
+          "documentation":"<p>The IP address of the device that is currently receiving content from this output.</p> <note> <ul> <li> <p>For outputs that use protocols where you specify the destination (such as SRT Caller or Zixi Push), this value matches the configured destination address.</p> </li> <li> <p>For outputs that use listener protocols (such as SRT Listener), this value shows the address of the connected receiver. </p> </li> <li> <p>Peer IP addresses aren't available for entitlements, managed MediaLive outputs, NDI® sources and outputs, and CDI/ST2110 outputs. </p> </li> <li> <p>The peer IP address might not be visible for flows that haven't been started yet, or flows that were started before May 2025. In these cases, restart your flow to see the peer IP address.</p> </li> </ul> </note>",
           "locationName":"peerIpAddress"
         },
         "RouterIntegrationState":{
@@ -7330,7 +7485,7 @@
         },
         "RegionName":{
           "shape":"String",
-          "documentation":"<p>The AWS Region where the router input is located.</p>",
+          "documentation":"<p>The Amazon Web Services Region where the router input is located.</p>",
           "locationName":"regionName"
         },
         "AvailabilityZone":{
@@ -7771,7 +7926,7 @@
         },
         "RegionName":{
           "shape":"String",
-          "documentation":"<p>The AWS Region where the router network interface is located.</p>",
+          "documentation":"<p>The Amazon Web Services Region where the router network interface is located.</p>",
           "locationName":"regionName"
         },
         "CreatedAt":{
@@ -7943,7 +8098,7 @@
         },
         "RegionName":{
           "shape":"String",
-          "documentation":"<p>The AWS Region where the router output is located.</p>",
+          "documentation":"<p>The Amazon Web Services Region where the router output is located.</p>",
           "locationName":"regionName"
         },
         "AvailabilityZone":{
@@ -8311,16 +8466,16 @@
       "members":{
         "SecretArn":{
           "shape":"SecretArn",
-          "documentation":"<p>The ARN of the AWS Secrets Manager secret used for transit encryption.</p>",
+          "documentation":"<p>The ARN of the Secrets Manager secret used for transit encryption.</p>",
           "locationName":"secretArn"
         },
         "RoleArn":{
           "shape":"RoleArn",
-          "documentation":"<p>The ARN of the IAM role assumed by MediaConnect to access the AWS Secrets Manager secret.</p>",
+          "documentation":"<p>The ARN of the IAM role assumed by MediaConnect to access the Secrets Manager secret.</p>",
           "locationName":"roleArn"
         }
       },
-      "documentation":"<p>The configuration settings for transit encryption using AWS Secrets Manager, including the secret ARN and role ARN.</p>"
+      "documentation":"<p>The configuration settings for transit encryption using Secrets Manager, including the secret ARN and role ARN.</p>"
     },
     "ServiceUnavailableException":{
       "type":"structure",
@@ -8455,6 +8610,11 @@
           "shape":"SetGatewayBridgeSourceRequest",
           "documentation":"<p> The source configuration for cloud flows receiving a stream from a bridge.</p>",
           "locationName":"gatewayBridgeSource"
+        },
+        "NdiSourceSettings":{
+          "shape":"NdiSourceSettings",
+          "documentation":"<p> The settings for the NDI® source. This includes the exact name of the upstream NDI sender that you want to connect to your source. </p>",
+          "locationName":"ndiSourceSettings"
         },
         "SourceTags":{
           "shape":"__mapOfString",
@@ -9386,8 +9546,13 @@
         },
         "NdiProgramName":{
           "shape":"String",
-          "documentation":"<p>A suffix for the names of the NDI sources that the flow creates. If a custom name isn't specified, MediaConnect uses the output name. </p>",
+          "documentation":"<p>A suffix for the name of the NDI® sender that the flow creates. If a custom name isn't specified, MediaConnect uses the output name. </p>",
           "locationName":"ndiProgramName"
+        },
+        "NdiSourceSettings":{
+          "shape":"NdiSourceSettings",
+          "documentation":"<p> The settings for the NDI source. This includes the exact name of the upstream NDI sender that you want to connect to your source. </p>",
+          "locationName":"ndiSourceSettings"
         }
       },
       "documentation":"<p> Attributes related to the transport stream that are used in a source or output.</p>"
@@ -10108,7 +10273,7 @@
         },
         "NdiProgramName":{
           "shape":"String",
-          "documentation":"<p> A suffix for the names of the NDI sources that the flow creates. If a custom name isn't specified, MediaConnect uses the output name. </p>",
+          "documentation":"<p> A suffix for the name of the NDI® sender that the flow creates. If a custom name isn't specified, MediaConnect uses the output name. </p>",
           "locationName":"ndiProgramName"
         },
         "NdiSpeedHqQuality":{
@@ -10177,13 +10342,17 @@
         },
         "NdiConfig":{
           "shape":"NdiConfig",
-          "documentation":"<p> Specifies the configuration settings for NDI outputs. Required when the flow includes NDI outputs. </p>",
+          "documentation":"<p> Specifies the configuration settings for a flow's NDI source or output. Required when the flow includes an NDI source or output. </p>",
           "locationName":"ndiConfig"
         },
         "FlowSize":{
           "shape":"FlowSize",
           "documentation":"<p> Determines the processing capacity and feature set of the flow. </p>",
           "locationName":"flowSize"
+        },
+        "EncodingConfig":{
+          "shape":"EncodingConfig",
+          "locationName":"encodingConfig"
         }
       }
     },
@@ -10310,6 +10479,11 @@
           "documentation":"<p>The source configuration for cloud flows receiving a stream from a bridge. </p>",
           "locationName":"gatewayBridgeSource"
         },
+        "NdiSourceSettings":{
+          "shape":"NdiSourceSettings",
+          "documentation":"<p> The settings for the NDI source. This includes the exact name of the upstream NDI sender that you want to connect to your source. </p>",
+          "locationName":"ndiSourceSettings"
+        },
         "RouterIntegrationState":{
           "shape":"State",
           "documentation":"<p>Indicates whether to enable or disable router integration for this flow source.</p>",
@@ -10339,7 +10513,7 @@
       "members":{
         "FlowArn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the flow that you was updated. </p>",
+          "documentation":"<p>The ARN of the flow that you updated.</p>",
           "locationName":"flowArn"
         },
         "Source":{
@@ -10873,6 +11047,14 @@
     "__listOfNdiDiscoveryServerConfig":{
       "type":"list",
       "member":{"shape":"NdiDiscoveryServerConfig"}
+    },
+    "__listOfNdiMediaStreamInfo":{
+      "type":"list",
+      "member":{"shape":"NdiMediaStreamInfo"}
+    },
+    "__listOfNdiSourceInfo":{
+      "type":"list",
+      "member":{"shape":"NdiSourceInfo"}
     },
     "__listOfOffering":{
       "type":"list",

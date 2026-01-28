@@ -2833,6 +2833,10 @@
           "shape":"EventSourceMappingMetricsConfig",
           "documentation":"<p>The metrics configuration for your event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/monitoring-metrics-types.html#event-source-mapping-metrics\">Event source mapping metrics</a>.</p>"
         },
+        "LoggingConfig":{
+          "shape":"EventSourceMappingLoggingConfig",
+          "documentation":"<p>(Amazon MSK, and self-managed Apache Kafka only) The logging configuration for your event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/esm-logging.html\">Event source mapping logging</a>.</p>"
+        },
         "ProvisionedPollerConfig":{
           "shape":"ProvisionedPollerConfig",
           "documentation":"<p>(Amazon SQS, Amazon MSK, and self-managed Apache Kafka only) The provisioned mode configuration for the event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html#invocation-eventsourcemapping-provisioned-mode\">provisioned mode</a>.</p>"
@@ -3861,6 +3865,10 @@
           "shape":"EventSourceMappingMetricsConfig",
           "documentation":"<p>The metrics configuration for your event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/monitoring-metrics-types.html#event-source-mapping-metrics\">Event source mapping metrics</a>.</p>"
         },
+        "LoggingConfig":{
+          "shape":"EventSourceMappingLoggingConfig",
+          "documentation":"<p>(Amazon MSK, and self-managed Apache Kafka only) The logging configuration for your event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/esm-logging.html\">Event source mapping logging</a>.</p>"
+        },
         "ProvisionedPollerConfig":{
           "shape":"ProvisionedPollerConfig",
           "documentation":"<p>(Amazon SQS, Amazon MSK, and self-managed Apache Kafka only) The provisioned mode configuration for the event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html#invocation-eventsourcemapping-provisioned-mode\">provisioned mode</a>.</p>"
@@ -3868,14 +3876,28 @@
       },
       "documentation":"<p>A mapping between an Amazon Web Services resource and a Lambda function. For details, see <a>CreateEventSourceMapping</a>.</p>"
     },
+    "EventSourceMappingLoggingConfig":{
+      "type":"structure",
+      "members":{
+        "SystemLogLevel":{
+          "shape":"EventSourceMappingSystemLogLevel",
+          "documentation":"<p> The log level you want your event source mapping to use. Lambda event poller only sends system logs at the selected level of detail and lower, where <code>DEBUG</code> is the highest level and <code>WARN</code> is the lowest. For more information about these metrics, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/esm-logging.html\"> Event source mapping logging</a>. </p>"
+        }
+      },
+      "documentation":"<p>(Amazon MSK, and self-managed Apache Kafka only) The logging configuration for your event source. Use this configuration object to define the level of logs for your event source mapping. </p>"
+    },
     "EventSourceMappingMetric":{
       "type":"string",
-      "enum":["EventCount"]
+      "enum":[
+        "EventCount",
+        "ErrorCount",
+        "KafkaMetrics"
+      ]
     },
     "EventSourceMappingMetricList":{
       "type":"list",
       "member":{"shape":"EventSourceMappingMetric"},
-      "max":1,
+      "max":3,
       "min":0
     },
     "EventSourceMappingMetricsConfig":{
@@ -3883,10 +3905,18 @@
       "members":{
         "Metrics":{
           "shape":"EventSourceMappingMetricList",
-          "documentation":"<p> The metrics you want your event source mapping to produce. Include <code>EventCount</code> to receive event source mapping metrics related to the number of events processed by your event source mapping. For more information about these metrics, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/monitoring-metrics-types.html#event-source-mapping-metrics\"> Event source mapping metrics</a>. </p>"
+          "documentation":"<p> The metrics you want your event source mapping to produce, including <code>EventCount</code>, <code>ErrorCount</code>, <code>KafkaMetrics</code>. </p> <ul> <li> <p> <code>EventCount</code> to receive metrics related to the number of events processed by your event source mapping.</p> </li> <li> <p> <code>ErrorCount</code> (Amazon MSK and self-managed Apache Kafka) to receive metrics related to the number of errors in your event source mapping processing.</p> </li> <li> <p> <code>KafkaMetrics</code> (Amazon MSK and self-managed Apache Kafka) to receive metrics related to the Kafka consumers from your event source mapping.</p> </li> </ul> <p> For more information about these metrics, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/monitoring-metrics-types.html#event-source-mapping-metrics\"> Event source mapping metrics</a>. </p>"
         }
       },
       "documentation":"<p>The metrics configuration for your event source. Use this configuration object to define which metrics you want your event source mapping to produce.</p>"
+    },
+    "EventSourceMappingSystemLogLevel":{
+      "type":"string",
+      "enum":[
+        "DEBUG",
+        "INFO",
+        "WARN"
+      ]
     },
     "EventSourceMappingsList":{
       "type":"list",
@@ -8966,6 +8996,7 @@
           "shape":"EventSourceMappingMetricsConfig",
           "documentation":"<p>The metrics configuration for your event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/monitoring-metrics-types.html#event-source-mapping-metrics\">Event source mapping metrics</a>.</p>"
         },
+        "LoggingConfig":{"shape":"EventSourceMappingLoggingConfig"},
         "ProvisionedPollerConfig":{
           "shape":"ProvisionedPollerConfig",
           "documentation":"<p>(Amazon SQS, Amazon MSK, and self-managed Apache Kafka only) The provisioned mode configuration for the event source. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html#invocation-eventsourcemapping-provisioned-mode\">provisioned mode</a>.</p>"

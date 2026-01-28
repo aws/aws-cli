@@ -56,16 +56,21 @@ class EnhancedErrorFormatter:
             return
 
         stream.write('\nAdditional error details:\n')
+        has_complex_value = False
         for key, value in additional_fields.items():
             if self._is_simple_value(value):
                 stream.write(f'{key}: {value}\n')
             elif self._is_small_collection(value):
                 stream.write(f'{key}: {self._format_inline(value)}\n')
             else:
-                stream.write(
-                    f'{key}: <complex value>, '
-                    f'use "--cli-error-format json" or another error format to see the full details\n'
-                )
+                stream.write(f'{key}: <complex value>\n')
+                has_complex_value = True
+
+        if has_complex_value:
+            stream.write(
+                'Use "--cli-error-format json" or another error format '
+                'to see the full details.\n'
+            )
 
     def _is_simple_value(self, value):
         return isinstance(value, (str, int, float, bool, type(None)))

@@ -6522,7 +6522,7 @@
       },
       "input":{"shape":"ModifyVolumeRequest"},
       "output":{"shape":"ModifyVolumeResult"},
-      "documentation":"<p>You can modify several parameters of an existing EBS volume, including volume size, volume type, and IOPS capacity. If your EBS volume is attached to a current-generation EC2 instance type, you might be able to apply these changes without stopping the instance or detaching the volume from it. For more information about modifying EBS volumes, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-modify-volume.html\">Amazon EBS Elastic Volumes</a> in the <i>Amazon EBS User Guide</i>.</p> <p>When you complete a resize operation on your volume, you need to extend the volume's file-system size to take advantage of the new storage capacity. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/recognize-expanded-volume-linux.html\">Extend the file system</a>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/monitoring-volume-modifications.html\">Monitor the progress of volume modifications</a> in the <i>Amazon EBS User Guide</i>.</p> <p>With previous-generation instance types, resizing an EBS volume might require detaching and reattaching the volume or stopping and restarting the instance.</p> <p>After modifying a volume, you must wait at least six hours and ensure that the volume is in the <code>in-use</code> or <code>available</code> state before you can modify the same volume. This is sometimes referred to as a cooldown period.</p>"
+      "documentation":"<p>You can modify several parameters of an existing EBS volume, including volume size, volume type, and IOPS capacity. If your EBS volume is attached to a current-generation EC2 instance type, you might be able to apply these changes without stopping the instance or detaching the volume from it. For more information about modifying EBS volumes, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/ebs-modify-volume.html\">Amazon EBS Elastic Volumes</a> in the <i>Amazon EBS User Guide</i>.</p> <p>When you complete a resize operation on your volume, you need to extend the volume's file-system size to take advantage of the new storage capacity. For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/recognize-expanded-volume-linux.html\">Extend the file system</a>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/monitoring-volume-modifications.html\">Monitor the progress of volume modifications</a> in the <i>Amazon EBS User Guide</i>.</p> <p>With previous-generation instance types, resizing an EBS volume might require detaching and reattaching the volume or stopping and restarting the instance.</p> <p>After you initiate a volume modification, you must wait for that modification to reach the <code>completed</code> state before you can initiate another modification for the same volume. You can modify a volume up to four times within a rolling 24-hour period, as long as the volume is in the <code>in-use</code> or <code>available</code> state, and all previous modifications for that volume are <code>completed</code>. If you exceed this limit, you get an error message that indicates when you can perform your next modification.</p>"
     },
     "ModifyVolumeAttribute":{
       "name":"ModifyVolumeAttribute",
@@ -8179,6 +8179,7 @@
         "locationName":"item"
       }
     },
+    "AdditionalFlexibleNetworkInterfaces":{"type":"integer"},
     "Address":{
       "type":"structure",
       "members":{
@@ -10401,6 +10402,10 @@
         "VolumeId":{
           "shape":"VolumeId",
           "documentation":"<p>The ID of the EBS volume. The volume and instance must be within the same Availability Zone.</p>"
+        },
+        "EbsCardIndex":{
+          "shape":"BoxedInteger",
+          "documentation":"<p>The index of the EBS card. Some instance types support multiple EBS cards. The default EBS card index is 0.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -33373,6 +33378,10 @@
         "AvailabilityZoneId":{
           "shape":"String",
           "documentation":"<p>The ID of the Availability Zone where the EBS volume will be created (for example, <code>use1-az1</code>).</p> <p>Either <code>AvailabilityZone</code> or <code>AvailabilityZoneId</code> can be specified, but not both. If neither is specified, Amazon EC2 automatically selects an Availability Zone within the Region.</p> <p>This parameter is not supported when using <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateFleet.html\">CreateFleet</a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateImage.html\">CreateImage</a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeImages.html\">DescribeImages</a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RequestSpotFleet.html\">RequestSpotFleet</a>, <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RequestSpotInstances.html\">RequestSpotInstances</a>, and <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_RunInstances.html\">RunInstances</a>.</p>"
+        },
+        "EbsCardIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the EBS card. Some instance types support multiple EBS cards. The default EBS card index is 0.</p>"
         }
       },
       "documentation":"<p>Describes a block device for an EBS volume.</p>"
@@ -33423,6 +33432,55 @@
       },
       "documentation":"<p>Describes a block device for an EBS volume.</p>"
     },
+    "EbsCardIndex":{"type":"integer"},
+    "EbsCardInfo":{
+      "type":"structure",
+      "members":{
+        "EbsCardIndex":{
+          "shape":"EbsCardIndex",
+          "documentation":"<p>The index of the EBS card.</p>",
+          "locationName":"ebsCardIndex"
+        },
+        "BaselineBandwidthInMbps":{
+          "shape":"BaselineBandwidthInMbps",
+          "documentation":"<p>The baseline bandwidth performance for the EBS card, in Mbps.</p>",
+          "locationName":"baselineBandwidthInMbps"
+        },
+        "BaselineThroughputInMBps":{
+          "shape":"BaselineThroughputInMBps",
+          "documentation":"<p>The baseline throughput performance for the EBS card, in MBps.</p>",
+          "locationName":"baselineThroughputInMBps"
+        },
+        "BaselineIops":{
+          "shape":"BaselineIops",
+          "documentation":"<p>The baseline IOPS performance for the EBS card.</p>",
+          "locationName":"baselineIops"
+        },
+        "MaximumBandwidthInMbps":{
+          "shape":"MaximumBandwidthInMbps",
+          "documentation":"<p>The maximum bandwidth performance for the EBS card, in Mbps.</p>",
+          "locationName":"maximumBandwidthInMbps"
+        },
+        "MaximumThroughputInMBps":{
+          "shape":"MaximumThroughputInMBps",
+          "documentation":"<p>The maximum throughput performance for the EBS card, in MBps.</p>",
+          "locationName":"maximumThroughputInMBps"
+        },
+        "MaximumIops":{
+          "shape":"MaximumIops",
+          "documentation":"<p>The maximum IOPS performance for the EBS card.</p>",
+          "locationName":"maximumIops"
+        }
+      },
+      "documentation":"<p>Describes the performance characteristics of an EBS card on the instance type.</p>"
+    },
+    "EbsCardInfoList":{
+      "type":"list",
+      "member":{
+        "shape":"EbsCardInfo",
+        "locationName":"item"
+      }
+    },
     "EbsEncryptionSupport":{
       "type":"string",
       "enum":[
@@ -33462,6 +33520,16 @@
           "shape":"AttachmentLimitType",
           "documentation":"<p>Indicates whether the instance type features a shared or dedicated Amazon EBS volume attachment limit. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/volume_limits.html\">Amazon EBS volume limits for Amazon EC2 instances</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"attachmentLimitType"
+        },
+        "MaximumEbsCards":{
+          "shape":"MaximumEbsCards",
+          "documentation":"<p>Indicates the number of EBS cards supported by the instance type.</p>",
+          "locationName":"maximumEbsCards"
+        },
+        "EbsCards":{
+          "shape":"EbsCardInfoList",
+          "documentation":"<p>Describes the EBS cards available for the instance type.</p>",
+          "locationName":"ebsCardSet"
         }
       },
       "documentation":"<p>Describes the Amazon EBS features supported by the instance type.</p>"
@@ -33503,6 +33571,11 @@
           "shape":"OperatorResponse",
           "documentation":"<p>The service provider that manages the EBS volume.</p>",
           "locationName":"operator"
+        },
+        "EbsCardIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the EBS card. Some instance types support multiple EBS cards. The default EBS card index is 0.</p>",
+          "locationName":"ebsCardIndex"
         }
       },
       "documentation":"<p>Describes a parameter used to set up an EBS volume in a block device mapping.</p>"
@@ -38395,7 +38468,7 @@
       "members":{
         "OrganizationTargets":{
           "shape":"IpamPolicyOrganizationTargetSet",
-          "documentation":"<p>The Amazon Web Services Organizations targets for an IPAM policy.</p>",
+          "documentation":"<p>The IDs of the Amazon Web Services Organizations targets.</p> <p>A target can be an individual Amazon Web Services account or an entity within an Amazon Web Services Organization to which an IPAM policy can be applied.</p>",
           "locationName":"organizationTargetSet"
         },
         "NextToken":{
@@ -39907,6 +39980,21 @@
           "documentation":"<p>The number of GPUs for the instance type.</p>",
           "locationName":"count"
         },
+        "LogicalGpuCount":{
+          "shape":"LogicalGpuCount",
+          "documentation":"<p>Total number of GPU devices of this type.</p>",
+          "locationName":"logicalGpuCount"
+        },
+        "GpuPartitionSize":{
+          "shape":"GpuPartitionSize",
+          "documentation":"<p>The size of each GPU as a fraction of a full GPU, between 0 (excluded) and 1 (included).</p>",
+          "locationName":"gpuPartitionSize"
+        },
+        "Workloads":{
+          "shape":"WorkloadsList",
+          "documentation":"<p>A list of workload types this GPU supports.</p>",
+          "locationName":"workloadSet"
+        },
         "MemoryInfo":{
           "shape":"GpuDeviceMemoryInfo",
           "documentation":"<p>Describes the memory available to the GPU accelerator.</p>",
@@ -39952,6 +40040,7 @@
       },
       "documentation":"<p>Describes the GPU accelerators for the instance type.</p>"
     },
+    "GpuPartitionSize":{"type":"double"},
     "GroupBy":{
       "type":"string",
       "enum":[
@@ -47087,7 +47176,7 @@
       "members":{
         "OrganizationTargetId":{
           "shape":"String",
-          "documentation":"<p>The ID of a Amazon Web Services Organizations target for an IPAM policy.</p>",
+          "documentation":"<p>The ID of the Amazon Web Services Organizations target.</p> <p>A target can be an individual Amazon Web Services account or an entity within an Amazon Web Services Organization to which an IPAM policy can be applied.</p>",
           "locationName":"organizationTargetId"
         }
       },
@@ -49224,6 +49313,11 @@
           "shape":"Integer",
           "documentation":"<p>The Amazon EBS Provisioned Rate for Volume Initialization (volume initialization rate) specified for the volume, in MiB/s. If no volume initialization rate was specified, the value is <code>null</code>.</p>",
           "locationName":"volumeInitializationRate"
+        },
+        "EbsCardIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the EBS card. Some instance types support multiple EBS cards. The default EBS card index is 0.</p>",
+          "locationName":"ebsCardIndex"
         }
       },
       "documentation":"<p>Describes a block device for an EBS volume.</p>"
@@ -49266,6 +49360,10 @@
         "VolumeInitializationRate":{
           "shape":"Integer",
           "documentation":"<p>Specifies the Amazon EBS Provisioned Rate for Volume Initialization (volume initialization rate), in MiB/s, at which to download the snapshot blocks from Amazon S3 to the volume. This is also known as <i>volume initialization</i>. Specifying a volume initialization rate ensures that the volume is initialized at a predictable and consistent rate after creation.</p> <p>This parameter is supported only for volumes created from snapshots. Omit this parameter if:</p> <ul> <li> <p>You want to create the volume using fast snapshot restore. You must specify a snapshot that is enabled for fast snapshot restore. In this case, the volume is fully initialized at creation.</p> <note> <p>If you specify a snapshot that is enabled for fast snapshot restore and a volume initialization rate, the volume will be initialized at the specified rate instead of fast snapshot restore.</p> </note> </li> <li> <p>You want to create a volume that is initialized at the default rate.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/ebs/latest/userguide/initalize-volume.html\"> Initialize Amazon EBS volumes</a> in the <i>Amazon EC2 User Guide</i>.</p> <p>Valid range: 100 - 300 MiB/s</p>"
+        },
+        "EbsCardIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the EBS card. Some instance types support multiple EBS cards. The default EBS card index is 0.</p>"
         }
       },
       "documentation":"<p>The parameters for a block device for an EBS volume.</p>"
@@ -51238,6 +51336,7 @@
         "kinesis-data-firehose"
       ]
     },
+    "LogicalGpuCount":{"type":"integer"},
     "Long":{"type":"long"},
     "MacHost":{
       "type":"structure",
@@ -51574,6 +51673,7 @@
       "min":0
     },
     "MaximumEbsAttachments":{"type":"integer"},
+    "MaximumEbsCards":{"type":"integer"},
     "MaximumEfaInterfaces":{"type":"integer"},
     "MaximumEnaQueueCount":{"type":"integer"},
     "MaximumEnaQueueCountPerInterface":{"type":"integer"},
@@ -56155,6 +56255,11 @@
           "shape":"MaxNetworkInterfaces",
           "documentation":"<p>The maximum number of network interfaces for the network card.</p>",
           "locationName":"maximumNetworkInterfaces"
+        },
+        "AdditionalFlexibleNetworkInterfaces":{
+          "shape":"AdditionalFlexibleNetworkInterfaces",
+          "documentation":"<p>The number of additional network interfaces that can be attached to an instance when using flexible Elastic Network Adapter (ENA) queues. This number is in addition to the base number specified by <code>maximumNetworkInterfaces</code>.</p>",
+          "locationName":"additionalFlexibleNetworkInterfaces"
         },
         "BaselineBandwidthInGbps":{
           "shape":"BaselineBandwidthInGbps",
@@ -72758,6 +72863,11 @@
           "documentation":"<p>The service principal of the Amazon Web Services service that owns the underlying resource to which the volume is attached.</p> <p>This parameter is returned only for volumes that are attached to Amazon Web Services-managed resources.</p>",
           "locationName":"instanceOwningService"
         },
+        "EbsCardIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the EBS card. Some instance types support multiple EBS cards. The default EBS card index is 0.</p>",
+          "locationName":"ebsCardIndex"
+        },
         "VolumeId":{
           "shape":"String",
           "documentation":"<p>The ID of the volume.</p>",
@@ -74960,6 +75070,14 @@
           "documentation":"<p>Information about the address pool.</p>",
           "locationName":"byoipCidr"
         }
+      }
+    },
+    "Workload":{"type":"string"},
+    "WorkloadsList":{
+      "type":"list",
+      "member":{
+        "shape":"Workload",
+        "locationName":"item"
       }
     },
     "ZoneIdStringList":{

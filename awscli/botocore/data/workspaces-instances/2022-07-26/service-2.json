@@ -105,7 +105,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Deletes the specified WorkSpace</p>"
+      "documentation":"<p>Deletes the specified WorkSpace</p> <important> <p>Usage of this API will result in deletion of the resource in question.</p> </important>"
     },
     "DisassociateVolume":{
       "name":"DisassociateVolume",
@@ -140,7 +140,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves detailed information about a specific WorkSpace Instance.</p>"
+      "documentation":"<p>Retrieves detailed information about a specific WorkSpace Instance.</p>",
+      "readonly":true
     },
     "ListInstanceTypes":{
       "name":"ListInstanceTypes",
@@ -156,7 +157,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves a list of instance types supported by Amazon WorkSpaces Instances, enabling precise workspace infrastructure configuration.</p>"
+      "documentation":"<p>Retrieves a list of instance types supported by Amazon WorkSpaces Instances, enabling precise workspace infrastructure configuration.</p>",
+      "readonly":true
     },
     "ListRegions":{
       "name":"ListRegions",
@@ -172,7 +174,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves a list of AWS regions supported by Amazon WorkSpaces Instances, enabling region discovery for workspace deployments.</p>"
+      "documentation":"<p>Retrieves a list of AWS regions supported by Amazon WorkSpaces Instances, enabling region discovery for workspace deployments.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -189,7 +192,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves tags for a WorkSpace Instance.</p>"
+      "documentation":"<p>Retrieves tags for a WorkSpace Instance.</p>",
+      "readonly":true
     },
     "ListWorkspaceInstances":{
       "name":"ListWorkspaceInstances",
@@ -205,7 +209,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Retrieves a collection of WorkSpaces Instances based on specified filters.</p>"
+      "documentation":"<p>Retrieves a collection of WorkSpaces Instances based on specified filters.</p>",
+      "readonly":true
     },
     "TagResource":{
       "name":"TagResource",
@@ -293,8 +298,7 @@
     },
     "AssociateVolumeResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Confirms volume attachment.</p>"
     },
     "AutoRecoveryEnum":{
@@ -306,7 +310,7 @@
     },
     "AvailabilityZone":{
       "type":"string",
-      "pattern":"[a-z]{2}-[a-z]+-\\d[a-z](-[a-z0-9]+)?"
+      "pattern":"[a-z]{2}-[a-z]+-\\d(?:[a-z]|-[a-z]+-\\d[a-z])"
     },
     "BandwidthWeightingEnum":{
       "type":"string",
@@ -314,6 +318,24 @@
         "default",
         "vpc-1",
         "ebs-1"
+      ]
+    },
+    "BillingConfiguration":{
+      "type":"structure",
+      "required":["BillingMode"],
+      "members":{
+        "BillingMode":{
+          "shape":"BillingMode",
+          "documentation":"<p>Specifies the billing mode for WorkSpace Instances. MONTHLY provides fixed monthly rates for predictable budgeting, while HOURLY enables pay-per-second billing for actual usage.</p>"
+        }
+      },
+      "documentation":"<p>Defines billing configuration settings for WorkSpace Instances, containing the billing mode selection.</p>"
+    },
+    "BillingMode":{
+      "type":"string",
+      "enum":[
+        "MONTHLY",
+        "HOURLY"
       ]
     },
     "BlockDeviceMappingRequest":{
@@ -529,6 +551,10 @@
         "ManagedInstance":{
           "shape":"ManagedInstanceRequest",
           "documentation":"<p>Comprehensive configuration settings for the WorkSpaces Instance, including network, compute, and storage parameters.</p>"
+        },
+        "BillingConfiguration":{
+          "shape":"BillingConfiguration",
+          "documentation":"<p>Optional billing configuration for the WorkSpace Instance. Allows customers to specify their preferred billing mode when creating a new instance. Defaults to hourly billing if not specified.</p>"
         }
       },
       "documentation":"<p>Defines the configuration parameters for creating a new WorkSpaces Instance.</p>"
@@ -566,8 +592,7 @@
     },
     "DeleteVolumeResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Confirms volume deletion.</p>"
     },
     "DeleteWorkspaceInstanceRequest":{
@@ -583,8 +608,7 @@
     },
     "DeleteWorkspaceInstanceResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Confirms the successful deletion of the specified WorkSpace Instance.</p>"
     },
     "Description":{
@@ -633,8 +657,7 @@
     },
     "DisassociateVolumeResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Confirms volume detachment.</p>"
     },
     "EC2InstanceError":{
@@ -766,6 +789,10 @@
         "EC2ManagedInstance":{
           "shape":"EC2ManagedInstance",
           "documentation":"<p>Details of the associated EC2 managed instance.</p>"
+        },
+        "BillingConfiguration":{
+          "shape":"BillingConfiguration",
+          "documentation":"<p>Returns the current billing configuration for the WorkSpace Instance, indicating the active billing mode.</p>"
         }
       },
       "documentation":"<p>Provides comprehensive details about the requested WorkSpaces Instance.</p>"
@@ -835,6 +862,36 @@
     "ImageId":{
       "type":"string",
       "pattern":"ami-[0-9a-zA-Z]{1,63}"
+    },
+    "InstanceConfigurationFilter":{
+      "type":"structure",
+      "required":[
+        "BillingMode",
+        "PlatformType",
+        "Tenancy"
+      ],
+      "members":{
+        "BillingMode":{
+          "shape":"BillingMode",
+          "documentation":"<p>Filters WorkSpace Instance types based on supported billing modes. Allows customers to search for instance types that support their preferred billing model, such as HOURLY or MONTHLY billing.</p>"
+        },
+        "PlatformType":{
+          "shape":"PlatformTypeEnum",
+          "documentation":"<p>Filters WorkSpace Instance types by operating system platform. Allows customers to find instances that support their desired OS, such as Windows, Linux/UNIX, Ubuntu Pro, RHEL, or SUSE.</p>"
+        },
+        "Tenancy":{
+          "shape":"InstanceConfigurationTenancyEnum",
+          "documentation":"<p>Filters WorkSpace Instance types by tenancy model. Allows customers to find instances that match their tenancy requirements, such as SHARED or DEDICATED.</p>"
+        }
+      },
+      "documentation":"<p>Defines filtering criteria for WorkSpace Instance type searches. Combines multiple filter conditions including billing mode, platform type, and tenancy to help customers find instance types that meet their specific requirements.</p>"
+    },
+    "InstanceConfigurationTenancyEnum":{
+      "type":"string",
+      "enum":[
+        "SHARED",
+        "DEDICATED"
+      ]
     },
     "InstanceInterruptionBehaviorEnum":{
       "type":"string",
@@ -1024,6 +1081,10 @@
         "InstanceType":{
           "shape":"InstanceType",
           "documentation":"<p>Unique identifier for the WorkSpace Instance type.</p>"
+        },
+        "SupportedInstanceConfigurations":{
+          "shape":"SupportedInstanceConfigurations",
+          "documentation":"<p>Lists all valid combinations of tenancy, platform type, and billing mode supported for the specific WorkSpace Instance type. Contains the complete set of configuration options available for this instance type.</p>"
         }
       },
       "documentation":"<p>Provides details about a specific WorkSpace Instance type.</p>"
@@ -1133,16 +1194,26 @@
       "type":"list",
       "member":{"shape":"LicenseConfigurationRequest"}
     },
+    "ListInstanceTypesMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":600,
+      "min":1
+    },
     "ListInstanceTypesRequest":{
       "type":"structure",
       "members":{
         "MaxResults":{
-          "shape":"MaxResults",
+          "shape":"ListInstanceTypesMaxResults",
           "documentation":"<p>Maximum number of instance types to return in a single API call. Enables pagination of instance type results.</p>"
         },
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>Pagination token for retrieving subsequent pages of instance type results.</p>"
+        },
+        "InstanceConfigurationFilter":{
+          "shape":"InstanceConfigurationFilter",
+          "documentation":"<p>Optional filter to narrow instance type results based on configuration requirements. Only returns instance types that support the specified combination of tenancy, platform type, and billing mode.</p>"
         }
       },
       "documentation":"<p>Defines input parameters for retrieving supported WorkSpaces Instances instance types.</p>"
@@ -1453,6 +1524,18 @@
       "type":"string",
       "pattern":"pg-[0-9a-zA-Z]{1,63}"
     },
+    "PlatformTypeEnum":{
+      "type":"string",
+      "enum":[
+        "Windows",
+        "Windows BYOL",
+        "Linux/UNIX",
+        "Ubuntu Pro Linux",
+        "Red Hat Enterprise Linux",
+        "Red Hat BYOL Linux",
+        "SUSE Linux"
+      ]
+    },
     "PrivateDnsNameOptionsRequest":{
       "type":"structure",
       "members":{
@@ -1667,6 +1750,28 @@
       "type":"string",
       "pattern":"subnet-[0-9a-zA-Z]{1,63}"
     },
+    "SupportedInstanceConfiguration":{
+      "type":"structure",
+      "members":{
+        "BillingMode":{
+          "shape":"BillingMode",
+          "documentation":"<p>Specifies the billing mode supported in this configuration combination.</p>"
+        },
+        "PlatformType":{
+          "shape":"PlatformTypeEnum",
+          "documentation":"<p>Specifies the operating system platform supported in this configuration combination.</p>"
+        },
+        "Tenancy":{
+          "shape":"InstanceConfigurationTenancyEnum",
+          "documentation":"<p>Specifies the tenancy model supported in this configuration combination.</p>"
+        }
+      },
+      "documentation":"<p>Represents a single valid configuration combination that an instance type supports, combining tenancy, platform type, and billing mode into one complete configuration specification.</p>"
+    },
+    "SupportedInstanceConfigurations":{
+      "type":"list",
+      "member":{"shape":"SupportedInstanceConfiguration"}
+    },
     "Tag":{
       "type":"structure",
       "members":{
@@ -1690,13 +1795,13 @@
     "TagKeyList":{
       "type":"list",
       "member":{"shape":"TagKey"},
-      "max":30,
+      "max":50,
       "min":1
     },
     "TagList":{
       "type":"list",
       "member":{"shape":"Tag"},
-      "max":30,
+      "max":50,
       "min":0
     },
     "TagResourceRequest":{
@@ -1719,8 +1824,7 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Confirms successful tag addition.</p>"
     },
     "TagSpecification":{
@@ -1803,8 +1907,7 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      },
+      "members":{},
       "documentation":"<p>Confirms successful tag removal.</p>"
     },
     "UserData":{

@@ -69,6 +69,7 @@ class CopySubmissionTask(SubmissionTask):
         'CopySourceSSECustomerKeyMD5',
         'MetadataDirective',
         'TaggingDirective',
+        'IfNoneMatch',
     ]
 
     COMPLETE_MULTIPART_ARGS = [
@@ -77,7 +78,9 @@ class CopySubmissionTask(SubmissionTask):
         'SSECustomerKeyMD5',
         'RequestPayer',
         'ExpectedBucketOwner',
+        'IfNoneMatch',
     ]
+
 
     def _submit(
         self, client, config, osutil, request_executor, transfer_future
@@ -154,19 +157,18 @@ class CopySubmissionTask(SubmissionTask):
         # Get the needed progress callbacks for the task
         progress_callbacks = get_callbacks(transfer_future, 'progress')
 
-        # Submit the request of a single copy.
         self._transfer_coordinator.submit(
             request_executor,
             CopyObjectTask(
                 transfer_coordinator=self._transfer_coordinator,
                 main_kwargs={
-                    'client': client,
-                    'copy_source': call_args.copy_source,
-                    'bucket': call_args.bucket,
-                    'key': call_args.key,
-                    'extra_args': call_args.extra_args,
-                    'callbacks': progress_callbacks,
-                    'size': transfer_future.meta.size,
+                    "client": client,
+                    "copy_source": call_args.copy_source,
+                    "bucket": call_args.bucket,
+                    "key": call_args.key,
+                    "extra_args": call_args.extra_args,
+                    "callbacks": progress_callbacks,
+                    "size": transfer_future.meta.size,
                 },
                 is_final=True,
             ),

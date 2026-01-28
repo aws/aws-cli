@@ -345,7 +345,7 @@
         },
         "dataFilterExpression":{
           "shape":"Expression",
-          "documentation":"<p> See <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_billing_Expression.html\">Expression</a>. Billing view only supports <code>LINKED_ACCOUNT</code> and <code>Tags</code>. </p>"
+          "documentation":"<p> See <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_billing_Expression.html\">Expression</a>. Billing view only supports <code>LINKED_ACCOUNT</code>, <code>Tags</code>, and <code>CostCategories</code>. </p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -523,6 +523,30 @@
       "documentation":"<p> The requested operation would cause a conflict with the current state of a service resource associated with the request. Resolve the conflict before retrying this request. </p>",
       "exception":true
     },
+    "CostCategoryName":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"(?! )[\\p{L}\\p{N}\\p{Z}-_]*(?<! )"
+    },
+    "CostCategoryValues":{
+      "type":"structure",
+      "required":[
+        "key",
+        "values"
+      ],
+      "members":{
+        "key":{
+          "shape":"CostCategoryName",
+          "documentation":"<p> The unique name of the Cost Category. </p>"
+        },
+        "values":{
+          "shape":"Values",
+          "documentation":"<p> The specific value of the Cost Category. </p>"
+        }
+      },
+      "documentation":"<p> The Cost Categories values used for filtering the costs. </p>"
+    },
     "CreateBillingViewRequest":{
       "type":"structure",
       "required":[
@@ -544,7 +568,7 @@
         },
         "dataFilterExpression":{
           "shape":"Expression",
-          "documentation":"<p> See <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_billing_Expression.html\">Expression</a>. Billing view only supports <code>LINKED_ACCOUNT</code> and <code>Tags</code>. </p>"
+          "documentation":"<p> See <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_billing_Expression.html\">Expression</a>. Billing view only supports <code>LINKED_ACCOUNT</code>, <code>Tags</code>, and <code>CostCategories</code>. </p>"
         },
         "clientToken":{
           "shape":"ClientToken",
@@ -660,12 +684,16 @@
           "shape":"TagValues",
           "documentation":"<p> The specific <code>Tag</code> to use for <code>Expression</code>. </p>"
         },
+        "costCategories":{
+          "shape":"CostCategoryValues",
+          "documentation":"<p> The filter that's based on <code>CostCategory</code> values. </p>"
+        },
         "timeRange":{
           "shape":"TimeRange",
           "documentation":"<p> Specifies a time range filter for the billing view data. </p>"
         }
       },
-      "documentation":"<p> See <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_billing_Expression.html\">Expression</a>. Billing view only supports <code>LINKED_ACCOUNT</code> and <code>Tags</code>. </p>"
+      "documentation":"<p> See <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_billing_Expression.html\">Expression</a>. Billing view only supports <code>LINKED_ACCOUNT</code>, <code>Tags</code>, and <code>CostCategories</code>. </p>"
     },
     "FieldName":{
       "type":"string",
@@ -1093,7 +1121,7 @@
         },
         "dataFilterExpression":{
           "shape":"Expression",
-          "documentation":"<p>See <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_billing_Expression.html\">Expression</a>. Billing view only supports <code>LINKED_ACCOUNT</code> and <code>Tags</code>. </p>"
+          "documentation":"<p>See <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_billing_Expression.html\">Expression</a>. Billing view only supports <code>LINKED_ACCOUNT</code>, <code>Tags</code>, and <code>CostCategories</code>. </p>"
         }
       }
     },

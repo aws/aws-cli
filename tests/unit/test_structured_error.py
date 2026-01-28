@@ -16,8 +16,8 @@ import json
 import signal
 from unittest import mock
 
-from ruamel.yaml import YAML
 from botocore.exceptions import ClientError, NoCredentialsError, NoRegionError
+from ruamel.yaml import YAML
 
 from awscli.arguments import UnknownArgumentError
 from awscli.constants import (
@@ -237,8 +237,9 @@ class TestEnhancedErrorFormatter:
         expected = (
             '\n'
             'Additional error details:\n'
-            'Details: <complex value> '
-            '(Use --cli-error-format with json or yaml to see full details)\n'
+            'Details: <complex value>\n'
+            'Use "--cli-error-format json" or another error format '
+            'to see the full details.\n'
         )
         assert output == expected
 
@@ -259,8 +260,9 @@ class TestEnhancedErrorFormatter:
         expected = (
             '\n'
             'Additional error details:\n'
-            'FieldErrors: <complex value> '
-            '(Use --cli-error-format with json or yaml to see full details)\n'
+            'FieldErrors: <complex value>\n'
+            'Use "--cli-error-format json" or another error format '
+            'to see the full details.\n'
         )
         assert output == expected
 
@@ -287,8 +289,9 @@ class TestEnhancedErrorFormatter:
         expected = (
             '\n'
             'Additional error details:\n'
-            'CancellationReasons: <complex value> '
-            '(Use --cli-error-format with json or yaml to see full details)\n'
+            'CancellationReasons: <complex value>\n'
+            'Use "--cli-error-format json" or another error format '
+            'to see the full details.\n'
         )
         assert output == expected
 
@@ -354,8 +357,9 @@ class TestEnhancedErrorFormatter:
         expected = (
             '\n'
             'Additional error details:\n'
-            'Items: <complex value> '
-            '(Use --cli-error-format with json or yaml to see full details)\n'
+            'Items: <complex value>\n'
+            'Use "--cli-error-format json" or another error format '
+            'to see the full details.\n'
         )
         assert output == expected
 
@@ -409,8 +413,9 @@ class TestRealWorldErrorScenarios:
             'CancellationReasons for specific reasons\n'
             '\n'
             'Additional error details:\n'
-            'CancellationReasons: <complex value> '
-            '(Use --cli-error-format with json or yaml to see full details)\n'
+            'CancellationReasons: <complex value>\n'
+            'Use "--cli-error-format json" or another error format '
+            'to see the full details.\n'
         )
         assert stderr.getvalue() == expected
 

@@ -6205,7 +6205,7 @@
         "TargetLkfs": {
           "shape": "__doubleMinNegative59Max0",
           "locationName": "targetLkfs",
-          "documentation": "Target LKFS(loudness) to adjust volume to. If no value is entered, a default value will be used according to the chosen algorithm.  The CALM Act (1770-1) recommends a target of -24 LKFS. The EBU R-128 specification (1770-2) recommends a target of -23 LKFS."
+          "documentation": "Target LKFS(loudness) to adjust volume to. If no value is entered, a default value will be used according to the chosen algorithm.  The CALM Act recommends a target of -24 LKFS. The EBU R-128 specification recommends a target of -23 LKFS."
         }
       },
       "documentation": "Audio Normalization Settings"
@@ -15211,6 +15211,16 @@
           "shape": "__stringMin1",
           "locationName": "channelName",
           "documentation": "Name of the channel in MediaPackageV2. Only use if you are sending CMAF Ingest output to a CMAF ingest endpoint on a MediaPackage channel that uses MediaPackage v2."
+        },
+        "ChannelEndpointId": {
+          "shape": "__stringMin1",
+          "locationName": "channelEndpointId",
+          "documentation": "Endpoint 1 or 2 of the channel in MediaPackageV2. Only use if you are sending CMAF Ingest output to a CMAF ingest endpoint on a MediaPackage channel that uses MediaPackage v2."
+        },
+        "MediaPackageRegionName": {
+          "shape": "__stringMin1",
+          "locationName": "mediaPackageRegionName",
+          "documentation": "Region the channel group and channel are located in for MediaPackageV2. Only use if you are sending CMAF Ingest output to a CMAF ingest endpoint on a MediaPackage channel that uses MediaPackage v2."
         }
       },
       "documentation": "MediaPackage Output Destination Settings"
@@ -29535,6 +29545,11 @@
           "shape": "CmafTimedMetadataPassthrough",
           "locationName": "timedMetadataPassthrough",
           "documentation": "Set to enabled to pass through ID3 metadata from the input sources."
+        },
+        "AdditionalDestinations": {
+          "shape": "__listOfMediaPackageAdditionalDestinations",
+          "locationName": "additionalDestinations",
+          "documentation": "Optional an array of additional destinational HTTP destinations for the OutputGroup outputs"
         }
       },
       "documentation": "Media Package V2 Group Settings"
@@ -30161,6 +30176,27 @@
         }
       },
       "documentation": "Settings for a primary (leader) channel in a linked pair"
+    },
+    "MediaPackageAdditionalDestinations": {
+      "type": "structure",
+      "members": {
+        "Destination": {
+          "shape": "OutputLocationRef",
+          "locationName": "destination",
+          "documentation": "The destination location"
+        }
+      },
+      "documentation": "Additional output destinations for a CMAF Ingest output group",
+      "required": [
+        "Destination"
+      ]
+    },
+    "__listOfMediaPackageAdditionalDestinations": {
+      "type": "list",
+      "member": {
+        "shape": "MediaPackageAdditionalDestinations"
+      },
+      "documentation": "Placeholder documentation for __listOfMediaPackageAdditionalDestinations"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

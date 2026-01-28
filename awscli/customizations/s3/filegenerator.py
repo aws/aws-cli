@@ -109,6 +109,8 @@ class FileStat:
         operation_name=None,
         response_data=None,
         etag=None,
+        case_conflict_submitted=None,
+        case_conflict_key=None,
     ):
         self.src = src
         self.dest = dest
@@ -120,6 +122,8 @@ class FileStat:
         self.operation_name = operation_name
         self.response_data = response_data
         self.etag = etag
+        self.case_conflict_submitted = case_conflict_submitted
+        self.case_conflict_key = case_conflict_key
 
 
 class FileGenerator:

@@ -89,7 +89,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p><note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <p>Creates a case in the specified Cases domain. Case system and custom fields are taken as an array id/value pairs with a declared data types.</p> <p>The following fields are required when creating a case:</p> <ul> <li> <p> <code>customer_id</code> - You must provide the full customer profile ARN in this format: <code>arn:aws:profile:your_AWS_Region:your_AWS_account ID:domains/your_profiles_domain_name/profiles/profile_ID</code> </p> </li> <li> <p> <code>title</code> </p> </li> </ul></p>",
+      "documentation":"<p><note> <p>If you provide a value for <code>PerformedBy.UserArn</code> you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">connect:DescribeUser</a> permission on the User ARN resource that you provide</p> </note> <p>Creates a case in the specified Cases domain. Case system and custom fields are taken as an array id/value pairs with a declared data types.</p> <p>When creating a case from a template that has tag propagation configurations, the specified tags are automatically applied to the case.</p> <p>The following fields are required when creating a case:</p> <ul> <li> <p> <code>customer_id</code> - You must provide the full customer profile ARN in this format: <code>arn:aws:profile:your_AWS_Region:your_AWS_account ID:domains/your_profiles_domain_name/profiles/profile_ID</code> </p> </li> <li> <p> <code>title</code> </p> </li> </ul></p>",
       "idempotent":true
     },
     "CreateCaseRule":{
@@ -1231,6 +1231,10 @@
           "documentation":"<p>A list of fields to filter on.</p>"
         },
         "not":{"shape":"CaseFilter"},
+        "tag":{
+          "shape":"TagFilter",
+          "documentation":"<p>A list of tags to filter on.</p>"
+        },
         "andAll":{
           "shape":"CaseFilterAndAllList",
           "documentation":"<p>Provides \"and all\" filtering.</p>"
@@ -1561,7 +1565,11 @@
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
           "idempotencyToken":true
         },
-        "performedBy":{"shape":"UserUnion"}
+        "performedBy":{"shape":"UserUnion"},
+        "tags":{
+          "shape":"MutableTags",
+          "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
+        }
       }
     },
     "CreateCaseRequestClientTokenString":{
@@ -1843,6 +1851,10 @@
         "rules":{
           "shape":"TemplateCaseRuleList",
           "documentation":"<p>A list of case rules (also known as <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">case field conditions</a>) on a template. </p>"
+        },
+        "tagPropagationConfigurations":{
+          "shape":"TagPropagationConfigurationList",
+          "documentation":"<p>Defines tag propagation configuration for resources created within a domain. Tags specified here will be automatically applied to resources being created for the specified resource type.</p>"
         }
       }
     },
@@ -2981,6 +2993,10 @@
         "rules":{
           "shape":"TemplateCaseRuleList",
           "documentation":"<p>A list of case rules (also known as <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">case field conditions</a>) on a template. </p>"
+        },
+        "tagPropagationConfigurations":{
+          "shape":"TagPropagationConfigurationList",
+          "documentation":"<p>Defines tag propagation configuration for resources created within a domain. Tags specified here will be automatically applied to resources being created for the specified resource type.</p>"
         }
       }
     },
@@ -3449,6 +3465,19 @@
       "box":true,
       "max":100,
       "min":1
+    },
+    "MutableTagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"(?![aA][wW][sS]:)[a-zA-Z0-9 _.:/=+\\-@]+"
+    },
+    "MutableTags":{
+      "type":"map",
+      "key":{"shape":"MutableTagKey"},
+      "value":{"shape":"TagValueString"},
+      "max":50,
+      "min":0
     },
     "NextToken":{
       "type":"string",
@@ -4092,6 +4121,12 @@
       "max":25,
       "min":0
     },
+    "SearchTagKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9 _.:/=+\\-@]+"
+    },
     "Section":{
       "type":"structure",
       "members":{
@@ -4283,6 +4318,17 @@
       "documentation":"<p>A structured set of sort terms.</p>"
     },
     "String":{"type":"string"},
+    "TagFilter":{
+      "type":"structure",
+      "members":{
+        "equalTo":{
+          "shape":"TagValue",
+          "documentation":"<p>Object containing tag key and value information.</p>"
+        }
+      },
+      "documentation":"<p>A filter for tags. Only one value can be provided.</p>",
+      "union":true
+    },
     "TagKey":{
       "type":"string",
       "max":128,
@@ -4294,6 +4340,41 @@
       "member":{"shape":"TagKey"},
       "max":50,
       "min":0
+    },
+    "TagPropagationConfiguration":{
+      "type":"structure",
+      "required":[
+        "resourceType",
+        "tagMap"
+      ],
+      "members":{
+        "resourceType":{
+          "shape":"TagPropagationResourceType",
+          "documentation":"<p>Supported resource types for tag propagation. Determines which resources will receive automatically propagated tags.</p>"
+        },
+        "tagMap":{
+          "shape":"TagPropagationConfigurationTagMapMap",
+          "documentation":"<p>The tags that will be applied to the created resource.</p>"
+        }
+      },
+      "documentation":"<p>Defines tag propagation configuration for resources created within a domain. Tags specified here will be automatically applied to resources being created for the specified resource type.</p>"
+    },
+    "TagPropagationConfigurationList":{
+      "type":"list",
+      "member":{"shape":"TagPropagationConfiguration"},
+      "max":1,
+      "min":0
+    },
+    "TagPropagationConfigurationTagMapMap":{
+      "type":"map",
+      "key":{"shape":"MutableTagKey"},
+      "value":{"shape":"TagValueString"},
+      "max":10,
+      "min":0
+    },
+    "TagPropagationResourceType":{
+      "type":"string",
+      "enum":["Cases"]
     },
     "TagResourceRequest":{
       "type":"structure",
@@ -4313,6 +4394,26 @@
           "documentation":"<p>A map of of key-value pairs that represent tags on a resource. Tags are used to organize, track, or control access for this resource.</p>"
         }
       }
+    },
+    "TagValue":{
+      "type":"structure",
+      "members":{
+        "key":{
+          "shape":"SearchTagKey",
+          "documentation":"<p>The tag key in the tag filter value.</p>"
+        },
+        "value":{
+          "shape":"TagValueString",
+          "documentation":"<p>The tag value in the tag filter value.</p>"
+        }
+      },
+      "documentation":"<p>Object for case tag filter values.</p>"
+    },
+    "TagValueString":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"([a-zA-Z0-9 _.:/=+\\-@]*)"
     },
     "Tags":{
       "type":"map",
@@ -4404,6 +4505,10 @@
         "status":{
           "shape":"TemplateStatus",
           "documentation":"<p>The status of the template.</p>"
+        },
+        "tagPropagationConfigurations":{
+          "shape":"TagPropagationConfigurationList",
+          "documentation":"<p>Defines tag propagation configuration for resources created within a domain. Tags specified here will be automatically applied to resources being created for the specified resource type.</p>"
         }
       },
       "documentation":"<p>Template summary information.</p>"
@@ -4625,6 +4730,10 @@
         "rules":{
           "shape":"TemplateCaseRuleList",
           "documentation":"<p>A list of case rules (also known as <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html\">case field conditions</a>) on a template.</p>"
+        },
+        "tagPropagationConfigurations":{
+          "shape":"TagPropagationConfigurationList",
+          "documentation":"<p>Defines tag propagation configuration for resources created within a domain. Tags specified here will be automatically applied to resources being created for the specified resource type.</p>"
         }
       }
     },

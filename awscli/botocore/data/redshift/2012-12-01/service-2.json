@@ -3477,6 +3477,10 @@
         "CatalogArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Glue data catalog associated with the cluster enabled with Amazon Redshift federated permissions.</p>"
+        },
+        "ExtraComputeForAutomaticOptimization":{
+          "shape":"String",
+          "documentation":"<p>A boolean value that, if <code>true</code>, indicates that the cluster allocates additional compute resources to run automatic optimization operations.</p> <p>Default: false</p>"
         }
       },
       "documentation":"<p>Describes a cluster.</p>",
@@ -4408,6 +4412,10 @@
         "CatalogName":{
           "shape":"CatalogNameString",
           "documentation":"<p>The name of the Glue data catalog that will be associated with the cluster enabled with Amazon Redshift federated permissions.</p> <p>Constraints:</p> <ul> <li> <p>Must contain at least one lowercase letter.</p> </li> <li> <p>Can only contain lowercase letters (a-z), numbers (0-9), underscores (_), and hyphens (-).</p> </li> </ul> <p>Pattern: <code>^[a-z0-9_-]*[a-z]+[a-z0-9_-]*$</code> </p> <p>Example: <code>my-catalog_01</code> </p>"
+        },
+        "ExtraComputeForAutomaticOptimization":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>If <code>true</code>, allocates additional compute resources for running automatic optimization operations.</p> <p>Default: false</p>"
         }
       },
       "documentation":"<p/>"
@@ -4962,7 +4970,7 @@
         },
         "LimitType":{
           "shape":"UsageLimitLimitType",
-          "documentation":"<p>The type of limit. Depending on the feature type, this can be based on a time duration or data size. If <code>FeatureType</code> is <code>spectrum</code>, then <code>LimitType</code> must be <code>data-scanned</code>. If <code>FeatureType</code> is <code>concurrency-scaling</code>, then <code>LimitType</code> must be <code>time</code>. If <code>FeatureType</code> is <code>cross-region-datasharing</code>, then <code>LimitType</code> must be <code>data-scanned</code>. </p>"
+          "documentation":"<p>The type of limit. Depending on the feature type, this can be based on a time duration or data size. If <code>FeatureType</code> is <code>spectrum</code>, then <code>LimitType</code> must be <code>data-scanned</code>. If <code>FeatureType</code> is <code>concurrency-scaling</code>, then <code>LimitType</code> must be <code>time</code>. If <code>FeatureType</code> is <code>cross-region-datasharing</code>, then <code>LimitType</code> must be <code>data-scanned</code>. If <code>FeatureType</code> is <code>extra-compute-for-automatic-optimization</code>, then <code>LimitType</code> must be <code>time</code>. </p>"
         },
         "Amount":{
           "shape":"Long",
@@ -8741,6 +8749,10 @@
         "MultiAZ":{
           "shape":"BooleanOptional",
           "documentation":"<p>If true and the cluster is currently only deployed in a single Availability Zone, the cluster will be modified to be deployed in two Availability Zones.</p>"
+        },
+        "ExtraComputeForAutomaticOptimization":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>If <code>true</code>, allocates additional compute resources for running automatic optimization operations.</p> <p>Default: false</p>"
         }
       },
       "documentation":"<p/>"
@@ -12196,7 +12208,8 @@
       "enum":[
         "spectrum",
         "concurrency-scaling",
-        "cross-region-datasharing"
+        "cross-region-datasharing",
+        "extra-compute-for-automatic-optimization"
       ]
     },
     "UsageLimitLimitType":{

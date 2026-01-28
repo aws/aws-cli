@@ -12,17 +12,20 @@
 # language governing permissions and limitations under the License.
 import argparse
 import os
+import stat
 
-from botocore.session import Session
-from botocore.history import HistoryRecorder
 from botocore.exceptions import ProfileNotFound
+from botocore.history import HistoryRecorder
+from botocore.session import Session
 
-from awscli.testutils import unittest, mock, FileCreator
 from awscli.compat import StringIO
-from awscli.customizations.history import attach_history_handler
-from awscli.customizations.history import add_history_commands
-from awscli.customizations.history import HistoryCommand
+from awscli.customizations.history import (
+    HistoryCommand,
+    add_history_commands,
+    attach_history_handler,
+)
 from awscli.customizations.history.db import DatabaseHistoryHandler
+from awscli.testutils import FileCreator, mock, skip_if_windows, unittest
 
 
 class TestAttachHistoryHandler(unittest.TestCase):
@@ -148,6 +151,53 @@ class TestAttachHistoryHandler(unittest.TestCase):
         attach_history_handler(session=mock_session, parsed_args=parsed_args)
         self.assertFalse(mock_recorder.add_handler.called)
         self.assertFalse(mock_db_sqlite3.connect.called)
+
+    @skip_if_windows
+    @mock.patch('awscli.customizations.history.sqlite3')
+    @mock.patch('awscli.customizations.history.db.sqlite3')
+    @mock.patch('awscli.customizations.history.HISTORY_RECORDER',
+                spec=HistoryRecorder)
+    def test_create_directory_with_secure_permissions(
+            self, mock_recorder, mock_db_sqlite3, mock_sqlite3):
+        mock_session = mock.Mock(Session)
+        mock_session.get_scoped_config.return_value = {
+            'cli_history': 'enabled'
+        }
+
+        parsed_args = argparse.Namespace()
+        parsed_args.command = 's3'
+
+        directory_to_create = os.path.join(self.files.rootdir, 'secure-dir')
+        db_filename = os.path.join(directory_to_create, 'name.db')
+        with mock.patch('os.environ', {'AWS_CLI_HISTORY_FILE': db_filename}):
+            attach_history_handler(
+                session=mock_session, parsed_args=parsed_args)
+            dir_mode = stat.S_IMODE(os.stat(directory_to_create).st_mode)
+            assert dir_mode == 0o700
+
+    @skip_if_windows('File permissions are not supported on Windows')
+    @mock.patch('awscli.customizations.history.sqlite3')
+    @mock.patch('awscli.customizations.history.db.sqlite3')
+    @mock.patch('awscli.customizations.history.HISTORY_RECORDER',
+                spec=HistoryRecorder)
+    def test_tighten_existing_directory_permissions(
+            self, mock_recorder, mock_db_sqlite3, mock_sqlite3):
+        mock_session = mock.Mock(Session)
+        mock_session.get_scoped_config.return_value = {
+            'cli_history': 'enabled'
+        }
+
+        parsed_args = argparse.Namespace()
+        parsed_args.command = 's3'
+
+        directory_to_create = os.path.join(self.files.rootdir, 'existing-dir')
+        os.makedirs(directory_to_create, mode=0o755)
+        db_filename = os.path.join(directory_to_create, 'name.db')
+        with mock.patch('os.environ', {'AWS_CLI_HISTORY_FILE': db_filename}):
+            attach_history_handler(
+                session=mock_session, parsed_args=parsed_args)
+            dir_mode = stat.S_IMODE(os.stat(directory_to_create).st_mode)
+            assert dir_mode == 0o700
 
 
 class TestAddHistoryCommand(unittest.TestCase):

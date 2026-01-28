@@ -10,24 +10,27 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import logging
 import os
 import sys
-import logging
 
-from botocore.history import get_global_history_recorder
 from botocore.exceptions import ProfileNotFound
+from botocore.history import get_global_history_recorder
 
 from awscli.compat import sqlite3
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.history.constants import HISTORY_FILENAME_ENV_VAR
-from awscli.customizations.history.constants import DEFAULT_HISTORY_FILENAME
-from awscli.customizations.history.db import DatabaseConnection
-from awscli.customizations.history.db import DatabaseRecordWriter
-from awscli.customizations.history.db import RecordBuilder
-from awscli.customizations.history.db import DatabaseHistoryHandler
-from awscli.customizations.history.show import ShowCommand
+from awscli.customizations.history.constants import (
+    DEFAULT_HISTORY_FILENAME,
+    HISTORY_FILENAME_ENV_VAR,
+)
+from awscli.customizations.history.db import (
+    DatabaseConnection,
+    DatabaseHistoryHandler,
+    DatabaseRecordWriter,
+    RecordBuilder,
+)
 from awscli.customizations.history.list import ListCommand
-
+from awscli.customizations.history.show import ShowCommand
 
 LOG = logging.getLogger(__name__)
 HISTORY_RECORDER = get_global_history_recorder()
@@ -49,8 +52,13 @@ def attach_history_handler(session, parsed_args, **kwargs):
 
         history_filename = os.environ.get(
             HISTORY_FILENAME_ENV_VAR, DEFAULT_HISTORY_FILENAME)
-        if not os.path.isdir(os.path.dirname(history_filename)):
-            os.makedirs(os.path.dirname(history_filename))
+        history_dir = os.path.dirname(history_filename)
+        if not os.path.isdir(history_dir):
+            os.makedirs(history_dir)
+        try:
+            os.chmod(history_dir, 0o700)
+        except OSError as e:
+            LOG.debug('Unable to set directory permissions: %s', e)
 
         connection = DatabaseConnection(history_filename)
         writer = DatabaseRecordWriter(connection)

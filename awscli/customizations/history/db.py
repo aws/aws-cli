@@ -10,19 +10,17 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import uuid
-import time
-import json
 import datetime
-import threading
+import json
 import logging
-from awscli.compat import collections_abc
+import os
+import threading
+import time
+import uuid
 
 from botocore.history import BaseHistoryHandler
 
-from awscli.compat import sqlite3
-from awscli.compat import binary_type
-
+from awscli.compat import binary_type, collections_abc, sqlite3
 
 LOG = logging.getLogger(__name__)
 
@@ -40,6 +38,15 @@ class DatabaseConnection(object):
     _ENABLE_WAL = 'PRAGMA journal_mode=WAL'
 
     def __init__(self, db_filename):
+        # Skip file operations for in-memory databases
+        if db_filename != ':memory:':
+            if not os.path.exists(db_filename):
+                # Create file so we can set permissions before sqlite opens it
+                open(db_filename, 'a').close()
+            try:
+                os.chmod(db_filename, 0o600)
+            except OSError as e:
+                LOG.debug('Unable to set file permissions: %s', e)
         self._connection = sqlite3.connect(
             db_filename, check_same_thread=False, isolation_level=None)
         self._ensure_database_setup()

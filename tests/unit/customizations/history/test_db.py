@@ -10,21 +10,24 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import datetime
+import json
+import numbers
 import os
 import re
-import json
+import stat
 import threading
-import datetime
-import numbers
 
 from awscli.compat import queue
-from awscli.customizations.history.db import DatabaseConnection
-from awscli.customizations.history.db import DatabaseHistoryHandler
-from awscli.customizations.history.db import DatabaseRecordWriter
-from awscli.customizations.history.db import DatabaseRecordReader
-from awscli.customizations.history.db import PayloadSerializer
-from awscli.customizations.history.db import RecordBuilder
-from awscli.testutils import mock, unittest, FileCreator
+from awscli.customizations.history.db import (
+    DatabaseConnection,
+    DatabaseHistoryHandler,
+    DatabaseRecordReader,
+    DatabaseRecordWriter,
+    PayloadSerializer,
+    RecordBuilder,
+)
+from awscli.testutils import FileCreator, mock, skip_if_windows, unittest
 from tests import CaseInsensitiveDict
 
 
@@ -46,8 +49,12 @@ class TestGetHistoryDBFilename(unittest.TestCase):
 
 
 class TestDatabaseConnection(unittest.TestCase):
+    @mock.patch('awscli.customizations.history.db.os.path.exists',
+                return_value=True)
+    @mock.patch('awscli.customizations.history.db.os.chmod')
     @mock.patch('awscli.compat.sqlite3.connect')
-    def test_can_connect_to_argument_file(self, mock_connect):
+    def test_can_connect_to_argument_file(self, mock_connect, mock_chmod,
+                                          mock_exists):
         expected_location = os.path.expanduser(os.path.join(
             '~', 'foo', 'bar', 'baz.db'))
         DatabaseConnection(expected_location)
@@ -80,6 +87,29 @@ class TestDatabaseConnection(unittest.TestCase):
         conn = DatabaseConnection(':memory:')
         conn.close()
         self.assertTrue(connection.close.called)
+
+
+@skip_if_windows
+class TestDatabaseConnectionPermissions:
+    def setup_method(self):
+        self.files = FileCreator()
+
+    def teardown_method(self):
+        self.files.remove_all()
+
+    def test_create_new_file_with_secure_permissions(self):
+        db_path = self.files.full_path('history.db')
+        DatabaseConnection(db_path)
+        file_mode = stat.S_IMODE(os.stat(db_path).st_mode)
+        assert file_mode == 0o600
+
+    def test_tighten_existing_file_permissions(self):
+        db_path = self.files.full_path('history.db')
+        open(db_path, 'a').close()
+        os.chmod(db_path, 0o644)
+        DatabaseConnection(db_path)
+        file_mode = stat.S_IMODE(os.stat(db_path).st_mode)
+        assert file_mode == 0o600
 
 
 class TestDatabaseHistoryHandler(unittest.TestCase):

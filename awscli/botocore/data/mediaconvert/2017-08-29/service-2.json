@@ -2146,7 +2146,7 @@
     },
     "AudioDefaultSelection": {
       "type": "string",
-      "documentation": "Enable this setting on one audio selector to set it as the default for the job. The service uses this default for outputs where it can't find the specified input audio. If you don't set a default, those outputs have no audio.",
+      "documentation": "Specify a fallback audio selector for this input. Use to ensure outputs have audio even when the audio selector you specify in your output is missing from the source. DEFAULT (Checked in the MediaConvert console): If your output settings specify an audio selector that does not exist in this input, MediaConvert uses this audio selector instead. This is useful when you have multiple inputs with a different number of audio tracks. NOT_DEFAULT (Unchecked in the MediaConvert console): MediaConvert will not fallback from any missing audio selector. Any output specifying a missing audio selector will be silent.",
       "enum": [
         "DEFAULT",
         "NOT_DEFAULT"
@@ -2375,7 +2375,7 @@
         "DefaultSelection": {
           "shape": "AudioDefaultSelection",
           "locationName": "defaultSelection",
-          "documentation": "Enable this setting on one audio selector to set it as the default for the job. The service uses this default for outputs where it can't find the specified input audio. If you don't set a default, those outputs have no audio."
+          "documentation": "Specify a fallback audio selector for this input. Use to ensure outputs have audio even when the audio selector you specify in your output is missing from the source. DEFAULT (Checked in the MediaConvert console): If your output settings specify an audio selector that does not exist in this input, MediaConvert uses this audio selector instead. This is useful when you have multiple inputs with a different number of audio tracks. NOT_DEFAULT (Unchecked in the MediaConvert console): MediaConvert will not fallback from any missing audio selector. Any output specifying a missing audio selector will be silent."
         },
         "ExternalAudioFileInput": {
           "shape": "__stringPatternS3Https",
@@ -3400,7 +3400,8 @@
         "TELETEXT",
         "NULL_SOURCE",
         "IMSC",
-        "WEBVTT"
+        "WEBVTT",
+        "TT_3GPP"
       ]
     },
     "CaptionSourceUpconvertSTLToTeletext": {
@@ -7284,6 +7285,22 @@
         "FOLLOW_BOTTOM_FIELD"
       ]
     },
+    "H265MvOverPictureBoundaries": {
+      "type": "string",
+      "documentation": "If you are setting up the picture as a tile, you must set this to \"disabled\". In all other configurations, you typically enter \"enabled\".",
+      "enum": [
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "H265MvTemporalPredictor": {
+      "type": "string",
+      "documentation": "If you are setting up the picture as a tile, you must set this to \"disabled\". In other configurations, you typically enter \"enabled\".",
+      "enum": [
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "H265ParControl": {
       "type": "string",
       "documentation": "Optional. Specify how the service determines the pixel aspect ratio (PAR) for this output. The default behavior, Follow source, uses the PAR from your input video for your output. To specify a different PAR, choose any value other than Follow source. When you choose SPECIFIED for this setting, you must also specify values for the parNumerator and parDenominator settings.",
@@ -7480,6 +7497,16 @@
           "locationName": "minIInterval",
           "documentation": "Specify the minimum number of frames allowed between two IDR-frames in your output. This includes frames created at the start of a GOP or a scene change. Use Min I-Interval to improve video compression by varying GOP size when two IDR-frames would be created near each other. For example, if a regular cadence-driven IDR-frame would fall within 5 frames of a scene-change IDR-frame, and you set Min I-interval to 5, then the encoder would only write an IDR-frame for the scene-change. In this way, one GOP is shortened or extended. If a cadence-driven IDR-frame would be further than 5 frames from a scene-change IDR-frame, then the encoder leaves all IDR-frames in place. To use an automatically determined interval: We recommend that you keep this value blank. This allows for MediaConvert to use an optimal setting according to the characteristics of your input video, and results in better video compression. To manually specify an interval: Enter a value from 1 to 30. Use when your downstream systems have specific GOP size requirements. To disable GOP size variance: Enter 0. MediaConvert will only create IDR-frames at the start of your output's cadence-driven GOP. Use when your downstream systems require a regular GOP size."
         },
+        "MvOverPictureBoundaries": {
+          "shape": "H265MvOverPictureBoundaries",
+          "locationName": "mvOverPictureBoundaries",
+          "documentation": "If you are setting up the picture as a tile, you must set this to \"disabled\". In all other configurations, you typically enter \"enabled\"."
+        },
+        "MvTemporalPredictor": {
+          "shape": "H265MvTemporalPredictor",
+          "locationName": "mvTemporalPredictor",
+          "documentation": "If you are setting up the picture as a tile, you must set this to \"disabled\". In other configurations, you typically enter \"enabled\"."
+        },
         "NumberBFramesBetweenReferenceFrames": {
           "shape": "__integerMin0Max7",
           "locationName": "numberBFramesBetweenReferenceFrames",
@@ -7570,10 +7597,30 @@
           "locationName": "temporalIds",
           "documentation": "Enables temporal layer identifiers in the encoded bitstream. Up to 3 layers are supported depending on GOP structure: I- and P-frames form one layer, reference B-frames can form a second layer and non-reference b-frames can form a third layer. Decoders can optionally decode only the lower temporal layers to generate a lower frame rate output. For example, given a bitstream with temporal IDs and with b-frames = 1 (i.e. IbPbPb display order), a decoder could decode all the frames for full frame rate output or only the I and P frames (lowest temporal layer) for a half frame rate output."
         },
+        "TileHeight": {
+          "shape": "__integerMin64Max2160",
+          "locationName": "tileHeight",
+          "documentation": "Set this field to set up the picture as a tile. You must also set TileWidth. The tile height must result in 22 or fewer rows in the frame. The tile width must result in 20 or fewer columns in the frame. And finally, the product of the column count and row count must be 64 or less. If the tile width and height are specified, MediaConvert will override the video codec slices field with a value that MediaConvert calculates."
+        },
+        "TilePadding": {
+          "shape": "H265TilePadding",
+          "locationName": "tilePadding",
+          "documentation": "Set to \"padded\" to force MediaConvert to add padding to the frame, to obtain a frame that is a whole multiple of the tile size. If you are setting up the picture as a tile, you must enter \"padded\". In all other configurations, you typically enter \"none\"."
+        },
+        "TileWidth": {
+          "shape": "__integerMin256Max3840",
+          "locationName": "tileWidth",
+          "documentation": "Set this field to set up the picture as a tile. See TileHeight for more information."
+        },
         "Tiles": {
           "shape": "H265Tiles",
           "locationName": "tiles",
           "documentation": "Enable use of tiles, allowing horizontal as well as vertical subdivision of the encoded pictures."
+        },
+        "TreeBlockSize": {
+          "shape": "H265TreeBlockSize",
+          "locationName": "treeBlockSize",
+          "documentation": "Select the tree block size used for encoding. If you enter \"auto\", the encoder will pick the best size. If you are setting up the picture as a tile, you must set this to 32x32. In all other configurations, you typically enter \"auto\"."
         },
         "UnregisteredSeiTimecode": {
           "shape": "H265UnregisteredSeiTimecode",
@@ -7629,12 +7676,28 @@
         "ENABLED"
       ]
     },
+    "H265TilePadding": {
+      "type": "string",
+      "documentation": "Set to \"padded\" to force MediaConvert to add padding to the frame, to obtain a frame that is a whole multiple of the tile size. If you are setting up the picture as a tile, you must enter \"padded\". In all other configurations, you typically enter \"none\".",
+      "enum": [
+        "NONE",
+        "PADDED"
+      ]
+    },
     "H265Tiles": {
       "type": "string",
       "documentation": "Enable use of tiles, allowing horizontal as well as vertical subdivision of the encoded pictures.",
       "enum": [
         "DISABLED",
         "ENABLED"
+      ]
+    },
+    "H265TreeBlockSize": {
+      "type": "string",
+      "documentation": "Select the tree block size used for encoding. If you enter \"auto\", the encoder will pick the best size. If you are setting up the picture as a tile, you must set this to 32x32. In all other configurations, you typically enter \"auto\".",
+      "enum": [
+        "AUTO",
+        "TREE_SIZE_32X32"
       ]
     },
     "H265UnregisteredSeiTimecode": {
@@ -8829,6 +8892,11 @@
           "shape": "__integerMin32Max8192",
           "locationName": "height",
           "documentation": "Specify the height, in pixels, for your video generator input. This is useful for positioning when you include one or more video overlays for this input. To use the default resolution 540x360: Leave both width and height blank. To specify a height: Enter an even integer from 32 to 8192. When you do, you must also specify a value for width."
+        },
+        "ImageInput": {
+          "shape": "__stringMin14PatternS3BmpBMPPngPNGTgaTGAHttpsBmpBMPPngPNGTgaTGA",
+          "locationName": "imageInput",
+          "documentation": "Specify the HTTP, HTTPS, or Amazon S3 location of the image that you want to overlay on the video. Use a PNG or TGA file."
         },
         "SampleRate": {
           "shape": "__integerMin32000Max48000",
@@ -14145,6 +14213,11 @@
     "VideoOverlayInput": {
       "type": "structure",
       "members": {
+        "AudioSelectors": {
+          "shape": "__mapOfAudioSelector",
+          "locationName": "audioSelectors",
+          "documentation": "Use Audio selectors to specify audio to use during your Video overlay. You can use multiple Audio selectors per Video overlay. When you include an Audio selector within a Video overlay, MediaConvert mutes any Audio selectors with the same name from the underlying input. For example, if your underlying input has Audio selector 1 and Audio selector 2, and your Video overlay only has Audio selector 1, then MediaConvert replaces all audio for Audio selector 1 during the Video overlay. To replace all audio for all Audio selectors from the underlying input by using a single Audio selector in your overlay, set DefaultSelection to DEFAULT (Check \\\"Use as default\\\" in the MediaConvert console)."
+        },
         "FileInput": {
           "shape": "__stringPatternS3Https",
           "locationName": "fileInput",
@@ -15601,6 +15674,11 @@
       "min": 24,
       "max": 60000
     },
+    "__integerMin256Max3840": {
+      "type": "integer",
+      "min": 256,
+      "max": 3840
+    },
     "__integerMin25Max10000": {
       "type": "integer",
       "min": 25,
@@ -15680,6 +15758,11 @@
       "type": "integer",
       "min": 64000,
       "max": 640000
+    },
+    "__integerMin64Max2160": {
+      "type": "integer",
+      "min": 64,
+      "max": 2160
     },
     "__integerMin6Max16": {
       "type": "integer",

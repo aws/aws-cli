@@ -11,14 +11,41 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
+import pytest
+
+from awscli.customizations.ecs import inject_commands
 from awscli.customizations.ecs.monitormutatinggatewayservice import (
     MUTATION_HANDLERS,
     MonitoringResourcesArgument,
     MonitorMutatingGatewayService,
     register_monitor_mutating_gateway_service,
 )
+
+
+@pytest.fixture
+def mock_watcher_class():
+    """Fixture that provides a mock watcher class."""
+    watcher_class = Mock()
+    watcher_class.is_monitoring_available.return_value = True
+    return watcher_class
+
+
+@pytest.fixture
+def mock_session():
+    """Fixture that provides a mock session."""
+    return Mock()
+
+
+@pytest.fixture
+def handler(mock_watcher_class):
+    """Fixture that provides a MonitorMutatingGatewayService handler."""
+    return MonitorMutatingGatewayService(
+        'create-gateway-service',
+        'DEPLOYMENT',
+        watcher_class=mock_watcher_class,
+    )
 
 
 class TestMonitoringResourcesArgument:
@@ -88,16 +115,6 @@ class TestMonitorMutatingGatewayService:
     def test_operation_args_parsed_with_monitor_resources_false(self):
         parsed_args = Mock()
         parsed_args.monitor_resources = False
-        parsed_globals = Mock()
-
-        self.handler.operation_args_parsed(parsed_args, parsed_globals)
-
-        assert not self.handler.effective_resource_view
-
-    def test_operation_args_parsed_no_monitor_resources_attr(self):
-        parsed_args = Mock()
-        # Remove the attribute
-        del parsed_args.monitor_resources
         parsed_globals = Mock()
 
         self.handler.operation_args_parsed(parsed_args, parsed_globals)
@@ -264,3 +281,353 @@ class TestRegisterFunction:
         assert (
             'after-call.ecs.CreateExpressGatewayService' in registered_events
         )
+
+
+class TestMonitorModeParameter:
+    """Tests for --monitor-mode parameter functionality."""
+
+    def test_monitor_mode_argument_added_to_table(self, handler):
+        """Test that --monitor-mode is added to argument table."""
+        argument_table = {}
+        session = Mock()
+
+        handler.building_argument_table(argument_table, session)
+
+        assert 'monitor-mode' in argument_table
+
+    @patch('sys.stdout.isatty', return_value=True)
+    def test_operation_args_parsed_with_monitor_mode_and_resources(
+        self, mock_isatty, handler, mock_session
+    ):
+        """Test operation_args_parsed with both --monitor-mode and --monitor-resources."""
+        handler.session = mock_session
+        parsed_args = Mock()
+        parsed_args.monitor_resources = 'RESOURCE'
+        parsed_args.monitor_mode = 'TEXT-ONLY'
+        parsed_globals = Mock()
+
+        # Should not raise
+        handler.operation_args_parsed(parsed_args, parsed_globals)
+
+        assert handler.effective_resource_view == 'RESOURCE'
+        assert handler.effective_mode == 'TEXT-ONLY'
+
+    @patch('sys.stdout.isatty', return_value=True)
+    def test_operation_args_parsed_with_monitor_mode_without_resources_raises(
+        self, mock_isatty, handler, mock_session
+    ):
+        """Test operation_args_parsed with --monitor-mode but no --monitor-resources raises ValueError."""
+        handler.session = mock_session
+        parsed_args = Mock()
+        parsed_args.monitor_resources = None
+        parsed_args.monitor_mode = 'TEXT-ONLY'
+        parsed_globals = Mock()
+
+        with pytest.raises(ValueError) as exc_info:
+            handler.operation_args_parsed(parsed_args, parsed_globals)
+
+        assert (
+            '--monitor-mode can only be used with --monitor-resources'
+            in str(exc_info.value)
+        )
+
+    @patch('sys.stdout.isatty', return_value=True)
+    def test_operation_args_parsed_defaults_mode_to_interactive(
+        self, mock_isatty, handler, mock_session
+    ):
+        """Test operation_args_parsed defaults mode to INTERACTIVE when not specified."""
+        handler.session = mock_session
+        parsed_args = Mock()
+        parsed_args.monitor_resources = 'DEPLOYMENT'
+        parsed_args.monitor_mode = None
+        parsed_globals = Mock()
+
+        handler.operation_args_parsed(parsed_args, parsed_globals)
+
+        assert handler.effective_mode == 'INTERACTIVE'
+
+    @patch('sys.stdout.isatty', return_value=True)
+    def test_operation_args_parsed_without_monitor_resources(
+        self, mock_isatty, handler, mock_session
+    ):
+        """Test operation_args_parsed disables monitoring when --monitor-resources not provided."""
+        handler.session = mock_session
+        parsed_args = Mock()
+        parsed_args.monitor_resources = None
+        parsed_args.monitor_mode = None
+        parsed_globals = Mock()
+
+        handler.operation_args_parsed(parsed_args, parsed_globals)
+
+        assert handler.effective_resource_view is None
+
+    @patch('sys.stdout.isatty', return_value=True)
+    def test_after_call_with_interactive_mode(
+        self, mock_isatty, mock_session, mock_watcher_class
+    ):
+        """Test monitoring starts with interactive mode when specified."""
+        handler = MonitorMutatingGatewayService(
+            'create-express-gateway-service',
+            'DEPLOYMENT',
+            watcher_class=mock_watcher_class,
+        )
+
+        mock_watcher = Mock()
+        mock_watcher_class.return_value = mock_watcher
+
+        mock_parsed_globals = Mock()
+        mock_parsed_globals.region = 'us-west-2'
+        mock_parsed_globals.endpoint_url = None
+        mock_parsed_globals.verify_ssl = True
+        mock_parsed_globals.color = 'auto'
+
+        mock_ecs_client = Mock()
+        mock_session.create_client.return_value = mock_ecs_client
+
+        handler.session = mock_session
+        handler.parsed_globals = mock_parsed_globals
+        handler.effective_resource_view = 'DEPLOYMENT'
+        handler.effective_mode = 'INTERACTIVE'
+
+        parsed = {
+            'service': {
+                'serviceArn': 'arn:aws:ecs:us-west-2:123456789:service/test-service'
+            }
+        }
+        context = {}
+        http_response = Mock()
+        http_response.status_code = 200
+
+        handler.after_call(parsed, context, http_response)
+
+        # Verify watcher was created with correct parameters
+        call_args = mock_watcher_class.call_args
+        assert call_args is not None
+
+        # Check positional arguments
+        assert (
+            call_args[0][1]
+            == 'arn:aws:ecs:us-west-2:123456789:service/test-service'
+        )  # service_arn
+        assert call_args[0][2] == 'DEPLOYMENT'  # resource_view
+        assert call_args[0][3] == 'INTERACTIVE'
+
+    @patch('sys.stdout.isatty', return_value=False)
+    def test_after_call_with_text_only_mode(
+        self, mock_isatty, mock_session, mock_watcher_class
+    ):
+        """Test monitoring starts with text-only mode when specified."""
+        handler = MonitorMutatingGatewayService(
+            'create-express-gateway-service',
+            'DEPLOYMENT',
+            watcher_class=mock_watcher_class,
+        )
+
+        mock_watcher = Mock()
+        mock_watcher_class.return_value = mock_watcher
+
+        mock_parsed_globals = Mock()
+        mock_parsed_globals.region = 'us-west-2'
+        mock_parsed_globals.endpoint_url = None
+        mock_parsed_globals.verify_ssl = True
+        mock_parsed_globals.color = 'off'
+
+        mock_ecs_client = Mock()
+        mock_session.create_client.return_value = mock_ecs_client
+
+        handler.session = mock_session
+        handler.parsed_globals = mock_parsed_globals
+        handler.effective_resource_view = 'RESOURCE'
+        handler.effective_mode = 'TEXT-ONLY'
+
+        parsed = {
+            'service': {
+                'serviceArn': 'arn:aws:ecs:us-west-2:123456789:service/test-service'
+            }
+        }
+        context = {}
+        http_response = Mock()
+        http_response.status_code = 200
+
+        handler.after_call(parsed, context, http_response)
+
+        # Verify watcher was created with correct parameters
+        call_args = mock_watcher_class.call_args
+        assert call_args is not None
+
+        # Check positional arguments
+        assert (
+            call_args[0][1]
+            == 'arn:aws:ecs:us-west-2:123456789:service/test-service'
+        )  # service_arn
+        assert call_args[0][2] == 'RESOURCE'  # resource_view
+        assert call_args[0][3] == 'TEXT-ONLY'
+
+    @patch('sys.stdout.isatty', return_value=True)
+    def test_after_call_with_color_on(
+        self, mock_isatty, mock_session, mock_watcher_class
+    ):
+        """Test use_color=True when color='on'."""
+        handler = MonitorMutatingGatewayService(
+            'create-express-gateway-service',
+            'DEPLOYMENT',
+            watcher_class=mock_watcher_class,
+        )
+
+        mock_watcher = Mock()
+        mock_watcher_class.return_value = mock_watcher
+
+        mock_parsed_globals = Mock()
+        mock_parsed_globals.region = 'us-west-2'
+        mock_parsed_globals.endpoint_url = None
+        mock_parsed_globals.verify_ssl = True
+        mock_parsed_globals.color = 'on'
+
+        mock_ecs_client = Mock()
+        mock_session.create_client.return_value = mock_ecs_client
+
+        handler.session = mock_session
+        handler.parsed_globals = mock_parsed_globals
+        handler.effective_resource_view = 'DEPLOYMENT'
+        handler.effective_mode = 'INTERACTIVE'
+
+        parsed = {
+            'service': {
+                'serviceArn': 'arn:aws:ecs:us-west-2:123456789:service/test-service'
+            }
+        }
+        context = {}
+        http_response = Mock()
+        http_response.status_code = 200
+
+        handler.after_call(parsed, context, http_response)
+
+        # Check keyword arguments
+        call_args = mock_watcher_class.call_args
+        assert call_args[1]['use_color'] is True
+
+    @patch('sys.stdout.isatty', return_value=False)
+    def test_after_call_with_color_off(
+        self, mock_isatty, mock_session, mock_watcher_class
+    ):
+        """Test use_color=False when color='off'."""
+        handler = MonitorMutatingGatewayService(
+            'create-express-gateway-service',
+            'DEPLOYMENT',
+            watcher_class=mock_watcher_class,
+        )
+
+        mock_watcher = Mock()
+        mock_watcher_class.return_value = mock_watcher
+
+        mock_parsed_globals = Mock()
+        mock_parsed_globals.region = 'us-west-2'
+        mock_parsed_globals.endpoint_url = None
+        mock_parsed_globals.verify_ssl = True
+        mock_parsed_globals.color = 'off'
+
+        mock_ecs_client = Mock()
+        mock_session.create_client.return_value = mock_ecs_client
+
+        handler.session = mock_session
+        handler.parsed_globals = mock_parsed_globals
+        handler.effective_resource_view = 'DEPLOYMENT'
+        handler.effective_mode = 'TEXT-ONLY'
+
+        parsed = {
+            'service': {
+                'serviceArn': 'arn:aws:ecs:us-west-2:123456789:service/test-service'
+            }
+        }
+        context = {}
+        http_response = Mock()
+        http_response.status_code = 200
+
+        handler.after_call(parsed, context, http_response)
+
+        call_args = mock_watcher_class.call_args
+        assert call_args[1]['use_color'] is False
+
+    @patch('sys.stdout.isatty', return_value=True)
+    def test_after_call_with_color_auto_with_tty(
+        self, mock_isatty, mock_session, mock_watcher_class
+    ):
+        """Test use_color=True when color='auto' with TTY."""
+        handler = MonitorMutatingGatewayService(
+            'create-express-gateway-service',
+            'DEPLOYMENT',
+            watcher_class=mock_watcher_class,
+        )
+
+        mock_watcher = Mock()
+        mock_watcher_class.return_value = mock_watcher
+
+        mock_parsed_globals = Mock()
+        mock_parsed_globals.region = 'us-west-2'
+        mock_parsed_globals.endpoint_url = None
+        mock_parsed_globals.verify_ssl = True
+        mock_parsed_globals.color = 'auto'
+
+        mock_ecs_client = Mock()
+        mock_session.create_client.return_value = mock_ecs_client
+
+        handler.session = mock_session
+        handler.parsed_globals = mock_parsed_globals
+        handler.effective_resource_view = 'DEPLOYMENT'
+        handler.effective_mode = 'INTERACTIVE'
+
+        parsed = {
+            'service': {
+                'serviceArn': 'arn:aws:ecs:us-west-2:123456789:service/test-service'
+            }
+        }
+        context = {}
+        http_response = Mock()
+        http_response.status_code = 200
+
+        handler.after_call(parsed, context, http_response)
+
+        call_args = mock_watcher_class.call_args
+        assert call_args[1]['use_color'] is True
+
+    @patch('sys.stdout.isatty', return_value=False)
+    def test_after_call_with_color_auto_without_tty(
+        self, mock_isatty, mock_session, mock_watcher_class
+    ):
+        """Test use_color=False when color='auto' without TTY."""
+        handler = MonitorMutatingGatewayService(
+            'create-express-gateway-service',
+            'DEPLOYMENT',
+            watcher_class=mock_watcher_class,
+        )
+
+        mock_watcher = Mock()
+        mock_watcher_class.return_value = mock_watcher
+
+        mock_parsed_globals = Mock()
+        mock_parsed_globals.region = 'us-west-2'
+        mock_parsed_globals.endpoint_url = None
+        mock_parsed_globals.verify_ssl = True
+        mock_parsed_globals.color = 'auto'
+
+        mock_ecs_client = Mock()
+        mock_session.create_client.return_value = mock_ecs_client
+
+        handler.session = mock_session
+        handler.parsed_globals = mock_parsed_globals
+        handler.effective_resource_view = 'DEPLOYMENT'
+        handler.effective_mode = 'TEXT-ONLY'
+
+        parsed = {
+            'service': {
+                'serviceArn': 'arn:aws:ecs:us-west-2:123456789:service/test-service'
+            }
+        }
+        context = {}
+        http_response = Mock()
+        http_response.status_code = 200
+
+        handler.after_call(parsed, context, http_response)
+
+        call_args = mock_watcher_class.call_args
+        assert call_args[1]['use_color'] is False

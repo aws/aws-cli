@@ -740,6 +740,11 @@
     },
     "AmortizedRecurringFee":{"type":"string"},
     "AmortizedUpfrontFee":{"type":"string"},
+    "AnalysesPageSize":{
+      "type":"integer",
+      "max":600,
+      "min":0
+    },
     "AnalysisDetails":{
       "type":"structure",
       "members":{
@@ -3126,7 +3131,7 @@
           "documentation":"<p>The hardware specifications for the service instances that you want recommendations for, such as standard or convertible Amazon EC2 instances.</p>"
         },
         "PageSize":{
-          "shape":"NonNegativeInteger",
+          "shape":"RecommendationsPageSize",
           "documentation":"<p>The number of recommendations that you want returned in a single response object.</p>"
         },
         "NextPageToken":{
@@ -3219,7 +3224,7 @@
           "documentation":"<p>The specific service that you want recommendations for. The only valid value for <code>GetRightsizingRecommendation</code> is \"<code>AmazonEC2</code>\".</p>"
         },
         "PageSize":{
-          "shape":"NonNegativeInteger",
+          "shape":"RecommendationsPageSize",
           "documentation":"<p>The number of recommendations that you want returned in a single response object.</p>"
         },
         "NextPageToken":{
@@ -3359,7 +3364,7 @@
           "documentation":"<p>The token to retrieve the next set of results. Amazon Web Services provides the token when the response from a previous call has more results than the maximum page size.</p>"
         },
         "PageSize":{
-          "shape":"NonNegativeInteger",
+          "shape":"RecommendationsPageSize",
           "documentation":"<p>The number of recommendations that you want returned in a single response object.</p>"
         },
         "LookbackPeriodInDays":{
@@ -3734,7 +3739,7 @@
           "documentation":"<p>The token to retrieve the next set of results.</p>"
         },
         "PageSize":{
-          "shape":"NonNegativeInteger",
+          "shape":"AnalysesPageSize",
           "documentation":"<p>The number of analyses that you want returned in a single response object.</p>"
         },
         "AnalysisIds":{
@@ -3840,7 +3845,7 @@
         },
         "SupportedResourceTypes":{
           "shape":"ResourceTypesFilterInput",
-          "documentation":"<p> Filter cost category definitions that are supported by given resource types based on the latest version. If the filter is present, the result only includes Cost Categories that supports input resource type. If the filter isn't provided, no filtering is applied. The valid values are <code>billing:rispgroupsharing</code>. </p>"
+          "documentation":"<p> Filter cost category definitions that are supported by given resource types based on the latest version. If the filter is present, the result only includes Cost Categories that supports input resource type. If the filter isn't provided, no filtering is applied. The valid values are <code>billing:rispgroupsharing</code> and <code>billing:billingview</code>. </p>"
         }
       }
     },
@@ -3900,7 +3905,7 @@
           "documentation":"<p>The IDs for each specific recommendation.</p>"
         },
         "PageSize":{
-          "shape":"NonNegativeInteger",
+          "shape":"RecommendationsPageSize",
           "documentation":"<p>The number of recommendations that you want returned in a single response object.</p>"
         },
         "NextPageToken":{
@@ -4234,6 +4239,10 @@
         "SizeFlexEligible":{
           "shape":"GenericBoolean",
           "documentation":"<p>Determines whether the recommended reservation is size flexible.</p>"
+        },
+        "DeploymentModel":{
+          "shape":"GenericString",
+          "documentation":"<p>Determines whether the recommendation is for a reservation for RDS Custom.</p>"
         }
       },
       "documentation":"<p>Details about the Amazon RDS reservations that Amazon Web Services recommends that you purchase.</p>"
@@ -4401,6 +4410,11 @@
         "SAME_INSTANCE_FAMILY",
         "CROSS_INSTANCE_FAMILY"
       ]
+    },
+    "RecommendationsPageSize":{
+      "type":"integer",
+      "max":6000,
+      "min":0
     },
     "RedshiftInstanceDetails":{
       "type":"structure",

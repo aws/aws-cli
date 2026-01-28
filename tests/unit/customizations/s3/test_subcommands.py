@@ -528,6 +528,16 @@ class CommandParametersTest(unittest.TestCase):
         self.assertTrue(cmd_params.parameters['only_show_errors'])
         self.assertFalse(cmd_params.parameters['dir_op'])
 
+    def test_validate_streaming_paths_with_no_overwrite(self):
+        paths = ['s3://bucket/key', '-']
+        cmd_params = CommandParameters('cp', {'no_overwrite': True}, '')
+        with self.assertRaises(ParamValidationError) as cm:
+            cmd_params.add_paths(paths)
+            self.assertIn(
+                '--no-overwrite parameter is not supported for streaming downloads',
+                cm.msg,
+            )
+
     def test_validate_no_streaming_paths(self):
         paths = [self.file_creator.rootdir, 's3://bucket']
         cmd_params = CommandParameters('cp', {}, '')

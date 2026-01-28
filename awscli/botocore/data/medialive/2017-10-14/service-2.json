@@ -6205,7 +6205,7 @@
         "TargetLkfs": {
           "shape": "__doubleMinNegative59Max0",
           "locationName": "targetLkfs",
-          "documentation": "Target LKFS(loudness) to adjust volume to. If no value is entered, a default value will be used according to the chosen algorithm.  The CALM Act (1770-1) recommends a target of -24 LKFS. The EBU R-128 specification (1770-2) recommends a target of -23 LKFS."
+          "documentation": "Target LKFS(loudness) to adjust volume to. If no value is entered, a default value will be used according to the chosen algorithm.  The CALM Act recommends a target of -24 LKFS. The EBU R-128 specification recommends a target of -23 LKFS."
         }
       },
       "documentation": "Audio Normalization Settings"
@@ -7444,6 +7444,11 @@
           "shape": "ChannelEngineVersionResponse",
           "locationName": "channelEngineVersion",
           "documentation": "Requested engine version for this channel."
+        },
+        "LinkedChannelSettings": {
+          "shape": "DescribeLinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "Linked Channel Settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for Channel"
@@ -7595,6 +7600,11 @@
           "shape": "__listOfChannelEngineVersionResponse",
           "locationName": "usedChannelEngineVersions",
           "documentation": "The engine version that the running pipelines are using."
+        },
+        "LinkedChannelSettings": {
+          "shape": "DescribeLinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "Linked Channel Settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for ChannelSummary"
@@ -7770,6 +7780,11 @@
         "DryRun": {
           "shape": "__boolean",
           "locationName": "dryRun"
+        },
+        "LinkedChannelSettings": {
+          "shape": "LinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "The linked channel settings for the channel."
         }
       },
       "documentation": "Placeholder documentation for CreateChannel"
@@ -7860,6 +7875,11 @@
         "DryRun": {
           "shape": "__boolean",
           "locationName": "dryRun"
+        },
+        "LinkedChannelSettings": {
+          "shape": "LinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "The linked channel settings for the channel."
         }
       },
       "documentation": "A request to create a channel"
@@ -8493,6 +8513,11 @@
           "shape": "ChannelEngineVersionResponse",
           "locationName": "channelEngineVersion",
           "documentation": "Requested engine version for this channel."
+        },
+        "LinkedChannelSettings": {
+          "shape": "DescribeLinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "Linked Channel Settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for DeleteChannelResponse"
@@ -8958,6 +8983,11 @@
           "shape": "ChannelEngineVersionResponse",
           "locationName": "channelEngineVersion",
           "documentation": "Requested engine version for this channel."
+        },
+        "LinkedChannelSettings": {
+          "shape": "DescribeLinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "Linked Channel Settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for DescribeChannelResponse"
@@ -15181,6 +15211,16 @@
           "shape": "__stringMin1",
           "locationName": "channelName",
           "documentation": "Name of the channel in MediaPackageV2. Only use if you are sending CMAF Ingest output to a CMAF ingest endpoint on a MediaPackage channel that uses MediaPackage v2."
+        },
+        "ChannelEndpointId": {
+          "shape": "__stringMin1",
+          "locationName": "channelEndpointId",
+          "documentation": "Endpoint 1 or 2 of the channel in MediaPackageV2. Only use if you are sending CMAF Ingest output to a CMAF ingest endpoint on a MediaPackage channel that uses MediaPackage v2."
+        },
+        "MediaPackageRegionName": {
+          "shape": "__stringMin1",
+          "locationName": "mediaPackageRegionName",
+          "documentation": "Region the channel group and channel are located in for MediaPackageV2. Only use if you are sending CMAF Ingest output to a CMAF ingest endpoint on a MediaPackage channel that uses MediaPackage v2."
         }
       },
       "documentation": "MediaPackage Output Destination Settings"
@@ -16487,6 +16527,10 @@
         "PipelineLockingSettings": {
           "shape": "PipelineLockingSettings",
           "locationName": "pipelineLockingSettings"
+        },
+        "DisabledLockingSettings": {
+          "shape": "DisabledLockingSettings",
+          "locationName": "disabledLockingSettings"
         }
       },
       "documentation": "Output Locking Settings"
@@ -16598,7 +16642,18 @@
     },
     "PipelineLockingSettings": {
       "type": "structure",
-      "members": {},
+      "members": {
+        "PipelineLockingMethod": {
+          "shape": "PipelineLockingMethod",
+          "locationName": "pipelineLockingMethod",
+          "documentation": "The method to use to lock the video frames in the pipelines. sourceTimecode (default): Use the timecode in the source. videoAlignment: Lock frames that the encoder identifies as having matching content. If videoAlignment is selected, existing timecodes will not be used for any locking decisions."
+        },
+        "CustomEpoch": {
+          "shape": "__string",
+          "locationName": "customEpoch",
+          "documentation": "Optional. Only applies to CMAF Ingest Output Group and MediaPackage V2 Output Group Only. Enter a value here to use a custom epoch, instead of the standard epoch (which started at 1970-01-01T00:00:00 UTC). Specify the start time of the custom epoch, in YYYY-MM-DDTHH:MM:SS in UTC. The time must be 2000-01-01T00:00:00 or later. Always set the MM:SS portion to 00:00."
+        }
+      },
       "documentation": "Pipeline Locking Settings"
     },
     "PipelinePauseStateSettings": {
@@ -17977,6 +18032,11 @@
           "shape": "ChannelEngineVersionResponse",
           "locationName": "channelEngineVersion",
           "documentation": "Requested engine version for this channel."
+        },
+        "LinkedChannelSettings": {
+          "shape": "DescribeLinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "Linked Channel Settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for StartChannelResponse"
@@ -18401,6 +18461,11 @@
           "shape": "ChannelEngineVersionResponse",
           "locationName": "channelEngineVersion",
           "documentation": "Requested engine version for this channel."
+        },
+        "LinkedChannelSettings": {
+          "shape": "DescribeLinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "Linked Channel Settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for StopChannelResponse"
@@ -19071,6 +19136,11 @@
           "shape": "AnywhereSettings",
           "locationName": "anywhereSettings",
           "documentation": "The Elemental Anywhere settings for this channel."
+        },
+        "LinkedChannelSettings": {
+          "shape": "LinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "The linked channel settings for the channel."
         }
       },
       "documentation": "Placeholder documentation for UpdateChannel"
@@ -19196,6 +19266,11 @@
           "shape": "AnywhereSettings",
           "locationName": "anywhereSettings",
           "documentation": "The Elemental Anywhere settings for this channel."
+        },
+        "LinkedChannelSettings": {
+          "shape": "LinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "The linked channel settings for the channel."
         }
       },
       "documentation": "A request to update a channel.",
@@ -21031,6 +21106,11 @@
           "shape": "ChannelEngineVersionResponse",
           "locationName": "channelEngineVersion",
           "documentation": "Requested engine version for this channel."
+        },
+        "LinkedChannelSettings": {
+          "shape": "DescribeLinkedChannelSettings",
+          "locationName": "linkedChannelSettings",
+          "documentation": "Linked Channel Settings for this channel."
         }
       },
       "documentation": "Placeholder documentation for RestartChannelPipelinesResponse"
@@ -25911,6 +25991,11 @@
           "shape": "Av1TemporalAq",
           "locationName": "temporalAq",
           "documentation": "Temporal AQ makes adjustments within each frame based on variations in content complexity over time. Enabled: MediaLive will determine the appropriate level of temporal AQ to apply. Disabled: No temporal AQ. For more information, see the topic about video adaptive quantization in the MediaLive user guide."
+        },
+        "TimecodeInsertion": {
+          "shape": "Av1TimecodeInsertionBehavior",
+          "locationName": "timecodeInsertion",
+          "documentation": "Controls how MediaLive inserts timecodes into the video output encode.\nDISABLED: Do not insert timecodes.\nMETADATA_OBU: Include timecodes. MediaLive inserts timecode metadata based on the timecode from the source specified in the Timecode Config property. The timecode metadata is a metadata OBU (Open Bitstream Unit) of type METADATA_TYPE_TIMECODE, in accordance with https://aomediacodec.github.io/av1-spec/#metadata-timecode-syntax."
         }
       },
       "documentation": "Av1 Settings",
@@ -29474,6 +29559,11 @@
           "shape": "CmafTimedMetadataPassthrough",
           "locationName": "timedMetadataPassthrough",
           "documentation": "Set to enabled to pass through ID3 metadata from the input sources."
+        },
+        "AdditionalDestinations": {
+          "shape": "__listOfMediaPackageAdditionalDestinations",
+          "locationName": "additionalDestinations",
+          "documentation": "Optional an array of additional destinational HTTP destinations for the OutputGroup outputs"
         }
       },
       "documentation": "Media Package V2 Group Settings"
@@ -29997,6 +30087,149 @@
         "shape": "RouterDestinationSettings"
       },
       "documentation": "Placeholder documentation for __listOfRouterDestinationSettings"
+    },
+    "DescribeFollowerChannelSettings": {
+      "type": "structure",
+      "members": {
+        "LinkedChannelType": {
+          "shape": "LinkedChannelType",
+          "locationName": "linkedChannelType",
+          "documentation": "Specifies this as a follower channel"
+        },
+        "PrimaryChannelArn": {
+          "shape": "__string",
+          "locationName": "primaryChannelArn",
+          "documentation": "The ARN of the primary channel this channel follows"
+        }
+      },
+      "documentation": "Details of a follower channel in a linked pair"
+    },
+    "DescribeLinkedChannelSettings": {
+      "type": "structure",
+      "members": {
+        "FollowerChannelSettings": {
+          "shape": "DescribeFollowerChannelSettings",
+          "locationName": "followerChannelSettings"
+        },
+        "PrimaryChannelSettings": {
+          "shape": "DescribePrimaryChannelSettings",
+          "locationName": "primaryChannelSettings"
+        }
+      },
+      "documentation": "Linked channel configuration details"
+    },
+    "DescribePrimaryChannelSettings": {
+      "type": "structure",
+      "members": {
+        "FollowingChannelArns": {
+          "shape": "__listOf__string",
+          "locationName": "followingChannelArns",
+          "documentation": "The ARNs of the following channels for this primary channel"
+        },
+        "LinkedChannelType": {
+          "shape": "LinkedChannelType",
+          "locationName": "linkedChannelType",
+          "documentation": "Specifies this as a primary channel"
+        }
+      },
+      "documentation": "Details of a primary (leader) channel in a linked pair"
+    },
+    "FollowerChannelSettings": {
+      "type": "structure",
+      "members": {
+        "LinkedChannelType": {
+          "shape": "LinkedChannelType",
+          "locationName": "linkedChannelType",
+          "documentation": "Specifies this as a follower channel"
+        },
+        "PrimaryChannelArn": {
+          "shape": "__string",
+          "locationName": "primaryChannelArn",
+          "documentation": "The ARN of the primary channel to follow"
+        }
+      },
+      "documentation": "Settings for a follower channel in a linked pair"
+    },
+    "LinkedChannelSettings": {
+      "type": "structure",
+      "members": {
+        "FollowerChannelSettings": {
+          "shape": "FollowerChannelSettings",
+          "locationName": "followerChannelSettings"
+        },
+        "PrimaryChannelSettings": {
+          "shape": "PrimaryChannelSettings",
+          "locationName": "primaryChannelSettings"
+        }
+      },
+      "documentation": "Configuration for linked channel relationships"
+    },
+    "LinkedChannelType": {
+      "type": "string",
+      "documentation": "The values for the role for a linked channel.",
+      "enum": [
+        "FOLLOWING_CHANNEL",
+        "PRIMARY_CHANNEL"
+      ]
+    },
+    "PipelineLockingMethod": {
+      "type": "string",
+      "documentation": "Pipeline Locking Method",
+      "enum": [
+        "SOURCE_TIMECODE",
+        "VIDEO_ALIGNMENT"
+      ]
+    },
+    "PrimaryChannelSettings": {
+      "type": "structure",
+      "members": {
+        "LinkedChannelType": {
+          "shape": "LinkedChannelType",
+          "locationName": "linkedChannelType",
+          "documentation": "Specifies this as a primary channel"
+        }
+      },
+      "documentation": "Settings for a primary (leader) channel in a linked pair"
+    },
+    "MediaPackageAdditionalDestinations": {
+      "type": "structure",
+      "members": {
+        "Destination": {
+          "shape": "OutputLocationRef",
+          "locationName": "destination",
+          "documentation": "The destination location"
+        }
+      },
+      "documentation": "Additional output destinations for a CMAF Ingest output group",
+      "required": [
+        "Destination"
+      ]
+    },
+    "__listOfMediaPackageAdditionalDestinations": {
+      "type": "list",
+      "member": {
+        "shape": "MediaPackageAdditionalDestinations"
+      },
+      "documentation": "Placeholder documentation for __listOfMediaPackageAdditionalDestinations"
+    },
+    "Av1TimecodeInsertionBehavior": {
+      "type": "string",
+      "documentation": "Av1 Timecode Insertion Behavior",
+      "enum": [
+        "DISABLED",
+        "METADATA_OBU"
+      ]
+    },
+    "DisabledLockingSettings": {
+      "type": "structure",
+      "members": {
+        "CustomEpoch": {
+          "shape": "__string",
+          "locationName": "customEpoch",
+          "documentation": "Optional. Only applies to CMAF Ingest Output Group and MediaPackage V2 Output Group. Enter a value here to use a custom epoch, instead of the standard epoch (which started at 1970-01-01T00:00:00 UTC). Specify the start time of the custom epoch, in YYYY-MM-DDTHH:MM:SS in UTC. The time must be 2000-01-01T00:00:00 or later. Always set the MM:SS portion to 00:00."
+        }
+      },
+      "documentation": "Disabled Locking Settings"
     }
   },
   "documentation": "API for AWS Elemental MediaLive"

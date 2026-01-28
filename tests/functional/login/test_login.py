@@ -6,6 +6,7 @@ from unittest import mock
 
 import pytest
 
+from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.login.login import LoginCommand
 
 DEFAULT_ARGS = Namespace(remote=False)
@@ -230,3 +231,68 @@ def test_new_profile_without_region(
         },
         'configfile',
     )
+
+
+@pytest.mark.parametrize(
+    'profile_config,expected_to_abort',
+    [
+        pytest.param({}, False, id="Empty profile"),
+        pytest.param(
+            {'login_session': 'arn:aws:iam::0123456789012:user/Admin'},
+            False,
+            id="Existing login profile",
+        ),
+        pytest.param(
+            {'web_identity_token_file': '/path'},
+            True,
+            id="Web Identity Token profile",
+        ),
+        pytest.param({'sso_role_name': 'role'}, True, id="SSO profile"),
+        pytest.param(
+            {'aws_access_key_id': 'AKIAIOSFODNN7EXAMPLE'},
+            True,
+            id="IAM access key profile",
+        ),
+        pytest.param(
+            {'role_arn': 'arn:aws:iam::123456789012:role/MyRole'},
+            True,
+            id="Assume role profile",
+        ),
+        pytest.param(
+            {'credential_process': '/path/to/credential/process'},
+            True,
+            id="Credential process profile",
+        ),
+    ],
+)
+@mock.patch('awscli.customizations.login.utils.get_base_sign_in_uri')
+@mock.patch(
+    'awscli.customizations.login.utils.SameDeviceLoginTokenFetcher.fetch_token'
+)
+def test_abort_if_profile_has_existing_credentials(
+    mock_token_fetcher,
+    mock_base_sign_in_uri,
+    mock_login_command,
+    mock_session,
+    mock_token_loader,
+    profile_config,
+    expected_to_abort,
+):
+    mock_base_sign_in_uri.return_value = 'https://foo'
+    mock_token_fetcher.return_value = (
+        {
+            'accessToken': 'access_token',
+            'idToken': SAMPLE_ID_TOKEN,
+            'expiresIn': 3600,
+        },
+        'arn:aws:iam::0123456789012:user/Admin',
+    )
+    mock_session.full_config = {'profiles': {'profile-name': profile_config}}
+
+    if expected_to_abort:
+        with pytest.raises(ConfigurationError):
+            mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
+            mock_token_fetcher.assert_not_called()
+    else:
+        mock_login_command._run_main(DEFAULT_ARGS, DEFAULT_GLOBAL_ARGS)
+        mock_token_fetcher.assert_called_once()

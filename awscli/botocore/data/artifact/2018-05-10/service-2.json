@@ -31,7 +31,8 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Get the account settings for Artifact.</p>"
+      "documentation":"<p>Get the account settings for Artifact.</p>",
+      "readonly":true
     },
     "GetReport":{
       "name":"GetReport",
@@ -51,7 +52,8 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Get the content for a single report.</p>"
+      "documentation":"<p>Get the content for a single report.</p>",
+      "readonly":true
     },
     "GetReportMetadata":{
       "name":"GetReportMetadata",
@@ -70,7 +72,8 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Get the metadata for a single report.</p>"
+      "documentation":"<p>Get the metadata for a single report.</p>",
+      "readonly":true
     },
     "GetTermForReport":{
       "name":"GetTermForReport",
@@ -90,7 +93,8 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Get the Term content associated with a single report.</p>"
+      "documentation":"<p>Get the Term content associated with a single report.</p>",
+      "readonly":true
     },
     "ListCustomerAgreements":{
       "name":"ListCustomerAgreements",
@@ -107,7 +111,28 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>List active customer-agreements applicable to calling identity.</p>"
+      "documentation":"<p>List active customer-agreements applicable to calling identity.</p>",
+      "readonly":true
+    },
+    "ListReportVersions":{
+      "name":"ListReportVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/report/listVersions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListReportVersionsRequest"},
+      "output":{"shape":"ListReportVersionsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>List available report versions for a given report.</p>",
+      "readonly":true
     },
     "ListReports":{
       "name":"ListReports",
@@ -126,7 +151,8 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>List available reports.</p>"
+      "documentation":"<p>List available reports.</p>",
+      "readonly":true
     },
     "PutAccountSettings":{
       "name":"PutAccountSettings",
@@ -296,8 +322,7 @@
     },
     "GetAccountSettingsRequest":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "GetAccountSettingsResponse":{
       "type":"structure",
@@ -455,6 +480,44 @@
         "customerAgreements":{
           "shape":"CustomerAgreementList",
           "documentation":"<p>List of customer-agreement resources.</p>"
+        },
+        "nextToken":{
+          "shape":"NextTokenAttribute",
+          "documentation":"<p>Pagination token to request the next page of resources.</p>"
+        }
+      }
+    },
+    "ListReportVersionsRequest":{
+      "type":"structure",
+      "required":["reportId"],
+      "members":{
+        "reportId":{
+          "shape":"ReportId",
+          "documentation":"<p>Unique resource ID for the report resource.</p>",
+          "location":"querystring",
+          "locationName":"reportId"
+        },
+        "maxResults":{
+          "shape":"MaxResultsAttribute",
+          "documentation":"<p>Maximum number of resources to return in the paginated response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextTokenAttribute",
+          "documentation":"<p>Pagination token to request the next page of resources.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListReportVersionsResponse":{
+      "type":"structure",
+      "required":["reports"],
+      "members":{
+        "reports":{
+          "shape":"ReportsList",
+          "documentation":"<p>List of report resources.</p>"
         },
         "nextToken":{
           "shape":"NextTokenAttribute",

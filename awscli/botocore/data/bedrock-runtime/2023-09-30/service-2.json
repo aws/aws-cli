@@ -571,6 +571,34 @@
       "type":"boolean",
       "box":true
     },
+    "CacheDetail":{
+      "type":"structure",
+      "required":[
+        "ttl",
+        "inputTokens"
+      ],
+      "members":{
+        "ttl":{
+          "shape":"CacheTTL",
+          "documentation":"<p>TTL duration for these cached tokens</p>"
+        },
+        "inputTokens":{
+          "shape":"CacheDetailInputTokensInteger",
+          "documentation":"<p>Number of tokens written to cache with this TTL (cache creation tokens)</p>"
+        }
+      },
+      "documentation":"<p>Cache creation metrics for a specific TTL duration</p>"
+    },
+    "CacheDetailInputTokensInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "CacheDetailsList":{
+      "type":"list",
+      "member":{"shape":"CacheDetail"},
+      "documentation":"<p>List of cache details by TTL</p>"
+    },
     "CachePointBlock":{
       "type":"structure",
       "required":["type"],
@@ -578,6 +606,10 @@
         "type":{
           "shape":"CachePointType",
           "documentation":"<p>Specifies the type of cache point within the CachePointBlock.</p>"
+        },
+        "ttl":{
+          "shape":"CacheTTL",
+          "documentation":"<p>Optional TTL duration for cache entries. When specified, enables extended TTL caching with the specified duration. When omitted, uses <code>type</code> value for caching behavior.</p>"
         }
       },
       "documentation":"<p>Defines a section of content to be cached for reuse in subsequent API calls.</p>"
@@ -585,6 +617,14 @@
     "CachePointType":{
       "type":"string",
       "enum":["default"]
+    },
+    "CacheTTL":{
+      "type":"string",
+      "documentation":"<p>Time-to-live duration for ephemeral cache entries</p>",
+      "enum":[
+        "5m",
+        "1h"
+      ]
     },
     "Citation":{
       "type":"structure",
@@ -4013,6 +4053,10 @@
         "cacheWriteInputTokens":{
           "shape":"TokenUsageCacheWriteInputTokensInteger",
           "documentation":"<p>The number of input tokens written to the cache for the request.</p>"
+        },
+        "cacheDetails":{
+          "shape":"CacheDetailsList",
+          "documentation":"<p>Detailed breakdown of cache writes by TTL. Empty if no cache creation occurred. Sorted by TTL duration (1h before 5m).</p>"
         }
       },
       "documentation":"<p>The tokens used in a message API inference call. </p>"

@@ -420,7 +420,7 @@
           "documentation":"<p>A string representing the type of address. For example, \"Home.\"</p>"
         },
         "Primary":{
-          "shape":"SensitiveBooleanType",
+          "shape":"BooleanType",
           "documentation":"<p>A Boolean value representing whether this is the primary address for the associated resource.</p>"
         }
       },
@@ -480,6 +480,7 @@
       "documentation":"<p>The value of the attribute. This is a <code>Document</code> type. This type is not supported by Java V1, Go V1, and older versions of the CLI.</p>",
       "document":true
     },
+    "BooleanType":{"type":"boolean"},
     "ConflictException":{
       "type":"structure",
       "members":{
@@ -648,6 +649,10 @@
         "Birthdate":{
           "shape":"SensitiveStringType",
           "documentation":"<p>The user's birthdate in YYYY-MM-DD format. This field supports standard date format for storing personal information.</p>"
+        },
+        "Roles":{
+          "shape":"Roles",
+          "documentation":"<p>A list of <code>Role</code> objects containing roles associated with the user.</p>"
         },
         "Extensions":{
           "shape":"Extensions",
@@ -963,6 +968,10 @@
           "shape":"SensitiveStringType",
           "documentation":"<p>The user's birthdate in YYYY-MM-DD format. This field returns the stored birthdate information for the user.</p>"
         },
+        "Roles":{
+          "shape":"Roles",
+          "documentation":"<p>The roles of the user.</p>"
+        },
         "CreatedAt":{
           "shape":"DateType",
           "documentation":"<p>The date and time the user was created.</p>"
@@ -997,7 +1006,7 @@
           "documentation":"<p>A string representing the type of address. For example, \"Work.\"</p>"
         },
         "Primary":{
-          "shape":"SensitiveBooleanType",
+          "shape":"BooleanType",
           "documentation":"<p>A Boolean value representing whether this is the primary email address for the associated resource.</p>"
         }
       },
@@ -1308,7 +1317,7 @@
           "documentation":"<p>An object that contains the identifier of a group member. Setting the <code>UserID</code> field to the specific identifier for a user indicates that the user is a member of the group.</p>"
         },
         "MembershipExists":{
-          "shape":"SensitiveBooleanType",
+          "shape":"BooleanType",
           "documentation":"<p>Indicates whether a membership relation exists or not.</p>"
         }
       },
@@ -1609,7 +1618,7 @@
           "documentation":"<p>A string representing the type of a phone number. For example, \"Mobile.\"</p>"
         },
         "Primary":{
-          "shape":"SensitiveBooleanType",
+          "shape":"BooleanType",
           "documentation":"<p>A Boolean value representing whether this is the primary phone number for the associated resource.</p>"
         }
       },
@@ -1638,7 +1647,7 @@
           "documentation":"<p>A human-readable description of the photo for display purposes. This optional field provides context about the photo.</p>"
         },
         "Primary":{
-          "shape":"SensitiveBooleanType",
+          "shape":"BooleanType",
           "documentation":"<p>Specifies whether this is the user's primary photo. Default value is <code>false</code>. Only one photo can be designated as primary per user.</p>"
         }
       },
@@ -1701,9 +1710,29 @@
       ]
     },
     "RetryAfterSeconds":{"type":"integer"},
-    "SensitiveBooleanType":{
-      "type":"boolean",
-      "sensitive":true
+    "Role":{
+      "type":"structure",
+      "members":{
+        "Value":{
+          "shape":"SensitiveStringType",
+          "documentation":"<p>A string containing a role name. For example, \"Researcher.\"</p>"
+        },
+        "Type":{
+          "shape":"SensitiveStringType",
+          "documentation":"<p>A string representing the type of role. For example, \"Work.\"</p>"
+        },
+        "Primary":{
+          "shape":"BooleanType",
+          "documentation":"<p>A Boolean value representing whether this is the primary role for the associated resource.</p>"
+        }
+      },
+      "documentation":"<p>The role associated with the user.</p>"
+    },
+    "Roles":{
+      "type":"list",
+      "member":{"shape":"Role"},
+      "max":1,
+      "min":1
     },
     "SensitiveStringType":{
       "type":"string",
@@ -1906,6 +1935,10 @@
         "Birthdate":{
           "shape":"SensitiveStringType",
           "documentation":"<p>The user's birthdate in YYYY-MM-DD format. This field stores personal birthdate information for the user.</p>"
+        },
+        "Roles":{
+          "shape":"Roles",
+          "documentation":"<p>A list of <code>Role</code> objects containing roles associated with the user.</p>"
         },
         "CreatedAt":{
           "shape":"DateType",

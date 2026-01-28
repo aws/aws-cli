@@ -771,7 +771,7 @@
       "errors":[
         {"shape":"ResourceLimitExceeded"}
       ],
-      "documentation":"<p>Creates a lifecycle configuration that you can associate with a notebook instance. A <i>lifecycle configuration</i> is a collection of shell scripts that run when you create or start a notebook instance.</p> <p>Each lifecycle configuration script has a limit of 16384 characters.</p> <p>The value of the <code>$PATH</code> environment variable that is available to both scripts is <code>/sbin:bin:/usr/sbin:/usr/bin</code>.</p> <p>View Amazon CloudWatch Logs for notebook instance lifecycle configurations in log group <code>/aws/sagemaker/NotebookInstances</code> in log stream <code>[notebook-instance-name]/[LifecycleConfigHook]</code>.</p> <p>Lifecycle configuration scripts cannot run for longer than 5 minutes. If a script runs for longer than 5 minutes, it fails and the notebook instance is not created or started.</p> <p>For information about notebook instance lifestyle configurations, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/notebook-lifecycle-config.html\">Step 2.1: (Optional) Customize a Notebook Instance</a>.</p>"
+      "documentation":"<p>Creates a lifecycle configuration that you can associate with a notebook instance. A <i>lifecycle configuration</i> is a collection of shell scripts that run when you create or start a notebook instance.</p> <p>Each lifecycle configuration script has a limit of 16384 characters.</p> <p>The value of the <code>$PATH</code> environment variable that is available to both scripts is <code>/sbin:bin:/usr/sbin:/usr/bin</code>.</p> <p>View Amazon CloudWatch Logs for notebook instance lifecycle configurations in log group <code>/aws/sagemaker/NotebookInstances</code> in log stream <code>[notebook-instance-name]/[LifecycleConfigHook]</code>.</p> <p>Lifecycle configuration scripts cannot run for longer than 5 minutes. If a script runs for longer than 5 minutes, it fails and the notebook instance is not created or started.</p> <p>For information about notebook instance lifestyle configurations, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/notebook-lifecycle-config.html\">Step 2.1: (Optional) Customize a Notebook Instance</a>.</p> <note> <p>Lifecycle configuration scripts execute with root access and the notebook instance's IAM execution role privileges. Grant this permission only to trusted principals. See <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/notebook-lifecycle-config.html\">Customize a Notebook Instance Using a Lifecycle Configuration Script</a> for security best practices.</p> </note>"
     },
     "CreateOptimizationJob":{
       "name":"CreateOptimizationJob",
@@ -4505,7 +4505,7 @@
       "errors":[
         {"shape":"ResourceLimitExceeded"}
       ],
-      "documentation":"<p>Updates a notebook instance. NotebookInstance updates include upgrading or downgrading the ML compute instance used for your notebook instance to accommodate changes in your workload requirements.</p>"
+      "documentation":"<p>Updates a notebook instance. NotebookInstance updates include upgrading or downgrading the ML compute instance used for your notebook instance to accommodate changes in your workload requirements.</p> <note> <p>This API can attach lifecycle configurations to notebook instances. Lifecycle configuration scripts execute with root access and the notebook instance's IAM execution role privileges. Principals with this permission and access to lifecycle configurations can execute code with the execution role's credentials. See <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/notebook-lifecycle-config.html\">Customize a Notebook Instance Using a Lifecycle Configuration Script</a> for security best practices.</p> </note>"
     },
     "UpdateNotebookInstanceLifecycleConfig":{
       "name":"UpdateNotebookInstanceLifecycleConfig",
@@ -4518,7 +4518,7 @@
       "errors":[
         {"shape":"ResourceLimitExceeded"}
       ],
-      "documentation":"<p>Updates a notebook instance lifecycle configuration created with the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateNotebookInstanceLifecycleConfig.html\">CreateNotebookInstanceLifecycleConfig</a> API.</p>"
+      "documentation":"<p>Updates a notebook instance lifecycle configuration created with the <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateNotebookInstanceLifecycleConfig.html\">CreateNotebookInstanceLifecycleConfig</a> API.</p> <note> <p>Updates to lifecycle configurations affect all notebook instances using that configuration upon their next start. Lifecycle configuration scripts execute with root access and the notebook instance's IAM execution role privileges. Grant this permission only to trusted principals. See <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/notebook-lifecycle-config.html\">Customize a Notebook Instance Using a Lifecycle Configuration Script</a> for security best practices.</p> </note>"
     },
     "UpdatePartnerApp":{
       "name":"UpdatePartnerApp",
@@ -4689,6 +4689,12 @@
     }
   },
   "shapes":{
+    "AbsoluteBorrowLimitResourceList":{
+      "type":"list",
+      "member":{"shape":"ComputeQuotaResourceConfig"},
+      "max":15,
+      "min":0
+    },
     "AcceleratorPartitionConfig":{
       "type":"structure",
       "required":[
@@ -7653,7 +7659,7 @@
       "members":{
         "Arn":{
           "shape":"String1024",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the metadata for the Amazon Bedrock custom model deployment. </p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) for the Amazon Bedrock custom model deployment. </p>"
         }
       },
       "documentation":"<p> The metadata of the Amazon Bedrock custom model deployment. </p>"
@@ -7663,7 +7669,7 @@
       "members":{
         "Arn":{
           "shape":"String1024",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the Amazon Bedrock custom model metadata. </p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of the Amazon Bedrock custom model. </p>"
         }
       },
       "documentation":"<p> The metadata of the Amazon Bedrock custom model. </p>"
@@ -7673,7 +7679,7 @@
       "members":{
         "Arn":{
           "shape":"String1024",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the Amazon Bedrock model import metadata. </p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of the Amazon Bedrock model import. </p>"
         }
       },
       "documentation":"<p> The metadata of the Amazon Bedrock model import. </p>"
@@ -7683,7 +7689,7 @@
       "members":{
         "Arn":{
           "shape":"String1024",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the Amazon Bedrock provisioned model throughput metadata. </p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of the Amazon Bedrock provisioned model throughput. </p>"
         }
       },
       "documentation":"<p> The metadata of the Amazon Bedrock provisioned model throughput. </p>"
@@ -7761,7 +7767,7 @@
     "BorrowLimit":{
       "type":"integer",
       "box":true,
-      "max":500,
+      "max":10000,
       "min":0
     },
     "Branch":{
@@ -9447,7 +9453,8 @@
         "ml.r7i.12xlarge",
         "ml.r7i.16xlarge",
         "ml.r7i.24xlarge",
-        "ml.r7i.48xlarge"
+        "ml.r7i.48xlarge",
+        "ml.p6-b300.48xlarge"
       ]
     },
     "ClusterKubernetesConfig":{
@@ -9815,7 +9822,6 @@
     },
     "ClusterOrchestrator":{
       "type":"structure",
-      "required":["Eks"],
       "members":{
         "Eks":{
           "shape":"ClusterOrchestratorEksConfig",
@@ -16624,6 +16630,10 @@
         "FailureReason":{
           "shape":"FailureReason",
           "documentation":"<p>Failure reason of the cluster policy.</p>"
+        },
+        "StatusDetails":{
+          "shape":"StatusDetailsMap",
+          "documentation":"<p>Additional details about the status of the cluster policy. This field provides context when the policy is in a non-active state, such as during creation, updates, or if failures occur.</p>"
         },
         "ClusterArn":{
           "shape":"ClusterArn",
@@ -25315,6 +25325,13 @@
       "max":20,
       "min":0
     },
+    "IdleResourceSharing":{
+      "type":"string",
+      "enum":[
+        "Enabled",
+        "Disabled"
+      ]
+    },
     "IdleSettings":{
       "type":"structure",
       "members":{
@@ -25827,7 +25844,7 @@
       "members":{
         "Arn":{
           "shape":"String2048",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the inference component metadata. </p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of the inference component. </p>"
         }
       },
       "documentation":"<p> The metadata of the inference component. </p>"
@@ -27014,7 +27031,7 @@
       "type":"integer",
       "documentation":"<p>Optional. Customer requested period in seconds for which the Training cluster is kept alive after the job is finished.</p>",
       "box":true,
-      "max":3600,
+      "max":21600,
       "min":0
     },
     "KendraSettings":{
@@ -27553,19 +27570,19 @@
       "members":{
         "ActionArns":{
           "shape":"MapString2048",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the lineage metadata action. </p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of the lineage action. </p>"
         },
         "ArtifactArns":{
           "shape":"MapString2048",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the lineage metadata artifact. </p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of the lineage artifact. </p>"
         },
         "ContextArns":{
           "shape":"MapString2048",
-          "documentation":"<p> The Amazon Resource Name (ARN) of the lineage metadata context. </p>"
+          "documentation":"<p> The Amazon Resource Name (ARN) of the lineage context. </p>"
         },
         "Associations":{
           "shape":"AssociationInfoList",
-          "documentation":"<p> The lineage metadata associations. </p>"
+          "documentation":"<p> The lineage associations. </p>"
         }
       },
       "documentation":"<p> The metadata that tracks relationships between ML artifacts, actions, and contexts. </p>"
@@ -33759,12 +33776,12 @@
         },
         "IsCheckpoint":{
           "shape":"Boolean",
-          "documentation":"<p> The checkpoint of the model package. </p>",
+          "documentation":"<p> Specifies whether the model data is a training checkpoint. </p>",
           "box":true
         },
         "BaseModel":{
           "shape":"BaseModel",
-          "documentation":"<p> The base model of the package. </p>"
+          "documentation":"<p> Identifies the foundation model that was used as the starting point for model customization. </p>"
         }
       },
       "documentation":"<p>Describes the Docker container for the model package.</p>"
@@ -39781,7 +39798,8 @@
         "ml.p6-b200.48xlarge",
         "ml.p4de.24xlarge",
         "ml.p6e-gb200.36xlarge",
-        "ml.p5.4xlarge"
+        "ml.p5.4xlarge",
+        "ml.p6-b300.48xlarge"
       ]
     },
     "ReservedCapacityOffering":{
@@ -40136,6 +40154,10 @@
         "BorrowLimit":{
           "shape":"BorrowLimit",
           "documentation":"<p>The limit on how much idle compute can be borrowed.The values can be 1 - 500 percent of idle compute that the team is allowed to borrow.</p> <p>Default is <code>50</code>.</p>"
+        },
+        "AbsoluteBorrowLimits":{
+          "shape":"AbsoluteBorrowLimitResourceList",
+          "documentation":"<p>The absolute limits on compute resources that can be borrowed from idle compute. When specified, these limits define the maximum amount of specific resource types (such as accelerators, vCPU, or memory) that an entity can borrow, regardless of the percentage-based <code>BorrowLimit</code>.</p>"
         }
       },
       "documentation":"<p>Resource sharing configuration.</p>"
@@ -40713,9 +40735,21 @@
         "FairShare":{
           "shape":"FairShare",
           "documentation":"<p>When enabled, entities borrow idle compute based on their assigned <code>FairShareWeight</code>.</p> <p>When disabled, entities borrow idle compute based on a first-come first-serve basis.</p> <p>Default is <code>Enabled</code>.</p>"
+        },
+        "IdleResourceSharing":{
+          "shape":"IdleResourceSharing",
+          "documentation":"<p>Configuration for sharing idle compute resources across entities in the cluster. When enabled, unallocated resources are automatically calculated and made available for entities to borrow. </p>"
         }
       },
       "documentation":"<p>Cluster policy configuration. This policy is used for task prioritization and fair-share allocation. This helps prioritize critical workloads and distributes idle compute across entities.</p>"
+    },
+    "SchedulerConfigComponent":{
+      "type":"string",
+      "enum":[
+        "PriorityClasses",
+        "FairShare",
+        "IdleResourceSharing"
+      ]
     },
     "SchedulerResourceStatus":{
       "type":"string",
@@ -40885,10 +40919,6 @@
     },
     "SearchTrainingPlanOfferingsRequest":{
       "type":"structure",
-      "required":[
-        "DurationHours",
-        "TargetResources"
-      ],
       "members":{
         "InstanceType":{
           "shape":"ReservedCapacityInstanceType",
@@ -41941,7 +41971,7 @@
         },
         "MlflowExperimentName":{
           "shape":"MlflowExperimentEntityName",
-          "documentation":"<p> The MLflow experiment name of the start execution. </p>"
+          "documentation":"<p> The MLflow experiment name of the pipeline execution. </p>"
         }
       }
     },
@@ -41996,6 +42026,11 @@
       "max":1024,
       "min":0,
       "pattern":".*"
+    },
+    "StatusDetailsMap":{
+      "type":"map",
+      "key":{"shape":"SchedulerConfigComponent"},
+      "value":{"shape":"SchedulerResourceStatus"}
     },
     "StatusMessage":{"type":"string"},
     "StepDescription":{
@@ -43475,7 +43510,8 @@
         "ml.r7i.24xlarge",
         "ml.r7i.48xlarge",
         "ml.p6e-gb200.36xlarge",
-        "ml.p5.4xlarge"
+        "ml.p5.4xlarge",
+        "ml.p6-b300.48xlarge"
       ]
     },
     "TrainingInstanceTypes":{
@@ -45245,6 +45281,10 @@
         "Id":{
           "shape":"String",
           "documentation":"<p>The unique identifier of the UltraServer.</p>"
+        },
+        "Type":{
+          "shape":"String",
+          "documentation":"<p>The type of the UltraServer.</p>"
         }
       },
       "documentation":"<p>Contains information about the UltraServer object.</p>"

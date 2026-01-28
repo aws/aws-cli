@@ -23,8 +23,45 @@
         "expected" : "UPDATE_FAILED"
       } ]
     },
+    "JobComplete" : {
+      "description" : "Wait until a job reaches any terminal status. Waits up to 1 hour by default.",
+      "delay" : 15,
+      "maxAttempts" : 240,
+      "operation" : "GetJob",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "taskRunStatus",
+        "state" : "success",
+        "expected" : "SUCCEEDED"
+      }, {
+        "matcher" : "path",
+        "argument" : "taskRunStatus",
+        "state" : "success",
+        "expected" : "FAILED"
+      }, {
+        "matcher" : "path",
+        "argument" : "taskRunStatus",
+        "state" : "success",
+        "expected" : "CANCELED"
+      }, {
+        "matcher" : "path",
+        "argument" : "taskRunStatus",
+        "state" : "success",
+        "expected" : "SUSPENDED"
+      }, {
+        "matcher" : "path",
+        "argument" : "taskRunStatus",
+        "state" : "success",
+        "expected" : "NOT_COMPATIBLE"
+      }, {
+        "matcher" : "path",
+        "argument" : "lifecycleStatus",
+        "state" : "success",
+        "expected" : "ARCHIVED"
+      } ]
+    },
     "JobCreateComplete" : {
-      "description" : "Wait until a Job is created. Use this after invoking CreateJob.",
+      "description" : "Wait until a job is created. Use this after invoking CreateJob.",
       "delay" : 1,
       "maxAttempts" : 120,
       "operation" : "GetJob",
@@ -58,6 +95,43 @@
         "argument" : "lifecycleStatus",
         "state" : "failure",
         "expected" : "CREATE_FAILED"
+      } ]
+    },
+    "JobSucceeded" : {
+      "description" : "Wait until a job has succeeded. Fails if the job reaches a non-successful terminal status. Waits up to 1 hour by default.",
+      "delay" : 15,
+      "maxAttempts" : 240,
+      "operation" : "GetJob",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "taskRunStatus",
+        "state" : "success",
+        "expected" : "SUCCEEDED"
+      }, {
+        "matcher" : "path",
+        "argument" : "taskRunStatus",
+        "state" : "failure",
+        "expected" : "FAILED"
+      }, {
+        "matcher" : "path",
+        "argument" : "taskRunStatus",
+        "state" : "failure",
+        "expected" : "CANCELED"
+      }, {
+        "matcher" : "path",
+        "argument" : "taskRunStatus",
+        "state" : "failure",
+        "expected" : "SUSPENDED"
+      }, {
+        "matcher" : "path",
+        "argument" : "taskRunStatus",
+        "state" : "failure",
+        "expected" : "NOT_COMPATIBLE"
+      }, {
+        "matcher" : "path",
+        "argument" : "lifecycleStatus",
+        "state" : "failure",
+        "expected" : "ARCHIVED"
       } ]
     },
     "LicenseEndpointDeleted" : {

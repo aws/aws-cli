@@ -2919,6 +2919,9 @@ class ContainerMetadataFetcher:
 
     def _validate_allowed_url(self, full_url):
         parsed = botocore.compat.urlparse(full_url)
+
+        if parsed.scheme == 'https':
+            return
         if self._is_loopback_address(parsed.hostname):
             return
         is_whitelisted_host = self._check_if_whitelisted_host(parsed.hostname)
@@ -4082,7 +4085,6 @@ CLIENT_NAME_TO_HYPHENIZED_SERVICE_ID_OVERRIDES = {
     'ds-data': 'directory-service-data',
     'dynamodbstreams': 'dynamodb-streams',
     'elasticbeanstalk': 'elastic-beanstalk',
-    'elastictranscoder': 'elastic-transcoder',
     'elb': 'elastic-load-balancing',
     'elbv2': 'elastic-load-balancing-v2',
     'es': 'elasticsearch-service',
@@ -4182,7 +4184,9 @@ def build_dpop_header(private_key, uri, uid=None, ts=None):
     )
     signing_input = f"{header_b64}.{payload_b64}".encode()
     signature = private_key.sign(hashlib.sha256(signing_input).digest())
-    signature_bytes = EC.decode_der_signature_to_padded_pair(signature, pad_to=32)
+    signature_bytes = EC.decode_der_signature_to_padded_pair(
+        signature, pad_to=32
+    )
     signature_b64 = base64_url_encode_no_padding(signature_bytes)
 
     return f"{header_b64}.{payload_b64}.{signature_b64}"

@@ -5839,7 +5839,10 @@
     },
     "GetRemainingFreeTrialDaysRequest":{
       "type":"structure",
-      "required":["DetectorId"],
+      "required":[
+        "AccountIds",
+        "DetectorId"
+      ],
       "members":{
         "DetectorId":{
           "shape":"DetectorId",
@@ -9221,6 +9224,11 @@
           "documentation":"<p>The Amazon Resource Name (ARN) that identifies the database instance involved in the finding.</p>",
           "locationName":"dbInstanceArn"
         },
+        "DbiResourceId":{
+          "shape":"String",
+          "documentation":"<p>The unique ID of the database resource involved in the activity that prompted GuardDuty to generate the finding.</p>",
+          "locationName":"dbiResourceId"
+        },
         "Tags":{
           "shape":"Tags",
           "documentation":"<p>Information about the tag key-value pairs.</p>",
@@ -10428,7 +10436,8 @@
         "UNSUPPORTED_FOR_INCREMENTAL",
         "UNSUPPORTED_AMI",
         "UNSUPPORTED_SNAPSHOT",
-        "UNSUPPORTED_COMPOSITE_RECOVERY_POINT"
+        "UNSUPPORTED_COMPOSITE_RECOVERY_POINT",
+        "ALL_FILES_SKIPPED_OR_FAILED"
       ]
     },
     "ScanThreatName":{

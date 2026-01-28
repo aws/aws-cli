@@ -13,6 +13,7 @@
 import datetime
 import json
 import logging
+import os
 import threading
 import time
 import uuid
@@ -37,6 +38,15 @@ class DatabaseConnection:
     _ENABLE_WAL = 'PRAGMA journal_mode=WAL'
 
     def __init__(self, db_filename):
+        # Skip file operations for in-memory databases
+        if db_filename != ':memory:':
+            if not os.path.exists(db_filename):
+                # Create file so we can set permissions before sqlite opens it
+                open(db_filename, 'a').close()
+            try:
+                os.chmod(db_filename, 0o600)
+            except OSError as e:
+                LOG.debug('Unable to set file permissions: %s', e)
         self._connection = sqlite3.connect(
             db_filename, check_same_thread=False, isolation_level=None
         )

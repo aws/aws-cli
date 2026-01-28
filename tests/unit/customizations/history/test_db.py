@@ -15,6 +15,7 @@ import json
 import numbers
 import os
 import re
+import stat
 import threading
 
 from awscli.compat import queue
@@ -28,6 +29,7 @@ from awscli.customizations.history.db import (
 )
 from awscli.testutils import FileCreator, mock, unittest
 from tests import CaseInsensitiveDict
+from tests.markers import skip_if_windows
 
 
 class FakeDatabaseConnection:
@@ -48,8 +50,20 @@ class TestGetHistoryDBFilename(unittest.TestCase):
 
 
 class TestDatabaseConnection(unittest.TestCase):
+    def setUp(self):
+        self.files = FileCreator()
+
+    def tearDown(self):
+        self.files.remove_all()
+
+    @skip_if_windows
+    @mock.patch('awscli.customizations.history.db.os.chmod')
+    @mock.patch('awscli.customizations.history.db.os.path.exists')
     @mock.patch('awscli.compat.sqlite3.connect')
-    def test_can_connect_to_argument_file(self, mock_connect):
+    def test_can_connect_to_argument_file(
+        self, mock_connect, mock_exists, mock_chmod
+    ):
+        mock_exists.return_value = True
         expected_location = os.path.expanduser(
             os.path.join('~', 'foo', 'bar', 'baz.db')
         )
@@ -64,7 +78,7 @@ class TestDatabaseConnection(unittest.TestCase):
         conn._connection.execute.assert_any_call('PRAGMA journal_mode=WAL')
 
     def test_does_ensure_table_created_first(self):
-        db = DatabaseConnection(":memory:")
+        db = DatabaseConnection(':memory:')
         cursor = db.execute('PRAGMA table_info(records)')
         schema = [col[:3] for col in cursor.fetchall()]
         expected_schema = [
@@ -84,6 +98,23 @@ class TestDatabaseConnection(unittest.TestCase):
         conn = DatabaseConnection(':memory:')
         conn.close()
         self.assertTrue(connection.close.called)
+
+    @skip_if_windows
+    def test_create_new_file_with_secure_permissions(self):
+        db_filename = os.path.join(self.files.rootdir, 'new_secure.db')
+        DatabaseConnection(db_filename)
+        file_mode = stat.S_IMODE(os.stat(db_filename).st_mode)
+        self.assertEqual(file_mode, 0o600)
+
+    @skip_if_windows
+    def test_tighten_existing_file_permissions(self):
+        db_filename = os.path.join(self.files.rootdir, 'existing.db')
+        open(db_filename, 'a').close()
+        os.chmod(db_filename, 0o644)
+
+        DatabaseConnection(db_filename)
+        file_mode = stat.S_IMODE(os.stat(db_filename).st_mode)
+        self.assertEqual(file_mode, 0o600)
 
 
 class TestDatabaseHistoryHandler(unittest.TestCase):

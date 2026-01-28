@@ -16,8 +16,8 @@ import json
 import signal
 from unittest import mock
 
-from ruamel.yaml import YAML
 from botocore.exceptions import ClientError, NoCredentialsError, NoRegionError
+from ruamel.yaml import YAML
 
 from awscli.arguments import UnknownArgumentError
 from awscli.constants import (
@@ -238,7 +238,7 @@ class TestEnhancedErrorFormatter:
             '\n'
             'Additional error details:\n'
             'Details: <complex value>, '
-            '--cli-error-format json recommended for full details\n'
+            'use "--cli-error-format json" or another error format to see the full details\n'
         )
         assert output == expected
 
@@ -260,7 +260,7 @@ class TestEnhancedErrorFormatter:
             '\n'
             'Additional error details:\n'
             'FieldErrors: <complex value>, '
-            '--cli-error-format json recommended for full details\n'
+            'use "--cli-error-format json" or another error format to see the full details\n'
         )
         assert output == expected
 
@@ -288,7 +288,7 @@ class TestEnhancedErrorFormatter:
             '\n'
             'Additional error details:\n'
             'CancellationReasons: <complex value>, '
-            '--cli-error-format json recommended for full details\n'
+            'use "--cli-error-format json" or another error format to see the full details\n'
         )
         assert output == expected
 
@@ -355,7 +355,7 @@ class TestEnhancedErrorFormatter:
             '\n'
             'Additional error details:\n'
             'Items: <complex value>, '
-            '--cli-error-format json recommended for full details\n'
+            'use "--cli-error-format json" or another error format to see the full details\n'
         )
         assert output == expected
 
@@ -410,7 +410,7 @@ class TestRealWorldErrorScenarios:
             '\n'
             'Additional error details:\n'
             'CancellationReasons: <complex value>, '
-            '--cli-error-format json recommended for full details\n'
+            'use "--cli-error-format json" or another error format to see the full details\n'
         )
         assert stderr.getvalue() == expected
 

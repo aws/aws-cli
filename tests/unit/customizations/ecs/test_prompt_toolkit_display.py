@@ -1,19 +1,15 @@
 import asyncio
-import sys
 from unittest.mock import Mock, patch
 
 import pytest
-from prompt_toolkit.application import create_app_session
-from prompt_toolkit.output import DummyOutput
 
 from awscli.customizations.ecs.prompt_toolkit_display import Display
 
 
 class TestPromptToolkitDisplay:
     @pytest.fixture
-    def display(self):
-        with create_app_session(output=DummyOutput()):
-            yield Display()
+    def display(self, ptk_app_session):
+        yield Display()
 
     def test_init(self, display):
         """Test Display initialization."""

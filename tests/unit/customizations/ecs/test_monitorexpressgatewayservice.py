@@ -10,14 +10,16 @@ from unittest.mock import Mock, patch
 
 import pytest
 from botocore.exceptions import ClientError
-from prompt_toolkit.application import create_app_session
-from prompt_toolkit.output import DummyOutput
 
+from awscli.customizations.ecs.expressgateway.display_strategy import (
+    InteractiveDisplayStrategy
+)
 from awscli.customizations.ecs.exceptions import MonitoringError
 from awscli.customizations.ecs.monitorexpressgatewayservice import (
     ECSExpressGatewayServiceWatcher,
     ECSMonitorExpressGatewayService,
 )
+from awscli.customizations.ecs.prompt_toolkit_display import Display
 
 
 class TestECSMonitorExpressGatewayServiceCommand:
@@ -139,13 +141,6 @@ class TestECSMonitorExpressGatewayServiceCommand:
 
 
 @pytest.fixture
-def watcher_app_session():
-    """Fixture that creates and manages an app session for watcher tests."""
-    with create_app_session(output=DummyOutput()) as session:
-        yield session
-
-
-@pytest.fixture
 def service_arn():
     """Fixture that provides a test service ARN."""
     return "arn:aws:ecs:us-west-2:123456789012:service/my-cluster/my-service"
@@ -191,7 +186,7 @@ class TestECSExpressGatewayServiceWatcher:
         assert watcher.collector == mock_collector
 
     def test_exec_calls_display_strategy_with_correct_parameters(
-        self, watcher_app_session
+        self, ptk_app_session
     ):
         """Test exec() calls display strategy with collector, start_time, and timeout"""
         mock_collector = Mock()
@@ -219,7 +214,7 @@ class TestECSExpressGatewayServiceWatcher:
         assert call_args.kwargs['timeout_minutes'] == 15
 
     def test_exec_propagates_exceptions_from_display_strategy(
-        self, watcher_app_session
+        self, ptk_app_session
     ):
         """Test exec() propagates exceptions from display strategy"""
         mock_display_strategy = Mock()
@@ -267,6 +262,10 @@ class TestMonitoringError:
 class TestColorSupport:
     """Test color support functionality"""
 
+    @pytest.fixture
+    def display(self, ptk_app_session):
+        yield Display()
+
     def test_should_use_color_on(self):
         """Test _should_use_color returns True when color is 'on'"""
         command = ECSMonitorExpressGatewayService(Mock())
@@ -303,29 +302,20 @@ class TestColorSupport:
 
         assert command._should_use_color(parsed_globals) is False
 
-    def test_watcher_accepts_use_color_parameter(self, watcher_app_session):
+    @pytest.mark.parametrize("use_color", [True, False])
+    def test_watcher_accepts_use_color_parameter(self, display, use_color):
         """Test ECSExpressGatewayServiceWatcher accepts use_color parameter"""
         mock_client = Mock()
 
-        # Test with use_color=True
         watcher = ECSExpressGatewayServiceWatcher(
             mock_client,
             "arn:aws:ecs:us-east-1:123456789012:service/test-service",
             "ALL",
             "INTERACTIVE",
-            use_color=True,
+            use_color=use_color,
+            display_strategy=InteractiveDisplayStrategy(display, use_color),
         )
-        assert watcher.collector.use_color is True
-
-        # Test with use_color=False
-        watcher = ECSExpressGatewayServiceWatcher(
-            mock_client,
-            "arn:aws:ecs:us-east-1:123456789012:service/test-service",
-            "ALL",
-            "INTERACTIVE",
-            use_color=False,
-        )
-        assert watcher.collector.use_color is False
+        assert watcher.collector.use_color is use_color
 
     def test_invalid_display_mode_raises_error(self):
         """Test that invalid display mode raises ValueError"""

@@ -17,7 +17,8 @@ import subprocess
 import sys
 import venv
 from pathlib import Path
-from typing import Dict
+
+from constants import DIST_INFO_DIRECTORIES_TO_KEEP
 
 IS_WINDOWS = sys.platform == "win32"
 BIN_DIRNAME = "Scripts" if IS_WINDOWS else "bin"
@@ -102,6 +103,16 @@ class BaseArtifactTest:
             "dist",
             "install",
         }
+        dist_dir = aws_dir / "dist"
+        dist_info_files = set(
+            f
+            for f in os.listdir(dist_dir)
+            if '.dist-info' in f
+            and not any(keep in f for keep in DIST_INFO_DIRECTORIES_TO_KEEP)
+        )
+        assert (
+            dist_info_files == set()
+        ), f"Expected no dist-info files (except {DIST_INFO_DIRECTORIES_TO_KEEP}), found: {dist_info_files}"
 
         aws_exe = aws_dir / "dist" / "aws"
         self.assert_version_string_is_correct(aws_exe, "exe")
@@ -171,7 +182,7 @@ class VEnvWorkspace:
     def python_exe(self):
         return self.venv_path / BIN_DIRNAME / PYTHON_EXE_NAME
 
-    def env(self, overrides: Dict[str, str] = None):
+    def env(self, overrides: dict[str, str] = None):
         env = os.environ.copy()
         if overrides:
             env.update(overrides)

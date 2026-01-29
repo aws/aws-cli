@@ -53,6 +53,15 @@ INSTALL_DIRNAME = "aws-cli"
 DISTRIBUTION_SOURCE_EXE = "source-exe"
 DISTRIBUTION_SOURCE_SANDBOX = "source-sandbox"
 
+# List of .dist-info directories to include in the CLI distribution.
+# See also hook-awscli.py in the pyinstaller directory.
+#
+# prompt_toolkit uses its own metadata to determine
+# its version. So we need to bundle the package
+# metadata to avoid runtime errors.
+# https://github.com/aws/aws-cli/issues/9453
+DIST_INFO_DIRECTORIES_TO_KEEP = ['prompt_toolkit']
+
 
 class ArtifactType(Enum):
     PORTABLE_EXE = "portable-exe"

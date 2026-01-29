@@ -1845,7 +1845,7 @@
         {"shape":"UnauthorizedException"},
         {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Container</p> <p>Updates capacity settings for a managed EC2 fleet or managed container fleet. For these fleets, you adjust capacity by changing the number of instances in the fleet. Fleet capacity determines the number of game sessions and players that the fleet can host based on its configuration. For fleets with multiple locations, use this operation to manage capacity settings in each location individually.</p> <p>Use this operation to set these fleet capacity properties: </p> <ul> <li> <p>Minimum/maximum size: Set hard limits on the number of Amazon EC2 instances allowed. If Amazon GameLift Servers receives a request--either through manual update or automatic scaling--it won't change the capacity to a value outside of this range.</p> </li> <li> <p>Desired capacity: As an alternative to automatic scaling, manually set the number of Amazon EC2 instances to be maintained. Before changing a fleet's desired capacity, check the maximum capacity of the fleet's Amazon EC2 instance type by calling <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeEC2InstanceLimits.html\">DescribeEC2InstanceLimits</a>.</p> </li> </ul> <p>To update capacity for a fleet's home Region, or if the fleet has no remote locations, omit the <code>Location</code> parameter. The fleet must be in <code>ACTIVE</code> status. </p> <p>To update capacity for a fleet's remote location, set the <code>Location</code> parameter to the location to update. The location must be in <code>ACTIVE</code> status.</p> <p>If successful, Amazon GameLift Servers updates the capacity settings and returns the identifiers for the updated fleet and/or location. If a requested change to desired capacity exceeds the instance type's limit, the <code>LimitExceeded</code> exception occurs. </p> <p>Updates often prompt an immediate change in fleet capacity, such as when current capacity is different than the new desired capacity or outside the new limits. In this scenario, Amazon GameLift Servers automatically initiates steps to add or remove instances in the fleet location. You can track a fleet's current capacity by calling <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeFleetCapacity.html\">DescribeFleetCapacity</a> or <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeFleetLocationCapacity.html\">DescribeFleetLocationCapacity</a>. </p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-manage-capacity.html\">Scaling fleet capacity</a> </p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Container</p> <p>Updates capacity settings for a managed EC2 fleet or managed container fleet. For these fleets, you adjust capacity by changing the number of instances in the fleet. Fleet capacity determines the number of game sessions and players that the fleet can host based on its configuration. For fleets with multiple locations, use this operation to manage capacity settings in each location individually.</p> <ul> <li> <p>Minimum/maximum size: Set hard limits on the number of Amazon EC2 instances allowed. If Amazon GameLift Servers receives a request--either through manual update or automatic scaling--it won't change the capacity to a value outside of this range.</p> </li> <li> <p>Desired capacity: As an alternative to automatic scaling, manually set the number of Amazon EC2 instances to be maintained. Before changing a fleet's desired capacity, check the maximum capacity of the fleet's Amazon EC2 instance type by calling <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeEC2InstanceLimits.html\">DescribeEC2InstanceLimits</a>.</p> </li> </ul> <p>To update capacity for a fleet's home Region, or if the fleet has no remote locations, omit the <code>Location</code> parameter. The fleet must be in <code>ACTIVE</code> status. </p> <p>To update capacity for a fleet's remote location, set the <code>Location</code> parameter to the location to update. The location must be in <code>ACTIVE</code> status.</p> <p>If successful, Amazon GameLift Servers updates the capacity settings and returns the identifiers for the updated fleet and/or location. If a requested change to desired capacity exceeds the instance type's limit, the <code>LimitExceeded</code> exception occurs. </p> <p>Updates often prompt an immediate change in fleet capacity, such as when current capacity is different than the new desired capacity or outside the new limits. In this scenario, Amazon GameLift Servers automatically initiates steps to add or remove instances in the fleet location. You can track a fleet's current capacity by calling <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeFleetCapacity.html\">DescribeFleetCapacity</a> or <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeFleetLocationCapacity.html\">DescribeFleetLocationCapacity</a>.</p> <p> Use ManagedCapacityConfiguration with the \"SCALE_TO_AND_FROM_ZERO\" ZeroCapacityStrategy to enable Amazon GameLift Servers to fully manage the MinSize value, switching between 0 and 1 based on game session activity. This is ideal for eliminating compute costs during periods of no game activity. It is particularly beneficial during development when you're away from your desk, iterating on builds for extended periods, in production environments serving low-traffic locations, or for games with long, predictable downtime windows. By automatically managing capacity between 0 and 1 instances, you avoid paying for idle instances while maintaining the ability to serve game sessions when demand arrives. Note that while scale-out is triggered immediately upon receiving a game session request, actual game session availability depends on your server process startup time, so this approach works best with multi-location Fleets where cold-start latency is tolerable. With a \"MANUAL\" ZeroCapacityStrategy Amazon GameLift Servers will not modify Fleet MinSize values automatically and will not scale out from zero instances in response to game sessions. This is configurable per-location.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-manage-capacity.html\">Scaling fleet capacity</a> </p>"
     },
     "UpdateFleetPortSettings":{
       "name":"UpdateFleetPortSettings",
@@ -3430,7 +3430,7 @@
         },
         "TimeoutInSeconds":{
           "shape":"WholeNumber",
-          "documentation":"<p>The maximum time, in seconds, that a new game session placement request remains in the queue. When a request exceeds this time, the game session placement changes to a <code>TIMED_OUT</code> status. If you don't specify a request timeout, the queue uses a default value.</p>"
+          "documentation":"<p>The maximum time, in seconds, that a new game session placement request remains in the queue. When a request exceeds this time, the game session placement changes to a <code>TIMED_OUT</code> status. If you don't specify a request timeout, the queue uses a default value.</p> <note> <p>The minimum value is 10 and the maximum value is 600.</p> </note>"
         },
         "PlayerLatencyPolicies":{
           "shape":"PlayerLatencyPolicyList",
@@ -5911,6 +5911,10 @@
         "GameServerContainerGroupCounts":{
           "shape":"GameServerContainerGroupCounts",
           "documentation":"<p>The number and status of game server container groups deployed in a container fleet. </p>"
+        },
+        "ManagedCapacityConfiguration":{
+          "shape":"ManagedCapacityConfiguration",
+          "documentation":"<p>Configuration settings for managed capacity scaling.</p>"
         }
       },
       "documentation":"<p>Current resource capacity settings for managed EC2 fleets and managed container fleets. For multi-location fleets, location values might refer to a fleet's remote location or its home Region. </p> <p> <b>Returned by:</b> <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeFleetCapacity.html\">DescribeFleetCapacity</a>, <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeFleetLocationCapacity.html\">DescribeFleetLocationCapacity</a>, <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_UpdateFleetCapacity.html\">UpdateFleetCapacity</a> </p>"
@@ -6831,7 +6835,7 @@
         },
         "TimeoutInSeconds":{
           "shape":"WholeNumber",
-          "documentation":"<p>The maximum time, in seconds, that a new game session placement request remains in the queue. When a request exceeds this time, the game session placement changes to a <code>TIMED_OUT</code> status.</p>"
+          "documentation":"<p>The maximum time, in seconds, that a new game session placement request remains in the queue. When a request exceeds this time, the game session placement changes to a <code>TIMED_OUT</code> status.</p> <note> <p>The minimum value is 10 and the maximum value is 600.</p> </note>"
         },
         "PlayerLatencyPolicies":{
           "shape":"PlayerLatencyPolicyList",
@@ -7958,6 +7962,20 @@
       "min":1,
       "pattern":"[a-zA-Z0-9:/\\-\\*]+"
     },
+    "ManagedCapacityConfiguration":{
+      "type":"structure",
+      "members":{
+        "ZeroCapacityStrategy":{
+          "shape":"ZeroCapacityStrategy",
+          "documentation":"<p>The strategy Amazon GameLift Servers will use to automatically scale your capacity to and from zero instances in response to game session activity. Game session activity refers to any active running sessions or game session requests.</p> <p>Possible ZeroCapacityStrategy types include:</p> <ul> <li> <p> <b>MANUAL</b> -- (default value) Amazon GameLift Servers will not update capacity to and from zero on your behalf.</p> </li> <li> <p> <b>SCALE_TO_AND_FROM_ZERO</b> -- Amazon GameLift Servers will automatically scale out MinSize and DesiredInstances from 0 to 1 in response to a game session request, and will scale in MinSize and DesiredInstances to 0 after a period with no game session activity. The duration of this scale in period can be configured using ScaleInAfterInactivityMinutes. </p> </li> </ul>"
+        },
+        "ScaleInAfterInactivityMinutes":{
+          "shape":"ScaleInAfterInactivityMinutes",
+          "documentation":"<p>Length of time, in minutes, that Amazon GameLift Servers will wait before scaling in your MinSize and DesiredInstances to 0 after a period with no game session activity. Default: 30 minutes.</p>"
+        }
+      },
+      "documentation":"<p>Use ManagedCapacityConfiguration with the \"SCALE_TO_AND_FROM_ZERO\" ZeroCapacityStrategy to enable Amazon GameLift Servers to fully manage the MinSize value, switching between 0 and 1 based on game session activity. This is ideal for eliminating compute costs during periods of no game activity. It is particularly beneficial during development when you're away from your desk, iterating on builds for extended periods, in production environments serving low-traffic locations, or for games with long, predictable downtime windows. By automatically managing capacity between 0 and 1 instances, you avoid paying for idle instances while maintaining the ability to serve game sessions when demand arrives. Note that while scale-out is triggered immediately upon receiving a game session request, actual game session availability depends on your server process startup time, so this approach works best with multi-location Fleets where cold-start latency is tolerable. With a \"MANUAL\" ZeroCapacityStrategy Amazon GameLift Servers will not modify Fleet MinSize values automatically and will not scale out from zero instances in response to game sessions. </p>"
+    },
     "MatchedPlayerSession":{
       "type":"structure",
       "members":{
@@ -8936,6 +8954,11 @@
         }
       },
       "documentation":"<p>The location in Amazon S3 where build or script files are stored for access by Amazon GameLift Servers.</p>"
+    },
+    "ScaleInAfterInactivityMinutes":{
+      "type":"integer",
+      "max":1440,
+      "min":5
     },
     "ScalingAdjustmentType":{
       "type":"string",
@@ -9960,7 +9983,7 @@
         },
         "MinSize":{
           "shape":"WholeNumber",
-          "documentation":"<p>The minimum number of instances that are allowed in the specified fleet location. If this parameter is not set, the default is 0.</p>"
+          "documentation":"<p>The minimum number of instances that are allowed in the specified fleet location. If this parameter is not set, the default is 0. This parameter cannot be set when using a ManagedCapacityConfiguration where ZeroCapacityStrategy has a value of SCALE_TO_AND_FROM_ZERO.</p>"
         },
         "MaxSize":{
           "shape":"WholeNumber",
@@ -9969,6 +9992,10 @@
         "Location":{
           "shape":"LocationStringModel",
           "documentation":"<p>The name of a remote location to update fleet capacity settings for, in the form of an Amazon Web Services Region code such as <code>us-west-2</code>.</p>"
+        },
+        "ManagedCapacityConfiguration":{
+          "shape":"ManagedCapacityConfiguration",
+          "documentation":"<p>Configuration for Amazon GameLift Servers-managed capacity scaling options.</p>"
         }
       }
     },
@@ -9986,6 +10013,10 @@
         "Location":{
           "shape":"LocationStringModel",
           "documentation":"<p>The remote location being updated, expressed as an Amazon Web Services Region code, such as <code>us-west-2</code>.</p>"
+        },
+        "ManagedCapacityConfiguration":{
+          "shape":"ManagedCapacityConfiguration",
+          "documentation":"<p>Configuration for Amazon GameLift Servers-managed capacity scaling options.</p>"
         }
       }
     },
@@ -10142,7 +10173,7 @@
         },
         "TimeoutInSeconds":{
           "shape":"WholeNumber",
-          "documentation":"<p>The maximum time, in seconds, that a new game session placement request remains in the queue. When a request exceeds this time, the game session placement changes to a <code>TIMED_OUT</code> status.</p>"
+          "documentation":"<p>The maximum time, in seconds, that a new game session placement request remains in the queue. When a request exceeds this time, the game session placement changes to a <code>TIMED_OUT</code> status.</p> <note> <p>The minimum value is 10 and the maximum value is 600.</p> </note>"
         },
         "PlayerLatencyPolicies":{
           "shape":"PlayerLatencyPolicyList",
@@ -10433,6 +10464,13 @@
     "WholeNumber":{
       "type":"integer",
       "min":0
+    },
+    "ZeroCapacityStrategy":{
+      "type":"string",
+      "enum":[
+        "MANUAL",
+        "SCALE_TO_AND_FROM_ZERO"
+      ]
     },
     "ZipBlob":{
       "type":"blob",

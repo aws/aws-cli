@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.33.10
+=======
+
+* bugfix:Autocomplete: Removed invalid autocompletion models.
+* bugfix:cli-history: Reverts the change from 2.33.9 to set the file permissions on history and cache files.
+
+
 2.33.9
 ======
 

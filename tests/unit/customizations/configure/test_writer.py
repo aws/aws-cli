@@ -369,3 +369,13 @@ class TestConfigFileWriter(unittest.TestCase):
             '[new-section]\n'
             'region = us-west-2\n'
         )
+        def test_writer_skips_empty_values(self):
+        self.writer.update_config(
+            {'region': '', '__section__': 'default'},
+            self.config_filename
+        )
+        with open(self.config_filename, 'r') as f:
+            contents = f.read()
+        self.assertNotIn('region', contents)
+
+

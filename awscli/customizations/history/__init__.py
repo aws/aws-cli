@@ -53,14 +53,8 @@ def attach_history_handler(session, parsed_args, **kwargs):
         history_filename = os.environ.get(
             HISTORY_FILENAME_ENV_VAR, DEFAULT_HISTORY_FILENAME
         )
-
-        history_dir = os.path.dirname(history_filename)
-        if not os.path.isdir(history_dir):
-            os.makedirs(history_dir)
-        try:
-            os.chmod(history_dir, 0o700)
-        except OSError as e:
-            LOG.debug('Unable to set directory permissions: %s', e)
+        if not os.path.isdir(os.path.dirname(history_filename)):
+            os.makedirs(os.path.dirname(history_filename))
 
         connection = DatabaseConnection(history_filename)
         writer = DatabaseRecordWriter(connection)

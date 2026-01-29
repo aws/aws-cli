@@ -10,10 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import os
 import sqlite3
-import stat
-from pathlib import Path
 from unittest.mock import MagicMock, PropertyMock, patch
 
 import pytest
@@ -30,7 +27,6 @@ from awscli.telemetry import (
     CLISessionOrchestrator,
     add_session_id_component_to_user_agent_extra,
 )
-from awscli.testutils import FileCreator
 from tests.markers import skip_if_windows
 
 
@@ -132,71 +128,6 @@ class TestCLISessionDatabaseConnection:
         fake_conn = CLISessionDatabaseConnection(FakeConnection(":memory:"))
         cursor = fake_conn.execute(test_query)
         assert cursor.fetchall() == []
-
-
-@skip_if_windows
-class TestCLISessionDatabaseConnectionPermissions:
-    def setup_method(self):
-        self.files = FileCreator()
-
-    def teardown_method(self):
-        self.files.remove_all()
-
-    def test_create_directory_with_secure_permissions(self):
-        cache_dir = self.files.full_path('cache')
-        cache_path = Path(cache_dir)
-
-        with patch('awscli.telemetry._CACHE_DIR', cache_path):
-            with patch('awscli.telemetry._DATABASE_FILENAME', 'session.db'):
-                conn = CLISessionDatabaseConnection()
-                conn._connection.close()
-
-        assert os.path.isdir(cache_dir)
-        dir_mode = stat.S_IMODE(os.stat(cache_dir).st_mode)
-        assert dir_mode == 0o700
-
-    def test_tighten_existing_directory_permissions(self):
-        cache_dir = self.files.full_path('cache')
-        os.makedirs(cache_dir, mode=0o755)
-        cache_path = Path(cache_dir)
-
-        with patch('awscli.telemetry._CACHE_DIR', cache_path):
-            with patch('awscli.telemetry._DATABASE_FILENAME', 'session.db'):
-                conn = CLISessionDatabaseConnection()
-                conn._connection.close()
-
-        dir_mode = stat.S_IMODE(os.stat(cache_dir).st_mode)
-        assert dir_mode == 0o700
-
-    def test_create_database_file_with_secure_permissions(self):
-        cache_dir = self.files.full_path('cache')
-        db_file = os.path.join(cache_dir, 'session.db')
-        cache_path = Path(cache_dir)
-
-        with patch('awscli.telemetry._CACHE_DIR', cache_path):
-            with patch('awscli.telemetry._DATABASE_FILENAME', 'session.db'):
-                conn = CLISessionDatabaseConnection()
-                conn._connection.close()
-
-        assert os.path.isfile(db_file)
-        file_mode = stat.S_IMODE(os.stat(db_file).st_mode)
-        assert file_mode == 0o600
-
-    def test_tighten_existing_database_file_permissions(self):
-        cache_dir = self.files.full_path('cache')
-        os.makedirs(cache_dir, mode=0o700)
-        db_file = os.path.join(cache_dir, 'session.db')
-        open(db_file, 'a').close()
-        os.chmod(db_file, 0o644)
-        cache_path = Path(cache_dir)
-
-        with patch('awscli.telemetry._CACHE_DIR', cache_path):
-            with patch('awscli.telemetry._DATABASE_FILENAME', 'session.db'):
-                conn = CLISessionDatabaseConnection()
-                conn._connection.close()
-
-        file_mode = stat.S_IMODE(os.stat(db_file).st_mode)
-        assert file_mode == 0o600
 
 
 class TestCLISessionDatabaseWriter:

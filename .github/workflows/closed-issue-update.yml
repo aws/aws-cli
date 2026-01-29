@@ -1,0 +1,32 @@
+name: Closed Issue Update
+
+on:
+  issues:
+    types: [closed]
+permissions:
+  issues: write
+
+jobs:
+  unlabel:
+    runs-on: ubuntu-latest
+    if: contains(toJson(github.event.issue.labels), 'needs-triage')
+    steps:
+    - uses: actions/github-script@v8
+      with:
+        script: |
+          github.rest.issues.removeLabel({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            name: 'needs-triage'
+          })      
+  auto_comment:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: aws-actions/closed-issue-message@v2
+      with:
+        # These inputs are both required
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        message: |
+          This issue is now closed. Comments on closed issues are hard for our team to see. 
+          If you need more assistance, please open a new issue that references this one.

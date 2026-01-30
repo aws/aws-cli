@@ -26,7 +26,7 @@ from awscli.customizations.history.db import (
     PayloadSerializer,
     RecordBuilder,
 )
-from awscli.testutils import FileCreator, mock, unittest
+from awscli.testutils import FileCreator, mock, skip_if_windows, unittest
 from tests import CaseInsensitiveDict
 
 
@@ -48,6 +48,12 @@ class TestGetHistoryDBFilename(unittest.TestCase):
 
 
 class TestDatabaseConnection(unittest.TestCase):
+    def setUp(self):
+        self.files = FileCreator()
+
+    def tearDown(self):
+        self.files.remove_all()
+
     @mock.patch('awscli.compat.sqlite3.connect')
     def test_can_connect_to_argument_file(self, mock_connect):
         expected_location = os.path.expanduser(
@@ -84,6 +90,13 @@ class TestDatabaseConnection(unittest.TestCase):
         conn = DatabaseConnection(':memory:')
         conn.close()
         self.assertTrue(connection.close.called)
+
+    @skip_if_windows('chmod is not supported on Windows')
+    def test_sets_file_permissions_to_0600(self):
+        db_path = os.path.join(self.files.rootdir, 'history.db')
+        DatabaseConnection(db_path)
+        permissions = os.stat(db_path).st_mode & 0o777
+        self.assertEqual(permissions, 0o600)
 
 
 class TestDatabaseHistoryHandler(unittest.TestCase):

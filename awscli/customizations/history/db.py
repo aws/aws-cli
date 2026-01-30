@@ -13,6 +13,7 @@
 import datetime
 import json
 import logging
+import os
 import threading
 import time
 import uuid
@@ -37,13 +38,21 @@ class DatabaseConnection:
     _ENABLE_WAL = 'PRAGMA journal_mode=WAL'
 
     def __init__(self, db_filename):
+        self._db_filename = db_filename
         self._connection = sqlite3.connect(
             db_filename, check_same_thread=False, isolation_level=None
         )
+        self._set_file_permissions()
         self._ensure_database_setup()
 
     def close(self):
         self._connection.close()
+
+    def _set_file_permissions(self):
+        try:
+            os.chmod(self._db_filename, 0o600)
+        except OSError as e:
+            LOG.debug('Unable to set file permissions: %s', e)
 
     def execute(self, query, *parameters):
         return self._connection.execute(query, *parameters)

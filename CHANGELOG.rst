@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.33.12
+=======
+
+* api-change:``quicksight``: Improve SessionTag usage guidelines in the GenerateEmbedURLForAnonymousUser API documentation. Update the GetIdentityContext document with the region support context.
+* api-change:``connect``: This release adds Estimated Wait Time support to the GetContactMetrics API for Amazon Connect.
+* enhancement:Autocomplete: Added completers for account, amp, apigatewayv2, s3, s3tables
+
+
 2.33.11
 =======
 

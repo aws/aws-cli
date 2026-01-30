@@ -12,8 +12,6 @@ from unittest.mock import Mock, patch
 
 import pytest
 from botocore.exceptions import ClientError
-from prompt_toolkit.application import create_app_session
-from prompt_toolkit.output import DummyOutput
 
 from awscli.customizations.ecs.expressgateway.display_strategy import (
     DisplayStrategy,
@@ -30,13 +28,6 @@ class TestDisplayStrategy:
         strategy = DisplayStrategy()
         with pytest.raises(NotImplementedError):
             strategy.execute_monitoring(None, None, None)
-
-
-@pytest.fixture
-def app_session():
-    """Fixture that creates and manages an app session for prompt_toolkit."""
-    with create_app_session(output=DummyOutput()) as session:
-        yield session
 
 
 @pytest.fixture
@@ -57,7 +48,7 @@ class TestInteractiveDisplayStrategy:
 
     @patch('time.sleep')
     def test_execute_with_mock_display(
-        self, mock_sleep, app_session, mock_display
+        self, mock_sleep, ptk_app_session, mock_display
     ):
         """Test strategy executes with mocked display."""
         mock_collector = Mock()
@@ -96,7 +87,7 @@ class TestInteractiveDisplayStrategy:
 
     @patch('time.sleep')
     def test_completion_message_on_normal_exit(
-        self, mock_sleep, app_session, mock_display, capsys
+        self, mock_sleep, ptk_app_session, mock_display, capsys
     ):
         """Test displays completion message when monitoring completes normally."""
         mock_collector = Mock()
@@ -119,7 +110,7 @@ class TestInteractiveDisplayStrategy:
 
     @patch('time.sleep')
     def test_collector_output_is_displayed(
-        self, mock_sleep, app_session, mock_display, capsys
+        self, mock_sleep, ptk_app_session, mock_display, capsys
     ):
         """Test that collector output appears in final output."""
         mock_collector = Mock()
@@ -142,7 +133,7 @@ class TestInteractiveDisplayStrategy:
 
     @patch('time.sleep')
     def test_execute_handles_service_inactive(
-        self, mock_sleep, app_session, mock_display, capsys
+        self, mock_sleep, ptk_app_session, mock_display, capsys
     ):
         """Test strategy handles service inactive error."""
         mock_collector = Mock()
@@ -174,7 +165,7 @@ class TestInteractiveDisplayStrategy:
 
     @patch('time.sleep')
     def test_execute_other_client_errors_propagate(
-        self, mock_sleep, app_session, mock_display
+        self, mock_sleep, ptk_app_session, mock_display
     ):
         """Test strategy propagates non-service-inactive ClientErrors."""
         mock_collector = Mock()
@@ -209,7 +200,7 @@ class TestInteractiveDisplayStrategy:
 
     @patch('time.sleep')
     def test_display_cleanup_on_exception(
-        self, mock_sleep, app_session, mock_display
+        self, mock_sleep, ptk_app_session, mock_display
     ):
         """Test display app is properly shut down when exception occurs."""
         mock_collector = Mock()

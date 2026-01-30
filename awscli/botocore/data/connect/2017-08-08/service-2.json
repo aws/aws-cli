@@ -2810,7 +2810,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Retrieves the position of the contact in the queue.</p> <p> <b>Use cases</b> </p> <p>Following are common uses cases for position in queue:</p> <ul> <li> <p>Understand the expected wait experience of a contact.</p> </li> <li> <p>Inform customers of their position in queue and potentially offer a callback.</p> </li> <li> <p>Make data-driven routing decisions between primary and alternative queues.</p> </li> <li> <p>Enhance queue visibility and leverage agent proficiencies to streamline contact routing.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>The only way to retrieve the position of the contact in queue is by using this API. You can't retrieve the position by using flows and attributes.</p> </li> <li> <p>For more information, see the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Position in queue</a> metric in the <i>Amazon Connect Administrator Guide</i>. </p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect endpoints and quotas</a>.</p>"
+      "documentation":"<p>Retrieves contact metric data for a specified contact.</p> <p> <b>Use cases</b> </p> <p>Following are common use cases for position in queue and estimated wait time:</p> <ul> <li> <p>Customer-Facing Wait Time Announcements - Display or announce the estimated wait time and position in queue to customers before or during their queue experience. </p> </li> <li> <p>Callback Offerings - Offer customers a callback option when the estimated wait time or position in queue exceeds a defined threshold. </p> </li> <li> <p>Queue Routing Decisions - Route incoming contacts to less congested queues by comparing estimated wait time and position in queue across multiple queues. </p> </li> <li> <p>Self-Service Deflection - Redirect customers to self-service options like chatbots or FAQs when estimated wait time is high or position in queue is unfavorable. </p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>Metrics are only available while the contact is actively in queue.</p> </li> <li> <p>For more information, see the <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Position in queue</a> metric in the <i>Amazon Connect Administrator Guide</i>. </p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect endpoints and quotas</a>.</p>"
     },
     "GetCurrentMetricData":{
       "name":"GetCurrentMetricData",
@@ -10102,14 +10102,17 @@
       "members":{
         "Name":{
           "shape":"ContactMetricName",
-          "documentation":"<p>The name of the metric being retrieved in type String.</p>"
+          "documentation":"<p>The name of the metric to retrieve. Supported values are POSITION_IN_QUEUE (returns the contact's current position in the queue) and ESTIMATED_WAIT_TIME (returns the predicted wait time in seconds).</p>"
         }
       },
-      "documentation":"<p>The object that contains information about metric being requested.</p>"
+      "documentation":"<p>Contains the details of a metric to be retrieved for a contact. Use this object to specify which contact level metrics you want to include in your GetContactMetrics request.</p>"
     },
     "ContactMetricName":{
       "type":"string",
-      "enum":["POSITION_IN_QUEUE"]
+      "enum":[
+        "ESTIMATED_WAIT_TIME",
+        "POSITION_IN_QUEUE"
+      ]
     },
     "ContactMetricResult":{
       "type":"structure",
@@ -10120,14 +10123,14 @@
       "members":{
         "Name":{
           "shape":"ContactMetricName",
-          "documentation":"<p>The name of the metric being retrieved in type String.</p>"
+          "documentation":"<p>The name of the metric that was retrieved. This corresponds to the metric name specified in the request, such as POSITION_IN_QUEUE or ESTIMATED_WAIT_TIME.</p>"
         },
         "Value":{
           "shape":"ContactMetricValue",
-          "documentation":"<p>Object result associated with the metric received.</p>"
+          "documentation":"<p>The calculated value for the requested metric. This object contains the numeric result based on the contact's current state in the queue.</p>"
         }
       },
-      "documentation":"<p>Object containing information about metric requested for the contact.</p>"
+      "documentation":"<p>Contains the result of a requested metric for the contact. This object is returned as part of the GetContactMetrics response and includes both the metric name and its calculated value.</p>"
     },
     "ContactMetricResults":{
       "type":"list",
@@ -10138,10 +10141,10 @@
       "members":{
         "Number":{
           "shape":"Double",
-          "documentation":"<p>The number of type Double. This number is the contact's position in queue.</p>"
+          "documentation":"<p>The numeric value of the metric result. For POSITION_IN_QUEUE, this represents the contact's current position in the queue (e.g., 3.00 means third in line). For ESTIMATED_WAIT_TIME, this represents the predicted wait time in seconds (e.g., 120.00 means approximately 2 minutes).</p>"
         }
       },
-      "documentation":"<p>Object which contains the number.</p>",
+      "documentation":"<p>Contains the numeric value of a contact metric result.</p>",
       "union":true
     },
     "ContactMetrics":{
@@ -12491,7 +12494,8 @@
         "CONTACTS_SCHEDULED",
         "AGENTS_ON_CONTACT",
         "SLOTS_ACTIVE",
-        "SLOTS_AVAILABLE"
+        "SLOTS_AVAILABLE",
+        "ESTIMATED_WAIT_TIME"
       ]
     },
     "CurrentMetricResult":{
@@ -18830,7 +18834,7 @@
         },
         "Metrics":{
           "shape":"ContactMetrics",
-          "documentation":"<p>A list of contact-level metrics to retrieve.</p>"
+          "documentation":"<p>A list of contact level metrics to retrieve.Supported metrics include POSITION_IN_QUEUE (the contact's current position in the queue) and ESTIMATED_WAIT_TIME (the predicted time in seconds until the contact is connected to an agent)</p>"
         }
       }
     },
@@ -18839,11 +18843,11 @@
       "members":{
         "MetricResults":{
           "shape":"ContactMetricResults",
-          "documentation":"<p>A list of metric results containing the calculated values for each requested metric. Each result includes the metric name and its corresponding calculated value.</p>"
+          "documentation":"<p>A list of metric results containing the calculated values for each requested metric. Each result includes the metric name and its corresponding value. For example, POSITION_IN_QUEUE returns a numeric value representing the contact's position in queue, and ESTIMATED_WAIT_TIME returns the predicted wait time in seconds.</p>"
         },
         "Id":{
           "shape":"ContactId",
-          "documentation":"<p>The unique identifier of the contact for which metrics were retrieved.</p>"
+          "documentation":"<p>The unique identifier of the contact for which metrics were retrieved. This matches the ContactId provided in the request.</p>"
         },
         "Arn":{
           "shape":"ARN",
@@ -18875,7 +18879,7 @@
         },
         "CurrentMetrics":{
           "shape":"CurrentMetrics",
-          "documentation":"<p>The metrics to retrieve. Specify the name or metricId, and unit for each metric. The following metrics are available. For a description of all the metrics, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Metrics definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <note> <p> MetricId should be used to reference custom metrics or out of the box metrics as Arn. If using MetricId, the limit is 10 MetricId per request.</p> </note> <dl> <dt>AGENTS_AFTER_CONTACT_WORK</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#aftercallwork-real-time\">ACW</a> </p> </dd> <dt>AGENTS_AVAILABLE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#available-real-time\">Available</a> </p> </dd> <dt>AGENTS_ERROR</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#error-real-time\">Error</a> </p> </dd> <dt>AGENTS_NON_PRODUCTIVE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#non-productive-time-real-time\">NPT (Non-Productive Time)</a> </p> </dd> <dt>AGENTS_ON_CALL</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#on-call-real-time\">On contact</a> </p> </dd> <dt>AGENTS_ON_CONTACT</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#on-call-real-time\">On contact</a> </p> </dd> <dt>AGENTS_ONLINE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#online-real-time\">Online</a> </p> </dd> <dt>AGENTS_STAFFED</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#staffed-real-time\">Staffed</a> </p> </dd> <dt>CONTACTS_IN_QUEUE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#in-queue-real-time\">In queue</a> </p> </dd> <dt>CONTACTS_SCHEDULED</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#scheduled-real-time\">Scheduled</a> </p> </dd> <dt>OLDEST_CONTACT_AGE</dt> <dd> <p>Unit: SECONDS</p> <p>When you use groupings, Unit says SECONDS and the Value is returned in SECONDS. </p> <p>When you do not use groupings, Unit says SECONDS but the Value is returned in MILLISECONDS. For example, if you get a response like this:</p> <p> <code>{ \"Metric\": { \"Name\": \"OLDEST_CONTACT_AGE\", \"Unit\": \"SECONDS\" }, \"Value\": 24113.0 </code>}</p> <p>The actual OLDEST_CONTACT_AGE is 24 seconds.</p> <p>When the filter <code>RoutingStepExpression</code> is used, this metric is still calculated from enqueue time. For example, if a contact that has been queued under <code>&lt;Expression 1&gt;</code> for 10 seconds has expired and <code>&lt;Expression 2&gt;</code> becomes active, then <code>OLDEST_CONTACT_AGE</code> for this queue will be counted starting from 10, not 0.</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#oldest-real-time\">Oldest</a> </p> </dd> <dt>SLOTS_ACTIVE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#active-real-time\">Active</a> </p> </dd> <dt>SLOTS_AVAILABLE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#availability-real-time\">Availability</a> </p> </dd> </dl>"
+          "documentation":"<p>The metrics to retrieve. Specify the name or metricId, and unit for each metric. The following metrics are available. For a description of all the metrics, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html\">Metrics definitions</a> in the <i>Amazon Connect Administrator Guide</i>.</p> <note> <p> MetricId should be used to reference custom metrics or out of the box metrics as Arn. If using MetricId, the limit is 10 MetricId per request.</p> </note> <dl> <dt>AGENTS_AFTER_CONTACT_WORK</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#aftercallwork-real-time\">ACW</a> </p> </dd> <dt>AGENTS_AVAILABLE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#available-real-time\">Available</a> </p> </dd> <dt>AGENTS_ERROR</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#error-real-time\">Error</a> </p> </dd> <dt>AGENTS_NON_PRODUCTIVE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#non-productive-time-real-time\">NPT (Non-Productive Time)</a> </p> </dd> <dt>AGENTS_ON_CALL</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#on-call-real-time\">On contact</a> </p> </dd> <dt>AGENTS_ON_CONTACT</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#on-call-real-time\">On contact</a> </p> </dd> <dt>AGENTS_ONLINE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#online-real-time\">Online</a> </p> </dd> <dt>AGENTS_STAFFED</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#staffed-real-time\">Staffed</a> </p> </dd> <dt>CONTACTS_IN_QUEUE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#in-queue-real-time\">In queue</a> </p> </dd> <dt>CONTACTS_SCHEDULED</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#scheduled-real-time\">Scheduled</a> </p> </dd> <dt>ESTIMATED_WAIT_TIME</dt> <dd> <p>Unit: SECONDS</p> <p>This metric supports filter and grouping combination only used for core routing purpose. Valid filter and grouping use cases: </p> <ul> <li> <p>Filter by a list of [Queues] and a list of [Channels], group by [“QUEUE”, “CHANNEL”]</p> </li> <li> <p>Filter by a singleton list of [Queue], a singleton list of [Channel], a list of [RoutingStepExpression], group by [“ROUTING_STEP_EXPRESSION”].</p> </li> </ul> </dd> <dt>OLDEST_CONTACT_AGE</dt> <dd> <p>Unit: SECONDS</p> <p>When you use groupings, Unit says SECONDS and the Value is returned in SECONDS. </p> <p>When you do not use groupings, Unit says SECONDS but the Value is returned in MILLISECONDS. For example, if you get a response like this:</p> <p> <code>{ \"Metric\": { \"Name\": \"OLDEST_CONTACT_AGE\", \"Unit\": \"SECONDS\" }, \"Value\": 24113.0 </code>}</p> <p>The actual OLDEST_CONTACT_AGE is 24 seconds.</p> <p>When the filter <code>RoutingStepExpression</code> is used, this metric is still calculated from enqueue time. For example, if a contact that has been queued under <code>&lt;Expression 1&gt;</code> for 10 seconds has expired and <code>&lt;Expression 2&gt;</code> becomes active, then <code>OLDEST_CONTACT_AGE</code> for this queue will be counted starting from 10, not 0.</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#oldest-real-time\">Oldest</a> </p> </dd> <dt>SLOTS_ACTIVE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#active-real-time\">Active</a> </p> </dd> <dt>SLOTS_AVAILABLE</dt> <dd> <p>Unit: COUNT</p> <p>Name in real-time metrics report: <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/metrics-definitions.html#availability-real-time\">Availability</a> </p> </dd> </dl>"
         },
         "NextToken":{
           "shape":"NextToken",

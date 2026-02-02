@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.44.30
+=======
+
+* api-change:``bedrock-agentcore-control``: Adds tagging support for AgentCore Evaluations (evaluator and online evaluation config)
+* api-change:``cloudfront``: Add OriginMTLS support to CloudFront Distribution APIs
+* api-change:``mpa``: Updates to multi-party approval (MPA) service to add support for multi-factor authentication (MFA) for voting operations.
+
+
 1.44.29
 =======
 

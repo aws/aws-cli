@@ -32,6 +32,9 @@ from awscli.arguments import CustomArgument, CLIArgument
 from awscli.arguments import ListArgument, BooleanArgument
 from awscli.arguments import create_argument_model_from_schema
 
+from awscli.clidriver import ServiceOperation, CLIOperationCaller
+from awscli.argparser import ArgTableArgParser
+
 
 # These tests use real service types so that we can
 # verify the real shapes of services.
@@ -894,6 +897,28 @@ class TestJSONValueHeaderParams(BaseArgProcessTest):
         with self.assertRaises(ParamError):
             unpack_cli_arg(self.p, value)
 
+class TestPercentInDocumentation(BaseArgProcessTest):
+    def test_percent_characters_escaped_in_argument_help(self):
+        operation_caller = CLIOperationCaller(self.session)
+        for service_name in self.session.get_available_services():
+            service_model = self.session.get_service_model(service_name)
+            for operation_name in service_model.operation_names:
+                operation_model = service_model.operation_model(operation_name)
+                if not operation_model.input_shape:
+                    continue
+                has_percent = any(
+                    '%' in (member.documentation or '')
+                    for member in operation_model.input_shape.members.values()
+                )
+                if has_percent:
+                    service_op = ServiceOperation(
+                        name=xform_name(operation_name, '-'),
+                        parent_name=service_name,
+                        operation_caller=operation_caller,
+                        operation_model=operation_model,
+                        session=self.session,
+                    )
+                    ArgTableArgParser(service_op.arg_table)
 
 if __name__ == '__main__':
     unittest.main()

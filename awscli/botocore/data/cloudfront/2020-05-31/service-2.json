@@ -6020,6 +6020,10 @@
         "IpAddressType":{
           "shape":"IpAddressType",
           "documentation":"<p>Specifies which IP protocol CloudFront uses when connecting to your origin. If your origin uses both IPv4 and IPv6 protocols, you can choose <code>dualstack</code> to help optimize reliability.</p>"
+        },
+        "OriginMtlsConfig":{
+          "shape":"OriginMtlsConfig",
+          "documentation":"<p>Configures mutual TLS authentication between CloudFront and your origin server.</p>"
         }
       },
       "documentation":"<p>A custom origin. A custom origin is any origin that is <i>not</i> an Amazon S3 bucket, with one exception. An Amazon S3 bucket that is <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html\">configured with static website hosting</a> <i>is</i> a custom origin.</p>"
@@ -12242,6 +12246,17 @@
         "locationName":"Origin"
       },
       "min":1
+    },
+    "OriginMtlsConfig":{
+      "type":"structure",
+      "required":["ClientCertificateArn"],
+      "members":{
+        "ClientCertificateArn":{
+          "shape":"string",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the client certificate stored in Amazon Web Services Certificate Manager (ACM) that CloudFront uses to authenticate with your origin using Mutual TLS.</p>"
+        }
+      },
+      "documentation":"<p>Configures mutual TLS authentication between CloudFront and your origin server.</p>"
     },
     "OriginProtocolPolicy":{
       "type":"string",

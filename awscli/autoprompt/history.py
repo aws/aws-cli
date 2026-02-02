@@ -53,8 +53,12 @@ class HistoryDriver(FileHistory):
             history['commands'] = history['commands'][-self._max_commands :]
             with open(self.filename, 'w') as f:
                 json.dump(history, f)
-        except Exception:
-            LOG.debug('Exception on loading prompt history:', exc_info=True)
+            try:
+                os.chmod(self.filename, 0o600)
+            except OSError as e:
+                LOG.debug('Unable to set file permissions: %s', e)
+        except Exception as e:
+            LOG.debug('Unable to save autoprompt history (check file permissions): %s', e)
 
 
 class HistoryCompleter(Completer):

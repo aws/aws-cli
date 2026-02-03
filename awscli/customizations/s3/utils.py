@@ -32,7 +32,7 @@ HUMANIZE_SUFFIXES = ('KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB')
 EPOCH_TIME = datetime(1970, 1, 1, tzinfo=tzutc())
 # Maximum object size allowed in S3.
 # See: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
-MAX_UPLOAD_SIZE = 5 * (1024 ** 4)
+MAX_UPLOAD_SIZE = 5 * (1024 ** 3) * 10000
 SIZE_SUFFIX = {
     'kb': 1024,
     'mb': 1024 ** 2,

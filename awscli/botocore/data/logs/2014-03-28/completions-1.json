@@ -7,7 +7,8 @@
         "destinationName": "destinations[].destinationName",
         "targetArn": "destinations[].targetArn",
         "roleArn": "destinations[].roleArn",
-        "accessPolicy": "destinations[].accessPolicy"
+        "accessPolicy": "destinations[].accessPolicy",
+        "arn": "destinations[].arn"
       }
     },
     "ExportTask": {
@@ -19,7 +20,9 @@
     "LogGroup": {
       "operation": "DescribeLogGroups",
       "resourceIdentifier": {
-        "kmsKeyId": "logGroups[].kmsKeyId"
+        "kmsKeyId": "logGroups[].kmsKeyId",
+        "logGroupName": "logGroups[].logGroupName",
+        "arn": "logGroups[].arn"
       }
     },
     "MetricFilter": {
@@ -35,6 +38,82 @@
       "resourceIdentifier": {
         "policyName": "resourcePolicies[].policyName",
         "policyDocument": "resourcePolicies[].policyDocument"
+      }
+    },
+    "ScheduledQuery": {
+      "operation": "ListScheduledQueries",
+      "resourceIdentifier": {
+        "scheduledQueryArn": "scheduledQueries[].scheduledQueryArn"
+      }
+    },
+    "ImportTask": {
+      "operation": "DescribeImportTasks",
+      "resourceIdentifier": {
+        "importId": "imports[].importId"
+      }
+    },
+    "DeliverySource": {
+      "operation": "DescribeDeliverySources",
+      "resourceIdentifier": {
+        "name": "deliverySources[].name"
+      }
+    },
+    "DeliveryDestination": {
+      "operation": "DescribeDeliveryDestinations",
+      "resourceIdentifier": {
+        "name": "deliveryDestinations[].name",
+        "arn": "deliveryDestinations[].arn"
+      }
+    },
+    "Delivery": {
+      "operation": "DescribeDeliveries",
+      "resourceIdentifier": {
+        "id": "deliveries[].id",
+        "arn": "deliveries[].arn"
+      }
+    },
+    "Integration": {
+      "operation": "ListIntegrations",
+      "resourceIdentifier": {
+        "integrationName": "integrationSummaries[].integrationName"
+      }
+    },
+    "LogAnomalyDetector": {
+      "operation": "ListLogAnomalyDetectors",
+      "resourceIdentifier": {
+        "anomalyDetectorArn": "anomalyDetectors[].anomalyDetectorArn"
+      }
+    },
+    "LogStream": {
+      "operation": "DescribeLogStreams",
+      "resourceIdentifier": {
+        "logStreamName": "logStreams[].logStreamName"
+      }
+    },
+    "QueryDefinition": {
+      "operation": "DescribeQueryDefinitions",
+      "resourceIdentifier": {
+        "queryDefinitionId": "queryDefinitions[].queryDefinitionId",
+        "name": "queryDefinitions[].name"
+      }
+    },
+    "ConfigurationTemplate": {
+      "operation": "DescribeConfigurationTemplates",
+      "resourceIdentifier": {
+        "service": "configurationTemplates[].service",
+        "logType": "configurationTemplates[].logType"
+      }
+    },
+    "Query": {
+      "operation": "DescribeQueries",
+      "resourceIdentifier": {
+        "queryId": "queries[].queryId"
+      }
+    },
+    "Anomaly": {
+      "operation": "ListAnomalies",
+      "resourceIdentifier": {
+        "anomalyId": "anomalies[].anomalyId"
       }
     }
   },
@@ -99,6 +178,15 @@
             "parameters": {},
             "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
+          }
+        ]
+      },
+      "logStreamName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogStream",
+            "resourceIdentifier": "logStreamName"
           }
         ]
       }
@@ -238,6 +326,15 @@
             "resourceIdentifier": "filterPattern"
           }
         ]
+      },
+      "logStreamNames": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogStream",
+            "resourceIdentifier": "logStreamName"
+          }
+        ]
       }
     },
     "GetLogEvents": {
@@ -247,6 +344,15 @@
             "parameters": {},
             "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
+          }
+        ]
+      },
+      "logStreamName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogStream",
+            "resourceIdentifier": "logStreamName"
           }
         ]
       }
@@ -318,6 +424,15 @@
             "parameters": {},
             "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
+          }
+        ]
+      },
+      "logStreamName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogStream",
+            "resourceIdentifier": "logStreamName"
           }
         ]
       }
@@ -418,6 +533,15 @@
             "resourceIdentifier": "roleArn"
           }
         ]
+      },
+      "destinationArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Destination",
+            "resourceIdentifier": "arn"
+          }
+        ]
       }
     },
     "TagLogGroup": {
@@ -449,6 +573,526 @@
             "parameters": {},
             "resourceName": "MetricFilter",
             "resourceIdentifier": "logGroupName"
+          }
+        ]
+      }
+    },
+    "AssociateSourceToS3TableIntegration": {
+      "integrationArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ScheduledQuery",
+            "resourceIdentifier": "scheduledQueryArn"
+          }
+        ]
+      }
+    },
+    "CancelImportTask": {
+      "importId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ImportTask",
+            "resourceIdentifier": "importId"
+          }
+        ]
+      }
+    },
+    "CreateDelivery": {
+      "deliverySourceName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DeliverySource",
+            "resourceIdentifier": "name"
+          }
+        ]
+      },
+      "deliveryDestinationArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DeliveryDestination",
+            "resourceIdentifier": "arn"
+          }
+        ]
+      }
+    },
+    "CreateExportTask": {
+      "logGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogGroup",
+            "resourceIdentifier": "logGroupName"
+          }
+        ]
+      }
+    },
+    "CreateImportTask": {
+      "importSourceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogGroup",
+            "resourceIdentifier": "arn"
+          }
+        ]
+      }
+    },
+    "CreateLogStream": {
+      "logGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogGroup",
+            "resourceIdentifier": "logGroupName"
+          }
+        ]
+      }
+    },
+    "DeleteAccountPolicy": {
+      "policyName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ResourcePolicy",
+            "resourceIdentifier": "policyName"
+          }
+        ]
+      }
+    },
+    "DeleteDelivery": {
+      "id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Delivery",
+            "resourceIdentifier": "id"
+          }
+        ]
+      }
+    },
+    "DeleteDeliveryDestination": {
+      "name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DeliveryDestination",
+            "resourceIdentifier": "name"
+          }
+        ]
+      }
+    },
+    "DeleteDeliveryDestinationPolicy": {
+      "deliveryDestinationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DeliveryDestination",
+            "resourceIdentifier": "name"
+          }
+        ]
+      }
+    },
+    "DeleteDeliverySource": {
+      "name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DeliverySource",
+            "resourceIdentifier": "name"
+          }
+        ]
+      }
+    },
+    "DeleteIntegration": {
+      "integrationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Integration",
+            "resourceIdentifier": "integrationName"
+          }
+        ]
+      }
+    },
+    "DeleteLogAnomalyDetector": {
+      "anomalyDetectorArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogAnomalyDetector",
+            "resourceIdentifier": "anomalyDetectorArn"
+          }
+        ]
+      }
+    },
+    "DeleteQueryDefinition": {
+      "queryDefinitionId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "QueryDefinition",
+            "resourceIdentifier": "queryDefinitionId"
+          }
+        ]
+      }
+    },
+    "DescribeAccountPolicies": {
+      "policyName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ResourcePolicy",
+            "resourceIdentifier": "policyName"
+          }
+        ]
+      }
+    },
+    "DescribeConfigurationTemplates": {
+      "service": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ConfigurationTemplate",
+            "resourceIdentifier": "service"
+          }
+        ]
+      }
+    },
+    "DescribeDestinations": {
+      "DestinationNamePrefix": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Destination",
+            "resourceIdentifier": "destinationName"
+          }
+        ]
+      }
+    },
+    "DescribeImportTaskBatches": {
+      "importId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ImportTask",
+            "resourceIdentifier": "importId"
+          }
+        ]
+      }
+    },
+    "DescribeImportTasks": {
+      "importId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ImportTask",
+            "resourceIdentifier": "importId"
+          }
+        ]
+      }
+    },
+    "DescribeLogGroups": {
+      "logGroupNamePrefix": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogGroup",
+            "resourceIdentifier": "logGroupName"
+          }
+        ]
+      }
+    },
+    "DescribeQueries": {
+      "logGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogGroup",
+            "resourceIdentifier": "logGroupName"
+          }
+        ]
+      }
+    },
+    "DescribeQueryDefinitions": {
+      "queryDefinitionNamePrefix": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "QueryDefinition",
+            "resourceIdentifier": "name"
+          }
+        ]
+      }
+    },
+    "DescribeResourcePolicies": {
+      "resourceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Delivery",
+            "resourceIdentifier": "arn"
+          }
+        ]
+      }
+    },
+    "GetDelivery": {
+      "id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Delivery",
+            "resourceIdentifier": "id"
+          }
+        ]
+      }
+    },
+    "GetDeliveryDestination": {
+      "name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DeliveryDestination",
+            "resourceIdentifier": "name"
+          }
+        ]
+      }
+    },
+    "GetDeliveryDestinationPolicy": {
+      "deliveryDestinationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DeliveryDestination",
+            "resourceIdentifier": "name"
+          }
+        ]
+      }
+    },
+    "GetDeliverySource": {
+      "name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DeliverySource",
+            "resourceIdentifier": "name"
+          }
+        ]
+      }
+    },
+    "GetIntegration": {
+      "integrationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Integration",
+            "resourceIdentifier": "integrationName"
+          }
+        ]
+      }
+    },
+    "GetLogAnomalyDetector": {
+      "anomalyDetectorArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogAnomalyDetector",
+            "resourceIdentifier": "anomalyDetectorArn"
+          }
+        ]
+      }
+    },
+    "GetLogGroupFields": {
+      "logGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogGroup",
+            "resourceIdentifier": "logGroupName"
+          }
+        ]
+      }
+    },
+    "GetQueryResults": {
+      "queryId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Query",
+            "resourceIdentifier": "queryId"
+          }
+        ]
+      }
+    },
+    "ListAnomalies": {
+      "anomalyDetectorArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogAnomalyDetector",
+            "resourceIdentifier": "anomalyDetectorArn"
+          }
+        ]
+      }
+    },
+    "ListLogGroupsForQuery": {
+      "queryId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Query",
+            "resourceIdentifier": "queryId"
+          }
+        ]
+      }
+    },
+    "PutAccountPolicy": {
+      "policyName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ResourcePolicy",
+            "resourceIdentifier": "policyName"
+          }
+        ]
+      }
+    },
+    "PutDeliveryDestinationPolicy": {
+      "deliveryDestinationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "DeliveryDestination",
+            "resourceIdentifier": "name"
+          }
+        ]
+      }
+    },
+    "PutDeliverySource": {
+      "logType": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ConfigurationTemplate",
+            "resourceIdentifier": "logType"
+          }
+        ]
+      }
+    },
+    "PutIntegration": {
+      "integrationName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Integration",
+            "resourceIdentifier": "integrationName"
+          }
+        ]
+      }
+    },
+    "PutQueryDefinition": {
+      "queryDefinitionId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "QueryDefinition",
+            "resourceIdentifier": "queryDefinitionId"
+          }
+        ]
+      },
+      "logGroupNames": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogGroup",
+            "resourceIdentifier": "logGroupName"
+          }
+        ]
+      }
+    },
+    "StartLiveTail": {
+      "logStreamNames": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogStream",
+            "resourceIdentifier": "logStreamName"
+          }
+        ]
+      }
+    },
+    "StartQuery": {
+      "logGroupName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogGroup",
+            "resourceIdentifier": "logGroupName"
+          }
+        ]
+      },
+      "logGroupNames": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogGroup",
+            "resourceIdentifier": "logGroupName"
+          }
+        ]
+      }
+    },
+    "StopQuery": {
+      "queryId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Query",
+            "resourceIdentifier": "queryId"
+          }
+        ]
+      }
+    },
+    "UpdateAnomaly": {
+      "anomalyId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Anomaly",
+            "resourceIdentifier": "anomalyId"
+          }
+        ]
+      },
+      "anomalyDetectorArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogAnomalyDetector",
+            "resourceIdentifier": "anomalyDetectorArn"
+          }
+        ]
+      }
+    },
+    "UpdateDeliveryConfiguration": {
+      "id": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Delivery",
+            "resourceIdentifier": "id"
+          }
+        ]
+      }
+    },
+    "UpdateLogAnomalyDetector": {
+      "anomalyDetectorArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "LogAnomalyDetector",
+            "resourceIdentifier": "anomalyDetectorArn"
           }
         ]
       }

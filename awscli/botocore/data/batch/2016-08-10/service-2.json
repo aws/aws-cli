@@ -591,6 +591,10 @@
           "shape":"ArrayJobStatusSummary",
           "documentation":"<p>A summary of the number of array job children in each available job status. This parameter is returned for parent array jobs.</p>"
         },
+        "statusSummaryLastUpdatedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the <code>statusSummary</code> was last updated.</p>"
+        },
         "size":{
           "shape":"Integer",
           "documentation":"<p>The size of the array job. This parameter is returned for parent array jobs.</p>"
@@ -612,6 +616,14 @@
         "index":{
           "shape":"Integer",
           "documentation":"<p>The job index within the array that's associated with this job. This parameter is returned for children of array jobs.</p>"
+        },
+        "statusSummary":{
+          "shape":"ArrayJobStatusSummary",
+          "documentation":"<p>A summary of the number of array job children in each available job status. This parameter is returned for parent array jobs.</p>"
+        },
+        "statusSummaryLastUpdatedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the <code>statusSummary</code> was last updated.</p>"
         }
       },
       "documentation":"<p>An object that represents the array properties of a job.</p>"
@@ -3876,7 +3888,7 @@
         },
         "jobStatus":{
           "shape":"JobStatus",
-          "documentation":"<p>The job status used to filter jobs in the specified queue. If the <code>filters</code> parameter is specified, the <code>jobStatus</code> parameter is ignored and jobs with any status are returned. If you don't specify a status, only <code>RUNNING</code> jobs are returned.</p>"
+          "documentation":"<p>The job status used to filter jobs in the specified queue. If the <code>filters</code> parameter is specified, the <code>jobStatus</code> parameter is ignored and jobs with any status are returned. If you don't specify a status, only <code>RUNNING</code> jobs are returned.</p> <note> <p>Array job parents are updated to <code>PENDING</code> when any child job is updated to <code>RUNNABLE</code> and remain in <code>PENDING</code> status while child jobs are running. To view these jobs, filter by <code>PENDING</code> status until all child jobs reach a terminal state.</p> </note>"
         },
         "maxResults":{
           "shape":"Integer",

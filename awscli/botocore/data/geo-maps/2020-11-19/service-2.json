@@ -115,6 +115,10 @@
       "type":"boolean",
       "box":true
     },
+    "Buildings":{
+      "type":"string",
+      "enum":["Buildings3D"]
+    },
     "ColorScheme":{
       "type":"string",
       "enum":[
@@ -124,7 +128,7 @@
     },
     "CompactOverlay":{
       "type":"string",
-      "max":7000,
+      "max":5000,
       "min":1,
       "sensitive":true
     },
@@ -147,7 +151,7 @@
     },
     "GeoJsonOverlay":{
       "type":"string",
-      "max":7000,
+      "max":4200,
       "min":1,
       "sensitive":true
     },
@@ -411,7 +415,7 @@
     },
     "GetStaticMapRequestBoundedPositionsString":{
       "type":"string",
-      "max":2000,
+      "max":5000,
       "min":0,
       "pattern":"(-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?)(,(-?\\d{1,3}(\\.\\d{1,14})?,-?\\d{1,2}(\\.\\d{1,14})?))*",
       "sensitive":true
@@ -514,13 +518,13 @@
         },
         "Terrain":{
           "shape":"Terrain",
-          "documentation":"<p>Adjusts how physical terrain details are rendered on the map.</p> <p>The following terrain styles are currently supported:</p> <ul> <li> <p> <code>Hillshade</code>: Displays the physical terrain details through shading and highlighting of elevation change and geographic features.</p> </li> </ul> <p>This parameter is valid only for the <code>Standard</code> map style.</p>",
+          "documentation":"<p>Adjusts how physical terrain details are rendered on the map.</p> <p>The following terrain styles are currently supported:</p> <ul> <li> <p> <code>Hillshade</code>: Displays the physical terrain details through shading and highlighting of elevation change and geographic features.</p> </li> <li> <p> <code>Terrain3D</code>: Displays physical terrain details and elevations as a three-dimensional model.</p> </li> </ul> <p> <code>Hillshade</code> is valid only for the <code>Standard</code> and <code>Monochrome</code> map styles.</p>",
           "location":"querystring",
           "locationName":"terrain"
         },
         "ContourDensity":{
           "shape":"ContourDensity",
-          "documentation":"<p>Displays the shape and steepness of terrain features using elevation lines. The density value controls how densely the available contour line information is rendered on the map.</p> <p>This parameter is valid only for the <code>Standard</code> map style.</p>",
+          "documentation":"<p>Displays the shape and steepness of terrain features using elevation lines. The density value controls how densely the available contour line information is rendered on the map.</p> <p>This parameter is valid only for the <code>Standard</code>, <code>Monochrome</code>, and <code>Hybrid</code> map styles.</p>",
           "location":"querystring",
           "locationName":"contour-density"
         },
@@ -535,6 +539,12 @@
           "documentation":"<p>Renders additional map information relevant to selected travel modes. Information for multiple travel modes can be displayed simultaneously, although this increases the overall information density rendered on the map.</p> <p>This parameter is valid only for the <code>Standard</code> map style.</p>",
           "location":"querystring",
           "locationName":"travel-modes"
+        },
+        "Buildings":{
+          "shape":"Buildings",
+          "documentation":"<p>Adjusts how building details are rendered on the map.</p> <p>The following building styles are currently supported:</p> <ul> <li> <p> <code>Buildings3D</code>: Displays buildings as three-dimensional extrusions on the map.</p> </li> </ul> <p> <code>Buildings3D</code> is valid only for the <code>Standard</code> and <code>Monochrome</code> map styles.</p>",
+          "location":"querystring",
+          "locationName":"buildings"
         },
         "Key":{
           "shape":"ApiKey",
@@ -589,7 +599,7 @@
         },
         "Tileset":{
           "shape":"Tileset",
-          "documentation":"<p>Specifies the desired tile set.</p> <p>Valid Values: <code>raster.satellite | vector.basemap</code> </p>",
+          "documentation":"<p>Specifies the desired tile set.</p> <p>Valid Values: <code>raster.satellite | vector.basemap | vector.traffic | raster.dem</code> </p>",
           "location":"uri",
           "locationName":"Tileset"
         },
@@ -760,7 +770,10 @@
     "String":{"type":"string"},
     "Terrain":{
       "type":"string",
-      "enum":["Hillshade"]
+      "enum":[
+        "Hillshade",
+        "Terrain3D"
+      ]
     },
     "ThrottlingException":{
       "type":"structure",

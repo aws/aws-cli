@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.33.14
+=======
+
+* api-change:``organizations``: Updated the CloseAccount description.
+* api-change:``geo-maps``: Added support for optional style parameters in maps, including 3D terrain and 3D Buildings
+* api-change:``dynamodb``: This change supports the creation of multi-account global tables. It adds two new arguments to CreateTable, GlobalTableSourceArn and GlobalTableSettingsReplicationMode. DescribeTable is also updated to include information about GlobalTableSettingsReplicationMode.
+* api-change:``marketplace-catalog``: Adds support for Catalog API us-east-1 dualstack endpoint catalog-marketplace.us-east-1.api.aws
+* bugfix:installer: Remove unnecessary .dist-info directories from executable
+* api-change:``kinesis``: Adds StreamId parameter to AWS Kinesis Data Streams APIs that is reserved for future use.
+* api-change:``batch``: AWS Batch Array Job Visibility feature support. Includes new statusSummaryLastUpdatedAt for array job parent DescribeJobs responses for the last time the statusSummary was updated. Includes both statusSummary and statusSummaryLastUpdatedAt in ListJobs responses for array job parents.
+* api-change:``sso-admin``: Added new Region management APIs to support multi-Region replication in IAM Identity Center.
+
+
 2.33.13
 =======
 

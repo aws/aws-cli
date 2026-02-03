@@ -34,8 +34,6 @@ from awscli.arguments import create_argument_model_from_schema
 
 from awscli.argparser import ArgTableArgParser
 
-import argparse
-
 # These tests use real service types so that we can
 # verify the real shapes of services.
 class BaseArgProcessTest(BaseCLIDriverTest):

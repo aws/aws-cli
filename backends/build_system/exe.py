@@ -15,6 +15,7 @@ from dataclasses import dataclass, field
 
 from awscli_venv import AwsCliVenv
 from constants import (
+    DIST_INFO_DIRECTORIES_TO_KEEP,
     DISTRIBUTION_SOURCE_EXE,
     EXE_ASSETS_DIR,
     PYINSTALLER_DIR,
@@ -56,6 +57,16 @@ class ExeBuilder:
             self._final_dist_dir,
             distribution_source=DISTRIBUTION_SOURCE_EXE,
         )
+        for distinfo in self._utils.glob(
+            '**/*.dist-info', root=self._final_dist_dir
+        ):
+            if not any(
+                package_name in distinfo
+                for package_name in DIST_INFO_DIRECTORIES_TO_KEEP
+            ):
+                self._utils.rmtree(
+                    os.path.join(self._final_dist_dir, distinfo)
+                )
 
     def _ensure_no_existing_build_dir(self):
         if self._utils.isdir(self._dist_dir):
@@ -99,4 +110,4 @@ class ExeBuilder:
         ]
         for location in locations:
             self._utils.rmtree(location)
-            print("Deleted build directory: %s" % location)
+            print(f"Deleted build directory: {location}")

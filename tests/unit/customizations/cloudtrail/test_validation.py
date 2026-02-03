@@ -684,8 +684,11 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
             '2014/08/09/{account}_CloudTrail-Digest_us-east-1_foo_'
             'us-east-1_20140809T235900Z.json.gz'
         )
+        prefix = 'prefix/AWSLogs/{account}/CloudTrail-Digest/us-east-1'
         mock_paginate.assert_called_once_with(
-            Bucket='1', Marker=marker.format(account=TEST_ACCOUNT_ID)
+            Bucket='1',
+            Marker=marker.format(account=TEST_ACCOUNT_ID),
+            Prefix=prefix.format(account=TEST_ACCOUNT_ID),
         )
 
     def test_calls_list_objects_correctly_org_trails(self):
@@ -710,13 +713,69 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
             '2014/08/09/{member_account}_CloudTrail-Digest_us-east-1_foo_'
             'us-east-1_20140809T235900Z.json.gz'
         )
+        prefix = (
+            'prefix/AWSLogs/{organization_id}/{member_account}/'
+            'CloudTrail-Digest/us-east-1'
+        )
         mock_paginate.assert_called_once_with(
             Bucket='1',
             Marker=marker.format(
                 member_account=TEST_ORGANIZATION_ACCOUNT_ID,
                 organization_id=TEST_ORGANIZATION_ID,
             ),
+            Prefix=prefix.format(
+                member_account=TEST_ORGANIZATION_ACCOUNT_ID,
+                organization_id=TEST_ORGANIZATION_ID,
+            ),
         )
+
+    def test_create_digest_prefix_without_key_prefix(self):
+        mock_s3_client_provider = mock.Mock()
+        provider = DigestProvider(
+            mock_s3_client_provider, TEST_ACCOUNT_ID, 'foo', 'us-east-1'
+        )
+        prefix = provider._create_digest_prefix(START_DATE, None)
+        expected = f'AWSLogs/{TEST_ACCOUNT_ID}/CloudTrail-Digest/us-east-1'
+        self.assertEqual(expected, prefix)
+
+    def test_create_digest_prefix_with_key_prefix(self):
+        mock_s3_client_provider = mock.Mock()
+        provider = DigestProvider(
+            mock_s3_client_provider, TEST_ACCOUNT_ID, 'foo', 'us-east-1'
+        )
+        prefix = provider._create_digest_prefix(START_DATE, 'my-prefix')
+        expected = (
+            f'my-prefix/AWSLogs/{TEST_ACCOUNT_ID}/CloudTrail-Digest/us-east-1'
+        )
+        self.assertEqual(expected, prefix)
+
+    def test_create_digest_prefix_org_trail(self):
+        mock_s3_client_provider = mock.Mock()
+        provider = DigestProvider(
+            mock_s3_client_provider,
+            TEST_ORGANIZATION_ACCOUNT_ID,
+            'foo',
+            'us-east-1',
+            'us-east-1',
+            TEST_ORGANIZATION_ID,
+        )
+        prefix = provider._create_digest_prefix(START_DATE, None)
+        expected = f'AWSLogs/{TEST_ORGANIZATION_ID}/{TEST_ORGANIZATION_ACCOUNT_ID}/CloudTrail-Digest/us-east-1'
+        self.assertEqual(expected, prefix)
+
+    def test_create_digest_prefix_org_trail_with_key_prefix(self):
+        mock_s3_client_provider = mock.Mock()
+        provider = DigestProvider(
+            mock_s3_client_provider,
+            TEST_ORGANIZATION_ACCOUNT_ID,
+            'foo',
+            'us-east-1',
+            'us-east-1',
+            TEST_ORGANIZATION_ID,
+        )
+        prefix = provider._create_digest_prefix(START_DATE, 'custom-prefix')
+        expected = f'custom-prefix/AWSLogs/{TEST_ORGANIZATION_ID}/{TEST_ORGANIZATION_ACCOUNT_ID}/CloudTrail-Digest/us-east-1'
+        self.assertEqual(expected, prefix)
 
     def test_ensures_digest_has_proper_metadata(self):
         out = BytesIO()

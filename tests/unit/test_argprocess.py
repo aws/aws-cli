@@ -32,9 +32,7 @@ from awscli.arguments import CustomArgument, CLIArgument
 from awscli.arguments import ListArgument, BooleanArgument
 from awscli.arguments import create_argument_model_from_schema
 
-from awscli.clidriver import ServiceOperation, CLIOperationCaller
-from awscli.argparser import ArgTableArgParser
-
+import argparse
 
 # These tests use real service types so that we can
 # verify the real shapes of services.
@@ -454,6 +452,26 @@ class TestParamShorthand(BaseArgProcessTest):
         with self.assertRaisesRegex(ParamError, error_msg):
             self.parse_shorthand(p, ['ParameterKey=key,ParameterValue="foo,bar\''])
 
+    def _test_argument_escapes_percent(self, arg_class, arg_type, doc_string, expected_substring):
+        argument = self.create_argument({'Test': {'type': arg_type}})
+        argument.argument_model.members['Test'].documentation = doc_string
+        arg = arg_class('test-arg', argument.argument_model.members['Test'], None, False)
+        parser = argparse.ArgumentParser()
+        arg.add_to_parser(parser)
+        action = parser._actions[-1]
+        self.assertIn(expected_substring, action.help)
+
+    def test_cli_argument_escapes_percent_in_symbols(self):
+        self._test_argument_escapes_percent(CLIArgument, 'string', 'Symbols: ! @ # $ % ^ & * ( )', '% ^')
+
+    def test_cli_argument_escapes_percent_in_url_encoding(self):
+        self._test_argument_escapes_percent(CLIArgument, 'string', 'test_file%283%29.png', '%28')
+
+    def test_boolean_argument_escapes_percent_in_symbols(self):
+        self._test_argument_escapes_percent(BooleanArgument, 'boolean', 'Symbols: ! @ # $ % ^ & * ( )', '% ^')
+
+    def test_boolean_argument_escapes_percent_in_url_encoding(self):
+        self._test_argument_escapes_percent(BooleanArgument, 'boolean', 'test_file%283%29.png', '%28')
 
 class TestParamShorthandCustomArguments(BaseArgProcessTest):
 
@@ -897,28 +915,6 @@ class TestJSONValueHeaderParams(BaseArgProcessTest):
         with self.assertRaises(ParamError):
             unpack_cli_arg(self.p, value)
 
-class TestPercentInDocumentation(BaseArgProcessTest):
-    def test_percent_characters_escaped_in_argument_help(self):
-        operation_caller = CLIOperationCaller(self.session)
-        for service_name in self.session.get_available_services():
-            service_model = self.session.get_service_model(service_name)
-            for operation_name in service_model.operation_names:
-                operation_model = service_model.operation_model(operation_name)
-                if not operation_model.input_shape:
-                    continue
-                has_percent = any(
-                    '%' in (member.documentation or '')
-                    for member in operation_model.input_shape.members.values()
-                )
-                if has_percent:
-                    service_op = ServiceOperation(
-                        name=xform_name(operation_name, '-'),
-                        parent_name=service_name,
-                        operation_caller=operation_caller,
-                        operation_model=operation_model,
-                        session=self.session,
-                    )
-                    ArgTableArgParser(service_op.arg_table)
 
 if __name__ == '__main__':
     unittest.main()

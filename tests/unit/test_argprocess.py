@@ -32,6 +32,8 @@ from awscli.arguments import CustomArgument, CLIArgument
 from awscli.arguments import ListArgument, BooleanArgument
 from awscli.arguments import create_argument_model_from_schema
 
+from awscli.argparser import ArgTableArgParser
+
 import argparse
 
 # These tests use real service types so that we can
@@ -451,27 +453,6 @@ class TestParamShorthand(BaseArgProcessTest):
             self.parse_shorthand(p, ['ParameterKey=key,ParameterValue=""foo,bar"'])
         with self.assertRaisesRegex(ParamError, error_msg):
             self.parse_shorthand(p, ['ParameterKey=key,ParameterValue="foo,bar\''])
-
-    def _test_argument_escapes_percent(self, arg_class, arg_type, doc_string, expected_substring):
-        argument = self.create_argument({'Test': {'type': arg_type}})
-        argument.argument_model.members['Test'].documentation = doc_string
-        arg = arg_class('test-arg', argument.argument_model.members['Test'], None, False)
-        parser = argparse.ArgumentParser()
-        arg.add_to_parser(parser)
-        action = parser._actions[-1]
-        self.assertIn(expected_substring, action.help)
-
-    def test_cli_argument_escapes_percent_in_symbols(self):
-        self._test_argument_escapes_percent(CLIArgument, 'string', 'Symbols: ! @ # $ % ^ & * ( )', '% ^')
-
-    def test_cli_argument_escapes_percent_in_url_encoding(self):
-        self._test_argument_escapes_percent(CLIArgument, 'string', 'test_file%283%29.png', '%28')
-
-    def test_boolean_argument_escapes_percent_in_symbols(self):
-        self._test_argument_escapes_percent(BooleanArgument, 'boolean', 'Symbols: ! @ # $ % ^ & * ( )', '% ^')
-
-    def test_boolean_argument_escapes_percent_in_url_encoding(self):
-        self._test_argument_escapes_percent(BooleanArgument, 'boolean', 'test_file%283%29.png', '%28')
 
 class TestParamShorthandCustomArguments(BaseArgProcessTest):
 
@@ -915,6 +896,27 @@ class TestJSONValueHeaderParams(BaseArgProcessTest):
         with self.assertRaises(ParamError):
             unpack_cli_arg(self.p, value)
 
+class TestArgumentPercentEscaping(BaseArgProcessTest):
+    def _test_percent_escaping(self, arg_type, arg_class, doc_string):
+        argument = self.create_argument({'Test': {'type': arg_type}})
+        argument.argument_model.members['Test'].documentation = doc_string
+        arg = arg_class('test-arg', argument.argument_model.members['Test'], mock.Mock(), mock.Mock(), is_required=False)
+        arg_table = {arg.name: arg}
+        parser = ArgTableArgParser(arg_table)
+        help_output = parser.format_help()
+        self.assertIn(arg.cli_name, help_output)
+
+    def test_cli_argument_escapes_percent(self):
+        self._test_percent_escaping('integer', CLIArgument, 'Symbols: % ^ & *')
+
+    def test_boolean_argument_escapes_percent(self):
+        self._test_percent_escaping('boolean', BooleanArgument, 'Symbols: % ^ & *')
+
+    def test_cli_argument_escapes_url_encoded_percent(self):
+        self._test_percent_escaping('integer', CLIArgument, 'File: test%28file%29.png')
+
+    def test_boolean_argument_escapes_url_encoded_percent(self):
+        self._test_percent_escaping('boolean', BooleanArgument, 'File: test%28file%29.png')
 
 if __name__ == '__main__':
     unittest.main()

@@ -952,7 +952,7 @@
     },
     "AuditEventFieldValueUnionStringValueString":{
       "type":"string",
-      "max":500,
+      "max":4100,
       "min":0
     },
     "AuditEventId":{
@@ -1220,7 +1220,7 @@
     "CaseEventIncludedDataFieldsList":{
       "type":"list",
       "member":{"shape":"FieldIdentifier"},
-      "max":200,
+      "max":400,
       "min":0
     },
     "CaseFilter":{
@@ -1580,7 +1580,7 @@
     "CreateCaseRequestFieldsList":{
       "type":"list",
       "member":{"shape":"FieldValue"},
-      "max":100,
+      "max":220,
       "min":0
     },
     "CreateCaseResponse":{
@@ -1702,6 +1702,10 @@
         "description":{
           "shape":"FieldDescription",
           "documentation":"<p>The description of the field.</p>"
+        },
+        "attributes":{
+          "shape":"FieldAttributes",
+          "documentation":"<p>Union of field attributes.</p>"
         }
       }
     },
@@ -2229,6 +2233,17 @@
       "max":500,
       "min":1
     },
+    "FieldAttributes":{
+      "type":"structure",
+      "members":{
+        "text":{
+          "shape":"TextAttributes",
+          "documentation":"<p>Field attributes for Text field type.</p>"
+        }
+      },
+      "documentation":"<p>Union of field attributes.</p>",
+      "union":true
+    },
     "FieldDescription":{
       "type":"string",
       "max":255,
@@ -2305,7 +2320,7 @@
     "FieldGroupFieldsList":{
       "type":"list",
       "member":{"shape":"FieldItem"},
-      "max":100,
+      "max":220,
       "min":0
     },
     "FieldGroupNameString":{
@@ -2463,6 +2478,10 @@
         "namespace":{
           "shape":"FieldNamespace",
           "documentation":"<p>The namespace of a field.</p>"
+        },
+        "attributes":{
+          "shape":"FieldAttributes",
+          "documentation":"<p>Union of field attributes.</p>"
         }
       },
       "documentation":"<p>Object for the summarized details of the field.</p>"
@@ -2530,7 +2549,7 @@
     },
     "FieldValueUnionStringValueString":{
       "type":"string",
-      "max":3000,
+      "max":4100,
       "min":0
     },
     "FileArn":{
@@ -2669,7 +2688,7 @@
     "GetCaseRequestFieldsList":{
       "type":"list",
       "member":{"shape":"FieldIdentifier"},
-      "max":100,
+      "max":220,
       "min":1
     },
     "GetCaseResponse":{
@@ -2700,7 +2719,7 @@
     "GetCaseResponseFieldsList":{
       "type":"list",
       "member":{"shape":"FieldValue"},
-      "max":100,
+      "max":220,
       "min":0
     },
     "GetCaseRuleResponse":{
@@ -2848,6 +2867,10 @@
         "lastModifiedTime":{
           "shape":"LastModifiedTime",
           "documentation":"<p>Timestamp at which the resource was created or last modified.</p>"
+        },
+        "attributes":{
+          "shape":"FieldAttributes",
+          "documentation":"<p>Union of field attributes.</p>"
         }
       },
       "documentation":"<p>Object to store detailed field information.</p>"
@@ -3978,6 +4001,10 @@
         "cases":{
           "shape":"SearchCasesResponseCasesList",
           "documentation":"<p>A list of case documents where each case contains the properties <code>CaseId</code> and <code>Fields</code> where each field is a complex union structure. </p>"
+        },
+        "totalCount":{
+          "shape":"TotalCount",
+          "documentation":"<p>The total number of cases that matched the search criteria.</p>"
         }
       }
     },
@@ -4513,6 +4540,17 @@
       },
       "documentation":"<p>Template summary information.</p>"
     },
+    "TextAttributes":{
+      "type":"structure",
+      "required":["isMultiline"],
+      "members":{
+        "isMultiline":{
+          "shape":"Boolean",
+          "documentation":"<p>Attribute that defines rendering component and validation.</p>"
+        }
+      },
+      "documentation":"<p>Field attributes for Text field type.</p>"
+    },
     "ThrottlingException":{
       "type":"structure",
       "required":["message"],
@@ -4526,6 +4564,10 @@
       },
       "exception":true,
       "retryable":{"throttling":false}
+    },
+    "TotalCount":{
+      "type":"long",
+      "min":0
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -4578,7 +4620,7 @@
     "UpdateCaseRequestFieldsList":{
       "type":"list",
       "member":{"shape":"FieldValue"},
-      "max":100,
+      "max":220,
       "min":0
     },
     "UpdateCaseResponse":{
@@ -4648,6 +4690,10 @@
         "description":{
           "shape":"FieldDescription",
           "documentation":"<p>The description of a field.</p>"
+        },
+        "attributes":{
+          "shape":"FieldAttributes",
+          "documentation":"<p>Union of field attributes.</p>"
         }
       }
     },

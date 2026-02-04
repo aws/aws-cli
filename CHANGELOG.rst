@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+2.33.15
+=======
+
+* api-change:``medialive``: AWS Elemental MediaLive now supports SRT listener mode for inputs and outputs, in addition to the existing SRT caller mode.
+* api-change:``connectcases``: Amazon Connect Cases now supports larger, multi-line text fields with up to 4,100 characters. Administrators can use the Admin UI to select the appropriate configuration (single-line or multi-line) on a per-field basis, improving case documentation capabilities.
+* api-change:``eks``: Update delete cluster description
+* api-change:``workspaces-web``: Support for configuring and managing custom domain names for WorkSpaces Secure Browser portals.
+* api-change:``redshift``: We have increased the maximum duration for a deferred maintenance window from 45 days to 60 days for Amazon Redshift provisioned clusters. This enhancement provides customers with greater flexibility in scheduling patching and maintenance activities while also maintaining security compliance.
+* api-change:``bedrock-runtime``: Added support for structured outputs to Converse and ConverseStream APIs.
+* enhancement:Autocomplete: Updated completion models for 10 services
+
+
 2.33.14
 =======
 

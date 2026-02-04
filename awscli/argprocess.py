@@ -185,20 +185,79 @@ def _unpack_json_cli_arg(argument_model, value, cli_name):
         )
 
 
+def _unpack_yaml_cli_arg(argument_model, value, cli_name):
+    try:
+        import yaml
+    except ImportError:
+        raise ParamError(
+            cli_name,
+            f"YAML is not available. Please install PyYAML to use YAML input.\n"
+            f"Attempted to parse as JSON but failed:\n{value}",
+        )
+    try:
+        # We use a custom loader to ensure we get OrderedDicts back.
+        # This matches the behavior of _unpack_json_cli_arg.
+        class OrderedDictLoader(yaml.SafeLoader):
+            pass
+
+        def construct_mapping(loader, node):
+            loader.flatten_mapping(node)
+            return OrderedDict(loader.construct_pairs(node))
+
+        OrderedDictLoader.add_constructor(
+            yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, construct_mapping
+        )
+
+        parsed = yaml.load(value, Loader=OrderedDictLoader)
+        if parsed is None:
+            return None
+
+        # Basic type validation to ensure the YAML parsed into the expected type
+        if argument_model.type_name in ['structure', 'map'] and not isinstance(
+            parsed, dict
+        ):
+            raise ParamError(
+                cli_name,
+                f"Expected a mapping for {argument_model.type_name}, "
+                f"found {type(parsed).__name__}. YAML received: {value}",
+            )
+        if argument_model.type_name == 'list' and not isinstance(parsed, list):
+            # If it's a list but only one element was provided and it's not a list,
+            # it might be a single YAML-parsed object. But we expect a list.
+            raise ParamError(
+                cli_name,
+                f"Expected a list, found {type(parsed).__name__}. "
+                f"YAML received: {value}",
+            )
+        return parsed
+    except Exception as e:
+        raise ParamError(
+            cli_name, f"Invalid YAML: {e}\nYAML received: {value}"
+        )
+
+
 def _unpack_complex_cli_arg(argument_model, value, cli_name):
     type_name = argument_model.type_name
     if type_name == 'structure' or type_name == 'map':
-        if value.lstrip()[0] == '{':
+        if value.lstrip().startswith('{'):
             return _unpack_json_cli_arg(argument_model, value, cli_name)
-        raise ParamError(cli_name, f"Invalid JSON:\n{value}")
+        return _unpack_yaml_cli_arg(argument_model, value, cli_name)
     elif type_name == 'list':
         if isinstance(value, str):
-            if value.lstrip()[0] == '[':
+            if value.lstrip().startswith('['):
                 return _unpack_json_cli_arg(argument_model, value, cli_name)
+            return _unpack_yaml_cli_arg(argument_model, value, cli_name)
         elif isinstance(value, list) and len(value) == 1:
             single_value = value[0].strip()
-            if single_value and single_value[0] == '[':
-                return _unpack_json_cli_arg(argument_model, value[0], cli_name)
+            if single_value:
+                if single_value.startswith('['):
+                    return _unpack_json_cli_arg(argument_model, value[0], cli_name)
+                # If it's a list with one item, it might be a YAML string representing a list
+                try:
+                    return _unpack_yaml_cli_arg(argument_model, value[0], cli_name)
+                except ParamError:
+                    # Fall back to treated as a list of one string
+                    pass
         try:
             # There's a couple of cases remaining here.
             # 1. It's possible that this is just a list of strings, i.e

@@ -889,10 +889,63 @@ class TestJSONValueHeaderParams(BaseArgProcessTest):
         value = 'null'
         self.assertEqual(unpack_cli_arg(self.p, value), None)
 
+
     def test_json_value_decode_error(self):
         value = 'invalid string to be serialized'
         with self.assertRaises(ParamError):
             unpack_cli_arg(self.p, value)
+
+
+class TestYAMLParams(BaseArgProcessTest):
+    def test_yaml_structure(self):
+        p = self.get_param_model('elasticbeanstalk.CreateConfigurationTemplate.'
+                                 'SourceConfiguration')
+        # Simple YAML mapping
+        yaml_content = "ApplicationName: foo\nTemplateName: bar"
+        result = unpack_cli_arg(p, yaml_content)
+        self.assertEqual(result, OrderedDict([('ApplicationName', 'foo'), ('TemplateName', 'bar')]))
+
+    def test_yaml_list(self):
+        p = self.get_param_model('cloudformation.CreateStack.Parameters')
+        # YAML list of mappings
+        yaml_content = "- ParameterKey: Key1\n  ParameterValue: Val1\n- ParameterKey: Key2\n  ParameterValue: Val2"
+        result = unpack_cli_arg(p, yaml_content)
+        self.assertEqual(result, [
+            OrderedDict([('ParameterKey', 'Key1'), ('ParameterValue', 'Val1')]),
+            OrderedDict([('ParameterKey', 'Key2'), ('ParameterValue', 'Val2')])
+        ])
+
+    def test_yaml_map(self):
+        p = self.get_param_model('sqs.SetQueueAttributes.Attributes')
+        # YAML mapping for a map type
+        yaml_content = "VisibilityTimeout: '15'\nDelaySeconds: '10'"
+        result = unpack_cli_arg(p, yaml_content)
+        self.assertEqual(result, OrderedDict([('VisibilityTimeout', '15'), ('DelaySeconds', '10')]))
+
+    def test_invalid_yaml(self):
+        p = self.get_param_model('elasticbeanstalk.CreateConfigurationTemplate.'
+                                 'SourceConfiguration')
+        # Invalid YAML (missing colon)
+        yaml_content = "ApplicationName foo"
+        with self.assertRaises(ParamError) as cm:
+            unpack_cli_arg(p, yaml_content)
+        self.assertIn("Invalid YAML", str(cm.exception))
+
+    def test_yaml_type_mismatch_list(self):
+        p = self.get_param_model('cloudformation.CreateStack.Parameters')
+        # Providing a mapping when a list is expected
+        yaml_content = "Key: Value"
+        with self.assertRaises(ParamError) as cm:
+            unpack_cli_arg(p, yaml_content)
+        self.assertIn("Expected a list", str(cm.exception))
+
+    def test_yaml_preserves_order(self):
+        p = self.get_param_model('elasticbeanstalk.CreateConfigurationTemplate.'
+                                 'SourceConfiguration')
+        # Ensure order is preserved in the resulting OrderedDict
+        yaml_content = "Z: value\nA: value"
+        result = unpack_cli_arg(p, yaml_content)
+        self.assertEqual(list(result.keys()), ['Z', 'A'])
 
 
 if __name__ == '__main__':

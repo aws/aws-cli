@@ -894,6 +894,7 @@ class TestJSONValueHeaderParams(BaseArgProcessTest):
         with self.assertRaises(ParamError):
             unpack_cli_arg(self.p, value)
 
+
 class TestArgumentPercentEscaping(BaseArgProcessTest):
     def _test_percent_escaping(self, arg_type, arg_class, doc_string):
         argument = self.create_argument(
@@ -914,16 +915,16 @@ class TestArgumentPercentEscaping(BaseArgProcessTest):
         arg_table = {arg.name: arg}
         parser = ArgTableArgParser(arg_table)
         help_output = parser.format_help()
-        self.assertIn(arg.cli_name, help_output)
+        self.assertIn(doc_string, help_output)
 
     def test_cli_argument_escapes_percent(self):
-        self._test_percent_escaping('integer', CLIArgument, 'Symbols: % ^ & *')
+        self._test_percent_escaping('string', CLIArgument, 'Symbols: % ^ & *')
 
     def test_boolean_argument_escapes_percent(self):
         self._test_percent_escaping('boolean', BooleanArgument, 'Symbols: % ^ & *')
 
     def test_cli_argument_escapes_url_encoded_percent(self):
-        self._test_percent_escaping('integer', CLIArgument, 'File: test%28file%29.png')
+        self._test_percent_escaping('string', CLIArgument, 'File: test%28file%29.png')
 
     def test_boolean_argument_escapes_url_encoded_percent(self):
         self._test_percent_escaping('boolean', BooleanArgument, 'File: test%28file%29.png')

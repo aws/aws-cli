@@ -452,6 +452,7 @@ class TestParamShorthand(BaseArgProcessTest):
         with self.assertRaisesRegex(ParamError, error_msg):
             self.parse_shorthand(p, ['ParameterKey=key,ParameterValue="foo,bar\''])
 
+
 class TestParamShorthandCustomArguments(BaseArgProcessTest):
 
     def setUp(self):

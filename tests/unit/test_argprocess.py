@@ -904,7 +904,13 @@ class TestArgumentPercentEscaping(BaseArgProcessTest):
                 }
             }
         )
-        arg = arg_class('test-arg', argument.argument_model.members['Test'], mock.Mock(), mock.Mock(), is_required=False)
+        arg = arg_class(
+            'test-arg',
+            argument.argument_model.members['Test'],
+            mock.Mock(),
+            mock.Mock(),
+            is_required=False,
+        )
         arg_table = {arg.name: arg}
         parser = ArgTableArgParser(arg_table)
         help_output = parser.format_help()

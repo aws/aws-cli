@@ -896,8 +896,14 @@ class TestJSONValueHeaderParams(BaseArgProcessTest):
 
 class TestArgumentPercentEscaping(BaseArgProcessTest):
     def _test_percent_escaping(self, arg_type, arg_class, doc_string):
-        argument = self.create_argument({'Test': {'type': arg_type}})
-        argument.argument_model.members['Test'].documentation = doc_string
+        argument = self.create_argument(
+            {
+                'Test': {
+                    'type': arg_type,
+                    'documentation': doc_string,
+                }
+            }
+        )
         arg = arg_class('test-arg', argument.argument_model.members['Test'], mock.Mock(), mock.Mock(), is_required=False)
         arg_table = {arg.name: arg}
         parser = ArgTableArgParser(arg_table)

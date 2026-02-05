@@ -454,14 +454,18 @@ VALIDATE_SAME_S3_PATHS = {
 
 CHECKSUM_MODE = {
         'name': 'checksum-mode', 'choices': ['ENABLED'],
-        'help_text': 'To retrieve the checksum, this mode must be enabled. If the object has a '
-                     'checksum, it will be verified. Valid values: ENABLED.'
+        'help_text': (
+            'To retrieve the checksum, this mode must be enabled. If the object has a '
+            'checksum, it will be verified. Valid value is ``ENABLED``.'
+        )
 }
 
 CHECKSUM_ALGORITHM = {
         'name': 'checksum-algorithm', 'choices': ['CRC64NVME', 'CRC32', 'SHA256', 'SHA1', 'CRC32C'],
-        'help_text': 'Indicates the algorithm used to create the checksum for the object. '
-                     'Valid values: CRC64NVME, CRC32, CRC32C, SHA1, and SHA256.'
+        'help_text': (
+            'Indicates the algorithm used to create the checksum for the object. '
+            'Valid values are ``CRC64NVME``, ``CRC32``, ``CRC32C``, ``SHA1``, and ``SHA256``.'
+        )
 }
 
 BUCKET_NAME_PREFIX = {

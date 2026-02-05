@@ -49,10 +49,12 @@ class DatabaseConnection:
         self._connection.close()
 
     def _set_file_permissions(self):
-        try:
-            os.chmod(self._db_filename, 0o600)
-        except OSError as e:
-            LOG.debug('Unable to set file permissions: %s', e)
+        for suffix in ('', '-wal', '-shm'):
+            path = self._db_filename + suffix
+            try:
+                os.chmod(path, 0o600)
+            except OSError as e:
+                LOG.debug('Unable to set file permissions for %s: %s', path, e)
 
     def execute(self, query, *parameters):
         return self._connection.execute(query, *parameters)

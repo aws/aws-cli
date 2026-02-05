@@ -56,7 +56,7 @@ class HistoryDriver(FileHistory):
             try:
                 os.chmod(self.filename, 0o600)
             except OSError as e:
-                LOG.debug('Unable to set file permissions: %s', e)
+                LOG.debug('Unable to set file permissions for autoprompt history file: %s', e)
         except Exception as e:
             LOG.debug('Unable to save autoprompt history (check file permissions): %s', e)
 

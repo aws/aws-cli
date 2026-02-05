@@ -99,6 +99,26 @@
       "documentation":"<p>Creates a custom browser.</p>",
       "idempotent":true
     },
+    "CreateBrowserProfile":{
+      "name":"CreateBrowserProfile",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/browser-profiles",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateBrowserProfileRequest"},
+      "output":{"shape":"CreateBrowserProfileResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates a browser profile in Amazon Bedrock AgentCore. A browser profile stores persistent browser data such as cookies, local storage, session storage, and browsing history that can be saved from browser sessions and reused in subsequent sessions.</p>",
+      "idempotent":true
+    },
     "CreateCodeInterpreter":{
       "name":"CreateCodeInterpreter",
       "http":{
@@ -380,6 +400,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Deletes a custom browser.</p>",
+      "idempotent":true
+    },
+    "DeleteBrowserProfile":{
+      "name":"DeleteBrowserProfile",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/browser-profiles/{profileId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteBrowserProfileRequest"},
+      "output":{"shape":"DeleteBrowserProfileResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes a browser profile.</p>",
       "idempotent":true
     },
     "DeleteCodeInterpreter":{
@@ -678,6 +718,25 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Gets information about a custom browser.</p>",
+      "readonly":true
+    },
+    "GetBrowserProfile":{
+      "name":"GetBrowserProfile",
+      "http":{
+        "method":"GET",
+        "requestUri":"/browser-profiles/{profileId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetBrowserProfileRequest"},
+      "output":{"shape":"GetBrowserProfileResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets information about a browser profile.</p>",
       "readonly":true
     },
     "GetCodeInterpreter":{
@@ -1006,6 +1065,24 @@
       "documentation":"<p>Lists all API key credential providers in your account.</p>",
       "readonly":true
     },
+    "ListBrowserProfiles":{
+      "name":"ListBrowserProfiles",
+      "http":{
+        "method":"POST",
+        "requestUri":"/browser-profiles",
+        "responseCode":200
+      },
+      "input":{"shape":"ListBrowserProfilesRequest"},
+      "output":{"shape":"ListBrowserProfilesResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists all browser profiles in your account.</p>",
+      "readonly":true
+    },
     "ListBrowsers":{
       "name":"ListBrowsers",
       "http":{
@@ -1244,7 +1321,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists the tags associated with the specified resource.</p> <note> <p>This feature is currently available only for AgentCore Runtime, Browser, Code Interpreter tool, and Gateway.</p> </note>",
+      "documentation":"<p>Lists the tags associated with the specified resource.</p> <note> <p>This feature is currently available only for AgentCore Runtime, Browser, Browser Profile, Code Interpreter tool, and Gateway.</p> </note>",
       "readonly":true
     },
     "ListWorkloadIdentities":{
@@ -1364,7 +1441,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Associates the specified tags to a resource with the specified resourceArn. If existing tags on a resource are not specified in the request parameters, they are not changed. When a resource is deleted, the tags associated with that resource are also deleted.</p> <note> <p>This feature is currently available only for AgentCore Runtime, Browser, Code Interpreter tool, and Gateway.</p> </note>"
+      "documentation":"<p>Associates the specified tags to a resource with the specified resourceArn. If existing tags on a resource are not specified in the request parameters, they are not changed. When a resource is deleted, the tags associated with that resource are also deleted.</p> <note> <p>This feature is currently available only for AgentCore Runtime, Browser, Browser Profile, Code Interpreter tool, and Gateway.</p> </note>"
     },
     "UntagResource":{
       "name":"UntagResource",
@@ -1382,7 +1459,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Removes the specified tags from the specified resource.</p> <note> <p>This feature is currently available only for AgentCore Runtime, Browser, Code Interpreter tool, and Gateway.</p> </note>",
+      "documentation":"<p>Removes the specified tags from the specified resource.</p> <note> <p>This feature is currently available only for AgentCore Runtime, Browser, Browser Profile, Code Interpreter tool, and Gateway.</p> </note>",
       "idempotent":true
     },
     "UpdateAgentRuntime":{
@@ -1713,7 +1790,7 @@
           "documentation":"<p>The current status of the agent runtime.</p>"
         }
       },
-      "documentation":"<p>Contains information about an agent runtime. An agent runtime is the execution environment for a Amazon Bedrock Agent.</p>"
+      "documentation":"<p>Contains information about an agent runtime. An agent runtime is the execution environment for a Amazon Bedrock AgentCore Agent.</p>"
     },
     "AgentRuntimeArn":{
       "type":"string",
@@ -2202,6 +2279,90 @@
         "VPC"
       ]
     },
+    "BrowserProfileArn":{
+      "type":"string",
+      "pattern":"arn:(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:browser-profile/[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}"
+    },
+    "BrowserProfileId":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}"
+    },
+    "BrowserProfileName":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
+    },
+    "BrowserProfileStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a browser profile.</p>",
+      "enum":[
+        "READY",
+        "DELETING",
+        "DELETED",
+        "SAVING"
+      ]
+    },
+    "BrowserProfileSummaries":{
+      "type":"list",
+      "member":{"shape":"BrowserProfileSummary"}
+    },
+    "BrowserProfileSummary":{
+      "type":"structure",
+      "required":[
+        "profileId",
+        "profileArn",
+        "name",
+        "status",
+        "createdAt",
+        "lastUpdatedAt"
+      ],
+      "members":{
+        "profileId":{
+          "shape":"BrowserProfileId",
+          "documentation":"<p>The unique identifier of the browser profile.</p>"
+        },
+        "profileArn":{
+          "shape":"BrowserProfileArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the browser profile.</p>"
+        },
+        "name":{
+          "shape":"BrowserProfileName",
+          "documentation":"<p>The name of the browser profile.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the browser profile.</p>"
+        },
+        "status":{
+          "shape":"BrowserProfileStatus",
+          "documentation":"<p>The current status of the browser profile. Possible values include READY, SAVING, DELETING, and DELETED.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the browser profile was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the browser profile was last updated.</p>"
+        },
+        "lastSavedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when browser session data was last saved to this profile.</p>"
+        },
+        "lastSavedBrowserSessionId":{
+          "shape":"BrowserSessionId",
+          "documentation":"<p>The identifier of the browser session from which data was last saved to this profile.</p>"
+        },
+        "lastSavedBrowserId":{
+          "shape":"BrowserId",
+          "documentation":"<p>The identifier of the browser from which data was last saved to this profile.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a browser profile. A browser profile stores persistent browser data that can be reused across browser sessions.</p>"
+    },
+    "BrowserSessionId":{
+      "type":"string",
+      "pattern":"[0-9a-zA-Z]{1,40}"
+    },
     "BrowserSigningConfigInput":{
       "type":"structure",
       "required":["enabled"],
@@ -2277,7 +2438,7 @@
           "documentation":"<p>The timestamp when the browser was last updated.</p>"
         }
       },
-      "documentation":"<p>Contains summary information about a browser. A browser enables Amazon Bedrock Agent to interact with web content.</p>"
+      "documentation":"<p>Contains summary information about a browser. A browser enables Amazon Bedrock AgentCore Agent to interact with web content.</p>"
     },
     "CategoricalScaleDefinition":{
       "type":"structure",
@@ -2519,7 +2680,7 @@
           "documentation":"<p>The timestamp when the code interpreter was last updated.</p>"
         }
       },
-      "documentation":"<p>Contains summary information about a code interpreter. A code interpreter enables Amazon Bedrock Agent to execute code.</p>"
+      "documentation":"<p>Contains summary information about a code interpreter. A code interpreter enables Amazon Bedrock AgentCore Agent to execute code.</p>"
     },
     "ConcurrentModificationException":{
       "type":"structure",
@@ -2791,6 +2952,56 @@
         }
       }
     },
+    "CreateBrowserProfileRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"BrowserProfileName",
+          "documentation":"<p>The name of the browser profile. The name must be unique within your account and can contain alphanumeric characters and underscores.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the browser profile. Use this field to describe the purpose or contents of the profile.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, Amazon Bedrock AgentCore ignores the request but does not return an error.</p>",
+          "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of tag keys and values to assign to the browser profile. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment.</p>"
+        }
+      }
+    },
+    "CreateBrowserProfileResponse":{
+      "type":"structure",
+      "required":[
+        "profileId",
+        "profileArn",
+        "createdAt",
+        "status"
+      ],
+      "members":{
+        "profileId":{
+          "shape":"BrowserProfileId",
+          "documentation":"<p>The unique identifier of the created browser profile.</p>"
+        },
+        "profileArn":{
+          "shape":"BrowserProfileArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created browser profile.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the browser profile was created.</p>"
+        },
+        "status":{
+          "shape":"BrowserProfileStatus",
+          "documentation":"<p>The current status of the browser profile.</p>"
+        }
+      }
+    },
     "CreateBrowserRequest":{
       "type":"structure",
       "required":[
@@ -2824,7 +3035,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request but does not return an error.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, Amazon Bedrock AgentCore ignores the request but does not return an error.</p>",
           "idempotencyToken":true
         },
         "tags":{
@@ -2885,7 +3096,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, Amazon Bedrock ignores the request but does not return an error.</p>",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, Amazon Bedrock AgentCore ignores the request but does not return an error.</p>",
           "idempotencyToken":true
         },
         "tags":{
@@ -4102,6 +4313,56 @@
     "DeleteApiKeyCredentialProviderResponse":{
       "type":"structure",
       "members":{}
+    },
+    "DeleteBrowserProfileRequest":{
+      "type":"structure",
+      "required":["profileId"],
+      "members":{
+        "profileId":{
+          "shape":"BrowserProfileId",
+          "documentation":"<p>The unique identifier of the browser profile to delete.</p>",
+          "location":"uri",
+          "locationName":"profileId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true,
+          "location":"querystring",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "DeleteBrowserProfileResponse":{
+      "type":"structure",
+      "required":[
+        "profileId",
+        "profileArn",
+        "status",
+        "lastUpdatedAt"
+      ],
+      "members":{
+        "profileId":{
+          "shape":"BrowserProfileId",
+          "documentation":"<p>The unique identifier of the deleted browser profile.</p>"
+        },
+        "profileArn":{
+          "shape":"BrowserProfileArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted browser profile.</p>"
+        },
+        "status":{
+          "shape":"BrowserProfileStatus",
+          "documentation":"<p>The current status of the browser profile deletion.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the browser profile was last updated.</p>"
+        },
+        "lastSavedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when browser session data was last saved to this profile before deletion.</p>"
+        }
+      }
     },
     "DeleteBrowserRequest":{
       "type":"structure",
@@ -5548,6 +5809,71 @@
         }
       }
     },
+    "GetBrowserProfileRequest":{
+      "type":"structure",
+      "required":["profileId"],
+      "members":{
+        "profileId":{
+          "shape":"BrowserProfileId",
+          "documentation":"<p>The unique identifier of the browser profile to retrieve.</p>",
+          "location":"uri",
+          "locationName":"profileId"
+        }
+      }
+    },
+    "GetBrowserProfileResponse":{
+      "type":"structure",
+      "required":[
+        "profileId",
+        "profileArn",
+        "name",
+        "status",
+        "createdAt",
+        "lastUpdatedAt"
+      ],
+      "members":{
+        "profileId":{
+          "shape":"BrowserProfileId",
+          "documentation":"<p>The unique identifier of the browser profile.</p>"
+        },
+        "profileArn":{
+          "shape":"BrowserProfileArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the browser profile.</p>"
+        },
+        "name":{
+          "shape":"BrowserProfileName",
+          "documentation":"<p>The name of the browser profile.</p>"
+        },
+        "description":{
+          "shape":"Description",
+          "documentation":"<p>The description of the browser profile.</p>"
+        },
+        "status":{
+          "shape":"BrowserProfileStatus",
+          "documentation":"<p>The current status of the browser profile.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the browser profile was created.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the browser profile was last updated.</p>"
+        },
+        "lastSavedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when browser session data was last saved to this profile.</p>"
+        },
+        "lastSavedBrowserSessionId":{
+          "shape":"BrowserSessionId",
+          "documentation":"<p>The identifier of the browser session from which data was last saved to this profile.</p>"
+        },
+        "lastSavedBrowserId":{
+          "shape":"BrowserId",
+          "documentation":"<p>The identifier of the browser from which data was last saved to this profile.</p>"
+        }
+      }
+    },
     "GetBrowserRequest":{
       "type":"structure",
       "required":["browserId"],
@@ -6896,6 +7222,37 @@
         "nextToken":{
           "shape":"String",
           "documentation":"<p>Pagination token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListBrowserProfilesRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListBrowserProfilesResponse":{
+      "type":"structure",
+      "required":["profileSummaries"],
+      "members":{
+        "profileSummaries":{
+          "shape":"BrowserProfileSummaries",
+          "documentation":"<p>The list of browser profile summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to retrieve the next page of results.</p>"
         }
       }
     },

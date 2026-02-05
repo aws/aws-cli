@@ -1266,6 +1266,26 @@
       "min":20,
       "pattern":"arn:\\S+"
     },
+    "As2AsyncMdnConnectorConfig":{
+      "type":"structure",
+      "members":{
+        "Url":{
+          "shape":"Url",
+          "documentation":"<p>The URL endpoint where asynchronous MDN responses should be sent.</p>"
+        },
+        "ServerIds":{
+          "shape":"As2AsyncMdnServerIds",
+          "documentation":"<p>A list of server identifiers that can handle asynchronous MDN responses. You can specify between 1 and 10 server IDs.</p>"
+        }
+      },
+      "documentation":"<p>Contains the configuration details for asynchronous Message Disposition Notification (MDN) responses in AS2 connectors. This configuration specifies where asynchronous MDN responses should be sent and which servers should handle them.</p>"
+    },
+    "As2AsyncMdnServerIds":{
+      "type":"list",
+      "member":{"shape":"ServerId"},
+      "max":10,
+      "min":1
+    },
     "As2ConnectorConfig":{
       "type":"structure",
       "members":{
@@ -1308,6 +1328,10 @@
         "PreserveContentType":{
           "shape":"PreserveContentType",
           "documentation":"<p>Allows you to use the Amazon S3 <code>Content-Type</code> that is associated with objects in S3 instead of having the content type mapped based on the file extension. This parameter is enabled by default when you create an AS2 connector from the console, but disabled by default when you create an AS2 connector by calling the API directly.</p>"
+        },
+        "AsyncMdnConfig":{
+          "shape":"As2AsyncMdnConnectorConfig",
+          "documentation":"<p>Configuration settings for asynchronous Message Disposition Notification (MDN) responses. This allows you to configure where asynchronous MDN responses should be sent and which servers should handle them.</p>"
         }
       },
       "documentation":"<p>Contains the details for an AS2 connector object. The connector object is used for AS2 outbound processes, to connect the Transfer Family customer with the trading partner.</p>"
@@ -1321,7 +1345,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"[\\p{Print}\\s]*"
+      "pattern":"[\\u0020-\\u007E\\s]*"
     },
     "As2Transport":{
       "type":"string",
@@ -1344,7 +1368,7 @@
       "type":"string",
       "max":48,
       "min":0,
-      "pattern":"[\\p{XDigit}{2}:?]*"
+      "pattern":"[0-9a-fA-F{}:?]*"
     },
     "Certificate":{
       "type":"string",
@@ -1355,14 +1379,14 @@
       "type":"string",
       "max":16384,
       "min":1,
-      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u00FF]*",
+      "pattern":"[\\t\\n\\r\\u0020-\\u00FF]+",
       "sensitive":true
     },
     "CertificateChainType":{
       "type":"string",
       "max":2097152,
       "min":1,
-      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u00FF]*",
+      "pattern":"[\\t\\n\\r\\u0020-\\u00FF]+",
       "sensitive":true
     },
     "CertificateId":{
@@ -1984,6 +2008,39 @@
         }
       },
       "documentation":"<p>Contains Amazon S3 locations for storing specific types of AS2 message files.</p>"
+    },
+    "CustomHttpHeader":{
+      "type":"structure",
+      "members":{
+        "Key":{
+          "shape":"CustomHttpHeaderKeyType",
+          "documentation":"<p>The name of the custom HTTP header.</p>"
+        },
+        "Value":{
+          "shape":"CustomHttpHeaderValueType",
+          "documentation":"<p>The value of the custom HTTP header.</p>"
+        }
+      },
+      "documentation":"<p>Represents a custom HTTP header that can be included in AS2 messages. Each header consists of a key-value pair.</p>",
+      "sensitive":true
+    },
+    "CustomHttpHeaderKeyType":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-]+",
+      "sensitive":true
+    },
+    "CustomHttpHeaderValueType":{
+      "type":"string",
+      "max":256,
+      "min":0,
+      "pattern":"[a-zA-Z0-9 +\\-./:=@_]*",
+      "sensitive":true
+    },
+    "CustomHttpHeaders":{
+      "type":"list",
+      "member":{"shape":"CustomHttpHeader"}
     },
     "CustomStepDetails":{
       "type":"structure",
@@ -3262,7 +3319,7 @@
       "type":"string",
       "max":200,
       "min":1,
-      "pattern":"[\\p{Graph}]+"
+      "pattern":"[\\u0021-\\u007E]+"
     },
     "DirectoryId":{
       "type":"string",
@@ -4675,7 +4732,8 @@
       "type":"string",
       "enum":[
         "SYNC",
-        "NONE"
+        "NONE",
+        "ASYNC"
       ]
     },
     "MdnSigningAlg":{
@@ -4694,7 +4752,8 @@
       "type":"string",
       "max":1024,
       "min":1,
-      "pattern":"[\\p{Print}\\p{Blank}]+"
+      "pattern":"[\\u0020-\\u007E\\t]+",
+      "sensitive":true
     },
     "MoveId":{
       "type":"string",
@@ -4806,7 +4865,7 @@
       "type":"string",
       "max":16384,
       "min":1,
-      "pattern":"[\\u0009\\u000A\\u000D\\u0020-\\u00FF]*",
+      "pattern":"[\\t\\n\\r\\u0020-\\u00FF]+",
       "sensitive":true
     },
     "ProfileId":{
@@ -5337,6 +5396,10 @@
         "RemoteDirectoryPath":{
           "shape":"FilePath",
           "documentation":"<p>For an outbound transfer, the <code>RemoteDirectoryPath</code> specifies the destination for one or more files that are transferred to the partner's SFTP server. If you don't specify a <code>RemoteDirectoryPath</code>, the destination for transferred files is the SFTP user's home directory.</p>"
+        },
+        "CustomHttpHeaders":{
+          "shape":"CustomHttpHeaders",
+          "documentation":"<p>An array of key-value pairs that represent custom HTTP headers to include in AS2 messages. These headers are added to the AS2 message when sending files to your trading partner.</p>"
         }
       }
     },

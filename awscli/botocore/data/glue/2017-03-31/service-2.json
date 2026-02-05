@@ -1044,6 +1044,24 @@
       ],
       "documentation":"<p>Deletes a connection from the Data Catalog.</p>"
     },
+    "DeleteConnectionType":{
+      "name":"DeleteConnectionType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteConnectionTypeRequest"},
+      "output":{"shape":"DeleteConnectionTypeResponse"},
+      "errors":[
+        {"shape":"EntityNotFoundException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Deletes a custom connection type in Glue.</p> <p>The connection type must exist and be registered before it can be deleted. This operation supports cleanup of connection type resources and helps maintain proper lifecycle management of custom connection types.</p>"
+    },
     "DeleteCrawler":{
       "name":"DeleteCrawler",
       "http":{
@@ -1502,7 +1520,7 @@
         {"shape":"InternalServiceException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>The <code>DescribeConnectionType</code> API provides full details of the supported options for a given connection type in Glue.</p>"
+      "documentation":"<p>The <code>DescribeConnectionType</code> API provides full details of the supported options for a given connection type in Glue. The response includes authentication configuration details that show supported authentication types and properties, and RestConfiguration for custom REST-based connection types registered via <code>RegisterConnectionType</code>.</p> <p>See also: <code>ListConnectionTypes</code>, <code>RegisterConnectionType</code>, <code>DeleteConnectionType</code> </p>"
     },
     "DescribeEntity":{
       "name":"DescribeEntity",
@@ -2924,7 +2942,7 @@
         {"shape":"InternalServiceException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>The <code>ListConnectionTypes</code> API provides a discovery mechanism to learn available connection types in Glue. The response contains a list of connection types with high-level details of what is supported for each connection type. The connection types listed are the set of supported options for the <code>ConnectionType</code> value in the <code>CreateConnection</code> API.</p>"
+      "documentation":"<p>The <code>ListConnectionTypes</code> API provides a discovery mechanism to learn available connection types in Glue. The response contains a list of connection types with high-level details of what is supported for each connection type, including both built-in connection types and custom connection types registered via <code>RegisterConnectionType</code>. The connection types listed are the set of supported options for the <code>ConnectionType</code> value in the <code>CreateConnection</code> API.</p> <p>See also: <code>DescribeConnectionType</code>, <code>RegisterConnectionType</code>, <code>DeleteConnectionType</code> </p>"
     },
     "ListCrawlers":{
       "name":"ListCrawlers",
@@ -3426,6 +3444,24 @@
         {"shape":"EntityNotFoundException"}
       ],
       "documentation":"<p>Queries for the schema version metadata information. </p>"
+    },
+    "RegisterConnectionType":{
+      "name":"RegisterConnectionType",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RegisterConnectionTypeRequest"},
+      "output":{"shape":"RegisterConnectionTypeResponse"},
+      "errors":[
+        {"shape":"InvalidInputException"},
+        {"shape":"OperationTimeoutException"},
+        {"shape":"ResourceNumberLimitExceededException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Registers a custom connection type in Glue based on the configuration provided. This operation enables customers to configure custom connectors for any data source with REST-based APIs, eliminating the need for building custom Lambda connectors.</p> <p>The registered connection type stores details about how requests and responses are interpreted by REST sources, including connection properties, authentication configuration, and REST configuration with entity definitions. Once registered, customers can create connections using this connection type and work with them the same way as natively supported Glue connectors.</p> <p>Supports multiple authentication types including Basic, OAuth2 (Client Credentials, JWT Bearer, Authorization Code), and Custom Auth configurations.</p>"
     },
     "RegisterSchemaVersion":{
       "name":"RegisterSchemaVersion",
@@ -5158,6 +5194,20 @@
       },
       "documentation":"<p>For supplying basic auth credentials when not providing a <code>SecretArn</code> value.</p>"
     },
+    "BasicAuthenticationProperties":{
+      "type":"structure",
+      "members":{
+        "Username":{
+          "shape":"ConnectorProperty",
+          "documentation":"<p>The username property name to use for Basic authentication credentials.</p>"
+        },
+        "Password":{
+          "shape":"ConnectorProperty",
+          "documentation":"<p>The password property name to use for Basic authentication credentials.</p>"
+        }
+      },
+      "documentation":"<p>Basic authentication configuration that defines the username and password properties for HTTP Basic authentication.</p>"
+    },
     "BasicCatalogTarget":{
       "type":"structure",
       "required":[
@@ -6786,6 +6836,40 @@
       "type":"list",
       "member":{"shape":"NameString"}
     },
+    "ClientCredentialsProperties":{
+      "type":"structure",
+      "members":{
+        "TokenUrl":{
+          "shape":"ConnectorProperty",
+          "documentation":"<p>The token endpoint URL where the client will request access tokens using client credentials.</p>"
+        },
+        "RequestMethod":{
+          "shape":"HTTPMethod",
+          "documentation":"<p>The HTTP method to use when making token requests, typically POST.</p>"
+        },
+        "ContentType":{
+          "shape":"ContentType",
+          "documentation":"<p>The content type to use for token requests, such as application/x-www-form-urlencoded or application/json.</p>"
+        },
+        "ClientId":{
+          "shape":"ConnectorProperty",
+          "documentation":"<p>The OAuth2 client identifier provided by the authorization server.</p>"
+        },
+        "ClientSecret":{
+          "shape":"ConnectorProperty",
+          "documentation":"<p>The OAuth2 client secret provided by the authorization server.</p>"
+        },
+        "Scope":{
+          "shape":"ConnectorProperty",
+          "documentation":"<p>The OAuth2 scope that defines the level of access requested for the client credentials flow.</p>"
+        },
+        "TokenUrlParameters":{
+          "shape":"ConnectorPropertyList",
+          "documentation":"<p>Additional parameters to include in token URL requests as key-value pairs.</p>"
+        }
+      },
+      "documentation":"<p>OAuth2 client credentials configuration that defines the properties needed for the Client Credentials grant type flow.</p>"
+    },
     "CloudWatchEncryption":{
       "type":"structure",
       "members":{
@@ -8102,6 +8186,20 @@
       "max":100,
       "min":0
     },
+    "ConnectionPropertiesConfiguration":{
+      "type":"structure",
+      "members":{
+        "Url":{
+          "shape":"ConnectorProperty",
+          "documentation":"<p>The base instance URL for the endpoint that this connection type will connect to.</p>"
+        },
+        "AdditionalRequestParameters":{
+          "shape":"ConnectorPropertyList",
+          "documentation":"<p>Key-value pairs of additional request parameters that may be needed during connection creation, such as API versions or service-specific configuration options.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that defines the base URL and additional request parameters needed during connection creation.</p>"
+    },
     "ConnectionPropertyKey":{
       "type":"string",
       "enum":[
@@ -8338,7 +8436,7 @@
           "documentation":"<p>The URL of the logo associated with a connection type variant.</p>"
         }
       },
-      "documentation":"<p>Represents a variant of a connection type in Glue Data Catalog. Connection type variants provide specific configurations and behaviors for different implementations of the same general connection type.</p>"
+      "documentation":"<p>Represents a variant of a connection type in Glue. Connection type variants provide specific configurations and behaviors for different implementations of the same general connection type.</p>"
     },
     "ConnectionTypeVariantList":{
       "type":"list",
@@ -8353,6 +8451,70 @@
         }
       },
       "documentation":"<p>Specifies the connections used by a job.</p>"
+    },
+    "ConnectorAuthenticationConfiguration":{
+      "type":"structure",
+      "required":["AuthenticationTypes"],
+      "members":{
+        "AuthenticationTypes":{
+          "shape":"AuthenticationTypes",
+          "documentation":"<p>A list of authentication types supported by this connection type, such as Basic, OAuth2, or Custom authentication methods.</p>"
+        },
+        "OAuth2Properties":{"shape":"ConnectorOAuth2Properties"},
+        "BasicAuthenticationProperties":{"shape":"BasicAuthenticationProperties"},
+        "CustomAuthenticationProperties":{"shape":"CustomAuthenticationProperties"}
+      },
+      "documentation":"<p>Configuration that defines the supported authentication types and required properties for the connection type.</p>"
+    },
+    "ConnectorAuthorizationCodeProperties":{
+      "type":"structure",
+      "members":{
+        "AuthorizationCodeUrl":{
+          "shape":"ConnectorProperty",
+          "documentation":"<p>The authorization endpoint URL where users will be redirected to grant authorization.</p>"
+        },
+        "AuthorizationCode":{
+          "shape":"ConnectorProperty",
+          "documentation":"<p>The authorization code received from the authorization server after user consent.</p>"
+        },
+        "RedirectUri":{
+          "shape":"ConnectorProperty",
+          "documentation":"<p>The redirect URI that must match the URI registered with the authorization server.</p>"
+        },
+        "TokenUrl":{
+          "shape":"ConnectorProperty",
+          "documentation":"<p>The token endpoint URL where the authorization code will be exchanged for an access token.</p>"
+        },
+        "RequestMethod":{
+          "shape":"HTTPMethod",
+          "documentation":"<p>The HTTP method to use when making token exchange requests, typically POST.</p>"
+        },
+        "ContentType":{
+          "shape":"ContentType",
+          "documentation":"<p>The content type to use for token exchange requests, such as application/x-www-form-urlencoded or application/json.</p>"
+        },
+        "ClientId":{
+          "shape":"ConnectorProperty",
+          "documentation":"<p>The OAuth2 client identifier provided by the authorization server.</p>"
+        },
+        "ClientSecret":{
+          "shape":"ConnectorProperty",
+          "documentation":"<p>The OAuth2 client secret provided by the authorization server.</p>"
+        },
+        "Scope":{
+          "shape":"ConnectorProperty",
+          "documentation":"<p>The OAuth2 scope that defines the level of access requested for the authorization code flow.</p>"
+        },
+        "Prompt":{
+          "shape":"ConnectorProperty",
+          "documentation":"<p>The OAuth2 prompt parameter that controls the authorization server's behavior during user authentication.</p>"
+        },
+        "TokenUrlParameters":{
+          "shape":"ConnectorPropertyList",
+          "documentation":"<p>Additional parameters to include in token URL requests as key-value pairs.</p>"
+        }
+      },
+      "documentation":"<p>OAuth2 authorization code configuration that defines the properties needed for the Authorization Code grant type flow.</p>"
     },
     "ConnectorDataSource":{
       "type":"structure",
@@ -8408,10 +8570,97 @@
       },
       "documentation":"<p>Specifies a target generated with standard connection options.</p>"
     },
+    "ConnectorOAuth2GrantType":{
+      "type":"string",
+      "enum":[
+        "CLIENT_CREDENTIALS",
+        "JWT_BEARER",
+        "AUTHORIZATION_CODE"
+      ]
+    },
+    "ConnectorOAuth2Properties":{
+      "type":"structure",
+      "required":["OAuth2GrantType"],
+      "members":{
+        "OAuth2GrantType":{
+          "shape":"ConnectorOAuth2GrantType",
+          "documentation":"<p>The OAuth2 grant type to use for authentication, such as CLIENT_CREDENTIALS, JWT_BEARER, or AUTHORIZATION_CODE.</p>"
+        },
+        "ClientCredentialsProperties":{
+          "shape":"ClientCredentialsProperties",
+          "documentation":"<p>Configuration properties specific to the OAuth2 Client Credentials grant type flow.</p>"
+        },
+        "JWTBearerProperties":{
+          "shape":"JWTBearerProperties",
+          "documentation":"<p>Configuration properties specific to the OAuth2 JWT Bearer grant type flow.</p>"
+        },
+        "AuthorizationCodeProperties":{
+          "shape":"ConnectorAuthorizationCodeProperties",
+          "documentation":"<p>Configuration properties specific to the OAuth2 Authorization Code grant type flow.</p>"
+        }
+      },
+      "documentation":"<p>OAuth2 configuration container that defines the authentication properties and flow-specific configurations for OAuth2-based connections.</p>"
+    },
     "ConnectorOptions":{
       "type":"map",
       "key":{"shape":"GenericString"},
       "value":{"shape":"GenericString"}
+    },
+    "ConnectorProperty":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Required",
+        "PropertyType"
+      ],
+      "members":{
+        "Name":{
+          "shape":"PropertyName",
+          "documentation":"<p>The name of the property.</p>"
+        },
+        "KeyOverride":{
+          "shape":"ConnectorPropertyKey",
+          "documentation":"<p>A key name to use when sending this property in API requests, if different from the display name.</p>"
+        },
+        "Required":{
+          "shape":"Bool",
+          "documentation":"<p>Indicates whether the property is required.</p>"
+        },
+        "DefaultValue":{
+          "shape":"String",
+          "documentation":"<p>The default value for the property.</p>"
+        },
+        "AllowedValues":{
+          "shape":"ListOfString",
+          "documentation":"<p>A list of <code>AllowedValue</code> objects representing the values allowed for the property.</p>"
+        },
+        "PropertyLocation":{
+          "shape":"PropertyLocation",
+          "documentation":"<p>Specifies where this property should be included in REST requests, such as in headers, query parameters, or request body.</p>"
+        },
+        "PropertyType":{
+          "shape":"PropertyType",
+          "documentation":"<p>The data type of this property</p>"
+        }
+      },
+      "documentation":"<p>Defines a property configuration for connection types, default values, and where the property should be used in requests.</p>"
+    },
+    "ConnectorPropertyKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "ConnectorPropertyList":{
+      "type":"list",
+      "member":{"shape":"ConnectorProperty"}
+    },
+    "ContentType":{
+      "type":"string",
+      "enum":[
+        "APPLICATION_JSON",
+        "URL_ENCODED"
+      ]
     },
     "ContextKey":{
       "type":"string",
@@ -10508,6 +10757,32 @@
         "None"
       ]
     },
+    "CursorConfiguration":{
+      "type":"structure",
+      "required":["NextPage"],
+      "members":{
+        "NextPage":{
+          "shape":"ExtractedParameter",
+          "documentation":"<p>The parameter name or JSON path that contains the cursor or token for retrieving the next page of results.</p>"
+        },
+        "LimitParameter":{
+          "shape":"ExtractedParameter",
+          "documentation":"<p>The parameter name used to specify the maximum number of results to return per page.</p>"
+        }
+      },
+      "documentation":"<p>Cursor-based pagination configuration that defines how to handle pagination using cursor tokens or next page identifiers.</p>"
+    },
+    "CustomAuthenticationProperties":{
+      "type":"structure",
+      "required":["AuthenticationParameters"],
+      "members":{
+        "AuthenticationParameters":{
+          "shape":"ConnectorPropertyList",
+          "documentation":"<p>A map of custom authentication parameters that define the specific authentication mechanism and required properties.</p>"
+        }
+      },
+      "documentation":"<p>Custom authentication configuration that allows for flexible authentication mechanisms beyond standard Basic and OAuth2 flows.</p>"
+    },
     "CustomCode":{
       "type":"structure",
       "required":[
@@ -11649,6 +11924,12 @@
       },
       "documentation":"<p>Contains a numeric value in decimal format.</p>"
     },
+    "DefaultValue":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":".*[^<>&'\"].*"
+    },
     "DeleteBehavior":{
       "type":"string",
       "enum":[
@@ -11811,6 +12092,20 @@
       }
     },
     "DeleteConnectionResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteConnectionTypeRequest":{
+      "type":"structure",
+      "required":["ConnectionType"],
+      "members":{
+        "ConnectionType":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the connection type to delete. Must reference an existing registered connection type.</p>"
+        }
+      }
+    },
+    "DeleteConnectionTypeResponse":{
       "type":"structure",
       "members":{}
     },
@@ -12497,6 +12792,10 @@
         "SparkConnectionProperties":{
           "shape":"PropertiesMap",
           "documentation":"<p>Connection properties specific to the Spark compute environment.</p>"
+        },
+        "RestConfiguration":{
+          "shape":"RestConfiguration",
+          "documentation":"<p>HTTP request and response configuration, validation endpoint, and entity configurations for REST based data source.</p>"
         }
       }
     },
@@ -13229,6 +13528,32 @@
       },
       "documentation":"<p>An entity supported by a given <code>ConnectionType</code>.</p>"
     },
+    "EntityConfiguration":{
+      "type":"structure",
+      "members":{
+        "SourceConfiguration":{
+          "shape":"SourceConfiguration",
+          "documentation":"<p>The source configuration that defines how to make requests to access this entity's data through the REST API.</p>"
+        },
+        "Schema":{
+          "shape":"FieldDefinitionMap",
+          "documentation":"<p>The schema definition for this entity, including field names, types, and other metadata that describes the structure of the data.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that defines how to interact with a specific data entity through the REST API, including its access patterns and schema definition.</p>"
+    },
+    "EntityConfigurationMap":{
+      "type":"map",
+      "key":{"shape":"EntityConfigurationMapKeyString"},
+      "value":{"shape":"EntityConfiguration"},
+      "documentation":"<p>A map of entity configurations that associates entity names with their corresponding configuration settings for REST API interactions.</p>"
+    },
+    "EntityConfigurationMapKeyString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_ -]+"
+    },
     "EntityDescription":{"type":"string"},
     "EntityFieldName":{"type":"string"},
     "EntityLabel":{"type":"string"},
@@ -13469,6 +13794,28 @@
       "type":"string",
       "pattern":"[\\s\\S]*"
     },
+    "ExtractedParameter":{
+      "type":"structure",
+      "members":{
+        "Key":{
+          "shape":"ConnectorPropertyKey",
+          "documentation":"<p>The parameter key name that will be used in subsequent requests.</p>"
+        },
+        "DefaultValue":{
+          "shape":"DefaultValue",
+          "documentation":"<p>The default value to use if the parameter cannot be extracted from the response.</p>"
+        },
+        "PropertyLocation":{
+          "shape":"PropertyLocation",
+          "documentation":"<p>Specifies where this extracted parameter should be placed in subsequent requests, such as in headers, query parameters, or request body.</p>"
+        },
+        "Value":{
+          "shape":"ResponseExtractionMapping",
+          "documentation":"<p>The JSON path or extraction mapping that defines how to extract the parameter value from API responses.</p>"
+        }
+      },
+      "documentation":"<p>Parameter extraction configuration that defines how to extract and map values from API responses to request parameters.</p>"
+    },
     "FederatedCatalog":{
       "type":"structure",
       "members":{
@@ -13685,8 +14032,38 @@
         "BYTE",
         "SHORT",
         "DOUBLE",
-        "STRUCT"
+        "STRUCT",
+        "BINARY",
+        "UNION"
       ]
+    },
+    "FieldDefinition":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "FieldDataType"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the field in the entity schema.</p>"
+        },
+        "FieldDataType":{
+          "shape":"FieldDataType",
+          "documentation":"<p>The data type of the field.</p>"
+        }
+      },
+      "documentation":"<p>Defines a field in an entity schema for REST connector data sources, specifying the field name and data type.</p>"
+    },
+    "FieldDefinitionMap":{
+      "type":"map",
+      "key":{"shape":"FieldDefinitionMapKeyString"},
+      "value":{"shape":"FieldDefinition"},
+      "documentation":"<p>A map of field definitions that define the schema structure for an entity in a REST connector data source.</p>"
+    },
+    "FieldDefinitionMapKeyString":{
+      "type":"string",
+      "min":1
     },
     "FieldDescription":{"type":"string"},
     "FieldFilterOperator":{
@@ -17213,6 +17590,13 @@
       "type":"list",
       "member":{"shape":"GroupFilters"}
     },
+    "HTTPMethod":{
+      "type":"string",
+      "enum":[
+        "GET",
+        "POST"
+      ]
+    },
     "HashString":{
       "type":"string",
       "max":255,
@@ -18201,6 +18585,10 @@
       "member":{"shape":"Tag"}
     },
     "IntegrationTimestamp":{"type":"timestamp"},
+    "IntegrationType":{
+      "type":"string",
+      "enum":["REST"]
+    },
     "IntegrationsList":{
       "type":"list",
       "member":{"shape":"Integration"}
@@ -18460,6 +18848,32 @@
       "type":"map",
       "key":{"shape":"JDBCDataType"},
       "value":{"shape":"GlueRecordType"}
+    },
+    "JWTBearerProperties":{
+      "type":"structure",
+      "members":{
+        "TokenUrl":{
+          "shape":"ConnectorProperty",
+          "documentation":"<p>The token endpoint URL where the JWT bearer token will be exchanged for an access token.</p>"
+        },
+        "RequestMethod":{
+          "shape":"HTTPMethod",
+          "documentation":"<p>The HTTP method to use when making JWT bearer token requests, typically POST.</p>"
+        },
+        "ContentType":{
+          "shape":"ContentType",
+          "documentation":"<p>The content type to use for JWT bearer token requests, such as application/x-www-form-urlencoded or application/json.</p>"
+        },
+        "JwtToken":{
+          "shape":"ConnectorProperty",
+          "documentation":"<p>The JWT token to be used in the bearer token grant flow for authentication.</p>"
+        },
+        "TokenUrlParameters":{
+          "shape":"ConnectorPropertyList",
+          "documentation":"<p>Additional parameters to include in token URL requests as key-value pairs.</p>"
+        }
+      },
+      "documentation":"<p>JWT bearer token configuration that defines the properties needed for the JWT Bearer grant type flow.</p>"
     },
     "JdbcMetadataEntry":{
       "type":"string",
@@ -19055,6 +19469,12 @@
       "documentation":"<p>A classifier for <code>JSON</code> content.</p>"
     },
     "JsonPath":{"type":"string"},
+    "JsonPathString":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"\\$(\\.[a-zA-Z0-9_.@\\[\\]\\(\\)-]+)*"
+    },
     "JsonValue":{"type":"string"},
     "JwtToken":{
       "type":"string",
@@ -21337,6 +21757,24 @@
       },
       "documentation":"<p>A structure containing properties for OAuth2 in the CreateConnection request.</p>"
     },
+    "OffsetConfiguration":{
+      "type":"structure",
+      "required":[
+        "OffsetParameter",
+        "LimitParameter"
+      ],
+      "members":{
+        "OffsetParameter":{
+          "shape":"ExtractedParameter",
+          "documentation":"<p>The parameter name used to specify the starting position or offset for retrieving results.</p>"
+        },
+        "LimitParameter":{
+          "shape":"ExtractedParameter",
+          "documentation":"<p>The parameter name used to specify the maximum number of results to return per page.</p>"
+        }
+      },
+      "documentation":"<p>Offset-based pagination configuration that defines how to handle pagination using numeric offsets and limits.</p>"
+    },
     "OneInput":{
       "type":"list",
       "member":{"shape":"NodeId"},
@@ -21674,6 +22112,20 @@
       "max":1000,
       "min":1
     },
+    "PaginationConfiguration":{
+      "type":"structure",
+      "members":{
+        "CursorConfiguration":{
+          "shape":"CursorConfiguration",
+          "documentation":"<p>Configuration for cursor-based pagination, where the API provides a cursor or token to retrieve the next page of results.</p>"
+        },
+        "OffsetConfiguration":{
+          "shape":"OffsetConfiguration",
+          "documentation":"<p>Configuration for offset-based pagination, where the API uses numeric offsets and limits to control which results are returned.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that defines how to handle paginated responses from REST APIs, supporting different pagination strategies used by various services.</p>"
+    },
     "PaginationToken":{"type":"string"},
     "ParamType":{
       "type":"string",
@@ -21904,6 +22356,12 @@
     "PathList":{
       "type":"list",
       "member":{"shape":"Path"}
+    },
+    "PathString":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"/[a-zA-Z0-9._~:/?#\\[\\]@!$&'()*+,;={}-]*"
     },
     "Permission":{
       "type":"string",
@@ -22184,6 +22642,14 @@
         "DataOperationScopes":{
           "shape":"DataOperations",
           "documentation":"<p>Indicates which data operations are applicable to the property.</p>"
+        },
+        "KeyOverride":{
+          "shape":"String",
+          "documentation":"<p>A key name to use when sending this property in API requests, if different from the display name.</p>"
+        },
+        "PropertyLocation":{
+          "shape":"PropertyLocation",
+          "documentation":"<p>Specifies where this property should be included in REST requests, such as in headers, query parameters, or request body.</p>"
         }
       },
       "documentation":"<p>An object that defines a connection type for a compute environment.</p>"
@@ -22197,6 +22663,15 @@
       "type":"string",
       "max":128,
       "min":1
+    },
+    "PropertyLocation":{
+      "type":"string",
+      "enum":[
+        "HEADER",
+        "BODY",
+        "QUERY_PARAM",
+        "PATH"
+      ]
     },
     "PropertyMap":{
       "type":"map",
@@ -22712,6 +23187,56 @@
       "pattern":"^[\\x20-\\x7E]*$",
       "sensitive":true
     },
+    "RegisterConnectionTypeRequest":{
+      "type":"structure",
+      "required":[
+        "ConnectionType",
+        "IntegrationType",
+        "ConnectionProperties",
+        "ConnectorAuthenticationConfiguration",
+        "RestConfiguration"
+      ],
+      "members":{
+        "ConnectionType":{
+          "shape":"NameString",
+          "documentation":"<p>The name of the connection type. Must be between 1 and 255 characters and must be prefixed with \"REST-\" to indicate it is a REST-based connector.</p>"
+        },
+        "IntegrationType":{
+          "shape":"IntegrationType",
+          "documentation":"<p>The integration type for the connection. Currently only \"REST\" protocol is supported.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>A description of the connection type. Can be up to 2048 characters and provides details about the purpose and functionality of the connection type.</p>"
+        },
+        "ConnectionProperties":{
+          "shape":"ConnectionPropertiesConfiguration",
+          "documentation":"<p>Defines the base URL and additional request parameters needed during connection creation for this connection type.</p>"
+        },
+        "ConnectorAuthenticationConfiguration":{
+          "shape":"ConnectorAuthenticationConfiguration",
+          "documentation":"<p>Defines the supported authentication types and required properties for this connection type, including Basic, OAuth2, and Custom authentication methods.</p>"
+        },
+        "RestConfiguration":{
+          "shape":"RestConfiguration",
+          "documentation":"<p>Defines the HTTP request and response configuration, validation endpoint, and entity configurations for REST API interactions.</p>"
+        },
+        "Tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>The tags you assign to the connection type.</p>"
+        }
+      }
+    },
+    "RegisterConnectionTypeResponse":{
+      "type":"structure",
+      "members":{
+        "ConnectionTypeArn":{
+          "shape":"GlueResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the registered connection type. This unique identifier can be used to reference the connection type in other Glue operations.</p>"
+        }
+      },
+      "documentation":"<p>Contains the Amazon Resource Name (ARN) of the newly registered connection type.</p>"
+    },
     "RegisterSchemaVersionInput":{
       "type":"structure",
       "required":[
@@ -23021,6 +23546,53 @@
       "member":{"shape":"ResourceUri"},
       "max":1000,
       "min":0
+    },
+    "ResponseConfiguration":{
+      "type":"structure",
+      "required":["ResultPath"],
+      "members":{
+        "ResultPath":{
+          "shape":"JsonPathString",
+          "documentation":"<p>The JSON path expression that identifies where the actual result data is located within the API response.</p>"
+        },
+        "ErrorPath":{
+          "shape":"JsonPathString",
+          "documentation":"<p>The JSON path expression that identifies where error information is located within API responses when requests fail.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that defines how to parse JSON responses from REST API calls, including paths to result data and error information.</p>"
+    },
+    "ResponseExtractionMapping":{
+      "type":"structure",
+      "members":{
+        "ContentPath":{
+          "shape":"JsonPathString",
+          "documentation":"<p>A JSON path expression that specifies how to extract a value from the response body content.</p>"
+        },
+        "HeaderKey":{
+          "shape":"ConnectorPropertyKey",
+          "documentation":"<p>The name of an HTTP response header from which to extract the value.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that defines how to extract values from HTTP response content or headers for use in subsequent requests or parameter mapping.</p>"
+    },
+    "RestConfiguration":{
+      "type":"structure",
+      "members":{
+        "GlobalSourceConfiguration":{
+          "shape":"SourceConfiguration",
+          "documentation":"<p>Global configuration settings that apply to all REST API requests for this connection type, including common request methods, paths, and parameters.</p>"
+        },
+        "ValidationEndpointConfiguration":{
+          "shape":"SourceConfiguration",
+          "documentation":"<p>Configuration for the endpoint used to validate connection credentials and test connectivity during connection creation.</p>"
+        },
+        "EntityConfigurations":{
+          "shape":"EntityConfigurationMap",
+          "documentation":"<p>A map of entity configurations that define how to interact with different data entities available through the REST API, including their schemas and access patterns.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that defines HTTP request and response handling, validation endpoints, and entity configurations for REST API interactions.</p>"
     },
     "ResumeWorkflowRunRequest":{
       "type":"structure",
@@ -25010,6 +25582,32 @@
         "DESCENDING",
         "ASCENDING"
       ]
+    },
+    "SourceConfiguration":{
+      "type":"structure",
+      "members":{
+        "RequestMethod":{
+          "shape":"HTTPMethod",
+          "documentation":"<p>The HTTP method to use for requests to this endpoint, such as GET, POST.</p>"
+        },
+        "RequestPath":{
+          "shape":"PathString",
+          "documentation":"<p>The URL path for the REST endpoint, which may include parameter placeholders that will be replaced with actual values during requests.</p>"
+        },
+        "RequestParameters":{
+          "shape":"ConnectorPropertyList",
+          "documentation":"<p>Configuration for request parameters that should be included in API calls, such as query parameters, headers, or body content.</p>"
+        },
+        "ResponseConfiguration":{
+          "shape":"ResponseConfiguration",
+          "documentation":"<p>Configuration that defines how to parse and extract data from API responses, including success and error handling.</p>"
+        },
+        "PaginationConfiguration":{
+          "shape":"PaginationConfiguration",
+          "documentation":"<p>Configuration for handling paginated responses from the REST API, supporting both cursor-based and offset-based pagination strategies.</p>"
+        }
+      },
+      "documentation":"<p>Configuration that defines how to make requests to endpoints, including request methods, paths, parameters, and response handling.</p>"
     },
     "SourceControlAuthStrategy":{
       "type":"string",

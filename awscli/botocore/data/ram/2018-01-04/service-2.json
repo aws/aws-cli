@@ -59,7 +59,7 @@
         {"shape":"UnknownResourceException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Adds the specified list of principals and list of resources to a resource share. Principals that already have access to this resource share immediately receive access to the added resources. Newly added principals immediately receive access to the resources shared in this resource share. </p>"
+      "documentation":"<p>Adds the specified list of principals, resources, and source constraints to a resource share. Principals that already have access to this resource share immediately receive access to the added resources. Newly added principals immediately receive access to the resources shared in this resource share. </p>"
     },
     "AssociateResourceSharePermission":{
       "name":"AssociateResourceSharePermission",
@@ -144,9 +144,10 @@
         {"shape":"TagPolicyViolationException"},
         {"shape":"TagLimitExceededException"},
         {"shape":"ServerInternalException"},
-        {"shape":"ServiceUnavailableException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a resource share. You can provide a list of the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> for the resources that you want to share, a list of principals you want to share the resources with, and the permissions to grant those principals.</p> <note> <p>Sharing a resource makes it available for use by principals outside of the Amazon Web Services account that created the resource. Sharing doesn't change any permissions or quotas that apply to the resource in the account that created it.</p> </note>"
+      "documentation":"<p>Creates a resource share. You can provide a list of the <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> for the resources that you want to share, a list of principals you want to share the resources with, the permissions to grant those principals, and optionally source constraints to enhance security for service principal sharing.</p> <note> <p>Sharing a resource makes it available for use by principals outside of the Amazon Web Services account that created the resource. Sharing doesn't change any permissions or quotas that apply to the resource in the account that created it.</p> </note>"
     },
     "DeletePermission":{
       "name":"DeletePermission",
@@ -204,7 +205,8 @@
         {"shape":"InvalidClientTokenException"},
         {"shape":"InvalidParameterException"},
         {"shape":"ServerInternalException"},
-        {"shape":"ServiceUnavailableException"}
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Deletes the specified resource share.</p> <important> <p>This doesn't delete any of the resources that were associated with the resource share; it only stops the sharing of those resources through this resource share.</p> </important>"
     },
@@ -226,9 +228,10 @@
         {"shape":"OperationNotPermittedException"},
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"},
-        {"shape":"UnknownResourceException"}
+        {"shape":"UnknownResourceException"},
+        {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Removes the specified principals or resources from participating in the specified resource share.</p>"
+      "documentation":"<p>Removes the specified principals, resources, or source constraints from participating in the specified resource share.</p>"
     },
     "DisassociateResourceSharePermission":{
       "name":"DisassociateResourceSharePermission",
@@ -299,7 +302,7 @@
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Retrieves the resource policies for the specified resources that you own and have shared.</p>"
+      "documentation":"<p>Retrieves the resource policies for the specified resources that you own and have shared.</p> <note> <p>Always check the <code>NextToken</code> response parameter for a <code>null</code> value when calling a paginated operation. These operations can occasionally return an empty set of results even when there are more results available. The <code>NextToken</code> response parameter value is <code>null</code> <i>only</i> when there are no more results to display.</p> </note>"
     },
     "GetResourceShareAssociations":{
       "name":"GetResourceShareAssociations",
@@ -318,7 +321,7 @@
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Retrieves the lists of resources and principals that associated for resource shares that you own.</p>"
+      "documentation":"<p>Retrieves the lists of resources and principals that associated for resource shares that you own.</p> <note> <p>Always check the <code>NextToken</code> response parameter for a <code>null</code> value when calling a paginated operation. These operations can occasionally return an empty set of results even when there are more results available. The <code>NextToken</code> response parameter value is <code>null</code> <i>only</i> when there are no more results to display.</p> </note>"
     },
     "GetResourceShareInvitations":{
       "name":"GetResourceShareInvitations",
@@ -338,7 +341,7 @@
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Retrieves details about invitations that you have received for resource shares.</p>"
+      "documentation":"<p>Retrieves details about invitations that you have received for resource shares.</p> <note> <p>Always check the <code>NextToken</code> response parameter for a <code>null</code> value when calling a paginated operation. These operations can occasionally return an empty set of results even when there are more results available. The <code>NextToken</code> response parameter value is <code>null</code> <i>only</i> when there are no more results to display.</p> </note>"
     },
     "GetResourceShares":{
       "name":"GetResourceShares",
@@ -356,7 +359,7 @@
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Retrieves details about the resource shares that you own or that are shared with you.</p>"
+      "documentation":"<p>Retrieves details about the resource shares that you own or that are shared with you.</p> <note> <p>Always check the <code>NextToken</code> response parameter for a <code>null</code> value when calling a paginated operation. These operations can occasionally return an empty set of results even when there are more results available. The <code>NextToken</code> response parameter value is <code>null</code> <i>only</i> when there are no more results to display.</p> </note>"
     },
     "ListPendingInvitationResources":{
       "name":"ListPendingInvitationResources",
@@ -377,7 +380,7 @@
         {"shape":"ResourceShareInvitationAlreadyRejectedException"},
         {"shape":"ResourceShareInvitationExpiredException"}
       ],
-      "documentation":"<p>Lists the resources in a resource share that is shared with you but for which the invitation is still <code>PENDING</code>. That means that you haven't accepted or rejected the invitation and the invitation hasn't expired.</p>"
+      "documentation":"<p>Lists the resources in a resource share that is shared with you but for which the invitation is still <code>PENDING</code>. That means that you haven't accepted or rejected the invitation and the invitation hasn't expired.</p> <note> <p>Always check the <code>NextToken</code> response parameter for a <code>null</code> value when calling a paginated operation. These operations can occasionally return an empty set of results even when there are more results available. The <code>NextToken</code> response parameter value is <code>null</code> <i>only</i> when there are no more results to display.</p> </note>"
     },
     "ListPermissionAssociations":{
       "name":"ListPermissionAssociations",
@@ -394,7 +397,7 @@
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Lists information about the managed permission and its associations to any resource shares that use this managed permission. This lets you see which resource shares use which versions of the specified managed permission.</p>"
+      "documentation":"<p>Lists information about the managed permission and its associations to any resource shares that use this managed permission. This lets you see which resource shares use which versions of the specified managed permission.</p> <note> <p>Always check the <code>NextToken</code> response parameter for a <code>null</code> value when calling a paginated operation. These operations can occasionally return an empty set of results even when there are more results available. The <code>NextToken</code> response parameter value is <code>null</code> <i>only</i> when there are no more results to display.</p> </note>"
     },
     "ListPermissionVersions":{
       "name":"ListPermissionVersions",
@@ -413,7 +416,7 @@
         {"shape":"OperationNotPermittedException"},
         {"shape":"InvalidParameterException"}
       ],
-      "documentation":"<p>Lists the available versions of the specified RAM permission.</p>"
+      "documentation":"<p>Lists the available versions of the specified RAM permission.</p> <note> <p>Always check the <code>NextToken</code> response parameter for a <code>null</code> value when calling a paginated operation. These operations can occasionally return an empty set of results even when there are more results available. The <code>NextToken</code> response parameter value is <code>null</code> <i>only</i> when there are no more results to display.</p> </note>"
     },
     "ListPermissions":{
       "name":"ListPermissions",
@@ -430,7 +433,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"OperationNotPermittedException"}
       ],
-      "documentation":"<p>Retrieves a list of available RAM permissions that you can use for the supported resource types. </p>"
+      "documentation":"<p>Retrieves a list of available RAM permissions that you can use for the supported resource types. </p> <note> <p>Always check the <code>NextToken</code> response parameter for a <code>null</code> value when calling a paginated operation. These operations can occasionally return an empty set of results even when there are more results available. The <code>NextToken</code> response parameter value is <code>null</code> <i>only</i> when there are no more results to display.</p> </note>"
     },
     "ListPrincipals":{
       "name":"ListPrincipals",
@@ -448,7 +451,7 @@
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Lists the principals that you are sharing resources with or that are sharing resources with you.</p>"
+      "documentation":"<p>Lists the principals that you are sharing resources with or that are sharing resources with you.</p> <note> <p>Always check the <code>NextToken</code> response parameter for a <code>null</code> value when calling a paginated operation. These operations can occasionally return an empty set of results even when there are more results available. The <code>NextToken</code> response parameter value is <code>null</code> <i>only</i> when there are no more results to display.</p> </note>"
     },
     "ListReplacePermissionAssociationsWork":{
       "name":"ListReplacePermissionAssociationsWork",
@@ -464,7 +467,7 @@
         {"shape":"InvalidNextTokenException"},
         {"shape":"InvalidParameterException"}
       ],
-      "documentation":"<p>Retrieves the current status of the asynchronous tasks performed by RAM when you perform the <a>ReplacePermissionAssociationsWork</a> operation.</p>"
+      "documentation":"<p>Retrieves the current status of the asynchronous tasks performed by RAM when you perform the <a>ReplacePermissionAssociationsWork</a> operation.</p> <note> <p>Always check the <code>NextToken</code> response parameter for a <code>null</code> value when calling a paginated operation. These operations can occasionally return an empty set of results even when there are more results available. The <code>NextToken</code> response parameter value is <code>null</code> <i>only</i> when there are no more results to display.</p> </note>"
     },
     "ListResourceSharePermissions":{
       "name":"ListResourceSharePermissions",
@@ -483,7 +486,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"OperationNotPermittedException"}
       ],
-      "documentation":"<p>Lists the RAM permissions that are associated with a resource share.</p>"
+      "documentation":"<p>Lists the RAM permissions that are associated with a resource share.</p> <note> <p>Always check the <code>NextToken</code> response parameter for a <code>null</code> value when calling a paginated operation. These operations can occasionally return an empty set of results even when there are more results available. The <code>NextToken</code> response parameter value is <code>null</code> <i>only</i> when there are no more results to display.</p> </note>"
     },
     "ListResourceTypes":{
       "name":"ListResourceTypes",
@@ -518,7 +521,25 @@
         {"shape":"ServerInternalException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p>Lists the resources that you added to a resource share or the resources that are shared with you.</p>"
+      "documentation":"<p>Lists the resources that you added to a resource share or the resources that are shared with you.</p> <note> <p>Always check the <code>NextToken</code> response parameter for a <code>null</code> value when calling a paginated operation. These operations can occasionally return an empty set of results even when there are more results available. The <code>NextToken</code> response parameter value is <code>null</code> <i>only</i> when there are no more results to display.</p> </note>"
+    },
+    "ListSourceAssociations":{
+      "name":"ListSourceAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/listsourceassociations"
+      },
+      "input":{"shape":"ListSourceAssociationsRequest"},
+      "output":{"shape":"ListSourceAssociationsResponse"},
+      "errors":[
+        {"shape":"UnknownResourceException"},
+        {"shape":"MalformedArnException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ServerInternalException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p>Lists source associations for resource shares. Source associations control which sources can be used with service principals in resource shares. This operation provides visibility into source associations for resource share owners.</p> <p>You can filter the results by resource share Amazon Resource Name (ARN), source ID, source type, or association status. We recommend using pagination to ensure that the operation returns quickly and successfully.</p>"
     },
     "PromotePermissionCreatedFromPolicy":{
       "name":"PromotePermissionCreatedFromPolicy",
@@ -530,6 +551,7 @@
       "output":{"shape":"PromotePermissionCreatedFromPolicyResponse"},
       "errors":[
         {"shape":"MalformedArnException"},
+        {"shape":"InvalidPolicyException"},
         {"shape":"OperationNotPermittedException"},
         {"shape":"InvalidParameterException"},
         {"shape":"MissingRequiredParameterException"},
@@ -765,7 +787,7 @@
         },
         "principals":{
           "shape":"PrincipalArnOrIdList",
-          "documentation":"<p>Specifies a list of principals to whom you want to the resource share. This can be <code>null</code> if you want to add only resources.</p> <p>What the principals can do with the resources in the share is determined by the RAM permissions that you associate with the resource share. See <a>AssociateResourceSharePermission</a>.</p> <p>You can include the following values:</p> <ul> <li> <p>An Amazon Web Services account ID, for example: <code>123456789012</code> </p> </li> <li> <p>An <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of an organization in Organizations, for example: <code>organizations::123456789012:organization/o-exampleorgid</code> </p> </li> <li> <p>An ARN of an organizational unit (OU) in Organizations, for example: <code>organizations::123456789012:ou/o-exampleorgid/ou-examplerootid-exampleouid123</code> </p> </li> <li> <p>An ARN of an IAM role, for example: <code>iam::123456789012:role/rolename</code> </p> </li> <li> <p>An ARN of an IAM user, for example: <code>iam::123456789012user/username</code> </p> </li> </ul> <note> <p>Not all resource types can be shared with IAM roles and users. For more information, see <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/permissions.html#permissions-rbp-supported-resource-types\">Sharing with IAM roles and users</a> in the <i>Resource Access Manager User Guide</i>.</p> </note>"
+          "documentation":"<p>Specifies a list of principals to whom you want to the resource share. This can be <code>null</code> if you want to add only resources.</p> <p>What the principals can do with the resources in the share is determined by the RAM permissions that you associate with the resource share. See <a>AssociateResourceSharePermission</a>.</p> <p>You can include the following values:</p> <ul> <li> <p>An Amazon Web Services account ID, for example: <code>123456789012</code> </p> </li> <li> <p>An <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of an organization in Organizations, for example: <code>organizations::123456789012:organization/o-exampleorgid</code> </p> </li> <li> <p>An ARN of an organizational unit (OU) in Organizations, for example: <code>organizations::123456789012:ou/o-exampleorgid/ou-examplerootid-exampleouid123</code> </p> </li> <li> <p>An ARN of an IAM role, for example: <code>iam::123456789012:role/rolename</code> </p> </li> <li> <p>An ARN of an IAM user, for example: <code>iam::123456789012user/username</code> </p> </li> <li> <p>A service principal name, for example: <code>service-id.amazonaws.com</code> </p> </li> </ul> <note> <p>Not all resource types can be shared with IAM roles and users. For more information, see <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/permissions.html#permissions-rbp-supported-resource-types\">Sharing with IAM roles and users</a> in the <i>Resource Access Manager User Guide</i>.</p> </note>"
         },
         "clientToken":{
           "shape":"String",
@@ -773,7 +795,7 @@
         },
         "sources":{
           "shape":"SourceArnOrAccountList",
-          "documentation":"<p>Specifies from which source accounts the service principal has access to the resources in this resource share.</p>"
+          "documentation":"<p>Specifies source constraints (accounts, ARNs, organization IDs, or organization paths) that limit when service principals can access resources in this resource share. When a service principal attempts to access a shared resource, validation is performed to ensure the request originates from one of the specified sources. This helps prevent confused deputy attacks by applying constraints on where service principals can access resources from.</p>"
         }
       }
     },
@@ -832,6 +854,44 @@
       "type":"list",
       "member":{"shape":"AssociatedPermission"}
     },
+    "AssociatedSource":{
+      "type":"structure",
+      "members":{
+        "resourceShareArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource share that contains the source association.</p>"
+        },
+        "sourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the source. This can be an account ID, Amazon Resource Name (ARN), organization ID, or organization path.</p>"
+        },
+        "sourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of source.</p>"
+        },
+        "status":{
+          "shape":"String",
+          "documentation":"<p>The current status of the source association.</p>"
+        },
+        "lastUpdatedTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when the source association was last updated.</p>"
+        },
+        "creationTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when the source association was created.</p>"
+        },
+        "statusMessage":{
+          "shape":"String",
+          "documentation":"<p>A message about the status of the source association.</p>"
+        }
+      },
+      "documentation":"<p>Information about a source association in a resource share. Source associations control which sources can be used with service principals.</p>"
+    },
+    "AssociatedSourceList":{
+      "type":"list",
+      "member":{"shape":"AssociatedSource"}
+    },
     "Boolean":{"type":"boolean"},
     "CreatePermissionRequest":{
       "type":"structure",
@@ -847,7 +907,7 @@
         },
         "resourceType":{
           "shape":"String",
-          "documentation":"<p>Specifies the name of the resource type that this customer managed permission applies to.</p> <p>The format is <code> <i>&lt;service-code&gt;</i>:<i>&lt;resource-type&gt;</i> </code> and is not case sensitive. For example, to specify an Amazon EC2 Subnet, you can use the string <code>ec2:subnet</code>. To see the list of valid values for this parameter, query the <a>ListResourceTypes</a> operation.</p>"
+          "documentation":"<p>Specifies the name of the resource type that this customer managed permission applies to.</p> <p>The format is <code> <i>&lt;service-code&gt;</i>:<i>&lt;resource-type&gt;</i> </code> and is case sensitive. For example, to specify an Amazon EC2 Subnet, you can use the string <code>ec2:Subnet</code>. To see the list of valid values for this parameter, query the <a>ListResourceTypes</a> operation. This value must match the display name of the resource (available in <code>ListResourceTypes</code>).</p>"
         },
         "policyTemplate":{
           "shape":"Policy",
@@ -921,7 +981,7 @@
         },
         "principals":{
           "shape":"PrincipalArnOrIdList",
-          "documentation":"<p>Specifies a list of one or more principals to associate with the resource share.</p> <p>You can include the following values:</p> <ul> <li> <p>An Amazon Web Services account ID, for example: <code>123456789012</code> </p> </li> <li> <p>An <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of an organization in Organizations, for example: <code>organizations::123456789012:organization/o-exampleorgid</code> </p> </li> <li> <p>An ARN of an organizational unit (OU) in Organizations, for example: <code>organizations::123456789012:ou/o-exampleorgid/ou-examplerootid-exampleouid123</code> </p> </li> <li> <p>An ARN of an IAM role, for example: <code>iam::123456789012:role/rolename</code> </p> </li> <li> <p>An ARN of an IAM user, for example: <code>iam::123456789012user/username</code> </p> </li> </ul> <note> <p>Not all resource types can be shared with IAM roles and users. For more information, see <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/permissions.html#permissions-rbp-supported-resource-types\">Sharing with IAM roles and users</a> in the <i>Resource Access Manager User Guide</i>.</p> </note>"
+          "documentation":"<p>Specifies a list of one or more principals to associate with the resource share.</p> <p>You can include the following values:</p> <ul> <li> <p>An Amazon Web Services account ID, for example: <code>123456789012</code> </p> </li> <li> <p>An <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of an organization in Organizations, for example: <code>organizations::123456789012:organization/o-exampleorgid</code> </p> </li> <li> <p>An ARN of an organizational unit (OU) in Organizations, for example: <code>organizations::123456789012:ou/o-exampleorgid/ou-examplerootid-exampleouid123</code> </p> </li> <li> <p>An ARN of an IAM role, for example: <code>iam::123456789012:role/rolename</code> </p> </li> <li> <p>An ARN of an IAM user, for example: <code>iam::123456789012user/username</code> </p> </li> <li> <p>A service principal name, for example: <code>service-id.amazonaws.com</code> </p> </li> </ul> <note> <p>Not all resource types can be shared with IAM roles and users. For more information, see <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/permissions.html#permissions-rbp-supported-resource-types\">Sharing with IAM roles and users</a> in the <i>Resource Access Manager User Guide</i>.</p> </note>"
         },
         "tags":{
           "shape":"TagList",
@@ -941,7 +1001,7 @@
         },
         "sources":{
           "shape":"SourceArnOrAccountList",
-          "documentation":"<p>Specifies from which source accounts the service principal has access to the resources in this resource share.</p>"
+          "documentation":"<p>Specifies source constraints (accounts, ARNs, organization IDs, or organization paths) that limit when service principals can access resources in this resource share. When a service principal attempts to access a shared resource, validation is performed to ensure the request originates from one of the specified sources. This helps prevent confused deputy attacks by applying constraints on where service principals can access resources from.</p>"
         }
       }
     },
@@ -1117,7 +1177,7 @@
         },
         "principals":{
           "shape":"PrincipalArnOrIdList",
-          "documentation":"<p>Specifies a list of one or more principals that no longer are to have access to the resources in this resource share.</p> <p>You can include the following values:</p> <ul> <li> <p>An Amazon Web Services account ID, for example: <code>123456789012</code> </p> </li> <li> <p>An <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of an organization in Organizations, for example: <code>organizations::123456789012:organization/o-exampleorgid</code> </p> </li> <li> <p>An ARN of an organizational unit (OU) in Organizations, for example: <code>organizations::123456789012:ou/o-exampleorgid/ou-examplerootid-exampleouid123</code> </p> </li> <li> <p>An ARN of an IAM role, for example: <code>iam::123456789012:role/rolename</code> </p> </li> <li> <p>An ARN of an IAM user, for example: <code>iam::123456789012user/username</code> </p> </li> </ul> <note> <p>Not all resource types can be shared with IAM roles and users. For more information, see <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/permissions.html#permissions-rbp-supported-resource-types\">Sharing with IAM roles and users</a> in the <i>Resource Access Manager User Guide</i>.</p> </note>"
+          "documentation":"<p>Specifies a list of one or more principals that no longer are to have access to the resources in this resource share.</p> <p>You can include the following values:</p> <ul> <li> <p>An Amazon Web Services account ID, for example: <code>123456789012</code> </p> </li> <li> <p>An <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of an organization in Organizations, for example: <code>organizations::123456789012:organization/o-exampleorgid</code> </p> </li> <li> <p>An ARN of an organizational unit (OU) in Organizations, for example: <code>organizations::123456789012:ou/o-exampleorgid/ou-examplerootid-exampleouid123</code> </p> </li> <li> <p>An ARN of an IAM role, for example: <code>iam::123456789012:role/rolename</code> </p> </li> <li> <p>An ARN of an IAM user, for example: <code>iam::123456789012user/username</code> </p> </li> <li> <p>A service principal name, for example: <code>service-id.amazonaws.com</code> </p> </li> </ul> <note> <p>Not all resource types can be shared with IAM roles and users. For more information, see <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/permissions.html#permissions-rbp-supported-resource-types\">Sharing with IAM roles and users</a> in the <i>Resource Access Manager User Guide</i>.</p> </note>"
         },
         "clientToken":{
           "shape":"String",
@@ -1125,7 +1185,7 @@
         },
         "sources":{
           "shape":"SourceArnOrAccountList",
-          "documentation":"<p>Specifies from which source accounts the service principal no longer has access to the resources in this resource share.</p>"
+          "documentation":"<p>Specifies source constraints (accounts, ARNs, organization IDs, or organization paths) to remove from the resource share. This enables granular management of source constraints while maintaining service principal associations. At least one source must remain when service principals are present.</p>"
         }
       }
     },
@@ -1594,7 +1654,7 @@
         },
         "principals":{
           "shape":"PrincipalArnOrIdList",
-          "documentation":"<p>Specifies that you want to list information for only the listed principals.</p> <p>You can include the following values:</p> <ul> <li> <p>An Amazon Web Services account ID, for example: <code>123456789012</code> </p> </li> <li> <p>An <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of an organization in Organizations, for example: <code>organizations::123456789012:organization/o-exampleorgid</code> </p> </li> <li> <p>An ARN of an organizational unit (OU) in Organizations, for example: <code>organizations::123456789012:ou/o-exampleorgid/ou-examplerootid-exampleouid123</code> </p> </li> <li> <p>An ARN of an IAM role, for example: <code>iam::123456789012:role/rolename</code> </p> </li> <li> <p>An ARN of an IAM user, for example: <code>iam::123456789012user/username</code> </p> </li> </ul> <note> <p>Not all resource types can be shared with IAM roles and users. For more information, see <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/permissions.html#permissions-rbp-supported-resource-types\">Sharing with IAM roles and users</a> in the <i>Resource Access Manager User Guide</i>.</p> </note>"
+          "documentation":"<p>Specifies that you want to list information for only the listed principals.</p> <p>You can include the following values:</p> <ul> <li> <p>An Amazon Web Services account ID, for example: <code>123456789012</code> </p> </li> <li> <p>An <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Name (ARN)</a> of an organization in Organizations, for example: <code>organizations::123456789012:organization/o-exampleorgid</code> </p> </li> <li> <p>An ARN of an organizational unit (OU) in Organizations, for example: <code>organizations::123456789012:ou/o-exampleorgid/ou-examplerootid-exampleouid123</code> </p> </li> <li> <p>An ARN of an IAM role, for example: <code>iam::123456789012:role/rolename</code> </p> </li> <li> <p>An ARN of an IAM user, for example: <code>iam::123456789012user/username</code> </p> </li> <li> <p>A service principal name, for example: <code>service-id.amazonaws.com</code> </p> </li> </ul> <note> <p>Not all resource types can be shared with IAM roles and users. For more information, see <a href=\"https://docs.aws.amazon.com/ram/latest/userguide/permissions.html#permissions-rbp-supported-resource-types\">Sharing with IAM roles and users</a> in the <i>Resource Access Manager User Guide</i>.</p> </note>"
         },
         "resourceType":{
           "shape":"String",
@@ -1770,6 +1830,48 @@
         "nextToken":{
           "shape":"String",
           "documentation":"<p>If present, this value indicates that more output is available than is included in the current response. Use this value in the <code>NextToken</code> request parameter in a subsequent call to the operation to get the next part of the output. You should repeat this until the <code>NextToken</code> response element comes back as <code>null</code>. This indicates that this is the last page of results.</p>"
+        }
+      }
+    },
+    "ListSourceAssociationsRequest":{
+      "type":"structure",
+      "members":{
+        "resourceShareArns":{
+          "shape":"ResourceShareArnList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the resource shares for which you want to retrieve source associations.</p>"
+        },
+        "sourceId":{
+          "shape":"String",
+          "documentation":"<p>The identifier of the source for which you want to retrieve associations. This can be an account ID, Amazon Resource Name (ARN), organization ID, or organization path.</p>"
+        },
+        "sourceType":{
+          "shape":"String",
+          "documentation":"<p>The type of source for which you want to retrieve associations.</p>"
+        },
+        "associationStatus":{
+          "shape":"ResourceShareAssociationStatus",
+          "documentation":"<p>The status of the source associations that you want to retrieve.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token that indicates the next set of results to retrieve.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        }
+      }
+    },
+    "ListSourceAssociationsResponse":{
+      "type":"structure",
+      "members":{
+        "sourceAssociations":{
+          "shape":"AssociatedSourceList",
+          "documentation":"<p>Information about the source associations.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The pagination token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
       }
     },
@@ -2289,14 +2391,18 @@
         "ASSOCIATED",
         "FAILED",
         "DISASSOCIATING",
-        "DISASSOCIATED"
+        "DISASSOCIATED",
+        "SUSPENDED",
+        "SUSPENDING",
+        "RESTORING"
       ]
     },
     "ResourceShareAssociationType":{
       "type":"string",
       "enum":[
         "PRINCIPAL",
-        "RESOURCE"
+        "RESOURCE",
+        "SOURCE"
       ]
     },
     "ResourceShareFeatureSet":{
@@ -2414,7 +2520,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p>The operation failed because it would exceed the limit for resource shares for your account. To view the limits for your Amazon Web Services account, see the <a href=\"https://console.aws.amazon.com/servicequotas/home/services/ram/quotas\">RAM page in the Service Quotas console</a>.</p>",
+      "documentation":"<p>The operation failed because it would exceed the limit for resource shares for your account. You can associate up to 100 resources per call. To view the limits for your Amazon Web Services account, see the <a href=\"https://console.aws.amazon.com/servicequotas/home/services/ram/quotas\">RAM page in the Service Quotas console</a>.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
     },
@@ -2665,7 +2771,7 @@
           "documentation":"<p>A list of zero or more tag values. If no values are provided, then the filter matches any tag with the specified key, regardless of its value.</p>"
         }
       },
-      "documentation":"<p>A tag key and optional list of possible values that you can use to filter results for tagged resources.</p>"
+      "documentation":"<p>A tag key and optional list of possible values that you can use to filter results for tagged resources.</p> <note> <p>Multiple tag filters are evaluated as an OR condition.</p> </note>"
     },
     "TagFilters":{
       "type":"list",

@@ -197,6 +197,10 @@ class ConfigFileWriter(object):
                     new_contents.append('%s%s = %s\n' % (subindent, subkey,
                                                          subval))
             else:
+                if value is None:
+                    continue
+                if isinstance(value, str) and not value.strip():
+                    continue
                 new_contents.append('%s%s = %s\n' % (indent, key, value))
             del new_values[key]
         contents.insert(line_number + 1, ''.join(new_contents))

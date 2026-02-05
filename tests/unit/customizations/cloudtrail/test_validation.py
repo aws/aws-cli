@@ -31,16 +31,18 @@ from awscli.customizations.cloudtrail.validation import (
     DigestSignatureError,
     DigestTraverser,
     InvalidDigestFormat,
+    PublicKeyProvider,
     S3ClientProvider,
     Sha256RSADigestValidator,
     assert_cloudtrail_arn_is_valid,
     create_digest_traverser,
     extract_digest_key_date,
     format_date,
+    is_backfill_digest_key,
     normalize_date,
     parse_date,
 )
-from awscli.customizations.exceptions import ParamValidationError
+from awscli.schema import ParameterRequiredError
 from awscli.testutils import BaseAWSCommandParamsTest, mock, unittest
 from tests import PublicPrivateKeyLoader
 
@@ -49,7 +51,7 @@ from . import get_private_key_path, get_public_key_path
 START_DATE = parser.parse('20140810T000000Z')
 END_DATE = parser.parse('20150810T000000Z')
 TEST_ACCOUNT_ID = '123456789012'
-TEST_TRAIL_ARN = 'arn:aws:cloudtrail:us-east-1:%s:trail/foo' % TEST_ACCOUNT_ID
+TEST_TRAIL_ARN = f'arn:aws:cloudtrail:us-east-1:{TEST_ACCOUNT_ID}:trail/foo'
 VALID_TEST_KEY = (
     'MIIBCgKCAQEAn11L2YZ9h7onug2ILi1MWyHiMRsTQjfWE+pHVRLk1QjfW'
     'hirG+lpOa8NrwQ/r7Ah5bNL6HepznOU9XTDSfmmnP97mqyc7z/upfZdS/'
@@ -112,20 +114,29 @@ class MockDigestProvider:
         self.actions = actions
         self.calls = {'fetch_digest': [], 'load_digest_keys_in_range': []}
         self.digests = []
+        self.backfill_digests = []
+        self.trail_home_region = 'us-east-1'
         for i in range(len(self.actions)):
             self.digests.append(self.get_key_at_position(i))
+            self.backfill_digests.append(
+                self.get_key_at_position(i, is_backfill=True)
+            )
 
-    def get_key_at_position(self, position):
+    def get_key_at_position(self, position, is_backfill=False):
+        """Get digest key at position, generating backfill keys if needed."""
         dt = START_DATE + timedelta(hours=position)
-        key = (
-            'AWSLogs/{account}/CloudTrail-Digest/us-east-1/{ymd}/{account}_'
-            'CloudTrail-Digest_us-east-1_foo_us-east-1_{date}.json.gz'
-        )
-        return key.format(
-            account=TEST_ACCOUNT_ID,
-            ymd=dt.strftime('%Y/%m/%d'),
-            date=dt.strftime(DATE_FORMAT),
-        )
+
+        if is_backfill:
+            key = (
+                f'AWSLogs/{TEST_ACCOUNT_ID}/CloudTrail-Digest/us-east-1/{dt.strftime("%Y/%m/%d")}/'
+                f'{TEST_ACCOUNT_ID}_CloudTrail-Digest_us-east-1_foo_us-east-1_{dt.strftime(DATE_FORMAT)}_backfill.json.gz'
+            )
+        else:
+            key = (
+                f'AWSLogs/{TEST_ACCOUNT_ID}/CloudTrail-Digest/us-east-1/{dt.strftime("%Y/%m/%d")}/'
+                f'{TEST_ACCOUNT_ID}_CloudTrail-Digest_us-east-1_foo_us-east-1_{dt.strftime(DATE_FORMAT)}.json.gz'
+            )
+        return key
 
     @staticmethod
     def create_digest(
@@ -179,28 +190,46 @@ class MockDigestProvider:
                 next_key=next_key,
                 logs=digest_logs,
             )
-            # Mark the digest as invalid if specified in the action.
             if action == 'invalid':
                 digest['_invalid'] = True
+
+        digest['_signature'] = 'mock_signature'
+        digest['_signature_algorithm'] = 'SHA256'
+
+        if is_backfill_digest_key(key):
+            digest['_backfill_generation_timestamp'] = '2025-09-01T00:00:00Z'
+
         return digest, json.dumps(digest)
 
-    def load_digest_keys_in_range(self, bucket, prefix, start_date, end_date):
+    def load_digest_keys_in_range(
+        self, bucket, prefix, start_date, end_date, is_backfill=False
+    ):
         self.calls['load_digest_keys_in_range'].append(locals())
+        if is_backfill:
+            return list(self.backfill_digests)
         return list(self.digests)
 
     def fetch_digest(self, bucket, key):
         self.calls['fetch_digest'].append(key)
-        position = self.digests.index(key)
+        position = (
+            self.backfill_digests.index(key)
+            if is_backfill_digest_key(key)
+            else self.digests.index(key)
+        )
         action = self.actions[position]
         # Simulate a digest missing from S3
         if action == 'missing':
             raise ClientError(
                 {'Error': {'Code': 'NoSuchKey', 'Message': 'foo'}}, 'GetObject'
             )
-        next_key = self.get_key_at_position(position - 1)
+
+        next_key = self.get_key_at_position(
+            position - 1, is_backfill_digest_key(key)
+        )
         next_bucket = int(bucket)
         if action == 'bucket_change':
             next_bucket += 1
+
         return self.create_link(
             key,
             next_key,
@@ -221,7 +250,7 @@ class TestValidation(unittest.TestCase):
         try:
             parse_date('foo')
             self.fail('Should have failed to parse')
-        except ParamValidationError as e:
+        except ValueError as e:
             self.assertIn('Unable to parse date value: foo', str(e))
 
     def test_parses_dates(self):
@@ -232,21 +261,21 @@ class TestValidation(unittest.TestCase):
         try:
             assert_cloudtrail_arn_is_valid('foo:bar:baz')
             self.fail('Should have failed')
-        except ParamValidationError as e:
+        except ValueError as e:
             self.assertIn('Invalid trail ARN provided: foo:bar:baz', str(e))
 
     def test_ensures_cloudtrail_arns_are_valid_when_missing_resource(self):
         try:
             assert_cloudtrail_arn_is_valid(
-                'arn:aws:cloudtrail:us-east-1:%s:foo' % TEST_ACCOUNT_ID
+                f'arn:aws:cloudtrail:us-east-1:{TEST_ACCOUNT_ID}:foo'
             )
             self.fail('Should have failed')
-        except ParamValidationError as e:
+        except ValueError as e:
             self.assertIn('Invalid trail ARN provided', str(e))
 
     def test_allows_valid_arns(self):
         assert_cloudtrail_arn_is_valid(
-            'arn:aws:cloudtrail:us-east-1:%s:trail/foo' % TEST_ACCOUNT_ID
+            f'arn:aws:cloudtrail:us-east-1:{TEST_ACCOUNT_ID}:trail/foo'
         )
 
     def test_normalizes_date_timezones(self):
@@ -261,6 +290,51 @@ class TestValidation(unittest.TestCase):
             '20150816T230550Z.json.gz'
         )
         self.assertEqual('20150816T230550Z', extract_digest_key_date(arn))
+
+    def test_is_backfill_digest_key_identifies_standard_digest(self):
+        standard_key = (
+            f'AWSLogs/{TEST_ACCOUNT_ID}/CloudTrail-Digest/us-east-1/2015/08/'
+            f'16/{TEST_ACCOUNT_ID}_CloudTrail-Digest_us-east-1_foo_us-east-1_'
+            '20150816T230550Z.json.gz'
+        )
+        self.assertFalse(is_backfill_digest_key(standard_key))
+
+    def test_is_backfill_digest_key_identifies_backfill_digest(self):
+        backfill_key = (
+            f'AWSLogs/{TEST_ACCOUNT_ID}/CloudTrail-Digest/us-east-1/2015/08/'
+            f'16/{TEST_ACCOUNT_ID}_CloudTrail-Digest_us-east-1_foo_us-east-1_'
+            '20150816T230550Z_backfill.json.gz'
+        )
+        self.assertTrue(is_backfill_digest_key(backfill_key))
+
+    def test_is_backfill_digest_key_handles_edge_cases(self):
+        # Test with different file extensions
+        self.assertFalse(is_backfill_digest_key('file.txt'))
+        self.assertFalse(is_backfill_digest_key('file_backfill.txt'))
+        self.assertFalse(is_backfill_digest_key('file.json.gz'))
+
+        # Test with backfill in middle of filename
+        self.assertFalse(is_backfill_digest_key('file_backfill_other.json.gz'))
+
+    def test_extracts_dates_from_backfill_digest_keys(self):
+        backfill_key = (
+            f'AWSLogs/{TEST_ACCOUNT_ID}/CloudTrail-Digest/us-east-1/2015/08/'
+            f'16/{TEST_ACCOUNT_ID}_CloudTrail-Digest_us-east-1_foo_us-east-1_'
+            '20150816T230550Z_backfill.json.gz'
+        )
+        self.assertEqual(
+            '20150816T230550Z', extract_digest_key_date(backfill_key)
+        )
+
+    def test_extracts_dates_from_standard_digest_keys(self):
+        standard_key = (
+            f'AWSLogs/{TEST_ACCOUNT_ID}/CloudTrail-Digest/us-east-1/2015/08/'
+            f'16/{TEST_ACCOUNT_ID}_CloudTrail-Digest_us-east-1_foo_us-east-1_'
+            '20150816T230550Z.json.gz'
+        )
+        self.assertEqual(
+            '20150816T230550Z', extract_digest_key_date(standard_key)
+        )
 
     def test_creates_traverser(self):
         mock_s3_provider = mock.Mock()
@@ -420,7 +494,7 @@ class TestValidation(unittest.TestCase):
                 "Id": TEST_ORGANIZATION_ID,
             }
         }
-        with self.assertRaises(ParamValidationError):
+        with self.assertRaises(ParameterRequiredError):
             create_digest_traverser(
                 trail_arn=TEST_TRAIL_ARN,
                 trail_source_region='us-east-1',
@@ -428,6 +502,33 @@ class TestValidation(unittest.TestCase):
                 organization_client=organization_client,
                 s3_client_provider=mock.Mock(),
             )
+
+
+class TestPublicKeyProvider(unittest.TestCase):
+    def test_returns_public_key_in_range(self):
+        cloudtrail_client = mock.Mock()
+        cloudtrail_client.list_public_keys.return_value = {
+            'PublicKeyList': [
+                {'Fingerprint': 'a', 'OtherData': 'a', 'Value': 'a'},
+                {'Fingerprint': 'b', 'OtherData': 'b', 'Value': 'b'},
+                {'Fingerprint': 'c', 'OtherData': 'c', 'Value': 'c'},
+            ]
+        }
+        provider = PublicKeyProvider(cloudtrail_client)
+        start_date = START_DATE
+        end_date = start_date + timedelta(days=2)
+        keys = provider.get_public_keys(start_date, end_date)
+        self.assertEqual(
+            {
+                'a': {'Fingerprint': 'a', 'OtherData': 'a', 'Value': 'a'},
+                'b': {'Fingerprint': 'b', 'OtherData': 'b', 'Value': 'b'},
+                'c': {'Fingerprint': 'c', 'OtherData': 'c', 'Value': 'c'},
+            },
+            keys,
+        )
+        cloudtrail_client.list_public_keys.assert_has_calls(
+            [mock.call(EndTime=end_date, StartTime=start_date)]
+        )
 
 
 class TestSha256RSADigestValidator(unittest.TestCase):
@@ -452,13 +553,7 @@ class TestSha256RSADigestValidator(unittest.TestCase):
             get_private_key_path(), get_public_key_path()
         )
         sha256_hash = hashlib.sha256(self._inflated_digest)
-        string_to_sign = "%s\n%s/%s\n%s\n%s" % (
-            self._digest_data['digestEndTime'],
-            self._digest_data['digestS3Bucket'],
-            self._digest_data['digestS3Object'],
-            sha256_hash.hexdigest(),
-            self._digest_data['previousDigestSignature'],
-        )
+        string_to_sign = f"{self._digest_data['digestEndTime']}\n{self._digest_data['digestS3Bucket']}/{self._digest_data['digestS3Object']}\n{sha256_hash.hexdigest()}\n{self._digest_data['previousDigestSignature']}"
         to_sign = string_to_sign.encode()
         signature = private_key.sign(
             signature_algorithm=RSASignatureAlgorithm.PKCS1_5_SHA256,
@@ -573,10 +668,10 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
                     {"Key": bad_region},  # skip (regex (source))
                     {"Key": keys[3]},
                     {"Key": keys[4]},  # hour is +1, but keep
-                    {"Key": keys[5]},
+                    {"Key": keys[5]},  # skip (date >)
                 ]
             }
-        ]  # skip (date >)
+        ]
         self.patch_make_request()
         provider = self._get_mock_provider(s3_client)
         digests = provider.load_digest_keys_in_range(
@@ -595,16 +690,18 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
         mock_search = mock_paginate.return_value.search
         mock_search.return_value = []
         provider = self._get_mock_provider(s3_client)
-        provider.load_digest_keys_in_range(
-            '1', 'prefix', START_DATE, END_DATE)
-        marker = ('prefix/AWSLogs/{account}/CloudTrail-Digest/us-east-1/'
-                  '2014/08/09/{account}_CloudTrail-Digest_us-east-1_foo_'
-                  'us-east-1_20140809T235900Z.json.gz')
+        provider.load_digest_keys_in_range('1', 'prefix', START_DATE, END_DATE)
+        marker = (
+            'prefix/AWSLogs/{account}/CloudTrail-Digest/us-east-1/'
+            '2014/08/09/{account}_CloudTrail-Digest_us-east-1_foo_'
+            'us-east-1_20140809T235900Z.json.gz'
+        )
         prefix = 'prefix/AWSLogs/{account}/CloudTrail-Digest/us-east-1'
         mock_paginate.assert_called_once_with(
             Bucket='1',
             Marker=marker.format(account=TEST_ACCOUNT_ID),
-            Prefix=prefix.format(account=TEST_ACCOUNT_ID))
+            Prefix=prefix.format(account=TEST_ACCOUNT_ID),
+        )
 
     def test_calls_list_objects_correctly_org_trails(self):
         s3_client = mock.Mock()
@@ -636,52 +733,60 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
             Bucket='1',
             Marker=marker.format(
                 member_account=TEST_ORGANIZATION_ACCOUNT_ID,
-                organization_id=TEST_ORGANIZATION_ID
+                organization_id=TEST_ORGANIZATION_ID,
             ),
             Prefix=prefix.format(
                 member_account=TEST_ORGANIZATION_ACCOUNT_ID,
-                organization_id=TEST_ORGANIZATION_ID
-            )
+                organization_id=TEST_ORGANIZATION_ID,
+            ),
         )
 
     def test_create_digest_prefix_without_key_prefix(self):
         mock_s3_client_provider = mock.Mock()
         provider = DigestProvider(
-            mock_s3_client_provider, TEST_ACCOUNT_ID, 'foo', 'us-east-1')
+            mock_s3_client_provider, TEST_ACCOUNT_ID, 'foo', 'us-east-1'
+        )
         prefix = provider._create_digest_prefix(START_DATE, None)
-        expected = 'AWSLogs/{account}/CloudTrail-Digest/us-east-1'.format(
-            account=TEST_ACCOUNT_ID)
+        expected = f'AWSLogs/{TEST_ACCOUNT_ID}/CloudTrail-Digest/us-east-1'
         self.assertEqual(expected, prefix)
 
     def test_create_digest_prefix_with_key_prefix(self):
         mock_s3_client_provider = mock.Mock()
         provider = DigestProvider(
-            mock_s3_client_provider, TEST_ACCOUNT_ID, 'foo', 'us-east-1')
+            mock_s3_client_provider, TEST_ACCOUNT_ID, 'foo', 'us-east-1'
+        )
         prefix = provider._create_digest_prefix(START_DATE, 'my-prefix')
-        expected = 'my-prefix/AWSLogs/{account}/CloudTrail-Digest/us-east-1'.format(
-            account=TEST_ACCOUNT_ID)
+        expected = (
+            f'my-prefix/AWSLogs/{TEST_ACCOUNT_ID}/CloudTrail-Digest/us-east-1'
+        )
         self.assertEqual(expected, prefix)
 
     def test_create_digest_prefix_org_trail(self):
         mock_s3_client_provider = mock.Mock()
         provider = DigestProvider(
-            mock_s3_client_provider, TEST_ORGANIZATION_ACCOUNT_ID,
-            'foo', 'us-east-1', 'us-east-1', TEST_ORGANIZATION_ID)
+            mock_s3_client_provider,
+            TEST_ORGANIZATION_ACCOUNT_ID,
+            'foo',
+            'us-east-1',
+            'us-east-1',
+            TEST_ORGANIZATION_ID,
+        )
         prefix = provider._create_digest_prefix(START_DATE, None)
-        expected = 'AWSLogs/{org}/{account}/CloudTrail-Digest/us-east-1'.format(
-            org=TEST_ORGANIZATION_ID,
-            account=TEST_ORGANIZATION_ACCOUNT_ID)
+        expected = f'AWSLogs/{TEST_ORGANIZATION_ID}/{TEST_ORGANIZATION_ACCOUNT_ID}/CloudTrail-Digest/us-east-1'
         self.assertEqual(expected, prefix)
 
     def test_create_digest_prefix_org_trail_with_key_prefix(self):
         mock_s3_client_provider = mock.Mock()
         provider = DigestProvider(
-            mock_s3_client_provider, TEST_ORGANIZATION_ACCOUNT_ID,
-            'foo', 'us-east-1', 'us-east-1', TEST_ORGANIZATION_ID)
+            mock_s3_client_provider,
+            TEST_ORGANIZATION_ACCOUNT_ID,
+            'foo',
+            'us-east-1',
+            'us-east-1',
+            TEST_ORGANIZATION_ID,
+        )
         prefix = provider._create_digest_prefix(START_DATE, 'custom-prefix')
-        expected = 'custom-prefix/AWSLogs/{org}/{account}/CloudTrail-Digest/us-east-1'.format(
-            org=TEST_ORGANIZATION_ID,
-            account=TEST_ORGANIZATION_ACCOUNT_ID)
+        expected = f'custom-prefix/AWSLogs/{TEST_ORGANIZATION_ID}/{TEST_ORGANIZATION_ACCOUNT_ID}/CloudTrail-Digest/us-east-1'
         self.assertEqual(expected, prefix)
 
     def test_ensures_digest_has_proper_metadata(self):
@@ -749,6 +854,129 @@ class TestDigestProvider(BaseAWSCommandParamsTest):
         )
         self.assertEqual(json_str.encode(), result[1])
 
+    def _fake_backfill_key(self, date):
+        parsed = parser.parse(date)
+        return (
+            f'prefix/AWSLogs/{TEST_ACCOUNT_ID}/CloudTrail-Digest/us-east-1/{parsed.year}/'
+            f'{parsed.month}/{parsed.day}/{TEST_ACCOUNT_ID}_CloudTrail-Digest_us-east-1_foo_'
+            f'us-east-1_{date}_backfill.json.gz'
+        )
+
+    def test_load_all_digest_keys_in_range_separates_standard_and_backfill(
+        self,
+    ):
+        s3_client = self.driver.session.create_client('s3')
+        standard_keys = [
+            self._fake_key(format_date(START_DATE + timedelta(days=1))),
+            self._fake_key(format_date(START_DATE + timedelta(days=2))),
+        ]
+        backfill_keys = [
+            self._fake_backfill_key(
+                format_date(START_DATE + timedelta(days=1))
+            ),
+            self._fake_backfill_key(
+                format_date(START_DATE + timedelta(days=2))
+            ),
+        ]
+
+        self.parsed_responses = [
+            {
+                "Contents": [
+                    {"Key": standard_keys[0]},
+                    {"Key": backfill_keys[0]},
+                    {"Key": standard_keys[1]},
+                    {"Key": backfill_keys[1]},
+                ]
+            }
+        ]
+        self.patch_make_request()
+        provider = self._get_mock_provider(s3_client)
+
+        standard_digests, backfill_digests = (
+            provider.load_all_digest_keys_in_range(
+                'foo', 'prefix', START_DATE, END_DATE
+            )
+        )
+
+        self.assertEqual(standard_keys, standard_digests)
+        self.assertEqual(backfill_keys, backfill_digests)
+
+    def test_load_digest_keys_in_range_uses_cache(self):
+        s3_client = mock.Mock()
+        mock_paginate = s3_client.get_paginator.return_value.paginate
+        mock_search = mock_paginate.return_value.search
+        mock_search.return_value = []
+        provider = self._get_mock_provider(s3_client)
+
+        provider.load_digest_keys_in_range(
+            'bucket', 'prefix', START_DATE, END_DATE, is_backfill=False
+        )
+        self.assertEqual(1, mock_paginate.call_count)
+
+        provider.load_digest_keys_in_range(
+            'bucket', 'prefix', START_DATE, END_DATE, is_backfill=True
+        )
+        self.assertEqual(1, mock_paginate.call_count)
+
+        provider.load_digest_keys_in_range(
+            'bucket', 'prefix', START_DATE, START_DATE, is_backfill=False
+        )
+        self.assertEqual(2, mock_paginate.call_count)
+
+    def test_fetches_backfill_digests_with_metadata(self):
+        json_str = '{"foo":"bar"}'
+        out = BytesIO()
+        f = gzip.GzipFile(fileobj=out, mode="wb")
+        f.write(json_str.encode())
+        f.close()
+        gzipped_data = out.getvalue()
+        s3_client = mock.Mock()
+        s3_client.get_object.return_value = {
+            'Body': BytesIO(gzipped_data),
+            'Metadata': {
+                'signature': 'abc',
+                'signature-algorithm': 'SHA256',
+                'backfill-generation-timestamp': '2025-09-01T00:00:00Z',
+            },
+        }
+        provider = self._get_mock_provider(s3_client)
+        backfill_key = self._fake_backfill_key(format_date(START_DATE))
+
+        result = provider.fetch_digest('bucket', backfill_key)
+
+        self.assertEqual(
+            {
+                'foo': 'bar',
+                '_signature': 'abc',
+                '_signature_algorithm': 'SHA256',
+                '_backfill_generation_timestamp': '2025-09-01T00:00:00Z',
+            },
+            result[0],
+        )
+        self.assertEqual(json_str.encode(), result[1])
+
+    def test_ensures_backfill_digest_has_proper_metadata(self):
+        json_str = '{"foo":"bar"}'
+        out = BytesIO()
+        f = gzip.GzipFile(fileobj=out, mode="wb")
+        f.write(json_str.encode())
+        f.close()
+        gzipped_data = out.getvalue()
+        s3_client = mock.Mock()
+        s3_client.get_object.return_value = {
+            'Body': BytesIO(gzipped_data),
+            'Metadata': {
+                'signature': 'abc',
+                'signature-algorithm': 'SHA256',
+                # Missing backfill-generation-timestamp
+            },
+        }
+        provider = self._get_mock_provider(s3_client)
+        backfill_key = self._fake_backfill_key(format_date(START_DATE))
+
+        with self.assertRaises(InvalidDigestFormat):
+            provider.fetch_digest('bucket', backfill_key)
+
 
 class TestDigestTraverser(unittest.TestCase):
     def test_initializes_with_default_validator(self):
@@ -775,7 +1003,7 @@ class TestDigestTraverser(unittest.TestCase):
             starting_prefix='baz',
             public_key_provider=key_provider,
         )
-        digest_iter = traverser.traverse(start_date, end_date)
+        digest_iter = traverser.traverse_digests(start_date, end_date)
         with self.assertRaises(RuntimeError):
             next(digest_iter)
         key_provider.get_public_keys.assert_called_with(start_date, end_date)
@@ -810,15 +1038,13 @@ class TestDigestTraverser(unittest.TestCase):
             public_key_provider=key_provider,
             on_invalid=on_invalid,
         )
-        digest_iter = traverser.traverse(start_date, end_date)
+        digest_iter = traverser.traverse_digests(start_date, end_date)
         with self.assertRaises(StopIteration):
             next(digest_iter)
         self.assertEqual(1, len(calls))
         self.assertEqual(
-            (
-                'Digest file\ts3://1/%s\tINVALID: public key not '
-                'found in region %s for fingerprint abc' % (key_name, region)
-            ),
+            f'Digest file\ts3://1/{key_name}\tINVALID: public key not '
+            f'found in region {region} for fingerprint abc',
             calls[0]['message'],
         )
 
@@ -850,7 +1076,7 @@ class TestDigestTraverser(unittest.TestCase):
             public_key_provider=key_provider,
             digest_validator=digest_validator,
         )
-        digest_iter = traverser.traverse(start_date, end_date)
+        digest_iter = traverser.traverse_digests(start_date, end_date)
         self.assertEqual(digest, next(digest_iter))
         digest_validator.validate.assert_called_with(
             '1', key_name, public_keys['a']['Value'], digest, key_name
@@ -880,11 +1106,11 @@ class TestDigestTraverser(unittest.TestCase):
             digest_validator=digest_validator,
             on_invalid=callback,
         )
-        digest_iter = traverser.traverse(start_date, end_date)
+        digest_iter = traverser.traverse_digests(start_date, end_date)
         self.assertIsNone(next(digest_iter, None))
         self.assertEqual(1, len(collected))
         self.assertEqual(
-            'Digest file\ts3://1/%s\tINVALID: invalid format' % key_name,
+            f'Digest file\ts3://1/{key_name}\tINVALID: invalid format',
             collected[0]['message'],
         )
 
@@ -901,7 +1127,7 @@ class TestDigestTraverser(unittest.TestCase):
             public_key_provider=key_provider,
             digest_validator=validator,
         )
-        collected = list(traverser.traverse(start_date, end_date))
+        collected = list(traverser.traverse_digests(start_date, end_date))
         self.assertEqual(1, key_provider.get_public_keys.call_count)
         self.assertEqual(
             1, len(digest_provider.calls['load_digest_keys_in_range'])
@@ -924,7 +1150,7 @@ class TestDigestTraverser(unittest.TestCase):
             digest_validator=validator,
             on_missing=on_missing,
         )
-        collected = list(traverser.traverse(start_date, end_date))
+        collected = list(traverser.traverse_digests(start_date, end_date))
         self.assertEqual(3, len(collected))
         self.assertEqual(1, key_provider.get_public_keys.call_count)
         self.assertEqual(1, len(missing_calls))
@@ -960,7 +1186,7 @@ class TestDigestTraverser(unittest.TestCase):
             digest_validator=validator,
             on_invalid=on_invalid,
         )
-        collected = list(traverser.traverse(start_date, end_date))
+        collected = list(traverser.traverse_digests(start_date, end_date))
         self.assertEqual(3, len(collected))
         self.assertEqual(1, key_provider.get_public_keys.call_count)
         self.assertEqual(2, len(invalid_calls))
@@ -1002,7 +1228,7 @@ class TestDigestTraverser(unittest.TestCase):
             digest_validator=validator,
             on_gap=on_gap,
         )
-        collected = list(traverser.traverse(start_date, end_date))
+        collected = list(traverser.traverse_digests(start_date, end_date))
         self.assertEqual(4, len(collected))
         self.assertEqual(1, key_provider.get_public_keys.call_count)
         self.assertEqual(2, len(gap_calls))
@@ -1037,7 +1263,7 @@ class TestDigestTraverser(unittest.TestCase):
             public_key_provider=key_provider,
             digest_validator=validator,
         )
-        collected = list(traverser.traverse(start_date, end_date))
+        collected = list(traverser.traverse_digests(start_date, end_date))
         self.assertEqual(4, len(collected))
         self.assertEqual(1, key_provider.get_public_keys.call_count)
         # Ensure the provider was called correctly
@@ -1082,12 +1308,218 @@ class TestDigestTraverser(unittest.TestCase):
             digest_validator=digest_validator,
             on_invalid=on_invalid,
         )
-        digest_iter = traverser.traverse(start_date, end_date)
+        digest_iter = traverser.traverse_digests(start_date, end_date)
         next(digest_iter, None)
         self.assertIn(
-            'Digest file\ts3://1/%s\tINVALID: ' % end_timestamp,
+            f'Digest file\ts3://1/{end_timestamp}\tINVALID: ',
             calls[0]['message'],
         )
+
+    def test_traverse_backfill_digests_basic(self):
+        start_date = START_DATE
+        end_date = START_DATE + timedelta(hours=4)
+        key_provider, digest_provider, validator = create_scenario(
+            ['gap', 'link', 'link', 'link']
+        )
+
+        traverser = DigestTraverser(
+            digest_provider=digest_provider,
+            starting_bucket='1',
+            starting_prefix='baz',
+            public_key_provider=key_provider,
+            digest_validator=validator,
+        )
+
+        collected = list(
+            traverser.traverse_digests(start_date, end_date, True)
+        )
+
+        self.assertEqual(4, len(collected))
+        self.assertEqual(1, key_provider.get_public_keys.call_count)
+        self.assertEqual(
+            1, len(digest_provider.calls['load_digest_keys_in_range'])
+        )
+        self.assertEqual(4, len(digest_provider.calls['fetch_digest']))
+
+    def test_traverse_backfill_digests_with_missing(self):
+        start_date = START_DATE
+        end_date = START_DATE + timedelta(hours=4)
+        key_provider, digest_provider, validator = create_scenario(
+            ['gap', 'link', 'missing', 'link']
+        )
+
+        on_missing, missing_calls = collecting_callback()
+        traverser = DigestTraverser(
+            digest_provider=digest_provider,
+            starting_bucket='1',
+            starting_prefix='baz',
+            public_key_provider=key_provider,
+            digest_validator=validator,
+            on_missing=on_missing,
+        )
+
+        collected = list(
+            traverser.traverse_digests(start_date, end_date, True)
+        )
+
+        self.assertEqual(3, len(collected))
+        self.assertEqual(1, key_provider.get_public_keys.call_count)
+        self.assertEqual(1, len(missing_calls))
+        self.assertIn('bucket', missing_calls[0])
+        self.assertIn('next_end_date', missing_calls[0])
+
+    def test_traverse_backfill_digests_with_invalid(self):
+        start_date = START_DATE
+        end_date = START_DATE + timedelta(hours=5)
+        key_provider, digest_provider, validator = create_scenario(
+            ['gap', 'link', 'invalid', 'link', 'invalid']
+        )
+
+        on_invalid, invalid_calls = collecting_callback()
+        traverser = DigestTraverser(
+            digest_provider=digest_provider,
+            starting_bucket='1',
+            starting_prefix='baz',
+            public_key_provider=key_provider,
+            digest_validator=validator,
+            on_invalid=on_invalid,
+        )
+
+        collected = list(
+            traverser.traverse_digests(start_date, end_date, True)
+        )
+
+        self.assertEqual(3, len(collected))
+        self.assertEqual(1, key_provider.get_public_keys.call_count)
+        self.assertEqual(2, len(invalid_calls))
+
+    def test_traverse_backfill_digests_with_gaps(self):
+        start_date = START_DATE
+        end_date = START_DATE + timedelta(hours=4)
+        key_provider, digest_provider, validator = create_scenario(
+            ['gap', 'link', 'gap', 'gap']
+        )
+
+        on_gap, gap_calls = collecting_callback()
+        traverser = DigestTraverser(
+            digest_provider=digest_provider,
+            starting_bucket='1',
+            starting_prefix='baz',
+            public_key_provider=key_provider,
+            digest_validator=validator,
+            on_gap=on_gap,
+        )
+
+        collected = list(
+            traverser.traverse_digests(start_date, end_date, True)
+        )
+
+        self.assertEqual(4, len(collected))
+        self.assertEqual(1, key_provider.get_public_keys.call_count)
+        self.assertEqual(2, len(gap_calls))
+        for gap_call in gap_calls:
+            self.assertIn('bucket', gap_call)
+            self.assertIn('next_key', gap_call)
+
+    def test_traverse_backfill_digests_bucket_change(self):
+        start_date = START_DATE
+        end_date = START_DATE + timedelta(hours=4)
+        key_provider, digest_provider, validator = create_scenario(
+            ['gap', 'link', 'bucket_change', 'link']
+        )
+
+        traverser = DigestTraverser(
+            digest_provider=digest_provider,
+            starting_bucket='1',
+            starting_prefix='baz',
+            public_key_provider=key_provider,
+            digest_validator=validator,
+        )
+
+        collected = list(
+            traverser.traverse_digests(start_date, end_date, True)
+        )
+
+        self.assertEqual(4, len(collected))
+        self.assertEqual(1, key_provider.get_public_keys.call_count)
+        self.assertEqual(
+            2, len(digest_provider.calls['load_digest_keys_in_range'])
+        )
+        self.assertEqual(
+            ['1', '1', '2', '2'], [c['digestS3Bucket'] for c in collected]
+        )
+
+    def test_traverse_mixed_standard_and_backfill_digests(self):
+        start_date = START_DATE
+        end_date = START_DATE + timedelta(hours=3)
+        key_provider, digest_provider, validator = create_scenario(
+            ['gap', 'link', 'link']
+        )
+
+        traverser = DigestTraverser(
+            digest_provider=digest_provider,
+            starting_bucket='1',
+            starting_prefix='baz',
+            public_key_provider=key_provider,
+            digest_validator=validator,
+        )
+
+        standard_digests = list(
+            traverser.traverse_digests(start_date, end_date)
+        )
+        backfill_digests = list(
+            traverser.traverse_digests(start_date, end_date, True)
+        )
+
+        self.assertEqual(3, len(standard_digests))
+        self.assertEqual(3, len(backfill_digests))
+        self.assertEqual(2, key_provider.get_public_keys.call_count)
+        self.assertEqual(
+            2, len(digest_provider.calls['load_digest_keys_in_range'])
+        )
+        self.assertEqual(6, len(digest_provider.calls['fetch_digest']))
+
+    def test_traverse_backfill_digests_cache_miss_triggers_multiple_api_calls(
+        self,
+    ):
+        start_date = START_DATE
+        end_date = START_DATE + timedelta(hours=3)
+        key_provider, digest_provider, validator = create_scenario(
+            ['gap', 'link', 'link']
+        )
+
+        call_count = 0
+
+        def mock_get_public_keys(start_date, end_date):
+            nonlocal call_count
+            call_count += 1
+            if call_count == 1:
+                return {'2': {'Fingerprint': '2', 'Value': 'ffaa02'}}
+            elif call_count == 2:
+                return {'1': {'Fingerprint': '1', 'Value': 'ffaa01'}}
+            else:
+                return {'0': {'Fingerprint': '0', 'Value': 'ffaa00'}}
+
+        key_provider.get_public_keys.side_effect = mock_get_public_keys
+
+        traverser = DigestTraverser(
+            digest_provider=digest_provider,
+            starting_bucket='1',
+            starting_prefix='baz',
+            public_key_provider=key_provider,
+            digest_validator=validator,
+        )
+
+        collected = list(
+            traverser.traverse_digests(start_date, end_date, True)
+        )
+
+        self.assertEqual(3, len(collected))
+        self.assertEqual(3, key_provider.get_public_keys.call_count)
+        self.assertEqual(
+            1, len(digest_provider.calls['load_digest_keys_in_range'])
+        )
+        self.assertEqual(3, len(digest_provider.calls['fetch_digest']))
 
 
 class TestCloudTrailCommand(BaseAWSCommandParamsTest):
@@ -1163,7 +1595,9 @@ class TestS3ClientProvider(BaseAWSCommandParamsTest):
         created_client = provider.get_client('foo')
         self.assertEqual(s3_client, created_client)
         create_client_calls = session.create_client.call_args_list
-        self.assertEqual(create_client_calls, [mock.call('s3', 'us-east-1')])
+        self.assertEqual(
+            create_client_calls, [mock.call('s3', region_name='us-east-1')]
+        )
         self.assertEqual(1, s3_client.get_bucket_location.call_count)
 
     def test_creates_clients_for_buckets_outside_us_east_1(self):
@@ -1179,7 +1613,10 @@ class TestS3ClientProvider(BaseAWSCommandParamsTest):
         create_client_calls = session.create_client.call_args_list
         self.assertEqual(
             create_client_calls,
-            [mock.call('s3', 'us-west-1'), mock.call('s3', 'us-west-2')],
+            [
+                mock.call('s3', region_name='us-west-1'),
+                mock.call('s3', region_name='us-west-2'),
+            ],
         )
         self.assertEqual(1, s3_client.get_bucket_location.call_count)
 
@@ -1217,4 +1654,4 @@ class TestS3ClientProvider(BaseAWSCommandParamsTest):
         session.create_client.return_value = s3_client
         s3_client.get_bucket_location.return_value = {'LocationConstraint': ''}
         provider = S3ClientProvider(session)
-        client = provider.get_client('foo')
+        provider.get_client('foo')

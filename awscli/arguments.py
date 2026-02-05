@@ -593,7 +593,7 @@ class BooleanArgument(CLIArgument):
     def add_to_parser(self, parser):
         parser.add_argument(
             self.cli_name,
-            help=self.documentation,
+            help=self.documentation.replace('%', '%%'),
             action=self._action,
             default=self._default,
             dest=self._destination,

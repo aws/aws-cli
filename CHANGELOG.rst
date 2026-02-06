@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.33.17
+=======
+
+* api-change:``deadline``: Adds support for tagging jobs during job creation
+* api-change:``partnercentral-selling``: Releasing AWS Opportunity Snapshots for SDK release.
+* api-change:``bedrock-data-automation-runtime``: Add OutputConfiguration to InvokeDataAutomation input and output to support S3 output
+* api-change:``iot-managed-integrations``: Adding support for Custom(General) Authorization in managed integrations for AWS IoT Device Management cloud connectors.
+* api-change:``sagemaker``: Adding g7e instance support in Sagemaker Training
+* enhancement:``openssl``: Update bundled OpenSSL version to 1.1.1ze for Linux installers
+
+
 2.33.16
 =======
 

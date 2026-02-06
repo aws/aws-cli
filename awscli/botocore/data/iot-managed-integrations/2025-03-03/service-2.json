@@ -1235,7 +1235,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>List tags for the specified resource.</p>",
+      "documentation":"<p>Lists the tags for a specified resource.</p>",
       "readonly":true
     },
     "PutDefaultEncryptionConfiguration":{
@@ -1407,6 +1407,7 @@
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
         {"shape":"ServiceUnavailableException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
@@ -1450,7 +1451,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Add tags for the specified resource.</p>",
+      "documentation":"<p>Adds tags to a specified resource.</p>",
       "idempotent":true
     },
     "UntagResource":{
@@ -1469,7 +1470,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Remove tags for the specified resource.</p>",
+      "documentation":"<p>Removes tags from a specified resource.</p>",
       "idempotent":true
     },
     "UpdateAccountAssociation":{
@@ -1797,6 +1798,10 @@
         "oAuth":{
           "shape":"OAuthConfig",
           "documentation":"<p>The OAuth configuration settings used for authentication with the third-party service.</p>"
+        },
+        "GeneralAuthorization":{
+          "shape":"AuthMaterials",
+          "documentation":"<p>The authorization materials for General Authorization.</p>"
         }
       },
       "documentation":"<p>The authentication configuration details for a connector destination, including OAuth settings and other authentication parameters.</p>"
@@ -1807,9 +1812,34 @@
         "oAuthUpdate":{
           "shape":"OAuthUpdate",
           "documentation":"<p>The updated OAuth configuration settings for the authentication configuration.</p>"
+        },
+        "GeneralAuthorizationUpdate":{
+          "shape":"GeneralAuthorizationUpdate",
+          "documentation":"<p>The General Authorization update information containing authorization materials to add or update in Kinesis Data Streams.</p>"
         }
       },
       "documentation":"<p>The updated authentication configuration details for a connector destination.</p>"
+    },
+    "AuthMaterial":{
+      "type":"structure",
+      "required":[
+        "SecretsManager",
+        "AuthMaterialName"
+      ],
+      "members":{
+        "SecretsManager":{"shape":"SecretsManager"},
+        "AuthMaterialName":{
+          "shape":"AuthMaterialName",
+          "documentation":"<p>The name of the authorization material.</p>"
+        }
+      },
+      "documentation":"<p>The authorization material containing the Secrets Manager arn and version.</p>"
+    },
+    "AuthMaterialName":{
+      "type":"string",
+      "max":100,
+      "min":1,
+      "pattern":"[a-zA-Z0-9=_+/-]+"
     },
     "AuthMaterialString":{
       "type":"string",
@@ -1825,8 +1855,15 @@
         "WIFI_SETUP_QR_BAR_CODE",
         "ZWAVE_QR_BAR_CODE",
         "ZIGBEE_QR_BAR_CODE",
-        "DISCOVERED_DEVICE"
+        "DISCOVERED_DEVICE",
+        "PRE_ONBOARDED_CLOUD"
       ]
+    },
+    "AuthMaterials":{
+      "type":"list",
+      "member":{"shape":"AuthMaterial"},
+      "max":3,
+      "min":0
     },
     "AuthType":{
       "type":"string",
@@ -2316,12 +2353,17 @@
       "pattern":"[a-zA-Z0-9_.,@-]+",
       "sensitive":true
     },
+    "ConnectorDeviceIdList":{
+      "type":"list",
+      "member":{"shape":"ConnectorDeviceId"},
+      "max":100,
+      "min":0
+    },
     "ConnectorDeviceName":{
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"[\\p{L}\\p{N} ._-]+",
-      "sensitive":true
+      "pattern":"[\\p{L}\\p{N} ._-]+"
     },
     "ConnectorEventMessage":{
       "type":"string",
@@ -2343,15 +2385,13 @@
       "type":"string",
       "max":6,
       "min":1,
-      "pattern":"[0-9.]+",
-      "sensitive":true
+      "pattern":"[0-9.]+"
     },
     "ConnectorEventStatusCode":{
       "type":"integer",
       "box":true,
       "max":550,
-      "min":100,
-      "sensitive":true
+      "min":100
     },
     "ConnectorId":{
       "type":"string",
@@ -2430,6 +2470,10 @@
         "Tags":{
           "shape":"TagsMap",
           "documentation":"<p>A set of key/value pairs that are used to manage the account association.</p>"
+        },
+        "GeneralAuthorization":{
+          "shape":"GeneralAuthorizationName",
+          "documentation":"<p>The General Authorization reference by authorization material name.</p>"
         }
       }
     },
@@ -2442,8 +2486,8 @@
       ],
       "members":{
         "OAuthAuthorizationUrl":{
-          "shape":"OAuthAuthorizationUrl",
-          "documentation":"<p>Third-party IoT platform OAuth authorization server URL backed with all the required parameters to perform end-user authentication.</p>"
+          "shape":"OAuthAuthorizationUrlOutput",
+          "documentation":"<p>Third-party IoT platform OAuth authorization server URL backed with all the required parameters to perform end-user authentication. This field will be empty when using General Authorization flows that do not require OAuth.</p>"
         },
         "AccountAssociationId":{
           "shape":"AccountAssociationId",
@@ -2502,9 +2546,7 @@
       "type":"structure",
       "required":[
         "CloudConnectorId",
-        "AuthType",
-        "AuthConfig",
-        "SecretsManager"
+        "AuthConfig"
       ],
       "members":{
         "Name":{
@@ -2691,7 +2733,7 @@
         },
         "AuthenticationMaterial":{
           "shape":"AuthMaterialString",
-          "documentation":"<p>The authentication material defining the device connectivity setup requests. The authentication materials used are the device bar code.</p>"
+          "documentation":"<p>The authentication material defining the device connectivity setup requests. The authorization materials used are the device bar code.</p>"
         },
         "AuthenticationMaterialType":{
           "shape":"AuthMaterialType",
@@ -2914,6 +2956,10 @@
         "CaCertificate":{
           "shape":"CaCertificate",
           "documentation":"<p>The id of the certificate authority (CA) certificate.</p>"
+        },
+        "ClaimCertificate":{
+          "shape":"ClaimCertificate",
+          "documentation":"<p>The claim certificate.</p>"
         },
         "Name":{
           "shape":"ProvisioningProfileName",
@@ -3579,6 +3625,30 @@
       "min":1,
       "pattern":"0[xX][0-9a-fA-F]+$|^[0-9]+"
     },
+    "GeneralAuthorizationName":{
+      "type":"structure",
+      "members":{
+        "AuthMaterialName":{
+          "shape":"AuthMaterialName",
+          "documentation":"<p>The name of the authorization material.</p>"
+        }
+      },
+      "documentation":"<p>The General Authorization reference by authorization material name.</p>"
+    },
+    "GeneralAuthorizationUpdate":{
+      "type":"structure",
+      "members":{
+        "AuthMaterialsToAdd":{
+          "shape":"AuthMaterials",
+          "documentation":"<p>The authorization materials to add.</p>"
+        },
+        "AuthMaterialsToUpdate":{
+          "shape":"AuthMaterials",
+          "documentation":"<p>The authorization materials to update.</p>"
+        }
+      },
+      "documentation":"<p>The General Authorization update information containing authorization materials to add or update.</p>"
+    },
     "GetAccountAssociationRequest":{
       "type":"structure",
       "required":["AccountAssociationId"],
@@ -3628,12 +3698,16 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the account association.</p>"
         },
         "OAuthAuthorizationUrl":{
-          "shape":"OAuthAuthorizationUrl",
-          "documentation":"<p>Third party IoT platform OAuth authorization server URL backed with all the required parameters to perform end-user authentication.</p>"
+          "shape":"OAuthAuthorizationUrlOutput",
+          "documentation":"<p>Third party IoT platform OAuth authorization server URL backed with all the required parameters to perform end-user authentication. This field will be empty when using General Authorization flows that do not require OAuth.</p>"
         },
         "Tags":{
           "shape":"TagsMap",
           "documentation":"<p>A set of key/value pairs that are used to manage the account association.</p>"
+        },
+        "GeneralAuthorization":{
+          "shape":"GeneralAuthorizationName",
+          "documentation":"<p>The General Authorization reference by authorization material name.</p>"
         }
       }
     },
@@ -5316,7 +5390,7 @@
       "members":{
         "ResourceArn":{
           "shape":"IoTManagedIntegrationsResourceARN",
-          "documentation":"<p>The ARN of the resource for which to list tags.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource for which to list tags.</p>",
           "location":"uri",
           "locationName":"ResourceArn"
         }
@@ -5377,6 +5451,10 @@
         "AccountAssociationId":{
           "shape":"AccountAssociationId",
           "documentation":"<p>The identifier of the account association in the association.</p>"
+        },
+        "ManagedThingAssociationStatus":{
+          "shape":"ManagedThingAssociationStatus",
+          "documentation":"<p>The status of the registration between the managed thing and the account association. Indicates whether the device is pre-associated or fully associated with the account association.</p>"
         }
       },
       "documentation":"<p>Structure representing an association between a managed thing and an account association, which connects a device to a third-party account.</p>"
@@ -5384,6 +5462,13 @@
     "ManagedThingAssociationList":{
       "type":"list",
       "member":{"shape":"ManagedThingAssociation"}
+    },
+    "ManagedThingAssociationStatus":{
+      "type":"string",
+      "enum":[
+        "PRE_ASSOCIATED",
+        "ASSOCIATED"
+      ]
     },
     "ManagedThingId":{
       "type":"string",
@@ -5881,11 +5966,11 @@
       "max":100,
       "min":1
     },
-    "OAuthAuthorizationUrl":{
+    "OAuthAuthorizationUrlOutput":{
       "type":"string",
       "max":1024,
-      "min":1,
-      "pattern":"(https)://.*",
+      "min":0,
+      "pattern":"$|^(https):\\/\\/.*",
       "sensitive":true
     },
     "OAuthCompleteRedirectUrl":{
@@ -6885,8 +6970,8 @@
       "required":["OAuthAuthorizationUrl"],
       "members":{
         "OAuthAuthorizationUrl":{
-          "shape":"OAuthAuthorizationUrl",
-          "documentation":"<p>Third-party IoT platform OAuth authorization server URL with all required parameters to perform end-user authentication during the refresh process.</p>"
+          "shape":"OAuthAuthorizationUrlOutput",
+          "documentation":"<p>Third-party IoT platform OAuth authorization server URL with all required parameters to perform end-user authentication during the refresh process. This field will be empty when using General Authorization flows that do not require OAuth.</p>"
         }
       }
     },
@@ -6935,6 +7020,10 @@
           "deprecated":true,
           "deprecatedMessage":"Tags have been deprecated from this api",
           "deprecatedSince":"06-25-2025"
+        },
+        "ConnectorDeviceIdList":{
+          "shape":"ConnectorDeviceIdList",
+          "documentation":"<p>Used as a filter for PLA discoveries.</p>"
         },
         "Protocol":{
           "shape":"ProtocolType",
@@ -7039,13 +7128,13 @@
       "members":{
         "ResourceArn":{
           "shape":"IoTManagedIntegrationsResourceARN",
-          "documentation":"<p>The ARN of the resource to which to add tags.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to which to add tags.</p>",
           "location":"uri",
           "locationName":"ResourceArn"
         },
         "Tags":{
           "shape":"TagsMap",
-          "documentation":"<p>A set of key/value pairs that are used to manage the resource</p>"
+          "documentation":"<p>A set of key/value pairs that are used to manage the resource.</p>"
         }
       }
     },
@@ -7189,7 +7278,7 @@
       "members":{
         "ResourceArn":{
           "shape":"IoTManagedIntegrationsResourceARN",
-          "documentation":"<p>The ARN of the resource to which to add tags.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource from which to remove tags.</p>",
           "location":"uri",
           "locationName":"ResourceArn"
         },

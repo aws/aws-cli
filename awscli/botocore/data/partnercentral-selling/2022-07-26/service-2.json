@@ -997,7 +997,7 @@
       "type":"map",
       "key":{"shape":"String"},
       "value":{"shape":"MonetaryAmount"},
-      "documentation":"<p>Maps spend amounts to AWS programs and strategic initiatives</p>"
+      "documentation":"<p>Maps spend amounts to AWS programs and modernization pathways.</p>"
     },
     "ApnPrograms":{
       "type":"list",
@@ -1227,7 +1227,10 @@
           "shape":"EngagementScore",
           "documentation":"<p>Represents a score assigned by AWS to indicate the level of engagement and potential success for the opportunity. This score helps partners prioritize their efforts.</p>"
         },
-        "AwsProductsSpendInsightsBySource":{"shape":"AwsProductsSpendInsightsBySource"}
+        "AwsProductsSpendInsightsBySource":{
+          "shape":"AwsProductsSpendInsightsBySource",
+          "documentation":"<p>Source-separated spend insights that provide independent analysis for AWS recommendations and partner estimates.</p>"
+        }
       },
       "documentation":"<p>Contains insights provided by AWS for the opportunity, offering recommendations and analysis that can help the partner optimize their engagement and strategy.</p>"
     },
@@ -1277,7 +1280,7 @@
         },
         "AwsPartition":{
           "shape":"AwsPartition",
-          "documentation":"<p>AWS partition where the opportunity will be deployed. Possible values: 'aws-eusc' for AWS European Sovereign Cloud, <code>null</code> for all other partitions</p>"
+          "documentation":"<p>AWS partition where the opportunity will be deployed. Possible values: <code>aws-eusc</code> for AWS European Sovereign Cloud, <code>null</code> for all other partitions.</p>"
         }
       },
       "documentation":"<p>Captures details about the project associated with the opportunity, including objectives, scope, and customer requirements.</p>"
@@ -1325,6 +1328,41 @@
         "Closed Incomplete"
       ]
     },
+    "AwsOpportunitySummaryFullView":{
+      "type":"structure",
+      "members":{
+        "RelatedOpportunityId":{
+          "shape":"OpportunityIdentifier",
+          "documentation":"<p>Identifier of the related partner opportunity.</p>"
+        },
+        "Origin":{
+          "shape":"OpportunityOrigin",
+          "documentation":"<p>Source origin of the AWS opportunity.</p>"
+        },
+        "InvolvementType":{
+          "shape":"SalesInvolvementType",
+          "documentation":"<p>Type of AWS involvement in the opportunity.</p>"
+        },
+        "Visibility":{
+          "shape":"Visibility",
+          "documentation":"<p>Visibility level for the AWS opportunity.</p>"
+        },
+        "LifeCycle":{"shape":"AwsOpportunityLifeCycle"},
+        "OpportunityTeam":{
+          "shape":"AwsOpportunityTeamMembersList",
+          "documentation":"<p>AWS team members involved in the opportunity.</p>"
+        },
+        "Insights":{"shape":"AwsOpportunityInsights"},
+        "InvolvementTypeChangeReason":{
+          "shape":"InvolvementTypeChangeReason",
+          "documentation":"<p>Reason for changes in AWS involvement type for the opportunity.</p>"
+        },
+        "RelatedEntityIds":{"shape":"AwsOpportunityRelatedEntities"},
+        "Customer":{"shape":"AwsOpportunityCustomer"},
+        "Project":{"shape":"AwsOpportunityProject"}
+      },
+      "documentation":"<p>Provides a comprehensive view of AwsOpportunitySummaryFullView template.</p>"
+    },
     "AwsOpportunityTeamMembersList":{
       "type":"list",
       "member":{"shape":"AwsTeamMember"}
@@ -1343,34 +1381,34 @@
       "members":{
         "ProductCode":{
           "shape":"String",
-          "documentation":"<p>AWS Partner Central product identifier used for opportunity association</p>"
+          "documentation":"<p>AWS Partner Central product identifier used for opportunity association.</p>"
         },
         "ServiceCode":{
           "shape":"String",
-          "documentation":"<p>Pricing Calculator service code (links to original calculator URL)</p>"
+          "documentation":"<p>Pricing Calculator service code.</p>"
         },
         "Categories":{
           "shape":"AwsProductDetailsCategoriesList",
-          "documentation":"<p>List of program and pathway categories this product is eligible for</p>"
+          "documentation":"<p>List of program and pathway categories this product is eligible for.</p>"
         },
         "Amount":{
           "shape":"MonetaryAmount",
-          "documentation":"<p>Baseline service cost before optimizations (may be null for AWS-sourced predictions)</p>"
+          "documentation":"<p>Baseline service cost before optimizations.</p>"
         },
         "OptimizedAmount":{
           "shape":"MonetaryAmount",
-          "documentation":"<p>Service cost after applying optimizations (may be null for AWS-sourced predictions)</p>"
+          "documentation":"<p>Service cost after applying optimizations.</p>"
         },
         "PotentialSavingsAmount":{
           "shape":"MonetaryAmount",
-          "documentation":"<p>Service-specific cost reduction through optimizations (may be null for AWS-sourced predictions)</p>"
+          "documentation":"<p>Service-specific cost reduction through optimizations.</p>"
         },
         "Optimizations":{
           "shape":"AwsProductOptimizationsList",
-          "documentation":"<p>List of specific optimization recommendations for this product</p>"
+          "documentation":"<p>List of specific optimization recommendations for this product.</p>"
         }
       },
-      "documentation":"<p>AWS services with program eligibility indicators (MAP, modernization pathways), cost estimates, and optimization recommendations.</p>"
+      "documentation":"<p>List of AWS services with program eligibility indicators (MAP, modernization pathways), cost estimates, and optimization recommendations.</p>"
     },
     "AwsProductDetailsCategoriesList":{
       "type":"list",
@@ -1394,31 +1432,31 @@
       "members":{
         "CurrencyCode":{
           "shape":"AwsProductInsightsCurrencyCodeEnum",
-          "documentation":"<p>ISO 4217 currency code (e.g., &quot;USD&quot;) ensuring consistent representation across calculations</p>"
+          "documentation":"<p>ISO 4217 currency code.</p>"
         },
         "Frequency":{
           "shape":"PaymentFrequency",
-          "documentation":"<p>Time period for spend amounts: &quot;Monthly&quot; or &quot;Annually&quot;</p>"
+          "documentation":"<p>Time period for spend amounts.</p>"
         },
         "TotalAmount":{
           "shape":"MonetaryAmount",
-          "documentation":"<p>Total estimated spend for this source before optimizations</p>"
+          "documentation":"<p>Total estimated spend for this source before optimizations.</p>"
         },
         "TotalOptimizedAmount":{
           "shape":"MonetaryAmount",
-          "documentation":"<p>Total estimated spend after applying recommended optimizations</p>"
+          "documentation":"<p>Total estimated spend after applying recommended optimizations.</p>"
         },
         "TotalPotentialSavingsAmount":{
           "shape":"MonetaryAmount",
-          "documentation":"<p>Quantified savings achievable through implementing optimizations</p>"
+          "documentation":"<p>Quantified savings achievable through implementing optimizations.</p>"
         },
         "TotalAmountByCategory":{
           "shape":"AmountMap",
-          "documentation":"<p>Spend amounts mapped to AWS programs and modernization pathways</p>"
+          "documentation":"<p>Spend amounts mapped to AWS programs and modernization pathways.</p>"
         },
         "AwsProducts":{
           "shape":"AwsProductsList",
-          "documentation":"<p>Product-level details including costs and optimization recommendations</p>"
+          "documentation":"<p>Product-level details including costs and optimization recommendations.</p>"
         }
       },
       "documentation":"<p>Comprehensive spend analysis for a single source (AWS or Partner) including total amounts, optimization savings, program category breakdowns, and detailed product-level insights.</p>"
@@ -1607,26 +1645,26 @@
       "members":{
         "Description":{
           "shape":"String",
-          "documentation":"<p>Human-readable explanation of the optimization strategy</p>"
+          "documentation":"<p>Human-readable explanation of the optimization strategy.</p>"
         },
         "SavingsAmount":{
           "shape":"MonetaryAmount",
-          "documentation":"<p>Quantified cost savings achievable by implementing this optimization</p>"
+          "documentation":"<p>Quantified cost savings achievable by implementing this optimization.</p>"
         }
       },
-      "documentation":"<p>Details for a specific optimization recommendation</p>"
+      "documentation":"<p>Specific optimization strategies partners can implement to reduce costs.</p>"
     },
     "AwsProductOptimizationsList":{
       "type":"list",
       "member":{"shape":"AwsProductOptimization"},
-      "documentation":"<p>List of optimization recommendations</p>",
+      "documentation":"<p>List of optimization recommendations.</p>",
       "max":10,
       "min":0
     },
     "AwsProductsList":{
       "type":"list",
       "member":{"shape":"AwsProductDetails"},
-      "documentation":"<p>AwsProductDetailsList of AWS services with program eligibility indicators (MAP, modernization pathways), cost estimates, and optimization recommendations.</p>",
+      "documentation":"<p>List of AWS services with program eligibility indicators.</p>",
       "max":100,
       "min":0
     },
@@ -1635,14 +1673,14 @@
       "members":{
         "Partner":{
           "shape":"AwsProductInsights",
-          "documentation":"<p>Partner-sourced insights derived from Pricing Calculator URLs including detailed service costs and optimizations</p>"
+          "documentation":"<p>Partner-sourced insights derived from Pricing Calculator URLs.</p>"
         },
         "AWS":{
           "shape":"AwsProductInsights",
-          "documentation":"<p>AI-generated insights including recommended products from AWS</p>"
+          "documentation":"<p>AI-generated insights including recommended products from AWS.</p>"
         }
       },
-      "documentation":"<p>Source-separated spend insights that provide independent analysis for AWS predictions and partner estimates</p>"
+      "documentation":"<p>Source-separated spend insights that provide independent analysis for AWS recommendations and partner estimates.</p>"
     },
     "AwsSubmission":{
       "type":"structure",
@@ -2418,6 +2456,20 @@
           "documentation":"<p> Specifies the revision number of the created snapshot. This field provides important information about the snapshot's place in the sequence of snapshots for the given resource. </p>"
         }
       }
+    },
+    "CreatedDateFilter":{
+      "type":"structure",
+      "members":{
+        "AfterCreatedDate":{
+          "shape":"DateTime",
+          "documentation":"<p>Filter opportunities created after this date.</p>"
+        },
+        "BeforeCreatedDate":{
+          "shape":"DateTime",
+          "documentation":"<p>Filter opportunities created before this date.</p>"
+        }
+      },
+      "documentation":"<p>Filter for opportunities based on creation date range.</p>"
     },
     "CurrencyCode":{
       "type":"string",
@@ -3817,7 +3869,11 @@
           "shape":"ResourceSnapshotRevision",
           "documentation":"<p>The revision number of this snapshot. This is a positive integer that is sequential and unique within the context of a resource view.</p>"
         },
-        "Payload":{"shape":"ResourceSnapshotPayload"}
+        "Payload":{"shape":"ResourceSnapshotPayload"},
+        "TargetMemberAccounts":{
+          "shape":"AwsAccountIdOrAliasList",
+          "documentation":"<p>Target member accounts associated with the resource snapshot.</p>"
+        }
       }
     },
     "GetSellingSystemSettingsRequest":{
@@ -4768,6 +4824,10 @@
         "CustomerCompanyName":{
           "shape":"ListOpportunitiesRequestCustomerCompanyNameList",
           "documentation":"<p>Filters the opportunities based on the customer's company name. This allows partners to search for opportunities associated with a specific customer by matching the provided company name string.</p>"
+        },
+        "CreatedDate":{
+          "shape":"CreatedDateFilter",
+          "documentation":"<p>Filter opportunities by creation date criteria.</p>"
         }
       }
     },
@@ -5344,7 +5404,8 @@
       "enum":[
         "LastModifiedDate",
         "Identifier",
-        "CustomerCompanyName"
+        "CustomerCompanyName",
+        "CreatedDate"
       ]
     },
     "OpportunitySummaries":{
@@ -5565,7 +5626,7 @@
         },
         "AwsPartition":{
           "shape":"AwsPartition",
-          "documentation":"<p>AWS partition where the opportunity will be deployed. Possible values: 'aws-eusc' for AWS European Sovereign Cloud, <code>null</code> for all other partitions</p>"
+          "documentation":"<p>AWS partition where the opportunity will be deployed. Possible values: <code>aws-eusc</code> for AWS European Sovereign Cloud, <code>null</code> for all other partitions.</p>"
         }
       },
       "documentation":"<p>An object that contains the <code>Opportunity</code>'s project details.</p>"
@@ -5885,6 +5946,10 @@
         "OpportunitySummary":{
           "shape":"OpportunitySummaryView",
           "documentation":"<p> An object that contains an <code>opportunity</code>'s subset of fields. </p>"
+        },
+        "AwsOpportunitySummaryFullView":{
+          "shape":"AwsOpportunitySummaryFullView",
+          "documentation":"<p>Provides a comprehensive view of AwsOpportunitySummaryFullView template.</p>"
         }
       },
       "documentation":"<p> Represents the payload of a resource snapshot. This structure is designed to accommodate different types of resource snapshots, currently supporting opportunity summaries. </p>",

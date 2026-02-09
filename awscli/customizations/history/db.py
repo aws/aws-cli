@@ -38,22 +38,23 @@ class DatabaseConnection:
     _ENABLE_WAL = 'PRAGMA journal_mode=WAL'
 
     def __init__(self, db_filename):
-        # Skip file operations for in-memory databases
-        if db_filename != ':memory:':
-            if not os.path.exists(db_filename):
-                # Create file so we can set permissions before sqlite opens it
-                open(db_filename, 'a').close()
-            try:
-                os.chmod(db_filename, 0o600)
-            except OSError as e:
-                LOG.debug('Unable to set file permissions: %s', e)
+        self._db_filename = db_filename
         self._connection = sqlite3.connect(
             db_filename, check_same_thread=False, isolation_level=None
         )
+        self._set_file_permissions()
         self._ensure_database_setup()
 
     def close(self):
         self._connection.close()
+
+    def _set_file_permissions(self):
+        for suffix in ('', '-wal', '-shm'):
+            path = self._db_filename + suffix
+            try:
+                os.chmod(path, 0o600)
+            except OSError as e:
+                LOG.debug('Unable to set file permissions for %s: %s', path, e)
 
     def execute(self, query, *parameters):
         return self._connection.execute(query, *parameters)

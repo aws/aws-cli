@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.33.18
+=======
+
+* api-change:``imagebuilder``: EC2 Image Builder now supports wildcard patterns in lifecycle policies with recipes and enhances the experience of tag-scoped policies.
+* api-change:``pcs``: Introduces RESUMING state for clusters, compute node groups, and queues.
+* api-change:``neptunedata``: Added edgeOnlyLoad boolean parameter to Neptune bulk load request. When TRUE, files are loaded in order without scanning. When FALSE (default), the loader scans files first, then loads vertex files before edge files automatically.
+* api-change:``ec2``: Amazon Secondary Networks is a networking feature that provides high-performance, low-latency connectivity for specialized workloads.
+* api-change:``transfer``: This release adds a documentation update for MdnResponse of type "ASYNC"
+* api-change:``lakeformation``: Allow cross account v5 in put data lake settings
+* api-change:``connectcampaignsv2``: Add the missing event type for WhatsApp
+* api-change:``eks``: Amazon EKS adds a new DescribeUpdate update type, VendedLogsUpdate, to support an integration between EKS Auto Mode and Amazon CloudWatch Vended Logs.
+
+
 2.33.17
 =======
 

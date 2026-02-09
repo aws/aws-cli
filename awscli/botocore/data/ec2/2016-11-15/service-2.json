@@ -1229,6 +1229,26 @@
       "output":{"shape":"CreateRouteTableResult"},
       "documentation":"<p>Creates a route table for the specified VPC. After you create a route table, you can add routes and associate the table with a subnet.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html\">Route tables</a> in the <i>Amazon VPC User Guide</i>.</p>"
     },
+    "CreateSecondaryNetwork":{
+      "name":"CreateSecondaryNetwork",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateSecondaryNetworkRequest"},
+      "output":{"shape":"CreateSecondaryNetworkResult"},
+      "documentation":"<p>Creates an Amazon secondary network.</p> <p>The allowed size for a secondary network CIDR block is between /28 netmask (16 IP addresses) and /12 netmask (1,048,576 IP addresses).</p>"
+    },
+    "CreateSecondarySubnet":{
+      "name":"CreateSecondarySubnet",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateSecondarySubnetRequest"},
+      "output":{"shape":"CreateSecondarySubnetResult"},
+      "documentation":"<p>Creates a secondary subnet in a secondary network.</p> <p>A secondary subnet CIDR block must not overlap with the CIDR block of an existing secondary subnet in the secondary network. After you create a secondary subnet, you can't change its CIDR block.</p> <p>The allowed size for a secondary subnet CIDR block is between /28 netmask (16 IP addresses) and /12 netmask (1,048,576 IP addresses). Amazon reserves the first four IP addresses and the last IP address in each secondary subnet for internal use.</p>"
+    },
     "CreateSecurityGroup":{
       "name":"CreateSecurityGroup",
       "http":{
@@ -2137,6 +2157,26 @@
       },
       "input":{"shape":"DeleteRouteTableRequest"},
       "documentation":"<p>Deletes the specified route table. You must disassociate the route table from any subnets before you can delete it. You can't delete the main route table.</p>"
+    },
+    "DeleteSecondaryNetwork":{
+      "name":"DeleteSecondaryNetwork",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteSecondaryNetworkRequest"},
+      "output":{"shape":"DeleteSecondaryNetworkResult"},
+      "documentation":"<p>Deletes a secondary network. You must delete all secondary subnets in the secondary network before you can delete the secondary network.</p>"
+    },
+    "DeleteSecondarySubnet":{
+      "name":"DeleteSecondarySubnet",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteSecondarySubnetRequest"},
+      "output":{"shape":"DeleteSecondarySubnetResult"},
+      "documentation":"<p>Deletes a secondary subnet. A secondary subnet must not contain any secondary interfaces prior to deletion.</p>"
     },
     "DeleteSecurityGroup":{
       "name":"DeleteSecurityGroup",
@@ -3808,6 +3848,36 @@
       "input":{"shape":"DescribeScheduledInstancesRequest"},
       "output":{"shape":"DescribeScheduledInstancesResult"},
       "documentation":"<p>Describes the specified Scheduled Instances or all your Scheduled Instances.</p>"
+    },
+    "DescribeSecondaryInterfaces":{
+      "name":"DescribeSecondaryInterfaces",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeSecondaryInterfacesRequest"},
+      "output":{"shape":"DescribeSecondaryInterfacesResult"},
+      "documentation":"<p>Describes one or more of your secondary interfaces.</p>"
+    },
+    "DescribeSecondaryNetworks":{
+      "name":"DescribeSecondaryNetworks",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeSecondaryNetworksRequest"},
+      "output":{"shape":"DescribeSecondaryNetworksResult"},
+      "documentation":"<p>Describes one or more secondary networks.</p>"
+    },
+    "DescribeSecondarySubnets":{
+      "name":"DescribeSecondarySubnets",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeSecondarySubnetsRequest"},
+      "output":{"shape":"DescribeSecondarySubnetsResult"},
+      "documentation":"<p>Describes one or more of your secondary subnets.</p>"
     },
     "DescribeSecurityGroupReferences":{
       "name":"DescribeSecurityGroupReferences",
@@ -18002,6 +18072,106 @@
         }
       }
     },
+    "CreateSecondaryNetworkRequest":{
+      "type":"structure",
+      "required":[
+        "Ipv4CidrBlock",
+        "NetworkType"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensure Idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Ipv4CidrBlock":{
+          "shape":"String",
+          "documentation":"<p>The IPv4 CIDR block for the secondary network. The CIDR block size must be between /12 and /28.</p>"
+        },
+        "NetworkType":{
+          "shape":"SecondaryNetworkType",
+          "documentation":"<p>The type of secondary network.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to assign to the secondary network.</p>",
+          "locationName":"TagSpecification"
+        }
+      }
+    },
+    "CreateSecondaryNetworkResult":{
+      "type":"structure",
+      "members":{
+        "SecondaryNetwork":{
+          "shape":"SecondaryNetwork",
+          "documentation":"<p>Information about the secondary network.</p>",
+          "locationName":"secondaryNetwork"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure the idempotency of the request. Only returned if a client token was provided in the request.</p>",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "CreateSecondarySubnetRequest":{
+      "type":"structure",
+      "required":[
+        "Ipv4CidrBlock",
+        "SecondaryNetworkId"
+      ],
+      "members":{
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensure Idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZoneName",
+          "documentation":"<p>The Availability Zone for the secondary subnet. You cannot specify both <code>AvailabilityZone</code> and <code>AvailabilityZoneId</code> in the same request.</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The ID of the Availability Zone for the secondary subnet. This option is preferred over <code>AvailabilityZone</code> as it provides a consistent identifier across Amazon Web Services accounts. You cannot specify both <code>AvailabilityZone</code> and <code>AvailabilityZoneId</code> in the same request.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Ipv4CidrBlock":{
+          "shape":"String",
+          "documentation":"<p>The IPv4 CIDR block for the secondary subnet. The CIDR block size must be between /12 and /28.</p>"
+        },
+        "SecondaryNetworkId":{
+          "shape":"SecondaryNetworkId",
+          "documentation":"<p>The ID of the secondary network in which to create the secondary subnet.</p>"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "documentation":"<p>The tags to assign to the secondary subnet.</p>",
+          "locationName":"TagSpecification"
+        }
+      }
+    },
+    "CreateSecondarySubnetResult":{
+      "type":"structure",
+      "members":{
+        "SecondarySubnet":{
+          "shape":"SecondarySubnet",
+          "documentation":"<p>Information about the secondary subnet.</p>",
+          "locationName":"secondarySubnet"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure the idempotency of the request. Only returned if a client token was provided in the request.</p>",
+          "locationName":"clientToken"
+        }
+      }
+    },
     "CreateSecurityGroupRequest":{
       "type":"structure",
       "required":[
@@ -21826,7 +21996,7 @@
           "locationName":"dryRun"
         },
         "GroupName":{
-          "shape":"PlacementGroupName",
+          "shape":"PlacementGroupNameWithResolver",
           "documentation":"<p>The name of the placement group.</p>",
           "locationName":"groupName"
         }
@@ -22038,6 +22208,74 @@
           "shape":"RouteTableId",
           "documentation":"<p>The ID of the route table.</p>",
           "locationName":"routeTableId"
+        }
+      }
+    },
+    "DeleteSecondaryNetworkRequest":{
+      "type":"structure",
+      "required":["SecondaryNetworkId"],
+      "members":{
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensure Idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "SecondaryNetworkId":{
+          "shape":"SecondaryNetworkId",
+          "documentation":"<p>The ID of the secondary network.</p>"
+        }
+      }
+    },
+    "DeleteSecondaryNetworkResult":{
+      "type":"structure",
+      "members":{
+        "SecondaryNetwork":{
+          "shape":"SecondaryNetwork",
+          "documentation":"<p>Information about the secondary network.</p>",
+          "locationName":"secondaryNetwork"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure the idempotency of the request. Only returned if a client token was provided in the request.</p>",
+          "locationName":"clientToken"
+        }
+      }
+    },
+    "DeleteSecondarySubnetRequest":{
+      "type":"structure",
+      "required":["SecondarySubnetId"],
+      "members":{
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier that you provide to ensure the idempotency of the request. For more information, see <a href=\"https://docs.aws.amazon.com/ec2/latest/devguide/ec2-api-idempotency.html\">Ensure Idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "SecondarySubnetId":{
+          "shape":"SecondarySubnetId",
+          "documentation":"<p>The ID of the secondary subnet to delete.</p>"
+        }
+      }
+    },
+    "DeleteSecondarySubnetResult":{
+      "type":"structure",
+      "members":{
+        "SecondarySubnet":{
+          "shape":"SecondarySubnet",
+          "documentation":"<p>Information about the secondary subnet being deleted.</p>",
+          "locationName":"secondarySubnet"
+        },
+        "ClientToken":{
+          "shape":"String",
+          "documentation":"<p>Unique, case-sensitive identifier to ensure the idempotency of the request. Only returned if a client token was provided in the request.</p>",
+          "locationName":"clientToken"
         }
       }
     },
@@ -28780,6 +29018,147 @@
         }
       },
       "documentation":"<p>Contains the output of DescribeScheduledInstances.</p>"
+    },
+    "DescribeSecondaryInterfacesMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":5
+    },
+    "DescribeSecondaryInterfacesRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>attachment.attachment-id</code> - The ID of the secondary interface attachment.</p> </li> <li> <p> <code>attachment.instance-id</code> - The ID of the instance to which the secondary interface is attached.</p> </li> <li> <p> <code>attachment.instance-owner-id</code> - The ID of the Amazon Web Services account that owns the instance to which the secondary interface is attached.</p> </li> <li> <p> <code>attachment.status</code> - The attachment status (<code>attaching</code> | <code>attached</code> | <code>detaching</code> | <code>detached</code>).</p> </li> <li> <p> <code>private-ipv4-addresses.private-ip-address</code> - The private IPv4 address associated with the secondary interface.</p> </li> <li> <p> <code>owner-id</code> - The ID of the Amazon Web Services account that owns the secondary interface.</p> </li> <li> <p> <code>secondary-interface-arn</code> - The ARN of the secondary interface.</p> </li> <li> <p> <code>secondary-interface-id</code> - The ID of the secondary interface.</p> </li> <li> <p> <code>secondary-interface-type</code> - The type of secondary interface (<code>secondary</code>).</p> </li> <li> <p> <code>secondary-network-id</code> - The ID of the secondary network.</p> </li> <li> <p> <code>secondary-network-type</code> - The type of the secondary network (<code>rdma</code>).</p> </li> <li> <p> <code>secondary-subnet-id</code> - The ID of the secondary subnet.</p> </li> <li> <p> <code>status</code> - The status of the secondary interface (<code>available</code> | <code>in-use</code>).</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"DescribeSecondaryInterfacesMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "SecondaryInterfaceIds":{
+          "shape":"SecondaryInterfaceIdList",
+          "documentation":"<p>The IDs of the secondary interfaces.</p>",
+          "locationName":"SecondaryInterfaceId"
+        }
+      }
+    },
+    "DescribeSecondaryInterfacesResult":{
+      "type":"structure",
+      "members":{
+        "SecondaryInterfaces":{
+          "shape":"SecondaryInterfaceList",
+          "documentation":"<p>Information about the secondary interfaces.</p>",
+          "locationName":"secondaryInterfaceSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "DescribeSecondaryNetworksMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":5
+    },
+    "DescribeSecondaryNetworksRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters. The following are the possible values:</p> <ul> <li> <p> <code>ipv4-cidr-block-association.association-id</code> - The association ID for an IPv4 CIDR block associated with the secondary network.</p> </li> <li> <p> <code>ipv4-cidr-block-association.cidr-block</code> - An IPv4 CIDR block associated with the secondary network.</p> </li> <li> <p> <code>ipv4-cidr-block-association.state</code> - The state of an IPv4 CIDR block associated with the secondary network.</p> </li> <li> <p> <code>owner-id</code> - The ID of the Amazon Web Services account that owns the secondary network.</p> </li> <li> <p> <code>secondary-network-id</code> - The ID of the secondary network.</p> </li> <li> <p> <code>secondary-network-arn</code> - The ARN of the secondary network.</p> </li> <li> <p> <code>state</code> - The state of the secondary network (<code>create-in-progress</code> | <code>create-complete</code> | <code>create-failed</code> | <code>delete-in-progress</code> | <code>delete-complete</code> | <code>delete-failed</code>).</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> <li> <p> <code>type</code> - The type of the secondary network (<code>rdma</code>).</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"DescribeSecondaryNetworksMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "SecondaryNetworkIds":{
+          "shape":"SecondaryNetworkIdList",
+          "documentation":"<p>The IDs of the secondary networks.</p>",
+          "locationName":"SecondaryNetworkId"
+        }
+      }
+    },
+    "DescribeSecondaryNetworksResult":{
+      "type":"structure",
+      "members":{
+        "SecondaryNetworks":{
+          "shape":"SecondaryNetworkList",
+          "documentation":"<p>Information about the secondary networks.</p>",
+          "locationName":"secondaryNetworkSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "DescribeSecondarySubnetsMaxResults":{
+      "type":"integer",
+      "max":1000,
+      "min":5
+    },
+    "DescribeSecondarySubnetsRequest":{
+      "type":"structure",
+      "members":{
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>The filters.</p> <ul> <li> <p> <code>ipv4-cidr-block-association.association-id</code> - The association ID for an IPv4 CIDR block associated with the secondary subnet.</p> </li> <li> <p> <code>ipv4-cidr-block-association.cidr-block</code> - An IPv4 CIDR block associated with the secondary subnet.</p> </li> <li> <p> <code>ipv4-cidr-block-association.state</code> - The state of an IPv4 CIDR block associated with the secondary subnet.</p> </li> <li> <p> <code>owner-id</code> - The ID of the Amazon Web Services account that owns the secondary subnet.</p> </li> <li> <p> <code>secondary-network-id</code> - The ID of the secondary network.</p> </li> <li> <p> <code>secondary-network-type</code> - The type of the secondary network (<code>rdma</code>).</p> </li> <li> <p> <code>secondary-subnet-id</code> - The ID of the secondary subnet.</p> </li> <li> <p> <code>secondary-subnet-arn</code> - The ARN of the secondary subnet.</p> </li> <li> <p> <code>state</code> - The state of the secondary subnet (<code>create-in-progress</code> | <code>create-complete</code> | <code>create-failed</code> | <code>delete-in-progress</code> | <code>delete-complete</code> | <code>delete-failed</code>).</p> </li> <li> <p> <code>tag</code>:&lt;key&gt; - The key/value combination of a tag assigned to the resource. Use the tag key in the filter name and the tag value as the filter value. For example, to find all resources that have a tag with the key <code>Owner</code> and the value <code>TeamA</code>, specify <code>tag:Owner</code> for the filter name and <code>TeamA</code> for the filter value.</p> </li> <li> <p> <code>tag-key</code> - The key of a tag assigned to the resource. Use this filter to find all resources assigned a tag with a specific key, regardless of the tag value.</p> </li> </ul>",
+          "locationName":"Filter"
+        },
+        "MaxResults":{
+          "shape":"DescribeSecondarySubnetsMaxResults",
+          "documentation":"<p>The maximum number of results to return with a single call. To retrieve the remaining results, make another call with the returned <code>nextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "SecondarySubnetIds":{
+          "shape":"SecondarySubnetIdList",
+          "documentation":"<p>The IDs of the secondary subnets.</p>",
+          "locationName":"SecondarySubnetId"
+        }
+      }
+    },
+    "DescribeSecondarySubnetsResult":{
+      "type":"structure",
+      "members":{
+        "SecondarySubnets":{
+          "shape":"SecondarySubnetList",
+          "documentation":"<p>Information about the secondary subnets.</p>",
+          "locationName":"secondarySubnetSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>",
+          "locationName":"nextToken"
+        }
+      }
     },
     "DescribeSecurityGroupReferencesRequest":{
       "type":"structure",
@@ -42671,6 +43050,11 @@
           "documentation":"<p>The service provider that manages the instance.</p>",
           "locationName":"operator"
         },
+        "SecondaryInterfaces":{
+          "shape":"InstanceSecondaryInterfaceList",
+          "documentation":"<p>The secondary interfaces for the instance.</p>",
+          "locationName":"secondaryInterfaceSet"
+        },
         "InstanceId":{
           "shape":"String",
           "documentation":"<p>The ID of the instance.</p>",
@@ -43660,7 +44044,7 @@
         },
         "InstanceMetadataTags":{
           "shape":"InstanceMetadataTagsState",
-          "documentation":"<p>Indicates whether access to instance tags from the instance metadata is enabled or disabled. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS\">Work with instance tags using the instance metadata</a> in the <i>Amazon EC2 User Guide</i>.</p>",
+          "documentation":"<p>Indicates whether access to instance tags from the instance metadata is enabled or disabled. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-tags-in-IMDS.html\">View tags for your EC2 instances using instance metadata</a> in the <i>Amazon EC2 User Guide</i>.</p>",
           "locationName":"instanceMetadataTags"
         },
         "ManagedBy":{
@@ -43704,7 +44088,7 @@
         },
         "InstanceMetadataTags":{
           "shape":"InstanceMetadataTagsState",
-          "documentation":"<p>Set to <code>enabled</code> to allow access to instance tags from the instance metadata. Set to <code>disabled</code> to turn off access to instance tags from the instance metadata. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS\">Work with instance tags using the instance metadata</a>.</p> <p>Default: <code>disabled</code> </p>"
+          "documentation":"<p>Set to <code>enabled</code> to allow access to instance tags from the instance metadata. Set to <code>disabled</code> to turn off access to instance tags from the instance metadata. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-tags-in-IMDS.html\">View tags for your EC2 instances using instance metadata</a>.</p> <p>Default: <code>disabled</code> </p>"
         }
       },
       "documentation":"<p>The metadata options for the instance.</p>"
@@ -43739,7 +44123,7 @@
         },
         "InstanceMetadataTags":{
           "shape":"InstanceMetadataTagsState",
-          "documentation":"<p>Indicates whether access to instance tags from the instance metadata is enabled or disabled. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS\">Work with instance tags using the instance metadata</a>.</p>",
+          "documentation":"<p>Indicates whether access to instance tags from the instance metadata is enabled or disabled. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-tags-in-IMDS.html\">View tags for your EC2 instances using instance metadata</a>.</p>",
           "locationName":"instanceMetadataTags"
         }
       },
@@ -44438,6 +44822,183 @@
         }
       },
       "documentation":"<p>The architecture type, virtualization type, and other attributes for the instance types. When you specify instance attributes, Amazon EC2 will identify instance types with those attributes.</p> <p>If you specify <code>InstanceRequirementsWithMetadataRequest</code>, you can't specify <code>InstanceTypes</code>.</p>"
+    },
+    "InstanceSecondaryInterface":{
+      "type":"structure",
+      "members":{
+        "Attachment":{
+          "shape":"InstanceSecondaryInterfaceAttachment",
+          "documentation":"<p>The attachment information for the secondary interface.</p>",
+          "locationName":"attachment"
+        },
+        "MacAddress":{
+          "shape":"String",
+          "documentation":"<p>The MAC address of the secondary interface.</p>",
+          "locationName":"macAddress"
+        },
+        "SecondaryInterfaceId":{
+          "shape":"SecondaryInterfaceId",
+          "documentation":"<p>The ID of the secondary interface.</p>",
+          "locationName":"secondaryInterfaceId"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID of the owner of the secondary interface.</p>",
+          "locationName":"ownerId"
+        },
+        "PrivateIpAddresses":{
+          "shape":"InstanceSecondaryInterfacePrivateIpAddressList",
+          "documentation":"<p>The private IPv4 addresses associated with the secondary interface.</p>",
+          "locationName":"privateIpAddressSet"
+        },
+        "SourceDestCheck":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether source/destination checking is enabled.</p>",
+          "locationName":"sourceDestCheck"
+        },
+        "Status":{
+          "shape":"SecondaryInterfaceStatus",
+          "documentation":"<p>The status of the secondary interface.</p>",
+          "locationName":"status"
+        },
+        "SecondarySubnetId":{
+          "shape":"SecondarySubnetId",
+          "documentation":"<p>The ID of the secondary subnet.</p>",
+          "locationName":"secondarySubnetId"
+        },
+        "SecondaryNetworkId":{
+          "shape":"SecondaryNetworkId",
+          "documentation":"<p>The ID of the secondary network.</p>",
+          "locationName":"secondaryNetworkId"
+        },
+        "InterfaceType":{
+          "shape":"SecondaryInterfaceType",
+          "documentation":"<p>The type of secondary interface.</p>",
+          "locationName":"interfaceType"
+        }
+      },
+      "documentation":"<p>Describes a secondary interface attached to an instance.</p>"
+    },
+    "InstanceSecondaryInterfaceAttachment":{
+      "type":"structure",
+      "members":{
+        "AttachTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The timestamp when the attachment was created.</p>",
+          "locationName":"attachTime"
+        },
+        "AttachmentId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the attachment.</p>",
+          "locationName":"attachmentId"
+        },
+        "DeleteOnTermination":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the secondary interface is deleted when the instance is terminated.</p> <p>The only supported value for this field is <code>true</code>.</p>",
+          "locationName":"deleteOnTermination"
+        },
+        "DeviceIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The device index of the secondary interface.</p>",
+          "locationName":"deviceIndex"
+        },
+        "Status":{
+          "shape":"AttachmentStatus",
+          "documentation":"<p>The attachment state.</p>",
+          "locationName":"status"
+        },
+        "NetworkCardIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the network card.</p>",
+          "locationName":"networkCardIndex"
+        }
+      },
+      "documentation":"<p>Describes the attachment of a secondary interface to an instance.</p>"
+    },
+    "InstanceSecondaryInterfaceList":{
+      "type":"list",
+      "member":{
+        "shape":"InstanceSecondaryInterface",
+        "locationName":"item"
+      }
+    },
+    "InstanceSecondaryInterfacePrivateIpAddress":{
+      "type":"structure",
+      "members":{
+        "PrivateIpAddress":{
+          "shape":"String",
+          "documentation":"<p>The private IPv4 address.</p>",
+          "locationName":"privateIpAddress"
+        }
+      },
+      "documentation":"<p>Describes a private IPv4 address for a secondary interface.</p>"
+    },
+    "InstanceSecondaryInterfacePrivateIpAddressList":{
+      "type":"list",
+      "member":{
+        "shape":"InstanceSecondaryInterfacePrivateIpAddress",
+        "locationName":"item"
+      }
+    },
+    "InstanceSecondaryInterfacePrivateIpAddressListRequest":{
+      "type":"list",
+      "member":{
+        "shape":"InstanceSecondaryInterfacePrivateIpAddressRequest",
+        "locationName":"item"
+      }
+    },
+    "InstanceSecondaryInterfacePrivateIpAddressRequest":{
+      "type":"structure",
+      "required":["PrivateIpAddress"],
+      "members":{
+        "PrivateIpAddress":{
+          "shape":"String",
+          "documentation":"<p>The private IPv4 address.</p>"
+        }
+      },
+      "documentation":"<p>Describes a private IPv4 address for a secondary interface request.</p>"
+    },
+    "InstanceSecondaryInterfaceSpecificationListRequest":{
+      "type":"list",
+      "member":{
+        "shape":"InstanceSecondaryInterfaceSpecificationRequest",
+        "locationName":"item"
+      }
+    },
+    "InstanceSecondaryInterfaceSpecificationRequest":{
+      "type":"structure",
+      "members":{
+        "DeleteOnTermination":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the secondary interface is deleted when the instance is terminated.</p> <p>The only supported value for this field is <code>true</code>.</p>"
+        },
+        "DeviceIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The device index for the secondary interface attachment.</p>"
+        },
+        "PrivateIpAddresses":{
+          "shape":"InstanceSecondaryInterfacePrivateIpAddressListRequest",
+          "documentation":"<p>The private IPv4 addresses to assign to the secondary interface.</p>",
+          "locationName":"PrivateIpAddress"
+        },
+        "PrivateIpAddressCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of private IPv4 addresses to assign to the secondary interface.</p>"
+        },
+        "SecondarySubnetId":{
+          "shape":"SecondarySubnetId",
+          "documentation":"<p>The ID of the secondary subnet.</p>"
+        },
+        "InterfaceType":{
+          "shape":"SecondaryInterfaceType",
+          "documentation":"<p>The type of secondary interface.</p>"
+        },
+        "NetworkCardIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the network card. The network card must support secondary interfaces.</p>"
+        }
+      },
+      "documentation":"<p>Describes a secondary interface specification for launching an instance.</p>"
     },
     "InstanceSet":{
       "type":"list",
@@ -48613,6 +49174,7 @@
         "advanced"
       ]
     },
+    "Ipv4AddressesPerSecondaryInterface":{"type":"integer"},
     "Ipv4PoolCoipId":{"type":"string"},
     "Ipv4PoolEc2Id":{"type":"string"},
     "Ipv4PrefixList":{
@@ -49991,6 +50553,96 @@
       "member":{
         "shape":"LaunchTemplateInstanceNetworkInterfaceSpecificationRequest",
         "locationName":"InstanceNetworkInterfaceSpecification"
+      }
+    },
+    "LaunchTemplateInstanceSecondaryInterfaceSpecification":{
+      "type":"structure",
+      "members":{
+        "DeleteOnTermination":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the secondary interface is deleted when the instance is terminated.</p> <p>The only supported value for this field is <code>true</code>.</p>",
+          "locationName":"deleteOnTermination"
+        },
+        "DeviceIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The device index for the secondary interface attachment.</p>",
+          "locationName":"deviceIndex"
+        },
+        "PrivateIpAddresses":{
+          "shape":"SecondaryInterfacePrivateIpAddressSpecificationList",
+          "documentation":"<p>The private IPv4 addresses to assign to the secondary interface.</p> <p>If you specify <code>privateIpAddresses</code> you cannot specify <code>privateIpAddressCount</code> </p>",
+          "locationName":"privateIpAddressesSet"
+        },
+        "PrivateIpAddressCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of private IPv4 addresses to assign to the secondary interface.</p> <p>If you specify <code>privateIpAddressCount</code> you cannot specify <code>privateIpAddresses</code> </p>",
+          "locationName":"privateIpAddressCount"
+        },
+        "SecondarySubnetId":{
+          "shape":"SecondarySubnetId",
+          "documentation":"<p>The ID of the secondary subnet.</p>",
+          "locationName":"secondarySubnetId"
+        },
+        "InterfaceType":{
+          "shape":"SecondaryInterfaceType",
+          "documentation":"<p>The type of secondary interface.</p>",
+          "locationName":"interfaceType"
+        },
+        "NetworkCardIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the network card.</p>",
+          "locationName":"networkCardIndex"
+        }
+      },
+      "documentation":"<p>Describes a secondary interface specification in a launch template.</p>"
+    },
+    "LaunchTemplateInstanceSecondaryInterfaceSpecificationList":{
+      "type":"list",
+      "member":{
+        "shape":"LaunchTemplateInstanceSecondaryInterfaceSpecification",
+        "locationName":"item"
+      }
+    },
+    "LaunchTemplateInstanceSecondaryInterfaceSpecificationRequest":{
+      "type":"structure",
+      "members":{
+        "DeleteOnTermination":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the secondary interface is deleted when the instance is terminated.</p> <p>The only supported value for this field is <code>true</code>.</p>"
+        },
+        "DeviceIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The device index for the secondary interface attachment.</p>"
+        },
+        "PrivateIpAddresses":{
+          "shape":"SecondaryInterfacePrivateIpAddressSpecificationListRequest",
+          "documentation":"<p>The private IPv4 addresses to assign to the secondary interface.</p>",
+          "locationName":"PrivateIpAddress"
+        },
+        "PrivateIpAddressCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of private IPv4 addresses to assign to the secondary interface.</p>"
+        },
+        "SecondarySubnetId":{
+          "shape":"SecondarySubnetId",
+          "documentation":"<p>The ID of the secondary subnet.</p>"
+        },
+        "InterfaceType":{
+          "shape":"SecondaryInterfaceType",
+          "documentation":"<p>The type of secondary interface.</p>"
+        },
+        "NetworkCardIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the network card.</p>"
+        }
+      },
+      "documentation":"<p>Describes a secondary interface specification for a launch template request.</p>"
+    },
+    "LaunchTemplateInstanceSecondaryInterfaceSpecificationRequestList":{
+      "type":"list",
+      "member":{
+        "shape":"LaunchTemplateInstanceSecondaryInterfaceSpecificationRequest",
+        "locationName":"InstanceSecondaryInterfaceSpecification"
       }
     },
     "LaunchTemplateLicenseConfiguration":{
@@ -51753,6 +52405,7 @@
     "MaximumEnaQueueCountPerInterface":{"type":"integer"},
     "MaximumIops":{"type":"integer"},
     "MaximumNetworkCards":{"type":"integer"},
+    "MaximumSecondaryNetworkInterfaces":{"type":"integer"},
     "MaximumThroughputInMBps":{"type":"double"},
     "MediaAcceleratorInfo":{
       "type":"structure",
@@ -52973,7 +53626,7 @@
         },
         "InstanceMetadataTags":{
           "shape":"DefaultInstanceMetadataTagsState",
-          "documentation":"<p>Enables or disables access to an instance's tags from the instance metadata. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS\">Work with instance tags using the instance metadata</a> in the <i>Amazon EC2 User Guide</i>.</p>"
+          "documentation":"<p>Enables or disables access to an instance's tags from the instance metadata. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-tags-in-IMDS.html\">View tags for your EC2 instances using instance metadata</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -53021,7 +53674,7 @@
         },
         "InstanceMetadataTags":{
           "shape":"InstanceMetadataTagsState",
-          "documentation":"<p>Set to <code>enabled</code> to allow access to instance tags from the instance metadata. Set to <code>disabled</code> to turn off access to instance tags from the instance metadata. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html#work-with-tags-in-IMDS\">Work with instance tags using the instance metadata</a>.</p>"
+          "documentation":"<p>Set to <code>enabled</code> to allow access to instance tags from the instance metadata. Set to <code>disabled</code> to turn off access to instance tags from the instance metadata. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-tags-in-IMDS.html\">View tags for your EC2 instances using instance metadata</a>.</p>"
         }
       }
     },
@@ -56447,6 +57100,21 @@
           "shape":"FlexibleEnaQueuesSupport",
           "documentation":"<p>Indicates whether changing the number of ENA queues is supported.</p>",
           "locationName":"flexibleEnaQueuesSupport"
+        },
+        "SecondaryNetworkSupported":{
+          "shape":"SecondaryNetworkSupportedFlag",
+          "documentation":"<p>Indicates whether secondary interface attachments from secondary network are supported.</p>",
+          "locationName":"secondaryNetworkSupported"
+        },
+        "MaximumSecondaryNetworkInterfaces":{
+          "shape":"MaximumSecondaryNetworkInterfaces",
+          "documentation":"<p>The maximum number of secondary interfaces for the instance type.</p>",
+          "locationName":"maximumSecondaryNetworkInterfaces"
+        },
+        "Ipv4AddressesPerSecondaryInterface":{
+          "shape":"Ipv4AddressesPerSecondaryInterface",
+          "documentation":"<p>The maximum number of IPv4 addresses per secondary interface.</p>",
+          "locationName":"ipv4AddressesPerSecondaryInterface"
         }
       },
       "documentation":"<p>Describes the networking features of the instance type.</p>"
@@ -58188,7 +58856,6 @@
     },
     "Period":{
       "type":"integer",
-      "max":86400,
       "min":3600
     },
     "PeriodType":{
@@ -58561,6 +59228,7 @@
       }
     },
     "PlacementGroupName":{"type":"string"},
+    "PlacementGroupNameWithResolver":{"type":"string"},
     "PlacementGroupState":{
       "type":"string",
       "enum":[
@@ -61290,6 +61958,11 @@
         "NetworkPerformanceOptions":{
           "shape":"LaunchTemplateNetworkPerformanceOptionsRequest",
           "documentation":"<p>Contains launch template settings to boost network performance for the type of workload that runs on your instance.</p>"
+        },
+        "SecondaryInterfaces":{
+          "shape":"LaunchTemplateInstanceSecondaryInterfaceSpecificationRequestList",
+          "documentation":"<p>The secondary interfaces to associate with instances launched from the template.</p>",
+          "locationName":"SecondaryInterface"
         }
       },
       "documentation":"<p>The information to include in the launch template.</p> <note> <p>You must specify at least one parameter for the launch template data.</p> </note>"
@@ -62445,6 +63118,9 @@
         "ipam-prefix-list-resolver",
         "ipam-policy",
         "ipam-prefix-list-resolver-target",
+        "secondary-interface",
+        "secondary-network",
+        "secondary-subnet",
         "capacity-manager-data-export",
         "vpn-concentrator"
       ]
@@ -62689,6 +63365,11 @@
           "shape":"LaunchTemplateNetworkPerformanceOptions",
           "documentation":"<p>Contains the launch template settings for network performance options for your instance.</p>",
           "locationName":"networkPerformanceOptions"
+        },
+        "SecondaryInterfaces":{
+          "shape":"LaunchTemplateInstanceSecondaryInterfaceSpecificationList",
+          "documentation":"<p>The secondary interfaces associated with the launch template.</p>",
+          "locationName":"secondaryInterfaceSet"
         }
       },
       "documentation":"<p>The information for a launch template. </p>"
@@ -64217,6 +64898,11 @@
           "shape":"OperatorRequest",
           "documentation":"<p>Reserved for internal use.</p>"
         },
+        "SecondaryInterfaces":{
+          "shape":"InstanceSecondaryInterfaceSpecificationListRequest",
+          "documentation":"<p>The secondary interfaces to associate with the instance.</p>",
+          "locationName":"SecondaryInterface"
+        },
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>",
@@ -65013,6 +65699,466 @@
           "locationName":"nextToken"
         }
       }
+    },
+    "SecondaryInterface":{
+      "type":"structure",
+      "members":{
+        "AvailabilityZone":{
+          "shape":"AvailabilityZoneName",
+          "documentation":"<p>The Availability Zone of the secondary interface.</p>",
+          "locationName":"availabilityZone"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The ID of the Availability Zone of the secondary interface.</p>",
+          "locationName":"availabilityZoneId"
+        },
+        "Attachment":{
+          "shape":"SecondaryInterfaceAttachment",
+          "documentation":"<p>The attachment information for the secondary interface.</p>",
+          "locationName":"attachment"
+        },
+        "MacAddress":{
+          "shape":"String",
+          "documentation":"<p>The MAC address of the secondary interface.</p>",
+          "locationName":"macAddress"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the secondary interface.</p>",
+          "locationName":"ownerId"
+        },
+        "PrivateIpv4Addresses":{
+          "shape":"SecondaryInterfaceIpv4AddressList",
+          "documentation":"<p>The private IPv4 addresses associated with the secondary interface.</p>",
+          "locationName":"privateIpv4AddressSet"
+        },
+        "SecondaryInterfaceId":{
+          "shape":"SecondaryInterfaceId",
+          "documentation":"<p>The ID of the secondary interface.</p>",
+          "locationName":"secondaryInterfaceId"
+        },
+        "SecondaryInterfaceArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the secondary interface.</p>",
+          "locationName":"secondaryInterfaceArn"
+        },
+        "SecondaryInterfaceType":{
+          "shape":"SecondaryInterfaceType",
+          "documentation":"<p>The type of secondary interface.</p>",
+          "locationName":"secondaryInterfaceType"
+        },
+        "SecondarySubnetId":{
+          "shape":"SecondarySubnetId",
+          "documentation":"<p>The ID of the secondary subnet.</p>",
+          "locationName":"secondarySubnetId"
+        },
+        "SecondaryNetworkId":{
+          "shape":"SecondaryNetworkId",
+          "documentation":"<p>The ID of the secondary network.</p>",
+          "locationName":"secondaryNetworkId"
+        },
+        "SecondaryNetworkType":{
+          "shape":"SecondaryNetworkType",
+          "documentation":"<p>The type of the secondary network.</p>",
+          "locationName":"secondaryNetworkType"
+        },
+        "SourceDestCheck":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether source/destination checking is enabled.</p>",
+          "locationName":"sourceDestCheck"
+        },
+        "Status":{
+          "shape":"SecondaryInterfaceStatus",
+          "documentation":"<p>The status of the secondary interface.</p>",
+          "locationName":"status"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags assigned to the secondary interface.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes a secondary interface.</p>"
+    },
+    "SecondaryInterfaceAttachment":{
+      "type":"structure",
+      "members":{
+        "AttachmentId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the attachment.</p>",
+          "locationName":"attachmentId"
+        },
+        "AttachTime":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The timestamp when the attachment was created.</p>",
+          "locationName":"attachTime"
+        },
+        "DeleteOnTermination":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the secondary interface is deleted when the instance is terminated.</p> <p>The only supported value for this field is <code>true</code>.</p>",
+          "locationName":"deleteOnTermination"
+        },
+        "DeviceIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The device index of the secondary interface.</p>",
+          "locationName":"deviceIndex"
+        },
+        "InstanceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the instance to which the secondary interface is attached.</p>",
+          "locationName":"instanceId"
+        },
+        "InstanceOwnerId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services account ID of the owner of the instance.</p>",
+          "locationName":"instanceOwnerId"
+        },
+        "NetworkCardIndex":{
+          "shape":"Integer",
+          "documentation":"<p>The index of the network card.</p>",
+          "locationName":"networkCardIndex"
+        },
+        "Status":{
+          "shape":"AttachmentStatus",
+          "documentation":"<p>The attachment state.</p>",
+          "locationName":"status"
+        }
+      },
+      "documentation":"<p>Describes the attachment of a secondary interface to an instance.</p>"
+    },
+    "SecondaryInterfaceId":{"type":"string"},
+    "SecondaryInterfaceIdList":{
+      "type":"list",
+      "member":{
+        "shape":"SecondaryInterfaceId",
+        "locationName":"item"
+      }
+    },
+    "SecondaryInterfaceIpv4Address":{
+      "type":"structure",
+      "members":{
+        "PrivateIpAddress":{
+          "shape":"String",
+          "documentation":"<p>The private IPv4 address.</p>",
+          "locationName":"privateIpAddress"
+        }
+      },
+      "documentation":"<p>Describes a private IPv4 address for a secondary interface.</p>"
+    },
+    "SecondaryInterfaceIpv4AddressList":{
+      "type":"list",
+      "member":{
+        "shape":"SecondaryInterfaceIpv4Address",
+        "locationName":"item"
+      }
+    },
+    "SecondaryInterfaceList":{
+      "type":"list",
+      "member":{
+        "shape":"SecondaryInterface",
+        "locationName":"item"
+      }
+    },
+    "SecondaryInterfacePrivateIpAddressSpecification":{
+      "type":"structure",
+      "members":{
+        "PrivateIpAddress":{
+          "shape":"String",
+          "documentation":"<p>The private IPv4 address.</p>",
+          "locationName":"privateIpAddress"
+        }
+      },
+      "documentation":"<p>Describes a private IPv4 address specification for a secondary interface.</p>"
+    },
+    "SecondaryInterfacePrivateIpAddressSpecificationList":{
+      "type":"list",
+      "member":{
+        "shape":"SecondaryInterfacePrivateIpAddressSpecification",
+        "locationName":"item"
+      }
+    },
+    "SecondaryInterfacePrivateIpAddressSpecificationListRequest":{
+      "type":"list",
+      "member":{
+        "shape":"SecondaryInterfacePrivateIpAddressSpecificationRequest",
+        "locationName":"SecondaryInterfacePrivateIpAddressSpecification"
+      }
+    },
+    "SecondaryInterfacePrivateIpAddressSpecificationRequest":{
+      "type":"structure",
+      "members":{
+        "PrivateIpAddress":{
+          "shape":"String",
+          "documentation":"<p>The private IPv4 address.</p>"
+        }
+      },
+      "documentation":"<p>Describes a private IPv4 address specification for a secondary interface request.</p>"
+    },
+    "SecondaryInterfaceStatus":{
+      "type":"string",
+      "enum":[
+        "available",
+        "in-use"
+      ]
+    },
+    "SecondaryInterfaceType":{
+      "type":"string",
+      "enum":["secondary"]
+    },
+    "SecondaryNetwork":{
+      "type":"structure",
+      "members":{
+        "SecondaryNetworkId":{
+          "shape":"SecondaryNetworkId",
+          "documentation":"<p>The ID of the secondary network.</p>",
+          "locationName":"secondaryNetworkId"
+        },
+        "SecondaryNetworkArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the secondary network.</p>",
+          "locationName":"secondaryNetworkArn"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the secondary network.</p>",
+          "locationName":"ownerId"
+        },
+        "Type":{
+          "shape":"SecondaryNetworkType",
+          "documentation":"<p>The type of the secondary network.</p>",
+          "locationName":"type"
+        },
+        "State":{
+          "shape":"SecondaryNetworkState",
+          "documentation":"<p>The state of the secondary network.</p>",
+          "locationName":"state"
+        },
+        "StateReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current state of the secondary network.</p>",
+          "locationName":"stateReason"
+        },
+        "Ipv4CidrBlockAssociations":{
+          "shape":"SecondaryNetworkIpv4CidrBlockAssociationList",
+          "documentation":"<p>Information about the IPv4 CIDR blocks associated with the secondary network.</p>",
+          "locationName":"ipv4CidrBlockAssociationSet"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags assigned to the secondary network.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes a secondary network.</p>"
+    },
+    "SecondaryNetworkCidrAssociationId":{"type":"string"},
+    "SecondaryNetworkCidrBlockAssociationState":{
+      "type":"string",
+      "enum":[
+        "associating",
+        "associated",
+        "association-failed",
+        "disassociating",
+        "disassociated",
+        "disassociation-failed"
+      ]
+    },
+    "SecondaryNetworkId":{"type":"string"},
+    "SecondaryNetworkIdList":{
+      "type":"list",
+      "member":{
+        "shape":"SecondaryNetworkId",
+        "locationName":"item"
+      }
+    },
+    "SecondaryNetworkIpv4CidrBlockAssociation":{
+      "type":"structure",
+      "members":{
+        "AssociationId":{
+          "shape":"SecondaryNetworkCidrAssociationId",
+          "documentation":"<p>The association ID for the IPv4 CIDR block.</p>",
+          "locationName":"associationId"
+        },
+        "CidrBlock":{
+          "shape":"String",
+          "documentation":"<p>The IPv4 CIDR block.</p>",
+          "locationName":"cidrBlock"
+        },
+        "State":{
+          "shape":"SecondaryNetworkCidrBlockAssociationState",
+          "documentation":"<p>The state of the CIDR block association.</p>",
+          "locationName":"state"
+        },
+        "StateReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current state of the CIDR block association.</p>",
+          "locationName":"stateReason"
+        }
+      },
+      "documentation":"<p>Describes an IPv4 CIDR block associated with a secondary network.</p>"
+    },
+    "SecondaryNetworkIpv4CidrBlockAssociationList":{
+      "type":"list",
+      "member":{
+        "shape":"SecondaryNetworkIpv4CidrBlockAssociation",
+        "locationName":"item"
+      }
+    },
+    "SecondaryNetworkList":{
+      "type":"list",
+      "member":{
+        "shape":"SecondaryNetwork",
+        "locationName":"item"
+      }
+    },
+    "SecondaryNetworkState":{
+      "type":"string",
+      "enum":[
+        "create-in-progress",
+        "create-complete",
+        "create-failed",
+        "delete-in-progress",
+        "delete-complete",
+        "delete-failed"
+      ]
+    },
+    "SecondaryNetworkSupportedFlag":{"type":"boolean"},
+    "SecondaryNetworkType":{
+      "type":"string",
+      "enum":["rdma"]
+    },
+    "SecondarySubnet":{
+      "type":"structure",
+      "members":{
+        "SecondarySubnetId":{
+          "shape":"SecondarySubnetId",
+          "documentation":"<p>The ID of the secondary subnet.</p>",
+          "locationName":"secondarySubnetId"
+        },
+        "SecondarySubnetArn":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the secondary subnet.</p>",
+          "locationName":"secondarySubnetArn"
+        },
+        "SecondaryNetworkId":{
+          "shape":"SecondaryNetworkId",
+          "documentation":"<p>The ID of the secondary network.</p>",
+          "locationName":"secondaryNetworkId"
+        },
+        "SecondaryNetworkType":{
+          "shape":"SecondaryNetworkType",
+          "documentation":"<p>The type of the secondary network.</p>",
+          "locationName":"secondaryNetworkType"
+        },
+        "OwnerId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the secondary subnet.</p>",
+          "locationName":"ownerId"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The ID of the Availability Zone of the secondary subnet.</p>",
+          "locationName":"availabilityZoneId"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZoneName",
+          "documentation":"<p>The Availability Zone of the secondary subnet.</p>",
+          "locationName":"availabilityZone"
+        },
+        "Ipv4CidrBlockAssociations":{
+          "shape":"SecondarySubnetIpv4CidrBlockAssociationList",
+          "documentation":"<p>Information about the IPv4 CIDR blocks associated with the secondary subnet.</p>",
+          "locationName":"ipv4CidrBlockAssociationSet"
+        },
+        "State":{
+          "shape":"SecondarySubnetState",
+          "documentation":"<p>The state of the secondary subnet.</p>",
+          "locationName":"state"
+        },
+        "StateReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current state of the secondary subnet.</p>",
+          "locationName":"stateReason"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags assigned to the secondary subnet.</p>",
+          "locationName":"tagSet"
+        }
+      },
+      "documentation":"<p>Describes a secondary subnet.</p>"
+    },
+    "SecondarySubnetCidrAssociationId":{"type":"string"},
+    "SecondarySubnetCidrBlockAssociationState":{
+      "type":"string",
+      "enum":[
+        "associating",
+        "associated",
+        "association-failed",
+        "disassociating",
+        "disassociated",
+        "disassociation-failed"
+      ]
+    },
+    "SecondarySubnetId":{"type":"string"},
+    "SecondarySubnetIdList":{
+      "type":"list",
+      "member":{
+        "shape":"SecondarySubnetId",
+        "locationName":"item"
+      }
+    },
+    "SecondarySubnetIpv4CidrBlockAssociation":{
+      "type":"structure",
+      "members":{
+        "AssociationId":{
+          "shape":"SecondarySubnetCidrAssociationId",
+          "documentation":"<p>The association ID for the IPv4 CIDR block.</p>",
+          "locationName":"associationId"
+        },
+        "CidrBlock":{
+          "shape":"String",
+          "documentation":"<p>The IPv4 CIDR block.</p>",
+          "locationName":"cidrBlock"
+        },
+        "State":{
+          "shape":"SecondarySubnetCidrBlockAssociationState",
+          "documentation":"<p>The state of the CIDR block association.</p>",
+          "locationName":"state"
+        },
+        "StateReason":{
+          "shape":"String",
+          "documentation":"<p>The reason for the current state of the CIDR block association.</p>",
+          "locationName":"stateReason"
+        }
+      },
+      "documentation":"<p>Describes an IPv4 CIDR block associated with a secondary subnet.</p>"
+    },
+    "SecondarySubnetIpv4CidrBlockAssociationList":{
+      "type":"list",
+      "member":{
+        "shape":"SecondarySubnetIpv4CidrBlockAssociation",
+        "locationName":"item"
+      }
+    },
+    "SecondarySubnetList":{
+      "type":"list",
+      "member":{
+        "shape":"SecondarySubnet",
+        "locationName":"item"
+      }
+    },
+    "SecondarySubnetState":{
+      "type":"string",
+      "enum":[
+        "create-in-progress",
+        "create-complete",
+        "create-failed",
+        "delete-in-progress",
+        "delete-complete",
+        "delete-failed"
+      ]
     },
     "SecretArn":{
       "type":"string",

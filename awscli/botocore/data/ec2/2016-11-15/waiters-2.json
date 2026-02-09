@@ -796,6 +796,92 @@
           "state": "success"
         }
       ]
+    },
+    "SecondaryNetworkCreateComplete": {
+      "operation": "DescribeSecondaryNetworks",
+      "delay": 10,
+      "maxAttempts": 30,
+      "acceptors": [
+        {
+          "expected": "create-complete",
+          "matcher": "pathAll",
+          "state": "success",
+          "argument": "SecondaryNetworks[].State"
+        },
+        {
+          "expected": "create-failed",
+          "matcher": "pathAny",
+          "state": "failure",
+          "argument": "SecondaryNetworks[].State"
+        },
+        {
+          "matcher": "error",
+          "expected": "InvalidSecondaryNetworkId.NotFound",
+          "state": "retry"
+        }
+      ]
+    },
+    "SecondaryNetworkDeleteComplete": {
+      "operation": "DescribeSecondaryNetworks",
+      "delay": 10,
+      "maxAttempts": 30,
+      "acceptors": [
+        {
+          "expected": "delete-complete",
+          "matcher": "pathAll",
+          "state": "success",
+          "argument": "SecondaryNetworks[].State"
+        },
+        {
+          "expected": "delete-failed",
+          "matcher": "pathAny",
+          "state": "failure",
+          "argument": "SecondaryNetworks[].State"
+        }
+      ]
+    },
+    "SecondarySubnetCreateComplete": {
+      "operation": "DescribeSecondarySubnets",
+      "delay": 10,
+      "maxAttempts": 30,
+      "acceptors": [
+        {
+          "expected": "create-complete",
+          "matcher": "pathAll",
+          "state": "success",
+          "argument": "SecondarySubnets[].State"
+        },
+        {
+          "expected": "delete-failed",
+          "matcher": "pathAny",
+          "state": "failure",
+          "argument": "SecondarySubnets[].State"
+        },
+        {
+          "matcher": "error",
+          "expected": "InvalidSecondarySubnetId.NotFound",
+          "state": "retry"
+        }
+      ]
+    },
+    "SecondarySubnetDeleteComplete": {
+      "operation": "DescribeSecondarySubnets",
+      "delay": 10,
+      "maxAttempts": 30,
+      "acceptors": [
+        {
+          "expected": "delete-complete",
+          "matcher": "pathAll",
+          "state": "success",
+          "argument": "SecondarySubnets[].State"
+        },
+        {
+          "expected": "delete-failed",
+          "matcher": "pathAny",
+          "state": "failure",
+          "argument": "SecondarySubnets[].State"
+        }
+      ]
     }
   }
 }

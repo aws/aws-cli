@@ -1146,7 +1146,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Creates a user account for the specified Amazon Connect instance.</p> <important> <p>Certain <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_UserIdentityInfo.html\">UserIdentityInfo</a> parameters are required in some situations. For example, <code>Email</code>, <code>FirstName</code> and <code>LastName</code> are required if you are using Amazon Connect or SAML for identity management.</p> </important> <p>For information about how to create users using the Amazon Connect admin website, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/user-management.html\">Add Users</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
+      "documentation":"<p>Creates a user account for the specified Amazon Connect instance.</p> <important> <p>Certain <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_UserIdentityInfo.html\">UserIdentityInfo</a> parameters are required in some situations. For example, <code>Email</code>, <code>FirstName</code> and <code>LastName</code> are required if you are using Amazon Connect or SAML for identity management.</p> </important> <note> <p>Fields in <code>PhoneConfig</code> cannot be set simultaneously with their corresponding channel-specific configuration parameters. Specifically:</p> <ul> <li> <p> <code>PhoneConfig.AutoAccept</code> conflicts with <code>AutoAcceptConfigs</code> </p> </li> <li> <p> <code>PhoneConfig.AfterContactWorkTimeLimit</code> conflicts with <code>AfterContactWorkConfigs</code> </p> </li> <li> <p> <code>PhoneConfig.PhoneType</code> and <code>PhoneConfig.PhoneNumber</code> conflict with <code>PhoneNumberConfigs</code> </p> </li> <li> <p> <code>PhoneConfig.PersistentConnection</code> conflicts with <code>PersistentConnectionConfigs</code> </p> </li> </ul> <p>We recommend using channel-specific parameters such as <code>AutoAcceptConfigs</code>, <code>AfterContactWorkConfigs</code>, <code>PhoneNumberConfigs</code>, <code>PersistentConnectionConfigs</code>, and <code>VoiceEnhancementConfigs</code> for per-channel configuration.</p> </note> <p>For information about how to create users using the Amazon Connect admin website, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/user-management.html\">Add Users</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
     },
     "CreateUserHierarchyGroup":{
       "name":"CreateUserHierarchyGroup",
@@ -6016,6 +6016,23 @@
       ],
       "documentation":"<p>Updates the traffic distribution for a given traffic distribution group. </p> <important> <p>When you shift telephony traffic, also shift agents and/or agent sign-ins to ensure they can handle the calls in the other Region. If you don't shift the agents, voice calls will go to the shifted Region but there won't be any agents available to receive the calls.</p> </important> <note> <p>The <code>SignInConfig</code> distribution is available only on a default <code>TrafficDistributionGroup</code> (see the <code>IsDefault</code> parameter in the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_TrafficDistributionGroup.html\">TrafficDistributionGroup</a> data type). If you call <code>UpdateTrafficDistribution</code> with a modified <code>SignInConfig</code> and a non-default <code>TrafficDistributionGroup</code>, an <code>InvalidRequestException</code> is returned.</p> </note> <p>For more information about updating a traffic distribution group, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/update-telephony-traffic-distribution.html\">Update telephony traffic distribution across Amazon Web Services Regions </a> in the <i>Amazon Connect Administrator Guide</i>. </p>"
     },
+    "UpdateUserConfig":{
+      "name":"UpdateUserConfig",
+      "http":{
+        "method":"POST",
+        "requestUri":"/users/{InstanceId}/{UserId}/config"
+      },
+      "input":{"shape":"UpdateUserConfigRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ConditionalOperationFailedException"}
+      ],
+      "documentation":"<p>Updates the configuration settings for the specified user, including per-channel auto-accept and after contact work (ACW) timeout settings.</p> <note> <p>This operation replaces the UpdateUserPhoneConfig API. While UpdateUserPhoneConfig applies the same ACW timeout to all channels, UpdateUserConfig allows you to set different auto-accept and ACW timeout values for each channel type.</p> </note>"
+    },
     "UpdateUserHierarchy":{
       "name":"UpdateUserHierarchy",
       "http":{
@@ -6096,7 +6113,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Updates the phone configuration settings for the specified user.</p>"
+      "documentation":"<p>Updates the phone configuration settings for the specified user.</p> <note> <p>We recommend using the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdateUserConfig.html\">UpdateUserConfig</a> API, which supports additional functionality that is not available in the UpdateUserPhoneConfig API, such as voice enhancement settings and per-channel configuration for auto-accept and After Contact Work (ACW) timeouts. In comparison, the UpdateUserPhoneConfig API will always set the same ACW timeouts to all channels the user handles.</p> </note>"
     },
     "UpdateUserProficiencies":{
       "name":"UpdateUserProficiencies",
@@ -6383,6 +6400,43 @@
       },
       "documentation":"<p>List of additional email addresses for an email contact.</p>"
     },
+    "AfterContactWorkConfig":{
+      "type":"structure",
+      "members":{
+        "AfterContactWorkTimeLimit":{
+          "shape":"AfterContactWorkTimeLimit",
+          "documentation":"<p>The ACW timeout duration in seconds. Minimum: 1 second. Maximum: 2,000,000 seconds (24 days). Enter 0 for indefinite ACW time.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for after contact work (ACW) timeout.</p>"
+    },
+    "AfterContactWorkConfigPerChannel":{
+      "type":"structure",
+      "required":[
+        "Channel",
+        "AfterContactWorkConfig"
+      ],
+      "members":{
+        "Channel":{
+          "shape":"Channel",
+          "documentation":"<p>The channel for this ACW timeout configuration. Valid values: VOICE, CHAT, TASK, EMAIL.</p>"
+        },
+        "AfterContactWorkConfig":{
+          "shape":"AfterContactWorkConfig",
+          "documentation":"<p>The ACW timeout settings for this channel.</p>"
+        },
+        "AgentFirstCallbackAfterContactWorkConfig":{
+          "shape":"AfterContactWorkConfig",
+          "documentation":"<p>The ACW timeout settings for agent-first callbacks. This setting only applies to the VOICE channel.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for after contact work (ACW) timeout for a specific channel.</p>"
+    },
+    "AfterContactWorkConfigs":{
+      "type":"list",
+      "member":{"shape":"AfterContactWorkConfigPerChannel"},
+      "documentation":"<p>A list of after contact work (ACW) timeout configuration settings for each channel.</p>"
+    },
     "AfterContactWorkTimeLimit":{
       "type":"integer",
       "min":0
@@ -6450,6 +6504,7 @@
       },
       "documentation":"<p>Information about agent-first outbound strategy configuration.</p>"
     },
+    "AgentFirstCallbackAutoAccept":{"type":"boolean"},
     "AgentFirstName":{
       "type":"string",
       "max":255,
@@ -8050,6 +8105,33 @@
       "sensitive":true
     },
     "AutoAccept":{"type":"boolean"},
+    "AutoAcceptConfig":{
+      "type":"structure",
+      "required":[
+        "Channel",
+        "AutoAccept"
+      ],
+      "members":{
+        "Channel":{
+          "shape":"Channel",
+          "documentation":"<p>The channel for this auto-accept configuration. Valid values: VOICE, CHAT, TASK, EMAIL.</p>"
+        },
+        "AutoAccept":{
+          "shape":"AutoAccept",
+          "documentation":"<p>Indicates whether auto-accept is enabled for this channel. When enabled, available agents are automatically connected to contacts from this channel.</p>"
+        },
+        "AgentFirstCallbackAutoAccept":{
+          "shape":"AgentFirstCallbackAutoAccept",
+          "documentation":"<p>Indicates whether auto-accept is enabled for agent-first callbacks. This setting only applies to the VOICE channel.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for auto-accept for a specific channel.</p>"
+    },
+    "AutoAcceptConfigs":{
+      "type":"list",
+      "member":{"shape":"AutoAcceptConfig"},
+      "documentation":"<p>A list of auto-accept configuration settings for each channel.</p>"
+    },
     "AutoEvaluationConfiguration":{
       "type":"structure",
       "required":["Enabled"],
@@ -12082,7 +12164,6 @@
       "type":"structure",
       "required":[
         "Username",
-        "PhoneConfig",
         "SecurityProfileIds",
         "RoutingProfileId",
         "InstanceId"
@@ -12102,7 +12183,7 @@
         },
         "PhoneConfig":{
           "shape":"UserPhoneConfig",
-          "documentation":"<p>The phone settings for the user.</p>"
+          "documentation":"<p>The phone settings for the user. This parameter is optional. If not provided, the user can be configured using channel-specific parameters such as <code>AutoAcceptConfigs</code>, <code>AfterContactWorkConfigs</code>, <code>PhoneNumberConfigs</code>, <code>PersistentConnectionConfigs</code>, and <code>VoiceEnhancementConfigs</code>.</p>"
         },
         "DirectoryUserId":{
           "shape":"DirectoryUserId",
@@ -12125,6 +12206,26 @@
           "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
           "location":"uri",
           "locationName":"InstanceId"
+        },
+        "AutoAcceptConfigs":{
+          "shape":"AutoAcceptConfigs",
+          "documentation":"<p>The list of auto-accept configuration settings for each channel.</p>"
+        },
+        "AfterContactWorkConfigs":{
+          "shape":"AfterContactWorkConfigs",
+          "documentation":"<p>The list of after contact work (ACW) timeout configuration settings for each channel.</p>"
+        },
+        "PhoneNumberConfigs":{
+          "shape":"PhoneNumberConfigs",
+          "documentation":"<p>The list of phone number configuration settings for each channel.</p>"
+        },
+        "PersistentConnectionConfigs":{
+          "shape":"PersistentConnectionConfigs",
+          "documentation":"<p>The list of persistent connection configuration settings for each channel.</p>"
+        },
+        "VoiceEnhancementConfigs":{
+          "shape":"VoiceEnhancementConfigs",
+          "documentation":"<p>The list of voice enhancement configuration settings for each channel.</p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -25291,9 +25392,60 @@
       "documentation":"<p>Enable persistent chats. For more information about enabling persistent chat, and for example use cases and how to configure for them, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html\">Enable persistent chat</a>.</p>"
     },
     "PersistentConnection":{"type":"boolean"},
+    "PersistentConnectionConfig":{
+      "type":"structure",
+      "required":[
+        "Channel",
+        "PersistentConnection"
+      ],
+      "members":{
+        "Channel":{
+          "shape":"Channel",
+          "documentation":"<p>Configuration settings for persistent connection. <b>Only <code>VOICE</code> is supported for this data type.</b> </p>"
+        },
+        "PersistentConnection":{
+          "shape":"PersistentConnection",
+          "documentation":"<p>Indicates whether persistent connection is enabled. When enabled, the agent's connection is maintained after a call ends, enabling subsequent calls to connect faster.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Configuration settings for persistent connection for a specific channel.</p>"
+    },
+    "PersistentConnectionConfigs":{
+      "type":"list",
+      "member":{"shape":"PersistentConnectionConfig"},
+      "documentation":"<p>The list of persistent connection configuration settings for each channel.</p>"
+    },
     "PhoneNumber":{
       "type":"string",
       "pattern":"\\\\+[1-9]\\\\d{1,14}$"
+    },
+    "PhoneNumberConfig":{
+      "type":"structure",
+      "required":[
+        "Channel",
+        "PhoneType"
+      ],
+      "members":{
+        "Channel":{
+          "shape":"Channel",
+          "documentation":"<p>The channel for this phone number configuration. <b>Only <code>VOICE</code> is supported for this data type.</b> </p>"
+        },
+        "PhoneType":{
+          "shape":"PhoneType",
+          "documentation":"<p>The phone type. Valid values: SOFT_PHONE, DESK_PHONE.</p>"
+        },
+        "PhoneNumber":{
+          "shape":"SensitivePhoneNumber",
+          "documentation":"<p>The phone number for the user's desk phone.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for phone type and phone number.</p>"
+    },
+    "PhoneNumberConfigs":{
+      "type":"list",
+      "member":{"shape":"PhoneNumberConfig"},
+      "documentation":"<p>The list of phone number configuration settings for each channel.</p>"
     },
     "PhoneNumberCountryCode":{
       "type":"string",
@@ -30126,6 +30278,11 @@
       "type":"structure",
       "members":{}
     },
+    "SensitivePhoneNumber":{
+      "type":"string",
+      "pattern":"\\+[1-9]\\d{1,14}$",
+      "sensitive":true
+    },
     "ServiceQuotaExceededException":{
       "type":"structure",
       "members":{
@@ -34424,6 +34581,47 @@
       "type":"structure",
       "members":{}
     },
+    "UpdateUserConfigRequest":{
+      "type":"structure",
+      "required":[
+        "UserId",
+        "InstanceId"
+      ],
+      "members":{
+        "AutoAcceptConfigs":{
+          "shape":"AutoAcceptConfigs",
+          "documentation":"<p>The list of auto-accept configuration settings for each channel. When auto-accept is enabled for a channel, available agents are automatically connected to contacts from that channel without needing to manually accept. Auto-accept connects agents to contacts in less than one second.</p>"
+        },
+        "AfterContactWorkConfigs":{
+          "shape":"AfterContactWorkConfigs",
+          "documentation":"<p>The list of after contact work (ACW) timeout configuration settings for each channel. ACW timeout specifies how many seconds agents have for after contact work, such as entering notes about the contact. The minimum setting is 1 second, and the maximum is 2,000,000 seconds (24 days). Enter 0 for an indefinite amount of time, meaning agents must manually choose to end ACW.</p>"
+        },
+        "PhoneNumberConfigs":{
+          "shape":"PhoneNumberConfigs",
+          "documentation":"<p>The list of phone number configuration settings for each channel.</p>"
+        },
+        "PersistentConnectionConfigs":{
+          "shape":"PersistentConnectionConfigs",
+          "documentation":"<p>The list of persistent connection configuration settings for each channel.</p>"
+        },
+        "VoiceEnhancementConfigs":{
+          "shape":"VoiceEnhancementConfigs",
+          "documentation":"<p>The list of voice enhancement configuration settings for each channel.</p>"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>The identifier of the user account.</p>",
+          "location":"uri",
+          "locationName":"UserId"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        }
+      }
+    },
     "UpdateUserHierarchyGroupNameRequest":{
       "type":"structure",
       "required":[
@@ -34966,6 +35164,26 @@
           "shape":"TagMap",
           "documentation":"<p>The tags.</p>"
         },
+        "AutoAcceptConfigs":{
+          "shape":"AutoAcceptConfigs",
+          "documentation":"<p>The list of auto-accept configuration settings for each channel.</p>"
+        },
+        "AfterContactWorkConfigs":{
+          "shape":"AfterContactWorkConfigs",
+          "documentation":"<p>The list of after contact work (ACW) timeout configuration settings for each channel.</p>"
+        },
+        "PhoneNumberConfigs":{
+          "shape":"PhoneNumberConfigs",
+          "documentation":"<p>The list of phone number configuration settings for each channel.</p>"
+        },
+        "PersistentConnectionConfigs":{
+          "shape":"PersistentConnectionConfigs",
+          "documentation":"<p>The list of persistent connection configuration settings for each channel.</p>"
+        },
+        "VoiceEnhancementConfigs":{
+          "shape":"VoiceEnhancementConfigs",
+          "documentation":"<p>The list of voice enhancement configuration settings for each channel.</p>"
+        },
         "LastModifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when this resource was last modified.</p>"
@@ -35157,7 +35375,6 @@
     },
     "UserPhoneConfig":{
       "type":"structure",
-      "required":["PhoneType"],
       "members":{
         "PhoneType":{
           "shape":"PhoneType",
@@ -35172,7 +35389,7 @@
           "documentation":"<p>The After Call Work (ACW) timeout setting, in seconds. This parameter has a minimum value of 0 and a maximum value of 2,000,000 seconds (24 days). Enter 0 if you don't want to allocate a specific amount of ACW time. It essentially means an indefinite amount of time. When the conversation ends, ACW starts; the agent must choose Close contact to end ACW. </p> <note> <p>When returned by a <code>SearchUsers</code> call, <code>AfterContactWorkTimeLimit</code> is returned in milliseconds. </p> </note>"
         },
         "DeskPhoneNumber":{
-          "shape":"PhoneNumber",
+          "shape":"SensitivePhoneNumber",
           "documentation":"<p>The phone number for the user's desk phone.</p>"
         },
         "PersistentConnection":{
@@ -35344,6 +35561,26 @@
         "Username":{
           "shape":"AgentUsername",
           "documentation":"<p>The name of the user.</p>"
+        },
+        "AutoAcceptConfigs":{
+          "shape":"AutoAcceptConfigs",
+          "documentation":"<p>The list of auto-accept configuration settings for each channel.</p>"
+        },
+        "AfterContactWorkConfigs":{
+          "shape":"AfterContactWorkConfigs",
+          "documentation":"<p>The list of after contact work (ACW) timeout configuration settings for each channel.</p>"
+        },
+        "PhoneNumberConfigs":{
+          "shape":"PhoneNumberConfigs",
+          "documentation":"<p>The list of phone number configuration settings for each channel.</p>"
+        },
+        "PersistentConnectionConfigs":{
+          "shape":"PersistentConnectionConfigs",
+          "documentation":"<p>The list of persistent connection configuration settings for each channel.</p>"
+        },
+        "VoiceEnhancementConfigs":{
+          "shape":"VoiceEnhancementConfigs",
+          "documentation":"<p>The list of voice enhancement configuration settings for each channel.</p>"
         }
       },
       "documentation":"<p>Information about the returned users.</p>"
@@ -35941,6 +36178,37 @@
         }
       },
       "documentation":"<p>Parameters for initiating a voice call test.</p>"
+    },
+    "VoiceEnhancementConfig":{
+      "type":"structure",
+      "required":[
+        "Channel",
+        "VoiceEnhancementMode"
+      ],
+      "members":{
+        "Channel":{
+          "shape":"Channel",
+          "documentation":"<p>The channel for this voice enhancement configuration. <b>Only <code>VOICE</code> is supported for this data type.</b> </p>"
+        },
+        "VoiceEnhancementMode":{
+          "shape":"VoiceEnhancementMode",
+          "documentation":"<p>The voice enhancement mode.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for voice enhancement.</p>"
+    },
+    "VoiceEnhancementConfigs":{
+      "type":"list",
+      "member":{"shape":"VoiceEnhancementConfig"},
+      "documentation":"<p>The list of voice enhancement configuration settings for each channel.</p>"
+    },
+    "VoiceEnhancementMode":{
+      "type":"string",
+      "enum":[
+        "VOICE_ISOLATION",
+        "NOISE_SUPPRESSION",
+        "NONE"
+      ]
     },
     "VoiceRecordingConfiguration":{
       "type":"structure",

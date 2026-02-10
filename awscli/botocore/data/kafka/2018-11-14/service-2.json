@@ -247,6 +247,88 @@
       ],
       "documentation": "<p>Creates the replicator.</p>"
     },
+    "CreateTopic": {
+      "name": "CreateTopic",
+      "http": {
+        "method": "POST",
+        "requestUri": "/v1/clusters/{clusterArn}/topics",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "CreateTopicRequest"
+      },
+      "output": {
+        "shape": "CreateTopicResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "<p>HTTP Status Code 503: Service Unavailable. Retrying your request in some time might resolve the issue.</p>"
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "HTTP Status Code 429: Limit exceeded. Resource limit reached."
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "\n            <p>This topic name already exists in the cluster. Retry your request using another topic name.</p>\n         "
+        },
+        {
+          "shape": "TopicExistsException",
+          "documentation": "\n            <p>The topic already exists in the cluster.</p>\n         "
+        },
+        {
+          "shape": "ClusterConnectivityException",
+          "documentation": "\n            <p>Unable to establish a connection to the Kafka cluster.</p>\n         "
+        },
+        {
+          "shape": "KafkaTimeoutException",
+          "documentation": "\n            <p>The Kafka request timed out.</p>\n         "
+        },
+        {
+          "shape": "UnknownTopicOrPartitionException",
+          "documentation": "\n            <p>The specified topic or partition does not exist.</p>\n         "
+        },
+        {
+          "shape": "ControllerMovedException",
+          "documentation": "\n            <p>The Kafka controller has moved.</p>\n         "
+        },
+        {
+          "shape": "NotControllerException",
+          "documentation": "\n            <p>TNot Controller.</p>\n         "
+        },
+        {
+          "shape": "ReassignmentInProgressException",
+          "documentation": "\n            <p>A partition reassignment is currently in progress.</p>\n         "
+        },
+        {
+          "shape": "GroupSubscribedToTopicException",
+          "documentation": "\n            <p>A consumer group is currently subscribed to this topic.</p>\n         "
+        },
+        {
+          "shape": "KafkaRequestException",
+          "documentation": "\n            <p>An error occurred while processing the Kafka request.</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Creates a topic in the specified MSK cluster.</p>\n         "
+    },
     "CreateVpcConnection": {
       "name": "CreateVpcConnection",
       "http": {
@@ -436,6 +518,72 @@
         }
       ],
       "documentation": "<p>Deletes a replicator.</p>"
+    },
+    "DeleteTopic": {
+      "name": "DeleteTopic",
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/v1/clusters/{clusterArn}/topics/{topicName}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DeleteTopicRequest"
+      },
+      "output": {
+        "shape": "DeleteTopicResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "ClusterConnectivityException",
+          "documentation": "\n            <p>Unable to establish a connection to the Kafka cluster.</p>\n         "
+        },
+        {
+          "shape": "KafkaTimeoutException",
+          "documentation": "\n            <p>The Kafka request timed out.</p>\n         "
+        },
+        {
+          "shape": "UnknownTopicOrPartitionException",
+          "documentation": "\n            <p>The specified topic or partition does not exist.</p>\n         "
+        },
+        {
+          "shape": "ControllerMovedException",
+          "documentation": "\n            <p>The Kafka controller has moved.</p>\n         "
+        },
+        {
+          "shape": "NotControllerException",
+          "documentation": "\n            <p>Not Controller.</p>\n         "
+        },
+        {
+          "shape": "ReassignmentInProgressException",
+          "documentation": "\n            <p>A partition reassignment is currently in progress.</p>\n         "
+        },
+        {
+          "shape": "GroupSubscribedToTopicException",
+          "documentation": "\n            <p>A consumer group is currently subscribed to this topic.</p>\n         "
+        },
+        {
+          "shape": "KafkaRequestException",
+          "documentation": "\n            <p>An error occurred while processing the Kafka request.</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Deletes a topic in the specified MSK cluster.</p>\n         "
     },
     "DeleteVpcConnection": {
       "name": "DeleteVpcConnection",
@@ -2254,6 +2402,80 @@
         }
       ],
       "documentation": "Updates cluster broker volume size (or) sets cluster storage mode to TIERED."
+    },
+    "UpdateTopic": {
+      "name": "UpdateTopic",
+      "http": {
+        "method": "PUT",
+        "requestUri": "/v1/clusters/{clusterArn}/topics/{topicName}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "UpdateTopicRequest"
+      },
+      "output": {
+        "shape": "UpdateTopicResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "ClusterConnectivityException",
+          "documentation": "\n            <p>Unable to establish a connection to the Kafka cluster.</p>\n         "
+        },
+        {
+          "shape": "KafkaTimeoutException",
+          "documentation": "\n            <p>The Kafka request timed out. </p>\n         "
+        },
+        {
+          "shape": "UnknownTopicOrPartitionException",
+          "documentation": "\n            <p>The specified topic or partition does not exist.</p>\n         "
+        },
+        {
+          "shape": "ControllerMovedException",
+          "documentation": "\n            <p>The Kafka controller has moved.</p>\n         "
+        },
+        {
+          "shape": "NotControllerException",
+          "documentation": "\n            <p>Not Controller</p>\n         "
+        },
+        {
+          "shape": "ReassignmentInProgressException",
+          "documentation": "\n            <p>A partition reassignment is currently in progress.</p>\n         "
+        },
+        {
+          "shape": "GroupSubscribedToTopicException",
+          "documentation": "\n            <p>A consumer group is currently subscribed to this topic.</p>\n         "
+        },
+        {
+          "shape": "KafkaRequestException",
+          "documentation": "\n            <p>An error occurred while processing the Kafka request.</p>\n         "
+        }
+      ],
+      "documentation": "\n            <p>Updates the configuration of the specified topic.</p>\n         "
     }
   },
   "shapes": {
@@ -3715,6 +3937,155 @@
         }
       }
     },
+    "CreateTopicRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>\n         "
+        },
+        "TopicName": {
+          "shape": "__string",
+          "locationName": "topicName",
+          "documentation": "\n            <p>The name of the topic to create.</p>\n         "
+        },
+        "PartitionCount": {
+          "shape": "__integerMin1",
+          "locationName": "partitionCount",
+          "documentation": "\n            <p>The number of partitions for the topic.</p>\n         "
+        },
+        "ReplicationFactor": {
+          "shape": "__integerMin1",
+          "locationName": "replicationFactor",
+          "documentation": "\n            <p>The replication factor for the topic.</p>\n         "
+        },
+        "Configs": {
+          "shape": "__string",
+          "locationName": "configs",
+          "documentation": "\n            <p>Topic configurations encoded as a Base64 string.</p>\n         "
+        }
+      },
+      "required": [
+        "ClusterArn",
+        "TopicName",
+        "PartitionCount",
+        "ReplicationFactor"
+      ]
+    },
+    "CreateTopicResponse": {
+      "type": "structure",
+      "members": {
+        "TopicArn": {
+          "shape": "__string",
+          "locationName": "topicArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the topic.</p>\n         "
+        },
+        "TopicName": {
+          "shape": "__string",
+          "locationName": "topicName",
+          "documentation": "\n            <p>The name of the topic that was created.</p>\n         "
+        },
+        "Status": {
+          "shape": "TopicState",
+          "locationName": "status",
+          "documentation": "\n            <p>The status of the topic creation.</p>\n         "
+        }
+      }
+    },
+    "DeleteTopicRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>\n         "
+        },
+        "TopicName": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "topicName",
+          "documentation": "\n            <p>The name of the topic to delete.</p>\n         "
+        }
+      },
+      "required": [
+        "ClusterArn",
+        "TopicName"
+      ]
+    },
+    "DeleteTopicResponse": {
+      "type": "structure",
+      "members": {
+        "TopicArn": {
+          "shape": "__string",
+          "locationName": "topicArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the topic.</p>\n         "
+        },
+        "TopicName": {
+          "shape": "__string",
+          "locationName": "topicName",
+          "documentation": "\n            <p>The name of the topic that was deleted.</p>\n         "
+        },
+        "Status": {
+          "shape": "TopicState",
+          "locationName": "status",
+          "documentation": "\n            <p>The status of the topic deletion.</p>\n         "
+        }
+      }
+    },
+    "UpdateTopicRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) that uniquely identifies the cluster.</p>\n         "
+        },
+        "TopicName": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "topicName",
+          "documentation": "\n            <p>The name of the topic to update configuration for.</p>\n         "
+        },
+        "Configs": {
+          "shape": "__string",
+          "locationName": "configs",
+          "documentation": "\n            <p>The new topic configurations encoded as a Base64 string.</p>\n  "
+        },
+        "PartitionCount": {
+          "shape": "__integer",
+          "locationName": "partitionCount",
+          "documentation": "\n            <p>The new total number of partitions for the topic.</p>\n  "
+        }
+      },
+      "required": [
+        "ClusterArn",
+        "TopicName"
+      ]
+    },
+    "UpdateTopicResponse": {
+      "type": "structure",
+      "members": {
+        "TopicArn": {
+          "shape": "__string",
+          "locationName": "topicArn",
+          "documentation": "\n            <p>The Amazon Resource Name (ARN) of the topic.</p>\n         "
+        },
+        "TopicName": {
+          "shape": "__string",
+          "locationName": "topicName",
+          "documentation": "\n            <p>The name of the topic whose configuration was updated.</p>\n         "
+        },
+        "Status": {
+          "shape": "TopicState",
+          "locationName": "status",
+          "documentation": "\n            <p>The status of the topic update.</p>\n         "
+        }
+      }
+    },
     "ClusterOperationV2": {
       "type": "structure",
       "members": {
@@ -4668,6 +5039,186 @@
       "exception": true,
       "error": {
         "httpStatusCode": 403
+      }
+    },
+    "TopicExistsException": {
+      "type": "structure",
+      "members": {
+        "InvalidParameter": {
+          "shape": "__string",
+          "locationName": "invalidParameter",
+          "documentation": "\n            <p>The parameter that caused the error.</p>\n         "
+        },
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "\n            <p>The description of the error.</p>\n         "
+        }
+      },
+      "documentation": "\n            <p>Returns information about an error.</p>\n         ",
+      "exception": true,
+      "error": {
+        "httpStatusCode": 409
+      }
+    },
+    "ClusterConnectivityException": {
+      "type": "structure",
+      "members": {
+        "InvalidParameter": {
+          "shape": "__string",
+          "locationName": "invalidParameter",
+          "documentation": "\n            <p>The parameter that caused the error.</p>\n         "
+        },
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "\n            <p>The description of the error.</p>\n         "
+        }
+      },
+      "documentation": "\n            <p>Returns information about an error.</p>\n         ",
+      "exception": true,
+      "error": {
+        "httpStatusCode": 409
+      }
+    },
+    "KafkaTimeoutException": {
+      "type": "structure",
+      "members": {
+        "InvalidParameter": {
+          "shape": "__string",
+          "locationName": "invalidParameter",
+          "documentation": "\n            <p>The parameter that caused the error.</p>\n         "
+        },
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "\n            <p>The description of the error.</p>\n         "
+        }
+      },
+      "documentation": "\n            <p>Returns information about an error.</p>\n         ",
+      "exception": true,
+      "error": {
+        "httpStatusCode": 409
+      }
+    },
+    "UnknownTopicOrPartitionException": {
+      "type": "structure",
+      "members": {
+        "InvalidParameter": {
+          "shape": "__string",
+          "locationName": "invalidParameter",
+          "documentation": "\n            <p>The parameter that caused the error.</p>\n         "
+        },
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "\n            <p>The description of the error.</p>\n         "
+        }
+      },
+      "documentation": "\n            <p>Returns information about an error.</p>\n         ",
+      "exception": true,
+      "error": {
+        "httpStatusCode": 404
+      }
+    },
+    "ControllerMovedException": {
+      "type": "structure",
+      "members": {
+        "InvalidParameter": {
+          "shape": "__string",
+          "locationName": "invalidParameter",
+          "documentation": "\n            <p>The parameter that caused the error.</p>\n         "
+        },
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "\n            <p>The description of the error.</p>\n         "
+        }
+      },
+      "documentation": "\n            <p>Returns information about an error.</p>\n         ",
+      "exception": true,
+      "error": {
+        "httpStatusCode": 409
+      }
+    },
+    "NotControllerException": {
+      "type": "structure",
+      "members": {
+        "InvalidParameter": {
+          "shape": "__string",
+          "locationName": "invalidParameter",
+          "documentation": "\n            <p>The parameter that caused the error.</p>\n         "
+        },
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "\n            <p>The description of the error.</p>\n         "
+        }
+      },
+      "documentation": "\n            <p>Returns information about an error.</p>\n         ",
+      "exception": true,
+      "error": {
+        "httpStatusCode": 409
+      }
+    },
+    "ReassignmentInProgressException": {
+      "type": "structure",
+      "members": {
+        "InvalidParameter": {
+          "shape": "__string",
+          "locationName": "invalidParameter",
+          "documentation": "\n            <p>The parameter that caused the error.</p>\n         "
+        },
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "\n            <p>The description of the error.</p>\n         "
+        }
+      },
+      "documentation": "\n            <p>Returns information about an error.</p>\n         ",
+      "exception": true,
+      "error": {
+        "httpStatusCode": 409
+      }
+    },
+    "GroupSubscribedToTopicException": {
+      "type": "structure",
+      "members": {
+        "InvalidParameter": {
+          "shape": "__string",
+          "locationName": "invalidParameter",
+          "documentation": "\n            <p>The parameter that caused the error.</p>\n         "
+        },
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "\n            <p>The description of the error.</p>\n         "
+        }
+      },
+      "documentation": "\n            <p>Returns information about an error.</p>\n         ",
+      "exception": true,
+      "error": {
+        "httpStatusCode": 409
+      }
+    },
+    "KafkaRequestException": {
+      "type": "structure",
+      "members": {
+        "InvalidParameter": {
+          "shape": "__string",
+          "locationName": "invalidParameter",
+          "documentation": "\n            <p>The parameter that caused the error.</p>\n         "
+        },
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "\n            <p>The description of the error.</p>\n         "
+        }
+      },
+      "documentation": "\n            <p>Returns information about an error.</p>\n         ",
+      "exception": true,
+      "error": {
+        "httpStatusCode": 400
       }
     },
     "GetBootstrapBrokersRequest": {

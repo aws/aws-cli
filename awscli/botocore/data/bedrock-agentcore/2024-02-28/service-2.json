@@ -832,6 +832,17 @@
       },
       "documentation":"<p>Contains information about an update to an automation stream.</p>"
     },
+    "BasicAuth":{
+      "type":"structure",
+      "required":["secretArn"],
+      "members":{
+        "secretArn":{
+          "shape":"SecretArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager secret containing proxy credentials. The secret must be a JSON object with <code>username</code> and <code>password</code> string fields that meet validation requirements. The caller must have <code>secretsmanager:GetSecretValue</code> permission for this ARN. Example secret format: <code>{\"username\": \"proxy_user\", \"password\": \"secure_password\"}</code> </p>"
+        }
+      },
+      "documentation":"<p>Configuration for HTTP Basic Authentication using credentials stored in Amazon Web Services Secrets Manager. The secret must contain a JSON object with <code>username</code> and <code>password</code> string fields. Username allows alphanumeric characters and <code>@._+=-</code> symbols (pattern: <code>^[a-zA-Z0-9@._+=\\-]+$</code>). Password allows alphanumeric characters and <code>@._+=-!#$%&amp;*</code> symbols (pattern: <code>^[a-zA-Z0-9@._+=\\-!#$%&amp;*]+$</code>). Both fields have a maximum length of 256 characters.</p>"
+    },
     "BatchCreateMemoryRecordsInput":{
       "type":"structure",
       "required":[
@@ -1499,6 +1510,18 @@
       "document":true,
       "sensitive":true
     },
+    "DomainPattern":{
+      "type":"string",
+      "max":253,
+      "min":1,
+      "pattern":"(\\.)?[a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?)*"
+    },
+    "DomainPatterns":{
+      "type":"list",
+      "member":{"shape":"DomainPattern"},
+      "max":100,
+      "min":1
+    },
     "Double":{
       "type":"double",
       "box":true
@@ -1740,6 +1763,38 @@
       "max":5,
       "min":1
     },
+    "ExternalProxy":{
+      "type":"structure",
+      "required":[
+        "server",
+        "port"
+      ],
+      "members":{
+        "server":{
+          "shape":"HostName",
+          "documentation":"<p>The hostname of the proxy server. Must be a valid DNS hostname (maximum 253 characters).</p>"
+        },
+        "port":{
+          "shape":"ExternalProxyPortInteger",
+          "documentation":"<p>The port number of the proxy server. Valid range: 1-65535.</p>"
+        },
+        "domainPatterns":{
+          "shape":"DomainPatterns",
+          "documentation":"<p>Optional array of domain patterns that should route through this specific proxy. Supports <code>.example.com</code> for subdomain matching (matches any subdomain of example.com) or <code>example.com</code> for exact domain matching. If omitted, this proxy acts as a catch-all for domains not matched by other proxies. Maximum 100 patterns per proxy, each up to 253 characters.</p>"
+        },
+        "credentials":{
+          "shape":"ProxyCredentials",
+          "documentation":"<p>Optional authentication credentials for the proxy server. If omitted, the proxy is accessed without authentication (useful for IP-allowlisted proxies).</p>"
+        }
+      },
+      "documentation":"<p>Configuration for a customer-managed external proxy server. Includes server location, optional domain-based routing patterns, and authentication credentials.</p>"
+    },
+    "ExternalProxyPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":1
+    },
     "ExtractionJob":{
       "type":"structure",
       "required":["jobId"],
@@ -1956,6 +2011,10 @@
         "streams":{
           "shape":"BrowserSessionStream",
           "documentation":"<p>The streams associated with this browser session. These include the automation stream and live view stream.</p>"
+        },
+        "proxyConfiguration":{
+          "shape":"ProxyConfiguration",
+          "documentation":"<p>The active proxy configuration for this browser session. This field is only present if proxy configuration was provided when the session was started using <code>StartBrowserSession</code>. The configuration includes proxy servers, domain bypass rules and the proxy authentication credentials.</p>"
         },
         "sessionReplayArtifact":{
           "shape":"String",
@@ -2266,6 +2325,12 @@
           "documentation":"<p>An opaque token representing the identity of both the workload and the user.</p>"
         }
       }
+    },
+    "HostName":{
+      "type":"string",
+      "max":253,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?(\\.[a-zA-Z0-9]([a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])?)*"
     },
     "HttpResponseCode":{
       "type":"integer",
@@ -3305,6 +3370,59 @@
         "typescript"
       ]
     },
+    "Proxy":{
+      "type":"structure",
+      "members":{
+        "externalProxy":{
+          "shape":"ExternalProxy",
+          "documentation":"<p>Configuration for an external customer-managed proxy server.</p>"
+        }
+      },
+      "documentation":"<p>Union type representing different proxy configurations. Currently supports external customer-managed proxies.</p>",
+      "union":true
+    },
+    "ProxyBypass":{
+      "type":"structure",
+      "members":{
+        "domainPatterns":{
+          "shape":"DomainPatterns",
+          "documentation":"<p>Array of domain patterns that should bypass the proxy. Supports <code>.amazonaws.com</code> for subdomain matching or <code>amazonaws.com</code> for exact domain matching. Requests to these domains connect directly without using any proxy. Maximum 253 characters per pattern.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for domains that should bypass all proxies and connect directly to the internet. These bypass rules take precedence over all proxy routing rules.</p>"
+    },
+    "ProxyConfiguration":{
+      "type":"structure",
+      "required":["proxies"],
+      "members":{
+        "proxies":{
+          "shape":"ProxyConfigurationProxiesList",
+          "documentation":"<p>An array of 1-5 proxy server configurations for domain-based routing. Each proxy can specify which domains it handles via <code>domainPatterns</code>, enabling flexible routing of different traffic through different proxies based on destination domain.</p>"
+        },
+        "bypass":{
+          "shape":"ProxyBypass",
+          "documentation":"<p>Optional configuration for domains that should bypass all proxies and connect directly to their destination, like the internet. Takes precedence over all proxy routing rules.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for routing browser traffic through customer-managed proxy servers. Supports 1-5 proxy servers for domain-based routing and proxy bypass rules.</p>"
+    },
+    "ProxyConfigurationProxiesList":{
+      "type":"list",
+      "member":{"shape":"Proxy"},
+      "max":5,
+      "min":1
+    },
+    "ProxyCredentials":{
+      "type":"structure",
+      "members":{
+        "basicAuth":{
+          "shape":"BasicAuth",
+          "documentation":"<p>HTTP Basic Authentication credentials (username and password) stored in Amazon Web Services Secrets Manager.</p>"
+        }
+      },
+      "documentation":"<p>Union type representing different proxy authentication methods. Currently supports HTTP Basic Authentication (username and password).</p>",
+      "union":true
+    },
     "RequestIdentifier":{
       "type":"string",
       "max":80,
@@ -3637,6 +3755,10 @@
       "max":100,
       "min":1
     },
+    "SecretArn":{
+      "type":"string",
+      "pattern":"arn:aws:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[a-zA-Z0-9/_+=.@-]+"
+    },
     "ServiceException":{
       "type":"structure",
       "required":["message"],
@@ -3788,6 +3910,10 @@
         "profileConfiguration":{
           "shape":"BrowserProfileConfiguration",
           "documentation":"<p>The browser profile configuration to use for this session. A browser profile contains persistent data such as cookies and local storage that can be reused across multiple browser sessions. If specified, the session initializes with the profile's stored data, enabling continuity for tasks that require authentication or personalized settings.</p>"
+        },
+        "proxyConfiguration":{
+          "shape":"ProxyConfiguration",
+          "documentation":"<p>Optional proxy configuration for routing browser traffic through customer-specified proxy servers. When provided, enables HTTP Basic authentication via Amazon Web Services Secrets Manager and domain-based routing rules. Requires <code>secretsmanager:GetSecretValue</code> IAM permission for the specified secret ARNs.</p>"
         },
         "clientToken":{
           "shape":"ClientToken",

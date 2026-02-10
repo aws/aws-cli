@@ -2985,6 +2985,10 @@
         "targetRoleArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the target IAM role to associate with the service account. This role is assumed by using the EKS Pod Identity association role, then the credentials for this role are injected into the Pod.</p> <p>When you run applications on Amazon EKS, your application might need to access Amazon Web Services resources from a different role that exists in the same or different Amazon Web Services account. For example, your application running in “Account A” might need to access resources, such as Amazon S3 buckets in “Account B” or within “Account A” itself. You can create a association to access Amazon Web Services resources in “Account B” by creating two IAM roles: a role in “Account A” and a role in “Account B” (which can be the same or different account), each with the necessary trust and permission policies. After you provide these roles in the <i>IAM role</i> and <i>Target IAM role</i> fields, EKS will perform role chaining to ensure your application gets the required permissions. This means Role A will assume Role B, allowing your Pods to securely access resources like S3 buckets in the target account.</p>"
+        },
+        "policy":{
+          "shape":"String",
+          "documentation":"<p>An optional IAM policy in JSON format (as an escaped string) that applies additional restrictions to this pod identity association beyond the IAM policies attached to the IAM role. This policy is applied as the intersection of the role's policies and this policy, allowing you to reduce the permissions that applications in the pods can use. Use this policy to enforce least privilege access while still leveraging a shared IAM role across multiple applications.</p> <p> <b>Important considerations</b> </p> <ul> <li> <p> <b>Session tags:</b> When using this policy, <code>disableSessionTags</code> must be set to <code>true</code>.</p> </li> <li> <p> <b>Target role permissions:</b> If you specify both a <code>TargetRoleArn</code> and a policy, the policy restrictions apply only to the target role's permissions, not to the initial role used for assuming the target role.</p> </li> </ul>"
         }
       }
     },
@@ -5763,6 +5767,10 @@
         "externalId":{
           "shape":"String",
           "documentation":"<p>The unique identifier for this EKS Pod Identity association for a target IAM role. You put this value in the trust policy of the target role, in a <code>Condition</code> to match the <code>sts.ExternalId</code>. This ensures that the target role can only be assumed by this association. This prevents the <i>confused deputy problem</i>. For more information about the confused deputy problem, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/confused-deputy.html\">The confused deputy problem</a> in the <i>IAM User Guide</i>.</p> <p>If you want to use the same target role with multiple associations or other roles, use independent statements in the trust policy to allow <code>sts:AssumeRole</code> access from each role.</p>"
+        },
+        "policy":{
+          "shape":"String",
+          "documentation":"<p>An optional IAM policy in JSON format (as an escaped string) that applies additional restrictions to this pod identity association beyond the IAM policies attached to the IAM role. This policy is applied as the intersection of the role's policies and this policy, allowing you to reduce the permissions that applications in the pods can use. Use this policy to enforce least privilege access while still leveraging a shared IAM role across multiple applications.</p>"
         }
       },
       "documentation":"<p>Amazon EKS Pod Identity associations provide the ability to manage credentials for your applications, similar to the way that Amazon EC2 instance profiles provide credentials to Amazon EC2 instances.</p>"
@@ -6845,6 +6853,10 @@
         "targetRoleArn":{
           "shape":"String",
           "documentation":"<p>The Amazon Resource Name (ARN) of the target IAM role to associate with the service account. This role is assumed by using the EKS Pod Identity association role, then the credentials for this role are injected into the Pod.</p> <p>When you run applications on Amazon EKS, your application might need to access Amazon Web Services resources from a different role that exists in the same or different Amazon Web Services account. For example, your application running in “Account A” might need to access resources, such as buckets in “Account B” or within “Account A” itself. You can create a association to access Amazon Web Services resources in “Account B” by creating two IAM roles: a role in “Account A” and a role in “Account B” (which can be the same or different account), each with the necessary trust and permission policies. After you provide these roles in the <i>IAM role</i> and <i>Target IAM role</i> fields, EKS will perform role chaining to ensure your application gets the required permissions. This means Role A will assume Role B, allowing your Pods to securely access resources like S3 buckets in the target account.</p>"
+        },
+        "policy":{
+          "shape":"String",
+          "documentation":"<p>An optional IAM policy in JSON format (as an escaped string) that applies additional restrictions to this pod identity association beyond the IAM policies attached to the IAM role. This policy is applied as the intersection of the role's policies and this policy, allowing you to reduce the permissions that applications in the pods can use. Use this policy to enforce least privilege access while still leveraging a shared IAM role across multiple applications.</p> <p> <b>Important considerations</b> </p> <ul> <li> <p> <b>Session tags:</b> When using this policy, <code>disableSessionTags</code> must be set to <code>true</code>.</p> </li> <li> <p> <b>Target role permissions:</b> If you specify both a <code>TargetRoleArn</code> and a policy, the policy restrictions apply only to the target role's permissions, not to the initial role used for assuming the target role.</p> </li> </ul>"
         }
       }
     },

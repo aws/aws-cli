@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.44.37
+=======
+
+* api-change:``batch``: Add support for listing jobs by share identifier and getting snapshots of active capacity utilization by job queue and share.
+* api-change:``ec2``: R8i instances powered by custom Intel Xeon 6 processors available only on AWS with sustained all-core 3.9 GHz turbo frequency
+* api-change:``eks``: This release adds support for Windows Server 2025 in Amazon EKS Managed Node Groups.
+* api-change:``kafkaconnect``: Support configurable upper limits on task count during autoscaling operations via maxAutoscalingTaskCount parameter.
+* api-change:``s3tables``: S3 Tables now supports setting partition specifications and sort orders on tables. Partition specs allow users to define how data is organized using transform functions. Sort order configurations enable users to specify sort directions and null ordering preferences for optimized data layout.
+* enhancement:cloudtrail: Added support for validating backfill digest files in ``validate-logs`` command
+
+
 1.44.36
 =======
 

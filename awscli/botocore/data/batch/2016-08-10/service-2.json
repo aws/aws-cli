@@ -306,7 +306,7 @@
         {"shape":"ClientException"},
         {"shape":"ServerException"}
       ],
-      "documentation":"<p>Provides a list of the first 100 <code>RUNNABLE</code> jobs associated to a single job queue.</p>"
+      "documentation":"<p>Provides a list of the first 100 <code>RUNNABLE</code> jobs associated to a single job queue and includes capacity utilization, including total usage and breakdown by share for fairshare scheduling job queues. </p>"
     },
     "ListConsumableResources":{
       "name":"ListConsumableResources",
@@ -334,7 +334,7 @@
         {"shape":"ClientException"},
         {"shape":"ServerException"}
       ],
-      "documentation":"<p>Returns a list of Batch jobs.</p> <p>You must specify only one of the following items:</p> <ul> <li> <p>A job queue ID to return a list of jobs in that job queue</p> </li> <li> <p>A multi-node parallel job ID to return a list of nodes for that job</p> </li> <li> <p>An array job ID to return a list of the children for that job</p> </li> </ul> <p>You can filter the results by job status with the <code>jobStatus</code> parameter. If you don't specify a status, only <code>RUNNING</code> jobs are returned.</p>"
+      "documentation":"<p>Returns a list of Batch jobs.</p> <p>You must specify only one of the following items:</p> <ul> <li> <p>A job queue ID to return a list of jobs in that job queue</p> </li> <li> <p>A multi-node parallel job ID to return a list of nodes for that job</p> </li> <li> <p>An array job ID to return a list of the children for that job</p> </li> </ul>"
     },
     "ListJobsByConsumableResource":{
       "name":"ListJobsByConsumableResource",
@@ -2020,6 +2020,10 @@
           "shape":"ServiceJobAttemptDetails",
           "documentation":"<p>A list of job attempts associated with the service job.</p>"
         },
+        "capacityUsage":{
+          "shape":"ServiceJobCapacityUsageDetailList",
+          "documentation":"<p>The configured capacity for the service job, such as the number of instances. The number of instances should be the same value as the <code>serviceRequestPayload.InstanceCount</code> field.</p>"
+        },
         "createdAt":{
           "shape":"Long",
           "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job was created.</p>"
@@ -2051,6 +2055,10 @@
         "retryStrategy":{
           "shape":"ServiceJobRetryStrategy",
           "documentation":"<p>The retry strategy to use for failed service jobs that are submitted with this service job.</p>"
+        },
+        "scheduledAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job was scheduled. This represents when the service job was dispatched to SageMaker and the service job transitioned to the <code>SCHEDULED</code> state.</p>"
         },
         "schedulingPriority":{
           "shape":"Integer",
@@ -2129,6 +2137,7 @@
       "type":"list",
       "member":{"shape":"Device"}
     },
+    "Double":{"type":"double"},
     "EFSAuthorizationConfig":{
       "type":"structure",
       "members":{
@@ -2966,6 +2975,42 @@
       "type":"list",
       "member":{"shape":"EvaluateOnExit"}
     },
+    "FairshareCapacityUsage":{
+      "type":"structure",
+      "members":{
+        "capacityUnit":{
+          "shape":"String",
+          "documentation":"<p>The unit of measure for the capacity usage. For compute jobs, this is <code>VCPU</code> for Amazon EC2 and <code>cpu</code> for Amazon EKS. For service jobs, this is <code>NUM_INSTANCES</code>.</p>"
+        },
+        "quantity":{
+          "shape":"Double",
+          "documentation":"<p>The quantity of capacity being used, measured in the units specified by <code>capacityUnit</code>.</p>"
+        }
+      },
+      "documentation":"<p>The capacity usage for a fairshare scheduling job queue.</p>"
+    },
+    "FairshareCapacityUsageList":{
+      "type":"list",
+      "member":{"shape":"FairshareCapacityUsage"}
+    },
+    "FairshareCapacityUtilization":{
+      "type":"structure",
+      "members":{
+        "shareIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The share identifier for the fairshare scheduling job queue.</p>"
+        },
+        "capacityUsage":{
+          "shape":"FairshareCapacityUsageList",
+          "documentation":"<p>The capacity usage information for this share, including the unit of measure and quantity being used. This is <code>VCPU</code> for Amazon EC2 and <code>cpu</code> for Amazon EKS.</p>"
+        }
+      },
+      "documentation":"<p>The capacity utilization for a specific share in a fairshare scheduling job queue, including the share identifier and its current usage.</p>"
+    },
+    "FairshareCapacityUtilizationList":{
+      "type":"list",
+      "member":{"shape":"FairshareCapacityUtilization"}
+    },
     "FairsharePolicy":{
       "type":"structure",
       "members":{
@@ -2983,6 +3028,20 @@
         }
       },
       "documentation":"<p>The fair-share scheduling policy details.</p>"
+    },
+    "FairshareUtilizationDetail":{
+      "type":"structure",
+      "members":{
+        "activeShareCount":{
+          "shape":"Long",
+          "documentation":"<p>The total number of active shares in the fairshare scheduling job queue that are currently utilizing capacity.</p>"
+        },
+        "topCapacityUtilization":{
+          "shape":"FairshareCapacityUtilizationList",
+          "documentation":"<p>A list of the top 20 shares with the highest capacity utilization, ordered by usage amount.</p>"
+        }
+      },
+      "documentation":"<p>The fairshare utilization for a job queue, including the number of active shares and top capacity utilization.</p>"
     },
     "FargatePlatformConfiguration":{
       "type":"structure",
@@ -3070,6 +3129,10 @@
         "frontOfQueue":{
           "shape":"FrontOfQueueDetail",
           "documentation":"<p>The list of the first 100 <code>RUNNABLE</code> jobs in each job queue. For first-in-first-out (FIFO) job queues, jobs are ordered based on their submission time. For fair-share scheduling (FSS) job queues, jobs are ordered based on their job priority and share usage.</p>"
+        },
+        "queueUtilization":{
+          "shape":"QueueSnapshotUtilizationDetail",
+          "documentation":"<p>The job queue's capacity utilization, including total usage and breakdown by fairshare scheduling queue.</p>"
         }
       }
     },
@@ -3126,6 +3189,24 @@
         "VALID",
         "INVALID"
       ]
+    },
+    "JobCapacityUsageSummary":{
+      "type":"structure",
+      "members":{
+        "capacityUnit":{
+          "shape":"String",
+          "documentation":"<p>The unit of measure for the capacity usage. This is <code>VCPU</code> for Amazon EC2 and <code>cpu</code> for Amazon EKS.</p>"
+        },
+        "quantity":{
+          "shape":"Double",
+          "documentation":"<p>The quantity of capacity being used by the job, measured in the units specified by <code>capacityUnit</code>.</p>"
+        }
+      },
+      "documentation":"<p>The capacity usage for a job, including the unit of measure and quantity of resources being used.</p>"
+    },
+    "JobCapacityUsageSummaryList":{
+      "type":"list",
+      "member":{"shape":"JobCapacityUsageSummary"}
     },
     "JobDefinition":{
       "type":"structure",
@@ -3531,9 +3612,21 @@
           "shape":"String",
           "documentation":"<p>The job name.</p>"
         },
+        "capacityUsage":{
+          "shape":"JobCapacityUsageSummaryList",
+          "documentation":"<p>The configured capacity usage information for this job, including the unit of measure and quantity of resources.</p>"
+        },
         "createdAt":{
           "shape":"Long",
           "documentation":"<p>The Unix timestamp (in milliseconds) for when the job was created. For non-array jobs and parent array jobs, this is when the job entered the <code>SUBMITTED</code> state (at the time <a href=\"https://docs.aws.amazon.com/batch/latest/APIReference/API_SubmitJob.html\">SubmitJob</a> was called). For array child jobs, this is when the child job was spawned by its parent and entered the <code>PENDING</code> state.</p>"
+        },
+        "scheduledAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the job was scheduled for execution. For more information on job statues, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/service-job-status.html\">Service job status</a> in the <i>Batch User Guide</i>.</p>"
+        },
+        "shareIdentifier":{
+          "shape":"String",
+          "documentation":"<p>The share identifier for the fairshare scheduling queue that this job is associated with.</p>"
         },
         "status":{
           "shape":"JobStatus",
@@ -3834,7 +3927,7 @@
         },
         "shareIdentifier":{
           "shape":"String",
-          "documentation":"<p>The fair-share scheduling policy identifier for the job.</p>"
+          "documentation":"<p>The fair-share scheduling identifier for the job.</p>"
         },
         "jobStatus":{
           "shape":"String",
@@ -3888,7 +3981,7 @@
         },
         "jobStatus":{
           "shape":"JobStatus",
-          "documentation":"<p>The job status used to filter jobs in the specified queue. If the <code>filters</code> parameter is specified, the <code>jobStatus</code> parameter is ignored and jobs with any status are returned. If you don't specify a status, only <code>RUNNING</code> jobs are returned.</p> <note> <p>Array job parents are updated to <code>PENDING</code> when any child job is updated to <code>RUNNABLE</code> and remain in <code>PENDING</code> status while child jobs are running. To view these jobs, filter by <code>PENDING</code> status until all child jobs reach a terminal state.</p> </note>"
+          "documentation":"<p>The job status used to filter jobs in the specified queue. If the <code>filters</code> parameter is specified, the <code>jobStatus</code> parameter is ignored and jobs with any status are returned. The exception is the <code>SHARE_IDENTIFIER</code> filter and <code>jobStatus</code> can be used together. If you don't specify a status, only <code>RUNNING</code> jobs are returned.</p> <note> <p>Array job parents are updated to <code>PENDING</code> when any child job is updated to <code>RUNNABLE</code> and remain in <code>PENDING</code> status while child jobs are running. To view these jobs, filter by <code>PENDING</code> status until all child jobs reach a terminal state.</p> </note>"
         },
         "maxResults":{
           "shape":"Integer",
@@ -3900,7 +3993,7 @@
         },
         "filters":{
           "shape":"ListJobsFilterList",
-          "documentation":"<p>The filter to apply to the query. Only one filter can be used at a time. When the filter is used, <code>jobStatus</code> is ignored. The filter doesn't apply to child jobs in an array or multi-node parallel (MNP) jobs. The results are sorted by the <code>createdAt</code> field, with the most recent jobs being first.</p> <dl> <dt>JOB_NAME</dt> <dd> <p>The value of the filter is a case-insensitive match for the job name. If the value ends with an asterisk (*), the filter matches any job name that begins with the string before the '*'. This corresponds to the <code>jobName</code> value. For example, <code>test1</code> matches both <code>Test1</code> and <code>test1</code>, and <code>test1*</code> matches both <code>test1</code> and <code>Test10</code>. When the <code>JOB_NAME</code> filter is used, the results are grouped by the job name and version.</p> </dd> <dt>JOB_DEFINITION</dt> <dd> <p>The value for the filter is the name or Amazon Resource Name (ARN) of the job definition. This corresponds to the <code>jobDefinition</code> value. The value is case sensitive. When the value for the filter is the job definition name, the results include all the jobs that used any revision of that job definition name. If the value ends with an asterisk (*), the filter matches any job definition name that begins with the string before the '*'. For example, <code>jd1</code> matches only <code>jd1</code>, and <code>jd1*</code> matches both <code>jd1</code> and <code>jd1A</code>. The version of the job definition that's used doesn't affect the sort order. When the <code>JOB_DEFINITION</code> filter is used and the ARN is used (which is in the form <code>arn:${Partition}:batch:${Region}:${Account}:job-definition/${JobDefinitionName}:${Revision}</code>), the results include jobs that used the specified revision of the job definition. Asterisk (*) isn't supported when the ARN is used.</p> </dd> <dt>BEFORE_CREATED_AT</dt> <dd> <p>The value for the filter is the time that's before the job was created. This corresponds to the <code>createdAt</code> value. The value is a string representation of the number of milliseconds since 00:00:00 UTC (midnight) on January 1, 1970.</p> </dd> <dt>AFTER_CREATED_AT</dt> <dd> <p>The value for the filter is the time that's after the job was created. This corresponds to the <code>createdAt</code> value. The value is a string representation of the number of milliseconds since 00:00:00 UTC (midnight) on January 1, 1970.</p> </dd> </dl>"
+          "documentation":"<p>The filter to apply to the query. Only one filter can be used at a time. When the filter is used, <code>jobStatus</code> is ignored with the exception that <code>SHARE_IDENTIFIER</code> and <code>jobStatus</code> can be used together. The filter doesn't apply to child jobs in an array or multi-node parallel (MNP) jobs. The results are sorted by the <code>createdAt</code> field, with the most recent jobs being first.</p> <note> <p>The <code>SHARE_IDENTIFIER</code> filter and the <code>jobStatus</code> field can be used together to filter results.</p> </note> <dl> <dt>JOB_NAME</dt> <dd> <p>The value of the filter is a case-insensitive match for the job name. If the value ends with an asterisk (*), the filter matches any job name that begins with the string before the '*'. This corresponds to the <code>jobName</code> value. For example, <code>test1</code> matches both <code>Test1</code> and <code>test1</code>, and <code>test1*</code> matches both <code>test1</code> and <code>Test10</code>. When the <code>JOB_NAME</code> filter is used, the results are grouped by the job name and version.</p> </dd> <dt>JOB_DEFINITION</dt> <dd> <p>The value for the filter is the name or Amazon Resource Name (ARN) of the job definition. This corresponds to the <code>jobDefinition</code> value. The value is case sensitive. When the value for the filter is the job definition name, the results include all the jobs that used any revision of that job definition name. If the value ends with an asterisk (*), the filter matches any job definition name that begins with the string before the '*'. For example, <code>jd1</code> matches only <code>jd1</code>, and <code>jd1*</code> matches both <code>jd1</code> and <code>jd1A</code>. The version of the job definition that's used doesn't affect the sort order. When the <code>JOB_DEFINITION</code> filter is used and the ARN is used (which is in the form <code>arn:${Partition}:batch:${Region}:${Account}:job-definition/${JobDefinitionName}:${Revision}</code>), the results include jobs that used the specified revision of the job definition. Asterisk (*) isn't supported when the ARN is used.</p> </dd> <dt>BEFORE_CREATED_AT</dt> <dd> <p>The value for the filter is the time that's before the job was created. This corresponds to the <code>createdAt</code> value. The value is a string representation of the number of milliseconds since 00:00:00 UTC (midnight) on January 1, 1970.</p> </dd> <dt>AFTER_CREATED_AT</dt> <dd> <p>The value for the filter is the time that's after the job was created. This corresponds to the <code>createdAt</code> value. The value is a string representation of the number of milliseconds since 00:00:00 UTC (midnight) on January 1, 1970.</p> </dd> <dt>SHARE_IDENTIFIER</dt> <dd> <p>The value for the filter is the fairshare scheduling share identifier.</p> </dd> </dl>"
         }
       },
       "documentation":"<p>Contains the parameters for <code>ListJobs</code>.</p>"
@@ -3955,7 +4048,7 @@
         },
         "jobStatus":{
           "shape":"ServiceJobStatus",
-          "documentation":"<p>The job status with which to filter service jobs. </p>"
+          "documentation":"<p>The job status used to filter service jobs in the specified queue. If the <code>filters</code> parameter is specified, the <code>jobStatus</code> parameter is ignored and jobs with any status are returned. The exception is the <code>SHARE_IDENTIFIER</code> filter and <code>jobStatus</code> can be used together. If you don't specify a status, only <code>RUNNING</code> jobs are returned.</p> <note> <p>The <code>SHARE_IDENTIFIER</code> filter and the <code>jobStatus</code> field can be used together to filter results.</p> </note>"
         },
         "maxResults":{
           "shape":"Integer",
@@ -3967,7 +4060,7 @@
         },
         "filters":{
           "shape":"ListJobsFilterList",
-          "documentation":"<p>The filter to apply to the query. Only one filter can be used at a time. When the filter is used, <code>jobStatus</code> is ignored. The results are sorted by the <code>createdAt</code> field, with the most recent jobs being first.</p> <dl> <dt>JOB_NAME</dt> <dd> <p>The value of the filter is a case-insensitive match for the job name. If the value ends with an asterisk (*), the filter matches any job name that begins with the string before the '*'. This corresponds to the <code>jobName</code> value. For example, <code>test1</code> matches both <code>Test1</code> and <code>test1</code>, and <code>test1*</code> matches both <code>test1</code> and <code>Test10</code>. When the <code>JOB_NAME</code> filter is used, the results are grouped by the job name and version.</p> </dd> <dt>BEFORE_CREATED_AT</dt> <dd> <p>The value for the filter is the time that's before the job was created. This corresponds to the <code>createdAt</code> value. The value is a string representation of the number of milliseconds since 00:00:00 UTC (midnight) on January 1, 1970.</p> </dd> <dt>AFTER_CREATED_AT</dt> <dd> <p>The value for the filter is the time that's after the job was created. This corresponds to the <code>createdAt</code> value. The value is a string representation of the number of milliseconds since 00:00:00 UTC (midnight) on January 1, 1970.</p> </dd> </dl>"
+          "documentation":"<p>The filter to apply to the query. Only one filter can be used at a time. When the filter is used, <code>jobStatus</code> is ignored with the exception that <code>SHARE_IDENTIFIER</code> and <code>jobStatus</code> can be used together. The results are sorted by the <code>createdAt</code> field, with the most recent jobs being first.</p> <note> <p>The <code>SHARE_IDENTIFIER</code> filter and the <code>jobStatus</code> field can be used together to filter results.</p> </note> <dl> <dt>JOB_NAME</dt> <dd> <p>The value of the filter is a case-insensitive match for the job name. If the value ends with an asterisk (*), the filter matches any job name that begins with the string before the '*'. This corresponds to the <code>jobName</code> value. For example, <code>test1</code> matches both <code>Test1</code> and <code>test1</code>, and <code>test1*</code> matches both <code>test1</code> and <code>Test10</code>. When the <code>JOB_NAME</code> filter is used, the results are grouped by the job name and version.</p> </dd> <dt>BEFORE_CREATED_AT</dt> <dd> <p>The value for the filter is the time that's before the job was created. This corresponds to the <code>createdAt</code> value. The value is a string representation of the number of milliseconds since 00:00:00 UTC (midnight) on January 1, 1970.</p> </dd> <dt>AFTER_CREATED_AT</dt> <dd> <p>The value for the filter is the time that's after the job was created. This corresponds to the <code>createdAt</code> value. The value is a string representation of the number of milliseconds since 00:00:00 UTC (midnight) on January 1, 1970.</p> </dd> <dt>SHARE_IDENTIFIER</dt> <dd> <p>The value for the filter is the fairshare scheduling share identifier.</p> </dd> </dl>"
         }
       }
     },
@@ -4281,6 +4374,42 @@
       "type":"string",
       "max":256,
       "min":1
+    },
+    "QueueSnapshotCapacityUsage":{
+      "type":"structure",
+      "members":{
+        "capacityUnit":{
+          "shape":"String",
+          "documentation":"<p>The unit of measure for the capacity usage. For compute jobs, this is <code>VCPU</code> for Amazon EC2 and <code>cpu</code> for Amazon EKS. For service jobs, this is <code>NUM_INSTANCES</code>.</p>"
+        },
+        "quantity":{
+          "shape":"Double",
+          "documentation":"<p>The quantity of capacity being used in the queue snapshot, measured in the units specified by <code>capacityUnit</code>.</p>"
+        }
+      },
+      "documentation":"<p>The configured capacity usage for a job queue snapshot, including the unit of measure and quantity of resources being used.</p>"
+    },
+    "QueueSnapshotCapacityUsageList":{
+      "type":"list",
+      "member":{"shape":"QueueSnapshotCapacityUsage"}
+    },
+    "QueueSnapshotUtilizationDetail":{
+      "type":"structure",
+      "members":{
+        "totalCapacityUsage":{
+          "shape":"QueueSnapshotCapacityUsageList",
+          "documentation":"<p>The total capacity usage for the entire job queue, for both first-in, first-out (FIFO) and fairshare scheduling job queue.</p>"
+        },
+        "fairshareUtilization":{
+          "shape":"FairshareUtilizationDetail",
+          "documentation":"<p>The utilization information for a fairshare scheduling job queues, including active share count and top capacity utilization by share.</p>"
+        },
+        "lastUpdatedAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the queue utilization information was last updated.</p>"
+        }
+      },
+      "documentation":"<p>The job queue utilization at a specific point in time, including total capacity usage and fairshare utilization breakdown.</p>"
     },
     "RegisterJobDefinitionRequest":{
       "type":"structure",
@@ -4637,6 +4766,42 @@
       "type":"list",
       "member":{"shape":"ServiceJobAttemptDetail"}
     },
+    "ServiceJobCapacityUsageDetail":{
+      "type":"structure",
+      "members":{
+        "capacityUnit":{
+          "shape":"String",
+          "documentation":"<p>The unit of measure for the service job capacity usage. For service jobs, this is <code>NUM_INSTANCES</code>.</p>"
+        },
+        "quantity":{
+          "shape":"Double",
+          "documentation":"<p>The quantity of capacity being used by the service job, measured in the units specified by <code>capacityUnit</code>.</p>"
+        }
+      },
+      "documentation":"<p>The capacity usage for a service job, including the unit of measure and quantity of resources being consumed.</p>"
+    },
+    "ServiceJobCapacityUsageDetailList":{
+      "type":"list",
+      "member":{"shape":"ServiceJobCapacityUsageDetail"}
+    },
+    "ServiceJobCapacityUsageSummary":{
+      "type":"structure",
+      "members":{
+        "capacityUnit":{
+          "shape":"String",
+          "documentation":"<p>The unit of measure for the service job capacity usage. For service jobs, this is <code>NUM_INSTANCES</code>.</p>"
+        },
+        "quantity":{
+          "shape":"Double",
+          "documentation":"<p>The quantity of capacity being used by the service job, measured in the units specified by <code>capacityUnit</code>.</p>"
+        }
+      },
+      "documentation":"<p>The capacity usage for a service job, including the unit of measure and quantity of resources being used.</p>"
+    },
+    "ServiceJobCapacityUsageSummaryList":{
+      "type":"list",
+      "member":{"shape":"ServiceJobCapacityUsageSummary"}
+    },
     "ServiceJobEvaluateOnExit":{
       "type":"structure",
       "members":{
@@ -4702,6 +4867,10 @@
           "shape":"LatestServiceJobAttempt",
           "documentation":"<p>Information about the latest attempt for the service job.</p>"
         },
+        "capacityUsage":{
+          "shape":"ServiceJobCapacityUsageSummaryList",
+          "documentation":"<p>The capacity usage information for this service job, including the unit of measure and quantity of resources being used.</p>"
+        },
         "createdAt":{
           "shape":"Long",
           "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job was created.</p>"
@@ -4717,6 +4886,10 @@
         "jobName":{
           "shape":"String",
           "documentation":"<p>The name of the service job.</p>"
+        },
+        "scheduledAt":{
+          "shape":"Long",
+          "documentation":"<p>The Unix timestamp (in milliseconds) for when the service job was scheduled for execution.</p>"
         },
         "serviceJobType":{
           "shape":"ServiceJobType",

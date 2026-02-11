@@ -112,6 +112,16 @@ class TestConfigureSetCommand(unittest.TestCase):
             'myconfigfile',
         )
 
+    def test_configure_set_with_sso_session(self):
+        # aws configure set sso-session.testing.sso_region us-east-2
+        set_command = ConfigureSetCommand(
+            self.session, self.config_writer)
+        set_command(args=['sso-session.testing.sso_region', 'us-east-2'],
+                    parsed_globals=None)
+        self.config_writer.update_config.assert_called_with(
+            {'__section__': 'sso-session testing',
+             'sso_region': 'us-east-2'}, 'myconfigfile')
+
     def test_access_key_written_to_shared_credentials_file(self):
         set_command = ConfigureSetCommand(self.session, self.config_writer)
         set_command(args=['aws_access_key_id', 'foo'], parsed_globals=None)

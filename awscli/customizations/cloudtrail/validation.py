@@ -585,7 +585,11 @@ class DigestTraverser:
 
         # For regular digests, pre-load public keys. For backfill, start with empty dict
         public_keys = (
-            {} if is_backfill else self._load_public_keys(start_date, end_date)
+            {}
+            if is_backfill
+            else self._load_public_keys(
+                start_date, end_date + timedelta(hours=2)
+            )
         )
 
         yield from self._traverse_digest_chain(

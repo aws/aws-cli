@@ -51,6 +51,8 @@ class DatabaseConnection:
     def _set_file_permissions(self):
         for suffix in ('', '-wal', '-shm'):
             path = self._db_filename + suffix
+            if not os.path.exists(path):
+                continue
             try:
                 os.chmod(path, 0o600)
             except OSError as e:

@@ -169,6 +169,29 @@ class TestAttachHistoryHandler(unittest.TestCase):
         self.assertFalse(mock_recorder.add_handler.called)
         self.assertFalse(mock_db_sqlite3.connect.called)
 
+    @mock.patch('awscli.customizations.history.DatabaseConnection')
+    @mock.patch(
+        'awscli.customizations.history.HISTORY_RECORDER', spec=HistoryRecorder
+    )
+    def test_warning_when_database_connection_fails(
+        self, mock_recorder, mock_db_connection
+    ):
+        mock_db_connection.side_effect = Exception('Permission denied')
+        mock_session = mock.Mock(Session)
+        mock_session.get_scoped_config.return_value = {
+            'cli_history': 'enabled'
+        }
+
+        parsed_args = argparse.Namespace()
+        parsed_args.command = 's3'
+
+        with mock.patch('sys.stderr', new_callable=StringIO) as mock_stderr:
+            attach_history_handler(
+                session=mock_session, parsed_args=parsed_args
+            )
+            self.assertIn('Warning: Unable to record CLI history', mock_stderr.getvalue())
+        self.assertFalse(mock_recorder.add_handler.called)
+
 
 class TestAddHistoryCommand(unittest.TestCase):
     def test_add_history_command(self):

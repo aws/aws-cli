@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.44.38
+=======
+
+* api-change:``ec2``: Launching nested virtualization. This feature allows you to run nested VMs inside virtual (non-bare metal) EC2 instances.
+* enhancement:cli-history: Create local history files with specific permissions
+
+
 1.44.37
 =======
 

@@ -14848,6 +14848,11 @@
           "shape":"AmdSevSnpSpecification",
           "documentation":"<p>Indicates whether the instance is enabled for AMD SEV-SNP. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html\">AMD SEV-SNP</a>.</p>",
           "locationName":"amdSevSnp"
+        },
+        "NestedVirtualization":{
+          "shape":"NestedVirtualizationSpecification",
+          "documentation":"<p>Indicates whether the instance is enabled for nested virtualization.</p>",
+          "locationName":"nestedVirtualization"
         }
       },
       "documentation":"<p>The CPU options for the instance.</p>"
@@ -14866,6 +14871,10 @@
         "AmdSevSnp":{
           "shape":"AmdSevSnpSpecification",
           "documentation":"<p>Indicates whether to enable the instance for AMD SEV-SNP. AMD SEV-SNP is supported with M6a, R6a, and C6a instance types only. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html\">AMD SEV-SNP</a>.</p>"
+        },
+        "NestedVirtualization":{
+          "shape":"NestedVirtualizationSpecification",
+          "documentation":"<p>Indicates whether to enable the instance for nested virtualization. Nested virtualization is supported only on 8th generation Intel-based instance types (c8i, m8i, r8i, and their flex variants). When nested virtualization is enabled, Virtual Secure Mode (VSM) is automatically disabled for the instance.</p>"
         }
       },
       "documentation":"<p>The CPU options for the instance. Both the core count and threads per core must be specified in the request.</p>"
@@ -49893,6 +49902,11 @@
           "shape":"AmdSevSnpSpecification",
           "documentation":"<p>Indicates whether the instance is enabled for AMD SEV-SNP. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html\">AMD SEV-SNP for Amazon EC2 instances</a>.</p>",
           "locationName":"amdSevSnp"
+        },
+        "NestedVirtualization":{
+          "shape":"NestedVirtualizationSpecification",
+          "documentation":"<p>Indicates whether the instance is enabled for nested virtualization. </p>",
+          "locationName":"nestedVirtualization"
         }
       },
       "documentation":"<p>The CPU options for the instance.</p>"
@@ -49911,6 +49925,10 @@
         "AmdSevSnp":{
           "shape":"AmdSevSnpSpecification",
           "documentation":"<p>Indicates whether to enable the instance for AMD SEV-SNP. AMD SEV-SNP is supported with M6a, R6a, and C6a instance types only. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/sev-snp.html\">AMD SEV-SNP for Amazon EC2 instances</a>.</p>"
+        },
+        "NestedVirtualization":{
+          "shape":"NestedVirtualizationSpecification",
+          "documentation":"<p>Indicates whether to enable the instance for nested virtualization. Nested virtualization is supported only on 8th generation Intel-based instance types (c8i, m8i, r8i, and their flex variants). When nested virtualization is enabled, Virtual Secure Mode (VSM) is automatically disabled for the instance.</p>"
         }
       },
       "documentation":"<p>The CPU options for the instance. Both the core count and threads per core must be specified in the request.</p>"
@@ -53429,11 +53447,7 @@
     },
     "ModifyInstanceCpuOptionsRequest":{
       "type":"structure",
-      "required":[
-        "InstanceId",
-        "CoreCount",
-        "ThreadsPerCore"
-      ],
+      "required":["InstanceId"],
       "members":{
         "InstanceId":{
           "shape":"InstanceId",
@@ -53446,6 +53460,10 @@
         "ThreadsPerCore":{
           "shape":"Integer",
           "documentation":"<p>The number of threads to run for each CPU core.</p>"
+        },
+        "NestedVirtualization":{
+          "shape":"NestedVirtualizationSpecification",
+          "documentation":"<p>Indicates whether to enable or disable nested virtualization for the instance. When nested virtualization is enabled, Virtual Secure Mode (VSM) is automatically disabled for the instance.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -53470,6 +53488,11 @@
           "shape":"Integer",
           "documentation":"<p>The number of threads that are running per CPU core for the specified instance after the update.</p>",
           "locationName":"threadsPerCore"
+        },
+        "NestedVirtualization":{
+          "shape":"NestedVirtualizationSpecification",
+          "documentation":"<p>Indicates whether nested virtualization has been enabled or disabled.</p>",
+          "locationName":"nestedVirtualization"
         }
       }
     },
@@ -56807,6 +56830,13 @@
         }
       },
       "documentation":"<p>Describes the OpenID Connect (OIDC) options.</p>"
+    },
+    "NestedVirtualizationSpecification":{
+      "type":"string",
+      "enum":[
+        "enabled",
+        "disabled"
+      ]
     },
     "NetmaskLength":{"type":"integer"},
     "NetworkAcl":{
@@ -69236,7 +69266,10 @@
     },
     "SupportedAdditionalProcessorFeature":{
       "type":"string",
-      "enum":["amd-sev-snp"]
+      "enum":[
+        "amd-sev-snp",
+        "nested-virtualization"
+      ]
     },
     "SupportedAdditionalProcessorFeatureList":{
       "type":"list",

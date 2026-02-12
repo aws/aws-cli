@@ -267,6 +267,15 @@ class TestBasicCommandFunctionality(unittest.TestCase):
             p.stdout.startswith('aws-cli')
         self.assertTrue(version_output, p.stderr)
 
+    def test_version_does_not_create_cache_directory(self):
+        # Regression test: --version should not create any files/directories.
+        with tempfile.TemporaryDirectory() as tmpdir:
+            env = os.environ.copy()
+            env['HOME'] = tmpdir
+            aws('--version', env_vars=env)
+            aws_dir = os.path.join(tmpdir, '.aws')
+            self.assertFalse(os.path.exists(aws_dir))
+
     def test_traceback_printed_when_debug_on(self):
         p = aws('ec2 describe-instances --filters BADKEY=foo --debug')
         self.assertIn('Traceback (most recent call last):', p.stderr, p.stderr)

@@ -8937,6 +8937,12 @@
         "Disable"
       ]
     },
+    "ClusterDnsName":{
+      "type":"string",
+      "max":275,
+      "min":16,
+      "pattern":"((fs|fc)i?-[0-9a-f]{8,}\\..{4,253})"
+    },
     "ClusterEbsVolumeConfig":{
       "type":"structure",
       "members":{
@@ -9076,6 +9082,49 @@
       },
       "documentation":"<p>A summary of an event in a HyperPod cluster.</p>"
     },
+    "ClusterFsxLustreConfig":{
+      "type":"structure",
+      "required":[
+        "DnsName",
+        "MountName"
+      ],
+      "members":{
+        "DnsName":{
+          "shape":"ClusterDnsName",
+          "documentation":"<p>The DNS name of the Amazon FSx for Lustre file system.</p>"
+        },
+        "MountName":{
+          "shape":"ClusterMountName",
+          "documentation":"<p>The mount name of the Amazon FSx for Lustre file system.</p>"
+        },
+        "MountPath":{
+          "shape":"ClusterFsxMountPath",
+          "documentation":"<p>The local path where the Amazon FSx for Lustre file system is mounted on instances.</p>"
+        }
+      },
+      "documentation":"<p>Defines the configuration for attaching an Amazon FSx for Lustre file system to instances in a SageMaker HyperPod cluster instance group.</p>"
+    },
+    "ClusterFsxMountPath":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"/[a-zA-Z0-9._/-]+"
+    },
+    "ClusterFsxOpenZfsConfig":{
+      "type":"structure",
+      "required":["DnsName"],
+      "members":{
+        "DnsName":{
+          "shape":"ClusterDnsName",
+          "documentation":"<p>The DNS name of the Amazon FSx for OpenZFS file system.</p>"
+        },
+        "MountPath":{
+          "shape":"ClusterFsxMountPath",
+          "documentation":"<p>The local path where the Amazon FSx for OpenZFS file system is mounted on instances.</p>"
+        }
+      },
+      "documentation":"<p>Defines the configuration for attaching an Amazon FSx for OpenZFS file system to instances in a SageMaker HyperPod cluster instance group.</p>"
+    },
     "ClusterInstanceCount":{
       "type":"integer",
       "box":true,
@@ -9173,7 +9222,11 @@
           "shape":"SoftwareUpdateStatus",
           "documentation":"<p>Status of the last software udpate request.</p> <p>Status transitions follow these possible sequences:</p> <ul> <li> <p>Pending -&gt; InProgress -&gt; Succeeded</p> </li> <li> <p>Pending -&gt; InProgress -&gt; RollbackInProgress -&gt; RollbackComplete</p> </li> <li> <p>Pending -&gt; InProgress -&gt; RollbackInProgress -&gt; Failed</p> </li> </ul>"
         },
-        "ActiveSoftwareUpdateConfig":{"shape":"DeploymentConfiguration"}
+        "ActiveSoftwareUpdateConfig":{"shape":"DeploymentConfiguration"},
+        "SlurmConfig":{
+          "shape":"ClusterSlurmConfigDetails",
+          "documentation":"<p>The Slurm configuration for the instance group.</p>"
+        }
       },
       "documentation":"<p>Details of an instance group in a SageMaker HyperPod cluster.</p>"
     },
@@ -9253,6 +9306,10 @@
           "shape":"ClusterKubernetesConfig",
           "documentation":"<p>Specifies the Kubernetes configuration for the instance group. You describe what you want the labels and taints to look like, and the cluster works to reconcile the actual state with the declared state for nodes in this instance group. </p>"
         },
+        "SlurmConfig":{
+          "shape":"ClusterSlurmConfig",
+          "documentation":"<p>Specifies the Slurm configuration for the instance group.</p>"
+        },
         "CapacityRequirements":{
           "shape":"ClusterCapacityRequirements",
           "documentation":"<p>Specifies the capacity requirements for the instance group.</p>"
@@ -9325,6 +9382,14 @@
         "EbsVolumeConfig":{
           "shape":"ClusterEbsVolumeConfig",
           "documentation":"<p>Defines the configuration for attaching additional Amazon Elastic Block Store (EBS) volumes to the instances in the SageMaker HyperPod cluster instance group. The additional EBS volume is attached to each instance within the SageMaker HyperPod cluster instance group and mounted to <code>/opt/sagemaker</code>.</p>"
+        },
+        "FsxLustreConfig":{
+          "shape":"ClusterFsxLustreConfig",
+          "documentation":"<p>Defines the configuration for attaching an Amazon FSx for Lustre file system to the instances in the SageMaker HyperPod cluster instance group.</p>"
+        },
+        "FsxOpenZfsConfig":{
+          "shape":"ClusterFsxOpenZfsConfig",
+          "documentation":"<p>Defines the configuration for attaching an Amazon FSx for OpenZFS file system to the instances in the SageMaker HyperPod cluster instance group.</p>"
         }
       },
       "documentation":"<p>Defines the configuration for attaching additional storage to the instances in the SageMaker HyperPod cluster instance group. To learn more, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-release-notes.html#sagemaker-hyperpod-release-notes-20240620\">SageMaker HyperPod release notes: June 20, 2024</a>.</p>",
@@ -9333,7 +9398,7 @@
     "ClusterInstanceStorageConfigs":{
       "type":"list",
       "member":{"shape":"ClusterInstanceStorageConfig"},
-      "max":2,
+      "max":4,
       "min":0
     },
     "ClusterInstanceType":{
@@ -9624,6 +9689,12 @@
       },
       "documentation":"<p>Metadata information about a HyperPod cluster showing information about the cluster level operations, such as creating, updating, and deleting.</p>"
     },
+    "ClusterMountName":{
+      "type":"string",
+      "max":8,
+      "min":1,
+      "pattern":"([A-Za-z0-9_-]{1,8})"
+    },
     "ClusterName":{
       "type":"string",
       "max":63,
@@ -9826,6 +9897,10 @@
         "Eks":{
           "shape":"ClusterOrchestratorEksConfig",
           "documentation":"<p>The Amazon EKS cluster used as the orchestrator for the SageMaker HyperPod cluster.</p>"
+        },
+        "Slurm":{
+          "shape":"ClusterOrchestratorSlurmConfig",
+          "documentation":"<p>The Slurm orchestrator configuration for the SageMaker HyperPod cluster.</p>"
         }
       },
       "documentation":"<p>The type of orchestrator used for the SageMaker HyperPod cluster.</p>"
@@ -9840,6 +9915,28 @@
         }
       },
       "documentation":"<p>The configuration settings for the Amazon EKS cluster used as the orchestrator for the SageMaker HyperPod cluster.</p>"
+    },
+    "ClusterOrchestratorSlurmConfig":{
+      "type":"structure",
+      "members":{
+        "SlurmConfigStrategy":{
+          "shape":"ClusterSlurmConfigStrategy",
+          "documentation":"<p>The strategy for managing partitions for the Slurm configuration. Valid values are <code>Managed</code>, <code>Overwrite</code>, and <code>Merge</code>.</p>"
+        }
+      },
+      "documentation":"<p>The configuration settings for the Slurm orchestrator used with the SageMaker HyperPod cluster.</p>"
+    },
+    "ClusterPartitionName":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "pattern":"[a-zA-Z0-9](-*[a-zA-Z0-9])*"
+    },
+    "ClusterPartitionNames":{
+      "type":"list",
+      "member":{"shape":"ClusterPartitionName"},
+      "max":1,
+      "min":0
     },
     "ClusterPrivateDnsHostname":{
       "type":"string",
@@ -10034,6 +10131,52 @@
     "ClusterSchedulerPriorityClassName":{
       "type":"string",
       "pattern":"[a-z0-9]([-a-z0-9]*[a-z0-9]){0,39}?"
+    },
+    "ClusterSlurmConfig":{
+      "type":"structure",
+      "required":["NodeType"],
+      "members":{
+        "NodeType":{
+          "shape":"ClusterSlurmNodeType",
+          "documentation":"<p>The type of Slurm node for the instance group. Valid values are <code>Controller</code>, <code>Worker</code>, and <code>Login</code>.</p>"
+        },
+        "PartitionNames":{
+          "shape":"ClusterPartitionNames",
+          "documentation":"<p>The list of Slurm partition names that the instance group belongs to.</p>"
+        }
+      },
+      "documentation":"<p>The Slurm configuration for an instance group in a SageMaker HyperPod cluster.</p>"
+    },
+    "ClusterSlurmConfigDetails":{
+      "type":"structure",
+      "required":["NodeType"],
+      "members":{
+        "NodeType":{
+          "shape":"ClusterSlurmNodeType",
+          "documentation":"<p>The type of Slurm node for the instance group. Valid values are <code>Controller</code>, <code>Worker</code>, and <code>Login</code>.</p>"
+        },
+        "PartitionNames":{
+          "shape":"ClusterPartitionNames",
+          "documentation":"<p>The list of Slurm partition names that the instance group belongs to.</p>"
+        }
+      },
+      "documentation":"<p>The Slurm configuration details for an instance group in a SageMaker HyperPod cluster.</p>"
+    },
+    "ClusterSlurmConfigStrategy":{
+      "type":"string",
+      "enum":[
+        "Overwrite",
+        "Managed",
+        "Merge"
+      ]
+    },
+    "ClusterSlurmNodeType":{
+      "type":"string",
+      "enum":[
+        "Controller",
+        "Login",
+        "Compute"
+      ]
     },
     "ClusterSortBy":{
       "type":"string",
@@ -11301,7 +11444,7 @@
         },
         "Orchestrator":{
           "shape":"ClusterOrchestrator",
-          "documentation":"<p>The type of orchestrator to use for the SageMaker HyperPod cluster. Currently, the only supported value is <code>\"eks\"</code>, which is to use an Amazon Elastic Kubernetes Service cluster as the orchestrator.</p>"
+          "documentation":"<p>The type of orchestrator to use for the SageMaker HyperPod cluster. Currently, supported values are <code>\"Eks\"</code> and <code>\"Slurm\"</code>, which is to use an Amazon Elastic Kubernetes Service or Slurm cluster as the orchestrator.</p> <note> <p>If you specify the <code>Orchestrator</code> field, you must provide exactly one orchestrator configuration: either <code>Eks</code> or <code>Slurm</code>. Specifying both or providing an empty configuration returns a validation error.</p> </note>"
         },
         "NodeRecovery":{
           "shape":"ClusterNodeRecovery",
@@ -37478,7 +37621,13 @@
         "ml.r7i.16xlarge",
         "ml.r7i.24xlarge",
         "ml.r7i.48xlarge",
-        "ml.p5.4xlarge"
+        "ml.p5.4xlarge",
+        "ml.g7e.2xlarge",
+        "ml.g7e.4xlarge",
+        "ml.g7e.8xlarge",
+        "ml.g7e.12xlarge",
+        "ml.g7e.24xlarge",
+        "ml.g7e.48xlarge"
       ]
     },
     "ProcessingJob":{
@@ -45528,7 +45677,8 @@
         "AutoScaling":{
           "shape":"ClusterAutoScalingConfig",
           "documentation":"<p>Updates the autoscaling configuration for the cluster. Use to enable or disable automatic node scaling.</p>"
-        }
+        },
+        "Orchestrator":{"shape":"ClusterOrchestrator"}
       }
     },
     "UpdateClusterResponse":{

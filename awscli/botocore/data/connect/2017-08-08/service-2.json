@@ -866,6 +866,25 @@
       ],
       "documentation":"<p>Creates an Amazon Web Services resource association with an Amazon Connect instance.</p>"
     },
+    "CreateNotification":{
+      "name":"CreateNotification",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/notifications/{InstanceId}"
+      },
+      "input":{"shape":"CreateNotificationRequest"},
+      "output":{"shape":"CreateNotificationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"DuplicateResourceException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Creates a new notification to be delivered to specified recipients. Notifications can include localized content with embedded links, and an optional expiration time. Recipients can be specified as individual user ARNs or instance ARNs to target all users in an instance.</p>"
+    },
     "CreateParticipant":{
       "name":"CreateParticipant",
       "http":{
@@ -1548,6 +1567,24 @@
       ],
       "documentation":"<p>Deletes an Amazon Web Services resource association from an Amazon Connect instance. The association must not have any use cases associated with it.</p>"
     },
+    "DeleteNotification":{
+      "name":"DeleteNotification",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/notifications/{InstanceId}/{NotificationId}"
+      },
+      "input":{"shape":"DeleteNotificationRequest"},
+      "output":{"shape":"DeleteNotificationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Deletes a notification. Once deleted, the notification is no longer visible to all users and cannot be managed through the Admin Website or APIs.</p>"
+    },
     "DeletePredefinedAttribute":{
       "name":"DeletePredefinedAttribute",
       "http":{
@@ -2166,6 +2203,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Retrieves the current storage configurations for the specified resource type, association ID, and instance ID.</p>"
+    },
+    "DescribeNotification":{
+      "name":"DescribeNotification",
+      "http":{
+        "method":"GET",
+        "requestUri":"/notifications/{InstanceId}/{NotificationId}"
+      },
+      "input":{"shape":"DescribeNotificationRequest"},
+      "output":{"shape":"DescribeNotificationResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a specific notification, including its content, priority, recipients, and metadata.</p>"
     },
     "DescribePhoneNumber":{
       "name":"DescribePhoneNumber",
@@ -3581,6 +3636,24 @@
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Returns a paginated list of all the Amazon Lex V1 bots currently associated with the instance. To return both Amazon Lex V1 and V2 bots, use the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_ListBots.html\">ListBots</a> API. </p>"
     },
+    "ListNotifications":{
+      "name":"ListNotifications",
+      "http":{
+        "method":"GET",
+        "requestUri":"/notifications/{InstanceId}"
+      },
+      "input":{"shape":"ListNotificationsRequest"},
+      "output":{"shape":"ListNotificationsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of all notifications in the Amazon Connect instance.</p>"
+    },
     "ListPhoneNumbers":{
       "name":"ListPhoneNumbers",
       "http":{
@@ -4025,6 +4098,24 @@
       ],
       "documentation":"<p>Provides summary information about the hierarchy groups for the specified Amazon Connect instance.</p> <p>For more information about agent hierarchies, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/agent-hierarchy.html\">Set Up Agent Hierarchies</a> in the <i>Amazon Connect Administrator Guide</i>.</p>"
     },
+    "ListUserNotifications":{
+      "name":"ListUserNotifications",
+      "http":{
+        "method":"GET",
+        "requestUri":"/users/{InstanceId}/{UserId}/notifications"
+      },
+      "input":{"shape":"ListUserNotificationsRequest"},
+      "output":{"shape":"ListUserNotificationsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of notifications for a specific user, including the notification status for that user.</p>"
+    },
     "ListUserProficiencies":{
       "name":"ListUserProficiencies",
       "http":{
@@ -4465,6 +4556,24 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Searches the hours of operation in an Amazon Connect instance, with optional filtering.</p>"
+    },
+    "SearchNotifications":{
+      "name":"SearchNotifications",
+      "http":{
+        "method":"POST",
+        "requestUri":"/search-notifications"
+      },
+      "input":{"shape":"SearchNotificationsRequest"},
+      "output":{"shape":"SearchNotificationsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Searches for notifications based on specified criteria and filters. Returns a paginated list of notifications matching the search parameters, ordered by descending creation time. Supports filtering by content and tags.</p>"
     },
     "SearchPredefinedAttributes":{
       "name":"SearchPredefinedAttributes",
@@ -5608,6 +5717,24 @@
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>Updates an existing configuration for a resource type. This API is idempotent.</p>"
     },
+    "UpdateNotificationContent":{
+      "name":"UpdateNotificationContent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/notifications/{InstanceId}/{NotificationId}"
+      },
+      "input":{"shape":"UpdateNotificationContentRequest"},
+      "output":{"shape":"UpdateNotificationContentResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Updates the localized content of an existing notification. This operation applies to all users for whom the notification was sent.</p>"
+    },
     "UpdateParticipantAuthentication":{
       "name":"UpdateParticipantAuthentication",
       "http":{
@@ -6098,6 +6225,24 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Updates the identity information for the specified user.</p> <important> <p>We strongly recommend limiting who has the ability to invoke <code>UpdateUserIdentityInfo</code>. Someone with that ability can change the login credentials of other users by changing their email address. This poses a security risk to your organization. They can change the email address of a user to the attacker's email address, and then reset the password through email. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-profile-best-practices.html\">Best Practices for Security Profiles</a> in the <i>Amazon Connect Administrator Guide</i>.</p> </important>"
+    },
+    "UpdateUserNotificationStatus":{
+      "name":"UpdateUserNotificationStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/users/{InstanceId}/{UserId}/notifications/{NotificationId}"
+      },
+      "input":{"shape":"UpdateUserNotificationStatusRequest"},
+      "output":{"shape":"UpdateUserNotificationStatusResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"}
+      ],
+      "documentation":"<p>Updates the status of a notification for a specific user, such as marking it as read or hidden. Users can only update notification status for notifications that have been sent to them. READ status deprioritizes the notification and greys it out, while HIDDEN status removes it from the notification widget.</p>"
     },
     "UpdateUserPhoneConfig":{
       "name":"UpdateUserPhoneConfig",
@@ -9260,6 +9405,14 @@
       "type":"list",
       "member":{"shape":"Condition"}
     },
+    "ConfigurableNotificationPriority":{
+      "type":"string",
+      "documentation":"<p>The priority level that can be set when creating a customer notification. Valid values are HIGH and LOW. URGENT priority is reserved for system-generated notifications.</p>",
+      "enum":[
+        "HIGH",
+        "LOW"
+      ]
+    },
     "ConflictException":{
       "type":"structure",
       "members":{
@@ -11368,6 +11521,65 @@
         "IntegrationAssociationArn":{
           "shape":"ARN",
           "documentation":"<p>The Amazon Resource Name (ARN) for the association.</p>"
+        }
+      }
+    },
+    "CreateNotificationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Recipients",
+        "Content"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "ExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification should expire and no longer be displayed to users. If not specified, defaults to one week from creation.</p>"
+        },
+        "Recipients":{
+          "shape":"RecipientList",
+          "documentation":"<p>A list of Amazon Resource Names (ARNs) identifying the recipients of the notification. Can include user ARNs or instance ARNs to target all users in an instance. Maximum of 200 recipients.</p>"
+        },
+        "Priority":{
+          "shape":"ConfigurableNotificationPriority",
+          "documentation":"<p>The priority level of the notification. Valid values are HIGH and LOW. High priority notifications are displayed above low priority notifications.</p>"
+        },
+        "Content":{
+          "shape":"NotificationContent",
+          "documentation":"<p>The localized content of the notification. A map where keys are locale codes and values are the notification text in that locale. Content supports markdown formatting and embedded links. Maximum 250 characters per locale.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, <code>{ \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }</code>.</p>"
+        },
+        "PredefinedNotificationId":{"shape":"NotificationId"},
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateNotificationResponse":{
+      "type":"structure",
+      "required":[
+        "NotificationId",
+        "NotificationArn"
+      ],
+      "members":{
+        "NotificationId":{
+          "shape":"NotificationId",
+          "documentation":"<p>The unique identifier assigned to the created notification.</p>"
+        },
+        "NotificationArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created notification.</p>"
         }
       }
     },
@@ -13769,6 +13981,32 @@
         }
       }
     },
+    "DeleteNotificationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "NotificationId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "NotificationId":{
+          "shape":"NotificationId",
+          "documentation":"<p>The unique identifier for the notification to delete.</p>",
+          "location":"uri",
+          "locationName":"NotificationId"
+        }
+      }
+    },
+    "DeleteNotificationResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The response from deleting a notification.</p>"
+    },
     "DeletePredefinedAttributeRequest":{
       "type":"structure",
       "required":[
@@ -14824,6 +15062,37 @@
         "StorageConfig":{
           "shape":"InstanceStorageConfig",
           "documentation":"<p>A valid storage type.</p>"
+        }
+      }
+    },
+    "DescribeNotificationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "NotificationId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "NotificationId":{
+          "shape":"NotificationId",
+          "documentation":"<p>The unique identifier for the notification.</p>",
+          "location":"uri",
+          "locationName":"NotificationId"
+        }
+      }
+    },
+    "DescribeNotificationResponse":{
+      "type":"structure",
+      "required":["Notification"],
+      "members":{
+        "Notification":{
+          "shape":"Notification",
+          "documentation":"<p>The complete notification information including content, priority, recipients, and metadata.</p>"
         }
       }
     },
@@ -22518,6 +22787,45 @@
         }
       }
     },
+    "ListNotificationsRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page. Valid range is 1-100.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListNotificationsResponse":{
+      "type":"structure",
+      "required":["NotificationSummaryList"],
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. If present, there are more results available.</p>"
+        },
+        "NotificationSummaryList":{
+          "shape":"NotificationSummaryList",
+          "documentation":"<p>A list of notification summaries.</p>"
+        }
+      }
+    },
     "ListPhoneNumbersRequest":{
       "type":"structure",
       "required":["InstanceId"],
@@ -23778,6 +24086,53 @@
         }
       }
     },
+    "ListUserNotificationsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "UserId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response to retrieve the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult1000",
+          "documentation":"<p>The maximum number of results to return per page. Valid range is 1-1000.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>The identifier of the user.</p>",
+          "location":"uri",
+          "locationName":"UserId"
+        }
+      }
+    },
+    "ListUserNotificationsResponse":{
+      "type":"structure",
+      "members":{
+        "UserNotifications":{
+          "shape":"UserNotificationSummaryList",
+          "documentation":"<p>A list of notifications sent to the specified user.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. If present, there are more results available.</p>"
+        }
+      }
+    },
     "ListUserProficienciesRequest":{
       "type":"structure",
       "required":[
@@ -24077,6 +24432,29 @@
           "documentation":"<p>A summary list of workspaces.</p>"
         }
       }
+    },
+    "LocaleCode":{
+      "type":"string",
+      "documentation":"<p>The locale code for localized content. Supported values include en_US, de_DE, es_ES, fr_FR, id_ID, it_IT, ja_JP, ko_KR, pt_BR, zh_CN, and zh_TW.</p>",
+      "enum":[
+        "en_US",
+        "de_DE",
+        "es_ES",
+        "fr_FR",
+        "id_ID",
+        "it_IT",
+        "ja_JP",
+        "ko_KR",
+        "pt_BR",
+        "zh_CN",
+        "zh_TW"
+      ]
+    },
+    "LocalizedString":{
+      "type":"string",
+      "documentation":"<p>A localized string value. Maximum length is 500 characters.</p>",
+      "max":500,
+      "min":0
     },
     "Long":{"type":"long"},
     "MatchCriteria":{
@@ -24616,6 +24994,63 @@
       "max":2500,
       "min":1
     },
+    "Notification":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Arn",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "Content":{
+          "shape":"NotificationContent",
+          "documentation":"<p>The localized content of the notification. A map where keys are locale codes and values are the notification text in that locale.</p>"
+        },
+        "Id":{
+          "shape":"NotificationId",
+          "documentation":"<p>The unique identifier for the notification.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the notification.</p>"
+        },
+        "Priority":{
+          "shape":"NotificationPriority",
+          "documentation":"<p>The priority level of the notification. Valid values are URGENT, HIGH, and LOW.</p>"
+        },
+        "Recipients":{
+          "shape":"RecipientList",
+          "documentation":"<p>A list of Amazon Resource Names (ARNs) identifying the recipients of the notification. Maximum of 200 recipients.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification was last modified.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification was created.</p>"
+        },
+        "ExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification expires and is no longer displayed to users.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The AWS Region where the notification was last modified.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, <code>{ \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a notification, including its content, priority, recipients, and metadata.</p>"
+    },
+    "NotificationContent":{
+      "type":"map",
+      "key":{"shape":"LocaleCode"},
+      "value":{"shape":"LocalizedString"},
+      "documentation":"<p>A map of localized notification content where keys are locale codes and values are the notification text in that locale. Each localized string can be 0-500 characters.</p>"
+    },
     "NotificationContentType":{
       "type":"string",
       "enum":["PLAIN_TEXT"]
@@ -24623,6 +25058,21 @@
     "NotificationDeliveryType":{
       "type":"string",
       "enum":["EMAIL"]
+    },
+    "NotificationId":{
+      "type":"string",
+      "documentation":"<p>The unique identifier for a notification.</p>",
+      "max":256,
+      "min":1
+    },
+    "NotificationPriority":{
+      "type":"string",
+      "documentation":"<p>The priority level of a notification. Valid values are URGENT (reserved for system-generated notifications during availability or security events), HIGH, and LOW. High priority notifications are displayed above low priority notifications in the notification widget.</p>",
+      "enum":[
+        "URGENT",
+        "HIGH",
+        "LOW"
+      ]
     },
     "NotificationRecipientType":{
       "type":"structure",
@@ -24637,6 +25087,113 @@
         }
       },
       "documentation":"<p>The type of notification recipient.</p>"
+    },
+    "NotificationSearchConditionList":{
+      "type":"list",
+      "member":{"shape":"NotificationSearchCriteria"}
+    },
+    "NotificationSearchCriteria":{
+      "type":"structure",
+      "members":{
+        "OrConditions":{
+          "shape":"NotificationSearchConditionList",
+          "documentation":"<p>A list of conditions to be met, where at least one condition must be satisfied.</p>"
+        },
+        "AndConditions":{
+          "shape":"NotificationSearchConditionList",
+          "documentation":"<p>A list of conditions that must all be satisfied.</p>"
+        },
+        "StringCondition":{"shape":"StringCondition"}
+      },
+      "documentation":"<p>The search criteria to be used to return notifications.</p>"
+    },
+    "NotificationSearchFilter":{
+      "type":"structure",
+      "members":{
+        "AttributeFilter":{
+          "shape":"ControlPlaneAttributeFilter",
+          "documentation":"<p>Attribute-based filters to apply to the search results.</p>"
+        }
+      },
+      "documentation":"<p>Filters to apply when searching for notifications.</p>"
+    },
+    "NotificationSearchSummary":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"NotificationId",
+          "documentation":"<p>The unique identifier for the notification.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the notification.</p>"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>"
+        },
+        "Content":{
+          "shape":"NotificationContent",
+          "documentation":"<p>The localized content of the notification.</p>"
+        },
+        "Priority":{
+          "shape":"NotificationPriority",
+          "documentation":"<p>The priority level of the notification.</p>"
+        },
+        "Recipients":{
+          "shape":"RecipientList",
+          "documentation":"<p>A list of recipient Amazon Resource Names (ARNs).</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification was created.</p>"
+        },
+        "ExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification expires.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The AWS Region where the notification was last modified.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification was last modified.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags associated with the notification.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a notification returned from a search operation.</p>"
+    },
+    "NotificationSearchSummaryList":{
+      "type":"list",
+      "member":{"shape":"NotificationSearchSummary"},
+      "documentation":"<p>A list of notification search summaries.</p>"
+    },
+    "NotificationSource":{
+      "type":"string",
+      "documentation":"<p>The source that created the notification. Possible values include CUSTOMER (user-created), RULES (rule-generated), and SYSTEM (system-generated).</p>",
+      "enum":[
+        "CUSTOMER",
+        "RULES",
+        "SYSTEM"
+      ]
+    },
+    "NotificationStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a notification for a specific user. Valid values are READ, UNREAD, and HIDDEN (removes the notification from the widget).</p>",
+      "enum":[
+        "READ",
+        "UNREAD",
+        "HIDDEN"
+      ]
+    },
+    "NotificationSummaryList":{
+      "type":"list",
+      "member":{"shape":"Notification"},
+      "documentation":"<p>A list of notification summaries.</p>"
     },
     "NullableBoolean":{"type":"boolean"},
     "NullableDouble":{"type":"double"},
@@ -27269,6 +27826,12 @@
       "type":"list",
       "member":{"shape":"RealtimeContactAnalysisSegment"}
     },
+    "RecipientList":{
+      "type":"list",
+      "member":{"shape":"ARN"},
+      "documentation":"<p>A list of recipient Amazon Resource Names (ARNs). Maximum of 200 recipients.</p>",
+      "max":200
+    },
     "RecordIds":{
       "type":"list",
       "member":{"shape":"DataTableId"}
@@ -29099,6 +29662,50 @@
         "ApproximateTotalCount":{
           "shape":"ApproximateTotalCount",
           "documentation":"<p>The total number of hours of operations which matched your search query.</p>"
+        }
+      }
+    },
+    "SearchNotificationsRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response to retrieve the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page. Valid range is 1-100.</p>",
+          "box":true
+        },
+        "SearchFilter":{
+          "shape":"NotificationSearchFilter",
+          "documentation":"<p>Filters to apply to the search results, such as tag-based filters.</p>"
+        },
+        "SearchCriteria":{
+          "shape":"NotificationSearchCriteria",
+          "documentation":"<p>The search criteria to apply when searching for notifications. Supports filtering by notification ID and message content using comparison types such as STARTS_WITH, CONTAINS, and EXACT.</p>"
+        }
+      }
+    },
+    "SearchNotificationsResponse":{
+      "type":"structure",
+      "members":{
+        "Notifications":{
+          "shape":"NotificationSearchSummaryList",
+          "documentation":"<p>A list of notifications matching the search criteria.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. If present, there are more results available.</p>"
+        },
+        "ApproximateTotalCount":{
+          "shape":"ApproximateTotalCount",
+          "documentation":"<p>The approximate total number of notifications matching the search criteria.</p>"
         }
       }
     },
@@ -33720,6 +34327,37 @@
         }
       }
     },
+    "UpdateNotificationContentRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "NotificationId",
+        "Content"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "NotificationId":{
+          "shape":"NotificationId",
+          "documentation":"<p>The unique identifier for the notification to update.</p>",
+          "location":"uri",
+          "locationName":"NotificationId"
+        },
+        "Content":{
+          "shape":"NotificationContent",
+          "documentation":"<p>The updated localized content of the notification. A map of locale codes and values. Maximum 500 characters per locale.</p>"
+        }
+      }
+    },
+    "UpdateNotificationContentResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The response from updating notification content.</p>"
+    },
     "UpdateParticipantAuthenticationRequest":{
       "type":"structure",
       "required":[
@@ -34718,6 +35356,56 @@
         }
       }
     },
+    "UpdateUserNotificationStatusRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "NotificationId",
+        "UserId",
+        "Status"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "NotificationId":{
+          "shape":"NotificationId",
+          "documentation":"<p>The unique identifier for the notification.</p>",
+          "location":"uri",
+          "locationName":"NotificationId"
+        },
+        "UserId":{
+          "shape":"UserId",
+          "documentation":"<p>The identifier of the user whose notification status is being updated.</p>",
+          "location":"uri",
+          "locationName":"UserId"
+        },
+        "Status":{
+          "shape":"NotificationStatus",
+          "documentation":"<p>The new status for the notification. Valid values are READ, UNREAD, and HIDDEN.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification status was last modified. Used for cross-region replication and optimistic locking.</p>",
+          "location":"header",
+          "locationName":"x-amz-last-modified-time"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The AWS Region where the notification status was last modified. Used for cross-region replication.</p>",
+          "location":"header",
+          "locationName":"x-amz-last-modified-region"
+        }
+      }
+    },
+    "UpdateUserNotificationStatusResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>The response from updating a user's notification status.</p>"
+    },
     "UpdateUserPhoneConfigRequest":{
       "type":"structure",
       "required":[
@@ -35372,6 +36060,53 @@
       "documentation":"<p>No user with the specified credentials was found in the Amazon Connect instance.</p>",
       "error":{"httpStatusCode":404},
       "exception":true
+    },
+    "UserNotificationSummary":{
+      "type":"structure",
+      "members":{
+        "NotificationId":{
+          "shape":"NotificationId",
+          "documentation":"<p>The unique identifier for the notification.</p>"
+        },
+        "NotificationStatus":{
+          "shape":"NotificationStatus",
+          "documentation":"<p>The status of the notification for this user. Valid values are READ, UNREAD, and HIDDEN.</p>"
+        },
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>"
+        },
+        "RecipientId":{
+          "shape":"AgentId",
+          "documentation":"<p>The identifier of the recipient user.</p>"
+        },
+        "Content":{
+          "shape":"NotificationContent",
+          "documentation":"<p>The localized content of the notification.</p>"
+        },
+        "Priority":{
+          "shape":"NotificationPriority",
+          "documentation":"<p>The priority level of the notification.</p>"
+        },
+        "Source":{
+          "shape":"NotificationSource",
+          "documentation":"<p>The source that created the notification. Valid values are CUSTOMER, RULES, and SYSTEM.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification was created.</p>"
+        },
+        "ExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the notification expires.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a notification for a specific user, including the user's read status.</p>"
+    },
+    "UserNotificationSummaryList":{
+      "type":"list",
+      "member":{"shape":"UserNotificationSummary"},
+      "documentation":"<p>A list of user notification summaries.</p>"
     },
     "UserPhoneConfig":{
       "type":"structure",

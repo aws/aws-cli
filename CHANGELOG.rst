@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.33.22
+=======
+
+* api-change:``inspector2``: Added .Net 10 (dotnet10) and Node 24.x (node24.x) runtime support for lambda package scanning
+* api-change:``ec2``: This release adds geography information to EC2 region and availability zone APIs. DescribeRegions now includes a Geography field, while DescribeAvailabilityZones includes both Geography and SubGeography fields, enabling better geographic classification for AWS regions and zones.
+* api-change:``sagemaker``: Enable g7e instance type support for SageMaker Processing, and enable single file configuration provisioning for HyperPod Slurm, where customers have the option to use HyperPod API to provide the provisioning parameters.
+* api-change:``cloudwatch``: Adding new evaluation states that provides information about the alarm evaluation process. Evaluation error Indicates configuration errors in alarm setup that require review and correction. Evaluation failure Indicates temporary CloudWatch issues.
+* api-change:``connect``: API release for headerr notifications in the admin website. APIs allow customers to publish brief messages (including URLs) to a specified audience, and a new header icon will indicate when unread messages are available.
+
+
 2.33.21
 =======
 

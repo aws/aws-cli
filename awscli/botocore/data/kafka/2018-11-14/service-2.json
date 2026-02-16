@@ -3271,6 +3271,17 @@
         "VpcConfigs"
       ]
     },
+    "ServerlessConnectivityInfo": {
+      "type": "structure",
+      "documentation": "\n            <p>Describes the cluster's connectivity information, such as its network type, which is IPv4 or DUAL.</p>\n         ",
+      "members": {
+        "NetworkType": {
+          "shape": "NetworkType",
+          "locationName": "networkType",
+          "documentation": "\n            <p>The network type of the cluster, which is IPv4 or DUAL. The DUAL network type uses both IPv4 and IPv6 addresses for your cluster and its resources.</p><p>By default, a cluster uses the IPv4 network type.</p>\n         "
+        }
+      }
+    },
     "Serverless": {
       "type": "structure",
       "documentation": "\n            <p>Serverless cluster.</p>\n         ",
@@ -3284,6 +3295,11 @@
           "shape": "ServerlessClientAuthentication",
           "locationName": "clientAuthentication",
           "documentation": "\n            <p>Includes all client authentication information.</p>\n         "
+        },
+        "ConnectivityInfo": {
+          "shape": "ServerlessConnectivityInfo",
+          "locationName": "connectivityInfo",
+          "documentation": "\n            <p>Describes the cluster's connectivity information, such as its network type, which is IPv4 or DUAL.</p>\n         "
         }
       },
       "required": [
@@ -3516,6 +3532,11 @@
           "shape": "VpcConnectivity",
           "locationName": "vpcConnectivity",
           "documentation": "\n            <p>VPC connectivity access control for brokers.</p>\n         "
+        },
+        "NetworkType": {
+          "shape": "NetworkType",
+          "locationName": "networkType",
+          "documentation": "\n            <p>The network type of the cluster, which is IPv4 or DUAL. The DUAL network type uses both IPv4 and IPv6 addresses for your cluster and its resources.</p><p>By default, a cluster uses the IPv4 network type.</p>\n         "
         }
       },
       "documentation": "\n            <p>Information about the broker access configuration.</p>\n         "
@@ -4171,6 +4192,16 @@
     "ClusterOperationV2Serverless": {
       "type": "structure",
       "members": {
+        "SourceClusterInfo": {
+          "shape": "ServerlessConnectivityInfo",
+          "locationName": "sourceClusterInfo",
+          "documentation": "\n            <p>Describes the cluster's attributes before any updates are applied. For example, networkType, which can be either IPv4 or DUAL.</p>"
+        },
+        "TargetClusterInfo": {
+          "shape": "ServerlessConnectivityInfo",
+          "locationName": "targetClusterInfo",
+          "documentation": "\n             <p>Describes the cluster's attributes after any updates are applied. For example, networkType, which can be either IPv4 or DUAL.</p>"
+        },
         "VpcConnectionInfo": {
           "shape": "VpcConnectionInfoServerless",
           "locationName": "vpcConnectionInfo",
@@ -5287,6 +5318,26 @@
           "shape": "__string",
           "locationName": "bootstrapBrokerStringVpcConnectivitySaslIam",
           "documentation": "\n            <p>A string containing one or more DNS names (or IP) and SASL/IAM port pairs for VPC connectivity.</p>\n         "
+        },
+        "BootstrapBrokerStringIpv6": {
+          "shape": "__string",
+          "locationName": "bootstrapBrokerStringIpv6",
+          "documentation": "\n            <p>A string that contains one or more DNS names (or IP) and port pairs for IPv6 connectivity.</p>\n         "
+        },
+        "BootstrapBrokerStringTlsIpv6": {
+          "shape": "__string",
+          "locationName": "bootstrapBrokerStringTlsIpv6",
+          "documentation": "\n            <p>A string that contains one or more DNS names (or IP) and TLS port pairs for IPv6 connectivity.</p>\n         "
+        },
+        "BootstrapBrokerStringSaslScramIpv6": {
+          "shape": "__string",
+          "locationName": "bootstrapBrokerStringSaslScramIpv6",
+          "documentation": "\n            <p>A string that contains one or more DNS names (or IP) and SASL SCRAM port pairs for IPv6 connectivity.</p>\n         "
+        },
+        "BootstrapBrokerStringSaslIamIpv6": {
+          "shape": "__string",
+          "locationName": "bootstrapBrokerStringSaslIamIpv6",
+          "documentation": "\n            <p>A string that contains one or more DNS names (or IP) and SASL IAM port pairs for IPv6 connectivity.</p>\n         "
         }
       }
     },
@@ -6465,6 +6516,14 @@
         }
       },
       "documentation": "\n            <p>The node information object.</p>\n         "
+    },
+    "NetworkType": {
+      "type": "string",
+      "documentation": "\n            <p>The network type of the cluster, which is IPv4 or DUAL. The DUAL network type uses both IPv4 and IPv6 addresses for your cluster and its resources.</p><p>By default, a cluster uses the IPv4 network type.</p>\n         ",
+      "enum": [
+        "IPV4",
+        "DUAL"
+      ]
     },
     "NodeType": {
       "type": "string",

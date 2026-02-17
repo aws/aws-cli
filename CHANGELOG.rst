@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.33.24
+=======
+
+* api-change:``iotanalytics`: The iotanalytics client has been removed following the deprecation of the service.
+* api-change:``ec2``: Add Operator field to CreatePlacementGroup and DescribePlacementGroup APIs.
+* api-change:``evidently``: The evidently client has been removed following the deprecation of the service.
+* api-change:``workspaces-web``: Adds support for branding customization without requiring a custom wallpaper.
+* api-change:``rds``: Adds support for the StorageEncryptionType field to specify encryption type for DB clusters, DB instances, snapshots, automated backups, and global clusters.
+* api-change:``grafana``: This release updates Amazon Managed Grafana's APIs to support customer managed KMS keys.
+
+
 2.33.23
 =======
 

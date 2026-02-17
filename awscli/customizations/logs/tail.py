@@ -33,7 +33,7 @@ class BaseLogEventsFormatter:
         self._output = output
         self._colorize = colorize
         if self._colorize:
-            colorama.init(autoreset=True, strip=False)
+            colorama.init(autoreset=True, strip=False)  # noqa
 
     def display_log_event(self, log_event):
         raise NotImplementedError('display_log_event()')

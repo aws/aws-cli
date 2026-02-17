@@ -5852,6 +5852,10 @@
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the DB cluster is encrypted.</p>"
         },
+        "StorageEncryptionType":{
+          "shape":"StorageEncryptionType",
+          "documentation":"<p>The type of encryption used to protect data at rest in the DB cluster. Possible values:</p> <ul> <li> <p> <code>none</code> - The DB cluster is not encrypted.</p> </li> <li> <p> <code>sse-rds</code> - The DB cluster is encrypted using an Amazon Web Services owned KMS key.</p> </li> <li> <p> <code>sse-kms</code> - The DB cluster is encrypted using a customer managed KMS key or Amazon Web Services managed KMS key.</p> </li> </ul>"
+        },
         "KmsKeyId":{
           "shape":"String",
           "documentation":"<p>If <code>StorageEncrypted</code> is enabled, the Amazon Web Services KMS key identifier for the encrypted DB cluster.</p> <p>The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for the KMS key.</p>"
@@ -6122,6 +6126,10 @@
         "StorageEncrypted":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the source DB cluster is encrypted.</p>"
+        },
+        "StorageEncryptionType":{
+          "shape":"StorageEncryptionType",
+          "documentation":"<p>The type of encryption used to protect data at rest in the automated backup. Possible values:</p> <ul> <li> <p> <code>none</code> - The automated backup is not encrypted.</p> </li> <li> <p> <code>sse-rds</code> - The automated backup is encrypted using an Amazon Web Services owned KMS key.</p> </li> <li> <p> <code>sse-kms</code> - The automated backup is encrypted using a customer managed KMS key or Amazon Web Services managed KMS key.</p> </li> </ul>"
         },
         "AllocatedStorage":{
           "shape":"Integer",
@@ -6716,6 +6724,10 @@
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the DB cluster snapshot is encrypted.</p>"
         },
+        "StorageEncryptionType":{
+          "shape":"StorageEncryptionType",
+          "documentation":"<p>The type of encryption used to protect data at rest in the DB cluster snapshot. Possible values:</p> <ul> <li> <p> <code>none</code> - The DB cluster snapshot is not encrypted.</p> </li> <li> <p> <code>sse-rds</code> - The DB cluster snapshot is encrypted using an Amazon Web Services owned KMS key.</p> </li> <li> <p> <code>sse-kms</code> - The DB cluster snapshot is encrypted using a customer managed KMS key or Amazon Web Services managed KMS key.</p> </li> </ul>"
+        },
         "BackupRetentionPeriod":{
           "shape":"IntegerOptional",
           "documentation":"<p>The number of days for which automatic DB snapshots are retained.</p>"
@@ -7192,6 +7204,10 @@
           "shape":"String",
           "documentation":"<p>The storage type associated with the DB instance.</p>"
         },
+        "StorageEncryptionType":{
+          "shape":"StorageEncryptionType",
+          "documentation":"<p>The type of encryption used to protect data at rest in the DB instance. Possible values:</p> <ul> <li> <p> <code>none</code> - The DB instance is not encrypted.</p> </li> <li> <p> <code>sse-rds</code> - The DB instance is encrypted using an Amazon Web Services owned KMS key.</p> </li> <li> <p> <code>sse-kms</code> - The DB instance is encrypted using a customer managed KMS key or Amazon Web Services managed KMS key.</p> </li> </ul>"
+        },
         "TdeCredentialArn":{
           "shape":"String",
           "documentation":"<p>The ARN from the key store with which the instance is associated for TDE encryption.</p>"
@@ -7498,6 +7514,10 @@
         "Encrypted":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the automated backup is encrypted.</p>"
+        },
+        "StorageEncryptionType":{
+          "shape":"StorageEncryptionType",
+          "documentation":"<p>The type of encryption used to protect data at rest in the automated backup. Possible values:</p> <ul> <li> <p> <code>none</code> - The automated backup is not encrypted.</p> </li> <li> <p> <code>sse-rds</code> - The automated backup is encrypted using an Amazon Web Services owned KMS key.</p> </li> <li> <p> <code>sse-kms</code> - The automated backup is encrypted using a customer managed KMS key or Amazon Web Services managed KMS key.</p> </li> </ul>"
         },
         "StorageType":{
           "shape":"String",
@@ -8682,6 +8702,10 @@
         "Encrypted":{
           "shape":"Boolean",
           "documentation":"<p>Indicates whether the DB snapshot is encrypted.</p>"
+        },
+        "StorageEncryptionType":{
+          "shape":"StorageEncryptionType",
+          "documentation":"<p>The type of encryption used to protect data at rest in the DB snapshot. Possible values:</p> <ul> <li> <p> <code>none</code> - The DB snapshot is not encrypted.</p> </li> <li> <p> <code>sse-rds</code> - The DB snapshot is encrypted using an Amazon Web Services owned KMS key.</p> </li> <li> <p> <code>sse-kms</code> - The DB snapshot is encrypted using a customer managed KMS key or Amazon Web Services managed KMS key.</p> </li> </ul>"
         },
         "BackupRetentionPeriod":{
           "shape":"IntegerOptional",
@@ -11574,6 +11598,10 @@
         "StorageEncrypted":{
           "shape":"BooleanOptional",
           "documentation":"<p>The storage encryption setting for the global database cluster.</p>"
+        },
+        "StorageEncryptionType":{
+          "shape":"StorageEncryptionType",
+          "documentation":"<p>The type of encryption used to protect data at rest in the global database cluster. Possible values:</p> <ul> <li> <p> <code>none</code> - The global database cluster is not encrypted.</p> </li> <li> <p> <code>sse-rds</code> - The global database cluster is encrypted using an Amazon Web Services owned KMS key.</p> </li> <li> <p> <code>sse-kms</code> - The global database cluster is encrypted using a customer managed KMS key or Amazon Web Services managed KMS key.</p> </li> </ul>"
         },
         "DeletionProtection":{
           "shape":"BooleanOptional",
@@ -17049,6 +17077,14 @@
       "members":{
         "DBInstance":{"shape":"DBInstance"}
       }
+    },
+    "StorageEncryptionType":{
+      "type":"string",
+      "enum":[
+        "none",
+        "sse-kms",
+        "sse-rds"
+      ]
     },
     "StorageQuotaExceededFault":{
       "type":"structure",

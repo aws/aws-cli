@@ -158,6 +158,24 @@
       ],
       "documentation":"<p>Associates a connect resource to a flow.</p>"
     },
+    "AssociateHoursOfOperations":{
+      "name":"AssociateHoursOfOperations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/hours-of-operations/{InstanceId}/{HoursOfOperationId}/associate-hours"
+      },
+      "input":{"shape":"AssociateHoursOfOperationsRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ConditionalOperationFailedException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Associates a set of hours of operations with another hours of operation. Refer to Administrator Guide <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/hours-of-operation-overrides.html\"> here </a> for more information on inheriting overrides from parent hours of operation(s).</p>"
+    },
     "AssociateInstanceStorageConfig":{
       "name":"AssociateInstanceStorageConfig",
       "http":{
@@ -790,7 +808,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"LimitExceededException"},
         {"shape":"ThrottlingException"},
-        {"shape":"InternalServiceException"}
+        {"shape":"InternalServiceException"},
+        {"shape":"ServiceQuotaExceededException"}
       ],
       "documentation":"<p>Creates hours of operation. </p>"
     },
@@ -1049,6 +1068,29 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Creates a new task template in the specified Amazon Connect instance.</p>"
+    },
+    "CreateTestCase":{
+      "name":"CreateTestCase",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/test-cases/{InstanceId}"
+      },
+      "input":{"shape":"CreateTestCaseRequest"},
+      "output":{"shape":"CreateTestCaseResponse"},
+      "errors":[
+        {"shape":"DuplicateResourceException"},
+        {"shape":"InvalidTestCaseException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"IdempotencyException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a test case with its content and metadata for the specified Amazon Connect instance.</p>"
     },
     "CreateTrafficDistributionGroup":{
       "name":"CreateTrafficDistributionGroup",
@@ -1658,6 +1700,24 @@
       ],
       "documentation":"<p>Deletes the task template.</p>"
     },
+    "DeleteTestCase":{
+      "name":"DeleteTestCase",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/test-cases/{InstanceId}/{TestCaseId}"
+      },
+      "input":{"shape":"DeleteTestCaseRequest"},
+      "output":{"shape":"DeleteTestCaseResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Deletes the test case that has already been created for the specified Amazon Connect instance.</p>"
+    },
     "DeleteTrafficDistributionGroup":{
       "name":"DeleteTrafficDistributionGroup",
       "http":{
@@ -2243,6 +2303,24 @@
       ],
       "documentation":"<p>Gets basic information about the security profile.</p> <p>For information about security profiles, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/connect-security-profiles.html\">Security Profiles</a> in the <i>Amazon Connect Administrator Guide</i>. For a mapping of the API name and user interface name of the security profile permissions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-profile-list.html\">List of security profile permissions</a>. </p>"
     },
+    "DescribeTestCase":{
+      "name":"DescribeTestCase",
+      "http":{
+        "method":"GET",
+        "requestUri":"/test-cases/{InstanceId}/{TestCaseId}"
+      },
+      "input":{"shape":"DescribeTestCaseRequest"},
+      "output":{"shape":"DescribeTestCaseResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the specified test case and allows you to get the content and metadata of the test case for the specified Amazon Connect instance.</p>"
+    },
     "DescribeTrafficDistributionGroup":{
       "name":"DescribeTrafficDistributionGroup",
       "http":{
@@ -2447,6 +2525,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Disassociates a connect resource from a flow.</p>"
+    },
+    "DisassociateHoursOfOperations":{
+      "name":"DisassociateHoursOfOperations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/hours-of-operations/{InstanceId}/{HoursOfOperationId}/disassociate-hours"
+      },
+      "input":{"shape":"DisassociateHoursOfOperationsRequest"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"ConditionalOperationFailedException"}
+      ],
+      "documentation":"<p>Disassociates a set of hours of operations with another hours of operation. Refer to Administrator Guide <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/hours-of-operation-overrides.html\"> here </a> for more information on inheriting overrides from parent hours of operation(s).</p>"
     },
     "DisassociateInstanceStorageConfig":{
       "name":"DisassociateInstanceStorageConfig",
@@ -2872,6 +2967,24 @@
       ],
       "documentation":"<p>Gets details about a specific task template in the specified Amazon Connect instance.</p>"
     },
+    "GetTestCaseExecutionSummary":{
+      "name":"GetTestCaseExecutionSummary",
+      "http":{
+        "method":"GET",
+        "requestUri":"/test-cases/{InstanceId}/{TestCaseId}/{TestCaseExecutionId}/summary"
+      },
+      "input":{"shape":"GetTestCaseExecutionSummaryRequest"},
+      "output":{"shape":"GetTestCaseExecutionSummaryResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves an overview of a test execution that includes the status of the execution, start and end time, and observation summary.</p>"
+    },
     "GetTrafficDistribution":{
       "name":"GetTrafficDistribution",
       "http":{
@@ -3041,6 +3154,23 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>This API is in preview release for Amazon Connect and is subject to change.</p> <p>For the specified version of Amazon Lex, returns a paginated list of all the Amazon Lex bots currently associated with the instance. Use this API to return both Amazon Lex V1 and V2 bots.</p>"
+    },
+    "ListChildHoursOfOperations":{
+      "name":"ListChildHoursOfOperations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/hours-of-operations/{InstanceId}/{HoursOfOperationId}/hours"
+      },
+      "input":{"shape":"ListChildHoursOfOperationsRequest"},
+      "output":{"shape":"ListChildHoursOfOperationsResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Provides information about the child hours of operations for the specified parent hours of operation.</p> <p>For more information about child hours of operations, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/\">Link overrides from different hours of operation</a> in the <i> Administrator Guide</i>.</p>"
     },
     "ListContactEvaluations":{
       "name":"ListContactEvaluations",
@@ -3775,6 +3905,60 @@
       ],
       "documentation":"<p>Lists task templates for the specified Amazon Connect instance.</p>"
     },
+    "ListTestCaseExecutionRecords":{
+      "name":"ListTestCaseExecutionRecords",
+      "http":{
+        "method":"GET",
+        "requestUri":"/test-cases/{InstanceId}/{TestCaseId}/{TestCaseExecutionId}/records"
+      },
+      "input":{"shape":"ListTestCaseExecutionRecordsRequest"},
+      "output":{"shape":"ListTestCaseExecutionRecordsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists detailed steps of test case execution that includes all observations along with actions taken and data associated in the specified Amazon Connect instance.</p>"
+    },
+    "ListTestCaseExecutions":{
+      "name":"ListTestCaseExecutions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/test-case-executions/{InstanceId}"
+      },
+      "input":{"shape":"ListTestCaseExecutionsRequest"},
+      "output":{"shape":"ListTestCaseExecutionsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists all test case executions and allows filtering by test case id, test case name, start time, end time or status of the execution for the specified Amazon Connect instance.</p>"
+    },
+    "ListTestCases":{
+      "name":"ListTestCases",
+      "http":{
+        "method":"GET",
+        "requestUri":"/test-cases-summary/{InstanceId}"
+      },
+      "input":{"shape":"ListTestCasesRequest"},
+      "output":{"shape":"ListTestCasesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Lists the test cases present in the specific Amazon Connect instance.</p>"
+    },
     "ListTrafficDistributionGroupUsers":{
       "name":"ListTrafficDistributionGroupUsers",
       "http":{
@@ -4402,6 +4586,24 @@
       ],
       "documentation":"<p>Searches security profiles in an Amazon Connect instance, with optional filtering.</p> <p>For information about security profiles, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/connect-security-profiles.html\">Security Profiles</a> in the <i>Amazon Connect Administrator Guide</i>. For a mapping of the API name and user interface name of the security profile permissions, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/security-profile-list.html\">List of security profile permissions</a>. </p>"
     },
+    "SearchTestCases":{
+      "name":"SearchTestCases",
+      "http":{
+        "method":"POST",
+        "requestUri":"/search-test-cases"
+      },
+      "input":{"shape":"SearchTestCasesRequest"},
+      "output":{"shape":"SearchTestCasesResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"}
+      ],
+      "documentation":"<p>Searches for test cases in the specified Amazon Connect instance, with optional filtering.</p>"
+    },
     "SearchUserHierarchyGroups":{
       "name":"SearchUserHierarchyGroups",
       "http":{
@@ -4761,6 +4963,25 @@
       ],
       "documentation":"<p>Initiates a flow to start a new task contact. For more information about task contacts, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/tasks.html\">Concepts: Tasks in Amazon Connect</a> in the <i>Amazon Connect Administrator Guide</i>. </p> <p>When using <code>PreviousContactId</code> and <code>RelatedContactId</code> input parameters, note the following:</p> <ul> <li> <p> <code>PreviousContactId</code> </p> <ul> <li> <p>Any updates to user-defined task contact attributes on any contact linked through the same <code>PreviousContactId</code> will affect every contact in the chain.</p> </li> <li> <p>There can be a maximum of 12 linked task contacts in a chain. That is, 12 task contacts can be created that share the same <code>PreviousContactId</code>.</p> </li> </ul> </li> <li> <p> <code>RelatedContactId</code> </p> <ul> <li> <p>Copies contact attributes from the related task contact to the new contact.</p> </li> <li> <p>Any update on attributes in a new task contact does not update attributes on previous contact.</p> </li> <li> <p>There’s no limit on the number of task contacts that can be created that use the same <code>RelatedContactId</code>.</p> </li> </ul> </li> </ul> <p>In addition, when calling StartTaskContact include only one of these parameters: <code>ContactFlowID</code>, <code>QuickConnectID</code>, or <code>TaskTemplateID</code>. Only one parameter is required as long as the task template has a flow configured to run it. If more than one parameter is specified, or only the <code>TaskTemplateID</code> is specified but it does not have a flow configured, the request returns an error because Amazon Connect cannot identify the unique flow to run when the task is created.</p> <p>A <code>ServiceQuotaExceededException</code> occurs when the number of open tasks exceeds the active tasks quota or there are already 12 tasks referencing the same <code>PreviousContactId</code>. For more information about service quotas for task contacts, see <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html\">Amazon Connect service quotas</a> in the <i>Amazon Connect Administrator Guide</i>. </p>"
     },
+    "StartTestCaseExecution":{
+      "name":"StartTestCaseExecution",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/test-cases/{InstanceId}/{TestCaseId}/start-execution"
+      },
+      "input":{"shape":"StartTestCaseExecutionRequest"},
+      "output":{"shape":"StartTestCaseExecutionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Starts executing a published test case.</p>"
+    },
     "StartWebRTCContact":{
       "name":"StartWebRTCContact",
       "http":{
@@ -4845,6 +5066,24 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p> Ends message streaming on a specified contact. To restart message streaming on that contact, call the <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_StartContactStreaming.html\">StartContactStreaming</a> API. </p>"
+    },
+    "StopTestCaseExecution":{
+      "name":"StopTestCaseExecution",
+      "http":{
+        "method":"POST",
+        "requestUri":"/test-cases/{InstanceId}/{TestCaseId}/{TestCaseExecutionId}/stop-execution"
+      },
+      "input":{"shape":"StopTestCaseExecutionRequest"},
+      "output":{"shape":"StopTestCaseExecutionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Stops a running test execution.</p>"
     },
     "SubmitContactEvaluation":{
       "name":"SubmitContactEvaluation",
@@ -5738,6 +5977,26 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p>Updates details about a specific task template in the specified Amazon Connect instance. This operation does not support partial updates. Instead it does a full update of template content.</p>"
+    },
+    "UpdateTestCase":{
+      "name":"UpdateTestCase",
+      "http":{
+        "method":"POST",
+        "requestUri":"/test-cases/{InstanceId}/{TestCaseId}"
+      },
+      "input":{"shape":"UpdateTestCaseRequest"},
+      "output":{"shape":"UpdateTestCaseResponse"},
+      "errors":[
+        {"shape":"InvalidRequestException"},
+        {"shape":"DuplicateResourceException"},
+        {"shape":"InvalidTestCaseException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates any of the metadata for a test case, such as the name, description, and status or content of an existing test case. This API doesn't allow customers to update the tags of the test case resource for the specified Amazon Connect instance.</p>"
     },
     "UpdateTrafficDistribution":{
       "name":"UpdateTrafficDistribution",
@@ -7000,6 +7259,32 @@
       "type":"structure",
       "members":{}
     },
+    "AssociateHoursOfOperationsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "HoursOfOperationId",
+        "ParentHoursOfOperationConfigs"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "HoursOfOperationId":{
+          "shape":"HoursOfOperationId",
+          "documentation":"<p>The identifier of the child hours of operation.</p>",
+          "location":"uri",
+          "locationName":"HoursOfOperationId"
+        },
+        "ParentHoursOfOperationConfigs":{
+          "shape":"ParentHoursOfOperationConfigList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the parent hours of operation resources to associate with the child hours of operation resource.</p>"
+        }
+      }
+    },
     "AssociateInstanceStorageConfigRequest":{
       "type":"structure",
       "required":[
@@ -7161,7 +7446,7 @@
         },
         "ManualAssignmentQueueConfigs":{
           "shape":"RoutingProfileManualAssignmentQueueConfigList",
-          "documentation":"<p>The manual assignment queues to associate with this routing profile.</p>"
+          "documentation":"<p>The manual assignment queues to associate with this routing profile.</p> <p>Note: Use this config for chat, email, and task contacts. It does not support voice contacts.</p>"
         }
       }
     },
@@ -8688,6 +8973,10 @@
       "type":"string",
       "max":350,
       "min":1
+    },
+    "ChildHoursOfOperationsList":{
+      "type":"list",
+      "member":{"shape":"HoursOfOperationsIdentifier"}
     },
     "ClaimPhoneNumberRequest":{
       "type":"structure",
@@ -10741,6 +11030,10 @@
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
         },
+        "ReviewConfiguration":{
+          "shape":"EvaluationReviewConfiguration",
+          "documentation":"<p>Configuration information about evaluation reviews.</p>"
+        },
         "TargetConfiguration":{
           "shape":"EvaluationFormTargetConfiguration",
           "documentation":"<p>Configuration that specifies the target for the evaluation form.</p>"
@@ -10810,6 +11103,14 @@
         "EffectiveTill":{
           "shape":"HoursOfOperationOverrideYearMonthDayDateFormat",
           "documentation":"<p>The date until when the hours of operation override is effective.</p>"
+        },
+        "RecurrenceConfig":{
+          "shape":"RecurrenceConfig",
+          "documentation":"<p>Configuration for a recurring event.</p>"
+        },
+        "OverrideType":{
+          "shape":"OverrideType",
+          "documentation":"<p>Whether the override will be defined as a <i>standard</i> or as a <i>recurring event</i>.</p> <p>For more information about how override types are applied, see <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/connect/latest/adminguide/hours-of-operation-overrides.html\">Build your list of overrides</a> in the <i> Administrator Guide</i>.</p>"
         }
       }
     },
@@ -10852,6 +11153,10 @@
         "Config":{
           "shape":"HoursOfOperationConfigList",
           "documentation":"<p>Configuration information for the hours of operation: day, start time, and end time.</p>"
+        },
+        "ParentHoursOfOperationConfigs":{
+          "shape":"ParentHoursOfOperationConfigList",
+          "documentation":"<p>Configuration for parent hours of operations. Eg: ResourceArn. </p> <p>For more information about parent hours of operations, see <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/connect/latest/adminguide/hours-of-operation-overrides.html\">Link overrides from different hours of operation</a> in the <i> Administrator Guide</i>.</p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -11327,7 +11632,7 @@
         },
         "ManualAssignmentQueueConfigs":{
           "shape":"RoutingProfileManualAssignmentQueueConfigList",
-          "documentation":"<p>The manual assignment queues associated with the routing profile. If no queue is added, agents and supervisors can't pick or assign any contacts from this routing profile. The limit of 10 array members applies to the maximum number of RoutingProfileManualAssignmentQueueConfig objects that can be passed during a CreateRoutingProfile API request. It is different from the quota of 50 queues per routing profile per instance that is listed in Amazon Connect service quotas.</p>"
+          "documentation":"<p>The manual assignment queues associated with the routing profile. If no queue is added, agents and supervisors can't pick or assign any contacts from this routing profile. The limit of 10 array members applies to the maximum number of RoutingProfileManualAssignmentQueueConfig objects that can be passed during a CreateRoutingProfile API request. It is different from the quota of 50 queues per routing profile per instance that is listed in Amazon Connect service quotas.</p> <p>Note: Use this config for chat, email, and task contacts. It does not support voice contacts.</p>"
         },
         "MediaConcurrencies":{
           "shape":"MediaConcurrencies",
@@ -11562,6 +11867,81 @@
         "Arn":{
           "shape":"TaskTemplateArn",
           "documentation":"<p>The Amazon Resource Name (ARN) for the task template resource.</p>"
+        }
+      }
+    },
+    "CreateTestCaseRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "Name",
+        "Content"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceIdOrArn",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "Name":{
+          "shape":"TestCaseName",
+          "documentation":"<p>The name of the test.</p>"
+        },
+        "Description":{
+          "shape":"TestCaseDescription",
+          "documentation":"<p>The description of the test.</p>"
+        },
+        "Content":{
+          "shape":"TestCaseContent",
+          "documentation":"<p>The JSON string that represents the content of the test.</p>"
+        },
+        "EntryPoint":{
+          "shape":"TestCaseEntryPoint",
+          "documentation":"<p>Defines the starting point for your test.</p>"
+        },
+        "InitializationData":{
+          "shape":"TestCaseInitializationData",
+          "documentation":"<p>Defines the initial custom attributes for your test.</p>"
+        },
+        "Status":{
+          "shape":"TestCaseStatus",
+          "documentation":"<p>Indicates the test status as either SAVED or PUBLISHED. The PUBLISHED status will initiate validation on the content. The SAVED status does not initiate validation of the content.</p>"
+        },
+        "TestCaseId":{
+          "shape":"TestCaseId",
+          "documentation":"<p>Id of the test case if you want to create it in a replica region using Amazon Connect Global Resiliency</p>",
+          "location":"header",
+          "locationName":"x-amz-resource-id"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the resource was last modified.</p>",
+          "location":"header",
+          "locationName":"x-amz-last-modified-time"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The region in which the resource was last modified</p>",
+          "location":"header",
+          "locationName":"x-amz-last-modified-region"
+        }
+      }
+    },
+    "CreateTestCaseResponse":{
+      "type":"structure",
+      "members":{
+        "TestCaseId":{
+          "shape":"TestCaseId",
+          "documentation":"<p>The identifier of the test.</p>"
+        },
+        "TestCaseArn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the test.</p>"
         }
       }
     },
@@ -13484,6 +13864,31 @@
       "type":"structure",
       "members":{}
     },
+    "DeleteTestCaseRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "TestCaseId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceIdOrArn",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "TestCaseId":{
+          "shape":"TestCaseId",
+          "documentation":"<p>The identifier of the test case to delete.</p>",
+          "location":"uri",
+          "locationName":"TestCaseId"
+        }
+      }
+    },
+    "DeleteTestCaseResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteTrafficDistributionGroupRequest":{
       "type":"structure",
       "required":["TrafficDistributionGroupId"],
@@ -14545,6 +14950,42 @@
         }
       }
     },
+    "DescribeTestCaseRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "TestCaseId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceIdOrArn",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "TestCaseId":{
+          "shape":"TestCaseId",
+          "documentation":"<p>The identifier of the test case.</p>",
+          "location":"uri",
+          "locationName":"TestCaseId"
+        },
+        "Status":{
+          "shape":"TestCaseStatus",
+          "documentation":"<p>The status of the test case version to retrieve. If not specified, returns the published version if available, otherwise returns the saved version.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        }
+      }
+    },
+    "DescribeTestCaseResponse":{
+      "type":"structure",
+      "members":{
+        "TestCase":{
+          "shape":"TestCase",
+          "documentation":"<p>The test case object containing all test case information.</p>"
+        }
+      }
+    },
     "DescribeTrafficDistributionGroupRequest":{
       "type":"structure",
       "required":["TrafficDistributionGroupId"],
@@ -14998,6 +15439,32 @@
     "DisassociateFlowResponse":{
       "type":"structure",
       "members":{}
+    },
+    "DisassociateHoursOfOperationsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "HoursOfOperationId",
+        "ParentHoursOfOperationIds"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "HoursOfOperationId":{
+          "shape":"HoursOfOperationId",
+          "documentation":"<p>The identifier of the child hours of operation.</p>",
+          "location":"uri",
+          "locationName":"HoursOfOperationId"
+        },
+        "ParentHoursOfOperationIds":{
+          "shape":"ParentHoursOfOperationIdList",
+          "documentation":"<p>The Amazon Resource Names (ARNs) of the parent hours of operation resources to disassociate with the child hours of operation resource.</p>"
+        }
+      }
     },
     "DisassociateInstanceStorageConfigRequest":{
       "type":"structure",
@@ -15465,6 +15932,24 @@
         }
       },
       "documentation":"<p>Information about the hours of operations with the effective override applied.</p>"
+    },
+    "EffectiveOverrideHours":{
+      "type":"structure",
+      "members":{
+        "Date":{
+          "shape":"HoursOfOperationOverrideYearMonthDayDateFormat",
+          "documentation":"<p>The date that the hours of operation override applies to.</p>"
+        },
+        "OverrideHours":{
+          "shape":"OverrideHours",
+          "documentation":"<p>Information about the hours of operation overrides that apply to a specific date.</p>"
+        }
+      },
+      "documentation":"<p>Information about the hours of operation overrides which contribute to effective hours of operations.</p>"
+    },
+    "EffectiveOverrideHoursList":{
+      "type":"list",
+      "member":{"shape":"EffectiveOverrideHours"}
     },
     "Email":{
       "type":"string",
@@ -16148,6 +16633,10 @@
           "shape":"EvaluationFormAutoEvaluationConfiguration",
           "documentation":"<p>The automatic evaluation configuration of an evaluation form.</p>"
         },
+        "ReviewConfiguration":{
+          "shape":"EvaluationReviewConfiguration",
+          "documentation":"<p>Configuration for evaluation review settings of this evaluation form.</p>"
+        },
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
@@ -16223,6 +16712,10 @@
         "LanguageConfiguration":{
           "shape":"EvaluationFormLanguageConfiguration",
           "documentation":"<p>Configuration for language settings of this evaluation form content.</p>"
+        },
+        "ReviewConfiguration":{
+          "shape":"EvaluationReviewConfiguration",
+          "documentation":"<p>Configuration for evaluation review settings of this evaluation form content.</p>"
         }
       },
       "documentation":"<p>Information about an evaluation form used in a contact evaluation.</p>"
@@ -17169,6 +17662,10 @@
           "shape":"EvaluationAcknowledgement",
           "documentation":"<p>Information related to evaluation acknowledgement.</p>"
         },
+        "Review":{
+          "shape":"EvaluationReviewMetadata",
+          "documentation":"<p>Information about reviews of this evaluation.</p>"
+        },
         "ContactParticipant":{
           "shape":"EvaluationContactParticipant",
           "documentation":"<p>Information about a contact participant in this evaluation.</p>"
@@ -17232,6 +17729,112 @@
         }
       },
       "documentation":"<p>Details of the input data used for automated question processing.</p>"
+    },
+    "EvaluationReviewConfiguration":{
+      "type":"structure",
+      "required":["ReviewNotificationRecipients"],
+      "members":{
+        "ReviewNotificationRecipients":{
+          "shape":"EvaluationReviewNotificationRecipientList",
+          "documentation":"<p>List of recipients who should be notified when a review is requested.</p>"
+        },
+        "EligibilityDays":{
+          "shape":"Integer",
+          "documentation":"<p>Number of days during which a request for review can be submitted for evaluations created from this form.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for evaluation reviews.</p>"
+    },
+    "EvaluationReviewMetadata":{
+      "type":"structure",
+      "required":[
+        "CreatedTime",
+        "CreatedBy",
+        "ReviewRequestComments"
+      ],
+      "members":{
+        "ReviewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier for the evaluation review.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the evaluation review was created.</p>"
+        },
+        "CreatedBy":{
+          "shape":"ARN",
+          "documentation":"<p>The user who created the evaluation review.</p>"
+        },
+        "ReviewRequestComments":{
+          "shape":"EvaluationReviewRequestCommentList",
+          "documentation":"<p>Comments provided when requesting the evaluation review.</p>"
+        }
+      },
+      "documentation":"<p>Metadata information about an evaluation review.</p>"
+    },
+    "EvaluationReviewNotificationRecipient":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "Value"
+      ],
+      "members":{
+        "Type":{
+          "shape":"EvaluationReviewNotificationRecipientType",
+          "documentation":"<p>The type of notification recipient.</p>"
+        },
+        "Value":{
+          "shape":"EvaluationReviewNotificationRecipientValue",
+          "documentation":"<p>The value associated with the notification recipient type.</p>"
+        }
+      },
+      "documentation":"<p>Information about a recipient who should be notified when an evaluation review is requested.</p>"
+    },
+    "EvaluationReviewNotificationRecipientList":{
+      "type":"list",
+      "member":{"shape":"EvaluationReviewNotificationRecipient"},
+      "min":1
+    },
+    "EvaluationReviewNotificationRecipientType":{
+      "type":"string",
+      "enum":["USER_ID"]
+    },
+    "EvaluationReviewNotificationRecipientValue":{
+      "type":"structure",
+      "members":{
+        "UserId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The user identifier for the notification recipient.</p>"
+        }
+      },
+      "documentation":"<p>The value information for an evaluation review notification recipient.</p>"
+    },
+    "EvaluationReviewRequestComment":{
+      "type":"structure",
+      "members":{
+        "Comment":{
+          "shape":"EvaluationReviewRequestCommentContent",
+          "documentation":"<p>The text content of the review request comment.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the review request comment was created.</p>"
+        },
+        "CreatedBy":{
+          "shape":"ARN",
+          "documentation":"<p>The user who created the review request comment.</p>"
+        }
+      },
+      "documentation":"<p>A comment provided when requesting an evaluation review.</p>"
+    },
+    "EvaluationReviewRequestCommentContent":{
+      "type":"string",
+      "max":500
+    },
+    "EvaluationReviewRequestCommentList":{
+      "type":"list",
+      "member":{"shape":"EvaluationReviewRequestComment"},
+      "max":1
     },
     "EvaluationScore":{
       "type":"structure",
@@ -17447,7 +18050,9 @@
       "type":"string",
       "enum":[
         "DRAFT",
-        "SUBMITTED"
+        "SUBMITTED",
+        "REVIEW_REQUESTED",
+        "UNDER_REVIEW"
       ]
     },
     "EvaluationSuggestedAnswer":{
@@ -17667,6 +18272,42 @@
         "OnSlaBreach"
       ]
     },
+    "ExecutionRecord":{
+      "type":"structure",
+      "members":{
+        "ObservationId":{
+          "shape":"TestCaseResourceId",
+          "documentation":"<p>The identifier of the execution record.</p>"
+        },
+        "Status":{
+          "shape":"ExecutionRecordStatus",
+          "documentation":"<p>The status of the action execution.</p>"
+        },
+        "Timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the action was executed.</p>"
+        },
+        "Record":{
+          "shape":"ExecutionRecordString",
+          "documentation":"<p>The details of the executed record.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a test case execution record.</p>"
+    },
+    "ExecutionRecordList":{
+      "type":"list",
+      "member":{"shape":"ExecutionRecord"}
+    },
+    "ExecutionRecordStatus":{
+      "type":"string",
+      "enum":[
+        "PASSED",
+        "FAILED",
+        "IN_PROGRESS",
+        "STOPPED"
+      ]
+    },
+    "ExecutionRecordString":{"type":"string"},
     "Expiry":{
       "type":"structure",
       "members":{
@@ -18355,6 +18996,10 @@
           "shape":"EffectiveHoursOfOperationList",
           "documentation":"<p>Information about the effective hours of operations.</p>"
         },
+        "EffectiveOverrideHoursList":{
+          "shape":"EffectiveOverrideHoursList",
+          "documentation":"<p>Information about override configurations applied to the base hours of operation to calculate the effective hours.</p> <p>For more information about how override types are applied, see <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/connect/latest/adminguide/hours-of-operation-overrides.html\">Build your list of overrides</a> in the <i> Administrator Guide</i>.</p>"
+        },
         "TimeZone":{
           "shape":"TimeZone",
           "documentation":"<p>The time zone for the hours of operation.</p>"
@@ -18689,6 +19334,55 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        }
+      }
+    },
+    "GetTestCaseExecutionSummaryRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "TestCaseId",
+        "TestCaseExecutionId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "TestCaseId":{
+          "shape":"TestCaseId",
+          "documentation":"<p>The identifier of the test case.</p>",
+          "location":"uri",
+          "locationName":"TestCaseId"
+        },
+        "TestCaseExecutionId":{
+          "shape":"TestCaseExecutionId",
+          "documentation":"<p>The identifier of the test case execution.</p>",
+          "location":"uri",
+          "locationName":"TestCaseExecutionId"
+        }
+      }
+    },
+    "GetTestCaseExecutionSummaryResponse":{
+      "type":"structure",
+      "members":{
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the test case execution started.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the test case execution ended.</p>"
+        },
+        "Status":{
+          "shape":"TestCaseExecutionStatus",
+          "documentation":"<p>The status of the test case execution.</p>"
+        },
+        "ObservationSummary":{
+          "shape":"ObservationSummary",
+          "documentation":"<p>Summary statistics for the test case execution.</p>"
         }
       }
     },
@@ -19206,6 +19900,10 @@
           "shape":"HoursOfOperationConfigList",
           "documentation":"<p>Configuration information for the hours of operation.</p>"
         },
+        "ParentHoursOfOperations":{
+          "shape":"ParentHoursOfOperationsList",
+          "documentation":"<p>Information about parent hours of operations.</p>"
+        },
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
@@ -19307,6 +20005,14 @@
         "EffectiveTill":{
           "shape":"HoursOfOperationOverrideYearMonthDayDateFormat",
           "documentation":"<p>The date until the hours of operation override is effective.</p>"
+        },
+        "RecurrenceConfig":{
+          "shape":"RecurrenceConfig",
+          "documentation":"<p>Configuration for a recurring event.</p>"
+        },
+        "OverrideType":{
+          "shape":"OverrideType",
+          "documentation":"<p>Whether the override will be defined as a <i>standard</i> or as a <i>recurring event</i>.</p>"
         }
       },
       "documentation":"<p>Information about the hours of operations override.</p>"
@@ -19449,6 +20155,28 @@
         }
       },
       "documentation":"<p>The start time or end time for an hours of operation.</p>"
+    },
+    "HoursOfOperationsIdentifier":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Id"
+      ],
+      "members":{
+        "Name":{
+          "shape":"CommonNameLength127",
+          "documentation":"<p>Name of the hours of operation</p>"
+        },
+        "Id":{
+          "shape":"HoursOfOperationId",
+          "documentation":"<p>Unique identifier of the hours of operation.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>Amazon Resource Name (ARN) of the hours of operations.</p>"
+        }
+      },
+      "documentation":"<p>Identifier for a hours of operations resource: ARN, ID, Name</p>"
     },
     "IAMRestrictedPrimaryValue":{
       "type":"string",
@@ -19990,6 +20718,12 @@
         "TOTAL"
       ]
     },
+    "IntervalPositiveInteger":{
+      "type":"integer",
+      "box":true,
+      "max":6,
+      "min":1
+    },
     "InvalidActiveRegionException":{
       "type":"structure",
       "members":{
@@ -20055,6 +20789,18 @@
       },
       "documentation":"<p>Reason why the request was invalid.</p>",
       "union":true
+    },
+    "InvalidTestCaseException":{
+      "type":"structure",
+      "members":{
+        "Problems":{
+          "shape":"Problems",
+          "documentation":"<p>The problems with the test. Please fix before trying again.</p>"
+        }
+      },
+      "documentation":"<p>The test is not valid.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
     },
     "InvisibleFieldInfo":{
       "type":"structure",
@@ -20514,6 +21260,61 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListChildHoursOfOperationsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "HoursOfOperationId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html\">find the instance ID</a> in the Amazon Resource Name (ARN) of the instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "HoursOfOperationId":{
+          "shape":"HoursOfOperationId",
+          "documentation":"<p>The identifier of the parent hours of operation.</p>",
+          "location":"uri",
+          "locationName":"HoursOfOperationId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page. The default MaxResult size is 100.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListChildHoursOfOperationsResponse":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        },
+        "ChildHoursOfOperationsSummaryList":{
+          "shape":"ChildHoursOfOperationsList",
+          "documentation":"<p>Information about the hours of operation.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when this resource was last modified.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The Amazon Web Services Region where this resource was last modified.</p>"
         }
       }
     },
@@ -22542,6 +23343,172 @@
         }
       }
     },
+    "ListTestCaseExecutionRecordsRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "TestCaseId",
+        "TestCaseExecutionId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "TestCaseId":{
+          "shape":"TestCaseId",
+          "documentation":"<p>The identifier of the test case.</p>",
+          "location":"uri",
+          "locationName":"TestCaseId"
+        },
+        "TestCaseExecutionId":{
+          "shape":"TestCaseExecutionId",
+          "documentation":"<p>The identifier of the test case execution.</p>",
+          "location":"uri",
+          "locationName":"TestCaseExecutionId"
+        },
+        "Status":{
+          "shape":"TestCaseExecutionStatus",
+          "documentation":"<p>Filter execution records by status.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListTestCaseExecutionRecordsResponse":{
+      "type":"structure",
+      "members":{
+        "ExecutionRecords":{
+          "shape":"ExecutionRecordList",
+          "documentation":"<p>An array of test case execution record objects.</p>"
+        },
+        "NextToken":{
+          "shape":"LargeNextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListTestCaseExecutionsRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "TestCaseId":{
+          "shape":"TestCaseId",
+          "documentation":"<p>Filter executions by test case identifier.</p>",
+          "location":"querystring",
+          "locationName":"testCaseId"
+        },
+        "TestCaseName":{
+          "shape":"TestCaseName",
+          "documentation":"<p>Filter executions by test case name.</p>",
+          "location":"querystring",
+          "locationName":"testCaseName"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter executions that started after this time.</p>",
+          "location":"querystring",
+          "locationName":"startTime"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Filter executions that started before this time.</p>",
+          "location":"querystring",
+          "locationName":"endTime"
+        },
+        "Status":{
+          "shape":"TestCaseExecutionStatus",
+          "documentation":"<p>Filter executions by status.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListTestCaseExecutionsResponse":{
+      "type":"structure",
+      "members":{
+        "TestCaseExecutions":{
+          "shape":"TestCaseExecutionList",
+          "documentation":"<p>An array of test case execution summary objects.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
+    "ListTestCasesRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "MaxResults":{
+          "shape":"MaxResult1000",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListTestCasesResponse":{
+      "type":"structure",
+      "members":{
+        "TestCaseSummaryList":{
+          "shape":"TestCaseSummaryList",
+          "documentation":"<p>Information about the tests.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        }
+      }
+    },
     "ListTrafficDistributionGroupUsersRequest":{
       "type":"structure",
       "required":["TrafficDistributionGroupId"],
@@ -23393,6 +24360,26 @@
         }
       }
     },
+    "Month":{
+      "type":"integer",
+      "box":true,
+      "max":12,
+      "min":1
+    },
+    "MonthDay":{
+      "type":"integer",
+      "box":true,
+      "max":31,
+      "min":-1
+    },
+    "MonthDayList":{
+      "type":"list",
+      "member":{"shape":"MonthDay"}
+    },
+    "MonthList":{
+      "type":"list",
+      "member":{"shape":"Month"}
+    },
     "MultiSelectQuestionRuleCategoryAutomation":{
       "type":"structure",
       "required":[
@@ -23627,6 +24614,24 @@
       },
       "documentation":"<p>Information about the property value used in automation of a numeric questions. Label values are associated with minimum and maximum values for the numeric question.</p> <ul> <li> <p>Sentiment scores have a minimum value of -5 and maximum value of 5.</p> </li> <li> <p> Duration labels, such as <code>NON_TALK_TIME</code>, <code>CONTACT_DURATION</code>, <code>AGENT_INTERACTION_DURATION</code>, <code>CUSTOMER_HOLD_TIME</code> have a minimum value of 0 and maximum value of 63072000.</p> </li> <li> <p>Percentages have a minimum value of 0 and maximum value of 100. </p> </li> <li> <p> <code>NUMBER_OF_INTERRUPTIONS</code> has a minimum value of 0 and maximum value of 1000.</p> </li> </ul>"
     },
+    "ObservationSummary":{
+      "type":"structure",
+      "members":{
+        "TotalObservations":{
+          "shape":"Count",
+          "documentation":"<p>The total number of observations in the test case.</p>"
+        },
+        "ObservationsPassed":{
+          "shape":"Count",
+          "documentation":"<p>The number of observations that passed during execution.</p>"
+        },
+        "ObservationsFailed":{
+          "shape":"Count",
+          "documentation":"<p>The number of observations that failed during execution.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary statistics about a test case execution.</p>"
+    },
     "OperatingSystem":{
       "type":"string",
       "max":128,
@@ -23649,6 +24654,13 @@
     "OperationalHours":{
       "type":"list",
       "member":{"shape":"OperationalHour"}
+    },
+    "OperationalStatus":{
+      "type":"string",
+      "enum":[
+        "OPEN",
+        "CLOSED"
+      ]
     },
     "Origin":{
       "type":"string",
@@ -23829,6 +24841,26 @@
         "SATURDAY"
       ]
     },
+    "OverrideHour":{
+      "type":"structure",
+      "members":{
+        "Start":{"shape":"OverrideTimeSlice"},
+        "End":{"shape":"OverrideTimeSlice"},
+        "OverrideName":{
+          "shape":"CommonHumanReadableName",
+          "documentation":"<p>Unique identifier name for the override.</p>"
+        },
+        "OperationalStatus":{
+          "shape":"OperationalStatus",
+          "documentation":"<p>Indicates whether the status is open or closed during the override period. This status determines how the override modifies the base hours of operation schedule.</p>"
+        }
+      },
+      "documentation":"<p>Information about hours of operation override</p>"
+    },
+    "OverrideHours":{
+      "type":"list",
+      "member":{"shape":"OverrideHour"}
+    },
     "OverrideTimeSlice":{
       "type":"structure",
       "required":[
@@ -23848,6 +24880,14 @@
         }
       },
       "documentation":"<p>The start time or end time for an hours of operation override.</p>"
+    },
+    "OverrideType":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "OPEN",
+        "CLOSED"
+      ]
     },
     "PEM":{
       "type":"string",
@@ -23951,6 +24991,32 @@
         }
       },
       "documentation":"<p>Contains primary color configuration for a workspace theme.</p>"
+    },
+    "ParentHoursOfOperationConfig":{
+      "type":"structure",
+      "members":{
+        "HoursOfOperationId":{
+          "shape":"HoursOfOperationId",
+          "documentation":"<p>The identifier for the hours of operation.</p>"
+        }
+      },
+      "documentation":"<p>Contains configuration for the parent hours of operation.</p>"
+    },
+    "ParentHoursOfOperationConfigList":{
+      "type":"list",
+      "member":{"shape":"ParentHoursOfOperationConfig"},
+      "max":3,
+      "min":0
+    },
+    "ParentHoursOfOperationIdList":{
+      "type":"list",
+      "member":{"shape":"HoursOfOperationId"},
+      "max":3,
+      "min":1
+    },
+    "ParentHoursOfOperationsList":{
+      "type":"list",
+      "member":{"shape":"HoursOfOperationsIdentifier"}
     },
     "ParticipantCapabilities":{
       "type":"structure",
@@ -26136,6 +27202,58 @@
       "type":"list",
       "member":{"shape":"RecordingInfo"}
     },
+    "RecurrenceConfig":{
+      "type":"structure",
+      "required":["RecurrencePattern"],
+      "members":{
+        "RecurrencePattern":{
+          "shape":"RecurrencePattern",
+          "documentation":"<p>The recurrence pattern that defines how the event repeats. Example: Frequency, Interval, ByMonth, ByMonthDay, ByWeekdayOccurrence</p>"
+        }
+      },
+      "documentation":"<p>Defines the recurrence configuration for overrides. This configuration uses a recurrence pattern to specify when and how frequently an event should repeat.</p>"
+    },
+    "RecurrenceFrequency":{
+      "type":"string",
+      "enum":[
+        "WEEKLY",
+        "MONTHLY",
+        "YEARLY"
+      ]
+    },
+    "RecurrencePattern":{
+      "type":"structure",
+      "required":[
+        "Frequency",
+        "Interval"
+      ],
+      "members":{
+        "Frequency":{
+          "shape":"RecurrenceFrequency",
+          "documentation":"<p>Defines how often the pattern repeats. This is the base unit for the recurrence schedule and works in conjunction with the Interval field to determine the exact repetition sequence.</p>"
+        },
+        "Interval":{
+          "shape":"IntervalPositiveInteger",
+          "documentation":"<p>Specifies the number of frequency units between each occurrence. Must be a positive integer. </p> <p> Examples: To repeat every week, set Interval=1 with WEEKLY frequency. To repeat every two months, set Interval=2 with MONTHLY frequency.</p>"
+        },
+        "ByMonth":{
+          "shape":"MonthList",
+          "documentation":"<p>Specifies which month the event should occur in (1-12, where 1=January, 12=December). Used with YEARLY frequency to schedule events in specific month. </p> <p>Note: It does not accept multiple values in the same list</p>",
+          "box":true
+        },
+        "ByMonthDay":{
+          "shape":"MonthDayList",
+          "documentation":"<p>Specifies which day of the month the event should occur on (1-31). Used with MONTHLY or YEARLY frequency to schedule events on specific date within a month.</p> <p> Examples: [15] for events on the 15th of each month, [-1] for events on the last day of month. </p> <p>Note: It does not accept multiple values in the same list. If a specified day doesn't exist in a particular month (e.g., day 31 in February), the event will be skipped for that month. This field cannot be used simultaneously with ByWeekdayOccurrence as they represent different scheduling approaches (specific dates vs. relative weekday positions).</p>",
+          "box":true
+        },
+        "ByWeekdayOccurrence":{
+          "shape":"WeekdayOccurrenceList",
+          "documentation":"<p>Specifies which occurrence of a weekday within the month the event should occur on. Must be used with MONTHLY or YEARLY frequency. </p> <p>Example: 2 corresponds to second occurrence of the weekday in the month. -1 corresponds to last occurrence of the weekday in the month </p> <p>The weekday itself is specified separately in the HoursOfOperationConfig. Example: To schedule the recurring event for the 2nd Thursday of April every year, set ByWeekdayOccurrence=[2], Day=THURSDAY, ByMonth=[4], Frequency: YEARLY and INTERVAL=1.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Specifies the detailed pattern for event recurrence. Use this to define complex scheduling rules such as \"every 2nd Tuesday of the month\" or \"every 3 months on the 15th\".</p>"
+    },
     "Reference":{
       "type":"structure",
       "required":["Type"],
@@ -28123,6 +29241,50 @@
         }
       }
     },
+    "SearchTestCasesRequest":{
+      "type":"structure",
+      "required":["InstanceId"],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceIdOrArn",
+          "documentation":"<p>The identifier of the Amazon Connect instance. You can find the instance ID in the Amazon Resource Name (ARN) of the instance.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken2500",
+          "documentation":"<p>The token for the next set of results. Use the value returned in the previous response in the next request to retrieve the next set of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResult100",
+          "documentation":"<p>The maximum number of results to return per page.</p>",
+          "box":true
+        },
+        "SearchFilter":{
+          "shape":"TestCaseSearchFilter",
+          "documentation":"<p>Filters to be applied to search results.</p>"
+        },
+        "SearchCriteria":{
+          "shape":"TestCaseSearchCriteria",
+          "documentation":"<p>The search criteria to be used to return test cases.</p>"
+        }
+      }
+    },
+    "SearchTestCasesResponse":{
+      "type":"structure",
+      "members":{
+        "TestCases":{
+          "shape":"TestCaseSearchSummaryList",
+          "documentation":"<p>Information about the test cases.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken2500",
+          "documentation":"<p>If there are additional results, this is the token for the next set of results.</p>"
+        },
+        "ApproximateTotalCount":{
+          "shape":"ApproximateTotalCount",
+          "documentation":"<p>The total number of test cases which matched your search query.</p>"
+        }
+      }
+    },
     "SearchText":{
       "type":"string",
       "max":128,
@@ -29826,6 +30988,45 @@
         }
       }
     },
+    "StartTestCaseExecutionRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "TestCaseId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "TestCaseId":{
+          "shape":"TestCaseId",
+          "documentation":"<p>The identifier of the test case to execute.</p>",
+          "location":"uri",
+          "locationName":"TestCaseId"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>"
+        }
+      }
+    },
+    "StartTestCaseExecutionResponse":{
+      "type":"structure",
+      "members":{
+        "TestCaseExecutionId":{
+          "shape":"TestCaseExecutionId",
+          "documentation":"<p>The identifier of the test case execution.</p>"
+        },
+        "TestCaseId":{
+          "shape":"TestCaseId",
+          "documentation":"<p>The identifier of the test case resource that was executed.</p>"
+        },
+        "Status":{"shape":"TestCaseExecutionStatus"}
+      }
+    },
     "StartWebRTCContactRequest":{
       "type":"structure",
       "required":[
@@ -30046,6 +31247,42 @@
       }
     },
     "StopContactStreamingResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "StopTestCaseExecutionRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "TestCaseExecutionId",
+        "TestCaseId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceId",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "TestCaseExecutionId":{
+          "shape":"TestCaseExecutionId",
+          "documentation":"<p>The identifier of the test case execution to stop.</p>",
+          "location":"uri",
+          "locationName":"TestCaseExecutionId"
+        },
+        "TestCaseId":{
+          "shape":"TestCaseId",
+          "documentation":"<p>The identifier of the test case.</p>",
+          "location":"uri",
+          "locationName":"TestCaseId"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If not provided, the Amazon Web Services SDK populates this field. For more information about idempotency, see <a href=\"https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/\">Making retries safe with idempotent APIs</a>.</p>"
+        }
+      }
+    },
+    "StopTestCaseExecutionResponse":{
       "type":"structure",
       "members":{}
     },
@@ -30697,6 +31934,231 @@
         }
       },
       "documentation":"<p>Information about template message configuration.</p>"
+    },
+    "TestCase":{
+      "type":"structure",
+      "members":{
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the test case.</p>"
+        },
+        "Id":{
+          "shape":"TestCaseId",
+          "documentation":"<p>The identifier of the test case.</p>"
+        },
+        "Name":{
+          "shape":"TestCaseName",
+          "documentation":"<p>The name of the test case.</p>"
+        },
+        "Content":{
+          "shape":"TestCaseContent",
+          "documentation":"<p>The JSON string that represents the content of the test.</p>"
+        },
+        "EntryPoint":{
+          "shape":"TestCaseEntryPoint",
+          "documentation":"<p>Defines the starting point for the test, including channel type and parameters.</p>"
+        },
+        "InitializationData":{
+          "shape":"TestCaseInitializationData",
+          "documentation":"<p>Defines the test attributes for precise data representation.</p>"
+        },
+        "Description":{
+          "shape":"TestCaseDescription",
+          "documentation":"<p>The description of the test case.</p>"
+        },
+        "Status":{
+          "shape":"TestCaseStatus",
+          "documentation":"<p>Indicates the test status as either SAVED or PUBLISHED.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the test case was last modified.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The region in which the test case was last modified.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        },
+        "TestCaseSha256":{
+          "shape":"TestCaseSha256",
+          "documentation":"<p>The SHA256 hash of the test case content.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a test case.</p>"
+    },
+    "TestCaseContent":{"type":"string"},
+    "TestCaseDescription":{"type":"string"},
+    "TestCaseEntryPoint":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"TestCaseEntryPointType",
+          "documentation":"<p>The type of entry point.</p>"
+        },
+        "VoiceCallEntryPointParameters":{
+          "shape":"VoiceCallEntryPointParameters",
+          "documentation":"<p>Parameters for voice call entry point.</p>"
+        }
+      },
+      "documentation":"<p>Defines the starting point for a test case.</p>"
+    },
+    "TestCaseEntryPointType":{
+      "type":"string",
+      "enum":["VOICE_CALL"]
+    },
+    "TestCaseExecution":{
+      "type":"structure",
+      "members":{
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the test case execution started.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the test case execution ended.</p>"
+        },
+        "TestCaseExecutionId":{
+          "shape":"TestCaseExecutionId",
+          "documentation":"<p>The identifier of the test case execution.</p>"
+        },
+        "TestCaseId":{
+          "shape":"TestCaseId",
+          "documentation":"<p>The identifier of the test case.</p>"
+        },
+        "TestCaseExecutionStatus":{
+          "shape":"TestCaseExecutionStatus",
+          "documentation":"<p>The status of the test case execution.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags used to organize, track, or control access for this resource.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about a test case execution.</p>"
+    },
+    "TestCaseExecutionId":{
+      "type":"string",
+      "max":500
+    },
+    "TestCaseExecutionList":{
+      "type":"list",
+      "member":{"shape":"TestCaseExecution"}
+    },
+    "TestCaseExecutionStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a test case execution.</p>",
+      "enum":[
+        "INITIATED",
+        "PASSED",
+        "FAILED",
+        "IN_PROGRESS",
+        "STOPPED"
+      ]
+    },
+    "TestCaseId":{
+      "type":"string",
+      "max":500
+    },
+    "TestCaseInitializationData":{"type":"string"},
+    "TestCaseName":{
+      "type":"string",
+      "min":1
+    },
+    "TestCaseResourceId":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "TestCaseSearchConditionList":{
+      "type":"list",
+      "member":{"shape":"TestCaseSearchCriteria"}
+    },
+    "TestCaseSearchCriteria":{
+      "type":"structure",
+      "members":{
+        "OrConditions":{
+          "shape":"TestCaseSearchConditionList",
+          "documentation":"<p>A list of conditions which would be applied together with an OR condition.</p>"
+        },
+        "AndConditions":{
+          "shape":"TestCaseSearchConditionList",
+          "documentation":"<p>A list of conditions which would be applied together with an AND condition.</p>"
+        },
+        "StringCondition":{
+          "shape":"StringCondition",
+          "documentation":"<p>A leaf node condition which can be used to specify a string condition.</p>"
+        },
+        "StatusCondition":{
+          "shape":"TestCaseStatus",
+          "documentation":"<p>The status of the test case.</p>"
+        }
+      },
+      "documentation":"<p>The search criteria to be used to return test cases.</p>"
+    },
+    "TestCaseSearchFilter":{
+      "type":"structure",
+      "members":{
+        "TagFilter":{
+          "shape":"ControlPlaneTagFilter",
+          "documentation":"<p>An object that can be used to specify Tag conditions inside the SearchFilter. This accepts an OR of AND (List of List) input where: Top level list specifies conditions that need to be applied with OR operator. Inner list specifies conditions that need to be applied with AND operator.</p>"
+        }
+      },
+      "documentation":"<p>Filters to be applied to search results.</p>"
+    },
+    "TestCaseSearchSummaryList":{
+      "type":"list",
+      "member":{"shape":"TestCase"}
+    },
+    "TestCaseSha256":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9]{64}$"
+    },
+    "TestCaseStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a test case.</p>",
+      "enum":[
+        "PUBLISHED",
+        "SAVED"
+      ]
+    },
+    "TestCaseSummary":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"TestCaseId",
+          "documentation":"<p>The identifier of the test case.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the test case.</p>"
+        },
+        "Name":{
+          "shape":"ContactFlowName",
+          "documentation":"<p>The name of the test case.</p>"
+        },
+        "Status":{
+          "shape":"TestCaseStatus",
+          "documentation":"<p>The status of the test case.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the test case was last modified.</p>"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The region in which the test case was last modified.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a test case.</p>"
+    },
+    "TestCaseSummaryList":{
+      "type":"list",
+      "member":{"shape":"TestCaseSummary"}
     },
     "ThemeImageLink":{
       "type":"string",
@@ -31854,6 +33316,10 @@
           "shape":"EvaluationFormAutoEvaluationConfiguration",
           "documentation":"<p>Whether automated evaluations are enabled.</p>"
         },
+        "ReviewConfiguration":{
+          "shape":"EvaluationReviewConfiguration",
+          "documentation":"<p>Configuration for evaluation review settings of the evaluation form.</p>"
+        },
         "AsDraft":{
           "shape":"BoxedBoolean",
           "documentation":"<p>A boolean flag indicating whether to update evaluation form to draft state.</p>"
@@ -31945,6 +33411,14 @@
         "EffectiveTill":{
           "shape":"HoursOfOperationOverrideYearMonthDayDateFormat",
           "documentation":"<p>The date until the hours of operation override is effective.</p>"
+        },
+        "RecurrenceConfig":{
+          "shape":"RecurrenceConfig",
+          "documentation":"<p>Configuration for a recurring event.</p>"
+        },
+        "OverrideType":{
+          "shape":"OverrideType",
+          "documentation":"<p>Whether the override will be defined as a <i>standard</i> or as a <i>recurring event</i>.</p> <p>For more information about how override types are applied, see <a href=\"https://docs.aws.amazon.com/https:/docs.aws.amazon.com/connect/latest/adminguide/hours-of-operation-overrides.html\">Build your list of overrides</a> in the <i> Administrator Guide</i>.</p>"
         }
       }
     },
@@ -32822,6 +34296,67 @@
           "documentation":"<p>The timestamp when the task template was created.</p>"
         }
       }
+    },
+    "UpdateTestCaseRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "TestCaseId"
+      ],
+      "members":{
+        "InstanceId":{
+          "shape":"InstanceIdOrArn",
+          "documentation":"<p>The identifier of the Amazon Connect instance.</p>",
+          "location":"uri",
+          "locationName":"InstanceId"
+        },
+        "TestCaseId":{
+          "shape":"TestCaseId",
+          "documentation":"<p>The identifier of the test case to update.</p>",
+          "location":"uri",
+          "locationName":"TestCaseId"
+        },
+        "Content":{
+          "shape":"TestCaseContent",
+          "documentation":"<p>The JSON string that represents the content of the test.</p>"
+        },
+        "EntryPoint":{
+          "shape":"TestCaseEntryPoint",
+          "documentation":"<p>Defines the starting point for your test.</p>"
+        },
+        "InitializationData":{
+          "shape":"TestCaseInitializationData",
+          "documentation":"<p>Defines the test attributes for precise data representation.</p>"
+        },
+        "Name":{
+          "shape":"TestCaseName",
+          "documentation":"<p>The name of the test case.</p>"
+        },
+        "Description":{
+          "shape":"TestCaseDescription",
+          "documentation":"<p>The description of the test case.</p>"
+        },
+        "Status":{
+          "shape":"TestCaseStatus",
+          "documentation":"<p>Indicates the test status as either SAVED or PUBLISHED. The PUBLISHED status will initiate validation on the content. The SAVED status does not initiate validation of the content.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time at which the resource was last modified.</p>",
+          "location":"header",
+          "locationName":"x-amz-last-modified-time"
+        },
+        "LastModifiedRegion":{
+          "shape":"RegionName",
+          "documentation":"<p>The region in which the resource was last modified</p>",
+          "location":"header",
+          "locationName":"x-amz-last-modified-region"
+        }
+      }
+    },
+    "UpdateTestCaseResponse":{
+      "type":"structure",
+      "members":{}
     },
     "UpdateTrafficDistributionRequest":{
       "type":"structure",
@@ -34351,6 +35886,24 @@
       "type":"list",
       "member":{"shape":"VocabularySummary"}
     },
+    "VoiceCallEntryPointParameters":{
+      "type":"structure",
+      "members":{
+        "SourcePhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The source phone number for the test.</p>"
+        },
+        "DestinationPhoneNumber":{
+          "shape":"PhoneNumber",
+          "documentation":"<p>The destination phone number for the test.</p>"
+        },
+        "FlowId":{
+          "shape":"ContactFlowId",
+          "documentation":"<p>The flow identifier for the test.</p>"
+        }
+      },
+      "documentation":"<p>Parameters for initiating a voice call test.</p>"
+    },
     "VoiceRecordingConfiguration":{
       "type":"structure",
       "members":{
@@ -34372,6 +35925,18 @@
         "TO_AGENT",
         "ALL"
       ]
+    },
+    "WeekdayOccurrenceInteger":{
+      "type":"integer",
+      "box":true,
+      "max":4,
+      "min":-1
+    },
+    "WeekdayOccurrenceList":{
+      "type":"list",
+      "member":{"shape":"WeekdayOccurrenceInteger"},
+      "max":1,
+      "min":0
     },
     "WisdomInfo":{
       "type":"structure",

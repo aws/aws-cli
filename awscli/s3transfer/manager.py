@@ -188,6 +188,7 @@ class TransferManager:
         'SSEKMSEncryptionContext',
         'Tagging',
         'WebsiteRedirectLocation',
+        'IfNoneMatch',
     ]
 
     ALLOWED_UPLOAD_ARGS = (

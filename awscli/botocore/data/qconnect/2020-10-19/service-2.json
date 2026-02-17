@@ -2281,13 +2281,24 @@
     "AIPromptInferenceConfiguration":{
       "type":"structure",
       "members":{
-        "textAIPromptInferenceConfiguration":{
-          "shape":"TextAIPromptInferenceConfiguration",
-          "documentation":"<p>The inference configuration for text-based AI Prompts.</p>"
+        "temperature":{
+          "shape":"Probability",
+          "documentation":"<p>The temperature setting for controlling randomness in the generated response.</p>"
+        },
+        "topP":{
+          "shape":"Probability",
+          "documentation":"<p>The top-P sampling parameter for nucleus sampling.</p>"
+        },
+        "topK":{
+          "shape":"TopK",
+          "documentation":"<p>The top-K sampling parameter for token selection.</p>"
+        },
+        "maxTokensToSample":{
+          "shape":"MaxTokensToSample",
+          "documentation":"<p>The maximum number of tokens to generate in the response.</p>"
         }
       },
-      "documentation":"<p>The configuration for inference parameters when using AI Prompts.</p>",
-      "union":true
+      "documentation":"<p>The configuration for inference parameters when using AI Prompts.</p>"
     },
     "AIPromptModelIdentifier":{
       "type":"string",
@@ -2532,7 +2543,8 @@
           "documentation":"<p>A hint indicating that the annotation contains potentially destructive content.</p>"
         }
       },
-      "documentation":"<p>An annotation that provides additional context or metadata.</p>"
+      "documentation":"<p>An annotation that provides additional context or metadata.</p>",
+      "sensitive":true
     },
     "AnswerRecommendationAIAgentConfiguration":{
       "type":"structure",
@@ -2987,7 +2999,7 @@
       "type":"structure",
       "members":{
         "completion":{
-          "shape":"NonEmptyString",
+          "shape":"NonEmptySensitiveString",
           "documentation":"<p>A chunk of the case summarization completion.</p>"
         },
         "nextChunkToken":{
@@ -6844,7 +6856,8 @@
     "JSONDocument":{
       "type":"structure",
       "members":{},
-      "document":true
+      "document":true,
+      "sensitive":true
     },
     "KnowledgeBaseAssociationConfigurationData":{
       "type":"structure",
@@ -7841,8 +7854,9 @@
     },
     "MaxTokensToSample":{
       "type":"integer",
+      "box":true,
       "max":4096,
-      "min":0,
+      "min":1,
       "sensitive":true
     },
     "MessageConfiguration":{
@@ -8807,6 +8821,7 @@
     },
     "Probability":{
       "type":"float",
+      "box":true,
       "max":1,
       "min":0,
       "sensitive":true
@@ -11470,7 +11485,8 @@
       "type":"string",
       "enum":[
         "RECOMMENDATION",
-        "RESULT"
+        "RESULT",
+        "MESSAGE"
       ]
     },
     "TextAIPrompt":{
@@ -11478,28 +11494,6 @@
       "max":1000000,
       "min":1,
       "sensitive":true
-    },
-    "TextAIPromptInferenceConfiguration":{
-      "type":"structure",
-      "members":{
-        "temperature":{
-          "shape":"Probability",
-          "documentation":"<p>The temperature setting for controlling randomness in the generated response.</p>"
-        },
-        "topP":{
-          "shape":"Probability",
-          "documentation":"<p>The top-P sampling parameter for nucleus sampling.</p>"
-        },
-        "topK":{
-          "shape":"TopK",
-          "documentation":"<p>The top-K sampling parameter for token selection.</p>"
-        },
-        "maxTokensToSample":{
-          "shape":"MaxTokensToSample",
-          "documentation":"<p>The maximum number of tokens to generate in the response.</p>"
-        }
-      },
-      "documentation":"<p>Inference configuration for text-based AI Prompts.</p>"
     },
     "TextData":{
       "type":"structure",
@@ -11540,8 +11534,8 @@
     },
     "TextMessageValueString":{
       "type":"string",
-      "max":1024,
-      "min":1,
+      "max":25000,
+      "min":0,
       "sensitive":true
     },
     "ThrottlingException":{
@@ -11597,7 +11591,7 @@
           "documentation":"<p>The type of the tool.</p>"
         },
         "title":{
-          "shape":"NonEmptyString",
+          "shape":"NonEmptySensitiveString",
           "documentation":"<p>The title of the tool configuration.</p>"
         },
         "toolId":{
@@ -11605,7 +11599,7 @@
           "documentation":"<p>The identifier of the tool, for example toolName from Model Context Provider server.</p>"
         },
         "description":{
-          "shape":"String",
+          "shape":"NonEmptySensitiveString",
           "documentation":"<p>The description of the tool configuration.</p>"
         },
         "instruction":{
@@ -11659,7 +11653,8 @@
           "documentation":"<p>Examples for using the tool.</p>"
         }
       },
-      "documentation":"<p>Instructions for using a tool.</p>"
+      "documentation":"<p>Instructions for using a tool.</p>",
+      "sensitive":true
     },
     "ToolOutputConfiguration":{
       "type":"structure",
@@ -11692,7 +11687,8 @@
     },
     "ToolOutputFilterList":{
       "type":"list",
-      "member":{"shape":"ToolOutputFilter"}
+      "member":{"shape":"ToolOutputFilter"},
+      "sensitive":true
     },
     "ToolOverrideConstantInputValue":{
       "type":"structure",
@@ -11743,7 +11739,8 @@
     },
     "ToolOverrideInputValueList":{
       "type":"list",
-      "member":{"shape":"ToolOverrideInputValue"}
+      "member":{"shape":"ToolOverrideInputValue"},
+      "sensitive":true
     },
     "ToolOverrideInputValueType":{
       "type":"string",
@@ -11790,6 +11787,7 @@
     },
     "TopK":{
       "type":"integer",
+      "box":true,
       "max":200,
       "min":0,
       "sensitive":true
@@ -12043,9 +12041,9 @@
           "shape":"AIAgentConfigurationData",
           "documentation":"<p>The configuration of the AI Agent being updated for use by default on the Amazon Q in Connect Assistant.</p>"
         },
-        "orchestratorConfigurationList":{
-          "shape":"OrchestratorConfigurationList",
-          "documentation":"<p>The updated list of orchestrator configurations for the assistant AI Agent.</p>"
+        "orchestratorUseCase":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The orchestrator use case for the AI Agent being added.</p>"
         }
       }
     },

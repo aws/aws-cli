@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+1.44.42
+=======
+
+* api-change:``cleanrooms``: This release adds support for federated catalogs in Athena-sourced configured tables.
+* api-change:``connect``: Correcting in-app notifications API documentation.
+
+
 1.44.41
 =======
 

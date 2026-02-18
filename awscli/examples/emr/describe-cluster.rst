@@ -10,8 +10,8 @@
 		    "Cluster": {
 		        "Status": {
 		            "Timeline": {
-		                "ReadyDateTime": 1436475075.199, 
-		                "CreationDateTime": 1436474656.563, 
+		                "ReadyDateTime": "2015-07-09T20:51:15.199+00:00", 
+		                "CreationDateTime": "2015-07-09T20:44:16.563+00:00", 
 		            }, 
 		            "State": "WAITING",
 		            "StateChangeReason": {
@@ -38,9 +38,9 @@
 		                "RequestedInstanceCount": 2, 
 		                "Status": {
 		                    "Timeline": {
-		                        "ReadyDateTime": 1436475074.245, 
-		                        "CreationDateTime": 1436474656.564, 
-		                        "EndDateTime": 1436638158.387
+		                        "ReadyDateTime": "2015-07-09T20:51:14.245+00:00", 
+		                        "CreationDateTime": "2015-07-09T20:44:16.564+00:00", 
+		                        "EndDateTime": "2015-07-11T18:09:18.387+00:00"
 		                    }, 
 		                    "State": "RUNNING", 
 		                    "StateChangeReason": {
@@ -59,9 +59,9 @@
 		                "RequestedInstanceCount": 1, 
 		                "Status": {
 		                    "Timeline": {
-		                        "ReadyDateTime": 1436475074.245, 
-		                        "CreationDateTime": 1436474656.564, 
-		                        "EndDateTime": 1436638158.387
+		                        "ReadyDateTime": "2015-07-09T20:51:14.245+00:00", 
+		                        "CreationDateTime": "2015-07-09T20:44:16.564+00:00", 
+		                        "EndDateTime": "2015-07-11T18:09:18.387+00:00"
 		                    }, 
 		                    "State": "RUNNING", 
 		                    "StateChangeReason": {
@@ -107,8 +107,8 @@
             "Cluster": {
                 "Status": {
                     "Timeline": {
-                        "ReadyDateTime": 1487897289.705,
-                        "CreationDateTime": 1487896933.942
+                        "ReadyDateTime": "2017-02-24T00:48:09.705+00:00",
+                        "CreationDateTime": "2017-02-24T00:42:13.942+00:00"
                     },
                     "State": "WAITING",
                     "StateChangeReason": {
@@ -135,8 +135,8 @@
                     {
                         "Status": {
                             "Timeline": {
-                                "ReadyDateTime": 1487897212.74,
-                                "CreationDateTime": 1487896933.948
+                                "ReadyDateTime": "2017-02-24T00:46:52.740+00:00",
+                                "CreationDateTime": "2017-02-24T00:42:13.948+00:00"
                             },
                             "State": "RUNNING",
                             "StateChangeReason": {
@@ -187,8 +187,8 @@
 	        "Cluster": {
 	            "Status": {
 	                "Timeline": {
-	                    "ReadyDateTime": 1399400564.432,
-	                    "CreationDateTime": 1399400268.62
+	                    "ReadyDateTime": "2014-05-06T18:22:44.432+00:00",
+	                    "CreationDateTime": "2014-05-06T18:17:48.620+00:00"
 	                },
 	                "State": "WAITING",
 	                "StateChangeReason": {
@@ -209,8 +209,8 @@
 	                    "RequestedInstanceCount": 1,
 	                    "Status": {
 	                        "Timeline": {
-	                            "ReadyDateTime": 1399400558.848,
-	                            "CreationDateTime": 1399400268.621
+	                            "ReadyDateTime": "2014-05-06T18:22:38.848+00:00",
+	                            "CreationDateTime": "2014-05-06T18:17:48.621+00:00"
 	                        },
 	                        "State": "RUNNING",
 	                        "StateChangeReason": {
@@ -228,8 +228,8 @@
 	                    "RequestedInstanceCount": 2,
 	                    "Status": {
 	                        "Timeline": {
-	                            "ReadyDateTime": 1399400564.439,
-	                            "CreationDateTime": 1399400268.621
+	                            "ReadyDateTime": "2014-05-06T18:22:44.439+00:00",
+	                            "CreationDateTime": "2014-05-06T18:17:48.621+00:00"
 	                        },
 	                        "State": "RUNNING",
 	                        "StateChangeReason": {

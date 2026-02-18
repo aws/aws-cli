@@ -231,6 +231,20 @@ class TextFormatter(Formatter):
         if stream is None:
             stream = self._get_default_stream()
         try:
+            # For paginated responses + a JMESPath query, fully buffer the
+            # result before applying the query.
+            #
+            # Streaming per-page + applying the query per-page can yield
+            # confusing extra output when later pages do not contain the
+            # queried field (for example: a scalar query printing a trailing
+            # "None" line). Buffering keeps text output consistent with the
+            # JSON/table formatters.
+            if is_response_paginated(response) and self._args.query is not None:
+                response_data = response.build_full_result()
+                self._remove_request_id(response_data)
+                self._format_response(response_data, stream)
+                return
+
             if is_response_paginated(response):
                 result_keys = response.result_keys
                 for i, page in enumerate(response):
@@ -246,8 +260,6 @@ class TextFormatter(Formatter):
                         )
                     self._format_response(current, stream)
                 if response.resume_token:
-                    # Tell the user about the next token so they can continue
-                    # if they want.
                     self._format_response(
                         {'NextToken': {'NextToken': response.resume_token}},
                         stream,
@@ -256,8 +268,6 @@ class TextFormatter(Formatter):
                 self._remove_request_id(response)
                 self._format_response(response, stream)
         finally:
-            # flush is needed to avoid the "close failed in file object
-            # destructor" in python2.x (see http://bugs.python.org/issue11380).
             self._flush_stream(stream)
 
     def _format_response(self, response, stream):

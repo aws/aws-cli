@@ -2359,7 +2359,7 @@
       "type":"string",
       "max":200,
       "min":0,
-      "pattern":"arn:aws:cleanrooms:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:membership/[\\d\\w-]+/analysistemplate/[\\d\\w-]+"
+      "pattern":"arn:aws[-a-z]*:cleanrooms:[\\w]{2}-[\\w]{4,9}-[\\d]:[\\d]{12}:membership/[\\d\\w-]+/analysistemplate/[\\d\\w-]+"
     },
     "AnalysisTemplateArnList":{
       "type":"list",
@@ -2597,6 +2597,12 @@
       "max":50,
       "min":1
     },
+    "AthenaCatalogName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
     "AthenaDatabaseName":{
       "type":"string",
       "max":128,
@@ -2642,6 +2648,10 @@
         "tableName":{
           "shape":"AthenaTableName",
           "documentation":"<p> The table reference.</p>"
+        },
+        "catalogName":{
+          "shape":"AthenaCatalogName",
+          "documentation":"<p> The catalog name.</p>"
         }
       },
       "documentation":"<p> A reference to a table within Athena.</p>"
@@ -9964,6 +9974,7 @@
     },
     "ResultFormat":{
       "type":"string",
+      "documentation":"<p>File format of the returned data.</p>",
       "enum":[
         "CSV",
         "PARQUET"
@@ -11401,7 +11412,8 @@
         },
         "number":{
           "shape":"WorkerComputeConfigurationNumberInteger",
-          "documentation":"<p> The number of workers.</p> <p>SQL queries support a minimum value of 2 and a maximum value of 400. </p> <p>PySpark jobs support a minimum value of 4 and a maximum value of 128.</p>"
+          "documentation":"<p> The number of workers.</p> <p>SQL queries support a minimum value of 2 and a maximum value of 400. </p> <p>PySpark jobs support a minimum value of 4 and a maximum value of 128.</p>",
+          "box":true
         },
         "properties":{
           "shape":"WorkerComputeConfigurationProperties",

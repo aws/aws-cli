@@ -175,7 +175,7 @@ class Styler:
 
 class ColorizedStyler(Styler):
     def __init__(self):
-        colorama.init(**COLORAMA_KWARGS)
+        colorama.init(**COLORAMA_KWARGS)  # noqa
 
     def style_title(self, text):
         # Originally bold + underline

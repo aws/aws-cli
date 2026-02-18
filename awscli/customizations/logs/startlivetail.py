@@ -543,7 +543,7 @@ class InteractivePrinter(BaseLiveTailPrinter):
         self._is_sampled = False
         self._keywords_to_highlight = keywords_to_highlight
         self._format = OutputFormat.JSON
-        colorama.init(autoreset=True, strip=False)
+        colorama.init(autoreset=True, strip=False)  # noqa
 
     @property
     def log_events_displayed(self):

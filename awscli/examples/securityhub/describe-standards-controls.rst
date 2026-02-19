@@ -1,6 +1,6 @@
 **To request the list of controls in an enabled standard**
 
-The following ``describe-standards-controls`` example requests the list of controls in the requestor account's subscription to the PCI DSS standard. The request returns two controls at a time. ::
+The following ``describe-standards-controls`` example requests the list of controls in the requester account's subscription to the PCI DSS standard. The request returns two controls at a time. ::
 
     aws securityhub describe-standards-controls \
         --standards-subscription-arn "arn:aws:securityhub:us-west-1:123456789012:subscription/pci-dss/v/3.2.1" \

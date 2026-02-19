@@ -1,6 +1,6 @@
 **To update an attribute group**
 
-The following ``update-attribute-group`` example updates a specific attribute group in your AWS account to include a descritption. ::
+The following ``update-attribute-group`` example updates a specific attribute group in your AWS account to include a description. ::
 
     aws servicecatalog-appregistry update-attribute-group \
         --attribute-group "ExampleAttributeGroup" \

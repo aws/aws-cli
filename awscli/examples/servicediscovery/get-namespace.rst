@@ -30,7 +30,7 @@ For more information, see `AWS Cloud Map namespaces <https://docs.aws.amazon.com
 
 **Example 2: To get the details of a namespace using ARN**
 
-The following ``get-namespace`` example retrieves information about the specified namespace using its ARN. Specifying the ARN is necessary for retreiving details of a namespace shared with your account. ::
+The following ``get-namespace`` example retrieves information about the specified namespace using its ARN. Specifying the ARN is necessary for retrieving details of a namespace shared with your account. ::
 
     aws servicediscovery get-namespace \
         --id arn:aws:servicediscovery:us-west-2:123456789012:namespace/ns-abcd1234xmpl5678

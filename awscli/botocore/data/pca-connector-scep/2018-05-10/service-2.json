@@ -23,8 +23,8 @@
       "input":{"shape":"CreateChallengeRequest"},
       "output":{"shape":"CreateChallengeResponse"},
       "errors":[
-        {"shape":"ResourceNotFoundException"},
         {"shape":"BadRequestException"},
+        {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ThrottlingException"},
@@ -32,7 +32,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>For general-purpose connectors. Creates a <i>challenge password</i> for the specified connector. The SCEP protocol uses a challenge password to authenticate a request before issuing a certificate from a certificate authority (CA). Your SCEP clients include the challenge password as part of their certificate request to Connector for SCEP. To retrieve the connector Amazon Resource Names (ARNs) for the connectors in your account, call <a href=\"https://docs.aws.amazon.com/C4SCEP_API/pca-connector-scep/latest/APIReference/API_ListConnectors.html\">ListConnectors</a>.</p> <p>To create additional challenge passwords for the connector, call <code>CreateChallenge</code> again. We recommend frequently rotating your challenge passwords.</p>"
+      "documentation":"<p>For general-purpose connectors. Creates a <i>challenge password</i> for the specified connector. The SCEP protocol uses a challenge password to authenticate a request before issuing a certificate from a certificate authority (CA). Your SCEP clients include the challenge password as part of their certificate request to Connector for SCEP. To retrieve the connector Amazon Resource Names (ARNs) for the connectors in your account, call <a href=\"https://docs.aws.amazon.com/pca-connector-scep/latest/APIReference/API_ListConnectors.html\">ListConnectors</a>.</p> <p>To create additional challenge passwords for the connector, call <code>CreateChallenge</code> again. We recommend frequently rotating your challenge passwords.</p>"
     },
     "CreateConnector":{
       "name":"CreateConnector",
@@ -70,7 +70,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Deletes the specified <a href=\"https://docs.aws.amazon.com/C4SCEP_API/pca-connector-scep/latest/APIReference/API_Challenge.html\">Challenge</a>.</p>",
+      "documentation":"<p>Deletes the specified <a href=\"https://docs.aws.amazon.com/pca-connector-scep/latest/APIReference/API_Challenge.html\">Challenge</a>.</p>",
       "idempotent":true
     },
     "DeleteConnector":{
@@ -89,7 +89,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Deletes the specified <a href=\"https://docs.aws.amazon.com/C4SCEP_API/pca-connector-scep/latest/APIReference/API_Connector.html\">Connector</a>. This operation also deletes any challenges associated with the connector.</p>",
+      "documentation":"<p>Deletes the specified <a href=\"https://docs.aws.amazon.com/pca-connector-scep/latest/APIReference/API_Connector.html\">Connector</a>. This operation also deletes any challenges associated with the connector.</p>",
       "idempotent":true
     },
     "GetChallengeMetadata":{
@@ -108,7 +108,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Retrieves the metadata for the specified <a href=\"https://docs.aws.amazon.com/C4SCEP_API/pca-connector-scep/latest/APIReference/API_Challenge.html\">Challenge</a>.</p>"
+      "documentation":"<p>Retrieves the metadata for the specified <a href=\"https://docs.aws.amazon.com/pca-connector-scep/latest/APIReference/API_Challenge.html\">Challenge</a>.</p>",
+      "readonly":true
     },
     "GetChallengePassword":{
       "name":"GetChallengePassword",
@@ -126,7 +127,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Retrieves the challenge password for the specified <a href=\"https://docs.aws.amazon.com/C4SCEP_API/pca-connector-scep/latest/APIReference/API_Challenge.html\">Challenge</a>.</p>"
+      "documentation":"<p>Retrieves the challenge password for the specified <a href=\"https://docs.aws.amazon.com/pca-connector-scep/latest/APIReference/API_Challenge.html\">Challenge</a>.</p>",
+      "readonly":true
     },
     "GetConnector":{
       "name":"GetConnector",
@@ -144,7 +146,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Retrieves details about the specified <a href=\"https://docs.aws.amazon.com/C4SCEP_API/pca-connector-scep/latest/APIReference/API_Connector.html\">Connector</a>. Calling this action returns important details about the connector, such as the public SCEP URL where your clients can request certificates.</p>"
+      "documentation":"<p>Retrieves details about the specified <a href=\"https://docs.aws.amazon.com/pca-connector-scep/latest/APIReference/API_Connector.html\">Connector</a>. Calling this action returns important details about the connector, such as the public SCEP URL where your clients can request certificates.</p>",
+      "readonly":true
     },
     "ListChallengeMetadata":{
       "name":"ListChallengeMetadata",
@@ -162,7 +165,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Retrieves the challenge metadata for the specified ARN.</p>"
+      "documentation":"<p>Retrieves the challenge metadata for the specified ARN.</p>",
+      "readonly":true
     },
     "ListConnectors":{
       "name":"ListConnectors",
@@ -179,7 +183,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Lists the connectors belonging to your Amazon Web Services account.</p>"
+      "documentation":"<p>Lists the connectors belonging to your Amazon Web Services account.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -197,7 +202,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Retrieves the tags associated with the specified resource. Tags are key-value pairs that you can use to categorize and manage your resources, for purposes like billing. For example, you might set the tag key to \"customer\" and the value to the customer name or ID. You can specify one or more tags to add to each Amazon Web Services resource, up to 50 tags for a resource.</p>"
+      "documentation":"<p>Retrieves the tags associated with the specified resource. Tags are key-value pairs that you can use to categorize and manage your resources, for purposes like billing. For example, you might set the tag key to \"customer\" and the value to the customer name or ID. You can specify one or more tags to add to each Amazon Web Services resource, up to 50 tags for a resource.</p>",
+      "readonly":true
     },
     "TagResource":{
       "name":"TagResource",
@@ -358,7 +364,7 @@
           "documentation":"<p>The date and time that the challenge was updated.</p>"
         }
       },
-      "documentation":"<p>Details about the specified challenge, returned by the <a href=\"https://docs.aws.amazon.com/C4SCEP_API/pca-connector-scep/latest/APIReference/API_GetChallengeMetadata.html\">GetChallengeMetadata</a> action.</p>"
+      "documentation":"<p>Details about the specified challenge, returned by the <a href=\"https://docs.aws.amazon.com/pca-connector-scep/latest/APIReference/API_GetChallengeMetadata.html\">GetChallengeMetadata</a> action.</p>"
     },
     "ClientToken":{
       "type":"string",
@@ -462,7 +468,9 @@
         "INTERNAL_FAILURE",
         "PRIVATECA_ACCESS_DENIED",
         "PRIVATECA_INVALID_STATE",
-        "PRIVATECA_RESOURCE_NOT_FOUND"
+        "PRIVATECA_RESOURCE_NOT_FOUND",
+        "VPC_ENDPOINT_RESOURCE_NOT_FOUND",
+        "VPC_ENDPOINT_DNS_ENTRIES_NOT_FOUND"
       ]
     },
     "ConnectorSummary":{
@@ -528,7 +536,7 @@
         },
         "ClientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Custom string that can be used to distinguish between calls to the <a href=\"https://docs.aws.amazon.com/C4SCEP_API/pca-connector-scep/latest/APIReference/API_CreateChallenge.html\">CreateChallenge</a> action. Client tokens for <code>CreateChallenge</code> time out after five minutes. Therefore, if you call <code>CreateChallenge</code> multiple times with the same client token within five minutes, Connector for SCEP recognizes that you are requesting only one challenge and will only respond with one. If you change the client token for each call, Connector for SCEP recognizes that you are requesting multiple challenge passwords.</p>",
+          "documentation":"<p>Custom string that can be used to distinguish between calls to the <a href=\"https://docs.aws.amazon.com/pca-connector-scep/latest/APIReference/API_CreateChallenge.html\">CreateChallenge</a> action. Client tokens for <code>CreateChallenge</code> time out after five minutes. Therefore, if you call <code>CreateChallenge</code> multiple times with the same client token within five minutes, Connector for SCEP recognizes that you are requesting only one challenge and will only respond with one. If you change the client token for each call, Connector for SCEP recognizes that you are requesting multiple challenge passwords.</p>",
           "idempotencyToken":true
         },
         "Tags":{
@@ -558,9 +566,13 @@
           "shape":"MobileDeviceManagement",
           "documentation":"<p>If you don't supply a value, by default Connector for SCEP creates a connector for general-purpose use. A general-purpose connector is designed to work with clients or endpoints that support the SCEP protocol, except Connector for SCEP for Microsoft Intune. With connectors for general-purpose use, you manage SCEP challenge passwords using Connector for SCEP. For information about considerations and limitations with using Connector for SCEP, see <a href=\"https://docs.aws.amazon.com/privateca/latest/userguide/scep-connector.htmlc4scep-considerations-limitations.html\">Considerations and Limitations</a>.</p> <p>If you provide an <code>IntuneConfiguration</code>, Connector for SCEP creates a connector for use with Microsoft Intune, and you manage the challenge passwords using Microsoft Intune. For more information, see <a href=\"https://docs.aws.amazon.com/privateca/latest/userguide/scep-connector.htmlconnector-for-scep-intune.html\">Using Connector for SCEP for Microsoft Intune</a>.</p>"
         },
+        "VpcEndpointId":{
+          "shape":"VpcEndpointId",
+          "documentation":"<p>If you don't supply a value, by default Connector for SCEP creates a connector accessible over the public internet. If you provide a VPC endpoint ID, creates a connector accessible only through that specific VPC endpoint.</p>"
+        },
         "ClientToken":{
           "shape":"ClientToken",
-          "documentation":"<p>Custom string that can be used to distinguish between calls to the <a href=\"https://docs.aws.amazon.com/C4SCEP_API/pca-connector-scep/latest/APIReference/API_CreateChallenge.html\">CreateChallenge</a> action. Client tokens for <code>CreateChallenge</code> time out after five minutes. Therefore, if you call <code>CreateChallenge</code> multiple times with the same client token within five minutes, Connector for SCEP recognizes that you are requesting only one challenge and will only respond with one. If you change the client token for each call, Connector for SCEP recognizes that you are requesting multiple challenge passwords.</p>",
+          "documentation":"<p>Custom string that can be used to distinguish between calls to the <a href=\"https://docs.aws.amazon.com/pca-connector-scep/latest/APIReference/API_CreateChallenge.html\">CreateChallenge</a> action. Client tokens for <code>CreateChallenge</code> time out after five minutes. Therefore, if you call <code>CreateChallenge</code> multiple times with the same client token within five minutes, Connector for SCEP recognizes that you are requesting only one challenge and will only respond with one. If you change the client token for each call, Connector for SCEP recognizes that you are requesting multiple challenge passwords.</p>",
           "idempotencyToken":true
         },
         "Tags":{
@@ -976,6 +988,12 @@
         "UNKNOWN_OPERATION",
         "OTHER"
       ]
+    },
+    "VpcEndpointId":{
+      "type":"string",
+      "max":22,
+      "min":13,
+      "pattern":"vpce-[0-9a-f]{8}([0-9a-f]{9})?"
     }
   },
   "documentation":"<p>Connector for SCEP creates a connector between Amazon Web Services Private CA and your SCEP-enabled clients and devices. For more information, see <a href=\"https://docs.aws.amazon.com/privateca/latest/userguide/scep-connector.htmlconnector-for-scep.html\">Connector for SCEP</a> in the <i>Amazon Web Services Private CA User Guide</i>.</p>"

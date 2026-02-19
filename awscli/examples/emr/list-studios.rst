@@ -1,6 +1,6 @@
 **To list available EMR Studios**
  
-The following ``list-studios`` example lists the EMR Studios in the AWS account::
+The following ``list-studios`` example lists the EMR Studios in the AWS account.::
  
     aws emr list-studios
 
@@ -18,6 +18,5 @@ Output::
         ]
     }
 
-
-For more information, see `Monitor, delete and updatMonitor, update and delete Amazon EMR Studio resources <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-studio-manage-studio.html>`__ in the *Amazon EMR Management Guide*.
+For more information, see `Monitor, update and delete Amazon EMR Studio resources <https://docs.aws.amazon.com/emr/latest/ManagementGuide/emr-studio-manage-studio.html>`__ in the *Amazon EMR Management Guide*.
     

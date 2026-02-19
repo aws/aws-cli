@@ -1,6 +1,6 @@
 **To request events for a specified time span**
 
-The following ``describe-fleet-events`` example diplays details of all fleet-related events that occurred during the specified time span. ::
+The following ``describe-fleet-events`` example displays details of all fleet-related events that occurred during the specified time span. ::
 
     aws gamelift describe-fleet-events \
         --fleet-id arn:aws:gamelift:us-west-2::fleet/fleet-a1b2c3d4-5678-90ab-cdef-EXAMPLE11111 \

@@ -99,7 +99,7 @@ class TestTextFormatter(unittest.TestCase):
         self.assertEqual(expected_output, actual_output)
 
     def test_can_truncate_args(self):
-        # Truncate the argument if it won't fit in the space alotted to the
+        # Truncate the argument if it won't fit in the space allotted to the
         # arguments field.
         self._format_records([
             {

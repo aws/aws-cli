@@ -1,6 +1,6 @@
 **Example 1: To list all patch baselines**
 
-The following ``describe-patch-baselines`` example retreives details for all patch baselines in your account in the current Region. ::
+The following ``describe-patch-baselines`` example retrieves details for all patch baselines in your account in the current Region. ::
 
     aws ssm describe-patch-baselines
 

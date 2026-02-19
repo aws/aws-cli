@@ -1,4 +1,4 @@
-**To retreive hosted configuration details**
+**To retrieve hosted configuration details**
 
 The following ``get-hosted-configuration-version`` example retrieves the configuration details of the AWS AppConfig hosted configuration. ::
 

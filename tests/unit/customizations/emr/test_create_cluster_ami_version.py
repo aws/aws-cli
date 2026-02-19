@@ -1412,7 +1412,7 @@ class TestCreateCluster(BaseAWSCommandParamsTest):
     def test_empty_step_args(self):
         cmd = DEFAULT_CMD + '--steps Type=Streaming,Args= '
         expect_error_msg = (
-            '\naws: error: The prameter Args cannot ' 'be an empty list.\n'
+            '\naws: error: The parameter Args cannot ' 'be an empty list.\n'
         )
         result = self.run_cmd(cmd, 255)
         self.assertEqual(expect_error_msg, result[1])

@@ -13,11 +13,12 @@
 # language governing permissions and limitations under the License.
 import os
 
-from awscli.testutils import BaseAWSCommandParamsTest
+from awscli.testutils import BaseAWSCommandParamsTest, skip_if_windows
 from awscli.testutils import capture_input
 from awscli.testutils import mock 
 from awscli.compat import BytesIO
 from tests.functional.s3 import BaseS3TransferCommandTest
+from tests.functional.s3.test_sync_command import TestSyncCaseConflict
 from tests import requires_crt
 
 
@@ -219,7 +220,11 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_metadata_copy(self):
         self.parsed_responses = [
-            {"ContentLength": "100", "LastModified": "00:00:00Z"},
+            {
+                "ContentLength": "100",
+                "LastModified": "00:00:00Z",
+                'ETag': '"foo-1"',
+            },
             {'ETag': '"foo-1"'},
         ]
         cmdline = ('%s s3://bucket/key.txt s3://bucket/key2.txt'
@@ -267,7 +272,11 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_metadata_directive_copy(self):
         self.parsed_responses = [
-            {"ContentLength": "100", "LastModified": "00:00:00Z"},
+            {
+                "ContentLength": "100",
+                "LastModified": "00:00:00Z",
+                "ETag": "'foo-1'",
+            },
             {'ETag': '"foo-1"'},
         ]
         cmdline = ('%s s3://bucket/key.txt s3://bucket/key2.txt'
@@ -610,7 +619,11 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_cp_copy_with_sse_kms_and_key_id(self):
         self.parsed_responses = [
-            {'ContentLength': 5, 'LastModified': '00:00:00Z'},  # HeadObject
+            {
+                'ContentLength': 5,
+                'LastModified': '00:00:00Z',
+                'ETag': '"foo"',
+            },  # HeadObject
             {}  # CopyObject
         ]
         cmdline = (
@@ -636,8 +649,11 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_cp_copy_large_file_with_sse_kms_and_key_id(self):
         self.parsed_responses = [
-            {'ContentLength': 10 * (1024 ** 2),
-             'LastModified': '00:00:00Z'},  # HeadObject
+            {
+                'ContentLength': 10 * (1024 ** 2),
+                'LastModified': '00:00:00Z',
+                'ETag': '"foo"',
+            },  # HeadObject
             {'UploadId': 'foo'},  # CreateMultipartUpload
             {'CopyPartResult': {'ETag': '"foo"'}},  # UploadPartCopy
             {'CopyPartResult': {'ETag': '"foo"'}},  # UploadPartCopy
@@ -669,8 +685,11 @@ class TestCPCommand(BaseCPCommandTest):
 
     def test_upload_unicode_path(self):
         self.parsed_responses = [
-            {'ContentLength': 10,
-             'LastModified': '00:00:00Z'},  # HeadObject
+            {
+                'ContentLength': 10,
+                'LastModified': '00:00:00Z',
+                'ETag': '"foo"',
+            },  # HeadObject
             {'ETag': '"foo"'}  # PutObject
         ]
         command = u's3 cp s3://bucket/\u2603 s3://bucket/\u2713'
@@ -1128,11 +1147,11 @@ class TestCpCommandWithRequesterPayer(BaseCPCommandTest):
                 self.upload_part_copy_request(
                     'sourcebucket', 'sourcekey', 'mybucket', 'mykey',
                     upload_id, PartNumber=mock.ANY, RequestPayer='requester',
-                    CopySourceRange=mock.ANY),
+                    CopySourceRange=mock.ANY, CopySourceIfMatch='"foo-1"'),
                 self.upload_part_copy_request(
                     'sourcebucket', 'sourcekey', 'mybucket', 'mykey',
                     upload_id, PartNumber=mock.ANY, RequestPayer='requester',
-                    CopySourceRange=mock.ANY),
+                    CopySourceRange=mock.ANY, CopySourceIfMatch='"foo-1"'),
                 self.complete_mpu_request(
                     'mybucket', 'mykey', upload_id, num_parts=2,
                     RequestPayer='requester')
@@ -1295,3 +1314,55 @@ class TestAccesspointCPCommand(BaseCPCommandTest):
                 self.put_object_request(mrap_arn, 'mykey')
             ]
         )
+
+
+class TestCpRecursiveCaseConflict(TestSyncCaseConflict):
+    prefix = 's3 cp --recursive '
+
+    def test_ignore_by_default(self):
+        self.files.create_file(self.lower_key, 'mycontent')
+        # Note there's no --case-conflict param.
+        cmd = f"{self.prefix} s3://bucket {self.files.rootdir}"
+        self.parsed_responses = [
+            self.list_objects_response([self.upper_key]),
+            self.get_object_response(),
+        ]
+        # Expect success, so not error mode.
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
+        # No warnings in stderr, so not warn or skip mode.
+        assert not stderr
+
+
+class TestS3ExpressCpRecursive(BaseCPCommandTest):
+    prefix = 's3 cp --recursive '
+
+    def test_s3_express_error_raises_exception(self):
+        cmd = (
+            f"{self.prefix} s3://bucket--usw2-az1--x-s3 {self.files.rootdir} "
+            "--case-conflict error"
+        )
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=255)
+        assert "`error` is not a valid value" in stderr
+
+    def test_s3_express_skip_raises_exception(self):
+        cmd = (
+            f"{self.prefix} s3://bucket--usw2-az1--x-s3 {self.files.rootdir} "
+            "--case-conflict skip"
+        )
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=255)
+        assert "`skip` is not a valid value" in stderr
+
+    @skip_if_windows("Can't rename to same file")
+    def test_s3_express_warn_emits_warning(self):
+        cmd = (
+            f"{self.prefix} s3://bucket--usw2-az1--x-s3 {self.files.rootdir} "
+            "--case-conflict warn"
+        )
+        self.parsed_responses = [
+            self.list_objects_response(['a.txt', 'A.txt']),
+            self.get_object_response(),
+            self.get_object_response(),
+        ]
+
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
+        assert "warning: Recursive copies/moves" in stderr

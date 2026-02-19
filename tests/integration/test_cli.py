@@ -118,11 +118,11 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         self.assertEqual(p.stderr, '')
 
     def test_help_with_warning_blocks(self):
-        p = aws('elastictranscoder create-pipeline help')
+        p = aws('bedrock-runtime invoke-model help')
         self.assertEqual(p.rc, 0, p.stderr)
         # Check text that appears in the warning block to ensure
         # the block was actually rendered.
-        self.assertRegex(p.stdout, r'To\s+receive\s+notifications')
+        self.assertRegex(p.stdout, r"To\s+deny\s+all\s+inference\s+access")
 
     def test_param_shorthand(self):
         p = aws(
@@ -266,6 +266,15 @@ class TestBasicCommandFunctionality(unittest.TestCase):
         version_output = p.stderr.startswith('aws-cli') or \
             p.stdout.startswith('aws-cli')
         self.assertTrue(version_output, p.stderr)
+
+    def test_version_does_not_create_cache_directory(self):
+        # Regression test: --version should not create any files/directories.
+        with tempfile.TemporaryDirectory() as tmpdir:
+            env = os.environ.copy()
+            env['HOME'] = tmpdir
+            aws('--version', env_vars=env)
+            aws_dir = os.path.join(tmpdir, '.aws')
+            self.assertFalse(os.path.exists(aws_dir))
 
     def test_traceback_printed_when_debug_on(self):
         p = aws('ec2 describe-instances --filters BADKEY=foo --debug')

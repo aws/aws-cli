@@ -32,7 +32,7 @@ HUMANIZE_SUFFIXES = ('KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB')
 EPOCH_TIME = datetime(1970, 1, 1, tzinfo=tzutc())
 # Maximum object size allowed in S3.
 # See: http://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html
-MAX_UPLOAD_SIZE = 5 * (1024 ** 4)
+MAX_UPLOAD_SIZE = 5 * (1024 ** 3) * 10000
 SIZE_SUFFIX = {
     'kb': 1024,
     'mb': 1024 ** 2,
@@ -688,6 +688,20 @@ class OnDoneFilteredSubscriber(BaseSubscriber):
 
     def _on_failure(self, future, e):
         pass
+
+
+class CaseConflictCleanupSubscriber(BaseSubscriber):
+    """
+    A subscriber which removes object compare key from case conflict set
+    when download finishes.
+    """
+
+    def __init__(self, submitted, case_conflict_key):
+        self._submitted = submitted
+        self._key = case_conflict_key
+
+    def on_done(self, future, **kwargs):
+        self._submitted.discard(self._key)
 
 
 class DeleteSourceSubscriber(OnDoneFilteredSubscriber):

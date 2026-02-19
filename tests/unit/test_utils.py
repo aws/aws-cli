@@ -23,7 +23,7 @@ from awscli.utils import (
     split_on_commas, ignore_ctrl_c, find_service_and_method_in_event_name,
     is_document_type, is_document_type_container, is_streaming_blob_type,
     is_tagged_union_type, operation_uses_document_types, ShapeWalker,
-    ShapeRecordingVisitor, OutputStreamFactory
+    ShapeRecordingVisitor, OutputStreamFactory, resolve_v2_debug_mode
 )
 
 
@@ -133,6 +133,30 @@ class TestFindServiceAndOperationNameFromEvent(unittest.TestCase):
         service, operation = find_service_and_method_in_event_name(event_name)
         self.assertIs(service, None)
         self.assertIs(operation, None)
+
+
+class TestV2DebugResolution(unittest.TestCase):
+    def test_v2_debug_flag_enabled(self):
+        args = mock.Mock(v2_debug=True)
+        self.assertTrue(resolve_v2_debug_mode(args))
+
+    def test_env_var_enabled(self):
+        args = mock.Mock(v2_debug=False)
+        with mock.patch.dict(os.environ, {'AWS_CLI_UPGRADE_DEBUG_MODE': 'true'}):
+            self.assertTrue(resolve_v2_debug_mode(args))
+
+    def test_all_disabled(self):
+        args = mock.Mock(v2_debug=False)
+        with mock.patch.dict(os.environ, {}, clear=True):
+            self.assertFalse(resolve_v2_debug_mode(args))
+
+    def test_env_var_non_true_value(self):
+        args = mock.Mock(v2_debug=False)
+        with mock.patch.dict(os.environ, {'AWS_CLI_UPGRADE_DEBUG_MODE': 'false'}):
+            self.assertFalse(resolve_v2_debug_mode(args))
+
+    def test_args_none(self):
+        self.assertFalse(resolve_v2_debug_mode(None))
 
 
 class MockProcess(object):

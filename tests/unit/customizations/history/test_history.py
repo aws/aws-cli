@@ -13,16 +13,18 @@
 import argparse
 import os
 
-from botocore.session import Session
-from botocore.history import HistoryRecorder
 from botocore.exceptions import ProfileNotFound
+from botocore.history import HistoryRecorder
+from botocore.session import Session
 
-from awscli.testutils import unittest, mock, FileCreator
 from awscli.compat import StringIO
-from awscli.customizations.history import attach_history_handler
-from awscli.customizations.history import add_history_commands
-from awscli.customizations.history import HistoryCommand
+from awscli.customizations.history import (
+    HistoryCommand,
+    add_history_commands,
+    attach_history_handler,
+)
 from awscli.customizations.history.db import DatabaseHistoryHandler
+from awscli.testutils import FileCreator, mock, unittest
 
 
 class TestAttachHistoryHandler(unittest.TestCase):
@@ -34,9 +36,12 @@ class TestAttachHistoryHandler(unittest.TestCase):
 
     @mock.patch('awscli.customizations.history.sqlite3')
     @mock.patch('awscli.customizations.history.db.sqlite3')
-    @mock.patch('awscli.customizations.history.HISTORY_RECORDER',
-                spec=HistoryRecorder)
-    def test_attach_history_handler(self, mock_recorder, mock_db_sqlite3, mock_sqlite3):
+    @mock.patch(
+        'awscli.customizations.history.HISTORY_RECORDER', spec=HistoryRecorder
+    )
+    def test_attach_history_handler(
+        self, mock_recorder, mock_db_sqlite3, mock_sqlite3
+    ):
         mock_session = mock.Mock(Session)
         mock_session.get_scoped_config.return_value = {
             'cli_history': 'enabled'
@@ -48,15 +53,18 @@ class TestAttachHistoryHandler(unittest.TestCase):
         attach_history_handler(session=mock_session, parsed_args=parsed_args)
         self.assertEqual(mock_recorder.add_handler.call_count, 1)
         self.assertIsInstance(
-            mock_recorder.add_handler.call_args[0][0], DatabaseHistoryHandler)
+            mock_recorder.add_handler.call_args[0][0], DatabaseHistoryHandler
+        )
         self.assertTrue(mock_db_sqlite3.connect.called)
 
     @mock.patch('awscli.customizations.history.sqlite3')
     @mock.patch('awscli.customizations.history.db.sqlite3')
-    @mock.patch('awscli.customizations.history.HISTORY_RECORDER',
-                spec=HistoryRecorder)
+    @mock.patch(
+        'awscli.customizations.history.HISTORY_RECORDER', spec=HistoryRecorder
+    )
     def test_no_attach_history_handler_when_history_not_configured(
-            self, mock_recorder, mock_db_sqlite3, mock_sqlite3):
+        self, mock_recorder, mock_db_sqlite3, mock_sqlite3
+    ):
         mock_session = mock.Mock(Session)
         mock_session.get_scoped_config.return_value = {}
 
@@ -69,10 +77,12 @@ class TestAttachHistoryHandler(unittest.TestCase):
 
     @mock.patch('awscli.customizations.history.sqlite3')
     @mock.patch('awscli.customizations.history.db.sqlite3')
-    @mock.patch('awscli.customizations.history.HISTORY_RECORDER',
-                spec=HistoryRecorder)
+    @mock.patch(
+        'awscli.customizations.history.HISTORY_RECORDER', spec=HistoryRecorder
+    )
     def test_no_attach_history_handler_when_command_is_history(
-            self, mock_recorder, mock_db_sqlite3, mock_sqlite3):
+        self, mock_recorder, mock_db_sqlite3, mock_sqlite3
+    ):
         mock_session = mock.Mock(Session)
         mock_session.get_scoped_config.return_value = {
             'cli_history': 'enabled'
@@ -87,10 +97,12 @@ class TestAttachHistoryHandler(unittest.TestCase):
 
     @mock.patch('awscli.customizations.history.sqlite3', None)
     @mock.patch('awscli.customizations.history.db.sqlite3')
-    @mock.patch('awscli.customizations.history.HISTORY_RECORDER',
-                spec=HistoryRecorder)
+    @mock.patch(
+        'awscli.customizations.history.HISTORY_RECORDER', spec=HistoryRecorder
+    )
     def test_no_attach_history_handler_when_no_sqlite3(
-            self, mock_recorder, mock_sqlite3):
+        self, mock_recorder, mock_sqlite3
+    ):
         mock_session = mock.Mock(Session)
         mock_session.get_scoped_config.return_value = {
             'cli_history': 'enabled'
@@ -101,18 +113,22 @@ class TestAttachHistoryHandler(unittest.TestCase):
 
         with mock.patch('sys.stderr', StringIO()) as mock_stderr:
             attach_history_handler(
-                session=mock_session, parsed_args=parsed_args)
+                session=mock_session, parsed_args=parsed_args
+            )
             self.assertIn(
-                'enabled but sqlite3 is unavailable', mock_stderr.getvalue())
+                'enabled but sqlite3 is unavailable', mock_stderr.getvalue()
+            )
         self.assertFalse(mock_recorder.add_handler.called)
         self.assertFalse(mock_sqlite3.connect.called)
 
     @mock.patch('awscli.customizations.history.sqlite3')
     @mock.patch('awscli.customizations.history.db.sqlite3')
-    @mock.patch('awscli.customizations.history.HISTORY_RECORDER',
-                spec=HistoryRecorder)
-    def test_create_directory_no_exists(self, mock_recorder,
-                                        mock_db_sqlite3, mock_sqlite3):
+    @mock.patch(
+        'awscli.customizations.history.HISTORY_RECORDER', spec=HistoryRecorder
+    )
+    def test_create_directory_no_exists(
+        self, mock_recorder, mock_db_sqlite3, mock_sqlite3
+    ):
         mock_session = mock.Mock(Session)
         mock_session.get_scoped_config.return_value = {
             'cli_history': 'enabled'
@@ -125,7 +141,8 @@ class TestAttachHistoryHandler(unittest.TestCase):
         db_filename = os.path.join(directory_to_create, 'name.db')
         with mock.patch('os.environ', {'AWS_CLI_HISTORY_FILE': db_filename}):
             attach_history_handler(
-                session=mock_session, parsed_args=parsed_args)
+                session=mock_session, parsed_args=parsed_args
+            )
             self.assertEqual(mock_recorder.add_handler.call_count, 1)
             # Is should create any missing parent directories of the
             # file as well.
@@ -134,13 +151,16 @@ class TestAttachHistoryHandler(unittest.TestCase):
 
     @mock.patch('awscli.customizations.history.sqlite3')
     @mock.patch('awscli.customizations.history.db.sqlite3')
-    @mock.patch('awscli.customizations.history.HISTORY_RECORDER',
-                spec=HistoryRecorder)
-    def test_profile_does_not_exist(self, mock_recorder, mock_db_sqlite3,
-                                    mock_sqlite3):
+    @mock.patch(
+        'awscli.customizations.history.HISTORY_RECORDER', spec=HistoryRecorder
+    )
+    def test_profile_does_not_exist(
+        self, mock_recorder, mock_db_sqlite3, mock_sqlite3
+    ):
         mock_session = mock.Mock(Session)
         mock_session.get_scoped_config.side_effect = ProfileNotFound(
-            profile='no-exist')
+            profile='no-exist'
+        )
 
         parsed_args = argparse.Namespace()
         parsed_args.command = 'configure'
@@ -149,13 +169,35 @@ class TestAttachHistoryHandler(unittest.TestCase):
         self.assertFalse(mock_recorder.add_handler.called)
         self.assertFalse(mock_db_sqlite3.connect.called)
 
+    @mock.patch('awscli.customizations.history.DatabaseConnection')
+    @mock.patch(
+        'awscli.customizations.history.HISTORY_RECORDER', spec=HistoryRecorder
+    )
+    def test_warning_when_database_connection_fails(
+        self, mock_recorder, mock_db_connection
+    ):
+        mock_db_connection.side_effect = Exception('Permission denied')
+        mock_session = mock.Mock(Session)
+        mock_session.get_scoped_config.return_value = {
+            'cli_history': 'enabled'
+        }
+
+        parsed_args = argparse.Namespace()
+        parsed_args.command = 's3'
+
+        with mock.patch('sys.stderr', new_callable=StringIO) as mock_stderr:
+            attach_history_handler(
+                session=mock_session, parsed_args=parsed_args
+            )
+            self.assertIn('Warning: Unable to record CLI history', mock_stderr.getvalue())
+        self.assertFalse(mock_recorder.add_handler.called)
+
 
 class TestAddHistoryCommand(unittest.TestCase):
     def test_add_history_command(self):
         command_table = {}
         mock_session = mock.Mock(Session)
-        add_history_commands(
-            command_table=command_table, session=mock_session)
+        add_history_commands(command_table=command_table, session=mock_session)
         self.assertIn('history', command_table)
         self.assertIsInstance(command_table['history'], HistoryCommand)
 

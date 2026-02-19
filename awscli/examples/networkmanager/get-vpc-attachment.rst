@@ -1,4 +1,4 @@
-**To get an a VPC attachment**
+**To get a VPC attachment**
 
 The following ``get-vpc-attachment`` example returns information about a VPC attachment. ::
 

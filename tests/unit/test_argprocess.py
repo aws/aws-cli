@@ -32,6 +32,7 @@ from awscli.arguments import CustomArgument, CLIArgument
 from awscli.arguments import ListArgument, BooleanArgument
 from awscli.arguments import create_argument_model_from_schema
 
+from awscli.argparser import ArgTableArgParser
 
 # These tests use real service types so that we can
 # verify the real shapes of services.
@@ -80,7 +81,7 @@ class TestURIParams(BaseArgProcessTest):
             )
             f.write(json_argument)
             f.flush()
-            result = self.uri_param('event-name', p, 'file://%s' % f.name)
+            result = self.uri_param('event-name', p, 'file://%s' % f.name, mock.Mock())
         self.assertEqual(result, json_argument)
 
     def test_uri_param_no_paramfile_false(self):
@@ -90,7 +91,7 @@ class TestURIParams(BaseArgProcessTest):
             json_argument = json.dumps([{"Name": "instance-id", "Values": ["i-1234"]}])
             f.write(json_argument)
             f.flush()
-            result = self.uri_param('event-name', p, 'file://%s' % f.name)
+            result = self.uri_param('event-name', p, 'file://%s' % f.name, mock.Mock())
         self.assertEqual(result, json_argument)
 
     def test_uri_param_no_paramfile_true(self):
@@ -100,7 +101,7 @@ class TestURIParams(BaseArgProcessTest):
             json_argument = json.dumps([{"Name": "instance-id", "Values": ["i-1234"]}])
             f.write(json_argument)
             f.flush()
-            result = self.uri_param('event-name', p, 'file://%s' % f.name)
+            result = self.uri_param('event-name', p, 'file://%s' % f.name, mock.Mock())
         self.assertEqual(result, None)
 
 
@@ -803,6 +804,24 @@ class TestDocGen(BaseArgProcessTest):
         generated_example = self.get_generated_example_for(argument)
         self.assertEqual(generated_example, '')
 
+    def test_structure_within_map(self):
+        argument = self.create_argument(
+            {
+                'A': {
+                    'type': 'map',
+                    'key': {'type': 'string'},
+                    'value': {
+                        'type': 'structure',
+                        'members': {
+                            'B': {'type': 'string'},
+                        },
+                    },
+                },
+            }
+        )
+        generated_example = self.get_generated_example_for(argument)
+        self.assertEqual('A={KeyName1={B=string},KeyName2={B=string}}', generated_example)
+
 
 class TestUnpackJSONParams(BaseArgProcessTest):
     def setUp(self):
@@ -876,6 +895,40 @@ class TestJSONValueHeaderParams(BaseArgProcessTest):
         with self.assertRaises(ParamError):
             unpack_cli_arg(self.p, value)
 
+
+class TestArgumentPercentEscaping(BaseArgProcessTest):
+    def _test_percent_escaping(self, arg_type, arg_class, doc_string):
+        argument = self.create_argument(
+            {
+                'Test': {
+                    'type': arg_type,
+                    'documentation': doc_string,
+                }
+            }
+        )
+        arg = arg_class(
+            'test-arg',
+            argument.argument_model.members['Test'],
+            mock.Mock(),
+            mock.Mock(),
+            is_required=False,
+        )
+        arg_table = {arg.name: arg}
+        parser = ArgTableArgParser(arg_table)
+        help_output = parser.format_help()
+        self.assertIn(doc_string, help_output)
+
+    def test_cli_argument_escapes_percent(self):
+        self._test_percent_escaping('string', CLIArgument, 'Symbols: % ^ & *')
+
+    def test_boolean_argument_escapes_percent(self):
+        self._test_percent_escaping('boolean', BooleanArgument, 'Symbols: % ^ & *')
+
+    def test_cli_argument_escapes_url_encoded_percent(self):
+        self._test_percent_escaping('string', CLIArgument, 'File: test%28file%29.png')
+
+    def test_boolean_argument_escapes_url_encoded_percent(self):
+        self._test_percent_escaping('boolean', BooleanArgument, 'File: test%28file%29.png')
 
 if __name__ == '__main__':
     unittest.main()

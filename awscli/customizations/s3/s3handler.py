@@ -47,6 +47,7 @@ from awscli.customizations.s3.utils import DirectoryCreatorSubscriber
 from awscli.customizations.s3.utils import DeleteSourceFileSubscriber
 from awscli.customizations.s3.utils import DeleteSourceObjectSubscriber
 from awscli.customizations.s3.utils import DeleteCopySourceObjectSubscriber
+from awscli.customizations.s3.utils import CaseConflictCleanupSubscriber
 from awscli.compat import get_binary_stdin
 
 
@@ -403,6 +404,13 @@ class DownloadRequestSubmitter(BaseTransferRequestSubmitter):
         if self._cli_params.get('is_move', False):
             subscribers.append(DeleteSourceObjectSubscriber(
                 fileinfo.source_client))
+        if fileinfo.case_conflict_submitted is not None:
+            subscribers.append(
+                CaseConflictCleanupSubscriber(
+                    fileinfo.case_conflict_submitted,
+                    fileinfo.case_conflict_key,
+                )
+            )
 
     def _submit_transfer_request(self, fileinfo, extra_args, subscribers):
         bucket, key = find_bucket_key(fileinfo.src)
@@ -433,6 +441,7 @@ class CopyRequestSubmitter(BaseTransferRequestSubmitter):
 
     def _add_additional_subscribers(self, subscribers, fileinfo):
         subscribers.append(ProvideSizeSubscriber(fileinfo.size))
+        subscribers.append(ProvideETagSubscriber(fileinfo.etag))
         if self._should_inject_content_type():
             subscribers.append(ProvideCopyContentTypeSubscriber())
         if self._cli_params.get('is_move', False):

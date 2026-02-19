@@ -5,21 +5,55 @@
       "operation": "DescribeComputeEnvironments",
       "resourceIdentifier": {
         "computeEnvironmentArn": "computeEnvironments[].computeEnvironmentArn",
-        "serviceRole": "computeEnvironments[].serviceRole"
+        "serviceRole": "computeEnvironments[].serviceRole",
+        "computeEnvironmentName": "computeEnvironments[].computeEnvironmentName"
       }
     },
     "JobDefinition": {
       "operation": "DescribeJobDefinitions",
       "resourceIdentifier": {
         "jobDefinitionName": "jobDefinitions[].jobDefinitionName",
-        "type": "jobDefinitions[].type"
+        "type": "jobDefinitions[].type",
+        "jobDefinitionArn": "jobDefinitions[].jobDefinitionArn"
       }
     },
     "JobQueue": {
       "operation": "DescribeJobQueues",
       "resourceIdentifier": {
         "state": "jobQueues[].state",
-        "status": "jobQueues[].status"
+        "status": "jobQueues[].status",
+        "jobQueueName": "jobQueues[].jobQueueName"
+      }
+    },
+    "Job": {
+      "operation": "ListJobs",
+      "resourceIdentifier": {
+        "jobId": "jobSummaryList[].jobId"
+      }
+    },
+    "SchedulingPolicy": {
+      "operation": "ListSchedulingPolicies",
+      "resourceIdentifier": {
+        "arn": "schedulingPolicies[].arn"
+      }
+    },
+    "ConsumableResource": {
+      "operation": "ListConsumableResources",
+      "resourceIdentifier": {
+        "consumableResourceArn": "consumableResources[].consumableResourceArn",
+        "consumableResourceName": "consumableResources[].consumableResourceName"
+      }
+    },
+    "ServiceEnvironment": {
+      "operation": "DescribeServiceEnvironments",
+      "resourceIdentifier": {
+        "serviceEnvironmentName": "serviceEnvironments[].serviceEnvironmentName"
+      }
+    },
+    "ServiceJob": {
+      "operation": "ListServiceJobs",
+      "resourceIdentifier": {
+        "jobId": "jobSummaryList[].jobId"
       }
     }
   },
@@ -111,6 +145,359 @@
             "parameters": {},
             "resourceName": "JobQueue",
             "resourceIdentifier": "state"
+          }
+        ]
+      },
+      "jobQueue": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "JobQueue",
+            "resourceIdentifier": "jobQueueName"
+          }
+        ]
+      },
+      "schedulingPolicyArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SchedulingPolicy",
+            "resourceIdentifier": "arn"
+          }
+        ]
+      }
+    },
+    "CancelJob": {
+      "jobId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "jobId"
+          }
+        ]
+      }
+    },
+    "CreateJobQueue": {
+      "schedulingPolicyArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SchedulingPolicy",
+            "resourceIdentifier": "arn"
+          }
+        ]
+      }
+    },
+    "DeleteConsumableResource": {
+      "consumableResource": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ConsumableResource",
+            "resourceIdentifier": "consumableResourceArn"
+          }
+        ]
+      }
+    },
+    "DeleteJobQueue": {
+      "jobQueue": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "JobQueue",
+            "resourceIdentifier": "jobQueueName"
+          }
+        ]
+      }
+    },
+    "DeleteSchedulingPolicy": {
+      "arn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SchedulingPolicy",
+            "resourceIdentifier": "arn"
+          }
+        ]
+      }
+    },
+    "DeleteServiceEnvironment": {
+      "serviceEnvironment": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ServiceEnvironment",
+            "resourceIdentifier": "serviceEnvironmentName"
+          }
+        ]
+      }
+    },
+    "DeregisterJobDefinition": {
+      "jobDefinition": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "JobDefinition",
+            "resourceIdentifier": "jobDefinitionArn"
+          }
+        ]
+      }
+    },
+    "DescribeComputeEnvironments": {
+      "computeEnvironments": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ComputeEnvironment",
+            "resourceIdentifier": "computeEnvironmentName"
+          }
+        ]
+      }
+    },
+    "DescribeConsumableResource": {
+      "consumableResource": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ConsumableResource",
+            "resourceIdentifier": "consumableResourceName"
+          }
+        ]
+      }
+    },
+    "DescribeJobQueues": {
+      "jobQueues": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "JobQueue",
+            "resourceIdentifier": "jobQueueName"
+          }
+        ]
+      }
+    },
+    "DescribeJobs": {
+      "jobs": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "jobId"
+          }
+        ]
+      }
+    },
+    "DescribeSchedulingPolicies": {
+      "arns": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SchedulingPolicy",
+            "resourceIdentifier": "arn"
+          }
+        ]
+      }
+    },
+    "DescribeServiceEnvironments": {
+      "serviceEnvironments": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ServiceEnvironment",
+            "resourceIdentifier": "serviceEnvironmentName"
+          }
+        ]
+      }
+    },
+    "DescribeServiceJob": {
+      "jobId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ServiceJob",
+            "resourceIdentifier": "jobId"
+          }
+        ]
+      }
+    },
+    "GetJobQueueSnapshot": {
+      "jobQueue": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "JobQueue",
+            "resourceIdentifier": "jobQueueName"
+          }
+        ]
+      }
+    },
+    "ListJobs": {
+      "jobQueue": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "JobQueue",
+            "resourceIdentifier": "jobQueueName"
+          }
+        ]
+      },
+      "arrayJobId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "jobId"
+          }
+        ]
+      },
+      "multiNodeJobId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "jobId"
+          }
+        ]
+      }
+    },
+    "ListJobsByConsumableResource": {
+      "consumableResource": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ConsumableResource",
+            "resourceIdentifier": "consumableResourceArn"
+          }
+        ]
+      }
+    },
+    "ListServiceJobs": {
+      "jobQueue": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "JobQueue",
+            "resourceIdentifier": "jobQueueName"
+          }
+        ]
+      }
+    },
+    "ListTagsForResource": {
+      "resourceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ComputeEnvironment",
+            "resourceIdentifier": "computeEnvironmentArn"
+          }
+        ]
+      }
+    },
+    "SubmitJob": {
+      "jobQueue": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "JobQueue",
+            "resourceIdentifier": "jobQueueName"
+          }
+        ]
+      },
+      "jobDefinition": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "JobDefinition",
+            "resourceIdentifier": "jobDefinitionName"
+          }
+        ]
+      }
+    },
+    "SubmitServiceJob": {
+      "jobQueue": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "JobQueue",
+            "resourceIdentifier": "jobQueueName"
+          }
+        ]
+      }
+    },
+    "TagResource": {
+      "resourceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ComputeEnvironment",
+            "resourceIdentifier": "computeEnvironmentArn"
+          }
+        ]
+      }
+    },
+    "TerminateJob": {
+      "jobId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Job",
+            "resourceIdentifier": "jobId"
+          }
+        ]
+      }
+    },
+    "TerminateServiceJob": {
+      "jobId": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ServiceJob",
+            "resourceIdentifier": "jobId"
+          }
+        ]
+      }
+    },
+    "UntagResource": {
+      "resourceArn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ComputeEnvironment",
+            "resourceIdentifier": "computeEnvironmentArn"
+          }
+        ]
+      }
+    },
+    "UpdateConsumableResource": {
+      "consumableResource": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ConsumableResource",
+            "resourceIdentifier": "consumableResourceName"
+          }
+        ]
+      }
+    },
+    "UpdateSchedulingPolicy": {
+      "arn": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "SchedulingPolicy",
+            "resourceIdentifier": "arn"
+          }
+        ]
+      }
+    },
+    "UpdateServiceEnvironment": {
+      "serviceEnvironment": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "ServiceEnvironment",
+            "resourceIdentifier": "serviceEnvironmentName"
           }
         ]
       }

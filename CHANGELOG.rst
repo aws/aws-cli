@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+1.44.43
+=======
+
+* api-change:``bcm-dashboards``: The Billing and Cost Management GetDashboard API now returns identifier for each widget, enabling users to uniquely identify widgets within their dashboards.
+* api-change:``ecr``: Adds multiple artifact types filter support in ListImageReferrers API.
+* api-change:``pca-connector-scep``: AWS Private CA Connector for SCEP now supports AWS PrivateLink, allowing your clients to request certificates from within your Amazon Virtual Private Cloud (VPC) without traversing the public internet. With this launch, you can create VPC endpoints to connect to your SCEP connector privately.
+
+
 1.44.42
 =======
 

@@ -184,7 +184,7 @@ Contents of ``SampleFeedback1.txt``::
 
 Contents of ``SampleFeedback2.txt``::
 
-    "Hi, I have a discrepancy with my new bill. Could we get it sorted out? A rep added stuff I didnt sign up for when I did my AnyPhone 10 upgrade. | We can absolutely get this sorted!"
+    "Hi, I have a discrepancy with my new bill. Could we get it sorted out? A rep added stuff I didn't sign up for when I did my AnyPhone 10 upgrade. | We can absolutely get this sorted!"
 
 Contents of ``SampleFeedback3.txt``::
 

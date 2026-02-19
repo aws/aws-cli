@@ -1,6 +1,6 @@
 **To retrieve the subscription information**
 
-The following ``get-subscriber`` example retrieves the subscription information for the specified Securiy Lake subscriber. ::
+The following ``get-subscriber`` example retrieves the subscription information for the specified Security Lake subscriber. ::
 
     aws securitylake get-subscriber \
         --subscriber-id a1b2c3d4-5678-90ab-cdef-EXAMPLE11111

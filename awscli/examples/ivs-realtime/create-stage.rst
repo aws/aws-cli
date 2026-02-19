@@ -50,7 +50,7 @@ Output::
 
 For more information, see `Enabling Multiple Hosts on an Amazon IVS Stream <https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/multiple-hosts.html>`__ in the *Amazon IVS Low-Latency Streaming User Guide*.
 
-**Example 2: To create a stage and configure individial participant recording**
+**Example 2: To create a stage and configure individual participant recording**
 
 The following ``create-stage`` example creates a stage and configures individual participant recording. ::
 
@@ -96,7 +96,7 @@ Output::
 
 For more information, see `Enabling Multiple Hosts on an Amazon IVS Stream <https://docs.aws.amazon.com/ivs/latest/LowLatencyUserGuide/multiple-hosts.html>`__ in the *Amazon IVS Low-Latency Streaming User Guide*.
 
-**Example 3: To create a stage and configure individial participant recording with thumbnail recording enabled**
+**Example 3: To create a stage and configure individual participant recording with thumbnail recording enabled**
 
 The following ``create-stage`` example creates a stage and configures individual participant recording with thumbnail recording enabled. ::
 

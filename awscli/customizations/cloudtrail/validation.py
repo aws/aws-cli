@@ -128,7 +128,7 @@ def create_digest_traverser(
         currently associated with the trail.
     :param account_id: The account id for which the digest files are
         validated. For normal trails this is the caller account, for
-        organization trails it is the member accout.
+        organization trails it is the member account.
 
     ``on_gap``, ``on_invalid``, and ``on_missing`` callbacks are invoked with
     the following named arguments:

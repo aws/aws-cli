@@ -1,4 +1,4 @@
-**To tag a resoure (application)**
+**To tag a resource (application)**
 
 The following ``tag-resource`` example adds two tags with keys Name and Type, and values testName and testType to an application named testApp in CodeDeploy.::
 

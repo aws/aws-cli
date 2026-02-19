@@ -26,7 +26,7 @@ def parse_last_evaluated_key_binary(parsed, **kwargs):
     # a base64 string if a binary field is present in the continuation token
     # as is the case with dynamodb the binary will be double encoded. This
     # ensures that the continuation token is properly converted to binary to
-    # avoid double encoding the contination token.
+    # avoid double encoding the continuation token.
     last_evaluated_key = parsed.get('LastEvaluatedKey', None)
     if last_evaluated_key is None:
         return

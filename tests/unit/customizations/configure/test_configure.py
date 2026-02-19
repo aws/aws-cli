@@ -87,7 +87,7 @@ class TestConfigureCommand(unittest.TestCase):
         # Test the case where the user only wants to change a single_value.
         responses = {
             "AWS Access Key ID": None,
-            "AWS Secert Access Key": None,
+            "AWS Secret Access Key": None,
             "Default region name": None,
             "Default output format": "NEW OUTPUT FORMAT",
         }

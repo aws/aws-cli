@@ -1261,7 +1261,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
     def test_empty_step_args(self):
         cmd = self.prefix + 'Type=Streaming,Args='
         expected_error_msg = (
-            '\naws: error: The prameter Args cannot ' 'be an empty list.\n'
+            '\naws: error: The parameter Args cannot be an empty list.\n'
         )
         self.assert_error_for_ami_and_release_based_clusters(
             cmd=cmd,

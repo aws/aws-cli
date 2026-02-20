@@ -20,7 +20,9 @@
         "Unit": "MetricAlarms[].Unit",
         "ComparisonOperator": "MetricAlarms[].ComparisonOperator",
         "TreatMissingData": "MetricAlarms[].TreatMissingData",
-        "EvaluateLowSampleCountPercentile": "MetricAlarms[].EvaluateLowSampleCountPercentile"
+        "EvaluateLowSampleCountPercentile": "MetricAlarms[].EvaluateLowSampleCountPercentile",
+        "CompositeAlarmsAlarmArn": "CompositeAlarms[].AlarmArn",
+        "CompositeAlarmsAlarmName": "CompositeAlarms[].AlarmName"
       }
     },
     "Dashboard": {
@@ -34,6 +36,19 @@
       "resourceIdentifier": {
         "Namespace": "Metrics[].Namespace",
         "MetricName": "Metrics[].MetricName"
+      }
+    },
+    "InsightRule": {
+      "operation": "DescribeInsightRules",
+      "resourceIdentifier": {
+        "Name": "InsightRules[].Name"
+      }
+    },
+    "MetricStream": {
+      "operation": "ListMetricStreams",
+      "resourceIdentifier": {
+        "Arn": "Entries[].Arn",
+        "Name": "Entries[].Name"
       }
     }
   },
@@ -96,6 +111,24 @@
             "parameters": {},
             "resourceName": "Alarm",
             "resourceIdentifier": "StateValue"
+          }
+        ]
+      },
+      "ChildrenOfAlarmName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Alarm",
+            "resourceIdentifier": "AlarmName"
+          }
+        ]
+      },
+      "ParentsOfAlarmName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Alarm",
+            "resourceIdentifier": "CompositeAlarmsAlarmName"
           }
         ]
       }
@@ -395,6 +428,160 @@
             "parameters": {},
             "resourceName": "Alarm",
             "resourceIdentifier": "StateReasonData"
+          }
+        ]
+      }
+    },
+    "DeleteInsightRules": {
+      "RuleNames": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "InsightRule",
+            "resourceIdentifier": "Name"
+          }
+        ]
+      }
+    },
+    "DeleteMetricStream": {
+      "Name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MetricStream",
+            "resourceIdentifier": "Name"
+          }
+        ]
+      }
+    },
+    "DescribeAlarmContributors": {
+      "AlarmName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Alarm",
+            "resourceIdentifier": "CompositeAlarmsAlarmName"
+          }
+        ]
+      }
+    },
+    "DisableInsightRules": {
+      "RuleNames": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "InsightRule",
+            "resourceIdentifier": "Name"
+          }
+        ]
+      }
+    },
+    "EnableInsightRules": {
+      "RuleNames": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "InsightRule",
+            "resourceIdentifier": "Name"
+          }
+        ]
+      }
+    },
+    "GetInsightRuleReport": {
+      "RuleName": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "InsightRule",
+            "resourceIdentifier": "Name"
+          }
+        ]
+      }
+    },
+    "GetMetricStream": {
+      "Name": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MetricStream",
+            "resourceIdentifier": "Name"
+          }
+        ]
+      }
+    },
+    "ListManagedInsightRules": {
+      "ResourceARN": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MetricStream",
+            "resourceIdentifier": "Arn"
+          }
+        ]
+      }
+    },
+    "ListTagsForResource": {
+      "ResourceARN": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MetricStream",
+            "resourceIdentifier": "Arn"
+          }
+        ]
+      }
+    },
+    "PutCompositeAlarm": {
+      "ActionsSuppressor": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "Alarm",
+            "resourceIdentifier": "CompositeAlarmsAlarmArn"
+          }
+        ]
+      }
+    },
+    "StartMetricStreams": {
+      "Names": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MetricStream",
+            "resourceIdentifier": "Name"
+          }
+        ]
+      }
+    },
+    "StopMetricStreams": {
+      "Names": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MetricStream",
+            "resourceIdentifier": "Name"
+          }
+        ]
+      }
+    },
+    "TagResource": {
+      "ResourceARN": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MetricStream",
+            "resourceIdentifier": "Arn"
+          }
+        ]
+      }
+    },
+    "UntagResource": {
+      "ResourceARN": {
+        "completions": [
+          {
+            "parameters": {},
+            "resourceName": "MetricStream",
+            "resourceIdentifier": "Arn"
           }
         ]
       }

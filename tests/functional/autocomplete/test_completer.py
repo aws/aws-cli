@@ -563,8 +563,6 @@ class TestShorthandCompleter(unittest.TestCase):
 
 class TestModelIndexCompleter(unittest.TestCase):
     def setUp(self):
-        cli_driver = CLIDriver()
-        self.cli_fetcher = fetcher.CliDriverFetcher(cli_driver)
         self.index = InMemoryIndex(
             {
                 'command_names': {
@@ -604,9 +602,7 @@ class TestModelIndexCompleter(unittest.TestCase):
             }
         )
         self.parser = parser.CLIParser(self.index)
-        self.completer = basic.ModelIndexCompleter(
-            self.index, cli_driver_fetcher=self.cli_fetcher
-        )
+        self.completer = basic.ModelIndexCompleter(self.index)
 
     def test_returns_help_text_for_params_in_global_scope(self):
         parsed = self.parser.parse('aws --re')

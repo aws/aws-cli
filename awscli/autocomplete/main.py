@@ -39,7 +39,7 @@ def create_autocompleter(
         basic.RegionCompleter(response_filter=response_filter),
         basic.ProfileCompleter(response_filter=response_filter),
         basic.ModelIndexCompleter(
-            index, cli_driver_fetcher, response_filter=response_filter
+            index, response_filter=response_filter
         ),
         basic.FilePathCompleter(response_filter=response_filter),
         serverside.create_server_side_completer(

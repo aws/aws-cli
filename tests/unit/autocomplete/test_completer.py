@@ -366,26 +366,6 @@ class TestModelIndexCompleter(unittest.TestCase):
         parsed = self.parser.parse('aws ec2 describe-instances --pos')
         self.assertEqual(self.completer.complete(parsed), [])
 
-    def test_get_documentation_if_fetcher_provided(self):
-        fake_cli_fetcher = mock.Mock()
-        fake_cli_fetcher.get_argument_documentation.return_value = (
-            '<p>Arg doc</p>'
-        )
-        fake_cli_fetcher.get_global_arg_documentation.return_value = (
-            '<p>Global arg doc</p>'
-        )
-        completer = basic.ModelIndexCompleter(self.index, fake_cli_fetcher)
-        parsed = self.parser.parse('aws ec2 describe-instances --r')
-        self.assertEqual(
-            completer.complete(parsed),
-            [
-                CompletionResult('--reserve', -3, False, 'string', 'Arg doc'),
-                CompletionResult(
-                    '--region', -3, False, 'string', 'Global arg doc'
-                ),
-            ],
-        )
-
     def test_return_service_full_name(self):
         parsed = self.parser.parse('aws ec')
         self.assertEqual(

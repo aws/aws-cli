@@ -506,7 +506,17 @@ class TestOperationModelFromService(unittest.TestCase):
             "requestChecksumRequired": True,
             "requestAlgorithmMember": "ChecksumAlgorithm",
             "requestValidationModeMember": "ChecksumMode",
-            "responseAlgorithms": ["crc32", "crc32c", "sha256", "sha1"],
+            "responseAlgorithms": [
+                "crc32",
+                "crc32c",
+                "sha256",
+                "sha1",
+                "sha512",
+                "md5",
+                "xxhash64",
+                "xxhash3",
+                "xxhash128",
+            ],
         }
         service_model = model.ServiceModel(self.model)
         operation_model = service_model.operation_model('OperationName')
@@ -525,7 +535,17 @@ class TestOperationModelFromService(unittest.TestCase):
         )
         self.assertEqual(
             http_checksum["responseAlgorithms"],
-            ["crc32", "crc32c", "sha256", "sha1"],
+            [
+                "crc32",
+                "crc32c",
+                "sha256",
+                "sha1",
+                "sha512",
+                "md5",
+                "xxhash64",
+                "xxhash3",
+                "xxhash128",
+            ],
         )
 
     def test_context_parameter_present(self):

@@ -52,4 +52,4 @@ Output::
         "my-lambda-target"
     ]
 
-For more information, see `Target groups <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html>`__ in the *Applicaion Load Balancers Guide*.
+For more information, see `Target groups <https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html>`__ in the *Application Load Balancers Guide*.

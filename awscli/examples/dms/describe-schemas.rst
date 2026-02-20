@@ -1,4 +1,4 @@
-**To desscribe database schemas**
+**To describe database schemas**
 
 The following ``describe-schemas`` example lists the available tables at an endpoint. ::
 

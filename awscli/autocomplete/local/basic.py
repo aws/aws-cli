@@ -202,8 +202,14 @@ class ModelIndexCompleter(BaseCompleter):
         lineage = parsed.lineage + [parsed.current_command]
         offset = -len(parsed.current_fragment)
         result = [
-            CompletionResult(name, help_text=full_name, starting_index=offset)
-            for name, full_name in self._index.commands_with_full_name(lineage)
+            CompletionResult(
+                name,
+                help_text=(full_name or help_text),
+                starting_index=offset,
+            )
+            for name, full_name, help_text in self._index.commands_with_full_name(
+                lineage
+            )
         ]
         return result
 
@@ -261,14 +267,7 @@ class ModelIndexCompleter(BaseCompleter):
         offset = -len(parsed.current_fragment)
         arg_data = self._index.get_global_arg_data()
         global_param_completions = []
-        for arg_name, type_name, *_, help_text in arg_data:
-            help_text = None
-            if self._cli_driver_fetcher:
-                help_text = strip_html_tags_and_newlines_and_multiple_sentences(
-                    self._cli_driver_fetcher.get_global_arg_documentation(
-                        arg_name
-                    )
-                )
+        for arg_name, type_name, _, _, help_text, *_ in arg_data:
             global_param_completions.append(
                 CompletionResult(
                     '--%s' % arg_name,

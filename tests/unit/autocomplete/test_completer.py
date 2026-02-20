@@ -110,10 +110,10 @@ class TestModelIndexCompleter(unittest.TestCase):
                 'command_names': {
                     '': [('aws', None)],
                     'aws': [
-                        ('ec2', 'Amazon Elastic Compute Cloud'),
-                        ('ecs', 'Amazon EC2 Container Registry'),
-                        ('s3', 'Amazon Simple Storage Service'),
-                        ('s3api', 'Amazon Simple Storage Service'),
+                        ('ec2', 'Amazon Elastic Compute Cloud', 'Amazon Elastic Compute Cloud You can access the features of Amazon Elastic Compute Cloud (Amazon EC2) programmatically'),
+                        ('ecs', 'Amazon EC2 Container Registry', 'Amazon Elastic Container Service Amazon Elastic Container Service (Amazon ECS) is a highly scalable, fast, container management service'),
+                        ('s3', 'Amazon Simple Storage Service', 'This section explains prominent concepts and notations in the set of high-level S3 commands provided'),
+                        ('s3api', 'Amazon Simple Storage Service', ''),
                     ],
                     'aws.ec2': [('describe-instances', None)],
                     'aws.s3api': [('get-object', None)],

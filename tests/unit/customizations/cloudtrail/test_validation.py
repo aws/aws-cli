@@ -994,7 +994,9 @@ class TestDigestTraverser(unittest.TestCase):
         digest_iter = traverser.traverse_digests(start_date, end_date)
         with self.assertRaises(RuntimeError):
             next(digest_iter)
-        key_provider.get_public_keys.assert_called_with(start_date, end_date)
+        key_provider.get_public_keys.assert_called_with(
+            start_date, end_date + timedelta(hours=2)
+        )
 
     def test_ensures_public_key_is_found(self):
         start_date = START_DATE

@@ -330,6 +330,22 @@ class TestEKSClient(unittest.TestCase):
         )
         self._session.create_client.assert_called_once_with("eks")
 
+    def test_exec_profile(self):
+        self._session.profile = "session-profile"
+        self._client = EKSClient(self._session, parsed_args=Namespace(cluster_name="ExampleCluster", role_arn=None, exec_profile="exec-profile"))
+        self._correct_user_entry["user"]["exec"]["env"] = [
+            OrderedDict([
+                ("name", "AWS_PROFILE"),
+                ("value", "exec-profile")
+            ])
+        ]
+        self.assertEqual(self._client.get_user_entry(),
+                         self._correct_user_entry)
+        self._mock_client.describe_cluster.assert_called_once_with(
+            name="ExampleCluster"
+        )
+        self._session.create_client.assert_called_once_with("eks")
+
     def test_create_user_with_alias(self):
         self._correct_user_entry["name"] = "alias"
         self.assertEqual(self._client.get_user_entry(user_alias="alias"),

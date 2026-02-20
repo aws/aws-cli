@@ -322,7 +322,9 @@ class DigestProvider:
         s3_digest_files_prefix = self._create_digest_prefix(start_date, prefix)
         client = self._client_provider.get_client(bucket)
         paginator = client.get_paginator('list_objects')
-        page_iterator = paginator.paginate(Bucket=bucket, Marker=marker, Prefix=s3_digest_files_prefix)
+        page_iterator = paginator.paginate(
+            Bucket=bucket, Marker=marker, Prefix=s3_digest_files_prefix
+        )
         key_filter = page_iterator.search('Contents[*].Key')
         # Create a target start end end date
         target_start_date = format_date(normalize_date(start_date))
@@ -466,7 +468,7 @@ class DigestProvider:
         template = 'AWSLogs/'
         template_params = {
             'account_id': self.account_id,
-            'source_region': self.trail_source_region
+            'source_region': self.trail_source_region,
         }
         if self.organization_id:
             template += '{organization_id}/'
@@ -580,7 +582,11 @@ class DigestTraverser:
 
         # For regular digests, pre-load public keys. For backfill, start with empty dict
         public_keys = (
-            {} if is_backfill else self._load_public_keys(start_date, end_date)
+            {}
+            if is_backfill
+            else self._load_public_keys(
+                start_date, end_date + timedelta(hours=2)
+            )
         )
 
         yield from self._traverse_digest_chain(

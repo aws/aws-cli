@@ -308,9 +308,7 @@ class MultiTable:
         widths = section.calculate_column_widths(
             padding=4, max_width=max_width
         )
-        # TODO: Built a list instead of +=, it's more efficient.
-        current = ''
-        length_so_far = 0
+        current = []
         # The first cell needs both left and right edges '|  foo  |'
         # while subsequent cells only need right edges '  foo  |'.
         first = True
@@ -321,16 +319,17 @@ class MultiTable:
                 first = False
             else:
                 left_edge = ''
-            current += center_text(
-                text=stylized_header,
-                length=width,
-                left_edge=left_edge,
-                right_edge='|',
-                text_length=get_text_length(header),
+            current.append(
+                center_text(
+                    text=stylized_header,
+                    length=width,
+                    left_edge=left_edge,
+                    right_edge='|',
+                    text_length=get_text_length(header),
+                )
             )
-            length_so_far += width
         self._write_line_break(stream, widths)
-        stream.write(current + '\n')
+        stream.write("".join(current) + '\n')
 
     def _write_line_break(self, stream, widths):
         # Write out something like:
@@ -356,10 +355,7 @@ class MultiTable:
             return
         self._write_line_break(stream, widths)
         for row in section.rows:
-            # TODO: Built the string in a list then join instead of using +=,
-            # it's more efficient.
-            current = ''
-            length_so_far = 0
+            current = []
             first = True
             for width, element in zip(widths, row):
                 if first:
@@ -368,15 +364,16 @@ class MultiTable:
                 else:
                     left_edge = ''
                 stylized = self._styler.style_row_element(element)
-                current += align_left(
-                    text=stylized,
-                    length=width,
-                    left_edge=left_edge,
-                    right_edge=self._column_separator,
-                    text_length=get_text_length(element),
+                current.append(
+                    align_left(
+                        text=stylized,
+                        length=width,
+                        left_edge=left_edge,
+                        right_edge=self._column_separator,
+                        text_length=get_text_length(element),
+                    )
                 )
-                length_so_far += width
-            stream.write(current + '\n')
+            stream.write("".join(current) + '\n')
         self._write_line_break(stream, widths)
 
 

@@ -140,10 +140,9 @@ class FilePathCompleter(BaseCompleter):
 
 class ModelIndexCompleter(BaseCompleter):
     def __init__(
-        self, index, cli_driver_fetcher=None, response_filter=startswith_filter
+        self, index, response_filter=startswith_filter
     ):
         self._index = index
-        self._cli_driver_fetcher = cli_driver_fetcher
         self._filter = response_filter
 
     def complete(self, parsed):
@@ -236,13 +235,6 @@ class ModelIndexCompleter(BaseCompleter):
                     command_name=parsed.current_command,
                     arg_name=arg_name,
                 )
-                help_text = None
-                if self._cli_driver_fetcher:
-                    help_text = strip_html_tags_and_newlines_and_multiple_sentences(
-                        self._cli_driver_fetcher.get_argument_documentation(
-                            parsed.lineage, parsed.current_command, arg_name
-                        )
-                    )
                 results.append(
                     self._outfile_filter(
                         CompletionResult(
@@ -250,7 +242,7 @@ class ModelIndexCompleter(BaseCompleter):
                             starting_index=offset,
                             required=arg_data.required,
                             cli_type_name=arg_data.type_name,
-                            help_text=help_text,
+                            help_text=arg_data.help_text,
                         )
                     )
                 )

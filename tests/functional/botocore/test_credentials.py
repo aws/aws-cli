@@ -67,8 +67,13 @@ from tests.functional.test_useragent import (
     parse_registered_feature_ids,
 )
 
-TIME_IN_ONE_HOUR = datetime.now(tz=timezone.utc) + timedelta(hours=1)
-TIME_IN_SIX_MONTHS = datetime.now(tz=timezone.utc) + timedelta(hours=4320)
+
+def _time_in_one_hour():
+    return datetime.now(tz=timezone.utc) + timedelta(hours=1)
+
+
+def _time_in_six_months():
+    return datetime.now(tz=timezone.utc) + timedelta(hours=4320)
 
 
 class TestCredentialRefreshRaces(unittest.TestCase):
@@ -645,7 +650,7 @@ class TestAssumeRole(BaseAssumeRoleTest):
         token_cache_key = '32096c2e0eff33d844ee6d675407ace18289357d'
         cached_token = {
             'accessToken': 'C',
-            'expiresAt': TIME_IN_ONE_HOUR.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            'expiresAt': _time_in_one_hour().strftime('%Y-%m-%dT%H:%M:%SZ'),
         }
         temp_cache = JSONFileCache(self.tempdir)
         temp_cache[token_cache_key] = cached_token
@@ -963,11 +968,11 @@ class MockCache:
             "startUrl": "https://test.awsapps.com/start",
             "region": "us-east-1",
             "accessToken": "access-token",
-            "expiresAt": TIME_IN_ONE_HOUR.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            "expiresAt": _time_in_one_hour().strftime('%Y-%m-%dT%H:%M:%SZ'),
             "expiresIn": 3600,
             "clientId": "client-12345",
             "clientSecret": "client-secret",
-            "registrationExpiresAt": TIME_IN_SIX_MONTHS.strftime(
+            "registrationExpiresAt": _time_in_six_months().strftime(
                 '%Y-%m-%dT%H:%M:%SZ'
             ),
             "refreshToken": "refresh-here",
@@ -1087,7 +1092,7 @@ class SSOSessionTest(BaseEnvVar):
                 'accessKeyId': self.access_key_id,
                 'secretAccessKey': self.secret_access_key,
                 'sessionToken': self.session_token,
-                'expiration': TIME_IN_ONE_HOUR.timestamp() * 1000,
+                'expiration': _time_in_one_hour().timestamp() * 1000,
             }
         }
         stubber.add_response(body=json.dumps(response).encode('utf-8'))

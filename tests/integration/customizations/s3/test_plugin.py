@@ -1431,11 +1431,17 @@ class TestDryrun(BaseS3IntegrationTest):
     This ensures that dryrun works.
     """
     def test_dryrun(self):
+        self._test_dryrun(arg='--dryrun')
+
+    def test_dryrun_short_option(self):
+        self._test_dryrun(arg='-n')
+
+    def _test_dryrun(self, arg):
         bucket_name = _SHARED_BUCKET
         foo_txt = self.files.create_file('foo.txt', 'foo contents')
 
         # Copy file into bucket.
-        p = aws('s3 cp %s s3://%s/ --dryrun' % (foo_txt, bucket_name))
+        p = aws('s3 cp %s s3://%s/ %s' % (foo_txt, bucket_name, arg))
         self.assertEqual(p.rc, 0)
         self.assert_no_errors(p)
         self.assertTrue(self.key_not_exists(bucket_name, 'foo.txt'))

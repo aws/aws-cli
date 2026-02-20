@@ -43,7 +43,13 @@ class TestSyncCommand(BaseS3TransferCommandTest):
         )
 
     def test_no_recursive_option(self):
-        cmdline = '. s3://mybucket --recursive'
+        self._test_no_recursive_option(arg='--recursive')
+
+    def test_no_recursive_short_option(self):
+        self._test_no_recursive_option(arg='-r')
+
+    def _test_no_recursive_option(self, arg):
+        cmdline = '. s3://mybucket %s' % arg
         # Return code will be 2 for invalid parameter ``--recursive``
         self.run_cmd(cmdline, expected_rc=2)
 

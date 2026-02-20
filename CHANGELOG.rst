@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.33.27
+=======
+
+* api-change:``sagemaker-runtime``: Added support for S3OutputPathExtension and Filename parameters to the InvokeEndpointAsync API to allow users to customize the S3 output path and file name for async inference response payloads.
+* api-change:``signer-data``: This release introduces AWS Signer Data Plane SDK client supporting GetRevocationStatus API. The new client enables AWS PrivateLink connectivity with both private DNS and VPC endpoint URLs.
+* api-change:``appstream``: Adding new attribute to disable IMDS v1 APIs for fleet, Image Builder and AppBlockBuilder instances.
+* api-change:``trustedadvisor``: Adding a new enum attribute(statusReason) to TrustedAdvisorAPI response. This attribute explains reasoning behind check status for certain specific scenarios.
+* api-change:``ecs``: Migrated to Smithy. No functional changes
+* enhancement:``awscrt``: Update awscrt to version 0.31.2
+* api-change:``ssm``: Add support for AssociationDispatchAssumeRole in AWS SSM State Manager.
+* bugfix:cloudtrail: Fixed edge case in validate-logs where digest validation could fail with "public key not found" when the end time lands near a key rotation boundary
+
+
 2.33.26
 =======
 

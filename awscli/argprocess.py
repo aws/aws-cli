@@ -237,8 +237,18 @@ def unpack_scalar_cli_arg(argument_model, value, cli_name=''):
     ):
         file_path = os.path.expandvars(value)
         file_path = os.path.expanduser(file_path)
-        if not os.path.isfile(file_path):
-            msg = 'Blob values must be a path to a file.'
+        is_file = os.path.isfile(file_path)
+        if not is_file:
+            is_dir = os.path.isdir(file_path)
+            exists = os.path.exists(file_path)
+            absolute = os.path.abspath(file_path)
+            # Print details about the file path supplied to help to determine that was the problem.
+            msg = (f'Blob values must be a path to a file. '
+                   f'Input path: {file_path}. '
+                   f'Absolute: {absolute}. '
+                   f'Exists: {exists}. '
+                   f'Is directory: {is_dir}. '
+                   f'Is file: {is_file}')
             raise ParamError(cli_name, msg)
         return open(file_path, 'rb')
     elif argument_model.type_name == 'boolean':

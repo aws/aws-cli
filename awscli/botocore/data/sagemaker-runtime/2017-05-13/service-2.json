@@ -91,6 +91,12 @@
       "pattern":"^[a-zA-Z0-9](-*[a-zA-Z0-9])*"
     },
     "ErrorCode":{"type":"string"},
+    "FilenameHeader":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"^(?!.*\\..*\\.)[a-zA-Z0-9][a-zA-Z0-9-_\\.]*$"
+    },
     "Header":{
       "type":"string",
       "max":1024,
@@ -192,6 +198,18 @@
           "documentation":"<p>The Amazon S3 URI where the inference request payload is stored.</p>",
           "location":"header",
           "locationName":"X-Amzn-SageMaker-InputLocation"
+        },
+        "S3OutputPathExtension":{
+          "shape":"S3OutputPathExtensionHeader",
+          "documentation":"<p>The path extension that is appended to the Amazon S3 output path where the inference response payload is stored.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-SageMaker-S3OutputPathExtension"
+        },
+        "Filename":{
+          "shape":"FilenameHeader",
+          "documentation":"<p>The filename for the inference response payload stored in Amazon S3. If not specified, Amazon SageMaker AI generates a filename based on the inference ID.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-SageMaker-Filename"
         },
         "RequestTTLSeconds":{
           "shape":"RequestTTLSecondsHeader",
@@ -536,6 +554,12 @@
       },
       "documentation":"<p>A stream of payload parts. Each part contains a portion of the response for a streaming inference request.</p>",
       "eventstream":true
+    },
+    "S3OutputPathExtensionHeader":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"^(?!s3:|https:)[a-zA-Z0-9!_.*'()/-]+$"
     },
     "ServiceUnavailable":{
       "type":"structure",

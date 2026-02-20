@@ -85,7 +85,7 @@ class TestModifyClusterAttributes(BaseAWSCommandParamsTest):
         )
         cmdline = self.prefix + args
         expected_error_msg = (
-            '\naws: error: You cannot specify both --visible-to-all-users '
+            '\naws: [ERROR]: An error occurred (ParamValidation): You cannot specify both --visible-to-all-users '
             'and --no-visible-to-all-users options together.\n'
         )
         result = self.run_cmd(cmdline, 252)
@@ -98,7 +98,7 @@ class TestModifyClusterAttributes(BaseAWSCommandParamsTest):
         )
         cmdline = self.prefix + args
         expected_error_msg = (
-            '\naws: error: You cannot specify both --termination-protected '
+            '\naws: [ERROR]: An error occurred (ParamValidation): You cannot specify both --termination-protected '
             'and --no-termination-protected options together.\n'
         )
         result = self.run_cmd(cmdline, 252)
@@ -110,7 +110,7 @@ class TestModifyClusterAttributes(BaseAWSCommandParamsTest):
         )
         cmdline = self.prefix + args
         expected_error_msg = (
-            '\naws: error: You cannot specify both --auto-terminate '
+            '\naws: [ERROR]: An error occurred (ParamValidation): You cannot specify both --auto-terminate '
             'and --no-auto-terminate options together.\n'
         )
         result = self.run_cmd(cmdline, 252)
@@ -178,7 +178,7 @@ class TestModifyClusterAttributes(BaseAWSCommandParamsTest):
         args = ' --cluster-id j-ABC123456'
         cmdline = self.prefix + args
         expected_error_msg = (
-            '\naws: error: Must specify one of the following boolean options: '
+            '\naws: [ERROR]: An error occurred (ParamValidation): Must specify one of the following boolean options: '
             '--visible-to-all-users|--no-visible-to-all-users, '
             '--termination-protected|--no-termination-protected, '
             '--auto-terminate|--no-auto-terminate, '

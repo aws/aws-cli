@@ -104,7 +104,7 @@ class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
         )
         cmdline = self.prefix + args
         expected_error_msg = (
-            '\naws: error: invalid type. type should be'
+            '\naws: [ERROR]: An error occurred (ParamValidation): invalid type. type should be'
             + ' either full or incremental.\n'
         )
         result = self.run_cmd(cmdline, 252)
@@ -118,7 +118,7 @@ class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
         )
         cmdline = self.prefix + args
         expected_error_msg = (
-            '\naws: error: invalid unit. unit should be'
+            '\naws: [ERROR]: An error occurred (ParamValidation): invalid unit. unit should be'
             + ' one of the following values: minutes,'
             + ' hours or days.\n'
         )
@@ -163,7 +163,7 @@ class TestScheduleHBaseBackup(BaseAWSCommandParamsTest):
         )
         cmdline = self.prefix + args
         expected_error_msg = (
-            "\naws: error: schedule-hbase-backup"
+            "\naws: [ERROR]: An error occurred (ParamValidation): schedule-hbase-backup"
             " is not supported with 'emr-4.0' release.\n"
         )
         result = self.run_cmd(cmdline, 252)

@@ -483,7 +483,7 @@ class TestShorthandCompleter(unittest.TestCase):
         suggestions = self.completer.complete(parsed)
         names = [s.name for s in suggestions]
         self.assertEqual(
-            names, ['json', 'text', 'table', 'yaml', 'yaml-stream']
+            names, ['json', 'text', 'table', 'yaml', 'yaml-stream', 'off']
         )
 
     def test_not_return_suggestions_for_global_arg_wo_trailing_space(self):

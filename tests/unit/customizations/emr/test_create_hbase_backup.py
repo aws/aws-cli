@@ -62,7 +62,7 @@ class TestCreateHBaseBackup(BaseAWSCommandParamsTest):
         args = ' --cluster-id j-ABCD --dir s3://abc/'
         cmdline = self.prefix + args
         expected_error_msg = (
-            "\naws: error: create-hbase-backup"
+            "\naws: [ERROR]: An error occurred (ParamValidation): create-hbase-backup"
             " is not supported with 'emr-4.0' release.\n"
         )
         result = self.run_cmd(cmdline, 252)

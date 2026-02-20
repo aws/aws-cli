@@ -152,6 +152,24 @@ class TestPresignCommand(BaseAWSCommandParamsTest):
         }
         self.assert_presigned_url_matches(stdout, expected)
 
+    def test_handles_version_id(self):
+        version_id = 'some_version'
+        stdout = self.get_presigned_url_for_cmd(
+            self.prefix + 's3://bucket/key --version-id %s' % version_id)
+
+        self.assert_presigned_url_matches(
+            stdout, {
+                'hostname': 'bucket.s3.amazonaws.com',
+                'path': '/key',
+                'query_params': {
+                    'AWSAccessKeyId': 'access_key',
+                    'Expires': str(FROZEN_TIMESTAMP + DEFAULT_EXPIRES),
+                    'Signature': 'G8%2BT1QlGztwA6Un8AavaXRaYBsE%3D',
+                    'versionId': version_id
+                }
+            }
+        )
+
     def test_s3_prefix_not_needed(self):
         # Consistent with the 'ls' command.
         stdout = self.get_presigned_url_for_cmd(

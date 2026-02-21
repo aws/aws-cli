@@ -9,8 +9,8 @@ Output::
           {
               "Status": {
                   "Timeline": {
-                      "ReadyDateTime": 1433200405.353,
-                      "CreationDateTime": 1433199926.596
+                      "ReadyDateTime": "2015-06-01T23:13:25.353+00:00",
+                      "CreationDateTime": "2015-06-01T23:05:26.596+00:00"
                   },
                   "State": "WAITING",
                   "StateChangeReason": {

@@ -4,6 +4,7 @@ This example demonstrates how to view comments for a pull request in a repositor
 
     aws codecommit get-comments-for-pull-request \
         --repository-name MyDemoRepo \
+        --pull-request-id 42 \
         --before-commit-ID 317f8570EXAMPLE \
         --after-commit-id 5d036259EXAMPLE
 

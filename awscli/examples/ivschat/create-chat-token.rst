@@ -3,10 +3,10 @@
 The following ``create-chat-token`` example creates an encrypted chat token that is used to establish an individual WebSocket connection to a room. The token is valid for one minute, and a connection (session) established with the token is valid for the specified duration. ::
 
     aws ivschat create-chat-token \
-        --roomIdentifier "arn:aws:ivschat:us-west-2:12345689012:room/g1H2I3j4k5L6", \
-        --userId" "11231234" \
-        --capabilities "SEND_MESSAGE", \
-        --sessionDurationInMinutes" 30
+        --room-identifier "arn:aws:ivschat:us-west-2:12345689012:room/g1H2I3j4k5L6" \
+        --user-id "11231234" \
+        --capabilities "SEND_MESSAGE" \
+        --session-duration-in-minutes 30
 
 Output::
 

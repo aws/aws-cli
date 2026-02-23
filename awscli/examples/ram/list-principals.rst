@@ -3,6 +3,7 @@
 The following ``list-principals`` example displays a list of the principals that can access resources of the specified type through any resource shares. ::
 
     aws ram list-principals \
+        --resource-owner SELF \
         --resource-type ec2:Subnet
 
 Output::

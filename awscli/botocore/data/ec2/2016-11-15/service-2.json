@@ -8620,7 +8620,7 @@
           "locationName":"quantity"
         },
         "AvailabilityZone":{
-          "shape":"String",
+          "shape":"AvailabilityZoneName",
           "documentation":"<p>The Availability Zone in which to allocate the Dedicated Host.</p>",
           "locationName":"availabilityZone"
         }
@@ -20786,6 +20786,14 @@
       }
     },
     "DefaultEnaQueueCountPerInterface":{"type":"integer"},
+    "DefaultHttpTokensEnforcedState":{
+      "type":"string",
+      "enum":[
+        "disabled",
+        "enabled",
+        "no-preference"
+      ]
+    },
     "DefaultInstanceMetadataEndpointState":{
       "type":"string",
       "enum":[
@@ -40993,6 +41001,13 @@
       "max":23,
       "min":0
     },
+    "HttpTokensEnforcedState":{
+      "type":"string",
+      "enum":[
+        "disabled",
+        "enabled"
+      ]
+    },
     "HttpTokensState":{
       "type":"string",
       "enum":[
@@ -44115,6 +44130,11 @@
           "shape":"String",
           "documentation":"<p>The customized exception message that is specified in the declarative policy.</p>",
           "locationName":"managedExceptionMessage"
+        },
+        "HttpTokensEnforced":{
+          "shape":"HttpTokensEnforcedState",
+          "documentation":"<p>Indicates whether to enforce the requirement of IMDSv2 on an instance at the time of launch. When enforcement is enabled, the instance can't launch unless IMDSv2 (<code>HttpTokens</code>) is set to <code>required</code>.</p>",
+          "locationName":"httpTokensEnforced"
         }
       },
       "documentation":"<p>The default instance metadata service (IMDS) settings that were set at the account level in the specified Amazon Web Services&#x2028; Region.</p>"
@@ -53717,6 +53737,10 @@
         "DryRun":{
           "shape":"Boolean",
           "documentation":"<p>Checks whether you have the required permissions for the operation, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        },
+        "HttpTokensEnforced":{
+          "shape":"DefaultHttpTokensEnforcedState",
+          "documentation":"<p>Specifies whether to enforce the requirement of IMDSv2 on an instance at the time of launch. When enforcement is enabled, the instance can't launch unless IMDSv2 (<code>HttpTokens</code>) is set to <code>required</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-IMDS-new-instances.html#enforce-imdsv2-at-the-account-level\">Enforce IMDSv2 at the account level</a> in the <i>Amazon EC2 User Guide</i>.</p>"
         }
       }
     },

@@ -1,4 +1,4 @@
-**Exampe 1: To describe a single task tasks**
+**Example 1: To describe a single task tasks**
 
 The following ``describe-tasks`` example retrieves the details of a task in a cluster. You can specify the task by using either the ID or full ARN of the task. This example uses the full ARN of the task. ::
 
@@ -77,7 +77,7 @@ Output::
 
 For more information, see `Amazon ECS Task Definitions <https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html>`__ in the *Amazon ECS Developer Guide*.
 
-**Exampe 2: To describe multiple tasks**
+**Example 2: To describe multiple tasks**
 
 The following ``describe-tasks`` example retrieves the details of multiple tasks in a cluster. You can specify the task by using either the ID or full ARN of the task. This example uses the full IDs of the tasks. ::
 

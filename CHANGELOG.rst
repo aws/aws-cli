@@ -2,6 +2,41 @@
 CHANGELOG
 =========
 
+2.33.28
+=======
+
+* api-change:``datazone``: Add workflow properties support to connections APIs
+* api-change:``dynamodb``: This change supports the creation of multi-account global tables. It adds one new arguments to UpdateTable, GlobalTableSettingsReplicationMode.
+* api-change:``wickr``: AWS Wickr now provides APIs to manage your Wickr OpenTDF integration. These APIs enable you to test and save your OpenTDF configuration allowing you to manage rooms based on Trusted Data Format attributes.
+* api-change:``connectcases``: SearchCases API can now accept 25 fields in the request and response as opposed to the previous limit of 10. DeleteField's hard limit of 100 fields per domain has been lifted.
+* enhancement:OpenSSL: Update bundled OpenSSL version to 1.1.1zf for Linux installers
+* api-change:``controlcatalog``: Updated ExemptedPrincipalArns parameter documentation for improved accuracy
+* api-change:``mediatailor``: Updated endpoint rule set for dualstack endpoints. Added a new opt-in option to log raw ad decision server requests for Playback Configurations.
+* api-change:``bedrock``: Automated Reasoning checks in Amazon Bedrock Guardrails now support fidelity report generation. The new workflow type assesses policy coverage and accuracy against customer documents. The GetAutomatedReasoningPolicyBuildWorkflowResultAssets API adds support for the three new asset types.
+* api-change:``quicksight``: Adds support for SEMISTRUCT to InputColumn Type
+
+
+2.33.27
+=======
+
+* api-change:``sagemaker-runtime``: Added support for S3OutputPathExtension and Filename parameters to the InvokeEndpointAsync API to allow users to customize the S3 output path and file name for async inference response payloads.
+* api-change:``signer-data``: This release introduces AWS Signer Data Plane SDK client supporting GetRevocationStatus API. The new client enables AWS PrivateLink connectivity with both private DNS and VPC endpoint URLs.
+* api-change:``appstream``: Adding new attribute to disable IMDS v1 APIs for fleet, Image Builder and AppBlockBuilder instances.
+* api-change:``trustedadvisor``: Adding a new enum attribute(statusReason) to TrustedAdvisorAPI response. This attribute explains reasoning behind check status for certain specific scenarios.
+* api-change:``ecs``: Migrated to Smithy. No functional changes
+* enhancement:``awscrt``: Update awscrt to version 0.31.2
+* api-change:``ssm``: Add support for AssociationDispatchAssumeRole in AWS SSM State Manager.
+* bugfix:cloudtrail: Fixed edge case in validate-logs where digest validation could fail with "public key not found" when the end time lands near a key rotation boundary
+
+
+2.33.26
+=======
+
+* api-change:``pca-connector-scep``: AWS Private CA Connector for SCEP now supports AWS PrivateLink, allowing your clients to request certificates from within your Amazon Virtual Private Cloud (VPC) without traversing the public internet. With this launch, you can create VPC endpoints to connect to your SCEP connector privately.
+* api-change:``ecr``: Adds multiple artifact types filter support in ListImageReferrers API.
+* api-change:``bcm-dashboards``: The Billing and Cost Management GetDashboard API now returns identifier for each widget, enabling users to uniquely identify widgets within their dashboards.
+
+
 2.33.25
 =======
 

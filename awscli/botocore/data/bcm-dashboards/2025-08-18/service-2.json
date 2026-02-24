@@ -63,7 +63,8 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves the configuration and metadata of a specified dashboard, including its widgets and layout settings.</p>"
+      "documentation":"<p>Retrieves the configuration and metadata of a specified dashboard, including its widgets and layout settings.</p>",
+      "readonly":true
     },
     "GetResourcePolicy":{
       "name":"GetResourcePolicy",
@@ -80,7 +81,8 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Retrieves the resource-based policy attached to a dashboard, showing sharing configurations and permissions.</p>"
+      "documentation":"<p>Retrieves the resource-based policy attached to a dashboard, showing sharing configurations and permissions.</p>",
+      "readonly":true
     },
     "ListDashboards":{
       "name":"ListDashboards",
@@ -96,7 +98,8 @@
         {"shape":"InternalServerException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Returns a list of all dashboards in your account.</p>"
+      "documentation":"<p>Returns a list of all dashboards in your account.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -112,7 +115,8 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Returns a list of all tags associated with a specified dashboard resource.</p>"
+      "documentation":"<p>Returns a list of all tags associated with a specified dashboard resource.</p>",
+      "readonly":true
     },
     "TagResource":{
       "name":"TagResource",
@@ -1031,6 +1035,10 @@
         "configs"
       ],
       "members":{
+        "id":{
+          "shape":"WidgetId",
+          "documentation":"<p>The unique identifier for the widget.</p>"
+        },
         "title":{
           "shape":"WidgetTitle",
           "documentation":"<p>The title of the widget.</p>"
@@ -1087,6 +1095,12 @@
       "box":true,
       "max":10,
       "min":4
+    },
+    "WidgetId":{
+      "type":"string",
+      "max":32,
+      "min":32,
+      "pattern":"[0-9a-f]{32}"
     },
     "WidgetList":{
       "type":"list",

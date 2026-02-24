@@ -79,7 +79,7 @@ Output::
     }
 
 
-**Example 2: Update ECS cluster to set a default Service Connect namspace**
+**Example 2: Update ECS cluster to set a default Service Connect namespace**
 
 The following ``update-cluster`` updates ECS cluster by setting a default Service Connect namespace. ::
 

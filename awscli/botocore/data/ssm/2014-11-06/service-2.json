@@ -1523,7 +1523,7 @@
         {"shape":"InvalidDocumentVersion"},
         {"shape":"InvalidNextToken"}
       ],
-      "documentation":"<important> <p>Amazon Web Services Systems Manager Change Manager will no longer be open to new customers starting November 7, 2025. If you would like to use Change Manager, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/change-manager-availability-change.html\">Amazon Web Services Systems Manager Change Manager availability change</a>.</p> </important> <p>Information about approval reviews for a version of a change template in Change Manager.</p>"
+      "documentation":"<important> <p>Amazon Web Services Systems Manager Change Manager is no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/change-manager-availability-change.html\">Amazon Web Services Systems Manager Change Manager availability change</a>.</p> </important> <p>Information about approval reviews for a version of a change template in Change Manager.</p>"
     },
     "ListDocumentVersions":{
       "name":"ListDocumentVersions",
@@ -2020,7 +2020,7 @@
         {"shape":"AutomationDefinitionNotApprovedException"},
         {"shape":"NoLongerSupportedException"}
       ],
-      "documentation":"<important> <p>Amazon Web Services Systems Manager Change Manager will no longer be open to new customers starting November 7, 2025. If you would like to use Change Manager, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/change-manager-availability-change.html\">Amazon Web Services Systems Manager Change Manager availability change</a>.</p> </important> <p>Creates a change request for Change Manager. The Automation runbooks specified in the change request run only after all required approvals for the change request have been received.</p>"
+      "documentation":"<important> <p>Amazon Web Services Systems Manager Change Manager is no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/change-manager-availability-change.html\">Amazon Web Services Systems Manager Change Manager availability change</a>.</p> </important> <p>Creates a change request for Change Manager. The Automation runbooks specified in the change request run only after all required approvals for the change request have been received.</p>"
     },
     "StartExecutionPreview":{
       "name":"StartExecutionPreview",
@@ -2191,7 +2191,7 @@
         {"shape":"InvalidDocumentVersion"},
         {"shape":"TooManyUpdates"}
       ],
-      "documentation":"<important> <p>Amazon Web Services Systems Manager Change Manager will no longer be open to new customers starting November 7, 2025. If you would like to use Change Manager, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/change-manager-availability-change.html\">Amazon Web Services Systems Manager Change Manager availability change</a>.</p> </important> <p>Updates information related to approval reviews for a specific version of a change template in Change Manager.</p>"
+      "documentation":"<important> <p>Amazon Web Services Systems Manager Change Manager is no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/change-manager-availability-change.html\">Amazon Web Services Systems Manager Change Manager availability change</a>.</p> </important> <p>Updates information related to approval reviews for a specific version of a change template in Change Manager.</p>"
     },
     "UpdateMaintenanceWindow":{
       "name":"UpdateMaintenanceWindow",
@@ -2831,6 +2831,11 @@
         "TriggeredAlarms":{
           "shape":"AlarmStateInformationList",
           "documentation":"<p>The CloudWatch alarm that was invoked during the association.</p>"
+        },
+        "AssociationDispatchAssumeRole":{
+          "shape":"AssociationDispatchAssumeRoleArn",
+          "documentation":"<p>A role used by association to take actions on your behalf. State Manager will assume this role and call required APIs when dispatching configurations to nodes. If not specified, <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/using-service-linked-roles.html\"> service-linked role for Systems Manager</a> will be used by default. </p>",
+          "box":true
         }
       },
       "documentation":"<p>Describes the parameters for a document.</p>"
@@ -2838,6 +2843,12 @@
     "AssociationDescriptionList":{
       "type":"list",
       "member":{"shape":"AssociationDescription"}
+    },
+    "AssociationDispatchAssumeRoleArn":{
+      "type":"string",
+      "max":512,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:iam::[0-9]{12}:role/.+"
     },
     "AssociationDoesNotExist":{
       "type":"structure",
@@ -3262,6 +3273,11 @@
         "TargetMaps":{
           "shape":"TargetMaps",
           "documentation":"<p>A key-value mapping of document parameters to target resources. Both Targets and TargetMaps can't be specified together.</p>",
+          "box":true
+        },
+        "AssociationDispatchAssumeRole":{
+          "shape":"AssociationDispatchAssumeRoleArn",
+          "documentation":"<p>A role used by association to take actions on your behalf. State Manager will assume this role and call required APIs when dispatching configurations to nodes. If not specified, <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/using-service-linked-roles.html\"> service-linked role for Systems Manager</a> will be used by default. </p>",
           "box":true
         }
       },
@@ -4738,6 +4754,11 @@
         "Entries":{
           "shape":"CreateAssociationBatchRequestEntries",
           "documentation":"<p>One or more associations.</p>"
+        },
+        "AssociationDispatchAssumeRole":{
+          "shape":"AssociationDispatchAssumeRoleArn",
+          "documentation":"<p>A role used by association to take actions on your behalf. State Manager will assume this role and call required APIs when dispatching configurations to nodes. If not specified, <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/using-service-linked-roles.html\"> service-linked role for Systems Manager</a> will be used by default. </p> <note> <p>It is recommended that you define a custom IAM role so that you have full control of the permissions that State Manager has when taking actions on your behalf.</p> <p>Service-linked role support in State Manager is being phased out. Associations relying on service-linked role may require updates in the future to continue functioning properly.</p> </note>",
+          "box":true
         }
       }
     },
@@ -4934,7 +4955,12 @@
           "documentation":"<p>Adds or overwrites one or more tags for a State Manager association. <i>Tags</i> are metadata that you can assign to your Amazon Web Services resources. Tags enable you to categorize your resources in different ways, for example, by purpose, owner, or environment. Each tag consists of a key and an optional value, both of which you define. </p>",
           "box":true
         },
-        "AlarmConfiguration":{"shape":"AlarmConfiguration"}
+        "AlarmConfiguration":{"shape":"AlarmConfiguration"},
+        "AssociationDispatchAssumeRole":{
+          "shape":"AssociationDispatchAssumeRoleArn",
+          "documentation":"<p>A role used by association to take actions on your behalf. State Manager will assume this role and call required APIs when dispatching configurations to nodes. If not specified, <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/using-service-linked-roles.html\"> service-linked role for Systems Manager</a> will be used by default. </p> <note> <p>It is recommended that you define a custom IAM role so that you have full control of the permissions that State Manager has when taking actions on your behalf.</p> <p>Service-linked role support in State Manager is being phased out. Associations relying on service-linked role may require updates in the future to continue functioning properly.</p> </note>",
+          "box":true
+        }
       }
     },
     "CreateAssociationResult":{
@@ -5089,7 +5115,7 @@
         },
         "OpsItemType":{
           "shape":"OpsItemType",
-          "documentation":"<p>The type of OpsItem to create. Systems Manager supports the following types of OpsItems:</p> <ul> <li> <p> <code>/aws/issue</code> </p> <p>This type of OpsItem is used for default OpsItems created by OpsCenter. </p> </li> <li> <p> <code>/aws/insight</code> </p> <p>This type of OpsItem is used by OpsCenter for aggregating and reporting on duplicate OpsItems. </p> </li> <li> <p> <code>/aws/changerequest</code> </p> <p>This type of OpsItem is used by Change Manager for reviewing and approving or rejecting change requests. </p> <important> <p>Amazon Web Services Systems Manager Change Manager will no longer be open to new customers starting November 7, 2025. If you would like to use Change Manager, sign up prior to that date. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/change-manager-availability-change.html\">Amazon Web Services Systems Manager Change Manager availability change</a>.</p> </important> </li> </ul>"
+          "documentation":"<p>The type of OpsItem to create. Systems Manager supports the following types of OpsItems:</p> <ul> <li> <p> <code>/aws/issue</code> </p> <p>This type of OpsItem is used for default OpsItems created by OpsCenter. </p> </li> <li> <p> <code>/aws/insight</code> </p> <p>This type of OpsItem is used by OpsCenter for aggregating and reporting on duplicate OpsItems. </p> </li> <li> <p> <code>/aws/changerequest</code> </p> <p>This type of OpsItem is used by Change Manager for reviewing and approving or rejecting change requests. </p> <important> <p>Amazon Web Services Systems Manager Change Manager is no longer open to new customers. Existing customers can continue to use the service as normal. For more information, see <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/change-manager-availability-change.html\">Amazon Web Services Systems Manager Change Manager availability change</a>.</p> </important> </li> </ul>"
         },
         "OperationalData":{
           "shape":"OpsItemOperationalData",
@@ -17202,7 +17228,12 @@
           "documentation":"<p>A key-value mapping of document parameters to target resources. Both Targets and TargetMaps can't be specified together.</p>",
           "box":true
         },
-        "AlarmConfiguration":{"shape":"AlarmConfiguration"}
+        "AlarmConfiguration":{"shape":"AlarmConfiguration"},
+        "AssociationDispatchAssumeRole":{
+          "shape":"AssociationDispatchAssumeRoleArn",
+          "documentation":"<p>A role used by association to take actions on your behalf. State Manager will assume this role and call required APIs when dispatching configurations to nodes. If not specified, <a href=\"https://docs.aws.amazon.com/systems-manager/latest/userguide/using-service-linked-roles.html\"> service-linked role for Systems Manager</a> will be used by default. </p> <note> <p>It is recommended that you define a custom IAM role so that you have full control of the permissions that State Manager has when taking actions on your behalf.</p> <p>Service-linked role support in State Manager is being phased out. Associations relying on service-linked role may require updates in the future to continue functioning properly.</p> </note>",
+          "box":true
+        }
       }
     },
     "UpdateAssociationResult":{

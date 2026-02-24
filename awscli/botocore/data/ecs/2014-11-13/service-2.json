@@ -2,6 +2,7 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2014-11-13",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"ecs",
     "jsonVersion":"1.1",
     "protocol":"json",
@@ -10,9 +11,9 @@
     "serviceFullName":"Amazon EC2 Container Service",
     "serviceId":"ECS",
     "signatureVersion":"v4",
+    "signingName":"ecs",
     "targetPrefix":"AmazonEC2ContainerServiceV20141113",
-    "uid":"ecs-2014-11-13",
-    "auth":["aws.auth#sigv4"]
+    "uid":"ecs-2014-11-13"
   },
   "operations":{
     "CreateCapacityProvider":{
@@ -24,15 +25,16 @@
       "input":{"shape":"CreateCapacityProviderRequest"},
       "output":{"shape":"CreateCapacityProviderResponse"},
       "errors":[
-        {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"},
         {"shape":"LimitExceededException"},
+        {"shape":"ServerException"},
         {"shape":"UpdateInProgressException"},
-        {"shape":"UnsupportedFeatureException"},
-        {"shape":"ClusterNotFoundException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
       ],
-      "documentation":"<p>Creates a capacity provider. Capacity providers are associated with a cluster and are used in capacity provider strategies to facilitate cluster auto scaling. You can create capacity providers for Amazon ECS Managed Instances and EC2 instances. Fargate has the predefined <code>FARGATE</code> and <code>FARGATE_SPOT</code> capacity providers.</p>"
+      "documentation":"<p>Creates a capacity provider. Capacity providers are associated with a cluster and are used in capacity provider strategies to facilitate cluster auto scaling. You can create capacity providers for Amazon ECS Managed Instances and EC2 instances. Fargate has the predefined <code>FARGATE</code> and <code>FARGATE_SPOT</code> capacity providers.</p>",
+      "idempotent":true
     },
     "CreateCluster":{
       "name":"CreateCluster",
@@ -43,10 +45,10 @@
       "input":{"shape":"CreateClusterRequest"},
       "output":{"shape":"CreateClusterResponse"},
       "errors":[
+        {"shape":"NamespaceNotFoundException"},
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"NamespaceNotFoundException"}
+        {"shape":"ClientException"}
       ],
       "documentation":"<p>Creates a new Amazon ECS cluster. By default, your account receives a <code>default</code> cluster when you launch your first container instance. However, you can create your own cluster with a unique name.</p> <note> <p>When you call the <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateCluster.html\">CreateCluster</a> API operation, Amazon ECS attempts to create the Amazon ECS service-linked role for your account. This is so that it can manage required resources in other Amazon Web Services services on your behalf. However, if the user that makes the call doesn't have permissions to create the service-linked role, it isn't created. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using-service-linked-roles.html\">Using service-linked roles for Amazon ECS</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </note>"
     },
@@ -60,12 +62,12 @@
       "output":{"shape":"CreateExpressGatewayServiceResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
+        {"shape":"PlatformUnknownException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
         {"shape":"ClusterNotFoundException"},
-        {"shape":"InvalidParameterException"},
-        {"shape":"PlatformUnknownException"},
         {"shape":"PlatformTaskDefinitionIncompatibilityException"},
-        {"shape":"ServerException"},
         {"shape":"UnsupportedFeatureException"}
       ],
       "documentation":"<p>Creates an Express service that simplifies deploying containerized web applications on Amazon ECS with managed Amazon Web Services infrastructure. This operation provisions and configures Application Load Balancers, target groups, security groups, and auto-scaling policies automatically.</p> <p>Specify a primary container configuration with your application image and basic settings. Amazon ECS creates the necessary Amazon Web Services resources for traffic distribution, health monitoring, network access control, and capacity management.</p> <p>Provide an execution role for task operations and an infrastructure role for managing Amazon Web Services resources on your behalf.</p>"
@@ -79,15 +81,15 @@
       "input":{"shape":"CreateServiceRequest"},
       "output":{"shape":"CreateServiceResponse"},
       "errors":[
-        {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"UnsupportedFeatureException"},
-        {"shape":"PlatformUnknownException"},
-        {"shape":"PlatformTaskDefinitionIncompatibilityException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"NamespaceNotFoundException"}
+        {"shape":"PlatformUnknownException"},
+        {"shape":"NamespaceNotFoundException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"PlatformTaskDefinitionIncompatibilityException"},
+        {"shape":"UnsupportedFeatureException"}
       ],
       "documentation":"<p>Runs and maintains your desired number of tasks from a specified task definition. If the number of tasks running in a service drops below the <code>desiredCount</code>, Amazon ECS runs another copy of the task in the specified cluster. To update an existing service, use <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_UpdateService.html\">UpdateService</a>.</p> <note> <p>On March 21, 2024, a change was made to resolve the task definition revision before authorization. When a task definition revision is not specified, authorization will occur using the latest revision of a task definition.</p> </note> <note> <p>Amazon Elastic Inference (EI) is no longer available to customers.</p> </note> <p>In addition to maintaining the desired count of tasks in your service, you can optionally run your service behind one or more load balancers. The load balancers distribute traffic across the tasks that are associated with the service. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-load-balancing.html\">Service load balancing</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>You can attach Amazon EBS volumes to Amazon ECS tasks by configuring the volume when creating or updating a service. <code>volumeConfigurations</code> is only supported for REPLICA service and not DAEMON service. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Tasks for services that don't use a load balancer are considered healthy if they're in the <code>RUNNING</code> state. Tasks for services that use a load balancer are considered healthy if they're in the <code>RUNNING</code> state and are reported as healthy by the load balancer.</p> <p>There are two service scheduler strategies available:</p> <ul> <li> <p> <code>REPLICA</code> - The replica scheduling strategy places and maintains your desired number of tasks across your cluster. By default, the service scheduler spreads tasks across Availability Zones. You can use task placement strategies and constraints to customize task placement decisions. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html\">Service scheduler concepts</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> <li> <p> <code>DAEMON</code> - The daemon scheduling strategy deploys exactly one task on each active container instance that meets all of the task placement constraints that you specify in your cluster. The service scheduler also evaluates the task placement constraints for running tasks. It also stops tasks that don't meet the placement constraints. When using this strategy, you don't need to specify a desired number of tasks, a task placement strategy, or use Service Auto Scaling policies. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html\">Amazon ECS services</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </li> </ul> <p>The deployment controller is the mechanism that determines how tasks are deployed for your service. The valid options are:</p> <ul> <li> <p>ECS</p> <p> When you create a service which uses the <code>ECS</code> deployment controller, you can choose between the following deployment strategies (which you can set in the “<code>strategy</code>” field in “<code>deploymentConfiguration</code>”): :</p> <ul> <li> <p> <code>ROLLING</code>: When you create a service which uses the <i>rolling update</i> (<code>ROLLING</code>) deployment strategy, the Amazon ECS service scheduler replaces the currently running tasks with new tasks. The number of tasks that Amazon ECS adds or removes from the service during a rolling update is controlled by the service deployment configuration. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-ecs.html\">Deploy Amazon ECS services by replacing tasks</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Rolling update deployments are best suited for the following scenarios:</p> <ul> <li> <p>Gradual service updates: You need to update your service incrementally without taking the entire service offline at once.</p> </li> <li> <p>Limited resource requirements: You want to avoid the additional resource costs of running two complete environments simultaneously (as required by blue/green deployments).</p> </li> <li> <p>Acceptable deployment time: Your application can tolerate a longer deployment process, as rolling updates replace tasks one by one.</p> </li> <li> <p>No need for instant roll back: Your service can tolerate a rollback process that takes minutes rather than seconds.</p> </li> <li> <p>Simple deployment process: You prefer a straightforward deployment approach without the complexity of managing multiple environments, target groups, and listeners.</p> </li> <li> <p>No load balancer requirement: Your service doesn't use or require a load balancer, Application Load Balancer, Network Load Balancer, or Service Connect (which are required for blue/green deployments).</p> </li> <li> <p>Stateful applications: Your application maintains state that makes it difficult to run two parallel environments.</p> </li> <li> <p>Cost sensitivity: You want to minimize deployment costs by not running duplicate environments during deployment.</p> </li> </ul> <p>Rolling updates are the default deployment strategy for services and provide a balance between deployment safety and resource efficiency for many common application scenarios.</p> </li> <li> <p> <code>BLUE_GREEN</code>: A <i>blue/green</i> deployment strategy (<code>BLUE_GREEN</code>) is a release methodology that reduces downtime and risk by running two identical production environments called blue and green. With Amazon ECS blue/green deployments, you can validate new service revisions before directing production traffic to them. This approach provides a safer way to deploy changes with the ability to quickly roll back if needed. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-blue-green.html\">Amazon ECS blue/green deployments</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Amazon ECS blue/green deployments are best suited for the following scenarios:</p> <ul> <li> <p>Service validation: When you need to validate new service revisions before directing production traffic to them</p> </li> <li> <p>Zero downtime: When your service requires zero-downtime deployments</p> </li> <li> <p>Instant roll back: When you need the ability to quickly roll back if issues are detected</p> </li> <li> <p>Load balancer requirement: When your service uses Application Load Balancer, Network Load Balancer, or Service Connect</p> </li> </ul> </li> <li> <p> <code>LINEAR</code>: A <i>linear</i> deployment strategy (<code>LINEAR</code>) gradually shifts traffic from the current production environment to a new environment in equal percentage increments. With Amazon ECS linear deployments, you can control the pace of traffic shifting and validate new service revisions with increasing amounts of production traffic.</p> <p>Linear deployments are best suited for the following scenarios:</p> <ul> <li> <p>Gradual validation: When you want to gradually validate your new service version with increasing traffic</p> </li> <li> <p>Performance monitoring: When you need time to monitor metrics and performance during the deployment</p> </li> <li> <p>Risk minimization: When you want to minimize risk by exposing the new version to production traffic incrementally</p> </li> <li> <p>Load balancer requirement: When your service uses Application Load Balancer or Service Connect</p> </li> </ul> </li> <li> <p> <code>CANARY</code>: A <i>canary</i> deployment strategy (<code>CANARY</code>) shifts a small percentage of traffic to the new service revision first, then shifts the remaining traffic all at once after a specified time period. This allows you to test the new version with a subset of users before full deployment.</p> <p>Canary deployments are best suited for the following scenarios:</p> <ul> <li> <p>Feature testing: When you want to test new features with a small subset of users before full rollout</p> </li> <li> <p>Production validation: When you need to validate performance and functionality with real production traffic</p> </li> <li> <p>Blast radius control: When you want to minimize blast radius if issues are discovered in the new version</p> </li> <li> <p>Load balancer requirement: When your service uses Application Load Balancer or Service Connect</p> </li> </ul> </li> </ul> </li> <li> <p>External</p> <p>Use a third-party deployment controller.</p> </li> <li> <p>Blue/green deployment (powered by CodeDeploy)</p> <p>CodeDeploy installs an updated version of the application as a new replacement task set and reroutes production traffic from the original application task set to the replacement task set. The original task set is terminated after a successful deployment. Use this deployment controller to verify a new deployment of a service before sending production traffic to it.</p> </li> </ul> <p>When creating a service that uses the <code>EXTERNAL</code> deployment controller, you can specify only parameters that aren't controlled at the task set level. The only required parameter is the service name. You control your services using the <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateTaskSet.html\">CreateTaskSet</a>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html\">Amazon ECS deployment types</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>When the service scheduler launches new tasks, it determines task placement. For information about task placement and task placement strategies, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-placement.html\">Amazon ECS task placement</a> in the <i>Amazon Elastic Container Service Developer Guide</i> </p>"
     },
@@ -100,17 +102,17 @@
       "input":{"shape":"CreateTaskSetRequest"},
       "output":{"shape":"CreateTaskSetResponse"},
       "errors":[
-        {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"UnsupportedFeatureException"},
-        {"shape":"PlatformUnknownException"},
-        {"shape":"PlatformTaskDefinitionIncompatibilityException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ServiceNotFoundException"},
+        {"shape":"PlatformUnknownException"},
+        {"shape":"NamespaceNotFoundException"},
         {"shape":"ServiceNotActiveException"},
-        {"shape":"NamespaceNotFoundException"}
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceNotFoundException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"PlatformTaskDefinitionIncompatibilityException"},
+        {"shape":"UnsupportedFeatureException"}
       ],
       "documentation":"<p>Create a task set in the specified cluster and service. This is used when a service uses the <code>EXTERNAL</code> deployment controller type. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html\">Amazon ECS deployment types</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <note> <p>On March 21, 2024, a change was made to resolve the task definition revision before authorization. When a task definition revision is not specified, authorization will occur using the latest revision of a task definition.</p> </note> <p>For information about the maximum number of task sets and other quotas, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-quotas.html\">Amazon ECS service quotas</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
     },
@@ -124,8 +126,8 @@
       "output":{"shape":"DeleteAccountSettingResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"}
       ],
       "documentation":"<p>Disables an account setting for a specified user, role, or the root user for an account.</p>"
     },
@@ -138,9 +140,9 @@
       "input":{"shape":"DeleteAttributesRequest"},
       "output":{"shape":"DeleteAttributesResponse"},
       "errors":[
-        {"shape":"ClusterNotFoundException"},
         {"shape":"TargetNotFoundException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p>Deletes one or more custom attributes from an Amazon ECS resource.</p>"
     },
@@ -154,12 +156,13 @@
       "output":{"shape":"DeleteCapacityProviderResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"UnsupportedFeatureException"},
-        {"shape":"ClusterNotFoundException"}
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
       ],
-      "documentation":"<p>Deletes the specified capacity provider.</p> <note> <p>The <code>FARGATE</code> and <code>FARGATE_SPOT</code> capacity providers are reserved and can't be deleted. You can disassociate them from a cluster using either <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_PutClusterCapacityProviders.html\">PutClusterCapacityProviders</a> or by deleting the cluster.</p> </note> <p>Prior to a capacity provider being deleted, the capacity provider must be removed from the capacity provider strategy from all services. The <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_UpdateService.html\">UpdateService</a> API can be used to remove a capacity provider from a service's capacity provider strategy. When updating a service, the <code>forceNewDeployment</code> option can be used to ensure that any tasks using the Amazon EC2 instance capacity provided by the capacity provider are transitioned to use the capacity from the remaining capacity providers. Only capacity providers that aren't associated with a cluster can be deleted. To remove a capacity provider from a cluster, you can either use <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_PutClusterCapacityProviders.html\">PutClusterCapacityProviders</a> or delete the cluster.</p>"
+      "documentation":"<p>Deletes the specified capacity provider.</p> <note> <p>The <code>FARGATE</code> and <code>FARGATE_SPOT</code> capacity providers are reserved and can't be deleted. You can disassociate them from a cluster using either <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_PutClusterCapacityProviders.html\">PutClusterCapacityProviders</a> or by deleting the cluster.</p> </note> <p>Prior to a capacity provider being deleted, the capacity provider must be removed from the capacity provider strategy from all services. The <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_UpdateService.html\">UpdateService</a> API can be used to remove a capacity provider from a service's capacity provider strategy. When updating a service, the <code>forceNewDeployment</code> option can be used to ensure that any tasks using the Amazon EC2 instance capacity provided by the capacity provider are transitioned to use the capacity from the remaining capacity providers. Only capacity providers that aren't associated with a cluster can be deleted. To remove a capacity provider from a cluster, you can either use <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_PutClusterCapacityProviders.html\">PutClusterCapacityProviders</a> or delete the cluster.</p>",
+      "idempotent":true
     },
     "DeleteCluster":{
       "name":"DeleteCluster",
@@ -170,17 +173,18 @@
       "input":{"shape":"DeleteClusterRequest"},
       "output":{"shape":"DeleteClusterResponse"},
       "errors":[
-        {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"ClusterContainsCapacityProviderException"},
         {"shape":"ClusterContainsContainerInstancesException"},
         {"shape":"ClusterContainsServicesException"},
+        {"shape":"ClusterContainsCapacityProviderException"},
         {"shape":"ClusterContainsTasksException"},
-        {"shape":"UpdateInProgressException"}
+        {"shape":"ServerException"},
+        {"shape":"UpdateInProgressException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"}
       ],
-      "documentation":"<p>Deletes the specified cluster. The cluster transitions to the <code>INACTIVE</code> state. Clusters with an <code>INACTIVE</code> status might remain discoverable in your account for a period of time. However, this behavior is subject to change in the future. We don't recommend that you rely on <code>INACTIVE</code> clusters persisting.</p> <p>You must deregister all container instances from this cluster before you may delete it. You can list the container instances in a cluster with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListContainerInstances.html\">ListContainerInstances</a> and deregister them with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeregisterContainerInstance.html\">DeregisterContainerInstance</a>.</p>"
+      "documentation":"<p>Deletes the specified cluster. The cluster transitions to the <code>INACTIVE</code> state. Clusters with an <code>INACTIVE</code> status might remain discoverable in your account for a period of time. However, this behavior is subject to change in the future. We don't recommend that you rely on <code>INACTIVE</code> clusters persisting.</p> <p>You must deregister all container instances from this cluster before you may delete it. You can list the container instances in a cluster with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListContainerInstances.html\">ListContainerInstances</a> and deregister them with <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeregisterContainerInstance.html\">DeregisterContainerInstance</a>.</p>",
+      "idempotent":true
     },
     "DeleteExpressGatewayService":{
       "name":"DeleteExpressGatewayService",
@@ -192,12 +196,12 @@
       "output":{"shape":"DeleteExpressGatewayServiceResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
-        {"shape":"ClientException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"InvalidParameterException"},
-        {"shape":"ServerException"},
-        {"shape":"ServiceNotFoundException"},
         {"shape":"ServiceNotActiveException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceNotFoundException"},
+        {"shape":"ClusterNotFoundException"},
         {"shape":"UnsupportedFeatureException"}
       ],
       "documentation":"<p>Deletes an Express service and removes all associated Amazon Web Services resources. This operation stops service tasks, removes the Application Load Balancer, target groups, security groups, auto-scaling policies, and other managed infrastructure components.</p> <p>The service enters a <code>DRAINING</code> state where existing tasks complete current requests without starting new tasks. After all tasks stop, the service and infrastructure are permanently removed.</p> <p>This operation cannot be reversed. Back up important data and verify the service is no longer needed before deletion.</p>"
@@ -212,12 +216,13 @@
       "output":{"shape":"DeleteServiceResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"ServiceNotFoundException"}
+        {"shape":"ClientException"},
+        {"shape":"ServiceNotFoundException"},
+        {"shape":"ClusterNotFoundException"}
       ],
-      "documentation":"<p>Deletes a specified service within a cluster. You can delete a service if you have no running tasks in it and the desired task count is zero. If the service is actively maintaining tasks, you can't delete it, and you must update the service to a desired task count of zero. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_UpdateService.html\">UpdateService</a>.</p> <note> <p>When you delete a service, if there are still running tasks that require cleanup, the service status moves from <code>ACTIVE</code> to <code>DRAINING</code>, and the service is no longer visible in the console or in the <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListServices.html\">ListServices</a> API operation. After all tasks have transitioned to either <code>STOPPING</code> or <code>STOPPED</code> status, the service status moves from <code>DRAINING</code> to <code>INACTIVE</code>. Services in the <code>DRAINING</code> or <code>INACTIVE</code> status can still be viewed with the <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DescribeServices.html\">DescribeServices</a> API operation. However, in the future, <code>INACTIVE</code> services may be cleaned up and purged from Amazon ECS record keeping, and <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DescribeServices.html\">DescribeServices</a> calls on those services return a <code>ServiceNotFoundException</code> error.</p> </note> <important> <p>If you attempt to create a new service with the same name as an existing service in either <code>ACTIVE</code> or <code>DRAINING</code> status, you receive an error.</p> </important>"
+      "documentation":"<p>Deletes a specified service within a cluster. You can delete a service if you have no running tasks in it and the desired task count is zero. If the service is actively maintaining tasks, you can't delete it, and you must update the service to a desired task count of zero. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_UpdateService.html\">UpdateService</a>.</p> <note> <p>When you delete a service, if there are still running tasks that require cleanup, the service status moves from <code>ACTIVE</code> to <code>DRAINING</code>, and the service is no longer visible in the console or in the <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListServices.html\">ListServices</a> API operation. After all tasks have transitioned to either <code>STOPPING</code> or <code>STOPPED</code> status, the service status moves from <code>DRAINING</code> to <code>INACTIVE</code>. Services in the <code>DRAINING</code> or <code>INACTIVE</code> status can still be viewed with the <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DescribeServices.html\">DescribeServices</a> API operation. However, in the future, <code>INACTIVE</code> services may be cleaned up and purged from Amazon ECS record keeping, and <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DescribeServices.html\">DescribeServices</a> calls on those services return a <code>ServiceNotFoundException</code> error.</p> </note> <important> <p>If you attempt to create a new service with the same name as an existing service in either <code>ACTIVE</code> or <code>DRAINING</code> status, you receive an error.</p> </important>",
+      "idempotent":true
     },
     "DeleteTaskDefinitions":{
       "name":"DeleteTaskDefinitions",
@@ -229,9 +234,9 @@
       "output":{"shape":"DeleteTaskDefinitionsResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
-        {"shape":"ClientException"},
+        {"shape":"ServerException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"ServerException"}
+        {"shape":"ClientException"}
       ],
       "documentation":"<p>Deletes one or more task definitions.</p> <p>You must deregister a task definition revision before you delete it. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeregisterTaskDefinition.html\">DeregisterTaskDefinition</a>.</p> <p>When you delete a task definition revision, it is immediately transitions from the <code>INACTIVE</code> to <code>DELETE_IN_PROGRESS</code>. Existing tasks and services that reference a <code>DELETE_IN_PROGRESS</code> task definition revision continue to run without disruption. Existing services that reference a <code>DELETE_IN_PROGRESS</code> task definition revision can still scale up or down by modifying the service's desired count.</p> <p>You can't use a <code>DELETE_IN_PROGRESS</code> task definition revision to run new tasks or create new services. You also can't update an existing service to reference a <code>DELETE_IN_PROGRESS</code> task definition revision.</p> <p> A task definition revision will stay in <code>DELETE_IN_PROGRESS</code> status until all the associated tasks and services have been terminated.</p> <p>When you delete all <code>INACTIVE</code> task definition revisions, the task definition name is not displayed in the console and not returned in the API. If a task definition revisions are in the <code>DELETE_IN_PROGRESS</code> state, the task definition name is displayed in the console and returned in the API. The task definition name is retained by Amazon ECS and the revision is incremented the next time you create a task definition with that name.</p>"
     },
@@ -244,17 +249,18 @@
       "input":{"shape":"DeleteTaskSetRequest"},
       "output":{"shape":"DeleteTaskSetResponse"},
       "errors":[
-        {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"UnsupportedFeatureException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ServiceNotFoundException"},
         {"shape":"ServiceNotActiveException"},
-        {"shape":"TaskSetNotFoundException"}
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"TaskSetNotFoundException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceNotFoundException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
       ],
-      "documentation":"<p>Deletes a specified task set within a service. This is used when a service uses the <code>EXTERNAL</code> deployment controller type. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html\">Amazon ECS deployment types</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+      "documentation":"<p>Deletes a specified task set within a service. This is used when a service uses the <code>EXTERNAL</code> deployment controller type. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html\">Amazon ECS deployment types</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>",
+      "idempotent":true
     },
     "DeregisterContainerInstance":{
       "name":"DeregisterContainerInstance",
@@ -266,8 +272,8 @@
       "output":{"shape":"DeregisterContainerInstanceResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
         {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p>Deregisters an Amazon ECS container instance from the specified cluster. This instance is no longer available to run tasks.</p> <p>If you intend to use the container instance for some other purpose after deregistration, we recommend that you stop all of the tasks running on the container instance before deregistration. That prevents any orphaned tasks from consuming resources.</p> <p>Deregistering a container instance removes the instance from a cluster, but it doesn't terminate the EC2 instance. If you are finished using the instance, be sure to terminate it in the Amazon EC2 console to stop billing.</p> <note> <p>If you terminate a running container instance, Amazon ECS automatically deregisters the instance from your cluster (stopped container instances or instances with disconnected agents aren't automatically deregistered when terminated).</p> </note>"
@@ -282,8 +288,8 @@
       "output":{"shape":"DeregisterTaskDefinitionResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"}
       ],
       "documentation":"<p>Deregisters the specified task definition by family and revision. Upon deregistration, the task definition is marked as <code>INACTIVE</code>. Existing tasks and services that reference an <code>INACTIVE</code> task definition continue to run without disruption. Existing services that reference an <code>INACTIVE</code> task definition can still scale up or down by modifying the service's desired count. If you want to delete a task definition revision, you must first deregister the task definition revision.</p> <p>You can't use an <code>INACTIVE</code> task definition to run new tasks or create new services, and you can't update an existing service to reference an <code>INACTIVE</code> task definition. However, there may be up to a 10-minute window following deregistration where these restrictions have not yet taken effect.</p> <note> <p>At this time, <code>INACTIVE</code> task definitions remain discoverable in your account indefinitely. However, this behavior is subject to change in the future. We don't recommend that you rely on <code>INACTIVE</code> task definitions persisting beyond the lifecycle of any associated tasks and services.</p> </note> <p>You must deregister a task definition revision before you delete it. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeleteTaskDefinitions.html\">DeleteTaskDefinitions</a>.</p>"
     },
@@ -297,12 +303,13 @@
       "output":{"shape":"DescribeCapacityProvidersResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"UnsupportedFeatureException"},
-        {"shape":"ClusterNotFoundException"}
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
       ],
-      "documentation":"<p>Describes one or more of your capacity providers.</p>"
+      "documentation":"<p>Describes one or more of your capacity providers.</p>",
+      "readonly":true
     },
     "DescribeClusters":{
       "name":"DescribeClusters",
@@ -314,10 +321,11 @@
       "output":{"shape":"DescribeClustersResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"}
       ],
-      "documentation":"<p>Describes one or more of your clusters.</p> <p> For CLI examples, see <a href=\"https://github.com/aws/aws-cli/blob/develop/awscli/examples/ecs/describe-clusters.rst\">describe-clusters.rst</a> on GitHub.</p>"
+      "documentation":"<p>Describes one or more of your clusters.</p> <p> For CLI examples, see <a href=\"https://github.com/aws/aws-cli/blob/develop/awscli/examples/ecs/describe-clusters.rst\">describe-clusters.rst</a> on GitHub.</p>",
+      "readonly":true
     },
     "DescribeContainerInstances":{
       "name":"DescribeContainerInstances",
@@ -329,11 +337,12 @@
       "output":{"shape":"DescribeContainerInstancesResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
         {"shape":"ClusterNotFoundException"}
       ],
-      "documentation":"<p>Describes one or more container instances. Returns metadata about each container instance requested.</p>"
+      "documentation":"<p>Describes one or more container instances. Returns metadata about each container instance requested.</p>",
+      "readonly":true
     },
     "DescribeExpressGatewayService":{
       "name":"DescribeExpressGatewayService",
@@ -345,14 +354,15 @@
       "output":{"shape":"DescribeExpressGatewayServiceResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
-        {"shape":"ClientException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"InvalidParameterException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
         {"shape":"UnsupportedFeatureException"}
       ],
-      "documentation":"<p>Retrieves detailed information about an Express service, including current status, configuration, managed infrastructure, and service revisions.</p> <p>Returns comprehensive service details, active service revisions, ingress paths with endpoints, and managed Amazon Web Services resource status including load balancers and auto-scaling policies.</p> <p>Use the <code>include</code> parameter to retrieve additional information such as resource tags.</p>"
+      "documentation":"<p>Retrieves detailed information about an Express service, including current status, configuration, managed infrastructure, and service revisions.</p> <p>Returns comprehensive service details, active service revisions, ingress paths with endpoints, and managed Amazon Web Services resource status including load balancers and auto-scaling policies.</p> <p>Use the <code>include</code> parameter to retrieve additional information such as resource tags.</p>",
+      "readonly":true
     },
     "DescribeServiceDeployments":{
       "name":"DescribeServiceDeployments",
@@ -364,14 +374,15 @@
       "output":{"shape":"DescribeServiceDeploymentsResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
-        {"shape":"ClientException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"InvalidParameterException"},
         {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
         {"shape":"ServiceNotFoundException"},
+        {"shape":"ClusterNotFoundException"},
         {"shape":"UnsupportedFeatureException"}
       ],
-      "documentation":"<p>Describes one or more of your service deployments.</p> <p>A service deployment happens when you release a software update for the service. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-deployment.html\">View service history using Amazon ECS service deployments</a>.</p>"
+      "documentation":"<p>Describes one or more of your service deployments.</p> <p>A service deployment happens when you release a software update for the service. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-deployment.html\">View service history using Amazon ECS service deployments</a>.</p>",
+      "readonly":true
     },
     "DescribeServiceRevisions":{
       "name":"DescribeServiceRevisions",
@@ -383,14 +394,15 @@
       "output":{"shape":"DescribeServiceRevisionsResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
-        {"shape":"ClientException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"InvalidParameterException"},
         {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
         {"shape":"ServiceNotFoundException"},
+        {"shape":"ClusterNotFoundException"},
         {"shape":"UnsupportedFeatureException"}
       ],
-      "documentation":"<p>Describes one or more service revisions.</p> <p>A service revision is a version of the service that includes the values for the Amazon ECS resources (for example, task definition) and the environment resources (for example, load balancers, subnets, and security groups). For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-revision.html\">Amazon ECS service revisions</a>.</p> <p>You can't describe a service revision that was created before October 25, 2024.</p>"
+      "documentation":"<p>Describes one or more service revisions.</p> <p>A service revision is a version of the service that includes the values for the Amazon ECS resources (for example, task definition) and the environment resources (for example, load balancers, subnets, and security groups). For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-revision.html\">Amazon ECS service revisions</a>.</p> <p>You can't describe a service revision that was created before October 25, 2024.</p>",
+      "readonly":true
     },
     "DescribeServices":{
       "name":"DescribeServices",
@@ -402,11 +414,12 @@
       "output":{"shape":"DescribeServicesResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
         {"shape":"ClusterNotFoundException"}
       ],
-      "documentation":"<p>Describes the specified services running in your cluster.</p>"
+      "documentation":"<p>Describes the specified services running in your cluster.</p>",
+      "readonly":true
     },
     "DescribeTaskDefinition":{
       "name":"DescribeTaskDefinition",
@@ -418,10 +431,11 @@
       "output":{"shape":"DescribeTaskDefinitionResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"}
       ],
-      "documentation":"<p>Describes a task definition. You can specify a <code>family</code> and <code>revision</code> to find information about a specific task definition, or you can simply specify the family to find the latest <code>ACTIVE</code> revision in that family.</p> <note> <p>You can only describe <code>INACTIVE</code> task definitions while an active task or service references them.</p> </note>"
+      "documentation":"<p>Describes a task definition. You can specify a <code>family</code> and <code>revision</code> to find information about a specific task definition, or you can simply specify the family to find the latest <code>ACTIVE</code> revision in that family.</p> <note> <p>You can only describe <code>INACTIVE</code> task definitions while an active task or service references them.</p> </note>",
+      "readonly":true
     },
     "DescribeTaskSets":{
       "name":"DescribeTaskSets",
@@ -432,16 +446,17 @@
       "input":{"shape":"DescribeTaskSetsRequest"},
       "output":{"shape":"DescribeTaskSetsResponse"},
       "errors":[
-        {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"UnsupportedFeatureException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"ServiceNotActiveException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
         {"shape":"ServiceNotFoundException"},
-        {"shape":"ServiceNotActiveException"}
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
       ],
-      "documentation":"<p>Describes the task sets in the specified cluster and service. This is used when a service uses the <code>EXTERNAL</code> deployment controller type. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html\">Amazon ECS Deployment Types</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+      "documentation":"<p>Describes the task sets in the specified cluster and service. This is used when a service uses the <code>EXTERNAL</code> deployment controller type. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html\">Amazon ECS Deployment Types</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>",
+      "readonly":true
     },
     "DescribeTasks":{
       "name":"DescribeTasks",
@@ -453,11 +468,12 @@
       "output":{"shape":"DescribeTasksResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
         {"shape":"ClusterNotFoundException"}
       ],
-      "documentation":"<p>Describes a specified task or tasks.</p> <p>Currently, stopped tasks appear in the returned results for at least one hour.</p> <p>If you have tasks with tags, and then delete the cluster, the tagged tasks are returned in the response. If you create a new cluster with the same name as the deleted cluster, the tagged tasks are not included in the response.</p>"
+      "documentation":"<p>Describes a specified task or tasks.</p> <p>Currently, stopped tasks appear in the returned results for at least one hour.</p> <p>If you have tasks with tags, and then delete the cluster, the tagged tasks are returned in the response. If you create a new cluster with the same name as the deleted cluster, the tagged tasks are not included in the response.</p>",
+      "readonly":true
     },
     "DiscoverPollEndpoint":{
       "name":"DiscoverPollEndpoint",
@@ -471,7 +487,7 @@
         {"shape":"ServerException"},
         {"shape":"ClientException"}
       ],
-      "documentation":"<note> <p>This action is only used by the Amazon ECS agent, and it is not intended for use outside of the agent.</p> </note> <p>Returns an endpoint for the Amazon ECS agent to poll for updates.</p>"
+      "documentation":"<p><note> <p>This action is only used by the Amazon ECS agent, and it is not intended for use outside of the agent.</p> </note> <p>Returns an endpoint for the Amazon ECS agent to poll for updates.</p></p>"
     },
     "ExecuteCommand":{
       "name":"ExecuteCommand",
@@ -482,12 +498,12 @@
       "input":{"shape":"ExecuteCommandRequest"},
       "output":{"shape":"ExecuteCommandResponse"},
       "errors":[
-        {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"TargetNotConnectedException"}
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"TargetNotConnectedException"},
+        {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p>Runs a command remotely on a container within a task.</p> <p>If you use a condition key in your IAM policy to refine the conditions for the policy statement, for example limit the actions to a specific cluster, you receive an <code>AccessDeniedException</code> when there is a mismatch between the condition key value and the corresponding parameter value.</p> <p>For information about required permissions and considerations, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html\">Using Amazon ECS Exec for debugging</a> in the <i>Amazon ECS Developer Guide</i>. </p>"
     },
@@ -501,14 +517,15 @@
       "output":{"shape":"GetTaskProtectionResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
-        {"shape":"ClientException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"InvalidParameterException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
         {"shape":"UnsupportedFeatureException"}
       ],
-      "documentation":"<p>Retrieves the protection status of tasks in an Amazon ECS service.</p>"
+      "documentation":"<p>Retrieves the protection status of tasks in an Amazon ECS service.</p>",
+      "readonly":true
     },
     "ListAccountSettings":{
       "name":"ListAccountSettings",
@@ -520,10 +537,11 @@
       "output":{"shape":"ListAccountSettingsResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"}
       ],
-      "documentation":"<p>Lists the account settings for a specified principal.</p>"
+      "documentation":"<p>Lists the account settings for a specified principal.</p>",
+      "readonly":true
     },
     "ListAttributes":{
       "name":"ListAttributes",
@@ -534,10 +552,11 @@
       "input":{"shape":"ListAttributesRequest"},
       "output":{"shape":"ListAttributesResponse"},
       "errors":[
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClusterNotFoundException"}
       ],
-      "documentation":"<p>Lists the attributes for Amazon ECS resources within a specified target type and cluster. When you specify a target type and cluster, <code>ListAttributes</code> returns a list of attribute objects, one for each attribute on each resource. You can filter the list of results to a single attribute name to only return results that have that name. You can also filter the results by attribute name and value. You can do this, for example, to see which container instances in a cluster are running a Linux AMI (<code>ecs.os-type=linux</code>). </p>"
+      "documentation":"<p>Lists the attributes for Amazon ECS resources within a specified target type and cluster. When you specify a target type and cluster, <code>ListAttributes</code> returns a list of attribute objects, one for each attribute on each resource. You can filter the list of results to a single attribute name to only return results that have that name. You can also filter the results by attribute name and value. You can do this, for example, to see which container instances in a cluster are running a Linux AMI (<code>ecs.os-type=linux</code>). </p>",
+      "readonly":true
     },
     "ListClusters":{
       "name":"ListClusters",
@@ -549,10 +568,11 @@
       "output":{"shape":"ListClustersResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"}
       ],
-      "documentation":"<p>Returns a list of existing clusters.</p>"
+      "documentation":"<p>Returns a list of existing clusters.</p>",
+      "readonly":true
     },
     "ListContainerInstances":{
       "name":"ListContainerInstances",
@@ -564,11 +584,12 @@
       "output":{"shape":"ListContainerInstancesResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
         {"shape":"ClusterNotFoundException"}
       ],
-      "documentation":"<p>Returns a list of container instances in a specified cluster. You can filter the results of a <code>ListContainerInstances</code> operation with cluster query language statements inside the <code>filter</code> parameter. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cluster-query-language.html\">Cluster Query Language</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+      "documentation":"<p>Returns a list of container instances in a specified cluster. You can filter the results of a <code>ListContainerInstances</code> operation with cluster query language statements inside the <code>filter</code> parameter. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cluster-query-language.html\">Cluster Query Language</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>",
+      "readonly":true
     },
     "ListServiceDeployments":{
       "name":"ListServiceDeployments",
@@ -580,13 +601,14 @@
       "output":{"shape":"ListServiceDeploymentsResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"},
         {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
         {"shape":"ServiceNotFoundException"},
         {"shape":"UnsupportedFeatureException"}
       ],
-      "documentation":"<p>This operation lists all the service deployments that meet the specified filter criteria.</p> <p>A service deployment happens when you release a software update for the service. You route traffic from the running service revisions to the new service revison and control the number of running tasks. </p> <p>This API returns the values that you use for the request parameters in <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DescribeServiceRevisions.html\">DescribeServiceRevisions</a>.</p>"
+      "documentation":"<p>This operation lists all the service deployments that meet the specified filter criteria.</p> <p>A service deployment happens when you release a software update for the service. You route traffic from the running service revisions to the new service revison and control the number of running tasks. </p> <p>This API returns the values that you use for the request parameters in <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DescribeServiceRevisions.html\">DescribeServiceRevisions</a>.</p>",
+      "readonly":true
     },
     "ListServices":{
       "name":"ListServices",
@@ -598,11 +620,12 @@
       "output":{"shape":"ListServicesResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
         {"shape":"ClusterNotFoundException"}
       ],
-      "documentation":"<p>Returns a list of services. You can filter the results by cluster, launch type, and scheduling strategy.</p>"
+      "documentation":"<p>Returns a list of services. You can filter the results by cluster, launch type, and scheduling strategy.</p>",
+      "readonly":true
     },
     "ListServicesByNamespace":{
       "name":"ListServicesByNamespace",
@@ -613,12 +636,13 @@
       "input":{"shape":"ListServicesByNamespaceRequest"},
       "output":{"shape":"ListServicesByNamespaceResponse"},
       "errors":[
+        {"shape":"NamespaceNotFoundException"},
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"NamespaceNotFoundException"}
+        {"shape":"ClientException"}
       ],
-      "documentation":"<p>This operation lists all of the services that are associated with a Cloud Map namespace. This list might include services in different clusters. In contrast, <code>ListServices</code> can only list services in one cluster at a time. If you need to filter the list of services in a single cluster by various parameters, use <code>ListServices</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-connect.html\">Service Connect</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+      "documentation":"<p>This operation lists all of the services that are associated with a Cloud Map namespace. This list might include services in different clusters. In contrast, <code>ListServices</code> can only list services in one cluster at a time. If you need to filter the list of services in a single cluster by various parameters, use <code>ListServices</code>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-connect.html\">Service Connect</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>",
+      "readonly":true
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -630,11 +654,12 @@
       "output":{"shape":"ListTagsForResourceResponse"},
       "errors":[
         {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"ClusterNotFoundException"}
       ],
-      "documentation":"<p>List the tags for an Amazon ECS resource.</p>"
+      "documentation":"<p>List the tags for an Amazon ECS resource.</p>",
+      "readonly":true
     },
     "ListTaskDefinitionFamilies":{
       "name":"ListTaskDefinitionFamilies",
@@ -646,10 +671,11 @@
       "output":{"shape":"ListTaskDefinitionFamiliesResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"}
       ],
-      "documentation":"<p>Returns a list of task definition families that are registered to your account. This list includes task definition families that no longer have any <code>ACTIVE</code> task definition revisions.</p> <p>You can filter out task definition families that don't contain any <code>ACTIVE</code> task definition revisions by setting the <code>status</code> parameter to <code>ACTIVE</code>. You can also filter the results with the <code>familyPrefix</code> parameter.</p>"
+      "documentation":"<p>Returns a list of task definition families that are registered to your account. This list includes task definition families that no longer have any <code>ACTIVE</code> task definition revisions.</p> <p>You can filter out task definition families that don't contain any <code>ACTIVE</code> task definition revisions by setting the <code>status</code> parameter to <code>ACTIVE</code>. You can also filter the results with the <code>familyPrefix</code> parameter.</p>",
+      "readonly":true
     },
     "ListTaskDefinitions":{
       "name":"ListTaskDefinitions",
@@ -661,10 +687,11 @@
       "output":{"shape":"ListTaskDefinitionsResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"}
       ],
-      "documentation":"<p>Returns a list of task definitions that are registered to your account. You can filter the results by family name with the <code>familyPrefix</code> parameter or by status with the <code>status</code> parameter.</p>"
+      "documentation":"<p>Returns a list of task definitions that are registered to your account. You can filter the results by family name with the <code>familyPrefix</code> parameter or by status with the <code>status</code> parameter.</p>",
+      "readonly":true
     },
     "ListTasks":{
       "name":"ListTasks",
@@ -676,12 +703,13 @@
       "output":{"shape":"ListTasksResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"ServiceNotFoundException"}
+        {"shape":"ClientException"},
+        {"shape":"ServiceNotFoundException"},
+        {"shape":"ClusterNotFoundException"}
       ],
-      "documentation":"<p>Returns a list of tasks. You can filter the results by cluster, task definition family, container instance, launch type, what IAM principal started the task, or by the desired status of the task.</p> <p>Recently stopped tasks might appear in the returned results. </p>"
+      "documentation":"<p>Returns a list of tasks. You can filter the results by cluster, task definition family, container instance, launch type, what IAM principal started the task, or by the desired status of the task.</p> <p>Recently stopped tasks might appear in the returned results. </p>",
+      "readonly":true
     },
     "PutAccountSetting":{
       "name":"PutAccountSetting",
@@ -693,8 +721,8 @@
       "output":{"shape":"PutAccountSettingResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"}
       ],
       "documentation":"<p>Modifies an account setting. Account settings are set on a per-Region basis.</p> <p>If you change the root user account setting, the default settings are reset for users and roles that do not have specified individual account settings. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-account-settings.html\">Account Settings</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
     },
@@ -708,8 +736,8 @@
       "output":{"shape":"PutAccountSettingDefaultResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"}
       ],
       "documentation":"<p>Modifies an account setting for all users on an account for whom no individual account setting has been specified. Account settings are set on a per-Region basis.</p>"
     },
@@ -722,10 +750,10 @@
       "input":{"shape":"PutAttributesRequest"},
       "output":{"shape":"PutAttributesResponse"},
       "errors":[
-        {"shape":"ClusterNotFoundException"},
         {"shape":"TargetNotFoundException"},
         {"shape":"AttributeLimitExceededException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p>Create or update an attribute on an Amazon ECS resource. If the attribute doesn't exist, it's created. If the attribute exists, its value is replaced with the specified value. To delete an attribute, use <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeleteAttributes.html\">DeleteAttributes</a>. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-placement-constraints.html#attributes\">Attributes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
     },
@@ -739,11 +767,11 @@
       "output":{"shape":"PutClusterCapacityProvidersResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
+        {"shape":"UpdateInProgressException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"ClusterNotFoundException"},
         {"shape":"ResourceInUseException"},
-        {"shape":"UpdateInProgressException"}
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p>Modifies the available capacity providers and the default capacity provider strategy for a cluster.</p> <p>You must specify both the available capacity providers and a default capacity provider strategy for the cluster. If the specified cluster has existing capacity providers associated with it, you must specify all existing capacity providers in addition to any new ones you want to add. Any existing capacity providers that are associated with a cluster that are omitted from a <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_PutClusterCapacityProviders.html\">PutClusterCapacityProviders</a> API call will be disassociated with the cluster. You can only disassociate an existing capacity provider from a cluster if it's not being used by any existing tasks.</p> <p>When creating a service or running a task on a cluster, if no capacity provider or launch type is specified, then the cluster's default capacity provider strategy is used. We recommend that you define a default capacity provider strategy for your cluster. However, you must specify an empty array (<code>[]</code>) to bypass defining a default strategy.</p> <p>Amazon ECS Managed Instances doesn't support this, because when you create a capacity provider with Amazon ECS Managed Instances, it becomes available only within the specified cluster.</p>"
     },
@@ -757,10 +785,10 @@
       "output":{"shape":"RegisterContainerInstanceResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"}
       ],
-      "documentation":"<note> <p>This action is only used by the Amazon ECS agent, and it is not intended for use outside of the agent.</p> </note> <p>Registers an EC2 instance into the specified cluster. This instance becomes available to place containers on.</p>"
+      "documentation":"<p><note> <p>This action is only used by the Amazon ECS agent, and it is not intended for use outside of the agent.</p> </note> <p>Registers an EC2 instance into the specified cluster. This instance becomes available to place containers on.</p></p>"
     },
     "RegisterTaskDefinition":{
       "name":"RegisterTaskDefinition",
@@ -772,8 +800,8 @@
       "output":{"shape":"RegisterTaskDefinitionResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"}
       ],
       "documentation":"<p>Registers a new task definition from the supplied <code>family</code> and <code>containerDefinitions</code>. Optionally, you can add data volumes to your containers with the <code>volumes</code> parameter. For more information about task definition parameters and defaults, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_defintions.html\">Amazon ECS Task Definitions</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>You can specify a role for your task with the <code>taskRoleArn</code> parameter. When you specify a role for a task, its containers can then use the latest versions of the CLI or SDKs to make API requests to the Amazon Web Services services that are specified in the policy that's associated with the role. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-iam-roles.html\">IAM Roles for Tasks</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>You can specify a Docker networking mode for the containers in your task definition with the <code>networkMode</code> parameter. If you specify the <code>awsvpc</code> network mode, the task is allocated an elastic network interface, and you must specify a <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_NetworkConfiguration.html\">NetworkConfiguration</a> when you create a service or run a task with the task definition. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-networking.html\">Task Networking</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
     },
@@ -786,16 +814,16 @@
       "input":{"shape":"RunTaskRequest"},
       "output":{"shape":"RunTaskResponse"},
       "errors":[
-        {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"UnsupportedFeatureException"},
-        {"shape":"PlatformUnknownException"},
-        {"shape":"PlatformTaskDefinitionIncompatibilityException"},
+        {"shape":"ConflictException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"PlatformUnknownException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
         {"shape":"BlockedException"},
-        {"shape":"ConflictException"}
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"PlatformTaskDefinitionIncompatibilityException"},
+        {"shape":"UnsupportedFeatureException"}
       ],
       "documentation":"<p>Starts a new task using the specified task definition.</p> <note> <p>On March 21, 2024, a change was made to resolve the task definition revision before authorization. When a task definition revision is not specified, authorization will occur using the latest revision of a task definition.</p> </note> <note> <p>Amazon Elastic Inference (EI) is no longer available to customers.</p> </note> <p>You can allow Amazon ECS to place tasks for you, or you can customize how Amazon ECS places tasks using placement constraints and placement strategies. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduling_tasks.html\">Scheduling Tasks</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>Alternatively, you can use <code>StartTask</code> to use your own scheduler or place tasks manually on specific container instances.</p> <p>You can attach Amazon EBS volumes to Amazon ECS tasks by configuring the volume when creating or updating a service. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>The Amazon ECS API follows an eventual consistency model. This is because of the distributed nature of the system supporting the API. This means that the result of an API command you run that affects your Amazon ECS resources might not be immediately visible to all subsequent commands you run. Keep this in mind when you carry out an API command that immediately follows a previous API command.</p> <p>To manage eventual consistency, you can do the following:</p> <ul> <li> <p>Confirm the state of the resource before you run a command to modify it. Run the DescribeTasks command using an exponential backoff algorithm to ensure that you allow enough time for the previous command to propagate through the system. To do this, run the DescribeTasks command repeatedly, starting with a couple of seconds of wait time and increasing gradually up to five minutes of wait time.</p> </li> <li> <p>Add wait time between subsequent commands, even if the DescribeTasks command returns an accurate response. Apply an exponential backoff algorithm starting with a couple of seconds of wait time, and increase gradually up to about five minutes of wait time.</p> </li> </ul> <p>If you get a <code>ConflictException</code> error, the <code>RunTask</code> request could not be processed due to conflicts. The provided <code>clientToken</code> is already in use with a different <code>RunTask</code> request. The <code>resourceIds</code> are the existing task ARNs which are already associated with the <code>clientToken</code>. </p> <p>To fix this issue:</p> <ul> <li> <p>Run <code>RunTask</code> with a unique <code>clientToken</code>.</p> </li> <li> <p>Run <code>RunTask</code> with the <code>clientToken</code> and the original set of parameters</p> </li> </ul> <p>If you get a <code>ClientException</code>error, the <code>RunTask</code> could not be processed because you use managed scaling and there is a capacity error because the quota of tasks in the <code>PROVISIONING</code> per cluster has been reached. For information about the service quotas, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-quotas.html\">Amazon ECS service quotas</a>.</p>"
     },
@@ -809,8 +837,8 @@
       "output":{"shape":"StartTaskResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
         {"shape":"ClusterNotFoundException"},
         {"shape":"UnsupportedFeatureException"}
       ],
@@ -825,11 +853,11 @@
       "input":{"shape":"StopServiceDeploymentRequest"},
       "output":{"shape":"StopServiceDeploymentResponse"},
       "errors":[
-        {"shape":"AccessDeniedException"},
-        {"shape":"ClientException"},
         {"shape":"ConflictException"},
-        {"shape":"InvalidParameterException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
         {"shape":"ServiceDeploymentNotFoundException"},
         {"shape":"UnsupportedFeatureException"}
       ],
@@ -845,8 +873,8 @@
       "output":{"shape":"StopTaskResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
         {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p>Stops a running task. Any tags associated with the task will be deleted.</p> <p>When you call <code>StopTask</code> on a task, the equivalent of <code>docker stop</code> is issued to the containers running in the task. This results in a stop signal value and a default 30-second timeout, after which the <code>SIGKILL</code> value is sent and the containers are forcibly stopped. This signal can be defined in your container image with the <code>STOPSIGNAL</code> instruction and will default to <code>SIGTERM</code>. If the container handles the <code>SIGTERM</code> value gracefully and exits within 30 seconds from receiving it, no <code>SIGKILL</code> value is sent.</p> <p>For Windows containers, POSIX signals do not work and runtime stops the container by sending a <code>CTRL_SHUTDOWN_EVENT</code>. For more information, see <a href=\"https://github.com/moby/moby/issues/25982\">Unable to react to graceful shutdown of (Windows) container #25982</a> on GitHub.</p> <note> <p>The default 30-second timeout can be configured on the Amazon ECS container agent with the <code>ECS_CONTAINER_STOP_TIMEOUT</code> variable. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-config.html\">Amazon ECS Container Agent Configuration</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </note>"
@@ -860,12 +888,12 @@
       "input":{"shape":"SubmitAttachmentStateChangesRequest"},
       "output":{"shape":"SubmitAttachmentStateChangesResponse"},
       "errors":[
-        {"shape":"ServerException"},
-        {"shape":"ClientException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"}
       ],
-      "documentation":"<note> <p>This action is only used by the Amazon ECS agent, and it is not intended for use outside of the agent.</p> </note> <p>Sent to acknowledge that an attachment changed states.</p>"
+      "documentation":"<p><note> <p>This action is only used by the Amazon ECS agent, and it is not intended for use outside of the agent.</p> </note> <p>Sent to acknowledge that an attachment changed states.</p></p>"
     },
     "SubmitContainerStateChange":{
       "name":"SubmitContainerStateChange",
@@ -876,11 +904,11 @@
       "input":{"shape":"SubmitContainerStateChangeRequest"},
       "output":{"shape":"SubmitContainerStateChangeResponse"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"ClientException"}
       ],
-      "documentation":"<note> <p>This action is only used by the Amazon ECS agent, and it is not intended for use outside of the agent.</p> </note> <p>Sent to acknowledge that a container changed states.</p>"
+      "documentation":"<p><note> <p>This action is only used by the Amazon ECS agent, and it is not intended for use outside of the agent.</p> </note> <p>Sent to acknowledge that a container changed states.</p></p>"
     },
     "SubmitTaskStateChange":{
       "name":"SubmitTaskStateChange",
@@ -891,12 +919,12 @@
       "input":{"shape":"SubmitTaskStateChangeRequest"},
       "output":{"shape":"SubmitTaskStateChangeResponse"},
       "errors":[
-        {"shape":"ServerException"},
-        {"shape":"ClientException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"}
       ],
-      "documentation":"<note> <p>This action is only used by the Amazon ECS agent, and it is not intended for use outside of the agent.</p> </note> <p>Sent to acknowledge that a task changed states.</p>"
+      "documentation":"<p><note> <p>This action is only used by the Amazon ECS agent, and it is not intended for use outside of the agent.</p> </note> <p>Sent to acknowledge that a task changed states.</p></p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -907,11 +935,11 @@
       "input":{"shape":"TagResourceRequest"},
       "output":{"shape":"TagResourceResponse"},
       "errors":[
-        {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"ClusterNotFoundException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p>Associates the specified tags to a resource with the specified <code>resourceArn</code>. If existing tags on a resource aren't specified in the request parameters, they aren't changed. When a resource is deleted, the tags that are associated with that resource are deleted as well.</p>"
     },
@@ -924,11 +952,11 @@
       "input":{"shape":"UntagResourceRequest"},
       "output":{"shape":"UntagResourceResponse"},
       "errors":[
-        {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"ClusterNotFoundException"},
         {"shape":"ResourceNotFoundException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p>Deletes specified tags from a resource.</p>"
     },
@@ -942,10 +970,10 @@
       "output":{"shape":"UpdateCapacityProviderResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"UnsupportedFeatureException"},
-        {"shape":"ClusterNotFoundException"}
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
       ],
       "documentation":"<p>Modifies the parameters for a capacity provider.</p> <p>These changes only apply to new Amazon ECS Managed Instances, or EC2 instances, not existing ones.</p>"
     },
@@ -958,11 +986,11 @@
       "input":{"shape":"UpdateClusterRequest"},
       "output":{"shape":"UpdateClusterResponse"},
       "errors":[
+        {"shape":"NamespaceNotFoundException"},
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"ClusterNotFoundException"},
         {"shape":"InvalidParameterException"},
-        {"shape":"NamespaceNotFoundException"}
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p>Updates the cluster.</p>"
     },
@@ -976,9 +1004,9 @@
       "output":{"shape":"UpdateClusterSettingsResponse"},
       "errors":[
         {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
         {"shape":"ClientException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"InvalidParameterException"}
+        {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p>Modifies the settings to use for a cluster.</p>"
     },
@@ -991,13 +1019,13 @@
       "input":{"shape":"UpdateContainerAgentRequest"},
       "output":{"shape":"UpdateContainerAgentResponse"},
       "errors":[
-        {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"UpdateInProgressException"},
         {"shape":"NoUpdateAvailableException"},
-        {"shape":"MissingVersionException"}
+        {"shape":"MissingVersionException"},
+        {"shape":"ServerException"},
+        {"shape":"UpdateInProgressException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p>Updates the Amazon ECS container agent on a specified container instance. Updating the Amazon ECS container agent doesn't interrupt running tasks or services on the container instance. The process for updating the agent differs depending on whether your container instance was launched with the Amazon ECS-optimized AMI or another operating system.</p> <note> <p>The <code>UpdateContainerAgent</code> API isn't supported for container instances using the Amazon ECS-optimized Amazon Linux 2 (arm64) AMI. To update the container agent, you can update the <code>ecs-init</code> package. This updates the agent. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/agent-update-ecs-ami.html\">Updating the Amazon ECS container agent</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </note> <note> <p>Agent updates with the <code>UpdateContainerAgent</code> API operation do not apply to Windows container instances. We recommend that you launch new container instances to update the agent version in your Windows clusters.</p> </note> <p>The <code>UpdateContainerAgent</code> API requires an Amazon ECS-optimized AMI or Amazon Linux AMI with the <code>ecs-init</code> service installed and running. For help updating the Amazon ECS container agent on other operating systems, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-agent-update.html#manually_update_agent\">Manually updating the Amazon ECS container agent</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
     },
@@ -1011,8 +1039,8 @@
       "output":{"shape":"UpdateContainerInstancesStateResponse"},
       "errors":[
         {"shape":"ServerException"},
-        {"shape":"ClientException"},
         {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
         {"shape":"ClusterNotFoundException"}
       ],
       "documentation":"<p>Modifies the status of an Amazon ECS container instance.</p> <p>Once a container instance has reached an <code>ACTIVE</code> state, you can change the status of a container instance to <code>DRAINING</code> to manually remove an instance from a cluster, for example to perform system updates, update the Docker daemon, or scale down the cluster size.</p> <important> <p>A container instance can't be changed to <code>DRAINING</code> until it has reached an <code>ACTIVE</code> status. If the instance is in any other status, an error will be received.</p> </important> <p>When you set a container instance to <code>DRAINING</code>, Amazon ECS prevents new tasks from being scheduled for placement on the container instance and replacement service tasks are started on other container instances in the cluster if the resources are available. Service tasks on the container instance that are in the <code>PENDING</code> state are stopped immediately.</p> <p>Service tasks on the container instance that are in the <code>RUNNING</code> state are stopped and replaced according to the service's deployment configuration parameters, <code>minimumHealthyPercent</code> and <code>maximumPercent</code>. You can change the deployment configuration of your service using <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_UpdateService.html\">UpdateService</a>.</p> <ul> <li> <p>If <code>minimumHealthyPercent</code> is below 100%, the scheduler can ignore <code>desiredCount</code> temporarily during task replacement. For example, <code>desiredCount</code> is four tasks, a minimum of 50% allows the scheduler to stop two existing tasks before starting two new tasks. If the minimum is 100%, the service scheduler can't remove existing tasks until the replacement tasks are considered healthy. Tasks for services that do not use a load balancer are considered healthy if they're in the <code>RUNNING</code> state. Tasks for services that use a load balancer are considered healthy if they're in the <code>RUNNING</code> state and are reported as healthy by the load balancer.</p> </li> <li> <p>The <code>maximumPercent</code> parameter represents an upper limit on the number of running tasks during task replacement. You can use this to define the replacement batch size. For example, if <code>desiredCount</code> is four tasks, a maximum of 200% starts four new tasks before stopping the four tasks to be drained, provided that the cluster resources required to do this are available. If the maximum is 100%, then replacement tasks can't start until the draining tasks have stopped.</p> </li> </ul> <p>Any <code>PENDING</code> or <code>RUNNING</code> tasks that do not belong to a service aren't affected. You must wait for them to finish or stop them manually.</p> <p>A container instance has completed draining when it has no more <code>RUNNING</code> tasks. You can verify this using <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListTasks.html\">ListTasks</a>.</p> <p>When a container instance has been drained, you can set a container instance to <code>ACTIVE</code> status and once it has reached that status the Amazon ECS scheduler can begin scheduling tasks on the instance again.</p>"
@@ -1027,12 +1055,12 @@
       "output":{"shape":"UpdateExpressGatewayServiceResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
-        {"shape":"ClientException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"InvalidParameterException"},
-        {"shape":"ServerException"},
-        {"shape":"ServiceNotFoundException"},
         {"shape":"ServiceNotActiveException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceNotFoundException"},
+        {"shape":"ClusterNotFoundException"},
         {"shape":"UnsupportedFeatureException"}
       ],
       "documentation":"<p>Updates an existing Express service configuration. Modifies container settings, resource allocation, auto-scaling configuration, and other service parameters without recreating the service.</p> <p>Amazon ECS creates a new service revision with updated configuration and performs a rolling deployment to replace existing tasks. The service remains available during updates, ensuring zero-downtime deployments.</p> <p>Some parameters like the infrastructure role cannot be modified after service creation and require creating a new service.</p>"
@@ -1046,16 +1074,16 @@
       "input":{"shape":"UpdateServiceRequest"},
       "output":{"shape":"UpdateServiceResponse"},
       "errors":[
-        {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"ServiceNotFoundException"},
-        {"shape":"ServiceNotActiveException"},
-        {"shape":"PlatformUnknownException"},
-        {"shape":"PlatformTaskDefinitionIncompatibilityException"},
         {"shape":"AccessDeniedException"},
+        {"shape":"PlatformUnknownException"},
         {"shape":"NamespaceNotFoundException"},
+        {"shape":"ServiceNotActiveException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceNotFoundException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"PlatformTaskDefinitionIncompatibilityException"},
         {"shape":"UnsupportedFeatureException"}
       ],
       "documentation":"<p>Modifies the parameters of a service.</p> <note> <p>On March 21, 2024, a change was made to resolve the task definition revision before authorization. When a task definition revision is not specified, authorization will occur using the latest revision of a task definition.</p> </note> <p>For services using the rolling update (<code>ECS</code>) you can update the desired count, deployment configuration, network configuration, load balancers, service registries, enable ECS managed tags option, propagate tags option, task placement constraints and strategies, and task definition. When you update any of these parameters, Amazon ECS starts new tasks with the new configuration. </p> <p>You can attach Amazon EBS volumes to Amazon ECS tasks by configuring the volume when starting or running a task, or when creating or updating a service. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>. You can update your volume configurations and trigger a new deployment. <code>volumeConfigurations</code> is only supported for REPLICA service and not DAEMON service. If you leave <code>volumeConfigurations</code> <code>null</code>, it doesn't trigger a new deployment. For more information on volumes, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>For services using the blue/green (<code>CODE_DEPLOY</code>) deployment controller, only the desired count, deployment configuration, health check grace period, task placement constraints and strategies, enable ECS managed tags option, and propagate tags can be updated using this API. If the network configuration, platform version, task definition, or load balancer need to be updated, create a new CodeDeploy deployment. For more information, see <a href=\"https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeployment.html\">CreateDeployment</a> in the <i>CodeDeploy API Reference</i>.</p> <p>For services using an external deployment controller, you can update only the desired count, task placement constraints and strategies, health check grace period, enable ECS managed tags option, and propagate tags option, using this API. If the launch type, load balancer, network configuration, platform version, or task definition need to be updated, create a new task set For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateTaskSet.html\">CreateTaskSet</a>.</p> <p>You can add to or subtract from the number of instantiations of a task definition in a service by specifying the cluster that the service is running in and a new <code>desiredCount</code> parameter.</p> <p>You can attach Amazon EBS volumes to Amazon ECS tasks by configuring the volume when starting or running a task, or when creating or updating a service. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon EBS volumes</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>If you have updated the container image of your application, you can create a new task definition with that image and deploy it to your service. The service scheduler uses the minimum healthy percent and maximum percent parameters (in the service's deployment configuration) to determine the deployment strategy.</p> <note> <p>If your updated Docker image uses the same tag as what is in the existing task definition for your service (for example, <code>my_image:latest</code>), you don't need to create a new revision of your task definition. You can update the service using the <code>forceNewDeployment</code> option. The new tasks launched by the deployment pull the current image/tag combination from your repository when they start.</p> </note> <p>You can also update the deployment configuration of a service. When a deployment is triggered by updating the task definition of a service, the service scheduler uses the deployment configuration parameters, <code>minimumHealthyPercent</code> and <code>maximumPercent</code>, to determine the deployment strategy.</p> <ul> <li> <p>If <code>minimumHealthyPercent</code> is below 100%, the scheduler can ignore <code>desiredCount</code> temporarily during a deployment. For example, if <code>desiredCount</code> is four tasks, a minimum of 50% allows the scheduler to stop two existing tasks before starting two new tasks. Tasks for services that don't use a load balancer are considered healthy if they're in the <code>RUNNING</code> state. Tasks for services that use a load balancer are considered healthy if they're in the <code>RUNNING</code> state and are reported as healthy by the load balancer.</p> </li> <li> <p>The <code>maximumPercent</code> parameter represents an upper limit on the number of running tasks during a deployment. You can use it to define the deployment batch size. For example, if <code>desiredCount</code> is four tasks, a maximum of 200% starts four new tasks before stopping the four older tasks (provided that the cluster resources required to do this are available).</p> </li> </ul> <p>When <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_UpdateService.html\">UpdateService</a> stops a task during a deployment, the equivalent of <code>docker stop</code> is issued to the containers running in the task. This results in a <code>SIGTERM</code> and a 30-second timeout. After this, <code>SIGKILL</code> is sent and the containers are forcibly stopped. If the container handles the <code>SIGTERM</code> gracefully and exits within 30 seconds from receiving it, no <code>SIGKILL</code> is sent.</p> <p>When the service scheduler launches new tasks, it determines task placement in your cluster with the following logic.</p> <ul> <li> <p>Determine which of the container instances in your cluster can support your service's task definition. For example, they have the required CPU, memory, ports, and container instance attributes.</p> </li> <li> <p>By default, the service scheduler attempts to balance tasks across Availability Zones in this manner even though you can choose a different placement strategy.</p> <ul> <li> <p>Sort the valid container instances by the fewest number of running tasks for this service in the same Availability Zone as the instance. For example, if zone A has one running service task and zones B and C each have zero, valid container instances in either zone B or C are considered optimal for placement.</p> </li> <li> <p>Place the new service task on a valid container instance in an optimal Availability Zone (based on the previous steps), favoring container instances with the fewest number of running tasks for this service.</p> </li> </ul> </li> </ul> <p>When the service scheduler stops running tasks, it attempts to maintain balance across the Availability Zones in your cluster using the following logic: </p> <ul> <li> <p>Sort the container instances by the largest number of running tasks for this service in the same Availability Zone as the instance. For example, if zone A has one running service task and zones B and C each have two, container instances in either zone B or C are considered optimal for termination.</p> </li> <li> <p>Stop the task on a container instance in an optimal Availability Zone (based on the previous steps), favoring container instances with the largest number of running tasks for this service.</p> </li> </ul>"
@@ -1069,15 +1097,15 @@
       "input":{"shape":"UpdateServicePrimaryTaskSetRequest"},
       "output":{"shape":"UpdateServicePrimaryTaskSetResponse"},
       "errors":[
-        {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"UnsupportedFeatureException"},
-        {"shape":"ServiceNotFoundException"},
+        {"shape":"AccessDeniedException"},
         {"shape":"ServiceNotActiveException"},
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
         {"shape":"TaskSetNotFoundException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"ClientException"},
+        {"shape":"ServiceNotFoundException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
       ],
       "documentation":"<p>Modifies which task set in a service is the primary task set. Any parameters that are updated on the primary task set in a service will transition to the service. This is used when a service uses the <code>EXTERNAL</code> deployment controller type. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html\">Amazon ECS Deployment Types</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
     },
@@ -1091,11 +1119,11 @@
       "output":{"shape":"UpdateTaskProtectionResponse"},
       "errors":[
         {"shape":"AccessDeniedException"},
-        {"shape":"ClientException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"InvalidParameterException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ClientException"},
+        {"shape":"ClusterNotFoundException"},
         {"shape":"UnsupportedFeatureException"}
       ],
       "documentation":"<p>Updates the protection status of a task. You can set <code>protectionEnabled</code> to <code>true</code> to protect your task from termination during scale-in events from <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-auto-scaling.html\">Service Autoscaling</a> or <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html\">deployments</a>.</p> <p>Task-protection, by default, expires after 2 hours at which point Amazon ECS clears the <code>protectionEnabled</code> property making the task eligible for termination by a subsequent scale-in event.</p> <p>You can specify a custom expiration period for task protection from 1 minute to up to 2,880 minutes (48 hours). To specify the custom expiration period, set the <code>expiresInMinutes</code> property. The <code>expiresInMinutes</code> property is always reset when you invoke this operation for a task that already has <code>protectionEnabled</code> set to <code>true</code>. You can keep extending the protection expiration period of a task by invoking this operation repeatedly.</p> <p>To learn more about Amazon ECS task protection, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-scale-in-protection.html\">Task scale-in protection</a> in the <i> <i>Amazon Elastic Container Service Developer Guide</i> </i>.</p> <note> <p>This operation is only supported for tasks belonging to an Amazon ECS service. Invoking this operation for a standalone task will result in an <code>TASK_NOT_VALID</code> failure. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/api_failures_messages.html\">API failure reasons</a>.</p> </note> <important> <p>If you prefer to set task protection from within the container, we recommend using the <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-scale-in-protection-endpoint.html\">Task scale-in protection endpoint</a>.</p> </important>"
@@ -1109,15 +1137,15 @@
       "input":{"shape":"UpdateTaskSetRequest"},
       "output":{"shape":"UpdateTaskSetResponse"},
       "errors":[
-        {"shape":"ServerException"},
-        {"shape":"ClientException"},
-        {"shape":"InvalidParameterException"},
-        {"shape":"ClusterNotFoundException"},
-        {"shape":"UnsupportedFeatureException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"ServiceNotFoundException"},
         {"shape":"ServiceNotActiveException"},
-        {"shape":"TaskSetNotFoundException"}
+        {"shape":"ServerException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"TaskSetNotFoundException"},
+        {"shape":"ClientException"},
+        {"shape":"ServiceNotFoundException"},
+        {"shape":"ClusterNotFoundException"},
+        {"shape":"UnsupportedFeatureException"}
       ],
       "documentation":"<p>Modifies a task set. This is used when a service uses the <code>EXTERNAL</code> deployment controller type. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html\">Amazon ECS Deployment Types</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
     }
@@ -1253,7 +1281,8 @@
     "AllowedInstanceTypeSet":{
       "type":"list",
       "member":{"shape":"AllowedInstanceType"},
-      "max":400
+      "max":400,
+      "min":0
     },
     "ApplicationProtocol":{
       "type":"string",
@@ -1969,7 +1998,7 @@
         },
         "entryPoint":{
           "shape":"StringList",
-          "documentation":"<important> <p>Early versions of the Amazon ECS container agent don't properly handle <code>entryPoint</code> parameters. If you have problems using <code>entryPoint</code>, update your container agent or enter your commands and arguments as <code>command</code> array items instead.</p> </important> <p>The entry point that's passed to the container. This parameter maps to <code>Entrypoint</code> in the docker container create command and the <code>--entrypoint</code> option to docker run.</p>"
+          "documentation":"<p><important> <p>Early versions of the Amazon ECS container agent don't properly handle <code>entryPoint</code> parameters. If you have problems using <code>entryPoint</code>, update your container agent or enter your commands and arguments as <code>command</code> array items instead.</p> </important> <p>The entry point that's passed to the container. This parameter maps to <code>Entrypoint</code> in the docker container create command and the <code>--entrypoint</code> option to docker run.</p></p>"
         },
         "command":{
           "shape":"StringList",
@@ -2444,7 +2473,8 @@
           "shape":"ClusterServiceConnectDefaultsRequest",
           "documentation":"<p>Use this parameter to set a default Service Connect namespace. After you set a default Service Connect namespace, any new services with Service Connect turned on that are created in the cluster are added as client services in the namespace. This setting only applies to new services that set the <code>enabled</code> parameter to <code>true</code> in the <code>ServiceConnectConfiguration</code>. You can set the namespace of each service individually in the <code>ServiceConnectConfiguration</code> to override this default parameter.</p> <p>Tasks that run in a namespace can use short names to connect to services in the namespace. Tasks can connect to services across all of the clusters in the namespace. Tasks connect through a managed proxy container that collects logs and metrics for increased visibility. Only the tasks that Amazon ECS services create are supported with Service Connect. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-connect.html\">Service Connect</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "CreateClusterResponse":{
       "type":"structure",
@@ -2453,7 +2483,8 @@
           "shape":"Cluster",
           "documentation":"<p>The full description of your new cluster.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "CreateExpressGatewayServiceRequest":{
       "type":"structure",
@@ -2656,7 +2687,8 @@
           "shape":"VpcLatticeConfigurations",
           "documentation":"<p>The VPC Lattice configuration for the service being created.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "CreateServiceResponse":{
       "type":"structure",
@@ -2665,7 +2697,8 @@
           "shape":"Service",
           "documentation":"<p>The full description of your service following the create call.</p> <p>A service will return either a <code>capacityProviderStrategy</code> or <code>launchType</code> parameter, but not both, depending where one was specified when it was created.</p> <p>If a service is using the <code>ECS</code> deployment controller, the <code>deploymentController</code> and <code>taskSets</code> parameters will not be returned.</p> <p>if the service uses the <code>CODE_DEPLOY</code> deployment controller, the <code>deploymentController</code>, <code>taskSets</code> and <code>deployments</code> parameters will be returned, however the <code>deployments</code> parameter will be an empty list.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "CreateTaskSetRequest":{
       "type":"structure",
@@ -2787,7 +2820,8 @@
           "shape":"Attributes",
           "documentation":"<p>The attributes to delete from your resource. You can specify up to 10 attributes for each request. For custom attributes, specify the attribute name and target ID, but don't specify the value. If you specify the target ID using the short form, you must also specify the target type.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DeleteAttributesResponse":{
       "type":"structure",
@@ -2796,7 +2830,8 @@
           "shape":"Attributes",
           "documentation":"<p>A list of attribute objects that were successfully deleted from your resource.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DeleteCapacityProviderRequest":{
       "type":"structure",
@@ -2829,7 +2864,8 @@
           "shape":"String",
           "documentation":"<p>The short name or full Amazon Resource Name (ARN) of the cluster to delete.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DeleteClusterResponse":{
       "type":"structure",
@@ -2838,7 +2874,8 @@
           "shape":"Cluster",
           "documentation":"<p>The full description of the deleted cluster.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DeleteExpressGatewayServiceRequest":{
       "type":"structure",
@@ -2875,7 +2912,8 @@
           "shape":"BoxedBoolean",
           "documentation":"<p>If <code>true</code>, allows you to delete a service even if it wasn't scaled down to zero tasks. It's only necessary to use this if the service uses the <code>REPLICA</code> scheduling strategy.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DeleteServiceResponse":{
       "type":"structure",
@@ -2884,7 +2922,8 @@
           "shape":"Service",
           "documentation":"<p>The full description of the deleted service.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DeleteTaskDefinitionsRequest":{
       "type":"structure",
@@ -3005,7 +3044,7 @@
         },
         "rolloutState":{
           "shape":"DeploymentRolloutState",
-          "documentation":"<note> <p>The <code>rolloutState</code> of a service is only returned for services that use the rolling update (<code>ECS</code>) deployment type that aren't behind a Classic Load Balancer.</p> </note> <p>The rollout state of the deployment. When a service deployment is started, it begins in an <code>IN_PROGRESS</code> state. When the service reaches a steady state, the deployment transitions to a <code>COMPLETED</code> state. If the service fails to reach a steady state and circuit breaker is turned on, the deployment transitions to a <code>FAILED</code> state. A deployment in <code>FAILED</code> state doesn't launch any new tasks. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeploymentCircuitBreaker.html\">DeploymentCircuitBreaker</a>.</p>"
+          "documentation":"<p><note> <p>The <code>rolloutState</code> of a service is only returned for services that use the rolling update (<code>ECS</code>) deployment type that aren't behind a Classic Load Balancer.</p> </note> <p>The rollout state of the deployment. When a service deployment is started, it begins in an <code>IN_PROGRESS</code> state. When the service reaches a steady state, the deployment transitions to a <code>COMPLETED</code> state. If the service fails to reach a steady state and circuit breaker is turned on, the deployment transitions to a <code>FAILED</code> state. A deployment in <code>FAILED</code> state doesn't launch any new tasks. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DeploymentCircuitBreaker.html\">DeploymentCircuitBreaker</a>.</p></p>"
         },
         "rolloutStateReason":{
           "shape":"String",
@@ -3073,14 +3112,14 @@
           "documentation":"<p>Determines whether to configure Amazon ECS to roll back the service if a service deployment fails. If rollback is on, when a service deployment fails, the service is rolled back to the last deployment that completed successfully.</p>"
         }
       },
-      "documentation":"<note> <p>The deployment circuit breaker can only be used for services using the rolling update (<code>ECS</code>) deployment type.</p> </note> <p>The <b>deployment circuit breaker</b> determines whether a service deployment will fail if the service can't reach a steady state. If it is turned on, a service deployment will transition to a failed state and stop launching new tasks. You can also configure Amazon ECS to roll back your service to the last completed deployment after a failure. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-ecs.html\">Rolling update</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>For more information about API failure reasons, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/api_failures_messages.html\">API failure reasons</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
+      "documentation":"<p><note> <p>The deployment circuit breaker can only be used for services using the rolling update (<code>ECS</code>) deployment type.</p> </note> <p>The <b>deployment circuit breaker</b> determines whether a service deployment will fail if the service can't reach a steady state. If it is turned on, a service deployment will transition to a failed state and stop launching new tasks. You can also configure Amazon ECS to roll back your service to the last completed deployment after a failure. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-ecs.html\">Rolling update</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> <p>For more information about API failure reasons, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/api_failures_messages.html\">API failure reasons</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p></p>"
     },
     "DeploymentConfiguration":{
       "type":"structure",
       "members":{
         "deploymentCircuitBreaker":{
           "shape":"DeploymentCircuitBreaker",
-          "documentation":"<note> <p>The deployment circuit breaker can only be used for services using the rolling update (<code>ECS</code>) deployment type.</p> </note> <p>The <b>deployment circuit breaker</b> determines whether a service deployment will fail if the service can't reach a steady state. If you use the deployment circuit breaker, a service deployment will transition to a failed state and stop launching new tasks. If you use the rollback option, when a service deployment fails, the service is rolled back to the last deployment that completed successfully. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-ecs.html\">Rolling update</a> in the <i>Amazon Elastic Container Service Developer Guide</i> </p>"
+          "documentation":"<p><note> <p>The deployment circuit breaker can only be used for services using the rolling update (<code>ECS</code>) deployment type.</p> </note> <p>The <b>deployment circuit breaker</b> determines whether a service deployment will fail if the service can't reach a steady state. If you use the deployment circuit breaker, a service deployment will transition to a failed state and stop launching new tasks. If you use the rollback option, when a service deployment fails, the service is rolled back to the last deployment that completed successfully. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-ecs.html\">Rolling update</a> in the <i>Amazon Elastic Container Service Developer Guide</i> </p></p>"
         },
         "maximumPercent":{
           "shape":"BoxedInteger",
@@ -3225,7 +3264,8 @@
           "shape":"BoxedBoolean",
           "documentation":"<p>Forces the container instance to be deregistered. If you have tasks running on the container instance when you deregister it with the <code>force</code> option, these tasks remain running until you terminate the instance or the tasks stop through some other means, but they're orphaned (no longer monitored or accounted for by Amazon ECS). If an orphaned task on your container instance is part of an Amazon ECS service, then the service scheduler starts another copy of that task, on a different container instance if possible. </p> <p>Any containers in orphaned service tasks that are registered with a Classic Load Balancer or an Application Load Balancer target group are deregistered. They begin connection draining according to the settings on the load balancer or target group.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DeregisterContainerInstanceResponse":{
       "type":"structure",
@@ -3234,7 +3274,8 @@
           "shape":"ContainerInstance",
           "documentation":"<p>The container instance that was deregistered.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DeregisterTaskDefinitionRequest":{
       "type":"structure",
@@ -3244,7 +3285,8 @@
           "shape":"String",
           "documentation":"<p>The <code>family</code> and <code>revision</code> (<code>family:revision</code>) or full Amazon Resource Name (ARN) of the task definition to deregister. You must specify a <code>revision</code>.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DeregisterTaskDefinitionResponse":{
       "type":"structure",
@@ -3253,7 +3295,8 @@
           "shape":"TaskDefinition",
           "documentation":"<p>The full description of the deregistered task.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DescribeCapacityProvidersRequest":{
       "type":"structure",
@@ -3308,7 +3351,8 @@
           "shape":"ClusterFieldList",
           "documentation":"<p>Determines whether to include additional information about the clusters in the response. If this field is omitted, this information isn't included.</p> <p>If <code>ATTACHMENTS</code> is specified, the attachments for the container instances or tasks within the cluster are included, for example the capacity providers.</p> <p>If <code>SETTINGS</code> is specified, the settings for the cluster are included.</p> <p>If <code>CONFIGURATIONS</code> is specified, the configuration for the cluster is included.</p> <p>If <code>STATISTICS</code> is specified, the task and service count is included, separated by launch type.</p> <p>If <code>TAGS</code> is specified, the metadata tags associated with the cluster are included.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DescribeClustersResponse":{
       "type":"structure",
@@ -3321,7 +3365,8 @@
           "shape":"Failures",
           "documentation":"<p>Any failures associated with the call.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DescribeContainerInstancesRequest":{
       "type":"structure",
@@ -3339,7 +3384,8 @@
           "shape":"ContainerInstanceFieldList",
           "documentation":"<p>Specifies whether you want to see the resource tags for the container instance. If <code>TAGS</code> is specified, the tags are included in the response. If <code>CONTAINER_INSTANCE_HEALTH</code> is specified, the container instance health is included in the response. If this field is omitted, tags and container instance health status aren't included in the response.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DescribeContainerInstancesResponse":{
       "type":"structure",
@@ -3352,7 +3398,8 @@
           "shape":"Failures",
           "documentation":"<p>Any failures associated with the call.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DescribeExpressGatewayServiceRequest":{
       "type":"structure",
@@ -3439,7 +3486,8 @@
           "shape":"ServiceFieldList",
           "documentation":"<p>Determines whether you want to see the resource tags for the service. If <code>TAGS</code> is specified, the tags are included in the response. If this field is omitted, tags aren't included in the response.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DescribeServicesResponse":{
       "type":"structure",
@@ -3452,7 +3500,8 @@
           "shape":"Failures",
           "documentation":"<p>Any failures associated with the call.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DescribeTaskDefinitionRequest":{
       "type":"structure",
@@ -3466,7 +3515,8 @@
           "shape":"TaskDefinitionFieldList",
           "documentation":"<p>Determines whether to see the resource tags for the task definition. If <code>TAGS</code> is specified, the tags are included in the response. If this field is omitted, tags aren't included in the response.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DescribeTaskDefinitionResponse":{
       "type":"structure",
@@ -3479,7 +3529,8 @@
           "shape":"Tags",
           "documentation":"<p>The metadata that's applied to the task definition to help you categorize and organize them. Each tag consists of a key and an optional value. You define both.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case-sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for either keys or values as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys or values with this prefix. Tags with this prefix do not count against your tags per resource limit.</p> </li> </ul>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DescribeTaskSetsRequest":{
       "type":"structure",
@@ -3535,7 +3586,8 @@
           "shape":"TaskFieldList",
           "documentation":"<p>Specifies whether you want to see the resource tags for the task. If <code>TAGS</code> is specified, the tags are included in the response. If this field is omitted, tags aren't included in the response.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DescribeTasksResponse":{
       "type":"structure",
@@ -3548,7 +3600,8 @@
           "shape":"Failures",
           "documentation":"<p>Any failures associated with the call.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DesiredStatus":{
       "type":"string",
@@ -3604,7 +3657,8 @@
           "shape":"String",
           "documentation":"<p>The short name or full Amazon Resource Name (ARN) of the cluster that the container instance belongs to.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DiscoverPollEndpointResponse":{
       "type":"structure",
@@ -3621,7 +3675,8 @@
           "shape":"String",
           "documentation":"<p>The endpoint for the Amazon ECS agent to poll for Service Connect configuration. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-connect.html\">Service Connect</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "DockerLabelsMap":{
       "type":"map",
@@ -3657,6 +3712,7 @@
     "Double":{"type":"double"},
     "Duration":{
       "type":"integer",
+      "box":true,
       "max":2147483647,
       "min":0
     },
@@ -3680,7 +3736,7 @@
         },
         "propagateTags":{
           "shape":"PropagateTags",
-          "documentation":"<p>Determines whether to propagate the tags from the task definition to &#x2028;the Amazon EBS volume. Tags can only propagate to a <code>SERVICE</code> specified in &#x2028;<code>ServiceVolumeConfiguration</code>. If no value is specified, the tags aren't &#x2028;propagated.</p>"
+          "documentation":"<p>Determines whether to propagate the tags from the task definition to the Amazon EBS volume. Tags can only propagate to a <code>SERVICE</code> specified in <code>ServiceVolumeConfiguration</code>. If no value is specified, the tags aren't propagated.</p>"
         }
       },
       "documentation":"<p>The tag specifications of an Amazon EBS volume.</p>"
@@ -3868,7 +3924,8 @@
     "ExcludedInstanceTypeSet":{
       "type":"list",
       "member":{"shape":"ExcludedInstanceType"},
-      "max":400
+      "max":400,
+      "min":0
     },
     "ExecuteCommandConfiguration":{
       "type":"structure",
@@ -4853,7 +4910,8 @@
           "shape":"String",
           "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListAttributes</code> request. When the results of a <code>ListAttributes</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "ListClustersRequest":{
       "type":"structure",
@@ -4866,7 +4924,8 @@
           "shape":"BoxedInteger",
           "documentation":"<p>The maximum number of cluster results that <code>ListClusters</code> returned in paginated output. When this parameter is used, <code>ListClusters</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListClusters</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 100. If this parameter isn't used, then <code>ListClusters</code> returns up to 100 results and a <code>nextToken</code> value if applicable.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "ListClustersResponse":{
       "type":"structure",
@@ -4879,7 +4938,8 @@
           "shape":"String",
           "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListClusters</code> request. When the results of a <code>ListClusters</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "ListContainerInstancesRequest":{
       "type":"structure",
@@ -4904,7 +4964,8 @@
           "shape":"ContainerInstanceStatus",
           "documentation":"<p>Filters the container instances by status. For example, if you specify the <code>DRAINING</code> status, the results include only container instances that have been set to <code>DRAINING</code> using <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_UpdateContainerInstancesState.html\">UpdateContainerInstancesState</a>. If you don't specify this parameter, the The default is to include container instances set to all states other than <code>INACTIVE</code>.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "ListContainerInstancesResponse":{
       "type":"structure",
@@ -4917,7 +4978,8 @@
           "shape":"String",
           "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListContainerInstances</code> request. When the results of a <code>ListContainerInstances</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "ListServiceDeploymentsRequest":{
       "type":"structure",
@@ -5020,7 +5082,8 @@
           "shape":"ResourceManagementType",
           "documentation":"<p>The resourceManagementType type to use when filtering the <code>ListServices</code> results.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "ListServicesResponse":{
       "type":"structure",
@@ -5033,7 +5096,8 @@
           "shape":"String",
           "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListServices</code> request. When the results of a <code>ListServices</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "ListTagsForResourceRequest":{
       "type":"structure",
@@ -5073,7 +5137,8 @@
           "shape":"BoxedInteger",
           "documentation":"<p>The maximum number of task definition family results that <code>ListTaskDefinitionFamilies</code> returned in paginated output. When this parameter is used, <code>ListTaskDefinitions</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListTaskDefinitionFamilies</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 100. If this parameter isn't used, then <code>ListTaskDefinitionFamilies</code> returns up to 100 results and a <code>nextToken</code> value if applicable.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "ListTaskDefinitionFamiliesResponse":{
       "type":"structure",
@@ -5086,7 +5151,8 @@
           "shape":"String",
           "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListTaskDefinitionFamilies</code> request. When the results of a <code>ListTaskDefinitionFamilies</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "ListTaskDefinitionsRequest":{
       "type":"structure",
@@ -5111,7 +5177,8 @@
           "shape":"BoxedInteger",
           "documentation":"<p>The maximum number of task definition results that <code>ListTaskDefinitions</code> returned in paginated output. When this parameter is used, <code>ListTaskDefinitions</code> only returns <code>maxResults</code> results in a single page along with a <code>nextToken</code> response element. The remaining results of the initial request can be seen by sending another <code>ListTaskDefinitions</code> request with the returned <code>nextToken</code> value. This value can be between 1 and 100. If this parameter isn't used, then <code>ListTaskDefinitions</code> returns up to 100 results and a <code>nextToken</code> value if applicable.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "ListTaskDefinitionsResponse":{
       "type":"structure",
@@ -5124,7 +5191,8 @@
           "shape":"String",
           "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListTaskDefinitions</code> request. When the results of a <code>ListTaskDefinitions</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "ListTasksRequest":{
       "type":"structure",
@@ -5165,7 +5233,8 @@
           "shape":"LaunchType",
           "documentation":"<p>The launch type to use when filtering the <code>ListTasks</code> results.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "ListTasksResponse":{
       "type":"structure",
@@ -5178,7 +5247,8 @@
           "shape":"String",
           "documentation":"<p>The <code>nextToken</code> value to include in a future <code>ListTasks</code> request. When the results of a <code>ListTasks</code> request exceed <code>maxResults</code>, this value can be used to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "LoadBalancer":{
       "type":"structure",
@@ -5754,6 +5824,7 @@
     },
     "ManagedScalingInstanceWarmupPeriod":{
       "type":"integer",
+      "box":true,
       "max":10000,
       "min":0
     },
@@ -5766,11 +5837,13 @@
     },
     "ManagedScalingStepSize":{
       "type":"integer",
+      "box":true,
       "max":10000,
       "min":1
     },
     "ManagedScalingTargetCapacity":{
       "type":"integer",
+      "box":true,
       "max":100,
       "min":1
     },
@@ -6325,7 +6398,8 @@
           "shape":"Attributes",
           "documentation":"<p>The attributes to apply to your resource. You can specify up to 10 custom attributes for each resource. You can specify up to 10 attributes in a single call.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "PutAttributesResponse":{
       "type":"structure",
@@ -6334,7 +6408,8 @@
           "shape":"Attributes",
           "documentation":"<p>The attributes applied to your resource.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "PutClusterCapacityProvidersRequest":{
       "type":"structure",
@@ -6406,7 +6481,8 @@
           "shape":"Tags",
           "documentation":"<p>The metadata that you apply to the container instance to help you categorize and organize them. Each tag consists of a key and an optional value. You define both.</p> <p>The following basic restrictions apply to tags:</p> <ul> <li> <p>Maximum number of tags per resource - 50</p> </li> <li> <p>For each resource, each tag key must be unique, and each tag key can have only one value.</p> </li> <li> <p>Maximum key length - 128 Unicode characters in UTF-8</p> </li> <li> <p>Maximum value length - 256 Unicode characters in UTF-8</p> </li> <li> <p>If your tagging schema is used across multiple services and resources, remember that other services may have restrictions on allowed characters. Generally allowed characters are: letters, numbers, and spaces representable in UTF-8, and the following characters: + - = . _ : / @.</p> </li> <li> <p>Tag keys and values are case-sensitive.</p> </li> <li> <p>Do not use <code>aws:</code>, <code>AWS:</code>, or any upper or lowercase combination of such as a prefix for either keys or values as it is reserved for Amazon Web Services use. You cannot edit or delete tag keys or values with this prefix. Tags with this prefix do not count against your tags per resource limit.</p> </li> </ul>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "RegisterContainerInstanceResponse":{
       "type":"structure",
@@ -6415,7 +6491,8 @@
           "shape":"ContainerInstance",
           "documentation":"<p>The container instance that was registered.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "RegisterTaskDefinitionRequest":{
       "type":"structure",
@@ -6496,7 +6573,8 @@
           "shape":"BoxedBoolean",
           "documentation":"<p>Enables fault injection when you register your task definition and allows for fault injection requests to be accepted from the task's containers. The default value is <code>false</code>.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "RegisterTaskDefinitionResponse":{
       "type":"structure",
@@ -6509,7 +6587,8 @@
           "shape":"Tags",
           "documentation":"<p>The list of tags associated with the task definition.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "RepositoryCredentials":{
       "type":"structure",
@@ -6721,7 +6800,8 @@
           "shape":"TaskVolumeConfigurations",
           "documentation":"<p>The details of the volume that was <code>configuredAtLaunch</code>. You can configure the size, volumeType, IOPS, throughput, snapshot and encryption in <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_TaskManagedEBSVolumeConfiguration.html\">TaskManagedEBSVolumeConfiguration</a>. The <code>name</code> of the volume must match the <code>name</code> from the task definition.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "RunTaskResponse":{
       "type":"structure",
@@ -6734,7 +6814,8 @@
           "shape":"Failures",
           "documentation":"<p>Any failures associated with the call.</p> <p>For information about how to address failures, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-event-messages.html#service-event-messages-list\">Service event messages</a> and <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/api_failures_messages.html\">API failure reasons</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "RuntimePlatform":{
       "type":"structure",
@@ -7470,7 +7551,7 @@
         },
         "filesystemType":{
           "shape":"TaskFilesystemType",
-          "documentation":"<p>The filesystem type for the volume. For volumes created from a snapshot, you must specify the same filesystem type that the volume was using when the snapshot was created. If there is a filesystem type mismatch, the tasks will fail to start.</p> <p>The available Linux filesystem types are&#x2028; <code>ext3</code>, <code>ext4</code>, and <code>xfs</code>. If no value is specified, the <code>xfs</code> filesystem type is used by default.</p> <p>The available Windows filesystem types are <code>NTFS</code>.</p>"
+          "documentation":"<p>The filesystem type for the volume. For volumes created from a snapshot, you must specify the same filesystem type that the volume was using when the snapshot was created. If there is a filesystem type mismatch, the tasks will fail to start.</p> <p>The available Linux filesystem types are <code>ext3</code>, <code>ext4</code>, and <code>xfs</code>. If no value is specified, the <code>xfs</code> filesystem type is used by default.</p> <p>The available Windows filesystem types are <code>NTFS</code>.</p>"
         }
       },
       "documentation":"<p>The configuration for the Amazon EBS volume that Amazon ECS creates and manages on your behalf. These settings are used to create each Amazon EBS volume, with one volume created for each task in the service. For information about the supported launch types and operating systems, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volumes-configuration\">Supported operating systems and launch types</a> in the<i> Amazon Elastic Container Service Developer Guide</i>.</p> <p>Many of these parameters map 1:1 with the Amazon EBS <code>CreateVolume</code> API request parameters.</p>"
@@ -7811,7 +7892,8 @@
           "shape":"TaskVolumeConfigurations",
           "documentation":"<p>The details of the volume that was <code>configuredAtLaunch</code>. You can configure the size, volumeType, IOPS, throughput, snapshot and encryption in <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_TaskManagedEBSVolumeConfiguration.html\">TaskManagedEBSVolumeConfiguration</a>. The <code>name</code> of the volume must match the <code>name</code> from the task definition.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "StartTaskResponse":{
       "type":"structure",
@@ -7824,7 +7906,8 @@
           "shape":"Failures",
           "documentation":"<p>Any failures associated with the call.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "Statistics":{
       "type":"list",
@@ -7876,7 +7959,8 @@
           "shape":"String",
           "documentation":"<p>An optional message specified when a task is stopped. For example, if you're using a custom scheduler, you can use this parameter to specify the reason for stopping the task here, and the message appears in subsequent <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_DescribeTasks.html\">DescribeTasks</a>&gt; API operations on this task.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "StopTaskResponse":{
       "type":"structure",
@@ -7885,7 +7969,8 @@
           "shape":"Task",
           "documentation":"<p>The task that was stopped.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "String":{"type":"string"},
     "StringList":{
@@ -7955,7 +8040,8 @@
           "shape":"NetworkBindings",
           "documentation":"<p>The network bindings of the container.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "SubmitContainerStateChangeResponse":{
       "type":"structure",
@@ -7964,7 +8050,8 @@
           "shape":"String",
           "documentation":"<p>Acknowledgement of the state change.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "SubmitTaskStateChangeRequest":{
       "type":"structure",
@@ -8009,7 +8096,8 @@
           "shape":"Timestamp",
           "documentation":"<p>The Unix timestamp for the time when the task execution stopped.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "SubmitTaskStateChangeResponse":{
       "type":"structure",
@@ -8018,7 +8106,8 @@
           "shape":"String",
           "documentation":"<p>Acknowledgement of the state change.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "SystemControl":{
       "type":"structure",
@@ -8056,7 +8145,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+      "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
     },
     "TagKeys":{
       "type":"list",
@@ -8087,7 +8176,7 @@
       "type":"string",
       "max":256,
       "min":0,
-      "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+      "pattern":"([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)"
     },
     "Tags":{
       "type":"list",
@@ -8426,7 +8515,7 @@
       "members":{
         "sizeInGiB":{
           "shape":"Integer",
-          "documentation":"<p>The total amount, in GiB, of the ephemeral storage to set for the task. The minimum supported value is <code>20</code> GiB and the maximum supported value is&#x2028; <code>200</code> GiB.</p>"
+          "documentation":"<p>The total amount, in GiB, of the ephemeral storage to set for the task. The minimum supported value is <code>20</code> GiB and the maximum supported value is <code>200</code> GiB.</p>"
         },
         "kmsKeyId":{
           "shape":"String",
@@ -8502,7 +8591,7 @@
         },
         "filesystemType":{
           "shape":"TaskFilesystemType",
-          "documentation":"<p>The Linux filesystem type for the volume. For volumes created from a snapshot, you must specify the same filesystem type that the volume was using when the snapshot was created. If there is a filesystem type mismatch, the task will fail to start.</p> <p>The available filesystem types are&#x2028; <code>ext3</code>, <code>ext4</code>, and <code>xfs</code>. If no value is specified, the <code>xfs</code> filesystem type is used by default.</p>"
+          "documentation":"<p>The Linux filesystem type for the volume. For volumes created from a snapshot, you must specify the same filesystem type that the volume was using when the snapshot was created. If there is a filesystem type mismatch, the task will fail to start.</p> <p>The available filesystem types are <code>ext3</code>, <code>ext4</code>, and <code>xfs</code>. If no value is specified, the <code>xfs</code> filesystem type is used by default.</p>"
         }
       },
       "documentation":"<p>The configuration for the Amazon EBS volume that Amazon ECS creates and manages on your behalf. These settings are used to create each Amazon EBS volume, with one volume created for each task.</p>"
@@ -8513,7 +8602,7 @@
       "members":{
         "deleteOnTermination":{
           "shape":"BoxedBoolean",
-          "documentation":"<p>Indicates whether the volume should be deleted on when the task stops. If a value of <code>true</code> is specified, &#x2028;Amazon ECS deletes the Amazon EBS volume on your behalf when the task goes into the <code>STOPPED</code> state. If no value is specified, the &#x2028;default value is <code>true</code> is used. When set to <code>false</code>, Amazon ECS leaves the volume in your &#x2028;account.</p>"
+          "documentation":"<p>Indicates whether the volume should be deleted on when the task stops. If a value of <code>true</code> is specified, Amazon ECS deletes the Amazon EBS volume on your behalf when the task goes into the <code>STOPPED</code> state. If no value is specified, the default value is <code>true</code> is used. When set to <code>false</code>, Amazon ECS leaves the volume in your account.</p>"
         }
       },
       "documentation":"<p>The termination policy for the Amazon EBS volume when the task exits. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types\">Amazon ECS volume termination policy</a>.</p>"
@@ -8708,6 +8797,7 @@
     },
     "TaskVolumeStorageGiB":{
       "type":"integer",
+      "box":true,
       "min":1
     },
     "Tasks":{
@@ -8950,7 +9040,8 @@
           "shape":"String",
           "documentation":"<p>The container instance ID or full ARN entries for the container instance where you would like to update the Amazon ECS container agent.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "UpdateContainerAgentResponse":{
       "type":"structure",
@@ -8959,7 +9050,8 @@
           "shape":"ContainerInstance",
           "documentation":"<p>The container instance that the container agent was updated for.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "UpdateContainerInstancesStateRequest":{
       "type":"structure",
@@ -8980,7 +9072,8 @@
           "shape":"ContainerInstanceStatus",
           "documentation":"<p>The container instance state to update the container instance with. The only valid values for this action are <code>ACTIVE</code> and <code>DRAINING</code>. A container instance can only be updated to <code>DRAINING</code> status once it has reached an <code>ACTIVE</code> state. If a container instance is in <code>REGISTERING</code>, <code>DEREGISTERING</code>, or <code>REGISTRATION_FAILED</code> state you can describe the container instance but can't update the container instance state.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "UpdateContainerInstancesStateResponse":{
       "type":"structure",
@@ -8993,7 +9086,8 @@
           "shape":"Failures",
           "documentation":"<p>Any failures associated with the call.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "UpdateExpressGatewayServiceRequest":{
       "type":"structure",
@@ -9176,7 +9270,7 @@
         },
         "loadBalancers":{
           "shape":"LoadBalancers",
-          "documentation":"<note> <p>You must have a service-linked role when you update this property</p> </note> <p>A list of Elastic Load Balancing load balancer objects. It contains the load balancer name, the container name, and the container port to access from the load balancer. The container name is as it appears in a container definition.</p> <p>When you add, update, or remove a load balancer configuration, Amazon ECS starts new tasks with the updated Elastic Load Balancing configuration, and then stops the old tasks when the new tasks are running.</p> <p>For services that use rolling updates, you can add, update, or remove Elastic Load Balancing target groups. You can update from a single target group to multiple target groups and from multiple target groups to a single target group.</p> <p>For services that use blue/green deployments, you can update Elastic Load Balancing target groups by using <code> <a href=\"https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeployment.html\">CreateDeployment</a> </code> through CodeDeploy. Note that multiple target groups are not supported for blue/green deployments. For more information see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/register-multiple-targetgroups.html\">Register multiple target groups with a service</a> in the <i>Amazon Elastic Container Service Developer Guide</i>. </p> <p>For services that use the external deployment controller, you can add, update, or remove load balancers by using <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateTaskSet.html\">CreateTaskSet</a>. Note that multiple target groups are not supported for external deployments. For more information see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/register-multiple-targetgroups.html\">Register multiple target groups with a service</a> in the <i>Amazon Elastic Container Service Developer Guide</i>. </p> <p>You can remove existing <code>loadBalancers</code> by passing an empty list.</p> <p>This parameter triggers a new service deployment.</p>"
+          "documentation":"<p><note> <p>You must have a service-linked role when you update this property</p> </note> <p>A list of Elastic Load Balancing load balancer objects. It contains the load balancer name, the container name, and the container port to access from the load balancer. The container name is as it appears in a container definition.</p> <p>When you add, update, or remove a load balancer configuration, Amazon ECS starts new tasks with the updated Elastic Load Balancing configuration, and then stops the old tasks when the new tasks are running.</p> <p>For services that use rolling updates, you can add, update, or remove Elastic Load Balancing target groups. You can update from a single target group to multiple target groups and from multiple target groups to a single target group.</p> <p>For services that use blue/green deployments, you can update Elastic Load Balancing target groups by using <code> <a href=\"https://docs.aws.amazon.com/codedeploy/latest/APIReference/API_CreateDeployment.html\">CreateDeployment</a> </code> through CodeDeploy. Note that multiple target groups are not supported for blue/green deployments. For more information see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/register-multiple-targetgroups.html\">Register multiple target groups with a service</a> in the <i>Amazon Elastic Container Service Developer Guide</i>. </p> <p>For services that use the external deployment controller, you can add, update, or remove load balancers by using <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateTaskSet.html\">CreateTaskSet</a>. Note that multiple target groups are not supported for external deployments. For more information see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/register-multiple-targetgroups.html\">Register multiple target groups with a service</a> in the <i>Amazon Elastic Container Service Developer Guide</i>. </p> <p>You can remove existing <code>loadBalancers</code> by passing an empty list.</p> <p>This parameter triggers a new service deployment.</p></p>"
         },
         "propagateTags":{
           "shape":"PropagateTags",
@@ -9184,7 +9278,7 @@
         },
         "serviceRegistries":{
           "shape":"ServiceRegistries",
-          "documentation":"<note> <p>You must have a service-linked role when you update this property.</p> <p>For more information about the role see the <code>CreateService</code> request parameter <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateService.html#ECS-CreateService-request-role\"> <code>role</code> </a>. </p> </note> <p>The details for the service discovery registries to assign to this service. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-discovery.html\">Service Discovery</a>.</p> <p>When you add, update, or remove the service registries configuration, Amazon ECS starts new tasks with the updated service registries configuration, and then stops the old tasks when the new tasks are running.</p> <p>You can remove existing <code>serviceRegistries</code> by passing an empty list.</p> <p>This parameter triggers a new service deployment.</p>"
+          "documentation":"<p><note> <p>You must have a service-linked role when you update this property.</p> <p>For more information about the role see the <code>CreateService</code> request parameter <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateService.html#ECS-CreateService-request-role\"> <code>role</code> </a>. </p> </note> <p>The details for the service discovery registries to assign to this service. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-discovery.html\">Service Discovery</a>.</p> <p>When you add, update, or remove the service registries configuration, Amazon ECS starts new tasks with the updated service registries configuration, and then stops the old tasks when the new tasks are running.</p> <p>You can remove existing <code>serviceRegistries</code> by passing an empty list.</p> <p>This parameter triggers a new service deployment.</p></p>"
         },
         "serviceConnectConfiguration":{
           "shape":"ServiceConnectConfiguration",
@@ -9198,7 +9292,8 @@
           "shape":"VpcLatticeConfigurations",
           "documentation":"<p>An object representing the VPC Lattice configuration for the service being updated.</p> <p>This parameter triggers a new service deployment.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "UpdateServiceResponse":{
       "type":"structure",
@@ -9207,7 +9302,8 @@
           "shape":"Service",
           "documentation":"<p>The full description of your service following the update call.</p>"
         }
-      }
+      },
+      "documentation":"<zonbook></zonbook><xhtml></xhtml>"
     },
     "UpdateTaskProtectionRequest":{
       "type":"structure",
@@ -9420,7 +9516,7 @@
       "members":{
         "roleArn":{
           "shape":"IAMRoleArn",
-          "documentation":"<p>The ARN of the IAM role to associate with this VPC Lattice configuration. This is the Amazon ECS&#x2028; infrastructure IAM role that is used to manage your VPC Lattice infrastructure.</p>"
+          "documentation":"<p>The ARN of the IAM role to associate with this VPC Lattice configuration. This is the Amazon ECS infrastructure IAM role that is used to manage your VPC Lattice infrastructure.</p>"
         },
         "targetGroupArn":{
           "shape":"String",
@@ -9438,5 +9534,5 @@
       "member":{"shape":"VpcLatticeConfiguration"}
     }
   },
-  "documentation":"<fullname>Amazon Elastic Container Service</fullname> <p>Amazon Elastic Container Service (Amazon ECS) is a highly scalable, fast, container management service. It makes it easy to run, stop, and manage Docker containers. You can host your cluster on a serverless infrastructure that's managed by Amazon ECS by launching your services or tasks on Fargate. For more control, you can host your tasks on a cluster of Amazon Elastic Compute Cloud (Amazon EC2) or External (on-premises) instances that you manage.</p> <p>Amazon ECS makes it easy to launch and stop container-based applications with simple API calls. This makes it easy to get the state of your cluster from a centralized service, and gives you access to many familiar Amazon EC2 features.</p> <p>You can use Amazon ECS to schedule the placement of containers across your cluster based on your resource needs, isolation policies, and availability requirements. With Amazon ECS, you don't need to operate your own cluster management and configuration management systems. You also don't need to worry about scaling your management infrastructure. </p>"
+  "documentation":"<p><fullname>Amazon Elastic Container Service</fullname> <p>Amazon Elastic Container Service (Amazon ECS) is a highly scalable, fast, container management service. It makes it easy to run, stop, and manage Docker containers. You can host your cluster on a serverless infrastructure that's managed by Amazon ECS by launching your services or tasks on Fargate. For more control, you can host your tasks on a cluster of Amazon Elastic Compute Cloud (Amazon EC2) or External (on-premises) instances that you manage.</p> <p>Amazon ECS makes it easy to launch and stop container-based applications with simple API calls. This makes it easy to get the state of your cluster from a centralized service, and gives you access to many familiar Amazon EC2 features.</p> <p>You can use Amazon ECS to schedule the placement of containers across your cluster based on your resource needs, isolation policies, and availability requirements. With Amazon ECS, you don't need to operate your own cluster management and configuration management systems. You also don't need to worry about scaling your management infrastructure. </p></p>"
 }

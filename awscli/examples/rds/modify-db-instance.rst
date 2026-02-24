@@ -95,7 +95,7 @@ Output::
         "ReadReplicaDBInstanceIdentifiers": [],
         "LicenseModel": "general-public-license",
         
-        ... output ommited ...
+        ... output omitted ...
         }
     }
 

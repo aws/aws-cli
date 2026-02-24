@@ -1,6 +1,6 @@
 **To create a Verified Access endpoint**
 
-The following ``create-verified-access-endpoint`` example creates a Verified Access endpoint for the speciied Verified Access group. The specified network interface and security group must belong to the same VPC. ::
+The following ``create-verified-access-endpoint`` example creates a Verified Access endpoint for the specified Verified Access group. The specified network interface and security group must belong to the same VPC. ::
 
     aws ec2 create-verified-access-endpoint \
         --verified-access-group-id vagr-0dbe967baf14b7235 \

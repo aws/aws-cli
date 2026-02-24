@@ -40,7 +40,7 @@ class TestPackageZipFiles(TestCase):
 
     @skip_if_windows(
         "Symlinks are not supported on Python 2.x + Windows, and require "
-        "administrator privleges on Python 3.x + Windows."
+        "administrator privileges on Python 3.x + Windows."
     )
     def test_must_follow_symlinks(self):
         data = "hello world"

@@ -679,6 +679,9 @@ class ClientArgsCreator:
             EPRBuiltins.AWS_S3_DISABLE_MRAP: s3_config.get(
                 's3_disable_multiregion_access_points', False
             ),
+            EPRBuiltins.AWS_S3_DISABLE_EXPRESS_SESSION_AUTH: s3_config.get(
+                'disable_s3_express_session_auth', False
+            ),
             EPRBuiltins.SDK_ENDPOINT: given_endpoint,
             EPRBuiltins.ACCOUNT_ID: credentials.get_deferred_property(
                 'account_id'

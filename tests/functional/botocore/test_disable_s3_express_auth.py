@@ -31,6 +31,7 @@ class TestDisableS3ExpressAuth:
     def mock_datetime(self):
         with mock.patch('datetime.datetime', spec=True) as mock_dt:
             mock_dt.now.return_value = self.DATE
+            mock_dt.utcnow.return_value = self.DATE
             yield mock_dt
 
     def test_disable_s3_express_auth_enabled(

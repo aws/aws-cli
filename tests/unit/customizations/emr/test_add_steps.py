@@ -1264,7 +1264,7 @@ class TestAddSteps(BaseAWSCommandParamsTest):
         cmd = self.prefix + 'Type=Streaming,Args='
         expected_error_msg = (
             '\naws: [ERROR]: An error occurred (ParamValidation): '
-            + 'The prameter Args cannot be an empty list.\n'
+            + 'The parameter Args cannot be an empty list.\n'
         )
         self.assert_error_for_ami_and_release_based_clusters(
             cmd=cmd,

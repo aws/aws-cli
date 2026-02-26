@@ -53,7 +53,7 @@ class EmptyListError(EmrError, ParamValidationError):
     :ivar param: The provided list parameter
     """
 
-    fmt = 'The prameter {param} cannot be an empty list.'
+    fmt = 'The parameter {param} cannot be an empty list.'
 
 
 class MissingRequiredInstanceGroupsError(EmrError, ParamValidationError):

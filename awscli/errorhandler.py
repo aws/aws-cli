@@ -216,9 +216,8 @@ class FilteredExceptionHandler(BaseExceptionHandler):
                 EnhancedErrorFormatter().format_error(error_info, stderr)
                 return True
 
-            formatter_args = parsed_globals or argparse.Namespace(
-                query=None, color='auto'
-            )
+            color = getattr(parsed_globals, 'color', 'auto')
+            formatter_args = argparse.Namespace(query=None, color=color)
             formatter = get_formatter(error_format, formatter_args)
             formatter('error', error_info, stderr)
             return True

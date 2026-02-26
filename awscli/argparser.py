@@ -14,7 +14,6 @@ import argparse
 import copy
 import sys
 from difflib import get_close_matches
-from awscli.errorformat import format_error_message
 
 HELP_BLURB = (
     "To see help text, you can run:\n"
@@ -114,8 +113,7 @@ class CLIArgParser(argparse.ArgumentParser):
         should raise an exception.
         """
         usage_message = self.format_usage()
-        error_message = format_error_message(message, prog=self.prog)
-        raise ArgParseException(f'{error_message}\n\n{usage_message}')
+        raise ArgParseException(f'{message}\n\n{usage_message}')
 
 
 class MainArgParser(CLIArgParser):

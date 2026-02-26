@@ -2,6 +2,29 @@
 CHANGELOG
 =========
 
+2.33.30
+=======
+
+* api-change:``ecr``: Update repository name regex to comply with OCI Distribution Specification
+* api-change:``wafv2``: AWS WAF now supports GetTopPathStatisticsByTraffic that provides aggregated statistics on the top URI paths accessed by bot traffic. Use this operation to see which paths receive the most bot traffic, identify the specific bots accessing them, and filter by category, organization, or bot name.
+* api-change:``neptune``: Neptune global clusters now supports tags
+* api-change:``batch``: AWS Batch documentation update for service job capacity units.
+* api-change:``ec2``: Add support for EC2 Capacity Blocks in Local Zones.
+
+
+2.33.29
+=======
+
+* api-change:``medialive``: AWS Elemental MediaLive - Added support for Elemental Inference for Smart Cropping and Clipping features for MediaLive.
+* api-change:``cloudwatch``: This release adds the APIs (PutAlarmMuteRule, ListAlarmMuteRules, GetAlarmMuteRule and DeleteAlarmMuteRule) to manage a new Cloudwatch resource, AlarmMuteRules. AlarmMuteRules allow customers to temporarily mute alarm notifications during expected downtime periods.
+* api-change:``observabilityadmin``: Adding a new field in the CreateCentralizationRuleForOrganization, UpdateCentralizationRuleForOrganization API and updating the GetCentralizationRuleForOrganization API response to include the new field
+* api-change:``partnercentral-selling``: Added support for filtering opportunities by target close date in the ListOpportunities API. You can now filter results to return opportunities with a target close date before or after a specified date, enabling more precise opportunity searches based on expected closure timelines.
+* api-change:``opensearch``: Fixed HTTP binding for DescribeDomainAutoTunes API to correctly pass request parameters as query parameters in the HTTP request.
+* api-change:``es``: Fixed HTTP binding for DescribeDomainAutoTunes API to correctly pass request parameters as query parameters in the HTTP request.
+* api-change:``ec2``: Adds httpTokensEnforced property to ModifyInstanceMetadataDefaults API. Set per account or manage organization-wide using declarative policies to prevent IMDSv1-enabled instance launch and block attempts to enable IMDSv1 on existing IMDSv2-only instances.
+* api-change:``elementalinference``: Initial GA launch for AWS Elemental Inference including capabilities of Smart Crop and Live Event Clipping
+
+
 2.33.28
 =======
 

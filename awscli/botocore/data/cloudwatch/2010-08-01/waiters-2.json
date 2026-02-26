@@ -14,6 +14,23 @@
         }
       ]
     },
+    "AlarmMuteRuleExists": {
+      "delay": 5,
+      "maxAttempts": 40,
+      "operation": "GetAlarmMuteRule",
+      "acceptors": [
+        {
+          "matcher": "status",
+          "expected": 200,
+          "state": "success"
+        },
+        {
+          "matcher": "status",
+          "expected": 404,
+          "state": "retry"
+        }
+      ]
+    },
     "CompositeAlarmExists": {
       "delay": 5,
       "maxAttempts": 40,

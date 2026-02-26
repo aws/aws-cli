@@ -666,7 +666,7 @@
         {"shape":"ValidationException"},
         {"shape":"TooManyRequestsException"}
       ],
-      "documentation":"<p>Updates the configuration of an existing telemetry pipeline.</p> <note> <p>The following attributes cannot be updated after pipeline creation:</p> <ul> <li> <p> <b>Pipeline name</b> - The pipeline name is immutable</p> </li> <li> <p> <b>Pipeline ARN</b> - The ARN is automatically generated and cannot be changed</p> </li> <li> <p> <b>Source type</b> - Once a pipeline is created with a specific source type (such as S3, CloudWatch Logs, GitHub, or third-party sources), it cannot be changed to a different source type</p> </li> </ul> <p>Processors can be added, removed, or modified. However, some processors are not supported for third-party pipelines and cannot be added through updates.</p> </note> <p> <b>Source-Specific Update Rules</b> </p> <dl> <dt>CloudWatch Logs Sources (Vended and Custom)</dt> <dd> <p> <b>Updatable:</b> <code>sts_role_arn</code> </p> <p> <b>Fixed:</b> <code>data_source_name</code>, <code>data_source_type</code>, sink (must remain <code>@original</code>)</p> </dd> <dt>S3 Sources (Crowdstrike, Zscaler, SentinelOne, Custom)</dt> <dd> <p> <b>Updatable:</b> All SQS configuration parameters, <code>sts_role_arn</code>, codec settings, compression type, bucket ownership settings, sink log group</p> <p> <b>Fixed:</b> <code>notification_type</code>, <code>aws.region</code> </p> </dd> <dt>GitHub Audit Logs</dt> <dd> <p> <b>Updatable:</b> All Amazon Web Services Secrets Manager attributes, <code>scope</code> (can switch between ORGANIZATION/ENTERPRISE), <code>organization</code> or <code>enterprise</code> name, <code>range</code>, authentication credentials (PAT or GitHub App)</p> </dd> <dt>Microsoft Sources (Entra ID, Office365, Windows)</dt> <dd> <p> <b>Updatable:</b> All Amazon Web Services Secrets Manager attributes, <code>tenant_id</code>, <code>workspace_id</code> (Windows only), OAuth2 credentials (<code>client_id</code>, <code>client_secret</code>)</p> </dd> <dt>Okta Sources (SSO, Auth0)</dt> <dd> <p> <b>Updatable:</b> All Amazon Web Services Secrets Manager attributes, <code>domain</code>, <code>range</code> (SSO only), OAuth2 credentials (<code>client_id</code>, <code>client_secret</code>)</p> </dd> <dt>Palo Alto Networks</dt> <dd> <p> <b>Updatable:</b> All Amazon Web Services Secrets Manager attributes, <code>hostname</code>, basic authentication credentials (<code>username</code>, <code>password</code>)</p> </dd> <dt>ServiceNow CMDB</dt> <dd> <p> <b>Updatable:</b> All Amazon Web Services Secrets Manager attributes, <code>instance_url</code>, <code>range</code>, OAuth2 credentials (<code>client_id</code>, <code>client_secret</code>)</p> </dd> <dt>Wiz CNAPP</dt> <dd> <p> <b>Updatable:</b> All Amazon Web Services Secrets Manager attributes, <code>region</code>, <code>range</code>, OAuth2 credentials (<code>client_id</code>, <code>client_secret</code>)</p> </dd> </dl>"
+      "documentation":"<p>Updates the configuration of an existing telemetry pipeline.</p> <note> <p>The following attributes cannot be updated after pipeline creation:</p> <ul> <li> <p> <b>Pipeline name</b> - The pipeline name is immutable</p> </li> <li> <p> <b>Pipeline ARN</b> - The ARN is automatically generated and cannot be changed</p> </li> <li> <p> <b>Source type</b> - Once a pipeline is created with a specific source type (such as S3, CloudWatch Logs, GitHub, or third-party sources), it cannot be changed to a different source type</p> </li> </ul> <p>Processors can be added, removed, or modified. However, some processors are not supported for third-party pipelines and cannot be added through updates.</p> </note> <p> <b>Source-Specific Update Rules</b> </p> <dl> <dt>CloudWatch Logs Sources (Vended and Custom)</dt> <dd> <p> <b>Updatable:</b> <code>sts_role_arn</code> </p> <p> <b>Fixed:</b> <code>data_source_name</code>, <code>data_source_type</code>, sink (must remain <code>@original</code>)</p> </dd> <dt>S3 Sources (Crowdstrike, Zscaler, SentinelOne, Custom)</dt> <dd> <p> <b>Updatable:</b> All SQS configuration parameters, <code>sts_role_arn</code>, codec settings, compression type, bucket ownership settings, sink log group</p> <p> <b>Fixed:</b> <code>notification_type</code>, <code>aws.region</code> </p> </dd> <dt>GitHub Audit Logs</dt> <dd> <p> <b>Updatable:</b> All Amazon Web Services Secrets Manager attributes, <code>scope</code> (can switch between ORGANIZATION/ENTERPRISE), <code>organization</code> or <code>enterprise</code> name, <code>range</code>, authentication credentials (PAT or GitHub App)</p> </dd> <dt>Microsoft Sources (Entra ID, Office365, Windows)</dt> <dd> <p> <b>Updatable:</b> All Amazon Web Services Secrets Manager attributes, <code>tenant_id</code>, <code>workspace_id</code> (Windows only), OAuth2 credentials (<code>client_id</code>, <code>client_secret</code>)</p> </dd> <dt>Okta Sources (SSO, Auth0)</dt> <dd> <p> <b>Updatable:</b> All Amazon Web Services Secrets Manager attributes, <code>domain</code>, <code>range</code>, OAuth2 credentials (<code>client_id</code>, <code>client_secret</code>)</p> </dd> <dt>Palo Alto Networks</dt> <dd> <p> <b>Updatable:</b> All Amazon Web Services Secrets Manager attributes, <code>hostname</code>, basic authentication credentials (<code>username</code>, <code>password</code>)</p> </dd> <dt>ServiceNow CMDB</dt> <dd> <p> <b>Updatable:</b> All Amazon Web Services Secrets Manager attributes, <code>instance_url</code>, <code>range</code>, OAuth2 credentials (<code>client_id</code>, <code>client_secret</code>)</p> </dd> <dt>Wiz CNAPP</dt> <dd> <p> <b>Updatable:</b> All Amazon Web Services Secrets Manager attributes, <code>region</code>, <code>range</code>, OAuth2 credentials (<code>client_id</code>, <code>client_secret</code>)</p> </dd> </dl>"
     },
     "UpdateTelemetryRule":{
       "name":"UpdateTelemetryRule",
@@ -1265,6 +1265,10 @@
         "BackupConfiguration":{
           "shape":"LogsBackupConfiguration",
           "documentation":"<p>Configuration defining the backup region and an optional KMS key for the backup destination.</p>"
+        },
+        "LogGroupNameConfiguration":{
+          "shape":"LogGroupNameConfiguration",
+          "documentation":"<p>Configuration that specifies a naming pattern for destination log groups created during centralization. The pattern supports static text and dynamic variables that are replaced with source attributes when log groups are created.</p>"
         }
       },
       "documentation":"<p>Configuration for centralization destination log groups, including encryption and backup settings.</p>"
@@ -2011,6 +2015,24 @@
       },
       "documentation":"<p>Configuration parameters for Amazon Bedrock AgentCore logging, including <code>logType</code> settings.</p>"
     },
+    "LogGroupNameConfiguration":{
+      "type":"structure",
+      "required":["LogGroupNamePattern"],
+      "members":{
+        "LogGroupNamePattern":{
+          "shape":"LogGroupNamePattern",
+          "documentation":"<p>The pattern used to generate destination log group names during centralization. The pattern can contain static text and dynamic variables that are replaced with source attributes. If a variable cannot be resolved, it inherits the value from its parent variable in the hierarchy. The pattern must be between 1 and 512 characters.</p> <p>Supported variables:</p> <ul> <li> <p> <b>${source.logGroup}</b> — The original log group name from the source account.</p> </li> <li> <p> <b>${source.accountId}</b> — The AWS account ID where the log originated.</p> </li> <li> <p> <b>${source.region}</b> — The AWS Region where the log originated.</p> </li> <li> <p> <b>${source.org.id}</b> — The AWS Organization ID of the source account.</p> </li> <li> <p> <b>${source.org.ouId}</b> — The organizational unit ID of the source account.</p> </li> <li> <p> <b>${source.org.rootId}</b> — The organization Root ID.</p> </li> <li> <p> <b>${source.org.path}</b> — The organizational path from account to root.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Configuration that specifies a naming pattern for destination log groups created during centralization. The pattern supports static text and dynamic variables that are replaced with source attributes when log groups are created.</p>"
+    },
+    "LogGroupNamePattern":{
+      "type":"string",
+      "documentation":"<p>The pattern used to generate destination log group names during centralization. The pattern can contain static text and dynamic variables that are replaced with source attributes. If a variable cannot be resolved, it inherits the value from its parent variable in the hierarchy. The pattern must be between 1 and 512 characters.</p> <p>Supported variables:</p> <ul> <li> <p> <b>${source.logGroup}</b> — The original log group name from the source account.</p> </li> <li> <p> <b>${source.accountId}</b> — The AWS account ID where the log originated.</p> </li> <li> <p> <b>${source.region}</b> — The AWS Region where the log originated.</p> </li> <li> <p> <b>${source.org.id}</b> — The AWS Organization ID of the source account.</p> </li> <li> <p> <b>${source.org.ouId}</b> — The organizational unit ID of the source account.</p> </li> <li> <p> <b>${source.org.rootId}</b> — The organization Root ID.</p> </li> <li> <p> <b>${source.org.path}</b> — The organizational path from account to root.</p> </li> </ul>",
+      "max":512,
+      "min":1,
+      "pattern":"(?:[\\._\\-/#A-Za-z0-9]+|\\$\\{[A-Za-z]+(?:\\.[A-Za-z]+){1,2}\\})+"
+    },
     "LogType":{
       "type":"string",
       "enum":[
@@ -2458,7 +2480,8 @@
         "LastUpdateTimeStamp":{
           "shape":"Long",
           "documentation":"<p> The timestamp of the last change to the telemetry configuration for the resource. For example, <code>1728679196318</code>. </p>"
-        }
+        },
+        "TelemetrySourceType":{"shape":"TelemetrySourceType"}
       },
       "documentation":"<p> A model representing the state of a resource within an account according to telemetry config. </p>"
     },
@@ -2564,7 +2587,7 @@
           "documentation":"<p>The pipeline configuration body that defines the data processing rules and transformations.</p>"
         }
       },
-      "documentation":"<p>Defines the configuration for a telemetry pipeline, including how data flows from sources through processors to destinations.</p>"
+      "documentation":"<p>Defines the configuration for a pipeline, including how data flows from sources through processors to destinations. The configuration is specified in YAML format and must include a valid pipeline definition with required source and sink components. This pipeline enables end-to-end telemetry data collection, transformation, and delivery while supporting optional processing steps and extensions for enhanced functionality.</p> <p>The primary pipeline configuration section are:</p> <ul> <li> <p> <b>Source:</b> Defines where log data originates from (S3 buckets, CloudWatch Logs, third-party APIs). Each pipeline must have exactly one source.</p> </li> <li> <p> <b>Processors (optional):</b> Transform, parse, and enrich log data as it flows through the pipeline. Processors are applied sequentially in the order they are defined.</p> </li> <li> <p> <b>Sink:</b> Defines the destination where processed log data is sent. Each pipeline must have exactly one sink.</p> </li> <li> <p> <b>Extensions (optional):</b> Provide additional functionality such as Amazon Web Services Secrets Manager integration for credential management.</p> </li> </ul> <p>For more details on each configuration section see <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch-pipelines.html\">CloudWatch pipelines User Guide</a>. Additional comprehensive configuration examples can be found in the <a href=\"https://docs.aws.amazon.com/cloudwatch/latest/observabilityadmin/API_CreateTelemetryPipeline.html#API_CreateTelemetryPipeline_Examples\">CreateTelemetryPipeline API docs</a>.</p>"
     },
     "TelemetryPipelineConfigurationBody":{
       "type":"string",

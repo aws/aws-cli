@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from utils import bin_path, cd, run, virtualenv_enabled
 
@@ -27,10 +28,11 @@ def get_package_tarball(package_dir, package_prefix):
 
 
 def install_local_package(package_dir, package, pip_script="pip"):
+    url = Path(package_dir).as_uri()
     with cd(package_dir):
         run(
-            "%s install %s --find-links file://%s %s"
-            % (pip_script, INSTALL_ARGS, package_dir, package)
+            f"{pip_script} install INSTALL_ARGS "
+            f"--find-links {url} {package}"
         )
 
 

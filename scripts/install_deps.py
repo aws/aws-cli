@@ -31,7 +31,7 @@ def install_local_package(package_dir, package, pip_script="pip"):
     url = Path(package_dir).as_uri()
     with cd(package_dir):
         run(
-            f"{pip_script} install INSTALL_ARGS "
+            f"{pip_script} install {INSTALL_ARGS} "
             f"--find-links {url} {package}"
         )
 

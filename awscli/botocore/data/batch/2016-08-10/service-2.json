@@ -1022,6 +1022,10 @@
         "ec2Configuration":{
           "shape":"Ec2ConfigurationList",
           "documentation":"<p>Provides information that's used to select Amazon Machine Images (AMIs) for Amazon EC2 instances in the compute environment. If <code>Ec2Configuration</code> isn't specified, the default is <code>ECS_AL2</code>.</p> <p>One or two values can be provided.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note>"
+        },
+        "scalingPolicy":{
+          "shape":"ComputeScalingPolicy",
+          "documentation":"<p>The scaling policy configuration for the compute environment.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note>"
         }
       },
       "documentation":"<p>An object that represents an Batch compute resource. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/compute_environments.html\">Compute environments</a> in the <i>Batch User Guide</i>.</p>"
@@ -1096,9 +1100,23 @@
         "imageId":{
           "shape":"String",
           "documentation":"<p>The Amazon Machine Image (AMI) ID used for instances launched in the compute environment. This parameter is overridden by the <code>imageIdOverride</code> member of the <code>Ec2Configuration</code> structure. To remove the custom AMI ID and use the default AMI ID, set this value to an empty string.</p> <p>When updating a compute environment, changing the AMI ID requires an infrastructure update of the compute environment. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note> <note> <p>The AMI that you choose for a compute environment must match the architecture of the instance types that you intend to use for that compute environment. For example, if your compute environment uses A1 instance types, the compute resource AMI that you choose must support ARM instances. Amazon ECS vends both x86 and ARM versions of the Amazon ECS-optimized Amazon Linux 2 AMI. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html#ecs-optimized-ami-linux-variants.html\">Amazon ECS-optimized Amazon Linux 2 AMI</a> in the <i>Amazon Elastic Container Service Developer Guide</i>.</p> </note>"
+        },
+        "scalingPolicy":{
+          "shape":"ComputeScalingPolicy",
+          "documentation":"<p>The scaling policy configuration for the compute environment.</p> <note> <p>This parameter isn't applicable to jobs that are running on Fargate resources. Don't specify it.</p> </note>"
         }
       },
       "documentation":"<p>An object that represents the attributes of a compute environment that can be updated. For more information, see <a href=\"https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html\">Updating compute environments</a> in the <i>Batch User Guide</i>.</p>"
+    },
+    "ComputeScalingPolicy":{
+      "type":"structure",
+      "members":{
+        "minScaleDownDelayMinutes":{
+          "shape":"Integer",
+          "documentation":"<p>The minimum time (in minutes) that Batch keeps instances running in the compute environment after their jobs complete. For each instance, the delay period begins when the last job finishes. If no new jobs are placed on the instance during this delay, Batch terminates the instance once the delay expires.</p> <p>Valid Range: Minimum value of 20. Maximum value of 10080. Use 0 to unset and disable the scale down delay.</p> <note> <p>The scale down delay does not apply to:</p> <ul> <li> <p>Instances being replaced during infrastructure updates</p> </li> <li> <p>Newly launched instances that have not yet run any jobs</p> </li> <li> <p>Spot instances reclaimed due to interruption</p> </li> </ul> </note>"
+        }
+      },
+      "documentation":"<p>An object that represents a scaling policy for a compute environment.</p>"
     },
     "ConsumableResourceList":{
       "type":"list",

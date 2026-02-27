@@ -4418,7 +4418,7 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServiceException"}
       ],
-      "documentation":"<p>Searches contact evaluations in an Amazon Connect instance, with optional filtering. </p> <p> <b>Use cases</b> </p> <p>Following are common uses cases for this API:</p> <ul> <li> <p>Find contact evaluations by using specific search criteria.</p> </li> <li> <p>Find contact evaluations that are tagged with a specific set of tags.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>A Search operation, unlike a List operation, takes time to index changes to resource (create, update or delete). If you don't see updated information for recently changed contact evaluations, try calling the API again in a few seconds. Contact Evaluations may not be fully backfilled with historical data in all regions yet, however all recently created Contact Evaluations should be available for search.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect endpoints and quotas</a>.</p>"
+      "documentation":"<p>Searches contact evaluations in an Amazon Connect instance, with optional filtering. </p> <p> <b>Use cases</b> </p> <p>Following are common uses cases for this API:</p> <ul> <li> <p>Find contact evaluations by using specific search criteria.</p> </li> <li> <p>Find contact evaluations that are tagged with a specific set of tags.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>A Search operation, unlike a List operation, takes time to index changes to resource (create, update or delete). If you don't see updated information for recently changed contact evaluations, try calling the API again in a few seconds.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Amazon Connect endpoints and quotas</a>.</p>"
     },
     "SearchContactFlowModules":{
       "name":"SearchContactFlowModules",
@@ -18125,23 +18125,33 @@
     },
     "EvaluationReviewMetadata":{
       "type":"structure",
-      "required":[
-        "CreatedTime",
-        "CreatedBy",
-        "ReviewRequestComments"
-      ],
+      "required":["ReviewRequestComments"],
       "members":{
         "ReviewId":{
           "shape":"ResourceId",
           "documentation":"<p>The unique identifier for the evaluation review.</p>"
         },
+        "RequestedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the evaluation review was requested.</p>"
+        },
+        "RequestedBy":{
+          "shape":"ARN",
+          "documentation":"<p>The user who requested the evaluation review.</p>"
+        },
         "CreatedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The timestamp when the evaluation review was created.</p>"
+          "documentation":"<p>The timestamp when the evaluation review was created.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"CreatedTime is deprecated.",
+          "deprecatedSince":"02/17/2026"
         },
         "CreatedBy":{
           "shape":"ARN",
-          "documentation":"<p>The user who created the evaluation review.</p>"
+          "documentation":"<p>The user who created the evaluation review.</p>",
+          "deprecated":true,
+          "deprecatedMessage":"CreatedBy is deprecated.",
+          "deprecatedSince":"02/17/2026"
         },
         "ReviewRequestComments":{
           "shape":"EvaluationReviewRequestCommentList",
@@ -18196,11 +18206,11 @@
         },
         "CreatedTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The timestamp when the review request comment was created.</p>"
+          "documentation":"<p>The timestamp when the evaluation review request comment was created.</p>"
         },
         "CreatedBy":{
           "shape":"ARN",
-          "documentation":"<p>The user who created the review request comment.</p>"
+          "documentation":"<p>The user who created the evaluation review request comment.</p>"
         }
       },
       "documentation":"<p>A comment provided when requesting an evaluation review.</p>"

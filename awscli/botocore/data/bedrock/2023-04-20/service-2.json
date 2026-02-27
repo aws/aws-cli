@@ -5400,6 +5400,10 @@
         "tags":{
           "shape":"TagList",
           "documentation":"<p>Any tags to associate with the batch inference job. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/tagging.html\">Tagging Amazon Bedrock resources</a>.</p>"
+        },
+        "modelInvocationType":{
+          "shape":"ModelInvocationType",
+          "documentation":"<p>The invocation endpoint for ModelInvocationJob</p>"
         }
       }
     },
@@ -6827,6 +6831,22 @@
         "status":{
           "shape":"FoundationModelLifecycleStatus",
           "documentation":"<p>Specifies whether a model version is available (<code>ACTIVE</code>) or deprecated (<code>LEGACY</code>.</p>"
+        },
+        "startOfLifeTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Launch time when the model first becomes available</p>"
+        },
+        "endOfLifeTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time when the model is no longer available for use</p>"
+        },
+        "legacyTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time when the model enters legacy state. Models in legacy state can still be used, but users should plan to transition to an Active model before the end of life time</p>"
+        },
+        "publicExtendedAccessTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>Public extended access portion of the legacy period, when users should expect higher pricing</p>"
         }
       },
       "documentation":"<p>Details about whether a model version is available or deprecated.</p>"
@@ -8167,6 +8187,10 @@
         "jobExpirationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time at which the batch inference job times or timed out.</p>"
+        },
+        "modelInvocationType":{
+          "shape":"ModelInvocationType",
+          "documentation":"<p>The invocation endpoint for ModelInvocationJob</p>"
         }
       }
     },
@@ -11828,6 +11852,10 @@
         "jobExpirationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time at which the batch inference job times or timed out.</p>"
+        },
+        "modelInvocationType":{
+          "shape":"ModelInvocationType",
+          "documentation":"<p>The invocation endpoint for ModelInvocationJob</p>"
         }
       },
       "documentation":"<p>A summary of a batch inference job.</p>"
@@ -11837,6 +11865,13 @@
       "box":true,
       "max":168,
       "min":24
+    },
+    "ModelInvocationType":{
+      "type":"string",
+      "enum":[
+        "InvokeModel",
+        "Converse"
+      ]
     },
     "ModelModality":{
       "type":"string",

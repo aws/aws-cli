@@ -1002,6 +1002,10 @@
         "sources":{
           "shape":"SourceArnOrAccountList",
           "documentation":"<p>Specifies source constraints (accounts, ARNs, organization IDs, or organization paths) that limit when service principals can access resources in this resource share. When a service principal attempts to access a shared resource, validation is performed to ensure the request originates from one of the specified sources. This helps prevent confused deputy attacks by applying constraints on where service principals can access resources from.</p>"
+        },
+        "resourceShareConfiguration":{
+          "shape":"ResourceShareConfiguration",
+          "documentation":"<p>Specifies the configuration of this resource share.</p>"
         }
       }
     },
@@ -2330,6 +2334,10 @@
         "featureSet":{
           "shape":"ResourceShareFeatureSet",
           "documentation":"<p>Indicates what features are available for this resource share. This parameter can have one of the following values:</p> <ul> <li> <p> <b>STANDARD</b> – A resource share that supports all functionality. These resource shares are visible to all principals you share the resource share with. You can modify these resource shares in RAM using the console or APIs. This resource share might have been created by RAM, or it might have been <b>CREATED_FROM_POLICY</b> and then promoted.</p> </li> <li> <p> <b>CREATED_FROM_POLICY</b> – The customer manually shared a resource by attaching a resource-based policy. That policy did not match any existing managed permissions, so RAM created this customer managed permission automatically on the customer's behalf based on the attached policy document. This type of resource share is visible only to the Amazon Web Services account that created it. You can't modify it in RAM unless you promote it. For more information, see <a>PromoteResourceShareCreatedFromPolicy</a>.</p> </li> <li> <p> <b>PROMOTING_TO_STANDARD</b> – This resource share was originally <code>CREATED_FROM_POLICY</code>, but the customer ran the <a>PromoteResourceShareCreatedFromPolicy</a> and that operation is still in progress. This value changes to <code>STANDARD</code> when complete.</p> </li> </ul>"
+        },
+        "resourceShareConfiguration":{
+          "shape":"ResourceShareConfiguration",
+          "documentation":"<p>The configuration of the resource share</p>"
         }
       },
       "documentation":"<p>Describes a resource share in RAM.</p>"
@@ -2404,6 +2412,16 @@
         "RESOURCE",
         "SOURCE"
       ]
+    },
+    "ResourceShareConfiguration":{
+      "type":"structure",
+      "members":{
+        "retainSharingOnAccountLeaveOrganization":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether the consumer account retains access to the resource share after leaving the organization.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of the resource share</p>"
     },
     "ResourceShareFeatureSet":{
       "type":"string",

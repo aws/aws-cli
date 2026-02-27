@@ -143,3 +143,100 @@ class TestConfigureGetCommand(unittest.TestCase):
         self.assertEqual(rc, 1)
         self.assertEqual(stream.getvalue(), '')
         self.assertEqual(error_stream.getvalue(), '')
+
+
+class TestConfigureGetCommandSubSections(unittest.TestCase):    
+    def create_command(self, session):
+        stdout = StringIO()
+        stderr = StringIO()
+        command = ConfigureGetCommand(session, stdout, stderr)
+        return stdout, stderr, command
+
+    def test_get_simple_property(self):
+        session = FakeSession({})
+        session.full_config = {
+            'sso_sessions': {
+                'my-session': {
+                    'sso_region': 'us-west-2',
+                    'sso_start_url': 'https://example.awsapps.com/start'
+                }
+            }
+        }
+        stream, error_stream, config_get = self.create_command(session)
+        rc = config_get(args=['--sso-session', 'my-session', 'sso_region'], 
+                       parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertEqual(rendered.strip(), 'us-west-2')
+        self.assertEqual(rc, 0)
+
+
+    def test_get_nested_property(self):
+        session = FakeSession({})
+        session.full_config = {
+            'services': {
+                'my-services': {
+                    's3': {
+                        'endpoint_url': 'http://localhost:4566',
+                    }
+                }
+            }
+        }
+        stream, error_stream, config_get = self.create_command(session)
+        rc = config_get(args=['--services', 'my-services', 's3.endpoint_url'],
+                       parsed_globals=None)
+        rendered = stream.getvalue()
+        self.assertEqual(rendered.strip(), 'http://localhost:4566')
+        self.assertEqual(rc, 0)
+
+    def test_non_existent_subsection_returns_exit_code_1(self):
+        session = FakeSession({})
+        session.full_config = {}
+        stream, error_stream, config_get = self.create_command(session)
+        rc = config_get(args=['--sso-session', 'non-existent', 'sso_region'],
+                       parsed_globals=None)
+
+        self.assertEqual(rc, 1)
+        self.assertEqual(stream.getvalue(), '')
+
+    def test_non_existent_property_returns_exit_code_1(self):
+        session = FakeSession({})
+        session.full_config = {
+            'sso_sessions': {
+                    'my-session': {
+                    'sso_region': 'us-west-2'
+                }
+            }
+        }
+        stream, error_stream, config_get = self.create_command(session)
+        rc = config_get(args=['--sso-session', 'my-session', 'non_existent_property'],
+                       parsed_globals=None)
+
+        self.assertEqual(rc, 1)
+        self.assertEqual(stream.getvalue(), '')
+
+    def test_no_output_to_stdout_for_non_existent_items(self):
+        session = FakeSession({})
+        session.full_config = {}
+        stream, error_stream, config_get = self.create_command(session)
+        
+        rc = config_get(args=['--sso-session', 'non-existent', 'sso_region'],
+                       parsed_globals=None)
+        self.assertEqual(rc, 1)
+        self.assertEqual(stream.getvalue(), '')
+    
+    def test_no_output_to_stdout_for_non_existent_items_existing_subsection(self):
+        session = FakeSession({})
+        
+        session.full_config = {
+            'sso"sessions': {
+                    'my-session': {
+                     'sso_region': 'us-west-2'
+                }
+            }
+        }
+
+        stream, error_stream, config_get = self.create_command(session)
+        rc = config_get(args=['--sso-session', 'my-session', 'non_existent'],
+                       parsed_globals=None)
+        self.assertEqual(rc, 1)
+        self.assertEqual(stream.getvalue(), '')

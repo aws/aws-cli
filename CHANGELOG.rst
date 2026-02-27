@@ -2,6 +2,24 @@
 CHANGELOG
 =========
 
+2.34.0
+======
+
+* enhancement:Error Messages: Standardize CLI error message format to use `aws: [ERROR]: <message>` prefix for consistency across all error types.
+* api-change:``health``: Updates the regex for validating availabilityZone strings used in the describe events filters.
+* api-change:``odb``: ODB Networking Route Management is a feature improvement which allows for implicit creation and deletion of EC2 Routes in the Peer Network Route Table designated by the customer via new optional input. This feature release is combined with Multiple App-VPC functionality for ODB Network Peering(s).
+* api-change:``customer-profiles``: This release introduces an optional SourcePriority parameter to the ProfileObjectType APIs, allowing you to control the precedence of object types when ingesting data from multiple sources. Additionally, WebAnalytics and Device have been added as new StandardIdentifier values.
+* api-change:``bedrock``: Added four new model lifecycle date fields, startOfLifeTime, endOfLifeTime, legacyTime, and publicExtendedAccessTime. Adds support for using the Converse API with Bedrock Batch inference jobs.
+* api-change:``cognito-idp``: Cognito is introducing a two-secret rotation model for app clients, enabling seamless credential rotation without downtime. Dedicated APIs support passing in a custom secret. Custom secrets need to be at least 24 characters. This eliminates reconfiguration needs and reduces security risks.
+* api-change:``batch``: This feature allows customers to specify the minimum time (in minutes) that AWS Batch keeps instances running in a compute environment after all jobs on the instance complete
+* api-change:``ram``: Resource owners can now specify ResourceShareConfiguration request parameter for CreateResourceShare API including RetainSharingOnAccountLeaveOrganization boolean parameter
+* api-change:``connect``: Deprecate EvaluationReviewMetadata's CreatedBy and CreatedTime, add EvaluationReviewMetadata's RequestedBy and RequestedTime
+* api-change:``arc-region-switch``: Post-Recovery Workflows enable customers to maintain comprehensive disaster recovery automation. This allows customer SREs and leadership to have complete recovery orchestration from failover through post-recovery preparation, ensuring Regions remain ready for subsequent recovery events.
+* enhancement:Output: Add support for ``--output off`` to suppress all stdout output while preserving stderr for errors and warnings.
+* api-change:``keyspacesstreams``: Added support for Change Data Capture (CDC) streams with Duration DataType.
+* feature:Output: Add structured error output with configurable formats. CLI errors now display additional fields in the configured format (legacy, json, yaml, text, table, or enhanced). Configure via ``--cli-error-format``, ``cli_error_format`` config variable, or ``AWS_CLI_ERROR_FORMAT`` environment variable. The new enhanced format is the default. Set ``cli_error_format=legacy`` to preserve the original error format.
+
+
 2.33.31
 =======
 

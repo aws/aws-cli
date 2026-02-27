@@ -11,11 +11,14 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
+import re
 import sys
 
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.utils import validate_mutually_exclusive
 
-from . import PREDEFINED_SECTION_NAMES
+from . import PREDEFINED_SECTION_NAMES, SUBSECTION_TYPE_ALLOWLIST
 
 LOG = logging.getLogger(__name__)
 
@@ -35,6 +38,18 @@ class ConfigureGetCommand(BasicCommand):
             'cli_type_name': 'string',
             'positional_arg': True,
         },
+        {
+            'name': 'sso-session',
+            'help_text': 'The name of the SSO session sub-section to retrieve from.',
+            'action': 'store',
+            'cli_type_name': 'string',
+        },
+        {
+            'name': 'services',
+            'help_text': 'The name of the services sub-section to retrieve from.',
+            'action': 'store',
+            'cli_type_name': 'string',
+        },
     ]
 
     def __init__(self, session, stream=None, error_stream=None):
@@ -46,10 +61,34 @@ class ConfigureGetCommand(BasicCommand):
         self._stream = stream
         self._error_stream = error_stream
 
+    def _get_subsection_config_name_from_args(self, args):
+        # Validate mutual exclusivity of sub-section type parameters
+        groups = [[v['param_name']] for v in SUBSECTION_TYPE_ALLOWLIST.values()]
+        validate_mutually_exclusive(args, *groups)
+
+        subsection_name = None
+        subsection_config_name = None
+
+        for section_properties in SUBSECTION_TYPE_ALLOWLIST.values():
+            param_value = getattr(args, section_properties['param_name'])
+            if param_value is not None:
+                subsection_name = param_value
+                subsection_config_name = section_properties['full_config_name']
+                break
+
+        return (subsection_config_name, subsection_name)
+
     def _run_main(self, args, parsed_globals):
         varname = args.varname
+        section_type, section_name = self._get_subsection_config_name_from_args(args)
 
-        if '.' not in varname:
+        if section_type:
+            value = self._get_subsection_property(
+                section_type.replace("-", "_"),
+                section_name,
+                varname
+            )
+        elif '.' not in varname:
             # get_scoped_config() returns the config variables in the config
             # file (not the logical_var names), which is what we want.
             config = self._session.get_scoped_config()
@@ -121,3 +160,24 @@ class ConfigureGetCommand(BasicCommand):
             except AttributeError:
                 value = None
         return value
+
+    def _get_subsection_property(self, section_type, section_name, varname):
+        full_config = self._session.full_config
+        
+        if section_type not in full_config:
+            return None
+        
+        section_type_config = full_config[section_type]
+        section_config = section_type_config.get(section_name, None)
+
+        # Handle nested properties
+        if '.' in varname:
+            parts = varname.split('.')
+            if len(parts) == 2:
+                value = section_config.get(parts[0])
+                if isinstance(value, dict):
+                    return value.get(parts[1])
+                else:
+                    return None
+        else:
+            return section_config.get(varname)

@@ -129,6 +129,20 @@ class TestConfigureCommand(BaseAWSCommandParamsTest):
         )
         self.assertEqual(stdout.strip(), "testing_access_key")
 
+    def test_get_command_with_subsection_set(self):
+        self.set_config_file_contents(
+            "\n"
+            "[default]\n"
+            "aws_access_key_id=default_access_key\n"
+            "\n"
+            "[sso-session my-sso-session]\n"
+            "sso_region = us-west-2\n"
+        )
+        stdout, _, _ = self.run_cmd(
+            "configure get --sso-session my-sso-session sso_region",
+        )
+        self.assertEqual(stdout.strip(), "us-west-2")
+
     def test_set_with_config_file_no_exist(self):
         self.run_cmd("configure set region us-west-1")
         self.assertEqual(

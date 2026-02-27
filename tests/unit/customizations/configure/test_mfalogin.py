@@ -166,9 +166,8 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
                         self.parsed_args, self.parsed_globals
                     )
                     self.assertEqual(rc, 1)
-                    mock_stderr.write.assert_called_with(
-                        "MFA serial number or MFA device ARN is required\n"
-                    )
+                    all_writes = ''.join(str(call) for call in mock_stderr.write.call_args_list)
+                    self.assertIn("aws: [ERROR]: MFA serial number or MFA device ARN is required", all_writes)
 
     def test_no_token_code_provided(self):
         # Mock botocore.session.Session
@@ -188,9 +187,8 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
                         self.parsed_args, self.parsed_globals
                     )
                     self.assertEqual(rc, 1)
-                    mock_stderr.write.assert_called_with(
-                        "MFA token code is required\n"
-                    )
+                    all_writes = ''.join(str(call) for call in mock_stderr.write.call_args_list)
+                    self.assertIn("aws: [ERROR]: MFA token code is required", all_writes)
 
     def test_sts_client_error(self):
         self.session.get_scoped_config.return_value = {}
@@ -218,9 +216,9 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
                 self.parsed_args, self.parsed_globals
             )
             self.assertEqual(rc, 1)
-            mock_stderr.write.assert_called_with(
-                mock.ANY
-            )  # Just check it was called
+            all_writes = ''.join(str(call) for call in mock_stderr.write.call_args_list)
+            self.assertIn("aws: [ERROR]:", all_writes)
+            self.assertIn("An error occurred", all_writes)
 
     def test_successful_mfa_login(self):
         # Setup
@@ -448,9 +446,8 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
             )
 
             self.assertEqual(rc, 1)
-            mock_stderr.write.assert_called_with(
-                "AWS Access Key ID is required\n"
-            )
+            all_writes = ''.join(str(call) for call in mock_stderr.write.call_args_list)
+            self.assertIn("aws: [ERROR]: AWS Access Key ID is required", all_writes)
 
     def test_handle_missing_default_profile_missing_secret_key(self):
         """Test error when secret key is not provided."""
@@ -465,9 +462,8 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
             )
 
             self.assertEqual(rc, 1)
-            mock_stderr.write.assert_called_with(
-                "AWS Secret Access Key is required\n"
-            )
+            all_writes = ''.join(str(call) for call in mock_stderr.write.call_args_list)
+            self.assertIn("aws: [ERROR]: AWS Secret Access Key is required", all_writes)
 
     def test_credential_value_prompting_clean_display(self):
         """Test that credential prompting doesn't show default values."""
@@ -515,11 +511,9 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
                 )
 
                 self.assertEqual(rc, 1)
-                # Verify error message was written
-                mock_stderr.write.assert_called()
-                self.assertIn(
-                    'An error occurred', str(mock_stderr.write.call_args)
-                )
+                all_writes = ''.join(str(call) for call in mock_stderr.write.call_args_list)
+                self.assertIn("aws: [ERROR]:", all_writes)
+                self.assertIn("An error occurred", all_writes)
 
     def test_non_interactive_missing_mfa_serial(self):
         """Test non-interactive mode when MFA serial is missing."""
@@ -539,9 +533,8 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
                     )
 
                     self.assertEqual(rc, 1)
-                    mock_stderr.write.assert_called_with(
-                        "MFA serial number or MFA device ARN is required\n"
-                    )
+                    all_writes = ''.join(str(call) for call in mock_stderr.write.call_args_list)
+                    self.assertIn("aws: [ERROR]: MFA serial number or MFA device ARN is required", all_writes)
 
     def test_non_interactive_missing_token_code(self):
         """Test non-interactive mode when token code would be prompted."""
@@ -559,9 +552,8 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
                 )
 
                 self.assertEqual(rc, 1)
-                mock_stderr.write.assert_called_with(
-                    "MFA token code is required\n"
-                )
+                all_writes = ''.join(str(call) for call in mock_stderr.write.call_args_list)
+                self.assertIn("aws: [ERROR]: MFA token code is required", all_writes)
 
     def test_empty_credential_input_handling(self):
         """Test handling of empty credential inputs."""
@@ -573,6 +565,5 @@ class TestConfigureMFALoginCommand(unittest.TestCase):
             )
 
             self.assertEqual(rc, 1)
-            mock_stderr.write.assert_called_with(
-                "AWS Access Key ID is required\n"
-            )
+            all_writes = ''.join(str(call) for call in mock_stderr.write.call_args_list)
+            self.assertIn("aws: [ERROR]: AWS Access Key ID is required", all_writes)

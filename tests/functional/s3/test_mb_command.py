@@ -52,7 +52,7 @@ class TestMBCommand(BaseAWSCommandParamsTest):
             'Bucket': 'bucket',
             'CreateBucketConfiguration': {
                 'LocationConstraint': 'us-west-2',
-                'TagSet': [
+                'Tags': [
                     {'Key': 'Key1', 'Value': 'Value1'}
                 ]
             }
@@ -65,7 +65,7 @@ class TestMBCommand(BaseAWSCommandParamsTest):
             'Bucket': 'bucket',
             'CreateBucketConfiguration': {
                 'LocationConstraint': 'us-west-2',
-                'TagSet': [
+                'Tags': [
                     {'Key': 'Key1', 'Value': 'Value1'},
                     {'Key': 'Key2', 'Value': 'Value2'}
                 ]

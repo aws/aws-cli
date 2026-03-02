@@ -1241,10 +1241,14 @@ class MbCommand(S3Command):
             )
 
         bucket_config = {
-            'LocationConstraint': self.client.meta.region_name,
-            'Tags': self._create_bucket_tags(parsed_args),
+            'LocationConstraint': self.client.meta.region_name
         }
+
         params = {'Bucket': bucket}
+        bucket_tags = self._create_bucket_tags(parsed_args)
+
+        if bucket_tags:
+            bucket_config['Tags'] = bucket_tags
         if self.client.meta.region_name != 'us-east-1':
             params['CreateBucketConfiguration'] = bucket_config
 

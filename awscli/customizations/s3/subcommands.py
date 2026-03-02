@@ -673,6 +673,15 @@ NO_OVERWRITE = {
     ),
 }
 
+TAGS = {
+    'name': 'tags',
+    'action': 'append',
+    'nargs': 2,
+    'help_text': (
+        "This flag specifies tags to be added to the bucket."
+    ),
+}
+
 
 CASE_CONFLICT = {
     'name': 'case-conflict',
@@ -1206,7 +1215,16 @@ class MbCommand(S3Command):
     NAME = 'mb'
     DESCRIPTION = "Creates an S3 bucket."
     USAGE = "<S3Uri>"
-    ARG_TABLE = [{'name': 'path', 'positional_arg': True, 'synopsis': USAGE}]
+    ARG_TABLE = (
+        [
+            {
+                'name': 'path',
+                'positional_arg': True,
+                'synopsis': USAGE,
+            }
+        ]
+        + [TAGS]
+    )
 
     def _run_main(self, parsed_args, parsed_globals):
         super(MbCommand, self)._run_main(parsed_args, parsed_globals)
@@ -1222,7 +1240,10 @@ class MbCommand(S3Command):
                 "Cannot use mb command with a directory bucket."
             )
 
-        bucket_config = {'LocationConstraint': self.client.meta.region_name}
+        bucket_config = {
+            'LocationConstraint': self.client.meta.region_name,
+            'Tags': self._create_bucket_tags(parsed_args),
+        }
         params = {'Bucket': bucket}
         if self.client.meta.region_name != 'us-east-1':
             params['CreateBucketConfiguration'] = bucket_config
@@ -1238,6 +1259,11 @@ class MbCommand(S3Command):
                 sys.stderr,
             )
             return 1
+
+    def _create_bucket_tags(self, parsed_args):
+        if parsed_args.tags is not None:
+            return [{'Key': tag[0], 'Value': tag[1]} for tag in parsed_args.tags]
+        return []
 
 
 class RbCommand(S3Command):

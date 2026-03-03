@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.34.1
+======
+
+* api-change:``partnercentral-channel``: Adds the Resold Unified Operations support plan and removes the Resold Business support plan in the CreateRelationship and UpdateRelationship APIs
+* api-change:``logs``: CloudWatch Logs updates- Added support for the PutBearerTokenAuthentication API to enable or disable bearer token authentication on a log group. For more information, see CloudWatch Logs API documentation.
+* api-change:``sagemaker``: This release adds b300 and g7e instance types for SageMaker inference endpoints.
+* api-change:``datazone``: Adding QueryGraph operation to DataZone SDK
+* enhancement:``checksums``: Add support for SHA512, XXHASH64, XXHASH3, and XXHASH128 HTTP checksum algorithms. Also added pass-through support for user-provided MD5 checksum headers (without client-side MD5 calculation or validation).
+* api-change:``bedrock-agentcore-control``: Support for AgentCore Policy GA
+
+
 2.34.0
 ======
 

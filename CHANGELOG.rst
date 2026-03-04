@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+1.44.51
+=======
+
+* api-change:``connect``: Added support for configuring additional email addresses on queues in Amazon Connect. Agents can now select an outbound email address and associate additional email addresses for replying to or initiating emails.
+* api-change:``elasticbeanstalk``: As part of this release, Beanstalk introduce a new info type - analyze for request environment info and retrieve environment info operations. When customers request an Al analysis, Elastic Beanstalk runs a script on an instance in their environment and returns an analysis of events, health and logs.
+* api-change:``es``: Adds support for DeploymentStrategyOptions.
+* api-change:``gamelift``: Amazon GameLift Servers now offers DDoS protection for Linux-based EC2 and Container Fleets on SDKv5. The player gateway proxy relay network provides traffic validation, per-player rate limiting, and game server IP address obfuscation all with negligible added latency and no additional cost.
+* api-change:``opensearch``: Adding support for DeploymentStrategyOptions
+* api-change:``quicksight``: Added several new values for Capabilities, increased visual limit per sheet from previous limit to 75, renamed Quick Suite to Quick in several places.
+
+
 1.44.50
 =======
 

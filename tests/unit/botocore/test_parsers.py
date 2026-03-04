@@ -1640,3 +1640,56 @@ def test_can_handle_generic_error_message(parser, body):
     )
     assert parsed['Error'] == {'Code': '503', 'Message': 'Service Unavailable'}
     assert parsed['ResponseMetadata']['HTTPStatusCode'] == 503
+
+
+class TestNullInListParsing(unittest.TestCase):
+    def test_handles_null_in_list(self):
+        parser = parsers.JSONParser()
+        body = b'{"items":[1,null,3]}'
+        output_shape = model.StructureShape(
+            'OutputShape',
+            {'type': 'structure', 'members': {'items': {'shape': 'ItemList'}}},
+            model.ShapeResolver(
+                {
+                    'ItemList': {
+                        'type': 'list',
+                        'member': {'shape': 'ItemType'},
+                    },
+                    'ItemType': {'type': 'integer'},
+                }
+            ),
+        )
+        parsed = parser.parse(
+            {'body': body, 'headers': {}, 'status_code': 200}, output_shape
+        )
+        self.assertEqual(parsed['items'], [1, None, 3])
+
+    def test_handles_null_in_nested_list(self):
+        parser = parsers.RestJSONParser()
+        body = b'{"data":[[{"values":[1,null,3]}]]}'
+        output_shape = model.StructureShape(
+            'OutputShape',
+            {'type': 'structure', 'members': {'data': {'shape': 'DataList'}}},
+            model.ShapeResolver(
+                {
+                    'DataList': {
+                        'type': 'list',
+                        'member': {'shape': 'ItemList'},
+                    },
+                    'ItemList': {'type': 'list', 'member': {'shape': 'Item'}},
+                    'Item': {
+                        'type': 'structure',
+                        'members': {'values': {'shape': 'ValueList'}},
+                    },
+                    'ValueList': {
+                        'type': 'list',
+                        'member': {'shape': 'ValueType'},
+                    },
+                    'ValueType': {'type': 'integer'},
+                }
+            ),
+        )
+        parsed = parser.parse(
+            {'body': body, 'headers': {}, 'status_code': 200}, output_shape
+        )
+        self.assertEqual(parsed['data'][0][0]['values'], [1, None, 3])

@@ -2802,6 +2802,10 @@
         "AIMLOptions":{
           "shape":"AIMLOptionsInput",
           "documentation":"<p>Options for all machine learning features for the specified domain.</p>"
+        },
+        "DeploymentStrategyOptions":{
+          "shape":"DeploymentStrategyOptions",
+          "documentation":"<p>Specifies the deployment strategy options for the domain.</p>"
         }
       }
     },
@@ -3299,6 +3303,43 @@
         "NOT_ELIGIBLE",
         "ELIGIBLE"
       ]
+    },
+    "DeploymentStrategy":{
+      "type":"string",
+      "documentation":"<p>Specifies the deployment strategy for the domain. Valid values are <code>Default</code> and <code>CapacityOptimized</code>.</p>",
+      "enum":[
+        "Default",
+        "CapacityOptimized"
+      ]
+    },
+    "DeploymentStrategyOptions":{
+      "type":"structure",
+      "required":["DeploymentStrategy"],
+      "members":{
+        "DeploymentStrategy":{
+          "shape":"DeploymentStrategy",
+          "documentation":"<p>Specifies the deployment strategy for the domain. Valid values are <code>Default</code> and <code>CapacityOptimized</code>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the deployment strategy options for the domain.</p>"
+    },
+    "DeploymentStrategyOptionsStatus":{
+      "type":"structure",
+      "required":[
+        "Options",
+        "Status"
+      ],
+      "members":{
+        "Options":{
+          "shape":"DeploymentStrategyOptions",
+          "documentation":"<p>Deployment strategy options for the domain.</p>"
+        },
+        "Status":{
+          "shape":"OptionStatus",
+          "documentation":"<p>The current status of the deployment strategy options for the domain.</p>"
+        }
+      },
+      "documentation":"<p>The status of deployment strategy options for the domain.</p>"
     },
     "DeploymentType":{
       "type":"string",
@@ -4080,6 +4121,10 @@
         "AIMLOptions":{
           "shape":"AIMLOptionsStatus",
           "documentation":"<p>Container for parameters required to enable all machine learning features.</p>"
+        },
+        "DeploymentStrategyOptions":{
+          "shape":"DeploymentStrategyOptionsStatus",
+          "documentation":"<p>Specifies <code>DeploymentStrategyOptions</code> for the domain.</p>"
         }
       },
       "documentation":"<p>Container for the configuration of an OpenSearch Service domain.</p>"
@@ -4503,6 +4548,10 @@
         "AIMLOptions":{
           "shape":"AIMLOptionsOutput",
           "documentation":"<p>Container for parameters required to enable all machine learning features.</p>"
+        },
+        "DeploymentStrategyOptions":{
+          "shape":"DeploymentStrategyOptions",
+          "documentation":"<p>The current status of the domain's deployment strategy options.</p>"
         }
       },
       "documentation":"<p>The current status of an OpenSearch Service domain.</p>"
@@ -8106,6 +8155,10 @@
         "AIMLOptions":{
           "shape":"AIMLOptionsInput",
           "documentation":"<p>Options for all machine learning features for the specified domain.</p>"
+        },
+        "DeploymentStrategyOptions":{
+          "shape":"DeploymentStrategyOptions",
+          "documentation":"<p>Specifies the deployment strategy options for the domain.</p>"
         }
       },
       "documentation":"<p>Container for the request parameters to the <code>UpdateDomain</code> operation.</p>"

@@ -754,7 +754,7 @@
         {"shape":"InvalidRequestException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere, Container</p> <p>Retrieves core fleet-wide properties for fleets in an Amazon Web Services Region. Properties include the computing hardware and deployment configuration for instances in the fleet.</p> <p>You can use this operation in the following ways: </p> <ul> <li> <p>To get attributes for specific fleets, provide a list of fleet IDs or fleet ARNs.</p> </li> <li> <p>To get attributes for all fleets, do not provide a fleet identifier.</p> </li> </ul> <p>When requesting attributes for multiple fleets, use the pagination parameters to retrieve results as a set of sequential pages. </p> <p>If successful, a <code>FleetAttributes</code> object is returned for each fleet requested, unless the fleet identifier is not found. </p> <note> <p>Some API operations limit the number of fleet IDs that allowed in one request. If a request exceeds this limit, the request fails and the error message contains the maximum allowed number.</p> </note> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers fleets</a> </p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere</p> <p>Retrieves core fleet-wide properties for fleets in an Amazon Web Services Region. Properties include the computing hardware and deployment configuration for instances in the fleet.</p> <p>You can use this operation in the following ways: </p> <ul> <li> <p>To get attributes for specific fleets, provide a list of fleet IDs or fleet ARNs.</p> </li> <li> <p>To get attributes for all fleets, do not provide a fleet identifier.</p> </li> </ul> <p>When requesting attributes for multiple fleets, use the pagination parameters to retrieve results as a set of sequential pages. </p> <p>If successful, a <code>FleetAttributes</code> object is returned for each fleet requested, unless the fleet identifier is not found. </p> <note> <p>Some API operations limit the number of fleet IDs that allowed in one request. If a request exceeds this limit, the request fails and the error message contains the maximum allowed number.</p> </note> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-intro.html\">Setting up Amazon GameLift Servers fleets</a> </p>"
     },
     "DescribeFleetCapacity":{
       "name":"DescribeFleetCapacity",
@@ -971,7 +971,7 @@
         {"shape":"NotFoundException"},
         {"shape":"UnauthorizedException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere, Container</p> <p>Retrieves information, including current status, about a game session placement request. </p> <p>To get game session placement details, specify the placement ID.</p> <p>This operation is not designed to be continually called to track game session status. This practice can cause you to exceed your API limit, which results in errors. Instead, you must configure an Amazon Simple Notification Service (SNS) topic to receive notifications from FlexMatch or queues. Continuously polling with <code>DescribeGameSessionPlacement</code> should only be used for games in development with low game session usage. </p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere, Container</p> <p>Retrieves information, including current status, about a game session placement request. </p> <p>To get game session placement details, specify the placement ID.</p> <p>This operation is not designed to be continually called to track game session status. This practice can cause you to exceed your API limit, which results in errors. Instead, you must configure an Amazon Simple Notification Service (SNS) topic to receive notifications from FlexMatch or queues. Continuously polling with <code>DescribeGameSessionPlacement</code> should only be used for games in development with low game session usage. For a reference implementation of event-based game session placement tracking, see <a href=\"https://github.com/amazon-gamelift/amazon-gamelift-toolkit/tree/main/event-based-session-placement\"> Event-based game session placement guidance</a> in the Amazon GameLift Toolkit.</p>"
     },
     "DescribeGameSessionQueues":{
       "name":"DescribeGameSessionQueues",
@@ -1022,7 +1022,7 @@
         {"shape":"InternalServiceException"},
         {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2</p> <p>Retrieves information about the EC2 instances in an Amazon GameLift Servers managed fleet, including instance ID, connection data, and status. You can use this operation with a multi-location fleet to get location-specific instance information. As an alternative, use the operations <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_ListCompute\">https://docs.aws.amazon.com/gamelift/latest/apireference/API_ListCompute</a> and <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeCompute\">https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeCompute</a> to retrieve information for compute resources, including EC2 and Anywhere fleets.</p> <p>You can call this operation in the following ways:</p> <ul> <li> <p>To get information on all instances in a fleet's home Region, specify the fleet ID.</p> </li> <li> <p>To get information on all instances in a fleet's remote location, specify the fleet ID and location name.</p> </li> <li> <p>To get information on a specific instance in a fleet, specify the fleet ID and instance ID.</p> </li> </ul> <p>Use the pagination parameters to retrieve results as a set of sequential pages. </p> <p>If successful, this operation returns <code>Instance</code> objects for each requested instance, listed in no particular order. If you call this operation for an Anywhere fleet, you receive an InvalidRequestException.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-remote-access.html\">Remotely connect to fleet instances</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-debug.html\">Debug fleet issues</a> </p> <p> <b>Related actions</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b>EC2, Container</p> <p>Retrieves information about the EC2 instances in an Amazon GameLift Servers managed fleet, including instance ID, connection data, and status. You can use this operation with a multi-location fleet to get location-specific instance information. As an alternative, use the operations <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_ListCompute\">https://docs.aws.amazon.com/gamelift/latest/apireference/API_ListCompute</a> and <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeCompute\">https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeCompute</a> to retrieve information for compute resources, including EC2 and Anywhere fleets.</p> <p>You can call this operation in the following ways:</p> <ul> <li> <p>To get information on all instances in a fleet's home Region, specify the fleet ID.</p> </li> <li> <p>To get information on all instances in a fleet's remote location, specify the fleet ID and location name.</p> </li> <li> <p>To get information on a specific instance in a fleet, specify the fleet ID and instance ID.</p> </li> </ul> <p>Use the pagination parameters to retrieve results as a set of sequential pages. </p> <p>If successful, this operation returns <code>Instance</code> objects for each requested instance, listed in no particular order. If you call this operation for an Anywhere fleet, you receive an InvalidRequestException.</p> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-remote-access.html\">Remotely connect to fleet instances</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-debug.html\">Debug fleet issues</a> </p> <p> <b>Related actions</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
     },
     "DescribeMatchmaking":{
       "name":"DescribeMatchmaking",
@@ -1231,6 +1231,25 @@
         {"shape":"InternalServiceException"}
       ],
       "documentation":"<p> <b>This API works with the following fleet types:</b> EC2</p> <p>Requests authorization to remotely connect to an instance in an Amazon GameLift Servers managed fleet. Use this operation to connect to instances with game servers that use Amazon GameLift Servers server SDK 4.x or earlier. To connect to instances with game servers that use server SDK 5.x or later, call <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GetComputeAccess\">https://docs.aws.amazon.com/gamelift/latest/apireference/API_GetComputeAccess</a>.</p> <p>To request access to an instance, specify IDs for the instance and the fleet it belongs to. You can retrieve instance IDs for a fleet by calling <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeInstances.html\">DescribeInstances</a> with the fleet ID. </p> <p>If successful, this operation returns an IP address and credentials. The returned credentials match the operating system of the instance, as follows: </p> <ul> <li> <p>For a Windows instance: returns a user name and secret (password) for use with a Windows Remote Desktop client. </p> </li> <li> <p>For a Linux instance: returns a user name and secret (RSA private key) for use with an SSH client. You must save the secret to a <code>.pem</code> file. If you're using the CLI, see the example <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GetInstanceAccess.html#API_GetInstanceAccess_Examples\"> Get credentials for a Linux instance</a> for tips on automatically saving the secret to a <code>.pem</code> file. </p> </li> </ul> <p> <b>Learn more</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-remote-access.html\">Remotely connect to fleet instances</a> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/fleets-creating-debug.html\">Debug fleet issues</a> </p> <p> <b>Related actions</b> </p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
+    },
+    "GetPlayerConnectionDetails":{
+      "name":"GetPlayerConnectionDetails",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetPlayerConnectionDetailsInput"},
+      "output":{"shape":"GetPlayerConnectionDetailsOutput"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"NotFoundException"},
+        {"shape":"InvalidGameSessionStatusException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InternalServiceException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"UnsupportedRegionException"}
+      ],
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2 (server SDK 5.x or later), Container</p> <p>Retrieves connection details for game clients to connect to game sessions. </p> <p> <b>Player gateway benefits:</b> DDoS protection with negligible impact to latency. </p> <p>To enable player gateway on your fleet, set <code>PlayerGatewayMode</code> to <code>ENABLED</code> or <code>REQUIRED</code> when calling <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_CreateFleet.html\">CreateFleet</a> or <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_CreateContainerFleet.html\">CreateContainerFleet</a>.</p> <p> <b>How to use:</b> After creating a game session and adding players, call this operation with the game session ID and player IDs. When player gateway is enabled, the response includes connection endpoints and player gateway tokens that your game clients can use to connect to the game session through player gateway. To learn more about player gateway integration, see <a href=\"https://docs.aws.amazon.com/gameliftservers/latest/developerguide/ddos-protection-intro.html\">DDoS protection with Amazon GameLift Servers player gateway</a>.</p> <p>When player gateway is disabled or in locations where player gateway is not supported, this operation returns game server connection information without player gateway tokens, so that your game clients directly connect to the game server endpoint.</p>"
     },
     "ListAliases":{
       "name":"ListAliases",
@@ -1554,7 +1573,7 @@
         {"shape":"TerminalRoutingStrategyException"},
         {"shape":"UnsupportedRegionException"}
       ],
-      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere, Container</p> <p>Retrieves all active game sessions that match a set of search criteria and sorts them into a specified order. </p> <p>This operation is not designed to continually track game session status because that practice can cause you to exceed your API limit and generate errors. Instead, configure an Amazon Simple Notification Service (Amazon SNS) topic to receive notifications from a matchmaker or a game session placement queue.</p> <p>When searching for game sessions, you specify exactly where you want to search and provide a search filter expression, a sort expression, or both. A search request can search only one fleet, but it can search all of a fleet's locations. </p> <p>This operation can be used in the following ways: </p> <ul> <li> <p>To search all game sessions that are currently running on all locations in a fleet, provide a fleet or alias ID. This approach returns game sessions in the fleet's home Region and all remote locations that fit the search criteria.</p> </li> <li> <p>To search all game sessions that are currently running on a specific fleet location, provide a fleet or alias ID and a location name. For location, you can specify a fleet's home Region or any remote location.</p> </li> </ul> <p>Use the pagination parameters to retrieve results as a set of sequential pages. </p> <p>If successful, a <code>GameSession</code> object is returned for each game session that matches the request. Search finds game sessions that are in <code>ACTIVE</code> status only. To retrieve information on game sessions in other statuses, use <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeGameSessions.html\">DescribeGameSessions</a>.</p> <p>To set search and sort criteria, create a filter expression using the following game session attributes. For game session search examples, see the Examples section of this topic.</p> <ul> <li> <p> <b>gameSessionId</b> -- A unique identifier for the game session. You can use either a <code>GameSessionId</code> or <code>GameSessionArn</code> value. </p> </li> <li> <p> <b>gameSessionName</b> -- Name assigned to a game session. Game session names do not need to be unique to a game session.</p> </li> <li> <p> <b>gameSessionProperties</b> -- A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. The filter expression must specify the <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameProperty\">https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameProperty</a> -- a <code>Key</code> and a string <code>Value</code> to search for the game sessions.</p> <p>For example, to search for the above key-value pair, specify the following search filter: <code>gameSessionProperties.difficulty = \"novice\"</code>. All game property values are searched as strings.</p> <p> For examples of searching game sessions, see the ones below, and also see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-client-api.html#game-properties-search\">Search game sessions by game property</a>. </p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note> </li> <li> <p> <b>maximumSessions</b> -- Maximum number of player sessions allowed for a game session.</p> </li> <li> <p> <b>creationTimeMillis</b> -- Value indicating when a game session was created. It is expressed in Unix time as milliseconds.</p> </li> <li> <p> <b>playerSessionCount</b> -- Number of players currently connected to a game session. This value changes rapidly as players join the session or drop out.</p> </li> <li> <p> <b>hasAvailablePlayerSessions</b> -- Boolean value indicating whether a game session has reached its maximum number of players. It is highly recommended that all search requests include this filter attribute to optimize search performance and return only sessions that players can join. </p> </li> </ul> <note> <p>Returned values for <code>playerSessionCount</code> and <code>hasAvailablePlayerSessions</code> change quickly as players join sessions and others drop out. Results should be considered a snapshot in time. Be sure to refresh search results often, and handle sessions that fill up before a player can join. </p> </note> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
+      "documentation":"<p> <b>This API works with the following fleet types:</b> EC2, Anywhere, Container</p> <p>Retrieves all active game sessions that match a set of search criteria and sorts them into a specified order. </p> <p>This operation is not designed to continually track game session status because that practice can cause you to exceed your API limit and generate errors. Instead, configure an Amazon Simple Notification Service (Amazon SNS) topic to receive notifications from a matchmaker or a game session placement queue.</p> <p>When searching for game sessions, you specify exactly where you want to search and provide a search filter expression, a sort expression, or both. A search request can search only one fleet, but it can search all of a fleet's locations. </p> <p>This operation can be used in the following ways: </p> <ul> <li> <p>To search all game sessions that are currently running on all locations in a fleet, provide a fleet or alias ID. This approach returns game sessions in the fleet's home Region and all remote locations that fit the search criteria.</p> </li> <li> <p>To search all game sessions that are currently running on a specific fleet location, provide a fleet or alias ID and a location name. For location, you can specify a fleet's home Region or any remote location.</p> </li> </ul> <p>Use the pagination parameters to retrieve results as a set of sequential pages. </p> <p>If successful, a <code>GameSession</code> object is returned for each game session that matches the request. Search finds game sessions that are in <code>ACTIVE</code> status only. To retrieve information on game sessions in other statuses, use <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeGameSessions.html\">DescribeGameSessions</a>.</p> <p>To set search and sort criteria, create a filter expression using the following game session attributes. For game session search examples, see the Examples section of this topic.</p> <ul> <li> <p> <b>gameSessionId</b> -- A unique identifier for the game session. You can use either a <code>GameSessionId</code> or <code>GameSessionArn</code> value. </p> </li> <li> <p> <b>gameSessionName</b> -- Name assigned to a game session. Game session names do not need to be unique to a game session.</p> </li> <li> <p> <b>gameSessionProperties</b> -- A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. The filter expression must specify the <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameProperty\">https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameProperty</a> -- a <code>Key</code> and a string <code>Value</code> to search for the game sessions.</p> <p>For example, to search for the above key-value pair, specify the following search filter: <code>gameSessionProperties.difficulty = \"novice\"</code>. All game property values are searched as strings.</p> <p> For examples of searching game sessions, see the ones below, and also see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-client-api.html#game-properties-search\">Search game sessions by game property</a>. </p> <note> <ul> <li> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </li> <li> <p>If you use SearchGameSessions API, there is a limit of 500 game property keys across all game sessions and all fleets per region. If the limit is exceeded, there will potentially be game session entries missing from SearchGameSessions API results.</p> </li> </ul> </note> </li> <li> <p> <b>maximumSessions</b> -- Maximum number of player sessions allowed for a game session.</p> </li> <li> <p> <b>creationTimeMillis</b> -- Value indicating when a game session was created. It is expressed in Unix time as milliseconds.</p> </li> <li> <p> <b>playerSessionCount</b> -- Number of players currently connected to a game session. This value changes rapidly as players join the session or drop out.</p> </li> <li> <p> <b>hasAvailablePlayerSessions</b> -- Boolean value indicating whether a game session has reached its maximum number of players. It is highly recommended that all search requests include this filter attribute to optimize search performance and return only sessions that players can join. </p> </li> </ul> <note> <p>Returned values for <code>playerSessionCount</code> and <code>hasAvailablePlayerSessions</code> change quickly as players join sessions and others drop out. Results should be considered a snapshot in time. Be sure to refresh search results often, and handle sessions that fill up before a player can join. </p> </note> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
     },
     "StartFleetActions":{
       "name":"StartFleetActions",
@@ -2192,7 +2211,7 @@
           "documentation":"<p>Current status of the build.</p> <p>Possible build statuses include the following:</p> <ul> <li> <p> <b>INITIALIZED</b> -- A new build has been defined, but no files have been uploaded. You cannot create fleets for builds that are in this status. When a build is successfully created, the build status is set to this value. </p> </li> <li> <p> <b>READY</b> -- The game build has been successfully uploaded. You can now create new fleets for this build.</p> </li> <li> <p> <b>FAILED</b> -- The game build upload failed. You cannot create new fleets for this build. </p> </li> </ul>"
         },
         "SizeOnDisk":{
-          "shape":"PositiveLong",
+          "shape":"WholeNumberLong",
           "documentation":"<p>File size of the uploaded game build, expressed in bytes. When the build status is <code>INITIALIZED</code> or when using a custom Amazon S3 storage location, this value is 0.</p>"
         },
         "OperatingSystem":{
@@ -2610,6 +2629,10 @@
         "LocationAttributes":{
           "shape":"ContainerFleetLocationAttributesList",
           "documentation":"<p>Information about the container fleet's remote locations where fleet instances are deployed.</p>"
+        },
+        "PlayerGatewayMode":{
+          "shape":"PlayerGatewayMode",
+          "documentation":"<p>Indicates whether player gateway is enabled for this container fleet. Player gateway provides benefits such as DDoS protection with negligible impact to latency.</p> <p>If <code>ENABLED</code> or <code>REQUIRED</code>, game clients can use player gateway to connect with the game server. If <code>DISABLED</code>, game clients cannot use player gateway. Instead, they have to directly connect to the game server.</p>"
         }
       },
       "documentation":"<p>Describes an Amazon GameLift Servers managed container fleet. </p>"
@@ -2636,6 +2659,10 @@
         "Status":{
           "shape":"ContainerFleetLocationStatus",
           "documentation":"<p>The status of fleet activity in the location. </p> <ul> <li> <p> <code>PENDING</code> -- A new container fleet has been requested.</p> </li> <li> <p> <code>CREATING</code> -- A new container fleet resource is being created. </p> </li> <li> <p> <code>CREATED</code> -- A new container fleet resource has been created. No fleet instances have been deployed.</p> </li> <li> <p> <code>ACTIVATING</code> -- New container fleet instances are being deployed.</p> </li> <li> <p> <code>ACTIVE</code> -- The container fleet has been deployed and is ready to host game sessions.</p> </li> <li> <p> <code>UPDATING</code> -- Updates to the container fleet is being updated. A deployment is in progress.</p> </li> </ul>"
+        },
+        "PlayerGatewayStatus":{
+          "shape":"PlayerGatewayStatus",
+          "documentation":"<p>The current status of player gateway in this location for this container fleet. Note, even if a container fleet has PlayerGatewayMode configured as <code>ENABLED</code>, player gateway might not be available in a specific location. For more information about locations where player gateway is supported, see <a href=\"https://docs.aws.amazon.com/gameliftservers/latest/developerguide/gamelift-regions.html\">Amazon GameLift Servers service locations</a>.</p> <p>Possible values include:</p> <ul> <li> <p> <code>ENABLED</code> -- Player gateway is available for this container fleet location.</p> </li> <li> <p> <code>DISABLED</code> -- Player gateway is not available for this container fleet location.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Details about a location in a multi-location container fleet. </p>"
@@ -3086,6 +3113,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>A list of labels to assign to the new fleet resource. Tags are developer-defined key-value pairs. Tagging Amazon Web Services resources are useful for resource management, access management and cost allocation. For more information, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html\"> Tagging Amazon Web Services Resources</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        },
+        "PlayerGatewayMode":{
+          "shape":"PlayerGatewayMode",
+          "documentation":"<p>Configures player gateway for your fleet. Player gateway provides benefits such as DDoS protection by rate limiting and validating traﬃc before it reaches game servers, hiding game server IP addresses from players, and providing updated endpoints when relay endpoints become unhealthy.</p> <p> <b>How it works:</b> When enabled, game clients connect to relay endpoints instead of to your game servers. Player gateway validates player gateway tokens and routes traffic to the appropriate game server. Your game backend calls <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GetPlayerConnectionDetails.html\">GetPlayerConnectionDetails</a> to retrieve relay endpoints and player gateway tokens for your game clients. To learn more about this topic, see <a href=\"https://docs.aws.amazon.com/gameliftservers/latest/developerguide/ddos-protection-intro.html\">DDoS protection with Amazon GameLift Servers player gateway</a>.</p> <p>Possible values include:</p> <ul> <li> <p> <code>DISABLED</code> (default) -- Game clients connect to the game server endpoint. Use this when you do not intend to integrate your game with player gateway.</p> </li> <li> <p> <code>ENABLED</code> -- Player gateway is available in fleet locations where it is supported. Your game backend can call <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GetPlayerConnectionDetails.html\">GetPlayerConnectionDetails</a> to obtain a player gateway token and endpoints for game clients.</p> </li> <li> <p> <code>REQUIRED</code> -- Player gateway is available in fleet locations where it is supported, and the fleet can only use locations that support this feature. Attempting to add a remote location to your fleet which does not support player gateway will result in an <code>InvalidRequestException</code>.</p> </li> </ul>"
         }
       }
     },
@@ -3249,6 +3280,14 @@
         "InstanceRoleCredentialsProvider":{
           "shape":"InstanceRoleCredentialsProvider",
           "documentation":"<p>Prompts Amazon GameLift Servers to generate a shared credentials file for the IAM role that's defined in <code>InstanceRoleArn</code>. The shared credentials file is stored on each fleet instance and refreshed as needed. Use shared credentials for applications that are deployed along with the game server executable, if the game server is integrated with server SDK version 5.x. For more information about using shared credentials, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-resources.html\"> Communicate with other Amazon Web Services resources from your fleets</a>.</p>"
+        },
+        "PlayerGatewayMode":{
+          "shape":"PlayerGatewayMode",
+          "documentation":"<p>Configures player gateway for your fleet. Player gateway provides benefits such as DDoS protection by rate limiting and validating traﬃc before it reaches game servers, hiding game server IP addresses from players, and providing updated endpoints when relay endpoints become unhealthy. Note, player gateway is only available for fleets using server SDK 5.x or later game server builds.</p> <p> <b>How it works:</b> When enabled, game clients connect to relay endpoints instead of to your game servers. Player gateway validates player gateway tokens and routes traffic to the appropriate game server. Your game backend calls <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GetPlayerConnectionDetails.html\">GetPlayerConnectionDetails</a> to retrieve relay endpoints and player gateway tokens for your game clients. To learn more about this topic, see <a href=\"https://docs.aws.amazon.com/gameliftservers/latest/developerguide/ddos-protection-intro.html\">DDoS protection with Amazon GameLift Servers player gateway</a>.</p> <p>Possible values include:</p> <ul> <li> <p> <code>DISABLED</code> (default) -- Game clients connect to the game server endpoint. Use this when you do not intend to integrate your game with player gateway.</p> </li> <li> <p> <code>ENABLED</code> -- Player gateway is available in fleet locations where it is supported. Your game backend can call <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GetPlayerConnectionDetails.html\">GetPlayerConnectionDetails</a> to obtain a player gateway token and endpoints for game clients.</p> </li> <li> <p> <code>REQUIRED</code> -- Player gateway is available in fleet locations where it is supported, and the fleet can only use locations that support this feature. Attempting to add a remote location to your fleet which does not support player gateway will result in an <code>InvalidRequestException</code>.</p> </li> </ul>"
+        },
+        "PlayerGatewayConfiguration":{
+          "shape":"PlayerGatewayConfiguration",
+          "documentation":"<p>Configuration settings for player gateway. Use this to specify advanced options for how player gateway handles connections.</p>"
         }
       }
     },
@@ -3387,7 +3426,7 @@
         },
         "GameProperties":{
           "shape":"GamePropertyList",
-          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. For an example, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-client-api.html#game-properties-create\">Create a game session with custom properties</a>. </p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note>"
+          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. For an example, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-client-api.html#game-properties-create\">Create a game session with custom properties</a>. </p> <note> <ul> <li> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </li> <li> <p>If you use SearchGameSessions API, there is a limit of 500 game property keys across all game sessions and all fleets per region. If the limit is exceeded, there will potentially be game session entries missing from SearchGameSessions API results.</p> </li> </ul> </note>"
         },
         "CreatorId":{
           "shape":"NonZeroAndMaxString",
@@ -3545,7 +3584,7 @@
         },
         "GameProperties":{
           "shape":"GamePropertyList",
-          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.</p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note>"
+          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.</p> <note> <ul> <li> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </li> <li> <p>If you use SearchGameSessions API, there is a limit of 500 game property keys across all game sessions and all fleets per region. If the limit is exceeded, there will potentially be game session entries missing from SearchGameSessions API results.</p> </li> </ul> </note>"
         },
         "GameSessionData":{
           "shape":"GameSessionData",
@@ -5871,6 +5910,14 @@
         "InstanceRoleCredentialsProvider":{
           "shape":"InstanceRoleCredentialsProvider",
           "documentation":"<p>Indicates that fleet instances maintain a shared credentials file for the IAM role defined in <code>InstanceRoleArn</code>. Shared credentials allow applications that are deployed with the game server executable to communicate with other Amazon Web Services resources. This property is used only when the game server is integrated with the server SDK version 5.x. For more information about using shared credentials, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-resources.html\"> Communicate with other Amazon Web Services resources from your fleets</a>. This attribute is used with fleets where <code>ComputeType</code> is <code>EC2</code>.</p>"
+        },
+        "PlayerGatewayMode":{
+          "shape":"PlayerGatewayMode",
+          "documentation":"<p>Indicates whether player gateway is enabled for this fleet. Player gateway provides benefits such as DDoS protection with negligible impact to latency.</p> <p>If <code>ENABLED</code> or <code>REQUIRED</code>, game clients can use player gateway to connect with the game server. If <code>DISABLED</code>, game clients cannot use player gateway. Instead, they have to directly connect to the game server.</p>"
+        },
+        "PlayerGatewayConfiguration":{
+          "shape":"PlayerGatewayConfiguration",
+          "documentation":"<p>Configuration settings for player gateway on this fleet.</p>"
         }
       },
       "documentation":"<p>Describes an Amazon GameLift Servers fleet of game hosting resources. Attributes differ based on the fleet's compute type, as follows:</p> <ul> <li> <p>EC2 fleet attributes identify a <code>Build</code> resource (for fleets with customer game server builds) or a <code>Script</code> resource (for Amazon GameLift Servers Realtime fleets).</p> </li> <li> <p>Amazon GameLift Servers Anywhere fleets have an abbreviated set of attributes, because most fleet configurations are set directly on the fleet's computes. Attributes include fleet identifiers and descriptive properties, creation/termination time, and fleet status.</p> </li> </ul> <p> <b>Returned by:</b> <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeFleetAttributes\">https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeFleetAttributes</a> </p>"
@@ -6087,7 +6134,7 @@
       "members":{
         "Key":{
           "shape":"GamePropertyKey",
-          "documentation":"<p>The game property identifier.</p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note>"
+          "documentation":"<p>The game property identifier.</p> <note> <ul> <li> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </li> <li> <p>If you use SearchGameSessions API, there is a limit of 500 game property keys across all game sessions and all fleets per region. If the limit is exceeded, there will potentially be game session entries missing from SearchGameSessions API results.</p> </li> </ul> </note>"
         },
         "Value":{
           "shape":"GamePropertyValue",
@@ -6550,6 +6597,13 @@
       "type":"list",
       "member":{"shape":"GameServerInstance"}
     },
+    "GameServerIpProtocolSupported":{
+      "type":"string",
+      "enum":[
+        "IPv4",
+        "DUAL_STACK"
+      ]
+    },
     "GameServerProtectionPolicy":{
       "type":"string",
       "enum":[
@@ -6613,7 +6667,7 @@
         },
         "GameProperties":{
           "shape":"GamePropertyList",
-          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>.</p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note>"
+          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>.</p> <note> <ul> <li> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </li> <li> <p>If you use SearchGameSessions API, there is a limit of 500 game property keys across all game sessions and all fleets per region. If the limit is exceeded, there will potentially be game session entries missing from SearchGameSessions API results.</p> </li> </ul> </note>"
         },
         "IpAddress":{
           "shape":"IpAddress",
@@ -6646,6 +6700,10 @@
         "Location":{
           "shape":"LocationStringModel",
           "documentation":"<p>The fleet location where the game session is running. This value might specify the fleet's home Region or a remote location. Location is expressed as an Amazon Web Services Region code such as <code>us-west-2</code>. </p>"
+        },
+        "PlayerGatewayStatus":{
+          "shape":"PlayerGatewayStatus",
+          "documentation":"<p>Indicates whether player gateway is available for use for this game session. Note, even if a fleet has PlayerGatewayMode configured as <code>ENABLED</code>, player gateway might not be available in a specific location. For more information about locations where player gateway is supported, see <a href=\"https://docs.aws.amazon.com/gameliftservers/latest/developerguide/gamelift-regions.html\">Amazon GameLift Servers service locations</a>.</p> <p>Possible values include:</p> <ul> <li> <p> <code>ENABLED</code> -- Player gateway is available for routing player connections for this game session.</p> </li> <li> <p> <code>DISABLED</code> -- Player gateway is not available for this game session.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Properties describing a game session.</p> <p>A game session in ACTIVE status can host players. When a game session ends, its status is set to <code>TERMINATED</code>. </p> <p>Amazon GameLift Servers retains a game session resource for 30 days after the game session ends. You can reuse idempotency token values after this time. Game session logs are retained for 14 days.</p> <p> <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/reference-awssdk.html#reference-awssdk-resources-fleets\">All APIs by task</a> </p>"
@@ -6677,6 +6735,10 @@
         "MatchedPlayerSessions":{
           "shape":"MatchedPlayerSessionList",
           "documentation":"<p>A collection of player session IDs, one for each player ID that was included in the original matchmaking request. </p>"
+        },
+        "PlayerGatewayStatus":{
+          "shape":"PlayerGatewayStatus",
+          "documentation":"<p>The current status of player gateway for the game session. Note, even if a fleet has PlayerGatewayMode configured as <code>ENABLED</code>, player gateway might not be available in a specific location. For more information about locations where player gateway is supported, see <a href=\"https://docs.aws.amazon.com/gameliftservers/latest/developerguide/gamelift-regions.html\">supported locations</a>.</p> <p>Possible values include:</p> <ul> <li> <p> <code>ENABLED</code> -- Player gateway is available for this game session.</p> </li> <li> <p> <code>DISABLED</code> -- Player gateway is not available for this game session.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Connection information for a new game session that is created in response to a start matchmaking request. Once a match is made, the FlexMatch engine creates a new game session for it. This information, including the game session endpoint and player sessions for each player in the original matchmaking request, is added to the matchmaking ticket.</p>"
@@ -6747,7 +6809,7 @@
         },
         "GameProperties":{
           "shape":"GamePropertyList",
-          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>.</p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note>"
+          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>.</p> <note> <ul> <li> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </li> <li> <p>If you use SearchGameSessions API, there is a limit of 500 game property keys across all game sessions and all fleets per region. If the limit is exceeded, there will potentially be game session entries missing from SearchGameSessions API results.</p> </li> </ul> </note>"
         },
         "MaximumPlayerSessionCount":{
           "shape":"WholeNumber",
@@ -6808,6 +6870,10 @@
         "PriorityConfigurationOverride":{
           "shape":"PriorityConfigurationOverride",
           "documentation":"<p>An alternative priority list of locations that's included with a game session placement request. When provided, the list overrides a queue's location order list for this game session placement request only. The list might include Amazon Web Services Regions, local zones, and custom locations (for Anywhere fleets). The fallback strategy tells Amazon GameLift Servers what action to take (if any) in the event that it failed to place a new game session. </p>"
+        },
+        "PlayerGatewayStatus":{
+          "shape":"PlayerGatewayStatus",
+          "documentation":"<p>The current status of player gateway for the game session placement. Note, even if a fleet has PlayerGatewayMode configured as <code>ENABLED</code>, player gateway might not be available in a specific location. For more information about locations where player gateway is supported, see <a href=\"https://docs.aws.amazon.com/gameliftservers/latest/developerguide/gamelift-regions.html\">Amazon GameLift Servers service locations</a>.</p> <p>Possible values include:</p> <ul> <li> <p> <code>ENABLED</code> -- Player gateway is available for this game session placement.</p> </li> <li> <p> <code>DISABLED</code> -- Player gateway is not available for this game session placement.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Represents a potential game session placement, including the full details of the original placement request and the current status. </p> <note> <p>If the game session placement status is <code>PENDING</code>, the properties for game session ID/ARN, region, IP address/DNS, and port aren't final. A game session is not active and ready to accept players until placement status reaches <code>FULFILLED</code>. When the placement is in <code>PENDING</code> status, Amazon GameLift Servers may attempt to place a game session multiple times before succeeding. With each attempt it creates a <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameSession\">https://docs.aws.amazon.com/gamelift/latest/apireference/API_GameSession</a> object and updates this placement object with the new game session properties.</p> </note>"
@@ -7060,6 +7126,36 @@
         "InstanceAccess":{
           "shape":"InstanceAccess",
           "documentation":"<p>The connection information for a fleet instance, including IP address and access credentials.</p>"
+        }
+      }
+    },
+    "GetPlayerConnectionDetailsInput":{
+      "type":"structure",
+      "required":[
+        "GameSessionId",
+        "PlayerIds"
+      ],
+      "members":{
+        "GameSessionId":{
+          "shape":"ArnStringModel",
+          "documentation":"<p>A unique identifier for the game session for which to retrieve player connection details.</p>"
+        },
+        "PlayerIds":{
+          "shape":"PlayerIdList",
+          "documentation":"<p>List of unique identifiers for players. Connection details are returned for each player in this list.</p>"
+        }
+      }
+    },
+    "GetPlayerConnectionDetailsOutput":{
+      "type":"structure",
+      "members":{
+        "GameSessionId":{
+          "shape":"ArnStringModel",
+          "documentation":"<p>A unique identifier for the game session for which the player connection details were retrieved.</p>"
+        },
+        "PlayerConnectionDetails":{
+          "shape":"PlayerConnectionDetailList",
+          "documentation":"<p>A collection of player connection detail objects, one for each requested player.</p>"
         }
       }
     },
@@ -7897,6 +7993,10 @@
         "Status":{
           "shape":"FleetStatus",
           "documentation":"<p>The life-cycle status of a fleet location. </p>"
+        },
+        "PlayerGatewayStatus":{
+          "shape":"PlayerGatewayStatus",
+          "documentation":"<p>The current status of player gateway in this location for this fleet. Note, even if a fleet has PlayerGatewayMode configured as <code>ENABLED</code>, player gateway might not be available in a specific location. For more information about locations where player gateway is supported, see <a href=\"https://docs.aws.amazon.com/gameliftservers/latest/developerguide/gamelift-regions.html\">Amazon GameLift Servers service locations</a>.</p> <p>Possible values include:</p> <ul> <li> <p> <code>ENABLED</code> -- Player gateway is available for this fleet location.</p> </li> <li> <p> <code>DISABLED</code> -- Player gateway is not available for this fleet location.</p> </li> </ul>"
         }
       },
       "documentation":"<p>A fleet location and its life-cycle state. A location state object might be used to describe a fleet's remote location or home Region. Life-cycle state tracks the progress of launching the first instance in a new location and preparing it for game hosting, and then removing all instances and deleting the location from the fleet.</p> <ul> <li> <p> <b>NEW</b> -- A new fleet location has been defined and desired instances is set to 1. </p> </li> <li> <p> <b>DOWNLOADING/VALIDATING/BUILDING/ACTIVATING</b> -- Amazon GameLift Servers is setting up the new fleet location, creating new instances with the game build or Realtime script and starting server processes.</p> </li> <li> <p> <b>ACTIVE</b> -- Hosts can now accept game sessions.</p> </li> <li> <p> <b>ERROR</b> -- An error occurred when downloading, validating, building, or activating the fleet location.</p> </li> <li> <p> <b>DELETING</b> -- Hosts are responding to a delete fleet location request.</p> </li> <li> <p> <b>TERMINATED</b> -- The fleet location no longer exists.</p> </li> <li> <p> <b>NOT_FOUND</b> -- The fleet location was not found. This could be because the custom location was removed or not created. </p> </li> </ul>"
@@ -8061,7 +8161,7 @@
         },
         "GameProperties":{
           "shape":"GamePropertyList",
-          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used when <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.</p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note>"
+          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used when <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.</p> <note> <ul> <li> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </li> <li> <p>If you use SearchGameSessions API, there is a limit of 500 game property keys across all game sessions and all fleets per region. If the limit is exceeded, there will potentially be game session entries missing from SearchGameSessions API results.</p> </li> </ul> </note>"
         },
         "GameSessionData":{
           "shape":"GameSessionData",
@@ -8226,6 +8326,11 @@
       "type":"integer",
       "max":2147483647,
       "min":1
+    },
+    "MaxString":{
+      "type":"string",
+      "max":1024,
+      "min":0
     },
     "MaximumGameServerContainerGroupsPerInstance":{
       "type":"integer",
@@ -8416,6 +8521,51 @@
       "type":"list",
       "member":{"shape":"PlayerAttributeString"}
     },
+    "PlayerConnectionDetail":{
+      "type":"structure",
+      "members":{
+        "PlayerId":{
+          "shape":"PlayerId",
+          "documentation":"<p>A unique identifier for a player associated with this connection.</p>"
+        },
+        "Endpoints":{
+          "shape":"PlayerConnectionEndpointList",
+          "documentation":"<p>List of connection endpoints for the game client. Your game client uses these IP address(es) and port(s) to connect to the game session.</p> <p>When player gateway is enabled, these are relay endpoints with benefits such as DDoS protection. When disabled, this is the game server endpoint.</p>"
+        },
+        "PlayerGatewayToken":{
+          "shape":"MaxString",
+          "documentation":"<p>Access token that your game client must prepend to all traffic sent through player gateway. Player gateway verifies identity and authorizes connection based on this token.</p> <p>This value is empty when player gateway is disabled.</p>"
+        },
+        "Expiration":{
+          "shape":"Timestamp",
+          "documentation":"<p>When player gateway is enabled, this is the timestamp indicating when player gateway token expires. Your game backend should call <a href=\"https://docs.aws.amazon.com/gamelift/latest/apireference/API_GetPlayerConnectionDetails.html\">GetPlayerConnectionDetails</a> to retrieve fresh connection information for your game clients before this time. Format is a number expressed in Unix time as milliseconds (for example <code>\"1469498468.057\"</code>). </p> <p>This value is empty when player gateway is disabled.</p>"
+        }
+      },
+      "documentation":"<p>Connection information for a game client to connect to a game session. This object contains the IP address(es), port(s), and authentication details your game client needs to establish a connection.</p> <p> <b>With player gateway enabled:</b> Contains relay endpoints and a player gateway token. Your game client must prepend player gateway token to each payload for validation and connection through relay endpoints.</p> <p> <b>With player gateway disabled:</b> Contains game server endpoint. Player gateway token and expiration fields are empty.</p>"
+    },
+    "PlayerConnectionDetailList":{
+      "type":"list",
+      "member":{"shape":"PlayerConnectionDetail"},
+      "min":1
+    },
+    "PlayerConnectionEndpoint":{
+      "type":"structure",
+      "members":{
+        "IpAddress":{
+          "shape":"IpAddress",
+          "documentation":"<p>IP address for connecting to the game session. When player gateway is enabled, this is a player gateway IP address. When player gateway is disabled, this is the game server IP address.</p>"
+        },
+        "Port":{
+          "shape":"PortNumber",
+          "documentation":"<p>Port number for connecting to the game session. When player gateway is enabled, this is a player gateway port. When player gateway is disabled, this is the game server port.</p>"
+        }
+      },
+      "documentation":"<p>Network address(es) and port(s) for connecting to a game session. </p>"
+    },
+    "PlayerConnectionEndpointList":{
+      "type":"list",
+      "member":{"shape":"PlayerConnectionEndpoint"}
+    },
     "PlayerData":{
       "type":"string",
       "max":2048,
@@ -8425,6 +8575,31 @@
       "type":"map",
       "key":{"shape":"NonZeroAndMaxString"},
       "value":{"shape":"PlayerData"}
+    },
+    "PlayerGatewayConfiguration":{
+      "type":"structure",
+      "members":{
+        "GameServerIpProtocolSupported":{
+          "shape":"GameServerIpProtocolSupported",
+          "documentation":"<p>The IP protocol that your game servers support for player connections through player gateway. If the value is set to <code>IPv4</code>, GameLift will install and execute a lightweight IP translation software on fleet instances to receive and transform incoming IPv6 traffic to IPv4. If the value is set to <code>DUAL_STACK</code>, the lightweight IP translation software will not be installed on fleet instances. <code>DUAL_STACK</code> provides slightly better performance than <code>IPv4</code>.</p>"
+        }
+      },
+      "documentation":"<p>Configuration settings for player gateway. Use these settings to specify advanced options for how player gateway handles connections.</p>"
+    },
+    "PlayerGatewayMode":{
+      "type":"string",
+      "enum":[
+        "DISABLED",
+        "ENABLED",
+        "REQUIRED"
+      ]
+    },
+    "PlayerGatewayStatus":{
+      "type":"string",
+      "enum":[
+        "DISABLED",
+        "ENABLED"
+      ]
     },
     "PlayerId":{
       "type":"string",
@@ -8581,10 +8756,6 @@
     },
     "PositiveInteger":{
       "type":"integer",
-      "min":1
-    },
-    "PositiveLong":{
-      "type":"long",
       "min":1
     },
     "PriorityConfiguration":{
@@ -9066,7 +9237,7 @@
           "documentation":"<p>Version information that is associated with a build or script. Version strings do not need to be unique.</p>"
         },
         "SizeOnDisk":{
-          "shape":"PositiveLong",
+          "shape":"WholeNumberLong",
           "documentation":"<p>The file size of the uploaded Realtime script, expressed in bytes. When files are uploaded from an S3 location, this value remains at \"0\".</p>"
         },
         "CreationTime":{
@@ -9254,7 +9425,7 @@
         },
         "GameProperties":{
           "shape":"GamePropertyList",
-          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>.</p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note>"
+          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>.</p> <note> <ul> <li> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </li> <li> <p>If you use SearchGameSessions API, there is a limit of 500 game property keys across all game sessions and all fleets per region. If the limit is exceeded, there will potentially be game session entries missing from SearchGameSessions API results.</p> </li> </ul> </note>"
         },
         "MaximumPlayerSessionCount":{
           "shape":"WholeNumber",
@@ -10150,7 +10321,7 @@
         },
         "GameProperties":{
           "shape":"GamePropertyList",
-          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. You can use this parameter to modify game properties in an active game session. This action adds new properties and modifies existing properties. There is no way to delete properties. For an example, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-client-api.html#game-properties-update\">Update the value of a game property</a>. </p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note>"
+          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. You can use this parameter to modify game properties in an active game session. This action adds new properties and modifies existing properties. There is no way to delete properties. For an example, see <a href=\"https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-client-api.html#game-properties-update\">Update the value of a game property</a>. </p> <note> <ul> <li> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </li> <li> <p>If you use SearchGameSessions API, there is a limit of 500 game property keys across all game sessions and all fleets per region. If the limit is exceeded, there will potentially be game session entries missing from SearchGameSessions API results.</p> </li> </ul> </note>"
         }
       }
     },
@@ -10256,7 +10427,7 @@
         },
         "GameProperties":{
           "shape":"GamePropertyList",
-          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.</p> <note> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </note>"
+          "documentation":"<p>A set of key-value pairs that can store custom data in a game session. For example: <code>{\"Key\": \"difficulty\", \"Value\": \"novice\"}</code>. This information is added to the new <code>GameSession</code> object that is created for a successful match. This parameter is not used if <code>FlexMatchMode</code> is set to <code>STANDALONE</code>.</p> <note> <ul> <li> <p>Avoid using periods (\".\") in property keys if you plan to search for game sessions by properties. Property keys containing periods cannot be searched and will be filtered out from search results due to search index limitations.</p> </li> <li> <p>If you use SearchGameSessions API, there is a limit of 500 game property keys across all game sessions and all fleets per region. If the limit is exceeded, there will potentially be game session entries missing from SearchGameSessions API results.</p> </li> </ul> </note>"
         },
         "GameSessionData":{
           "shape":"GameSessionData",
@@ -10463,6 +10634,10 @@
     },
     "WholeNumber":{
       "type":"integer",
+      "min":0
+    },
+    "WholeNumberLong":{
+      "type":"long",
       "min":0
     },
     "ZeroCapacityStrategy":{

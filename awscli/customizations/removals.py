@@ -102,6 +102,11 @@ def register_removals(event_handler):
         remove_commands=['get-log-object'],
     )
 
+    cmd_remover.remove(
+        on_event='building-command-table.connecthealth',
+        remove_commands=['start-medical-scribe-listening-session'],
+    )
+
 
 class CommandRemover:
     def __init__(self, events):

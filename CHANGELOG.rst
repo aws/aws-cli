@@ -2,6 +2,18 @@
 CHANGELOG
 =========
 
+1.44.52
+=======
+
+* api-change:``connecthealth``: Connect-Health SDK is AWS's unified SDK for the Amazon Connect Health offering. It allows healthcare developers to integrate purpose-built agents - such as patient insights, ambient documentation, and medical coding - into their existing applications, including EHRs, telehealth, and revenue cycle.
+* api-change:``ec2``: Added metadata field to CapacityAllocation.
+* api-change:``endpoint-rules``: Update endpoint-rules command to latest version
+* api-change:``guardduty``: Added MALICIOUS FILE to IndicatorType enum in MDC Sequence
+* api-change:``mpa``: Updates to multi-party approval (MPA) service to add support for approval team baseline operations.
+* api-change:``sagemaker``: Adds support for S3 Bucket Ownership validation for SageMaker Managed MLflow.
+* api-change:``savingsplans``: Added support for OpenSearch and Neptune Analytics to Database Savings Plans.
+
+
 1.44.51
 =======
 
